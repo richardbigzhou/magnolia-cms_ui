@@ -46,7 +46,6 @@ import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.Util;
-import com.vaadin.client.VConsole;
 
 /**
  * The AppsTransitionDelegate provides custom transition logic when launching, closing an app, or
@@ -88,7 +87,7 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
         }
     };
 
-    private FadeAnimation curtainFadeOutAnimation = new FadeAnimation(0, false, false);
+    private FadeAnimation curtainFadeOutAnimation = new FadeAnimation(0, true, false);
     private FadeAnimation curtainFadeInAnimation = new FadeAnimation(CURTAIN_ALPHA, true, true) {
         @Override
         protected void onStart() {
@@ -117,7 +116,6 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
             viewport.setChildVisibleNoTransition(app);
             zoomInAnimation.run(500, app.getElement());
         } else {
-            VConsole.log("Setting visible with no transition");
             viewport.setChildVisibleNoTransition(app);
         }
     }
