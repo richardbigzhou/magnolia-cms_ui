@@ -90,30 +90,6 @@
       <implementation>info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.form.definition.FormDefinition</type>
-      <implementation>info.magnolia.ui.form.definition.ConfiguredFormDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.form.definition.FormActionDefinition</type>
-      <implementation>info.magnolia.ui.form.definition.ConfiguredFormActionDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.dialog.definition.DialogDefinition</type>
-      <implementation>info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.form.definition.TabDefinition</type>
-      <implementation>info.magnolia.ui.form.definition.ConfiguredTabDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.form.field.definition.FieldDefinition</type>
-      <implementation>info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.form.field.validation.FieldValidatorDefinition</type>
-      <implementation>info.magnolia.ui.form.field.validation.ConfiguredFieldValidatorDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
       <type>info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition</type>
       <implementation>info.magnolia.ui.framework.app.launcherlayout.definition.ConfiguredAppLauncherLayoutDefinition</implementation>
     </type-mapping>
@@ -139,23 +115,9 @@
       <class>info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer</class>
     </configurer>
     <component>
-      <type>info.magnolia.ui.form.action.DialogActionRegistry</type>
+      <type>info.magnolia.ui.form.validator.registry.FieldValidatorRegistry</type>
       <workspace>config</workspace>
-      <path>/modules/ui-admincentral/dialogActionRegistry</path>
-      <observed>true</observed>
-      <scope>singleton</scope>
-    </component>
-    <component>
-      <type>info.magnolia.ui.form.field.builder.DialogFieldRegistry</type>
-      <workspace>config</workspace>
-      <path>/modules/ui-admincentral/dialogFieldRegistry</path>
-      <observed>true</observed>
-      <scope>singleton</scope>
-    </component>
-    <component>
-      <type>info.magnolia.ui.form.field.validation.ValidatorFieldRegistry</type>
-      <workspace>config</workspace>
-      <path>/modules/ui-admincentral/dialogFieldValidatorRegistry</path>
+      <path>/modules/ui-admincentral/fieldValidatorRegistry</path>
       <observed>true</observed>
       <scope>singleton</scope>
     </component>
@@ -223,15 +185,6 @@
       <type>info.magnolia.ui.admincentral.shellapp.pulse.dashboard.PulseDashboardView</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.dashboard.PulseDashboardViewImpl</implementation>
     </component>
-    <component>
-      <type>info.magnolia.ui.form.field.builder.FieldFactory</type>
-      <implementation>info.magnolia.ui.form.field.builder.FieldFactory</implementation>
-    </component>
-
-    <type-mapping>
-      <type>info.magnolia.ui.vaadin.form.FormView</type>
-      <implementation>info.magnolia.ui.vaadin.form.ItemFormView</implementation>
-    </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.framework.app.AppInstanceController</type>
       <implementation>info.magnolia.ui.framework.app.AppInstanceControllerImpl</implementation>
@@ -253,8 +206,8 @@
       <implementation>info.magnolia.ui.workbench.ContentViewBuilderImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.form.field.validation.ValidatorFieldFactory</type>
-      <implementation>info.magnolia.ui.form.field.validation.ValidatorFieldFactory</implementation>
+      <type>info.magnolia.ui.form.validator.registry.FieldValidatorFactory</type>
+      <implementation>info.magnolia.ui.form.validator.registry.FieldValidatorFactory</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.imageprovider.definition.ImageProviderDefinition</type>
@@ -283,33 +236,12 @@
       <implementation>info.magnolia.ui.dialog.FormDialogPresenterImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.form.field.builder.FieldFactory</type>
-      <implementation>info.magnolia.ui.form.field.builder.FieldFactory</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.form.action.SaveFormActionDefinition</type>
-      <implementation>info.magnolia.ui.form.action.SaveFormActionDefinition</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.vaadin.dialog.DialogView</type>
       <implementation>info.magnolia.ui.vaadin.dialog.BaseDialog</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
       <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
-    </component>
-    <!-- The FormView is mapped twice because of it two use-cases:
-    in admin-central scope without app-contexts visible and in app-scope, where the app-context is actually needed,
-    so the interface has to be provided by the correct ComponentProvider.
-    !-->
-    <component>
-      <type>info.magnolia.ui.vaadin.form.FormView</type>
-      <implementation>info.magnolia.ui.vaadin.form.ItemFormView</implementation>
-    </component>
-
-    <component>
-      <type>info.magnolia.ui.vaadin.form.FormViewReduced</type>
-      <implementation>info.magnolia.ui.vaadin.form.Form</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.app.tools.EmbeddedPageView</type>

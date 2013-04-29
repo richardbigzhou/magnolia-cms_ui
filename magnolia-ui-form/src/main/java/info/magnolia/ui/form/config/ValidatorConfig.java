@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.form.config;
 
-import info.magnolia.ui.form.field.validation.ConfiguredFieldValidatorDefinition;
-import info.magnolia.ui.form.field.validation.EmailValidatorDefinition;
-import info.magnolia.ui.form.field.validation.RegexpValidatorDefinition;
+import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
+import info.magnolia.ui.form.validator.definition.EmailValidatorDefinition;
+import info.magnolia.ui.form.validator.definition.RegexpValidatorDefinition;
 
 /**
  * Config object creating builders for validator definitions.

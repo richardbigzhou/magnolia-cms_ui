@@ -74,13 +74,14 @@ public class ElementProcessor {
      * Processes the current {@link Element}.
      *
      * @param element the current node beeing processed
-     * @param mgnlElement the associated {@link MgnlElement}
+     * @param mgnlElement the associated {@link info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement}
+     * @param preview
      */
-    public void process(Element element, MgnlElement mgnlElement) {
+    public void process(Element element, MgnlElement mgnlElement, boolean preview) {
 
         if (element.hasTagName("A")) {
 
-            if (isNavigation(element)) {
+            if (preview || isNavigation(element)) {
                 registerOnclick(element);
             } else {
                 disableLink(element);

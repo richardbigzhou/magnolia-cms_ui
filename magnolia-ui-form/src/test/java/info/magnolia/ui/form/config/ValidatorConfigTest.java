@@ -35,9 +35,9 @@ package info.magnolia.ui.form.config;
 
 import static org.junit.Assert.assertTrue;
 
-import info.magnolia.ui.form.field.validation.ConfiguredFieldValidatorDefinition;
-import info.magnolia.ui.form.field.validation.EmailValidatorDefinition;
-import info.magnolia.ui.form.field.validation.RegexpValidatorDefinition;
+import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
+import info.magnolia.ui.form.validator.definition.EmailValidatorDefinition;
+import info.magnolia.ui.form.validator.definition.RegexpValidatorDefinition;
 
 import org.junit.Test;
 
