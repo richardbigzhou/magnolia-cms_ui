@@ -40,6 +40,13 @@ import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.core.SystemProperty;
 import info.magnolia.init.MagnoliaConfigurationProperties;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.overlay.AlertCallback;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
+import info.magnolia.ui.api.overlay.MessageStyleType;
+import info.magnolia.ui.api.overlay.NotificationCallback;
+import info.magnolia.ui.api.overlay.OverlayCloser;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.upload.basic.BasicUploadField;
 import info.magnolia.ui.imageprovider.ImageProvider;
@@ -75,7 +82,7 @@ public class BasicUploadFieldBuilderTest extends AbstractBuilderTest<BasicUpload
         directory.deleteOnExit();
         MagnoliaConfigurationProperties config = mock(MagnoliaConfigurationProperties.class);
         when(config.getProperty(SystemProperty.MAGNOLIA_UPLOAD_TMPDIR)).thenReturn(directory.getAbsolutePath());
-        basicUploadBuilder = new BasicUploadFieldBuilder(definition, baseItem, config, new TestImageProvider());
+        basicUploadBuilder = new BasicUploadFieldBuilder(definition, baseItem, config, new TestImageProvider(), new TestUiContext());
         basicUploadBuilder.setI18nContentSupport(i18nContentSupport);
     }
 
@@ -175,6 +182,46 @@ public class BasicUploadFieldBuilderTest extends AbstractBuilderTest<BasicUpload
         public Object getThumbnailResourceById(String workspace, String identifier, String generator) {
             return null;
         }
+    }
 
+    private class TestUiContext implements UiContext {
+
+        @Override
+        public OverlayCloser openOverlay(View view) {
+            return null;
+        }
+
+        @Override
+        public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
+            return null;
+        }
+
+        @Override
+        public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb) {
+        }
+
+        @Override
+        public void openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
+        }
+
+        @Override
+        public void openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
+        }
+
+        @Override
+        public void openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
+        }
+
+        @Override
+        public void openNotification(MessageStyleType type, boolean doesTimeout, View viewToShow) {
+        }
+
+        @Override
+        public void openNotification(MessageStyleType type, boolean doesTimeout, String title) {
+        }
+
+        @Override
+        public void openNotification(MessageStyleType type, boolean doesTimeout, String title, String linkText, NotificationCallback cb) {
+        }
     }
 }

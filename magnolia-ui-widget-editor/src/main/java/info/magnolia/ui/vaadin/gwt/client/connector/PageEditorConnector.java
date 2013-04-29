@@ -246,7 +246,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
                 }
             } else if (childNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = childNode.cast();
-                elementProcessor.process(element, mgnlElement);
+                elementProcessor.process(element, mgnlElement, getState().parameters.isPreview());
             }
             processDocument(childNode, mgnlElement);
 

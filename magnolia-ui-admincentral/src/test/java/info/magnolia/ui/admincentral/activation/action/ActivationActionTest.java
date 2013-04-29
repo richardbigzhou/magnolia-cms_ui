@@ -46,6 +46,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
+import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.HashMap;
@@ -101,7 +102,7 @@ public class ActivationActionTest {
     @Test(expected = ExchangeException.class)
     public void testGetExchangeException() throws Exception {
         // GIVEN
-        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class));
+        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), mock(SubAppContextImpl.class));
         // for some reason we need to call this twice else no exception is thrown
         when(commandsManager.executeCommand("activate", params)).thenThrow(new ExchangeException());
         when(commandsManager.executeCommand("activate", params)).thenThrow(new ExchangeException());
@@ -118,7 +119,7 @@ public class ActivationActionTest {
         definition.setRecursive(true);
 
         // WHEN
-        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class));
+        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), mock(SubAppContextImpl.class));
 
         // THEN
         assertTrue((Boolean) action.getParams().get(Context.ATTRIBUTE_RECURSIVE));

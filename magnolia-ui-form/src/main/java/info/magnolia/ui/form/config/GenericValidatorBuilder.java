@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.form.config;
 
-import info.magnolia.ui.form.field.validation.ConfiguredFieldValidatorDefinition;
+import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 /**
  * Builder for creating a validator using only the standard properties.
  *
- * @see ValidatorConfig#custom(info.magnolia.ui.form.field.validation.ConfiguredFieldValidatorDefinition)
+ * @see ValidatorConfig#custom(info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition)
  */
 public class GenericValidatorBuilder {
 

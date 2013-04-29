@@ -60,8 +60,6 @@ public class MagnoliaShellState extends AbstractLayoutState {
 
     public Map<ViewportType, Connector> viewports = new EnumMap<ViewportType, Connector>(ViewportType.class);
 
-    public Connector activeViewport = null;
-
     public List<Connector> overlays = new ArrayList<Connector>();
 
 }

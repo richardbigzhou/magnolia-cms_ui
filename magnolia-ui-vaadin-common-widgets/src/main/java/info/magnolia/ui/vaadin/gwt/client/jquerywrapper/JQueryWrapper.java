@@ -40,12 +40,9 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * JQuery library wrapper. The functionality covered is ruled by
- * the needs of MagnoliaShell (and its parts) implementation.
+ * JQuery library wrapper. The functionality covered is ruled by the needs of MagnoliaShell (and its parts) implementation.
  */
 public class JQueryWrapper extends JavaScriptObject {
-
-    public static final String TRANSITION_END_EVENT_ID = "transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd";
 
     protected JQueryWrapper() {
     }
@@ -112,6 +109,18 @@ public class JQueryWrapper extends JavaScriptObject {
                                    .fire(jq);
                     }
                });
+    }-*/;
+
+    public final native void animate(int duration, double delay, AnimationSettings settings) /*-{
+        var json = settings.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings::asJSO()();
+        var jq = this;
+        this.delay(delay).animate(json, duration,
+                function() {
+                    if (settings != null) {
+                        settings.@info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings::getCallbacks()()
+                                .fire(jq);
+                    }
+                });
     }-*/;
 
     public final native JQueryWrapper stop() /*-{
@@ -238,6 +247,10 @@ public class JQueryWrapper extends JavaScriptObject {
     public native final JsArray<Element> get() /*-{
           return this.get();
     }-*/;
+
+    public final boolean isAnimationInProgress() {
+        return is(":animated");
+    }
 
     public static native Integer parseInt(final String value) /*-{
           var number = parseInt(value, 10);

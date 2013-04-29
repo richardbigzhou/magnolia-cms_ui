@@ -54,6 +54,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.vaadin.annotations.JavaScript;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.Connector;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
@@ -105,8 +106,8 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
     }
 
     private void initializeViewports() {
-        final ShellAppsViewport shellAppsViewport = new ShellAppsViewport(MagnoliaShell.this);
-        final AppsViewport appsViewport = new AppsViewport(MagnoliaShell.this);
+        final ShellAppsViewport shellAppsViewport = new ShellAppsViewport();
+        final AppsViewport appsViewport = new AppsViewport();
 
         getState().viewports.put(ViewportType.SHELL_APP, shellAppsViewport);
         getState().viewports.put(ViewportType.APP, appsViewport);
@@ -119,10 +120,6 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
         appsViewport.setParent(this);
     }
 
-    public void propagateFragmentToClient(Fragment fragment) {
-        getRpcProxy(ShellClientRpc.class).setFragmentFromServer(fragment);
-    }
-
     public void goToApp(Fragment fragment) {
         listener.goToApp(fragment);
     }
@@ -133,32 +130,31 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
 
     public void doNavigate(final ShellViewport viewport, Fragment fragment) {
         viewport.setCurrentShellFragment(fragment.toFragment());
-        setActiveViewport(viewport);
         notifyOnFragmentChanged(fragment.toFragment());
     }
 
     public void showInfo(String id, String subject, String message) {
-        getSession().lock();
+        VaadinSession.getCurrent().lock();
         getRpcProxy(ShellClientRpc.class).showMessage(MessageType.INFO.name(), subject, message, id);
-        getSession().unlock();
+        VaadinSession.getCurrent().unlock();
     }
 
     public void showError(String id, String subject, String message) {
-        getSession().lock();
+        VaadinSession.getCurrent().lock();
         getRpcProxy(ShellClientRpc.class).showMessage(MessageType.ERROR.name(), subject, message, id);
-        getSession().unlock();
+        VaadinSession.getCurrent().unlock();
     }
 
     public void showWarning(String id, String subject, String message) {
-        getSession().lock();
+        VaadinSession.getCurrent().lock();
         getRpcProxy(ShellClientRpc.class).showMessage(MessageType.WARNING.name(), subject, message, id);
-        getSession().unlock();
+        VaadinSession.getCurrent().unlock();
     }
 
     public void hideAllMessages() {
-        getSession().lock();
+        VaadinSession.getCurrent().lock();
         getRpcProxy(ShellClientRpc.class).hideAllMessages();
-        getSession().unlock();
+        VaadinSession.getCurrent().unlock();
     }
 
     public void updateShellAppIndication(ShellAppType type, int incrementOrDecrement) {
@@ -209,17 +205,6 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
         getState().overlays.remove(overlay);
     }
 
-    public void setActiveViewport(ShellViewport viewport) {
-        final Connector currentActive = getState().activeViewport;
-        if (currentActive != viewport) {
-            getState().activeViewport = viewport;
-        }
-    }
-
-    public ShellViewport getActiveViewport() {
-        return (ShellViewport) getState(false).activeViewport;
-    }
-
     @Override
     protected MagnoliaShellState createState() {
         return new MagnoliaShellState();
@@ -235,7 +220,7 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
         return (MagnoliaShellState) super.getState(markDirty);
     }
 
-    private void notifyOnFragmentChanged(String fragment) {
+    public void notifyOnFragmentChanged(String fragment) {
         listener.onFragmentChanged(fragment);
     }
 
@@ -266,11 +251,9 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
      */
     @Override
     public Iterator<Component> iterator() {
-
         Iterator<Connector> viewportIterator = getState(false).viewports.values().iterator();
         Iterator<Connector> overlayIterator = getState(false).overlays.iterator();
-
-        ArrayList<Connector> connectors = new ArrayList<Connector>();
+        List<Connector> connectors = new ArrayList<Connector>();
 
         // Add viewports
         while (viewportIterator.hasNext()) {

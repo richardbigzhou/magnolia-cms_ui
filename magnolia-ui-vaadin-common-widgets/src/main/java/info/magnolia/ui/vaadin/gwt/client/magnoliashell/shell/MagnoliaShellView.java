@@ -57,8 +57,6 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
 
     void shiftViewportsVertically(int shiftPx, boolean animated);
 
-    // void setPusher(VICEPush pusher);
-
     void setShellAppIndication(ShellAppType type, int indication);
 
     void showMessage(final MessageType type, String text, String message, String id);
@@ -81,6 +79,10 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
      */
     void openOverlayOnWidget(Widget overlayWidget, Widget overlayParent);
 
+    void showShellApp(ShellAppType type);
+
+    void setActiveViewport(boolean isAppViewport);
+
     /**
      * Presenter for {@link MagnoliaShellView}.
      */
@@ -88,17 +90,19 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
 
         Widget getShellAppWidget(ShellAppType type);
 
-        void activateApp(Fragment dto);
+        void activateApp(Fragment f);
 
         void activateShellApp(Fragment f);
 
-        void updateViewportLayout(ViewportWidget activeViewport);
+        void updateViewportLayout(ViewportWidget viewport);
 
         void closeCurrentApp();
 
         void closeCurrentShellApp();
 
         void removeMessage(String id);
+
+        void initHistory();
 
         boolean isAppRegistered(String appName);
 

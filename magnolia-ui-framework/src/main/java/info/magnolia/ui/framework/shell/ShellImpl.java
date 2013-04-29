@@ -71,6 +71,7 @@ import javax.inject.Singleton;
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.ui.Component;
+import com.vaadin.ui.UI;
 
 
 /**
@@ -111,7 +112,6 @@ public class ShellImpl implements Shell, MessageEventHandler {
 
             @Override
             public void onAppFocused(AppLifecycleEvent event) {
-                magnoliaShell.setActiveViewport(magnoliaShell.getAppViewport());
             }
 
             @Override
@@ -202,7 +202,7 @@ public class ShellImpl implements Shell, MessageEventHandler {
 
     @Override
     public String getFragment() {
-        return magnoliaShell.getActiveViewport().getCurrentShellFragment();
+        return UI.getCurrent().getPage().getUriFragment();
     }
 
     @Override
@@ -211,10 +211,7 @@ public class ShellImpl implements Shell, MessageEventHandler {
         f.setAppId(DefaultLocation.extractAppId(fragment));
         f.setSubAppId(DefaultLocation.extractSubAppId(fragment));
         f.setParameter(DefaultLocation.extractParameter(fragment));
-
         getMagnoliaShell().getUI().getPage().setUriFragment(fragment, false);
-        magnoliaShell.getActiveViewport().setCurrentShellFragment(f.toFragment());
-        magnoliaShell.propagateFragmentToClient(f);
     }
 
     @Override
@@ -272,26 +269,20 @@ public class ShellImpl implements Shell, MessageEventHandler {
         ShellViewport appViewport = magnoliaShell.getAppViewport();
         if (!appViewport.isEmpty()) {
             // An app is open.
-            magnoliaShell.setActiveViewport(appViewport);
             appController.focusCurrentApp();
         } else {
             // No apps are open.
             String appLauncherNameLower = ShellAppType.APPLAUNCHER.name().toLowerCase();
             // Only navigate if the requested location is not the applauncher
-            if (magnoliaShell.getActiveViewport() != null) {
-                String fragmentCurrent = magnoliaShell.getActiveViewport().getCurrentShellFragment();
-                if (fragmentCurrent != null && !fragmentCurrent.startsWith(appLauncherNameLower)) {
-                    goToShellApp(Fragment.fromString("shell:applauncher"));
-                }
+            String fragmentCurrent = getFragment();
+            if (fragmentCurrent != null && !fragmentCurrent.startsWith(appLauncherNameLower)) {
+                goToShellApp(Fragment.fromString("shell:applauncher"));
             }
         }
     }
 
     @Override
     public void pushToClient() {
-        // synchronized (getApplication()) {
-        // getPusher().push();
-        // }
     }
 
     /**

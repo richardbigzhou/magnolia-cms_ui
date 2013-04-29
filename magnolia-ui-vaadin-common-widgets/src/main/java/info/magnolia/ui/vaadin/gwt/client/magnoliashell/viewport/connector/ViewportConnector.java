@@ -39,12 +39,12 @@ import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
 
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.LayoutManager;
@@ -61,8 +61,6 @@ import com.vaadin.shared.ui.Connect;
 @Connect(ShellViewport.class)
 public class ViewportConnector extends AbstractLayoutConnector {
 
-    private EventBus eventBus;
-
     protected ElementResizeListener childCenterer = new ElementResizeListener() {
         @Override
         public void onElementResize(ElementResizeEvent e) {
@@ -75,13 +73,12 @@ public class ViewportConnector extends AbstractLayoutConnector {
         addStateChangeHandler("activeComponent", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent event) {
-                final ComponentConnector candidate = (ComponentConnector) getState().activeComponent;
-                if (candidate != null && getWidget().getVisibleApp() != candidate) {
-                    getWidget().setVisibleApp(candidate != null ? candidate.getWidget() : null);
+                final ComponentConnector newActiveComponent = (ComponentConnector) getState().activeComponent;
+                if (newActiveComponent != null && getWidget().getVisibleChild() != newActiveComponent) {
+                    getWidget().setVisibleChild(newActiveComponent.getWidget());
+                    newActiveComponent.getWidget().getElement().getStyle().clearOpacity();
                 }
-                getWidget().hideLoadingPane();
             }
-
         });
     }
 
@@ -110,6 +107,17 @@ public class ViewportConnector extends AbstractLayoutConnector {
             if (w.getParent() != viewport) {
                 viewport.insert(w, index);
                 getLayoutManager().addElementResizeListener(w.getElement(), childCenterer);
+                w.getElement().getStyle().setOpacity(0d);
+                Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                        if (getWidget().getVisibleChild() != cc.getWidget()) {
+                            w.getElement().getStyle().setDisplay(Display.NONE);
+                        }
+                        w.getElement().getStyle().clearOpacity();
+                    }
+                });
+
             }
             ++index;
         }
@@ -124,14 +132,6 @@ public class ViewportConnector extends AbstractLayoutConnector {
     @Override
     public ViewportWidget getWidget() {
         return (ViewportWidget) super.getWidget();
-    }
-
-    public void setEventBus(EventBus eventBus) {
-        this.eventBus = eventBus;
-    }
-
-    public EventBus getEventBus() {
-        return eventBus;
     }
 
     @Override

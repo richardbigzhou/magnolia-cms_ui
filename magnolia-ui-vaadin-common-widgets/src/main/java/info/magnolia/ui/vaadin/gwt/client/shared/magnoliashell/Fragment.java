@@ -118,7 +118,7 @@ public class Fragment implements Serializable {
     }
 
     public boolean isSameApp(Fragment other) {
-        return appViewportType == other.appViewportType && appId.equals(other.appId);
+        return other != null && appViewportType == other.appViewportType && appId.equals(other.appId);
     }
 
     @Override
