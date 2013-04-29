@@ -235,7 +235,25 @@ public class TreeViewImpl implements TreeView {
 
     @Override
     public void select(String path) {
+        if (!"/".equals(path)) {
+            expandTreeToNode(path);
+        }
         treeTable.select(path);
+    }
+
+    /**
+     * Expand the parent nodes of the node specified in the path.
+     */
+    public void expandTreeToNode(String path){
+        String[] segments = path.split("/");
+        String segmentPath = "";
+        // Expand each parent node in turn.
+        for (int s = 0; s < segments.length - 1; s++) {
+            if (!"".equals(segments[s])) {
+                segmentPath += "/" + segments[s];
+                treeTable.setCollapsed(segmentPath, false);
+            }
+        }
     }
 
     @Override
