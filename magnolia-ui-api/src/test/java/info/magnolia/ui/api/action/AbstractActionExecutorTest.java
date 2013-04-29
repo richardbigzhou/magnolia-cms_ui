@@ -33,137 +33,148 @@
  */
 package info.magnolia.ui.api.action;
 
-import info.magnolia.cms.beans.config.ConfigurationException;
+import static org.junit.Assert.*;
+
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
-import org.junit.Before;
 import org.junit.Test;
 
 /**
- * AbstractActionExecutorTest.
+ * Test case for AbstractActionExecutor.
  */
 public class AbstractActionExecutorTest {
 
-    public final static String ACTION_NAME = "testActionName";
+    @Test
+    public void testCreateActionThrowsExceptionWhenActionDefinitionMissing() {
 
-    protected ActionExecutor actionExecutor;
-    protected TestActionParameters params;
+        AbstractActionExecutor abstractActionExecutor = new AbstractActionExecutor(null) {
+            @Override
+            public ActionDefinition getActionDefinition(String actionName) {
+                return null;
+            }
+        };
 
-    @Before
-    public void setUp() throws Exception {
-
-        this.params = new TestActionParameters();
-        ComponentProvider componentProvider = initComponentProvider();
-        actionExecutor = componentProvider.newInstance(ActionExecutor.class);
-    }
-
-    @Test(expected = ConfigurationException.class)
-    public void testCreateActionThrowsConfigurationExceptionWithNonExistingAction() throws Exception {
-        AbstractActionExecutor abstractActionExecutor = (AbstractActionExecutor) actionExecutor;
         //WHEN
-        abstractActionExecutor.createAction("foobar");
-
-        //THEN
-        // exception thrown
+        try {
+            abstractActionExecutor.createAction("foobar");
+            fail("Expected ActionExecutionException");
+        } catch (ActionExecutionException e) {
+            //THEN
+            assertEquals("No definition exists for action: foobar", e.getMessage());
+        }
     }
 
+    @Test
+    public void testCreateActionThrowsExceptionWhenActionDefinitionLacksActionClass() {
 
-    protected GuiceComponentProvider initComponentProvider() {
+        AbstractActionExecutor abstractActionExecutor = new AbstractActionExecutor(null) {
+            @Override
+            public ActionDefinition getActionDefinition(String actionName) {
+                return new CommandActionDefinition();
+            }
+        };
 
-        ComponentProviderConfiguration components = new ComponentProviderConfiguration();
+        //WHEN
+        try {
+            abstractActionExecutor.createAction("foobar");
+            fail("Expected ActionExecutionException");
+        } catch (ActionExecutionException e) {
+            //THEN
+            assertEquals("No action class set for action: foobar", e.getMessage());
+        }
+    }
 
-        components.addTypeMapping(ActionExecutor.class, TestActionExecutor.class);
-
-        components.registerInstance(TestActionParameters.class, params);
+    @Test
+    public void testThrowsExceptionWhenActionThrowsRuntimeException() {
 
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
+        builder.withConfiguration(new ComponentProviderConfiguration());
+        GuiceComponentProvider componentProvider = builder.build();
+        SimpleActionExecutor actionExecutor = new SimpleActionExecutor(componentProvider);
 
-        builder.withConfiguration(components);
-        builder.exposeGlobally();
-        return builder.build();
+        ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
+        actionDefinition.setName("foobar");
+        actionDefinition.setImplementationClass(ActionThatThrowsRuntimeException.class);
+        actionExecutor.add(actionDefinition);
+
+        //WHEN
+        try {
+            actionExecutor.execute("foobar");
+            fail("Expected ActionExecutionException");
+        } catch (ActionExecutionException e) {
+            //THEN
+            assertEquals("Action execution failed for action: foobar", e.getMessage());
+            assertEquals("ActionThatThrowsRuntimeException", e.getCause().getMessage());
+        }
     }
 
-    public class TestActionDefinition implements ActionDefinition {
+    @Test
+    public void testThrowsExceptionWhenActionThrowsActionExecutionException() {
 
-        @Override
-        public Class<? extends Action> getImplementationClass() {
-            return TestAction.class;
+        GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
+        builder.withConfiguration(new ComponentProviderConfiguration());
+        GuiceComponentProvider componentProvider = builder.build();
+        SimpleActionExecutor actionExecutor = new SimpleActionExecutor(componentProvider);
+
+        ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
+        actionDefinition.setName("foobar");
+        actionDefinition.setImplementationClass(ActionThatThrowsActionExecutionException.class);
+        actionExecutor.add(actionDefinition);
+
+        //WHEN
+        try {
+            actionExecutor.execute("foobar");
+            fail("Expected ActionExecutionException");
+        } catch (ActionExecutionException e) {
+            //THEN
+            assertEquals("ActionThatThrowsActionExecutionException", e.getMessage());
         }
-
-        @Override
-        public String getName() {
-            return ACTION_NAME;
-        }
-
-        @Override
-        public String getLabel() {
-            return "test Action Label";
-        }
-
-        @Override
-        public String getI18nBasename() {
-            return "";
-        }
-
-        @Override
-        public String getIcon() {
-            return "test-icon";
-        }
-
-        @Override
-        public String getDescription() {
-            return "test description";
-        }
-
-        @Override
-        public String getSuccessMessage() {
-
-            return "test success message";
-        }
-
-        @Override
-        public String getFailureMessage() {
-            return "test failure message";
-        }
-
-        @Override
-        public String getErrorMessage() {
-            return "test error message";
-        }
-
-        public class TestAction extends ActionBase {
-
-            private final TestActionParameters params;
-
-            @Inject
-            public TestAction(TestActionDefinition definition, TestActionParameters params) {
-                super(definition);
-                this.params = params;
-            }
-
-            @Override
-            public void execute() throws ActionExecutionException {
-                params.setActionname(getDefinition().getName());
-            }
-        }
-
     }
 
-    public class TestActionParameters {
+    public static class ActionThatThrowsRuntimeException implements Action {
 
-        private String actionname = "";
+        @Override
+        public void execute() throws ActionExecutionException {
+            throw new NullPointerException("ActionThatThrowsRuntimeException");
+        }
+    }
 
-        public String getActionname() {
-            return actionname;
+    public static class ActionThatThrowsActionExecutionException implements Action {
+
+        @Override
+        public void execute() throws ActionExecutionException {
+            throw new ActionExecutionException("ActionThatThrowsActionExecutionException");
+        }
+    }
+
+    private static class SimpleActionExecutor extends AbstractActionExecutor {
+
+        private List<ActionDefinition> definitions = new ArrayList<ActionDefinition>();
+
+        @Inject
+        public SimpleActionExecutor(ComponentProvider componentProvider) {
+            super(componentProvider);
         }
 
-        public void setActionname(String actionname) {
-            this.actionname = actionname;
+        public boolean add(ActionDefinition actionDefinition) {
+            return definitions.add(actionDefinition);
+        }
+
+        @Override
+        public ActionDefinition getActionDefinition(String actionName) {
+            for (ActionDefinition definition : definitions) {
+                if (definition.getName() != null && definition.getName().equals(actionName))
+                    return definition;
+            }
+            return null;
         }
     }
 }

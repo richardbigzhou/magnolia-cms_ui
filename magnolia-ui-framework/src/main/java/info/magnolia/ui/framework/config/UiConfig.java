@@ -38,7 +38,7 @@ import info.magnolia.ui.dialog.config.DialogConfig;
 import info.magnolia.ui.form.config.FieldsConfig;
 import info.magnolia.ui.form.config.FormConfig;
 import info.magnolia.ui.form.config.ValidatorConfig;
-import info.magnolia.ui.api.action.builder.ActionConfig;
+import info.magnolia.ui.api.action.config.ActionConfig;
 import info.magnolia.ui.workbench.config.ColumnConfig;
 
 /**

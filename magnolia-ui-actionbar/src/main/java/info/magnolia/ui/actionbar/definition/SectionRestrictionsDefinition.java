@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.action;
+package info.magnolia.ui.actionbar.definition;
+
+import java.util.Collection;
 
 /**
- * Exception thrown when an {@link Action} encounters an error during execution.
+ * Definition of restrictions on when a section is shown.
  */
-public class ActionExecutionException extends Exception {
+public interface SectionRestrictionsDefinition {
 
-    public ActionExecutionException() {
-    }
+    /**
+     * If true the section is only displayed when there's no selection.
+     */
+    boolean isRoot();
 
-    public ActionExecutionException(String message) {
-        super(message);
-    }
+    /**
+     * If true the section is only displayed when a property is selected.
+     */
+    boolean isProperties();
 
-    public ActionExecutionException(Throwable cause) {
-        super(cause);
-    }
-
-    public ActionExecutionException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    /**
+     * The section is only displayed if a selected node has one of these node types.
+     */
+    Collection<String> getNodeTypes();
 }

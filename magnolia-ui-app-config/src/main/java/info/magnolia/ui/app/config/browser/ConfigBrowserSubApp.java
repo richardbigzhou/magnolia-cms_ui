@@ -37,6 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.contentapp.browser.BrowserPresenter;
 import info.magnolia.ui.contentapp.browser.BrowserSubApp;
@@ -61,8 +62,8 @@ public class ConfigBrowserSubApp extends BrowserSubApp {
     private static final Logger log = LoggerFactory.getLogger(ConfigBrowserSubApp.class);
 
     @Inject
-    public ConfigBrowserSubApp(final SubAppContext subAppContext, ContentSubAppView view, BrowserPresenter browser, @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
-        super(subAppContext, view, browser, subAppEventBus);
+    public ConfigBrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, ContentSubAppView view, BrowserPresenter browser, @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
+        super(actionExecutor, subAppContext, view, browser, subAppEventBus);
     }
 
     @Override

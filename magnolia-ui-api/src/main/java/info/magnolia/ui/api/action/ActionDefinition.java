@@ -34,22 +34,25 @@
 package info.magnolia.ui.api.action;
 
 /**
- * An action definition is always associated with an {@link Action} and provides
- * the latter with the context (i.e. dependencies) it needs to be executed. For
- * instance, a place change action might provide a place object to move to via a
- * place controller. Implementations are expected to provide correct {@link Object#equals(Object)} and {@link Object#hashCode()} methods.
+ * Action definitions describe actions are used to configure actions in many parts of the UI. The definition holds a
+ * name which is used to identify the action within a certain scope, for instance within a sub app. Many actions have
+ * dedicated action definition classes implementing this interface that allows supplying additional parameters to the
+ * action.
+ *
+ * Implementations are expected to provide correct {@link Object#equals(Object)} and {@link Object#hashCode()} methods.
+ *
+ * @see Action
+ * @see ActionExecutor
  */
 public interface ActionDefinition {
-
-    Class<? extends Action> getImplementationClass();
 
     String getName();
 
     String getLabel();
 
-    String getI18nBasename();
-
     String getIcon();
+
+    String getI18nBasename();
 
     String getDescription();
 
@@ -59,4 +62,7 @@ public interface ActionDefinition {
 
     String getErrorMessage();
 
+    Class<? extends Action> getImplementationClass();
+
+    ActionRestrictionsDefinition getRestrictions();
 }

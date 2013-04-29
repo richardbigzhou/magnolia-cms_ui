@@ -36,6 +36,7 @@ package info.magnolia.ui.contentapp;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.contentapp.browser.BrowserPresenter;
 import info.magnolia.ui.contentapp.browser.BrowserSubApp;
 import info.magnolia.ui.framework.app.AppContext;
@@ -72,14 +73,14 @@ public class ContentSubAppTest {
         when(workbench.getActionbarPresenter()).thenReturn(actionbar);
 
         subAppEventBus = mock(EventBus.class);
-        this.subApp = new DummyContentSubApp(subAppContext, view, workbench, subAppEventBus);
+        this.subApp = new DummyContentSubApp(null, subAppContext, view, workbench, subAppEventBus);
     }
 
     private class DummyContentSubApp extends BrowserSubApp {
         public int foo = 0;
 
-        public DummyContentSubApp(SubAppContext subAppContext, ContentSubAppView view, BrowserPresenter workbench, EventBus subAppEventBus) {
-            super(subAppContext, view, workbench, subAppEventBus);
+        public DummyContentSubApp(ActionExecutor actionExecutor, SubAppContext subAppContext, ContentSubAppView view, BrowserPresenter workbench, EventBus subAppEventBus) {
+            super(actionExecutor, subAppContext, view, workbench, subAppEventBus);
         }
 
         @Override

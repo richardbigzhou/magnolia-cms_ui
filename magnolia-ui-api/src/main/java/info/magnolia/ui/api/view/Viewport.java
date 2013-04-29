@@ -34,14 +34,15 @@
 package info.magnolia.ui.api.view;
 
 /**
- * Implemented by displays that can be given an {@link View} to show.
+ * Implemented by displays that can be given a {@link View} to show.
  *
  * @see View
  */
 public interface Viewport {
 
     /**
-     * Set the only component of the receiver, replacing the previous view if there was one.
+     * Sets the view to display replacing a previous view if there is one. If called with null removes a previous view
+     * making the viewport empty.
      */
     void setView(View view);
 

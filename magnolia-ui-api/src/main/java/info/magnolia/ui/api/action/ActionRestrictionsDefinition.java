@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,23 +33,30 @@
  */
 package info.magnolia.ui.api.action;
 
+import java.util.Collection;
+
 /**
- * Exception thrown when an {@link Action} encounters an error during execution.
+ * Definition of restrictions on when an action is available.
  */
-public class ActionExecutionException extends Exception {
+public interface ActionRestrictionsDefinition {
 
-    public ActionExecutionException() {
-    }
+    /**
+     * If true the action is available when there's no selection.
+     */
+    boolean isRoot();
 
-    public ActionExecutionException(String message) {
-        super(message);
-    }
+    /**
+     * If true the action is available for properties.
+     */
+    boolean isProperties();
 
-    public ActionExecutionException(Throwable cause) {
-        super(cause);
-    }
+    /**
+     * Unless this is empty the action is available only for these node types.
+     */
+    Collection<String> getNodeTypes();
 
-    public ActionExecutionException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    /**
+     * Unless this is empty the action is available for the current user only if he/she has one of these roles.
+     */
+    Collection<String> getRoles();
 }

@@ -47,9 +47,7 @@ import com.vaadin.client.VConsole;
  */
 public class JQueryAnimation extends Animation {
 
-    private AnimationSettings settings = new AnimationSettings();
-
-    private Callbacks callbacks = Callbacks.create();
+    private AnimationSettings settings = new AnimationSettings(););
 
     private JQueryWrapper jQueryWrapper;
 
@@ -64,11 +62,10 @@ public class JQueryAnimation extends Animation {
     }
 
     public void addCallback(JQueryCallback callback) {
-        callbacks.add(callback);
+        settings.addCallback(callback);
     }
 
     public JQueryAnimation() {
-        settings.setCallbacks(callbacks);
     }
 
     @Override

@@ -31,24 +31,52 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.action;
+package info.magnolia.ui.api.action.config;
 
-import javax.inject.Inject;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.api.action.Action;
 
-import info.magnolia.objectfactory.ComponentProvider;
+/**
+ * Builder for building an action definition.
+ */
+public class ActionBuilder {
 
-public class TestActionExecutor extends AbstractActionExecutor {
+    private ConfiguredActionDefinition definition = new ConfiguredActionDefinition();
 
-    @Inject
-    public TestActionExecutor(ComponentProvider componentProvider) {
-        super(componentProvider);
+    public ActionBuilder(String name) {
+        this.definition.setName(name);
     }
 
-    @Override
-    public ActionDefinition getActionDefinition(String actionName) {
-        if (!AbstractActionExecutorTest.ACTION_NAME.equals(actionName)) {
-            return null;
-        }
-        return new AbstractActionExecutorTest().new TestActionDefinition();
+    public ActionBuilder implementation(Class<? extends Action> subAppClass) {
+        definition.setImplementationClass(subAppClass);
+        return this;
+    }
+
+    public String getName() {
+        return definition.getName();
+    }
+
+    public ActionBuilder label(String label) {
+        definition.setLabel(label);
+        return this;
+    }
+
+    public ActionBuilder icon(String icon) {
+        definition.setIcon(icon);
+        return this;
+    }
+
+    public ActionBuilder i18n(String i18n) {
+        definition.setI18nBasename(i18n);
+        return this;
+    }
+
+    public ActionBuilder description(String description) {
+        definition.setDescription(description);
+        return this;
+    }
+
+    public ConfiguredActionDefinition exec() {
+        return definition;
     }
 }

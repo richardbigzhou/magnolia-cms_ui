@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.action;
+package info.magnolia.ui.actionbar.definition;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
- * Exception thrown when an {@link Action} encounters an error during execution.
+ * Simple implementation for {@link SectionRestrictionsDefinition}.
  */
-public class ActionExecutionException extends Exception {
+public class ConfiguredSectionRestrictionsDefinition implements SectionRestrictionsDefinition {
 
-    public ActionExecutionException() {
+    private boolean root = false;
+    private boolean properties = false;
+    private Collection<String> nodeTypes = new ArrayList<String>();
+
+    @Override
+    public boolean isRoot() {
+        return root;
     }
 
-    public ActionExecutionException(String message) {
-        super(message);
+    public void setRoot(boolean root) {
+        this.root = root;
     }
 
-    public ActionExecutionException(Throwable cause) {
-        super(cause);
+    @Override
+    public boolean isProperties() {
+        return properties;
     }
 
-    public ActionExecutionException(String message, Throwable cause) {
-        super(message, cause);
+    public void setProperties(boolean properties) {
+        this.properties = properties;
+    }
+
+    @Override
+    public Collection<String> getNodeTypes() {
+        return nodeTypes;
+    }
+
+    public void setNodeTypes(Collection<String> nodeTypes) {
+        this.nodeTypes = nodeTypes;
+    }
+
+    public void addNodeType(String nodeType) {
+        nodeTypes.add(nodeType);
     }
 }

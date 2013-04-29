@@ -52,4 +52,6 @@ public interface ActionbarSectionDefinition {
      * @return the list of groups
      */
     List<ActionbarGroupDefinition> getGroups();
+
+    SectionRestrictionsDefinition getRestrictions();
 }

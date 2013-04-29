@@ -33,13 +33,38 @@
  */
 package info.magnolia.ui.api.action;
 
+import javax.jcr.Item;
+
 /**
- * ActionExecutor is responsible for creating and executing actions.
+ * Responsible for executing actions and doing lookups of action definitions based on action names. Creates a new
+ * instance of the action for each execution and allows the action to receive its action definition object via injection
+ * as it is created.
+ *
+ * @see Action
+ * @see ActionDefinition
  */
 public interface ActionExecutor {
 
-    void execute(String actionName, Object ... args) throws ActionExecutionException;
+    /**
+     * Creates a new instance of the action for the supplied name and executes it. The arguments passed here along with
+     * the action definition are made available to the action instance using injection.
+     *
+     * @throws ActionExecutionException if the action encounters a problem during execution or if no action definition matches the name
+     */
+    void execute(String actionName, Object... args) throws ActionExecutionException;
 
+    /**
+     * Performs a lookup for an action definition by name.
+     *
+     * @return the action definition for the supplied action name or null if not found
+     */
     ActionDefinition getActionDefinition(String actionName);
 
+    /**
+     * Evaluates if an action is available for the current user. This involves checking if the user has the required
+     * permission to use the action and if the action is available for a specific item.
+     *
+     * @see ActionRestrictionsDefinition
+     */
+    boolean isAvailable(String actionName, Item item);
 }
