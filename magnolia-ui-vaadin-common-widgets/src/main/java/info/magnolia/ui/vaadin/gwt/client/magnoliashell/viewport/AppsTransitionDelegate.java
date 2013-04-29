@@ -103,7 +103,7 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
         curtainFadeOutAnimation.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper jq) {
-                viewport.setCurtainAttached(false);
+                setCurtainAttached(false);
             }
         });
     }
@@ -125,7 +125,7 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
     public void setCurtainVisible(boolean visible) {
         final Element curtain = viewport.getCurtain();
         if (visible) {
-            viewport.setCurtainAttached(true);
+            setCurtainAttached(true);
             curtainFadeOutAnimation.cancel();
             curtainFadeInAnimation.run(CURTAIN_FADE_IN_DURATION, curtain);
         } else {
@@ -141,5 +141,15 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
     private boolean isWidgetVisibilityHidden(final Widget app) {
         return Visibility.HIDDEN.getCssName().equals(app.getElement().getStyle().getVisibility()) ||
                 Style.Display.NONE.getCssName().equals(app.getElement().getStyle().getDisplay());
+    }
+
+    public void setCurtainAttached(boolean visible) {
+        Element viewportElement = viewport.getElement();
+        Element curtain = viewport.getCurtain();
+        if (visible) {
+            viewportElement.appendChild(curtain);
+        } else if (viewportElement.isOrHasChild(curtain)) {
+            viewportElement.removeChild(curtain);
+        }
     }
 }
