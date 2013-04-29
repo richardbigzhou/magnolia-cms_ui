@@ -119,14 +119,6 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
         ((AppsTransitionDelegate) getTransitionDelegate()).setCurtainVisible(visible);
     }
 
-    public void setCurtainAttached(boolean visible) {
-        if (visible) {
-            getElement().appendChild(getCurtain());
-        } else if (getElement().isOrHasChild(curtain)) {
-            getElement().removeChild(getCurtain());
-        }
-    }
-
     private boolean hasChildren() {
         return getWidgetCount() - (isClosing() ? 1 : 0) > 0;
     }
@@ -329,12 +321,6 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
         preloader.addStyleName("zoom-in");
         RootPanel.get().add(preloader);
         callback.onPreloaderShown(appName);
-        /*new Timer() {
-            @Override
-            public void run() {
-
-            }
-        }.schedule(500);*/
     }
 
     public boolean hasPreloader() {

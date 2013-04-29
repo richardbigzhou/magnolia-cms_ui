@@ -103,7 +103,6 @@ public class ShellAppsTransitionDelegate implements TransitionDelegate {
     public void setActive(final ViewportWidget viewport, boolean active) {
         slideDownAnimation.cancel();
         slideUpAnimation.cancel();
-        fadeOutAnimation.cancel();
         if (active) {
             viewport.setClosing(false);
             viewport.setVisible(true);

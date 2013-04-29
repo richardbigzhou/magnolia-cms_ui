@@ -59,7 +59,8 @@
 .favorites-entry input[type="text"] {
   color: #666;
   font-size: 12px;
-  margin-top: 5px;
+  border:none !important;
+  margin-top: 6px !important;
   margin-left: 3px;
   width: 310px;
   text-overflow: ellipsis;
@@ -121,6 +122,7 @@
   top:0;
   cursor: pointer;
 }
+
 .favorites-form-content, .favorites-tabs {
     background-color: #E6E6E6;
 }

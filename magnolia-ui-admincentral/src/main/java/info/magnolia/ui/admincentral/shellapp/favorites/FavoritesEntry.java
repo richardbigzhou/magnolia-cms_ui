@@ -145,6 +145,7 @@ public class FavoritesEntry extends CustomComponent {
 
                 if (event.getClickedComponent() == titleField && !isEditable()) {
                     if (event.isDoubleClick()) {
+                        // TODO fgrilli temporarily commented out as, besides making the text editable, it also goes to the saved location
                         // setEditable(true);
                     } else {
                         listener.goToLocation(getLocationValue());
@@ -182,11 +183,13 @@ public class FavoritesEntry extends CustomComponent {
         this.editable = editable;
         this.selected = !editable;
         titleField.setReadOnly(!editable);
-        String icon = editable ? "icon-tick" : "icon-edit";
+        String icon = "";
         if (editable) {
+            icon = "icon-tick";
             titleField.addStyleName("editable");
             titleField.focus();
         } else {
+            icon = "icon-edit";
             titleField.removeStyleName("editable");
         }
         editButton.setCaption("<span class=\"" + icon + "\"></span>");

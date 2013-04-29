@@ -119,7 +119,7 @@ public class FavoritesPresenter implements FavoritesView.Listener {
             }
             final String appIcon = StringUtils.defaultIfEmpty(appDescriptor.getIcon(), "icon-app");
             final String title = appDescriptor.getLabel() + " " + (path == null ? "/" : path);
-            final String urlFragment = getUrlFragmentFrom(previousLocation);
+            final String urlFragment = getUrlFragmentFromURI(previousLocation);
             favoriteLocation = createNewFavoriteSuggestion(urlFragment, title, appIcon);
         }
         return favoriteLocation;
@@ -164,7 +164,7 @@ public class FavoritesPresenter implements FavoritesView.Listener {
         initializeView();
     }
 
-    protected String getWebAppRootURI() {
+    String getWebAppRootURI() {
         final HttpServletRequest request = MgnlContext.getWebContext().getRequest();
         final String fullProtocolString = request.getProtocol();
         String instancePrefix = fullProtocolString.substring(0, fullProtocolString.indexOf("/")).toLowerCase() + "://" + request.getServerName() + ":" + request.getServerPort();
@@ -172,15 +172,15 @@ public class FavoritesPresenter implements FavoritesView.Listener {
         return instancePrefix;
     }
 
-    public String getUrlFragmentFrom(URI location) {
+    String getUrlFragmentFromURI(URI location) {
         final String url = location.toString();
         String instancePrefix = getWebAppRootURI();
 
-        final String urlFragment =  url.contains(instancePrefix) ? url.substring(url.indexOf(instancePrefix) + instancePrefix.length(), url.length()) : url;
+        final String urlFragment = url.contains(instancePrefix) ? url.substring(url.indexOf(instancePrefix) + instancePrefix.length(), url.length()) : url;
         return urlFragment;
     }
 
-    public String getCompleteURIFromFragment(final String fragment) {
+    String getCompleteURIFromFragment(final String fragment) {
         URI uri = null;
         try {
             uri = new URI(fragment);
