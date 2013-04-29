@@ -34,9 +34,17 @@
 package info.magnolia.ui.actionbar.definition;
 
 /**
- * Defines an item within a {@link ActionbarGroupDefinition}.
+ * Simple implementation for {@link ActionbarItemDefinition}.
  */
-public interface ActionbarItemDefinition {
+public class ConfiguredActionbarItemDefinition implements ActionbarItemDefinition {
 
-    String getName();
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

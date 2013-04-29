@@ -34,8 +34,8 @@
 package info.magnolia.ui.actionbar.config;
 
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
-import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarGroupDefinition;
+import info.magnolia.ui.actionbar.definition.ConfiguredActionbarItemDefinition;
 
 /**
  * Builder for building an actionbar group definition.
@@ -54,7 +54,9 @@ public class ActionbarGroupBuilder {
 
     public ActionbarGroupBuilder actions(String... actions) {
         for (String action : actions) {
-            definition.addItem(new ActionbarItemDefinition(action));
+            ConfiguredActionbarItemDefinition itemDefinition = new ConfiguredActionbarItemDefinition();
+            itemDefinition.setName(action);
+            definition.addItem(itemDefinition);
         }
         return this;
     }

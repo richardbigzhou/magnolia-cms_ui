@@ -23,6 +23,10 @@
       <type>info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition</type>
       <implementation>info.magnolia.ui.actionbar.definition.ConfiguredActionbarGroupDefinition</implementation>
     </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.actionbar.definition.ActionbarItemDefinition</type>
+      <implementation>info.magnolia.ui.actionbar.definition.ConfiguredActionbarItemDefinition</implementation>
+    </type-mapping>
   </components>
 </module>
 
