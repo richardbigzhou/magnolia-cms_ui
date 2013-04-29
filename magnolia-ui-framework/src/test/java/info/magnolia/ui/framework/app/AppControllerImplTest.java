@@ -45,6 +45,8 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImpl;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
@@ -474,6 +476,7 @@ public class AppControllerImplTest {
         components.registerImplementation(AppView.class, AppFrameView.class);
         components.registerImplementation(LocationController.class);
         components.registerImplementation(ModuleRegistry.class, ModuleRegistryImpl.class);
+        components.registerImplementation(AppLauncherLayoutManager.class, AppLauncherLayoutManagerImpl.class);
 
         components.registerInstance(AppDescriptorRegistry.class, appRegistry);
         components.registerInstance(Shell.class, mock(Shell.class));
