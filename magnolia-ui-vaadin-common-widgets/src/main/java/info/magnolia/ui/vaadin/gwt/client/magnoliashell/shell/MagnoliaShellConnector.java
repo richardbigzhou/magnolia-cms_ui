@@ -78,8 +78,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         @Override
         public void onShellAppActivated(final ShellAppActivatedEvent event) {
             view.showShellApp(event.getType());
-            lastHandledFragment =  Fragment.fromString("shell:" + event.getType().name().toLowerCase() + ":" + event.getToken());
-            activateShellApp(lastHandledFragment);
+            activateShellApp(Fragment.fromString("shell:" + event.getType().name().toLowerCase() + ":" + event.getToken()));
         }
 
     };
@@ -89,8 +88,6 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     private MagnoliaShellView view;
 
     private EventBus eventBus = new SimpleEventBus();
-
-    private Fragment lastHandledFragment;
 
     private boolean isHistoryInitialized = false;
 
@@ -156,7 +153,6 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 Fragment newFragment = Fragment.fromString(event.getValue());
                 changeAppFromFragment(newFragment);
                 view.setActiveViewport(newFragment.isApp());
-                lastHandledFragment =  newFragment;
             }
         });
     }
@@ -250,9 +246,6 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     }
 
     public void changeAppFromFragment(final Fragment f) {
-        if (f.isSameApp(lastHandledFragment)) {
-            return;
-        }
         if (f.isShellApp()) {
             eventBus.fireEvent(new ShellAppActivatedEvent(f.resolveShellAppType(), f.getParameter()));
         } else {
