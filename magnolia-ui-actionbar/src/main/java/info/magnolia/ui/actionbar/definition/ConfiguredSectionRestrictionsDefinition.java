@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,47 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.tabsheet.widget;
+package info.magnolia.ui.actionbar.definition;
 
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent.HasActiveTabChangeHandlers;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabSetChangedEvent.HasTabSetChangedHandlers;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
-
-import java.util.List;
-
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
- * VShellTabView.
+ * Simple implementation for {@link SectionRestrictionsDefinition}.
  */
-public interface MagnoliaTabSheetView extends HasWidgets, IsWidget, HasTabSetChangedHandlers, HasActiveTabChangeHandlers {
+public class ConfiguredSectionRestrictionsDefinition implements SectionRestrictionsDefinition {
 
-    /**
-     * Presenter.
-     */
-    public interface Presenter {
+    private boolean root = false;
+    private boolean properties = false;
+    private Collection<String> nodeTypes = new ArrayList<String>();
 
-        void updateLayoutOfActiveTab();
+    @Override
+    public boolean isRoot() {
+        return root;
     }
 
-    List<MagnoliaTabWidget> getTabs();
+    public void setRoot(boolean root) {
+        this.root = root;
+    }
 
-    void updateTab(MagnoliaTabWidget tab);
+    @Override
+    public boolean isProperties() {
+        return properties;
+    }
 
-    TabBarWidget getTabContainer();
+    public void setProperties(boolean properties) {
+        this.properties = properties;
+    }
 
-    MagnoliaTabWidget getActiveTab();
+    @Override
+    public Collection<String> getNodeTypes() {
+        return nodeTypes;
+    }
 
-    void setShowActiveTabFullscreen(boolean isFullscreen);
+    public void setNodeTypes(Collection<String> nodeTypes) {
+        this.nodeTypes = nodeTypes;
+    }
 
-    void setActiveTab(MagnoliaTabWidget tab);
-
-    void removeTab(MagnoliaTabWidget tabToOrphan);
-
-    void showAllTabContents(boolean visible);
-
-    void setLogo(String logo, String logoBgColor);
-
-    void setMaxHeight(int height);
+    public void addNodeType(String nodeType) {
+        nodeTypes.add(nodeType);
+    }
 }

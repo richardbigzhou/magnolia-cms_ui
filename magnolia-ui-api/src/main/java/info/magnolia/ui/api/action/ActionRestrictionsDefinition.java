@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,47 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.tabsheet.widget;
+package info.magnolia.ui.api.action;
 
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent.HasActiveTabChangeHandlers;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabSetChangedEvent.HasTabSetChangedHandlers;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
-
-import java.util.List;
-
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
+import java.util.Collection;
 
 /**
- * VShellTabView.
+ * Definition of restrictions on when an action is available.
  */
-public interface MagnoliaTabSheetView extends HasWidgets, IsWidget, HasTabSetChangedHandlers, HasActiveTabChangeHandlers {
+public interface ActionRestrictionsDefinition {
 
     /**
-     * Presenter.
+     * If true the action is available when there's no selection.
      */
-    public interface Presenter {
+    boolean isRoot();
 
-        void updateLayoutOfActiveTab();
-    }
+    /**
+     * If true the action is available for properties.
+     */
+    boolean isProperties();
 
-    List<MagnoliaTabWidget> getTabs();
+    /**
+     * Unless this is empty the action is available only for these node types.
+     */
+    Collection<String> getNodeTypes();
 
-    void updateTab(MagnoliaTabWidget tab);
-
-    TabBarWidget getTabContainer();
-
-    MagnoliaTabWidget getActiveTab();
-
-    void setShowActiveTabFullscreen(boolean isFullscreen);
-
-    void setActiveTab(MagnoliaTabWidget tab);
-
-    void removeTab(MagnoliaTabWidget tabToOrphan);
-
-    void showAllTabContents(boolean visible);
-
-    void setLogo(String logo, String logoBgColor);
-
-    void setMaxHeight(int height);
+    /**
+     * Unless this is empty the action is available for the current user only if he/she has one of these roles.
+     */
+    Collection<String> getRoles();
 }

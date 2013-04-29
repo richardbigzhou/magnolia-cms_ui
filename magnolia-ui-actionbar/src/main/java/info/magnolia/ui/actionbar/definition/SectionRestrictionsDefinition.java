@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,47 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.tabsheet.widget;
+package info.magnolia.ui.actionbar.definition;
 
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent.HasActiveTabChangeHandlers;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabSetChangedEvent.HasTabSetChangedHandlers;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
-
-import java.util.List;
-
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
+import java.util.Collection;
 
 /**
- * VShellTabView.
+ * Definition of restrictions on when a section is shown.
  */
-public interface MagnoliaTabSheetView extends HasWidgets, IsWidget, HasTabSetChangedHandlers, HasActiveTabChangeHandlers {
+public interface SectionRestrictionsDefinition {
 
     /**
-     * Presenter.
+     * If true the section is only displayed when there's no selection.
      */
-    public interface Presenter {
+    boolean isRoot();
 
-        void updateLayoutOfActiveTab();
-    }
+    /**
+     * If true the section is only displayed when a property is selected.
+     */
+    boolean isProperties();
 
-    List<MagnoliaTabWidget> getTabs();
-
-    void updateTab(MagnoliaTabWidget tab);
-
-    TabBarWidget getTabContainer();
-
-    MagnoliaTabWidget getActiveTab();
-
-    void setShowActiveTabFullscreen(boolean isFullscreen);
-
-    void setActiveTab(MagnoliaTabWidget tab);
-
-    void removeTab(MagnoliaTabWidget tabToOrphan);
-
-    void showAllTabContents(boolean visible);
-
-    void setLogo(String logo, String logoBgColor);
-
-    void setMaxHeight(int height);
+    /**
+     * The section is only displayed if a selected node has one of these node types.
+     */
+    Collection<String> getNodeTypes();
 }

@@ -34,8 +34,10 @@
 package info.magnolia.ui.api.action;
 
 /**
- * An action encapsulates the logic for some UI behavior, e.g. clicking on an app menu item would trigger an action
- * which goes to a place associated with it. An action is bound to an {@link ActionDefinition}.
+ * An action is executed in response to user interaction with the UI. For instance clicking on an item in a menu.
+ * Virtually all actions have an associated {@link ActionDefinition} that is used to configure it.
+ *
+ * @see ActionDefinition
  */
 public interface Action {
 

@@ -34,7 +34,7 @@
 package info.magnolia.ui.api.action;
 
 /**
- * Thrown when an {@link Action} encounters an error during execution.
+ * Exception thrown when an {@link Action} encounters an error during execution.
  */
 public class ActionExecutionException extends Exception {
 
@@ -52,5 +52,4 @@ public class ActionExecutionException extends Exception {
     public ActionExecutionException(String message, Throwable cause) {
         super(message, cause);
     }
-
 }

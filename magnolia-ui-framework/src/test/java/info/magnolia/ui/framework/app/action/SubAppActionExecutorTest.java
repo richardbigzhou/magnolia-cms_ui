@@ -33,95 +33,47 @@
  */
 package info.magnolia.ui.framework.app.action;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
-import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.app.SubAppDescriptor;
-import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
-import info.magnolia.ui.api.action.AbstractActionExecutorTest;
 import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Before;
 import org.junit.Test;
 
 /**
- * SubAppActionExecutorTest.
+ * Test case for SubAppActionExecutor.
  */
-public class SubAppActionExecutorTest extends AbstractActionExecutorTest {
-
-    private SubAppContext subAppContext;
-
-    @Override
-    @Before
-    public void setUp() throws Exception {
-
-        this.subAppContext = mock(SubAppContext.class);
-        this.params = new TestActionParameters();
-
-        when(subAppContext.getSubAppDescriptor()).thenReturn(createSubAppDescriptor());
-
-        ComponentProvider componentProvider = initComponentProvider();
-
-        actionExecutor = componentProvider.newInstance(ActionExecutor.class);
-    }
+public class SubAppActionExecutorTest {
 
     @Test
-    public void testActionExecution() throws ActionExecutionException {
+    public void testCanResolveActionFromSubAppDescriptor() {
 
-        //WHEN
-        actionExecutor.execute(ACTION_NAME);
+        ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
+        actionDefinition.setName("foobar");
 
-        //THEN
-        assertEquals(ACTION_NAME, params.getActionname());
-    }
+        ConfiguredSubAppDescriptor subAppDescriptor = new ConfiguredSubAppDescriptor();
+        subAppDescriptor.getActions().put(actionDefinition.getName(), actionDefinition);
 
-    @Test(expected=ActionExecutionException.class)
-    public void testNonExistingAction() throws ActionExecutionException {
-
-        //WHEN
-        actionExecutor.execute(ACTION_NAME + "non_existing");
-
-        //THEN
-        // exception thrown
-    }
-
-    private SubAppDescriptor createSubAppDescriptor() {
-        ConfiguredSubAppDescriptor descriptor = new ConfiguredSubAppDescriptor();
-        ActionDefinition testActionDefinition = new AbstractActionExecutorTest.TestActionDefinition();
-
-        Map<String, ActionDefinition> actions =  new HashMap<String, ActionDefinition>();
-        actions.put(testActionDefinition.getName(), testActionDefinition);
-
-        descriptor.setActions(actions);
-
-        return descriptor;
-    }
-
-    @Override
-    public GuiceComponentProvider initComponentProvider() {
-
-        ComponentProviderConfiguration components = new ComponentProviderConfiguration();
-
-        components.addTypeMapping(ActionExecutor.class, SubAppActionExecutor.class);
-
-        components.registerInstance(SubAppContext.class, subAppContext);
-        components.registerInstance(TestActionParameters.class, params);
+        SubAppContext subAppContext = mock(SubAppContext.class);
+        when(subAppContext.getSubAppDescriptor()).thenReturn(subAppDescriptor);
 
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
+        builder.withConfiguration(new ComponentProviderConfiguration());
+        GuiceComponentProvider componentProvider = builder.build();
+        SubAppActionExecutor actionExecutor = new SubAppActionExecutor(componentProvider, subAppContext);
 
-        builder.withConfiguration(components);
-        builder.exposeGlobally();
-        return builder.build();
+        // WHEN
+        ActionDefinition returnedActionDefinition = actionExecutor.getActionDefinition("foobar");
+
+        // THEN
+        assertNotNull(returnedActionDefinition);
+        assertSame(actionDefinition, returnedActionDefinition);
     }
-
 }

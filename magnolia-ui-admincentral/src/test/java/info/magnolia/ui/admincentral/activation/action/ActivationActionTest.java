@@ -43,6 +43,7 @@ import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.module.ModuleRegistry;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
@@ -82,7 +83,7 @@ public class ActivationActionTest {
 
         commandsManager = mock(CommandsManager.class);
 
-        definition = new ActivationActionDefinition();
+        definition = new ActivationActionDefinition(mock(ModuleRegistry.class));
         definition.setCommand("activate");
 
         activationCommand = mock(Command.class);

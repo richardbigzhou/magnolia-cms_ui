@@ -31,54 +31,62 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.action.builder;
+package info.magnolia.ui.api.action;
 
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.api.action.Action;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
- * ActionBuilder.
+ * Simple implementation for {@link ActionRestrictionsDefinition}.
  */
-public class ActionBuilder {
+public class ConfiguredActionRestrictionsDefinition implements ActionRestrictionsDefinition {
 
-    private ConfiguredActionDefinition definition = new ConfiguredActionDefinition();
+    private boolean root = false;
+    private boolean properties = false;
+    private Collection<String> nodeTypes = new ArrayList<String>();
+    private Collection<String> roles = new ArrayList<String>();
 
-    public ActionBuilder(String name) {
-        this.definition.setName(name);
+    @Override
+    public boolean isRoot() {
+        return root;
     }
 
-    public ActionBuilder implementation(Class<? extends Action> subAppClass) {
-        definition.setImplementationClass(subAppClass);
-        return this;
+    public void setRoot(boolean root) {
+        this.root = root;
     }
 
-    public String getName() {
-        return definition.getName();
+    @Override
+    public boolean isProperties() {
+        return properties;
     }
 
-    public ActionBuilder label(String label) {
-        definition.setLabel(label);
-        return this;
+    public void setProperties(boolean properties) {
+        this.properties = properties;
     }
 
-    public ActionBuilder icon(String icon) {
-        definition.setIcon(icon);
-        return this;
+    @Override
+    public Collection<String> getNodeTypes() {
+        return nodeTypes;
     }
 
-    public ActionBuilder i18n(String i18n) {
-        definition.setI18nBasename(i18n);
-        return this;
+    public void setNodeTypes(Collection<String> nodeTypes) {
+        this.nodeTypes = nodeTypes;
     }
 
-    public ActionBuilder description(String description) {
-        definition.setDescription(description);
-        return this;
+    public void addNodeType(String nodeType) {
+        nodeTypes.add(nodeType);
     }
 
-    public ConfiguredActionDefinition exec() {
-        return definition;
+    @Override
+    public Collection<String> getRoles() {
+        return roles;
     }
 
+    public void setRoles(Collection<String> roles) {
+        this.roles = roles;
+    }
 
+    public void addRole(String role) {
+        roles.add(role);
+    }
 }

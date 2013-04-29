@@ -34,44 +34,28 @@
 package info.magnolia.ui.api.action;
 
 /**
- * ConfiguredActionDefinition.
+ * Simple implementation of {@link ActionDefinition}.
  */
 public class ConfiguredActionDefinition implements ActionDefinition {
 
     private String name;
-
-    private Class<? extends Action> implementationClass;
-
     private String label;
-
-    private String icon;
-
-    private String i18nBasename;
-
     private String description;
-
+    private String icon;
+    private String i18nBasename;
+    private Class<? extends Action> implementationClass;
+    private ActionRestrictionsDefinition restrictions = new ConfiguredActionRestrictionsDefinition();
     private String successMessage;
-
     private String failureMessage;
-
     private String errorMessage;
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     @Override
     public String getName() {
         return name;
     }
 
-    public void setImplementationClass(Class<? extends Action> implementationClass) {
-        this.implementationClass = implementationClass;
-    }
-
-    @Override
-    public Class<? extends Action> getImplementationClass() {
-        return implementationClass;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -81,6 +65,15 @@ public class ConfiguredActionDefinition implements ActionDefinition {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
@@ -102,12 +95,21 @@ public class ConfiguredActionDefinition implements ActionDefinition {
     }
 
     @Override
-    public String getDescription() {
-        return description;
+    public Class<? extends Action> getImplementationClass() {
+        return implementationClass;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setImplementationClass(Class<? extends Action> implementationClass) {
+        this.implementationClass = implementationClass;
+    }
+
+    @Override
+    public ActionRestrictionsDefinition getRestrictions() {
+        return restrictions;
+    }
+
+    public void setRestrictions(ActionRestrictionsDefinition restrictions) {
+        this.restrictions = restrictions;
     }
 
     @Override

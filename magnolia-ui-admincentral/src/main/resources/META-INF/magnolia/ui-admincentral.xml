@@ -105,7 +105,10 @@
       <type>info.magnolia.ui.api.i18n.I18NAwareProperty</type>
       <implementation>info.magnolia.ui.admincentral.i18n.I18NAwarePropertyImpl</implementation>
     </type-mapping>
-
+    <type-mapping>
+      <type>info.magnolia.ui.api.action.ActionRestrictionsDefinition</type>
+      <implementation>info.magnolia.ui.api.action.ConfiguredActionRestrictionsDefinition</implementation>
+    </type-mapping>
   </components>
 
   <components>

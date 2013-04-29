@@ -37,7 +37,7 @@ import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.form.config.FormBuilder;
 import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.action.builder.ActionBuilder;
+import info.magnolia.ui.api.action.config.ActionBuilder;
 
 /**
  * Builder for building a dialog definition.

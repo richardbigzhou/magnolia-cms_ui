@@ -35,6 +35,7 @@ package info.magnolia.ui.app.security;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.contentapp.browser.BrowserPresenter;
 import info.magnolia.ui.contentapp.browser.BrowserSubApp;
@@ -55,8 +56,8 @@ public class SecurityUsersSubApp extends BrowserSubApp {
     private static final Logger log = LoggerFactory.getLogger(SecurityUsersSubApp.class);
 
     @Inject
-    public SecurityUsersSubApp(final SubAppContext subAppContext, ContentSubAppView view, BrowserPresenter workbench, @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
-        super(subAppContext, view, workbench, subAppEventBus);
+    public SecurityUsersSubApp(ActionExecutor actionExecutor, SubAppContext subAppContext, ContentSubAppView view, BrowserPresenter workbench, @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
+        super(actionExecutor, subAppContext, view, workbench, subAppEventBus);
     }
 
     @Override

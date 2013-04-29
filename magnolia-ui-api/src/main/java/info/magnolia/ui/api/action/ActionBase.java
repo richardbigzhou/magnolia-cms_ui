@@ -34,7 +34,7 @@
 package info.magnolia.ui.api.action;
 
 /**
- * An {@link Action} bound to an {@link ActionDefinition}.
+ * Abstract {@link Action} base class holding a reference to its {@link ActionDefinition}.
  * 
  * @param <D> the action definition type
  */
@@ -49,5 +49,4 @@ public abstract class ActionBase<D extends ActionDefinition> implements Action {
     protected D getDefinition() {
         return definition;
     }
-
 }

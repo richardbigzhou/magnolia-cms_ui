@@ -16,6 +16,10 @@
       <implementation>info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition</implementation>
     </type-mapping>
     <type-mapping>
+      <type>info.magnolia.ui.actionbar.definition.SectionRestrictionsDefinition</type>
+      <implementation>info.magnolia.ui.actionbar.definition.ConfiguredSectionRestrictionsDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
       <type>info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition</type>
       <implementation>info.magnolia.ui.actionbar.definition.ConfiguredActionbarGroupDefinition</implementation>
     </type-mapping>
