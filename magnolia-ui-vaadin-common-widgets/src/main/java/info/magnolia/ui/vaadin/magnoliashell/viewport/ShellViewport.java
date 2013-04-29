@@ -34,9 +34,9 @@
 package info.magnolia.ui.vaadin.magnoliashell.viewport;
 
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.api.view.Viewport;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ViewportState;
 import info.magnolia.ui.vaadin.magnoliashell.DeckLayout;
-import info.magnolia.ui.vaadin.view.Viewport;
 
 import com.vaadin.ui.Component;
 
@@ -50,6 +50,7 @@ public class ShellViewport extends DeckLayout implements Viewport {
 
     public ShellViewport() {
         super();
+        setSizeFull();
     }
 
     public void setCurrentShellFragment(String currentShellFragment) {
