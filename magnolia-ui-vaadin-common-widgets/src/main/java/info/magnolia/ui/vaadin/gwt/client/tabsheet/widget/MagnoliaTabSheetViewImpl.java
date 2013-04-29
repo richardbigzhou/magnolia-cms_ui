@@ -82,7 +82,6 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         addStyleName("v-shell-tabsheet");
         scroller.addStyleName("v-shell-tabsheet-scroller");
         tabPanel.addStyleName("v-shell-tabsheet-tab-wrapper");
-        logo.addClassName("v-shell-tabsheet-logo");
         getElement().appendChild(logo);
         add(tabBar);
         add(scroller);
@@ -193,6 +192,7 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
 
     @Override
     public void setLogo(String logo, String logoBgColor) {
+        this.logo.addClassName("v-shell-tabsheet-logo");
         this.logo.addClassName(logo);
         this.logo.getStyle().setBackgroundColor(logoBgColor);
     }
