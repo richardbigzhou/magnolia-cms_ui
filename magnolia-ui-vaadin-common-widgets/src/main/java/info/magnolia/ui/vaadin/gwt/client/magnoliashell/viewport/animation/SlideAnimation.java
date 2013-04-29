@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,47 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.tabsheet.widget;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation;
 
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent.HasActiveTabChangeHandlers;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabSetChangedEvent.HasTabSetChangedHandlers;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
-
-import java.util.List;
-
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 
 /**
- * VShellTabView.
+ * Slide anumation of an element.
  */
-public interface MagnoliaTabSheetView extends HasWidgets, IsWidget, HasTabSetChangedHandlers, HasActiveTabChangeHandlers {
+public class SlideAnimation extends JQueryAnimation {
 
-    /**
-     * Presenter.
-     */
-    public interface Presenter {
-
-        void updateLayoutOfActiveTab();
+    public SlideAnimation(boolean clearTopOnComplete) {
+        super();
+        if (clearTopOnComplete) {
+            addCallback(new JQueryCallback() {
+                @Override
+                public void execute(JQueryWrapper query) {
+                    query.get(0).getStyle().clearTop();
+                }
+            });
+        }
     }
 
-    List<MagnoliaTabWidget> getTabs();
-
-    void updateTab(MagnoliaTabWidget tab);
-
-    TabBarWidget getTabContainer();
-
-    MagnoliaTabWidget getActiveTab();
-
-    void setShowActiveTabFullscreen(boolean isFullscreen);
-
-    void setActiveTab(MagnoliaTabWidget tab);
-
-    void removeTab(MagnoliaTabWidget tabToOrphan);
-
-    void showAllTabContents(boolean visible);
-
-    void setLogo(String logo, String logoBgColor);
-
-    void setMaxHeight(int height);
+    public void setTargetTop(int top) {
+        setProperty("top", top);
+    }
 }

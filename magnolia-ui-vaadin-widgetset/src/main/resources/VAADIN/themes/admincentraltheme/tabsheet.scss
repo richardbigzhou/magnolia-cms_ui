@@ -20,6 +20,28 @@
 
 .dialog-panel .v-shell-tabsheet .nav li.active {color:#000;}
 
+.v-shell-tabsheet-logo {
+    position: absolute;
+    float: left;
+    display: inline-block;
+    text-align: center;
+    width: 17px;
+    height: 17px;
+    top: 4px;
+    left: 23px;
+    line-height: 17px;
+    font-size: 16px;
+    color: #fff;
+}
+
+.v-app-preloader > .nav {
+    margin-left: 30px !important;
+}
+
+.v-shell-tabsheet-logo + .nav li:first-child {
+    padding: 3px 48px 2px 46px;
+}
+
 .fullscreen .v-shell-tabsheet-scroller {
 	position: absolute !important;
 	top: -60px;

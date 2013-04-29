@@ -112,6 +112,10 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
             @Override
             public void onStateChanged(StateChangeEvent event) {
                 view.getTabContainer().addShowAllTab(getState().showAllEnabled, getState().showAllLabel);
+
+                if (getState().logo != null && getState().logoBgColor != null) {
+                    view.setLogo(getState().logo, getState().logoBgColor);
+                }
             }
         });
 
@@ -186,11 +190,6 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
         if (getState().activeTab != null) {
             ((ComponentConnector) getState().activeTab).getLayoutManager().layoutNow();
         }
-    }
-
-    @Override
-    public void updateLayout() {
-        getLayoutManager().setNeedsMeasure(this);
     }
 
     @Override

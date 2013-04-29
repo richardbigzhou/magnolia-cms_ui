@@ -33,6 +33,13 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form.formsection.connector;
 
+import info.magnolia.ui.vaadin.form.FormSection;
+import info.magnolia.ui.vaadin.gwt.client.form.formsection.widget.FormSectionWidget;
+import info.magnolia.ui.vaadin.gwt.client.form.rpc.FormSectionClientRpc;
+import info.magnolia.ui.vaadin.gwt.client.form.tab.connector.FormTabConnector;
+
+import java.util.List;
+
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent;
@@ -40,12 +47,6 @@ import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractLayoutConnector;
 import com.vaadin.shared.Connector;
 import com.vaadin.shared.ui.Connect;
-import info.magnolia.ui.vaadin.form.FormSection;
-import info.magnolia.ui.vaadin.gwt.client.form.formsection.widget.FormSectionWidget;
-import info.magnolia.ui.vaadin.gwt.client.form.rpc.FormSectionClientRpc;
-import info.magnolia.ui.vaadin.gwt.client.form.tab.connector.FormTabConnector;
-
-import java.util.List;
 
 /**
  * FormSectionConnector.
@@ -73,8 +74,8 @@ public class FormSectionConnector extends AbstractLayoutConnector {
 
     private void updateChildError(ComponentConnector connector) {
         final String errorMsg = connector.getState().errorMessage;
-        boolean errorOccured = errorMsg != null && !errorMsg.isEmpty();
-        if (getState().isValidationVisible && errorOccured) {
+        boolean errorOccurred = errorMsg != null && !errorMsg.isEmpty();
+        if (getState().isValidationVisible && errorOccurred) {
             getWidget().setFieldError(connector.getWidget(), errorMsg);
         } else {
             getWidget().clearError(connector.getWidget());
@@ -138,8 +139,8 @@ public class FormSectionConnector extends AbstractLayoutConnector {
         return (FormSectionWidget) super.getWidget();
     }
 
-    public boolean isValidationVisible() {
-        return getState().isValidationVisible;
+    @Override
+    public void onUnregister() {
+        super.onUnregister();
     }
-
 }

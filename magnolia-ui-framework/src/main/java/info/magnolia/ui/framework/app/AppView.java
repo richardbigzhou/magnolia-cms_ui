@@ -58,6 +58,8 @@ public interface AppView extends View {
 
     void setTheme(String value);
 
+    void setAppLogo(String logo, String bgcolor);
+
     void setListener(Listener listener);
 
     String addSubAppView(View view, String caption, boolean closable);

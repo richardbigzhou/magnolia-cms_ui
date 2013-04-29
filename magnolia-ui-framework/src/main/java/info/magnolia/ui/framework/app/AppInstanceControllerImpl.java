@@ -41,6 +41,9 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationB
 import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
+import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.event.EventBusProtector;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
@@ -104,15 +107,18 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
     private OverlayLayer overlayPresenter;
 
+    private AppLauncherLayoutManager appLauncherLayoutManager;
+
     @Inject
     public AppInstanceControllerImpl(ModuleRegistry moduleRegistry, AppController appController, LocationController locationController, Shell shell,
-            MessagesManager messagesManager, AppDescriptor appDescriptor) {
+            MessagesManager messagesManager, AppDescriptor appDescriptor, AppLauncherLayoutManager appLauncherLayoutManager) {
         this.moduleRegistry = moduleRegistry;
         this.appController = appController;
         this.locationController = locationController;
         this.shell = shell;
         this.messagesManager = messagesManager;
         this.appDescriptor = appDescriptor;
+        this.appLauncherLayoutManager = appLauncherLayoutManager;
 
         overlayPresenter = new OverlayPresenter() {
 
@@ -187,6 +193,17 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
         if (StringUtils.isNotBlank(appDescriptor.getTheme())) {
             app.getView().setTheme(appDescriptor.getTheme());
+        }
+
+        // Get icon colors from appLauncherLayoutManager
+        if (StringUtils.isNotBlank(appDescriptor.getIcon())) {
+            for (AppLauncherGroup group : appLauncherLayoutManager.getLayoutForCurrentUser().getGroups()) {
+                for (AppLauncherGroupEntry entry : group.getApps()) {
+                    if (entry.getName().equals(this.getAppDescriptor().getName())) {
+                        app.getView().setAppLogo(getAppDescriptor().getIcon(), group.getColor());
+                    }
+                }
+            }
         }
     }
 

@@ -156,4 +156,9 @@ public class AppFrameView implements AppView {
         tabsheet.closeTabFromServer(mapper.get(instanceId));
     }
 
+    @Override
+    public void setAppLogo(String logo, String bgcolor) {
+        tabsheet.setLogo(logo, bgcolor);
+    }
+
 }

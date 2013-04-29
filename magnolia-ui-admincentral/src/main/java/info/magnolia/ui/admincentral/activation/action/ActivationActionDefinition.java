@@ -33,9 +33,10 @@
  */
 package info.magnolia.ui.admincentral.activation.action;
 
-import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.module.ModuleRegistry;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 
+import javax.inject.Inject;
 
 /**
  * Activation action definition. By default performs a non-recursive activation.
@@ -44,8 +45,11 @@ public class ActivationActionDefinition extends CommandActionDefinition {
 
     private boolean recursive = false;
 
+    private ModuleRegistry moduleRegistry;
 
-    public ActivationActionDefinition() {
+    @Inject
+    public ActivationActionDefinition(ModuleRegistry moduleRegistry) {
+        this.moduleRegistry = moduleRegistry;
         setImplementationClass(ActivationAction.class);
     }
 
@@ -57,26 +61,29 @@ public class ActivationActionDefinition extends CommandActionDefinition {
         return recursive;
     }
 
+    @Override
     public String getSuccessMessage() {
-        if (workflowInstalled()) {
+        if (isWorkflowInstalled()) {
             return "The workflow has been started.";
         }
         return "Activation has been started.";
     }
 
+    @Override
     public String getFailureMessage() {
-        if (workflowInstalled()) {
+        if (isWorkflowInstalled()) {
             return "The workflow could not be launched.";
         }
         return "Activation has failed.";
     }
 
+    @Override
     public String getErrorMessage() {
         return "Activation failed. Please contact the system administrator for assistance.";
     }
 
-    private boolean workflowInstalled() {
-        return SessionUtil.getNode("config", "/modules/workflow-base") != null;
+    private boolean isWorkflowInstalled() {
+        return moduleRegistry.isModuleRegistered("workflow-base");
     }
 
 }
