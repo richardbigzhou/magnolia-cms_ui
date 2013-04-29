@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -73,7 +73,7 @@ public class FavoriteStoreTest extends MgnlTestCase {
 
         MgnlUserManager userMgr = new MgnlUserManager() {
             {
-                setName(Realm.REALM_SYSTEM.getName());
+                setRealmName(Realm.REALM_SYSTEM.getName());
             }
             @Override
             public User getSystemUser() {

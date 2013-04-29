@@ -33,8 +33,9 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.hamcrest.CoreMatchers.*;
 
 import info.magnolia.cms.security.MgnlUserManager;
 import info.magnolia.cms.security.Realm;
@@ -44,13 +45,14 @@ import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
 import info.magnolia.test.ComponentsTestUtil;
-import info.magnolia.test.mock.MockContext;
+import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.framework.AdmincentralNodeTypes;
+import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.favorite.FavoriteStore;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
-import javax.jcr.Node;
+import java.net.URI;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.junit.After;
 import org.junit.Before;
@@ -59,17 +61,26 @@ import org.junit.Test;
 /**
  * Tests.
  */
-public class FavoritesManagerImplTest {
+public class FavoritesPresenterTest {
 
     public static final String TEST_USER = "MickeyMouse";
+    public static final String SERVER_NAME = "localhost";
+    public static final int SERVER_PORT = 8080;
+    public static final String WEBAPP_CONTEXT_PATH = "/myWebApp";
+    public static final String FULL_PROTOCOL = "HTTP/1.1";
+    public static final String PROTOCOL = "http";
+    public static final String FRAGMENT = "/.magnolia/admincentral#app:pages:;";
+
+    public static final String WEB_APP_URL = PROTOCOL + "://" + SERVER_NAME + ":" + SERVER_PORT + WEBAPP_CONTEXT_PATH;
+
     private MockSession session;
-    private FavoritesManagerImpl favoritesManager;
-    private FavoriteStore favoriteStore;
+    private MockWebContext ctx;
+    private FavoritesPresenter presenter;
 
     @Before
     public void setUp() {
         session = new MockSession(FavoriteStore.WORKSPACE_NAME);
-        MockContext ctx = new MockContext();
+        ctx = new MockWebContext();
         final User user = mock(User.class);
         when(user.getName()).thenReturn(TEST_USER);
         ctx.setUser(user);
@@ -90,10 +101,18 @@ public class FavoritesManagerImplTest {
         ComponentsTestUtil.setInstance(SecuritySupport.class, sec);
         ComponentsTestUtil.setInstance(SystemContext.class, ctx);
 
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getProtocol()).thenReturn(FULL_PROTOCOL);
+        when(request.getServerName()).thenReturn(SERVER_NAME);
+        when(request.getServerPort()).thenReturn(SERVER_PORT);
+        ctx.setRequest(request);
+
+        ctx.setContextPath(WEBAPP_CONTEXT_PATH);
+
         MgnlContext.setInstance(ctx);
 
-        favoriteStore = new FavoriteStore();
-        favoritesManager = new FavoritesManagerImpl(favoriteStore);
+        AppDescriptorRegistry registry = mock(AppDescriptorRegistry.class);
+        presenter = new FavoritesPresenter(null, null,registry);
     }
 
     @After
@@ -102,62 +121,49 @@ public class FavoritesManagerImplTest {
     }
 
     @Test
-    public void testAddFavorite() throws Exception {
+    public void testGetWebAppRootURI() throws Exception{
         // GIVEN
-        final String bookmarkTitle = "justATest";
-        JcrNewNodeAdapter newNodeAdapter = favoritesManager.createFavoriteSuggestion("/foo/bar", bookmarkTitle, "");
+
         // WHEN
-        favoritesManager.addFavorite(newNodeAdapter);
+        final String result = presenter.getWebAppRootURI();
 
         // THEN
-        final Node newBookmarkNode = favoriteStore.getBookmarkRoot().getNode(bookmarkTitle);
-        assertEquals(bookmarkTitle, newBookmarkNode.getName());
-        assertEquals(bookmarkTitle, newBookmarkNode.getProperty(AdmincentralNodeTypes.Favorite.TITLE).getString());
+        assertThat(result, equalTo(WEB_APP_URL));
     }
 
     @Test
-    public void testAddGroup() throws Exception {
+    public void testGetCompleteURIFromFragment() throws Exception {
         // GIVEN
-        final String groupTitle = "justATest";
-        JcrNewNodeAdapter newNodeAdapter = favoritesManager.createFavoriteGroupSuggestion(groupTitle);
 
         // WHEN
-        favoritesManager.addGroup(newNodeAdapter);
+        final String result = presenter.getCompleteURIFromFragment(FRAGMENT);
 
         // THEN
-        final Node newGroupNode = favoriteStore.getBookmarkRoot().getNode(groupTitle);
-        assertEquals(groupTitle, newGroupNode.getName());
-        assertEquals(groupTitle, newGroupNode.getProperty(AdmincentralNodeTypes.Favorite.TITLE).getString());
+        assertThat("Fragment should have been completed.", result, equalTo(WEB_APP_URL + FRAGMENT));
     }
 
     @Test
-    public void testCreateFavoriteSuggestion() throws Exception {
+    public void testGetCompleteURIFromFragmentWithAbsoluteURI() {
         // GIVEN
-        final String location = "/somewhere/over/the/rainbow";
-        final String title = "Mr. LoverLover";
-        final String icon = "this-is-my-icon-name";
+        final String completeUri = "http://www.magnolia-cms.com/magnolia-cms.html";
 
         // WHEN
-        JcrNewNodeAdapter suggestion = favoritesManager.createFavoriteSuggestion(location, title, icon);
+        final String result = presenter.getCompleteURIFromFragment(completeUri);
 
         // THEN
-        assertEquals(title, suggestion.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue());
-        assertEquals(location, suggestion.getItemProperty(AdmincentralNodeTypes.Favorite.URL).getValue());
-        assertEquals(icon, suggestion.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue());
+        assertThat("Complete URIs should be returned unchanged.", result, equalTo(completeUri));
+
+
     }
 
     @Test
-    public void testCreateFavoriteSuggestionWithDefaultIcon() throws Exception {
+    public void testGetUrlFragmentFrom() throws Exception {
         // GIVEN
-        final String location = "/somewhere/over/the/rainbow";
-        final String title = "Mr. LoverLover";
 
         // WHEN
-        JcrNewNodeAdapter suggestion = favoritesManager.createFavoriteSuggestion(location, title, null);
+        final String result = presenter.getUrlFragmentFrom(new URI(WEB_APP_URL + FRAGMENT));
 
         // THEN
-        assertEquals(title, suggestion.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue());
-        assertEquals(location, suggestion.getItemProperty(AdmincentralNodeTypes.Favorite.URL).getValue());
-        assertEquals("icon-app", suggestion.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue());
+        assertThat(result, equalTo(FRAGMENT));
     }
 }
