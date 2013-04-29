@@ -34,32 +34,19 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
-import info.magnolia.ui.api.ModelConstants;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed.FeedSection;
 
-import java.util.Iterator;
+import java.util.Map;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
-import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.event.LayoutEvents.LayoutClickListener;
-import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
+import javax.inject.Inject;
+
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.NativeButton;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -69,16 +56,21 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
     private VerticalLayout layout = new VerticalLayout();
     private FavoritesView.Listener listener;
-    private FavoritesSection newPages;
-    private FavoriteForm favoriteForm;
+    private FavoritesSection noGroup;
+    private Component favoriteForm;
+    private FeedSection leftColumn;
+    private FeedSection rightColumn;
+    private Shell shell;
 
     @Override
     public String getId() {
         return "favorite";
     }
 
-    public FavoritesViewImpl() {
+    @Inject
+    public FavoritesViewImpl(Shell shell) {
         super();
+        this.shell = shell;
         construct();
     }
 
@@ -93,21 +85,12 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         layout.setWidth("900px");
 
         final SplitFeed splitPanel = new SplitFeed();
-        final FeedSection leftSide = splitPanel.getLeftContainer();
-        final FeedSection rightSide = splitPanel.getRightContainer();
+        leftColumn = splitPanel.getLeftContainer();
+        rightColumn = splitPanel.getRightContainer();
 
-        newPages = new FavoritesSection();
-        newPages.setCaption("New Pages");
-
-        FavoritesSection newCampaigns = new FavoritesSection();
-        newCampaigns.setCaption("New Campaigns");
-
-        FavoritesSection assetShortcuts = new FavoritesSection();
-        assetShortcuts.setCaption("Asset Shortcuts");
-
-        leftSide.addComponent(newPages);
-        leftSide.addComponent(newCampaigns);
-        rightSide.addComponent(assetShortcuts);
+        noGroup = new FavoritesSection();
+        noGroup.addStyleName("no-group");
+        leftColumn.addComponent(noGroup);
 
         layout.addComponent(splitPanel);
         layout.setExpandRatio(splitPanel, 1f);
@@ -120,177 +103,49 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     }
 
     @Override
-    public void setFavoriteLocation(JcrNewNodeAdapter newFavorite) {
+    public void setFavoriteLocation(JcrNewNodeAdapter newFavorite, JcrNewNodeAdapter newGroup, Map<String, String> availableGroupsNames) {
         layout.removeComponent(favoriteForm);
-        favoriteForm = new FavoriteForm(newFavorite);
+        favoriteForm = new FavoritesForm(newFavorite, newGroup, availableGroupsNames, listener, shell);
         layout.addComponent(favoriteForm);
     }
 
-    /**
-     * Favorite entry.
-     */
-    public class FavoriteEntry extends CssLayout {
+    @Override
+    public void init(JcrItemNodeAdapter favorites, JcrNewNodeAdapter favoriteSuggestion, JcrNewNodeAdapter groupSuggestion, Map<String, String> availableGroups) {
+        noGroup.removeAllComponents();
+        leftColumn.removeAllComponents();
+        rightColumn.removeAllComponents();
 
-        public FavoriteEntry(final Item favorite) {
-            addStyleName("v-favorites-entry");
-
-            String location = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.URL).getValue().toString();
-            String title = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue().toString();
-
-            String icon = "icon-app";
-            if (favorite.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue() != null) {
-                icon = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue().toString();
-            }
-
-            Favorite fav = new Favorite(title, icon, location);
-            fav.setWidth(null);
-            addComponent(fav);
-
-            NativeButton remove = new NativeButton("Remove", new ClickListener() {
-
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    listener.removeFavorite((String) event.getButton().getData());
+        for (JcrItemNodeAdapter favoriteAdapter : favorites.getChildren().values()) {
+            if (AdmincentralNodeTypes.Favorite.NAME.equals(favoriteAdapter.getPrimaryNodeTypeName())) {
+                final FavoritesEntry favEntry = new FavoritesEntry(favoriteAdapter, listener);
+                noGroup.addComponent(favEntry);
+            } else {
+                FavoritesSection group = new FavoritesSection();
+                group.setCaption(favoriteAdapter.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue().toString());
+                for (JcrItemNodeAdapter fav : favoriteAdapter.getChildren().values()) {
+                    final FavoritesEntry favEntry = new FavoritesEntry(fav, listener);
+                    group.addComponent(favEntry);
                 }
-            });
-            remove.setWidth(null);
-            remove.setData(favorite.getItemProperty(ModelConstants.JCR_NAME).getValue());
-
-            addComponent(remove);
-
-        }
-
-        /**
-         * Favorite.
-         */
-        public class Favorite extends CustomComponent {
-
-            private HorizontalLayout root = new HorizontalLayout();
-            private String location;
-            private String icon;
-            private String title;
-
-            public Favorite(String title, String icon, String location) {
-                super();
-                this.icon = icon;
-                this.title = title;
-                this.location = location;
-                this.root.setSpacing(true);
-
-                Label iconLabel = new Label();
-                iconLabel.setValue("<span class=\"" + icon + "\"></span>");
-                iconLabel.setStyleName("icon");
-                iconLabel.setContentMode(ContentMode.HTML);
-                root.addComponent(iconLabel);
-
-                Label titleLabel = new Label();
-                titleLabel.setValue(title);
-                titleLabel.setStyleName("text");
-                root.addComponent(titleLabel);
-
-                root.addLayoutClickListener(new LayoutClickListener() {
-
-                    @Override
-                    public void layoutClick(LayoutClickEvent event) {
-                        listener.goToLocation(getLocationValue());
-                    }
-                });
-
-                setCompositionRoot(root);
-            }
-
-            public String getLocationValue() {
-                return location;
-            }
-
-            public String getIconValue() {
-                return icon;
-            }
-
-            public String getTitleValue() {
-                return title;
+                rightColumn.addComponent(group);
             }
         }
+        leftColumn.addComponent(noGroup);
+
+        if (favoriteForm != null) {
+            layout.removeComponent(favoriteForm);
+        }
+        favoriteForm = new FavoritesForm(favoriteSuggestion, groupSuggestion, availableGroups, listener, shell);
+        layout.addComponent(favoriteForm);
     }
 
     /**
      * Favorite section.
      */
-    public static class FavoritesSection extends CssLayout {
+    private class FavoritesSection extends CssLayout {
 
         public FavoritesSection() {
             addStyleName("favorites-section");
         }
     }
 
-    @Override
-    public void init(JcrItemNodeAdapter favorites, JcrNewNodeAdapter favoriteSuggestion) {
-        Iterator<JcrItemNodeAdapter> favoritesIterator = favorites.getChildren().values().iterator();
-        newPages.removeAllComponents();
-
-        while(favoritesIterator.hasNext()) {
-            JcrItemNodeAdapter favorite = favoritesIterator.next();
-            newPages.addComponent(new FavoriteEntry(favorite));
-        }
-        if (favoriteForm != null) {
-            layout.removeComponent(favoriteForm);
-        }
-        favoriteForm = new FavoriteForm(favoriteSuggestion);
-        layout.addComponent(favoriteForm);
-
-    }
-
-    /**
-     * A form component that allows editing an item.
-     */
-    private class FavoriteForm extends CustomComponent {
-
-        private TextField url = new TextField("Location");
-
-        private TextField title = new TextField("Title");
-
-        public FavoriteForm(final JcrNewNodeAdapter newFavorite) {
-            addStyleName("favorites-form");
-            FormLayout layout = new FormLayout();
-            title.setWidth(800, Unit.PIXELS);
-            title.setRequired(true);
-            url.setWidth(800, Unit.PIXELS);
-            url.setRequired(true);
-            layout.addComponent(url);
-            layout.addComponent(title);
-
-            // Now use a binder to bind the members
-            final FieldGroup binder = new FieldGroup(newFavorite);
-            binder.bindMemberFields(this);
-
-            Button addButton = new Button("Add", new ClickListener() {
-
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    try {
-                        binder.commit();
-                        listener.addFavorite(newFavorite);
-                    } catch (CommitException e) {
-                        // TODO how do we display validation errors?
-                        Notification.show(e.getMessage());
-                    }
-                }
-            });
-            addButton.addStyleName("btn-dialog-commit");
-
-            // A button to commit the buffer
-            layout.addComponent(addButton);
-
-            // A button to discard the buffer
-            layout.addComponent(new Button("Cancel", new ClickListener() {
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    binder.discard();
-                    // TODO remove form
-                }
-            }));
-
-            setCompositionRoot(layout);
-        }
-    }
 }

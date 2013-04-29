@@ -66,6 +66,7 @@ public class AdmincentralNodeTypes {
         public static final String URL = "url";
         public static final String TITLE = "title";
         public static final String ICON = "icon";
+        public static final String GROUP = "group";
     }
 
     /**
