@@ -34,7 +34,6 @@
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation;
 
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.Callbacks;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 
@@ -47,7 +46,7 @@ import com.vaadin.client.VConsole;
  */
 public class JQueryAnimation extends Animation {
 
-    private AnimationSettings settings = new AnimationSettings(););
+    private AnimationSettings settings = new AnimationSettings();
 
     private JQueryWrapper jQueryWrapper;
 
