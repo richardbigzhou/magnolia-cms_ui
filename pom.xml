@@ -16,7 +16,7 @@
     <javaVersion>1.6</javaVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <magnoliaVersion>5.0-SNAPSHOT</magnoliaVersion>
+    <magnoliaVersion>5.0-beta1-2</magnoliaVersion>
     <vaadinVersion>7.0.2</vaadinVersion>
     <scmTagPrefix>magnolia-ui</scmTagPrefix>
   </properties>
@@ -41,7 +41,7 @@
       <dependency>
         <groupId>info.magnolia</groupId>
         <artifactId>magnolia-module-imaging</artifactId>
-        <version>3.0-beta1-1</version>
+        <version>3.0-beta1-2</version>
       </dependency>
       <dependency>
         <groupId>org.vaadin.addons</groupId>
