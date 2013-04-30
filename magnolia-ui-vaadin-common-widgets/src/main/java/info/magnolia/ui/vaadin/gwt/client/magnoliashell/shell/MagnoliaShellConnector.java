@@ -122,9 +122,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                     Widget overlayWidget = ((ComponentConnector) overlay).getWidget();
                     if (overlayWidget.getParent() == null) {
                         // Add the widget
-                        ComponentConnector overlayParent = (ComponentConnector) (((OverlayConnector) overlay).getState().overlayParent);
-                        Widget parentWidget = overlayParent.getWidget();
-                        view.openOverlayOnWidget(overlayWidget, parentWidget);
+
                     }
                 }
 
@@ -183,6 +181,11 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             if (connector instanceof ViewportConnector) {
                 final ViewportConnector vc = (ViewportConnector) connector;
                 view.updateViewport(vc.getWidget(), vc.getType());
+            } else if (connector instanceof OverlayConnector) {
+                final OverlayConnector oc = (OverlayConnector) connector;
+                ComponentConnector overlayParent = (ComponentConnector) oc.getState().overlayParent;
+                Widget parentWidget = overlayParent.getWidget();
+                view.openOverlayOnWidget(oc.getWidget(), parentWidget);
             }
         }
     }

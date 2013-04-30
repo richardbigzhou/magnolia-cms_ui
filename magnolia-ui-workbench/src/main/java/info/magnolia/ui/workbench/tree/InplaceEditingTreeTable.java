@@ -58,6 +58,8 @@ import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.TableFieldFactory;
+import com.vaadin.ui.TextField;
 
 /**
  * The Inplace-editing TreeTable, for editing item properties inplace, on double click or via keyboard shortcuts.
@@ -116,7 +118,6 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         this.editingItemId = itemId;
         this.editingPropertyId = propertyId;
         refreshRowCache();
-        markAsDirty();
     }
 
     // INPLACE EDITING FIELD FACTORY
@@ -124,15 +125,21 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
     /**
      * A factory for creating the inplace editing field in the right cell.
      */
-    private class InplaceEditingFieldFactory extends DefaultFieldFactory {
+    private class InplaceEditingFieldFactory implements TableFieldFactory {
 
         @Override
-        public Field<?> createField(Container container, final Object itemId, final Object propertyId, Component uiContext) {
+        public Field<?> createField(Container container, Object itemId, Object propertyId, Component uiContext) {
 
             // add TextField only for selected row/column.
             if (editableColumns.contains(propertyId) && itemId.equals(editingItemId) && propertyId.equals(editingPropertyId)) {
 
-                Field<?> field = super.createField(container, itemId, propertyId, uiContext);
+                Property<?> containerProperty = container.getContainerProperty(itemId, propertyId);
+                Class<?> type = containerProperty.getType();
+                final Field<?> field = createFieldByPropertyType(type);
+                if (field != null) {
+                    field.setCaption(DefaultFieldFactory.createCaptionByPropertyId(propertyId));
+                    field.setSizeFull();
+                }
 
                 // set TextField Focus listeners
                 if (field instanceof AbstractTextField) {
@@ -160,6 +167,15 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
             }
             return null;
         }
+
+        private Field<?> createFieldByPropertyType(Class<?> type) {
+            if (type == null) {
+                return null;
+            }
+
+            return new TextField();
+        }
+
     }
 
     // FIRING ITEM EDITED EVENTS

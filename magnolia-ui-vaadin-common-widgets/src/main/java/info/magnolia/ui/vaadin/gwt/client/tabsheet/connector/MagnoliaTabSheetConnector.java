@@ -191,14 +191,4 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
             ((ComponentConnector) getState().activeTab).getLayoutManager().layoutNow();
         }
     }
-
-    @Override
-    public void onUnregister() {
-        new Timer() {
-            @Override
-            public void run() {
-                MagnoliaTabSheetConnector.super.onUnregister();
-            }
-        }.schedule(1000);
-    }
 }
