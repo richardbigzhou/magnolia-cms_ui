@@ -34,10 +34,9 @@
 package info.magnolia.ui.api.action;
 
 /**
- * Action definitions describe actions are used to configure actions in many parts of the UI. The definition holds a
- * name which is used to identify the action within a certain scope, for instance within a sub app. Many actions have
- * dedicated action definition classes implementing this interface that allows supplying additional parameters to the
- * action.
+ * Action definitions are used to configure actions in many parts of the UI. The definition holds a name which is used
+ * to identify the action within a certain scope, for instance within a sub app. Many actions have dedicated action
+ * definition classes implementing this interface that allows supplying additional parameters to the action.
  *
  * Implementations are expected to provide correct {@link Object#equals(Object)} and {@link Object#hashCode()} methods.
  *

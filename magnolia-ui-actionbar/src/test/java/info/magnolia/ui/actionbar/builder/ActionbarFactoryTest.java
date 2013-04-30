@@ -36,10 +36,10 @@ package info.magnolia.ui.actionbar.builder;
 import static org.junit.Assert.*;
 
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.definition.ConfiguredActionbarItemDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
-import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarGroupDefinition;
@@ -226,8 +226,9 @@ public class ActionbarFactoryTest {
         ConfiguredActionbarGroupDefinition group = new ConfiguredActionbarGroupDefinition();
         group.setName(name);
         for (String action : actions) {
-            ActionbarItemDefinition def = new ActionbarItemDefinition(action);
-            group.addItem(new ActionbarItemDefinition(action));
+            ConfiguredActionbarItemDefinition def = new ConfiguredActionbarItemDefinition();
+            def.setName(action);
+            group.addItem(def);
         }
         return group;
     }

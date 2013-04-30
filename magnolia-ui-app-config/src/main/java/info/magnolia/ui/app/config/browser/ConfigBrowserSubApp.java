@@ -35,7 +35,6 @@ package info.magnolia.ui.app.config.browser;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.contentapp.ContentSubAppView;
@@ -47,7 +46,6 @@ import info.magnolia.ui.framework.app.SubAppEventBus;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Item;
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -87,10 +85,6 @@ public class ConfigBrowserSubApp extends BrowserSubApp {
                     actionbar.enableGroup("duplicateActions");
                     actionbar.enableGroup("activationActions");
                     actionbar.enableGroup("importExportActions");
-                    // Check if the selected Node is a folder
-                    if (NodeTypes.ContentNode.NAME.equals(((Node) jcrItem).getPrimaryNodeType().getName())) {
-                        actionbar.disable("addFolder");
-                    }
                 } else {
                     // Handle Selected Property
                     actionbar.enable("delete");
