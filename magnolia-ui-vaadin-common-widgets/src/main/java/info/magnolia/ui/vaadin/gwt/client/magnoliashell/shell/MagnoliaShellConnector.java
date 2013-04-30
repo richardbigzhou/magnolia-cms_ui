@@ -110,25 +110,6 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             }
         });
 
-        addStateChangeHandler("overlays", new StateChangeHandler() {
-            @Override
-            public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                MagnoliaShellState state = getState();
-                Iterator<Connector> it = state.overlays.iterator();
-                // Check for overlays that have not yet been added.
-                while (it.hasNext()) {
-                    final Connector overlay = it.next();
-                    // Test if overlay is attached.
-                    Widget overlayWidget = ((ComponentConnector) overlay).getWidget();
-                    if (overlayWidget.getParent() == null) {
-                        // Add the widget
-
-                    }
-                }
-
-            }
-        });
-
         addStateChangeHandler("uriFragment", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
