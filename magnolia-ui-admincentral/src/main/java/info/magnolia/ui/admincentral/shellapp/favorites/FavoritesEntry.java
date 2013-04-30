@@ -110,7 +110,7 @@ public class FavoritesEntry extends CustomComponent {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                if (isSelected()) {
+                if (isSelected() && !isEditable()) {
                     setEditable(true);
                     return;
                 }
@@ -181,7 +181,6 @@ public class FavoritesEntry extends CustomComponent {
 
     public void setEditable(boolean editable) {
         this.editable = editable;
-        this.selected = !editable;
         titleField.setReadOnly(!editable);
         String icon = "";
         if (editable) {
@@ -197,7 +196,6 @@ public class FavoritesEntry extends CustomComponent {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
-        this.editable = !selected;
         titleField.setReadOnly(true);
         editButton.setVisible(selected);
         editButton.setCaption("<span class=\"icon-edit\"></span>");
