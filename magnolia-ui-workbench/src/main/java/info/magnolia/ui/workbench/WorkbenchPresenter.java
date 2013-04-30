@@ -115,6 +115,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     public void selectPath(String path) {
         view.selectPath(path);
+        contentPresenter.setSelectedItemPath(path);
     }
 
     public void refresh() {
