@@ -41,6 +41,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
+import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.app.pages.field.TemplateSelectorField;
@@ -111,7 +112,9 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                view.refresh();
+                if (event.getWorkspace().equals(RepositoryConstants.WEBSITE)) {
+                    view.refresh();
+                }
             }
         });
     }

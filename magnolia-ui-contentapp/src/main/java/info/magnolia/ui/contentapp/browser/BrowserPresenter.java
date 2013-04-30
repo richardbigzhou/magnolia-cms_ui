@@ -38,6 +38,9 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
@@ -45,9 +48,6 @@ import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
-import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
@@ -101,7 +101,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
 
     private final BrowserView view;
 
-    private final EventBus admincentralEventBus;
+    private final EventBus adminCentralEventBus;
 
     private final EventBus subAppEventBus;
 
@@ -112,13 +112,13 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
     private final AppContext appContext;
 
     @Inject
-    public BrowserPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final BrowserView view, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
+    public BrowserPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final BrowserView view, @Named(AdmincentralEventBus.NAME) final EventBus adminCentralEventBus,
             final @Named(SubAppEventBus.NAME) EventBus subAppEventBus,
             final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider, WorkbenchPresenter workbenchPresenter) {
         this.workbenchPresenter = workbenchPresenter;
         this.actionExecutor = actionExecutor;
         this.view = view;
-        this.admincentralEventBus = admincentralEventBus;
+        this.adminCentralEventBus = adminCentralEventBus;
         this.subAppEventBus = subAppEventBus;
         this.actionbarPresenter = actionbarPresenter;
         this.appContext = subAppContext.getAppContext();
@@ -146,13 +146,15 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
     }
 
     private void bindHandlers() {
-        admincentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+        adminCentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                refreshActionbarPreviewImage(event.getPath(), event.getWorkspace());
-                workbenchPresenter.selectPath(event.getPath());
-                workbenchPresenter.refresh();
+                if (event.getWorkspace().equals(getWorkspace())) {
+                    refreshActionbarPreviewImage(event.getPath(), event.getWorkspace());
+                    workbenchPresenter.selectPath(event.getPath());
+                    workbenchPresenter.refresh();
+                }
             }
         });
 
@@ -198,8 +200,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
 
     /**
      * @return The configured default view Type.<br>
-     *         If non define, return the first Content Definition as default.
-     * 
+     * If non define, return the first Content Definition as default.
      */
     public ViewType getDefaultViewType() {
         return workbenchPresenter.getDefaultViewType();
@@ -276,11 +277,16 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
     public void onExecute(String actionName) {
         try {
             Session session = MgnlContext.getJCRSession(getWorkspace());
-            javax.jcr.Item item = session.getItem(getSelectedItemId());
-            if (item.isNode()) {
-                actionExecutor.execute(actionName, new JcrNodeAdapter((Node) item));
+            if (session.itemExists(getSelectedItemId())) {
+                javax.jcr.Item item = session.getItem(getSelectedItemId());
+                if (item.isNode()) {
+                    actionExecutor.execute(actionName, new JcrNodeAdapter((Node) item));
+                } else {
+                    actionExecutor.execute(actionName, new JcrPropertyAdapter((Property) item));
+                }
             } else {
-                actionExecutor.execute(actionName, new JcrPropertyAdapter((Property) item));
+                Message error = new Message(MessageType.ERROR, "Could not get item ", "Following Item not found :" + getSelectedItemId());
+                appContext.sendLocalMessage(error);
             }
         } catch (RepositoryException e) {
             Message error = new Message(MessageType.ERROR, "Could not get item: " + getSelectedItemId(), e.getMessage());
