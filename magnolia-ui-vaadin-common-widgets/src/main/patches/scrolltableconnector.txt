@@ -1,5 +1,5 @@
 --- k1/src/main/java/com/vaadin/client/ui/table/TableConnector.java	2013-03-06 04:00:32.000000000 +0100
-+++ k2/src/main/java/com/vaadin/client/ui/table/TableConnector.java	2013-03-25 10:26:07.000000000 +0100
++++ k2/src/main/java/com/vaadin/client/ui/table/TableConnector.java	2013-04-30 14:50:07.000000000 +0100
 @@ -35,15 +35,15 @@
  import com.vaadin.client.Util;
  import com.vaadin.client.ui.AbstractHasComponentsConnector;
@@ -47,8 +47,9 @@
      @Override
      public void postLayout() {
 -        VScrollTable table = getWidget();
+-        if (table.sizeNeedsInit) {
 +        VScrollTablePatched table = getWidget();
-         if (table.sizeNeedsInit) {
++        if (table.isVisibleInHierarchy() && table.sizeNeedsInit) {
              table.sizeInit();
              Scheduler.get().scheduleFinally(new ScheduledCommand() {
                  @Override
