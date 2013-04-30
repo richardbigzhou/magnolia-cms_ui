@@ -78,7 +78,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         @Override
         public void onShellAppActivated(final ShellAppActivatedEvent event) {
             view.showShellApp(event.getType());
-            lastHandledFragment =  Fragment.fromString("shell:" + event.getType().name().toLowerCase() + ":" + event.getToken());
+            lastHandledFragment = Fragment.fromString("shell:" + event.getType().name().toLowerCase() + ":" + event.getToken());
             activateShellApp(lastHandledFragment);
         }
 
@@ -110,24 +110,14 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             }
         });
 
-        addStateChangeHandler("overlays", new StateChangeHandler() {
+        addStateChangeHandler("uriFragment", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                MagnoliaShellState state = getState();
-                Iterator<Connector> it = state.overlays.iterator();
-                // Check for overlays that have not yet been added.
-                while (it.hasNext()) {
-                    final Connector overlay = it.next();
-                    // Test if overlay is attached.
-                    Widget overlayWidget = ((ComponentConnector) overlay).getWidget();
-                    if (overlayWidget.getParent() == null) {
-                        // Add the widget
-                        ComponentConnector overlayParent = (ComponentConnector) (((OverlayConnector) overlay).getState().overlayParent);
-                        Widget parentWidget = overlayParent.getWidget();
-                        view.openOverlayOnWidget(overlayWidget, parentWidget);
-                    }
+                Fragment f = getState().uriFragment;
+                if (f != null) {
+                    view.setActiveViewport(f.isApp());
+                    History.newItem(f.toFragment(), !f.isSameApp(lastHandledFragment));
                 }
-
             }
         });
 
@@ -155,7 +145,6 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             public void onValueChange(ValueChangeEvent<String> event) {
                 Fragment newFragment = Fragment.fromString(event.getValue());
                 changeAppFromFragment(newFragment);
-                view.setActiveViewport(newFragment.isApp());
                 lastHandledFragment =  newFragment;
             }
         });
@@ -173,6 +162,11 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             if (connector instanceof ViewportConnector) {
                 final ViewportConnector vc = (ViewportConnector) connector;
                 view.updateViewport(vc.getWidget(), vc.getType());
+            } else if (connector instanceof OverlayConnector) {
+                final OverlayConnector oc = (OverlayConnector) connector;
+                ComponentConnector overlayParent = (ComponentConnector) oc.getState().overlayParent;
+                Widget parentWidget = overlayParent.getWidget();
+                view.openOverlayOnWidget(oc.getWidget(), parentWidget);
             }
         }
     }
@@ -250,9 +244,6 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     }
 
     public void changeAppFromFragment(final Fragment f) {
-        if (f.isSameApp(lastHandledFragment)) {
-            return;
-        }
         if (f.isShellApp()) {
             eventBus.fireEvent(new ShellAppActivatedEvent(f.resolveShellAppType(), f.getParameter()));
         } else {

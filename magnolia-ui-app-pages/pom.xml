@@ -15,10 +15,6 @@
   </properties>
 
   <dependencies>
-      <dependency>
-          <groupId>info.magnolia.pageexport</groupId>
-          <artifactId>magnolia-module-page-export</artifactId>
-      </dependency>
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-rendering</artifactId>

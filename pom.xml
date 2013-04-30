@@ -16,7 +16,7 @@
     <javaVersion>1.6</javaVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <magnoliaVersion>5.0-beta1-4</magnoliaVersion>
+    <magnoliaVersion>5.0-SNAPSHOT</magnoliaVersion>
     <vaadinVersion>7.0.2</vaadinVersion>
     <scmTagPrefix>magnolia-ui</scmTagPrefix>
   </properties>
@@ -32,11 +32,6 @@
         <groupId>info.magnolia</groupId>
         <artifactId>magnolia-rendering</artifactId>
         <version>${magnoliaVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.pageexport</groupId>
-        <artifactId>magnolia-module-page-export</artifactId>
-        <version>1.0-alpha3-1</version>
       </dependency>
       <dependency>
         <groupId>info.magnolia</groupId>

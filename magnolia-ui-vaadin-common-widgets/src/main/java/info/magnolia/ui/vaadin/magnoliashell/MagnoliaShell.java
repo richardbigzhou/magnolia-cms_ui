@@ -54,6 +54,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.vaadin.annotations.JavaScript;
+import com.vaadin.server.Page;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.Connector;
 import com.vaadin.ui.AbstractComponent;
@@ -172,6 +173,15 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
     }
 
 
+    public void setUriFragment(Fragment fragment) {
+        getState().uriFragment = fragment;
+        Page.getCurrent().setUriFragment(fragment.toFragment(), false);
+    }
+
+    public String getUriFragment() {
+        return getState().uriFragment.toFragment();
+    }
+
     /**
      * Open an Overlay on top of a specific View.
      * 
@@ -203,6 +213,7 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
     public void closeOverlay(Component overlayComponent) {
         Overlay overlay = (Overlay) overlayComponent.getParent();
         getState().overlays.remove(overlay);
+        overlay.setParent(null);
     }
 
     @Override
