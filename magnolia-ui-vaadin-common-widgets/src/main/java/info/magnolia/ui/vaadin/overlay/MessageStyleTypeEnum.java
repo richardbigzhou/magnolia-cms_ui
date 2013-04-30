@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.overlay;
 import info.magnolia.ui.api.overlay.MessageStyleType;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
 import info.magnolia.ui.vaadin.icon.ErrorIcon;
+import info.magnolia.ui.vaadin.icon.InfoIcon;
 import info.magnolia.ui.vaadin.icon.NullIcon;
 import info.magnolia.ui.vaadin.icon.WarningIcon;
 
@@ -47,7 +48,7 @@ public enum MessageStyleTypeEnum implements MessageStyleType {
     UNKNOWN("", "", NullIcon.class),
     ERROR("Error", "msgerror", ErrorIcon.class),
     WARNING("Warning", "msgwarn", WarningIcon.class),
-    INFO("Info", "msginfo", NullIcon.class);
+    INFO("Info", "msginfo", InfoIcon.class);
 
     private String caption;
     private String cssClass;
