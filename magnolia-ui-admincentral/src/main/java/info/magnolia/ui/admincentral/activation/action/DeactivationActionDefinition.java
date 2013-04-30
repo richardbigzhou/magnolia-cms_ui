@@ -46,6 +46,7 @@ public class DeactivationActionDefinition extends CommandActionDefinition {
         setImplementationClass(DeactivationAction.class);
     }
 
+    @Override
     public String getSuccessMessage() {
         if (workflowInstalled()) {
             return "The workflow has been started.";
@@ -53,6 +54,7 @@ public class DeactivationActionDefinition extends CommandActionDefinition {
         return "Deactivation has been started.";
     }
 
+    @Override
     public String getFailureMessage() {
         if (workflowInstalled()) {
             return "The workflow could not be launched.";
@@ -60,6 +62,7 @@ public class DeactivationActionDefinition extends CommandActionDefinition {
         return "Deactivation has failed.";
     }
 
+    @Override
     public String getErrorMessage() {
         return "Deactivation failed. Please contact the system administrator for assistance.";
     }

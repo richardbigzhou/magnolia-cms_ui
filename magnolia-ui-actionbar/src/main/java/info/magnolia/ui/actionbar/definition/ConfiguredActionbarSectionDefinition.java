@@ -97,6 +97,7 @@ public class ConfiguredActionbarSectionDefinition implements ActionbarSectionDef
         groups.add(groupDefinition);
     }
 
+    @Override
     public SectionRestrictionsDefinition getRestrictions() {
         return restrictions;
     }
