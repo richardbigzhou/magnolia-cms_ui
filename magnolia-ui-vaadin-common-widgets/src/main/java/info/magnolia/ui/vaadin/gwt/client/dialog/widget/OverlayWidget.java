@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.dialog.connector.OverlayConnector;
-
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -46,11 +44,9 @@ public class OverlayWidget extends SimplePanel {
 
     private final Element modalityCurtain = DOM.createDiv();
 
-    public OverlayWidget(OverlayConnector connector) {
+    public OverlayWidget() {
         super();
-
         setStyleName("overlay");
-
         modalityCurtain.setClassName("modal-curtain");
         this.getElement().appendChild(modalityCurtain);
     }

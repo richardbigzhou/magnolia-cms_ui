@@ -36,7 +36,6 @@ package info.magnolia.ui.vaadin.gwt.client.dialog.connector;
 import info.magnolia.ui.vaadin.gwt.client.dialog.widget.OverlayWidget;
 import info.magnolia.ui.vaadin.overlay.Overlay;
 
-import com.google.gwt.user.client.Timer;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.ui.AbstractSingleComponentContainerConnector;
@@ -49,11 +48,6 @@ import com.vaadin.shared.ui.Connect;
 public class OverlayConnector extends AbstractSingleComponentContainerConnector {
 
     @Override
-    protected void init() {
-        super.init();
-    }
-
-    @Override
     public void updateCaption(ComponentConnector connector) {
     }
 
@@ -63,21 +57,9 @@ public class OverlayConnector extends AbstractSingleComponentContainerConnector 
     }
 
     @Override
-    protected OverlayWidget createWidget() {
-        return new OverlayWidget(this);
-    }
-
-
-    @Override
     public void onUnregister() {
-        // Delay the destruction of the connector till the widget is ready.
-        new Timer() {
-
-            @Override
-            public void run() {
-                OverlayConnector.super.onUnregister();
-            }
-        }.schedule(10);
+        getWidget().removeFromParent();
+        super.onUnregister();
     }
 
     @Override
