@@ -34,11 +34,6 @@
         <version>${magnoliaVersion}</version>
       </dependency>
       <dependency>
-        <groupId>info.magnolia.pageexport</groupId>
-        <artifactId>magnolia-module-page-export</artifactId>
-        <version>1.0-alpha3-1</version>
-      </dependency>
-      <dependency>
         <groupId>info.magnolia</groupId>
         <artifactId>magnolia-module-imaging</artifactId>
         <version>3.0-beta1-2</version>
