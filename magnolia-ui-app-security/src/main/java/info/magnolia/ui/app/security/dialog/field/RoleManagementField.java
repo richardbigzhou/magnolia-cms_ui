@@ -34,6 +34,8 @@
 package info.magnolia.ui.app.security.dialog.field;
 
 import info.magnolia.cms.util.QueryUtil;
+import info.magnolia.jcr.iterator.FilteringPropertyIterator;
+import info.magnolia.jcr.predicate.JCRMgnlPropertyHidingPredicate;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.form.field.builder.TwinColSelectFieldBuilder;
@@ -137,17 +139,14 @@ public class RoleManagementField extends TwinColSelectFieldBuilder<RoleManagemen
         Node mainNode = getRelatedNode(item);
         try {
             if (mainNode.hasNode("roles")) {
-                Node groupsNode = mainNode.getNode("roles");
-                if (groupsNode == null) {
+                Node rolesNode = mainNode.getNode("roles");
+                if (rolesNode == null) {
                     // shouldn't happen, just in case
                     return roles;
                 }
-                PropertyIterator pi = groupsNode.getProperties();
-                while (pi.hasNext()) {
-                    Property p = pi.nextProperty();
-                    if (!p.getName().startsWith(NodeTypes.JCR_PREFIX)) {
-                        roles.add(p.getString());
-                    }
+                for (PropertyIterator iter = new FilteringPropertyIterator(rolesNode.getProperties(), new JCRMgnlPropertyHidingPredicate());  iter.hasNext();) {
+                    Property p = iter.nextProperty();
+                    roles.add(p.getString());
                 }
             }
         } catch (RepositoryException re) {

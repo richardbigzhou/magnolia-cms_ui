@@ -34,6 +34,8 @@
 package info.magnolia.ui.app.security.dialog.field;
 
 import info.magnolia.cms.util.QueryUtil;
+import info.magnolia.jcr.iterator.FilteringPropertyIterator;
+import info.magnolia.jcr.predicate.JCRMgnlPropertyHidingPredicate;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.form.field.builder.TwinColSelectFieldBuilder;
@@ -168,13 +170,10 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
                     // shouldn't happen, just in case
                     return groups;
                 }
-                PropertyIterator pi = groupsNode.getProperties();
-                while (pi.hasNext()) {
-                    Property p = pi.nextProperty();
-                    if (!p.getName().startsWith(NodeTypes.JCR_PREFIX)) {
-                        // do not add system properties
-                        groups.add(p.getString());
-                    }
+                for (PropertyIterator iter = new FilteringPropertyIterator(groupsNode.getProperties(), new JCRMgnlPropertyHidingPredicate());  iter.hasNext();) {
+                    Property p = iter.nextProperty();
+                    groups.add(p.getString());
+
                 }
             }
         } catch (RepositoryException re) {
