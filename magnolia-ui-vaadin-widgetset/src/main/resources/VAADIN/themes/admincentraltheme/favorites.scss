@@ -115,6 +115,7 @@
    left: 50px;
    cursor: pointer;
 }
+
 .favorites-form .dialog-header .icon span{
   position: absolute;
   color: white;
@@ -123,10 +124,32 @@
   cursor: pointer;
 }
 
+.favorites-form .v-tabsheet-content {
+	border: none !important;
+	height: 144px !important;
+}
+
 .favorites-form-content, .favorites-tabs {
     background-color: #E6E6E6;
 }
 
+.favorites-tabs .v-tabsheet-tabitem {
+	border: none ;
+}
+
+.favorites-tabs .v-tabsheet-spacertd div {
+    border: none;
+}
+
+.favorites-tabs .v-tabsheet-tabitemcell-first {
+    border-right: 1px solid #999;
+}
+.favorites-tabs .v-tabsheet-tabitem .v-caption {
+	color: #999;
+}
+.favorites-tabs .v-tabsheet-tabitem-selected .v-caption {
+	color: black;
+}
 .favorites-form-content input[type="text"] {
   width: 700px !important;
  }
