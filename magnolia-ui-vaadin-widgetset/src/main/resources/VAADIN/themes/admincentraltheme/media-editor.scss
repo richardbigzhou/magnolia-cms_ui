@@ -7,7 +7,7 @@
 
 .v-media-editor .dialog-panel {
     position: relative;
-    background-color: #000000;
+    background-color: $c90000;
 }
 
 .v-media-editor .dialog-content{
@@ -21,11 +21,11 @@
 .v-media-editor .dialog-footer {
     position:absolute;
     bottom:0px;
-    background-color: #999999;
+    background-color: $c12;
 }
 
 .v-media-editor {
-	color: #FFFFFF;
+	color: $c80FFF;
 }
 
 .v-media-editor .v-label {
@@ -37,15 +37,15 @@
 	font-family: DINWebPro;
 	font-size: 12px;
 	font-weight: bold;
-	background: none repeat scroll 0px 0px #666666;
+	background: none repeat scroll 0px 0px $c10;
 	border: none;
-	color: #FFF;
+	color: $c80;
 	cursor: pointer;
 	padding: 4px 12px;
 	text-transform: uppercase;
 }
 
-.v-media-editor .v-nativebutton:hover,.v-media-editor .v-nativebutton:focus,.v-media-editor .v-nativebutton-active{color: #fff;}
+.v-media-editor .v-nativebutton:hover,.v-media-editor .v-nativebutton:focus,.v-media-editor .v-nativebutton-active{color: $c80;}
 .v-media-editor .v-nativebutton::-moz-focus-inner {padding: 0; border: 0;}
 .v-media-editor .v-nativebutton-caption {text-decoration: none;}
 .v-media-editor .v-nativebutton.rotate-left {}

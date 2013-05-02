@@ -34,16 +34,16 @@
 * Tabsheet color
 */
 .form-panel .v-shell-tabsheet {
-    background-color: #F2F2F2;
+    background-color: $c16;
 }
 
 .form-panel .v-shell-tabsheet .nav li.active {
-    background-color: #F2F2F2;
+    background-color: $c16;
 }
 
 .v-form-layout {
-    padding-top:25px;
-    background-color: #F2F2F2;
+    background-color: $c16;
+    margin-top:25px;
     width: 100%;
 }
 
@@ -60,8 +60,8 @@
 }
 
 .form-error {
-    background-color:#9A3333;
-    color:#fff;
+    background-color:$c70;
+    color:$c80;
 }
 
 .form-help {
@@ -86,7 +86,7 @@ button.btn-form-help {
 }
 
 .form-panel .field-container {
-    color: #999;
+    color: $c12;
 }
 
 .v-form-field.v-customcomponent {
@@ -102,7 +102,7 @@ button.btn-form-help {
     text-align: right;
     width: 140px;
     margin-right: 12px;
-    color: #666;
+    color: $c10;
     text-overflow: ellipsis;
     overflow: hidden;
     vertical-align: top; /*needed by FF*/
@@ -115,13 +115,13 @@ button.btn-form-help {
 }
 
 .validation-hilight {
-    border: 2px solid #9A3333;
+    border: 2px solid $c70;
     padding: 3px 0px;
     background-color: white;
 }
 
 .v-form-field-section {
-    color: #000;
+    color: $c90;
     margin-bottom: 11px;
 }
 
@@ -137,14 +137,14 @@ button.btn-form-help {
 }
 
 .validation-message,.help-message {
-    background: none repeat scroll 0px 0px #9A3333;
+    background: none repeat scroll 0px 0px $c70;
     color: white;
     display: block;
     padding: 10px;
 }
 
 .help-message {
-    background: none repeat scroll 0px 0px #C1D8DF;
+    background: none repeat scroll 0px 0px $c24;
     color: black;
 }
 
@@ -154,11 +154,11 @@ button.btn-form-help {
 }
 
 .triangle.red path {
-    fill: #9A3333;
+    fill: $c70;
 }
 
 .triangle.blue path {
-    fill: #C1D8DF;
+    fill: $c24;
 }
 
 .triangle {
@@ -180,14 +180,14 @@ button.btn-form-help {
     -moz-user-select: text;
     background: none repeat scroll 0% 0% transparent;
     border: medium none;
-    color: #999 !important;
+    color: $c12 !important;
     display: inline;
     padding-left: 5px;
     cursor: pointer;
 }
 
 .action-jump-to-next-error:hover {
-    color: #FFF ! important;
+    color: $c80 ! important;
 }
 
 .action-jump-to-next-error:focus {
@@ -274,7 +274,7 @@ fieldset {
 
 .field-view .v-caption {
   display: inline-block;
-  color: #666666;
+  color: $c10;
   line-height: 25px;
   margin-right: 12px;
   overflow: hidden;
