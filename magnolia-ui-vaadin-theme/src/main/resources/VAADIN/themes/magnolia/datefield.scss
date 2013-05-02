@@ -25,16 +25,16 @@
 
   .v-datefield-calendarpanel,
   .v-inline-datefield-calendarpanel {
-    border: 1px solid $c02;
+    border: 1px solid $c54;
     border-collapse: collapse;
-    background-color: $c21;
+    background-color: $c80;
     font-size: 14x;
   }
 
   .v-datefield-calendarpanel-header,
   .v-inline-datefield-calendarpanel-header {
     height: 20px;
-    background-color: $c01;
+    background-color: $c50;
 
     td {
       padding: 0 2px 2px;
@@ -44,7 +44,7 @@
       &.v-inline-datefield-calendarpanel-month {
         min-width: 105px;
         padding: 2px 6px 0;
-        color: $c21;
+        color: $c80;
         font-family: DINWebPro, sans-serif;
         font-size: 1em;
         text-transform: capitalize;
@@ -70,8 +70,8 @@
     td {
       min-width: 30px;
       height: 28px;
-      border: 1px solid $c03;
-      color: $c01;
+      border: 1px solid $c62;
+      color: $c50;
       font-family: DINWebPro, sans-serif;
       font-size: 1em;
       text-align: center;
@@ -117,7 +117,7 @@
   .v-datefield-calendarpanel-day-today,
   .v-inline-datefield-calendarpanel-day-today {
     border: none;
-    background-color: $c08;
+    background-color: $c26;
   }
 
   .v-datefield-calendarpanel-day-focused,
@@ -129,13 +129,13 @@
   .v-datefield-calendarpanel-day-focused,
   .v-inline-datefield-calendarpanel-day-selected,
   .v-inline-datefield-calendarpanel-day-focused {
-    background: $c06;
+    background: $c90;
     color: #333;
   }
 
   .v-datefield-calendarpanel-day-offmonth,
   .v-inline-datefield-calendarpanel-day-offmonth {
-    background-color: $c24;
-    color: $c03;
+    background-color: $c65;
+    color: $c62;
   }
 }

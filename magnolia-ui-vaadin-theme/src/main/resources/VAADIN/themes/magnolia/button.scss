@@ -17,14 +17,14 @@
 
     &.commit,
     &.btn-dialog-commit {
-      background-color: $c09;
+      background-color: $c40;
     }
   }
 
   .v-button-inline,
   .v-nativebutton-inline {
     background-color: transparent;
-  	color: $c01;
+  	color: $c50;
   }
 
   .v-button-link {
@@ -35,8 +35,8 @@
 
 @mixin basebutton {
   border: none;
-  background-color: $c01;
-  color: $c21;
+  background-color: $c50;
+  color: $c80;
   font-family: DINWebPro;
   font-size: 12px;
   text-transform: uppercase;
@@ -81,7 +81,7 @@
 
   &:hover,
   &:focus {
-    color: $c05;
+    color: $c75;
   }
 
   &:active {
