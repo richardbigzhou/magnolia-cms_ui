@@ -79,6 +79,7 @@ public class DialogContainingFormConnector extends BaseDialogConnector {
     }
 
     private final ElementResizeListener listener = new ElementResizeListener() {
+        @Override
         public void onElementResize(ElementResizeEvent e) {
             updateSize();
         }
