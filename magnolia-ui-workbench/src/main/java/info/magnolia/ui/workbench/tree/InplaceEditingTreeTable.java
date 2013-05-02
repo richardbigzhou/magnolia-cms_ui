@@ -230,7 +230,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
     @Override
     public void itemClick(ItemClickEvent event) {
-        if (event.isDoubleClick()) {
+        if (event.isDoubleClick() && editableColumns.contains(event.getPropertyId())) {
             setEditing(event.getItemId(), event.getPropertyId());
         }
     }
