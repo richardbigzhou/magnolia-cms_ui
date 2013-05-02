@@ -13,7 +13,7 @@
 }
 
 .v-dashboard-entry {
-	border-bottom: 1px solid #CCCCCC;
+	border-bottom: 1px solid $c14;
 	margin-bottom: 10px;
 	font-size:15px;
 }
@@ -53,11 +53,11 @@
 }
 .v-dashboard-entry .v-label-comment {
 	padding:8px;
-	background-color:#e6e6e6;
+	background-color:$c15;
 	margin-bottom:5px;
 }
 .v-dashboard-entry .comment-divet {
-	color:#E6E6E6;
+	color:$c15;
 	display:block;
     font-size:20px;
     height:14px;
@@ -66,18 +66,18 @@
 }
 
 .v-dashboard-entry .v-label-date {
-	color:#cccccc;
+	color:$c14;
 	text-align:right;
 	width:340px !important;
 }
 
 .v-pulse {
-  background-color: #FFF;
+  background-color: $c80;
 }
 
 .v-pulse .back-button {
   display: inline-block;
-  color: #666;
+  color: $c10;
   cursor: pointer;
 }
 
@@ -93,7 +93,7 @@
 }
 
 .v-pulse .v-shell-tabsheet {
-    background-color: #FFF;
+    background-color: $c80;
 }
 
 .v-pulse .v-feed-title-link {
@@ -108,7 +108,7 @@
 }
 
 .v-pulse .category-separator, .v-pulse .recent-pages th {
-    color:#000000;
+    color:$c90000;
     font-family:Verdana,sans-serif;
     font-weight:bold;
 }
@@ -132,22 +132,22 @@
 	position:absolute;
 	top:8px;
 	right:20px;
-	color:#CCCCCC;
+	color:$c14;
     font-size: 20px;
 }
 
 .v-pulse .navigator {padding:13px 0 20px;}
 .v-pulse .navigator-button {
 	height:12px;
-	border-right:1px solid #ccc;
+	border-right:1px solid $c13;
 	padding:0 42px 0 20px;
-	color:#ccc;
+	color:$c13;
 	font-family:DINWebPro, sans-serif;
 	font-size:14px;
 	line-height:1;
 	text-transform:uppercase;
 }
-.v-pulse .v-nativebutton-active {color:#666;}
+.v-pulse .v-nativebutton-active {color:$c10;}
 .v-pulse .v-nativebutton::-moz-focus-inner {padding:0; border:0}
 .v-pulse .navigator-button .v-nativebutton-caption {text-decoration:none;}
 
@@ -155,14 +155,14 @@
 	background: transparent;
 }
 .v-pulse .v-table-generated-row .v-table-cell-content {
-	border-bottom: 1px solid #888;
+	border-bottom: 1px solid $c11;
 	font-family: Verdana, Geneva, sans-serif;
-	color: #999;
+	color: $c12;
 	padding-top: 20px;
 	padding-bottom: 0px;
 }
 .v-pulse .v-table-cell-content-v-cell-invisible {
-	background: #E6E6E6;
+	background: $c15;
 }
 .v-pulse .v-table-cell-content-v-cell-invisible div {
 	display: none;
@@ -174,7 +174,7 @@
 }
 
 .v-pulse .emptyplaceholder {
-	color: #666;
+	color: $c10;
 	font-weight: bold;
 	text-align: center;
 }

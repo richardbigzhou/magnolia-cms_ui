@@ -1,30 +1,30 @@
 @charset "UTF-8";
 
 /* Color scheme for Magnolia */
-$c50: #666; /* Greys */
-$c54: #999;
-$c62: #ccc;
-$c64: #e6e6e6;
-$c65: #f2f2f2;
-$c75: #4b8e9e; /* Info blues */
-$c90: #93bac6;
-$c16: #c1d8df;
-$c26: #ebeff4;
-$c40: #689600; /* Magnolia 5 Green */
-$c41: #91ac24;
-$c50: #aabf2f;
-$c52: #dbdf7c;
-$c54: #edf6b5;
-$c60: #ffbf28; /* Warning yellows */
-$c62: #ffdb85;
-$c64: #ffe8b8;
-$c65: #fff2d6;
-$c70: #9a3332; /* Error reds */
-$c71: #ca704d;
-$c73: #eda77c;
-$c75: #fbe4c3;
-$c80: #fff; /* White */
-$c90: #000; /* Black */
+$c50: $c10; /* Greys */
+$c54: $c12;
+$c62: $c13;
+$c64: $c15;
+$c65: $c16;
+$c75: $c20; /* Info blues */
+$c90: $c22;
+$c16: $c24;
+$c26: $c26;
+$c40: $c40; /* Magnolia 5 Green */
+$c41: $c41;
+$c50: $c50;
+$c52: $c52;
+$c54: $c54;
+$c60: $c60; /* Warning yellows */
+$c62: $c62;
+$c64: $c64;
+$c65: $c65;
+$c70: $c70; /* Error reds */
+$c71: $c71;
+$c73: $c73;
+$c75: $c75;
+$c80: $c80; /* White */
+$c90: $c90; /* Black */
 $c30: #3e5900; /* Dark green */
 
 /* Colors of page editor bars */
@@ -32,4 +32,4 @@ $c50: #6a9000;
 $c51: #a5bc66;
 $c52: #e1e8cc;
 $c53: #efefef;
-$c54: #fff;
+$c54: $c80;

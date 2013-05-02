@@ -4,7 +4,7 @@
 
 .v-magnolia-table {
 	position:relative;
-	background:none repeat scroll 0 0 #ffffff;
+	background:none repeat scroll 0 0 $c80fff;
 }
 
 .v-magnolia-table .v-table-table {
@@ -13,17 +13,17 @@
 }
 
 .v-magnolia-table .v-table-cell-content {
-	border-bottom:1px dashed #dddddd;
+	border-bottom:1px dashed $c14;
 	border-right: none;
 	padding:5px;
 	line-height:18px;
-	color:#666666;
+	color:$c10;
 }
 
 .v-magnolia-table .v-table-header-wrap {
-	background: #f2f2f2;
+	background: $c16;
 	border: none;
-	border-bottom:1px solid #ccc;
+	border-bottom:1px solid $c13;
 }
 
 .v-magnolia-table .v-table-body-wrapper {
@@ -45,13 +45,13 @@
     height:20px;
     margin-top:10px;
     padding-left:0;
-    border-right:1px dotted #ccc;
+    border-right:1px dotted $c13;
     background:none;
 }
 .v-magnolia-table .v-table-header td:last-child .v-table-resizer {visibility:hidden;}
 
 .v-magnolia-table .v-table-caption-container {
-	color:#666;
+	color:$c10;
 	font-size:12px;
 	font-weight:normal;
 	font-family:Verdana,sans-serif;
@@ -101,8 +101,8 @@
 .tablet .v-magnolia-table .v-select-all {margin-top:-23px;}
 
 .v-magnolia-table tr.v-selected .v-table-cell-content {
-	background:#666;
-	color:#fff;
+	background:$c10;
+	color:$c80;
 }
 
 *:focus {
@@ -120,9 +120,9 @@
 }
 
 .v-magnolia-table .v-table-row:hover,
-.v-magnolia-table .v-table-row-odd:hover {background-color:#f2f2f2;}
+.v-magnolia-table .v-table-row-odd:hover {background-color:$c16;}
 .tablet .v-magnolia-table .v-table-row:hover {background-color:transparent;}
-.v-magnolia-table .v-selected:hover {background-color: #666666;}
+.v-magnolia-table .v-selected:hover {background-color: $c10;}
 
 .v-magnolia-table .v-treetable-treespacer {
   position: relative;
@@ -131,7 +131,7 @@
   height: 16px;
   vertical-align: text-bottom;
   background: none;
-  color: #999999;
+  color: $c12;
   font-size: 20px;
   text-align: right;
   width: 20px;

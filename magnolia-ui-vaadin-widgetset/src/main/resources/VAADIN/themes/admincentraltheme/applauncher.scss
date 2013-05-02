@@ -17,7 +17,7 @@
 }
 
 .item {
-    background: none repeat scroll 0 0 #689600;
+    background: none repeat scroll 0 0 $c40;
     color: white;
     cursor: pointer;
     display: inline-block;
@@ -33,12 +33,12 @@
 }
 
 .item.hover{
-    background-color:#3f5900 !important;   /* dark green */
+    background-color:$c30 !important;   /* dark green */
     color:white !important;
 }
 
 .item.section.hover{
-    background-color:#8da924 !important;   /* light green */
+    background-color:$c41 !important;   /* light green */
     color:white !important;
 }
 
@@ -69,7 +69,7 @@
 }
 
 .item.section{
-    background-color:#3f5900;   /* dark green */
+    background-color:$c30;   /* dark green */
 }
 
 .item.section .label {

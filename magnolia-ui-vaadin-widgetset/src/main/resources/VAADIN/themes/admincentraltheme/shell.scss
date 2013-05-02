@@ -30,7 +30,7 @@
     height:60px;
     z-index:400;
     overflow:hidden;
-    background-color:#689600;
+    background-color:$c40;
     color:#48630a;
     text-align:center;
 }
@@ -121,7 +121,7 @@
 }
 
 .v-curtain-black {
-    background-color:#000;
+    background-color:$c90;
     opacity:0.8;
     filter:alpha(opacity = 80);
 }
@@ -134,7 +134,7 @@
 	right:0;
 	filter: alpha(opacity = 0);
     opacity: 0.0;
-    background: none repeat scroll 0 0 #000000;
+    background: none repeat scroll 0 0 $c90000;
 	z-index:1000;
 	visibility:hidden;
 }
@@ -151,7 +151,7 @@
 	width:24px;
 	margin-left:-17px;
 	padding:5px;
-	background:#666;
+	background:$c10;
 }
 
 .zoom-out {
