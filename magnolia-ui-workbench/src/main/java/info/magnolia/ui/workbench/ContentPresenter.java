@@ -111,6 +111,10 @@ public class ContentPresenter implements ContentView.Listener {
         return selectedItemPath;
     }
 
+    public void setSelectedItemPath(String selectedItemPath) {
+        this.selectedItemPath = selectedItemPath;
+    }
+
     @Override
     public void onDoubleClick(Item item) {
         if (item != null) {
