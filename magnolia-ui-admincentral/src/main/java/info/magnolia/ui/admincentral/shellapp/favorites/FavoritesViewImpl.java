@@ -45,7 +45,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.VerticalLayout;
 
@@ -56,7 +55,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
 
     private VerticalLayout layout = new VerticalLayout();
     private FavoritesView.Listener listener;
-    private FavoritesSection noGroup;
+    private FavoritesGroup noGroup;
     private Component favoriteForm;
     private FeedSection leftColumn;
     private FeedSection rightColumn;
@@ -88,7 +87,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         leftColumn = splitPanel.getLeftContainer();
         rightColumn = splitPanel.getRightContainer();
 
-        noGroup = new FavoritesSection();
+        noGroup = new FavoritesGroup();
         noGroup.addStyleName("no-group");
         leftColumn.addComponent(noGroup);
 
@@ -120,12 +119,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
                 final FavoritesEntry favEntry = new FavoritesEntry(favoriteAdapter, listener);
                 noGroup.addComponent(favEntry);
             } else {
-                FavoritesSection group = new FavoritesSection();
-                group.setCaption(favoriteAdapter.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue().toString());
-                for (JcrItemNodeAdapter fav : favoriteAdapter.getChildren().values()) {
-                    final FavoritesEntry favEntry = new FavoritesEntry(fav, listener);
-                    group.addComponent(favEntry);
-                }
+                FavoritesGroup group = new FavoritesGroup(favoriteAdapter, listener);
                 rightColumn.addComponent(group);
             }
         }
@@ -137,15 +131,4 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         favoriteForm = new FavoritesForm(favoriteSuggestion, groupSuggestion, availableGroups, listener, shell);
         layout.addComponent(favoriteForm);
     }
-
-    /**
-     * Favorite section.
-     */
-    private class FavoritesSection extends CssLayout {
-
-        public FavoritesSection() {
-            addStyleName("favorites-section");
-        }
-    }
-
 }

@@ -15,25 +15,34 @@
   background: transparent;
 }
 
-.v-caption-favorites-section {
-  color:#679600;
-  font-family:DINWebPro, Verdana, sans-serif;
-  font-size:18px;
-  border-top: 1px solid #E6E6E6;
-  padding-top: 5px;
-  padding-bottom: 5px;
-}
-
-.favorites-section {
+.favorites-group {
+	border-top: 1px solid #E6E6E6;
     border-bottom: 1px solid #E6E6E6;
     margin-bottom: 20px;
 }
-.favorites-entry:hover {
-	background-color: #E6E6E6;
+
+.favorites-group input[type="text"] {
+  color:#679600;
+  font-family:DINWebPro, Verdana, sans-serif;
+  font-size:18px;
+  width: 329px;
+  text-overflow: ellipsis;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  cursor: pointer;
 }
 
-.favorites-section.no-group {
+.favorites-group input.v-textfield-readonly {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.favorites-group.no-group {
   border-bottom: none;
+}
+
+.favorites-group-title:hover, .favorites-entry:hover {
+  background-color: #E6E6E6;
 }
 
 .favorites-entry {
@@ -41,7 +50,7 @@
   	width:402px;
 }
 
-.favorites-entry.selected {
+.favorites-group-title.selected,.favorites-entry.selected {
 	color: white;
 	background-color: #666;
 }
@@ -59,7 +68,8 @@
 
 .favorites-entry input[type="text"] {
   color: #666;
-  font-size: 12px;
+  font-family: Verdana, sans-serif;
+  font-size: 13px;
   border:none !important;
   margin-top: 6px !important;
   margin-left: 3px;
@@ -85,15 +95,16 @@
 	cursor: pointer;
 }
 
-.favorites-entry button.favorite-action {
+.favorites-group button.favorite-action, .favorites-entry button.favorite-action {
 	border: none;
 	margin-right: 5px;
 	background-color: transparent;
     font-size: 20px;
     width: 25px;
     padding-top: 2px;
+    color: white;
 }
-.favorites-entry button.favorite-action:hover {
+.favorites-group button.favorite-action:hover, .favorites-entry button.favorite-action:hover {
 	color: #679600;
 }
 
@@ -148,6 +159,9 @@
 }
 .favorites-tabs .v-tabsheet-tabitem .v-caption {
 	color: #999;
+}
+.favorites-tabs .v-tabsheet-tabitem .v-caption :hover {
+	color: #679600;
 }
 .favorites-tabs .v-tabsheet-tabitem-selected .v-caption {
 	color: black;
