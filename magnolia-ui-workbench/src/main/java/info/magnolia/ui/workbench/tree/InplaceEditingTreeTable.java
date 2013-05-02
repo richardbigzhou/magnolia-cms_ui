@@ -75,6 +75,9 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
     private ColumnGenerator bypassedColumnGenerator;
 
+    /** This is a fallback when itemId was changed in the container (e.g. after renaming a node), then we get the new id assuming index hasn't changed. */
+    private int editingIndex = -1;
+
     private final List<ItemEditedEvent.Handler> listeners = new ArrayList<ItemEditedEvent.Handler>();
 
     public InplaceEditingTreeTable() {
@@ -114,6 +117,12 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
             }
             focus();
         }
+
+        // try to update itemId if it was changed
+        if (itemId == editingItemId && getItem(itemId) == null && editingIndex != -1) {
+            itemId = getIdByIndex(editingIndex);
+        }
+        editingIndex = -1;
 
         this.editingItemId = itemId;
         this.editingPropertyId = propertyId;
@@ -193,6 +202,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
     }
 
     private void fireItemEditedEvent(Item item) {
+        editingIndex = indexOfId(editingItemId);
         if (item != null) {
             ItemEditedEvent event = new ItemEditedEvent(item);
             for (ItemEditedEvent.Handler listener : listeners) {
