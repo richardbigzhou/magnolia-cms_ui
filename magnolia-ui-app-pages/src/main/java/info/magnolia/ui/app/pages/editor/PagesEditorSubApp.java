@@ -270,7 +270,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         this.parameters.setPlatformType(targetPreviewPlatform);
         try {
             Node node = MgnlContext.getJCRSession(workspace).getNode(path);
-            String url = createLocalizedUrl(node, currentLocale);
+            String url = i18NAuthoringSupport.createI18NURI(node, currentLocale);
             if (parameters.isPreview()) {
                 StringBuffer sb = new StringBuffer(url);
                 LinkUtil.addParameter(sb, "mgnlIntercept", "PREVIEW");
@@ -350,10 +350,6 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                 updateActions();
             }
         });
-    }
-
-    private String createLocalizedUrl(Node node, Locale locale) {
-        return i18NAuthoringSupport.createI18NURI(node, locale);
     }
 
     @Override
