@@ -132,6 +132,9 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
             return  true;
 
         // Must have _any_ of the node types if any are specified, otherwise its available by default
+        if (restrictions.getNodeTypes().isEmpty())
+            return true;
+
         for (String nodeType : restrictions.getNodeTypes()) {
             try {
                 if (NodeUtil.isNodeType((Node)item, nodeType))
@@ -141,6 +144,6 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
             }
         }
 
-        return true;
+        return false;
     }
 }
