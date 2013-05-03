@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.editor.pagebar;
 
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
 
 import java.util.Locale;
 
@@ -56,8 +57,6 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
 
     private Label pageNameLabel = new Label();
 
-    private Label settingsStatus = new Label();
-
     private AbstractSelect languageSelector;
 
     private AbstractSelect platformSelector = new ComboBox();
@@ -76,19 +75,18 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
 
     private void construct() {
         root.addStyleName("pagebar");
-        platformSelector.addItem("Desktop");
-        platformSelector.addItem("Mobile");
-        platformSelector.addItem("Tablet");
+        for (PlatformType type : PlatformType.values()) {
+            platformSelector.addItem(type);
+        }
         platformSelector.setNullSelectionAllowed(false);
-
+        platformSelector.setImmediate(true);
         platformSelector.setSizeUndefined();
         platformSelector.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
                 if (listener != null) {
-                    listener.platformSelected(String.valueOf(event.getProperty().getValue()));
+                    listener.platformSelected((PlatformType)event.getProperty().getValue());
                 }
-                updateStatusLabel();
             }
         });
 
@@ -102,33 +100,19 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
                     if (listener != null) {
                         listener.languageSelected((Locale) event.getProperty().getValue());
                     }
-                    updateStatusLabel();
                 }
             });
         }
 
-        this.platformSelector.setValue("Desktop");
-        this.platformSelector.setEnabled(false);
+        this.platformSelector.setValue(PlatformType.DESKTOP);
         this.pageNameLabel.setSizeUndefined();
         this.pageNameLabel.addStyleName("title");
-
-        this.settingsStatus.addStyleName("status");
-        settingsStatus.setSizeUndefined();
 
         root.addComponent(pageNameLabel);
         if (languageSelector != null) {
             root.addComponent(languageSelector);
         }
         root.addComponent(platformSelector);
-        root.addComponent(settingsStatus);
-    }
-
-    private void updateStatusLabel() {
-        String value = platformSelector.getValue() + " - ";
-        if (languageSelector != null) {
-            value += languageSelector.getValue();
-        }
-        settingsStatus.setValue(value);
     }
 
     @Override
@@ -150,13 +134,7 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
 
     @Override
     public void togglePreviewMode(boolean isPreview) {
-        if (languageSelector != null) {
-            languageSelector.setVisible(!isPreview);
-        }
-        platformSelector.setVisible(!isPreview);
-
-        settingsStatus.setVisible(isPreview);
-
+        platformSelector.setVisible(isPreview);
         if (isPreview) {
             root.addStyleName("preview");
         } else {

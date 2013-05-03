@@ -37,10 +37,16 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.link.LinkUtil;
 import info.magnolia.rendering.engine.RenderException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
@@ -52,12 +58,8 @@ import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
-import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.action.ActionExecutor;
-import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
@@ -103,6 +105,9 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private final AppContext appContext;
 
     private PageEditorParameters parameters;
+
+    private PlatformType targetPreviewPlatform = PlatformType.DESKTOP;
+    private Locale currentLocale;
     private String caption;
 
     @Inject
@@ -119,7 +124,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         this.editorDefinition = ((DetailSubAppDescriptor) subAppContext.getSubAppDescriptor()).getEditor();
         this.workspace = editorDefinition.getWorkspace();
         this.appContext = subAppContext.getAppContext();
-
+        this.currentLocale = i18nContentSupport.getLocale();
         view.setListener(this);
         bindHandlers();
     }
@@ -247,10 +252,14 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     private void goToLocation(DetailLocation location) {
         if (isLocationChanged(location)) {
-            setPageEditorParameters(location);
-            hideAllSections();
-            pageEditorPresenter.loadPageEditor(parameters);
+            doGoToLocation(location);
         }
+    }
+
+    private void doGoToLocation(DetailLocation location) {
+        setPageEditorParameters(location);
+        hideAllSections();
+        pageEditorPresenter.loadPageEditor(parameters);
     }
 
     private void setPageEditorParameters(DetailLocation location) {
@@ -258,12 +267,19 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         String path = location.getNodePath();
         boolean isPreview = DetailView.ViewType.VIEW.getText().equals(action.getText());
         this.parameters = new PageEditorParameters(MgnlContext.getContextPath(), path, isPreview);
+        this.parameters.setPlatformType(targetPreviewPlatform);
         try {
             Node node = MgnlContext.getJCRSession(workspace).getNode(path);
-            String uri = i18NAuthoringSupport.createI18NURI(node, new Locale("en"));
-            this.parameters.setUrl(uri);
+            String url = createLocalizedUrl(node, currentLocale);
+            if (parameters.isPreview()) {
+                StringBuffer sb = new StringBuffer(url);
+                LinkUtil.addParameter(sb, "mgnlIntercept", "PREVIEW");
+                LinkUtil.addParameter(sb, "mgnlChannel", targetPreviewPlatform.getId());
+                url = sb.toString();
+            }
+            this.parameters.setUrl(url);
             this.caption = getPageTitle(path);
-            pageBarView.setPageName(getPageTitle(path) + "-" + path);
+            pageBarView.setPageName(getPageTitle(path) + " - " + path);
             pageBarView.togglePreviewMode(isPreview);
         } catch (RepositoryException e) {
             log.error(e.getMessage(), e);
@@ -318,7 +334,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                     if (parameters.isPreview()) {
                         actionbarPresenter.showSection("pagePreviewActions");
                     } else {
-                    actionbarPresenter.showSection("pageActions");
+                        actionbarPresenter.showSection("pageActions");
                     }
                 }
                 else if (element instanceof AreaElement) {
@@ -334,6 +350,10 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                 updateActions();
             }
         });
+    }
+
+    private String createLocalizedUrl(Node node, Locale locale) {
+        return i18NAuthoringSupport.createI18NURI(node, locale);
     }
 
     @Override
@@ -398,19 +418,13 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     @Override
     public void languageSelected(Locale locale) {
-        try {
-            Node node = MgnlContext.getJCRSession(workspace).getNode(parameters.getNodePath());
-            String uri = i18NAuthoringSupport.createI18NURI(node, locale);
-            this.parameters.setUrl(uri);
-            this.pageEditorPresenter.loadPageEditor(parameters);
-        } catch (RepositoryException e) {
-            log.error(e.getMessage(), e);
-        }
+        this.currentLocale = locale;
+        doGoToLocation(getCurrentLocation());
     }
 
     @Override
-    public void platformSelected(String platformId) {
-        parameters.setPlatformId(platformId);
-        pageEditorPresenter.loadPageEditor(parameters);
+    public void platformSelected(PlatformType platformType) {
+        this.targetPreviewPlatform = platformType;
+        doGoToLocation(getCurrentLocation());
     }
 }

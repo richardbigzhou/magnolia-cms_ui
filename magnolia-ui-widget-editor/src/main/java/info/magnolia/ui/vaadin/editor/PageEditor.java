@@ -46,14 +46,11 @@ import java.util.Map;
 
 import com.google.gson.Gson;
 import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.Component;
 
 /**
  * PageEditor widget server side implementation.
  */
-public class PageEditor extends AbstractComponent implements PageEditorView {
-
-    private PageEditorView.Listener listener;
+public class PageEditor extends AbstractComponent {
 
     private String PAGE_ELEMENT = "cms:page";
 
@@ -66,15 +63,9 @@ public class PageEditor extends AbstractComponent implements PageEditorView {
         setImmediate(true);
     }
 
-    @Override
-    public void setListener(PageEditorView.Listener listener) {
-        this.listener = listener;
-    }
-
     /**
      * Load the page editor with the parameters sent to client by state.
      */
-    @Override
     public void load(PageEditorParameters parameters) {
         getState().parameters = parameters;
     }
@@ -82,48 +73,8 @@ public class PageEditor extends AbstractComponent implements PageEditorView {
     /**
      * Silently update the parameters in the state.
      */
-    @Override
     public void update(PageEditorParameters parameters) {
         getState(false).parameters = parameters;
-    }
-
-    @Override
-    public void init() {
-        registerRpc(new PageEditorServerRpc() {
-
-            @Override
-            public void sortComponent(String workspace, String parentPath, String sourcePath, String targetPath, String order) {
-                listener.sortComponent(workspace, parentPath, sourcePath, targetPath, order);
-            }
-
-            @Override
-            public void selectElement(String type, Map<String, String> attributes) {
-                AbstractElement element = resolveElement(type, attributes);
-                listener.selectElement(element);
-            }
-
-            @Override
-            public void newComponent(String workspace, String eventType, String availableComponents) {
-                listener.newComponent(workspace, eventType, availableComponents);
-            }
-
-            @Override
-            public void newArea(String workspace, String nodeType, String path) {
-                listener.newArea(workspace, nodeType, path);
-            }
-
-            @Override
-            public void editComponent(String workspace, String eventType, String dialog) {
-                listener.editComponent(workspace, eventType, dialog);
-            }
-
-            @Override
-            public void deleteComponent(String workspace, String path) {
-                listener.deleteComponent(workspace, path);
-
-            }
-        });
-
     }
 
     @Override
@@ -136,7 +87,7 @@ public class PageEditor extends AbstractComponent implements PageEditorView {
         return (PageEditorState) super.getState(markAsDirty);
     }
 
-    private AbstractElement resolveElement(String type, Map<String, String> attributes) {
+    public AbstractElement resolveElement(String type, Map<String, String> attributes) {
         AbstractElement element = null;
         Gson gson = new Gson();
         if (type.equals(PAGE_ELEMENT)) {
@@ -149,13 +100,11 @@ public class PageEditor extends AbstractComponent implements PageEditorView {
         return element;
     }
 
-    @Override
     public void refresh() {
         getRpcProxy(PageEditorClientRpc.class).refresh();
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        return this;
+    public void setServerRpc(PageEditorServerRpc rpc) {
+        registerRpc(rpc);
     }
 }
