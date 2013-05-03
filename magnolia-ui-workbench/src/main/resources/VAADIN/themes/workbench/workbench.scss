@@ -17,12 +17,13 @@
     .view-modes .v-nativebutton {
       font-style: normal;
       font-size: 24px;
-      color: $c52;
       line-height: 1;
       border-left: 1px solid $c60;
       color: $c12;
       line-height: 1;
-      border-left: 1px solid $c14;
+      border-left: 1px solid $c13;
+      color: $c11;
+      line-height: 1;
 
       .v-nativebutton-caption {
         text-decoration: none;
@@ -74,7 +75,11 @@
 
       &.v-textfield-prompt {
         background-color: $c16;
+<<<<<<< HEAD
         color: $c12;
+=======
+        color: $c11;
+>>>>>>> b15535c... MGNLUI-1226 Stage 3 Switch to the new color definitions & fix a first batch of color bugs.
       }
     }
 
