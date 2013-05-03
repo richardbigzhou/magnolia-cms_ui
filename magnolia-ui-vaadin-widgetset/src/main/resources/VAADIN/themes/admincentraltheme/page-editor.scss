@@ -45,4 +45,76 @@
     height: 12px;
   }
 
+  .preview.tabletLandscape {
+    background: url(img/preview/mobile/tablet/landscape.png) no-repeat !important;
+    width: 1300px !important;
+    height: 1025px !important;
+  }
+
+  .preview.tabletLandscape .content {
+    position: absolute !important;
+    top: 211px !important;
+    left: 128px !important;
+    width: 1024px !important;
+    height: 672px !important;
+  }
+
+  .preview.tabletPortrait {
+    background: url(img/preview/mobile/tablet/portrait.png) no-repeat !important;
+    width: 1020px !important;
+    height: 1300px !important;
+  }
+
+  .preview.tabletPortrait .content {
+    position: absolute !important;
+    top: 224px !important;
+    left: 118px !important;
+    width: 768px !important;
+    height: 928px !important;
+  }
+
+  .preview.smartphoneLandscape {
+    background: url(img/preview/mobile/smartphone/landscape.png) no-repeat !important;
+    width: 752px !important;
+    height: 461px !important;
+  }
+
+  .preview.smartphoneLandscape .content {
+    position: absolute !important;
+    top: 112px !important;
+    left: 130px !important;
+    width: 480px !important;
+    height: 210px !important;
+  }
+
+  .preview.smartphonePortrait {
+    background: url(img/preview/mobile/smartphone/portrait.png) no-repeat !important;
+    width: 393px !important;
+    height: 756px !important;
+  }
+
+  .preview.smartphonePortrait .content {
+    position: absolute !important;
+    top: 213px !important;
+    left: 32px !important;
+    width: 320px !important;
+    height: 356px !important;
+  }
+
+  .preview iframe {
+    border: none !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: center no-repeat url(img/preview/mobile/loading.gif) !important;
+  }
+
+  .preview {
+    margin: auto;
+    margin-top: 20px;
+    position: relative;
+  }
+
+  .pageEditorView {
+    overflow: auto;
+  }
 }
