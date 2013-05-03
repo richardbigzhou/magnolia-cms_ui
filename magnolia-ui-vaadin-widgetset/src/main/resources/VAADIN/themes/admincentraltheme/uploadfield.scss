@@ -18,15 +18,15 @@
 }
 
 .upload-image-field  .v-ddwrapper.v-ddwrapper-over, .in-progress {
-  background-color: #C1D8DF !important;
-  border: 1px solid #4B8E9E !important;
+  background-color: $c24 !important;
+  border: 1px solid $c20 !important;
 }
 
 .upload {
-  background-color: #E6E6E6;
+  background-color: $c15;
   height: 118px !important;
   width: 523px !important;
-  border: 1px solid #999;
+  border: 1px solid $c12;
   border-radius: 0px;
   -webkit-border-radius: 0px;
   -moz-border-radius: 0px;
@@ -55,7 +55,7 @@
 }
 
 .file-details .key {
-  color: #666;
+  color: $c10;
   margin-right: 12px;
   text-align: right;
   width: 50px;
@@ -81,7 +81,7 @@
   position: absolute;
   left: 20px;
   top:20px;
-    background-color: #dddddd;
+    background-color: $c14;
 }
 
 
@@ -117,7 +117,7 @@
   position: absolute;
   top: 46px;
   left: 210px;
-  color: #999
+  color: $c12
 }
 
 .upload-text em {
@@ -143,7 +143,7 @@
 }
 
 .uploading-progress-indicator  .v-progressindicator-wrapper .v-progressindicator-indicator {
-    background: #666;
+    background: $c10;
  }
 
 .uploading-progress-indicator .uploading-file-progress {

@@ -57,7 +57,7 @@
 
   /*AdminCentral module styles */
   button.btn-dialog-selectCallBack {
-  	background: none repeat scroll 0px 0px #689600;
+  	background: none repeat scroll 0px 0px $c40;
   	margin-left:10px;
   	float: right;
   }
@@ -118,10 +118,10 @@
   }
 
   .v-select-twincol-buttons .v-button {
-       background: none repeat scroll 0px 0px #666666 ! important;
+       background: none repeat scroll 0px 0px $c10 ! important;
        border-radius: 0px 0px 0px 0px ! important;
        border: medium none;
-       color: #FFFFFF;
+       color: $c80;
        cursor: pointer;
        font-family: DINWebPro;
        font-size: 12px;
@@ -136,19 +136,19 @@
   }
   /*a bit hackish -  right caption is positioned absolutely whereas left caption is floating left */
   .v-select-twincol-caption-right {
-      color: #666;
+      color: $c10;
       left: 450px;
       position: absolute;
       width: 200px !important;
   }
 
   .v-select-twincol-caption-left {
-      color: #666;
+      color: $c10;
       width: 200px !important;
   }
 
   input.v-textfield-readonly, textarea.v-textarea-readonly {
-      background-color: #e6e6e6 !important;
+      background-color: $c15 !important;
   }
 
   .cke_contents {
@@ -158,7 +158,7 @@
 
   /*Due to implementation reasons this has to be here. For all other styles of thumbnail layout - see thumbnail.css file.*/
   .thumbnail {
-  	border: 1px solid #F0F0F0;
+  	border: 1px solid $c16;
   	margin: 3px;
   	padding: 5px;
   	cursor:pointer;
