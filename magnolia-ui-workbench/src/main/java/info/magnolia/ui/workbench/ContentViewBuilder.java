@@ -34,6 +34,7 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 /**
@@ -41,5 +42,5 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
  */
 public interface ContentViewBuilder {
 
-    ContentView build(WorkbenchDefinition workbenchDefinition, ImageProviderDefinition imageProviderDefinition, ContentViewDefinition viewDefinition);
+    ContentView build(WorkbenchDefinition workbenchDefinition, ImageProviderDefinition imageProviderDefinition, ContentPresenterDefinition viewDefinition);
 }

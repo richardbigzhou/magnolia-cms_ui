@@ -31,21 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.list;
+package info.magnolia.ui.workbench.thumbnail;
 
 import info.magnolia.ui.workbench.ContentView.ViewType;
-import info.magnolia.ui.workbench.ContentViewDefinition;
+import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 
 /**
- * Definition of a {@link info.magnolia.ui.workbench.ContentView} of type List.
+ * Default configured definition for a content view presenting thumbnails.
  */
-public class ListContentViewDefinition extends ContentViewDefinition {
+public class ThumbnailPresenterDefinition extends ConfiguredContentPresenterDefinition {
 
-    public ListContentViewDefinition() {
-        setImplementationClass(ListViewImpl.class);
-        setViewType(ViewType.LIST);
+    public ThumbnailPresenterDefinition() {
+        setImplementationClass(LazyThumbnailViewImpl.class);
+        setViewType(ViewType.THUMBNAIL);
         setActive(false);
-        setIcon("icon-view-list");
+        setIcon("icon-view-thumbnails");
     }
 
 }

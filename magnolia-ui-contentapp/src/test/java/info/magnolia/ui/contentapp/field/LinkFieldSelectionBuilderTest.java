@@ -50,7 +50,7 @@ import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
-import info.magnolia.ui.workbench.tree.TreeContentViewDefinition;
+import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 import javax.jcr.RepositoryException;
 
@@ -83,7 +83,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
             public Void answer(InvocationOnMock invocation) throws Throwable {
                 Object[] args = invocation.getArguments();
                 WorkbenchView workbenchView = (WorkbenchView) args[0];
-                workbenchView.addContentView(ViewType.TREE, mock(ContentView.class), new TreeContentViewDefinition());
+                workbenchView.addContentView(ViewType.TREE, mock(ContentView.class), new TreePresenterDefinition());
                 return null;
             }
         }).when(presenter).startChooseDialog(any(WorkbenchView.class));

@@ -31,26 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench;
+package info.magnolia.ui.workbench.definition;
 
+import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 
 /**
- * Definition of a {@link ContentView}.
+ * Default configured implementation for {@link ContentPresenterDefinition}.
  */
-public class ContentViewDefinition {
+public class ConfiguredContentPresenterDefinition implements ContentPresenterDefinition {
 
     private ViewType viewType;
 
     private Class<? extends ContentView> implementationClass;
 
     private String icon;
-    
+
     private boolean active;
 
-    /**
-     * @return the name.
-     */
+    @Override
     public ViewType getViewType() {
         return viewType;
     }
@@ -59,9 +58,7 @@ public class ContentViewDefinition {
         this.viewType = viewType;
     }
 
-    /**
-     * @return the implementationClass.
-     */
+    @Override
     public Class<? extends ContentView> getImplementationClass() {
         return implementationClass;
     }
@@ -70,32 +67,20 @@ public class ContentViewDefinition {
         this.implementationClass = implementationClass;
     }
 
-    /**
-     * @return the icon
-     */
+    @Override
     public String getIcon() {
         return icon;
     }
-    
-    /**
-     * @param icon
-     *            the icon to set
-     */
+
     public void setIcon(String icon) {
         this.icon = icon;
     }
-    
-    /**
-     * @return the active
-     */
+
+    @Override
     public boolean isActive() {
         return active;
     }
-    
-    /**
-     * @param active
-     *            the active to set
-     */
+
     public void setActive(boolean active) {
         this.active = active;
     }

@@ -35,6 +35,7 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.statusbar.StatusBarView;
+import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -128,7 +129,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
     }
 
     @Override
-    public void addContentView(ContentView.ViewType viewType, ContentView view, ContentViewDefinition contentViewDefintion) {
+    public void addContentView(ContentView.ViewType viewType, ContentView view, ContentPresenterDefinition contentViewDefintion) {
         contentViews.put(viewType, view);
 
         if(viewType.equals(ContentView.ViewType.SEARCH)) {

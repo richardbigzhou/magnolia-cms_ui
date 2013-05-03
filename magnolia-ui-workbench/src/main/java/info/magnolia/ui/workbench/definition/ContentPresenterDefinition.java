@@ -31,22 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.thumbnail;
+package info.magnolia.ui.workbench.definition;
 
+import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.ContentView.ViewType;
-import info.magnolia.ui.workbench.ContentViewDefinition;
 
 /**
- * Definition of a {@link info.magnolia.ui.workbench.ContentView} of type
- * Thumbnail.
+ * Definition for a workbench generic content view.
  */
-public class ThumbnailContentViewDefinition extends ContentViewDefinition {
+public interface ContentPresenterDefinition {
 
-    public ThumbnailContentViewDefinition() {
-        setImplementationClass(LazyThumbnailViewImpl.class);
-        setViewType(ViewType.THUMBNAIL);
-        setActive(false);
-        setIcon("icon-view-thumbnails");
-    }
+    ViewType getViewType();
 
+    Class<? extends ContentView> getImplementationClass();
+
+    String getIcon();
+
+    boolean isActive();
 }

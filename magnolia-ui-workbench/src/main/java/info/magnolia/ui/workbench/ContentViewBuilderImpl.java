@@ -35,6 +35,7 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.io.Serializable;
@@ -54,7 +55,7 @@ public class ContentViewBuilderImpl implements ContentViewBuilder, Serializable 
     }
 
     @Override
-    public ContentView build(final WorkbenchDefinition workbenchDefinition, ImageProviderDefinition imageProviderDefinition, final ContentViewDefinition viewDefinition) {
+    public ContentView build(final WorkbenchDefinition workbenchDefinition, ImageProviderDefinition imageProviderDefinition, final ContentPresenterDefinition viewDefinition) {
 
         Class<? extends ContentView> contentViewClass = viewDefinition.getImplementationClass();
         if (contentViewClass != null) {

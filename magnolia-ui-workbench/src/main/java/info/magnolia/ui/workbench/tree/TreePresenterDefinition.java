@@ -34,14 +34,14 @@
 package info.magnolia.ui.workbench.tree;
 
 import info.magnolia.ui.workbench.ContentView.ViewType;
-import info.magnolia.ui.workbench.ContentViewDefinition;
+import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 
 /**
- * Definition of a {@link info.magnolia.ui.workbench.ContentView} of type Tree.
+ * Default configured definition for a content view presenting a tree.
  */
-public class TreeContentViewDefinition extends ContentViewDefinition {
+public class TreePresenterDefinition extends ConfiguredContentPresenterDefinition {
 
-    public TreeContentViewDefinition() {
+    public TreePresenterDefinition() {
         setImplementationClass(TreeViewImpl.class);
         setViewType(ViewType.TREE);
         setActive(true);

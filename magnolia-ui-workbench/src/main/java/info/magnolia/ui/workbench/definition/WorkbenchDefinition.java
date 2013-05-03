@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.workbench.definition;
 
-import info.magnolia.ui.workbench.ContentViewDefinition;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
@@ -92,6 +91,6 @@ public interface WorkbenchDefinition extends Serializable {
     /**
      * @return the list of configured views.<br>
      */
-    List<ContentViewDefinition> getContentViews();
+    List<ContentPresenterDefinition> getContentViews();
 
 }

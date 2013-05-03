@@ -31,52 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench;
+package info.magnolia.ui.workbench.search;
 
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.statusbar.StatusBarView;
-import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
+import info.magnolia.ui.workbench.ContentView.ViewType;
+import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 
 /**
- * WorkbenchView.
+ * Default configured definition for a content view presenting search results.
  */
-public interface WorkbenchView extends View {
-    /**
-     * Listener interface for events concerning the workbench.
-     */
-    interface Listener {
+public class SearchPresenterDefinition extends ConfiguredContentPresenterDefinition {
 
-        void onSearch(String searchExpression);
-
-        void onViewTypeChanged(ContentView.ViewType viewType);
+    public SearchPresenterDefinition() {
+        setImplementationClass(SearchViewImpl.class);
+        setViewType(ViewType.SEARCH);
+        setActive(false);
+        setIcon("icon-view-list");
     }
-
-    void setListener(Listener listener);
-
-    /**
-     * Updates the search box with given search query.
-     */
-    void setSearchQuery(String query);
-
-    /**
-     * Refreshes the current view.
-     */
-    void refresh();
-
-    /**
-     * Use this method to add sub views hosted by this view.
-     */
-    void addContentView(ContentView.ViewType type, ContentView view, ContentPresenterDefinition contentViewDefintion);
-
-    void setViewType(ContentView.ViewType type);
-
-    /**
-     * Use this method to add a status bar to this sub app view.
-     */
-    void setStatusBarView(StatusBarView statusBar);
-
-    void selectPath(String path);
-
-    ContentView getSelectedView();
 
 }

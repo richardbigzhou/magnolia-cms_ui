@@ -36,6 +36,7 @@ package info.magnolia.ui.workbench;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
@@ -123,7 +124,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     }
 
     public ContentView.ViewType getDefaultViewType() {
-        for (ContentViewDefinition definition : this.workbenchDefinition.getContentViews()) {
+        for (ContentPresenterDefinition definition : this.workbenchDefinition.getContentViews()) {
             if (definition.isActive()) {
                 return definition.getViewType();
             }

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.workbench.config;
 
-import info.magnolia.ui.workbench.ContentViewDefinition;
+import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
@@ -105,8 +105,8 @@ public class WorkbenchBuilder {
         return this;
     }
     
-    public WorkbenchBuilder contentViews(ContentViewDefinition... views) {
-        for (ContentViewDefinition view : views) {
+    public WorkbenchBuilder contentViews(ContentPresenterDefinition... views) {
+        for (ContentPresenterDefinition view : views) {
             definition.addContentView(view);
         }
         return this;

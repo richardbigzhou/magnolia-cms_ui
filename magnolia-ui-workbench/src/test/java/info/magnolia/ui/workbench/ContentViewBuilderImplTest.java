@@ -44,13 +44,13 @@ import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.workbench.column.definition.LabelColumnDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
-import info.magnolia.ui.workbench.list.ListContentViewDefinition;
+import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.list.ListView;
-import info.magnolia.ui.workbench.search.SearchContentViewDefinition;
+import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
 import info.magnolia.ui.workbench.search.SearchView;
-import info.magnolia.ui.workbench.thumbnail.ThumbnailContentViewDefinition;
+import info.magnolia.ui.workbench.thumbnail.ThumbnailPresenterDefinition;
 import info.magnolia.ui.workbench.thumbnail.ThumbnailView;
-import info.magnolia.ui.workbench.tree.TreeContentViewDefinition;
+import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreeView;
 
 import org.junit.After;
@@ -96,7 +96,7 @@ public class ContentViewBuilderImplTest {
 
         // WHEN
         final ContentViewBuilderImpl builder = new ContentViewBuilderImpl(componentProvider);
-        final ContentView result = builder.build(workbenchDef, imageProvider, new ListContentViewDefinition());
+        final ContentView result = builder.build(workbenchDef, imageProvider, new ListPresenterDefinition());
 
         // THEN
         assertTrue(result instanceof ListView);
@@ -109,7 +109,7 @@ public class ContentViewBuilderImplTest {
 
         // WHEN
         final ContentViewBuilderImpl builder = new ContentViewBuilderImpl(componentProvider);
-        final ContentView result = builder.build(workbenchDef, imageProvider, new TreeContentViewDefinition());
+        final ContentView result = builder.build(workbenchDef, imageProvider, new TreePresenterDefinition());
 
         // THEN
         assertTrue(result instanceof TreeView);
@@ -122,7 +122,7 @@ public class ContentViewBuilderImplTest {
 
         // WHEN
         final ContentViewBuilderImpl builder = new ContentViewBuilderImpl(componentProvider);
-        final ContentView result = builder.build(workbenchDef, imageProvider, new ThumbnailContentViewDefinition());
+        final ContentView result = builder.build(workbenchDef, imageProvider, new ThumbnailPresenterDefinition());
 
         // THEN
         assertTrue(result instanceof ThumbnailView);
@@ -135,7 +135,7 @@ public class ContentViewBuilderImplTest {
 
         // WHEN
         final ContentViewBuilderImpl builder = new ContentViewBuilderImpl(componentProvider);
-        final ContentView result = builder.build(workbenchDef, imageProvider, new SearchContentViewDefinition());
+        final ContentView result = builder.build(workbenchDef, imageProvider, new SearchPresenterDefinition());
 
         // THEN
         assertTrue(result instanceof SearchView);

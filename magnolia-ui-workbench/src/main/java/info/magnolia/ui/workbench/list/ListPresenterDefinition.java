@@ -31,20 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.search;
+package info.magnolia.ui.workbench.list;
 
 import info.magnolia.ui.workbench.ContentView.ViewType;
-import info.magnolia.ui.workbench.ContentViewDefinition;
+import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 
 /**
- * Definition of a {@link info.magnolia.ui.workbench.ContentView} of type
- * Search.
+ * Default configured definition for a content view presenting a list.
  */
-public class SearchContentViewDefinition extends ContentViewDefinition {
+public class ListPresenterDefinition extends ConfiguredContentPresenterDefinition {
 
-    public SearchContentViewDefinition() {
-        setImplementationClass(SearchViewImpl.class);
-        setViewType(ViewType.SEARCH);
+    public ListPresenterDefinition() {
+        setImplementationClass(ListViewImpl.class);
+        setViewType(ViewType.LIST);
         setActive(false);
         setIcon("icon-view-list");
     }

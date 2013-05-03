@@ -38,6 +38,7 @@ import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
+import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
@@ -172,7 +173,7 @@ public class ContentPresenter implements ContentView.Listener {
             throw new IllegalStateException(workbenchDefinition.getName() + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
         }
 
-        for (final ContentViewDefinition contentViewDefinition : workbenchDefinition.getContentViews()) {
+        for (final ContentPresenterDefinition contentViewDefinition : workbenchDefinition.getContentViews()) {
             final ContentView contentView = contentViewBuilder.build(workbenchDefinition, imageProviderDefinition, contentViewDefinition);
             contentView.setListener(this);
             contentView.select(workbenchDefinition.getPath());
