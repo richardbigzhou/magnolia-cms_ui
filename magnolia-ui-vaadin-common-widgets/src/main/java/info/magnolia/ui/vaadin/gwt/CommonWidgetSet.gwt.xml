@@ -19,7 +19,6 @@
     <inherits name="org.vaadin.cssinject.Cssinject_addonWidgetset" />
 
     <stylesheet src="jcrop/jquery.Jcrop.css"/>
-    <stylesheet src="lightbox/lightbox.css"/>
 
 	<replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.MobileSafariTouchWidgetImplProxy">
 		<when-type-is class="com.googlecode.mgwt.ui.client.widget.touch.TouchWidgetImpl" />

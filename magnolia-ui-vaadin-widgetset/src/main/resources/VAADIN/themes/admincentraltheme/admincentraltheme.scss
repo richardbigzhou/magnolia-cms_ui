@@ -6,7 +6,6 @@
 @import "favorites.scss";
 @import "form.scss";
 @import "fonts.scss";
-@import "lightbox.scss";
 @import "media-editor.scss";
 @import "pulse.scss";
 @import "shell.scss";
@@ -28,7 +27,6 @@
   @include overlay;
   @include favorites;
   @include form;
-  @include lightbox;
   @include media-editor;
   @include pulse;
   @include tabsheet;
@@ -40,7 +38,7 @@
   @include smallapp;
   @include uploadfield;
   @include page-editor;
- 
+
   body{
       -webkit-user-select: none; /* Disable content selection on mobile safari */
       -webkit-tap-highlight-color: rgba(0,0,0,0); /* Disable grey box when you click on something */
