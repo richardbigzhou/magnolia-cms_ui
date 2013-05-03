@@ -11,7 +11,7 @@
     @include box-sizing(content-box);
     margin: 0;
     padding: 3px 3px 4px 6px !important;
-    border: 1px solid $c54;
+    border: 1px solid $c12;
     background-color: $c80;
     color: $c90;
     font-family: Verdana, sans-serif;
@@ -22,7 +22,7 @@
     &:focus, &.focus {
       margin: -1px;
       border-width: 2px;
-      border-color: $c90;
+      border-color: $c22;
     }
   }
 
@@ -31,7 +31,7 @@
   }
 
   input.v-textfield-readonly, textarea.v-textarea-readonly {
-    border: 1px solid $c64 !important;
+    border: 1px solid $c15 !important;
     margin: 0 !important;
   }
 

@@ -130,7 +130,7 @@ button.btn-dialog-help {
     color:black;
     padding-bottom:5px;
     border: solid 1px;
-    box-shadow: 7px 7px 10px $c11;
+    box-shadow: 7px 7px 10px $c10;
  }
 
 .light-dialog-panel .dialog-header {
@@ -189,7 +189,7 @@ content:"]";
 .light-dialog-panel .btn-dialog-default { float:right;}
 
 .light-dialog-panel.msginfo {                       border-color:   #A1ADAF;}
-.light-dialog-panel.msginfo .m-closebutton {        color:          $c75;
+.light-dialog-panel.msginfo .m-closebutton {        color:          $c20;
     &:hover,&:active {                              color:          #A1ADAF;}}
 .light-dialog-panel.msginfo .btn-dialog-default {   background:     $c75;}
 .light-dialog-panel.msginfo button {                background:     #A1ADAF;}
