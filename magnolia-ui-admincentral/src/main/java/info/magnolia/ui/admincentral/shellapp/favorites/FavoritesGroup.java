@@ -134,8 +134,11 @@ public class FavoritesGroup extends CssLayout {
         return editable;
     }
 
-    public void unselect() {
-        // this group is just a placeholder for no group fav entries, hence it has no title
+    /**
+     * Sets this group and all of its fav entries (if any) as unselected and non editable, that is at their initial state.
+     */
+    public void reset() {
+        // skip it if this group is a placeholder for no group fav entries, hence it has no title
         if (titleField != null) {
             setEditable(false);
             setSelected(false);

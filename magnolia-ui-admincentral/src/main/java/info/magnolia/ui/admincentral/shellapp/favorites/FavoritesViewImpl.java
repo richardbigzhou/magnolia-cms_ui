@@ -150,13 +150,13 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
             return;
         }
         favoriteForm.close();
-        noGroup.unselect();
+        noGroup.reset();
         Iterator<Component> components = rightColumn.getComponentIterator();
 
         while (components.hasNext()) {
             Component component = components.next();
             if (component instanceof FavoritesGroup) {
-                ((FavoritesGroup) component).unselect();
+                ((FavoritesGroup) component).reset();
             }
         }
     }
