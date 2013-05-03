@@ -37,10 +37,13 @@ import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
+import java.util.Iterator;
+
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;
@@ -63,6 +66,7 @@ public class FavoritesGroup extends CssLayout {
      * Creates an empty placeholder group.
      */
     public FavoritesGroup() {
+        addStyleName("no-group");
     }
 
     public FavoritesGroup(final JcrItemNodeAdapter favoritesGroup, final FavoritesView.Listener listener) {
@@ -73,7 +77,6 @@ public class FavoritesGroup extends CssLayout {
         for (JcrItemNodeAdapter fav : favoritesGroup.getChildren().values()) {
             final FavoritesEntry favEntry = new FavoritesEntry(fav, listener);
             addComponent(favEntry);
-
         }
     }
 
@@ -87,29 +90,31 @@ public class FavoritesGroup extends CssLayout {
 
     public void setEditable(boolean editable) {
         this.editable = editable;
-        titleField.setReadOnly(!editable);
-        String icon = "";
+        String icon = "icon-tick";
         if (editable) {
-            icon = "icon-tick";
             titleField.addStyleName("editable");
             titleField.focus();
+            titleField.selectAll();
         } else {
             icon = "icon-edit";
+            // discard pending changes
+            titleField.setValue(getTitleValue());
             titleField.removeStyleName("editable");
         }
+        titleField.setReadOnly(!editable);
         editButton.setCaption("<span class=\"" + icon + "\"></span>");
     }
 
     public void setSelected(boolean selected) {
         this.selected = selected;
-        titleField.setReadOnly(true);
-        editButton.setVisible(selected);
-        editButton.setCaption("<span class=\"icon-edit\"></span>");
         if (selected) {
             wrapper.addStyleName("selected");
         } else {
             wrapper.removeStyleName("selected");
         }
+        titleField.setReadOnly(true);
+        editButton.setVisible(selected);
+        editButton.setCaption("<span class=\"icon-edit\"></span>");
         removeButton.setVisible(selected);
     }
 
@@ -127,6 +132,23 @@ public class FavoritesGroup extends CssLayout {
      */
     public boolean isEditable() {
         return editable;
+    }
+
+    public void unselect() {
+        // this group is just a placeholder for no group fav entries, hence it has no title
+        if (titleField != null) {
+            setEditable(false);
+            setSelected(false);
+        }
+        Iterator<Component> components = getComponentIterator();
+        while (components.hasNext()) {
+            Component component = components.next();
+            if (component instanceof FavoritesEntry) {
+                FavoritesEntry fav = (FavoritesEntry) component;
+                fav.setEditable(false);
+                fav.setSelected(false);
+            }
+        }
     }
 
     private void construct(final JcrItemNodeAdapter favoritesGroup, final FavoritesView.Listener listener) {
@@ -154,11 +176,7 @@ public class FavoritesGroup extends CssLayout {
                     setEditable(true);
                     return;
                 }
-                boolean titleHasChanged = !getTitleValue().equals(titleField.getValue());
-                if (isEditable() && titleHasChanged) {
-                    listener.editGroup(getRelPath(), titleField.getValue());
-                }
-                setEditable(false);
+                doEditTitle(listener);
             }
         });
         editButton.setVisible(false);
@@ -192,5 +210,13 @@ public class FavoritesGroup extends CssLayout {
         });
 
         addComponent(wrapper);
+    }
+
+    private void doEditTitle(final FavoritesView.Listener listener) {
+        boolean titleHasChanged = !getTitleValue().equals(titleField.getValue());
+        if (isEditable() && titleHasChanged) {
+            listener.editGroup(getRelPath(), titleField.getValue());
+        }
+        setEditable(false);
     }
 }

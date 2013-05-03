@@ -40,10 +40,13 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed.FeedSection;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.inject.Inject;
 
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.VerticalLayout;
@@ -56,7 +59,7 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     private VerticalLayout layout = new VerticalLayout();
     private FavoritesView.Listener listener;
     private FavoritesGroup noGroup;
-    private Component favoriteForm;
+    private FavoritesForm favoriteForm;
     private FeedSection leftColumn;
     private FeedSection rightColumn;
     private Shell shell;
@@ -88,9 +91,16 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         rightColumn = splitPanel.getRightContainer();
 
         noGroup = new FavoritesGroup();
-        noGroup.addStyleName("no-group");
         leftColumn.addComponent(noGroup);
 
+        layout.addLayoutClickListener(new LayoutClickListener() {
+
+            @Override
+            public void layoutClick(LayoutClickEvent event) {
+                Component clickedComponent = event.getClickedComponent();
+                reset(clickedComponent);
+            }
+        });
         layout.addComponent(splitPanel);
         layout.setExpandRatio(splitPanel, 1f);
 
@@ -130,5 +140,24 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         }
         favoriteForm = new FavoritesForm(favoriteSuggestion, groupSuggestion, availableGroups, listener, shell);
         layout.addComponent(favoriteForm);
+    }
+
+    /**
+     * Clicking outside a group or favorite resets everything.
+     */
+    private void reset(Component clickedComponent) {
+        if (!(clickedComponent instanceof SplitFeed.FeedSection)) {
+            return;
+        }
+        favoriteForm.close();
+        noGroup.unselect();
+        Iterator<Component> components = rightColumn.getComponentIterator();
+
+        while (components.hasNext()) {
+            Component component = components.next();
+            if (component instanceof FavoritesGroup) {
+                ((FavoritesGroup) component).unselect();
+            }
+        }
     }
 }

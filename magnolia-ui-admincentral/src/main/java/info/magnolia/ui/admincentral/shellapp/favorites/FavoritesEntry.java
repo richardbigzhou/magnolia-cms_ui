@@ -100,6 +100,7 @@ public class FavoritesEntry extends CustomComponent {
         titleField = new TextField();
         titleField.setValue(title);
         titleField.setReadOnly(true);
+
         root.addComponent(titleField);
 
         editButton = new NativeButton();
@@ -114,11 +115,7 @@ public class FavoritesEntry extends CustomComponent {
                     setEditable(true);
                     return;
                 }
-                boolean titleHasChanged = !getTitleValue().equals(titleField.getValue());
-                if (isEditable() && titleHasChanged) {
-                    listener.editFavorite(getRelPath(), titleField.getValue());
-                }
-                setEditable(false);
+                doEditTitle(listener);
             }
         });
         editButton.setVisible(false);
@@ -142,7 +139,6 @@ public class FavoritesEntry extends CustomComponent {
 
             @Override
             public void layoutClick(LayoutClickEvent event) {
-
                 if (event.getClickedComponent() == titleField && !isEditable()) {
                     if (event.isDoubleClick()) {
                         // TODO fgrilli temporarily commented out as, besides making the text editable, it also goes to the saved location
@@ -152,6 +148,7 @@ public class FavoritesEntry extends CustomComponent {
                     }
                 } else if (event.getClickedComponent() == iconLabel) {
                     setSelected(!isSelected());
+                    setEditable(false);
                 }
             }
         });
@@ -181,29 +178,31 @@ public class FavoritesEntry extends CustomComponent {
 
     public void setEditable(boolean editable) {
         this.editable = editable;
-        titleField.setReadOnly(!editable);
-        String icon = "";
+        String icon = "icon-tick";
         if (editable) {
-            icon = "icon-tick";
             titleField.addStyleName("editable");
             titleField.focus();
+            titleField.selectAll();
         } else {
             icon = "icon-edit";
             titleField.removeStyleName("editable");
+            // pending changes are reverted
+            titleField.setValue(getTitleValue());
         }
+        titleField.setReadOnly(!editable);
         editButton.setCaption("<span class=\"" + icon + "\"></span>");
     }
 
     public void setSelected(boolean selected) {
         this.selected = selected;
-        titleField.setReadOnly(true);
-        editButton.setVisible(selected);
-        editButton.setCaption("<span class=\"icon-edit\"></span>");
         if (selected) {
             addStyleName("selected");
         } else {
             removeStyleName("selected");
         }
+        titleField.setReadOnly(true);
+        editButton.setVisible(selected);
+        editButton.setCaption("<span class=\"icon-edit\"></span>");
         removeButton.setVisible(selected);
     }
 
@@ -221,5 +220,13 @@ public class FavoritesEntry extends CustomComponent {
      */
     public boolean isEditable() {
         return editable;
+    }
+
+    private void doEditTitle(final FavoritesView.Listener listener) {
+        boolean titleHasChanged = !getTitleValue().equals(titleField.getValue());
+        if (isEditable() && titleHasChanged) {
+            listener.editFavorite(getRelPath(), titleField.getValue());
+        }
+        setEditable(false);
     }
 }

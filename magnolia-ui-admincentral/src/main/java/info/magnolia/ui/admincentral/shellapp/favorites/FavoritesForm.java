@@ -63,6 +63,7 @@ import com.vaadin.ui.VerticalLayout;
 public class FavoritesForm extends CustomComponent {
     private FavoritesView.Listener listener;
     private Shell shell;
+    private TabSheet tabsheet;
 
     public FavoritesForm(JcrNewNodeAdapter newFavorite, JcrNewNodeAdapter newGroup, Map<String, String> availableGroups, FavoritesView.Listener listener, Shell shell) {
         this.listener = listener;
@@ -72,7 +73,7 @@ public class FavoritesForm extends CustomComponent {
 
         final FavoriteForm favoriteFormEntry = new FavoriteForm(newFavorite, availableGroups);
         final FavoriteGroupForm favoriteGroupForm = new FavoriteGroupForm(newGroup);
-        final TabSheet tabsheet = new TabSheet();
+        tabsheet = new TabSheet();
         tabsheet.addStyleName("favorites-tabs");
         tabsheet.addTab(favoriteFormEntry, "Add a new favorite");
         tabsheet.addTab(favoriteGroupForm, "Add a new group");
@@ -102,6 +103,14 @@ public class FavoritesForm extends CustomComponent {
         favoriteForm.addComponent(header);
         favoriteForm.addComponent(tabsheet);
         setCompositionRoot(favoriteForm);
+    }
+
+    public void close() {
+        tabsheet.setVisible(false);
+    }
+
+    public void open() {
+        tabsheet.setVisible(true);
     }
 
     /**
@@ -153,7 +162,6 @@ public class FavoritesForm extends CustomComponent {
             });
             addButton.addStyleName("btn-dialog-commit");
 
-            // A button to commit the buffer
             buttons.addComponent(addButton);
 
             layout.addComponent(buttons);
