@@ -42,7 +42,7 @@ import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinitio
 public class ThumbnailPresenterDefinition extends ConfiguredContentPresenterDefinition {
 
     public ThumbnailPresenterDefinition() {
-        setImplementationClass(LazyThumbnailViewImpl.class);
+        setImplementationClass(ThumbnailPresenter.class);
         setViewType(ViewType.THUMBNAIL);
         setActive(false);
         setIcon("icon-view-thumbnails");

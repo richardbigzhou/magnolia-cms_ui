@@ -38,11 +38,9 @@ import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
-import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
-import info.magnolia.ui.workbench.tree.drop.DropConstraint;
-import info.magnolia.ui.workbench.tree.drop.TreeViewDropHandler;
+import info.magnolia.ui.workbench.list.ListViewImpl;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -56,8 +54,6 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Container;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.dd.DropHandler;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.TreeTable;
@@ -65,13 +61,11 @@ import com.vaadin.ui.TreeTable;
 /**
  * Vaadin UI component that displays a tree.
  */
-public class TreeViewImpl implements TreeView {
+public class TreeViewImpl extends ListViewImpl implements TreeView {
 
     private static final Logger log = LoggerFactory.getLogger(TreeViewImpl.class);
 
     private final TreeTable treeTable;
-
-    private final HierarchicalJcrContainer container;
 
     private ContentView.Listener listener;
 
@@ -84,20 +78,29 @@ public class TreeViewImpl implements TreeView {
      * @param componentProvider the component provider
      * @param container the container data source
      */
-    public TreeViewImpl(WorkbenchDefinition workbench, ComponentProvider componentProvider) {
-        this.container = new HierarchicalJcrContainer(workbench);
+    public TreeViewImpl() {
+        this(new MagnoliaTreeTable());
+    }
 
-        treeTable = buildTreeTable(container, workbench, componentProvider);
+    public TreeViewImpl(TreeTable tree) {
+        super(tree);
+        this.treeTable = tree;
+    }
+
+    private void init() {
+        // this.container = new HierarchicalJcrContainer(workbench);
+
+        // treeTable = buildTreeTable(container, workbench, componentProvider);
 
         // Set Drop Handler
-        Class<? extends DropConstraint> dropContainerClass = workbench.getDropConstraintClass();
-        if (dropContainerClass != null) {
-            DropConstraint constraint = componentProvider.newInstance(dropContainerClass);
-            DropHandler dropHandler = new TreeViewDropHandler(treeTable, constraint);
-            treeTable.setDropHandler(dropHandler);
-            treeTable.setDragMode(TableDragMode.ROW);
-            log.debug("Set following drop container {} to the treeTable", dropContainerClass.getName());
-        }
+        // Class<? extends DropConstraint> dropContainerClass = workbench.getDropConstraintClass();
+        // if (dropContainerClass != null) {
+        // DropConstraint constraint = componentProvider.newInstance(dropContainerClass);
+        // DropHandler dropHandler = new TreeViewDropHandler(treeTable, constraint);
+        // treeTable.setDropHandler(dropHandler);
+        // treeTable.setDragMode(TableDragMode.ROW);
+        // log.debug("Set following drop container {} to the treeTable", dropContainerClass.getName());
+        // }
 
         treeTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
 
@@ -107,7 +110,7 @@ public class TreeViewImpl implements TreeView {
             public void itemClick(ItemClickEvent event) {
                 Object currentSelection = event.getItemId();
                 if (event.isDoubleClick()) {
-                    presenterOnDoubleClick(String.valueOf(event.getItemId()));
+                    // presenterOnDoubleClick(String.valueOf(event.getItemId()));
                 } else {
                     // toggle will deselect
                     if (previousSelection == currentSelection) {
@@ -128,14 +131,14 @@ public class TreeViewImpl implements TreeView {
                 }
                 final Object value = event.getProperty().getValue();
                 if (value instanceof String) {
-                    presenterOnItemSelection(String.valueOf(value));
+                    // presenterOnItemSelection(String.valueOf(value));
                 } else if (value instanceof Set) {
                     final Set<?> set = new HashSet<Object>((Set<?>) value);
                     set.removeAll(defaultValue);
                     if (set.size() == 1) {
-                        presenterOnItemSelection(String.valueOf(set.iterator().next()));
+                        // presenterOnItemSelection(String.valueOf(set.iterator().next()));
                     } else if (set.size() == 0) {
-                        presenterOnItemSelection(null);
+                        // presenterOnItemSelection(null);
                         treeTable.setValue(null);
                     }
                 }
@@ -259,36 +262,8 @@ public class TreeViewImpl implements TreeView {
     }
 
     @Override
-    public void refresh() {
-        container.refresh();
-        container.fireItemSetChange();
-    }
-
-    @Override
-    public AbstractJcrContainer getContainer() {
-        return container;
-    }
-
-    @Override
     public ViewType getViewType() {
         return ViewType.TREE;
-    }
-
-    @Override
-    public void setListener(ContentView.Listener listener) {
-        this.listener = listener;
-    }
-
-    private void presenterOnItemSelection(String id) {
-        if (listener != null) {
-            listener.onItemSelection(treeTable.getItem(id));
-        }
-    }
-
-    private void presenterOnDoubleClick(String id) {
-        if (listener != null) {
-            listener.onDoubleClick(treeTable.getItem(id));
-        }
     }
 
     private void presenterOnEditItem(ItemEditedEvent event) {
@@ -296,12 +271,12 @@ public class TreeViewImpl implements TreeView {
             listener.onItemEdited(event.getItem());
 
             // Clear preOrder cache of itemIds in case node was renamed
-            TreeViewImpl.this.container.fireItemSetChange();
+            getContainer().fireItemSetChange();
         }
     }
 
     @Override
-    public Component asVaadinComponent() {
+    public TreeTable asVaadinComponent() {
         return treeTable;
     }
 

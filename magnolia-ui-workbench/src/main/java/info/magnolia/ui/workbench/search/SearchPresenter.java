@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,16 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench;
+package info.magnolia.ui.workbench.search;
 
-import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.list.ListPresenter;
+
+import javax.inject.Inject;
 
 /**
- * Builds a {@link ContentView} for a specific view type based on a workbench definition.
+ * The SearchPresenter.
  */
-public interface ContentViewBuilder {
+public class SearchPresenter extends ListPresenter implements SearchView.Listener {
 
-    ContentView build(WorkbenchDefinition workbenchDefinition, ImageProviderDefinition imageProviderDefinition, ContentPresenterDefinition viewDefinition);
+    @Inject
+    public SearchPresenter(SearchView view, ComponentProvider componentProvider) {
+        super(view, componentProvider);
+    }
+
+    @Override
+    protected SearchJcrContainer createContainer(WorkbenchDefinition workbench) {
+        return new SearchJcrContainer(workbench);
+    }
+
 }

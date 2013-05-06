@@ -31,21 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.list;
+package info.magnolia.ui.workbench.thumbnail;
 
-import info.magnolia.ui.workbench.ContentView.ViewType;
-import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.workbench.AbstractContentPresenter;
+import info.magnolia.ui.workbench.ContentView;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+
+import javax.inject.Inject;
 
 /**
- * Default configured definition for a content view presenting a list.
+ * The ThumbnailPresenter.
  */
-public class ListPresenterDefinition extends ConfiguredContentPresenterDefinition {
+public class ThumbnailPresenter extends AbstractContentPresenter implements ThumbnailView.Listener {
 
-    public ListPresenterDefinition() {
-        setImplementationClass(ListPresenter.class);
-        setViewType(ViewType.LIST);
-        setActive(false);
-        setIcon("icon-view-list");
+    private final ThumbnailView view;
+
+    @Inject
+    public ThumbnailPresenter(ThumbnailView view) {
+        this.view = view;
+    }
+
+    @Override
+    public ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus) {
+        super.start(workbenchDefinition, eventBus);
+        return view;
+    }
+
+    @Override
+    public void refresh() {
     }
 
 }

@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.workbench.tree;
 
-import info.magnolia.ui.workbench.ContentView;
+import info.magnolia.ui.workbench.list.ListView;
 
 /**
  * Tree view interface.
  */
-public interface TreeView extends ContentView {
+public interface TreeView extends ListView {
 
      /**
      * Deactivate the drag And Drop functionality.

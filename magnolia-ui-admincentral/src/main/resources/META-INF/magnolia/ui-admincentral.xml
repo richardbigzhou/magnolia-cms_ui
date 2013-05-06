@@ -197,10 +197,6 @@
       <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.workbench.ContentViewBuilder</type>
-      <implementation>info.magnolia.ui.workbench.ContentViewBuilderImpl</implementation>
-    </component>
-    <component>
       <type>info.magnolia.ui.form.validator.registry.FieldValidatorFactory</type>
       <implementation>info.magnolia.ui.form.validator.registry.FieldValidatorFactory</implementation>
     </component>

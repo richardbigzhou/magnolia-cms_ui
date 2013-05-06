@@ -34,10 +34,27 @@
 package info.magnolia.ui.workbench.list;
 
 import info.magnolia.ui.workbench.ContentView;
+import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
+
+import com.vaadin.data.Container;
 
 /**
  * List view interface.
  */
 public interface ListView extends ContentView {
+
+    void setContainer(Container container);
+
+    void addColumn(String propertyId, String title);
+
+    void addColumn(String propertyId, String title, int width);
+
+    void addColumn(String propertyId, String title, float expandRatio);
+
+    void setColumnFormatter(String propertyId, ColumnFormatter formatter);
+
+    void setNodeIcon(String primaryNodeType, String iconName);
+
+    void setEditable(boolean editable);
 
 }

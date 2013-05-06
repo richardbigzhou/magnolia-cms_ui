@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,42 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench;
+package info.magnolia.ui.workbench.tree;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-
-import java.io.Serializable;
+import info.magnolia.ui.workbench.list.ListPresenter;
 
 import javax.inject.Inject;
 
 /**
- * Default {@link ContentViewBuilder} implementation.
+ * The TreePresenter.
  */
-public class ContentViewBuilderImpl implements ContentViewBuilder, Serializable {
-
-    private final ComponentProvider componentProvider;
+public class TreePresenter extends ListPresenter implements TreeView.Listener {
 
     @Inject
-    public ContentViewBuilderImpl(final ComponentProvider componentProvider) {
-        this.componentProvider = componentProvider;
+    public TreePresenter(TreeView view, ComponentProvider componentProvider) {
+        super(view, componentProvider);
     }
 
     @Override
-    public ContentView build(final WorkbenchDefinition workbenchDefinition, ImageProviderDefinition imageProviderDefinition, final ContentPresenterDefinition viewDefinition) {
+    public TreeView start(WorkbenchDefinition workbench, EventBus eventBus) {
+        return (TreeView) super.start(workbench, eventBus);
+    }
 
-        Class<? extends ContentView> contentViewClass = viewDefinition.getImplementationClass();
-        if (contentViewClass != null) {
-            if (imageProviderDefinition != null) {
-                return componentProvider.newInstance(contentViewClass, workbenchDefinition, imageProviderDefinition);
-            } else {
-                return componentProvider.newInstance(contentViewClass, workbenchDefinition);
-            }
-        } else {
-            throw new RuntimeException("The provided view type [" + viewDefinition.getViewType().getText() + "] is not valid.");
-        }
+    @Override
+    protected HierarchicalJcrContainer createContainer(WorkbenchDefinition workbench) {
+        return new HierarchicalJcrContainer(workbench);
     }
 
 }

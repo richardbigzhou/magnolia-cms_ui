@@ -38,9 +38,8 @@ import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.event.ChooseDialogEventBus;
-import info.magnolia.ui.workbench.ContentPresenter;
+import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.ContentView;
-import info.magnolia.ui.workbench.ContentViewBuilder;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.tree.TreeView;
@@ -56,16 +55,14 @@ import com.rits.cloning.Cloner;
  * ChooseDialog ContentPresenter.
  * Used to inject a specific EventBus, and to handle specific ChooseDialog logic.
  */
-public class ChooseDialogContentPresenter extends ContentPresenter {
+public class ChooseDialogContentPresenter extends AbstractContentPresenter {
 
     private AppContext appContext;
 
     private EventBus chooseDialogEventBus;
 
     @Inject
-    public ChooseDialogContentPresenter(ContentViewBuilder contentViewBuilder, @Named(ChooseDialogEventBus.NAME) EventBus chooseDialogEventBus,
-                                        AppContext appContext) {
-        super(contentViewBuilder);
+    public ChooseDialogContentPresenter(@Named(ChooseDialogEventBus.NAME) EventBus chooseDialogEventBus, AppContext appContext) {
         this.appContext = appContext;
         this.chooseDialogEventBus = chooseDialogEventBus;
     }
@@ -75,7 +72,7 @@ public class ChooseDialogContentPresenter extends ContentPresenter {
         if (subAppContext instanceof BrowserSubAppDescriptor) {
             BrowserSubAppDescriptor bsd = (BrowserSubAppDescriptor)subAppContext;
             WorkbenchDefinition clone = new Cloner().deepClone(bsd.getWorkbench());
-            super.start(workbenchView, clone, bsd.getImageProvider(), chooseDialogEventBus);
+            super.start(clone, chooseDialogEventBus);
         }
     }
 
@@ -92,5 +89,9 @@ public class ChooseDialogContentPresenter extends ContentPresenter {
         super.initContentView(view);
         view.setViewType(ContentView.ViewType.TREE);
         ((TreeView)view.getSelectedView()).deactivateDragAndDrop();
+    }
+
+    @Override
+    public void refresh() {
     }
 }

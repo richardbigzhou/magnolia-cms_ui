@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.workbench.definition;
 
-import info.magnolia.ui.workbench.ContentView;
+import info.magnolia.ui.workbench.ContentPresenter;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 
 /**
@@ -43,7 +43,7 @@ public interface ContentPresenterDefinition {
 
     ViewType getViewType();
 
-    Class<? extends ContentView> getImplementationClass();
+    Class<? extends ContentPresenter> getImplementationClass();
 
     String getIcon();
 

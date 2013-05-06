@@ -37,8 +37,20 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.workbench.ContentPresenter</type>
-      <implementation>info.magnolia.ui.workbench.ContentPresenter</implementation>
+      <type>info.magnolia.ui.workbench.list.ListView</type>
+      <implementation>info.magnolia.ui.workbench.list.ListViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.workbench.tree.TreeView</type>
+      <implementation>info.magnolia.ui.workbench.tree.TreeViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.workbench.thumbnail.ThumbnailView</type>
+      <implementation>info.magnolia.ui.workbench.thumbnail.LazyThumbnailViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.workbench.search.SearchView</type>
+      <implementation>info.magnolia.ui.workbench.search.SearchViewImpl</implementation>
     </component>
 
     <component>

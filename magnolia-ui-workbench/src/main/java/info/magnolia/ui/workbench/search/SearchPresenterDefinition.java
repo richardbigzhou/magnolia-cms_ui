@@ -42,7 +42,7 @@ import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinitio
 public class SearchPresenterDefinition extends ConfiguredContentPresenterDefinition {
 
     public SearchPresenterDefinition() {
-        setImplementationClass(SearchViewImpl.class);
+        setImplementationClass(SearchPresenter.class);
         setViewType(ViewType.SEARCH);
         setActive(false);
         setIcon("icon-view-list");

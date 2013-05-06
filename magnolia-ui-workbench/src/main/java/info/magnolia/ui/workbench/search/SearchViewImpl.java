@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.workbench.search;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.list.ListViewImpl;
 
 /**
@@ -42,22 +40,18 @@ import info.magnolia.ui.workbench.list.ListViewImpl;
  */
 public class SearchViewImpl extends ListViewImpl implements SearchView {
 
-    public SearchViewImpl(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
-        super(workbenchDefinition, componentProvider);
-    }
-
     @Override
     public void search(String fulltextExpr) {
         SearchJcrContainer container = ((SearchJcrContainer) getContainer());
         container.setFullTextExpression(fulltextExpr);
-        refresh();
+        // refresh();
     }
 
     @Override
     public void clear() {
         SearchJcrContainer container = ((SearchJcrContainer) getContainer());
         container.setFullTextExpression(null);
-        refresh();
+        // refresh();
     }
 
     @Override

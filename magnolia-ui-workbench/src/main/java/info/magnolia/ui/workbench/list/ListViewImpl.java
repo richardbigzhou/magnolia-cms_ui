@@ -33,59 +33,82 @@
  */
 package info.magnolia.ui.workbench.list;
 
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.vaadin.grid.MagnoliaTable;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.ContentView;
-import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
+import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.search.SearchJcrContainer;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Container;
+import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.TableDragMode;
 
 /**
  * Vaadin UI component that displays a list.
  */
 public class ListViewImpl implements ListView {
 
-    private static final Logger log = LoggerFactory.getLogger(ListViewImpl.class);
+    private static final String ICON_PROPERTY = "icon-node-data";
 
-    private ContentView.Listener listener;
+    private static final Logger log = LoggerFactory.getLogger(ListViewImpl.class);
 
     private final Table table;
 
-    private final AbstractJcrContainer container;
+    private final Map<String, String> nodeIcons = new HashMap<String, String>();
 
-    public ListViewImpl(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
-        table = new MagnoliaTable();
+    private ListView.Listener listener;
+
+    public ListViewImpl() {
+        this(new MagnoliaTable());
+        bindHandlers();
+    }
+
+    public ListViewImpl(Table table) {
         table.setSizeFull();
 
-        // next two lines are required to make the browser (Table) react on
-        // selection change via
-        // mouse
         table.setImmediate(true);
-        table.setNullSelectionAllowed(false);
-        // table.setMultiSelectMode(MultiSelectMode.DEFAULT);
+        table.setSelectable(true);
         table.setMultiSelect(false);
+        table.setNullSelectionAllowed(false);
+
+        table.setDragMode(TableDragMode.NONE);
+        table.setEditable(false);
+        table.setColumnCollapsingAllowed(true);
+        table.setColumnReorderingAllowed(false);
         table.setSortEnabled(true);
-        // Important do not set page length and cache ratio on the Table, rather
-        // set them by using
-        // AbstractJcrContainer corresponding methods. Setting
-        // those value explicitly on the Table will cause the same jcr query to
-        // be repeated twice
-        // thus degrading performance greatly.
+
+        table.setCellStyleGenerator(new Table.CellStyleGenerator() {
+            @Override
+            public String getStyle(Table source, Object itemId, Object propertyId) {
+
+                final Item item = source.getContainerDataSource().getItem(itemId);
+                if (item instanceof JcrPropertyAdapter) {
+                    return ICON_PROPERTY;
+                } else if (item instanceof JcrNodeAdapter) {
+                    return nodeIcons.get(((JcrNodeAdapter) item).getPrimaryNodeTypeName());
+                }
+                return null;
+            }
+        });
+
+        this.table = table;
+    }
+
+    protected void bindHandlers() {
         table.addValueChangeListener(new Table.ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {
@@ -102,57 +125,16 @@ public class ListViewImpl implements ListView {
                 }
             }
         });
-
-        table.setCellStyleGenerator(new Table.CellStyleGenerator() {
-            @Override
-            public String getStyle(Table source, Object itemId, Object propertyId) {
-                return presenterGetIcon(itemId, propertyId);
-            }
-        });
-
-        table.setEditable(false);
-        table.setSelectable(true);
-        table.setColumnCollapsingAllowed(true);
-        table.setColumnReorderingAllowed(false);
-
-        if (getViewType().equals(ViewType.LIST)) {
-            this.container = new FlatJcrContainer(workbenchDefinition);
-        } else {
-            this.container = new SearchJcrContainer(workbenchDefinition);
-        }
-        buildColumns(workbenchDefinition, componentProvider);
     }
 
     @Override
-    public void select(String path) {
-        table.select(path);
-    }
-
-    @Override
-    public void refresh() {
-        // This will update the row count and display the newly created items.
-        container.refresh();
-        container.fireItemSetChange();
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return table;
-    }
-
-    @Override
-    public void setListener(Listener listener) {
+    public void setListener(ContentView.Listener listener) {
         this.listener = listener;
-    }
-
-    @Override
-    public AbstractJcrContainer getContainer() {
-        return container;
     }
 
     private void presenterOnItemSelection(String id) {
         if (listener != null) {
-            com.vaadin.data.Item item = container.getItem(id);
+            com.vaadin.data.Item item = getContainer().getItem(id);
             listener.onItemSelection(item);
         }
     }
@@ -163,52 +145,6 @@ public class ListViewImpl implements ListView {
         }
     }
 
-    private void buildColumns(WorkbenchDefinition workbenchDefinition, ComponentProvider componentProvider) {
-        final List<String> columnOrder = new ArrayList<String>();
-        final Iterator<ColumnDefinition> iterator = workbenchDefinition.getColumns().iterator();
-
-        while (iterator.hasNext()) {
-            ColumnDefinition column = iterator.next();
-            if (!workbenchDefinition.isDialogWorkbench() || column.isDisplayInChooseDialog()) {
-                String columnName = column.getName();
-                final String columnProperty = (column.getPropertyName() != null) ? column.getPropertyName() : columnName;
-
-                // FIXME fgrilli workaround for conference
-                // when setting cols width in dialogs we are forced to use
-                // explicit px value instead
-                // of expand ratios, which for some reason don't work
-                if (workbenchDefinition.isDialogWorkbench()) {
-                    table.setColumnWidth(columnProperty, 300);
-                } else {
-                    if (column.getWidth() > 0) {
-                        table.setColumnWidth(columnProperty, column.getWidth());
-                    } else {
-                        table.setColumnExpandRatio(columnProperty, column.getExpandRatio());
-                    }
-                }
-                table.setColumnHeader(columnProperty, column.getLabel());
-                container.addContainerProperty(columnProperty, column.getType(), "");
-
-                // Set Formatter
-                if (column.getFormatterClass() != null) {
-                    table.addGeneratedColumn(columnProperty, componentProvider.newInstance(column.getFormatterClass(), column));
-                }
-
-                columnOrder.add(columnProperty);
-            }
-
-            table.setContainerDataSource(container);
-
-            // Set column order
-            table.setVisibleColumns(columnOrder.toArray());
-        }
-    }
-
-    @Override
-    public ViewType getViewType() {
-        return ViewType.LIST;
-    }
-
     private String presenterGetIcon(Object itemId, Object propertyId) {
         Container container = table.getContainerDataSource();
         if (listener != null && propertyId == null) {
@@ -217,4 +153,67 @@ public class ListViewImpl implements ListView {
 
         return null;
     }
+
+    // NEW VIEW LOGIC
+
+    @Override
+    public void addColumn(String propertyId, String title) {
+        table.setColumnHeader(propertyId, title);
+        List<Object> visibleColumns = new ArrayList<Object>(Arrays.asList(table.getVisibleColumns()));
+        visibleColumns.add(propertyId);
+        table.setVisibleColumns(visibleColumns.toArray());
+    }
+
+    @Override
+    public void addColumn(String propertyId, String title, int width) {
+        addColumn(propertyId, title);
+        table.setColumnWidth(propertyId, width);
+    }
+
+    @Override
+    public void addColumn(String propertyId, String title, float expandRatio) {
+        addColumn(propertyId, title);
+        table.setColumnExpandRatio(propertyId, expandRatio);
+    }
+
+    @Override
+    public void setColumnFormatter(String propertyId, ColumnFormatter formatter) {
+        table.addGeneratedColumn(propertyId, formatter);
+    }
+
+    @Override
+    public void setNodeIcon(String primaryNodeType, String iconName) {
+        nodeIcons.put(primaryNodeType, iconName);
+    }
+
+    @Override
+    public void setEditable(boolean editable) {
+        table.setEditable(editable);
+    }
+
+    @Override
+    public ViewType getViewType() {
+        return ViewType.LIST;
+    }
+
+    @Override
+    public Table asVaadinComponent() {
+        return table;
+    }
+
+    @Override
+    public AbstractJcrContainer getContainer() {
+        return (AbstractJcrContainer) table.getContainerDataSource();
+    }
+
+    @Override
+    public void setContainer(Container container) {
+        table.setContainerDataSource(container);
+    }
+
+    @Override
+    public void select(String path) {
+        table.select(path);
+    }
+
 }

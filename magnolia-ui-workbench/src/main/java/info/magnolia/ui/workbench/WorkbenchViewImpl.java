@@ -124,11 +124,6 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
     }
 
     @Override
-    public void refresh() {
-        getSelectedView().refresh();
-    }
-
-    @Override
     public void addContentView(ContentView.ViewType viewType, ContentView view, ContentPresenterDefinition contentViewDefintion) {
         contentViews.put(viewType, view);
 
@@ -164,7 +159,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
         this.currentViewType = type;
 
         setViewTypeStyling(currentViewType);
-        refresh();
+        // refresh();
 
         this.listener.onViewTypeChanged(currentViewType);
     }

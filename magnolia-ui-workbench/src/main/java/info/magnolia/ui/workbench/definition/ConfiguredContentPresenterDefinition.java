@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.workbench.definition;
 
-import info.magnolia.ui.workbench.ContentView;
+import info.magnolia.ui.workbench.ContentPresenter;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 
 /**
@@ -43,7 +43,7 @@ public class ConfiguredContentPresenterDefinition implements ContentPresenterDef
 
     private ViewType viewType;
 
-    private Class<? extends ContentView> implementationClass;
+    private Class<? extends ContentPresenter> implementationClass;
 
     private String icon;
 
@@ -59,11 +59,11 @@ public class ConfiguredContentPresenterDefinition implements ContentPresenterDef
     }
 
     @Override
-    public Class<? extends ContentView> getImplementationClass() {
+    public Class<? extends ContentPresenter> getImplementationClass() {
         return implementationClass;
     }
 
-    public void setImplementationClass(Class<? extends ContentView> implementationClass) {
+    public void setImplementationClass(Class<? extends ContentPresenter> implementationClass) {
         this.implementationClass = implementationClass;
     }
 

@@ -88,8 +88,6 @@ public interface ContentView extends View {
      */
     void select(String path);
 
-    void refresh();
-
     AbstractJcrContainer getContainer();
 
     ViewType getViewType();

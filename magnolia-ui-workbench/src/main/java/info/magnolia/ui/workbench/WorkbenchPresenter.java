@@ -35,12 +35,16 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 import info.magnolia.ui.workbench.search.SearchView;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.jcr.RepositoryException;
@@ -61,7 +65,11 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     private final WorkbenchView view;
 
-    private final ContentPresenter contentPresenter;
+    private final ComponentProvider componentProvider;
+
+    private final Map<String, ContentPresenter> contentPresenters = new LinkedHashMap<String, ContentPresenter>();
+
+    private ContentPresenter activePresenter;
 
     private final WorkbenchStatusBarPresenter statusBarPresenter;
 
@@ -70,17 +78,49 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     private EventBus eventBus;
 
     @Inject
-    public WorkbenchPresenter(WorkbenchView view, ContentPresenter contentPresenter, WorkbenchStatusBarPresenter statusBarPresenter) {
+    public WorkbenchPresenter(WorkbenchView view, ComponentProvider componentProvider, WorkbenchStatusBarPresenter statusBarPresenter) {
         this.view = view;
-        this.contentPresenter = contentPresenter;
+        this.componentProvider = componentProvider;
         this.statusBarPresenter = statusBarPresenter;
     }
 
     public WorkbenchView start(WorkbenchDefinition workbenchDefinition, ImageProviderDefinition imageProviderDefinition, EventBus eventBus) {
         this.workbenchDefinition = workbenchDefinition;
         this.eventBus = eventBus;
-        contentPresenter.start(view, workbenchDefinition, imageProviderDefinition, eventBus);
 
+        if (workbenchDefinition == null) {
+            throw new IllegalArgumentException("Trying to init a workbench but got null definition.");
+        }
+        if (StringUtils.isBlank(workbenchDefinition.getWorkspace())) {
+            throw new IllegalStateException(workbenchDefinition.getName() + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
+        }
+
+        // add content views
+        for (final ContentPresenterDefinition presenterDefinition : workbenchDefinition.getContentViews()) {
+
+            Class<? extends ContentPresenter> presenterClass = presenterDefinition.getImplementationClass();
+            ContentPresenter presenter = null;
+            if (presenterClass != null) {
+                if (imageProviderDefinition != null) {
+                    presenter = componentProvider.newInstance(presenterClass, workbenchDefinition, imageProviderDefinition);
+                } else {
+                    presenter = componentProvider.newInstance(presenterClass, workbenchDefinition);
+                }
+                contentPresenters.put(presenterDefinition.getViewType().getText(), presenter);
+                if (presenterDefinition.isActive()) {
+                    activePresenter = presenter;
+                }
+            } else {
+                throw new RuntimeException("The provided view type [" + presenterDefinition.getViewType().getText() + "] is not valid.");
+            }
+
+            // contentView.setListener(this);
+            // contentView.select(workbenchDefinition.getPath());
+            ContentView contentView = presenter.start(workbenchDefinition, eventBus);
+            view.addContentView(presenterDefinition.getViewType(), contentView, presenterDefinition);
+        }
+
+        // add status bar
         if (view.getSelectedView() != null && view.getSelectedView().getContainer() != null) {
             view.getSelectedView().getContainer().addItemSetChangeListener(new ItemSetChangeListener() {
 
@@ -103,11 +143,13 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     @Override
     public void onViewTypeChanged(final ContentView.ViewType viewType) {
+        activePresenter = contentPresenters.get(viewType.getText());
+        activePresenter.refresh();
         eventBus.fireEvent(new ViewTypeChangedEvent(viewType));
     }
 
     public String getSelectedId() {
-        return contentPresenter.getSelectedItemPath();
+        return activePresenter.getSelectedItemPath();
     }
 
     public String getWorkspace() {
@@ -116,11 +158,11 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     public void selectPath(String path) {
         view.selectPath(path);
-        contentPresenter.setSelectedItemPath(path);
+        activePresenter.setSelectedItemPath(path);
     }
 
     public void refresh() {
-        view.refresh();
+        activePresenter.refresh();
     }
 
     public ContentView.ViewType getDefaultViewType() {

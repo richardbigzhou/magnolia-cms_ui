@@ -67,7 +67,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Base implementation of a content subApp. A content subApp displays a collection of data represented inside a {@link info.magnolia.ui.workbench.ContentView}
- * created by {@link info.magnolia.ui.workbench.ContentViewBuilder}.
+ * created by the {@link info.magnolia.ui.workbench.WorkbenchPresenter}.
  * <pre>
  *  <p>
  *      This class Provides sensible implementation for services shared by all content subApps.

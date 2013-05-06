@@ -59,11 +59,6 @@ public interface WorkbenchView extends View {
     void setSearchQuery(String query);
 
     /**
-     * Refreshes the current view.
-     */
-    void refresh();
-
-    /**
      * Use this method to add sub views hosted by this view.
      */
     void addContentView(ContentView.ViewType type, ContentView view, ContentPresenterDefinition contentViewDefintion);

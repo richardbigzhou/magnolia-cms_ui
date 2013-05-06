@@ -36,6 +36,7 @@ package info.magnolia.ui.workbench;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
+import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.workbench.config.WorkbenchBuilder;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
@@ -61,9 +62,9 @@ public class WorkbenchPresenterTest {
 
     private void initWorkbenchPresenter() {
         WorkbenchView view = mock(WorkbenchView.class);
-        ContentPresenter contentPresenter = mock(ContentPresenter.class);
+        MockComponentProvider componentProvider = new MockComponentProvider();
         WorkbenchStatusBarPresenter statusBarPresenter = mock(WorkbenchStatusBarPresenter.class);
-        this.presenter = new WorkbenchPresenter(view, contentPresenter, statusBarPresenter);
+        this.presenter = new WorkbenchPresenter(view, componentProvider, statusBarPresenter);
         this.presenter.start(
                 new WorkbenchBuilder().workspace(WORKSPACE).path(ROOT_PATH).contentViews(new TreePresenterDefinition(), new ListPresenterDefinition()).exec(),
                 null,

@@ -33,20 +33,13 @@
  */
 package info.magnolia.ui.workbench.thumbnail;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.imageprovider.DefaultImageProvider;
 import info.magnolia.ui.imageprovider.ImageProvider;
-import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailDblClickListener;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailSelectionListener;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,9 +53,9 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     private static final Logger log = LoggerFactory.getLogger(LazyThumbnailViewImpl.class);
 
-    private ThumbnailContainer container;
+    // private ThumbnailContainer container;
 
-    private final WorkbenchDefinition workbenchDefinition;
+    // private final WorkbenchDefinition workbenchDefinition;
 
     private Listener listener;
 
@@ -70,11 +63,12 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
     private final ImageProvider imageProvider;
 
-    public LazyThumbnailViewImpl(final WorkbenchDefinition definition, ComponentProvider componentProvider, ImageProviderDefinition imageProviderDefinition) {
-        this.workbenchDefinition = definition;
+    public LazyThumbnailViewImpl() {
+        // this.workbenchDefinition = definition;
 
-        this.imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
-        this.container = new ThumbnailContainer(workbenchDefinition, imageProvider);
+        // this.imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
+        this.imageProvider = new DefaultImageProvider();
+        // this.container = new ThumbnailContainer(workbenchDefinition, imageProvider);
 
         this.thumbnailLayout = new LazyThumbnailLayout();
 
@@ -110,15 +104,15 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
         // do something?
     }
 
-    @Override
-    public final void refresh() {
-        this.container = new ThumbnailContainer(workbenchDefinition, imageProvider);
-        container.setWorkspaceName(workbenchDefinition.getWorkspace());
-        container.setThumbnailHeight(73);
-        container.setThumbnailWidth(73);
-        thumbnailLayout.setContainerDataSource(container);
-        thumbnailLayout.setThumbnailSize(73, 73);
-    }
+    // @Override
+    // public final void refresh() {
+        // this.container = new ThumbnailContainer(workbenchDefinition, imageProvider);
+        // container.setWorkspaceName(workbenchDefinition.getWorkspace());
+        // container.setThumbnailHeight(73);
+        // container.setThumbnailWidth(73);
+        // thumbnailLayout.setContainerDataSource(container);
+        // thumbnailLayout.setThumbnailSize(73, 73);
+    // }
 
     @Override
     public AbstractJcrContainer getContainer() {
@@ -131,13 +125,13 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
     }
 
     private JcrNodeAdapter getThumbnailNodeAdapterByIdentifier(final String thumbnailId) {
-        try {
-            Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
-            final Node imageNode = session.getNodeByIdentifier(thumbnailId);
-            return new JcrNodeAdapter(imageNode);
-        } catch (RepositoryException e) {
-            log.error(e.getMessage());
-        }
+        // try {
+        // Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
+        // final Node imageNode = session.getNodeByIdentifier(thumbnailId);
+        // return new JcrNodeAdapter(imageNode);
+        // } catch (RepositoryException e) {
+        // log.error(e.getMessage());
+        // }
         return null;
     }
 

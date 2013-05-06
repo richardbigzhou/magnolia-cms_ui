@@ -42,7 +42,7 @@ import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinitio
 public class TreePresenterDefinition extends ConfiguredContentPresenterDefinition {
 
     public TreePresenterDefinition() {
-        setImplementationClass(TreeViewImpl.class);
+        setImplementationClass(TreePresenter.class);
         setViewType(ViewType.TREE);
         setActive(true);
         setIcon("icon-view-tree");
