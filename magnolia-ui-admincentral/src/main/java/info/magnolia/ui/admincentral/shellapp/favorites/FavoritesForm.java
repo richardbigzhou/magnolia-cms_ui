@@ -69,6 +69,7 @@ public class FavoritesForm extends CustomComponent {
     private FavoritesView.Listener listener;
     private Shell shell;
     private TabSheet tabsheet;
+    private Label arrowIcon;
 
     public FavoritesForm(final JcrNewNodeAdapter newFavorite, final JcrNewNodeAdapter newGroup, final Map<String, String> availableGroups, final FavoritesView.Listener listener, final Shell shell) {
         this.listener = listener;
@@ -83,7 +84,6 @@ public class FavoritesForm extends CustomComponent {
         tabsheet.addStyleName("favorites-tabs");
         tabsheet.addTab(favoriteFormEntry, "Add a new favorite");
         tabsheet.addTab(favoriteGroupForm, "Add a new group");
-        tabsheet.setVisible(false);
 
         tabsheet.addSelectedTabChangeListener(new SelectedTabChangeListener() {
 
@@ -106,7 +106,11 @@ public class FavoritesForm extends CustomComponent {
 
             @Override
             public void layoutClick(LayoutClickEvent event) {
-                tabsheet.setVisible(!tabsheet.isVisible());
+                if (isOpen()) {
+                    close();
+                } else {
+                    open();
+                }
             }
         });
 
@@ -120,20 +124,37 @@ public class FavoritesForm extends CustomComponent {
         addNewLabel.setSizeUndefined();
         addNewLabel.addStyleName("title");
 
+        arrowIcon = new Label();
+        arrowIcon.setSizeUndefined();
+        arrowIcon.setContentMode(ContentMode.HTML);
+        arrowIcon.addStyleName("icon");
+        arrowIcon.addStyleName("arrow");
+
+
         header.addComponent(addNewIcon);
         header.addComponent(addNewLabel);
+        header.addComponent(arrowIcon);
         favoriteForm.addComponent(header);
         favoriteForm.addComponent(tabsheet);
+
+        // form is closed initially
+        close();
 
         setCompositionRoot(favoriteForm);
     }
 
     public void close() {
         tabsheet.setVisible(false);
+        arrowIcon.setValue("<span class=\"icon-arrow2_n\"></span>");
     }
 
     public void open() {
         tabsheet.setVisible(true);
+        arrowIcon.setValue("<span class=\"icon-arrow2_s\"></span>");
+    }
+
+    public boolean isOpen() {
+        return tabsheet.isVisible();
     }
 
     /**
