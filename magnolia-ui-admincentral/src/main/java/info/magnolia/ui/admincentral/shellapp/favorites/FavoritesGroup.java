@@ -39,8 +39,13 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
 import java.util.Iterator;
 
+import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.event.FieldEvents.BlurListener;
+import com.vaadin.event.FieldEvents.FocusEvent;
+import com.vaadin.event.FieldEvents.FocusListener;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
@@ -61,6 +66,8 @@ public class FavoritesGroup extends CssLayout {
     private boolean editable;
     private boolean selected;
     private CssLayout wrapper;
+    private EnterKeyShortcutListener enterKeyShortcutListener;
+    private EscapeKeyShortcutListener escapeKeyShortcutListener;
 
     /**
      * Creates an empty placeholder group.
@@ -80,15 +87,26 @@ public class FavoritesGroup extends CssLayout {
         }
     }
 
-    public String getTitleValue() {
-        return title;
+    /**
+     * Sets this group and all of its fav entries (if any) as unselected and non editable, that is at their initial state.
+     */
+    public void reset() {
+        // skip it if this group is a placeholder for no group fav entries, as it has no title
+        if (titleField != null) {
+            setEditable(false);
+            setSelected(false);
+        }
+        Iterator<Component> components = getComponentIterator();
+        while (components.hasNext()) {
+            Component component = components.next();
+            if(component instanceof FavoritesEntry) {
+                FavoritesEntry fav = (FavoritesEntry) component;
+                fav.reset();
+            }
+        }
     }
 
-    public String getRelPath() {
-        return relPath;
-    }
-
-    public void setEditable(boolean editable) {
+    private void setEditable(boolean editable) {
         this.editable = editable;
         String icon = "icon-tick";
         if (editable) {
@@ -98,14 +116,14 @@ public class FavoritesGroup extends CssLayout {
         } else {
             icon = "icon-edit";
             // discard pending changes
-            titleField.setValue(getTitleValue());
+            titleField.setValue(title);
             titleField.removeStyleName("editable");
         }
         titleField.setReadOnly(!editable);
         editButton.setCaption("<span class=\"" + icon + "\"></span>");
     }
 
-    public void setSelected(boolean selected) {
+    private void setSelected(boolean selected) {
         this.selected = selected;
         if (selected) {
             wrapper.addStyleName("selected");
@@ -118,45 +136,12 @@ public class FavoritesGroup extends CssLayout {
         removeButton.setVisible(selected);
     }
 
-    /**
-     * @return true if this group is selected, meaning the available actions (edit, remove) are displayed next to the group title. Bear in mind that selected does not necessarily mean editable.
-     * @see #isEditable()
-     */
-    public boolean isSelected() {
-        return selected;
-    }
-
-    /**
-     * @return true if this group is editable, meaning that its title can be changed in line.
-     * @see #isSelected()
-     */
-    public boolean isEditable() {
-        return editable;
-    }
-
-    /**
-     * Sets this group and all of its fav entries (if any) as unselected and non editable, that is at their initial state.
-     */
-    public void reset() {
-        // skip it if this group is a placeholder for no group fav entries, hence it has no title
-        if (titleField != null) {
-            setEditable(false);
-            setSelected(false);
-        }
-        Iterator<Component> components = getComponentIterator();
-        while (components.hasNext()) {
-            Component component = components.next();
-            if (component instanceof FavoritesEntry) {
-                FavoritesEntry fav = (FavoritesEntry) component;
-                fav.setEditable(false);
-                fav.setSelected(false);
-            }
-        }
-    }
-
     private void construct(final JcrItemNodeAdapter favoritesGroup, final FavoritesView.Listener listener) {
         wrapper = new CssLayout();
         wrapper.addStyleName("favorites-group-title");
+
+        this.enterKeyShortcutListener = new EnterKeyShortcutListener(listener);
+        this.escapeKeyShortcutListener = new EscapeKeyShortcutListener();
 
         this.relPath = favoritesGroup.getItemProperty(ModelConstants.JCR_NAME).getValue().toString();
         this.title = favoritesGroup.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue().toString();
@@ -164,6 +149,23 @@ public class FavoritesGroup extends CssLayout {
         titleField = new TextField();
         titleField.setValue(title);
         titleField.setReadOnly(true);
+        titleField.addFocusListener(new FocusListener() {
+
+            @Override
+            public void focus(FocusEvent event) {
+                titleField.addShortcutListener(enterKeyShortcutListener);
+                titleField.addShortcutListener(escapeKeyShortcutListener);
+            }
+        });
+
+        titleField.addBlurListener(new BlurListener() {
+
+            @Override
+            public void blur(BlurEvent event) {
+                titleField.removeShortcutListener(enterKeyShortcutListener);
+                titleField.removeShortcutListener(escapeKeyShortcutListener);
+            }
+        });
 
         wrapper.addComponent(titleField);
 
@@ -175,7 +177,7 @@ public class FavoritesGroup extends CssLayout {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                if (isSelected() && !isEditable()) {
+                if (selected && !editable) {
                     setEditable(true);
                     return;
                 }
@@ -193,7 +195,7 @@ public class FavoritesGroup extends CssLayout {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                listener.removeGroup(getRelPath());
+                listener.removeGroup(relPath);
             }
         });
         removeButton.setVisible(false);
@@ -205,8 +207,8 @@ public class FavoritesGroup extends CssLayout {
             public void layoutClick(LayoutClickEvent event) {
 
                 if (event.getClickedComponent() == titleField) {
-                    if (!isEditable()) {
-                        setSelected(!isSelected());
+                    if (!editable) {
+                        setSelected(!selected);
                     }
                 }
             }
@@ -216,10 +218,36 @@ public class FavoritesGroup extends CssLayout {
     }
 
     private void doEditTitle(final FavoritesView.Listener listener) {
-        boolean titleHasChanged = !getTitleValue().equals(titleField.getValue());
-        if (isEditable() && titleHasChanged) {
-            listener.editGroup(getRelPath(), titleField.getValue());
+        boolean titleHasChanged = !title.equals(titleField.getValue());
+        if (editable && titleHasChanged) {
+            listener.editGroup(relPath, titleField.getValue());
         }
         setEditable(false);
+    }
+
+    private class EnterKeyShortcutListener extends ShortcutListener {
+        private FavoritesView.Listener listener;
+
+        public EnterKeyShortcutListener(final FavoritesView.Listener listener) {
+            super("", KeyCode.ENTER, null);
+            this.listener = listener;
+        }
+
+        @Override
+        public void handleAction(Object sender, Object target) {
+            doEditTitle(listener);
+        }
+    }
+
+    private class EscapeKeyShortcutListener extends ShortcutListener {
+
+        public EscapeKeyShortcutListener() {
+            super("", KeyCode.ESCAPE, null);
+        }
+
+        @Override
+        public void handleAction(Object sender, Object target) {
+            reset();
+        }
     }
 }
