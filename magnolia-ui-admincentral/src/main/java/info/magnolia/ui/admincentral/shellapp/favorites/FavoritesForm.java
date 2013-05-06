@@ -74,9 +74,9 @@ public class FavoritesForm extends CustomComponent {
     public FavoritesForm(final JcrNewNodeAdapter newFavorite, final JcrNewNodeAdapter newGroup, final Map<String, String> availableGroups, final FavoritesView.Listener listener, final Shell shell) {
         this.listener = listener;
         this.shell = shell;
-        final VerticalLayout favoriteForm = new VerticalLayout();
-        favoriteForm.addStyleName("favorites-form");
+        addStyleName("favorites-form");
 
+        final VerticalLayout favoriteForm = new VerticalLayout();
         final InternalFavoriteForm favoriteFormEntry = new InternalFavoriteForm(newFavorite, availableGroups);
         final InternalFavoriteGroupForm favoriteGroupForm = new InternalFavoriteGroupForm(newGroup);
 
@@ -129,7 +129,6 @@ public class FavoritesForm extends CustomComponent {
         arrowIcon.setContentMode(ContentMode.HTML);
         arrowIcon.addStyleName("icon");
         arrowIcon.addStyleName("arrow");
-
 
         header.addComponent(addNewIcon);
         header.addComponent(addNewLabel);
@@ -222,6 +221,7 @@ public class FavoritesForm extends CustomComponent {
 
         public void addEnterKeyShortcutListener() {
             addShortcutListener(enterShortcutListener);
+            title.focus();
         }
 
         public void removeEnterKeyShortcutListener() {
@@ -284,6 +284,7 @@ public class FavoritesForm extends CustomComponent {
 
         public void addEnterKeyShortcutListener() {
             addShortcutListener(enterShortcutListener);
+            title.focus();
         }
 
         public void removeEnterKeyShortcutListener() {
