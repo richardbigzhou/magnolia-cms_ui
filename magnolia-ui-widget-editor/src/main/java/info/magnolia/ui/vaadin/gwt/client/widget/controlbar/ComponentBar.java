@@ -169,22 +169,6 @@ public class ComponentBar extends AbstractBar {
 
     private void createControls() {
 
-        /*
-         * final Label move = new Label();
-         * move.setStyleName("icon icon-trash");
-         * move.addClickHandler(new ClickHandler() {
-         * 
-         * @Override
-         * public void onClick(ClickEvent event) {
-         * getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getImagePathByNodePath()));
-         * }
-         * });
-         * if (!canMove) {
-         * move.setVisible(false);
-         * }
-         * addSecondaryButton(move);
-         */
-
         final Label edit = new Label();
         edit.setStyleName(ICON_CLASSNAME);
         edit.addStyleName(EDIT_CLASSNAME);

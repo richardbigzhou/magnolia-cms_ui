@@ -41,8 +41,6 @@ import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.AbstractMgnlEleme
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.CommentProcessor;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.ElementProcessor;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.MgnlElementProcessorFactory;
-import info.magnolia.ui.vaadin.gwt.client.editor.event.DeleteComponentEvent;
-import info.magnolia.ui.vaadin.gwt.client.editor.event.DeleteComponentEventHandler;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEventHandler;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.FrameNavigationEvent;
@@ -181,12 +179,6 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
             }
         });
 
-        eventBus.addHandler(DeleteComponentEvent.TYPE, new DeleteComponentEventHandler() {
-            @Override
-            public void onDeleteComponent(DeleteComponentEvent deleteComponentEvent) {
-                rpc.deleteComponent(deleteComponentEvent.getWorkspace(), deleteComponentEvent.getPath());
-            }
-        });
         eventBus.addHandler(SortComponentEvent.TYPE, new SortComponentEventHandler() {
             @Override
             public void onSortComponent(SortComponentEvent sortComponentEvent) {

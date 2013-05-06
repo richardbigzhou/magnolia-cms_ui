@@ -50,8 +50,6 @@ public interface PageEditorServerRpc extends ServerRpc {
 
     void editComponent(String workspace, String eventType, String dialog);
 
-    void deleteComponent(String workspace, String path);
-
     void sortComponent(String workspace, String parentPath, String sourcePath, String targetPath, String order);
 
 }

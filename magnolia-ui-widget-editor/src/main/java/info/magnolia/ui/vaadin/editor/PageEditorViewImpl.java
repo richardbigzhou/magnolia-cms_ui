@@ -124,11 +124,6 @@ public class PageEditorViewImpl extends CssLayout implements PageEditorView {
                 listener.editComponent(workspace, eventType, dialog);
             }
 
-            @Override
-            public void deleteComponent(String workspace, String path) {
-                listener.deleteComponent(workspace, path);
-
-            }
         });
     }
 }

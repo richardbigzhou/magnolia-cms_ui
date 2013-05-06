@@ -42,15 +42,10 @@ import info.magnolia.ui.vaadin.gwt.client.editor.event.NewComponentEvent;
 import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.web.bindery.event.shared.EventBus;
 
 /**
@@ -114,46 +109,6 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
 
         setVisible(false);
         createControls();
-    }
-
-    private void createBoxPlaceHolder() {
-
-        FlowPanel elementWrapper = new FlowPanel();
-        elementWrapper.setStyleName("mgnlEditorPlaceholderElements");
-
-        if (this.showAddButton) {
-            elementWrapper.getElement().getStyle().setCursor(Cursor.POINTER);
-            elementWrapper.addDomHandler(new MouseDownHandler() {
-
-                @Override
-                public void onMouseDown(MouseDownEvent event) {
-                    if (event.getNativeButton() == NativeEvent.BUTTON_RIGHT) {
-                        return;
-                    }
-                    getEventBus().fireEvent(new NewComponentEvent(areaWorkspace, areaPath, availableComponents));
-                }
-            }, MouseDownEvent.getType());
-        }
-        add(elementWrapper);
-
-    }
-
-    private void createButtons() {
-
-        if (this.showAddButton) {
-            PushButton button = new PushButton();
-            button.setTitle(getI18nMessage("buttons.add.js") + " " + labelString);
-            button.setStylePrimaryName("mgnlEditorPushButton");
-            button.addStyleName("add");
-
-            button.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    getEventBus().fireEvent(new NewComponentEvent(areaWorkspace, areaPath, availableComponents));
-                }
-            });
-            buttonWrapper.add(button);
-        }
     }
 
     private void createControls() {
