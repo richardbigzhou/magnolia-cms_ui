@@ -2,18 +2,18 @@
 
 @mixin messages {
   .msgwhite {
-    background-color: $c21;
+    background-color: $c80;
   }
   .msginfo {
-    background-color: $c07;
-    color: $c22;
+    background-color: $c24;
+    color: $c90;
   }
   .msgwarn {
-    background-color: $c13;
-    color: $c22;
+    background-color: $c60;
+    color: $c90;
   }
   .msgerror {
-    background-color: $c17;
-    color: $c21;
+    background-color: $c70;
+    color: $c80;
   }
 }

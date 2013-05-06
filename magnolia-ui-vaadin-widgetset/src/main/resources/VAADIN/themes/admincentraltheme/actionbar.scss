@@ -4,8 +4,8 @@
 
 .v-actionbar {
 	position:relative;
-	background:#666;
-	color:#fff;
+	background:$c10;
+	color:$c80;
 	font-size:14px;
 
 	overflow-x:visible;
@@ -15,7 +15,7 @@
 .v-actionbar-open {width:270px; padding-top:0;}
 
 .v-actionbar.stub{
-	background: #ccc;
+	background: $c13;
 }
 
 .v-actionbar-section {
@@ -26,7 +26,7 @@
 	height:1.2em;
 	margin:0;
 	padding:0 0 6px 4px;
-	color:#aabf2f;
+	color:$c50;
 	font-family:DINWebPro, Verdana;
 	font-size:15px;
 	font-weight:normal;
@@ -37,7 +37,7 @@
 .v-actionbar-group {
 	margin:0;
 	padding:5px 0 2px;
-	border-bottom:1px solid #888;
+	border-bottom:1px solid $c11;
 	list-style:outside none;
 }
 
@@ -52,7 +52,7 @@
 
 .v-action.v-disabled {opacity:0.4;}
 .v-action.v-disabled:hover {cursor:default;}
-.v-action.v-disabled:hover {color:#fff;}
+.v-action.v-disabled:hover {color:$c80;}
 
 .v-action .v-icon {
 	display:inline-block;
@@ -67,8 +67,8 @@
 .v-actionbar .v-action .v-text {display:none;}
 .v-actionbar-open .v-action .v-text {display:inline;}
 
-.v-action:hover {color:#aabf2f;}
-.v-action.mousedown:hover {color:#fff;}
+.v-action:hover {color:$c50;}
+.v-action.mousedown:hover {color:$c80;}
 
 .v-action .v-flyout-indicator {display:none;}
 
@@ -119,7 +119,7 @@
 	padding-top:6px;
 	padding-left:14px;
 	padding-right:14px;
-	background-color:#333;
+	background-color:$c91;
 	text-align:center;
 }
 .v-actionbar .v-actionbar-section.preview {display:none;}
@@ -155,10 +155,10 @@ span.icon-publish-incl-sub { text-indent: -27px !important; }
 	width:70px;
 	height:78px;
 	margin-right:0;
-	background:#666;
+	background:$c10;
 	border-width:2px 0 2px 2px;
 	border-style:solid;
-	border-color:#e6e6e6;
+	border-color:$c15;
 	line-height:inherit;
 	text-align:center;
 	text-indent:0;
@@ -170,7 +170,7 @@ span.icon-publish-incl-sub { text-indent: -27px !important; }
 .tablet .v-action.v-disabled {opacity:1;}
 .tablet .v-action.v-disabled > * {opacity:0.4;}
 
-.tablet .v-action.hover {color:#666; background-color:#e6e6e6;}
+.tablet .v-action.hover {color:$c10; background-color:$c15;}
 
 .tablet .v-action .v-icon {
 	text-indent:0;
@@ -200,7 +200,7 @@ span.icon-publish-incl-sub { text-indent: -27px !important; }
 	width:70px;
 	height:40px;
 	margin-top:2px;
-	background-color:#666;
+	background-color:$c10;
 }
 
 .tablet .v-actionbar-toggle-icon {

@@ -37,6 +37,9 @@ import info.magnolia.ui.vaadin.form.DialogContainingForm;
 import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogView;
 import info.magnolia.ui.vaadin.gwt.client.form.widget.FormViewImpl;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -79,6 +82,7 @@ public class DialogContainingFormConnector extends BaseDialogConnector {
     }
 
     private final ElementResizeListener listener = new ElementResizeListener() {
+        @Override
         public void onElementResize(ElementResizeEvent e) {
             updateSize();
         }
@@ -88,7 +92,7 @@ public class DialogContainingFormConnector extends BaseDialogConnector {
     public void onUnregister() {
         getLayoutManager().removeElementResizeListener(getWidget().getElement(), listener);
     }
-    
+
     /**
      * Calculates and sets the max height of form view.
      */
@@ -100,6 +104,8 @@ public class DialogContainingFormConnector extends BaseDialogConnector {
             NodeList<Node> childNodes = element.getChildNodes();
             int footerHeight = 0;
             int headerHeight = 0;
+            int marginHeight = 0;
+            List<String> marginElements = Arrays.asList("dialog-description", "dialog-error", "dialog-content", "dialog-footer");
 
             for (int i = 0; i < childNodes.getLength(); i++) {
                 Node item = childNodes.getItem(i);
@@ -111,10 +117,13 @@ public class DialogContainingFormConnector extends BaseDialogConnector {
                     } else if (child.getClassName().isEmpty()) {
                         headerHeight = child.getOffsetHeight();
                     }
+                    if (marginElements.contains(child.getClassName())) {
+                        marginHeight += 2;
+                    }
                 }
             }
 
-            formview.setMaxHeight(view.asWidget().getElement().getOffsetHeight() - footerHeight - headerHeight);
+            formview.setMaxHeight(view.asWidget().getElement().getOffsetHeight() - footerHeight - headerHeight - marginHeight);
         }
     }
 }

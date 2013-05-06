@@ -163,10 +163,13 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 final ViewportConnector vc = (ViewportConnector) connector;
                 view.updateViewport(vc.getWidget(), vc.getType());
             } else if (connector instanceof OverlayConnector) {
-                final OverlayConnector oc = (OverlayConnector) connector;
-                ComponentConnector overlayParent = (ComponentConnector) oc.getState().overlayParent;
-                Widget parentWidget = overlayParent.getWidget();
-                view.openOverlayOnWidget(oc.getWidget(), parentWidget);
+                // MGNLUI-1274: Open overlay when it's not already existing in shell.
+                if (!view.hasOverlay(connector.getWidget())) {
+                    final OverlayConnector oc = (OverlayConnector) connector;
+                    ComponentConnector overlayParent = (ComponentConnector) oc.getState().overlayParent;
+                    Widget parentWidget = overlayParent.getWidget();
+                    view.openOverlayOnWidget(oc.getWidget(), parentWidget);
+                }
             }
         }
     }

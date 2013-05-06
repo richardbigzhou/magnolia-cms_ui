@@ -282,4 +282,9 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         super.onLoad();
         presenter.initHistory();
     }
+
+    @Override
+    public boolean hasOverlay(Widget widget) {
+        return getWidgetIndex(widget) != -1;
+    }
 }
