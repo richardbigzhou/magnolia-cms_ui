@@ -109,7 +109,7 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
         boolean onlyBar = (marker != null && marker.getAttribute(AreaDefinition.CMS_ADD).equals("bar"));
 
         if (!onlyBar) {
-            createBoxPlaceHolder();
+            this.addStyleName("box");
         }
 
         setVisible(false);
