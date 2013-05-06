@@ -40,6 +40,9 @@ public class AreaElement extends AbstractElement {
 
     private String availableComponents;
 
+    public AreaElement() {
+    }
+
     public AreaElement(String workspace, String path, String dialog, String availableComponents) {
         super(workspace, path, dialog);
         this.availableComponents = availableComponents;
@@ -47,5 +50,9 @@ public class AreaElement extends AbstractElement {
 
     public String getAvailableComponents() {
         return availableComponents;
+    }
+
+    public void setAvailableComponents(String availableComponents) {
+        this.availableComponents = availableComponents;
     }
 }

@@ -33,7 +33,10 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom;
 
-import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
+import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AbstractBar;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaEndBar;
 import info.magnolia.ui.vaadin.gwt.client.widget.placeholder.ComponentPlaceHolder;
@@ -167,15 +170,15 @@ public class MgnlElement extends CmsNode {
         this.endComment = element;
     }
 
-    public String getType() {
-
+    public AbstractElement getTypedElement() {
+        AbstractElement element = null;
         if (isPage()) {
-            return Model.CMS_PAGE;
+            element = new PageElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"));
+        } else if (isArea()) {
+            element = new AreaElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"), getAttribute("availableComponents"));
+        } else if (isComponent()) {
+            element = new ComponentElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"));
         }
-        if (isArea()) {
-            return Model.CMS_AREA;
-        } else {
-            return Model.CMS_COMPONENT;
-        }
+        return element;
     }
 }

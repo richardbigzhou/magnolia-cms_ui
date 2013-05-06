@@ -38,6 +38,9 @@ package info.magnolia.ui.vaadin.gwt.client.shared;
  */
 public class ComponentElement extends AbstractElement {
 
+    public ComponentElement() {
+    }
+
     public ComponentElement(String workspace, String path, String dialog) {
         super(workspace, path, dialog);
     }

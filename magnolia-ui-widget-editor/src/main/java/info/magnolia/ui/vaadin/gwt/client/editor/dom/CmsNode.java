@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom;
 
+import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
+
 import java.util.LinkedList;
 import java.util.List;
 

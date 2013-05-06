@@ -36,15 +36,8 @@ package info.magnolia.ui.vaadin.editor;
 import info.magnolia.ui.vaadin.gwt.client.connector.PageEditorState;
 import info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorServerRpc;
-import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
-import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
-import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
-import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 
-import java.util.Map;
-
-import com.google.gson.Gson;
 import com.vaadin.ui.AbstractComponent;
 
 /**
@@ -52,11 +45,6 @@ import com.vaadin.ui.AbstractComponent;
  */
 public class PageEditor extends AbstractComponent {
 
-    private String PAGE_ELEMENT = "cms:page";
-
-    private String AREA_ELEMENT = "cms:area";
-
-    private String COMPONENT_ELEMENT = "cms:component";
 
     public PageEditor() {
         setSizeFull();
@@ -85,19 +73,6 @@ public class PageEditor extends AbstractComponent {
     @Override
     protected PageEditorState getState(boolean markAsDirty) {
         return (PageEditorState) super.getState(markAsDirty);
-    }
-
-    public AbstractElement resolveElement(String type, Map<String, String> attributes) {
-        AbstractElement element = null;
-        Gson gson = new Gson();
-        if (type.equals(PAGE_ELEMENT)) {
-            element = gson.fromJson(gson.toJson(attributes), PageElement.class);
-        } else if (type.equals(AREA_ELEMENT)) {
-            element = gson.fromJson(gson.toJson(attributes), AreaElement.class);
-        } else if (type.equals(COMPONENT_ELEMENT)) {
-            element = gson.fromJson(gson.toJson(attributes), ComponentElement.class);
-        }
-        return element;
     }
 
     public void refresh() {

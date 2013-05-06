@@ -35,10 +35,10 @@ package info.magnolia.ui.vaadin.editor;
 
 import info.magnolia.ui.vaadin.editor.preview.PageEditorPreviewWrapper;
 import info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorServerRpc;
-import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
-
-import java.util.Map;
+import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -104,8 +104,17 @@ public class PageEditorViewImpl extends CssLayout implements PageEditorView {
             }
 
             @Override
-            public void selectElement(String type, Map<String, String> attributes) {
-                AbstractElement element = pageEditor.resolveElement(type, attributes);
+            public void selectPage(PageElement element) {
+                listener.selectElement(element);
+            }
+
+            @Override
+            public void selectArea(AreaElement element) {
+                listener.selectElement(element);
+            }
+
+            @Override
+            public void selectComponent(ComponentElement element) {
                 listener.selectElement(element);
             }
 

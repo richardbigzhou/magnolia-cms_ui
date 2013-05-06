@@ -60,7 +60,11 @@ import info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModel;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModelImpl;
 import info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorServerRpc;
+import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
+import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 import info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView;
 import info.magnolia.ui.vaadin.gwt.client.widget.PageEditorViewImpl;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.PageBar;
@@ -154,7 +158,16 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
         eventBus.addHandler(SelectElementEvent.TYPE, new SelectElementEventHandler() {
             @Override
             public void onSelectElement(SelectElementEvent selectElementEvent) {
-                rpc.selectElement(selectElementEvent.getType(), selectElementEvent.getAttributes());
+                AbstractElement element = selectElementEvent.getElement();
+                if (element instanceof PageElement) {
+                    rpc.selectPage((PageElement) selectElementEvent.getElement());
+                }
+                else if (element instanceof AreaElement) {
+                    rpc.selectArea((AreaElement) selectElementEvent.getElement());
+                }
+                else if (element instanceof ComponentElement) {
+                    rpc.selectComponent((ComponentElement) selectElementEvent.getElement());
+                }
             }
         });
 
