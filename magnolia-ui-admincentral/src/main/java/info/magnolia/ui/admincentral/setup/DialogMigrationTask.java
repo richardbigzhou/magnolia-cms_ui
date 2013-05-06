@@ -261,6 +261,9 @@ public class DialogMigrationTask extends AbstractTask {
                     fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.LinkFieldDefinition");
                     fieldNode.setProperty("dialogName", "ui-pages-app:link");
                 }
+            } else if (fieldNode.getProperty("controlType").getString().equals("file")) {
+                fieldNode.getProperty("controlType").remove();
+                fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition");
             } else {
                 fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.StaticFieldDefinition");
                 if (!fieldNode.hasProperty("value")) {

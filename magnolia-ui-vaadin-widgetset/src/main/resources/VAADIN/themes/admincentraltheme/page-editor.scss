@@ -22,12 +22,12 @@
   }
 
   .pagebar {
-    color: #EEEEEE;
+    color: $c16;
     background-color: #6a9000;
   }
 
   .pagebar.preview {
-    background-color: #333333;
+    background-color: $c91333;
   }
 
   .pagebar > .v-filterselect {
