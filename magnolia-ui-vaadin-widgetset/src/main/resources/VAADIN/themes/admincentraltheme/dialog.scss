@@ -25,15 +25,15 @@
 .tablet .dialog-content .v-shell-tabsheet-scroller {max-height:385px;} /* Ensure form footer is visible on the iPad */
 
 .dialog-header {
-    background-color:#666;
-    color: #AABF2F;
+    background-color:$c10;
+    color: $c50;
     font-size:15px;
     line-height:15px;
     height:15px;
 }
 
 .dialog-header span {
-    color:#aabf2f;
+    color:$c50;
     font-family:DINWebPro;
     font-size:16px;
 }
@@ -44,7 +44,7 @@
 }
 
 .dialog-description {
-  background-color: #c1d8df;
+  background-color: $c24;
 }
 
 .dialog-description span {
@@ -52,7 +52,7 @@
 }
 
 .dialog-footer {
-  background-color: #ccc;
+  background-color: $c13;
   text-align: right;
   left: 0;
   right: 0;
@@ -99,7 +99,7 @@ button.btn-dialog-help {
 }
 
 .dialog-panel .field-container {
-  color: #999;
+  color: $c12;
 }
 
 .action-dialog-help {
@@ -130,7 +130,7 @@ button.btn-dialog-help {
     color:black;
     padding-bottom:5px;
     border: solid 1px;
-    box-shadow: 7px 7px 10px #888888;
+    box-shadow: 7px 7px 10px $c10;
  }
 
 .light-dialog-panel .dialog-header {
@@ -189,21 +189,21 @@ content:"]";
 .light-dialog-panel .btn-dialog-default { float:right;}
 
 .light-dialog-panel.msginfo {                       border-color:   #A1ADAF;}
-.light-dialog-panel.msginfo .m-closebutton {        color:          $c05;
+.light-dialog-panel.msginfo .m-closebutton {        color:          $c20;
     &:hover,&:active {                              color:          #A1ADAF;}}
-.light-dialog-panel.msginfo .btn-dialog-default {   background:     $c05;}
+.light-dialog-panel.msginfo .btn-dialog-default {   background:     $c75;}
 .light-dialog-panel.msginfo button {                background:     #A1ADAF;}
 
-.light-dialog-panel.msgwarn {                       background:     $c15;
+.light-dialog-panel.msgwarn {                       background:     $c64;
                                                     border-color:   #BEB099;}
 .light-dialog-panel.msgwarn .m-closebutton {        color:          #F6A51C;}
 .light-dialog-panel.msgwarn .btn-dialog-default {   background:     #F6A51C;}
 .light-dialog-panel.msgwarn button {                background:     #BEB099;}
 
-.light-dialog-panel.msgerror {                      background:     $c19;
+.light-dialog-panel.msgerror {                      background:     $c73;
                                                     border-color:   #AE9D9D;}
-.light-dialog-panel.msgerror .m-closebutton {       color:          $c17;}
-.light-dialog-panel.msgerror .btn-dialog-default {  background:     $c17;}
+.light-dialog-panel.msgerror .m-closebutton {       color:          $c70;}
+.light-dialog-panel.msgerror .btn-dialog-default {  background:     $c70;}
 .light-dialog-panel.msgerror button {               background:     #AE9D9D;}
 
 

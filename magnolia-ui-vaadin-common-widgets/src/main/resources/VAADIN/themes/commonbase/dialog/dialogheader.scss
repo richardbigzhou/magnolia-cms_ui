@@ -6,10 +6,10 @@
     float: right;
     margin: -5px -6px 0 7px;
     padding: 6px;
-    color: #aabf2f;
+    color: $c50;
 
     &:hover, &:focus, &:active {
-      color: #dbdf7c;
+      color: $c52;
     }
   }
 

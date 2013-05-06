@@ -1,47 +1,46 @@
 <module>
 
-	<!-- WS Compiler: manually edited -->
-	<inherits name="com.vaadin.DefaultWidgetSet" />
+  <!-- WS Compiler: manually edited -->
+  <inherits name="com.vaadin.DefaultWidgetSet" />
 
-	<!--<inherits name="org.vaadin.artur.icepush.IcepushaddonWidgetset" />
-	<inherits name='org.vaadin.artur.superdevmode.SuperdevmodeaddonWidgetset' />-->
+  <!--<inherits name="org.vaadin.artur.icepush.IcepushaddonWidgetset" />
+    <inherits name='org.vaadin.artur.superdevmode.SuperdevmodeaddonWidgetset' /> -->
 
 
-    <inherits name='org.vaadin.gwtgraphics.GWTGraphics' />
-	<inherits name='com.googlecode.mgwt.dom.DOM' />
-	<inherits name='com.googlecode.mgwt.ui.UI' />
+  <inherits name='org.vaadin.gwtgraphics.GWTGraphics' />
+  <inherits name='com.googlecode.mgwt.dom.DOM' />
+  <inherits name='com.googlecode.mgwt.ui.UI' />
 
-    <inherits name='com.github.wolfie.refresher.RefresherWidgetset' />
+  <inherits name='com.github.wolfie.refresher.RefresherWidgetset' />
 
-	<inherits name="com.google.gwt.json.JSON" />
-	<inherits name="com.google.gwt.resources.Resources" />
-    <inherits name="org.vaadin.openesignforms.ckeditor.widgetset.VaadinCKEditorWidgetset" />
-    <inherits name="org.vaadin.cssinject.Cssinject_addonWidgetset" />
+  <inherits name="com.google.gwt.json.JSON" />
+  <inherits name="com.google.gwt.resources.Resources" />
+  <inherits name="org.vaadin.openesignforms.ckeditor.widgetset.VaadinCKEditorWidgetset" />
+  <inherits name="org.vaadin.cssinject.Cssinject_addonWidgetset" />
 
-    <stylesheet src="jcrop/jquery.Jcrop.css"/>
-    <stylesheet src="lightbox/lightbox.css"/>
+  <stylesheet src="jcrop/jquery.Jcrop.css" />
 
-	<replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.MobileSafariTouchWidgetImplProxy">
-		<when-type-is class="com.googlecode.mgwt.ui.client.widget.touch.TouchWidgetImpl" />
-		<all>
-			<when-property-is name="mobile.user.agent" value="mobilesafari" />
-		</all>
-	</replace-with>
+  <replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.MobileSafariTouchWidgetImplProxy">
+    <when-type-is class="com.googlecode.mgwt.ui.client.widget.touch.TouchWidgetImpl" />
+    <all>
+      <when-property-is name="mobile.user.agent" value="mobilesafari" />
+    </all>
+  </replace-with>
 
-	<replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.VMobileSafariUI">
-		<when-type-is class="com.vaadin.client.ui.VUI" />
-		<all>
-			<when-property-is name="mobile.user.agent" value="mobilesafari" />
-		</all>
-	</replace-with>
+  <replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.VMobileSafariUI">
+    <when-type-is class="com.vaadin.client.ui.VUI" />
+    <all>
+      <when-property-is name="mobile.user.agent" value="mobilesafari" />
+    </all>
+  </replace-with>
 
-	<replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.VMgwtStylesUI">
-		<when-type-is class="com.vaadin.client.ui.VUI" />
-		<all>
-			<when-property-is name="mgwt.os" value="desktop" />
-		</all>
-	</replace-with>
+  <replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.VMgwtStylesUI">
+    <when-type-is class="com.vaadin.client.ui.VUI" />
+    <all>
+      <when-property-is name="mgwt.os" value="desktop" />
+    </all>
+  </replace-with>
 
-	<set-configuration-property name="mgwt.css" value="pretty" />
+  <set-configuration-property name="mgwt.css" value="pretty" />
 
 </module>
