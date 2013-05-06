@@ -54,7 +54,6 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Container;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.TreeTable;
 
@@ -175,14 +174,6 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
             });
         }
 
-        treeTable.setCellStyleGenerator(new Table.CellStyleGenerator() {
-
-            @Override
-            public String getStyle(Table source, Object itemId, Object propertyId) {
-                return presenterGetIcon(itemId, propertyId);
-            }
-        });
-
         return treeTable;
     }
 
@@ -278,15 +269,6 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     @Override
     public TreeTable asVaadinComponent() {
         return treeTable;
-    }
-
-    private String presenterGetIcon(Object itemId, Object propertyId) {
-        Container container = treeTable.getContainerDataSource();
-        if (listener != null && propertyId == null) {
-            return listener.getItemIcon(container.getItem(itemId));
-        }
-
-        return null;
     }
 
     @Override

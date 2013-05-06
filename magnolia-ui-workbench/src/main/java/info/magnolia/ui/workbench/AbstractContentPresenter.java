@@ -35,15 +35,10 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
-
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +49,6 @@ import com.vaadin.data.Item;
  * Presenter for ContentView.
  */
 public abstract class AbstractContentPresenter implements ContentPresenter, ContentView.Listener {
-
-    private static final String ICON_PROPERTY = "icon-node-data";
 
     private static final Logger log = LoggerFactory.getLogger(AbstractContentPresenter.class);
 
@@ -132,26 +125,6 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
         } catch (Exception e) {
             log.error("An error occurred while double clicking on a row in the data grid", e);
         }
-    }
-
-    @Override
-    public String getItemIcon(Item item) {
-        if (item instanceof JcrPropertyAdapter && workbenchDefinition.includeProperties()) {
-            return ICON_PROPERTY;
-        }
-
-        if (item instanceof JcrNodeAdapter) {
-            JcrNodeAdapter node = (JcrNodeAdapter) item;
-            String typeName = node.getPrimaryNodeTypeName();
-            List<NodeTypeDefinition> nodeTypes = workbenchDefinition.getNodeTypes();
-            for (NodeTypeDefinition currentNodeType: nodeTypes) {
-                if (currentNodeType.getName().equals(typeName)) {
-                    return currentNodeType.getIcon();
-                }
-            }
-        }
-
-        return null;
     }
 
     protected void initContentView(WorkbenchView parentView) {

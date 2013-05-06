@@ -103,7 +103,5 @@ public interface ContentView extends View {
 
         void onItemEdited(Item item);
 
-        String getItemIcon(Item item);
-
     }
 }

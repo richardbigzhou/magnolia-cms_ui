@@ -145,15 +145,6 @@ public class ListViewImpl implements ListView {
         }
     }
 
-    private String presenterGetIcon(Object itemId, Object propertyId) {
-        Container container = table.getContainerDataSource();
-        if (listener != null && propertyId == null) {
-            return listener.getItemIcon(container.getItem(itemId));
-        }
-
-        return null;
-    }
-
     // NEW VIEW LOGIC
 
     @Override
