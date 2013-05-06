@@ -135,7 +135,7 @@ public class ConfiguredActionDefinition implements ActionDefinition {
         return errorMessage;
     }
 
-    public void setErrorMessage() {
+    public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
 }

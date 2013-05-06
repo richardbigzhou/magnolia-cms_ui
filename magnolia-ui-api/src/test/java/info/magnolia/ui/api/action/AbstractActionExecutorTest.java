@@ -35,39 +35,83 @@ package info.magnolia.ui.api.action;
 
 import static org.junit.Assert.*;
 
+import info.magnolia.cms.security.MgnlUser;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.test.MgnlTestCase;
+import info.magnolia.test.mock.MockWebContext;
+import info.magnolia.test.mock.jcr.MockNode;
+import info.magnolia.test.mock.jcr.MockProperty;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Test case for AbstractActionExecutor.
  */
-public class AbstractActionExecutorTest {
+public class AbstractActionExecutorTest extends MgnlTestCase {
+
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+
+        ArrayList<String> roles = new ArrayList<String>();
+        roles.add("testRole");
+
+        MgnlUser user = new MgnlUser("testUser", null, new ArrayList<String>(), roles, new HashMap<String, String>()) {
+
+            // Overridden to avoid querying the group manager in test
+            @Override
+            public Collection<String> getAllRoles() {
+                return super.getRoles();
+            }
+        };
+
+        MockWebContext context = (MockWebContext) MgnlContext.getInstance();
+        context.setUser(user);
+    }
+
+    @Test
+    public void testCreatesAndExecutesAction() throws ActionExecutionException {
+
+        // GIVEN
+        SimpleActionExecutor actionExecutor = createSimpleActionExecutor();
+
+        ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
+        actionDefinition.setName("foobar");
+        actionDefinition.setImplementationClass(ActionThatCompletesNormally.class);
+        actionExecutor.add(actionDefinition);
+
+        // WHEN
+        actionExecutor.execute("foobar");
+
+        // THEN
+        assertTrue(ActionThatCompletesNormally.executed);
+    }
 
     @Test
     public void testCreateActionThrowsExceptionWhenActionDefinitionMissing() {
 
-        AbstractActionExecutor abstractActionExecutor = new AbstractActionExecutor(null) {
-            @Override
-            public ActionDefinition getActionDefinition(String actionName) {
-                return null;
-            }
-        };
+        // GIVEN
+        SimpleActionExecutor actionExecutor = createSimpleActionExecutor();
 
-        //WHEN
+        // WHEN
         try {
-            abstractActionExecutor.createAction("foobar");
+            actionExecutor.createAction("foobar");
             fail("Expected ActionExecutionException");
         } catch (ActionExecutionException e) {
-            //THEN
+            // THEN
             assertEquals("No definition exists for action: foobar", e.getMessage());
         }
     }
@@ -75,19 +119,19 @@ public class AbstractActionExecutorTest {
     @Test
     public void testCreateActionThrowsExceptionWhenActionDefinitionLacksActionClass() {
 
-        AbstractActionExecutor abstractActionExecutor = new AbstractActionExecutor(null) {
-            @Override
-            public ActionDefinition getActionDefinition(String actionName) {
-                return new CommandActionDefinition();
-            }
-        };
+        // GIVEN
+        SimpleActionExecutor actionExecutor = createSimpleActionExecutor();
 
-        //WHEN
+        ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
+        actionDefinition.setName("foobar");
+        actionExecutor.add(actionDefinition);
+
+        // WHEN
         try {
-            abstractActionExecutor.createAction("foobar");
+            actionExecutor.createAction("foobar");
             fail("Expected ActionExecutionException");
         } catch (ActionExecutionException e) {
-            //THEN
+            // THEN
             assertEquals("No action class set for action: foobar", e.getMessage());
         }
     }
@@ -95,22 +139,20 @@ public class AbstractActionExecutorTest {
     @Test
     public void testThrowsExceptionWhenActionThrowsRuntimeException() {
 
-        GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
-        builder.withConfiguration(new ComponentProviderConfiguration());
-        GuiceComponentProvider componentProvider = builder.build();
-        SimpleActionExecutor actionExecutor = new SimpleActionExecutor(componentProvider);
+        // GIVEN
+        SimpleActionExecutor actionExecutor = createSimpleActionExecutor();
 
         ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
         actionDefinition.setName("foobar");
         actionDefinition.setImplementationClass(ActionThatThrowsRuntimeException.class);
         actionExecutor.add(actionDefinition);
 
-        //WHEN
+        // WHEN
         try {
             actionExecutor.execute("foobar");
             fail("Expected ActionExecutionException");
         } catch (ActionExecutionException e) {
-            //THEN
+            // THEN
             assertEquals("Action execution failed for action: foobar", e.getMessage());
             assertEquals("ActionThatThrowsRuntimeException", e.getCause().getMessage());
         }
@@ -119,40 +161,48 @@ public class AbstractActionExecutorTest {
     @Test
     public void testThrowsExceptionWhenActionThrowsActionExecutionException() {
 
-        GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
-        builder.withConfiguration(new ComponentProviderConfiguration());
-        GuiceComponentProvider componentProvider = builder.build();
-        SimpleActionExecutor actionExecutor = new SimpleActionExecutor(componentProvider);
+        // GIVEN
+        SimpleActionExecutor actionExecutor = createSimpleActionExecutor();
 
         ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
         actionDefinition.setName("foobar");
         actionDefinition.setImplementationClass(ActionThatThrowsActionExecutionException.class);
         actionExecutor.add(actionDefinition);
 
-        //WHEN
+        // WHEN
         try {
             actionExecutor.execute("foobar");
             fail("Expected ActionExecutionException");
         } catch (ActionExecutionException e) {
-            //THEN
+            // THEN
             assertEquals("ActionThatThrowsActionExecutionException", e.getMessage());
         }
     }
 
-    public static class ActionThatThrowsRuntimeException implements Action {
+    public static class ActionThatCompletesNormally implements Action {
 
+        public static boolean executed = false;
+
+        @Override
+        public void execute() throws ActionExecutionException {
+            executed = true;
+        }
+    }
+
+    public static class ActionThatThrowsRuntimeException implements Action {
         @Override
         public void execute() throws ActionExecutionException {
             throw new NullPointerException("ActionThatThrowsRuntimeException");
         }
+
     }
 
     public static class ActionThatThrowsActionExecutionException implements Action {
-
         @Override
         public void execute() throws ActionExecutionException {
             throw new ActionExecutionException("ActionThatThrowsActionExecutionException");
         }
+
     }
 
     private static class SimpleActionExecutor extends AbstractActionExecutor {
@@ -176,6 +226,121 @@ public class AbstractActionExecutorTest {
             }
             return null;
         }
+    }
+
+    @Test
+    public void missingActionIsNotAvailable() {
+
+        // GIVEN
+        SimpleActionExecutor actionExecutor = createSimpleActionExecutor();
+
+        // THEN
+        assertFalse(actionExecutor.isAvailable("foobar", null));
+        assertFalse(actionExecutor.isAvailable("foobar", new MockNode()));
+        assertFalse(actionExecutor.isAvailable("foobar", new MockProperty("propertyName", "propertyValue", new MockNode())));
+    }
+
+    @Test
+    public void actionIsAvailableIfRootEnabledAndGivenNull() {
+
+        // GIVEN
+        SimpleActionExecutor actionExecutor = createSimpleActionExecutor();
+
+        ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
+        actionDefinition.setName("foobar");
+        ConfiguredActionRestrictionsDefinition restrictions = (ConfiguredActionRestrictionsDefinition) actionDefinition.getRestrictions();
+        restrictions.setRoot(true);
+        actionExecutor.add(actionDefinition);
+
+        // THEN
+        assertTrue(actionExecutor.isAvailable("foobar", null));
+        assertTrue(actionExecutor.isAvailable("foobar", new MockNode()));
+        assertFalse(actionExecutor.isAvailable("foobar", new MockProperty("propertyName", "propertyValue", new MockNode())));
+    }
+
+    @Test
+    public void actionIsAvailableIfPropertiesEnabledAndGivenProperty() {
+
+        // GIVEN
+        SimpleActionExecutor actionExecutor = createSimpleActionExecutor();
+
+        ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
+        actionDefinition.setName("foobar");
+        ConfiguredActionRestrictionsDefinition restrictions = (ConfiguredActionRestrictionsDefinition) actionDefinition.getRestrictions();
+        restrictions.setProperties(true);
+        actionExecutor.add(actionDefinition);
+
+        // THEN
+        assertFalse(actionExecutor.isAvailable("foobar", null));
+        assertTrue(actionExecutor.isAvailable("foobar", new MockProperty("propertyName", "propertyValue", new MockNode())));
+        assertTrue(actionExecutor.isAvailable("foobar", new MockNode()));
+    }
+
+    @Test
+    public void actionIsAvailableWhenNoNodeTypesAreConfigured() {
+
+        // GIVEN
+        SimpleActionExecutor actionExecutor = createSimpleActionExecutor();
+
+        ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
+        actionDefinition.setName("foobar");
+        actionExecutor.add(actionDefinition);
+
+        // THEN
+        assertFalse(actionExecutor.isAvailable("foobar", null));
+        assertFalse(actionExecutor.isAvailable("foobar", new MockProperty("propertyName", "propertyValue", new MockNode())));
+        assertTrue(actionExecutor.isAvailable("foobar", new MockNode()));
+    }
+
+    @Test
+    public void actionIsAvailableOnlyForTheConfiguredNodeTypes() {
+
+        // GIVEN
+        SimpleActionExecutor actionExecutor = createSimpleActionExecutor();
+
+        ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
+        actionDefinition.setName("foobar");
+        ConfiguredActionRestrictionsDefinition restrictions = (ConfiguredActionRestrictionsDefinition) actionDefinition.getRestrictions();
+        restrictions.getNodeTypes().add(NodeTypes.Content.NAME);
+        actionExecutor.add(actionDefinition);
+
+        // THEN
+        assertFalse(actionExecutor.isAvailable("foobar", null));
+        assertFalse(actionExecutor.isAvailable("foobar", new MockProperty("propertyName", "propertyValue", new MockNode())));
+        assertTrue(actionExecutor.isAvailable("foobar", new MockNode("", NodeTypes.Content.NAME)));
+        assertFalse(actionExecutor.isAvailable("foobar", new MockNode("", NodeTypes.ContentNode.NAME)));
+    }
+
+    @Test
+    public void actionIsAvailableOnlyForTheConfiguredRoles() {
+
+        // GIVEN
+        SimpleActionExecutor actionExecutor = createSimpleActionExecutor();
+
+        ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
+        actionDefinition.setName("requiresTestRole");
+        ConfiguredActionRestrictionsDefinition restrictions = (ConfiguredActionRestrictionsDefinition) actionDefinition.getRestrictions();
+        restrictions.setRoot(true);
+        restrictions.getRoles().add("testRole");
+        actionExecutor.add(actionDefinition);
+
+        ConfiguredActionDefinition actionDefinition2 = new ConfiguredActionDefinition();
+        actionDefinition2.setName("requiresTestRole2");
+        restrictions = (ConfiguredActionRestrictionsDefinition) actionDefinition2.getRestrictions();
+        restrictions.setRoot(true);
+        restrictions.getRoles().add("testRole2");
+        actionExecutor.add(actionDefinition2);
+
+        // THEN
+        assertTrue(actionExecutor.isAvailable("requiresTestRole", null));
+        assertFalse(actionExecutor.isAvailable("requiresTestRole2", null));
+    }
+
+    private SimpleActionExecutor createSimpleActionExecutor() {
+        GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
+        builder.withConfiguration(new ComponentProviderConfiguration());
+        GuiceComponentProvider componentProvider = builder.build();
+        return new SimpleActionExecutor(componentProvider);
     }
 }
 

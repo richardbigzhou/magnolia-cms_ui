@@ -103,6 +103,12 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
      * @param propertyId the property id
      */
     public void setEditing(Object itemId, Object propertyId) {
+        // ensure we don't keep outdated itemIds
+        if (getItem(itemId) == null) {
+            itemId = null;
+            propertyId = null;
+        }
+
         if (itemId != null && propertyId != null) {
             if ((bypassedColumnGenerator = getColumnGenerator(propertyId)) != null) {
                 removeGeneratedColumn(propertyId);
@@ -279,19 +285,21 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                     setEditing(null, null);
 
                 } else if (action == tabNext) {
-                    // Saves first
+                    // First gets a reference to next candidate
+                    TableCell nextCell = getNextEditableCandidate(editingItemId, editingPropertyId);
+
+                    // Then saves
                     fireItemEditedEvent(getItemFromField(field));
 
-                    // Then updates current editingItemId, and asks for next candidate
-                    TableCell nextCell = getNextEditableCandidate(editingItemId, editingPropertyId);
                     setEditing(nextCell.getItemId(), nextCell.getPropertyId());
 
                 } else if (action == tabPrev) {
-                    // Saves first
+                    // First gets a reference to previous candidate
+                    TableCell previousCell = getPreviousEditableCandidate(editingItemId, editingPropertyId);
+
+                    // Then saves
                     fireItemEditedEvent(getItemFromField(field));
 
-                    // Then updates current editingItemId, and asks for previous candidate
-                    TableCell previousCell = getPreviousEditableCandidate(editingItemId, editingPropertyId);
                     setEditing(previousCell.getItemId(), previousCell.getPropertyId());
 
                 } else if (action == escape) {

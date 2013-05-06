@@ -16,7 +16,7 @@
 }
 
 .favorites-group {
-	border-top: 1px solid #E6E6E6;
+  border-top: 1px solid #E6E6E6;
     border-bottom: 1px solid #E6E6E6;
     margin-bottom: 20px;
 }
@@ -46,13 +46,13 @@
 }
 
 .favorites-entry {
-  	height:35px;
-  	width:402px;
+    height:35px;
+    width:402px;
 }
 
 .favorites-group-title.selected,.favorites-entry.selected {
-	color: white;
-	background-color: #666;
+  color: white;
+  background-color: #666;
 }
 
 .favorites-entry .v-label {
@@ -78,34 +78,34 @@
 }
 
 .favorites-entry input[type="text"]:hover {
-	text-decoration: underline;
+  text-decoration: underline;
 }
 
 .favorites-entry.selected input[type="text"],.favorites-entry.selected input[type="text"].readonly {
-	color:white;
+  color:white;
 }
 
 .favorites-entry.selected input[type="text"].editable {
-	 color: #666;
-	 text-decoration: none;
+   color: #666;
+   text-decoration: none;
 }
 
 .favorites-entry input.v-textfield-readonly {
-	background-color: transparent !important;
-	cursor: pointer;
+  background-color: transparent !important;
+  cursor: pointer;
 }
 
 .favorites-group button.favorite-action, .favorites-entry button.favorite-action {
-	border: none;
-	margin-right: 5px;
-	background-color: transparent;
+  border: none;
+  margin-right: 5px;
+  background-color: transparent;
     font-size: 20px;
     width: 25px;
     padding-top: 2px;
     color: white;
 }
 .favorites-group button.favorite-action:hover, .favorites-entry button.favorite-action:hover {
-	color: #679600;
+  color: #679600;
 }
 
 .favorites-form {
@@ -143,8 +143,8 @@
 }
 
 .favorites-form .v-tabsheet-content {
-	border: none !important;
-	height: 144px !important;
+  border: none !important;
+  height: 144px !important;
 }
 
 .favorites-form-content, .favorites-tabs {
@@ -152,11 +152,11 @@
 }
 
 .favorites-form-content .v-formlayout-captioncell {
-	padding-left:15px;
+  padding-left:15px;
 }
 
 .favorites-tabs .v-tabsheet-tabitem {
-	border: none ;
+  border: none ;
 }
 
 .favorites-tabs .v-tabsheet-spacertd div {
@@ -167,13 +167,13 @@
     border-right: 1px solid #999;
 }
 .favorites-tabs .v-tabsheet-tabitem .v-caption {
-	color: #999;
+  color: #999;
 }
 .favorites-tabs .v-tabsheet-tabitem .v-caption :hover {
-	color: #679600;
+  color: #679600;
 }
 .favorites-tabs .v-tabsheet-tabitem-selected .v-caption {
-	color: black;
+  color: black;
 }
 .favorites-form-content input[type="text"] {
   width: 700px !important;
@@ -184,7 +184,7 @@
  }
 
 .favorites-form-content span.v-required-field-indicator {
- 	color: black;
+   color: black;
  }
 
 }

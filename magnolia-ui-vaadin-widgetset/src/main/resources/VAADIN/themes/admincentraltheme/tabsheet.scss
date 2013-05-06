@@ -3,22 +3,22 @@
 @mixin tabsheet {
 
 /* color definitions */
-.v-shell-tabsheet {background-color:#e6e6e6;position: relative;}
-.v-shell-tabsheet .nav {background-color:#ccc; border-color:#999;}
-.v-shell-tabsheet .nav li {border-color:#999; color:#999;}
-.v-shell-tabsheet .nav li:hover {background-color:#999; color:#666;}
-.v-shell-tabsheet .nav li:active {background-color:#e6e6e6;}
+.v-shell-tabsheet {background-color:$c15;position: relative;}
+.v-shell-tabsheet .nav {background-color:$c13; border-color:$c12;}
+.v-shell-tabsheet .nav li {border-color:$c12; color:$c12;}
+.v-shell-tabsheet .nav li:hover {background-color:$c12; color:$c10;}
+.v-shell-tabsheet .nav li:active {background-color:$c15;}
 .v-shell-tabsheet .nav li.show-all {border-color:transparent;}
-.v-shell-tabsheet .nav li.active {background-color:#e6e6e6; border-color:#999; color:#666;}
+.v-shell-tabsheet .nav li.active {background-color:$c15; border-color:$c12; color:$c10;}
 
-.v-shell-tabsheet-light {background-color:#fff;}
-.v-shell-tabsheet-light .nav {background-color:#e6e6e6; border-color:#ccc;}
-.v-shell-tabsheet-light .nav li {border-color:#ccc;}
-.v-shell-tabsheet-light .nav li:hover {background-color:#ccc; color:#666;}
-.v-shell-tabsheet-light .nav li:active {background-color:#fff;}
-.v-shell-tabsheet-light .nav li.active {background-color:#fff; border-color:#ccc;}
+.v-shell-tabsheet-light {background-color:$c80;}
+.v-shell-tabsheet-light .nav {background-color:$c15; border-color:$c13;}
+.v-shell-tabsheet-light .nav li {border-color:$c13;}
+.v-shell-tabsheet-light .nav li:hover {background-color:$c13; color:$c10;}
+.v-shell-tabsheet-light .nav li:active {background-color:$c80;}
+.v-shell-tabsheet-light .nav li.active {background-color:$c80; border-color:$c13;}
 
-.dialog-panel .v-shell-tabsheet .nav li.active {color:#000;}
+.dialog-panel .v-shell-tabsheet .nav li.active {color:$c90;}
 
 .v-shell-tabsheet-logo {
     position: absolute;
@@ -31,7 +31,7 @@
     left: 23px;
     line-height: 17px;
     font-size: 16px;
-    color: #fff;
+    color: $c80;
 }
 
 .v-app-preloader > .nav {
@@ -43,11 +43,10 @@
 }
 
 .fullscreen .v-shell-tabsheet-scroller {
-	position: absolute !important;
 	top: -60px;
 	bottom: 0;
 	z-index: 500;
-	background-color: $c04;
+	background-color: $c64;
 	zoom: 1;
 }
 
@@ -167,7 +166,7 @@
 	height: 22px;
 	width: 22px;
 
-    color: #FFFFFF;
+    color: $c80;
     font-size: 12px;
     vertical-align: text-bottom;
     z-index: 4001;

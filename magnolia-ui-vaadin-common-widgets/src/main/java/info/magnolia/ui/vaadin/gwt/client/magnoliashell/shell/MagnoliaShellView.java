@@ -71,6 +71,8 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
 
     void updateShellDivet();
 
+    boolean hasOverlay(Widget widget);
+
     /**
      * Add the overlayWidget to the Shell - but the DOM of the widget will be placed over
      * the DOM of the specified overlayParent.

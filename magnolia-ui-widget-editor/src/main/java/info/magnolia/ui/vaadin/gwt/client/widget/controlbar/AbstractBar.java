@@ -35,7 +35,6 @@ package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
-import info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Float;
@@ -51,8 +50,7 @@ public abstract class AbstractBar extends FlowPanel {
 
     protected final static String ICON_CLASSNAME = "editorIcon";
     protected final static String EDIT_CLASSNAME = "icon-edit";
-    protected final static String REMOVE_CLASSNAME = "icon-trash";
-    protected final static String ADD_CLASSNAME = "icon-add";
+    protected final static String ADD_CLASSNAME = "icon-add-item";
 
     private String workspace;
 
@@ -63,10 +61,6 @@ public abstract class AbstractBar extends FlowPanel {
     private final FlowPanel buttonWrapper;
 
     private CmsNode cmsNode;
-
-    private FlowPanel primaryButtons;
-
-    private FlowPanel secondaryButtons;
 
     private final EventBus eventBus;
 
@@ -113,49 +107,11 @@ public abstract class AbstractBar extends FlowPanel {
      * Adds this widget to this bar as a button. The default (primary) style applied is <code>mgnlEditorButton</code>. See also <code>editor.css</code>.
      */
     protected void addButton(final Widget button, final Float cssFloat) {
-        button.setStylePrimaryName("mgnlEditorButton");
         button.getElement().getStyle().setFloat(cssFloat);
-
         buttonWrapper.add(button);
     }
 
-    /**
-     * Adds this widget to this bar as a button. The default (primary) style applied is <code>mgnlEditorButton</code>. See also <code>editor.css</code>.
-     */
-    protected void addSecondaryButton(final Widget button) {
-        if (secondaryButtons == null) {
-            secondaryButtons = new FlowPanel();
-            secondaryButtons.setStylePrimaryName("mgnlEditorBarSecondaryButtons");
-            buttonWrapper.add(secondaryButtons);
-        }
-        secondaryButtons.add(button);
-    }
-
-    /**
-     * Adds this widget to this bar as a button. The default (primary) style applied is <code>mgnlEditorButton</code>. See also <code>editor.css</code>.
-     */
-    protected void addPrimaryButton(final Widget button) {
-        if (primaryButtons == null) {
-            primaryButtons = new FlowPanel();
-            primaryButtons.setStylePrimaryName("mgnlEditorBarPrimaryButtons");
-            buttonWrapper.add(primaryButtons);
-        }
-
-        primaryButtons.add(button);
-    }
-
-    /**
-     * Adds this widget to this bar as a button. It allows overriding the default (primary) style
-     * applied <code>mgnlEditorButton</code>. See also <code>editor.css</code>.
-     */
-    protected void addButton(final Widget button, final Float cssFloat, final String primaryStyleName) {
-        if (JavascriptUtils.isEmpty(primaryStyleName)) {
-            addButton(button, cssFloat);
-            return;
-        }
-        button.setStylePrimaryName(primaryStyleName);
-        button.getElement().getStyle().setFloat(cssFloat);
-
+    protected void addButton(final Widget button) {
         buttonWrapper.add(button);
     }
 
@@ -185,8 +141,7 @@ public abstract class AbstractBar extends FlowPanel {
         CmsNode parent = cmsNode.getParent();
         if (parent != null) {
             for (CmsNode component : parent.getComponents()) {
-                component.asMgnlElement().getControlBar().primaryButtons.setVisible(visible);
-                component.asMgnlElement().getControlBar().secondaryButtons.setVisible(visible);
+                component.asMgnlElement().getControlBar().buttonWrapper.setVisible(visible);
             }
         }
     }
