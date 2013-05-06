@@ -34,12 +34,15 @@
 package info.magnolia.ui.workbench;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.imageprovider.DefaultImageProvider;
+import info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.workbench.column.definition.LabelColumnDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
@@ -55,17 +58,16 @@ import info.magnolia.ui.workbench.tree.TreeView;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Tests for ConfiguredContentViewBuilder.
+ * Tests.
  */
 public class ContentViewBuilderImplTest {
 
     protected final MockComponentProvider componentProvider = new MockComponentProvider();
     protected final ConfiguredWorkbenchDefinition workbenchDef = new ConfiguredWorkbenchDefinition();
-    private ImageProviderDefinition imageProvider;
+    private ConfiguredImageProviderDefinition imageProvider;
 
     @Before
     public void setUp() throws Exception {
@@ -75,9 +77,12 @@ public class ContentViewBuilderImplTest {
         final MockSession session = new MockSession(workspace);
         MockUtil.setSessionAndHierarchyManager(session);
 
-        this.imageProvider = mock(ImageProviderDefinition.class);
+        this.imageProvider = new ConfiguredImageProviderDefinition();
+        imageProvider.setImageProviderClass(DefaultImageProvider.class);
         componentProvider.setInstance(ImageProviderDefinition.class, imageProvider);
+        componentProvider.setInstance(ComponentProvider.class, componentProvider);
 
+        ComponentsTestUtil.setInstance(ComponentProvider.class, componentProvider);
         workbenchDef.setWorkspace(workspace);
         workbenchDef.setPath("/");
 
@@ -90,7 +95,6 @@ public class ContentViewBuilderImplTest {
     }
 
     @Test
-    @Ignore
     public void testBuildingListView() {
         // GIVEN all conditions in setUp
 
@@ -103,7 +107,6 @@ public class ContentViewBuilderImplTest {
     }
 
     @Test
-    @Ignore
     public void testBuildingTreeView() {
         // GIVEN all conditions in setUp
 
@@ -116,7 +119,6 @@ public class ContentViewBuilderImplTest {
     }
 
     @Test
-    @Ignore
     public void testBuildingThumbnailView() {
         // GIVEN all conditions in setUp
 
@@ -129,7 +131,6 @@ public class ContentViewBuilderImplTest {
     }
 
     @Test
-    @Ignore
     public void testBuildingSearchView() {
         // GIVEN all conditions in setUp
 
