@@ -4,7 +4,7 @@
 
 .thumbnail-layout {
 	position: relative;
-	background-color: $c21;
+	background-color: $c80;
 }
 
 .thumbnail-layout .thumbnail-scroller {
@@ -21,11 +21,11 @@
 }
 
 .thumbnail.selected {
-	background-color: #AABF2F;
+	background-color: $c50;
 }
 
 .thumbnail:hover {
-	border: 1px solid #AABF2F;
+	border: 1px solid $c50;
 }
 
 /* Contact info styles */
