@@ -50,6 +50,8 @@ import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.favorite.FavoriteStore;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
+import java.util.Map;
+
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 
@@ -223,5 +225,27 @@ public class FavoritesManagerImplTest {
         assertEquals(title, suggestion.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue());
         assertEquals(location, suggestion.getItemProperty(AdmincentralNodeTypes.Favorite.URL).getValue());
         assertEquals("icon-app", suggestion.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue());
+    }
+
+    @Test
+    public void testGetGroupsNamesReturnsSortedMap() throws Exception {
+        // GIVEN
+        JcrNewNodeAdapter newNodeAdapter = favoritesManager.createFavoriteGroupSuggestion("zzz");
+        favoritesManager.addGroup(newNodeAdapter);
+
+        newNodeAdapter = favoritesManager.createFavoriteGroupSuggestion("Aaa");
+        favoritesManager.addGroup(newNodeAdapter);
+
+        newNodeAdapter = favoritesManager.createFavoriteGroupSuggestion("hhh");
+        favoritesManager.addGroup(newNodeAdapter);
+
+        // WHEN
+        Map<String, String> groups = favoritesManager.getGroupsNames();
+        String[] values = groups.values().toArray(new String[] {});
+
+        // THEN
+        assertEquals("Aaa", values[0]);
+        assertEquals("hhh", values[1]);
+        assertEquals("zzz", values[2]);
     }
 }

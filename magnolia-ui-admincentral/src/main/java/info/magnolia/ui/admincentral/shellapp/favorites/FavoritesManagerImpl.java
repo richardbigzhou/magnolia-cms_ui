@@ -45,8 +45,8 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
@@ -105,7 +105,7 @@ public class FavoritesManagerImpl implements FavoritesManager {
 
     @Override
     public Map<String, String> getGroupsNames() {
-        Map<String, String> groupNames = new HashMap<String, String>();
+        Map<String, String> groupNames = new TreeMap<String, String>();
         Iterable<Node> groups;
         try {
             Node bookmarksNode = favoriteStore.getBookmarkRoot();
