@@ -110,8 +110,14 @@
 
   .preview {
     margin: auto;
-    margin-top: 20px;
     position: relative;
+  }
+
+  .preview.tabletPortrait,
+  .preview.tabletLandscape,
+  .preview.smartphoneLandscape,
+  .preview.smartphonePortrait {
+    margin-top: 20px;
   }
 
   .pageEditorView {
