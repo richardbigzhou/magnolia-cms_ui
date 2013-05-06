@@ -125,11 +125,13 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
             }
         }
 
-        if (item == null)
+        if (item == null) {
             return restrictions.isRoot();
+        }
 
-        if (!item.isNode() && restrictions.isProperties())
-            return  true;
+        if (!item.isNode()) {
+            return restrictions.isProperties();
+        }
 
         // Must have _any_ of the node types if any are specified, otherwise its available by default
         if (restrictions.getNodeTypes().isEmpty())
@@ -137,8 +139,9 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
 
         for (String nodeType : restrictions.getNodeTypes()) {
             try {
-                if (NodeUtil.isNodeType((Node)item, nodeType))
+                if (NodeUtil.isNodeType((Node)item, nodeType)) {
                     return true;
+                }
             } catch (RepositoryException e) {
                 log.error("Could not determine node type of node " + NodeUtil.getNodePathIfPossible((Node) item));
             }
