@@ -11,7 +11,7 @@
   <packaging>jar</packaging>
   <name>magnolia-ui-app-pages</name>
   <properties>
-    <cloverCoverageThreshold>16</cloverCoverageThreshold>
+    <cloverCoverageThreshold>10</cloverCoverageThreshold>
   </properties>
 
   <dependencies>
