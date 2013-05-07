@@ -120,7 +120,12 @@
     margin-top: 20px;
   }
 
-  .pageEditorView {
+  .pageEditorView.previewMode {
     overflow: auto;
   }
+
+  .pageEditorView {
+    overflow: hidden;
+  }
+
 }

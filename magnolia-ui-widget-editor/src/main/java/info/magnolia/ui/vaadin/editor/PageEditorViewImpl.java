@@ -74,9 +74,11 @@ public class PageEditorViewImpl extends CssLayout implements PageEditorView {
     public void load(PageEditorParameters parameters) {
         boolean isPreview = parameters.isPreview();
         if (!isPreview) {
+            removeStyleName("previewMode");
             removeComponent(previewChrome);
             addComponent(pageEditor);
         } else {
+            addStyleName("previewMode");
             previewChrome.setCurrentPlatform(parameters.getPlatformType());
             previewChrome.setContent(pageEditor);
             addComponent(previewChrome);
