@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
@@ -84,8 +85,8 @@ public final class FavoritesForm extends CustomComponent {
 
         tabsheet = new TabSheet();
         tabsheet.addStyleName("favorites-tabs");
-        tabsheet.addTab(favoriteEntryForm, "Add a new favorite");
-        tabsheet.addTab(favoriteGroupForm, "Add a new group");
+        tabsheet.addTab(favoriteEntryForm, MessagesUtil.get("favorites.form.favorite.add"));
+        tabsheet.addTab(favoriteGroupForm, MessagesUtil.get("favorites.form.group.add"));
 
         tabsheet.addSelectedTabChangeListener(new SelectedTabChangeListener() {
 
@@ -122,7 +123,7 @@ public final class FavoritesForm extends CustomComponent {
         addNewIcon.setValue("<span class=\"icon-add-fav\"></span>");
         addNewIcon.addStyleName("icon");
 
-        final Label addNewLabel = new Label("Add new");
+        final Label addNewLabel = new Label(MessagesUtil.get("favorites.form.add"));
         addNewLabel.setSizeUndefined();
         addNewLabel.addStyleName("title");
 
@@ -168,9 +169,9 @@ public final class FavoritesForm extends CustomComponent {
      */
     private class InternalFavoriteEntryForm extends CustomComponent {
 
-        private TextField url = new TextField("Location");
+        private TextField url = new TextField(MessagesUtil.get("favorites.form.location"));
 
-        private TextField title = new TextField("Title");
+        private TextField title = new TextField(MessagesUtil.get("favorites.form.title"));
 
         private ComboBox group;
 
@@ -186,7 +187,7 @@ public final class FavoritesForm extends CustomComponent {
             layout.addComponent(title);
             layout.addComponent(url);
 
-            group = new ComboBox("Add to group");
+            group = new ComboBox(MessagesUtil.get("favorites.form.groups"));
             for (Entry<String, String> entry : availableGroups.entrySet()) {
                 String id = entry.getKey();
                 group.addItem(id);
@@ -201,7 +202,7 @@ public final class FavoritesForm extends CustomComponent {
             final CssLayout buttons = new CssLayout();
             buttons.addStyleName("buttons");
 
-            final Button addButton = new Button("Add", new ClickListener() {
+            final Button addButton = new Button(MessagesUtil.get("buttons.add"), new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -238,7 +239,7 @@ public final class FavoritesForm extends CustomComponent {
                 binder.commit();
                 listener.addFavorite(newFavorite);
             } catch (CommitException e) {
-                shell.openNotification(MessageStyleTypeEnum.ERROR, true, "Please enter required fields");
+                shell.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("favorites.fields.required"));
             }
         }
     }
@@ -265,7 +266,7 @@ public final class FavoritesForm extends CustomComponent {
             final CssLayout buttons = new CssLayout();
             buttons.addStyleName("buttons");
 
-            final Button addButton = new Button("Add", new ClickListener() {
+            final Button addButton = new Button(MessagesUtil.get("buttons.add"), new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -301,7 +302,7 @@ public final class FavoritesForm extends CustomComponent {
                 binder.commit();
                 listener.addGroup(newGroup);
             } catch (CommitException e) {
-                shell.openNotification(MessageStyleTypeEnum.ERROR, true, "Please enter required field");
+                shell.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("favorites.fields.required"));
             }
         }
     }

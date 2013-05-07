@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.shell.Shell;
@@ -234,7 +235,7 @@ public final class FavoritesGroup extends CssLayout {
 
     private void doEditTitle(final FavoritesView.Listener listener) {
         if (StringUtils.isBlank(titleField.getValue())) {
-            shell.openNotification(MessageStyleTypeEnum.ERROR, true, "Please enter a title");
+            shell.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("favorites.title.required"));
             return;
         }
         boolean titleHasChanged = !title.equals(titleField.getValue());
