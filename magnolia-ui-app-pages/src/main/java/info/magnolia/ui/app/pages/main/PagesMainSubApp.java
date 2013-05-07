@@ -50,6 +50,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NodeType;
 
 /**
  * PagesMainSubApp.
@@ -68,15 +69,32 @@ public class PagesMainSubApp extends BrowserSubApp {
         actionbar.disable("move", "duplicate");
 
         // actions disabled based on selection
-        final String[] defaultActions = new String[] { "delete", "preview", "edit", "export", "activate", "deactivate", "activateRecursive" };
+        final String[] defaultPageActions = new String[] { "delete", "preview", "edit", "export", "activate", "deactivate", "activateRecursive" };
+        final String[] defaultPageDeleteActions = new String[] { "activate", "activateRecursive", "showPreviousVersion", "restorePreviousVersion" };
 
         if (getBrowser().getSelectedItemId() == null || "/".equals(getBrowser().getSelectedItemId())) {
-            actionbar.disable(defaultActions);
+            actionbar.hideSection("pageDeleteActions");
+            actionbar.showSection("pageActions");
+            actionbar.disable(defaultPageActions);
         } else {
-            actionbar.enable(defaultActions);
+
             final String path = getBrowser().getSelectedItemId();
             final String workspace = getBrowser().getWorkspace();
             final Node page = SessionUtil.getNode(workspace, path);
+
+            // if it's deleted, display the deleted section
+            if (isDeleted(page)) {
+                actionbar.showSection("pageDeleteActions");
+                actionbar.hideSection("pageActions");
+                actionbar.disable(defaultPageActions);
+                actionbar.disable("add");
+                actionbar.enable(defaultPageDeleteActions);
+
+            } else {
+                actionbar.hideSection("pageDeleteActions");
+                actionbar.showSection("pageActions");
+                actionbar.enable(defaultPageActions);
+            }
             // if it's a leaf recursive activation should not be available.
             if (isLeaf(page)) {
                 actionbar.disable("activateRecursive");
@@ -87,6 +105,19 @@ public class PagesMainSubApp extends BrowserSubApp {
     private boolean isLeaf(final Node node) {
         try {
             return !NodeUtil.getNodes(node, NodeTypes.Page.NAME).iterator().hasNext();
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+    }
+
+    public static boolean isDeleted(final Node node) {
+        try {
+            for (NodeType nodeType:node.getMixinNodeTypes()) {
+                if (NodeTypes.Deleted.NAME.equals(nodeType.getName())) {
+                    return true;
+                }
+            }
+            return false;
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }

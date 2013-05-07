@@ -38,6 +38,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes.Renderable;
 import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
@@ -46,6 +47,7 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.app.pages.main.PagesMainSubApp;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
@@ -145,8 +147,8 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         return view;
     }
 
-    private void updateActions() {
-        updateActionsByTemplateRights();
+    private void updateActions(Node node) {
+        updateActionsByTemplateRights(node);
         // actions currently always disabled
         actionbarPresenter.disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
     }
@@ -167,15 +169,14 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     /**
      * Show/Hide actions buttons according to operation permissions.
      */
-    private void updateActionsByTemplateRights() {
+    private void updateActionsByTemplateRights(Node node) {
 
         try {
             AbstractElement element = pageEditorPresenter.getSelectedElement();
             if (element == null || !(element instanceof ComponentElement)) { // currently only for components
                 return;
             }
-            final String path = element.getPath();
-            Node node = MgnlContext.getJCRSession(workspace).getNode(path);
+
             String templateId = Renderable.getTemplate(node);
             if (templateId == null) {
                 return;
@@ -265,7 +266,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     }
 
     private void hideAllSections() {
-        actionbarPresenter.hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions");
+        actionbarPresenter.hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions", "restorePreviousVersion");
     }
 
     private void bindHandlers() {
@@ -283,27 +284,34 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                 }
 
                 hideAllSections();
-                if (element instanceof PageElement) {
-                    if (!path.equals(parameters.getNodePath())) {
-                        updateNodePath(path);
+
+                Node node = SessionUtil.getNode(workspace, path);
+                if (PagesMainSubApp.isDeleted(node)) {
+                    actionbarPresenter.showSection("restorePreviousVersion");
+
+                } else {
+                    if (element instanceof PageElement) {
+                        if (!path.equals(parameters.getNodePath())) {
+                            updateNodePath(path);
+                        }
+                        if (parameters.isPreview()) {
+                            actionbarPresenter.showSection("pagePreviewActions");
+                        } else {
+                            actionbarPresenter.showSection("pageActions");
+                        }
                     }
-                    if (parameters.isPreview()) {
-                        actionbarPresenter.showSection("pagePreviewActions");
-                    } else {
-                    actionbarPresenter.showSection("pageActions");
+                    else if (element instanceof AreaElement) {
+                        if (dialog == null) {
+                            actionbarPresenter.showSection("areaActions");
+                        } else {
+                            actionbarPresenter.showSection("editableAreaActions");
+                        }
                     }
-                }
-                else if (element instanceof AreaElement) {
-                    if (dialog == null) {
-                        actionbarPresenter.showSection("areaActions");
-                    } else {
-                        actionbarPresenter.showSection("editableAreaActions");
+                    else if (element instanceof ComponentElement) {
+                        actionbarPresenter.showSection("componentActions");
                     }
+                    updateActions(node);
                 }
-                else if (element instanceof ComponentElement) {
-                    actionbarPresenter.showSection("componentActions");
-                }
-                updateActions();
             }
         });
     }

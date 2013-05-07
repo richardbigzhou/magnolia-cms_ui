@@ -9,6 +9,9 @@
   <sv:property sv:name="jcr:uuid" sv:type="String">
     <sv:value>61fecebb-0e50-49e8-8434-3cca2233b829</sv:value>
   </sv:property>
+  <sv:property sv:name="jcr:created" sv:type="Date">
+    <sv:value>2013-05-07T14:58:38.550+02:00</sv:value>
+  </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
   </sv:property>
@@ -36,6 +39,9 @@
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-switch-edit</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-05-07T14:58:38.550+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -68,6 +74,9 @@
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-edit</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-05-07T14:58:38.551+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -104,6 +113,9 @@
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-redo</sv:value>
     </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-05-07T14:58:38.551+02:00</sv:value>
+    </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
     </sv:property>
@@ -138,6 +150,9 @@
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-undo</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-05-07T14:58:38.552+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -174,6 +189,9 @@
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-add-item</sv:value>
     </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-05-07T14:58:38.552+02:00</sv:value>
+    </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
     </sv:property>
@@ -208,6 +226,9 @@
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-paste</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-05-07T14:58:38.553+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -247,6 +268,9 @@
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-add-item</sv:value>
     </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-05-07T14:58:38.553+02:00</sv:value>
+    </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
     </sv:property>
@@ -278,6 +302,9 @@
       <sv:property sv:name="jcr:uuid" sv:type="String">
         <sv:value>4c4ed4c2-5e19-4fee-b275-8e4c9ef15b74</sv:value>
       </sv:property>
+      <sv:property sv:name="jcr:created" sv:type="Date">
+        <sv:value>2013-05-07T14:58:38.554+02:00</sv:value>
+      </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
@@ -307,6 +334,9 @@
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-delete</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-05-07T14:58:38.554+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -343,6 +373,9 @@
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-delete</sv:value>
     </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-05-07T14:58:38.558+02:00</sv:value>
+    </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
     </sv:property>
@@ -378,6 +411,9 @@
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-switch-preview</sv:value>
     </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-05-07T14:58:38.558+02:00</sv:value>
+    </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
     </sv:property>
@@ -410,6 +446,9 @@
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-edit</sv:value>
     </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-05-07T14:58:38.558+02:00</sv:value>
+    </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
     </sv:property>
@@ -441,6 +480,9 @@
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-copy</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-05-07T14:58:38.559+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -477,6 +519,9 @@
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-move</sv:value>
     </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-05-07T14:58:38.559+02:00</sv:value>
+    </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
     </sv:property>
@@ -506,6 +551,9 @@
     <sv:property sv:name="extends" sv:type="String">
       <sv:value>/modules/ui-pages-app/apps/pages/subApps/browser/actions/activate</sv:value>
     </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-05-07T14:58:38.560+02:00</sv:value>
+    </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
     </sv:property>
@@ -534,6 +582,9 @@
     </sv:property>
     <sv:property sv:name="extends" sv:type="String">
       <sv:value>/modules/ui-pages-app/apps/pages/subApps/browser/actions/deactivate</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-05-07T14:58:38.560+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
