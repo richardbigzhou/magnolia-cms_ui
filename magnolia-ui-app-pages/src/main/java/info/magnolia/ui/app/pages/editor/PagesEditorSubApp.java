@@ -41,6 +41,10 @@ import info.magnolia.rendering.engine.RenderException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
@@ -52,10 +56,6 @@ import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
-import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.action.ActionExecutor;
-import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
@@ -95,9 +95,9 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private final EventBus eventBus;
     private final PageEditorPresenter pageEditorPresenter;
     private final ActionbarPresenter actionbarPresenter;
-    private PageBarView pageBarView;
-    private I18NAuthoringSupport i18NAuthoringSupport;
-    private I18nContentSupport i18nContentSupport;
+    private final PageBarView pageBarView;
+    private final I18NAuthoringSupport i18NAuthoringSupport;
+    private final I18nContentSupport i18nContentSupport;
     private final EditorDefinition editorDefinition;
     private final String workspace;
     private final AppContext appContext;
@@ -184,29 +184,6 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             String templateId = node.getProperty("mgnl:template").getString();
             TemplateDefinition componentDefinition = pageEditorPresenter.getTemplateDefinitionRegistry().getTemplateDefinition(templateId);
 
-            final String canDelete = componentDefinition.getCanDelete();
-            final String canEdit = componentDefinition.getCanEdit();
-            final String canMove = componentDefinition.getCanMove();
-
-            Collection<String> groups = MgnlContext.getUser().getAllGroups();
-
-            if (hasRight(canDelete, "canDelete", groups)) {
-                actionbarPresenter.enable(ACTION_DELETE_COMPONENT);
-            } else {
-                actionbarPresenter.disable(ACTION_DELETE_COMPONENT);
-            }
-
-            if (hasRight(canEdit, "canEdit", groups)) {
-                actionbarPresenter.enable(ACTION_EDIT_COMPONENT);
-            } else {
-                actionbarPresenter.disable(ACTION_EDIT_COMPONENT);
-            }
-
-            if (hasRight(canMove, "canMove", groups)) {
-                actionbarPresenter.enable(ACTION_MOVE_COMPONENT);
-            } else {
-                actionbarPresenter.disable(ACTION_MOVE_COMPONENT);
-            }
         } catch (Exception e) {
             log.error("Exception caught: {}", e.getMessage(), e);
         }
