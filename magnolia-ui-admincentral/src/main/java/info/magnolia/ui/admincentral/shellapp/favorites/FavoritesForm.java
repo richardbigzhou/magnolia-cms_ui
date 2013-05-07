@@ -249,7 +249,7 @@ public final class FavoritesForm extends CustomComponent {
      */
     private class InternalFavoriteGroupForm extends CustomComponent {
 
-        private TextField title = new TextField("Title");
+        private TextField title = new TextField(MessagesUtil.get("favorites.form.title"));
         private ShortcutListener enterShortcutListener;
 
         public InternalFavoriteGroupForm(final JcrNewNodeAdapter newGroup) {
