@@ -103,7 +103,12 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
     private boolean hasComponentPlaceHolder(Map<String, String> attributes) {
 
         String type = attributes.get("type");
+        boolean optional = Boolean.parseBoolean(attributes.get("optional"));
+        boolean created = Boolean.parseBoolean(attributes.get("created"));
 
+        if (optional && !created) {
+            return false;
+        }
         String availableComponents = "";
         if (AreaDefinition.TYPE_NO_COMPONENT.equals(type)) {
             availableComponents = "";

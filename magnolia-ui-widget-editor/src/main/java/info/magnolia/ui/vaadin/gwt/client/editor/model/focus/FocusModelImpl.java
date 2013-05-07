@@ -206,18 +206,19 @@ public class FocusModelImpl implements FocusModel {
                 }
             }
         }
-
     }
 
     private void toggleChildComponentVisibility(MgnlArea area, boolean visible) {
+
+        if (area.getComponentPlaceHolder() != null) {
+            area.getComponentPlaceHolder().setVisible(visible);
+        }
+
         for (MgnlComponent component : area.getComponents()) {
 
             // toggle all child-components editbar visibility - does this case occur?
             if (component.getControlBar() != null) {
                 component.getControlBar().setVisible(visible);
-            }
-            if (area.getComponentPlaceHolder() != null) {
-                area.getComponentPlaceHolder().setVisible(visible);
             }
             // toggle all child-components-area placeholder visibility
             for (MgnlArea childArea : component.getAreas()) {

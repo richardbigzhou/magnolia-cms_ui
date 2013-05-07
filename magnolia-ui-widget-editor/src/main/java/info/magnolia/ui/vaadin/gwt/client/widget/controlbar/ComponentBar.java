@@ -75,7 +75,6 @@ public class ComponentBar extends AbstractBar {
 
         super(eventBus, mgnlElement);
 
-        setFields(mgnlElement.getAttributes());
         addStyleName("component");
 
         /*
@@ -105,7 +104,8 @@ public class ComponentBar extends AbstractBar {
         }
     }
 
-    private void setFields(Map<String, String> attributes) {
+    @Override
+    protected void setFields(Map<String, String> attributes) {
 
         setWorkspace(attributes.get("workspace"));
         setPath(attributes.get("path"));

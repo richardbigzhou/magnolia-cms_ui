@@ -70,7 +70,6 @@ public class AreaBar extends AbstractBar {
     public AreaBar(EventBus eventBus, MgnlElement mgnlElement) {
         super(eventBus, mgnlElement);
 
-        setFields(mgnlElement.getAttributes());
 
         GWT.log("Area [" + this.name + "] is of type " + this.type);
 
@@ -79,6 +78,11 @@ public class AreaBar extends AbstractBar {
         setVisible(false);
         createControls();
 
+    }
+
+    @Override
+    protected String createLabel(String label) {
+        return label + ((optional) ? " (optional)" : "");
     }
 
     private void createControls() {
@@ -116,7 +120,8 @@ public class AreaBar extends AbstractBar {
 
     }
 
-    private void setFields(Map<String, String> attributes) throws IllegalArgumentException {
+    @Override
+    protected void setFields(Map<String, String> attributes) throws IllegalArgumentException {
 
         setWorkspace(attributes.get("workspace"));
         setPath(attributes.get("path"));

@@ -67,7 +67,6 @@ import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 import info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView;
 import info.magnolia.ui.vaadin.gwt.client.widget.PageEditorViewImpl;
-import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.PageBar;
 
 import java.util.List;
 
@@ -137,9 +136,6 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
                 process(document);
                 if (!getState().parameters.isPreview()) {
                     view.initSelectionListener();
-                    if (model.getRootPage().getControlBar() != null) {
-                        ((PageBar) model.getRootPage().getControlBar()).setPageTitle(document.getTitle());
-                    }
                     focusModel.init();
                 }
                 else {

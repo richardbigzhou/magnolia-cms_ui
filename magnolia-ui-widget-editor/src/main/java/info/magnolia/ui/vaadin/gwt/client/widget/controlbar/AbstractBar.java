@@ -36,6 +36,8 @@ package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 
+import java.util.Map;
+
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -56,8 +58,6 @@ public abstract class AbstractBar extends FlowPanel {
 
     private String path;
 
-    private String label = "";
-
     private final FlowPanel buttonWrapper;
 
     private CmsNode cmsNode;
@@ -73,17 +73,14 @@ public abstract class AbstractBar extends FlowPanel {
 
         this.setCmsNode(mgnlElement);
 
-        buttonWrapper = new FlowPanel();
-        buttonWrapper.setStylePrimaryName("mgnlEditorBarButtons");
-
-        add(buttonWrapper);
+        setFields(mgnlElement.getAttributes());
 
         if (mgnlElement != null) {
-            this.label = mgnlElement.getAttribute("label");
+            String label = createLabel(mgnlElement.getAttribute("label"));
             if (label != null && !label.isEmpty()) {
-                Label areaName = new Label(this.label);
+                Label areaName = new Label(label);
                 // tooltip. Nice to have when area label is truncated because too long.
-                areaName.setTitle(this.label);
+                areaName.setTitle(label);
                 areaName.setStylePrimaryName("mgnlEditorBarLabel");
 
                 // setStylePrimaryName(..) replaces gwt default css class, in this case gwt-Label
@@ -91,7 +88,17 @@ public abstract class AbstractBar extends FlowPanel {
             }
         }
 
+        buttonWrapper = new FlowPanel();
+        buttonWrapper.setStylePrimaryName("mgnlEditorBarButtons");
+
+        add(buttonWrapper);
         setStyleName("mgnlEditor mgnlEditorBar");
+    }
+
+    protected abstract void setFields(Map<String, String> attributes) throws IllegalArgumentException;
+
+    protected String createLabel(String label) {
+        return label;
     }
 
     @Override
