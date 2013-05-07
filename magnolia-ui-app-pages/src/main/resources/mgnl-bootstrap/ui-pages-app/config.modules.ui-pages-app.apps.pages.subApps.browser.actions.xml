@@ -10,7 +10,7 @@
     <sv:value>10205fcf-2a4b-42da-9d3c-c97d8641d353</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:created" sv:type="Date">
-    <sv:value>2013-04-25T10:05:09.897+02:00</sv:value>
+    <sv:value>2013-05-03T08:28:23.775+02:00</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
@@ -44,7 +44,7 @@
       <sv:value>icon-add-item</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-25T10:05:09.899+02:00</sv:value>
+      <sv:value>2013-05-03T08:28:23.777+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -79,13 +79,16 @@
       <sv:value>18a1eca6-4060-496c-8635-b4ee060cf2ba</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.admincentral.tree.action.MarkNodeAsDeletedActionDefinition</sv:value>
+    </sv:property>
+    <sv:property sv:name="command" sv:type="String">
+      <sv:value>markAsDeleted</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-delete</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-25T10:05:09.900+02:00</sv:value>
+      <sv:value>2013-05-03T08:28:23.778+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -97,7 +100,7 @@
       <sv:value>2013-02-25T12:29:29.745+01:00</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-      <sv:value>2013-02-25T12:30:44.143+01:00</sv:value>
+      <sv:value>2013-05-07T10:08:29.923+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
       <sv:value>superuser</sv:value>
@@ -120,7 +123,7 @@
       <sv:value>icon-view</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-25T10:05:09.901+02:00</sv:value>
+      <sv:value>2013-05-03T08:28:23.779+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -155,7 +158,7 @@
       <sv:value>icon-edit</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-25T10:05:09.902+02:00</sv:value>
+      <sv:value>2013-05-03T08:28:23.780+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -190,7 +193,7 @@
       <sv:value>icon-move</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-25T10:05:09.903+02:00</sv:value>
+      <sv:value>2013-05-03T08:28:23.781+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -225,7 +228,7 @@
       <sv:value>icon-duplicate</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-25T10:05:09.904+02:00</sv:value>
+      <sv:value>2013-05-03T08:28:23.781+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -266,7 +269,7 @@
       <sv:value>icon-publish</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-25T10:05:09.905+02:00</sv:value>
+      <sv:value>2013-05-03T08:28:23.782+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -307,7 +310,7 @@
       <sv:value>icon-publish-incl-sub</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-25T10:05:09.906+02:00</sv:value>
+      <sv:value>2013-05-03T08:28:23.782+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -351,7 +354,7 @@
       <sv:value>icon-unpublish</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-25T10:05:09.907+02:00</sv:value>
+      <sv:value>2013-05-03T08:28:23.783+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
