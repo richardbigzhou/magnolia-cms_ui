@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,47 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.lightbox;
+package info.magnolia.ui.admincentral.tree.action;
 
-
-import info.magnolia.ui.vaadin.gwt.shared.lightbox.LightBoxState;
-
-import com.vaadin.server.AbstractJavaScriptExtension;
-import com.vaadin.server.Resource;
-import com.vaadin.ui.Image;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Showbox.
+ * Definition for an action that creates a new folder.
  */
-public class LightBoxBase extends AbstractJavaScriptExtension {
+public class AddFolderActionDefinition extends ConfiguredActionDefinition {
 
-    @Override
-    protected Class<? extends Image> getSupportedParentType() {
-        return Image.class;
-    }
-
-    public void setSource(Resource resource) {
-        setResource("source", resource);
-    }
-    
-    public Resource getSource() {
-        return getResource("source");
-    }
-    
-    @Override
-    protected LightBoxState getState() {
-        return (LightBoxState) super.getState();
+    public AddFolderActionDefinition() {
+        setImplementationClass(AddFolderAction.class);
     }
 
-    @Override
-    public Image getParent() {
-        return (Image) super.getParent();
-    }
-
-    @Override
-    public void attach() {
-        super.attach();
-        getParent().addStyleName("lightboxed" + getConnectorId());
-    }
-    
 }

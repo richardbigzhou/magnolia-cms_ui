@@ -75,9 +75,6 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
     private ColumnGenerator bypassedColumnGenerator;
 
-    /** This is a fallback when itemId was changed in the container (e.g. after renaming a node), then we get the new id assuming index hasn't changed. */
-    private int editingIndex = -1;
-
     private final List<ItemEditedEvent.Handler> listeners = new ArrayList<ItemEditedEvent.Handler>();
 
     public InplaceEditingTreeTable() {
@@ -106,6 +103,12 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
      * @param propertyId the property id
      */
     public void setEditing(Object itemId, Object propertyId) {
+        // ensure we don't keep outdated itemIds
+        if (getItem(itemId) == null) {
+            itemId = null;
+            propertyId = null;
+        }
+
         if (itemId != null && propertyId != null) {
             if ((bypassedColumnGenerator = getColumnGenerator(propertyId)) != null) {
                 removeGeneratedColumn(propertyId);
@@ -117,12 +120,6 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
             }
             focus();
         }
-
-        // try to update itemId if it was changed
-        if (itemId == editingItemId && getItem(itemId) == null && editingIndex != -1) {
-            itemId = getIdByIndex(editingIndex);
-        }
-        editingIndex = -1;
 
         this.editingItemId = itemId;
         this.editingPropertyId = propertyId;
@@ -202,7 +199,6 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
     }
 
     private void fireItemEditedEvent(Item item) {
-        editingIndex = indexOfId(editingItemId);
         if (item != null) {
             ItemEditedEvent event = new ItemEditedEvent(item);
             for (ItemEditedEvent.Handler listener : listeners) {
@@ -289,19 +285,21 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                     setEditing(null, null);
 
                 } else if (action == tabNext) {
-                    // Saves first
+                    // First gets a reference to next candidate
+                    TableCell nextCell = getNextEditableCandidate(editingItemId, editingPropertyId);
+
+                    // Then saves
                     fireItemEditedEvent(getItemFromField(field));
 
-                    // Then updates current editingItemId, and asks for next candidate
-                    TableCell nextCell = getNextEditableCandidate(editingItemId, editingPropertyId);
                     setEditing(nextCell.getItemId(), nextCell.getPropertyId());
 
                 } else if (action == tabPrev) {
-                    // Saves first
+                    // First gets a reference to previous candidate
+                    TableCell previousCell = getPreviousEditableCandidate(editingItemId, editingPropertyId);
+
+                    // Then saves
                     fireItemEditedEvent(getItemFromField(field));
 
-                    // Then updates current editingItemId, and asks for previous candidate
-                    TableCell previousCell = getPreviousEditableCandidate(editingItemId, editingPropertyId);
                     setEditing(previousCell.getItemId(), previousCell.getPropertyId());
 
                 } else if (action == escape) {
