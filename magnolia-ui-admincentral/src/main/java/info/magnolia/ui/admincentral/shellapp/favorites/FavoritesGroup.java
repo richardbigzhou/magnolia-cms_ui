@@ -38,6 +38,9 @@ import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
 import java.util.Iterator;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
@@ -81,7 +84,12 @@ public final class FavoritesGroup extends CssLayout {
 
         construct(favoritesGroup, listener);
 
-        for (JcrItemNodeAdapter fav : favoritesGroup.getChildren().values()) {
+        final Map<String, JcrItemNodeAdapter> nodeAdapters = favoritesGroup.getChildren();
+        final SortedSet<String> keys = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+        keys.addAll(nodeAdapters.keySet());
+
+        for (String key : keys) {
+            final JcrItemNodeAdapter fav = nodeAdapters.get(key);
             final FavoritesEntry favEntry = new FavoritesEntry(fav, listener);
             addComponent(favEntry);
         }
