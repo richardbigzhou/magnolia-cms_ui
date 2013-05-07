@@ -83,7 +83,7 @@ public class WorkbenchChooseDialogPresenterFactory implements ChooseDialogPresen
         dialog.setHeight("500px");
 
         if (path != null && !path.isEmpty()) {
-            workbenchView.selectPath(path);
+            workbenchView.select(path);
         }
 
         workbenchChooseDialogPresenter.addActionCallback(WorkbenchChooseDialogView.CHOOSE_ACTION_NAME, new DialogActionListener() {

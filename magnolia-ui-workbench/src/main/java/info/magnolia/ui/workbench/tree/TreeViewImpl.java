@@ -36,6 +36,7 @@ package info.magnolia.ui.workbench.tree;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 import info.magnolia.ui.workbench.ContentView;
+import info.magnolia.ui.workbench.JcrItemUtil;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
@@ -50,6 +51,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +87,6 @@ public class TreeViewImpl implements TreeView {
      *
      * @param workbench the workbench definition
      * @param componentProvider the component provider
-     * @param container the container data source
      */
     public TreeViewImpl(WorkbenchDefinition workbench, ComponentProvider componentProvider) {
         this.container = new HierarchicalJcrContainer(workbench);
@@ -234,27 +238,38 @@ public class TreeViewImpl implements TreeView {
     // CONTENT VIEW IMPL
 
     @Override
-    public void select(String path) {
-        if (!"/".equals(path)) {
-            expandTreeToNode(path);
-            treeTable.setCurrentPageFirstItemId(path);
+    public void select(String itemId) {
+        if (!treeTable.isRoot(itemId)) {
+            // properties cannot be expanded so use the nodeId only
+            expandTreeToNode(JcrItemUtil.getNodeUuidFrom(itemId));
+            treeTable.setCurrentPageFirstItemId(itemId);
         }
-        treeTable.select(path);
-
+        treeTable.select(itemId);
     }
 
     /**
-     * Expand the parent nodes of the node specified in the path.
+     * Expand the parent nodes of the node specified in the nodeId.
      */
-    public void expandTreeToNode(String path){
-        String[] segments = path.split("/");
-        String segmentPath = "";
-        // Expand each parent node in turn.
-        for (int s = 0; s < segments.length - 1; s++) {
-            if (!"".equals(segments[s])) {
-                segmentPath += "/" + segments[s];
-                treeTable.setCollapsed(segmentPath, false);
+    public void expandTreeToNode(String nodeId){
+        final List<String> uuidsToExpand = new ArrayList<String>();
+        uuidsToExpand.add(0, nodeId);
+
+        try {
+            Node parent = container.getJcrItem(nodeId).getParent();
+            while (parent != null) {
+                uuidsToExpand.add(0, parent.getIdentifier());
+                parent = parent.getParent();
+                if (StringUtils.equals(parent.getPath(), container.getWorkbenchDefinition().getPath()) || !parent.getPath().contains(container.getWorkbenchDefinition().getPath())) {
+                    // parent is outside the scope of the workbench so ignore it
+                    parent = null;
+                }
             }
+        } catch (RepositoryException e) {
+            log.warn("Could not collect the parent hierarchy of node {}", nodeId, e);
+        }
+
+        for (String uuid: uuidsToExpand) {
+            treeTable.setCollapsed(uuid, false);
         }
     }
 

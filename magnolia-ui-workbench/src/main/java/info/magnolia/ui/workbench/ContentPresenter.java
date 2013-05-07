@@ -175,7 +175,7 @@ public class ContentPresenter implements ContentView.Listener {
         for (final ContentViewDefinition contentViewDefinition : workbenchDefinition.getContentViews()) {
             final ContentView contentView = contentViewBuilder.build(workbenchDefinition, imageProviderDefinition, contentViewDefinition);
             contentView.setListener(this);
-            contentView.select(workbenchDefinition.getPath());
+            contentView.select(JcrItemUtil.getUuidOrNull(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath()));
             parentView.addContentView(contentViewDefinition.getViewType(), contentView, contentViewDefinition);
         }
 

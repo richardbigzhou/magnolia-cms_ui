@@ -152,7 +152,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
             public void onContentChanged(ContentChangedEvent event) {
                 if (event.getWorkspace().equals(getWorkspace())) {
                     refreshActionbarPreviewImage(event.getPath(), event.getWorkspace());
-                    workbenchPresenter.selectPath(event.getPath());
+                    workbenchPresenter.select(event.getPath());
                     workbenchPresenter.refresh();
                 }
             }

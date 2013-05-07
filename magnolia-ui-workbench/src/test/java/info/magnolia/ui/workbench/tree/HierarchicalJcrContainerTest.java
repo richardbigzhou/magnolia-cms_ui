@@ -41,6 +41,7 @@ import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
+import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.container.AbstractJcrContainerTest;
 import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
@@ -118,14 +119,14 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         // GIVEN
         Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, PROPERTY_1, "name1");
         node1.getSession().save();
-        String containerItemId = node1.getPath();
+        String containerItemId = node1.getIdentifier();
 
         // WHEN
         com.vaadin.data.Item item = hierarchicalJcrContainer.getItem(containerItemId);
 
         // THEN
         assertTrue(item instanceof JcrNodeAdapter);
-        assertEquals(node1.getPath(), ((JcrNodeAdapter) item).getJcrItem().getPath());
+        assertEquals(node1.getIdentifier(), ((JcrNodeAdapter) item).getNodeIdentifier());
     }
 
     @Test
@@ -136,7 +137,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         Node node2 = AbstractJcrContainerTest.createNode(node1, "node2", NodeTypes.Content.NAME, PROPERTY_1, "name2");
         node2.getSession().save();
-        String containerItemId = node1.getPath();
+        String containerItemId = node1.getIdentifier();
 
         // WHEN
         boolean res = hierarchicalJcrContainer.areChildrenAllowed(containerItemId);
@@ -150,7 +151,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         // GIVEN
         Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, PROPERTY_1, "name1");
         node1.getSession().save();
-        String containerItemId = node1.getProperty(PROPERTY_1).getPath();
+        String containerItemId = node1.getIdentifier() + AbstractJcrContainer.PROPERTY_NAME_AND_UUID_SEPARATOR + PROPERTY_1;
 
         // WHEN
         boolean res = hierarchicalJcrContainer.areChildrenAllowed(containerItemId);
@@ -168,8 +169,8 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         AbstractJcrContainerTest.createNode(node2, "node2_1", NodeTypes.Content.NAME, PROPERTY_1, "name2_1");
         node1.getSession().save();
 
-        String containerItemId1 = node1.getPath();
-        String containerItemId2 = node2.getPath();
+        String containerItemId1 = node1.getIdentifier();
+        String containerItemId2 = node2.getIdentifier();
 
         // WHEN
         Collection<String> res = hierarchicalJcrContainer.rootItemIds();
@@ -187,7 +188,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         AbstractJcrContainerTest.createNode(node1, "node1_1", NodeTypes.Content.NAME, PROPERTY_1, "name1_1");
         node1.getSession().save();
 
-        String containerItemId1 = node1.getPath();
+        String containerItemId1 = node1.getIdentifier();
 
         // WHEN
         boolean res = hierarchicalJcrContainer.isRoot(containerItemId1);
@@ -203,7 +204,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         Node node11 = AbstractJcrContainerTest.createNode(node1, "node1_1", NodeTypes.Content.NAME, PROPERTY_1, "name1_1");
         node1.getSession().save();
 
-        String containerItemId1_1 = node11.getPath();
+        String containerItemId1_1 = node11.getIdentifier();
 
         // WHEN
         boolean res = hierarchicalJcrContainer.isRoot(containerItemId1_1);
@@ -221,14 +222,14 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         AbstractJcrContainerTest.createNode(node2, "node2_1", NodeTypes.Content.NAME, PROPERTY_1, "name2_1");
         node1.getSession().save();
 
-        String containerItemId1 = node1.getPath();
+        String containerItemId1 = node1.getIdentifier();
 
         // WHEN
         Collection<String> res = hierarchicalJcrContainer.getChildren(containerItemId1);
 
         // THEN
         assertEquals(1, res.size());
-        assertTrue(res.contains(node11.getPath()));
+        assertTrue(res.contains(node11.getIdentifier()));
     }
 
     @Test
@@ -240,10 +241,10 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         AbstractJcrContainerTest.createNode(node2, "node2_1", NodeTypes.Content.NAME, PROPERTY_1, "name2_1");
         node1.getSession().save();
 
-        String containerItemId1 = node1.getPath();
+        String containerItemId1 = node1.getIdentifier();
 
         // WHEN
-        String res = hierarchicalJcrContainer.getParent(node1_1.getPath());
+        String res = hierarchicalJcrContainer.getParent(node1_1.getIdentifier());
 
         // THEN
         assertEquals(containerItemId1, res);
@@ -259,7 +260,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         // Initial check
         Collection<Item> res = hierarchicalJcrContainer.getRootItemIds();
         assertEquals(1, res.size());
-        assertEquals(node2.getPath(), ((Node) res.toArray()[0]).getPath());
+        assertEquals(node2.getIdentifier(), ((Node) res.toArray()[0]).getIdentifier());
 
         // WHEN
         workbenchDefinition.setPath("/node2");
@@ -267,7 +268,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         // THEN
         assertEquals(1, res.size());
-        assertEquals(node21.getPath(), ((Node) res.toArray()[0]).getPath());
+        assertEquals(node21.getIdentifier(), ((Node) res.toArray()[0]).getIdentifier());
     }
 
     @Test
@@ -299,7 +300,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         node1.getSession().save();
 
         // WHEN
-        Item res = hierarchicalJcrContainer.getItemByPath(node1.getPath());
+        Item res = hierarchicalJcrContainer.getJcrItem(node1.getIdentifier());
 
         // THEN
         assertNotNull(res);
@@ -307,13 +308,13 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetItemByPathWithProperty() throws RepositoryException {
+    public void testGetJcrItemProperty() throws RepositoryException {
         // GIVEN
         Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, PROPERTY_1, "name1");
         node1.getSession().save();
 
         // WHEN
-        Item res = hierarchicalJcrContainer.getItemByPath(node1.getPath() + "/" + PROPERTY_1);
+        Item res = hierarchicalJcrContainer.getJcrItem(node1.getIdentifier() + AbstractJcrContainer.PROPERTY_NAME_AND_UUID_SEPARATOR + PROPERTY_1);
 
         // THEN
         assertNotNull(res);
@@ -335,7 +336,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         assertEquals(1, res.size());
         // Currently don't get subtypes (mgnl:page is a sub type of mgnl:content but not included as
         // child.
-        assertEquals(node1.getPath(), ((Node) res.toArray()[0]).getPath());
+        assertEquals(node1.getIdentifier(), ((Node) res.toArray()[0]).getIdentifier());
     }
 
     @Test
@@ -356,8 +357,8 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         // THEN
         assertEquals(3, res.size());
-        assertEquals(node1.getPath(), ((Node) res.toArray()[0]).getPath());
-        assertEquals(node2.getPath(), ((Node) res.toArray()[1]).getPath());
+        assertEquals(node1.getIdentifier(), ((Node) res.toArray()[0]).getIdentifier());
+        assertEquals(node2.getIdentifier(), ((Node) res.toArray()[1]).getIdentifier());
         assertEquals(rootNode.getProperty(PROPERTY_1).getString(), ((Property) res.toArray()[2]).getString());
     }
 
@@ -377,14 +378,14 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetItemByPathWhenWorkbenchPathIsNotRoot() throws RepositoryException {
+    public void testGetJcrItemWhenWorkbenchPathIsNotRoot() throws RepositoryException {
         // GIVEN
         Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, PROPERTY_1, "name1");
         node1.getSession().save();
 
         // WHEN
         workbenchDefinition.setPath("/node1");
-        Item res = hierarchicalJcrContainer.getItemByPath(node1.getPath());
+        Item res = hierarchicalJcrContainer.getJcrItem(node1.getIdentifier());
 
         // THEN
         assertNotNull(res);

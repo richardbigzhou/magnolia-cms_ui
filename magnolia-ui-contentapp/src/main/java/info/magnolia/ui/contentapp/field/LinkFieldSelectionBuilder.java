@@ -134,6 +134,6 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
     private void restoreContentSelection() {
         final String propertyValue = String.valueOf(item.getItemProperty(propertyName).getValue());
         final String path = LinkFieldBuilder.PATH_PROPERTY_NAME.equals(propertyName) && StringUtils.isNotBlank(propertyValue) ? propertyValue : contentPresenter.getRootPath();
-        textContent.getContentView().selectPath(path);
+        textContent.getContentView().select(path);
     }
 }

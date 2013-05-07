@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.workbench;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
@@ -42,7 +41,6 @@ import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 import info.magnolia.ui.workbench.search.SearchView;
 
 import javax.inject.Inject;
-import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -113,9 +111,9 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         return workbenchDefinition.getWorkspace();
     }
 
-    public void selectPath(String path) {
-        view.selectPath(path);
-        contentPresenter.setSelectedItemPath(path);
+    public void select(String itemId) {
+        view.select(itemId);
+        contentPresenter.setSelectedItemPath(itemId);
     }
 
     public void refresh() {
@@ -141,12 +139,13 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         }
 
         // restore selection
-        boolean itemExists = itemExists(path);
+        final String itemId = JcrItemUtil.getUuidOrNull(workbenchDefinition.getWorkspace(), path);
+        boolean itemExists = itemId != null;
         if (!itemExists) {
             log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.",
                     new Object[] { path, workbenchDefinition.getWorkspace(), workbenchDefinition.getPath() });
         }
-        view.selectPath(itemExists ? path : workbenchDefinition.getPath());
+        view.select(itemExists ? itemId : JcrItemUtil.getUuidOrNull(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath()));
     }
 
     public void doSearch(String searchExpression) {
@@ -160,14 +159,5 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         } else {
             searchView.search(searchExpression);
         }
-    }
-
-    private boolean itemExists(String path) {
-        try {
-            return StringUtils.isNotBlank(path) && MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).itemExists(path);
-        } catch (RepositoryException e) {
-            log.warn("", e);
-        }
-        return false;
     }
 }

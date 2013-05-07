@@ -37,6 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.workbench.JcrItemUtil;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
@@ -86,25 +87,20 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
 
     @Override
     public Collection<String> getChildren(Object itemId) {
-            try {
-                long start = System.currentTimeMillis();
-                Collection<Item> children = getChildren(getItemByPath((String) itemId));
-                log.debug("Fetched {} children in {}ms", children.size(), System.currentTimeMillis() - start);
-                return createContainerIds(children);
-            } catch (RepositoryException e) {
-                handleRepositoryException(log, "Cannot retrieve Children for item with id:" + itemId, e);
-            }
-            return Collections.emptySet();
+        long start = System.currentTimeMillis();
+        Collection<Item> children = getChildren(getJcrItem(itemId));
+        log.debug("Fetched {} children in {}ms", children.size(), System.currentTimeMillis() - start);
+        return createContainerIds(children);
     }
 
     @Override
     public String getParent(Object itemId) {
         try {
-            Item item = getItemByPath((String) itemId);
+            Item item = getJcrItem(itemId);
             if (item.isNode() && item.getDepth() == 0) {
                 return null;
             }
-            return item.getParent().getPath();
+            return item.getParent().getIdentifier();
         } catch (RepositoryException e) {
             handleRepositoryException(log, "Cannot determine parent for itemId: " + itemId, e);
             return null;
@@ -144,7 +140,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     @Override
     public boolean isRoot(Object itemId) {
         try {
-            return isRoot(getItemByPath((String) itemId));
+            return isRoot(getJcrItem(itemId));
         } catch (RepositoryException e) {
             handleRepositoryException(log, "Cannot determine whether item is root - itemId: " + itemId, e);
             return true;
@@ -153,24 +149,23 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
 
     @Override
     public boolean hasChildren(Object itemId) {
-        try {
-            final Item item = getItemByPath((String) itemId);
-            return item.isNode() && !getChildren(item).isEmpty();
-        } catch (RepositoryException e) {
-            handleRepositoryException(log, "Cannot determine children for item with id " + itemId, e);
-            return false;
-        }
+        final Item item = getJcrItem(itemId);
+        return item.isNode() && !getChildren(item).isEmpty();
     }
 
     protected Collection<String> createContainerIds(Collection<Item> children) {
         ArrayList<String> ids = new ArrayList<String>();
-        String currentPath;
+        String currentId;
         for (Item child : children) {
             try {
-                currentPath = child.getPath();
-                ids.add(currentPath);
+                if (child.isNode()) {
+                    currentId = ((Node) child).getIdentifier();
+                } else {
+                    currentId = JcrItemUtil.getItemId((Property) child);
+                }
+                ids.add(currentId);
             } catch (RepositoryException e) {
-                handleRepositoryException(log, "Cannot retrieve currentPath", e);
+                handleRepositoryException(log, "Cannot retrieve currentId", e);
             }
         }
         return ids;
@@ -246,11 +241,6 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
             handleRepositoryException(log, "Cannot determine depth of jcr item", e);
             return true;
         }
-    }
-
-    public Item getItemByPath(String path) throws RepositoryException {
-        String absolutePath = getPathInWorkspace(path);
-        return getSession().getItem(absolutePath);
     }
 
     // Move operations performed by drag-n-drop in JcrBrowser

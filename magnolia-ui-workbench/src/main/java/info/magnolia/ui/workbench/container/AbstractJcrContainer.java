@@ -38,6 +38,7 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
+import info.magnolia.ui.workbench.JcrItemUtil;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
@@ -52,6 +53,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
@@ -80,6 +82,10 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     public static final int DEFAULT_CACHE_RATIO = 2;
 
+    /**
+     * String separating a properties name and the uuid of its node.
+     */
+    public static final String PROPERTY_NAME_AND_UUID_SEPARATOR = "@";
     private static final Long LONG_ZERO = Long.valueOf(0);
 
     /**
@@ -154,7 +160,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         }
     }
 
-    protected WorkbenchDefinition getWorkbenchDefinition() {
+    public WorkbenchDefinition getWorkbenchDefinition() {
         return workbenchDefinition;
     }
 
@@ -218,28 +224,30 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         this.cacheRatio = cacheRatio;
     }
 
-    /**************************************/
-    /** Methods from interface Container **/
-    /**
-     * *********************************
-     */
-
-    @Override
-    public Item getItem(Object itemId) {
+    public javax.jcr.Item getJcrItem(Object itemId) {
         if (itemId == null) {
             return null;
         }
         try {
-            final Session jcrSession = MgnlContext.getJCRSession(getWorkspace());
-            if (!jcrSession.itemExists((String) itemId)) {
-                return null;
-            }
-            javax.jcr.Item item = jcrSession.getItem((String) itemId);
-            return item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((javax.jcr.Property) item);
+            return JcrItemUtil.getJcrItem(getWorkspace(), (String) itemId);
+        } catch (PathNotFoundException p) {
+            log.debug("Could not access itemId {} in workspace {} - {}. Most likely it has been (re)moved in the meantime.", new Object[]{itemId, getWorkspace(), p.toString()});
         } catch (RepositoryException e) {
-            handleRepositoryException(log, "Could not retrieve item with id: " + itemId, e);
+            handleRepositoryException(log, "Could not retrieve jcr item with id: " + itemId, e);
+        }
+        return null;
+    }
+
+    /**************************************/
+    /** Methods from interface Container **/
+    /**************************************/
+    @Override
+    public Item getItem(Object itemId) {
+        javax.jcr.Item item = getJcrItem(itemId);
+        if (item == null) {
             return null;
         }
+        return item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((javax.jcr.Property) item);
     }
 
     @Override
@@ -268,17 +276,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     @Override
     public boolean containsId(Object itemId) {
-        if (itemId == null) {
-            return false;
-        }
-
-        try {
-            final Session jcrSession = MgnlContext.getJCRSession(getWorkspace());
-            return jcrSession.itemExists((String) itemId);
-        } catch (RepositoryException e) {
-            handleRepositoryException(log, "Could not check whether item exists in session - itemId: " + itemId, e);
-            return false;
-        }
+        return getItem(itemId) != null;
     }
 
     @Override
@@ -500,7 +498,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         long rowCount = currentOffset;
         while (iterator.hasNext()) {
             final Node node = iterator.nextRow().getNode(SELECTOR_NAME);
-            final String id = node.getPath();
+            final String id = node.getIdentifier();
             log.debug("Adding node {} to cached items.", id);
             itemIndexes.put(rowCount++, id);
         }

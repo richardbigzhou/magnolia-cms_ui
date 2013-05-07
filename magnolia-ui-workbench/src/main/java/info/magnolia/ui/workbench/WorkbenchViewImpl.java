@@ -181,8 +181,8 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
     }
 
     @Override
-    public void selectPath(String path) {
-        getSelectedView().select(path);
+    public void select(String itemId) {
+        getSelectedView().select(itemId);
     }
 
     @Override
