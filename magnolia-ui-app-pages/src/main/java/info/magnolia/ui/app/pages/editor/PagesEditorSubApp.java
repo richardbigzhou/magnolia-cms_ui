@@ -36,9 +36,9 @@ package info.magnolia.ui.app.pages.editor;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.jcr.util.NodeTypes.Renderable;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.link.LinkUtil;
-import info.magnolia.rendering.engine.RenderException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
@@ -46,6 +46,7 @@ import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
@@ -57,7 +58,6 @@ import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
@@ -68,7 +68,6 @@ import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import java.util.Collection;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -87,6 +86,10 @@ import org.slf4j.LoggerFactory;
 public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppView.Listener, ActionbarPresenter.Listener, PageBarView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
+
+    public static final String ACTION_DELETE_COMPONENT = "deleteComponent";
+    public static final String ACTION_EDIT_COMPONENT = "editComponent";
+    public static final String ACTION_MOVE_COMPONENT = "moveComponent";
 
     private final ActionExecutor actionExecutor;
     private final PagesEditorSubAppView view;
@@ -167,7 +170,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     }
 
     /**
-     * Show/Hide actions buttons according to the canEdit, canDelete, canMove properties of template.
+     * Show/Hide actions buttons according to operation permissions.
      */
     private void updateActionsByTemplateRights() {
 
@@ -177,30 +180,26 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                 return;
             }
             final String path = element.getPath();
-            Session session = MgnlContext.getJCRSession(workspace);
-            Node node = session.getNode(path);
-            if (!node.hasProperty("mgnl:template")) {
+            Node node = MgnlContext.getJCRSession(workspace).getNode(path);
+            String templateId = Renderable.getTemplate(node);
+            if (templateId == null) {
                 return;
             }
-            String templateId = node.getProperty("mgnl:template").getString();
-            TemplateDefinition componentDefinition = pageEditorPresenter.getTemplateDefinitionRegistry().getTemplateDefinition(templateId);
+            TemplateDefinition templateDefinition = pageEditorPresenter.getTemplateDefinitionRegistry().getTemplateDefinition(templateId);
+
+            if (templateDefinition.getDeletable() != null && !templateDefinition.getDeletable()) {
+                actionbarPresenter.disable(PagesEditorSubApp.ACTION_DELETE_COMPONENT);
+            }
+            if (templateDefinition.getMoveable() != null && !templateDefinition.getMoveable()) {
+                actionbarPresenter.disable(PagesEditorSubApp.ACTION_MOVE_COMPONENT);
+            }
+            if (templateDefinition.getWritable() != null && !templateDefinition.getWritable()) {
+                actionbarPresenter.disable(PagesEditorSubApp.ACTION_EDIT_COMPONENT);
+            }
 
         } catch (Exception e) {
             log.error("Exception caught: {}", e.getMessage(), e);
         }
-    }
-
-    private boolean hasRight(String rightTemplateProperty, String right, Collection<String> groups) throws RepositoryException, RenderException {
-        if (rightTemplateProperty == null) {
-            return true; // default is true
-        }
-        String groupsWithThisRight = "," + rightTemplateProperty + ",";
-        for (String group : groups) {
-            if (groupsWithThisRight.contains("," + group + ",")) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

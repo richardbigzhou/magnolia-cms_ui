@@ -52,6 +52,7 @@ public class PageEditorPreviewWrapper extends CssLayout {
 
     public PageEditorPreviewWrapper() {
         super();
+        setSizeFull();
         addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {

@@ -40,7 +40,7 @@ import com.vaadin.client.ui.AbstractComponentConnector;
 import com.vaadin.shared.ui.Connect;
 
 /**
- * {@link BadgeIconConnector}.
+ * Client-side connector for {@link BadgeIcon} component.
  */
 @Connect(BadgeIcon.class)
 public class BadgeIconConnector extends AbstractComponentConnector {

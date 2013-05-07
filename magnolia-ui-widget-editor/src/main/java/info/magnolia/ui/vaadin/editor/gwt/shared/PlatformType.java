@@ -48,7 +48,7 @@ public enum PlatformType {
         }
     },
 
-    MOBILE("smartphone", "Mobile") {
+    MOBILE("smartphone", "Smartphone") {
         @Override
         public String getStyleName(boolean isPortrait) {
             return isPortrait ? "smartphonePortrait" : "smartphoneLandscape";
