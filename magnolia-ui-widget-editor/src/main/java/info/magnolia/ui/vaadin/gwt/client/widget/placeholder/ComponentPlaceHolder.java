@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.gwt.client.widget.placeholder;
 import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.getI18nMessage;
 
 import info.magnolia.rendering.template.AreaDefinition;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.NewComponentEvent;
 
@@ -100,7 +101,7 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
 
         add(controlBar);
 
-        Element marker = getMgnlElement().getComponentElement();
+        Element marker = getMgnlElement().getComponentMarkerElement();
         boolean onlyBar = (marker != null && marker.getAttribute(AreaDefinition.CMS_ADD).equals("bar"));
 
         if (!onlyBar) {
@@ -145,4 +146,8 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
         }
     }
 
+    @Override
+    public MgnlArea getMgnlElement() {
+        return (MgnlArea) super.getMgnlElement();
+    }
 }

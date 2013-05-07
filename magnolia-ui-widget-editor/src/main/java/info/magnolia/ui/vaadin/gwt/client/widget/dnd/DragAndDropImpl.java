@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.gwt.client.widget.dnd;
 
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.SortComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar;
 import info.magnolia.ui.vaadin.gwt.client.widget.placeholder.ComponentPlaceHolder;
@@ -64,7 +65,7 @@ public class DragAndDropImpl {
 
                 bar.setStyleName("moveSource", true);
 
-                CmsNode area = bar.getCmsNode().getParentArea();
+                MgnlArea area = bar.getCmsNode().getParentArea();
                 if (area != null) {
                     for (CmsNode component : area.getComponents()) {
                         ComponentBar componentBar = (ComponentBar) component.asMgnlElement().getControlBar();
@@ -72,7 +73,7 @@ public class DragAndDropImpl {
                             componentBar.setStyleName("moveTarget", true);
                         }
                     }
-                    ComponentPlaceHolder placeholder = area.asMgnlElement().getComponentPlaceHolder();
+                    ComponentPlaceHolder placeholder = area.getComponentPlaceHolder();
                     if (placeholder != null) {
                         placeholder.setStyleName("moveOngoing", true);
                     }
@@ -93,7 +94,7 @@ public class DragAndDropImpl {
 
                 bar.setStyleName("moveSource", false);
 
-                CmsNode area = bar.getCmsNode().getParentArea();
+                MgnlArea area = bar.getCmsNode().getParentArea();
                 if (area != null) {
                     for (CmsNode component : area.getComponents()) {
                         ComponentBar componentBar = (ComponentBar) component.asMgnlElement().getControlBar();
@@ -101,7 +102,7 @@ public class DragAndDropImpl {
                             componentBar.setStyleName("moveTarget", false);
                         }
                     }
-                    ComponentPlaceHolder placeholder = area.asMgnlElement().getComponentPlaceHolder();
+                    ComponentPlaceHolder placeholder = area.getComponentPlaceHolder();
                     if (placeholder != null) {
                         placeholder.setStyleName("moveOngoing", false);
                     }

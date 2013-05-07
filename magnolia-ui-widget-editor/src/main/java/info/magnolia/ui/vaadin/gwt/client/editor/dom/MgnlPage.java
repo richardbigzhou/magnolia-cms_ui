@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,22 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor.model.focus;
+package info.magnolia.ui.vaadin.gwt.client.editor.dom;
 
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
-
-import com.google.gwt.dom.client.Element;
+import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 
 /**
- * Interface for Focus Model.
+ * MgnlPage.
  */
-public interface FocusModel {
+public class MgnlPage extends MgnlElement {
+    /**
+     * MgnlElement. Represents a node in the tree built on cms-tags.
+     */
+    public MgnlPage(MgnlElement parent) {
+        super(parent);
+    }
 
-    void selectElement(Element element);
+    @Override
+    public AbstractElement getTypedElement() {
+        return new PageElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"));
+    }
 
-    void toggleRootAreaBar(boolean visible);
+    @Override
+    public boolean isPage() {
+        return true;
+    }
 
-    void init();
+    @Override
+    public boolean isArea() {
+        return false;
+    }
 
-    void select(MgnlElement mgnlElement);
+    @Override
+    public boolean isComponent() {
+        return false;
+    }
 }

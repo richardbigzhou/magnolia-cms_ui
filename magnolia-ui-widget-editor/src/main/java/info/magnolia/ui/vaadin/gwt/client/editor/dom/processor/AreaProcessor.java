@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 
 import info.magnolia.rendering.template.AreaDefinition;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaBar;
@@ -176,7 +177,7 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
     }
 
     private void attachComponentPlaceHolder(ComponentPlaceHolder placeHolder) {
-        Element parent = getMgnlElement().getComponentElement();
+        Element parent = getMgnlElement().getComponentMarkerElement();
 
         if (parent == null) {
             if (getMgnlElement().getLastElement() != null && getMgnlElement().getFirstElement() == getMgnlElement().getLastElement()) {
@@ -196,4 +197,8 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
         getMgnlElement().setComponentPlaceHolder(placeHolder);
     }
 
+    @Override
+    public MgnlArea getMgnlElement() {
+        return (MgnlArea) super.getMgnlElement();
+    }
 }
