@@ -44,7 +44,7 @@ import javax.inject.Inject;
 /**
  * Favorites shell app.
  */
-public class FavoritesShellApp implements ShellApp {
+public final class FavoritesShellApp implements ShellApp {
 
     private FavoritesView favoritesView;
 

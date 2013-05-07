@@ -56,7 +56,7 @@ import com.vaadin.ui.TextField;
 /**
  * Favorite group.
  */
-public class FavoritesGroup extends CssLayout {
+public final class FavoritesGroup extends CssLayout {
 
     private TextField titleField;
     private NativeButton editButton;

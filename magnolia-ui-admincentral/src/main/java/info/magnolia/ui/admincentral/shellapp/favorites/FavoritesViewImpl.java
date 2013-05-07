@@ -54,7 +54,7 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * Default view implementation for favorites.
  */
-public class FavoritesViewImpl extends CustomComponent implements FavoritesView {
+public final class FavoritesViewImpl extends CustomComponent implements FavoritesView {
 
     private VerticalLayout layout = new VerticalLayout();
     private FavoritesView.Listener listener;

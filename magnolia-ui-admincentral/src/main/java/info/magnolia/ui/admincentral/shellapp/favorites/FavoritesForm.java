@@ -64,36 +64,38 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * FavoritesForm.
  */
-public class FavoritesForm extends CustomComponent {
+public final class FavoritesForm extends CustomComponent {
 
     private FavoritesView.Listener listener;
     private Shell shell;
     private TabSheet tabsheet;
     private Label arrowIcon;
+    private InternalFavoriteEntryForm favoriteEntryForm;
+    private InternalFavoriteGroupForm favoriteGroupForm;
 
     public FavoritesForm(final JcrNewNodeAdapter newFavorite, final JcrNewNodeAdapter newGroup, final Map<String, String> availableGroups, final FavoritesView.Listener listener, final Shell shell) {
+        addStyleName("favorites-form");
         this.listener = listener;
         this.shell = shell;
-        addStyleName("favorites-form");
 
         final VerticalLayout favoriteForm = new VerticalLayout();
-        final InternalFavoriteForm favoriteFormEntry = new InternalFavoriteForm(newFavorite, availableGroups);
-        final InternalFavoriteGroupForm favoriteGroupForm = new InternalFavoriteGroupForm(newGroup);
+        favoriteEntryForm = new InternalFavoriteEntryForm(newFavorite, availableGroups);
+        favoriteGroupForm = new InternalFavoriteGroupForm(newGroup);
 
         tabsheet = new TabSheet();
         tabsheet.addStyleName("favorites-tabs");
-        tabsheet.addTab(favoriteFormEntry, "Add a new favorite");
+        tabsheet.addTab(favoriteEntryForm, "Add a new favorite");
         tabsheet.addTab(favoriteGroupForm, "Add a new group");
 
         tabsheet.addSelectedTabChangeListener(new SelectedTabChangeListener() {
 
             @Override
             public void selectedTabChange(SelectedTabChangeEvent event) {
-                if (event.getTabSheet().getSelectedTab() instanceof InternalFavoriteForm) {
+                if (event.getTabSheet().getSelectedTab() instanceof InternalFavoriteEntryForm) {
                     favoriteGroupForm.removeEnterKeyShortcutListener();
-                    favoriteFormEntry.addEnterKeyShortcutListener();
+                    favoriteEntryForm.addEnterKeyShortcutListener();
                 } else {
-                    favoriteFormEntry.removeEnterKeyShortcutListener();
+                    favoriteEntryForm.removeEnterKeyShortcutListener();
                     favoriteGroupForm.addEnterKeyShortcutListener();
                 }
             }
@@ -145,11 +147,16 @@ public class FavoritesForm extends CustomComponent {
     public void close() {
         tabsheet.setVisible(false);
         arrowIcon.setValue("<span class=\"icon-arrow2_n\"></span>");
+        // remove key shortcut listener or this might compete with the next element getting the focus.
+        favoriteEntryForm.removeEnterKeyShortcutListener();
+        favoriteGroupForm.removeEnterKeyShortcutListener();
     }
 
     public void open() {
         tabsheet.setVisible(true);
         arrowIcon.setValue("<span class=\"icon-arrow2_s\"></span>");
+        favoriteEntryForm.addEnterKeyShortcutListener();
+        // the group form will get the key shortcut listener attached on selecting it.
     }
 
     public boolean isOpen() {
@@ -159,7 +166,7 @@ public class FavoritesForm extends CustomComponent {
     /**
      * The form component displayed in the favorite tab.
      */
-    private class InternalFavoriteForm extends CustomComponent {
+    private class InternalFavoriteEntryForm extends CustomComponent {
 
         private TextField url = new TextField("Location");
 
@@ -169,7 +176,7 @@ public class FavoritesForm extends CustomComponent {
 
         private ShortcutListener enterShortcutListener;
 
-        public InternalFavoriteForm(final JcrNewNodeAdapter newFavorite, final Map<String, String> availableGroups) {
+        public InternalFavoriteEntryForm(final JcrNewNodeAdapter newFavorite, final Map<String, String> availableGroups) {
             addStyleName("favorites-form-content");
             FormLayout layout = new FormLayout();
             layout.setSizeUndefined();
@@ -213,8 +220,6 @@ public class FavoritesForm extends CustomComponent {
                     addFavorite(newFavorite, binder);
                 }
             };
-
-            addEnterKeyShortcutListener();
 
             setCompositionRoot(layout);
         }

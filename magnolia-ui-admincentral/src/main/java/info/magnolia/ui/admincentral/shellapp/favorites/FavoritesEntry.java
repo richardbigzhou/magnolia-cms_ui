@@ -58,7 +58,7 @@ import com.vaadin.ui.TextField;
 /**
  * FavoritesEntry.
  */
-public class FavoritesEntry extends CustomComponent {
+public final class FavoritesEntry extends CustomComponent {
 
     private HorizontalLayout root = new HorizontalLayout();
     private String location;

@@ -59,7 +59,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * Implementation of a Manager for Favorites.
  */
-public class FavoritesManagerImpl implements FavoritesManager {
+public final class FavoritesManagerImpl implements FavoritesManager {
     private FavoriteStore favoriteStore;
 
     @Inject
