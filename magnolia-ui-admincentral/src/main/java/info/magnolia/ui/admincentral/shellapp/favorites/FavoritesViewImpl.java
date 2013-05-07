@@ -133,10 +133,10 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
         for (String key : keys) {
             final JcrItemNodeAdapter favoriteAdapter = nodeAdapters.get(key);
             if (AdmincentralNodeTypes.Favorite.NAME.equals(favoriteAdapter.getPrimaryNodeTypeName())) {
-                final FavoritesEntry favEntry = new FavoritesEntry(favoriteAdapter, listener);
+                final FavoritesEntry favEntry = new FavoritesEntry(favoriteAdapter, listener, shell);
                 noGroup.addComponent(favEntry);
             } else {
-                FavoritesGroup group = new FavoritesGroup(favoriteAdapter, listener);
+                FavoritesGroup group = new FavoritesGroup(favoriteAdapter, listener, shell);
                 rightColumn.addComponent(group);
             }
         }

@@ -35,7 +35,9 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -62,7 +64,6 @@ public final class FavoritesEntry extends CustomComponent {
 
     private HorizontalLayout root = new HorizontalLayout();
     private String location;
-    private String icon;
     private String title;
     private String group;
     private String relPath;
@@ -73,10 +74,12 @@ public final class FavoritesEntry extends CustomComponent {
     private boolean selected;
     private EnterKeyShortcutListener enterKeyShortcutListener;
     private EscapeKeyShortcutListener escapeKeyShortcutListener;
+    private Shell shell;
 
 
-    public FavoritesEntry(final JcrItemNodeAdapter favorite, final FavoritesView.Listener listener) {
+    public FavoritesEntry(final JcrItemNodeAdapter favorite, final FavoritesView.Listener listener, final Shell shell) {
         super();
+        this.shell = shell;
         construct(favorite, listener);
     }
 
@@ -142,8 +145,6 @@ public final class FavoritesEntry extends CustomComponent {
             icon = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue().toString();
         }
 
-        this.icon = icon;
-
         final Label iconLabel = new Label();
         iconLabel.setValue("<span class=\"" + icon + "\"></span>");
         iconLabel.setStyleName("icon");
@@ -153,6 +154,7 @@ public final class FavoritesEntry extends CustomComponent {
         titleField = new TextField();
         titleField.setValue(title);
         titleField.setReadOnly(true);
+
         titleField.addFocusListener(new FocusListener() {
 
             @Override
@@ -227,6 +229,11 @@ public final class FavoritesEntry extends CustomComponent {
     }
 
     private void doEditTitle(final FavoritesView.Listener listener) {
+        if (StringUtils.isBlank(titleField.getValue())) {
+            shell.openNotification(MessageStyleTypeEnum.ERROR, true, "Please enter a title");
+            return;
+        }
+
         boolean titleHasChanged = !title.equals(titleField.getValue());
         if (editable && titleHasChanged) {
             listener.editFavorite(relPath, titleField.getValue());

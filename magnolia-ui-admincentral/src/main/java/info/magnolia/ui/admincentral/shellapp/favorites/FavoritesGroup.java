@@ -35,12 +35,16 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
@@ -71,6 +75,7 @@ public final class FavoritesGroup extends CssLayout {
     private CssLayout wrapper;
     private EnterKeyShortcutListener enterKeyShortcutListener;
     private EscapeKeyShortcutListener escapeKeyShortcutListener;
+    private Shell shell;
 
     /**
      * Creates an empty placeholder group.
@@ -79,7 +84,9 @@ public final class FavoritesGroup extends CssLayout {
         addStyleName("no-group");
     }
 
-    public FavoritesGroup(final JcrItemNodeAdapter favoritesGroup, final FavoritesView.Listener listener) {
+    public FavoritesGroup(final JcrItemNodeAdapter favoritesGroup, final FavoritesView.Listener listener, final Shell shell) {
+        this.shell = shell;
+
         addStyleName("favorites-group");
 
         construct(favoritesGroup, listener);
@@ -90,7 +97,7 @@ public final class FavoritesGroup extends CssLayout {
 
         for (String key : keys) {
             final JcrItemNodeAdapter fav = nodeAdapters.get(key);
-            final FavoritesEntry favEntry = new FavoritesEntry(fav, listener);
+            final FavoritesEntry favEntry = new FavoritesEntry(fav, listener, shell);
             addComponent(favEntry);
         }
     }
@@ -226,6 +233,10 @@ public final class FavoritesGroup extends CssLayout {
     }
 
     private void doEditTitle(final FavoritesView.Listener listener) {
+        if (StringUtils.isBlank(titleField.getValue())) {
+            shell.openNotification(MessageStyleTypeEnum.ERROR, true, "Please enter a title");
+            return;
+        }
         boolean titleHasChanged = !title.equals(titleField.getValue());
         if (editable && titleHasChanged) {
             listener.editGroup(relPath, titleField.getValue());
