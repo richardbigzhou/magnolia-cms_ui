@@ -124,6 +124,8 @@ public final class FavoritesEntry extends CustomComponent {
 
     private void construct(final JcrItemNodeAdapter favorite, final FavoritesView.Listener listener) {
         addStyleName("favorites-entry");
+        setSizeUndefined();
+        root.setSizeUndefined();
 
         this.enterKeyShortcutListener = new EnterKeyShortcutListener(listener);
         this.escapeKeyShortcutListener = new EscapeKeyShortcutListener();
