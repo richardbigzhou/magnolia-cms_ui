@@ -38,7 +38,6 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
-import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +50,7 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
@@ -74,7 +74,6 @@ public class ListViewImpl implements ListView {
 
     public ListViewImpl() {
         this(new MagnoliaTable());
-        bindHandlers();
     }
 
     public ListViewImpl(Table table) {
@@ -83,11 +82,11 @@ public class ListViewImpl implements ListView {
         table.setImmediate(true);
         table.setSelectable(true);
         table.setMultiSelect(false);
-        table.setNullSelectionAllowed(false);
+        table.setNullSelectionAllowed(true);
 
         table.setDragMode(TableDragMode.NONE);
         table.setEditable(false);
-        table.setColumnCollapsingAllowed(true);
+        table.setColumnCollapsingAllowed(false);
         table.setColumnReorderingAllowed(false);
         table.setSortEnabled(true);
 
@@ -106,25 +105,46 @@ public class ListViewImpl implements ListView {
         });
 
         this.table = table;
+        bindHandlers();
     }
 
     protected void bindHandlers() {
-        table.addValueChangeListener(new Table.ValueChangeListener() {
+        table.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {
                 log.debug("Handle value change Event: {}", event.getProperty().getValue());
-                presenterOnItemSelection((String) event.getProperty().getValue());
+
+                if (listener != null) {
+                    listener.onItemSelection(table.getItem(event.getProperty().getValue()));
+                }
             }
         });
 
         table.addItemClickListener(new ItemClickListener() {
+
+            private Object previousSelection;
+
             @Override
             public void itemClick(ItemClickEvent event) {
+                Object currentSelection = event.getItemId();
                 if (event.isDoubleClick()) {
-                    presenterOnDoubleClick(String.valueOf(event.getItemId()));
+                    if (listener != null) {
+                        listener.onDoubleClick(event.getItem());
+                    }
+                } else {
+                    // toggle will deselect
+                    if (previousSelection == currentSelection) {
+                        table.setValue(null);
+                    }
                 }
+
+                previousSelection = currentSelection;
             }
         });
+    }
+
+    protected ListView.Listener getListener() {
+        return listener;
     }
 
     @Override
@@ -132,20 +152,10 @@ public class ListViewImpl implements ListView {
         this.listener = listener;
     }
 
-    private void presenterOnItemSelection(String id) {
-        if (listener != null) {
-            com.vaadin.data.Item item = getContainer().getItem(id);
-            listener.onItemSelection(item);
-        }
+    @Override
+    public void setContainer(Container container) {
+        table.setContainerDataSource(container);
     }
-
-    private void presenterOnDoubleClick(String id) {
-        if (listener != null) {
-            listener.onDoubleClick(table.getItem(id));
-        }
-    }
-
-    // NEW VIEW LOGIC
 
     @Override
     public void addColumn(String propertyId, String title) {
@@ -178,8 +188,8 @@ public class ListViewImpl implements ListView {
     }
 
     @Override
-    public void setEditable(boolean editable) {
-        table.setEditable(editable);
+    public void select(String path) {
+        table.select(path);
     }
 
     @Override
@@ -190,21 +200,6 @@ public class ListViewImpl implements ListView {
     @Override
     public Table asVaadinComponent() {
         return table;
-    }
-
-    @Override
-    public AbstractJcrContainer getContainer() {
-        return (AbstractJcrContainer) table.getContainerDataSource();
-    }
-
-    @Override
-    public void setContainer(Container container) {
-        table.setContainerDataSource(container);
-    }
-
-    @Override
-    public void select(String path) {
-        table.select(path);
     }
 
 }

@@ -37,11 +37,12 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
-import info.magnolia.ui.workbench.search.SearchView;
+import info.magnolia.ui.workbench.search.SearchPresenter;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -53,8 +54,10 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Container.ItemSetChangeEvent;
 import com.vaadin.data.Container.ItemSetChangeListener;
+import com.vaadin.data.Container.ItemSetChangeNotifier;
 
 /**
  * TODO: Add JavaDoc for WorkbenchPresenter.
@@ -121,14 +124,17 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         }
 
         // add status bar
-        if (view.getSelectedView() != null && view.getSelectedView().getContainer() != null) {
-            view.getSelectedView().getContainer().addItemSetChangeListener(new ItemSetChangeListener() {
+        if (activePresenter != null) {
+            Container container = activePresenter.getContainer();
+            if (container instanceof ItemSetChangeNotifier) {
+                ((ItemSetChangeNotifier) container).addItemSetChangeListener(new ItemSetChangeListener() {
 
-                @Override
-                public void containerItemSetChange(ItemSetChangeEvent event) {
-                    statusBarPresenter.setItemCount(event.getContainer().size());
-                }
-            });
+                    @Override
+                    public void containerItemSetChange(ItemSetChangeEvent event) {
+                        statusBarPresenter.setItemCount(event.getContainer().size());
+                    }
+                });
+            }
         }
 
         view.setStatusBarView(statusBarPresenter.start(eventBus));
@@ -177,7 +183,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     public void resynch(final String path, final ContentView.ViewType viewType, final String query) {
         view.setViewType(viewType);
 
-        if (viewType == ContentView.ViewType.SEARCH) {
+        if (viewType == ViewType.SEARCH) {
             doSearch(query);
             // update search field and focus it
             view.setSearchQuery(query);
@@ -194,14 +200,14 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     public void doSearch(String searchExpression) {
         // firing new search forces search view as new view type
-        if (view.getSelectedView().getViewType() != ContentView.ViewType.SEARCH) {
-            view.setViewType(ContentView.ViewType.SEARCH);
+        if (activePresenter != contentPresenters.get(ViewType.SEARCH.getText())) {
+            view.setViewType(ViewType.SEARCH);
         }
-        final SearchView searchView = (SearchView) view.getSelectedView();
+        final SearchPresenter searchPresenter = (SearchPresenter) activePresenter;
         if (StringUtils.isBlank(searchExpression)) {
-            searchView.clear();
+            searchPresenter.clear();
         } else {
-            searchView.search(searchExpression);
+            searchPresenter.search(searchExpression);
         }
     }
 

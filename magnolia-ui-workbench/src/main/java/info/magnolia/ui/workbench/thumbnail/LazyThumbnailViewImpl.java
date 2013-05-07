@@ -39,7 +39,6 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailDblClickListener;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailSelectionListener;
-import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,11 +112,6 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
         // thumbnailLayout.setContainerDataSource(container);
         // thumbnailLayout.setThumbnailSize(73, 73);
     // }
-
-    @Override
-    public AbstractJcrContainer getContainer() {
-        throw new UnsupportedOperationException();
-    }
 
     @Override
     public Component asVaadinComponent() {

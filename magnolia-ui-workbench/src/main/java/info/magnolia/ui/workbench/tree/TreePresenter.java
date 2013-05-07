@@ -35,15 +35,28 @@ package info.magnolia.ui.workbench.tree;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.list.ListPresenter;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
 
 /**
  * The TreePresenter.
  */
 public class TreePresenter extends ListPresenter implements TreeView.Listener {
+
+    private static final Logger log = LoggerFactory.getLogger(TreePresenter.class);
 
     @Inject
     public TreePresenter(TreeView view, ComponentProvider componentProvider) {
@@ -52,12 +65,62 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
 
     @Override
     public TreeView start(WorkbenchDefinition workbench, EventBus eventBus) {
-        return (TreeView) super.start(workbench, eventBus);
+        TreeView view = (TreeView) super.start(workbench, eventBus);
+
+        // inplace-editing
+        if (workbench.isEditable()) {
+
+            List<Object> editableColumns = new ArrayList<Object>();
+
+            Iterator<ColumnDefinition> it = workbench.getColumns().iterator();
+            while (it.hasNext()) {
+                ColumnDefinition column = it.next();
+
+                String propertyId = column.getPropertyName() != null ? column.getPropertyName() : column.getName();
+                if (column.isEditable()) {
+                    editableColumns.add(propertyId);
+                }
+            }
+
+            view.setEditableColumns(editableColumns.toArray());
+            view.setEditable(true);
+        }
+
+        // Drag and Drop
+        // Class<? extends DropConstraint> dropContainerClass = workbench.getDropConstraintClass();
+        // if (dropContainerClass != null) {
+        // DropConstraint constraint = componentProvider.newInstance(dropContainerClass);
+        // DropHandler dropHandler = new TreeViewDropHandler(treeTable, constraint);
+        // treeTable.setDropHandler(dropHandler);
+        // treeTable.setDragMode(TableDragMode.ROW);
+        // log.debug("Set following drop container {} to the treeTable", dropContainerClass.getName());
+        // }
+
+        return view;
     }
 
     @Override
     protected HierarchicalJcrContainer createContainer(WorkbenchDefinition workbench) {
         return new HierarchicalJcrContainer(workbench);
+    }
+
+    // TREE VIEW LISTENER IMPL
+
+    @Override
+    public void onItemEdited(Item item) {
+        try {
+            if (item != null) {
+                log.debug("com.vaadin.data.Item edited. Firing ItemEditedEvent...");
+                getEventBus().fireEvent(new ItemEditedEvent(item));
+            } else {
+                log.warn("Null item edited");
+            }
+        } catch (Exception e) {
+            log.error("An error occurred while double clicking on a row in the data grid", e);
+        }
+
+        // Clear preOrder cache of itemIds in case node was renamed
+        getContainer().fireItemSetChange();
     }
 
 }

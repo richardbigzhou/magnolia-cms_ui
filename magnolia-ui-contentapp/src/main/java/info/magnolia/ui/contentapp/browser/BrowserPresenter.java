@@ -191,9 +191,6 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
         });
     }
 
-    /**
-     * @see info.magnolia.ui.workbench.AbstractContentPresenter#getSelectedItemPath()
-     */
     public String getSelectedItemId() {
         return workbenchPresenter.getSelectedId();
     }

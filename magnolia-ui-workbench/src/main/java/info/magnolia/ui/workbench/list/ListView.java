@@ -55,6 +55,4 @@ public interface ListView extends ContentView {
 
     void setNodeIcon(String primaryNodeType, String iconName);
 
-    void setEditable(boolean editable);
-
 }

@@ -47,10 +47,6 @@ public class MagnoliaTreeTable extends TreeTable {
 
     public MagnoliaTreeTable() {
         addStyleName("v-magnolia-table");
-        setSelectable(true);
-        setMultiSelect(true);
-        setDragMode(TableDragMode.NONE);
-        setImmediate(true);
 
         // MGNLUI-961 Tree table was patched on client-side to disable lazy-loading according to number of visible rows.
         // Therefore it should keep page length set to 0.

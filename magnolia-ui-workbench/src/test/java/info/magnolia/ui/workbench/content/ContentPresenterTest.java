@@ -47,6 +47,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import com.vaadin.data.Container;
+
 /**
  * Tests for ContentPresenter.
  */
@@ -121,6 +123,11 @@ public class ContentPresenterTest {
 
         @Override
         public void refresh() {
+        }
+
+        @Override
+        public Container getContainer() {
+            return mock(Container.class);
         }
 
     }

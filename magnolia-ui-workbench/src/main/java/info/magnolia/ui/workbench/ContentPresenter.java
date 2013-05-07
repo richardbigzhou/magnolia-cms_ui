@@ -36,12 +36,16 @@ package info.magnolia.ui.workbench;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
+import com.vaadin.data.Container;
+
 /**
  * Defines the basic api for a workbench content presenter.
  */
 public interface ContentPresenter {
 
     ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus);
+
+    Container getContainer();
 
     void refresh();
 

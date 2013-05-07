@@ -54,9 +54,9 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
 
     private final ListView view;
 
-    private AbstractJcrContainer container;
-
     private final ComponentProvider componentProvider;
+
+    private AbstractJcrContainer container;
 
     @Inject
     public ListPresenter(ListView view, ComponentProvider componentProvider) {
@@ -69,12 +69,13 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
         super.start(workbench, eventBus);
 
         this.container = createContainer(workbench);
+        view.setListener(this);
         view.setContainer(container);
 
         // build columns
         List<Object> editableColumns = new ArrayList<Object>();
 
-        final Iterator<ColumnDefinition> it = workbench.getColumns().iterator();
+        Iterator<ColumnDefinition> it = workbench.getColumns().iterator();
         while (it.hasNext()) {
             ColumnDefinition column = it.next();
 
@@ -99,20 +100,6 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
             }
         }
 
-        // inplace-editing
-        if (workbench.isEditable()) {
-            view.setEditable(true);
-            // editingDelegate = new InplaceEditingDelegate(view.asVaadinComponent());
-            // editingDelegate.setEditableColumns(editableColumns.toArray());
-            // editingDelegate.addListener(new ItemEditedEvent.Handler() {
-            //
-            // @Override
-            // public void onItemEdited(ItemEditedEvent event) {
-            // presenterOnEditItem(event);
-            // }
-            // });
-        }
-
         // node icons
         List<NodeTypeDefinition> nodeTypes = workbench.getNodeTypes();
         for (NodeTypeDefinition nodeType : nodeTypes) {
@@ -120,16 +107,6 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
                 view.setNodeIcon(nodeType.getName(), nodeType.getIcon());
             }
         }
-
-        // Set Drop Handler
-        // if (workbench.getDropConstraintClass() != null) {
-        // Class<? extends DropConstraint> dropContainerClass = workbench.getDropConstraintClass();
-        // DropConstraint constraint = componentProvider.newInstance(dropContainerClass);
-        // DropHandler dropHandler = new TreeViewDropHandler(treeTable, constraint);
-        // treeTable.setDropHandler(dropHandler);
-        // treeTable.setDragMode(TableDragMode.ROW);
-        // log.debug("Set following drop container {} to the treeTable", dropContainerClass.getName());
-        // }
 
         return view;
     }
@@ -143,6 +120,11 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
 
     protected AbstractJcrContainer createContainer(WorkbenchDefinition workbench) {
         return new FlatJcrContainer(workbench);
+    }
+
+    @Override
+    public AbstractJcrContainer getContainer() {
+        return container;
     }
 
 }

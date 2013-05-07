@@ -54,4 +54,19 @@ public class SearchPresenter extends ListPresenter implements SearchView.Listene
         return new SearchJcrContainer(workbench);
     }
 
+    @Override
+    public SearchJcrContainer getContainer() {
+        return (SearchJcrContainer) super.getContainer();
+    }
+
+    public void search(String fulltextExpr) {
+        getContainer().setFullTextExpression(fulltextExpr);
+        refresh();
+    }
+
+    public void clear() {
+        getContainer().setFullTextExpression(null);
+        refresh();
+    }
+
 }

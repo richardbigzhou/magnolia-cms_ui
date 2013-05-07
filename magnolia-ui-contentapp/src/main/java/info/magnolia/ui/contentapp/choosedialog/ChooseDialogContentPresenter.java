@@ -47,9 +47,8 @@ import info.magnolia.ui.workbench.tree.TreeView;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.rits.cloning.Cloner;
+import com.vaadin.data.Container;
 
 /**
  * ChooseDialog ContentPresenter.
@@ -76,22 +75,22 @@ public class ChooseDialogContentPresenter extends AbstractContentPresenter {
         }
     }
 
-    /**
-     * Return the Root path.
-     */
     public String getRootPath() {
-        return StringUtils.defaultIfEmpty(getWorkbenchDefinition().getPath(), "/");
+        return "/";
+        // return StringUtils.defaultIfEmpty(getWorkbenchDefinition().getPath(), "/");
     }
 
-
-    @Override
     protected void initContentView(WorkbenchView view) {
-        super.initContentView(view);
         view.setViewType(ContentView.ViewType.TREE);
         ((TreeView)view.getSelectedView()).deactivateDragAndDrop();
     }
 
     @Override
     public void refresh() {
+    }
+
+    @Override
+    public Container getContainer() {
+        return null;
     }
 }

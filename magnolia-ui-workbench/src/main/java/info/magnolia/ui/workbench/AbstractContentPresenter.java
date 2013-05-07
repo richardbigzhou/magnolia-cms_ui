@@ -37,7 +37,6 @@ import info.magnolia.event.EventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
-import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 
 import org.slf4j.Logger;
@@ -46,7 +45,7 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 
 /**
- * Presenter for ContentView.
+ * Abstract generic logic for content presenters.
  */
 public abstract class AbstractContentPresenter implements ContentPresenter, ContentView.Listener {
 
@@ -58,13 +57,30 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
 
     private String selectedItemPath;
 
+    // CONTENT PRESENTER
+
     @Override
     public ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus) {
         this.workbenchDefinition = workbenchDefinition;
         this.eventBus = eventBus;
-        initContentView(null);
         return null;
     }
+
+    @Override
+    public String getSelectedItemPath() {
+        return selectedItemPath;
+    }
+
+    @Override
+    public void setSelectedItemPath(String selectedItemPath) {
+        this.selectedItemPath = selectedItemPath;
+    }
+
+    protected EventBus getEventBus() {
+        return eventBus;
+    }
+
+    // CONTENT VIEW LISTENER
 
     @Override
     public void onItemSelection(Item item) {
@@ -83,21 +99,6 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
         }
     }
 
-    /**
-     * @return the path of the vaadin item currently selected in the currently active {@link ContentView}. It is
-     *         equivalent to javax.jcr.Item#getPath().
-     * @see JcrItemAdapter#getPath()
-     */
-    @Override
-    public String getSelectedItemPath() {
-        return selectedItemPath;
-    }
-
-    @Override
-    public void setSelectedItemPath(String selectedItemPath) {
-        this.selectedItemPath = selectedItemPath;
-    }
-
     @Override
     public void onDoubleClick(Item item) {
         if (item != null) {
@@ -111,27 +112,6 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
         } else {
             log.warn("Got null com.vaadin.data.Item. No event will be fired.");
         }
-    }
-
-    @Override
-    public void onItemEdited(Item item) {
-        try {
-            if (item != null) {
-                log.debug("com.vaadin.data.Item edited. Firing ItemEditedEvent...");
-                eventBus.fireEvent(new ItemEditedEvent(item));
-            } else {
-                log.warn("Null item edited");
-            }
-        } catch (Exception e) {
-            log.error("An error occurred while double clicking on a row in the data grid", e);
-        }
-    }
-
-    protected void initContentView(WorkbenchView parentView) {
-    }
-
-    protected WorkbenchDefinition getWorkbenchDefinition() {
-        return workbenchDefinition;
     }
 
 }

@@ -33,27 +33,9 @@
  */
 package info.magnolia.ui.workbench.tree;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
-import info.magnolia.ui.workbench.ContentView;
-import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
-import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.list.ListViewImpl;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.vaadin.data.Container;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.TreeTable;
 
@@ -62,170 +44,79 @@ import com.vaadin.ui.TreeTable;
  */
 public class TreeViewImpl extends ListViewImpl implements TreeView {
 
-    private static final Logger log = LoggerFactory.getLogger(TreeViewImpl.class);
-
     private final TreeTable treeTable;
 
-    private ContentView.Listener listener;
+    private final ItemEditedEvent.Handler itemEditedListener = new ItemEditedEvent.Handler() {
 
-    private Set<?> defaultValue = null;
+        @Override
+        public void onItemEdited(ItemEditedEvent event) {
+            if (getListener() != null) {
+                getListener().onItemEdited(event.getItem());
+            }
+        }
+    };
 
-    /**
-     * Instantiates a new content tree view.
-     *
-     * @param workbench the workbench definition
-     * @param componentProvider the component provider
-     * @param container the container data source
-     */
+    // private Set<?> defaultValue = null;
+
     public TreeViewImpl() {
-        this(new MagnoliaTreeTable());
+        this(new InplaceEditingTreeTable());
     }
 
     public TreeViewImpl(TreeTable tree) {
         super(tree);
+        tree.setSortEnabled(false);
+
+        tree.setCollapsed(tree.firstItemId(), false);
+
         this.treeTable = tree;
     }
 
-    private void init() {
-        // this.container = new HierarchicalJcrContainer(workbench);
+    // @Override
+    // protected void bindHandlers() {
+    //
+    // treeTable.addValueChangeListener(new TreeTable.ValueChangeListener() {
+    //
+    // @Override
+    // public void valueChange(ValueChangeEvent event) {
+    // if (defaultValue == null && event.getProperty().getValue() instanceof Set) {
+    // defaultValue = (Set<?>) event.getProperty().getValue();
+    // }
+    // final Object value = event.getProperty().getValue();
+    // if (value instanceof String) {
+    // // presenterOnItemSelection(String.valueOf(value));
+    // } else if (value instanceof Set) {
+    // final Set<?> set = new HashSet<Object>((Set<?>) value);
+    // set.removeAll(defaultValue);
+    // if (set.size() == 1) {
+    // // presenterOnItemSelection(String.valueOf(set.iterator().next()));
+    // } else if (set.size() == 0) {
+    // // presenterOnItemSelection(null);
+    // treeTable.setValue(null);
+    // }
+    // }
+    // }
+    // });
+    // }
 
-        // treeTable = buildTreeTable(container, workbench, componentProvider);
-
-        // Set Drop Handler
-        // Class<? extends DropConstraint> dropContainerClass = workbench.getDropConstraintClass();
-        // if (dropContainerClass != null) {
-        // DropConstraint constraint = componentProvider.newInstance(dropContainerClass);
-        // DropHandler dropHandler = new TreeViewDropHandler(treeTable, constraint);
-        // treeTable.setDropHandler(dropHandler);
-        // treeTable.setDragMode(TableDragMode.ROW);
-        // log.debug("Set following drop container {} to the treeTable", dropContainerClass.getName());
-        // }
-
-        treeTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
-
-            private Object previousSelection;
-
-            @Override
-            public void itemClick(ItemClickEvent event) {
-                Object currentSelection = event.getItemId();
-                if (event.isDoubleClick()) {
-                    // presenterOnDoubleClick(String.valueOf(event.getItemId()));
-                } else {
-                    // toggle will deselect
-                    if (previousSelection == currentSelection) {
-                        treeTable.setValue(null);
-                    }
-                }
-
-                previousSelection = currentSelection;
-            }
-        });
-
-        treeTable.addValueChangeListener(new TreeTable.ValueChangeListener() {
-
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-                if (defaultValue == null && event.getProperty().getValue() instanceof Set) {
-                    defaultValue = (Set<?>) event.getProperty().getValue();
-                }
-                final Object value = event.getProperty().getValue();
-                if (value instanceof String) {
-                    // presenterOnItemSelection(String.valueOf(value));
-                } else if (value instanceof Set) {
-                    final Set<?> set = new HashSet<Object>((Set<?>) value);
-                    set.removeAll(defaultValue);
-                    if (set.size() == 1) {
-                        // presenterOnItemSelection(String.valueOf(set.iterator().next()));
-                    } else if (set.size() == 0) {
-                        // presenterOnItemSelection(null);
-                        treeTable.setValue(null);
-                    }
-                }
-            }
-        });
-
-    }
-
-    // CONFIGURE TREE TABLE
-
-    private TreeTable buildTreeTable(final Container container, WorkbenchDefinition workbench, ComponentProvider componentProvider) {
-
-        TreeTable treeTable = (workbench.isEditable()) ? new InplaceEditingTreeTable() : new MagnoliaTreeTable();
-
-        // basic widget configuration
-        treeTable.setNullSelectionAllowed(true);
-        treeTable.setColumnCollapsingAllowed(false);
-        treeTable.setColumnReorderingAllowed(false);
-        treeTable.setCollapsed(treeTable.firstItemId(), false);
-        treeTable.setSizeFull();
-
-        // data model
-        treeTable.setContainerDataSource(container);
-        buildColumns(treeTable, container, workbench.getColumns(), componentProvider);
-
-        // listeners
-        if (workbench.isEditable()) {
-            ((InplaceEditingTreeTable) treeTable).addListener(new ItemEditedEvent.Handler() {
-
-                @Override
-                public void onItemEdited(ItemEditedEvent event) {
-                    presenterOnEditItem(event);
-                }
-            });
-        }
-
-        return treeTable;
-    }
-
-    /**
-     * Sets the columns for the vaadin TreeTable, based on workbench columns configuration.
-     *
-     * @param treeTable the TreeTable vaadin component
-     * @param container the container data source
-     * @param columns the list of ColumnDefinitions
-     * @param componentProvider the component provider
-     */
-    protected void buildColumns(TreeTable treeTable, Container container, List<ColumnDefinition> columns, ComponentProvider componentProvider) {
-        final Iterator<ColumnDefinition> iterator = columns.iterator();
-        final List<String> visibleColumns = new ArrayList<String>();
-        final List<String> editableColumns = new ArrayList<String>();
-
-        while (iterator.hasNext()) {
-            final ColumnDefinition column = iterator.next();
-            final String columnProperty = column.getPropertyName() != null ? column.getPropertyName() : column.getName();
-
-            // Add data column
-            container.addContainerProperty(columnProperty, column.getType(), "");
-            visibleColumns.add(columnProperty);
-
-            // Set appearance
-            treeTable.setColumnHeader(columnProperty, column.getLabel());
-            if (column.getWidth() > 0) {
-                treeTable.setColumnWidth(columnProperty, column.getWidth());
-            } else if (column.getExpandRatio() > 0) {
-                treeTable.setColumnExpandRatio(columnProperty, column.getExpandRatio());
-            }
-
-            // Generated columns
-            Class<? extends ColumnFormatter> formatterClass = column.getFormatterClass();
-            if (formatterClass != null) {
-                ColumnFormatter formatter = componentProvider.newInstance(formatterClass, column);
-                treeTable.addGeneratedColumn(columnProperty, formatter);
-            }
-
-            // Inplace editing
-            if (column.isEditable()) {
-                editableColumns.add(columnProperty);
-            }
-        }
-
-        treeTable.setVisibleColumns(visibleColumns.toArray());
-        if (treeTable instanceof InplaceEditingTreeTable) {
-            ((InplaceEditingTreeTable) treeTable).setEditableColumns(editableColumns.toArray());
+    @Override
+    public void setEditable(boolean editable) {
+        treeTable.setEditable(editable);
+        if (editable && treeTable instanceof InplaceEditingTreeTable) {
+            ((InplaceEditingTreeTable) treeTable).addItemEditedListener(itemEditedListener);
+        } else {
+            ((InplaceEditingTreeTable) treeTable).removeItemEditedListener(itemEditedListener);
         }
     }
 
-    // CONTENT VIEW IMPL
+    @Override
+    public void setEditableColumns(Object... propertyIds) {
+        ((InplaceEditingTreeTable) treeTable).setEditableColumns(propertyIds);
+    }
+
+    @Override
+    public void deactivateDragAndDrop() {
+        treeTable.setDragMode(TableDragMode.NONE);
+    }
 
     @Override
     public void select(String path) {
@@ -234,13 +125,9 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
             treeTable.setCurrentPageFirstItemId(path);
         }
         treeTable.select(path);
-
     }
 
-    /**
-     * Expand the parent nodes of the node specified in the path.
-     */
-    public void expandTreeToNode(String path){
+    private void expandTreeToNode(String path) {
         String[] segments = path.split("/");
         String segmentPath = "";
         // Expand each parent node in turn.
@@ -253,17 +140,13 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     }
 
     @Override
-    public ViewType getViewType() {
-        return ViewType.TREE;
+    protected TreeView.Listener getListener() {
+        return (TreeView.Listener) super.getListener();
     }
 
-    private void presenterOnEditItem(ItemEditedEvent event) {
-        if (listener != null) {
-            listener.onItemEdited(event.getItem());
-
-            // Clear preOrder cache of itemIds in case node was renamed
-            getContainer().fireItemSetChange();
-        }
+    @Override
+    public ViewType getViewType() {
+        return ViewType.TREE;
     }
 
     @Override
@@ -271,8 +154,4 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         return treeTable;
     }
 
-    @Override
-    public void deactivateDragAndDrop() {
-        treeTable.setDragMode(TableDragMode.NONE);
-    }
 }

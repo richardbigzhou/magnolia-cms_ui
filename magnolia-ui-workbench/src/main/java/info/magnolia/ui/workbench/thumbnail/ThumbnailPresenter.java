@@ -40,6 +40,8 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import javax.inject.Inject;
 
+import com.vaadin.data.Container;
+
 /**
  * The ThumbnailPresenter.
  */
@@ -60,6 +62,11 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
 
     @Override
     public void refresh() {
+    }
+
+    @Override
+    public Container getContainer() {
+        return null;
     }
 
 }
