@@ -1,4 +1,8 @@
-@import "fonts.css";
+@charset "UTF-8";
+
+@import "../magnolia/fonts.scss";
+@import "../admincentraltheme/fonts.scss";
+@import "../magnolia/colors.scss";
 
 /* ---------------------------
  * Edit bars definitions
@@ -38,6 +42,8 @@ div.mgnlEditorBar {
     color: #6a9090 !important;
     text-transform: uppercase !important;
     margin: 0 0 2px 0 !important;
+    font-family: DINWebPro, Verdana, sans-serif !important;
+    font-size: 12px !important;
 }
 
 /* Selected Item (focus) */
@@ -154,8 +160,6 @@ div.editorIcon {
  */
 div.mgnlEditorBarLabel {
     padding: 0 0 0 16px !important;
-    font-family: Verdana, sans-serif !important;
-    font-size: 12px !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
@@ -179,8 +183,6 @@ div.mgnlEditorPlaceholder {
     box-sizing: border-box !important;         /* IE 8+ */
     clear: both !important;
     color: #6a9000 !important;
-    font-family: Verdana, sans-serif !important;
-    font-size: 12px !important;
 }
 
 /* Area place holder, not in focus. */

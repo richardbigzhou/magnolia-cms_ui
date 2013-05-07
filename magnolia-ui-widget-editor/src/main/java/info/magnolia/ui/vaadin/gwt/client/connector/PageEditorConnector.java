@@ -92,7 +92,7 @@ import com.vaadin.shared.ui.Connect;
 @Connect(PageEditor.class)
 public class PageEditorConnector extends AbstractComponentConnector implements PageEditorView.Listener {
 
-    private static final String PAGE_EDITOR_CSS = "/VAADIN/themes/admincentraltheme/pageeditor.css";
+    private static final String PAGE_EDITOR_CSS = "/VAADIN/themes/ui-app-pages/page-editor.css";
 
     private PageEditorServerRpc rpc = RpcProxy.create(PageEditorServerRpc.class, this);
 

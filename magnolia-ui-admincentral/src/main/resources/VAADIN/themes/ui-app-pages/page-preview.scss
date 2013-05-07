@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-@mixin page-editor {
+@mixin page-preview {
 
   .pagebar > .v-label {
     margin: 0 0 0 5px;
@@ -46,7 +46,7 @@
   }
 
   .preview.tabletLandscape {
-    background: url(img/preview/mobile/tablet/landscape.png) no-repeat !important;
+    background: url(img/tablet/landscape.png) no-repeat !important;
     width: 1300px !important;
     height: 1025px !important;
   }
@@ -60,7 +60,7 @@
   }
 
   .preview.tabletPortrait {
-    background: url(img/preview/mobile/tablet/portrait.png) no-repeat !important;
+    background: url(img/tablet/portrait.png) no-repeat !important;
     width: 1020px !important;
     height: 1300px !important;
   }
@@ -74,7 +74,7 @@
   }
 
   .preview.smartphoneLandscape {
-    background: url(img/preview/mobile/smartphone/landscape.png) no-repeat !important;
+    background: url(img/smartphone/landscape.png) no-repeat !important;
     width: 752px !important;
     height: 461px !important;
   }
@@ -88,7 +88,7 @@
   }
 
   .preview.smartphonePortrait {
-    background: url(img/preview/mobile/smartphone/portrait.png) no-repeat !important;
+    background: url(img/smartphone/portrait.png) no-repeat !important;
     width: 393px !important;
     height: 756px !important;
   }
@@ -105,7 +105,7 @@
     border: none !important;
     width: 100% !important;
     height: 100% !important;
-    background: center no-repeat url(img/preview/mobile/loading.gif) !important;
+    background: center no-repeat url(img/loading.gif) !important;
   }
 
   .preview {
