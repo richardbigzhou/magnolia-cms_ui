@@ -10,6 +10,13 @@
   <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
   <name>magnolia-ui-vaadin-common-widgets</name>
 
+<repositories>
+   <repository>
+       <id>vaadin-addons</id>
+       <url>http://maven.vaadin.com/vaadin-addons</url>
+    </repository>
+  </repositories>
+
   <dependencies>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
@@ -69,6 +76,13 @@
       <groupId>com.jhlabs</groupId>
       <artifactId>filters</artifactId>
     </dependency>
+
+    <dependency>
+   <groupId>org.vaadin.addons</groupId>
+   <artifactId>contextmenu</artifactId>
+   <version>4.2.0</version>
+   </dependency>
+
   </dependencies>
 
   <build>
@@ -219,13 +233,13 @@
               <source>
                 import java.io.File
                 def path = "${project.build.sourceDirectory}/com/vaadin/client/ui/"
-                def renameMap = [(new File(path + "VScrollTable.java")):(new File(path + "VScrollTablePatched.java")), 
+                def renameMap = [(new File(path + "VScrollTable.java")):(new File(path + "VScrollTablePatched.java")),
                     (new File(path + "VTreeTable.java")):(new File(path + "VTreeTablePatched.java")),
                     (new File(path + "treetable/TreeTableConnector.java")):(new File(path + "treetable/TreeTableConnectorPatched.java")),
                     (new File(path + "table/TableConnector.java")):(new File(path + "table/TableConnectorPatched.java"))];
-                     
-                for (v in renameMap) { 
-                    println "Renaming ${v.key.name} to ${v.value.name}..." 
+
+                for (v in renameMap) {
+                    println "Renaming ${v.key.name} to ${v.value.name}..."
                     v.key.renameTo(v.value)
                 }
               </source>

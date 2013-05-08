@@ -241,4 +241,41 @@ span.icon-publish-incl-sub { text-indent: -27px !important; }
 .tablet .v-actionbar .row-6 {top:480px;}
 .tablet .v-actionbar .row-7 {top:560px;}
 
+
+/* Action Popup */
+
+.popupContent .v-context-menu{
+	box-shadow:4px 4px 10px $c91;
+}
+
+
+.popupContent .v-context-menu .v-context-menu-item-basic,
+.popupContent .v-context-menu .v-context-menu-item-basic-submenu
+{
+    background:$c10;
+    color:$c80;
+    font-size:14px;
+    font-family:DINWebPro-Light, DINWebPro, Verdana;
+}
+
+.popupContent .v-context-menu .v-context-menu-item-basic:focus,
+.popupContent .v-context-menu .v-context-menu-item-basic-submenu:focus,
+.popupContent .v-context-menu .v-context-menu-item-basic-open
+{
+    background:$c10;
+    color:$c50;
+}
+
+v-context-menu-item-basic-text {
+
+}
+.v-actionbar .v-action .v-text {display:none;}
+.v-actionbar-open .v-action .v-text {display:inline;}
+/*
+.popupContent .v-context-menu .v-context-menu-item-basic-text {color:$c80;}
+.popupContent .v-context-menu .v-context-menu-item-basic-text:hover {color:$c50;}
+*/
+
+
+
 }
