@@ -80,6 +80,10 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
         return eventBus;
     }
 
+    protected WorkbenchDefinition getWorkbenchDefinition() {
+        return workbenchDefinition;
+    }
+
     // CONTENT VIEW LISTENER
 
     @Override

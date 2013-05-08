@@ -34,10 +34,12 @@
 package info.magnolia.ui.workbench;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
-import info.magnolia.test.mock.MockComponentProvider;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.workbench.config.WorkbenchBuilder;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
@@ -53,29 +55,30 @@ public class WorkbenchPresenterTest {
 
     private final static String ROOT_PATH = "/";
 
+    private ComponentProvider componentProvider;
+
     private WorkbenchPresenter presenter;
 
     @Before
     public void setUp() {
-        initWorkbenchPresenter();
-    }
-
-    private void initWorkbenchPresenter() {
         WorkbenchView view = mock(WorkbenchView.class);
-        MockComponentProvider componentProvider = new MockComponentProvider();
         WorkbenchStatusBarPresenter statusBarPresenter = mock(WorkbenchStatusBarPresenter.class);
-        this.presenter = new WorkbenchPresenter(view, componentProvider, statusBarPresenter);
-        this.presenter.start(
-                new WorkbenchBuilder().workspace(WORKSPACE).path(ROOT_PATH).contentViews(new TreePresenterDefinition(), new ListPresenterDefinition()).exec(),
-                null,
-                null
-        );
+
+        componentProvider = mock(ComponentProvider.class);
+        doReturn(mock(ContentPresenter.class)).when(componentProvider).newInstance(any(Class.class), anyVararg());
+
+        presenter = new WorkbenchPresenter(view, componentProvider, statusBarPresenter);
     }
 
     @Test
     public void testGetDefaultViewType() {
+        // GIVEN
+        WorkbenchDefinition workbenchDefinition = new WorkbenchBuilder().workspace(WORKSPACE).path(ROOT_PATH).contentViews(new TreePresenterDefinition(), new ListPresenterDefinition()).exec();
+        presenter.start(workbenchDefinition, null, null);
+
         // WHEN
         ContentView.ViewType viewType = presenter.getDefaultViewType();
+
         // THEN
         assertEquals(ContentView.ViewType.TREE, viewType);
     }

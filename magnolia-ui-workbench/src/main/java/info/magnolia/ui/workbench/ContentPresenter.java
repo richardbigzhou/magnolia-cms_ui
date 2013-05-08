@@ -51,6 +51,6 @@ public interface ContentPresenter {
 
     String getSelectedItemPath();
 
-    void setSelectedItemPath(String path);
+    void setSelectedItemPath(String itemId);
 
 }

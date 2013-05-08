@@ -70,8 +70,6 @@ public interface WorkbenchView extends View {
      */
     void setStatusBarView(StatusBarView statusBar);
 
-    void selectPath(String path);
-
     ContentView getSelectedView();
 
 }

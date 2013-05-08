@@ -113,7 +113,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
             return;
         }
         // turn off value change listener, so that presenter does not think there was user input and searches again
-        searchBox.addValueChangeListener(searchBoxListener);
+        searchBox.removeValueChangeListener(searchBoxListener);
         if (StringUtils.isNotBlank(query)) {
             searchBox.setValue(query);
             searchBox.focus();
@@ -127,7 +127,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
     public void addContentView(ContentView.ViewType viewType, ContentView view, ContentPresenterDefinition contentViewDefintion) {
         contentViews.put(viewType, view);
 
-        if(viewType.equals(ContentView.ViewType.SEARCH)) {
+        if (viewType.equals(ContentView.ViewType.SEARCH)) {
             // Do not add a Button for Search
             return;
         }
@@ -156,12 +156,13 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
             previousViewType = type;
             setSearchQuery(null);
         }
-        this.currentViewType = type;
+        setViewTypeStyling(type);
 
-        setViewTypeStyling(currentViewType);
-        // refresh();
+        currentViewType = type;
+    }
 
-        this.listener.onViewTypeChanged(currentViewType);
+    private void fireViewTypeChangedEvent(ContentView.ViewType viewType) {
+        this.listener.onViewTypeChanged(viewType);
     }
 
     @Override
@@ -174,11 +175,6 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
         }
         setExpandRatio(c, 0);
         this.statusBar = statusBar;
-    }
-
-    @Override
-    public void selectPath(String path) {
-        getSelectedView().select(path);
     }
 
     @Override
@@ -200,7 +196,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
         NativeButton button = new NativeButton(null, new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                setViewType(viewType);
+                fireViewTypeChangedEvent(viewType);
             }
         });
         button.setStyleName(BaseTheme.BUTTON_LINK);
@@ -222,10 +218,6 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
                 entry.getValue().addStyleName("active");
             }
         }
-        // Handle Search (Not part of the Button List)
-        if (viewType.equals(ContentView.ViewType.SEARCH) && contentViewsButton.containsKey(ContentView.ViewType.LIST)) {
-            contentViewsButton.get(ContentView.ViewType.LIST).addStyleName("active");
-        }
     }
 
     private TextField buildBasicSearchBox() {
@@ -245,7 +237,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
             public void blur(FieldEvents.BlurEvent event) {
                 // return to previous view type when leaving empty field
                 if (StringUtils.isBlank(searchBox.getValue().toString())) {
-                    setViewType(previousViewType);
+                    fireViewTypeChangedEvent(previousViewType);
                 }
             }
         });

@@ -46,7 +46,7 @@
     </component>
     <component>
       <type>info.magnolia.ui.workbench.thumbnail.ThumbnailView</type>
-      <implementation>info.magnolia.ui.workbench.thumbnail.LazyThumbnailViewImpl</implementation>
+      <implementation>info.magnolia.ui.workbench.thumbnail.ThumbnailViewImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.workbench.search.SearchView</type>

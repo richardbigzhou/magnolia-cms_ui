@@ -33,52 +33,35 @@
  */
 package info.magnolia.ui.workbench.thumbnail;
 
-import info.magnolia.ui.imageprovider.DefaultImageProvider;
-import info.magnolia.ui.imageprovider.ImageProvider;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailDblClickListener;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailSelectionListener;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.vaadin.data.Container;
+import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
 
 /**
  * Vaadin UI component that displays thumbnails.
  */
-public class LazyThumbnailViewImpl implements ThumbnailView {
-
-    private static final Logger log = LoggerFactory.getLogger(LazyThumbnailViewImpl.class);
-
-    // private ThumbnailContainer container;
-
-    // private final WorkbenchDefinition workbenchDefinition;
+public class ThumbnailViewImpl implements ThumbnailView {
 
     private Listener listener;
 
-    private final LazyThumbnailLayout thumbnailLayout;
+    private final LazyThumbnailLayout thumbnailLayout = new LazyThumbnailLayout();;
 
-    private final ImageProvider imageProvider;
-
-    public LazyThumbnailViewImpl() {
-        // this.workbenchDefinition = definition;
-
-        // this.imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
-        this.imageProvider = new DefaultImageProvider();
-        // this.container = new ThumbnailContainer(workbenchDefinition, imageProvider);
-
-        this.thumbnailLayout = new LazyThumbnailLayout();
-
+    public ThumbnailViewImpl() {
         thumbnailLayout.setSizeFull();
         thumbnailLayout.addStyleName("mgnl-workbench-thumbnail-view");
+        bindHandlers();
+    }
 
+    private void bindHandlers() {
         thumbnailLayout.addThumbnailSelectionListener(new ThumbnailSelectionListener() {
 
             @Override
             public void onThumbnailSelected(final String thumbnailId) {
-                JcrNodeAdapter node = getThumbnailNodeAdapterByIdentifier(thumbnailId);
+                Item node = thumbnailLayout.getContainerDataSource().getItem(thumbnailId);
                 listener.onItemSelection(node);
             }
         });
@@ -87,7 +70,7 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
 
             @Override
             public void onThumbnailDblClicked(final String thumbnailId) {
-                JcrNodeAdapter node = getThumbnailNodeAdapterByIdentifier(thumbnailId);
+                Item node = thumbnailLayout.getContainerDataSource().getItem(thumbnailId);
                 listener.onDoubleClick(node);
             }
         });
@@ -103,34 +86,28 @@ public class LazyThumbnailViewImpl implements ThumbnailView {
         // do something?
     }
 
-    // @Override
-    // public final void refresh() {
-        // this.container = new ThumbnailContainer(workbenchDefinition, imageProvider);
-        // container.setWorkspaceName(workbenchDefinition.getWorkspace());
-        // container.setThumbnailHeight(73);
-        // container.setThumbnailWidth(73);
-        // thumbnailLayout.setContainerDataSource(container);
-        // thumbnailLayout.setThumbnailSize(73, 73);
-    // }
-
     @Override
-    public Component asVaadinComponent() {
-        return thumbnailLayout;
+    public void refresh() {
+        thumbnailLayout.refresh();
     }
 
-    private JcrNodeAdapter getThumbnailNodeAdapterByIdentifier(final String thumbnailId) {
-        // try {
-        // Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
-        // final Node imageNode = session.getNodeByIdentifier(thumbnailId);
-        // return new JcrNodeAdapter(imageNode);
-        // } catch (RepositoryException e) {
-        // log.error(e.getMessage());
-        // }
-        return null;
+    @Override
+    public void setContainer(Container container) {
+        thumbnailLayout.setContainerDataSource(container);
+    }
+
+    @Override
+    public void setThumbnailSize(int width, int height) {
+        thumbnailLayout.setThumbnailSize(width, height);
     }
 
     @Override
     public ViewType getViewType() {
         return ViewType.THUMBNAIL;
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return thumbnailLayout;
     }
 }

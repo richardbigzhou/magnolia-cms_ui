@@ -112,6 +112,12 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     }
 
     @Override
+    public void setSelectedItemPath(String itemId) {
+        super.setSelectedItemPath(itemId);
+        view.select(itemId);
+    }
+
+    @Override
     public void refresh() {
         // This will update the row count and display the newly created items.
         container.refresh();

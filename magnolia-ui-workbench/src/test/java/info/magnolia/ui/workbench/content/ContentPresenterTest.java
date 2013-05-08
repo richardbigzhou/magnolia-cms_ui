@@ -112,6 +112,7 @@ public class ContentPresenterTest {
         // GIVEN
         AbstractContentPresenter presenter = new DummyContentPresenter();
         presenter.start(workbench, eventBus);
+
         // WHEN
         presenter.onItemSelection(null);
 

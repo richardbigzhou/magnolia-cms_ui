@@ -36,6 +36,7 @@ package info.magnolia.ui.workbench;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
@@ -105,20 +106,20 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
             ContentPresenter presenter = null;
             if (presenterClass != null) {
                 if (imageProviderDefinition != null) {
-                    presenter = componentProvider.newInstance(presenterClass, workbenchDefinition, imageProviderDefinition);
+                    ImageProvider imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
+                    presenter = componentProvider.newInstance(presenterClass, imageProvider);
                 } else {
-                    presenter = componentProvider.newInstance(presenterClass, workbenchDefinition);
+                    presenter = componentProvider.newInstance(presenterClass);
                 }
                 contentPresenters.put(presenterDefinition.getViewType().getText(), presenter);
                 if (presenterDefinition.isActive()) {
                     activePresenter = presenter;
+                    activePresenter.setSelectedItemPath(workbenchDefinition.getPath());
                 }
             } else {
                 throw new RuntimeException("The provided view type [" + presenterDefinition.getViewType().getText() + "] is not valid.");
             }
 
-            // contentView.setListener(this);
-            // contentView.select(workbenchDefinition.getPath());
             ContentView contentView = presenter.start(workbenchDefinition, eventBus);
             view.addContentView(presenterDefinition.getViewType(), contentView, presenterDefinition);
         }
@@ -136,8 +137,8 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                 });
             }
         }
-
         view.setStatusBarView(statusBarPresenter.start(eventBus));
+
         view.setListener(this);
         return view;
     }
@@ -148,23 +149,40 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     }
 
     @Override
-    public void onViewTypeChanged(final ContentView.ViewType viewType) {
-        activePresenter = contentPresenters.get(viewType.getText());
-        activePresenter.refresh();
+    public void onViewTypeChanged(final ViewType viewType) {
+        setViewType(viewType);
         eventBus.fireEvent(new ViewTypeChangedEvent(viewType));
     }
 
-    public String getSelectedId() {
-        return activePresenter.getSelectedItemPath();
+    private void setViewType(ViewType viewType) {
+        ContentPresenter oldPresenter = activePresenter;
+        String itemId = oldPresenter.getSelectedItemPath();
+
+        activePresenter = contentPresenters.get(viewType.getText());
+        activePresenter.refresh();
+        view.setViewType(viewType);
+
+        // make sure selection is kept when switching views
+        selectPath(itemId);
     }
 
     public String getWorkspace() {
         return workbenchDefinition.getWorkspace();
     }
 
-    public void selectPath(String path) {
-        view.selectPath(path);
-        activePresenter.setSelectedItemPath(path);
+    public String getSelectedId() {
+        return activePresenter.getSelectedItemPath();
+    }
+
+    public void selectPath(String itemId) {
+        // restore selection
+        boolean itemExists = itemExists(itemId);
+        if (!itemExists) {
+            log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.",
+                    new Object[] { itemId, workbenchDefinition.getWorkspace(), workbenchDefinition.getPath() });
+        }
+
+        activePresenter.setSelectedItemPath(itemExists ? itemId : workbenchDefinition.getPath());
     }
 
     public void refresh() {
@@ -181,27 +199,20 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     }
 
     public void resynch(final String path, final ContentView.ViewType viewType, final String query) {
-        view.setViewType(viewType);
+        setViewType(viewType);
+        selectPath(path);
 
         if (viewType == ViewType.SEARCH) {
             doSearch(query);
             // update search field and focus it
             view.setSearchQuery(query);
         }
-
-        // restore selection
-        boolean itemExists = itemExists(path);
-        if (!itemExists) {
-            log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.",
-                    new Object[] { path, workbenchDefinition.getWorkspace(), workbenchDefinition.getPath() });
-        }
-        view.selectPath(itemExists ? path : workbenchDefinition.getPath());
     }
 
     public void doSearch(String searchExpression) {
         // firing new search forces search view as new view type
         if (activePresenter != contentPresenters.get(ViewType.SEARCH.getText())) {
-            view.setViewType(ViewType.SEARCH);
+            setViewType(ViewType.SEARCH);
         }
         final SearchPresenter searchPresenter = (SearchPresenter) activePresenter;
         if (StringUtils.isBlank(searchExpression)) {
