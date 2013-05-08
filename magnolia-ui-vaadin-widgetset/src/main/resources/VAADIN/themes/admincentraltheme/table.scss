@@ -36,8 +36,8 @@
 
 .v-magnolia-table .v-table-cell-wrapper {
 	position: relative;
-	margin-top: 1px;
-	margin-bottom: -1px;
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 .v-magnolia-table .v-table-resizer {
@@ -126,7 +126,7 @@
 
 .v-magnolia-table .v-treetable-treespacer {
   position: relative;
-  top: -1px;
+  top: 0px;
   display: inline-block;
   height: 16px;
   vertical-align: text-bottom;
@@ -146,6 +146,8 @@
   margin-right: 4px;
   font-size: 19px;
   vertical-align: middle;
+  position: relative;
+  top: 0px;
 }
 
 }
