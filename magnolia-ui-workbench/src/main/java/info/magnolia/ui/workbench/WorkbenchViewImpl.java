@@ -129,18 +129,18 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
         contentViews.put(viewType, view);
 
         if (viewType.equals(ViewType.SEARCH)) {
-            // Do not add a Button for Search
+            // do not add a button for search
             return;
         }
         if (viewType.equals(ViewType.LIST)) {
             searchBox.setVisible(true);
         }
 
-        // Set Button
+        // set button
         Button button = buildButton(viewType, contentViewDefintion.getIcon(), contentViewDefintion.isActive());
         contentViewsButton.put(viewType, button);
         viewModes.addComponent(button);
-        // Set Active
+        // set active
         if (contentViewDefintion.isActive()) {
             currentViewType = previousViewType = viewType;
         }
@@ -215,9 +215,12 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
         for (Map.Entry<ViewType, Button> entry : contentViewsButton.entrySet()) {
             entry.getValue().removeStyleName("active");
             if (entry.getKey().equals(viewType)) {
-                // Set Active
                 entry.getValue().addStyleName("active");
             }
+        }
+        // search is a list view
+        if (viewType.equals(ContentView.ViewType.SEARCH) && contentViewsButton.containsKey(ContentView.ViewType.LIST)) {
+            contentViewsButton.get(ContentView.ViewType.LIST).addStyleName("active");
         }
     }
 
