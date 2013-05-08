@@ -69,7 +69,7 @@ public class ChooseDialogContentPresenter extends AbstractContentPresenter {
     public void startChooseDialog(WorkbenchView workbenchView) {
         SubAppDescriptor subAppContext = appContext.getDefaultSubAppDescriptor();
         if (subAppContext instanceof BrowserSubAppDescriptor) {
-            BrowserSubAppDescriptor bsd = (BrowserSubAppDescriptor)subAppContext;
+            BrowserSubAppDescriptor bsd = (BrowserSubAppDescriptor) subAppContext;
             WorkbenchDefinition clone = new Cloner().deepClone(bsd.getWorkbench());
             super.start(clone, chooseDialogEventBus);
         }
@@ -82,7 +82,7 @@ public class ChooseDialogContentPresenter extends AbstractContentPresenter {
 
     protected void initContentView(WorkbenchView view) {
         view.setViewType(ContentView.ViewType.TREE);
-        ((TreeView)view.getSelectedView()).deactivateDragAndDrop();
+        ((TreeView) view.getSelectedView()).deactivateDragAndDrop();
     }
 
     @Override
