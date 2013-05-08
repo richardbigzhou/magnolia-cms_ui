@@ -18,12 +18,12 @@
 }
 
 .v-shell-notification.warning {
-	background: none repeat scroll 0 0 $c60;
+	background: none repeat scroll 0 0 #FFBF28;
 	bottom: 0;
 }
 
 .v-shell-notification.error {
-	background: none repeat scroll 0 0 $c70;
+	background: none repeat scroll 0 0 #9A3333;
 	color: white;
 	top: 60px;
 }
@@ -55,12 +55,12 @@
 }
 
 .badge-icon {
-	background-color:$c40;
+	background-color:#689600;
     border-width:0;
     border-style:solid;
-    border-color:$c80;
+    border-color:#fff;
     border-radius:0.7em;
-	color:$c80;
+	color:#fff;
     display:inline-block;
     font-family:DINWebPro, sans-serif;
     font-size:16px;

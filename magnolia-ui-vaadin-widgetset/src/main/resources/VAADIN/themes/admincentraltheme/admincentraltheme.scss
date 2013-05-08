@@ -38,7 +38,7 @@
   @include smallapp;
   @include uploadfield;
   @include page-editor;
-
+ 
   body{
       -webkit-user-select: none; /* Disable content selection on mobile safari */
       -webkit-tap-highlight-color: rgba(0,0,0,0); /* Disable grey box when you click on something */
@@ -57,7 +57,7 @@
 
   /*AdminCentral module styles */
   button.btn-dialog-selectCallBack {
-  	background: none repeat scroll 0px 0px $c40;
+  	background: none repeat scroll 0px 0px #689600;
   	margin-left:10px;
   	float: right;
   }
@@ -118,10 +118,14 @@
   }
 
   .v-select-twincol-buttons .v-button {
-       background: none repeat scroll 0px 0px $c10 ! important;
+       background: none repeat scroll 0px 0px #666666 ! important;
        border-radius: 0px 0px 0px 0px ! important;
        border: medium none;
+<<<<<<< HEAD
        color: $c80;
+=======
+       color: #FFFFFF;
+>>>>>>> parent of 2413a55... MGNLUI-1226 Stage 2 - Change references to old hard coded values to new variables.
        cursor: pointer;
        font-family: DINWebPro;
        font-size: 12px;
@@ -136,19 +140,19 @@
   }
   /*a bit hackish -  right caption is positioned absolutely whereas left caption is floating left */
   .v-select-twincol-caption-right {
-      color: $c10;
+      color: #666;
       left: 450px;
       position: absolute;
       width: 200px !important;
   }
 
   .v-select-twincol-caption-left {
-      color: $c10;
+      color: #666;
       width: 200px !important;
   }
 
   input.v-textfield-readonly, textarea.v-textarea-readonly {
-      background-color: $c15 !important;
+      background-color: #e6e6e6 !important;
   }
 
   .cke_contents {
@@ -158,7 +162,7 @@
 
   /*Due to implementation reasons this has to be here. For all other styles of thumbnail layout - see thumbnail.css file.*/
   .thumbnail {
-  	border: 1px solid $c16;
+  	border: 1px solid #F0F0F0;
   	margin: 3px;
   	padding: 5px;
   	cursor:pointer;

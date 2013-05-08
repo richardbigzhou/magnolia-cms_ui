@@ -33,7 +33,7 @@
     bottom:0px;
     left:0px;
     right:0px;
-    background-color:$c90;
+    background-color:#000;
     opacity:0.8;
     filter:alpha(opacity = 80);
 }
@@ -62,12 +62,12 @@
 */
 
 .overlay .v-form-layout {
-    background-color: $c15;
+    background-color: #E6E6E6;
 }
 
 .overlay .form-panel .v-shell-tabsheet,
 .overlay .form-panel .v-shell-tabsheet .nav li.active {
-    background-color: $c15;
+    background-color: #E6E6E6;
 }
 
 

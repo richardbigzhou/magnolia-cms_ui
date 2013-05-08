@@ -3,17 +3,17 @@
 @mixin smallapp {
 
 .small-app {margin:0 auto;}
-.small-app .v-label-intro {padding-top:23px; padding-bottom:30px; font-family:Verdana, sans-serif; font-size:12px; color:$c90;}
-.small-app-panel {background-color:$c16;}
-.small-app-panel .v-csslayout-margin {border-bottom:4px solid $c15;}
+.small-app .v-label-intro {padding-top:23px; padding-bottom:30px; font-family:Verdana, sans-serif; font-size:12px; color:#000;}
+.small-app-panel {background-color:#f2f2f2;}
+.small-app-panel .v-csslayout-margin {border-bottom:4px solid #e6e6e6;}
 .small-app-panel .v-csslayout-margin-top {padding-top:5px;}
 .small-app-panel .v-csslayout-margin-right {padding-right:45px;}
 .small-app-panel .v-csslayout-margin-bottom {padding-bottom:5px;}
 .small-app .v-formlayout label,
-.small-app .v-formlayout-captioncell {font-family:Verdana, sans-serif; font-size:12px; color:$c10;}
+.small-app .v-formlayout-captioncell {font-family:Verdana, sans-serif; font-size:12px; color:#666;}
 .small-app .v-formlayout-captioncell {width:158px; min-width:158px; padding:0; vertical-align:top;}
 .small-app .v-formlayout-captioncell .v-caption-required,
-.small-app .v-formlayout-captioncell .v-caption-required .v-required-field-indicator {color:$c90;}
+.small-app .v-formlayout-captioncell .v-caption-required .v-required-field-indicator {color:#000;}
 .small-app .v-formlayout-spacing {border-spacing:0 20px;}
 .small-app .v-formlayout-spacing .v-formlayout-captioncell,
 .small-app .v-formlayout-spacing .v-formlayout-errorcell {padding-top:2px;}
