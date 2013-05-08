@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-contentapp</artifactId>
   <name>magnolia-ui-contentapp</name>
   <properties>
-    <cloverCoverageThreshold>22</cloverCoverageThreshold>
+    <cloverCoverageThreshold>21</cloverCoverageThreshold>
   </properties>
 
   <dependencies>
