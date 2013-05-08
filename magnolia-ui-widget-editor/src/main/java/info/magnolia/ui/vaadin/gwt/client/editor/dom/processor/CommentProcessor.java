@@ -46,15 +46,15 @@ import java.util.Map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
-
 /**
  * Processor for comment elements.
  */
 public class CommentProcessor {
 
-    public MgnlElement process(Model model, Node node, MgnlElement currentElement) throws IllegalArgumentException {
+    public MgnlElement process(Model model, EventBus eventBus, Node node, MgnlElement currentElement) throws IllegalArgumentException {
 
         CMSComment comment = getCmsComment(node);
 
@@ -65,7 +65,7 @@ public class CommentProcessor {
 
             try {
 
-                mgnlElement = createMgnlElement(comment, currentElement);
+                mgnlElement = createMgnlElement(comment, currentElement, eventBus);
                 mgnlElement.setStartComment((Element) node.cast());
 
                 if (mgnlElement.getParent() == null) {
@@ -158,15 +158,15 @@ public class CommentProcessor {
         return attributes;
     }
 
-    private MgnlElement createMgnlElement(CMSComment comment, MgnlElement parent) throws IllegalArgumentException {
+    private MgnlElement createMgnlElement(CMSComment comment, MgnlElement parent, EventBus eventBus) throws IllegalArgumentException {
         String tagName = comment.getTagName();
         MgnlElement mgnlElement;
         if (Model.CMS_PAGE.equals(tagName)) {
             mgnlElement = new MgnlPage(parent);
         } else if (Model.CMS_AREA.equals(tagName)) {
-            mgnlElement = new MgnlArea(parent);
+            mgnlElement = new MgnlArea(parent, eventBus);
         } else if (Model.CMS_COMPONENT.equals(tagName)) {
-            mgnlElement = new MgnlComponent(parent);
+            mgnlElement = new MgnlComponent(parent, eventBus);
         } else {
             throw new IllegalArgumentException("The tagname must be one of the defined marker Strings.");
         }

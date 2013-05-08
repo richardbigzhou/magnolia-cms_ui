@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
-
-import com.google.gwt.user.client.ui.FlowPanel;
+package info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener;
 
 /**
- * Area bar.
+ * AreaListener.
  */
-public class AreaEndBar extends FlowPanel {
+public interface AreaListener {
+    void createOptionalArea();
 
-    private final static String FOCUS_CLASSNAME = "focus";
-    private final static String CHILD_FOCUS_CLASSNAME = "childFocus";
+    void editArea();
 
-    public AreaEndBar() {
-
-        this.setStyleName("mgnlEditor mgnlEditorBar");
-        this.addStyleName("area");
-        this.addStyleName("end");
-
-        setVisible(false);
-
-    }
-
-    @Override
-    public void onAttach() {
-        super.onAttach();
-    }
-
-    public void setFocus(boolean focus, boolean child) {
-        String className = (child) ? CHILD_FOCUS_CLASSNAME : FOCUS_CLASSNAME;
-        if (focus) {
-            addStyleName(className);
-        } else {
-            removeStyleName(className);
-        }
-    }
-
-    public void removeFocus() {
-        removeStyleName(FOCUS_CLASSNAME);
-        removeStyleName(CHILD_FOCUS_CLASSNAME);
-    }
-
-    public void setFocus(boolean child) {
-        String className = (child) ? CHILD_FOCUS_CLASSNAME : FOCUS_CLASSNAME;
-        addStyleName(className);
-    }
+    void createNewComponent();
 }

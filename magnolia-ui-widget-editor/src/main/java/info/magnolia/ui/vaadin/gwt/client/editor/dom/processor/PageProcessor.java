@@ -37,14 +37,13 @@ import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 
 import com.google.gwt.core.client.GWT;
-import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * PageProcessor.
  */
 public class PageProcessor extends AbstractMgnlElementProcessor {
-    public PageProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) {
-        super(model, eventBus, mgnlElement);
+    public PageProcessor(Model model, MgnlElement mgnlElement) {
+        super(model, mgnlElement);
     }
 
     @Override

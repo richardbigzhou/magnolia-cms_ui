@@ -33,10 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
-import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
-import info.magnolia.ui.vaadin.gwt.client.widget.dnd.DragAndDrop;
-import info.magnolia.ui.vaadin.gwt.client.widget.dnd.LegacyDragAndDrop;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.ComponentListener;
 
 import java.util.Map;
 
@@ -45,23 +43,14 @@ import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DragDropEventBase;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.ui.Label;
-import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * Edit bar.
  */
 public class ComponentBar extends AbstractBar {
 
-    private String dialog;
-
-    private String nodeName;
+    private final ComponentListener listener;
 
     private boolean isInherited;
 
@@ -71,10 +60,10 @@ public class ComponentBar extends AbstractBar {
     private boolean canMove = true;
     private boolean canEdit = true;
 
-    public ComponentBar(EventBus eventBus, MgnlElement mgnlElement) {
+    public ComponentBar(MgnlComponent mgnlElement) {
 
-        super(eventBus, mgnlElement);
-
+        super(mgnlElement);
+        this.listener = mgnlElement;
         addStyleName("component");
 
         /*
@@ -107,14 +96,7 @@ public class ComponentBar extends AbstractBar {
     @Override
     protected void setFields(Map<String, String> attributes) {
 
-        setWorkspace(attributes.get("workspace"));
-        setPath(attributes.get("path"));
-
-        this.nodeName = getPath().substring(getPath().lastIndexOf("/") + 1);
-
-        setId("__" + nodeName);
-
-        this.dialog = attributes.get("dialog");
+        //setId("__" + nodeName);
 
         this.isInherited = Boolean.parseBoolean(attributes.get("inherited"));
 
@@ -130,11 +112,7 @@ public class ComponentBar extends AbstractBar {
         }
     }
 
-    public String getNodeName() {
-        return nodeName;
-    }
-
-    private void createDragAndDropHandlers() {
+/*    private void createDragAndDropHandlers() {
         DragAndDrop.dragAndDrop(getEventBus(), this);
     }
 
@@ -164,7 +142,7 @@ public class ComponentBar extends AbstractBar {
                 LegacyDragAndDrop.moveComponentOut(ComponentBar.this);
             }
         }, MouseOutEvent.getType());
-    }
+    }*/
 
 
     private void createControls() {
@@ -176,7 +154,7 @@ public class ComponentBar extends AbstractBar {
 
             @Override
             public void onClick(ClickEvent event) {
-                getEventBus().fireEvent(new EditComponentEvent(getWorkspace(), getPath(), dialog));
+                listener.editComponent();
             }
         });
         if (!canEdit) {
@@ -186,8 +164,4 @@ public class ComponentBar extends AbstractBar {
 
     }
 
-    @Override
-    public String getDialog() {
-        return dialog;
-    }
 }

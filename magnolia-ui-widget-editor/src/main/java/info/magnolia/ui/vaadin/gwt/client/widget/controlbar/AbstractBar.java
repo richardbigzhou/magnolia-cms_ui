@@ -33,17 +33,14 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 
 import java.util.Map;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * Base class for horizontal bars with buttons.
@@ -53,46 +50,33 @@ public abstract class AbstractBar extends FlowPanel {
     protected final static String ICON_CLASSNAME = "editorIcon";
     protected final static String EDIT_CLASSNAME = "icon-edit";
     protected final static String ADD_CLASSNAME = "icon-add-item";
-
-    private String workspace;
-
-    private String path;
-
-    private final FlowPanel buttonWrapper;
-
-    private CmsNode cmsNode;
-
-    private final EventBus eventBus;
-
     private final static String FOCUS_CLASSNAME = "focus";
-
     private final static String CHILD_FOCUS_CLASSNAME = "childFocus";
 
-    public AbstractBar(EventBus eventBus, MgnlElement mgnlElement) {
-        this.eventBus = eventBus;
+    private FlowPanel buttonWrapper;
 
-        this.setCmsNode(mgnlElement);
+    public AbstractBar(MgnlElement mgnlElement) {
 
+        setStyleName("mgnlEditor mgnlEditorBar");
         setFields(mgnlElement.getAttributes());
+        String label = createLabel(mgnlElement.getAttribute("label"));
+        initLayout(label);
+    }
 
-        if (mgnlElement != null) {
-            String label = createLabel(mgnlElement.getAttribute("label"));
-            if (label != null && !label.isEmpty()) {
-                Label areaName = new Label(label);
-                // tooltip. Nice to have when area label is truncated because too long.
-                areaName.setTitle(label);
-                areaName.setStylePrimaryName("mgnlEditorBarLabel");
-
-                // setStylePrimaryName(..) replaces gwt default css class, in this case gwt-Label
-                add(areaName);
-            }
-        }
-
+    private void initLayout(String label) {
         buttonWrapper = new FlowPanel();
         buttonWrapper.setStylePrimaryName("mgnlEditorBarButtons");
-
         add(buttonWrapper);
-        setStyleName("mgnlEditor mgnlEditorBar");
+
+        if (label != null && !label.isEmpty()) {
+            Label areaName = new Label(label);
+            // tooltip. Nice to have when area label is truncated because too long.
+            areaName.setTitle(label);
+            areaName.setStylePrimaryName("mgnlEditorBarLabel");
+
+            // setStylePrimaryName(..) replaces gwt default css class, in this case gwt-Label
+            add(areaName);
+        }
     }
 
     protected abstract void setFields(Map<String, String> attributes) throws IllegalArgumentException;
@@ -110,14 +94,6 @@ public abstract class AbstractBar extends FlowPanel {
         getElement().setId(id);
     }
 
-    /**
-     * Adds this widget to this bar as a button. The default (primary) style applied is <code>mgnlEditorButton</code>. See also <code>editor.css</code>.
-     */
-    protected void addButton(final Widget button, final Float cssFloat) {
-        button.getElement().getStyle().setFloat(cssFloat);
-        buttonWrapper.add(button);
-    }
-
     protected void addButton(final Widget button) {
         buttonWrapper.add(button);
     }
@@ -132,31 +108,6 @@ public abstract class AbstractBar extends FlowPanel {
         return getElement().getStyle();
     }
 
-    public void toggleVisible() {
-        setVisible(!isVisible());
-    }
-
-    public void setCmsNode(CmsNode cmsNode) {
-        this.cmsNode = cmsNode;
-    }
-
-    public CmsNode getCmsNode() {
-        return cmsNode;
-    }
-
-    public void toggleButtons(boolean visible) {
-        CmsNode parent = cmsNode.getParent();
-        if (parent != null) {
-            for (CmsNode component : parent.getComponents()) {
-                component.asMgnlElement().getControlBar().buttonWrapper.setVisible(visible);
-            }
-        }
-    }
-
-    public EventBus getEventBus() {
-        return eventBus;
-    }
-
     public void removeFocus() {
         removeStyleName(FOCUS_CLASSNAME);
         removeStyleName(CHILD_FOCUS_CLASSNAME);
@@ -166,23 +117,5 @@ public abstract class AbstractBar extends FlowPanel {
         String className = (child) ? CHILD_FOCUS_CLASSNAME : FOCUS_CLASSNAME;
         addStyleName(className);
     }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public void setWorkspace(String workspace) {
-        this.workspace = workspace;
-    }
-
-    public abstract String getDialog();
 
 }

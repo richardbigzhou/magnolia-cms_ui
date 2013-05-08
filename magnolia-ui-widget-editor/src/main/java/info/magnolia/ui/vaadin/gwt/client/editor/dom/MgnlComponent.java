@@ -33,18 +33,25 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom;
 
+import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.ComponentListener;
+
+import com.google.gwt.event.shared.EventBus;
 
 /**
  * MgnlComponent.
  */
-public class MgnlComponent extends MgnlElement {
+public class MgnlComponent extends MgnlElement implements ComponentListener {
+    private EventBus eventBus;
+
     /**
      * MgnlElement. Represents a node in the tree built on cms-tags.
      */
-    public MgnlComponent(MgnlElement parent) {
+    public MgnlComponent(MgnlElement parent, EventBus eventBus) {
         super(parent);
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -65,5 +72,13 @@ public class MgnlComponent extends MgnlElement {
     @Override
     public boolean isComponent() {
         return true;
+    }
+
+    @Override
+    public void editComponent() {
+        String workspace = getAttribute("workspace");
+        String path = getAttribute("path");
+        String dialog = getAttribute("dialog");
+        eventBus.fireEvent(new EditComponentEvent(workspace, path, dialog));
     }
 }

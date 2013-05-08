@@ -36,7 +36,6 @@ package info.magnolia.ui.vaadin.gwt.client.widget.placeholder;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * Abstract Widget for area and component placeholder.
@@ -44,11 +43,9 @@ import com.google.web.bindery.event.shared.EventBus;
 public class AbstractPlaceHolder extends FlowPanel {
 
     private MgnlElement mgnlElement;
-    private EventBus eventBus;
 
-    public AbstractPlaceHolder(EventBus eventBus, MgnlElement mgnlElement) {
+    public AbstractPlaceHolder(MgnlElement mgnlElement) {
         super();
-        this.eventBus = eventBus;
 
         this.setMgnlElement(mgnlElement);
 
@@ -73,7 +70,4 @@ public class AbstractPlaceHolder extends FlowPanel {
         return mgnlElement;
     }
 
-    public EventBus getEventBus() {
-        return eventBus;
-    }
 }

@@ -33,10 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
-import info.magnolia.rendering.template.AreaDefinition;
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
-import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
-import info.magnolia.ui.vaadin.gwt.client.editor.event.NewAreaEvent;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.AreaListener;
 
 import java.util.Map;
 
@@ -44,7 +42,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
-import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * Area bar.
@@ -57,18 +54,17 @@ public class AreaBar extends AbstractBar {
 
     private String dialog;
 
-    private String availableComponents;
-
     private boolean optional;
 
     private boolean created;
 
     private boolean editable = true;
 
-    private static final String NODE_TYPE = "mgnl:area";
+    private final AreaListener listener;
 
-    public AreaBar(EventBus eventBus, MgnlElement mgnlElement) {
-        super(eventBus, mgnlElement);
+    public AreaBar(MgnlArea mgnlElement) {
+        super(mgnlElement);
+        listener = mgnlElement;
 
 
         GWT.log("Area [" + this.name + "] is of type " + this.type);
@@ -94,7 +90,7 @@ public class AreaBar extends AbstractBar {
                 add.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent event) {
-                        getEventBus().fireEvent(new NewAreaEvent(getWorkspace(), NODE_TYPE, getPath()));
+                        listener.createOptionalArea();
                     }
                 });
                 addButton(add);
@@ -111,7 +107,7 @@ public class AreaBar extends AbstractBar {
 
                     @Override
                     public void onClick(ClickEvent event) {
-                        getEventBus().fireEvent(new EditComponentEvent(getWorkspace(), getPath(), dialog));
+                        listener.editArea();
                     }
                 });
                 addButton(edit);
@@ -123,9 +119,6 @@ public class AreaBar extends AbstractBar {
     @Override
     protected void setFields(Map<String, String> attributes) throws IllegalArgumentException {
 
-        setWorkspace(attributes.get("workspace"));
-        setPath(attributes.get("path"));
-
         this.name = attributes.get("name");
         this.type = attributes.get("type");
 
@@ -135,23 +128,9 @@ public class AreaBar extends AbstractBar {
             this.editable = Boolean.parseBoolean(attributes.get("editable"));
         }
 
-        availableComponents = "";
-        if (!AreaDefinition.TYPE_NO_COMPONENT.equals(this.type)) {
-            availableComponents = attributes.get("availableComponents");
-        }
-
         boolean showAddButton = Boolean.parseBoolean(attributes.get("showAddButton"));
         this.optional = Boolean.parseBoolean(attributes.get("optional"));
         this.created = Boolean.parseBoolean(attributes.get("created"));
-    }
-
-    @Override
-    public String getDialog() {
-        return editable ? dialog : null;
-    }
-
-    public String getAvailableComponents() {
-        return availableComponents;
     }
 
 }

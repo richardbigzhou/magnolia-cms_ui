@@ -33,14 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.dnd;
 
-import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.moveComponent;
-
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode;
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar;
-import info.magnolia.ui.vaadin.gwt.client.widget.placeholder.ComponentPlaceHolder;
-
-import com.google.gwt.dom.client.Element;
 
 /**
  * DragAndDropLegacy. GWT port of legacy /magnolia-module-admininterface/src/main/resources/mgnl-resources/admin-js/inline.js
@@ -51,7 +44,7 @@ public class LegacyDragAndDrop {
     private static MoveWidget moveDiv;
 
     public static void moveComponentStart(ComponentBar bar) {
-        toggleStyles(bar, true);
+/*        toggleStyles(bar, true);
 
         // reset native drag and drop
         bar.setDraggable(false);
@@ -67,31 +60,31 @@ public class LegacyDragAndDrop {
         sourceBar = bar;
         int height = bar.getOffsetHeight();
         int width = bar.getOffsetWidth();
-        moveDiv = new MoveWidget(height, width);
+        moveDiv = new MoveWidget(height, width);*/
     }
 
     public static void moveComponentOver(ComponentBar bar) {
-        if (isMoving()) {
+/*        if (isMoving()) {
             String idSource = sourceBar.getNodeName();
 
             if (!bar.getNodeName().equals(idSource)) {
                 bar.setStyleName("moveOver", true);
             }
-        }
+        }*/
     }
 
     public static void moveComponentOut(ComponentBar bar) {
-        if (isMoving()) {
+/*        if (isMoving()) {
             String idSource = sourceBar.getNodeName();
 
             if (!bar.getNodeName().equals(idSource)) {
                 bar.setStyleName("moveOver", false);
             }
-        }
+        }*/
     }
 
     public static void moveComponentEnd(ComponentBar bar) {
-        if (isMoving()) {
+/*        if (isMoving()) {
 
             String idSource = sourceBar.getNodeName();
 
@@ -116,11 +109,11 @@ public class LegacyDragAndDrop {
                 String parentPath = bar.getPath().substring(0, bar.getPath().lastIndexOf("/"));
                 moveComponent(bar.getNodeName(), idSource, parentPath, order);
             }
-        }
+        }*/
     }
 
     public static void moveComponentReset() {
-        if (isMoving()) {
+/*        if (isMoving()) {
             toggleStyles(sourceBar, false);
 
             // reset native drag and drop
@@ -137,11 +130,11 @@ public class LegacyDragAndDrop {
 
             sourceBar = null;
             moveDiv.detach();
-        }
+        }*/
     }
 
     private static void toggleStyles(ComponentBar bar, boolean isMove) {
-        bar.toggleButtons(!isMove);
+/*        bar.toggleButtons(!isMove);
 
         bar.setStyleName("moveSource", isMove);
 
@@ -163,7 +156,7 @@ public class LegacyDragAndDrop {
             if (placeholder != null) {
                 placeholder.setStyleName("moveOngoing", isMove);
             }
-        }
+        }*/
     }
 
     public static boolean isMoving() {

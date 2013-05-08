@@ -37,8 +37,7 @@ import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.get
 
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
-import info.magnolia.ui.vaadin.gwt.client.editor.event.NewComponentEvent;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.AreaListener;
 
 import java.util.Map;
 
@@ -47,7 +46,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * A Widget for adding components to area.
@@ -59,18 +57,18 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
 
     private boolean showAddButton = false;
     private boolean showNewComponentArea = false;
-    private String availableComponents = "";
     private String type = "";
-    private String areaWorkspace = "";
-    private String areaPath = "";
+
     private final FlowPanel buttonWrapper;
     private String label;
     private String labelString;
+    private final AreaListener listener;
 
-    public ComponentPlaceHolder(EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
+    public ComponentPlaceHolder(MgnlArea mgnlElement) throws IllegalArgumentException {
 
-        super(eventBus, mgnlElement);
+        super(mgnlElement);
 
+        this.listener = mgnlElement;
         setFields(mgnlElement.getAttributes());
 
         this.addStyleName("component");
@@ -121,7 +119,7 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
             add.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    getEventBus().fireEvent(new NewComponentEvent(areaWorkspace, areaPath, availableComponents));
+                    listener.createNewComponent();
                 }
             });
             buttonWrapper.add(add);
@@ -134,16 +132,9 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
         this.showNewComponentArea = Boolean.parseBoolean(attributes.get("showNewComponentArea"));
         this.type = attributes.get("type");
 
-        this.areaWorkspace = attributes.get("workspace");
-        this.areaPath = attributes.get("path");
 
         this.label = getMgnlElement().getAttribute("label");
 
-        if (AreaDefinition.TYPE_NO_COMPONENT.equals(this.type)) {
-            this.availableComponents = "";
-        } else {
-            this.availableComponents = attributes.get("availableComponents");
-        }
     }
 
     @Override

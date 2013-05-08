@@ -239,7 +239,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
             Node childNode = node.getChild(i);
             if (childNode.getNodeType() == Comment.COMMENT_NODE) {
                 try {
-                    mgnlElement = commentProcessor.process(model, childNode, mgnlElement);
+                    mgnlElement = commentProcessor.process(model, eventBus, childNode, mgnlElement);
                 } catch (IllegalArgumentException e) {
                     GWT.log("Not CMSComment element, skipping: " + e.toString());
                 } catch (Exception e) {
@@ -261,7 +261,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
         elements.add(root);
         for (CmsNode element : elements) {
             try {
-                AbstractMgnlElementProcessor processor = MgnlElementProcessorFactory.getProcessor(model, eventBus, element.asMgnlElement());
+                AbstractMgnlElementProcessor processor = MgnlElementProcessorFactory.getProcessor(model, element.asMgnlElement());
                 processor.process();
             } catch (IllegalArgumentException e) {
                 GWT.log("MgnlFactory could not instantiate class. The element is neither an area nor component.");

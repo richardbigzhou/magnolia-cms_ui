@@ -35,7 +35,6 @@ package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaBar;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaEndBar;
@@ -46,32 +45,31 @@ import java.util.Map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
-import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * Factory Class for MgnlElement processors.
  */
 public class AreaProcessor extends AbstractMgnlElementProcessor {
 
-    public AreaProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) {
-        super(model, eventBus, mgnlElement);
+    public AreaProcessor(Model model, MgnlArea mgnlElement) {
+        super(model, mgnlElement);
     }
 
     @Override
     public void process() {
 
         if (hasControlBar(getMgnlElement().getAttributes())) {
-            AreaBar areaBar = new AreaBar(getEventBus(), getMgnlElement());
+            AreaBar areaBar = new AreaBar(getMgnlElement());
             setEditBar(areaBar);
             attachWidget();
 
             if (hasComponentPlaceHolder(getMgnlElement().getAttributes())) {
-                ComponentPlaceHolder placeHolder = new ComponentPlaceHolder(getEventBus(), getMgnlElement());
+                ComponentPlaceHolder placeHolder = new ComponentPlaceHolder(getMgnlElement());
                 attachComponentPlaceHolder(placeHolder);
                 addToModel(placeHolder);
             }
 
-            AreaEndBar endBar = new AreaEndBar(getMgnlElement());
+            AreaEndBar endBar = new AreaEndBar();
             attachAreaEndBar(endBar);
             addToModel(endBar);
 

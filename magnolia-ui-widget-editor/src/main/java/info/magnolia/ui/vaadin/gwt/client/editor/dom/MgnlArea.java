@@ -33,26 +33,34 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom;
 
+import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
+import info.magnolia.ui.vaadin.gwt.client.editor.event.NewAreaEvent;
+import info.magnolia.ui.vaadin.gwt.client.editor.event.NewComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaEndBar;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.AreaListener;
 import info.magnolia.ui.vaadin.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.shared.EventBus;
 
 /**
  * MgnlArea.
  */
-public class MgnlArea extends MgnlElement {
+public class MgnlArea extends MgnlElement implements AreaListener {
     private AreaEndBar areaEndBar;
     private ComponentPlaceHolder componentPlaceHolder;
     private Element componentMarkerElement;
+    private static final String NODE_TYPE = "mgnl:area";
+    private EventBus eventBus;
 
     /**
      * MgnlElement. Represents a node in the tree built on cms-tags.
      */
-    public MgnlArea(MgnlElement parent) {
+    public MgnlArea(MgnlElement parent, EventBus eventBus) {
         super(parent);
+        this.eventBus = eventBus;
     }
 
     public AreaEndBar getAreaEndBar() {
@@ -100,4 +108,29 @@ public class MgnlArea extends MgnlElement {
         return false;
     }
 
+    @Override
+    public void createOptionalArea() {
+        String workspace = getAttribute("workspace");
+        String path = getAttribute("path");
+        eventBus.fireEvent(new NewAreaEvent(workspace, NODE_TYPE, path));
+
+    }
+
+    @Override
+    public void editArea() {
+        String workspace = getAttribute("workspace");
+        String path = getAttribute("path");
+        String dialog = getAttribute("dialog");
+        eventBus.fireEvent(new EditComponentEvent(workspace, path, dialog));
+
+    }
+
+    @Override
+    public void createNewComponent() {
+        String workspace = getAttribute("workspace");
+        String path = getAttribute("path");
+        String availableComponents = getAttribute("availableComponents");
+
+        eventBus.fireEvent(new NewComponentEvent(workspace, path, availableComponents));
+    }
 }
