@@ -44,7 +44,7 @@ import java.util.Locale;
  */
 public interface PageBarView extends View {
 
-    void setPageName(String pageName);
+    void setPageName(String pageTitle, String path);
 
     void setListener(Listener listener);
 

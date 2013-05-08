@@ -133,6 +133,11 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         return caption;
     }
 
+    public void updateCaption(String path) {
+        this.caption = getPageTitle(path);
+        pageBarView.setPageName(caption, path);
+    }
+
     @Override
     public View start(Location location) {
         DetailLocation detailLocation = DetailLocation.wrap(location);
@@ -250,8 +255,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                 url = sb.toString();
             }
             this.parameters.setUrl(url);
-            this.caption = getPageTitle(path);
-            pageBarView.setPageName(getPageTitle(path) + " - " + path);
+            updateCaption(path);
             pageBarView.togglePreviewMode(isPreview);
         } catch (RepositoryException e) {
             log.error(e.getMessage(), e);
@@ -293,13 +297,14 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                 AbstractElement element = event.getElement();
                 String path = element.getPath();
                 String dialog = element.getDialog();
-                pageBarView.setPageName(getPageTitle(path) + "-" + path);
                 if (StringUtils.isEmpty(path)) {
-                        path = "/";
+                    path = "/";
                 }
 
                 hideAllSections();
                 if (element instanceof PageElement) {
+                    updateCaption(path);
+
                     if (!path.equals(parameters.getNodePath())) {
                         updateNodePath(path);
                     }
