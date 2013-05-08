@@ -35,6 +35,7 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.statusbar.StatusBarView;
+import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 
 import java.util.EnumMap;
@@ -54,7 +55,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
 /**
- * TODO: Add JavaDoc for WorkbenchViewImpl.
+ * Implementation of the workbench view.
  */
 public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
 
@@ -66,16 +67,16 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
 
     private StatusBarView statusBar;
 
-    private Map<ContentView.ViewType, ContentView> contentViews = new EnumMap<ContentView.ViewType, ContentView>(ContentView.ViewType.class);
+    private Map<ViewType, ContentView> contentViews = new EnumMap<ViewType, ContentView>(ViewType.class);
 
-    private Map<ContentView.ViewType, Button> contentViewsButton = new EnumMap<ContentView.ViewType, Button>(ContentView.ViewType.class);
+    private Map<ViewType, Button> contentViewsButton = new EnumMap<ViewType, Button>(ViewType.class);
 
-    private ContentView.ViewType currentViewType = ContentView.ViewType.TREE;
+    private ViewType currentViewType = ViewType.TREE;
 
     /**
      * for going back from search view if search expression is empty.
      */
-    private ContentView.ViewType previousViewType = currentViewType;
+    private ViewType previousViewType = currentViewType;
 
     private final Property.ValueChangeListener searchBoxListener = new Property.ValueChangeListener() {
 
@@ -124,14 +125,14 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
     }
 
     @Override
-    public void addContentView(ContentView.ViewType viewType, ContentView view, ContentPresenterDefinition contentViewDefintion) {
+    public void addContentView(ViewType viewType, ContentView view, ContentPresenterDefinition contentViewDefintion) {
         contentViews.put(viewType, view);
 
-        if (viewType.equals(ContentView.ViewType.SEARCH)) {
+        if (viewType.equals(ViewType.SEARCH)) {
             // Do not add a Button for Search
             return;
         }
-        if (viewType.equals(ContentView.ViewType.LIST)) {
+        if (viewType.equals(ViewType.LIST)) {
             searchBox.setVisible(true);
         }
 
@@ -146,13 +147,13 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
     }
 
     @Override
-    public void setViewType(ContentView.ViewType type) {
+    public void setViewType(ViewType type) {
         removeComponent(getSelectedView().asVaadinComponent());
         final Component c = contentViews.get(type).asVaadinComponent();
         addComponent(c, 1); // between tool bar and status bar
         setExpandRatio(c, 1);
 
-        if (type != ContentView.ViewType.SEARCH) {
+        if (type != ViewType.SEARCH) {
             previousViewType = type;
             setSearchQuery(null);
         }
@@ -161,7 +162,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
         currentViewType = type;
     }
 
-    private void fireViewTypeChangedEvent(ContentView.ViewType viewType) {
+    private void fireViewTypeChangedEvent(ViewType viewType) {
         this.listener.onViewTypeChanged(viewType);
     }
 
@@ -192,7 +193,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
         this.listener = listener;
     }
 
-    private Button buildButton(final ContentView.ViewType viewType, final String icon, final boolean active) {
+    private Button buildButton(final ViewType viewType, final String icon, final boolean active) {
         NativeButton button = new NativeButton(null, new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -210,8 +211,8 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
         return button;
     }
 
-    private void setViewTypeStyling(final ContentView.ViewType viewType) {
-        for (Map.Entry<ContentView.ViewType, Button> entry : contentViewsButton.entrySet()) {
+    private void setViewTypeStyling(final ViewType viewType) {
+        for (Map.Entry<ViewType, Button> entry : contentViewsButton.entrySet()) {
             entry.getValue().removeStyleName("active");
             if (entry.getKey().equals(viewType)) {
                 // Set Active
