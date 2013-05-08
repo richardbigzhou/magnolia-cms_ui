@@ -44,6 +44,7 @@ div.mgnlEditorBar {
     margin: 0 0 2px 0 !important;
     font-family: DINWebPro, Verdana, sans-serif !important;
     font-size: 12px !important;
+    clear: both;
 }
 
 /* Selected Item (focus) */
@@ -128,11 +129,9 @@ div.mgnlEditorBar.component {
     color: #6a9000 !important;
 }
 
-.mgnlEditorBar.placeholder {
-    background-color: inherit !important;
-
-    /* See .mgnlEditorBar for an explanation of this */
-    color: inherit !important;
+/* Component place holder box */
+div.mgnlEditorBar.placeholder.box {
+  height: 45px !important;
 }
 
 /*
@@ -174,46 +173,7 @@ div.mgnlEditorBarLabel {
  * ----------------------------------
  */
 
-/* General place holder definitions */
-div.mgnlEditorPlaceholder {
-    /* Change the box model to include borders and paddings in the width and height set. */
-    /* Allows here for a more intuitive handling of place holder heights and widths. */
-    -webkit-box-sizing: border-box !important; /* Safari/Chrome, other WebKit */
-    -moz-box-sizing: border-box !important;    /* Firefox, other Gecko */
-    box-sizing: border-box !important;         /* IE 8+ */
-    clear: both !important;
-    color: #6a9000 !important;
-}
 
-/* Area place holder, not in focus. */
-div.mgnlEditorPlaceholder.area {
-    margin: 10px 0 !important;
-    padding: 25px 15px !important;
-    background-color: #eeeeee !important;
-    color: #6a9000 !important;
-    text-align: center !important;
-}
-
-/* Area place holder, in focus. */
-div.mgnlEditorPlaceholder.area.active {
-    display: none !important;
-}
-
-/* Component place holder */
-div.mgnlEditorPlaceholder.component.box {
-    background-color: #efefef !important;
-
-    /* See .mgnlEditorBar for an explanation of this */
-    color: #6a9000 !important;
-}
-div.mgnlEditorPlaceholder.component.box {
-    height: 45px !important;
-}
-
-.mgnlEditorLocaleSelector {
-    margin-top: 1px !important;
-    margin-right: 4px !important;
-}
 
 /* --- End of edit place holder definitions --- */
 

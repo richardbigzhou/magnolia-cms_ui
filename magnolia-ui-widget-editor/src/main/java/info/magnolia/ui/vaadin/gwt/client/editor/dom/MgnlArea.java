@@ -40,7 +40,7 @@ import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaEndBar;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.AreaListener;
-import info.magnolia.ui.vaadin.gwt.client.widget.placeholder.ComponentPlaceHolder;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentPlaceHolder;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventBus;

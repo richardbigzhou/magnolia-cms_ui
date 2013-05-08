@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.widget.placeholder;
+package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
 import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.getI18nMessage;
 
@@ -44,62 +44,30 @@ import java.util.Map;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 
 /**
  * A Widget for adding components to area.
  */
-public class ComponentPlaceHolder extends AbstractPlaceHolder {
+public class ComponentPlaceHolder extends AbstractBar {
 
     protected final static String ICON_CLASSNAME = "editorIcon";
     protected final static String ADD_CLASSNAME = "icon-add-item";
 
-    private boolean showAddButton = false;
-    private boolean showNewComponentArea = false;
-    private String type = "";
+    private boolean showAddButton;
+    private boolean showNewComponentArea;
 
-    private final FlowPanel buttonWrapper;
-    private String label;
-    private String labelString;
     private final AreaListener listener;
 
-    public ComponentPlaceHolder(MgnlArea mgnlElement) throws IllegalArgumentException {
+    public ComponentPlaceHolder(MgnlArea area) throws IllegalArgumentException {
+        super(area);
 
-        super(mgnlElement);
+        this.listener = area;
 
-        this.listener = mgnlElement;
-        setFields(mgnlElement.getAttributes());
-
-        this.addStyleName("component");
-
-        FlowPanel controlBar = new FlowPanel();
-        controlBar.setStyleName("mgnlEditorBar");
-        controlBar.addStyleName("placeholder");
-
-        buttonWrapper = new FlowPanel();
-        buttonWrapper.setStylePrimaryName("mgnlEditorBarButtons");
-
-        controlBar.add(buttonWrapper);
-
-        // if the add new component area should be visible
-        if (this.showNewComponentArea && !this.showAddButton) { // maximum of components is reached - show add new component area with the maximum reached message, but without the ADD button
-            labelString = getI18nMessage("buttons.component.maximum.js");
-        } else { // maximum of components is NOT reached - show add new component area with ADD button
-            labelString = getI18nMessage("buttons.component.new.js");
-            if (this.label != null && !this.label.isEmpty()) {
-                labelString = getI18nMessage("buttons.new.js") + " " + label + " " + getI18nMessage("buttons.component.js");
-            }
-        }
+        this.addStyleName("component placeholder");
 
 
-        Label labelName = new Label(labelString);
-        labelName.setStyleName("mgnlEditorBarLabel");
-        controlBar.add(labelName);
-
-        add(controlBar);
-
-        Element marker = getMgnlElement().getComponentMarkerElement();
+        Element marker = area.getComponentMarkerElement();
         boolean onlyBar = (marker != null && marker.getAttribute(AreaDefinition.CMS_ADD).equals("bar"));
 
         if (!onlyBar) {
@@ -108,6 +76,21 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
 
         setVisible(false);
         createControls();
+    }
+
+    @Override
+    protected String createLabel(String label) {
+        String labelString;
+        // if the add new component area should be visible
+        if (this.showNewComponentArea && !this.showAddButton) { // maximum of components is reached - show add new component area with the maximum reached message, but without the ADD button
+            labelString = getI18nMessage("buttons.component.maximum.js");
+        } else { // maximum of components is NOT reached - show add new component area with ADD button
+            labelString = getI18nMessage("buttons.component.new.js");
+            if (label != null && !label.isEmpty()) {
+                labelString = getI18nMessage("buttons.new.js") + " " + label + " " + getI18nMessage("buttons.component.js");
+            }
+        }
+        return labelString;
     }
 
     private void createControls() {
@@ -122,23 +105,19 @@ public class ComponentPlaceHolder extends AbstractPlaceHolder {
                     listener.createNewComponent();
                 }
             });
-            buttonWrapper.add(add);
+            addButton(add);
         }
     }
 
-    private void setFields(Map<String, String> attributes) throws IllegalArgumentException {
-
+    @Override
+    protected void setFields(Map<String, String> attributes) throws IllegalArgumentException {
         this.showAddButton = Boolean.parseBoolean(attributes.get("showAddButton"));
         this.showNewComponentArea = Boolean.parseBoolean(attributes.get("showNewComponentArea"));
-        this.type = attributes.get("type");
-
-
-        this.label = getMgnlElement().getAttribute("label");
-
     }
 
     @Override
-    public MgnlArea getMgnlElement() {
-        return (MgnlArea) super.getMgnlElement();
+    public void onAttach() {
+        super.onAttach();
     }
+
 }

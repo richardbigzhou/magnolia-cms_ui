@@ -38,7 +38,7 @@ import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaBar;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaEndBar;
-import info.magnolia.ui.vaadin.gwt.client.widget.placeholder.ComponentPlaceHolder;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentPlaceHolder;
 
 import java.util.Map;
 

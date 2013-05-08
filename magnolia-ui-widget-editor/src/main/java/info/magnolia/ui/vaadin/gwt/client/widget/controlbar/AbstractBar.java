@@ -63,7 +63,7 @@ public abstract class AbstractBar extends FlowPanel {
         initLayout(label);
     }
 
-    private void initLayout(String label) {
+    protected void initLayout(String label) {
         buttonWrapper = new FlowPanel();
         buttonWrapper.setStylePrimaryName("mgnlEditorBarButtons");
         add(buttonWrapper);
