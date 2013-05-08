@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
+import info.magnolia.cms.security.operations.OperationPermissionDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.ComponentListener;
 
@@ -56,9 +57,7 @@ public class ComponentBar extends AbstractBar {
 
     private boolean editable = true;
 
-    private boolean canDelete = true;
-    private boolean canMove = true;
-    private boolean canEdit = true;
+    private boolean writable = true;
 
     public ComponentBar(MgnlComponent mgnlElement) {
 
@@ -104,11 +103,8 @@ public class ComponentBar extends AbstractBar {
             this.editable = Boolean.parseBoolean(attributes.get("editable"));
         }
 
-        if (attributes.containsKey("rights")) {
-            final String rights = attributes.get("rights");
-            this.canDelete = rights.contains("canDelete");
-            this.canMove = rights.contains("canMove");
-            this.canEdit = rights.contains("canEdit");
+        if (attributes.containsKey(OperationPermissionDefinition.WRITABLE)) {
+            this.writable = Boolean.parseBoolean(attributes.get(OperationPermissionDefinition.WRITABLE));
         }
     }
 
@@ -144,7 +140,6 @@ public class ComponentBar extends AbstractBar {
         }, MouseOutEvent.getType());
     }*/
 
-
     private void createControls() {
 
         final Label edit = new Label();
@@ -157,7 +152,7 @@ public class ComponentBar extends AbstractBar {
                 listener.editComponent();
             }
         });
-        if (!canEdit) {
+        if (!writable) {
             edit.setVisible(false);
         }
         addButton(edit);
