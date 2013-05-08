@@ -38,7 +38,7 @@
   @include smallapp;
   @include uploadfield;
   @include page-editor;
- 
+
   body{
       -webkit-user-select: none; /* Disable content selection on mobile safari */
       -webkit-tap-highlight-color: rgba(0,0,0,0); /* Disable grey box when you click on something */
@@ -121,11 +121,7 @@
        background: none repeat scroll 0px 0px #666666 ! important;
        border-radius: 0px 0px 0px 0px ! important;
        border: medium none;
-<<<<<<< HEAD
-       color: $c80;
-=======
        color: #FFFFFF;
->>>>>>> parent of 2413a55... MGNLUI-1226 Stage 2 - Change references to old hard coded values to new variables.
        cursor: pointer;
        font-family: DINWebPro;
        font-size: 12px;
