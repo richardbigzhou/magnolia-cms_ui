@@ -93,6 +93,10 @@
       <type>info.magnolia.ui.api.action.ActionRestrictionsDefinition</type>
       <implementation>info.magnolia.ui.api.action.ConfiguredActionRestrictionsDefinition</implementation>
     </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.imageprovider.definition.ImageProviderDefinition</type>
+      <implementation>info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
+    </type-mapping>
   </components>
 
   <components>
