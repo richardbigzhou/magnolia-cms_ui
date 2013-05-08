@@ -255,7 +255,11 @@ public final class FavoritesGroup extends CssLayout {
 
         @Override
         public void handleAction(Object sender, Object target) {
-            doEditTitle(listener);
+            if (editable) {
+                doEditTitle(listener);
+            } else {
+                setEditable(true);
+            }
         }
     }
 

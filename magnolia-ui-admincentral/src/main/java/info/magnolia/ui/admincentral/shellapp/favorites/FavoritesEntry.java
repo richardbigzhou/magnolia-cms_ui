@@ -154,6 +154,7 @@ public final class FavoritesEntry extends CustomComponent {
         iconLabel.setContentMode(ContentMode.HTML);
         root.addComponent(iconLabel);
 
+
         titleField = new TextField();
         titleField.setValue(title);
         titleField.setReadOnly(true);
@@ -162,6 +163,7 @@ public final class FavoritesEntry extends CustomComponent {
 
             @Override
             public void focus(FocusEvent event) {
+                iconLabel.removeShortcutListener(enterKeyShortcutListener);
                 titleField.addShortcutListener(enterKeyShortcutListener);
                 titleField.addShortcutListener(escapeKeyShortcutListener);
             }
@@ -224,6 +226,9 @@ public final class FavoritesEntry extends CustomComponent {
                 } else if (event.getClickedComponent() == iconLabel) {
                     setSelected(!selected);
                     setEditable(false);
+                    if (selected) {
+                        iconLabel.addShortcutListener(enterKeyShortcutListener);
+                    }
                 }
             }
         });
@@ -254,7 +259,11 @@ public final class FavoritesEntry extends CustomComponent {
 
         @Override
         public void handleAction(Object sender, Object target) {
-            doEditTitle(listener);
+            if (editable) {
+                doEditTitle(listener);
+            } else {
+                setEditable(true);
+            }
         }
     }
 
