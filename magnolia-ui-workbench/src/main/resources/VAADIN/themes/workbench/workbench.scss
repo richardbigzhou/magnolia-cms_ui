@@ -20,6 +20,9 @@
       color: $c11;
       line-height: 1;
       border-left: 1px solid $c13;
+      color: $c02;
+      line-height: 1;
+      border-left: 1px solid $c03;
 
       .v-nativebutton-caption {
         text-decoration: none;
@@ -45,7 +48,7 @@
       &:hover,
       &:focus,
       &.active {
-        color: $c80;
+        color: $c21;
       }
 
       &.active .view-type-arrow {
@@ -65,13 +68,13 @@
       margin: 0;
       padding: 0 2px 1px;
       border: none;
-      background: url("img/icon-search.png") no-repeat right center $c80;
-      color: $c50;
+      background: url("img/icon-search.png") no-repeat right center $c21;
+      color: $c01;
       font-size:12px;
 
       &.v-textfield-prompt {
-        background-color: $c16;
-        color: $c11;
+        background-color: $c24;
+        color: $c02;
       }
     }
 
@@ -81,16 +84,16 @@
       line-height: 1;
       text-align: center;
 
-      &.color-green {color: $c40;}
-      &.color-yellow {color: $c60;}
-      &.color-red {color: $c70;}
+      &.color-green {color: $c09;}
+      &.color-yellow {color: $c13;}
+      &.color-red {color: $c17;}
     }
 
     .v-horizontallayout-statusbar {
       height: 40px !important;
       padding-left: 24px;
       padding-right: 24px;
-      color: $c10;
+      color: $c01;
       font-size: 12px;
       line-height: 1;
 
