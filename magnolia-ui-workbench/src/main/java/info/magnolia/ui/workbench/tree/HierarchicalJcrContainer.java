@@ -234,13 +234,15 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
      * to remove unnecessary offset in trees.
      */
     public boolean isRoot(Item item) throws RepositoryException {
-        try {
-            int rootDepth = getRootNode().getDepth();
-            return item.getDepth() <= rootDepth + 1;
-        } catch (RepositoryException e) {
-            handleRepositoryException(log, "Cannot determine depth of jcr item", e);
-            return true;
+        if (item != null) {
+            try {
+                int rootDepth = getRootNode().getDepth();
+                return item.getDepth() <= rootDepth + 1;
+            } catch (RepositoryException e) {
+                handleRepositoryException(log, "Cannot determine depth of jcr item", e);
+            }
         }
+        return true;
     }
 
     // Move operations performed by drag-n-drop in JcrBrowser
