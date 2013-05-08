@@ -42,6 +42,7 @@ import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
+import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 
 import java.util.List;
@@ -124,6 +125,22 @@ public class ContentPresenter implements ContentView.Listener {
                 eventBus.fireEvent(new ItemDoubleClickedEvent(workbenchDefinition.getWorkspace(), selectedItemPath));
             } catch (Exception e) {
                 log.error("An error occurred while double clicking on a row in the data grid", e);
+            }
+        } else {
+            log.warn("Got null com.vaadin.data.Item. No event will be fired.");
+        }
+    }
+
+    @Override
+    public void onRightClick(Item item) {
+        if (item != null) {
+            try {
+                selectedItemPath = ((JcrItemAdapter) item).getPath();
+                String clickedItemPath = ((JcrItemAdapter) item).getPath();
+                log.debug("com.vaadin.data.Item at {} was right clicked. Firing ItemRightClickedEvent...", clickedItemPath);
+                eventBus.fireEvent(new ItemRightClickedEvent(workbenchDefinition.getWorkspace(), clickedItemPath));
+            } catch (Exception e) {
+                log.error("An error occurred while right clicking on a row in the data grid", e);
             }
         } else {
             log.warn("Got null com.vaadin.data.Item. No event will be fired.");

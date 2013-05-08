@@ -57,6 +57,7 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.dd.DropHandler;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.TableDragMode;
@@ -106,8 +107,13 @@ public class TreeViewImpl implements TreeView {
             @Override
             public void itemClick(ItemClickEvent event) {
                 Object currentSelection = event.getItemId();
-                if (event.isDoubleClick()) {
+
+                if (event.getButton()==MouseButton.RIGHT){
+                    presenterOnRightClick(String.valueOf(event.getItemId()));
+
+                } else if (event.isDoubleClick()) {
                     presenterOnDoubleClick(String.valueOf(event.getItemId()));
+
                 } else {
                     // toggle will deselect
                     if (previousSelection == currentSelection) {
@@ -288,6 +294,12 @@ public class TreeViewImpl implements TreeView {
     private void presenterOnDoubleClick(String id) {
         if (listener != null) {
             listener.onDoubleClick(treeTable.getItem(id));
+        }
+    }
+
+    private void presenterOnRightClick(String id) {
+        if (listener != null) {
+            listener.onRightClick(treeTable.getItem(id));
         }
     }
 
