@@ -33,10 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
-
-import java.util.Map;
-
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -55,19 +51,19 @@ public abstract class AbstractBar extends FlowPanel {
 
     private FlowPanel buttonWrapper;
 
-    public AbstractBar(MgnlElement mgnlElement) {
+    public AbstractBar() {
 
         setStyleName("mgnlEditor mgnlEditorBar");
-        setFields(mgnlElement.getAttributes());
-        String label = createLabel(mgnlElement.getAttribute("label"));
-        initLayout(label);
+
+        setVisible(false);
     }
 
-    protected void initLayout(String label) {
+    protected void initLayout() {
         buttonWrapper = new FlowPanel();
         buttonWrapper.setStylePrimaryName("mgnlEditorBarButtons");
         add(buttonWrapper);
 
+        String label = getLabel();
         if (label != null && !label.isEmpty()) {
             Label areaName = new Label(label);
             // tooltip. Nice to have when area label is truncated because too long.
@@ -77,13 +73,13 @@ public abstract class AbstractBar extends FlowPanel {
             // setStylePrimaryName(..) replaces gwt default css class, in this case gwt-Label
             add(areaName);
         }
+
+        createControls();
     }
 
-    protected abstract void setFields(Map<String, String> attributes) throws IllegalArgumentException;
+    protected abstract String getLabel();
 
-    protected String createLabel(String label) {
-        return label;
-    }
+    protected abstract void createControls();
 
     @Override
     public void onAttach() {
@@ -117,5 +113,4 @@ public abstract class AbstractBar extends FlowPanel {
         String className = (child) ? CHILD_FOCUS_CLASSNAME : FOCUS_CLASSNAME;
         addStyleName(className);
     }
-
 }

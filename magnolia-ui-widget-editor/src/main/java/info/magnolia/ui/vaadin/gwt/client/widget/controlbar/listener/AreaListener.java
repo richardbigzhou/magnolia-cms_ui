@@ -42,4 +42,14 @@ public interface AreaListener {
     void editArea();
 
     void createNewComponent();
+
+    boolean hasAddButton();
+
+    boolean hasEditButton();
+
+    String getLabel();
+
+    String getPlaceHolderLabel();
+
+    boolean hasAddComponentButton();
 }

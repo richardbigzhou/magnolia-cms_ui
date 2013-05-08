@@ -33,13 +33,9 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
-import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.getI18nMessage;
-
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.AreaListener;
-
-import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -54,18 +50,12 @@ public class ComponentPlaceHolder extends AbstractBar {
     protected final static String ICON_CLASSNAME = "editorIcon";
     protected final static String ADD_CLASSNAME = "icon-add-item";
 
-    private boolean showAddButton;
-    private boolean showNewComponentArea;
-
     private final AreaListener listener;
 
     public ComponentPlaceHolder(MgnlArea area) throws IllegalArgumentException {
-        super(area);
-
         this.listener = area;
 
         this.addStyleName("component placeholder");
-
 
         Element marker = area.getComponentMarkerElement();
         boolean onlyBar = (marker != null && marker.getAttribute(AreaDefinition.CMS_ADD).equals("bar"));
@@ -74,28 +64,19 @@ public class ComponentPlaceHolder extends AbstractBar {
             this.addStyleName("box");
         }
 
-        setVisible(false);
-        createControls();
+        initLayout();
+
     }
 
     @Override
-    protected String createLabel(String label) {
-        String labelString;
-        // if the add new component area should be visible
-        if (this.showNewComponentArea && !this.showAddButton) { // maximum of components is reached - show add new component area with the maximum reached message, but without the ADD button
-            labelString = getI18nMessage("buttons.component.maximum.js");
-        } else { // maximum of components is NOT reached - show add new component area with ADD button
-            labelString = getI18nMessage("buttons.component.new.js");
-            if (label != null && !label.isEmpty()) {
-                labelString = getI18nMessage("buttons.new.js") + " " + label + " " + getI18nMessage("buttons.component.js");
-            }
-        }
-        return labelString;
+    protected String getLabel() {
+        return listener.getPlaceHolderLabel();
     }
 
-    private void createControls() {
+    @Override
+    protected void createControls() {
 
-        if (this.showAddButton) {
+        if (listener.hasAddComponentButton()) {
             final Label add = new Label();
             add.setStyleName(ICON_CLASSNAME);
             add.addStyleName(ADD_CLASSNAME);
@@ -109,11 +90,6 @@ public class ComponentPlaceHolder extends AbstractBar {
         }
     }
 
-    @Override
-    protected void setFields(Map<String, String> attributes) throws IllegalArgumentException {
-        this.showAddButton = Boolean.parseBoolean(attributes.get("showAddButton"));
-        this.showNewComponentArea = Boolean.parseBoolean(attributes.get("showNewComponentArea"));
-    }
 
     @Override
     public void onAttach() {

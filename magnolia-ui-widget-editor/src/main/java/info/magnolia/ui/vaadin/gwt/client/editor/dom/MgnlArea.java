@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom;
 
+import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.getI18nMessage;
+
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.NewAreaEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.NewComponentEvent;
@@ -49,10 +51,11 @@ import com.google.gwt.event.shared.EventBus;
  * MgnlArea.
  */
 public class MgnlArea extends MgnlElement implements AreaListener {
+
+    private static final String NODE_TYPE = "mgnl:area";
     private AreaEndBar areaEndBar;
     private ComponentPlaceHolder componentPlaceHolder;
     private Element componentMarkerElement;
-    private static final String NODE_TYPE = "mgnl:area";
     private EventBus eventBus;
 
     /**
@@ -132,5 +135,59 @@ public class MgnlArea extends MgnlElement implements AreaListener {
         String availableComponents = getAttribute("availableComponents");
 
         eventBus.fireEvent(new NewComponentEvent(workspace, path, availableComponents));
+    }
+
+    @Override
+    public boolean hasAddButton() {
+        boolean optional = Boolean.parseBoolean(getAttribute("optional"));
+        boolean created = Boolean.parseBoolean(getAttribute("created"));
+
+        return optional && !created;
+    }
+
+    @Override
+    public boolean hasEditButton() {
+        boolean optional = Boolean.parseBoolean(getAttribute("optional"));
+        boolean created = Boolean.parseBoolean(getAttribute("created"));
+        boolean dialog = null != getAttribute("dialog");
+
+        if (dialog) {
+            // do not show edit-icon if the area has not been created
+            if (optional && created) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean hasAddComponentButton() {
+        return Boolean.parseBoolean(getAttribute("showAddButton"));
+    }
+
+    @Override
+    public String getLabel() {
+        String label = getAttribute("label");
+        boolean optional = Boolean.parseBoolean(getAttribute("optional"));
+        return label + ((optional) ? " (optional)" : "");
+    }
+
+    @Override
+    public String getPlaceHolderLabel() {
+        String label = getAttribute("label");
+        boolean showAddButton = Boolean.parseBoolean(getAttribute("showAddButton"));
+        boolean showNewComponentArea = Boolean.parseBoolean(getAttribute("showNewComponentArea"));
+
+        String labelString;
+        // if the add new component area should be visible
+        if (showNewComponentArea && !showAddButton) { // maximum of components is reached - show add new component area with the maximum reached message, but without the ADD button
+            labelString = getI18nMessage("buttons.component.maximum.js");
+        } else { // maximum of components is NOT reached - show add new component area with ADD button
+            labelString = getI18nMessage("buttons.component.new.js");
+            if (label != null && !label.isEmpty()) {
+                labelString = getI18nMessage("buttons.new.js") + " " + label + " " + getI18nMessage("buttons.component.js");
+            }
+        }
+        return labelString;
     }
 }

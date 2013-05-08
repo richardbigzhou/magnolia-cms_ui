@@ -33,17 +33,11 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
-import info.magnolia.cms.security.operations.OperationPermissionDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.ComponentListener;
 
-import java.util.Map;
-
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.DragDropEventBase;
 import com.google.gwt.user.client.ui.Label;
 
 /**
@@ -53,15 +47,8 @@ public class ComponentBar extends AbstractBar {
 
     private final ComponentListener listener;
 
-    private boolean isInherited;
-
-    private boolean editable = true;
-
-    private boolean writable = true;
-
     public ComponentBar(MgnlComponent mgnlElement) {
 
-        super(mgnlElement);
         this.listener = mgnlElement;
         addStyleName("component");
 
@@ -71,16 +58,11 @@ public class ComponentBar extends AbstractBar {
          *
          * }
          */
-        if (!this.isInherited) {
-            createControls();
-            // createMouseEventsHandlers();
-        }
-
-        setVisible(false);
+        initLayout();
 
     }
 
-    public void setDraggable(boolean draggable) {
+/*    public void setDraggable(boolean draggable) {
         if (DragDropEventBase.isSupported()) {
             if (draggable) {
                 this.getElement().setDraggable(Element.DRAGGABLE_TRUE);
@@ -90,21 +72,28 @@ public class ComponentBar extends AbstractBar {
                 getStyle().setCursor(Cursor.DEFAULT);
             }
         }
+    }*/
+
+    @Override
+    protected String getLabel() {
+        return listener.getLabel();
     }
 
     @Override
-    protected void setFields(Map<String, String> attributes) {
+    protected void createControls() {
+        if (listener.hasEditButton()) {
+            final Label edit = new Label();
+            edit.setStyleName(ICON_CLASSNAME);
+            edit.addStyleName(EDIT_CLASSNAME);
+            edit.addClickHandler(new ClickHandler() {
 
-        //setId("__" + nodeName);
+                @Override
+                public void onClick(ClickEvent event) {
+                    listener.editComponent();
+                }
+            });
 
-        this.isInherited = Boolean.parseBoolean(attributes.get("inherited"));
-
-        if (attributes.containsKey("editable")) {
-            this.editable = Boolean.parseBoolean(attributes.get("editable"));
-        }
-
-        if (attributes.containsKey(OperationPermissionDefinition.WRITABLE)) {
-            this.writable = Boolean.parseBoolean(attributes.get(OperationPermissionDefinition.WRITABLE));
+            addButton(edit);
         }
     }
 
@@ -139,24 +128,5 @@ public class ComponentBar extends AbstractBar {
             }
         }, MouseOutEvent.getType());
     }*/
-
-    private void createControls() {
-
-        final Label edit = new Label();
-        edit.setStyleName(ICON_CLASSNAME);
-        edit.addStyleName(EDIT_CLASSNAME);
-        edit.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                listener.editComponent();
-            }
-        });
-        if (!writable) {
-            edit.setVisible(false);
-        }
-        addButton(edit);
-
-    }
 
 }

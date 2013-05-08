@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom;
 
+import info.magnolia.cms.security.operations.OperationPermissionDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
@@ -80,5 +81,20 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
         String path = getAttribute("path");
         String dialog = getAttribute("dialog");
         eventBus.fireEvent(new EditComponentEvent(workspace, path, dialog));
+    }
+
+    @Override
+    public String getLabel() {
+        return getAttribute("label");
+    }
+
+    @Override
+    public boolean hasEditButton() {
+        boolean inherited = Boolean.parseBoolean(getAttribute("inherited"));
+        boolean writable = true;
+        if (getAttributes().containsKey(OperationPermissionDefinition.WRITABLE)) {
+            writable = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.WRITABLE));
+        }
+        return !inherited && writable;
     }
 }
