@@ -33,10 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
-import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.getI18nMessage;
-
+import info.magnolia.cms.security.operations.OperationPermissionDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
-import info.magnolia.ui.vaadin.gwt.client.editor.event.DeleteComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.widget.dnd.DragAndDrop;
 import info.magnolia.ui.vaadin.gwt.client.widget.dnd.LegacyDragAndDrop;
@@ -55,7 +53,6 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.web.bindery.event.shared.EventBus;
 
 /**
@@ -71,9 +68,7 @@ public class ComponentBar extends AbstractBar {
 
     private boolean editable = true;
 
-    private boolean canDelete = true;
-    private boolean canMove = true;
-    private boolean canEdit = true;
+    private boolean writable = true;
 
     public ComponentBar(EventBus eventBus, MgnlElement mgnlElement) {
 
@@ -126,11 +121,8 @@ public class ComponentBar extends AbstractBar {
             this.editable = Boolean.parseBoolean(attributes.get("editable"));
         }
 
-        if (attributes.containsKey("rights")) {
-            final String rights = attributes.get("rights");
-            this.canDelete = rights.contains("canDelete");
-            this.canMove = rights.contains("canMove");
-            this.canEdit = rights.contains("canEdit");
+        if (attributes.containsKey(OperationPermissionDefinition.WRITABLE)) {
+            this.writable = Boolean.parseBoolean(attributes.get(OperationPermissionDefinition.WRITABLE));
         }
     }
 
@@ -170,67 +162,8 @@ public class ComponentBar extends AbstractBar {
         }, MouseOutEvent.getType());
     }
 
-    private void createButtons() {
-
-        final PushButton remove = new PushButton();
-        remove.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getPath()));
-            }
-        });
-        remove.setTitle(getI18nMessage("buttons.component.delete.js"));
-        remove.setStylePrimaryName("mgnlEditorPushButton");
-        remove.addStyleName("remove");
-
-        addSecondaryButton(remove);
-
-        final PushButton move = new PushButton();
-        move.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                toggleButtons(false);
-                LegacyDragAndDrop.moveComponentStart(ComponentBar.this);
-            }
-        });
-        move.setTitle(getI18nMessage("buttons.component.move.js"));
-        move.setStylePrimaryName("mgnlEditorPushButton");
-        move.addStyleName("move");
-        addPrimaryButton(move);
-
-        if (dialog != null) {
-            final PushButton edit = new PushButton();
-            edit.addClickHandler(new ClickHandler() {
-
-                @Override
-                public void onClick(ClickEvent event) {
-                    getEventBus().fireEvent(new EditComponentEvent(getWorkspace(), getPath(), dialog));
-                }
-            });
-            edit.setTitle(getI18nMessage("buttons.component.edit.js"));
-            edit.setStylePrimaryName("mgnlEditorPushButton");
-            edit.addStyleName("edit");
-            addPrimaryButton(edit);
-        }
-    }
-
     private void createControls() {
 
-        final Label remove = new Label();
-        remove.setStyleName(ICON_CLASSNAME);
-        remove.addStyleName(REMOVE_CLASSNAME);
-        remove.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getPath()));
-            }
-        });
-        if (!canDelete) {
-            remove.setVisible(false);
-        }
-        addSecondaryButton(remove);
         /*
          * final Label move = new Label();
          * move.setStyleName("icon icon-trash");
@@ -257,10 +190,10 @@ public class ComponentBar extends AbstractBar {
                 getEventBus().fireEvent(new EditComponentEvent(getWorkspace(), getPath(), dialog));
             }
         });
-        if (!canEdit) {
+        if (!writable) {
             edit.setVisible(false);
         }
-        addPrimaryButton(edit);
+        addButton(edit);
 
     }
 
