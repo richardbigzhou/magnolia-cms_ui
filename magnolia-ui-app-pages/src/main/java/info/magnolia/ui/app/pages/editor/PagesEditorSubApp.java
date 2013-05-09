@@ -317,7 +317,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     }
 
     @Override
-    public void onExecute(String actionName) {
+    public void onActionbarItemClicked(String actionName) {
 
         if (actionName.equals("editProperties") || actionName.equals("editComponent") || actionName.equals("editArea")) {
             pageEditorPresenter.editComponent(
