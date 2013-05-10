@@ -40,6 +40,11 @@
     margin-bottom: 0px;
 }
 
+.v-magnolia-table .v-table-cell-wrapper:empty:after {
+    color: #ccc;
+    content: '\2014';
+}
+
 .v-magnolia-table .v-table-resizer {
     width:1px;
     height:20px;
