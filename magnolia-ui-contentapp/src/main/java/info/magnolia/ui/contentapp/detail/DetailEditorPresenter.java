@@ -129,7 +129,7 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
     }
 
     @Override
-    public void onExecute(String actionName) {
+    public void onActionbarItemClicked(String actionName) {
         try {
             Session session = MgnlContext.getJCRSession(editorDefinition.getWorkspace());
             final javax.jcr.Item item = session.getItem(nodePath);
