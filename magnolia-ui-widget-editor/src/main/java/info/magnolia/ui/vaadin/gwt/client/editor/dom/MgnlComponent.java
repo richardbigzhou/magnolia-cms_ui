@@ -57,7 +57,27 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
 
     @Override
     public AbstractElement getTypedElement() {
-        return new ComponentElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"));
+        ComponentElement component = new ComponentElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"));
+
+        boolean deletable = true;
+        if (getAttributes().containsKey(OperationPermissionDefinition.DELETABLE)) {
+            deletable = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.DELETABLE));
+        }
+
+        boolean writable = true;
+        if (getAttributes().containsKey(OperationPermissionDefinition.WRITABLE)) {
+            writable = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.WRITABLE));
+        }
+
+        boolean movable = true;
+        if (getAttributes().containsKey(OperationPermissionDefinition.MOVEABLE)) {
+            movable = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.MOVEABLE));
+        }
+
+        component.setDeletable(deletable);
+        component.setWritable(writable);
+        component.setMoveable(movable);
+        return component;
     }
 
     @Override

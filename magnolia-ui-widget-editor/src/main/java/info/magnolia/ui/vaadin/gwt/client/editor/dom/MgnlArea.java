@@ -35,6 +35,7 @@ package info.magnolia.ui.vaadin.gwt.client.editor.dom;
 
 import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.getI18nMessage;
 
+import info.magnolia.cms.security.operations.OperationPermissionDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.NewAreaEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.NewComponentEvent;
@@ -93,7 +94,15 @@ public class MgnlArea extends MgnlElement implements AreaListener {
 
     @Override
     public AbstractElement getTypedElement() {
-        return new AreaElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"), getAttribute("availableComponents"));
+        AreaElement area = new AreaElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"), getAttribute("availableComponents"));
+
+        boolean addible = true;
+        if (getAttributes().containsKey(OperationPermissionDefinition.ADDIBLE)) {
+            addible = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.ADDIBLE));
+        }
+        area.setAddible(addible);
+
+        return area;
     }
 
     @Override

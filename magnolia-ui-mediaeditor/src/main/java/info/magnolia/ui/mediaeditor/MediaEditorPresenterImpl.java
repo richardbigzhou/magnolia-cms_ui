@@ -186,7 +186,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     }
 
     @Override
-    public void onExecute(String actionName) {
+    public void onActionbarItemClicked(String actionName) {
         doExecuteMediaEditorAction(actionName);
     }
 

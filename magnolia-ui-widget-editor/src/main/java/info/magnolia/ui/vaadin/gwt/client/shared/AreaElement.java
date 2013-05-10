@@ -39,6 +39,7 @@ package info.magnolia.ui.vaadin.gwt.client.shared;
 public class AreaElement extends AbstractElement {
 
     private String availableComponents;
+    private Boolean addible; // add button operation permission
 
     public AreaElement() {
     }
@@ -54,5 +55,13 @@ public class AreaElement extends AbstractElement {
 
     public void setAvailableComponents(String availableComponents) {
         this.availableComponents = availableComponents;
+    }
+
+    public Boolean getAddible() {
+        return addible;
+    }
+
+    public void setAddible(Boolean addible) {
+        this.addible = addible;
     }
 }

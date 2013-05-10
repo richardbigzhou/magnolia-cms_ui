@@ -38,6 +38,11 @@ package info.magnolia.ui.vaadin.gwt.client.shared;
  */
 public class ComponentElement extends AbstractElement {
 
+    // attributes for showing/hiding buttons
+    private Boolean writable; // edit
+    private Boolean moveable; // move
+    private Boolean deletable; // delete
+    
     public ComponentElement() {
     }
 
@@ -45,4 +50,27 @@ public class ComponentElement extends AbstractElement {
         super(workspace, path, dialog);
     }
 
+    public Boolean getWritable() {
+        return writable;
+    }
+
+    public void setWritable(Boolean editable) {
+        this.writable = editable;
+    }
+
+    public Boolean getMoveable() {
+        return moveable;
+    }
+
+    public void setMoveable(Boolean moveable) {
+        this.moveable = moveable;
+    }
+
+    public Boolean getDeletable() {
+        return deletable;
+    }
+
+    public void setDeletable(Boolean deletable) {
+        this.deletable = deletable;
+    }
 }
