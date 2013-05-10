@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
+import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
@@ -102,12 +103,13 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private final EditorDefinition editorDefinition;
     private final String workspace;
     private final AppContext appContext;
+    private final VersionManager versionManager;
 
     private PageEditorParameters parameters;
     private String caption;
 
     @Inject
-    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named(SubAppEventBus.NAME) EventBus eventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView, I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport) {
+    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named(SubAppEventBus.NAME) EventBus eventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView, I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager) {
         super(subAppContext, view);
         this.actionExecutor = actionExecutor;
         this.view = view;
@@ -120,6 +122,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         this.editorDefinition = ((DetailSubAppDescriptor) subAppContext.getSubAppDescriptor()).getEditor();
         this.workspace = editorDefinition.getWorkspace();
         this.appContext = subAppContext.getAppContext();
+        this.versionManager = versionManager;
 
         view.setListener(this);
         bindHandlers();
@@ -233,6 +236,10 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         this.parameters = new PageEditorParameters(MgnlContext.getContextPath(), path, isPreview);
         try {
             Node node = MgnlContext.getJCRSession(workspace).getNode(path);
+            if (location.hasVersion()) {
+                node = versionManager.getVersion(node, location.getVersion());
+            }
+
             String uri = i18NAuthoringSupport.createI18NURI(node, new Locale("en"));
             this.parameters.setUrl(uri);
             this.caption = getPageTitle(path);
@@ -266,7 +273,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     }
 
     private void hideAllSections() {
-        actionbarPresenter.hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions", "restorePreviousVersion");
+        actionbarPresenter.hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions", "pageDeleteActions");
     }
 
     private void bindHandlers() {
@@ -287,7 +294,8 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
                 Node node = SessionUtil.getNode(workspace, path);
                 if (PagesMainSubApp.isDeleted(node)) {
-                    actionbarPresenter.showSection("restorePreviousVersion");
+                    actionbarPresenter.showSection("pageDeleteActions");
+                    actionbarPresenter.enable("restorePreviousVersion");
 
                 } else {
                     if (element instanceof PageElement) {
