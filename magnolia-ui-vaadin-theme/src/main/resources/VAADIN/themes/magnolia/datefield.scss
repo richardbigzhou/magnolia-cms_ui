@@ -25,7 +25,7 @@
 
   .v-datefield-calendarpanel,
   .v-inline-datefield-calendarpanel {
-    border: 1px solid $c54;
+    border: 1px solid $c12;
     border-collapse: collapse;
     background-color: $c80;
     font-size: 14x;
@@ -34,7 +34,7 @@
   .v-datefield-calendarpanel-header,
   .v-inline-datefield-calendarpanel-header {
     height: 20px;
-    background-color: $c50;
+    background-color: $c10;
 
     td {
       padding: 0 2px 2px;
@@ -70,8 +70,8 @@
     td {
       min-width: 30px;
       height: 28px;
-      border: 1px solid $c62;
-      color: $c50;
+      border: 1px solid $c14;
+      color: $c10;
       font-family: DINWebPro, sans-serif;
       font-size: 1em;
       text-align: center;
@@ -129,13 +129,13 @@
   .v-datefield-calendarpanel-day-focused,
   .v-inline-datefield-calendarpanel-day-selected,
   .v-inline-datefield-calendarpanel-day-focused {
-    background: $c90;
+    background: $c22;
     color: $c91;
   }
 
   .v-datefield-calendarpanel-day-offmonth,
   .v-inline-datefield-calendarpanel-day-offmonth {
-    background-color: $c65;
-    color: $c62;
+    background-color: $c16;
+    color: $c14;
   }
 }

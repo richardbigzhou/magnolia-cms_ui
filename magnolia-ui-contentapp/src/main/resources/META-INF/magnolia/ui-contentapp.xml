@@ -10,6 +10,22 @@
   
   <components>
     <id>main</id>
+    <type-mapping>
+      <type>info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor</type>
+      <implementation>info.magnolia.ui.contentapp.browser.ConfiguredBrowserSubAppDescriptor</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor</type>
+      <implementation>info.magnolia.ui.contentapp.detail.ConfiguredDetailSubAppDescriptor</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.contentapp.definition.EditorDefinition</type>
+      <implementation>info.magnolia.ui.contentapp.definition.ConfiguredEditorDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.contentapp.definition.FormActionItemDefinition</type>
+      <implementation>info.magnolia.ui.contentapp.definition.ConfiguredFormActionItemDefinition</implementation>
+    </type-mapping>
   </components>
 
   <components>

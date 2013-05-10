@@ -36,8 +36,13 @@
 
 .v-magnolia-table .v-table-cell-wrapper {
 	position: relative;
-	margin-top: 1px;
-	margin-bottom: -1px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.v-magnolia-table .v-table-cell-wrapper:empty:after {
+    color: #ccc;
+    content: '\2014';
 }
 
 .v-magnolia-table .v-table-resizer {
@@ -57,6 +62,7 @@
 	font-family:Verdana,sans-serif;
 	padding:10px 5px 4px;
 	margin:0;
+	text-overflow:ellipsis;
 }
 
 .v-table-header-cell-asc .v-table-sort-indicator, .v-table-header-cell-desc .v-table-sort-indicator {
@@ -126,7 +132,7 @@
 
 .v-magnolia-table .v-treetable-treespacer {
   position: relative;
-  top: -1px;
+  top: 0px;
   display: inline-block;
   height: 16px;
   vertical-align: text-bottom;
@@ -146,6 +152,8 @@
   margin-right: 4px;
   font-size: 19px;
   vertical-align: middle;
+  position: relative;
+  top: 0px;
 }
 
 }

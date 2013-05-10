@@ -38,7 +38,6 @@ import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +49,21 @@ import com.vaadin.server.Resource;
  */
 public class ActionbarPresenter implements ActionbarView.Listener {
 
+    /**
+     *  Listener interface for the Actionbar.
+     */
+    public interface Listener {
+
+        void onActionbarItemClicked(String itemName);
+
+        String getLabel(String itemName);
+
+        String getIcon(String itemName);
+
+        void setFullScreen(boolean fullscreen);
+
+    }
+
     private static final Logger log = LoggerFactory.getLogger(ActionbarPresenter.class);
 
     private static final String PREVIEW_SECTION_NAME = "preview";
@@ -59,6 +73,10 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     private ActionbarView actionbar;
 
     private Listener listener;
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
 
     /**
      * Initializes an actionbar with given definition and returns the view for
@@ -84,7 +102,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         }
     }
 
-    // JUST DELEGATING CONTEXT SENSITIVITY TO WIDGET
+    // METHODS DELEGATING TO THE VIEW
 
     public void enable(String... actionNames) {
         if (actionbar != null) {
@@ -142,13 +160,13 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         }
     }
 
-    // WIDGET LISTENER
+    // VIEW LISTENER
+
     @Override
     public void onActionbarItemClicked(String actionToken) {
         String actionName = getActionName(actionToken);
-        listener.onExecute(actionName);
+        listener.onActionbarItemClicked(actionName);
     }
-
 
     @Override
     public void onChangeFullScreen(boolean isFullScreen) {
@@ -158,48 +176,12 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     private String getActionName(String actionToken) {
         final String[] chunks = actionToken.split(":");
         if (chunks.length != 2) {
-            log.warn(
-                    "Invalid actionToken [{}]: it is expected to be in the form sectionName:actionName. ActionDefintion cannot be retrieved. Please check actionbar definition.", actionToken);
+            log.warn("Invalid actionToken [{}]: it is expected to be in the form sectionName:actionName. Action name cannot be resolved. Please check actionbar definition.", actionToken);
             return null;
         }
         final String sectionName = chunks[0];
         final String actionName = chunks[1];
 
         return actionName;
-    }
-
-    // DEFAULT ACTION
-
-    /**
-     * Executes the workbench's default action, as configured in the defaultAction property.
-     */
-    public void executeDefaultAction() {
-        String defaultAction = definition.getDefaultAction();
-        if (StringUtils.isNotEmpty(defaultAction)) {
-            listener.onExecute(defaultAction);
-        }
-        else {
-            log.warn("Default action is null. Please check actionbar definition.");
-        }
-    }
-
-    public void setListener(Listener listener) {
-        this.listener = listener;
-
-    }
-
-    /**
-     *  Listener interface for the Actionbar.
-     */
-    public interface Listener {
-
-        void onExecute(String actionName);
-
-        String getLabel(String actionName);
-
-        String getIcon(String actionName);
-
-        void setFullScreen(boolean fullscreen);
-
     }
 }

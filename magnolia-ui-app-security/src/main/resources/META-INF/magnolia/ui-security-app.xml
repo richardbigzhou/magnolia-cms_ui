@@ -4,7 +4,6 @@
   <name>ui-security-app</name>
   <displayName>UI Security App</displayName>
   <description>UI Security App</description>
-  <class>info.magnolia.ui.app.security.SecurityModule</class>
   <version>${project.version}</version>
 
     <!-- Used to create an App component provider for injection of AppContext for example -->

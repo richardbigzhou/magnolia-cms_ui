@@ -243,10 +243,8 @@ public class TreeViewImpl implements TreeView {
     public void select(String path) {
         if (!"/".equals(path)) {
             expandTreeToNode(path);
-            treeTable.setCurrentPageFirstItemId(path);
         }
         treeTable.select(path);
-
     }
 
     /**
