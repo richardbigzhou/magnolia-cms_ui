@@ -47,6 +47,11 @@ div.mgnlEditorBar {
     clear: both;
 }
 
+div.mgnlEditorBar.area.init {
+  background-color: #a5bc66 !important;
+  color: #ffffff !important;
+}
+
 /* Selected Item (focus) */
 div.mgnlEditorBar.area.childFocus ~ * div.mgnlEditorBar.component.focus,
 div.mgnlEditorBar.area.childFocus ~ div.mgnlEditorBar.component.focus,
@@ -65,8 +70,8 @@ div.mgnlEditorBar.area.childFocus {
 /* Siblings of the selected area */
 div.mgnlEditorBar.area.childFocus ~ div.mgnlEditorBar.component,
 div.mgnlEditorBar.area.childFocus ~ * div.mgnlEditorBar.component,
-div.mgnlEditorBar.area.childFocus ~ div.mgnlEditorPlaceholder.component,
-div.mgnlEditorBar.area.childFocus ~ * div.mgnlEditorPlaceholder.component {
+div.mgnlEditorBar.area.init ~ * div.mgnlEditorBar.component.placeholder,
+div.mgnlEditorBar.area.init ~ div.mgnlEditorBar.component.placeholder {
     background-color: #e1e8cc !important;
     color: #6a9000 !important;
 }
@@ -74,9 +79,7 @@ div.mgnlEditorBar.area.childFocus ~ * div.mgnlEditorPlaceholder.component {
 
 /* "Children" of an area - (which are actually any siblings in the dom structure, which contain a mgnlEditorBar component.) */
 div.mgnlEditorBar.area.focus ~ div.mgnlEditorBar.component,
-div.mgnlEditorBar.area.focus ~ * div.mgnlEditorBar.component,
-div.mgnlEditorBar.area.focus ~ div.mgnlEditorPlaceholder.component,
-div.mgnlEditorBar.area.focus ~ * div.mgnlEditorPlaceholder.component {
+div.mgnlEditorBar.area.focus ~ * div.mgnlEditorBar.component {
     background-color: #a5bc66 !important;
     color: #ffffff !important;
 }

@@ -44,8 +44,6 @@ public interface FocusModel {
 
     void selectElement(Element element);
 
-    void toggleRootAreaBar(boolean visible);
-
     void init();
 
     void select(MgnlElement mgnlElement);

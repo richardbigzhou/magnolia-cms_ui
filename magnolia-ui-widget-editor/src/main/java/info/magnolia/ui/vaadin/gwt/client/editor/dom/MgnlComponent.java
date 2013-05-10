@@ -117,4 +117,22 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
         }
         return !inherited && writable;
     }
+
+    public void setVisible(boolean visible) {
+        if (getControlBar() != null) {
+            getControlBar().setVisible(visible);
+        }
+    }
+
+    public void removeFocus() {
+        if (getControlBar() != null) {
+            getControlBar().removeFocus();
+        }
+    }
+
+    public void setFocus() {
+        if (getControlBar() != null) {
+            getControlBar().setFocus(false);
+        }
+    }
 }

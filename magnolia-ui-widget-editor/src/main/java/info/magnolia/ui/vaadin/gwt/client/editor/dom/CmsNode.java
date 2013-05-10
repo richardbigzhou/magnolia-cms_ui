@@ -91,6 +91,16 @@ public class CmsNode {
         return parentArea;
     }
 
+    public MgnlArea getRootArea() {
+        MgnlArea parentArea = (this instanceof MgnlArea) ? (MgnlArea) this : null;
+        for (CmsNode parent = getParent(); parent != null; parent = parent.getParent()) {
+            if (parent instanceof MgnlArea) {
+                parentArea = (MgnlArea) parent;
+            }
+        }
+        return parentArea;
+    }
+
     public List<MgnlComponent> getComponents() {
         List<MgnlComponent> components = new LinkedList<MgnlComponent>();
         for (CmsNode element : getChildren()) {
@@ -120,8 +130,7 @@ public class CmsNode {
     }
 
     public boolean isRelated(CmsNode relative) {
-
-        return relative != null && this.getRoot() == relative.getRoot();
+        return relative != null && this.getRootArea() == relative.getRootArea();
     }
 
     public void delete() {

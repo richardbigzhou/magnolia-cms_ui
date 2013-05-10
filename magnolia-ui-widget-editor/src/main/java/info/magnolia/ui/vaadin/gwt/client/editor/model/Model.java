@@ -63,13 +63,13 @@ public interface Model {
 
     List<MgnlArea> getRootAreas();
 
-    void setSelectedMgnlAreaElement(MgnlArea selectedMgnlAreaElement);
+    void setSelectedArea(MgnlArea selectedMgnlAreaElement);
 
-    MgnlArea getSelectedMgnlAreaElement();
+    MgnlArea getSelectedArea();
 
-    void setSelectedMgnlComponentElement(MgnlComponent selectedMgnlComponentElement);
+    void setSelectedComponent(MgnlComponent selectedMgnlComponentElement);
 
-    MgnlComponent getSelectedMgnlComponentElement();
+    MgnlComponent getSelectedComponent();
 
     void removeMgnlElement(MgnlElement mgnlElement);
 

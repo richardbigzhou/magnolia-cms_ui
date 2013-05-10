@@ -161,7 +161,7 @@ public class MgnlArea extends MgnlElement implements AreaListener {
 
         if (dialog) {
             // do not show edit-icon if the area has not been created
-            if (optional && created) {
+            if (!optional || (optional && created)) {
                 return true;
             }
         }
@@ -230,6 +230,17 @@ public class MgnlArea extends MgnlElement implements AreaListener {
     public void setPlaceHolderVisible(boolean visible) {
         if (getComponentPlaceHolder() != null) {
             getComponentPlaceHolder().setVisible(visible);
+        }
+    }
+
+    public void toggleInitFocus(boolean visible) {
+        if (visible) {
+            getControlBar().addStyleName("init");
+            getAreaEndBar().addStyleName("init");
+            getAreaEndBar().addStyleName("init");
+        } else {
+            getControlBar().removeStyleName("init");
+            getAreaEndBar().removeStyleName("init");
         }
     }
 }
