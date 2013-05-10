@@ -72,7 +72,7 @@ public class EditItemAction extends ActionBase<EditItemActionDefinition> {
                 return;
             }
             final String path = nodeItemToEdit.getNode().getPath();
-            DetailLocation location = new DetailLocation(getDefinition().getAppId(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path);
+            DetailLocation location = new DetailLocation(getDefinition().getAppId(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path, "");
             locationController.goTo(location);
 
         } catch (RepositoryException e) {
