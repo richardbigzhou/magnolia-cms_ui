@@ -79,7 +79,7 @@ public class FocusModelImpl implements FocusModel {
             }
         }
         // first set the component, then set the area. the selected component is used for setting
-        // the corrent area class.
+        // the current area class.
         setComponentSelection(component);
         setAreaSelection(area);
 
@@ -127,13 +127,7 @@ public class FocusModelImpl implements FocusModel {
 
         if (selectedArea != null) {
 
-            if (selectedArea.getControlBar() != null) {
-                selectedArea.getControlBar().removeFocus();
-            }
-
-            if (selectedArea.getAreaEndBar() != null) {
-                selectedArea.getAreaEndBar().removeFocus();
-            }
+            selectedArea.removeFocus();
 
             // always reset current area selection unless area and current area are related
             if (!selectedArea.isRelated(area)) {
@@ -154,12 +148,7 @@ public class FocusModelImpl implements FocusModel {
             toggleAreaVisibility(area, true);
             toggleChildComponentVisibility(area, true);
 
-            if (area.getControlBar() != null) {
-                area.getControlBar().setFocus((currentComponent != null));
-            }
-            if (area.getAreaEndBar() != null) {
-                area.getAreaEndBar().setFocus((currentComponent != null));
-            }
+            area.setFocus((currentComponent != null));
         }
         model.setSelectedMgnlAreaElement(area);
     }
@@ -174,12 +163,7 @@ public class FocusModelImpl implements FocusModel {
         }
         // root areas are always visible
         if (!model.getRootAreas().contains(area)) {
-            if (area.getControlBar() != null) {
-                area.getControlBar().setVisible(visible);
-            }
-            if (area.getAreaEndBar() != null) {
-                area.getAreaEndBar().setVisible(visible);
-            }
+            area.setVisible(visible);
         }
 
         if (!area.isRelated(model.getSelectedMgnlAreaElement())) {
@@ -193,26 +177,20 @@ public class FocusModelImpl implements FocusModel {
             // toggle all direct child-areas placeholders visibility
             for (MgnlArea childArea : area.getAreas()) {
 
+                childArea.setVisible(visible);
                 /*
                  * if (model.getAreaPlaceHolder(childArea) != null) {
                  * model.getAreaPlaceHolder(childArea).setVisible(visible);
                  * }
                  */
-                if (childArea.getControlBar() != null) {
-                    childArea.getControlBar().setVisible(visible);
-                }
-                if (childArea.getAreaEndBar() != null) {
-                    childArea.getAreaEndBar().setVisible(visible);
-                }
+
             }
         }
     }
 
     private void toggleChildComponentVisibility(MgnlArea area, boolean visible) {
 
-        if (area.getComponentPlaceHolder() != null) {
-            area.getComponentPlaceHolder().setVisible(visible);
-        }
+        area.setPlaceHolderVisible(visible);
 
         for (MgnlComponent component : area.getComponents()) {
 
@@ -223,17 +201,13 @@ public class FocusModelImpl implements FocusModel {
             // toggle all child-components-area placeholder visibility
             for (MgnlArea childArea : component.getAreas()) {
 
+                childArea.setVisible(visible);
                 /*
                  * if (model.getAreaPlaceHolder(childArea) != null) {
                  * model.getAreaPlaceHolder(childArea).setVisible(visible);
                  * }
                  */
-                if (childArea.getControlBar() != null) {
-                    childArea.getControlBar().setVisible(visible);
-                }
-                if (childArea.getAreaEndBar() != null) {
-                    childArea.getAreaEndBar().setVisible(visible);
-                }
+
             }
         }
     }
@@ -243,15 +217,8 @@ public class FocusModelImpl implements FocusModel {
 
         this.rootSelected = !this.rootSelected;
         for (MgnlArea root : model.getRootAreas()) {
-            if (root.getControlBar() != null) {
-                root.getControlBar().setVisible(visible);
-            }
-            if (root.getAreaEndBar() != null) {
-                root.getAreaEndBar().setVisible(visible);
-            }
-            if (root.getComponentPlaceHolder() != null) {
-                root.getComponentPlaceHolder().setVisible(visible);
-            }
+                root.setVisible(visible);
+                root.setPlaceHolderVisible(visible);
         }
     }
 

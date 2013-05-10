@@ -83,7 +83,6 @@ public class MgnlArea extends MgnlElement implements AreaListener {
         this.componentPlaceHolder = componentPlaceHolder;
     }
 
-
     public void setComponentMarkerElement(Element componentElement) {
         this.componentMarkerElement = componentElement;
     }
@@ -198,5 +197,39 @@ public class MgnlArea extends MgnlElement implements AreaListener {
             }
         }
         return labelString;
+    }
+
+    public void removeFocus() {
+        if (getControlBar() != null) {
+            getControlBar().removeFocus();
+        }
+
+        if (getAreaEndBar() != null) {
+            getAreaEndBar().removeFocus();
+        }
+    }
+
+    public void setFocus(boolean child) {
+        if (getControlBar() != null) {
+            getControlBar().setFocus(child);
+        }
+        if (getAreaEndBar() != null) {
+            getAreaEndBar().setFocus(child);
+        }
+    }
+
+    public void setVisible(boolean visible) {
+        if (getControlBar() != null) {
+            getControlBar().setVisible(visible);
+        }
+        if (getAreaEndBar() != null) {
+            getAreaEndBar().setVisible(visible);
+        }
+    }
+
+    public void setPlaceHolderVisible(boolean visible) {
+        if (getComponentPlaceHolder() != null) {
+            getComponentPlaceHolder().setVisible(visible);
+        }
     }
 }
