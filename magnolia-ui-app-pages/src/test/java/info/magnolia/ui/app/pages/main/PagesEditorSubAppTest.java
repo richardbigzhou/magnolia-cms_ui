@@ -126,7 +126,7 @@ public class PagesEditorSubAppTest {
         eventBus.fireEvent(new NodeSelectedEvent(element));
 
         // THEN
-        verify(actionbarPresenter).hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions");
+        verify(actionbarPresenter).hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions", "pageDeleteActions");
         verify(actionbarPresenter).showSection("areaActions");
         verify(actionbarPresenter).disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
 
@@ -148,7 +148,7 @@ public class PagesEditorSubAppTest {
         eventBus.fireEvent(new NodeSelectedEvent(element));
 
         // THEN
-        verify(actionbarPresenter).hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions");
+        verify(actionbarPresenter).hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions", "pageDeleteActions");
         verify(actionbarPresenter).showSection("componentActions");
         verify(actionbarPresenter).disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
 
@@ -171,7 +171,7 @@ public class PagesEditorSubAppTest {
         eventBus.fireEvent(new NodeSelectedEvent(element));
 
         // THEN
-        verify(actionbarPresenter).hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions");
+        verify(actionbarPresenter).hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions", "pageDeleteActions");
         verify(actionbarPresenter).showSection("areaActions");
         verify(actionbarPresenter).disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
 

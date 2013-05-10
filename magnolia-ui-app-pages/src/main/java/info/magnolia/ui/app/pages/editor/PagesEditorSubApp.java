@@ -298,7 +298,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                 hideAllSections();
 
                 Node node = SessionUtil.getNode(workspace, path);
-                if (PagesMainSubApp.isDeleted(node)) {
+                if (node != null && PagesMainSubApp.isDeleted(node)) {
                     actionbarPresenter.showSection("pageDeleteActions");
                     actionbarPresenter.enable("restorePreviousVersion");
 
