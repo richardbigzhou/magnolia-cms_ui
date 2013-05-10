@@ -39,7 +39,6 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.jcr.util.SessionUtil;
-import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
@@ -324,7 +323,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                     else if (element instanceof ComponentElement) {
                         actionbarPresenter.showSection("componentActions");
                     }
-                    updateActions(node);
+                    updateActions();
                 }
             }
         });
