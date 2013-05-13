@@ -45,9 +45,9 @@ import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
+import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
-import info.magnolia.ui.workbench.tree.TreeView;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -136,13 +136,13 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
 
         BrowserSubAppDescriptor subApp = (BrowserSubAppDescriptor) subAppContext;
         WorkbenchDefinition workbench = new Cloner().deepClone(subApp.getWorkbench());
+        // mark definition as a dialog workbench so that workbench presenter can disable drag n drop
+        ((ConfiguredWorkbenchDefinition) workbench).setDialogWorkbench(true);
         ImageProviderDefinition imageProvider = new Cloner().deepClone(subApp.getImageProvider());
         WorkbenchView view = workbenchPresenter.start(workbench, imageProvider, eventBus);
-        chooseDialogView.setContent(view);
-
         view.setViewType(ViewType.TREE);
-        ((TreeView) view.getSelectedView()).deactivateDragAndDrop();
 
+        chooseDialogView.setContent(view);
         return chooseDialogView;
     }
 

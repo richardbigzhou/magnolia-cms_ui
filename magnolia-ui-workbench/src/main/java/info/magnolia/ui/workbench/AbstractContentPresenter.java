@@ -51,9 +51,9 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
 
     private static final Logger log = LoggerFactory.getLogger(AbstractContentPresenter.class);
 
-    private EventBus eventBus;
+    protected EventBus eventBus;
 
-    private WorkbenchDefinition workbenchDefinition;
+    protected WorkbenchDefinition workbenchDefinition;
 
     private String selectedItemPath;
 
@@ -74,14 +74,6 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
     @Override
     public void setSelectedItemPath(String selectedItemPath) {
         this.selectedItemPath = selectedItemPath;
-    }
-
-    protected EventBus getEventBus() {
-        return eventBus;
-    }
-
-    protected WorkbenchDefinition getWorkbenchDefinition() {
-        return workbenchDefinition;
     }
 
     // CONTENT VIEW LISTENER

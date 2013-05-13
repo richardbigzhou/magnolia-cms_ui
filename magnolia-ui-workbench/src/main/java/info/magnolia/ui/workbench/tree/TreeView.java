@@ -36,6 +36,7 @@ package info.magnolia.ui.workbench.tree;
 import info.magnolia.ui.workbench.list.ListView;
 
 import com.vaadin.data.Item;
+import com.vaadin.event.dd.DropHandler;
 
 /**
  * Tree view interface.
@@ -46,7 +47,7 @@ public interface TreeView extends ListView {
 
     void setEditableColumns(Object... propertyIds);
 
-    void deactivateDragAndDrop();
+    void setDragAndDropHandler(DropHandler dropHandler);
 
     /**
      * Tree-view specific listener interface.

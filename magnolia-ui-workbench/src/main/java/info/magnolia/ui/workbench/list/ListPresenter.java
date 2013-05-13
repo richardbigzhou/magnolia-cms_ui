@@ -52,11 +52,11 @@ import javax.inject.Inject;
  */
 public class ListPresenter extends AbstractContentPresenter implements ListView.Listener {
 
-    private final ListView view;
+    protected final ListView view;
 
-    private final ComponentProvider componentProvider;
+    protected final ComponentProvider componentProvider;
 
-    private AbstractJcrContainer container;
+    protected AbstractJcrContainer container;
 
     @Inject
     public ListPresenter(ListView view, ComponentProvider componentProvider) {

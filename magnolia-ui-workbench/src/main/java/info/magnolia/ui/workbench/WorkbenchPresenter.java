@@ -44,6 +44,7 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 import info.magnolia.ui.workbench.search.SearchPresenter;
+import info.magnolia.ui.workbench.tree.TreePresenter;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -121,6 +122,10 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
             }
 
             ContentView contentView = presenter.start(workbenchDefinition, eventBus);
+            if (presenter instanceof TreePresenter && workbenchDefinition.isDialogWorkbench()) {
+                ((TreePresenter) presenter).disableDragAndDrop();
+            }
+
             view.addContentView(presenterDefinition.getViewType(), contentView, presenterDefinition);
         }
 

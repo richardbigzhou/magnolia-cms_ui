@@ -126,7 +126,7 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
         if (item instanceof ThumbnailItem) {
             String itemId = ((ThumbnailItem) item).getItemId();
             try {
-                Session session = MgnlContext.getJCRSession(getWorkbenchDefinition().getWorkspace());
+                Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
                 final Node imageNode = session.getNodeByIdentifier(itemId);
                 return new JcrNodeAdapter(imageNode);
             } catch (RepositoryException e) {

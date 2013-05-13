@@ -39,6 +39,8 @@ import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.list.ListPresenter;
+import info.magnolia.ui.workbench.tree.drop.DropConstraint;
+import info.magnolia.ui.workbench.tree.drop.TreeViewDropHandler;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -50,6 +52,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
+import com.vaadin.event.dd.DropHandler;
+import com.vaadin.ui.TreeTable;
 
 /**
  * The TreePresenter.
@@ -87,16 +91,19 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
         }
 
         // Drag and Drop
-        // Class<? extends DropConstraint> dropContainerClass = workbench.getDropConstraintClass();
-        // if (dropContainerClass != null) {
-        // DropConstraint constraint = componentProvider.newInstance(dropContainerClass);
-        // DropHandler dropHandler = new TreeViewDropHandler(treeTable, constraint);
-        // treeTable.setDropHandler(dropHandler);
-        // treeTable.setDragMode(TableDragMode.ROW);
-        // log.debug("Set following drop container {} to the treeTable", dropContainerClass.getName());
-        // }
+        Class<? extends DropConstraint> dropConstraintClass = workbench.getDropConstraintClass();
+        if (dropConstraintClass != null) {
+            DropConstraint constraint = componentProvider.newInstance(dropConstraintClass);
+            DropHandler dropHandler = new TreeViewDropHandler((TreeTable) view.asVaadinComponent(), constraint);
+            view.setDragAndDropHandler(dropHandler);
+            log.debug("Set following drop container {} to the treeTable", dropConstraintClass.getName());
+        }
 
         return view;
+    }
+
+    public void disableDragAndDrop() {
+        ((TreeView) view).setDragAndDropHandler(null);
     }
 
     @Override
@@ -111,7 +118,7 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
         try {
             if (item != null) {
                 log.debug("com.vaadin.data.Item edited. Firing ItemEditedEvent...");
-                getEventBus().fireEvent(new ItemEditedEvent(item));
+                eventBus.fireEvent(new ItemEditedEvent(item));
             } else {
                 log.warn("Null item edited");
             }

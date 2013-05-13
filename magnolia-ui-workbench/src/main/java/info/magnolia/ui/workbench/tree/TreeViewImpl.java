@@ -36,6 +36,7 @@ package info.magnolia.ui.workbench.tree;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.list.ListViewImpl;
 
+import com.vaadin.event.dd.DropHandler;
 import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.TreeTable;
 
@@ -114,8 +115,14 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     }
 
     @Override
-    public void deactivateDragAndDrop() {
-        treeTable.setDragMode(TableDragMode.NONE);
+    public void setDragAndDropHandler(DropHandler dropHandler) {
+        if (dropHandler != null) {
+            treeTable.setDragMode(TableDragMode.ROW);
+            treeTable.setDropHandler(dropHandler);
+        } else {
+            treeTable.setDragMode(TableDragMode.NONE);
+            treeTable.setDropHandler(null);
+        }
     }
 
     @Override

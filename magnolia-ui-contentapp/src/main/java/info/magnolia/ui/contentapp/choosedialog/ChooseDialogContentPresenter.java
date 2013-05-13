@@ -39,10 +39,8 @@ import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.event.ChooseDialogEventBus;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
-import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.tree.TreeView;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -81,8 +79,6 @@ public class ChooseDialogContentPresenter extends AbstractContentPresenter {
     }
 
     protected void initContentView(WorkbenchView view) {
-        view.setViewType(ContentView.ViewType.TREE);
-        ((TreeView) view.getSelectedView()).deactivateDragAndDrop();
     }
 
     @Override
