@@ -36,14 +36,14 @@ package info.magnolia.ui.form;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.ui.form.field.builder.FieldBuilder;
 import info.magnolia.ui.form.field.builder.FieldFactory;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.form.FormView;
 
 import javax.inject.Inject;
@@ -66,10 +66,10 @@ public class FormBuilder {
     private I18nContentSupport i18nContentSupport;
     private I18NAuthoringSupport i18NAuthoringSupport;
     private ComponentProvider componentProvider;
-    
+
     @Inject
     public FormBuilder(FieldFactory fieldFactory, I18nContentSupport i18nContentSupport,
-                       I18NAuthoringSupport i18NAuthoringSupport, ComponentProvider componentProvider) {
+            I18NAuthoringSupport i18NAuthoringSupport, ComponentProvider componentProvider) {
         this.fieldFactory = fieldFactory;
         this.componentProvider = componentProvider;
         this.i18nContentSupport = i18nContentSupport;
@@ -135,6 +135,7 @@ public class FormBuilder {
                 view.setCurrentLocale(i18nContentSupport.getFallbackLocale());
             }
         }
+        view.focusFirstField();
         return view;
     }
 

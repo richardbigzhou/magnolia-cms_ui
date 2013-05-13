@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.dialog;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
+import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 
@@ -70,13 +71,12 @@ public class ConfirmationDialog extends LightDialog {
         }
 
         addAction(CONFIRM_ACTION, "OK", new DialogActionListener() {
-
             @Override
             public void onActionExecuted(String actionName) {
                 fireEvent(new ConfirmationEvent(ConfirmationDialog.this, true));
             }
-
         });
+        addShortcut(CONFIRM_ACTION, KeyCode.ENTER, null);
 
         addAction(CANCEL_ACTION, "Cancel", new DialogActionListener() {
             @Override
@@ -84,6 +84,7 @@ public class ConfirmationDialog extends LightDialog {
                 fireEvent(new ConfirmationEvent(ConfirmationDialog.this, false));
             }
         });
+        addShortcut(CANCEL_ACTION, KeyCode.ESCAPE, null);
     }
 
 

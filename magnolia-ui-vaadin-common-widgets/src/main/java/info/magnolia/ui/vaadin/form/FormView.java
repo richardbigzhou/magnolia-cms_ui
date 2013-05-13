@@ -77,4 +77,6 @@ public interface FormView extends View, Item.Editor {
 
     boolean isValid();
 
+    void focusFirstField();
+
 }

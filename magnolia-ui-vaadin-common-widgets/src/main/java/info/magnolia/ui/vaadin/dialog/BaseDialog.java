@@ -40,17 +40,22 @@ import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.DialogServerRpc;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractSingleComponentContainer;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
+
+import elemental.events.KeyboardEvent.KeyCode;
 
 /**
  * Basic implementation of dialogs.
@@ -60,6 +65,7 @@ import com.vaadin.ui.VerticalLayout;
 public class BaseDialog extends AbstractComponent implements HasComponents, DialogView {
 
     protected final ListMultimap<String, DialogActionListener> actionCallbackMap = ArrayListMultimap.<String, DialogActionListener> create();
+    private final Map<String, ShortcutListener> actionShortcutMap = new HashMap<String, ShortcutListener>();
 
     public BaseDialog() {
         super();
@@ -68,10 +74,7 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         registerRpc(new DialogServerRpc() {
             @Override
             public void fireAction(String actionId) {
-                Object[] array = actionCallbackMap.get(actionId).toArray();
-                for (Object l : array) {
-                    ((DialogActionListener)l).onActionExecuted(actionId);
-                }
+                doFireAction(actionId);
             }
 
             @Override
@@ -84,6 +87,8 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
                 BaseDialog.this.setDescriptionVisibility(isVisible);
             }
         });
+        // By default we only register
+        addShortcut("cancel", KeyCode.ESC, null);
     }
 
     @Override
@@ -187,6 +192,7 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
     public void removeAction(String actionName) {
         getState().actions.remove(actionName);
         actionCallbackMap.removeAll(actionName);
+        removeShortcut(actionName);
     }
 
     public void addAction(String actionName, String actionLabel) {
@@ -225,6 +231,23 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         addActionCallback(actionName, callback);
     }
 
+    public void addShortcut(final String actionName, final int keyCode, final int... modifiers) {
+        final ShortcutListener shortcut = new ShortcutListener("", keyCode, modifiers) {
+
+            @Override
+            public void handleAction(Object sender, Object target) {
+                doFireAction(actionName);
+            }
+        };
+        addShortcutListener(shortcut);
+        actionShortcutMap.put(actionName, shortcut);
+    }
+
+    public void removeShortcut(String actionName) {
+        removeShortcutListener(actionShortcutMap.get(actionName));
+        actionShortcutMap.remove(actionName);
+    }
+
     public void addActionCallback(String actionName, DialogActionListener callback) {
         actionCallbackMap.put(actionName, callback);
     }
@@ -251,6 +274,13 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
 
     public void removeDescriptionVisibilityHandler(DescriptionVisibilityEvent.Handler handler) {
         removeListener("descriptionVisibilityEvent", DescriptionVisibilityEvent.class, handler);
+    }
+
+    private void doFireAction(final String actionId) {
+        Object[] array = actionCallbackMap.get(actionId).toArray();
+        for (Object l : array) {
+            ((DialogActionListener) l).onActionExecuted(actionId);
+        }
     }
 
     /**
@@ -318,6 +348,6 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         public boolean isVisible() {
             return isVisible;
         }
-
     }
+
 }

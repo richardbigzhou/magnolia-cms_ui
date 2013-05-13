@@ -99,6 +99,13 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
         });
     }
 
+    public void focusFirstField() {
+        if (fields.isEmpty()) {
+            return;
+        }
+        fields.get(0).focus();
+    }
+
     private void doFocusNextProblematicField(Connector currentFocused) {
         /**
          * In case the remaining issues are in the current tab above current focus -
@@ -114,7 +121,7 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
             if (nextProblematic == null) {
                 tab = tabSheet.getNextTab(tab);
                 tabsToIterate--;
-                 // After testing the first section - we want to check ALL fields per section.
+                // After testing the first section - we want to check ALL fields per section.
                 currentFocused = null;
             }
 

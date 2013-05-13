@@ -34,16 +34,18 @@
 package info.magnolia.ui.vaadin.form;
 
 import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DescriptionVisibilityEvent;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 
 import java.util.Collection;
 import java.util.Locale;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.ShortcutAction.ModifierKey;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Field;
 
@@ -60,6 +62,7 @@ public class ItemFormView implements FormView {
 
     public ItemFormView() {
         form = new Form();
+
         dialog = new DialogContainingForm();
         dialog.setContent(form);
         dialog.addDescriptionVisibilityHandler(new BaseDialog.DescriptionVisibilityEvent.Handler() {
@@ -90,7 +93,6 @@ public class ItemFormView implements FormView {
     @Override
     public void addField(Field<?> field) {
         form.addField(field);
-
     }
 
     @Override
@@ -102,6 +104,14 @@ public class ItemFormView implements FormView {
     @Override
     public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
         dialog.addAction(actionName, actionLabel, callback);
+
+        if ("commit".equals(actionName)) {
+            dialog.addShortcut(actionName, KeyCode.S, ModifierKey.CTRL);
+        } else if ("cancel".equals(actionName)) {
+            dialog.addShortcut(actionName, KeyCode.ESCAPE);
+            dialog.addShortcut(actionName, KeyCode.C, ModifierKey.CTRL);
+        }
+
     }
 
     @Override
@@ -160,5 +170,10 @@ public class ItemFormView implements FormView {
             }
         });
         dialog.setFooterToolbar(languageSelector);
+    }
+
+    @Override
+    public void focusFirstField() {
+        form.focusFirstField();
     }
 }
