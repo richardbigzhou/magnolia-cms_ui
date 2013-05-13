@@ -170,7 +170,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
 
             @Override
             public void onItemDoubleClicked(ItemDoubleClickedEvent event) {
-                actionbarPresenter.executeDefaultAction();
+                executeDefaultAction();
             }
         });
 
@@ -274,7 +274,44 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
     }
 
     @Override
-    public void onExecute(String actionName) {
+    public void onActionbarItemClicked(String itemName) {
+        executeAction(itemName);
+    }
+
+    @Override
+    public String getLabel(String itemName) {
+        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(itemName);
+        return actionDefinition != null ? actionDefinition.getLabel() : null;
+    }
+
+    @Override
+    public String getIcon(String itemName) {
+        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(itemName);
+        return actionDefinition != null ? actionDefinition.getIcon() : null;
+    }
+
+    @Override
+    public void setFullScreen(boolean fullScreen) {
+        if (fullScreen) {
+            appContext.enterFullScreenMode();
+        } else {
+            appContext.exitFullScreenMode();
+        }
+    }
+
+    /**
+     * Executes the default action, as configured in the {@link info.magnolia.ui.actionbar.definition.ActionbarDefinition}.
+     */
+    private void executeDefaultAction() {
+        String defaultAction = subAppDescriptor.getActionbar().getDefaultAction();
+        if (StringUtils.isNotEmpty(defaultAction)) {
+            executeAction(defaultAction);
+        } else {
+            log.warn("Default action is null. Please check actionbar definition.");
+        }
+    }
+
+    private void executeAction(String actionName) {
         try {
             Session session = MgnlContext.getJCRSession(getWorkspace());
             if (session.itemExists(getSelectedItemId())) {
@@ -290,7 +327,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
             }
         } catch (RepositoryException e) {
             Message error = new Message(MessageType.ERROR, "Could not get item: " + getSelectedItemId(), e.getMessage());
-            log.error("", e);
+            log.error("An error occurred while executing action [{}]", actionName, e);
             appContext.sendLocalMessage(error);
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
@@ -298,27 +335,4 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
             appContext.sendLocalMessage(error);
         }
     }
-
-    @Override
-    public String getLabel(String actionName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
-        return actionDefinition != null ? actionDefinition.getLabel() : null;
-    }
-
-    @Override
-    public String getIcon(String actionName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
-        return actionDefinition != null ? actionDefinition.getIcon() : null;
-    }
-
-
-    @Override
-    public void setFullScreen(boolean fullScreen) {
-        if (fullScreen) {
-            appContext.enterFullScreenMode();
-        } else {
-            appContext.exitFullScreenMode();
-        }
-    }
-
 }

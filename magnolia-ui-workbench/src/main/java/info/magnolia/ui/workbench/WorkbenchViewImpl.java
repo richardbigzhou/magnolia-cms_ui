@@ -210,7 +210,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
         button.setStyleName(BaseTheme.BUTTON_LINK);
 
         button.setHtmlContentAllowed(true);
-        button.setCaption("<span class=\"" + icon + "\"></span><span class=\"view-type-arrow icon-arrow2_n\"></span>");
+        button.setCaption("<span class=\"" + icon + "\"></span><span class=\"view-type-arrow view-type-arrow-" + viewType.getText() + " icon-arrow2_n\"></span>");
 
         if (active) {
             button.addStyleName("active");

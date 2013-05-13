@@ -57,6 +57,7 @@ import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -128,7 +129,53 @@ public class PagesEditorSubAppTest {
         verify(actionbarPresenter).showSection("areaActions");
         verify(actionbarPresenter).disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
 
+        verify(actionbarPresenter).enable(PagesEditorSubApp.ACTION_ADD_COMPONENT);
+
         verifyNoMoreInteractions(actionbarPresenter);
     }
 
+    @Test
+    public void testHidingButtonsBasedOnOperationPermissionsForComponent() {
+        // GIVEN
+        ComponentElement element = new ComponentElement(null, null, null);
+        element.setMoveable(true);
+        element.setDeletable(false);
+        when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null);
+
+        // WHEN
+        eventBus.fireEvent(new NodeSelectedEvent(element));
+
+        // THEN
+        verify(actionbarPresenter).hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions");
+        verify(actionbarPresenter).showSection("componentActions");
+        verify(actionbarPresenter).disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
+
+        verify(actionbarPresenter).disable(PagesEditorSubApp.ACTION_DELETE_COMPONENT);
+        verify(actionbarPresenter).enable(PagesEditorSubApp.ACTION_MOVE_COMPONENT);
+        verify(actionbarPresenter).enable(PagesEditorSubApp.ACTION_EDIT_COMPONENT);
+
+        verifyNoMoreInteractions(actionbarPresenter);
+    }
+
+    @Test
+    public void testHidingButtonsBasedOnOperationPermissionsForArea() {
+        // GIVEN
+        AreaElement element = new AreaElement(null, null, null, null);
+        element.setAddible(false);
+        when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null);
+
+        // WHEN
+        eventBus.fireEvent(new NodeSelectedEvent(element));
+
+        // THEN
+        verify(actionbarPresenter).hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions");
+        verify(actionbarPresenter).showSection("areaActions");
+        verify(actionbarPresenter).disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
+
+        verify(actionbarPresenter).disable(PagesEditorSubApp.ACTION_ADD_COMPONENT);
+
+        verifyNoMoreInteractions(actionbarPresenter);
+    }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,8 +38,36 @@ package info.magnolia.ui.vaadin.gwt.client.shared;
  */
 public class ComponentElement extends AbstractElement {
 
+    // attributes for showing/hiding buttons
+    private Boolean writable; // edit
+    private Boolean moveable; // move
+    private Boolean deletable; // delete
+
     public ComponentElement(String workspace, String path, String dialog) {
         super(workspace, path, dialog);
     }
 
+    public Boolean getWritable() {
+        return writable;
+    }
+
+    public void setWritable(Boolean editable) {
+        this.writable = editable;
+    }
+
+    public Boolean getMoveable() {
+        return moveable;
+    }
+
+    public void setMoveable(Boolean moveable) {
+        this.moveable = moveable;
+    }
+
+    public Boolean getDeletable() {
+        return deletable;
+    }
+
+    public void setDeletable(Boolean deletable) {
+        this.deletable = deletable;
+    }
 }
