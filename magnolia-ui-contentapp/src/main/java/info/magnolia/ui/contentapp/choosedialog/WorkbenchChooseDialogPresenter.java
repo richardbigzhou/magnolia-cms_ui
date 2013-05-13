@@ -39,6 +39,7 @@ import info.magnolia.ui.dialog.BaseDialogPresenter;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.event.ChooseDialogEventBus;
+import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.workbench.ContentView.ViewType;
@@ -134,8 +135,9 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
         }
 
         BrowserSubAppDescriptor subApp = (BrowserSubAppDescriptor) subAppContext;
-        WorkbenchDefinition clone = new Cloner().deepClone(subApp.getWorkbench());
-        WorkbenchView view = workbenchPresenter.start(clone, null, eventBus);
+        WorkbenchDefinition workbench = new Cloner().deepClone(subApp.getWorkbench());
+        ImageProviderDefinition imageProvider = new Cloner().deepClone(subApp.getImageProvider());
+        WorkbenchView view = workbenchPresenter.start(workbench, imageProvider, eventBus);
         chooseDialogView.setContent(view);
 
         view.setViewType(ViewType.TREE);
