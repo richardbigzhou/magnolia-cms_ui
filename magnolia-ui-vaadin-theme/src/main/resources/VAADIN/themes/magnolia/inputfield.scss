@@ -38,7 +38,7 @@
   .v-filterselect-input {
     &:focus, &.focus {
       & + .v-filterselect-button {
-       background-color: $c90;
+       background-color: $c22;
      }
     }
   }
@@ -48,10 +48,10 @@
       .v-filterselect-input {
         margin: -1px;
         border-width: 2px;
-        border-color: $c90;
+        border-color: $c22;
       }
       .v-filterselect-button {
-        background-color: $c90;
+        background-color: $c22;
       }
     }
   }
@@ -74,7 +74,7 @@
 
   .v-filterselect-suggestpopup {
     padding: 0 0 3px;
-    border: 1px solid $c54;
+    border: 1px solid $c12;
     font-size: 12px;
   }
 
@@ -83,7 +83,7 @@
   }
 
   .v-filterselect-suggestmenu .gwt-MenuItem-selected {
-    background-color: $c90;
+    background-color: $c22;
     color: $c90;
   }
 
