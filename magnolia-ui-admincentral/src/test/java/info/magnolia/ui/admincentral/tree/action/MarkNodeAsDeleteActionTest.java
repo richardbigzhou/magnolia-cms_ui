@@ -33,8 +33,7 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.exchange.ActivationManager;
@@ -66,7 +65,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Main Test class of {@link DeleteAction}.
+ * Main Test class of {@link MarkNodeAsDeletedCommand}.
  */
 public class MarkNodeAsDeleteActionTest extends RepositoryTestCase {
     private CommandsManager commandsManager;
