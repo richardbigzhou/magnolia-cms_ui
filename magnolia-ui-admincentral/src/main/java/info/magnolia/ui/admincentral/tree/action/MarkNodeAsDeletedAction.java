@@ -52,7 +52,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * Deletes a node from the repository.
+ * Mark node as Deleted Action. This will create a new Node version marked as deleted.
  */
 public class MarkNodeAsDeletedAction extends DeleteAction<MarkNodeAsDeletedActionDefinition> {
 
