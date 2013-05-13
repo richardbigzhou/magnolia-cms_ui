@@ -50,7 +50,7 @@ import com.vaadin.data.Container.ItemSetChangeEvent;
 import com.vaadin.data.Container.ItemSetChangeListener;
 
 /**
- * TODO: Add JavaDoc for WorkbenchPresenter.
+ * Presenter for the Workbench.
  */
 public class WorkbenchPresenter implements WorkbenchView.Listener {
 
