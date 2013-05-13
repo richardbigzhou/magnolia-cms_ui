@@ -31,10 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench;
+package info.magnolia.ui.vaadin.integration.jcr;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
 
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockProperty;

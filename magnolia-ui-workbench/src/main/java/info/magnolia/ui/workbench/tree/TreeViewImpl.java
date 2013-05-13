@@ -36,7 +36,7 @@ package info.magnolia.ui.workbench.tree;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 import info.magnolia.ui.workbench.ContentView;
-import info.magnolia.ui.workbench.JcrItemUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;

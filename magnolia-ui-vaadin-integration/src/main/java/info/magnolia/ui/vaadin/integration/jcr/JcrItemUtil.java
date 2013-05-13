@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench;
+package info.magnolia.ui.vaadin.integration.jcr;
 
 import info.magnolia.context.MgnlContext;
 
