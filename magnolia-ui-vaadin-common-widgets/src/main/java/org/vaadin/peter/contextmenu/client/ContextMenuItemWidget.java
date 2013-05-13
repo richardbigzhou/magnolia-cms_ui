@@ -153,11 +153,14 @@ public class ContextMenuItemWidget extends FocusWidget {
 			iconContainer.clear();
 			icon = null;
 		} else {
+            // >>> This is the Magnolia IconFont patch. What is replaced. (MGNLUI-1323)
+
             // icon = Document.get().createImageElement();
             // icon.setClassName("v-icon");
             // icon.setSrc(url);
             // iconContainer.getElement().appendChild(icon);
 
+            // >>> This is the Magnolia IconFont patch. The new code (MGNLUI-1323)
             SpanElement iconFont;
             iconFont = Document.get().createSpanElement();
             iconFont.setClassName("v-icon " + url);
