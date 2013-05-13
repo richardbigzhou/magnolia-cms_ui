@@ -60,7 +60,7 @@ public class AddNodeAction extends RepositoryOperationAction<AddNodeActionDefini
     protected void onExecute(JcrItemAdapter item) throws RepositoryException {
         if (item.getJcrItem().isNode()) {
             Node node = (Node) item.getJcrItem();
-            String name = Path.getUniqueLabel(item.getJcrItem().getSession(), item.getPath(), DEFAULT_NODE_NAME);
+            String name = Path.getUniqueLabel(item.getJcrItem().getSession(), node.getPath(), DEFAULT_NODE_NAME);
             Node newNode = node.addNode(name, getDefinition().getNodeType());
             NodeTypes.Created.set(newNode);
         }

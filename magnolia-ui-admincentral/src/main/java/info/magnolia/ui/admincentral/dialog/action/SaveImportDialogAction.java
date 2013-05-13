@@ -128,7 +128,7 @@ public class SaveImportDialogAction extends ActionBase<SaveImportDialogActionDef
         params.put(ImportCommand.IMPORT_IDENTIFIER_BEHAVIOR, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
         params.put(ImportCommand.IMPORT_XML_FILE_NAME, importXml.getItemProperty(FileProperties.PROPERTY_FILENAME).getValue());
         params.put("repository", itemChanged.getWorkspace());
-        params.put("path", itemChanged.getPath());
+        params.put("path", itemChanged.getJcrItem().getPath());
     }
 
 }

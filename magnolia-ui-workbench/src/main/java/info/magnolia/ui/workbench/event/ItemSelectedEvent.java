@@ -65,7 +65,7 @@ public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
     }
 
     public String getPath() {
-        return item != null ? item.getPath() : null;
+        return item != null ? item.getItemId() : null;
     }
 
     public JcrItemAdapter getItem() {

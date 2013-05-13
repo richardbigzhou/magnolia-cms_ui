@@ -61,11 +61,12 @@ public class ContentPresenterTest {
 
     protected static final String TEST_WORKSPACE_NAME = "test";
 
-    protected static final String TEST_ITEM_PATH = "2";
+    protected static final String TEST_ITEM_ID = "2";
 
     private static final String TEST_WORKBENCHDEF_PATH = "/path/to/somewhere";
 
     private WorkbenchDefinition workbench;
+
     @Before
     public void setUp() {
         this.workbench = mock(WorkbenchDefinition.class);
@@ -74,7 +75,7 @@ public class ContentPresenterTest {
         when(workbench.getPath()).thenReturn(TEST_WORKBENCHDEF_PATH);
         eventBus = mock(EventBus.class);
         item = mock(JcrItemAdapter.class);
-        when(item.getPath()).thenReturn(TEST_ITEM_PATH);
+        when(item.getItemId()).thenReturn(TEST_ITEM_ID);
 
     }
 
@@ -90,7 +91,7 @@ public class ContentPresenterTest {
         ArgumentCaptor<ItemSelectedEvent> argument = ArgumentCaptor.forClass(ItemSelectedEvent.class);
         verify(eventBus).fireEvent(argument.capture());
         assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
-        assertEquals(TEST_ITEM_PATH, argument.getValue().getPath());
+        assertEquals(TEST_ITEM_ID, argument.getValue().getPath());
     }
 
     @Test
@@ -106,7 +107,7 @@ public class ContentPresenterTest {
         ArgumentCaptor<ItemDoubleClickedEvent> argument = ArgumentCaptor.forClass(ItemDoubleClickedEvent.class);
         verify(eventBus).fireEvent(argument.capture());
         assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
-        assertEquals(TEST_ITEM_PATH, argument.getValue().getPath());
+        assertEquals(TEST_ITEM_ID, argument.getValue().getPath());
     }
 
     @Test

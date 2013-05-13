@@ -138,7 +138,7 @@ public class DetailPresenter implements DialogActionListener, EditorCallback, Ed
 
     @Override
     public void onSuccess(String actionName) {
-        eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getPath()));
+        eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
         // setItemView(ItemView.ViewType.VIEW);
         subAppContext.close();
     }

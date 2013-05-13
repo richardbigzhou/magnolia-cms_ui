@@ -38,6 +38,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import javax.inject.Named;
 import javax.jcr.Node;
@@ -49,7 +50,7 @@ import javax.jcr.RepositoryException;
  */
 public class AddFolderAction extends RepositoryOperationAction<AddFolderActionDefinition> {
 
-    private String path;
+    private String itemId;
 
     private static final String NEW_NODE_NAME = "untitled";
 
@@ -64,12 +65,12 @@ public class AddFolderAction extends RepositoryOperationAction<AddFolderActionDe
             String name = Path.getUniqueLabel(node.getSession(), node.getPath(), NEW_NODE_NAME);
             Node newNode = node.addNode(name, NodeTypes.Folder.NAME);
             NodeTypes.Created.set(newNode);
-            path = newNode.getPath();
+            itemId = JcrItemUtil.getItemId(newNode);
         }
     }
 
     @Override
-    protected String getItemPath() throws RepositoryException {
-        return path;
+    protected String getItemId() throws RepositoryException {
+        return itemId;
     }
 }

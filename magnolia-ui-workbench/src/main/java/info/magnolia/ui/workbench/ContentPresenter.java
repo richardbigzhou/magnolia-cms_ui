@@ -95,7 +95,7 @@ public class ContentPresenter implements ContentView.Listener {
             return;
         }
         try {
-            selectedItemPath = ((JcrItemAdapter) item).getPath();
+            selectedItemPath = ((JcrItemAdapter) item).getItemId();
             log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemPath);
             eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), (JcrItemAdapter) item));
         } catch (Exception e) {
@@ -105,8 +105,8 @@ public class ContentPresenter implements ContentView.Listener {
 
     /**
      * @return the path of the vaadin item currently selected in the currently active {@link ContentView}. It is
-     *         equivalent to javax.jcr.Item#getPath().
-     * @see JcrItemAdapter#getPath()
+     *         equivalent to javax.jcr.Item#getItemId().
+     * @see JcrItemAdapter#getItemId()
      */
     public String getSelectedItemPath() {
         return selectedItemPath;
@@ -120,7 +120,7 @@ public class ContentPresenter implements ContentView.Listener {
     public void onDoubleClick(Item item) {
         if (item != null) {
             try {
-                selectedItemPath = ((JcrItemAdapter) item).getPath();
+                selectedItemPath = ((JcrItemAdapter) item).getItemId();
                 log.debug("com.vaadin.data.Item at {} was double clicked. Firing ItemDoubleClickedEvent...", selectedItemPath);
                 eventBus.fireEvent(new ItemDoubleClickedEvent(workbenchDefinition.getWorkspace(), selectedItemPath));
             } catch (Exception e) {

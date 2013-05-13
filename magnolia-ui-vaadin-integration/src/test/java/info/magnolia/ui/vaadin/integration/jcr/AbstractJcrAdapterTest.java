@@ -80,7 +80,7 @@ public class AbstractJcrAdapterTest {
         // THEN
         assertTrue(adapter.isNode());
         assertEquals(workspaceName, adapter.getWorkspace());
-        assertEquals(testNode.getPath(), adapter.getPath());
+        assertEquals(testNode.getIdentifier(), adapter.getItemId());
         assertEquals(testNode.getPath(), ((Node) adapter.getJcrItem()).getPath());
     }
 
@@ -99,9 +99,8 @@ public class AbstractJcrAdapterTest {
         // THEN
         assertFalse(adapter.isNode());
         assertEquals(workspaceName, adapter.getWorkspace());
-        assertEquals(testProperty.getPath(), adapter.getPath());
+        assertEquals(JcrItemUtil.getItemId(testProperty), adapter.getItemId());
         assertEquals(testProperty.getPath(), adapter.getJcrItem().getPath());
-        assertEquals(testNode.getPath() + "/" + propertyName, adapter.getPath());
     }
 
     @Test

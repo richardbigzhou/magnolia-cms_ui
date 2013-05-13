@@ -72,18 +72,18 @@ public abstract class RepositoryOperationAction<D extends ActionDefinition> exte
             Session session = item.getJcrItem().getSession();
             onExecute(item);
             session.save();
-            eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), getItemPath()));
+            eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), getItemId()));
         } catch (RepositoryException e) {
             throw new ActionExecutionException("Can't execute repository operation.\n" + e.getMessage(), e);
         }
     }
 
     /**
-     * Get Item Path.
-     * Used by subclass to define the item path (for a deleted Item, should be the parent).
+     * Used by subclasses to define the itemId (for a deleted item, this should be the parent's id).
+     * @return the itemId
      */
-    protected String getItemPath() throws RepositoryException {
-        return item.getPath();
+    protected String getItemId() throws RepositoryException {
+        return item.getItemId();
     }
 
     protected abstract void onExecute(JcrItemAdapter item) throws RepositoryException;

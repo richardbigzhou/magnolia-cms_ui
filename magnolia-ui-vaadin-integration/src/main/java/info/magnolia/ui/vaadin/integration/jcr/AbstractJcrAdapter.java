@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import info.magnolia.context.MgnlContext;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -61,7 +59,7 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
 
     private String workspace;
 
-    private String path;
+    private String itemId;
 
     private final Map<String, Property> changedProperties = new HashMap<String, Property>();
 
@@ -78,10 +76,10 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
         isNode = jcrItem.isNode();
         try {
             workspace = jcrItem.getSession().getWorkspace().getName();
-            path = jcrItem.getPath();
+            itemId = JcrItemUtil.getItemId(jcrItem);
         } catch (RepositoryException e) {
             log.error("Could not retrieve workspace or path of JCR Item.", e);
-            path = UNIDENTIFIED;
+            itemId = UNIDENTIFIED;
             workspace = UNIDENTIFIED;
         }
     }
@@ -97,12 +95,12 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
     }
 
     @Override
-    public String getPath() {
-        return path;
+    public String getItemId() {
+        return itemId;
     }
 
     public void setPath(String path) {
-        this.path = path;
+        this.itemId = path;
     }
 
     /**
@@ -111,7 +109,7 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
     @Override
     public javax.jcr.Item getJcrItem() {
         try {
-            return MgnlContext.getJCRSession(workspace).getItem(path);
+            return JcrItemUtil.getJcrItem(workspace, itemId);
         } catch (RepositoryException re) {
             log.warn("Not able to retrieve the JcrItem ", re.getMessage());
             return null;

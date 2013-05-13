@@ -78,7 +78,7 @@ public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition>
 
             @Override
             public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getPath()));
+                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
                 formDialogPresenter.closeDialog();
             }
 

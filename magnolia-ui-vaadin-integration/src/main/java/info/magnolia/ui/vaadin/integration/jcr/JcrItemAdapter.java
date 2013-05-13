@@ -44,7 +44,7 @@ public interface JcrItemAdapter extends Item {
 
     String getWorkspace();
 
-    String getPath();
+    String getItemId();
 
     javax.jcr.Item getJcrItem();
 
