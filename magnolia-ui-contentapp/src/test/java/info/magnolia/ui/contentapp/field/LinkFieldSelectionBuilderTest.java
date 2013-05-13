@@ -40,15 +40,17 @@ import static org.mockito.Mockito.*;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder;
-import info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter;
 import info.magnolia.ui.form.field.builder.AbstractBuilderTest;
 import info.magnolia.ui.form.field.builder.AbstractFieldBuilderTest;
+import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.ContentView.ViewType;
+import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
@@ -67,14 +69,14 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
 
     private LinkFieldSelectionBuilder builder;
 
-    private ChooseDialogContentPresenter presenter;
+    private WorkbenchPresenter presenter;
 
     private EventBus eventBus;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        presenter = mock(ChooseDialogContentPresenter.class);
+        presenter = mock(WorkbenchPresenter.class);
         eventBus = new SimpleEventBus();
         // make sure that workbench view registers a content view so that restore selection doesn't fail.
         doAnswer(new Answer<Void>() {
@@ -86,7 +88,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
                 workbenchView.addContentView(ViewType.TREE, mock(ContentView.class), new TreePresenterDefinition());
                 return null;
             }
-        }).when(presenter).startChooseDialog(any(WorkbenchView.class));
+        }).when(presenter).start(any(WorkbenchDefinition.class), any(ImageProviderDefinition.class), any(EventBus.class));
 
     }
 

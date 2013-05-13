@@ -67,7 +67,7 @@ public interface WorkbenchDefinition extends Serializable {
 
     /**
      * Define if this workbench is used for Dialog. This is set during the cloning of the workbench in
-     * ChooseDialogContentPresenter.
+     * {@link info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogPresenter}.
      */
     boolean isDialogWorkbench();
 
