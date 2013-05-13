@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,8 +36,8 @@ package info.magnolia.ui.admincentral.tree.action;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 
 /**
- * Delete Definition used to configure a {@link DeleteAction}. <br>
- * This action is used to delete a {@link javax.jcr.Item}.
+ * Delete Definition used to configure a {@link MarkNodeAsDeletedAction}. <br>
+ * This action is used to create a new {@link javax.jcr.Item} version and mark them as deleted.
  */
 public class MarkNodeAsDeletedActionDefinition extends CommandActionDefinition {
 
