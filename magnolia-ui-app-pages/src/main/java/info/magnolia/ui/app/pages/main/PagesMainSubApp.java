@@ -50,7 +50,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.NodeType;
 
 /**
  * PagesMainSubApp.
@@ -81,9 +80,12 @@ public class PagesMainSubApp extends BrowserSubApp {
             final String path = getBrowser().getSelectedItemId();
             final String workspace = getBrowser().getWorkspace();
             final Node page = SessionUtil.getNode(workspace, path);
+            if (page == null) {
+                return;
+            }
 
             // if it's deleted, display the deleted section
-            if (isDeleted(page)) {
+            if (isDeletedNode(page)) {
                 actionbar.showSection("pageDeleteActions");
                 actionbar.hideSection("pageActions");
                 actionbar.disable(defaultPageActions);
@@ -110,16 +112,12 @@ public class PagesMainSubApp extends BrowserSubApp {
         }
     }
 
-    public static boolean isDeleted(final Node node) {
+    private boolean isDeletedNode(final Node node) {
         try {
-            for (NodeType nodeType:node.getMixinNodeTypes()) {
-                if (NodeTypes.Deleted.NAME.equals(nodeType.getName())) {
-                    return true;
-                }
-            }
+            return NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
+        } catch (RepositoryException re) {
             return false;
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
         }
     }
+
 }
