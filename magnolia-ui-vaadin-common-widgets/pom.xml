@@ -10,12 +10,6 @@
   <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
   <name>magnolia-ui-vaadin-common-widgets</name>
 
-<repositories>
-   <repository>
-       <id>vaadin-addons</id>
-       <url>http://maven.vaadin.com/vaadin-addons</url>
-    </repository>
-  </repositories>
 
   <dependencies>
     <dependency>
@@ -76,12 +70,6 @@
       <groupId>com.jhlabs</groupId>
       <artifactId>filters</artifactId>
     </dependency>
-
-    <dependency>
-   <groupId>org.vaadin.addons</groupId>
-   <artifactId>contextmenu</artifactId>
-   <version>4.2.0</version>
-   </dependency>
 
   </dependencies>
 
@@ -251,7 +239,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
-          <excludes>**/*Patched.java, **/org/vaadin/openesignforms/**/*.java</excludes>
+          <excludes>**/*Patched.java, **/org/vaadin/openesignforms/**/*.java, **/org/vaadin/peter/contextmenu/**</excludes>
         </configuration>
       </plugin>
       <plugin>
