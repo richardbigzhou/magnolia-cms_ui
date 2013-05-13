@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -46,7 +46,7 @@ public interface FavoritesManager {
     JcrItemNodeAdapter getFavorites();
 
     /**
-     * @return A map whose key is the group jcr name and whose value is its title (human-readable) property.
+     * @return A map whose key is the group jcr name and whose value is its title (human-readable) property. The map elements are sorted alphabetically (descending) by their value.
      */
     Map<String, String> getGroupsNames();
 

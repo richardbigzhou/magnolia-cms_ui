@@ -58,7 +58,7 @@ import com.vaadin.server.Page;
 /**
  * Presenter for Favorites.
  */
-public class FavoritesPresenter implements FavoritesView.Listener {
+public final class FavoritesPresenter implements FavoritesView.Listener {
 
     private final Logger log = LoggerFactory.getLogger(FavoritesPresenter.class);
 

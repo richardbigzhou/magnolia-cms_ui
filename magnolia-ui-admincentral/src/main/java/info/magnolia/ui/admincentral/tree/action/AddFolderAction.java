@@ -51,6 +51,8 @@ public class AddFolderAction extends RepositoryOperationAction<AddFolderActionDe
 
     private String path;
 
+    private static final String NEW_NODE_NAME = "untitled";
+
     public AddFolderAction(AddFolderActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
         super(definition, item, eventBus);
     }
@@ -59,7 +61,7 @@ public class AddFolderAction extends RepositoryOperationAction<AddFolderActionDe
     protected void onExecute(JcrItemAdapter item) throws RepositoryException {
         if (item.getJcrItem().isNode()) {
             Node node = (Node) item.getJcrItem();
-            String name = Path.getUniqueLabel(node.getSession(), node.getPath(), "untitled");
+            String name = Path.getUniqueLabel(node.getSession(), node.getPath(), NEW_NODE_NAME);
             Node newNode = node.addNode(name, NodeTypes.Folder.NAME);
             NodeTypes.Created.set(newNode);
             path = newNode.getPath();

@@ -17,9 +17,13 @@
     .view-modes .v-nativebutton {
       font-style: normal;
       font-size: 24px;
-      color: $c11;
+      line-height: 1;
+      border-left: 1px solid $c60;
+      color: $c12;
       line-height: 1;
       border-left: 1px solid $c13;
+      color: $c11;
+      line-height: 1;
 
       .v-nativebutton-caption {
         text-decoration: none;
@@ -36,6 +40,10 @@
         height: 20px;
         margin-left: 10px;
         font-size: 32px;
+        color: $c16;
+      }
+      .view-type-arrow-thumbnailview {
+        color: $c80;
       }
 
       &:first-child {
@@ -66,7 +74,7 @@
       padding: 0 2px 1px;
       border: none;
       background: url("img/icon-search.png") no-repeat right center $c80;
-      color: $c50;
+      color: $c10;
       font-size:12px;
 
       &.v-textfield-prompt {

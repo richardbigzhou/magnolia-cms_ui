@@ -50,7 +50,10 @@ import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.favorite.FavoriteStore;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
+import java.util.Map;
+
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -106,6 +109,7 @@ public class FavoritesManagerImplTest {
         // GIVEN
         final String bookmarkTitle = "justATest";
         JcrNewNodeAdapter newNodeAdapter = favoritesManager.createFavoriteSuggestion("/foo/bar", bookmarkTitle, "");
+
         // WHEN
         favoritesManager.addFavorite(newNodeAdapter);
 
@@ -113,6 +117,37 @@ public class FavoritesManagerImplTest {
         final Node newBookmarkNode = favoriteStore.getBookmarkRoot().getNode(bookmarkTitle);
         assertEquals(bookmarkTitle, newBookmarkNode.getName());
         assertEquals(bookmarkTitle, newBookmarkNode.getProperty(AdmincentralNodeTypes.Favorite.TITLE).getString());
+    }
+
+    @Test
+    public void testEditFavorite() throws Exception {
+        // GIVEN
+        final String initialTitle = "justATest";
+        JcrNewNodeAdapter newNodeAdapter = favoritesManager.createFavoriteSuggestion("/foo/bar", initialTitle, "");
+        favoritesManager.addFavorite(newNodeAdapter);
+
+        // WHEN
+        final String newTitle = "a new title";
+        favoritesManager.editFavorite(initialTitle, newTitle);
+
+        // THEN
+        Node bookmarkNode = favoriteStore.getBookmarkRoot().getNode("a-new-title");
+        assertEquals("a-new-title", bookmarkNode.getName());
+        assertEquals(newTitle, bookmarkNode.getProperty(AdmincentralNodeTypes.Favorite.TITLE).getString());
+    }
+
+    @Test(expected = PathNotFoundException.class)
+    public void testRemoveFavorite() throws Exception {
+        // GIVEN
+        final String title = "justATest";
+        JcrNewNodeAdapter newNodeAdapter = favoritesManager.createFavoriteSuggestion("/foo/bar", title, "");
+        favoritesManager.addFavorite(newNodeAdapter);
+
+        // WHEN
+        favoritesManager.removeFavorite(title);
+
+        // THEN
+        favoriteStore.getBookmarkRoot().getNode(title);
     }
 
     @Test
@@ -128,6 +163,37 @@ public class FavoritesManagerImplTest {
         final Node newGroupNode = favoriteStore.getBookmarkRoot().getNode(groupTitle);
         assertEquals(groupTitle, newGroupNode.getName());
         assertEquals(groupTitle, newGroupNode.getProperty(AdmincentralNodeTypes.Favorite.TITLE).getString());
+    }
+
+    @Test
+    public void testEditGroup() throws Exception {
+        // GIVEN
+        final String groupTitle = "justATest";
+        JcrNewNodeAdapter newNodeAdapter = favoritesManager.createFavoriteGroupSuggestion(groupTitle);
+        favoritesManager.addGroup(newNodeAdapter);
+
+        // WHEN
+        final String newTitle = "a new title";
+        favoritesManager.editGroup(groupTitle, newTitle);
+
+        // THEN
+        final Node groupNode = favoriteStore.getBookmarkRoot().getNode("a-new-title");
+        assertEquals("a-new-title", groupNode.getName());
+        assertEquals(newTitle, groupNode.getProperty(AdmincentralNodeTypes.Favorite.TITLE).getString());
+    }
+
+    @Test(expected = PathNotFoundException.class)
+    public void testRemoveGroup() throws Exception {
+        // GIVEN
+        final String groupTitle = "justATest";
+        JcrNewNodeAdapter newNodeAdapter = favoritesManager.createFavoriteGroupSuggestion(groupTitle);
+        favoritesManager.addGroup(newNodeAdapter);
+
+        // WHEN
+        favoritesManager.removeGroup(groupTitle);
+
+        // THEN
+        favoriteStore.getBookmarkRoot().getNode(groupTitle);
     }
 
     @Test
@@ -159,5 +225,27 @@ public class FavoritesManagerImplTest {
         assertEquals(title, suggestion.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue());
         assertEquals(location, suggestion.getItemProperty(AdmincentralNodeTypes.Favorite.URL).getValue());
         assertEquals("icon-app", suggestion.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue());
+    }
+
+    @Test
+    public void testGetGroupsNamesReturnsSortedMap() throws Exception {
+        // GIVEN
+        JcrNewNodeAdapter newNodeAdapter = favoritesManager.createFavoriteGroupSuggestion("zzz");
+        favoritesManager.addGroup(newNodeAdapter);
+
+        newNodeAdapter = favoritesManager.createFavoriteGroupSuggestion("Aaa");
+        favoritesManager.addGroup(newNodeAdapter);
+
+        newNodeAdapter = favoritesManager.createFavoriteGroupSuggestion("hhh");
+        favoritesManager.addGroup(newNodeAdapter);
+
+        // WHEN
+        Map<String, String> groups = favoritesManager.getGroupsNames();
+        String[] values = groups.values().toArray(new String[] {});
+
+        // THEN
+        assertEquals("Aaa", values[0]);
+        assertEquals("hhh", values[1]);
+        assertEquals("zzz", values[2]);
     }
 }
