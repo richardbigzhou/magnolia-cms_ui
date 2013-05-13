@@ -120,7 +120,7 @@ public class PagesEditorSubAppTest {
         // GIVEN
         element = new AreaElement(null, null, null, null);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null, null);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null);
 
         // WHEN
         eventBus.fireEvent(new NodeSelectedEvent(element));
@@ -142,7 +142,7 @@ public class PagesEditorSubAppTest {
         element.setMoveable(true);
         element.setDeletable(false);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null, null);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null);
 
         // WHEN
         eventBus.fireEvent(new NodeSelectedEvent(element));
@@ -165,7 +165,7 @@ public class PagesEditorSubAppTest {
         AreaElement element = new AreaElement(null, null, null, null);
         element.setAddible(false);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null, null);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null);
 
         // WHEN
         eventBus.fireEvent(new NodeSelectedEvent(element));
