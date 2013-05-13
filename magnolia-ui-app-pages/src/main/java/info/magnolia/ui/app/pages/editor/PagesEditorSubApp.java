@@ -33,10 +33,11 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
-import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
@@ -46,7 +47,6 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.app.pages.main.PagesMainSubApp;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
@@ -102,13 +102,12 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private final EditorDefinition editorDefinition;
     private final String workspace;
     private final AppContext appContext;
-    private final VersionManager versionManager;
 
     private PageEditorParameters parameters;
     private String caption;
 
     @Inject
-    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named(SubAppEventBus.NAME) EventBus eventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView, I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager) {
+    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named(SubAppEventBus.NAME) EventBus eventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView, I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport) {
         super(subAppContext, view);
         this.actionExecutor = actionExecutor;
         this.view = view;
@@ -121,7 +120,6 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         this.editorDefinition = ((DetailSubAppDescriptor) subAppContext.getSubAppDescriptor()).getEditor();
         this.workspace = editorDefinition.getWorkspace();
         this.appContext = subAppContext.getAppContext();
-        this.versionManager = versionManager;
 
         view.setListener(this);
         bindHandlers();
@@ -241,11 +239,10 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         this.parameters = new PageEditorParameters(MgnlContext.getContextPath(), path, isPreview);
         try {
             Node node = MgnlContext.getJCRSession(workspace).getNode(path);
-            if (location.hasVersion()) {
-                node = versionManager.getVersion(node, location.getVersion());
-            }
-
             String uri = i18NAuthoringSupport.createI18NURI(node, new Locale("en"));
+            if (location.hasVersion()) {
+                uri = uri + "?mgnlVersion=" + location.getVersion();
+            }
             this.parameters.setUrl(uri);
             this.caption = getPageTitle(path);
             pageBarView.setPageName(getPageTitle(path) + "-" + path);
@@ -259,7 +256,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         DetailView.ViewType action = location.getViewType();
         String path = location.getNodePath();
 
-        if (parameters != null && (parameters.getNodePath().equals(path) && parameters.isPreview() == DetailView.ViewType.VIEW.getText().equals(action.getText()))) {
+        if (parameters != null && (parameters.getNodePath().equals(path) && parameters.isPreview() == DetailView.ViewType.VIEW.getText().equals(action.getText())) && !location.hasVersion()) {
             return false;
         }
         return true;
@@ -297,10 +294,15 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
                 hideAllSections();
 
-                Node node = SessionUtil.getNode(workspace, path);
-                if (node != null && PagesMainSubApp.isDeleted(node)) {
+                if (isDeletedNode(workspace, path)) {
                     actionbarPresenter.showSection("pageDeleteActions");
+                    if (!getCurrentLocation().hasVersion()) {
+                        actionbarPresenter.enable("showPreviousVersion");
+                    } else {
+                        actionbarPresenter.disable("showPreviousVersion");
+                    }
                     actionbarPresenter.enable("restorePreviousVersion");
+                    actionbarPresenter.enable("activateDelete");
 
                 } else {
                     if (element instanceof PageElement) {
@@ -405,5 +407,19 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     public void platformSelected(String platformId) {
         parameters.setPlatformId(platformId);
         pageEditorPresenter.loadPageEditor(parameters);
+    }
+
+    private boolean isDeletedNode(String workspace, String path) {
+        Node node = SessionUtil.getNode(workspace, path);
+        try {
+            if (node != null) {
+                return NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
+            } else {
+                return false;
+            }
+        } catch (RepositoryException re) {
+            log.warn("Not able to check if node has MixIn");
+            return false;
+        }
     }
 }
