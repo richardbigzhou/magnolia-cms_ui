@@ -261,7 +261,7 @@ public class ActionbarFactoryTest {
         }
 
         @Override
-        public void onExecute(String actionName) {
+        public void onActionbarItemClicked(String actionName) {
 
         }
 

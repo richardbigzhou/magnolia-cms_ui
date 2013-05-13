@@ -109,9 +109,8 @@ public class MessagePresenter implements MessageView.Listener, ActionbarPresente
     }
 
     @Override
-    public void onExecute(String actionName) {
+    public void onActionbarItemClicked(String actionName) {
         try {
-
             messageActionExecutor.execute(actionName, message);
         } catch (ActionExecutionException e) {
             throw new RuntimeException("Could not execute action " + actionName, e);
