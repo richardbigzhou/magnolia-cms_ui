@@ -76,7 +76,7 @@ public class ConfirmationDialog extends LightDialog {
                 fireEvent(new ConfirmationEvent(ConfirmationDialog.this, true));
             }
         });
-        addShortcut(CONFIRM_ACTION, KeyCode.ENTER, null);
+        addShortcut(CONFIRM_ACTION, KeyCode.ENTER);
 
         addAction(CANCEL_ACTION, "Cancel", new DialogActionListener() {
             @Override
@@ -84,7 +84,7 @@ public class ConfirmationDialog extends LightDialog {
                 fireEvent(new ConfirmationEvent(ConfirmationDialog.this, false));
             }
         });
-        addShortcut(CANCEL_ACTION, KeyCode.ESCAPE, null);
+        addShortcut(CANCEL_ACTION, KeyCode.ESCAPE);
     }
 
 

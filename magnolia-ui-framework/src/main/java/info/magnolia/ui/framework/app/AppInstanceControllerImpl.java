@@ -41,6 +41,14 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationB
 import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.overlay.AlertCallback;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
+import info.magnolia.ui.api.overlay.MessageStyleType;
+import info.magnolia.ui.api.overlay.NotificationCallback;
+import info.magnolia.ui.api.overlay.OverlayCloser;
+import info.magnolia.ui.api.overlay.OverlayLayer;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
@@ -51,14 +59,6 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.api.overlay.AlertCallback;
-import info.magnolia.ui.api.overlay.ConfirmationCallback;
-import info.magnolia.ui.api.overlay.MessageStyleType;
-import info.magnolia.ui.api.overlay.NotificationCallback;
-import info.magnolia.ui.api.overlay.OverlayCloser;
-import info.magnolia.ui.api.overlay.OverlayLayer;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.overlay.OverlayPresenter;
 
 import java.util.Collection;
@@ -245,6 +245,9 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
     private void stopSubAppInstance(String instanceId) {
         SubAppDetails subAppDetails = subApps.get(instanceId);
+        if (subAppDetails == null) {
+            return;
+        }
         subAppDetails.context.getSubApp().stop();
         subAppDetails.componentProvider.destroy();
         subAppDetails.eventBusProtector.resetEventBuses();
@@ -308,7 +311,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
      */
     @Override
     public void closeSubApp(String instanceId) {
-       getView().closeSubAppView(instanceId);
+        getView().closeSubAppView(instanceId);
     }
 
     private SubAppContext startSubApp(Location location, boolean isClosable) {

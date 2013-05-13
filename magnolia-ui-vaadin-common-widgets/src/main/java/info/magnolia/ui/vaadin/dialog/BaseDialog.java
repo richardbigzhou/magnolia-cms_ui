@@ -87,7 +87,7 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
                 BaseDialog.this.setDescriptionVisibility(isVisible);
             }
         });
-        // By default we only register
+        // By default we only register an ESC shortcut bound to the cancel action
         addShortcut("cancel", KeyCode.ESC, null);
     }
 
