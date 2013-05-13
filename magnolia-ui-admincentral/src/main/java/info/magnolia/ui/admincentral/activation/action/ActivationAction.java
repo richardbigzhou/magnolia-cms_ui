@@ -38,6 +38,7 @@ import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.app.action.CommandActionBase;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
@@ -50,7 +51,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Item;
-import javax.jcr.Node;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -61,15 +61,16 @@ public class ActivationAction extends CommandActionBase<ActivationActionDefiniti
 
     private final JcrItemAdapter jcrItemAdapter;
 
-    private final EventBus eventBus;
-
+    private final EventBus admincentralEventBus;
+    private final EventBus subAppEventBus;
     private final SubAppContext subAppContext;
 
     @Inject
-    public ActivationAction(final ActivationActionDefinition definition, final JcrItemAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, SubAppContext subAppContext) {
+    public ActivationAction(final ActivationActionDefinition definition, final JcrItemAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, SubAppContext subAppContext) {
         super(definition, item, commandsManager, subAppContext);
         this.jcrItemAdapter = item;
-        this.eventBus = eventBus;
+        this.admincentralEventBus = admincentralEventBus;
+        this.subAppEventBus = subAppEventBus;
         this.subAppContext = subAppContext;
     }
 
@@ -87,9 +88,8 @@ public class ActivationAction extends CommandActionBase<ActivationActionDefiniti
 
     @Override
     protected void onPostExecute() throws Exception {
-        Node jcrNode = ((JcrNodeAdapter) jcrItemAdapter).getNodeFromRepository();
-        eventBus.fireEvent(new ContentChangedEvent(jcrNode.getSession().getWorkspace().getName(), jcrNode.getPath()));
-
+        admincentralEventBus.fireEvent(new ContentChangedEvent(((JcrNodeAdapter) jcrItemAdapter).getWorkspace(), ((JcrNodeAdapter) jcrItemAdapter).getPath()));
+        subAppEventBus.fireEvent(new ContentChangedEvent(((JcrNodeAdapter) jcrItemAdapter).getWorkspace(), ((JcrNodeAdapter) jcrItemAdapter).getPath()));
         // Display a notification
 
         Context context = MgnlContext.getInstance();
