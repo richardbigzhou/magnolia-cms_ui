@@ -33,11 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
-import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.getI18nMessage;
-
 import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
-import info.magnolia.ui.vaadin.gwt.client.editor.event.DeleteComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.NewAreaEvent;
 
@@ -47,7 +44,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.web.bindery.event.shared.EventBus;
 
 /**
@@ -85,74 +81,9 @@ public class AreaBar extends AbstractBar {
 
     }
 
-    private void createButtons() {
-
-        if (this.dialog != null) {
-            // do not show edit-icon if the area has not been created
-            if (!this.optional || (this.optional && this.created)) {
-                PushButton editButton = new PushButton();
-                editButton.addClickHandler(new ClickHandler() {
-
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        getEventBus().fireEvent(new EditComponentEvent(dialog, getWorkspace(), getPath()));
-                    }
-                });
-                editButton.setTitle(getI18nMessage("buttons.area.edit.js"));
-                editButton.setStylePrimaryName("mgnlEditorPushButton");
-                editButton.addStyleName("edit");
-                addPrimaryButton(editButton);
-            }
-        }
-        if (this.optional) {
-            if (this.created) {
-                PushButton removeButton = new PushButton();
-                removeButton.addClickHandler(new ClickHandler() {
-
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getPath()));
-                    }
-                });
-                removeButton.setTitle(getI18nMessage("buttons.area.delete.js"));
-                removeButton.setStylePrimaryName("mgnlEditorPushButton");
-                removeButton.addStyleName("remove");
-                addSecondaryButton(removeButton);
-            } else {
-                PushButton createbutton = new PushButton();
-                createbutton.setStylePrimaryName("mgnlEditorButton");
-
-                createbutton.addClickHandler(new ClickHandler() {
-
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        getEventBus().fireEvent(new NewAreaEvent(getWorkspace(), NODE_TYPE, getPath()));
-                    }
-                });
-                createbutton.setTitle(getI18nMessage("buttons.area.add.js"));
-                createbutton.setStylePrimaryName("mgnlEditorPushButton");
-                createbutton.addStyleName("add");
-                addSecondaryButton(createbutton);
-            }
-        }
-
-    }
-
     private void createControls() {
         if (this.optional) {
-            if (this.created) {
-                final Label remove = new Label();
-                remove.setStyleName(ICON_CLASSNAME);
-                remove.addStyleName(REMOVE_CLASSNAME);
-                remove.addClickHandler(new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getPath()));
-                    }
-                });
-                addSecondaryButton(remove);
-
-            } else {
+            if (!this.created) {
                 final Label add = new Label();
                 add.setStyleName(ICON_CLASSNAME);
                 add.addStyleName(ADD_CLASSNAME);
@@ -162,7 +93,7 @@ public class AreaBar extends AbstractBar {
                         getEventBus().fireEvent(new NewAreaEvent(getWorkspace(), NODE_TYPE, getPath()));
                     }
                 });
-                addSecondaryButton(add);
+                addButton(add);
             }
         }
 
@@ -179,7 +110,7 @@ public class AreaBar extends AbstractBar {
                         getEventBus().fireEvent(new EditComponentEvent(getWorkspace(), getPath(), dialog));
                     }
                 });
-                addPrimaryButton(edit);
+                addButton(edit);
             }
         }
 

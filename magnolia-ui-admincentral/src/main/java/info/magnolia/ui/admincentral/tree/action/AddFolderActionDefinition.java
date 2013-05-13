@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.shared;
+package info.magnolia.ui.admincentral.tree.action;
+
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Class for GSON serialization of area elements.
+ * Definition for an action that creates a new folder.
  */
-public class AreaElement extends AbstractElement {
+public class AddFolderActionDefinition extends ConfiguredActionDefinition {
 
-    private final String availableComponents;
-    private Boolean addible; // add button operation permission
-
-    public AreaElement(String workspace, String path, String dialog, String availableComponents) {
-        super(workspace, path, dialog);
-        this.availableComponents = availableComponents;
+    public AddFolderActionDefinition() {
+        setImplementationClass(AddFolderAction.class);
     }
 
-    public String getAvailableComponents() {
-        return availableComponents;
-    }
-
-    public Boolean getAddible() {
-        return addible;
-    }
-
-    public void setAddible(Boolean addible) {
-        this.addible = addible;
-    }
 }
