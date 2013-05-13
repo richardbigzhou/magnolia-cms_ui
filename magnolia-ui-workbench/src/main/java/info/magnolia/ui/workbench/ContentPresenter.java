@@ -34,6 +34,8 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -47,6 +49,8 @@ import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -152,6 +156,9 @@ public class ContentPresenter implements ContentView.Listener {
 
         if (item instanceof JcrNodeAdapter) {
             JcrNodeAdapter node = (JcrNodeAdapter) item;
+            if (isDeletedNode(node)) {
+                return "icon-trash";
+            }
             String typeName = node.getPrimaryNodeTypeName();
             List<NodeTypeDefinition> nodeTypes = workbenchDefinition.getNodeTypes();
             for (NodeTypeDefinition currentNodeType: nodeTypes) {
@@ -162,6 +169,16 @@ public class ContentPresenter implements ContentView.Listener {
         }
 
         return null;
+    }
+
+    private boolean isDeletedNode(JcrNodeAdapter nodeAdapter) {
+        Node node = nodeAdapter.getNode();
+        try {
+            return NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
+        } catch (RepositoryException re) {
+            log.warn("Not able to check if node has MixIn");
+            return false;
+        }
     }
 
     protected void initContentView(WorkbenchView parentView) {
