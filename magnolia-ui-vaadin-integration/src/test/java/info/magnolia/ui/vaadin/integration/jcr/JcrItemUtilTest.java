@@ -99,7 +99,7 @@ public class JcrItemUtilTest {
     }
 
     @Test
-    public void testGetItemId() throws Exception {
+    public void testGetItemIdWithProperty() throws Exception {
         // Given
         final String nodeUuid = "ccb8ae64-3ad2-4ffd-93ce-367926f3bcd2";
         final MockNode node = new MockNode();
@@ -110,6 +110,21 @@ public class JcrItemUtilTest {
         // WHEN
         final String result = JcrItemUtil.getItemId(property);
 
+        // THEN
         assertThat(result, equalTo(nodeUuid + JcrItemUtil.PROPERTY_NAME_AND_UUID_SEPARATOR + propertyName));
+    }
+
+    @Test
+    public void testGetItemIdWithNode() throws Exception {
+        // Given
+        final String nodeUuid = "ccb8ae64-3ad2-4ffd-93ce-367926f3bcd2";
+        final MockNode node = new MockNode();
+        node.setIdentifier(nodeUuid);
+
+        // WHEN
+        final String result = JcrItemUtil.getItemId(node);
+
+        // THEN
+        assertThat(result, equalTo(nodeUuid));
     }
 }

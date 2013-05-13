@@ -102,8 +102,8 @@ public class JcrItemUtil {
         return uuid;
     }
 
-    public static String getItemId(final Property property) throws RepositoryException {
-        return property.getParent().getIdentifier() + PROPERTY_NAME_AND_UUID_SEPARATOR + property.getName();
+    public static String getItemId(final Item jcrItem) throws RepositoryException {
+        return jcrItem.isNode() ? ((Node) jcrItem).getIdentifier() : jcrItem.getParent().getIdentifier() + PROPERTY_NAME_AND_UUID_SEPARATOR + jcrItem.getName();
     }
 
     public static Item getJcrItem(final String workspaceName, final String itemId) throws RepositoryException {

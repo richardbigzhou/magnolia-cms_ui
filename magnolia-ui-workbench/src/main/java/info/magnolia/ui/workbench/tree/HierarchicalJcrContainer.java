@@ -155,15 +155,9 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
 
     protected Collection<String> createContainerIds(Collection<Item> children) {
         ArrayList<String> ids = new ArrayList<String>();
-        String currentId;
         for (Item child : children) {
             try {
-                if (child.isNode()) {
-                    currentId = ((Node) child).getIdentifier();
-                } else {
-                    currentId = JcrItemUtil.getItemId((Property) child);
-                }
-                ids.add(currentId);
+                ids.add(JcrItemUtil.getItemId(child));
             } catch (RepositoryException e) {
                 handleRepositoryException(log, "Cannot retrieve currentId", e);
             }
