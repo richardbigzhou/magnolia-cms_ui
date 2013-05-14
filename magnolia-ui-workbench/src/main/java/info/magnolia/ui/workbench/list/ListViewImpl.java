@@ -63,7 +63,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.TableDragMode;
 
 /**
- * Vaadin UI component that displays a list.
+ * Default Vaadin implementation of the list view.
  */
 public class ListViewImpl implements ListView {
 

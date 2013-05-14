@@ -40,7 +40,7 @@ import info.magnolia.ui.workbench.list.ListPresenter;
 import javax.inject.Inject;
 
 /**
- * The SearchPresenter.
+ * The SearchPresenter is responsible for handling a list of search results according to the workbench definition.
  */
 public class SearchPresenter extends ListPresenter implements SearchView.Listener {
 

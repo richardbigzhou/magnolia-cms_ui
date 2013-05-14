@@ -48,7 +48,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * The ListPresenter.
+ * The ListPresenter is responsible for creating, configuring and updating a list of items according to the workbench definition.
  */
 public class ListPresenter extends AbstractContentPresenter implements ListView.Listener {
 

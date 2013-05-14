@@ -55,7 +55,7 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 
 /**
- * The ThumbnailPresenter.
+ * The ThumbnailPresenter is responsible for creating, configuring and updating a thumbnail grid of items according to the workbench definition.
  */
 public class ThumbnailPresenter extends AbstractContentPresenter implements ThumbnailView.Listener {
 

@@ -56,7 +56,7 @@ import com.vaadin.event.dd.DropHandler;
 import com.vaadin.ui.TreeTable;
 
 /**
- * The TreePresenter.
+ * The TreePresenter is responsible for creating, configuring and updating a tree of items according to the workbench definition.
  */
 public class TreePresenter extends ListPresenter implements TreeView.Listener {
 

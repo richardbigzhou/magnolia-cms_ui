@@ -42,7 +42,7 @@ import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
 
 /**
- * Vaadin UI component that displays thumbnails.
+ * Default Vaadin implementation of the thumbnail view.
  */
 public class ThumbnailViewImpl implements ThumbnailView {
 

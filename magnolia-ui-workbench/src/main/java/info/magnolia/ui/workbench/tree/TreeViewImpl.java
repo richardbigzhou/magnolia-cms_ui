@@ -57,8 +57,6 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         }
     };
 
-    // private Set<?> defaultValue = null;
-
     public TreeViewImpl() {
         this(new InplaceEditingTreeTable());
     }
@@ -71,33 +69,6 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
 
         this.treeTable = tree;
     }
-
-    // @Override
-    // protected void bindHandlers() {
-    //
-    // treeTable.addValueChangeListener(new TreeTable.ValueChangeListener() {
-    //
-    // @Override
-    // public void valueChange(ValueChangeEvent event) {
-    // if (defaultValue == null && event.getProperty().getValue() instanceof Set) {
-    // defaultValue = (Set<?>) event.getProperty().getValue();
-    // }
-    // final Object value = event.getProperty().getValue();
-    // if (value instanceof String) {
-    // // presenterOnItemSelection(String.valueOf(value));
-    // } else if (value instanceof Set) {
-    // final Set<?> set = new HashSet<Object>((Set<?>) value);
-    // set.removeAll(defaultValue);
-    // if (set.size() == 1) {
-    // // presenterOnItemSelection(String.valueOf(set.iterator().next()));
-    // } else if (set.size() == 0) {
-    // // presenterOnItemSelection(null);
-    // treeTable.setValue(null);
-    // }
-    // }
-    // }
-    // });
-    // }
 
     @Override
     public void setEditable(boolean editable) {

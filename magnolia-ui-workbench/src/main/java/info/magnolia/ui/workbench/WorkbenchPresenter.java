@@ -62,7 +62,7 @@ import com.vaadin.data.Container.ItemSetChangeListener;
 import com.vaadin.data.Container.ItemSetChangeNotifier;
 
 /**
- * TODO: Add JavaDoc for WorkbenchPresenter.
+ * The WorkbenchPresenter is responsible for creating, configuring and updating the workbench view, as well as handling its interaction.
  */
 public class WorkbenchPresenter implements WorkbenchView.Listener {
 
