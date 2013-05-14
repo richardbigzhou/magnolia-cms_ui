@@ -38,13 +38,13 @@ import info.magnolia.commands.impl.ExportCommand;
 import info.magnolia.ui.admincentral.tree.action.export.ExportStreamer;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.action.CommandActionBase;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import java.io.OutputStream;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.jcr.Node;
+import javax.jcr.Item;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
@@ -60,7 +60,7 @@ public class ExportAction extends CommandActionBase<ExportActionDefinition> {
     private OutputStream outputStream;
 
     @Inject
-    public ExportAction(ExportActionDefinition definition, JcrItemNodeAdapter item, CommandsManager commandsManager, SubAppContext subAppContext) {
+    public ExportAction(ExportActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, SubAppContext subAppContext) {
         super(definition, item, commandsManager, subAppContext);
     }
 
@@ -79,8 +79,8 @@ public class ExportAction extends CommandActionBase<ExportActionDefinition> {
     }
 
     @Override
-    protected Map<String, Object> buildParams(final Node node) {
-        Map<String, Object> params = super.buildParams(node);
+    protected Map<String, Object> buildParams(final Item jcrItem) {
+        Map<String, Object> params = super.buildParams(jcrItem);
         params.put(ExportCommand.EXPORT_EXTENSION, ".xml");
         params.put(ExportCommand.EXPORT_FORMAT, Boolean.TRUE);
         params.put(ExportCommand.EXPORT_KEEP_HISTORY, Boolean.TRUE);

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,8 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.detail.action;
+package info.magnolia.ui.app.pages.action;
 
+import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.location.LocationController;
@@ -40,26 +41,30 @@ import info.magnolia.ui.api.action.ActionBase;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
+import javax.inject.Inject;
 import javax.jcr.RepositoryException;
+import javax.jcr.version.Version;
+import javax.jcr.version.VersionIterator;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Action for editing items in {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.
- *
- * @see EditItemActionDefinition
+ * Opens a preview of the previous version of the selected page.
  */
-public class EditItemAction extends ActionBase<EditItemActionDefinition> {
+public class PreviewPreviousVersionAction extends ActionBase<PreviewPreviousVersionActionDefinition> {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final JcrItemNodeAdapter nodeItemToEdit;
     private final LocationController locationController;
+    private final VersionManager versionManager;
 
-    public EditItemAction(EditItemActionDefinition definition, JcrItemNodeAdapter nodeItemToEdit, LocationController locationController) {
+    @Inject
+    public PreviewPreviousVersionAction(PreviewPreviousVersionActionDefinition definition, JcrItemNodeAdapter nodeItemToEdit, LocationController locationController, VersionManager versionManager) {
         super(definition);
         this.nodeItemToEdit = nodeItemToEdit;
         this.locationController = locationController;
+        this.versionManager = versionManager;
     }
 
     @Override
@@ -72,11 +77,32 @@ public class EditItemAction extends ActionBase<EditItemActionDefinition> {
                 return;
             }
             final String path = nodeItemToEdit.getNode().getPath();
-            DetailLocation location = new DetailLocation(getDefinition().getAppId(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path, "");
+            final String previousVersion = getPreviousVersion();
+            DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.VIEW, path, previousVersion);
             locationController.goTo(location);
 
         } catch (RepositoryException e) {
             throw new ActionExecutionException("Could not execute EditItemAction: ", e);
         }
     }
+
+    /**
+     * @return Last version if present or an empty string if no version are available.
+     */
+    private String getPreviousVersion() throws RepositoryException {
+        String previousVersion = StringUtils.EMPTY;
+        VersionIterator versionIterator = versionManager.getAllVersions(nodeItemToEdit.getNode());
+        // Check.
+        if (versionIterator == null) {
+            return previousVersion;
+        }
+        // Get last Version.
+        while (versionIterator.hasNext()) {
+            Version version = versionIterator.nextVersion();
+            previousVersion = version.getName();
+        }
+
+        return previousVersion;
+    }
+
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.detail.action;
+package info.magnolia.ui.app.pages.action;
 
+import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
+import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.api.action.ActionBase;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
+import javax.inject.Inject;
 import javax.jcr.RepositoryException;
+import javax.jcr.version.Version;
+import javax.jcr.version.VersionIterator;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Action for editing items in {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.
- *
- * @see EditItemActionDefinition
+ * Restore the previous version of a page and edit it.
  */
-public class EditItemAction extends ActionBase<EditItemActionDefinition> {
+public class RestorePreviousVersionAction extends ActionBase<RestorePreviousVersionActionDefinition> {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final JcrItemNodeAdapter nodeItemToEdit;
     private final LocationController locationController;
+    private final VersionManager versionManager;
+    private final SubAppContext subAppContext;
 
-    public EditItemAction(EditItemActionDefinition definition, JcrItemNodeAdapter nodeItemToEdit, LocationController locationController) {
+    @Inject
+    public RestorePreviousVersionAction(RestorePreviousVersionActionDefinition definition, JcrItemNodeAdapter nodeItemToEdit, LocationController locationController, VersionManager versionManager, SubAppContext subAppContext) {
         super(definition);
         this.nodeItemToEdit = nodeItemToEdit;
         this.locationController = locationController;
+        this.versionManager = versionManager;
+        this.subAppContext = subAppContext;
     }
 
     @Override
@@ -72,11 +81,40 @@ public class EditItemAction extends ActionBase<EditItemActionDefinition> {
                 return;
             }
             final String path = nodeItemToEdit.getNode().getPath();
-            DetailLocation location = new DetailLocation(getDefinition().getAppId(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path, "");
+
+            // Get last version.
+            Version version = getPreviousVersion();
+            // Check the version.
+            if (version == null) {
+                subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, "This Item do not have a Previous version. Action cancelled.");
+                return;
+            }
+            // Restore previous version
+            versionManager.restore(nodeItemToEdit.getNode(), version, true);
+            DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, path, "");
             locationController.goTo(location);
 
         } catch (RepositoryException e) {
+            subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, "This Item do not have a Valid Previos version. Action cancelled.");
             throw new ActionExecutionException("Could not execute EditItemAction: ", e);
         }
     }
+
+    /**
+     * @return Previous version or null if not founded.
+     */
+    private Version getPreviousVersion() throws RepositoryException {
+        Version previousVersion = null;
+        VersionIterator versionIterator = versionManager.getAllVersions(nodeItemToEdit.getNode());
+        if (versionIterator == null) {
+            return previousVersion;
+        }
+
+        while (versionIterator.hasNext()) {
+            previousVersion = versionIterator.nextVersion();
+        }
+
+        return previousVersion;
+    }
+
 }
