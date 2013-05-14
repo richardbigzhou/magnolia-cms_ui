@@ -234,10 +234,9 @@ public class AbstractJcrNodeAdapterTest {
     @Test
     public void testUpdatePropertiesNameToAlreadyExisting() throws Exception {
 
-        // spy hooks for session move
+        // MockSession doesn't support move so we use a spy
         final MockSession session = spy(this.session);
         final Node root = new MockNode(session);
-        doReturn(root).when(session).getRootNode();
 
         MockContext ctx = (MockContext) MgnlContext.getInstance();
         ctx.addSession(WORKSPACE_NAME, session);
@@ -259,11 +258,11 @@ public class AbstractJcrNodeAdapterTest {
         // GIVEN
         String existingName = "existingName";
         String subNodeName = "subNode";
-        Node node = session.getRootNode();
-        node.setProperty(existingName, "42");
-        Node subNode = node.addNode(subNodeName);
-        long nodeCount = node.getNodes().getSize();
-        long propertyCount = node.getProperties().getSize();
+
+        root.setProperty(existingName, "42");
+        Node subNode = root.addNode(subNodeName);
+        long nodeCount = root.getNodes().getSize();
+        long propertyCount = root.getProperties().getSize();
         DummyJcrNodeAdapter adapter = new DummyJcrNodeAdapter(subNode);
 
         // WHEN
@@ -271,11 +270,11 @@ public class AbstractJcrNodeAdapterTest {
         adapter.updateProperties();
 
         // THEN
-        assertTrue(node.hasProperty(existingName));
-        assertFalse(node.hasNode(existingName));
-        assertFalse(node.hasNode(subNodeName));
-        assertEquals(nodeCount, node.getNodes().getSize());
-        assertEquals(propertyCount, node.getProperties().getSize());
+        assertTrue(root.hasProperty(existingName));
+        assertFalse(root.hasNode(existingName));
+        assertFalse(root.hasNode(subNodeName));
+        assertEquals(nodeCount, root.getNodes().getSize());
+        assertEquals(propertyCount, root.getProperties().getSize());
     }
 
     /**
