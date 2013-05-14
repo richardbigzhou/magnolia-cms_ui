@@ -36,9 +36,12 @@ package info.magnolia.ui.vaadin.gwt.client.grid;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.UIDL;
 import com.vaadin.client.ui.VTreeTablePatched;
 
@@ -139,8 +142,19 @@ public class VMagnoliaTreeTable extends VTreeTablePatched {
             @Override
             protected void setIndent() {
                 if (getIndentWidth() > 0) {
-                    treeSpacer.getParentElement().getStyle().setPaddingRight(getIndent(), Unit.PX);
                     treeSpacer.getStyle().setWidth(getIndent(), Unit.PX);
+                }
+            }
+
+            @Override
+            protected void setCellWidth(int cellIx, int width) {
+                super.setCellWidth(cellIx, width);
+                // MGNLUI-1170: first column need separate width calculation due to tree spacer.
+                if (cellIx == 0) {
+                    Element cell = DOM.getChild(getElement(), cellIx);
+                    Style wrapperStyle = cell.getFirstChildElement().getStyle();
+                    wrapperStyle.setPropertyPx("width", width);
+                    cell.getStyle().setPropertyPx("width", width);
                 }
             }
         }

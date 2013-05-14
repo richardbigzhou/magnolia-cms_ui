@@ -38,6 +38,7 @@
 	position: relative;
     margin-top: 0px;
     margin-bottom: 0px;
+    text-overflow: ellipsis;
 }
 
 .v-magnolia-table .v-table-cell-wrapper:empty:after {
