@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -64,6 +64,8 @@ import com.vaadin.data.Item;
 public class ContentPresenter implements ContentView.Listener {
 
     private static final String ICON_PROPERTY = "icon-node-data";
+
+    private static final String ICON_TRASH = "icon-trash";
 
     private static final Logger log = LoggerFactory.getLogger(ContentPresenter.class);
 
@@ -157,7 +159,7 @@ public class ContentPresenter implements ContentView.Listener {
         if (item instanceof JcrNodeAdapter) {
             JcrNodeAdapter node = (JcrNodeAdapter) item;
             if (isDeletedNode(node)) {
-                return "icon-trash";
+                return ICON_TRASH;
             }
             String typeName = node.getPrimaryNodeTypeName();
             List<NodeTypeDefinition> nodeTypes = workbenchDefinition.getNodeTypes();
