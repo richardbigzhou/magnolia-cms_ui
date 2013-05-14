@@ -31,38 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.favorites;
+package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
+import info.magnolia.ui.contentapp.detail.action.AbstractItemActionDefinition;
 
-import java.util.Map;
 
 /**
- * Manages the favorites for the current user.
+ * ActionDefinition used for restoring the previous version on a page.
  */
-public interface FavoritesManager {
+public class RestorePreviousVersionActionDefinition extends AbstractItemActionDefinition {
 
-    JcrItemNodeAdapter getFavorites();
-
-    /**
-     * @return A map whose key is the group jcr name and whose value is its title (human-readable) property. The map elements are sorted alphabetically (descending) by their value.
-     */
-    Map<String, String> getGroupsNames();
-
-    void addFavorite(JcrNewNodeAdapter newFavorite);
-
-    JcrNewNodeAdapter createFavoriteSuggestion(String location, String title, String icon);
-
-    void removeFavorite(String relPath);
-
-    void editFavorite(String relPath, String newTitle);
-
-    void addGroup(JcrNewNodeAdapter newGroup);
-
-    void editGroup(String relPath, String newTitle);
-
-    void removeGroup(String relPath);
-
-    JcrNewNodeAdapter createFavoriteGroupSuggestion(String title);
+    public RestorePreviousVersionActionDefinition() {
+        setImplementationClass(RestorePreviousVersionAction.class);
+    }
 }

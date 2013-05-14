@@ -31,38 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.favorites;
+package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
-
-import java.util.Map;
+import info.magnolia.ui.api.action.CommandActionDefinition;
 
 /**
- * Manages the favorites for the current user.
+ * Delete Definition used to configure a {@link MarkNodeAsDeletedAction}. <br>
+ * This action is used to create a new {@link javax.jcr.Item} version and mark them as deleted.
  */
-public interface FavoritesManager {
+public class MarkNodeAsDeletedActionDefinition extends CommandActionDefinition {
 
-    JcrItemNodeAdapter getFavorites();
+    public MarkNodeAsDeletedActionDefinition() {
+        setImplementationClass(MarkNodeAsDeletedAction.class);
+    }
 
-    /**
-     * @return A map whose key is the group jcr name and whose value is its title (human-readable) property. The map elements are sorted alphabetically (descending) by their value.
-     */
-    Map<String, String> getGroupsNames();
-
-    void addFavorite(JcrNewNodeAdapter newFavorite);
-
-    JcrNewNodeAdapter createFavoriteSuggestion(String location, String title, String icon);
-
-    void removeFavorite(String relPath);
-
-    void editFavorite(String relPath, String newTitle);
-
-    void addGroup(JcrNewNodeAdapter newGroup);
-
-    void editGroup(String relPath, String newTitle);
-
-    void removeGroup(String relPath);
-
-    JcrNewNodeAdapter createFavoriteGroupSuggestion(String title);
 }

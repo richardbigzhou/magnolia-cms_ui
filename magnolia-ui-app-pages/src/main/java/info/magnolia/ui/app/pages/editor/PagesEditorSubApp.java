@@ -34,10 +34,14 @@
 package info.magnolia.ui.app.pages.editor;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.link.LinkUtil;
+import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
@@ -53,6 +57,8 @@ import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
+import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
@@ -92,7 +98,10 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     private final ActionExecutor actionExecutor;
     private final PagesEditorSubAppView view;
-    private final EventBus eventBus;
+
+    private final EventBus subAppEventBus;
+    private final EventBus admincentralEventBus;
+
     private final PageEditorPresenter pageEditorPresenter;
     private final ActionbarPresenter actionbarPresenter;
     private final PageBarView pageBarView;
@@ -109,11 +118,12 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private String caption;
 
     @Inject
-    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named(SubAppEventBus.NAME) EventBus eventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView, I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport) {
+    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView, I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport) {
         super(subAppContext, view);
         this.actionExecutor = actionExecutor;
         this.view = view;
-        this.eventBus = eventBus;
+        this.subAppEventBus = subAppEventBus;
+        this.admincentralEventBus = admincentralEventBus;
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.pageBarView = pageBarView;
@@ -251,14 +261,17 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         this.parameters.setPlatformType(targetPreviewPlatform);
         try {
             Node node = MgnlContext.getJCRSession(workspace).getNode(path);
-            String url = i18NAuthoringSupport.createI18NURI(node, currentLocale);
-            if (parameters.isPreview()) {
-                StringBuffer sb = new StringBuffer(url);
+            String uri = i18NAuthoringSupport.createI18NURI(node, currentLocale);
+            StringBuffer sb = new StringBuffer(uri);
+            if (parameters.isPreview()) {              
                 LinkUtil.addParameter(sb, "mgnlIntercept", "PREVIEW");
                 LinkUtil.addParameter(sb, "mgnlChannel", targetPreviewPlatform.getId());
-                url = sb.toString();
             }
-            this.parameters.setUrl(url);
+            if (location.hasVersion()) {
+                LinkUtil.addParameter(sb, "mgnlVersion", location.getVersion());
+            }
+            uri = sb.toString();
+            this.parameters.setUrl(uri);
             updateCaption(path);
             pageBarView.togglePreviewMode(isPreview);
         } catch (RepositoryException e) {
@@ -270,7 +283,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         DetailView.ViewType action = location.getViewType();
         String path = location.getNodePath();
 
-        if (parameters != null && (parameters.getNodePath().equals(path) && parameters.isPreview() == DetailView.ViewType.VIEW.getText().equals(action.getText()))) {
+        if (parameters != null && (parameters.getNodePath().equals(path) && parameters.isPreview() == DetailView.ViewType.VIEW.getText().equals(action.getText())) && !location.hasVersion()) {
             return false;
         }
         return true;
@@ -289,12 +302,26 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     }
 
     private void hideAllSections() {
-        actionbarPresenter.hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions");
+        actionbarPresenter.hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions", "pageDeleteActions");
     }
 
     private void bindHandlers() {
 
-        eventBus.addHandler(NodeSelectedEvent.class, new NodeSelectedEvent.Handler() {
+        admincentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+
+            @Override
+            public void onContentChanged(ContentChangedEvent event) {
+                if (event.getWorkspace().equals(RepositoryConstants.WEBSITE)) {
+                    // Check if the node still exist
+                    Node currentpage = SessionUtil.getNode(event.getWorkspace(), event.getPath());
+                    if (getCurrentLocation().getNodePath().equals(event.getPath()) && currentpage == null) {
+                        getSubAppContext().close();
+                    }
+                }
+            }
+        });
+
+        subAppEventBus.addHandler(NodeSelectedEvent.class, new NodeSelectedEvent.Handler() {
 
             @Override
             public void onItemSelected(NodeSelectedEvent event) {
@@ -306,29 +333,43 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                 }
 
                 hideAllSections();
-                if (element instanceof PageElement) {
-                    updateCaption(path);
 
-                    if (!path.equals(parameters.getNodePath())) {
-                        updateNodePath(path);
-                    }
-                    if (parameters.isPreview()) {
-                        actionbarPresenter.showSection("pagePreviewActions");
+                if (isDeletedNode(workspace, path)) {
+                    actionbarPresenter.showSection("pageDeleteActions");
+                    if (!getCurrentLocation().hasVersion()) {
+                        actionbarPresenter.enable("showPreviousVersion");
                     } else {
-                        actionbarPresenter.showSection("pageActions");
+                        actionbarPresenter.disable("showPreviousVersion");
                     }
-                }
-                else if (element instanceof AreaElement) {
-                    if (dialog == null) {
-                        actionbarPresenter.showSection("areaActions");
-                    } else {
-                        actionbarPresenter.showSection("editableAreaActions");
+                    actionbarPresenter.enable("restorePreviousVersion");
+                    actionbarPresenter.enable("activateDelete");
+
+                } else {
+
+                    if (element instanceof PageElement) {
+                        updateCaption(path);
+
+                        if (!path.equals(parameters.getNodePath())) {
+                            updateNodePath(path);
+                        }
+                        if (parameters.isPreview()) {
+                            actionbarPresenter.showSection("pagePreviewActions");
+                        } else {
+                            actionbarPresenter.showSection("pageActions");
+                        }
                     }
+                    else if (element instanceof AreaElement) {
+                        if (dialog == null) {
+                            actionbarPresenter.showSection("areaActions");
+                        } else {
+                            actionbarPresenter.showSection("editableAreaActions");
+                        }
+                    }
+                    else if (element instanceof ComponentElement) {
+                        actionbarPresenter.showSection("componentActions");
+                    }
+                    updateActions();
                 }
-                else if (element instanceof ComponentElement) {
-                    actionbarPresenter.showSection("componentActions");
-                }
-                updateActions();
             }
         });
     }
@@ -403,5 +444,19 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     public void platformSelected(PlatformType platformType) {
         this.targetPreviewPlatform = platformType;
         doGoToLocation(getCurrentLocation());
+    }
+
+    private boolean isDeletedNode(String workspace, String path) {
+        Node node = SessionUtil.getNode(workspace, path);
+        try {
+            if (node != null) {
+                return NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
+            } else {
+                return false;
+            }
+        } catch (RepositoryException re) {
+            log.warn("Not able to check if node has MixIn");
+            return false;
+        }
     }
 }
