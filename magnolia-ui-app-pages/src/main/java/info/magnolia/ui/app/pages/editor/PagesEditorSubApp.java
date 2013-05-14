@@ -34,6 +34,7 @@
 package info.magnolia.ui.app.pages.editor;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
@@ -55,6 +56,8 @@ import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
+import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
@@ -93,7 +96,10 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     private final ActionExecutor actionExecutor;
     private final PagesEditorSubAppView view;
-    private final EventBus eventBus;
+
+    private final EventBus subAppEventBus;
+    private final EventBus admincentralEventBus;
+
     private final PageEditorPresenter pageEditorPresenter;
     private final ActionbarPresenter actionbarPresenter;
     private final PageBarView pageBarView;
@@ -107,11 +113,12 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private String caption;
 
     @Inject
-    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, final @Named(SubAppEventBus.NAME) EventBus eventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView, I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport) {
+    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView, I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport) {
         super(subAppContext, view);
         this.actionExecutor = actionExecutor;
         this.view = view;
-        this.eventBus = eventBus;
+        this.subAppEventBus = subAppEventBus;
+        this.admincentralEventBus = admincentralEventBus;
         this.pageEditorPresenter = pageEditorPresenter;
         this.actionbarPresenter = actionbarPresenter;
         this.pageBarView = pageBarView;
@@ -280,7 +287,21 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     private void bindHandlers() {
 
-        eventBus.addHandler(NodeSelectedEvent.class, new NodeSelectedEvent.Handler() {
+        admincentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+
+            @Override
+            public void onContentChanged(ContentChangedEvent event) {
+                if (event.getWorkspace().equals(RepositoryConstants.WEBSITE)) {
+                    // Check if the node still exist
+                    Node currentpage = SessionUtil.getNode(event.getWorkspace(), event.getPath());
+                    if (getCurrentLocation().getNodePath().equals(event.getPath()) && currentpage == null) {
+                        getSubAppContext().close();
+                    }
+                }
+            }
+        });
+
+        subAppEventBus.addHandler(NodeSelectedEvent.class, new NodeSelectedEvent.Handler() {
 
             @Override
             public void onItemSelected(NodeSelectedEvent event) {

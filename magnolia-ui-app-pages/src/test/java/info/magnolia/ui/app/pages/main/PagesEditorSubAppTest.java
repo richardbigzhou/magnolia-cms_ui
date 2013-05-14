@@ -78,6 +78,7 @@ public class PagesEditorSubAppTest {
     private SubAppContext subAppContext;
     private PagesEditorSubAppView view;
     private EventBus eventBus;
+    private EventBus adminCentralEventBus;
     private ActionbarPresenter actionbarPresenter;
     private PageBarView pageBarView;
     private AbstractElement element;
@@ -106,6 +107,7 @@ public class PagesEditorSubAppTest {
         subAppContext = new SubAppContextImpl(descriptor, null);
         view = mock(PagesEditorSubAppView.class);
         eventBus = new SimpleEventBus();
+        adminCentralEventBus = new SimpleEventBus();
         pageEditorPresenter = mock(PageEditorPresenter.class);
         TemplateDefinitionRegistry registry = mock(TemplateDefinitionRegistry.class);
         when(pageEditorPresenter.getTemplateDefinitionRegistry()).thenReturn(registry);
@@ -120,7 +122,7 @@ public class PagesEditorSubAppTest {
         // GIVEN
         element = new AreaElement(null, null, null, null);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null);
 
         // WHEN
         eventBus.fireEvent(new NodeSelectedEvent(element));
@@ -142,7 +144,7 @@ public class PagesEditorSubAppTest {
         element.setMoveable(true);
         element.setDeletable(false);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null);
 
         // WHEN
         eventBus.fireEvent(new NodeSelectedEvent(element));
@@ -165,7 +167,7 @@ public class PagesEditorSubAppTest {
         AreaElement element = new AreaElement(null, null, null, null);
         element.setAddible(false);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null);
 
         // WHEN
         eventBus.fireEvent(new NodeSelectedEvent(element));
