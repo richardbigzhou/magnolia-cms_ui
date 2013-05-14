@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -55,9 +55,9 @@ public class DetailLocation extends DefaultLocation {
     private String nodePath;
     private String version;
     // Position of the parameter based on the ':' used as separator.
-    private int nodePathParamPosition = 0;
-    private int viewTypeParamPosition = 1;
-    private int versionParamPosition = 2;
+    private final static int nodePathParamPosition = 0;
+    private final static int viewTypeParamPosition = 1;
+    private final static int versionParamPosition = 2;
 
     public DetailLocation(String appId, String subAppId, String parameter) {
         super(LOCATION_TYPE_APP, appId, subAppId, parameter);
