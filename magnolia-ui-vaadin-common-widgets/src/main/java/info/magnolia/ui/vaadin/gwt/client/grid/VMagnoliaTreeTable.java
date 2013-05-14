@@ -41,7 +41,6 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.UIDL;
 import com.vaadin.client.ui.VTreeTablePatched;
 
