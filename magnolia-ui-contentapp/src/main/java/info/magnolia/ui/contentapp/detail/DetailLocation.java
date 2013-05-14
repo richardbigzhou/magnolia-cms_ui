@@ -55,9 +55,9 @@ public class DetailLocation extends DefaultLocation {
     private String nodePath;
     private String version;
     // Position of the parameter based on the ':' used as separator.
-    private final static int nodePathParamPosition = 0;
-    private final static int viewTypeParamPosition = 1;
-    private final static int versionParamPosition = 2;
+    private final static int NODE_PATH_PARAME_POSITION = 0;
+    private final static int VIEW_TYPE_PARAME_POSITION = 1;
+    private final static int VERSION_PARAME_POSITION = 2;
 
     public DetailLocation(String appId, String subAppId, String parameter) {
         super(LOCATION_TYPE_APP, appId, subAppId, parameter);
@@ -114,7 +114,7 @@ public class DetailLocation extends DefaultLocation {
      * @return some/node/path
      */
     private String extractNodePath(String parameter) {
-        return getParameter(parameter, nodePathParamPosition);
+        return getParameter(parameter, NODE_PATH_PARAME_POSITION);
     }
 
     /**
@@ -124,7 +124,7 @@ public class DetailLocation extends DefaultLocation {
      * @return viewType
      */
     private DetailView.ViewType extractViewType(String parameter) {
-        String action = getParameter(parameter, viewTypeParamPosition);
+        String action = getParameter(parameter, VIEW_TYPE_PARAME_POSITION);
         return DetailView.ViewType.fromString(action);
     }
 
@@ -135,7 +135,7 @@ public class DetailLocation extends DefaultLocation {
      * @return version
      */
     private String extractVersion(String parameter) {
-        return getParameter(parameter, versionParamPosition);
+        return getParameter(parameter, VERSION_PARAME_POSITION);
     }
 
     private String getParameter(String parameter, int position) {
