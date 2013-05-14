@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,13 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.search;
+package info.magnolia.ui.workbench.thumbnail;
 
-import info.magnolia.ui.workbench.list.ListView;
+import info.magnolia.ui.workbench.ContentView.ViewType;
+import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 
 /**
- * The search view interface.
+ * Default configured definition for a content view presenting thumbnails.
  */
-public interface SearchView extends ListView {
+public class ThumbnailPresenterDefinition extends ConfiguredContentPresenterDefinition {
+
+    public ThumbnailPresenterDefinition() {
+        setImplementationClass(ThumbnailPresenter.class);
+        setViewType(ViewType.THUMBNAIL);
+        setActive(false);
+        setIcon("icon-view-thumbnails");
+    }
 
 }

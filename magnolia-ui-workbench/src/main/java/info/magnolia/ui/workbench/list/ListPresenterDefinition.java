@@ -31,73 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench;
+package info.magnolia.ui.workbench.list;
 
 import info.magnolia.ui.workbench.ContentView.ViewType;
+import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 
 /**
- * Definition of a {@link ContentView}.
+ * Default configured definition for a content view presenting a list.
  */
-public class ContentViewDefinition {
+public class ListPresenterDefinition extends ConfiguredContentPresenterDefinition {
 
-    private ViewType viewType;
-
-    private Class<? extends ContentView> implementationClass;
-
-    private String icon;
-    
-    private boolean active;
-
-    /**
-     * @return the name.
-     */
-    public ViewType getViewType() {
-        return viewType;
-    }
-
-    public void setViewType(ViewType viewType) {
-        this.viewType = viewType;
-    }
-
-    /**
-     * @return the implementationClass.
-     */
-    public Class<? extends ContentView> getImplementationClass() {
-        return implementationClass;
-    }
-
-    public void setImplementationClass(Class<? extends ContentView> implementationClass) {
-        this.implementationClass = implementationClass;
-    }
-
-    /**
-     * @return the icon
-     */
-    public String getIcon() {
-        return icon;
-    }
-    
-    /**
-     * @param icon
-     *            the icon to set
-     */
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-    
-    /**
-     * @return the active
-     */
-    public boolean isActive() {
-        return active;
-    }
-    
-    /**
-     * @param active
-     *            the active to set
-     */
-    public void setActive(boolean active) {
-        this.active = active;
+    public ListPresenterDefinition() {
+        setImplementationClass(ListPresenter.class);
+        setViewType(ViewType.LIST);
+        setActive(false);
+        setIcon("icon-view-list");
     }
 
 }

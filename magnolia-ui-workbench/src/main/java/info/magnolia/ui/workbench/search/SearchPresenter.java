@@ -31,22 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.thumbnail;
+package info.magnolia.ui.workbench.search;
 
-import info.magnolia.ui.workbench.ContentView.ViewType;
-import info.magnolia.ui.workbench.ContentViewDefinition;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.list.ListPresenter;
+
+import javax.inject.Inject;
 
 /**
- * Definition of a {@link info.magnolia.ui.workbench.ContentView} of type
- * Thumbnail.
+ * The SearchPresenter is responsible for handling a list of search results according to the workbench definition.
  */
-public class ThumbnailContentViewDefinition extends ContentViewDefinition {
+public class SearchPresenter extends ListPresenter implements SearchView.Listener {
 
-    public ThumbnailContentViewDefinition() {
-        setImplementationClass(LazyThumbnailViewImpl.class);
-        setViewType(ViewType.THUMBNAIL);
-        setActive(false);
-        setIcon("icon-view-thumbnails");
+    @Inject
+    public SearchPresenter(SearchView view, ComponentProvider componentProvider) {
+        super(view, componentProvider);
+    }
+
+    @Override
+    protected SearchJcrContainer createContainer(WorkbenchDefinition workbench) {
+        return new SearchJcrContainer(workbench);
+    }
+
+    @Override
+    public SearchJcrContainer getContainer() {
+        return (SearchJcrContainer) super.getContainer();
+    }
+
+    public void search(String fulltextExpr) {
+        getContainer().setFullTextExpression(fulltextExpr);
+        refresh();
+    }
+
+    public void clear() {
+        getContainer().setFullTextExpression(null);
+        refresh();
     }
 
 }

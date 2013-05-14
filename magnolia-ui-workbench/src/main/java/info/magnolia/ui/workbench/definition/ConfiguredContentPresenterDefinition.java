@@ -31,22 +31,58 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.search;
+package info.magnolia.ui.workbench.definition;
 
+import info.magnolia.ui.workbench.ContentPresenter;
 import info.magnolia.ui.workbench.ContentView.ViewType;
-import info.magnolia.ui.workbench.ContentViewDefinition;
 
 /**
- * Definition of a {@link info.magnolia.ui.workbench.ContentView} of type
- * Search.
+ * Default configured implementation for {@link ContentPresenterDefinition}.
  */
-public class SearchContentViewDefinition extends ContentViewDefinition {
+public class ConfiguredContentPresenterDefinition implements ContentPresenterDefinition {
 
-    public SearchContentViewDefinition() {
-        setImplementationClass(SearchViewImpl.class);
-        setViewType(ViewType.SEARCH);
-        setActive(false);
-        setIcon("icon-view-list");
+    private ViewType viewType;
+
+    private Class<? extends ContentPresenter> implementationClass;
+
+    private String icon;
+
+    private boolean active;
+
+    @Override
+    public ViewType getViewType() {
+        return viewType;
+    }
+
+    public void setViewType(ViewType viewType) {
+        this.viewType = viewType;
+    }
+
+    @Override
+    public Class<? extends ContentPresenter> getImplementationClass() {
+        return implementationClass;
+    }
+
+    public void setImplementationClass(Class<? extends ContentPresenter> implementationClass) {
+        this.implementationClass = implementationClass;
+    }
+
+    @Override
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    @Override
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
 }

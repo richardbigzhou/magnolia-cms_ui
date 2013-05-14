@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,15 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench;
+package info.magnolia.ui.workbench.definition;
 
-import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.ContentPresenter;
+import info.magnolia.ui.workbench.ContentView.ViewType;
 
 /**
- * Builds a {@link ContentView} for a specific view type based on a workbench definition.
+ * Definition for a workbench generic content view.
  */
-public interface ContentViewBuilder {
+public interface ContentPresenterDefinition {
 
-    ContentView build(WorkbenchDefinition workbenchDefinition, ImageProviderDefinition imageProviderDefinition, ContentViewDefinition viewDefinition);
+    ViewType getViewType();
+
+    Class<? extends ContentPresenter> getImplementationClass();
+
+    String getIcon();
+
+    boolean isActive();
 }
