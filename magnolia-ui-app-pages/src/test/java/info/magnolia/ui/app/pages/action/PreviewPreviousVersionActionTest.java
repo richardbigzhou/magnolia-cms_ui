@@ -54,7 +54,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests covering execution of the {@link DuplicateNodeAction}.
+ * Tests .
  */
 public class PreviewPreviousVersionActionTest extends RepositoryTestCase {
 
