@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -53,6 +52,7 @@ import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.ContentView.ViewType;
@@ -66,9 +66,9 @@ import info.magnolia.ui.workbench.event.SearchEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -313,18 +313,11 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
 
     private void executeAction(String actionName) {
         try {
-            Session session = MgnlContext.getJCRSession(getWorkspace());
-            if (session.itemExists(getSelectedItemId())) {
-                javax.jcr.Item item = session.getItem(getSelectedItemId());
-                if (item.isNode()) {
-                    actionExecutor.execute(actionName, new JcrNodeAdapter((Node) item));
-                } else {
-                    actionExecutor.execute(actionName, new JcrPropertyAdapter((Property) item));
-                }
-            } else {
-                Message error = new Message(MessageType.ERROR, "Could not get item ", "Following Item not found :" + getSelectedItemId());
-                appContext.sendLocalMessage(error);
-            }
+            javax.jcr.Item item = JcrItemUtil.getJcrItem(getWorkspace(), getSelectedItemId());
+            actionExecutor.execute(actionName, item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((Property) item));
+        } catch (PathNotFoundException p) {
+            Message error = new Message(MessageType.ERROR, "Could not get item ", "Following Item not found :" + getSelectedItemId());
+            appContext.sendLocalMessage(error);
         } catch (RepositoryException e) {
             Message error = new Message(MessageType.ERROR, "Could not get item: " + getSelectedItemId(), e.getMessage());
             log.error("An error occurred while executing action [{}]", actionName, e);
