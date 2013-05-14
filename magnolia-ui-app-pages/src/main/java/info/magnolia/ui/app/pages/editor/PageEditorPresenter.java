@@ -37,7 +37,6 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
@@ -98,10 +97,10 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     private final ComponentProvider componentProvider;
 
     @Inject
-    public PageEditorPresenter(PageEditorView view, final @Named(SubAppEventBus.NAME) EventBus eventBus, TemplateDefinitionRegistry templateDefinitionRegistry,
+    public PageEditorPresenter(PageEditorView view, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, TemplateDefinitionRegistry templateDefinitionRegistry,
             SubAppContext subAppContext, ComponentProvider componentProvider) {
         this.view = view;
-        this.subAppEventBus = eventBus;
+        this.subAppEventBus = subAppEventBus;
         this.templateDefinitionRegistry = templateDefinitionRegistry;
         this.subAppContext = subAppContext;
         this.componentProvider = componentProvider;
@@ -114,13 +113,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             @Override
             public void onContentChanged(ContentChangedEvent event) {
                 if (event.getWorkspace().equals(RepositoryConstants.WEBSITE)) {
-                    // Check if the node still exist
-                    Node currentpage = SessionUtil.getNode(event.getWorkspace(), event.getPath());
-                    if (currentpage == null) {
-                        subAppContext.close();
-                    } else {
                         view.refresh();
-                    }
                 }
             }
         });
