@@ -46,20 +46,16 @@ import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.workbench.ContentView;
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
-import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 import javax.jcr.RepositoryException;
 
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 
 /**
@@ -69,34 +65,26 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
 
     private LinkFieldSelectionBuilder builder;
 
-    private WorkbenchPresenter presenter;
+    private WorkbenchPresenter workbenchPresenter;
 
     private EventBus eventBus;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        presenter = mock(WorkbenchPresenter.class);
+        workbenchPresenter = mock(WorkbenchPresenter.class);
         eventBus = new SimpleEventBus();
         // make sure that workbench view registers a content view so that restore selection doesn't fail.
-        doAnswer(new Answer<Void>() {
-
-            @Override
-            public Void answer(InvocationOnMock invocation) throws Throwable {
-                Object[] args = invocation.getArguments();
-                WorkbenchView workbenchView = (WorkbenchView) args[0];
-                workbenchView.addContentView(ViewType.TREE, mock(ContentView.class), new TreePresenterDefinition());
-                return null;
-            }
-        }).when(presenter).start(any(WorkbenchDefinition.class), any(ImageProviderDefinition.class), any(EventBus.class));
-
+        WorkbenchView workbenchView = mock(WorkbenchView.class);
+        doReturn(mock(Component.class)).when(workbenchView).asVaadinComponent();
+        doReturn(workbenchView).when(workbenchPresenter).start(any(WorkbenchDefinition.class), any(ImageProviderDefinition.class), any(EventBus.class));
     }
 
     @Test
     public void buildFieldSimpleTest() {
         // GIVEN
         baseItem.addItemProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, DefaultPropertyUtil.newDefaultProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, null, null));
-        builder = new LinkFieldSelectionBuilder(definition, baseItem, presenter, eventBus);
+        builder = new LinkFieldSelectionBuilder(definition, baseItem, workbenchPresenter, eventBus);
         builder.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
@@ -111,7 +99,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
     public void fieldEventTest() throws RepositoryException {
         // GIVEN
         baseItem.addItemProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, DefaultPropertyUtil.newDefaultProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, null, null));
-        builder = new LinkFieldSelectionBuilder(definition, baseItem, presenter, eventBus);
+        builder = new LinkFieldSelectionBuilder(definition, baseItem, workbenchPresenter, eventBus);
         builder.setI18nContentSupport(i18nContentSupport);
         Field field = builder.getField();
 
@@ -129,7 +117,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
         baseNode.setProperty("newProperty", "initial");
         baseItem = new JcrNodeAdapter(baseNode);
         baseItem.addItemProperty("newProperty", DefaultPropertyUtil.newDefaultProperty("newProperty", null, "initial"));
-        builder = new LinkFieldSelectionBuilder(definition, baseItem, presenter, eventBus);
+        builder = new LinkFieldSelectionBuilder(definition, baseItem, workbenchPresenter, eventBus);
         builder.setI18nContentSupport(i18nContentSupport);
         Field field = builder.getField();
 
