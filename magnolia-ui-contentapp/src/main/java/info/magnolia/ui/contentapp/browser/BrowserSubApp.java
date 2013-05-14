@@ -43,6 +43,7 @@ import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.actionbar.definition.SectionRestrictionsDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.contentapp.ContentSubAppView;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.framework.app.BaseSubApp;
@@ -302,7 +303,12 @@ public class BrowserSubApp extends BaseSubApp {
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
                 BrowserLocation location = getCurrentLocation();
-                location.updateNodePath(event.getPath());
+                try {
+                    Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.getNodeUuidFrom(event.getItemId()));
+                    location.updateNodePath(selected.getPath());
+                } catch (RepositoryException e) {
+                    log.warn("Could not get jcrItem with itemId " + event.getItemId() + " from workspace " + event.getWorkspace(), e);
+                }
                 getAppContext().updateSubAppLocation(getSubAppContext(), location);
                 updateActionbar(actionbar);
             }

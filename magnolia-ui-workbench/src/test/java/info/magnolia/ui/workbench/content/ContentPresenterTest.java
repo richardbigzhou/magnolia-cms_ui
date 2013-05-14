@@ -91,7 +91,7 @@ public class ContentPresenterTest {
         ArgumentCaptor<ItemSelectedEvent> argument = ArgumentCaptor.forClass(ItemSelectedEvent.class);
         verify(eventBus).fireEvent(argument.capture());
         assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
-        assertEquals(TEST_ITEM_ID, argument.getValue().getPath());
+        assertEquals(TEST_ITEM_ID, argument.getValue().getItemId());
     }
 
     @Test

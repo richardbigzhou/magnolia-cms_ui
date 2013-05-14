@@ -64,7 +64,7 @@ public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
         return workspace;
     }
 
-    public String getPath() {
+    public String getItemId() {
         return item != null ? item.getItemId() : null;
     }
 

@@ -162,7 +162,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
 
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
-                refreshActionbarPreviewImage(event.getPath(), event.getWorkspace());
+                refreshActionbarPreviewImage(event.getItemId(), event.getWorkspace());
             }
         });
 
@@ -226,12 +226,12 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
         workbenchPresenter.resynch(path, viewType, query);
     }
 
-    private void refreshActionbarPreviewImage(final String path, final String workspace) {
-        if (StringUtils.isBlank(path)) {
+    private void refreshActionbarPreviewImage(final String itemId, final String workspace) {
+        if (StringUtils.isBlank(itemId)) {
             actionbarPresenter.setPreview(null);
         } else {
             if (imageProvider != null) {
-                Object previewResource = imageProvider.getThumbnailResourceByPath(workspace, path, ImageProvider.PORTRAIT_GENERATOR);
+                Object previewResource = imageProvider.getThumbnailResourceById(workspace, itemId, ImageProvider.PORTRAIT_GENERATOR);
                 if (previewResource instanceof Resource) {
                     actionbarPresenter.setPreview((Resource) previewResource);
                 } else {

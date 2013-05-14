@@ -108,7 +108,7 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
         chooseDialogEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
-                final Node selected = SessionUtil.getNode(event.getWorkspace(), event.getPath());
+                final Node selected = SessionUtil.getNodeByIdentifier(event.getWorkspace(), event.getItemId());
                 if (selected != null) {
                     try {
                         boolean isPropertyExisting = StringUtils.isNotBlank(propertyName)

@@ -52,7 +52,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * PagesMainSubApp.
+ * Main SubApp for Pages - the Browser.
  */
 public class PagesMainSubApp extends BrowserSubApp {
 
@@ -74,9 +74,9 @@ public class PagesMainSubApp extends BrowserSubApp {
             actionbar.disable(defaultActions);
         } else {
             actionbar.enable(defaultActions);
-            final String path = getBrowser().getSelectedItemId();
+            final String itemId = getBrowser().getSelectedItemId();
             final String workspace = getBrowser().getWorkspace();
-            final Node page = SessionUtil.getNode(workspace, path);
+            final Node page = SessionUtil.getNodeByIdentifier(workspace, itemId);
             // if it's a leaf recursive activation should not be available.
             if (isLeaf(page)) {
                 actionbar.disable("activateRecursive");
