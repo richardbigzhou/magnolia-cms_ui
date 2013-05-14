@@ -44,6 +44,7 @@ import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
+import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.app.pages.field.TemplateSelectorField;
 import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.config.DialogBuilder;
@@ -58,7 +59,6 @@ import info.magnolia.ui.form.config.TabBuilder;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
-import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
@@ -86,7 +86,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private final PageEditorView view;
 
-    private final EventBus eventBus;
+    private final EventBus subAppEventBus;
 
     private final TemplateDefinitionRegistry templateDefinitionRegistry;
 
@@ -97,10 +97,10 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     private final ComponentProvider componentProvider;
 
     @Inject
-    public PageEditorPresenter(PageEditorView view, @Named(SubAppEventBus.NAME) EventBus eventBus, TemplateDefinitionRegistry templateDefinitionRegistry,
+    public PageEditorPresenter(PageEditorView view, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, TemplateDefinitionRegistry templateDefinitionRegistry,
             SubAppContext subAppContext, ComponentProvider componentProvider) {
         this.view = view;
-        this.eventBus = eventBus;
+        this.subAppEventBus = subAppEventBus;
         this.templateDefinitionRegistry = templateDefinitionRegistry;
         this.subAppContext = subAppContext;
         this.componentProvider = componentProvider;
@@ -108,12 +108,12 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     }
 
     private void registerHandlers() {
-        eventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+        subAppEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
                 if (event.getWorkspace().equals(RepositoryConstants.WEBSITE)) {
-                    view.refresh();
+                        view.refresh();
                 }
             }
         });
@@ -206,7 +206,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
             @Override
             public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getPath()));
+                subAppEventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getPath()));
                 formDialogPresenter.closeDialog();
             }
 
@@ -343,7 +343,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     @Override
     public void selectElement(AbstractElement selectedElement) {
         this.selectedElement = selectedElement;
-        eventBus.fireEvent(new NodeSelectedEvent(selectedElement));
+        subAppEventBus.fireEvent(new NodeSelectedEvent(selectedElement));
     }
 
     public PageEditorView start() {

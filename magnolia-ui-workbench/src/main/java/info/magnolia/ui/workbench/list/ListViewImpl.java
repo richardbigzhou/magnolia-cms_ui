@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.workbench.list;
 
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.vaadin.grid.MagnoliaTable;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
@@ -44,6 +46,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +68,8 @@ import com.vaadin.ui.Table.TableDragMode;
 public class ListViewImpl implements ListView {
 
     private static final String ICON_PROPERTY = "icon-node-data";
+
+    private static final String ICON_TRASH = "icon-trash";
 
     private static final Logger log = LoggerFactory.getLogger(ListViewImpl.class);
 
@@ -98,6 +105,9 @@ public class ListViewImpl implements ListView {
                 if (item instanceof JcrPropertyAdapter) {
                     return ICON_PROPERTY;
                 } else if (item instanceof JcrNodeAdapter) {
+                    if (isDeletedNode((JcrNodeAdapter) item)) {
+                        return ICON_TRASH;
+                    }
                     return nodeIcons.get(((JcrNodeAdapter) item).getPrimaryNodeTypeName());
                 }
                 return null;
@@ -106,6 +116,16 @@ public class ListViewImpl implements ListView {
 
         this.table = table;
         bindHandlers();
+    }
+
+    private boolean isDeletedNode(JcrNodeAdapter nodeAdapter) {
+        Node node = nodeAdapter.getNode();
+        try {
+            return NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
+        } catch (RepositoryException re) {
+            log.warn("Not able to check if node has MixIn");
+            return false;
+        }
     }
 
     protected void bindHandlers() {

@@ -41,10 +41,9 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.action.CommandActionBase;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
-
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -57,25 +56,20 @@ import org.apache.commons.lang.StringUtils;
  */
 public class DeactivationAction extends CommandActionBase<DeactivationActionDefinition> {
 
-    private final JcrItemNodeAdapter node;
+    private final JcrItemNodeAdapter jcrNodeAdapter;
 
     private final EventBus eventBus;
 
     private final SubAppContext subAppContext;
 
     @Inject
-    public DeactivationAction(final DeactivationActionDefinition definition, final JcrItemNodeAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, SubAppContext subAppContext) {
+    public DeactivationAction(final DeactivationActionDefinition definition, final JcrItemAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, SubAppContext subAppContext) {
         super(definition, item, commandsManager, subAppContext);
-        this.node = item;
+        this.jcrNodeAdapter = (JcrItemNodeAdapter) item;
         this.eventBus = eventBus;
         this.subAppContext = subAppContext;
     }
 
-    @Override
-    protected Map<String, Object> buildParams(final Node node) {
-        Map<String, Object> params = super.buildParams(node);
-        return params;
-    }
 
     @Override
     protected void onError(Exception e) {
@@ -84,7 +78,7 @@ public class DeactivationAction extends CommandActionBase<DeactivationActionDefi
 
     @Override
     protected void onPostExecute() throws Exception {
-        Node jcrNode = node.getNodeFromRepository();
+        Node jcrNode = jcrNodeAdapter.getNodeFromRepository();
         eventBus.fireEvent(new ContentChangedEvent(jcrNode.getSession().getWorkspace().getName(), jcrNode.getPath()));
 
         // Display a notification
