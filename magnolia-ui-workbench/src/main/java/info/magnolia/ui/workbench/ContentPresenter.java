@@ -65,7 +65,7 @@ public class ContentPresenter implements ContentView.Listener {
 
     private static final String ICON_PROPERTY = "icon-node-data";
 
-    private static final String ICON_TRASH = "icon-trash";
+    protected static final String ICON_TRASH = "icon-trash";
 
     private static final Logger log = LoggerFactory.getLogger(ContentPresenter.class);
 
