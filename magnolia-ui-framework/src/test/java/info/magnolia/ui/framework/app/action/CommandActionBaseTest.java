@@ -47,8 +47,11 @@ import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
 import java.util.Map;
+
+import javax.jcr.Property;
 
 import org.junit.After;
 import org.junit.Before;
@@ -111,6 +114,31 @@ public class CommandActionBaseTest {
 
         assertEquals("website", params.get(Context.ATTRIBUTE_REPOSITORY));
         assertEquals("/parent/sub", params.get(Context.ATTRIBUTE_PATH));
+        assertEquals("2", params.get(Context.ATTRIBUTE_UUID));
+    }
+
+    @Test
+    public void testGetParamsReturnsBasicContextParamsFromProperty() throws Exception {
+        // GIVEN
+        Property jcrProperty = MgnlContext.getJCRSession("website").getNode("/parent/sub").setProperty("property1", "property1");
+        CommandActionBase<CommandActionDefinition> action =
+                new CommandActionBase<CommandActionDefinition>(
+                        new CommandActionDefinition(),
+                        new JcrPropertyAdapter(jcrProperty),
+                        commandsManager,
+                        null);
+
+        // WHEN
+        Map<String, Object> params = action.getParams();
+
+        // THEN
+        assertTrue(params.containsKey(Context.ATTRIBUTE_REPOSITORY));
+        assertTrue(params.containsKey(Context.ATTRIBUTE_PATH));
+        assertTrue(params.containsKey(Context.ATTRIBUTE_UUID));
+
+        assertEquals("website", params.get(Context.ATTRIBUTE_REPOSITORY));
+        assertEquals(jcrProperty.getPath(), params.get(Context.ATTRIBUTE_PATH));
+        // In case of property, the Identifier is the parent Node ID
         assertEquals("2", params.get(Context.ATTRIBUTE_UUID));
     }
 

@@ -58,6 +58,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 
+/**
+ * Main test class for Activation Action.
+ */
 public class ActivationActionTest {
     private String website =
             "/foo.uuid=1\n" +
