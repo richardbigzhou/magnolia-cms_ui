@@ -99,8 +99,8 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
         return itemId;
     }
 
-    public void setPath(String path) {
-        this.itemId = path;
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
     }
 
     /**

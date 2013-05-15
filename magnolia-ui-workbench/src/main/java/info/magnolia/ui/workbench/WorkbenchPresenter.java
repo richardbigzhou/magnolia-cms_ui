@@ -197,7 +197,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
             // restore selection
 
-            if (itemExists(itemId)) {
+            if (JcrItemUtil.itemExists(getWorkspace(), itemId)) {
                 activePresenter.setSelectedItemId(itemId);
             } else {
                 log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.",
@@ -257,14 +257,5 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         } else {
             searchPresenter.search(searchExpression);
         }
-    }
-
-    private boolean itemExists(String path) {
-        try {
-            return StringUtils.isNotBlank(path) && MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).itemExists(path);
-        } catch (RepositoryException e) {
-            log.warn("", e);
-        }
-        return false;
     }
 }

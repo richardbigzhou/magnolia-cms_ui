@@ -97,12 +97,12 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     }
 
     @Override
-    public void select(String path) {
-        if (!"/".equals(path)) {
-            expandTreeToNode(path);
+    public void select(String itemId) {
+        if (!"/".equals(itemId)) {
+            expandTreeToNode(itemId);
         }
         treeTable.setValue(null);
-        treeTable.select(path);
+        treeTable.select(itemId);
     }
 
     private void expandTreeToNode(String path) {

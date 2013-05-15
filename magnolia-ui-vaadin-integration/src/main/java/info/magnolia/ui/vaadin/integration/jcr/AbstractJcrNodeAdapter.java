@@ -267,7 +267,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
                     jcrName = Path.getUniqueLabel(node.getSession(), node.getParent().getPath(), jcrName);
                     String newPath = NodeUtil.combinePathAndName(node.getParent().getPath(), jcrName);
                     node.getSession().move(node.getPath(), newPath);
-                    setPath(node.getPath());
+                    setItemId(JcrItemUtil.getItemId(node));
                 }
             } catch (RepositoryException e) {
                     log.error("Could not rename JCR Node.", e);

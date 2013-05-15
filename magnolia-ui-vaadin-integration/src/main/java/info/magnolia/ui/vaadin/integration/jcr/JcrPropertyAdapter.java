@@ -150,7 +150,7 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
                     Node parent = jcrProperty.getParent();
                     jcrName = Path.getUniqueLabel(jcrProperty.getSession(), parent.getPath(), jcrName);
                     PropertyUtil.renameProperty(jcrProperty, jcrName);
-                    setPath(parent.getProperty(jcrName).getPath());
+                    setItemId(JcrItemUtil.getItemId(parent.getProperty(jcrName)));
                 } catch (RepositoryException e) {
                     log.error("Could not rename JCR Property.", e);
                 }

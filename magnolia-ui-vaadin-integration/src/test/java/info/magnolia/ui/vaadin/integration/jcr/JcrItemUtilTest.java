@@ -49,13 +49,13 @@ import org.junit.Test;
 public class JcrItemUtilTest {
 
     @Test
-    public void testGetNodeUUIDFrom() throws Exception {
+    public void testGetNodeIdentifierFrom() throws Exception {
         // GIVEN
         final String nodeUuid = "ccb8ae64-3ad2-4ffd-93ce-367926f3bcd2";
         final String propertyId = nodeUuid + "@" + "name";
 
         // WHEN
-        final String result = JcrItemUtil.getNodeUuidFrom(propertyId);
+        final String result = JcrItemUtil.getNodeIdentifierFrom(propertyId);
 
         // THEN
         assertThat(result, equalTo(nodeUuid));
