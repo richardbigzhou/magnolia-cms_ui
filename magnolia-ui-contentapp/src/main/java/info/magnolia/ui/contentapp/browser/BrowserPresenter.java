@@ -393,6 +393,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
             }
 
             // Evaluate availability of each action within the section
+            ContextMenuItem menuItem = null;
             for (ActionbarGroupDefinition groupDefinition : sectionDefinition.getGroups()) {
                 for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
 
@@ -402,11 +403,18 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
                         String label = action.getLabel();
                         String iconFontCode = ActionPopupView.ICON_FONT_CODE + action.getIcon();
                         ExternalResource iconFontResource = new ExternalResource(iconFontCode);
-                        ContextMenuItem menuItem = actionPopupView.addItem(label, iconFontResource);
+                        menuItem = actionPopupView.addItem(label, iconFontResource);
                         // Set data so that the event handler can determine which action to launch.
                         menuItem.setData(actionName);
                     }
                 }
+                // Add group separator.
+                if (menuItem != null) {
+                    menuItem.setSeparatorVisible(true);
+                }
+            }
+            if (menuItem != null) {
+                menuItem.setSeparatorVisible(false);
             }
         } catch (RepositoryException e) {
             log.error("Failed to updated actionbar", e);
