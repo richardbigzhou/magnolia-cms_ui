@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor.event;
+package info.magnolia.ui.vaadin.gwt.client.editor.dom;
 
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.web.bindery.event.shared.Event;
+import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 
 /**
- * DeleteComponentEvent. Used for components and areas.
+ * MgnlPage.
  */
-public class DeleteComponentEvent extends Event<DeleteComponentEventHandler> {
-
-    public static GwtEvent.Type<DeleteComponentEventHandler> TYPE = new GwtEvent.Type<DeleteComponentEventHandler>();
-
-    private String workspace;
-    private String path;
-
-    public DeleteComponentEvent(String workspace, String path) {
-        this.workspace = workspace;
-        this.path = path;
+public class MgnlPage extends MgnlElement {
+    /**
+     * MgnlElement. Represents a node in the tree built on cms-tags.
+     */
+    public MgnlPage(MgnlElement parent) {
+        super(parent);
     }
 
     @Override
-    public GwtEvent.Type<DeleteComponentEventHandler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch(DeleteComponentEventHandler handler) {
-        handler.onDeleteComponent(this);
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public String getWorkspace() {
-        return workspace;
+    public AbstractElement getTypedElement() {
+        return new PageElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"));
     }
 }

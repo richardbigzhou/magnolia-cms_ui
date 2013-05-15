@@ -39,7 +39,6 @@ import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AbstractBar;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
-import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * Abstract Class for MgnlElement processors.
@@ -49,13 +48,11 @@ public abstract class AbstractMgnlElementProcessor {
     private MgnlElement mgnlElement;
 
     private Model model;
-    private EventBus eventBus;
 
     private AbstractBar editBar;
 
-    public AbstractMgnlElementProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) {
+    public AbstractMgnlElementProcessor(Model model, MgnlElement mgnlElement) {
         this.model = model;
-        this.eventBus = eventBus;
         this.setMgnlElement(mgnlElement);
     }
 
@@ -74,8 +71,6 @@ public abstract class AbstractMgnlElementProcessor {
         } else if (getMgnlElement().getFirstElement() != null && getMgnlElement().getFirstElement() == getMgnlElement().getLastElement()) {
             attach(getMgnlElement());
         } else {
-            String nodeData = getMgnlElement().getStartComment().getNodeValue();
-
             attach(getMgnlElement().getStartComment());
         }
         getEditBar().onAttach();
@@ -113,10 +108,6 @@ public abstract class AbstractMgnlElementProcessor {
 
     public Model getModel() {
         return model;
-    }
-
-    protected EventBus getEventBus() {
-        return eventBus;
     }
 
     protected void setEditBar(AbstractBar editBar) {

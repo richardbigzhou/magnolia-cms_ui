@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * {@link BaseDialogView}.
+ * Provides a basic interface for the widgets that display their content in a dialog.
  */
 public interface BaseDialogView extends IsWidget, HasWidgets {
 

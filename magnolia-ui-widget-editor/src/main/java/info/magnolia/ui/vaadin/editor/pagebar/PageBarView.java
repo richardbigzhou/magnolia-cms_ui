@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.editor.pagebar;
 
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
 
 import java.util.Locale;
 
@@ -43,7 +44,7 @@ import java.util.Locale;
  */
 public interface PageBarView extends View {
 
-    void setPageName(String pageName);
+    void setPageName(String pageTitle, String path);
 
     void setListener(Listener listener);
 
@@ -58,7 +59,7 @@ public interface PageBarView extends View {
 
         void languageSelected(Locale locale);
 
-        void platformSelected(String platformId);
+        void platformSelected(PlatformType platformType);
 
     }
 }

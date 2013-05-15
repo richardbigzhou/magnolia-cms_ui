@@ -42,9 +42,6 @@ import java.util.List;
 public class CmsNode {
     protected CmsNode parent;
     private LinkedList<CmsNode> children = new LinkedList<CmsNode>();
-    private boolean isPage = false;
-    private boolean isArea = false;
-    private boolean isComponent = false;
 
     public CmsNode(CmsNode parent) {
         this.parent = parent;
@@ -83,32 +80,42 @@ public class CmsNode {
         return ascendants;
     }
 
-    public CmsNode getParentArea() {
-        CmsNode parentArea = null;
+    public MgnlArea getParentArea() {
+        MgnlArea parentArea = null;
         for (CmsNode parent = getParent(); parent != null; parent = parent.getParent()) {
-            if (parent.isArea()) {
-                parentArea = parent;
+            if (parent instanceof MgnlArea) {
+                parentArea = (MgnlArea) parent;
                 break;
             }
         }
         return parentArea;
     }
 
-    public List<CmsNode> getComponents() {
-        List<CmsNode> components = new LinkedList<CmsNode>();
+    public MgnlArea getRootArea() {
+        MgnlArea parentArea = (this instanceof MgnlArea) ? (MgnlArea) this : null;
+        for (CmsNode parent = getParent(); parent != null; parent = parent.getParent()) {
+            if (parent instanceof MgnlArea) {
+                parentArea = (MgnlArea) parent;
+            }
+        }
+        return parentArea;
+    }
+
+    public List<MgnlComponent> getComponents() {
+        List<MgnlComponent> components = new LinkedList<MgnlComponent>();
         for (CmsNode element : getChildren()) {
-            if (element.isComponent()) {
-                components.add(element);
+            if (element instanceof MgnlComponent) {
+                components.add((MgnlComponent) element);
             }
         }
         return components;
     }
 
-    public List<CmsNode> getAreas() {
-        List<CmsNode> areas = new LinkedList<CmsNode>();
+    public List<MgnlArea> getAreas() {
+        List<MgnlArea> areas = new LinkedList<MgnlArea>();
         for (CmsNode element : getChildren()) {
-            if (element.isArea()) {
-                areas.add(element);
+            if (element instanceof MgnlArea) {
+                areas.add((MgnlArea) element);
             }
         }
         return areas;
@@ -123,8 +130,7 @@ public class CmsNode {
     }
 
     public boolean isRelated(CmsNode relative) {
-
-        return relative != null && this.getRoot() == relative.getRoot();
+        return relative != null && this.getRootArea() == relative.getRootArea();
     }
 
     public void delete() {
@@ -136,31 +142,16 @@ public class CmsNode {
         }
     }
 
-    public void setPage(boolean isPage) {
-        this.isPage = isPage;
-    }
-
-    public void setArea(boolean isArea) {
-        this.isArea = isArea;
-    }
-
-    public void setComponent(boolean isComponent) {
-        this.isComponent = isComponent;
-    }
-
-    public boolean isPage() {
-        return isPage;
-    }
-
-    public boolean isArea() {
-        return isArea;
-    }
-
-    public boolean isComponent() {
-        return isComponent;
-    }
-
     public MgnlElement asMgnlElement() {
         return (MgnlElement) this;
     }
+
+    public int getLevel() {
+        int level = 0;
+        for (CmsNode parent = getParent(); parent != null; parent = parent.getParent()) {
+            level++;
+        }
+        return level;
+    }
+
 }
