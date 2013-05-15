@@ -38,6 +38,9 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.test.MgnlTestCase;
+import info.magnolia.test.mock.MockUtil;
+import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.workbench.config.WorkbenchBuilder;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
@@ -49,7 +52,7 @@ import org.junit.Test;
 /**
  * Tests for {@link WorkbenchPresenter}.
  */
-public class WorkbenchPresenterTest {
+public class WorkbenchPresenterTest extends MgnlTestCase {
 
     private final static String WORKSPACE = "workspace";
 
@@ -60,7 +63,7 @@ public class WorkbenchPresenterTest {
     private WorkbenchPresenter presenter;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         WorkbenchView view = mock(WorkbenchView.class);
         WorkbenchStatusBarPresenter statusBarPresenter = mock(WorkbenchStatusBarPresenter.class);
 
@@ -72,6 +75,11 @@ public class WorkbenchPresenterTest {
 
     @Test
     public void testGetDefaultViewType() {
+
+        MockUtil.initMockContext();
+        MockUtil.setSessionAndHierarchyManager(new MockSession(WORKSPACE));
+
+
         // GIVEN
         WorkbenchDefinition workbenchDefinition = new WorkbenchBuilder().workspace(WORKSPACE).path(ROOT_PATH).contentViews(new TreePresenterDefinition(), new ListPresenterDefinition()).exec();
         presenter.start(workbenchDefinition, null, null);
