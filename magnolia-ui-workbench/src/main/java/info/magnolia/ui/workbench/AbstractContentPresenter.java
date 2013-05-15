@@ -35,6 +35,7 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
@@ -80,16 +81,16 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
 
     @Override
     public void onItemSelection(Item item) {
-        if (item == null) {
-            log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
-            setSelectedItemId(null);
-            eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), null));
-            return;
-        }
         try {
-            setSelectedItemId(((JcrItemAdapter) item).getItemId());
-            log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemId);
-            eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), (JcrItemAdapter) item));
+            if (item == null) {
+                log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
+                selectedItemId = JcrItemUtil.getItemId(JcrItemUtil.getNode(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath()));
+                eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), null));
+            } else {
+                selectedItemId = ((JcrItemAdapter) item).getItemId();
+                log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemId);
+                eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), (JcrItemAdapter) item));
+            }
         } catch (Exception e) {
             log.error("An error occurred while selecting a row in the data grid", e);
         }

@@ -37,7 +37,6 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.contentapp.ContentSubAppView;
