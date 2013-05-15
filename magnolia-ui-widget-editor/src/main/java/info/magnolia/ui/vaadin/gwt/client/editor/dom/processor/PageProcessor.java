@@ -33,30 +33,27 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlPage;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 
 import com.google.gwt.core.client.GWT;
 
 /**
- * PageProcessor.
+ * Processor for the {@link MgnlPage} element.
  */
 public class PageProcessor extends AbstractMgnlElementProcessor {
-    public PageProcessor(Model model, MgnlElement mgnlElement) {
+    public PageProcessor(Model model, MgnlPage mgnlElement) {
         super(model, mgnlElement);
     }
 
     @Override
     public void process() {
-
-        GWT.log("element was detected as page edit bar. Injecting it...");
-/*        PageBar pageBarWidget = new PageBar(getMgnlElement());
-        setEditBar(pageBarWidget);
-        attachWidget();*/
+        GWT.log("element was detected as page element.");
     }
 
     @Override
     public void attach() {
+        // do nothing. There is no PageBar widget inside the page editor.
     }
 
 }

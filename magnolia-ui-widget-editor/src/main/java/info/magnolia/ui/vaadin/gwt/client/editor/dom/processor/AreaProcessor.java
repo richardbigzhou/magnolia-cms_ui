@@ -47,7 +47,12 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 
 /**
- * Factory Class for MgnlElement processors.
+ * Processor for {@link MgnlArea}s. Extends the {@link AbstractMgnlElementProcessor} for handling widgets associated with areas.
+ * Removes areas which do not contain any {@link AreaBar} from the {@link Model}.
+ *
+ * @see AreaBar
+ * @see AreaEndBar
+ * @see ComponentPlaceHolder
  */
 public class AreaProcessor extends AbstractMgnlElementProcessor {
 

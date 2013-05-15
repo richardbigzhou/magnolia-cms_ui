@@ -36,7 +36,8 @@ package info.magnolia.ui.vaadin.gwt.client.shared;
 import java.io.Serializable;
 
 /**
- * AbstractElement.
+ * Abstract element used to communicate between client and server.
+ * It is a slimmed down version of the {@MgnlElement}.
  */
 public abstract class AbstractElement implements Serializable {
 

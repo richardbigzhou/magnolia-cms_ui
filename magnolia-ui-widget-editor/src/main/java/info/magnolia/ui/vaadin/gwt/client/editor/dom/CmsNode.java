@@ -37,7 +37,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * CmsNode.
+ * Represents a node inside the tree structure built by the {@link info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.CommentProcessor}.
+ * Holds a reference to its parent node and a list to its children and allows navigating inside the tree structure.
+ *
+ * @see MgnlPage
+ * @see MgnlArea
+ * @see MgnlComponent
  */
 public class CmsNode {
     protected CmsNode parent;

@@ -36,7 +36,7 @@ package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
 
 /**
- * Area bar.
+ * Simple widget which marks the end of an area.
  */
 public class AreaEndBar extends AbstractBar {
 

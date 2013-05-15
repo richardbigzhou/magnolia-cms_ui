@@ -42,7 +42,9 @@ import java.util.Map;
 import com.google.gwt.core.client.GWT;
 
 /**
- * Factory Class for MgnlElement processors.
+ * Processor for {@link MgnlComponent}s.
+ *
+ * @see ComponentBar
  */
 public class ComponentProcessor extends AbstractMgnlElementProcessor {
 

@@ -43,7 +43,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * A Widget for adding components to area.
+ * A Widget for adding components to area. Marks where a newly created component will be injected.
+ * Is assembled by a {@link PlaceHolderBar} and an empty place holder area.
  */
 public class ComponentPlaceHolder extends FlowPanel {
 
@@ -87,6 +88,9 @@ public class ComponentPlaceHolder extends FlowPanel {
         super.onAttach();
     }
 
+    /**
+     * A placeholder bar which resembles the {@link ComponentBar}.
+     */
     private class PlaceHolderBar extends AbstractBar {
 
         private final MgnlArea listener;
