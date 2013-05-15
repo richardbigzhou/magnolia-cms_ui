@@ -38,8 +38,6 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.MgnlInstantiationException;
 
-import java.util.Collection;
-
 import javax.inject.Inject;
 import javax.jcr.Item;
 import javax.jcr.Node;
@@ -114,30 +112,26 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
             return false;
         }
 
-        ActionRestrictionsDefinition restrictions = actionDefinition.getRestrictions();
+        ActionAvailabilityDefinition availability = actionDefinition.getAvailability();
 
         // Validate that the user has all required roles
-        Collection<String> assignedRoles = MgnlContext.getUser().getAllRoles();
-        Collection<String> requiredRoles = restrictions.getRoles();
-        for (String requiredRole : requiredRoles) {
-            if (!assignedRoles.contains(requiredRole)) {
-                return false;
-            }
+        if (!availability.getAccess().hasAccess(MgnlContext.getUser())) {
+            return false;
         }
 
         if (item == null) {
-            return restrictions.isRoot();
+            return availability.isRoot();
         }
 
         if (!item.isNode()) {
-            return restrictions.isProperties();
+            return availability.isProperties();
         }
 
         // Must have _any_ of the node types if any are specified, otherwise its available by default
-        if (restrictions.getNodeTypes().isEmpty())
+        if (availability.getNodeTypes().isEmpty())
             return true;
 
-        for (String nodeType : restrictions.getNodeTypes()) {
+        for (String nodeType : availability.getNodeTypes()) {
             try {
                 if (NodeUtil.isNodeType((Node)item, nodeType)) {
                     return true;

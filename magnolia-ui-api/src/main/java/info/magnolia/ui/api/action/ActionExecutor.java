@@ -64,7 +64,7 @@ public interface ActionExecutor {
      * Evaluates if an action is available for the current user. This involves checking if the user has the required
      * permission to use the action and if the action is available for a specific item.
      *
-     * @see ActionRestrictionsDefinition
+     * @see ActionAvailabilityDefinition
      */
     boolean isAvailable(String actionName, Item item);
 }

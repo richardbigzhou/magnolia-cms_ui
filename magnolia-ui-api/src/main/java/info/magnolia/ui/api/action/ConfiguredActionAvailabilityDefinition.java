@@ -33,18 +33,22 @@
  */
 package info.magnolia.ui.api.action;
 
+import info.magnolia.cms.security.operations.AccessDefinition;
+import info.magnolia.objectfactory.Components;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * Simple implementation for {@link ActionRestrictionsDefinition}.
+ * Simple implementation for {@link ActionAvailabilityDefinition}.
  */
-public class ConfiguredActionRestrictionsDefinition implements ActionRestrictionsDefinition {
+public class ConfiguredActionAvailabilityDefinition implements ActionAvailabilityDefinition {
 
     private boolean root = false;
     private boolean properties = false;
+    private boolean nodes = true;
     private Collection<String> nodeTypes = new ArrayList<String>();
-    private Collection<String> roles = new ArrayList<String>();
+    private AccessDefinition access = Components.newInstance(AccessDefinition.class, new Object[] {});
 
     @Override
     public boolean isRoot() {
@@ -65,6 +69,15 @@ public class ConfiguredActionRestrictionsDefinition implements ActionRestriction
     }
 
     @Override
+    public boolean isNodes() {
+        return this.nodes;
+    }
+
+    public void setNodes(boolean nodes) {
+        this.nodes = nodes;
+    }
+
+    @Override
     public Collection<String> getNodeTypes() {
         return nodeTypes;
     }
@@ -77,16 +90,12 @@ public class ConfiguredActionRestrictionsDefinition implements ActionRestriction
         nodeTypes.add(nodeType);
     }
 
+    public void setAccess(AccessDefinition access) {
+        this.access = access;
+    }
+
     @Override
-    public Collection<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Collection<String> roles) {
-        this.roles = roles;
-    }
-
-    public void addRole(String role) {
-        roles.add(role);
+    public AccessDefinition getAccess() {
+        return this.access;
     }
 }

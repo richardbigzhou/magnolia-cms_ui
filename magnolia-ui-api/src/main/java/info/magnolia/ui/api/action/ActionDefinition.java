@@ -63,5 +63,5 @@ public interface ActionDefinition {
 
     Class<? extends Action> getImplementationClass();
 
-    ActionRestrictionsDefinition getRestrictions();
+    ActionAvailabilityDefinition getAvailability();
 }

@@ -33,12 +33,14 @@
  */
 package info.magnolia.ui.api.action;
 
+import info.magnolia.cms.security.operations.AccessDefinition;
+
 import java.util.Collection;
 
 /**
  * Definition of restrictions on when an action is available.
  */
-public interface ActionRestrictionsDefinition {
+public interface ActionAvailabilityDefinition {
 
     /**
      * If true the action is available when there's no selection.
@@ -51,12 +53,17 @@ public interface ActionRestrictionsDefinition {
     boolean isProperties();
 
     /**
+     * If true the action is available for nodes.
+     */
+    boolean isNodes();
+
+    /**
      * Unless this is empty the action is available only for these node types.
      */
     Collection<String> getNodeTypes();
 
     /**
-     * Unless this is empty the action is available for the current user only if he/she has one of these roles.
+     * Returns the AccessDefinition object for this action.
      */
-    Collection<String> getRoles();
+    AccessDefinition getAccess();
 }
