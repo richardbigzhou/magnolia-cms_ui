@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
@@ -61,7 +60,6 @@ import javax.inject.Named;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -188,10 +186,10 @@ public class BrowserSubApp extends BaseSubApp {
         try {
 
             Item item = null;
-            String absItemPath = getBrowser().getSelectedItemId();
-            if (absItemPath != null && !absItemPath.equals(workbench.getPath())) {
-                final Session session = MgnlContext.getJCRSession(workbench.getWorkspace());
-                item = session.getItem(absItemPath);
+            String selectedItemId = getBrowser().getSelectedItemId();
+            String workbenchRootItemId = JcrItemUtil.getItemId(JcrItemUtil.getNode(workbench.getWorkspace(), workbench.getPath()));
+            if (selectedItemId != null && !selectedItemId.equals(workbenchRootItemId)) {
+                item = JcrItemUtil.getJcrItem(workbench.getWorkspace(), selectedItemId);
             }
 
             // Figure out which section to show, only one
