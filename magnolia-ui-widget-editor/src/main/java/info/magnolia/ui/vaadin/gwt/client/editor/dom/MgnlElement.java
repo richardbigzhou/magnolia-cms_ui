@@ -33,19 +33,20 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom;
 
-import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
+import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AbstractBar;
-import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaEndBar;
-import info.magnolia.ui.vaadin.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
 import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
 
 /**
- * MgnlElement Constructor.
+ * Extends the {@link CmsNode} by objects used for positioning the associated {@link AbstractBar} inside the DOM structure.
+ * Has a map with all attributes extracted from the {@link Comment}.
+ *
+ * @see info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.AbstractMgnlElementProcessor
  */
-public class MgnlElement extends CmsNode {
+public abstract class MgnlElement extends CmsNode {
 
     private Map<String, String> attributes;
 
@@ -54,15 +55,9 @@ public class MgnlElement extends CmsNode {
 
     private Element firstElement;
     private Element lastElement;
-    private Element componentElement;
-    private Element areaElement;
 
     private Element editElement;
     private AbstractBar controlBar;
-
-    // only used in areas
-    ComponentPlaceHolder componentPlaceHolder;
-    AreaEndBar areaEndBar;
 
     /**
      * MgnlElement. Represents a node in the tree built on cms-tags.
@@ -79,28 +74,12 @@ public class MgnlElement extends CmsNode {
         return this.attributes;
     }
 
-    public AbstractBar getControlBar() {
+    protected AbstractBar getControlBar() {
         return controlBar;
     }
 
     public void setControlBar(AbstractBar controlBar) {
         this.controlBar = controlBar;
-    }
-
-    public ComponentPlaceHolder getComponentPlaceHolder() {
-        return componentPlaceHolder;
-    }
-
-    public void setComponentPlaceHolder(ComponentPlaceHolder componentPlaceHolder) {
-        this.componentPlaceHolder = componentPlaceHolder;
-    }
-
-    public AreaEndBar getAreaEndBar() {
-        return areaEndBar;
-    }
-
-    public void setAreaEndBar(AreaEndBar areaEndBar) {
-        this.areaEndBar = areaEndBar;
     }
 
     public Element getFirstElement() {
@@ -119,24 +98,8 @@ public class MgnlElement extends CmsNode {
         this.lastElement = lastElement;
     }
 
-    public void setComponentElement(Element componentElement) {
-        this.componentElement = componentElement;
-    }
-
-    public void setAreaElement(Element areaElement) {
-        this.areaElement = areaElement;
-    }
-
     public void setEditElement(Element editElement) {
         this.editElement = editElement;
-    }
-
-    public Element getComponentElement() {
-        return componentElement;
-    }
-
-    public Element getAreaElement() {
-        return areaElement;
     }
 
     public Element getEditElement() {
@@ -167,15 +130,18 @@ public class MgnlElement extends CmsNode {
         this.endComment = element;
     }
 
-    public String getType() {
+    public abstract AbstractElement getTypedElement();
 
-        if (isPage()) {
-            return Model.CMS_PAGE;
-        }
-        if (isArea()) {
-            return Model.CMS_AREA;
-        } else {
-            return Model.CMS_COMPONENT;
-        }
+    public boolean isPage() {
+        return this instanceof MgnlPage;
     }
+
+    public boolean isArea() {
+        return this instanceof MgnlArea;
+    }
+
+    public boolean isComponent(){
+        return this instanceof MgnlComponent;
+    }
+
 }

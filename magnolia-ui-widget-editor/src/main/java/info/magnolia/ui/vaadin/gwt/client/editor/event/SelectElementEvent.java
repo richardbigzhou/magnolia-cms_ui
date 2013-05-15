@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.event;
 
-import java.util.Map;
+import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.web.bindery.event.shared.Event;
@@ -45,14 +45,10 @@ public class SelectElementEvent extends Event<SelectElementEventHandler> {
 
     public static GwtEvent.Type<SelectElementEventHandler> TYPE = new GwtEvent.Type<SelectElementEventHandler>();
 
-    private final String type;
+    private final AbstractElement element;
 
-    private final Map<String, String> attributes;
-
-    public SelectElementEvent(String type, Map<String, String> atttributes) {
-        this.type = type;
-        this.attributes = atttributes;
-
+    public SelectElementEvent(AbstractElement element) {
+        this.element = element;
     }
 
     @Override
@@ -65,12 +61,7 @@ public class SelectElementEvent extends Event<SelectElementEventHandler> {
         handler.onSelectElement(this);
     }
 
-    public String getType() {
-        return type;
+    public AbstractElement getElement() {
+        return element;
     }
-
-    public Map<String, String> getAttributes() {
-        return attributes;
-    }
-
 }

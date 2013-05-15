@@ -40,6 +40,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.link.LinkUtil;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
@@ -62,6 +63,7 @@ import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
@@ -110,6 +112,9 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private final AppContext appContext;
 
     private PageEditorParameters parameters;
+
+    private PlatformType targetPreviewPlatform = PlatformType.DESKTOP;
+    private Locale currentLocale;
     private String caption;
 
     @Inject
@@ -127,7 +132,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         this.editorDefinition = ((DetailSubAppDescriptor) subAppContext.getSubAppDescriptor()).getEditor();
         this.workspace = editorDefinition.getWorkspace();
         this.appContext = subAppContext.getAppContext();
-
+        this.currentLocale = i18nContentSupport.getLocale();
         view.setListener(this);
         bindHandlers();
     }
@@ -135,6 +140,11 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     @Override
     public String getCaption() {
         return caption;
+    }
+
+    public void updateCaption(String path) {
+        this.caption = getPageTitle(path);
+        pageBarView.setPageName(caption, path);
     }
 
     @Override
@@ -233,10 +243,14 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     private void goToLocation(DetailLocation location) {
         if (isLocationChanged(location)) {
-            setPageEditorParameters(location);
-            hideAllSections();
-            pageEditorPresenter.loadPageEditor(parameters);
+            doGoToLocation(location);
         }
+    }
+
+    private void doGoToLocation(DetailLocation location) {
+        setPageEditorParameters(location);
+        hideAllSections();
+        pageEditorPresenter.loadPageEditor(parameters);
     }
 
     private void setPageEditorParameters(DetailLocation location) {
@@ -244,15 +258,21 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         String path = location.getNodePath();
         boolean isPreview = DetailView.ViewType.VIEW.getText().equals(action.getText());
         this.parameters = new PageEditorParameters(MgnlContext.getContextPath(), path, isPreview);
+        this.parameters.setPlatformType(targetPreviewPlatform);
         try {
             Node node = MgnlContext.getJCRSession(workspace).getNode(path);
-            String uri = i18NAuthoringSupport.createI18NURI(node, new Locale("en"));
-            if (location.hasVersion()) {
-                uri = uri + "?mgnlVersion=" + location.getVersion();
+            String uri = i18NAuthoringSupport.createI18NURI(node, currentLocale);
+            StringBuffer sb = new StringBuffer(uri);
+            if (parameters.isPreview()) {              
+                LinkUtil.addParameter(sb, "mgnlIntercept", "PREVIEW");
+                LinkUtil.addParameter(sb, "mgnlChannel", targetPreviewPlatform.getId());
             }
+            if (location.hasVersion()) {
+                LinkUtil.addParameter(sb, "mgnlVersion", location.getVersion());
+            }
+            uri = sb.toString();
             this.parameters.setUrl(uri);
-            this.caption = getPageTitle(path);
-            pageBarView.setPageName(getPageTitle(path) + "-" + path);
+            updateCaption(path);
             pageBarView.togglePreviewMode(isPreview);
         } catch (RepositoryException e) {
             log.error(e.getMessage(), e);
@@ -294,7 +314,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                 if (event.getWorkspace().equals(RepositoryConstants.WEBSITE)) {
                     // Check if the node still exist
                     Node currentpage = SessionUtil.getNode(event.getWorkspace(), event.getPath());
-                    if (getCurrentLocation().getNodePath().equals(event.getPath()) && currentpage == null) {
+                    if (getCurrentLocation().getNodePath().startsWith(event.getPath()) && currentpage == null) {
                         getSubAppContext().close();
                     }
                 }
@@ -308,9 +328,8 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                 AbstractElement element = event.getElement();
                 String path = element.getPath();
                 String dialog = element.getDialog();
-                pageBarView.setPageName(getPageTitle(path) + "-" + path);
                 if (StringUtils.isEmpty(path)) {
-                        path = "/";
+                    path = "/";
                 }
 
                 hideAllSections();
@@ -326,7 +345,10 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                     actionbarPresenter.enable("activateDelete");
 
                 } else {
+
                     if (element instanceof PageElement) {
+                        updateCaption(path);
+
                         if (!path.equals(parameters.getNodePath())) {
                             updateNodePath(path);
                         }
@@ -414,20 +436,14 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     @Override
     public void languageSelected(Locale locale) {
-        try {
-            Node node = MgnlContext.getJCRSession(workspace).getNode(parameters.getNodePath());
-            String uri = i18NAuthoringSupport.createI18NURI(node, locale);
-            this.parameters.setUrl(uri);
-            this.pageEditorPresenter.loadPageEditor(parameters);
-        } catch (RepositoryException e) {
-            log.error(e.getMessage(), e);
-        }
+        this.currentLocale = locale;
+        doGoToLocation(getCurrentLocation());
     }
 
     @Override
-    public void platformSelected(String platformId) {
-        parameters.setPlatformId(platformId);
-        pageEditorPresenter.loadPageEditor(parameters);
+    public void platformSelected(PlatformType platformType) {
+        this.targetPreviewPlatform = platformType;
+        doGoToLocation(getCurrentLocation());
     }
 
     private boolean isDeletedNode(String workspace, String path) {

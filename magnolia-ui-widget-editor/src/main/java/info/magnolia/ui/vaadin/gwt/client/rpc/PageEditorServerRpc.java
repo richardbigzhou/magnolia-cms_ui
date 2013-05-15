@@ -33,7 +33,9 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.rpc;
 
-import java.util.Map;
+import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 
 import com.vaadin.shared.communication.ServerRpc;
 
@@ -42,7 +44,11 @@ import com.vaadin.shared.communication.ServerRpc;
  */
 public interface PageEditorServerRpc extends ServerRpc {
 
-    void selectElement(String type, Map<String, String> attributes);
+    void selectPage(PageElement element);
+
+    void selectArea(AreaElement element);
+
+    void selectComponent(ComponentElement element);
 
     void newArea(String workspace, String eventType, String path);
 
@@ -50,8 +56,5 @@ public interface PageEditorServerRpc extends ServerRpc {
 
     void editComponent(String workspace, String eventType, String dialog);
 
-    void deleteComponent(String workspace, String path);
-
     void sortComponent(String workspace, String parentPath, String sourcePath, String targetPath, String order);
-
 }

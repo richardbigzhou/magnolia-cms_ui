@@ -7,9 +7,7 @@
 	background:$c10;
 	color:$c80;
 	font-size:14px;
-
-	overflow-x:visible;
-	overflow-y:hidden;
+	overflow:hidden;
 }
 .v-actionbar {width:50px; padding-top:24px;}
 .v-actionbar-open {width:270px; padding-top:0;}
@@ -141,6 +139,7 @@ span.icon-publish-incl-sub { text-indent: -27px !important; }
 	font-size:12px;
 	margin-top:18px;
 	padding-top:0;
+	overflow: visible;
 }
 
 .tablet .v-actionbar-section {padding:0;}

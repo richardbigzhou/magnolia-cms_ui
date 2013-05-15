@@ -50,7 +50,7 @@ import com.vaadin.client.ui.AbstractComponentConnector;
 import com.vaadin.shared.ui.Connect;
 
 /**
- * {@link AppLauncherConnector}.
+ * Client-side connector for {@link AppLauncher} component.
  */
 @Connect(AppLauncher.class)
 public class AppLauncherConnector extends AbstractComponentConnector {

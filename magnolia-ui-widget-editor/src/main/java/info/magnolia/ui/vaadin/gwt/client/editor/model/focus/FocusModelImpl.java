@@ -33,8 +33,10 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.model.focus;
 
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlPage;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.SelectElementEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 
@@ -63,26 +65,26 @@ public class FocusModelImpl implements FocusModel {
 
         MgnlElement mgnlElement = model.getMgnlElement(element);
 
-        MgnlElement area = null;
-        MgnlElement component = null;
+        MgnlPage page = null;
+        MgnlArea area = null;
+        MgnlComponent component = null;
 
         // if there is no mapping, we select the page
         if (mgnlElement == null) {
-            mgnlElement = model.getRootPage();
-            setPageSelection(true);
+            page = model.getRootPage();
         } else {
-            setPageSelection(false);
             if (mgnlElement.isComponent()) {
-                component = mgnlElement;
-                area = mgnlElement.getParentArea().asMgnlElement();
+                component = (MgnlComponent) mgnlElement;
+                area = mgnlElement.getParentArea();
             } else if (mgnlElement.isArea()) {
-                area = mgnlElement;
+                area = (MgnlArea) mgnlElement;
             }
         }
         // first set the component, then set the area. the selected component is used for setting
-        // the corrent area class.
+        // the current area class.
         setComponentSelection(component);
         setAreaSelection(area);
+        setPageSelection(page);
 
         select(mgnlElement);
 
@@ -90,21 +92,16 @@ public class FocusModelImpl implements FocusModel {
 
     @Override
     public void init() {
-        toggleRootAreaBar(true);
-        setPageSelection(true);
-        select(model.getRootPage());
-    }
+        for (MgnlArea root : model.getRootAreas()) {
+            root.setVisible(true);
 
-    @Override
-    public void setPageSelection(boolean select) {
-        MgnlElement page = model.getRootPage();
-        if (page.getControlBar() != null) {
-            if (select) {
-                page.getControlBar().setFocus(false);
-            } else {
-                page.getControlBar().removeFocus();
+            if(root.getComponents().isEmpty()) {
+                root.setPlaceHolderVisible(true);
             }
         }
+
+        setPageSelection(model.getRootPage());
+        select(model.getRootPage());
     }
 
     /**
@@ -113,20 +110,18 @@ public class FocusModelImpl implements FocusModel {
      *
      * @param component the MgnlElement component, can be null.
      */
-    private void setComponentSelection(MgnlElement component) {
-        MgnlElement currentComponent = model.getSelectedMgnlComponentElement();
+    private void setComponentSelection(MgnlComponent component) {
+        MgnlComponent currentComponent = model.getSelectedComponent();
         if (currentComponent == component) {
             return;
         }
         if (currentComponent != null) {
-            if (currentComponent.getControlBar() != null) {
-                currentComponent.getControlBar().removeFocus();
-            }
+                currentComponent.removeFocus();
         }
-        if (component != null && component.getControlBar() != null) {
-            component.getControlBar().setFocus(false);
+        if (component != null) {
+            component.setFocus();
         }
-        model.setSelectedMgnlComponentElement(component);
+        model.setSelectedComponent(component);
 
     }
 
@@ -135,19 +130,13 @@ public class FocusModelImpl implements FocusModel {
      *
      * @param area selected area, can be null.
      */
-    private void setAreaSelection(MgnlElement area) {
-        MgnlElement selectedArea = model.getSelectedMgnlAreaElement();
-        MgnlElement currentComponent = model.getSelectedMgnlComponentElement();
+    private void setAreaSelection(MgnlArea area) {
+        MgnlArea selectedArea = model.getSelectedArea();
+        MgnlComponent currentComponent = model.getSelectedComponent();
 
         if (selectedArea != null) {
 
-            if (selectedArea.getControlBar() != null) {
-                selectedArea.getControlBar().removeFocus();
-            }
-
-            if (selectedArea.getAreaEndBar() != null) {
-                selectedArea.getAreaEndBar().removeFocus();
-            }
+            selectedArea.removeFocus();
 
             // always reset current area selection unless area and current area are related
             if (!selectedArea.isRelated(area)) {
@@ -168,110 +157,74 @@ public class FocusModelImpl implements FocusModel {
             toggleAreaVisibility(area, true);
             toggleChildComponentVisibility(area, true);
 
-            if (area.getControlBar() != null) {
-                area.getControlBar().setFocus((currentComponent != null));
-            }
-            if (area.getAreaEndBar() != null) {
-                area.getAreaEndBar().setFocus((currentComponent != null));
-            }
+            area.setFocus((currentComponent != null));
         }
-        model.setSelectedMgnlAreaElement(area);
+        model.setSelectedArea(area);
     }
 
-    private void toggleAreaVisibility(MgnlElement area, boolean visible) {
+    private void toggleAreaVisibility(MgnlArea area, boolean visible) {
 
-        CmsNode parentArea = area.getParentArea();
+        MgnlArea parentArea = area.getParentArea();
         if (parentArea != null) {
-            toggleAreaVisibility(parentArea.asMgnlElement(), visible);
-            toggleChildComponentVisibility(parentArea.asMgnlElement(), visible);
+            toggleAreaVisibility(parentArea, visible);
+            toggleChildComponentVisibility(parentArea, visible);
 
         }
         // root areas are always visible
         if (!model.getRootAreas().contains(area)) {
-            if (area.getControlBar() != null) {
-                area.getControlBar().setVisible(visible);
-            }
-            if (area.getAreaEndBar() != null) {
-                area.getAreaEndBar().setVisible(visible);
-            }
+            area.setVisible(visible);
         }
 
-        if (!area.isRelated(model.getSelectedMgnlAreaElement())) {
+        if (!area.isRelated(model.getSelectedArea())) {
 
-            /*
-             * if (model.getAreaPlaceHolder(area) != null) {
-             * model.getAreaPlaceHolder(area).setActive(visible);
-             * }
-             */
-
-            // toggle all direct child-areas placeholders visibility
-            for (CmsNode childArea : area.getAreas()) {
-
-                /*
-                 * if (model.getAreaPlaceHolder(childArea) != null) {
-                 * model.getAreaPlaceHolder(childArea).setVisible(visible);
-                 * }
-                 */
-                if (childArea.asMgnlElement().getControlBar() != null) {
-                    childArea.asMgnlElement().getControlBar().setVisible(visible);
-                }
-                if (childArea.asMgnlElement().getAreaEndBar() != null) {
-                    childArea.asMgnlElement().getAreaEndBar().setVisible(visible);
-                }
+            // toggle all direct child-areas visibility
+            for (MgnlArea childArea : area.getAreas()) {
+                childArea.setVisible(visible);
             }
         }
-
     }
 
-    private void toggleChildComponentVisibility(MgnlElement area, boolean visible) {
-        for (CmsNode component : area.getComponents()) {
+    private void toggleChildComponentVisibility(MgnlArea area, boolean visible) {
+
+        // do not hide empty root areas placeholder
+        if (!model.getRootAreas().contains(area) || !area.getComponents().isEmpty()) {
+            area.setPlaceHolderVisible(visible);
+        }
+
+        // hide
+        if (!visible && !area.getComponents().isEmpty()) {
+            area.setPlaceHolderVisible(visible);
+        }
+
+
+        for (MgnlComponent component : area.getComponents()) {
 
             // toggle all child-components editbar visibility - does this case occur?
-            if (component.asMgnlElement().getControlBar() != null) {
-                component.asMgnlElement().getControlBar().setVisible(visible);
-            }
-            if (area.getComponentPlaceHolder() != null) {
-                area.getComponentPlaceHolder().setVisible(visible);
-            }
-            // toggle all child-components-area placeholder visibility
-            for (CmsNode childArea : component.getAreas()) {
+            component.setVisible(visible);
 
-                /*
-                 * if (model.getAreaPlaceHolder(childArea) != null) {
-                 * model.getAreaPlaceHolder(childArea).setVisible(visible);
-                 * }
-                 */
-                if (childArea.asMgnlElement().getControlBar() != null) {
-                    childArea.asMgnlElement().getControlBar().setVisible(visible);
-                }
-                if (childArea.asMgnlElement().getAreaEndBar() != null) {
-                    childArea.asMgnlElement().getAreaEndBar().setVisible(visible);
-                }
+
+            // toggle all child-components-area visibility
+            for (MgnlArea childArea : component.getAreas()) {
+                childArea.setVisible(visible);
             }
         }
     }
 
-    @Override
-    public void toggleRootAreaBar(boolean visible) {
+    private void setPageSelection(MgnlPage page) {
+        boolean visible = true;
+        if (page == null) {
+            visible = false;
+        }
 
         this.rootSelected = !this.rootSelected;
-        for (CmsNode root : model.getRootAreas()) {
-            if (root.asMgnlElement().getControlBar() != null) {
-                root.asMgnlElement().getControlBar().setVisible(visible);
-            }
-            if (root.asMgnlElement().getAreaEndBar() != null) {
-                root.asMgnlElement().getAreaEndBar().setVisible(visible);
-            }
-            if (root.asMgnlElement().getComponentPlaceHolder() != null) {
-                root.asMgnlElement().getComponentPlaceHolder().setVisible(visible);
-            }
+        for (MgnlArea root : model.getRootAreas()) {
+            root.toggleInitFocus(visible);
         }
     }
 
     @Override
     public void select(MgnlElement mgnlElement) {
-        String type = mgnlElement.getType();
-        eventBus.fireEvent(new SelectElementEvent(type, mgnlElement.getAttributes()));
+        eventBus.fireEvent(new SelectElementEvent(mgnlElement.getTypedElement()));
     }
 
 }
