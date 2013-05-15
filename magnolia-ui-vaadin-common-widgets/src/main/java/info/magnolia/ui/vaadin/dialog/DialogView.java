@@ -44,6 +44,4 @@ public interface DialogView extends View {
 
     void setCaption(String caption);
 
-    @Override
-    public BaseDialog asVaadinComponent();
 }

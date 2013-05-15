@@ -35,7 +35,6 @@ package info.magnolia.ui.vaadin.form;
 
 
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 import java.util.Collection;
@@ -49,9 +48,6 @@ import com.vaadin.ui.Field;
  * Interface for {@link Form}.
  */
 public interface FormView extends View, Item.Editor {
-
-    @Override
-    BaseDialog asVaadinComponent();
 
     Collection<Field<?>> getFields();
 

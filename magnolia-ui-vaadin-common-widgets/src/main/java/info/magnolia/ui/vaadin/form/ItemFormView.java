@@ -44,12 +44,9 @@ import java.util.Locale;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.event.ShortcutAction.ModifierKey;
-import com.vaadin.event.ShortcutListener;
 import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
-import com.vaadin.ui.Panel;
 
 /**
  * Owns a Form and Dialog and connects them.
@@ -61,8 +58,6 @@ public class ItemFormView implements FormView {
     private BaseDialog dialog;
 
     private Form form;
-
-    private Panel panel;
 
     public ItemFormView() {
 
@@ -78,12 +73,11 @@ public class ItemFormView implements FormView {
                 form.setDescriptionVisibility(event.isVisible());
             }
         });
-        panel = new Panel(dialog);
     }
 
     @Override
-    public BaseDialog asVaadinComponent() {
-        return dialog;
+    public Component asVaadinComponent() {
+        return dialog.asVaadinComponent();
     }
 
     @Override
@@ -111,14 +105,6 @@ public class ItemFormView implements FormView {
     @Override
     public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
         dialog.addAction(actionName, actionLabel, callback);
-
-        if ("commit".equals(actionName)) {
-            addShortcut(actionName, KeyCode.S, ModifierKey.CTRL);
-        } else if ("cancel".equals(actionName)) {
-            addShortcut(actionName, KeyCode.ESCAPE);
-            addShortcut(actionName, KeyCode.C, ModifierKey.CTRL);
-        }
-
     }
 
     @Override
@@ -182,17 +168,6 @@ public class ItemFormView implements FormView {
     @Override
     public void focusFirstField() {
         form.focusFirstField();
-    }
-
-    private void addShortcut(final String actionName, final int keyCode, final int... modifiers) {
-        final ShortcutListener shortcut = new ShortcutListener("", keyCode, modifiers) {
-
-            @Override
-            public void handleAction(Object sender, Object target) {
-                dialog.doFireAction(actionName);
-            }
-        };
-        panel.addShortcutListener(shortcut);
     }
 
 }

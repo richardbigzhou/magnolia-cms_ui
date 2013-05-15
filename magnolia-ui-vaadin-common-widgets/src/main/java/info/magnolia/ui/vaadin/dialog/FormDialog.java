@@ -33,9 +33,12 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
-import com.vaadin.ui.CustomComponent;
-
 import info.magnolia.ui.vaadin.form.FormView;
+
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Panel;
 
 /**
  * Special case of Dialog based on {@link BaseDialog} but has a custom client-side implementation that
@@ -44,7 +47,7 @@ import info.magnolia.ui.vaadin.form.FormView;
 public class FormDialog extends CustomComponent implements FormDialogView {
 
     private FormView view;
-    
+
     @Override
     public void setFormView(FormView formView) {
         this.view = formView;
@@ -52,11 +55,11 @@ public class FormDialog extends CustomComponent implements FormDialogView {
 
     @Override
     public void setDialogDescription(String description) {
-        view.asVaadinComponent().setDescription(description);
+        ((AbstractComponent) ((Panel) view.asVaadinComponent()).getContent()).setDescription(description);
     }
 
     @Override
-    public BaseDialog asVaadinComponent() {
+    public Component asVaadinComponent() {
         return view.asVaadinComponent();
     }
 

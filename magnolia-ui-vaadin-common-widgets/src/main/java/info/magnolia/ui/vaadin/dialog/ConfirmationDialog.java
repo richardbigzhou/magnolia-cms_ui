@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.dialog;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
+import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 
@@ -44,9 +45,7 @@ import com.vaadin.ui.Label;
  */
 public class ConfirmationDialog extends LightDialog {
 
-    public static final String CONFIRM_ACTION = "confirm";
-
-    public static final String CANCEL_ACTION = "cancel";
+    public static final String CONFIRM_ACTION_NAME = "confirm";
 
     private String message;
 
@@ -64,35 +63,35 @@ public class ConfirmationDialog extends LightDialog {
     public void init(boolean cancelIsDefault) {
         // Add a class to the default button
         if (cancelIsDefault) {
-            this.setDefaultAction(CANCEL_ACTION);
+            this.setDefaultAction(CANCEL_ACTION_NAME);
         } else {
-            this.setDefaultAction(CONFIRM_ACTION);
+            this.setDefaultAction(CONFIRM_ACTION_NAME);
         }
 
-        addAction(CONFIRM_ACTION, "OK", new DialogActionListener() {
+        addAction(CONFIRM_ACTION_NAME, "OK", new DialogActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
                 fireEvent(new ConfirmationEvent(ConfirmationDialog.this, true));
             }
         });
-        // addShortcut(CONFIRM_ACTION, KeyCode.ENTER);
+        // we need to explicitly add an ENTER shortcut bound to the confirm action, because addAction(..) do it only for commit and cancel actions.
+        addShortcut(CONFIRM_ACTION_NAME, KeyCode.ENTER);
 
-        addAction(CANCEL_ACTION, "Cancel", new DialogActionListener() {
+        addAction(CANCEL_ACTION_NAME, "Cancel", new DialogActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
                 fireEvent(new ConfirmationEvent(ConfirmationDialog.this, false));
             }
         });
-        // addShortcut(CANCEL_ACTION, KeyCode.ESCAPE);
     }
 
 
     public void setConfirmActionLabel(final String label) {
-        addAction(CONFIRM_ACTION, label);
+        addAction(CONFIRM_ACTION_NAME, label);
     }
 
     public void setRejectActionLabel(final String label) {
-        addAction(CANCEL_ACTION, label);
+        addAction(CANCEL_ACTION_NAME, label);
     }
 
     public void setMessage(String message) {

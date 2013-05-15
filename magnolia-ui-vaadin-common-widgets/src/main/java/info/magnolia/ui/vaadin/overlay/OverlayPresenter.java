@@ -173,7 +173,7 @@ public abstract class OverlayPresenter implements OverlayLayer {
             @Override
             public void onClose(BaseDialog.DialogCloseEvent event) {
                 overlayCloser.close();
-                event.getView().asVaadinComponent().removeDialogCloseHandler(this);
+                ((BaseDialog) event.getView().asVaadinComponent()).removeDialogCloseHandler(this);
             }
         };
     }

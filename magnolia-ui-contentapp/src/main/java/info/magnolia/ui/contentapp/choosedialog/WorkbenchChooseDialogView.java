@@ -41,13 +41,11 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog;
  */
 public class WorkbenchChooseDialogView extends BaseDialog implements ChooseDialogView {
 
-    public static final String CHOOSE_ACTION_NAME = "commit";
-    public static final String CANCEL_ACTION_NAME = "cancel";
-
     public WorkbenchChooseDialogView() {
+        super();
         setHeight("500px");
         addStyleName("choose-dialog");
-        addAction(CHOOSE_ACTION_NAME, "Choose");
+        addAction(COMMIT_ACTION_NAME, "Choose");
         addAction(CANCEL_ACTION_NAME, "Cancel");
     }
 

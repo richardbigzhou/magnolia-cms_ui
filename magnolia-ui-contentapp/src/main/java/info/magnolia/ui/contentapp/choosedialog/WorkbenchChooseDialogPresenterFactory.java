@@ -57,7 +57,7 @@ public class WorkbenchChooseDialogPresenterFactory implements ChooseDialogPresen
     public WorkbenchChooseDialogPresenter createChooseDialogPresenter(String path, final ItemChosenListener listener) {
         final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = componentProvider.newInstance(WorkbenchChooseDialogPresenter.class);
 
-        workbenchChooseDialogPresenter.addActionCallback(WorkbenchChooseDialogView.CHOOSE_ACTION_NAME, new DialogActionListener() {
+        workbenchChooseDialogPresenter.addActionCallback(WorkbenchChooseDialogView.COMMIT_ACTION_NAME, new DialogActionListener() {
             @Override
             public void onActionExecuted(final String actionName) {
                 listener.onItemChosen(workbenchChooseDialogPresenter.getValue());
