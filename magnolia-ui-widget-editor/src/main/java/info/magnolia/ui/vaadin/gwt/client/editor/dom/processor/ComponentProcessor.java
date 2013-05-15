@@ -33,29 +33,28 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar;
 
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
-import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * Factory Class for MgnlElement processors.
  */
 public class ComponentProcessor extends AbstractMgnlElementProcessor {
 
-    public ComponentProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) {
-        super(model, eventBus, mgnlElement);
+    public ComponentProcessor(Model model, MgnlComponent component) {
+        super(model, component);
     }
 
     @Override
     public void process() {
         if (hasControlBar(getMgnlElement().getAttributes())) {
             GWT.log("Component has edit bar. Injecting it..");
-            ComponentBar editBarWidget = new ComponentBar(getEventBus(), getMgnlElement());
+            ComponentBar editBarWidget = new ComponentBar(getMgnlElement());
             setEditBar(editBarWidget);
             attachWidget();
         } else {
@@ -79,4 +78,8 @@ public class ComponentProcessor extends AbstractMgnlElementProcessor {
 
     }
 
+    @Override
+    public MgnlComponent getMgnlElement() {
+        return (MgnlComponent) super.getMgnlElement();
+    }
 }

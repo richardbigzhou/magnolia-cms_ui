@@ -33,21 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.dnd;
 
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode;
-import info.magnolia.ui.vaadin.gwt.client.editor.event.SortComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar;
-import info.magnolia.ui.vaadin.gwt.client.widget.placeholder.ComponentPlaceHolder;
 
-import com.google.gwt.event.dom.client.DragEndEvent;
-import com.google.gwt.event.dom.client.DragEndHandler;
-import com.google.gwt.event.dom.client.DragLeaveEvent;
-import com.google.gwt.event.dom.client.DragLeaveHandler;
-import com.google.gwt.event.dom.client.DragOverEvent;
-import com.google.gwt.event.dom.client.DragOverHandler;
-import com.google.gwt.event.dom.client.DragStartEvent;
-import com.google.gwt.event.dom.client.DragStartHandler;
-import com.google.gwt.event.dom.client.DropEvent;
-import com.google.gwt.event.dom.client.DropHandler;
 import com.google.web.bindery.event.shared.EventBus;
 
 /**
@@ -56,7 +43,7 @@ import com.google.web.bindery.event.shared.EventBus;
 public class DragAndDropImpl {
 
     public void dragAndDrop(final EventBus eventBus, final ComponentBar bar) {
-        bar.setDraggable(true);
+        /*bar.setDraggable(true);
         bar.addDomHandler(new DragStartHandler() {
             @Override
             public void onDragStart(DragStartEvent event) {
@@ -64,7 +51,7 @@ public class DragAndDropImpl {
 
                 bar.setStyleName("moveSource", true);
 
-                CmsNode area = bar.getCmsNode().getParentArea();
+                MgnlArea area = bar.getCmsNode().getParentArea();
                 if (area != null) {
                     for (CmsNode component : area.getComponents()) {
                         ComponentBar componentBar = (ComponentBar) component.asMgnlElement().getControlBar();
@@ -72,7 +59,7 @@ public class DragAndDropImpl {
                             componentBar.setStyleName("moveTarget", true);
                         }
                     }
-                    ComponentPlaceHolder placeholder = area.asMgnlElement().getComponentPlaceHolder();
+                    ComponentPlaceHolder placeholder = area.getComponentPlaceHolder();
                     if (placeholder != null) {
                         placeholder.setStyleName("moveOngoing", true);
                     }
@@ -93,7 +80,7 @@ public class DragAndDropImpl {
 
                 bar.setStyleName("moveSource", false);
 
-                CmsNode area = bar.getCmsNode().getParentArea();
+                MgnlArea area = bar.getCmsNode().getParentArea();
                 if (area != null) {
                     for (CmsNode component : area.getComponents()) {
                         ComponentBar componentBar = (ComponentBar) component.asMgnlElement().getControlBar();
@@ -101,7 +88,7 @@ public class DragAndDropImpl {
                             componentBar.setStyleName("moveTarget", false);
                         }
                     }
-                    ComponentPlaceHolder placeholder = area.asMgnlElement().getComponentPlaceHolder();
+                    ComponentPlaceHolder placeholder = area.getComponentPlaceHolder();
                     if (placeholder != null) {
                         placeholder.setStyleName("moveOngoing", false);
                     }
@@ -164,7 +151,7 @@ public class DragAndDropImpl {
 
                 event.preventDefault();
             }
-        }, DropEvent.getType());
+        }, DropEvent.getType());*/
 
     }
 }

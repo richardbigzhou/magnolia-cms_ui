@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.shared;
 
+import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
+
 import java.io.Serializable;
 
 /**
@@ -40,15 +42,15 @@ import java.io.Serializable;
  */
 public class PageEditorParameters implements Serializable {
 
+    private PlatformType platformType = PlatformType.DESKTOP;
+
     private String contextPath;
 
     private String nodePath;
 
-    private boolean preview;
-
-    private String platformId;
-
     private String url;
+
+    private boolean preview;
 
     public PageEditorParameters() {
     }
@@ -83,19 +85,19 @@ public class PageEditorParameters implements Serializable {
         return preview;
     }
 
-    public String getPlatformId() {
-        return platformId;
-    }
-
-    public void setPlatformId(String platformId) {
-        this.platformId = platformId;
-    }
-
     public String getUrl() {
         return url;
     }
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public PlatformType getPlatformType() {
+        return platformType;
+    }
+
+    public void setPlatformType(PlatformType platformType) {
+        this.platformType = platformType;
     }
 }

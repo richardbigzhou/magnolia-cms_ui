@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,13 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor.event;
-
-import com.google.gwt.event.shared.EventHandler;
+package info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener;
 
 /**
- * DeleteComponentEventHandler.
+ * AreaListener.
  */
-public interface DeleteComponentEventHandler extends EventHandler {
-    void onDeleteComponent(DeleteComponentEvent deleteComponentEvent);
+public interface AreaListener {
+    void createOptionalArea();
+
+    void editArea();
+
+    void createNewComponent();
+
+    boolean hasAddButton();
+
+    boolean hasEditButton();
+
+    String getLabel();
+
+    String getPlaceHolderLabel();
+
+    boolean isBoxPlaceHolder();
+
+    boolean hasAddComponentButton();
 }
