@@ -14,37 +14,37 @@
  * Makes it easier to maintain and all subsequent classes should only declare styles they actually use.
  */
 .mgnlEditor, .mgnlEditor div {
-    float: none !important;
-    width: auto !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: transparent none no-repeat !important;
-    outline: 0 !important;
+  float: none !important;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent none no-repeat !important;
+  outline: 0 !important;
 }
 
 a.disabled:hover {
-    cursor: default !important;
+  cursor: default !important;
 }
 
 /*
  * General appearance of edit bar.
  */
 div.mgnlEditorBar {
-    /* Change the box model to include borders and paddings in the width and height set. */
-    /* Allows here for a more intuitive handling of place holder heights and widths. */
-    -webkit-box-sizing: border-box !important; /* Safari/Chrome, other WebKit */
-    -moz-box-sizing: border-box !important;    /* Firefox, other Gecko */
-    box-sizing: border-box !important;         /* IE 8+ */
-    height: 25px !important;
-    /* vertical paddings minus borders -1. "-1" to make sure that FF properly align labels in all cases; for other */
-    /* browsers, this has no effect. This only works with single-line labels. */
-    background-color: #efefef !important;
-    color: #6a9090 !important;
-    text-transform: uppercase !important;
-    margin: 0 0 2px 0 !important;
-    font-family: DINWebPro, Verdana, sans-serif !important;
-    font-size: 12px !important;
-    clear: both;
+  /* Change the box model to include borders and paddings in the width and height set. */
+  /* Allows here for a more intuitive handling of place holder heights and widths. */
+  -webkit-box-sizing: border-box !important; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box !important;    /* Firefox, other Gecko */
+  box-sizing: border-box !important;         /* IE 8+ */
+  height: 25px !important;
+  /* vertical paddings minus borders -1. "-1" to make sure that FF properly align labels in all cases; for other */
+  /* browsers, this has no effect. This only works with single-line labels. */
+  background-color: #efefef !important;
+  color: #6a9090 !important;
+  text-transform: uppercase !important;
+  margin: 0 0 2px 0 !important;
+  font-family: DINWebPro, Verdana, sans-serif !important;
+  font-size: 12px !important;
+  clear: both;
 }
 
 div.mgnlEditorBar.area.init {
@@ -57,14 +57,14 @@ div.mgnlEditorBar.area.childFocus ~ * div.mgnlEditorBar.component.focus,
 div.mgnlEditorBar.area.childFocus ~ div.mgnlEditorBar.component.focus,
 div.mgnlEditorBar.area.focus
 {
-    background-color: #6a9000 !important;
-    color: #ffffff !important;
+  background-color: #6a9000 !important;
+  color: #ffffff !important;
 }
 
 /* The parent of the focussed component */
 div.mgnlEditorBar.area.childFocus {
-    background-color: #e1e8cc !important;
-    color: #6a9000 !important;
+  background-color: #e1e8cc !important;
+  color: #6a9000 !important;
 }
 
 /* Siblings of the selected area */
@@ -72,8 +72,8 @@ div.mgnlEditorBar.area.childFocus ~ div.mgnlEditorBar.component,
 div.mgnlEditorBar.area.childFocus ~ * div.mgnlEditorBar.component,
 div.mgnlEditorBar.area.init ~ * div.mgnlPlaceholder div.mgnlEditorBar.component,
 div.mgnlEditorBar.area.init ~ div.mgnlPlaceholder div.mgnlEditorBar.component {
-    background-color: #e1e8cc !important;
-    color: #6a9000 !important;
+  background-color: #e1e8cc !important;
+  color: #6a9000 !important;
 }
 
 div.mgnlEditorBar.area.childFocus ~ div.mgnlPlaceholder div.mgnlPlaceholderBox,
@@ -90,8 +90,8 @@ div.mgnlEditorBar.area.init ~ div.mgnlPlaceholder div.mgnlPlaceholderBox {
  */
 div.mgnlEditorBar.area.focus ~ div.mgnlEditorBar.component,
 div.mgnlEditorBar.area.focus ~ * div.mgnlEditorBar.component {
-    background-color: #a5bc66 !important;
-    color: #ffffff !important;
+  background-color: #a5bc66 !important;
+  color: #ffffff !important;
 }
 div.mgnlEditorBar.area.focus ~ * div.mgnlPlaceholder div.mgnlPlaceholderBox,
 div.mgnlEditorBar.area.focus ~ div.mgnlPlaceholder div.mgnlPlaceholderBox {
@@ -103,31 +103,31 @@ div.mgnlEditorBar.area.focus ~ div.mgnlPlaceholder div.mgnlPlaceholderBox {
 div.mgnlEditorBar.component.focus ~ * div.mgnlEditorBar.area,
 div.mgnlEditorBar.component.focus ~ div.mgnlEditorBar.area
 {
-    background-color: #a5bc66 !important;
-    color: #ffffff !important;
+  background-color: #a5bc66 !important;
+  color: #ffffff !important;
 }
 
 div.mgnlEditorBar.area {
-    background-color: #efefef !important;
-    color: #689600 !important;
-    clear: both !important;
-    border-radius: 5px 5px 0 0 !important;
+  background-color: #efefef !important;
+  color: #689600 !important;
+  clear: both !important;
+  border-radius: 5px 5px 0 0 !important;
 }
 
 div.mgnlEditorBar.area.end {
-    height: 10px !important;
-    margin: 0 0 10px 0 !important;
-    border-radius: 0 0 5px 5px !important;
+  height: 10px !important;
+  margin: 0 0 10px 0 !important;
+  border-radius: 0 0 5px 5px !important;
 }
 
 /*
  * Component edit bar.
  */
 div.mgnlEditorBar.component {
-    background-color: #efefef !important;
+  background-color: #efefef !important;
 
-    /* See .mgnlEditorBar for an explanation of this */
-    color: #6a9000 !important;
+  /* See .mgnlEditorBar for an explanation of this */
+  color: #6a9000 !important;
 }
 
 div.mgnlPlaceholder {
@@ -160,10 +160,10 @@ div.mgnlEditorBarButtons {
  * Icon classes.
  */
 div.editorIcon {
-    line-height: 25px !important;
-    padding: 0 0 0 11px !important;
-    cursor: pointer !important;
-    font-size: 18px !important;
+  line-height: 25px !important;
+  padding: 0 0 0 11px !important;
+  cursor: pointer !important;
+  font-size: 18px !important;
 }
 
 
@@ -171,11 +171,11 @@ div.editorIcon {
  * Label on bars showing name of component or area.
  */
 div.mgnlEditorBarLabel {
-    overflow: hidden !important;
-    padding: 5px 0 0 16px !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
+  overflow: hidden !important;
+  padding: 5px 0 0 16px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
 }
 
 /*
@@ -221,52 +221,52 @@ div.mgnlLevel-max {
 
 /* drag source */
 .mgnlEditorBar.component.moveSource {
-    border-top: 1px solid #deeab7 !important;
-    border-left: 1px solid #deeab7 !important;
-    border-bottom: 1px solid #b3c587 !important;
-    border-right: 1px solid #b3c587 !important;
-    background-image: url("img/bars/mgnl-bar.component.deemphasized.png") !important;
+  border-top: 1px solid #deeab7 !important;
+  border-left: 1px solid #deeab7 !important;
+  border-bottom: 1px solid #b3c587 !important;
+  border-right: 1px solid #b3c587 !important;
+  background-image: url("img/bars/mgnl-bar.component.deemphasized.png") !important;
 }
 
 /* possible drop targets */
 .mgnlEditorBar.component.moveTarget {
-    border: 1px solid #d0234b !important;
+  border: 1px solid #d0234b !important;
 }
 
 /* selected drop target */
 .mgnlEditorBar.component.moveOver {
-    line-height: 16px !important;
-    border: 3px solid #d0234b !important;
+  line-height: 16px !important;
+  border: 3px solid #d0234b !important;
 }
 
 .mgnlEditorBar.component.moveOver .mgnlEditorBarLabel {
-    margin: 0 0 0 3px !important;
+  margin: 0 0 0 3px !important;
 }
 
 /* make component mgnlPlaceholder slightly less strong */
 .mgnlEditormgnlPlaceholder.component.moveOngoing .mgnlEditorBar {
-    border-top: 1px solid #deeab7 !important;
-    border-left: 1px solid #deeab7 !important;
-    border-bottom: 1px solid #b3c587 !important;
-    border-right: 1px solid #b3c587 !important;
+  border-top: 1px solid #deeab7 !important;
+  border-left: 1px solid #deeab7 !important;
+  border-bottom: 1px solid #b3c587 !important;
+  border-right: 1px solid #b3c587 !important;
 }
 
 .mgnlEditormgnlPlaceholder.component.moveOngoing .mgnlEditormgnlPlaceholderElements {
-    border: 2px dotted #b3c587 !important;
-    border-top: none;
+  border: 2px dotted #b3c587 !important;
+  border-top: none;
 }
 
 .mgnlEditormgnlPlaceholder.component.moveOngoing .mgnlEditorBarLabel {
-    display: none !important;
+  display: none !important;
 }
 
 .mgnlEditormgnlPlaceholder.component.moveOngoing .mgnlEditorPushButton {
-    display: none !important;
+  display: none !important;
 }
 
 div.mgnlEditorMoveDiv {
-    position: absolute !important;
-    z-index: 1000 !important;
+  position: absolute !important;
+  z-index: 1000 !important;
 }
 
 /* --- End of DnD definitions --- */
