@@ -18,9 +18,6 @@
   <sv:property sv:name="editable" sv:type="String">
     <sv:value>false</sv:value>
   </sv:property>
-  <sv:property sv:name="includeProperties" sv:type="String">
-    <sv:value>true</sv:value>
-  </sv:property>
   <sv:property sv:name="jcr:created" sv:type="Date">
     <sv:value>2013-05-06T09:36:40.322+02:00</sv:value>
   </sv:property>
