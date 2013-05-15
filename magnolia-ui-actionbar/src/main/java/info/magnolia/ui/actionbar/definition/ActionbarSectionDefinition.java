@@ -53,5 +53,5 @@ public interface ActionbarSectionDefinition {
      */
     List<ActionbarGroupDefinition> getGroups();
 
-    SectionRestrictionsDefinition getRestrictions();
+    SectionAvailabilityDefinition getAvailability();
 }

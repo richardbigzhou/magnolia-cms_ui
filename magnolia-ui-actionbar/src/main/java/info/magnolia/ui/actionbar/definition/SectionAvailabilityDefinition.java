@@ -33,12 +33,14 @@
  */
 package info.magnolia.ui.actionbar.definition;
 
+import info.magnolia.cms.security.operations.AccessDefinition;
+
 import java.util.Collection;
 
 /**
  * Definition of restrictions on when a section is shown.
  */
-public interface SectionRestrictionsDefinition {
+public interface SectionAvailabilityDefinition {
 
     /**
      * If true the section is only displayed when there's no selection.
@@ -49,6 +51,16 @@ public interface SectionRestrictionsDefinition {
      * If true the section is only displayed when a property is selected.
      */
     boolean isProperties();
+
+    /**
+     * If true (default) the section is displayed when a node is selected.
+     */
+    boolean isNodes();
+
+    /**
+     * Defines access for user roles.
+     */
+    AccessDefinition getAccess();
 
     /**
      * The section is only displayed if a selected node has one of these node types.

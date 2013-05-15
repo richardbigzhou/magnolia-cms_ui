@@ -33,16 +33,21 @@
  */
 package info.magnolia.ui.actionbar.definition;
 
+import info.magnolia.cms.security.operations.AccessDefinition;
+import info.magnolia.objectfactory.Components;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * Simple implementation for {@link SectionRestrictionsDefinition}.
+ * Simple implementation for {@link SectionAvailabilityDefinition}.
  */
-public class ConfiguredSectionRestrictionsDefinition implements SectionRestrictionsDefinition {
+public class ConfiguredSectionAvailabilityDefinition implements SectionAvailabilityDefinition {
 
     private boolean root = false;
     private boolean properties = false;
+    private boolean nodes = true;
+    private AccessDefinition access = Components.newInstance(AccessDefinition.class, new Object[] {});
     private Collection<String> nodeTypes = new ArrayList<String>();
 
     @Override
@@ -64,6 +69,15 @@ public class ConfiguredSectionRestrictionsDefinition implements SectionRestricti
     }
 
     @Override
+    public boolean isNodes() {
+        return this.nodes;
+    }
+
+    public void setNodes(boolean nodes) {
+        this.nodes = nodes;
+    }
+
+    @Override
     public Collection<String> getNodeTypes() {
         return nodeTypes;
     }
@@ -74,5 +88,14 @@ public class ConfiguredSectionRestrictionsDefinition implements SectionRestricti
 
     public void addNodeType(String nodeType) {
         nodeTypes.add(nodeType);
+    }
+
+    public void setAccess(AccessDefinition access) {
+        this.access = access;
+    }
+
+    @Override
+    public AccessDefinition getAccess() {
+        return this.access;
     }
 }
