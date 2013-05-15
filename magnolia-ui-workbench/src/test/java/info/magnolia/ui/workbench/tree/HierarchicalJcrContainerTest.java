@@ -126,7 +126,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         // THEN
         assertTrue(item instanceof JcrNodeAdapter);
-        assertEquals(node1.getIdentifier(), ((JcrNodeAdapter) item).getNodeIdentifier());
+        assertEquals(node1.getIdentifier(), ((JcrNodeAdapter) item).getItemId());
     }
 
     @Test

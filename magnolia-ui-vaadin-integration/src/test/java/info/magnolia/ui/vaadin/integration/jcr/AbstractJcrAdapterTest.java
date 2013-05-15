@@ -44,6 +44,7 @@ import java.util.Collection;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.Property;
+import javax.jcr.RepositoryException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -193,6 +194,11 @@ public class AbstractJcrAdapterTest {
 
         @Override
         protected void updateProperty(Item item, String propertyId, com.vaadin.data.Property property) {
+        }
+
+        @Override
+        public Item getModifiedJcrItem() throws RepositoryException {
+            return null;
         }
     }
 

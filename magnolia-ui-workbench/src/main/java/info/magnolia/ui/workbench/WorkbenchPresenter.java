@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.workbench;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.imageprovider.ImageProvider;
@@ -124,7 +123,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                 if (presenterDefinition.isActive()) {
                     activePresenter = presenter;
                     try {
-                        String workbenchRootItemId = JcrItemUtil.getItemId(JcrItemUtil.getNode(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath()));
+                        String workbenchRootItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
                         activePresenter.setSelectedItemId(workbenchRootItemId);
                     } catch (RepositoryException e) {
                         log.error("Could not find workbench root node", e);
@@ -202,7 +201,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
             } else {
                 log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.",
                         new Object[] { itemId, workbenchDefinition.getWorkspace(), workbenchDefinition.getPath() });
-                String workbenchRootItemId = JcrItemUtil.getItemId(JcrItemUtil.getNode(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath()));
+                String workbenchRootItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
                 activePresenter.setSelectedItemId( workbenchRootItemId);
             }
 

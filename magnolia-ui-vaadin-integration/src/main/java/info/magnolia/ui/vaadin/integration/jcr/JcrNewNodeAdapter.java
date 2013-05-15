@@ -37,9 +37,7 @@ import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.api.ModelConstants;
 
-import javax.jcr.AccessDeniedException;
 import javax.jcr.Item;
-import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -113,14 +111,13 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
      * Return the parent Node.
      */
     public Node getParentNode() {
-        return (Node) getJcrItem();
+        return getJcrItem();
     }
 
     /**
      * Create a new node linked o the parent node used to initialized this NewNodeAdapter.
      */
     private Node createNode() {
-        Node node = null;
         try {
             Node parent = getParentNode();
 
@@ -129,7 +126,7 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
                 setNodeName(getUniqueNewItemName(parent));
             }
 
-            node = parent.addNode(getNodeName(), getPrimaryNodeTypeName());
+            Node node = parent.addNode(getNodeName(), getPrimaryNodeTypeName());
 
             log.debug("create a new node for parent " + parent.getPath() + " with nodeId " + getNodeName());
             // Update property
@@ -155,7 +152,7 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
      * Create a new unique nodeName. If JCR_NAME if part of the properties, use this property as
      * desired nodeName.
      */
-    private String getUniqueNewItemName(final Item item) throws RepositoryException, ItemNotFoundException, AccessDeniedException {
+    private String getUniqueNewItemName(final Item item) throws RepositoryException {
         if (item == null) {
             throw new IllegalArgumentException("Item cannot be null.");
         }

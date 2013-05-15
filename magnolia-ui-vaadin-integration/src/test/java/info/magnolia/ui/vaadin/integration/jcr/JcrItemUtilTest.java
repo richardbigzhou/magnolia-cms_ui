@@ -55,7 +55,7 @@ public class JcrItemUtilTest {
         final String propertyId = nodeUuid + "@" + "name";
 
         // WHEN
-        final String result = JcrItemUtil.getNodeIdentifierFrom(propertyId);
+        final String result = JcrItemUtil.parseNodeIdentifier(propertyId);
 
         // THEN
         assertThat(result, equalTo(nodeUuid));
@@ -68,7 +68,7 @@ public class JcrItemUtilTest {
         final String propertyId = "ccb8ae64-3ad2-4ffd-93ce-367926f3bcd2" + "@" + propertyName;
 
         // WHEN
-        final String result = JcrItemUtil.getPropertyName(propertyId);
+        final String result = JcrItemUtil.parsePropertyName(propertyId);
 
         // THEN
         assertThat(result, equalTo(propertyName));
@@ -80,7 +80,7 @@ public class JcrItemUtilTest {
         final String propertyId = "ccb8ae64-3ad2-4ffd-93ce-367926f3bcd2" + "@" + "specialProp";
 
         // WHEN
-        final boolean result = JcrItemUtil.isPropertyId(propertyId);
+        final boolean result = JcrItemUtil.isPropertyItemId(propertyId);
 
         // THEN
         assertTrue("Result should be considered to be a propertyId", result);
@@ -92,7 +92,7 @@ public class JcrItemUtilTest {
         final String nodeId = "ccb8ae64-3ad2-4ffd-93ce-367926f3bcd2";
 
         // WHEN
-        final boolean result = JcrItemUtil.isPropertyId(nodeId);
+        final boolean result = JcrItemUtil.isPropertyItemId(nodeId);
 
         // THEN
         assertFalse("Result should not be considered to be a propertyId", result);
@@ -111,7 +111,7 @@ public class JcrItemUtilTest {
         final String result = JcrItemUtil.getItemId(property);
 
         // THEN
-        assertThat(result, equalTo(nodeUuid + JcrItemUtil.PROPERTY_NAME_AND_UUID_SEPARATOR + propertyName));
+        assertThat(result, equalTo(nodeUuid + JcrItemUtil.PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR + propertyName));
     }
 
     @Test

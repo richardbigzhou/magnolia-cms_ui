@@ -38,74 +38,54 @@ import info.magnolia.context.MgnlContext;
 import javax.jcr.Item;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Supports retrieving Jcr Items or uuids from itemId Strings and vice versa.
- *
- * each itemId can be a
- *   nodeId     -> the jcr uuid of the node
- *   propertyId -> the jcr uuid of the hosting node + #PROPERTY_NAME_AND_UUID_SEPARATOR + the name of the property
+ * Utility methods for item ids used in the container.
+ * <p/>
+ * The format is:
+ * <ul>
+ *     <li>for nodes &lt;node identifier&gt;
+ *     <li>for properties &lt;node identifier&gt;@&lt;propertyName&gt;
+ * </ul>
  */
 public class JcrItemUtil {
+
     /**
-     * String separating a properties name and the uuid of its node.
+     * String separating property name and node identifier.
      */
-    public static final String PROPERTY_NAME_AND_UUID_SEPARATOR = "@";
+    public static final String PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR = "@";
 
     private static final Logger log = LoggerFactory.getLogger(JcrItemUtil.class);
 
     /**
-     * @return all chars in front of #PROPERTY_NAME_AND_UUID_SEPARATOR - if it doesn't contain #PROPERTY_NAME_AND_UUID_SEPARATOR the provided itemId (then we assume it's already a nodeId)
+     * @return all chars in front of #PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR - if it doesn't contain #PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR the provided itemId (then we assume it's already a nodeId)
      */
-    public static String getNodeIdentifierFrom(final String itemId) {
-        return isPropertyId(itemId) ? itemId.substring(0, itemId.indexOf(PROPERTY_NAME_AND_UUID_SEPARATOR)) : itemId;
+    public static String parseNodeIdentifier(final String itemId) {
+        return isPropertyItemId(itemId) ? itemId.substring(0, itemId.indexOf(PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR)) : itemId;
     }
 
-    public static String getPropertyName(final String propertyId) {
-        return propertyId.substring(propertyId.indexOf(PROPERTY_NAME_AND_UUID_SEPARATOR) + 1);
+    public static String parsePropertyName(final String itemId) {
+        return itemId.substring(itemId.indexOf(PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR) + 1);
     }
 
-    public static boolean isPropertyId(final String itemId) {
-        return itemId.contains(PROPERTY_NAME_AND_UUID_SEPARATOR);
-    }
-
-    public static Node getNode(final String workspaceName, final String absPath) throws RepositoryException {
-        if (StringUtils.isNotEmpty(workspaceName) && StringUtils.isNotEmpty(absPath)) {
-            return MgnlContext.getJCRSession(workspaceName).getNode(absPath);
-        }
-        return null;
-    }
-
-    public static String getNodeIdentifier(final String workspaceName, final String absPath) throws RepositoryException {
-        return getNode(workspaceName, absPath).getIdentifier();
+    public static boolean isPropertyItemId(final String itemId) {
+        return itemId.contains(PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR);
     }
 
     /**
-     * Get uuid of the desired node or null in case it cannot be found.
+     * Returns the JCR Item represented by the given itemId or returns null if it doesn't exist.
      */
-    public static String getUuidOrNull(final String workspaceName, final String nodePath) {
-        String uuid = null;
-        try {
-            uuid = getNodeIdentifier(workspaceName, nodePath);
-        } catch (PathNotFoundException p) {
-            log.debug("Workspace {} does not contain node with path {}", workspaceName, nodePath);
-        } catch (RepositoryException e) {
-            log.error("Could not determine uuid for node with path " + nodePath + " in workspace " + workspaceName, e);
-        }
-        return uuid;
-    }
-
     public static Item getJcrItem(final String workspaceName, final String itemId) throws RepositoryException {
         if (itemId == null) {
             return null;
         }
-        final String nodeId = getNodeIdentifierFrom(itemId);
+        final String nodeId = parseNodeIdentifier(itemId);
 
         Node node;
         try {
@@ -115,11 +95,11 @@ public class JcrItemUtil {
             return null;
         }
 
-        if (!isPropertyId(itemId)) {
+        if (!isPropertyItemId(itemId)) {
             return node;
         }
 
-        final String propertyName = getPropertyName(itemId);
+        final String propertyName = parsePropertyName(itemId);
         if (node.hasProperty(propertyName)) {
             return node.getProperty(propertyName);
         }
@@ -131,11 +111,23 @@ public class JcrItemUtil {
     }
 
     public static String getItemId(final Item jcrItem) throws RepositoryException {
-        return jcrItem.isNode() ? ((Node) jcrItem).getIdentifier() : jcrItem.getParent().getIdentifier() + PROPERTY_NAME_AND_UUID_SEPARATOR + jcrItem.getName();
+        return jcrItem.isNode() ? ((Node) jcrItem).getIdentifier() : jcrItem.getParent().getIdentifier() + PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR + jcrItem.getName();
     }
 
+    /**
+     * Returns the itemId for a node at the given path if it exists, otherwise returns null.
+     */
     public static String getItemId(final String workspaceName, final String absPath) throws RepositoryException {
-        return getItemId(getNode(workspaceName, absPath));
-    }
 
+        if (StringUtils.isEmpty(workspaceName) || StringUtils.isEmpty(absPath)) {
+            return null;
+        }
+
+        Session session = MgnlContext.getJCRSession(workspaceName);
+        if (!session.nodeExists(absPath)) {
+            return null;
+        }
+
+        return getItemId(session.getNode(absPath));
+    }
 }

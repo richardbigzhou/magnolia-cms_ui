@@ -104,7 +104,7 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
     }
 
     /**
-     * @return The represented JCR Item, or null in case of {@link RepositoryException}.
+     * @return the JCR Item represented by this adapter, or null in case of {@link RepositoryException}.
      */
     @Override
     public javax.jcr.Item getJcrItem() {
@@ -118,7 +118,8 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
 
     // ABSTRACT IMPLEMENTATION OF PROPERTY CHANGES
 
-    public boolean hasChangedProperties() {
+    @Override
+    public boolean isModified() {
         return changedProperties.size() > 0;
     }
 

@@ -63,8 +63,6 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrNodeAdapter.class);
 
-    private String nodeIdentifier;
-
     private String primaryNodeType;
 
     private final Map<String, JcrItemNodeAdapter> children = new HashMap<String, JcrItemNodeAdapter>();
@@ -84,20 +82,13 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         super.initCommonAttributes(jcrItem);
         Node node = (Node) jcrItem;
         try {
-            nodeIdentifier = node.getIdentifier();
             if (StringUtils.isBlank(primaryNodeType)) {
                 primaryNodeType = node.getPrimaryNodeType().getName();
             }
         } catch (RepositoryException e) {
-            log.error("Could not retrieve identifier or primaryNodeType name of JCR Node.", e);
-            nodeIdentifier = UNIDENTIFIED;
+            log.error("Could not determine primaryNodeType name of JCR node", e);
             primaryNodeType = UNIDENTIFIED;
         }
-    }
-
-    @Override
-    public String getNodeIdentifier() {
-        return nodeIdentifier;
     }
 
     protected void setPrimaryNodeTypeName(String primaryNodeTypeName) {
@@ -113,12 +104,9 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         return removedChildren;
     }
 
-    /**
-     * @return Corresponding node or null if not existing.
-     */
     @Override
-    public Node getNodeFromRepository() {
-        return (Node) getJcrItem();
+    public Node getJcrItem() {
+        return (Node)super.getJcrItem();
     }
 
     /**
@@ -131,16 +119,18 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
 
         log.debug("Add new Property Item name " + id + " with value " + property.getValue());
         try {
-            if (!getNodeFromRepository().hasProperty((String) id)) {
+            Node node = getJcrItem();
+            String propertyName = (String) id;
+            if (!node.hasProperty(propertyName)) {
                 // Create Property.
-                getNodeFromRepository().setProperty((String) id, (String) property.getValue());
+                node.setProperty(propertyName, (String) property.getValue());
                 return true;
             } else {
-                log.warn("Property " + id + " already exist.do nothing");
+                log.warn("Property " + id + " already exist.");
                 return false;
             }
         } catch (RepositoryException e) {
-            log.error("", e);
+            log.error("Unable to add JCR property", e);
             return false;
         }
     }
@@ -154,7 +144,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         Object value;
         int type = PropertyType.STRING;
         try {
-            final Node jcrNode = getNodeFromRepository();
+            final Node jcrNode = getJcrItem();
             if (!jcrNode.hasProperty((String) id)) {
                 if (ModelConstants.JCR_NAME.equals(id)) {
                     value = jcrNode.getName();
@@ -186,6 +176,18 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         }
     }
 
+    @Override
+    public Node getModifiedJcrItem() throws RepositoryException {
+        // get Node from repository
+        Node node = getJcrItem();
+
+        // Update Node properties and children
+        updateProperties(node);
+        updateChildren(node);
+
+        return node;
+    }
+
     /**
      * Gets the JCR Node and updates its properties and children. Update will create new properties,
      * set new values and remove those requested for removal. Children will also be added, updated
@@ -193,19 +195,11 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
      */
     @Override
     public Node getNode() {
-        Node node = null;
         try {
-            // get Node from repository
-            node = (Node) getJcrItem();
-
-            // Update Node properties and children
-            updateProperties(node);
-            updateChildren(node);
-
+            return getModifiedJcrItem();
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
-        return node;
     }
 
     /**

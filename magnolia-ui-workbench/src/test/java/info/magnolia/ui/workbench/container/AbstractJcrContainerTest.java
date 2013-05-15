@@ -124,7 +124,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         final com.vaadin.data.Item item = jcrContainer.getItem(containerItemId);
 
         // THEN
-        assertEquals(node1.getIdentifier(), ((JcrNodeAdapter) item).getNodeIdentifier());
+        assertEquals(node1.getIdentifier(), ((JcrNodeAdapter) item).getItemId());
     }
 
     @Test
@@ -162,7 +162,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
 
         // THEN
         assertEquals(containerItemId2, containerItemId2Res);
-        assertEquals(node2.getIdentifier(), ((JcrNodeAdapter) jcrContainer.getItem(containerItemId2Res)).getNodeIdentifier());
+        assertEquals(node2.getIdentifier(), ((JcrNodeAdapter) jcrContainer.getItem(containerItemId2Res)).getItemId());
     }
 
     @Test
@@ -265,7 +265,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
 
         // THEN
 
-        assertEquals(node1.getIdentifier(), ((JcrNodeAdapter) item).getNodeIdentifier());
+        assertEquals(node1.getIdentifier(), ((JcrNodeAdapter) item).getItemId());
     }
 
     @Test

@@ -85,8 +85,8 @@ public class AbstractJcrNodeAdapterTest {
         DummyJcrNodeAdapter adapter = new DummyJcrNodeAdapter(testNode);
 
         // THEN
-        assertEquals(testNode.getIdentifier(), adapter.getNodeIdentifier());
-        assertEquals(testNode.getIdentifier(), ((Node) adapter.getJcrItem()).getIdentifier());
+        assertEquals(testNode.getIdentifier(), adapter.getItemId());
+        assertEquals(testNode.getIdentifier(), adapter.getJcrItem().getIdentifier());
         assertEquals(testNode.getPrimaryNodeType().getName(), adapter.getPrimaryNodeTypeName());
     }
 

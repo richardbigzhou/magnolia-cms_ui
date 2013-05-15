@@ -39,9 +39,11 @@ import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.api.ModelConstants;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.jcr.Item;
-import javax.jcr.Node;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -53,7 +55,7 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Property;
 
 /**
- * Base implementation of an {@link com.vaadin.data.Item} wrapping/representing a {@link javax.jcr.Property}.
+ * Represents a JCR property as a Vaadin data Item with three fixed properties for its name, type and value.
  */
 public class JcrPropertyAdapter extends AbstractJcrAdapter {
 
@@ -61,36 +63,28 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
 
     public static final String TYPE_PROPERTY = "type";
 
-    // Init
-    private static final Logger log = LoggerFactory.getLogger(JcrPropertyAdapter.class);
+    public static final Set<String> PROPERTY_IDS = Collections.unmodifiableSet(new HashSet<String>() {{
+        add(ModelConstants.JCR_NAME);
+        add(TYPE_PROPERTY);
+        add(VALUE_PROPERTY);
+    }});
 
-    private String jcrPropertyName;
+    private static final Logger log = LoggerFactory.getLogger(JcrPropertyAdapter.class);
 
     public JcrPropertyAdapter(javax.jcr.Property jcrProperty) {
         super(jcrProperty);
-        setPropertyName(jcrProperty);
     }
 
-    /**
-     * Set PropertyName.
-     */
-    private void setPropertyName(javax.jcr.Property jcrProperty) {
-        String propertyIdentifier = null;
-        try {
-            propertyIdentifier = jcrProperty.getName();
-        } catch (RepositoryException e) {
-            log.error("Couldn't retrieve identifier of jcr property", e);
-            propertyIdentifier = UNIDENTIFIED;
-        }
-        this.jcrPropertyName = propertyIdentifier;
+    @Override
+    public javax.jcr.Property getJcrItem() {
+        return (javax.jcr.Property)super.getJcrItem();
     }
 
-    public String getPropertyName() {
-        return jcrPropertyName;
-    }
-
-    public javax.jcr.Property getProperty() throws RepositoryException {
-        return (javax.jcr.Property) getJcrItem();
+    @Override
+    public javax.jcr.Property getModifiedJcrItem() throws RepositoryException {
+        javax.jcr.Property jcrItem = getJcrItem();
+        super.updateProperties(jcrItem);
+        return getJcrItem();
     }
 
     @Override
@@ -98,15 +92,16 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
         Object value;
         int type = PropertyType.STRING;
         try {
+            javax.jcr.Property jcrProperty = getJcrItem();
             if (ModelConstants.JCR_NAME.equals(id)) {
-                value = getProperty().getName();
+                value = jcrProperty.getName();
             } else if (VALUE_PROPERTY.equals(id)) {
-                value = PropertyUtil.getValueObject(getProperty().getValue());
-                type = getProperty().getType();
+                value = PropertyUtil.getValueObject(jcrProperty.getValue());
+                type = jcrProperty.getType();
             } else if (TYPE_PROPERTY.equals(id)) {
-                value = PropertyType.nameFromValue(getProperty().getType());
+                value = PropertyType.nameFromValue(jcrProperty.getType());
             } else {
-                value = null;
+                return null;
             }
         } catch (RepositoryException re) {
             log.error("Could not get property for " + id, re);
@@ -121,13 +116,11 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
 
     @Override
     public Collection<?> getItemPropertyIds() {
-        throw new UnsupportedOperationException();
+        return PROPERTY_IDS;
     }
 
     /**
-     * JcrPropertyAdapter custom logic to update one single vaadin property. If updated propertyId is {@link info.magnolia.ui.api.ModelConstants#JCR_NAME}, then rename JCR Property. If propertyId
-     * is {@link #VALUE_PROPERTY}, set new property value. If propertyId is {@link #TYPE_PROPERTY}, set new property
-     * type. Otherwise, do nothing.
+     * Updates one of the three supported properties or does nothing if the given propertyId is something else.
      */
     @Override
     protected void updateProperty(Item item, String propertyId, Property property) {
@@ -136,23 +129,23 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
         }
         javax.jcr.Property jcrProperty = (javax.jcr.Property) item;
 
-        // JCR_NAME name then move this Node
         if (ModelConstants.JCR_NAME.equals(propertyId)) {
             String jcrName = (String) property.getValue();
             if (jcrName != null && !jcrName.isEmpty()) {
                 try {
-                    // Never rename property to same name, otherwise PropertyUtil would delete it.
-                    boolean isNameUnchanged = (jcrName.equals(jcrProperty.getName()));
-                    if (isNameUnchanged) {
-                        return;
+                    if (!(jcrName.equals(jcrProperty.getName()))) {
+
+                        // make sure new path is available
+                        jcrName = Path.getUniqueLabel(jcrProperty.getSession(), jcrProperty.getParent().getPath(), jcrName);
+
+                        // rename the node
+                        javax.jcr.Property newProperty = PropertyUtil.renameProperty(jcrProperty, jcrName);
+
+                        // update internal state
+                        setItemId(JcrItemUtil.getItemId(newProperty));
                     }
-                    // make sure new path is clear
-                    Node parent = jcrProperty.getParent();
-                    jcrName = Path.getUniqueLabel(jcrProperty.getSession(), parent.getPath(), jcrName);
-                    PropertyUtil.renameProperty(jcrProperty, jcrName);
-                    setItemId(JcrItemUtil.getItemId(parent.getProperty(jcrName)));
                 } catch (RepositoryException e) {
-                    log.error("Could not rename JCR Property.", e);
+                    log.error("Could not rename JCR property", e);
                 }
             }
         } else if (VALUE_PROPERTY.equals(propertyId)) {
@@ -165,17 +158,18 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
                     Value newValue = PropertyUtil.createValue(valueString, valueType, valueFactory);
                     jcrProperty.setValue(newValue);
                 } catch (RepositoryException e) {
-                    log.error("Could not set JCR Property", e);
+                    log.error("Could not set JCR property", e);
                 }
             }
         } else if (TYPE_PROPERTY.equals(propertyId)) {
             if (property.getValue() != null) {
+
                 // get new type from string
                 int newType;
                 try {
                     newType = PropertyType.valueFromName(property.getValue().toString());
                 } catch (IllegalArgumentException e) {
-                    log.warn("Could not set new type for JCR Property, unknown type string.", e);
+                    log.warn("Could not set new type for JCR property, unknown type string", e);
                     return;
                 }
 
@@ -187,31 +181,19 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
                     Value newValue = PropertyUtil.createValue(valueString, newType, valueFactory);
                     jcrProperty.setValue(newValue);
                 } catch (RepositoryException e) {
-                    log.error("Could not set new type for JCR Property.", e);
+                    log.error("Could not set new type for JCR property", e);
                 }
-
             }
         }
     }
 
     @Override
     public boolean addItemProperty(Object id, Property property) {
-        try {
-            getProperty().setValue((String) property.getValue());
-        } catch (RepositoryException re) {
-            throw new RuntimeRepositoryException(re);
-        }
-        return true;
+        throw new UnsupportedOperationException("addItemProperty");
     }
 
     @Override
     public boolean removeItemProperty(Object id) throws UnsupportedOperationException {
-        try {
-            getProperty().remove();
-        } catch (RepositoryException re) {
-            throw new RuntimeRepositoryException(re);
-        }
-        return true;
+        throw new UnsupportedOperationException("removeItemProperty");
     }
-
 }

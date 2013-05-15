@@ -78,7 +78,7 @@ public class DeactivationAction extends CommandActionBase<DeactivationActionDefi
 
     @Override
     protected void onPostExecute() throws Exception {
-        Node jcrNode = jcrNodeAdapter.getNodeFromRepository();
+        Node jcrNode = jcrNodeAdapter.getJcrItem();
         eventBus.fireEvent(new ContentChangedEvent(jcrNode.getSession().getWorkspace().getName(), jcrNode.getPath()));
 
         // Display a notification

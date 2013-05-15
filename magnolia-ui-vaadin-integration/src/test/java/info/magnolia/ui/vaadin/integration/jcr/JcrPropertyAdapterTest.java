@@ -205,8 +205,8 @@ public class JcrPropertyAdapterTest {
         node.setProperty(booleanPropertyName, booleanValue);
         JcrPropertyAdapter numericAdapter = new JcrPropertyAdapter(node.getProperty(numericPropertyName));
         JcrPropertyAdapter booleanAdapter = new JcrPropertyAdapter(node.getProperty(booleanPropertyName));
-        int numericType = numericAdapter.getProperty().getType();
-        int booleanType = booleanAdapter.getProperty().getType();
+        int numericType = numericAdapter.getJcrItem().getType();
+        int booleanType = booleanAdapter.getJcrItem().getType();
         String newIntValue = "43";
         String newBooleanValue = "false";
 

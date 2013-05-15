@@ -50,7 +50,7 @@ import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -254,40 +254,53 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
 
     private void editItem(ItemEditedEvent event) {
         Item item = event.getItem();
-        // don't save if no value change occurred on adapter
-        if (!(item instanceof AbstractJcrAdapter) || !((AbstractJcrAdapter) item).hasChangedProperties()) {
+
+        // we support only JCR item adapters
+        if (!(item instanceof JcrItemAdapter)) {
+            return;
+        }
+
+        // don't save if no value changes occurred on adapter
+        if (!((JcrItemAdapter) item).isModified()) {
             return;
         }
 
         if (item instanceof JcrItemNodeAdapter) {
             // Saving JCR Node, getting updated node first
-            Node node = ((JcrItemNodeAdapter) item).getNode();
+            JcrItemNodeAdapter nodeAdapter = (JcrItemNodeAdapter) item;
             try {
+
+                // get modifications
+                Node node = nodeAdapter.getModifiedJcrItem();
+
                 LastModified.update(node);
                 node.getSession().save();
 
-                // in case the node changed name
+                // update workbench selection in case the node changed name
                 workbenchPresenter.select(JcrItemUtil.getItemId(node));
 
             } catch (RepositoryException e) {
-                log.error("Could not save changes to node.", e);
+                log.error("Could not save changes to node", e);
             }
 
         } else if (item instanceof JcrPropertyAdapter) {
             // Saving JCR Property, update it first
+            JcrPropertyAdapter propertyAdapter = (JcrPropertyAdapter) item;
             try {
-                // get parent first because once property is updated, it won't exist anymore.
-                Property property = ((JcrPropertyAdapter) item).getProperty();
-                Node parent = property.getParent();
-                ((JcrPropertyAdapter) item).updateProperties();
+                // get parent first because once property is updated, it won't exist anymore if the name changes
+                Node parent = propertyAdapter.getJcrItem().getParent();
+
+                // get modifications
+                propertyAdapter.getModifiedJcrItem();
+
                 LastModified.update(parent);
                 parent.getSession().save();
 
-                // in case the property changed name
-                workbenchPresenter.select(JcrItemUtil.getItemId(((JcrPropertyAdapter) item).getProperty()));
+                // update workbench selection in case the property changed name
+                workbenchPresenter.select(JcrItemUtil.getItemId(propertyAdapter.getJcrItem()));
 
             } catch (RepositoryException e) {
-                log.error("Could not save changes to node.", e);
+                log.error("Could not save changes to property", e);
             }
         }
     }

@@ -316,7 +316,7 @@ public class BrowserSubApp extends BaseSubApp {
                     if (event.getItemId() == null) {
                         location.updateNodePath("/");
                     } else {
-                        Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.getNodeIdentifierFrom(event.getItemId()));
+                        Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.parseNodeIdentifier(event.getItemId()));
                         location.updateNodePath(selected.getPath());
                     }
                 } catch (RepositoryException e) {

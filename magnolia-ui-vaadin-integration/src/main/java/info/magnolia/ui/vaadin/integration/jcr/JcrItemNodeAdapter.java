@@ -36,20 +36,12 @@ package info.magnolia.ui.vaadin.integration.jcr;
 import java.util.Map;
 
 import javax.jcr.Node;
-
-import com.vaadin.data.Item;
+import javax.jcr.RepositoryException;
 
 /**
  * Common definition for child handling and corresponding Node access.
  */
-public interface JcrItemNodeAdapter extends Item {
-
-    /**
-     * Gets the node identifier, i.e. the JCR uuid.
-     *
-     * @return the node identifier
-     */
-    String getNodeIdentifier();
+public interface JcrItemNodeAdapter extends JcrItemAdapter {
 
     /**
      * Return the Primary node type Name. This Node type is defined based on the related JCR Node.
@@ -64,7 +56,13 @@ public interface JcrItemNodeAdapter extends Item {
      * stored Jcr node. </b> To get the Jcr Node including the changes done on the current Item, use
      * getNode().
      */
-    Node getNodeFromRepository();
+    Node getJcrItem();
+
+    /**
+     * Return the Jcr Node represented by this Item, Including the Modification done on Property and
+     * Child Nodes (added or removed).
+     */
+    Node getModifiedJcrItem() throws RepositoryException;
 
     /**
      * Return the Jcr Node represented by this Item, Including the Modification done on Property and

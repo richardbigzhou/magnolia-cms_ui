@@ -33,10 +33,15 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
+import javax.jcr.RepositoryException;
+
 import com.vaadin.data.Item;
 
 /**
- * Define common operation for Jcr Item Adapter.
+ * Represents a JCR Item (node or property) as a Vaadin data Item.
+ *
+ * @see com.vaadin.data.Item
+ * @see javax.jcr.Item
  */
 public interface JcrItemAdapter extends Item {
 
@@ -48,4 +53,10 @@ public interface JcrItemAdapter extends Item {
 
     javax.jcr.Item getJcrItem();
 
+    /**
+     * Returns the JCR Item represented by this Item with any modifications applied.
+     */
+    javax.jcr.Item getModifiedJcrItem() throws RepositoryException;
+
+    boolean isModified();
 }
