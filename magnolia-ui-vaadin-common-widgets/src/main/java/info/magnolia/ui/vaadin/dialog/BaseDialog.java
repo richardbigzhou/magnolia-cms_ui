@@ -55,8 +55,6 @@ import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
-import elemental.events.KeyboardEvent.KeyCode;
-
 /**
  * Basic implementation of dialogs.
  * Provides Action registration and callbacks to the view.
@@ -87,8 +85,9 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
                 BaseDialog.this.setDescriptionVisibility(isVisible);
             }
         });
+
         // By default we only register an ESC shortcut bound to the cancel action
-        addShortcut("cancel", KeyCode.ESC, null);
+        // addShortcut("cancel", KeyCode.ESCAPE);
     }
 
     @Override
@@ -157,9 +156,9 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
      * <p>
      * The composition root must be set to non-null value before the component can be used. The composition root can only be set once.
      * </p>
-     *
+     * 
      * @param newContent
-     *            the root of the composition component tree.
+     * the root of the composition component tree.
      */
     protected void replaceComponent(Component newContent) {
         if (newContent != null) {
@@ -178,7 +177,6 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         markAsDirty();
 
     }
-
 
     public Component getContent() {
         return (Component) getState().content;
@@ -231,17 +229,18 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         addActionCallback(actionName, callback);
     }
 
-    public void addShortcut(final String actionName, final int keyCode, final int... modifiers) {
-        final ShortcutListener shortcut = new ShortcutListener("", keyCode, modifiers) {
-
-            @Override
-            public void handleAction(Object sender, Object target) {
-                doFireAction(actionName);
-            }
-        };
-        addShortcutListener(shortcut);
-        actionShortcutMap.put(actionName, shortcut);
-    }
+    /*
+     * protected void addShortcut(final String actionName, final int keyCode, final int... modifiers) {
+     * final ShortcutListener shortcut = new ShortcutListener("", keyCode, modifiers) {
+     * 
+     * @Override
+     * public void handleAction(Object sender, Object target) {
+     * doFireAction(actionName);
+     * }
+     * };
+     * addShortcutListener(shortcut);
+     * }
+     */
 
     public void removeShortcut(String actionName) {
         removeShortcutListener(actionShortcutMap.get(actionName));
@@ -276,7 +275,7 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         removeListener("descriptionVisibilityEvent", DescriptionVisibilityEvent.class, handler);
     }
 
-    private void doFireAction(final String actionId) {
+    public void doFireAction(final String actionId) {
         Object[] array = actionCallbackMap.get(actionId).toArray();
         for (Object l : array) {
             ((DialogActionListener) l).onActionExecuted(actionId);
@@ -301,7 +300,7 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
 
         static {
             try {
-                ON_DIALOG_CLOSE = DialogCloseEvent.Handler.class.getDeclaredMethod("onClose", new Class[]{DialogCloseEvent.class});
+                ON_DIALOG_CLOSE = DialogCloseEvent.Handler.class.getDeclaredMethod("onClose", new Class[] { DialogCloseEvent.class });
             } catch (final java.lang.NoSuchMethodException e) {
                 throw new java.lang.RuntimeException(e);
             }
