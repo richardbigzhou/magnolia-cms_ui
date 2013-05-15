@@ -89,6 +89,7 @@
       height: 20px;
       line-height: 20px;
       overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     tr.v-selected .v-table-cell-content {
