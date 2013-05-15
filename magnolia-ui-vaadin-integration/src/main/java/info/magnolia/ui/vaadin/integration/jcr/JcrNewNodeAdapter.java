@@ -163,8 +163,10 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
         if (getChangedProperties().containsKey(ModelConstants.JCR_NAME)) {
             nodeName = getChangedProperties().get(ModelConstants.JCR_NAME).toString();
             getChangedProperties().remove(ModelConstants.JCR_NAME);
+            nodeName = StringUtils.isNotBlank(nodeName) ? nodeName : "untitled";
+            nodeName = Path.getValidatedLabel(nodeName);
         }
 
-        return Path.getUniqueLabel(item.getSession(), item.getPath(), StringUtils.isNotBlank(nodeName) ? nodeName : "untitled");
+        return Path.getUniqueLabel(item.getSession(), item.getPath(), nodeName);
     }
 }
