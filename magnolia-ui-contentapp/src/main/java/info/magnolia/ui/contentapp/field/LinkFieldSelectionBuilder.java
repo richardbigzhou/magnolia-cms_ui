@@ -130,6 +130,6 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
         final String propertyValue = String.valueOf(item.getItemProperty(propertyName).getValue());
         // TODO 20130513 mgeljic get fallback root path from workbench definition
         final String path = LinkFieldBuilder.PATH_PROPERTY_NAME.equals(propertyName) && StringUtils.isNotBlank(propertyValue) ? propertyValue : "/";
-        workbenchPresenter.selectPath(path);
+        workbenchPresenter.select(path);
     }
 }

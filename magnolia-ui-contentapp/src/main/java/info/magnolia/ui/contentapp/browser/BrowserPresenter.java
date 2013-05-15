@@ -160,7 +160,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
                         if (!JcrItemUtil.itemExists(getWorkspace(), getSelectedItemId())) {
                             // If the selected node no longer exists we revert selection to the root
                             String workbenchRootItemId = JcrItemUtil.getItemId(JcrItemUtil.getNode(subAppDescriptor.getWorkbench().getWorkspace(), subAppDescriptor.getWorkbench().getPath()));
-                            workbenchPresenter.selectPath(workbenchRootItemId);
+                            workbenchPresenter.select(workbenchRootItemId);
                         } else {
                             // If the selected node does exists refresh the preview image in case it was changed
                             refreshActionbarPreviewImage(itemId, event.getWorkspace());
@@ -267,7 +267,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
                 node.getSession().save();
 
                 // in case the node changed name
-                workbenchPresenter.selectPath(JcrItemUtil.getItemId(node));
+                workbenchPresenter.select(JcrItemUtil.getItemId(node));
 
             } catch (RepositoryException e) {
                 log.error("Could not save changes to node.", e);
@@ -284,7 +284,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
                 parent.getSession().save();
 
                 // in case the property changed name
-                workbenchPresenter.selectPath(JcrItemUtil.getItemId(((JcrPropertyAdapter) item).getProperty()));
+                workbenchPresenter.select(JcrItemUtil.getItemId(((JcrPropertyAdapter) item).getProperty()));
 
             } catch (RepositoryException e) {
                 log.error("Could not save changes to node.", e);

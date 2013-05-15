@@ -123,7 +123,12 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                 contentPresenters.put(presenterDefinition.getViewType().getText(), presenter);
                 if (presenterDefinition.isActive()) {
                     activePresenter = presenter;
-                    activePresenter.setSelectedItemId(workbenchDefinition.getPath());
+                    try {
+                        String workbenchRootItemId = JcrItemUtil.getItemId(JcrItemUtil.getNode(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath()));
+                        activePresenter.setSelectedItemId(workbenchRootItemId);
+                    } catch (RepositoryException e) {
+                        log.error("Could not find workbench root node", e);
+                    }
                 }
             } else {
                 throw new RuntimeException("The provided view type [" + presenterDefinition.getViewType().getText() + "] is not valid.");
@@ -176,7 +181,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         view.setViewType(viewType);
 
         // make sure selection is kept when switching views
-        selectPath(itemId);
+        select(itemId);
     }
 
     public String getWorkspace() {
@@ -187,17 +192,20 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         return activePresenter.getSelectedItemId();
     }
 
-    public void selectPath(String itemId) {
-        // restore selection
-        boolean itemExists = itemExists(itemId);
-        if (!itemExists) {
-            log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.",
-                    new Object[] { itemId, workbenchDefinition.getWorkspace(), workbenchDefinition.getPath() });
-        }
-
-        activePresenter.setSelectedItemId(itemExists ? itemId : workbenchDefinition.getPath());
-
+    public void select(String itemId) {
         try {
+
+            // restore selection
+
+            if (itemExists(itemId)) {
+                activePresenter.setSelectedItemId(itemId);
+            } else {
+                log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.",
+                        new Object[] { itemId, workbenchDefinition.getWorkspace(), workbenchDefinition.getPath() });
+                String workbenchRootItemId = JcrItemUtil.getItemId(JcrItemUtil.getNode(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath()));
+                activePresenter.setSelectedItemId( workbenchRootItemId);
+            }
+
             Item jcrItem = JcrItemUtil.getJcrItem(getWorkspace(), itemId);
 
             JcrItemAdapter itemAdapter;
@@ -229,7 +237,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     public void resynch(final String path, final ContentView.ViewType viewType, final String query) {
         setViewType(viewType);
-        selectPath(path);
+        select(path);
 
         if (viewType == ViewType.SEARCH) {
             doSearch(query);
