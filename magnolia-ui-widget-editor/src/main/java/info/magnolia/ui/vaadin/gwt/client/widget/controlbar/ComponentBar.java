@@ -48,9 +48,12 @@ public class ComponentBar extends AbstractBar {
     private final ComponentListener listener;
 
     public ComponentBar(MgnlComponent mgnlElement) {
+        super(mgnlElement);
 
         this.listener = mgnlElement;
-        addStyleName("component");
+        addStyleName(COMPONENT_CLASS_NAME);
+
+        initLayout();
 
         /*
          * if (DragDropEventBase.isSupported()) {
@@ -58,21 +61,10 @@ public class ComponentBar extends AbstractBar {
          *
          * }
          */
-        initLayout();
 
     }
 
-/*    public void setDraggable(boolean draggable) {
-        if (DragDropEventBase.isSupported()) {
-            if (draggable) {
-                this.getElement().setDraggable(Element.DRAGGABLE_TRUE);
-                getStyle().setCursor(Cursor.MOVE);
-            } else {
-                this.getElement().setDraggable(Element.DRAGGABLE_FALSE);
-                getStyle().setCursor(Cursor.DEFAULT);
-            }
-        }
-    }*/
+
 
     @Override
     protected String getLabel() {
@@ -83,8 +75,8 @@ public class ComponentBar extends AbstractBar {
     protected void createControls() {
         if (listener.hasEditButton()) {
             final Label edit = new Label();
-            edit.setStyleName(ICON_CLASSNAME);
-            edit.addStyleName(EDIT_CLASSNAME);
+            edit.setStyleName(ICON_CLASS_NAME);
+            edit.addStyleName(EDIT_CLASS_NAME);
             edit.addClickHandler(new ClickHandler() {
 
                 @Override
@@ -96,6 +88,18 @@ public class ComponentBar extends AbstractBar {
             addButton(edit);
         }
     }
+
+    /*    public void setDraggable(boolean draggable) {
+        if (DragDropEventBase.isSupported()) {
+            if (draggable) {
+                this.getElement().setDraggable(Element.DRAGGABLE_TRUE);
+                getStyle().setCursor(Cursor.MOVE);
+            } else {
+                this.getElement().setDraggable(Element.DRAGGABLE_FALSE);
+                getStyle().setCursor(Cursor.DEFAULT);
+            }
+        }
+    }*/
 
 /*    private void createDragAndDropHandlers() {
         DragAndDrop.dragAndDrop(getEventBus(), this);

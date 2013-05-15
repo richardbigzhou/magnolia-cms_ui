@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.gwt.client.editor.dom;
 import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.getI18nMessage;
 
 import info.magnolia.cms.security.operations.OperationPermissionDefinition;
+import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.NewAreaEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.NewComponentEvent;
@@ -105,21 +106,6 @@ public class MgnlArea extends MgnlElement implements AreaListener {
     }
 
     @Override
-    public boolean isPage() {
-        return false;
-    }
-
-    @Override
-    public boolean isArea() {
-        return true;
-    }
-
-    @Override
-    public boolean isComponent() {
-        return false;
-    }
-
-    @Override
     public void createOptionalArea() {
         String workspace = getAttribute("workspace");
         String path = getAttribute("path");
@@ -178,6 +164,13 @@ public class MgnlArea extends MgnlElement implements AreaListener {
         String label = getAttribute("label");
         boolean optional = Boolean.parseBoolean(getAttribute("optional"));
         return label + ((optional) ? " (optional)" : "");
+    }
+
+    @Override
+    public boolean isBoxPlaceHolder() {
+        Element marker = getComponentMarkerElement();
+        boolean onlyBar = (marker != null && marker.getAttribute(AreaDefinition.CMS_ADD).equals("bar"));
+        return !onlyBar;
     }
 
     @Override

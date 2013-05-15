@@ -51,5 +51,7 @@ public interface AreaListener {
 
     String getPlaceHolderLabel();
 
+    boolean isBoxPlaceHolder();
+
     boolean hasAddComponentButton();
 }

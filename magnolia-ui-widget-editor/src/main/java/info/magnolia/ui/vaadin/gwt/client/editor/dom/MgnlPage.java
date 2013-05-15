@@ -51,19 +51,4 @@ public class MgnlPage extends MgnlElement {
     public AbstractElement getTypedElement() {
         return new PageElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"));
     }
-
-    @Override
-    public boolean isPage() {
-        return true;
-    }
-
-    @Override
-    public boolean isArea() {
-        return false;
-    }
-
-    @Override
-    public boolean isComponent() {
-        return false;
-    }
 }

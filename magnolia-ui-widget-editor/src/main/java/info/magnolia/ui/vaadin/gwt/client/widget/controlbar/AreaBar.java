@@ -49,11 +49,11 @@ public class AreaBar extends AbstractBar {
     private final AreaListener listener;
 
     public AreaBar(MgnlArea mgnlElement) {
-        listener = mgnlElement;
+        super(mgnlElement);
+        this.listener = mgnlElement;
 
-        this.addStyleName("area");
+        this.addStyleName(AREA_CLASS_NAME);
         initLayout();
-
     }
 
     @Override
@@ -65,8 +65,8 @@ public class AreaBar extends AbstractBar {
     protected void createControls() {
         if (listener.hasAddButton()) {
             final Label add = new Label();
-            add.setStyleName(ICON_CLASSNAME);
-            add.addStyleName(ADD_CLASSNAME);
+            add.setStyleName(ICON_CLASS_NAME);
+            add.addStyleName(ADD_CLASS_NAME);
             add.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
@@ -77,8 +77,8 @@ public class AreaBar extends AbstractBar {
         }
         if (listener.hasEditButton()) {
             final Label edit = new Label();
-            edit.setStyleName(ICON_CLASSNAME);
-            edit.addStyleName(EDIT_CLASSNAME);
+            edit.setStyleName(ICON_CLASS_NAME);
+            edit.addStyleName(EDIT_CLASS_NAME);
             edit.addClickHandler(new ClickHandler() {
 
                 @Override

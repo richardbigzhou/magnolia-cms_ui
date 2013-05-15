@@ -69,7 +69,7 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
                 addToModel(placeHolder);
             }
 
-            AreaEndBar endBar = new AreaEndBar();
+            AreaEndBar endBar = new AreaEndBar(getMgnlElement());
             attachAreaEndBar(endBar);
             addToModel(endBar);
 

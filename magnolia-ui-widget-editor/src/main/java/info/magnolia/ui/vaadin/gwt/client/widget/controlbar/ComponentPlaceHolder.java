@@ -33,67 +33,93 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
-import info.magnolia.rendering.template.AreaDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
-import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.AreaListener;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 
 /**
  * A Widget for adding components to area.
  */
-public class ComponentPlaceHolder extends AbstractBar {
+public class ComponentPlaceHolder extends FlowPanel {
 
-    protected final static String ICON_CLASSNAME = "editorIcon";
-    protected final static String ADD_CLASSNAME = "icon-add-item";
+    private final static String PLACEHOLDER_CLASS_NAME = "mgnlPlaceholder";
+    private final static String PLACEHOLDER_ELEMENT_BOX_CLASS_NAME = "mgnlPlaceholderBox";
 
-    private final AreaListener listener;
+    private final MgnlArea listener;
+
+    private PlaceHolderBar placeHolderBar;
 
     public ComponentPlaceHolder(MgnlArea area) throws IllegalArgumentException {
+
         this.listener = area;
+        this.placeHolderBar = new PlaceHolderBar(area);
+        setStyleName(AbstractBar.EDITOR_CLASS_NAME);
+        addStyleName(PLACEHOLDER_CLASS_NAME);
 
-        this.addStyleName("component placeholder");
-
-        Element marker = area.getComponentMarkerElement();
-        boolean onlyBar = (marker != null && marker.getAttribute(AreaDefinition.CMS_ADD).equals("bar"));
-
-        if (!onlyBar) {
-            this.addStyleName("box");
-        }
-
+        setVisible(false);
         initLayout();
-
     }
 
-    @Override
-    protected String getLabel() {
-        return listener.getPlaceHolderLabel();
-    }
+    protected void initLayout() {
+        add(placeHolderBar);
+        if (listener.isBoxPlaceHolder()) {
 
-    @Override
-    protected void createControls() {
-
-        if (listener.hasAddComponentButton()) {
-            final Label add = new Label();
-            add.setStyleName(ICON_CLASSNAME);
-            add.addStyleName(ADD_CLASSNAME);
-            add.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    listener.createNewComponent();
-                }
-            });
-            addButton(add);
+            Element element = DOM.createDiv();
+            element.addClassName(AbstractBar.EDITOR_CLASS_NAME);
+            element.addClassName(PLACEHOLDER_ELEMENT_BOX_CLASS_NAME);
+            getElement().appendChild(element);
         }
     }
 
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        placeHolderBar.setVisible(visible);
+    }
 
     @Override
     public void onAttach() {
         super.onAttach();
     }
 
+    private class PlaceHolderBar extends AbstractBar {
+
+        private final MgnlArea listener;
+
+        public PlaceHolderBar(MgnlArea area) {
+            super(area);
+            this.listener = area;
+
+            addStyleName(COMPONENT_CLASS_NAME);
+
+            initLayout();
+        }
+
+        @Override
+        protected String getLabel() {
+            return listener.getPlaceHolderLabel();
+        }
+
+        @Override
+        protected void createControls() {
+
+            if (listener.hasAddComponentButton()) {
+                final Label add = new Label();
+                add.setStyleName(ICON_CLASS_NAME);
+                add.addStyleName(ADD_CLASS_NAME);
+                add.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        listener.createNewComponent();
+                    }
+                });
+                addButton(add);
+            }
+        }
+    }
 }

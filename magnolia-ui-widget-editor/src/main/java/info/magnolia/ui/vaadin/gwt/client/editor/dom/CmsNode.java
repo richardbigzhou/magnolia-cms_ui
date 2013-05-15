@@ -145,4 +145,13 @@ public class CmsNode {
     public MgnlElement asMgnlElement() {
         return (MgnlElement) this;
     }
+
+    public int getLevel() {
+        int level = 0;
+        for (CmsNode parent = getParent(); parent != null; parent = parent.getParent()) {
+            level++;
+        }
+        return level;
+    }
+
 }

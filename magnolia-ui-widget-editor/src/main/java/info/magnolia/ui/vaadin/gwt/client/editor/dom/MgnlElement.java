@@ -129,9 +129,16 @@ public abstract class MgnlElement extends CmsNode {
 
     public abstract AbstractElement getTypedElement();
 
-    public abstract boolean isPage();
+    public boolean isPage() {
+        return this instanceof MgnlPage;
+    }
 
-    public abstract boolean isArea();
+    public boolean isArea() {
+        return this instanceof MgnlArea;
+    }
 
-    public abstract boolean isComponent();
+    public boolean isComponent(){
+        return this instanceof MgnlComponent;
+    }
+
 }

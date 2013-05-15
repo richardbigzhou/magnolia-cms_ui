@@ -81,21 +81,6 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
     }
 
     @Override
-    public boolean isPage() {
-        return false;
-    }
-
-    @Override
-    public boolean isArea() {
-        return false;
-    }
-
-    @Override
-    public boolean isComponent() {
-        return true;
-    }
-
-    @Override
     public void editComponent() {
         String workspace = getAttribute("workspace");
         String path = getAttribute("path");
