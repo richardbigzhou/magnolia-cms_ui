@@ -56,8 +56,8 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.config.WorkbenchBuilder;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
-import info.magnolia.ui.workbench.list.ListContentViewDefinition;
-import info.magnolia.ui.workbench.tree.TreeContentViewDefinition;
+import info.magnolia.ui.workbench.list.ListPresenterDefinition;
+import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 import java.util.Calendar;
 
@@ -108,7 +108,7 @@ public class BrowserPresenterTest {
     private void initBrowserPresenter() {
         // initialize test instance
         BrowserSubAppBuilder subAppBuilder = new ContentAppBuilder(APP_NAME).browserSubApp(SUB_APP_NAME);
-        subAppBuilder.workbench(new WorkbenchBuilder().workspace(WORKSPACE).path(ROOT_PATH).contentViews(new TreeContentViewDefinition(), new ListContentViewDefinition()));
+        subAppBuilder.workbench(new WorkbenchBuilder().workspace(WORKSPACE).path(ROOT_PATH).contentViews(new TreePresenterDefinition(), new ListPresenterDefinition()));
         Shell mockShell = mock(Shell.class);
         SubAppContext subAppContext = new SubAppContextImpl(subAppBuilder.exec(), mockShell);
 

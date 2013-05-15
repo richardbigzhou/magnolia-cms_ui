@@ -35,6 +35,7 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.statusbar.StatusBarView;
+import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 
 /**
  * WorkbenchView.
@@ -58,14 +59,9 @@ public interface WorkbenchView extends View {
     void setSearchQuery(String query);
 
     /**
-     * Refreshes the current view.
-     */
-    void refresh();
-
-    /**
      * Use this method to add sub views hosted by this view.
      */
-    void addContentView(ContentView.ViewType type, ContentView view, ContentViewDefinition contentViewDefintion);
+    void addContentView(ContentView.ViewType type, ContentView view, ContentPresenterDefinition contentViewDefintion);
 
     void setViewType(ContentView.ViewType type);
 
@@ -73,8 +69,6 @@ public interface WorkbenchView extends View {
      * Use this method to add a status bar to this sub app view.
      */
     void setStatusBarView(StatusBarView statusBar);
-
-    void select(String itemId);
 
     ContentView getSelectedView();
 

@@ -39,12 +39,13 @@ import info.magnolia.commands.impl.ImportCommand;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.action.CommandActionBase;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.jcr.ImportUUIDBehavior;
+import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -61,19 +62,20 @@ public class ImportAction extends CommandActionBase<ImportActionDefinition> {
     private static final Logger log = LoggerFactory.getLogger(ImportAction.class);
 
     @Inject
-    public ImportAction(ImportActionDefinition definition, JcrItemNodeAdapter item, CommandsManager commandsManager, SubAppContext subAppContext) {
+    public ImportAction(ImportActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, SubAppContext subAppContext) {
         super(definition, item, commandsManager, subAppContext);
     }
 
     @Override
-    protected Map<String, Object> buildParams(final Node node) {
-        Map<String, Object> params = super.buildParams(node);
+    protected Map<String, Object> buildParams(final Item jcrItem) {
+        Map<String, Object> params = super.buildParams(jcrItem);
         try {
+            Node node = (Node) jcrItem;
             params.put(ImportCommand.IMPORT_XML_STREAM, ((BinaryImpl) node.getNode("import").getProperty(JcrConstants.JCR_DATA)).getStream());
             params.put(ImportCommand.IMPORT_IDENTIFIER_BEHAVIOR, ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
             params.put(ImportCommand.IMPORT_XML_FILE_NAME, node.getNode("import").getProperty(FileProperties.PROPERTY_FILENAME).getString());
         } catch (RepositoryException re) {
-            log.warn("Not able to init ImportCommand Parameter for the following Node {} ", NodeUtil.getNodePathIfPossible(node));
+            log.warn("Not able to init ImportCommand Parameter for the following Node {} ", NodeUtil.getNodePathIfPossible((Node) jcrItem));
         }
         return params;
     }

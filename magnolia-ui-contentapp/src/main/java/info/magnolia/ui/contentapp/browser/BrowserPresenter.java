@@ -152,7 +152,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
             public void onContentChanged(ContentChangedEvent event) {
                 if (event.getWorkspace().equals(getWorkspace())) {
                     refreshActionbarPreviewImage(event.getPath(), event.getWorkspace());
-                    workbenchPresenter.select(event.getPath());
+                    workbenchPresenter.selectPath(event.getPath());
                     workbenchPresenter.refresh();
                 }
             }
@@ -191,9 +191,6 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
         });
     }
 
-    /**
-     * @see info.magnolia.ui.workbench.ContentPresenter#getSelectedItemPath()
-     */
     public String getSelectedItemId() {
         return workbenchPresenter.getSelectedId();
     }
