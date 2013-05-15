@@ -47,21 +47,11 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public interface MagnoliaTabSheetView extends HasWidgets, IsWidget, HasTabSetChangedHandlers, HasActiveTabChangeHandlers {
 
-    /**
-     * Presenter.
-     */
-    public interface Presenter {
-
-        void updateLayoutOfActiveTab();
-    }
-
     List<MagnoliaTabWidget> getTabs();
-
-    void updateTab(MagnoliaTabWidget tab);
 
     TabBarWidget getTabContainer();
 
-    MagnoliaTabWidget getActiveTab();
+    void updateTab(MagnoliaTabWidget tab);
 
     void setShowActiveTabFullscreen(boolean isFullscreen);
 
@@ -74,4 +64,8 @@ public interface MagnoliaTabSheetView extends HasWidgets, IsWidget, HasTabSetCha
     void setLogo(String logo, String logoBgColor);
 
     void setMaxHeight(int height);
+
+    void showPreloader();
+
+    void removePreloader();
 }

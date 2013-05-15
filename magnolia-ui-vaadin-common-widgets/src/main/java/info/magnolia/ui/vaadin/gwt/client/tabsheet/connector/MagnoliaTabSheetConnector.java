@@ -48,7 +48,6 @@ import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
 import java.util.List;
 
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
@@ -59,6 +58,7 @@ import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractComponentContainerConnector;
+import com.vaadin.client.ui.PostLayoutListener;
 import com.vaadin.shared.Connector;
 import com.vaadin.shared.ui.Connect;
 
@@ -66,7 +66,7 @@ import com.vaadin.shared.ui.Connect;
  * Client-side connector, counter-part of {@link MagnoliaTabSheet}.
  */
 @Connect(MagnoliaTabSheet.class)
-public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnector implements MagnoliaTabSheetView.Presenter {
+public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnector implements PostLayoutListener {
 
     private final MagnoliaTabSheetServerRpc rpc = RpcProxy.create(MagnoliaTabSheetServerRpc.class, this);
 
@@ -81,7 +81,7 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
 
     @Override
     protected Widget createWidget() {
-        this.view = new MagnoliaTabSheetViewImpl(eventBus, this);
+        this.view = new MagnoliaTabSheetViewImpl(eventBus);
         return view.asWidget();
     }
 
@@ -94,16 +94,8 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
             public void onStateChanged(StateChangeEvent event) {
                 final MagnoliaTabConnector tabConnector = (MagnoliaTabConnector) getState().activeTab;
                 if (tabConnector != null) {
-
                     view.setActiveTab(tabConnector.getWidget());
-
-                    // TODO: Implement the activation of the tab label in a more robust way that is not subject to timing issues. (see MGNLUI-771)
-                    new Timer() {
-                        @Override
-                        public void run() {
-                            eventBus.fireEvent(new ActiveTabChangedEvent(tabConnector.getWidget(), false));
-                        }
-                    }.schedule(10);
+                    eventBus.fireEvent(new ActiveTabChangedEvent(tabConnector.getWidget(), false));
                 }
             }
         });
@@ -112,7 +104,6 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
             @Override
             public void onStateChanged(StateChangeEvent event) {
                 view.getTabContainer().addShowAllTab(getState().showAllEnabled, getState().showAllLabel);
-
                 if (getState().logo != null && getState().logoBgColor != null) {
                     view.setLogo(getState().logo, getState().logoBgColor);
                 }
@@ -143,6 +134,7 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
             @Override
             public void onActiveTabChanged(ActiveTabChangedEvent event) {
                 if (event.isNotifyServer()) {
+                    view.showPreloader();
                     Connector c = Util.findConnectorFor(event.getTab());
                     rpc.setActiveTab(c);
                 }
@@ -186,14 +178,10 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
     }
 
     @Override
-    public void updateLayoutOfActiveTab() {
-        if (getState().activeTab != null) {
-            ((ComponentConnector) getState().activeTab).getLayoutManager().layoutNow();
-        }
-    }
+    public void onUnregister() {}
 
     @Override
-    public void onUnregister() {
-
+    public void postLayout() {
+        view.removePreloader();
     }
 }
