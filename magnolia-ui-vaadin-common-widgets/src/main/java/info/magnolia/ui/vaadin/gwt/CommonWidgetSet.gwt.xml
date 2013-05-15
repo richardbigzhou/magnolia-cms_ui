@@ -20,7 +20,6 @@
 
   <inherits name="org.vaadin.peter.contextmenu.ContextmenuWidgetset" />
 
-
   <stylesheet src="jcrop/jquery.Jcrop.css" />
 
   <replace-with class="info.magnolia.ui.vaadin.gwt.client.touchwidget.MobileSafariTouchWidgetImplProxy">
@@ -45,5 +44,7 @@
   </replace-with>
 
   <set-configuration-property name="mgwt.css" value="pretty" />
+
+
 
 </module>

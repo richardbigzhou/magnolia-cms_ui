@@ -45,22 +45,23 @@
     content: '\2014';
 }
 
+
 .v-magnolia-table .v-table-resizer {
-    width:1px;
+    width: 8px;
+    margin-left: -7px;
     height:20px;
     margin-top:10px;
     padding-left:0;
     border-right:1px dotted $c13;
     background:none;
 }
-.v-magnolia-table .v-table-header td:last-child .v-table-resizer {visibility:hidden;}
 
 .v-magnolia-table .v-table-caption-container {
 	color:$c10;
 	font-size:12px;
 	font-weight:normal;
 	font-family:Verdana,sans-serif;
-	padding:10px 5px 4px;
+	padding:10px 4px 4px;
 	margin:0;
 	text-overflow:ellipsis;
 }

@@ -62,10 +62,11 @@
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
     </dependency>
-<!--      <dependency>
+    <dependency>
       <groupId>org.vaadin.addons</groupId>
       <artifactId>ckeditor-wrapper-for-vaadin</artifactId>
-    </dependency>-->
+       <version>7.8.3</version>
+    </dependency>
     <dependency>
       <groupId>com.jhlabs</groupId>
       <artifactId>filters</artifactId>
@@ -207,6 +208,7 @@
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>groovy-maven-plugin</artifactId>
@@ -216,10 +218,12 @@
             <goals>
               <goal>execute</goal>
             </goals>
-             <!-- Rename patched VScrollTable.java -->
+             <!-- Rename patched table classes and execute Sass compilation. -->
             <configuration>
               <source>
                 import java.io.File
+                import com.vaadin.sass.SassCompiler
+                import java.util.regex.Matcher
                 def path = "${project.build.sourceDirectory}/com/vaadin/client/ui/"
                 def renameMap = [(new File(path + "VScrollTable.java")):(new File(path + "VScrollTablePatched.java")),
                     (new File(path + "VTreeTable.java")):(new File(path + "VTreeTablePatched.java")),
@@ -230,6 +234,7 @@
                     println "Renaming ${v.key.name} to ${v.value.name}..."
                     v.key.renameTo(v.value)
                 }
+
               </source>
             </configuration>
           </execution>

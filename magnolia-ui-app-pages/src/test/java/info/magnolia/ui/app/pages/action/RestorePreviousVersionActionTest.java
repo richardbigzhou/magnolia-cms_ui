@@ -1,0 +1,248 @@
+/**
+ * This file Copyright (c) 2013 Magnolia International
+ * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
+ *
+ *
+ * This file is dual-licensed under both the Magnolia
+ * Network Agreement and the GNU General Public License.
+ * You may elect to use one or the other of these licenses.
+ *
+ * This file is distributed in the hope that it will be
+ * useful, but AS-IS and WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE, TITLE, or NONINFRINGEMENT.
+ * Redistribution, except as permitted by whichever of the GPL
+ * or MNA you select, is prohibited.
+ *
+ * 1. For the GPL license (GPL), you can redistribute and/or
+ * modify this file under the terms of the GNU General
+ * Public License, Version 3, as published by the Free Software
+ * Foundation.  You should have received a copy of the GNU
+ * General Public License, Version 3 along with this program;
+ * if not, write to the Free Software Foundation, Inc., 51
+ * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * 2. For the Magnolia Network Agreement (MNA), this file
+ * and the accompanying materials are made available under the
+ * terms of the MNA which accompanies this distribution, and
+ * is available at http://www.magnolia-cms.com/mna.html
+ *
+ * Any modifications to this file must keep this entire header
+ * intact.
+ *
+ */
+package info.magnolia.ui.app.pages.action;
+
+import static org.mockito.Mockito.mock;
+import static org.junit.Assert.assertEquals;
+import info.magnolia.cms.core.version.VersionManager;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.event.SimpleEventBus;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.api.overlay.AlertCallback;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
+import info.magnolia.ui.api.overlay.MessageStyleType;
+import info.magnolia.ui.api.overlay.NotificationCallback;
+import info.magnolia.ui.api.overlay.OverlayCloser;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.framework.app.SubAppDescriptor;
+import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
+
+import javax.jcr.Node;
+import javax.jcr.Session;
+
+import org.junit.Before;
+import org.junit.Test;
+
+/**
+ * Test.
+ */
+public class RestorePreviousVersionActionTest extends RepositoryTestCase {
+
+    private Node node;
+
+    private static final RestorePreviousVersionActionDefinition DEFINITION = new RestorePreviousVersionActionDefinition();
+
+    private SimpleEventBus locationEventBus;
+    private LocationController locationController;
+    private RestorePreviousVersionActionTest.TestSubAppContext subAppContext;
+
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        Session webSiteSession = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
+        node = webSiteSession.getRootNode().addNode("node", NodeTypes.Page.NAME);
+        NodeTypes.Created.set(node);
+        node.setProperty("property", "property");
+        node.addNode("subNode", NodeTypes.Page.NAME);
+        node.getNode("subNode").setProperty("property_subNode", "property_subNode");
+        webSiteSession.save();
+
+        locationEventBus = new SimpleEventBus();
+        locationController = new LocationController(locationEventBus, mock(Shell.class));
+
+        subAppContext = new RestorePreviousVersionActionTest.TestSubAppContext();
+    }
+
+
+    @Test
+    public void testExecute() throws Exception {
+        // GIVEN
+        VersionManager versionMan = VersionManager.getInstance();
+        versionMan.addVersion(node);
+        JcrItemNodeAdapter item = new JcrNodeAdapter(node);
+        RestorePreviousVersionAction action = new RestorePreviousVersionAction(DEFINITION, item, locationController, versionMan, subAppContext);
+
+        // WHEN
+        action.execute();
+
+        // THEN
+        Location location = locationController.getWhere();
+        assertEquals("app:pages:detail;/node:edit", location.toString());
+        assertEquals(versionMan.getBaseVersion(node).getName(), "1.0");
+    }
+
+    @Test
+    public void testExecuteNoVersion() throws Exception {
+        // GIVEN
+        VersionManager versionMan = VersionManager.getInstance();
+        JcrItemNodeAdapter item = new JcrNodeAdapter(node);
+        RestorePreviousVersionAction action = new RestorePreviousVersionAction(DEFINITION, item, locationController, versionMan, subAppContext);
+
+        // WHEN
+        action.execute();
+
+        // THEN
+        assertEquals(subAppContext.title, "This Item do not have a Previous version. Action cancelled.");
+        assertEquals(subAppContext.type, MessageStyleTypeEnum.ERROR);
+    }
+
+    @Test
+    public void testExecuteThreeVersion() throws Exception {
+        // GIVEN
+        VersionManager versionMan = VersionManager.getInstance();
+        versionMan.addVersion(node);
+        versionMan.addVersion(node);
+        versionMan.addVersion(node);
+        JcrItemNodeAdapter item = new JcrNodeAdapter(node);
+        RestorePreviousVersionAction action = new RestorePreviousVersionAction(DEFINITION, item, locationController, versionMan, subAppContext);
+
+        // WHEN
+        action.execute();
+
+        // THEN
+        assertEquals(versionMan.getBaseVersion(node).getName(), "1.2");
+    }
+
+    /**
+     * Basic Empty implementation of {@link SubAppContext} for test purpose.
+     */
+    public static class TestSubAppContext implements SubAppContext {
+
+        public String title;
+        public MessageStyleType type;
+
+        @Override
+        public OverlayCloser openOverlay(View view) {
+            return null;
+        }
+
+        @Override
+        public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
+            return null;
+        }
+
+        @Override
+        public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb) {
+        }
+
+        @Override
+        public void openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
+        }
+
+        @Override
+        public void openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
+        }
+
+        @Override
+        public void openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
+        }
+
+        @Override
+        public void openNotification(MessageStyleType type, boolean doesTimeout, View viewToShow) {
+        }
+
+        @Override
+        public void openNotification(MessageStyleType type, boolean doesTimeout, String title) {
+            this.title = title;
+            this.type = type;
+        }
+
+        @Override
+        public void openNotification(MessageStyleType type, boolean doesTimeout, String title, String linkText, NotificationCallback cb) {
+        }
+
+        @Override
+        public String getSubAppId() {
+            return null;
+        }
+
+        @Override
+        public SubApp getSubApp() {
+            return null;
+        }
+
+        @Override
+        public Location getLocation() {
+            return null;
+        }
+
+        @Override
+        public AppContext getAppContext() {
+            return null;
+        }
+
+        @Override
+        public SubAppDescriptor getSubAppDescriptor() {
+            return null;
+        }
+
+        @Override
+        public void setAppContext(AppContext appContext) {
+        }
+
+        @Override
+        public void setLocation(Location location) {
+        }
+
+        @Override
+        public void setSubApp(SubApp subApp) {
+        }
+
+        @Override
+        public void setInstanceId(String instanceId) {
+        }
+
+        @Override
+        public String getInstanceId() {
+            return null;
+        }
+
+        @Override
+        public void close() {
+        }
+
+    }
+
+}

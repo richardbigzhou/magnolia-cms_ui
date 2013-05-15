@@ -38,9 +38,7 @@ import static org.mockito.Mockito.*;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.workbench.ContentPresenter;
-import info.magnolia.ui.workbench.ContentViewBuilder;
-import info.magnolia.ui.workbench.WorkbenchView;
+import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
@@ -49,11 +47,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import com.vaadin.data.Container;
+
 /**
  * Tests for ContentPresenter.
  */
 public class ContentPresenterTest {
-    protected ContentViewBuilder contentViewBuilder;
 
     protected EventBus eventBus;
 
@@ -69,7 +68,6 @@ public class ContentPresenterTest {
     @Before
     public void setUp() {
         this.workbench = mock(WorkbenchDefinition.class);
-        contentViewBuilder = mock(ContentViewBuilder.class);
         when(workbench.getWorkspace()).thenReturn(TEST_WORKSPACE_NAME);
         when(workbench.getPath()).thenReturn(TEST_WORKBENCHDEF_PATH);
         eventBus = mock(EventBus.class);
@@ -81,8 +79,8 @@ public class ContentPresenterTest {
     @Test
     public void testOnItemSelectionFiresOnEventBus() {
         // GIVEN
-        final ContentPresenter presenter = new ContentPresenter(contentViewBuilder);
-        presenter.start(mock(WorkbenchView.class), workbench, null, eventBus);
+        final AbstractContentPresenter presenter = new DummyContentPresenter();
+        presenter.start(workbench, eventBus);
         // WHEN
         presenter.onItemSelection(item);
 
@@ -96,8 +94,8 @@ public class ContentPresenterTest {
     @Test
     public void testOnDoubleClickFiresOnEventBus() {
         // GIVEN
-        final ContentPresenter presenter = new ContentPresenter(contentViewBuilder);
-        presenter.start(mock(WorkbenchView.class), workbench, null, eventBus);
+        final AbstractContentPresenter presenter = new DummyContentPresenter();
+        presenter.start(workbench, eventBus);
 
         // WHEN
         presenter.onDoubleClick(item);
@@ -112,12 +110,26 @@ public class ContentPresenterTest {
     @Test
     public void testOnItemSelectionWithNullItemSetSelectedPath() {
         // GIVEN
-        ContentPresenter presenter = new ContentPresenter(contentViewBuilder);
-        presenter.start(mock(WorkbenchView.class), workbench, null, eventBus);
+        AbstractContentPresenter presenter = new DummyContentPresenter();
+        presenter.start(workbench, eventBus);
+
         // WHEN
         presenter.onItemSelection(null);
 
         // THEN
         assertEquals(TEST_WORKBENCHDEF_PATH, presenter.getSelectedItemPath());
+    }
+
+    private static class DummyContentPresenter extends AbstractContentPresenter {
+
+        @Override
+        public void refresh() {
+        }
+
+        @Override
+        public Container getContainer() {
+            return mock(Container.class);
+        }
+
     }
 }

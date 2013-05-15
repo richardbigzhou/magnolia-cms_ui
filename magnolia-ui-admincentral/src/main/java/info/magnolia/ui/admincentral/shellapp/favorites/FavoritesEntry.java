@@ -33,14 +33,22 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.event.FieldEvents.BlurListener;
+import com.vaadin.event.FieldEvents.FocusEvent;
+import com.vaadin.event.FieldEvents.FocusListener;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -53,11 +61,10 @@ import com.vaadin.ui.TextField;
 /**
  * FavoritesEntry.
  */
-public class FavoritesEntry extends CustomComponent {
+public final class FavoritesEntry extends CustomComponent {
 
     private HorizontalLayout root = new HorizontalLayout();
     private String location;
-    private String icon;
     private String title;
     private String group;
     private String relPath;
@@ -66,10 +73,62 @@ public class FavoritesEntry extends CustomComponent {
     private NativeButton removeButton;
     private boolean editable;
     private boolean selected;
+    private EnterKeyShortcutListener enterKeyShortcutListener;
+    private EscapeKeyShortcutListener escapeKeyShortcutListener;
+    private Shell shell;
 
-    public FavoritesEntry(final JcrItemNodeAdapter favorite, final FavoritesView.Listener listener) {
+
+    public FavoritesEntry(final JcrItemNodeAdapter favorite, final FavoritesView.Listener listener, final Shell shell) {
         super();
+        this.shell = shell;
+        construct(favorite, listener);
+    }
+
+    /**
+     * Sets this fav as unselected and non editable, that is at its initial state.
+     */
+    public void reset() {
+        setEditable(false);
+        setSelected(false);
+    }
+
+    private void setEditable(boolean editable) {
+        this.editable = editable;
+        String icon = "icon-tick";
+        if (editable) {
+            titleField.addStyleName("editable");
+            titleField.focus();
+            titleField.selectAll();
+        } else {
+            icon = "icon-edit";
+            titleField.removeStyleName("editable");
+            // pending changes are reverted
+            titleField.setValue(title);
+        }
+        titleField.setReadOnly(!editable);
+        editButton.setCaption("<span class=\"" + icon + "\"></span>");
+    }
+
+    private void setSelected(boolean selected) {
+        this.selected = selected;
+        if (selected) {
+            addStyleName("selected");
+        } else {
+            removeStyleName("selected");
+        }
+        titleField.setReadOnly(true);
+        editButton.setVisible(selected);
+        editButton.setCaption("<span class=\"icon-edit\"></span>");
+        removeButton.setVisible(selected);
+    }
+
+    private void construct(final JcrItemNodeAdapter favorite, final FavoritesView.Listener listener) {
         addStyleName("favorites-entry");
+        setSizeUndefined();
+        root.setSizeUndefined();
+
+        this.enterKeyShortcutListener = new EnterKeyShortcutListener(listener);
+        this.escapeKeyShortcutListener = new EscapeKeyShortcutListener();
 
         String nodeName = favorite.getItemProperty(ModelConstants.JCR_NAME).getValue().toString();
         this.location = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.URL).getValue().toString();
@@ -89,17 +148,36 @@ public class FavoritesEntry extends CustomComponent {
             icon = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue().toString();
         }
 
-        this.icon = icon;
-
         final Label iconLabel = new Label();
         iconLabel.setValue("<span class=\"" + icon + "\"></span>");
         iconLabel.setStyleName("icon");
         iconLabel.setContentMode(ContentMode.HTML);
         root.addComponent(iconLabel);
 
+
         titleField = new TextField();
         titleField.setValue(title);
         titleField.setReadOnly(true);
+
+        titleField.addFocusListener(new FocusListener() {
+
+            @Override
+            public void focus(FocusEvent event) {
+                iconLabel.removeShortcutListener(enterKeyShortcutListener);
+                titleField.addShortcutListener(enterKeyShortcutListener);
+                titleField.addShortcutListener(escapeKeyShortcutListener);
+            }
+        });
+
+        titleField.addBlurListener(new BlurListener() {
+
+            @Override
+            public void blur(BlurEvent event) {
+                titleField.removeShortcutListener(enterKeyShortcutListener);
+                titleField.removeShortcutListener(escapeKeyShortcutListener);
+            }
+        });
+
         root.addComponent(titleField);
 
         editButton = new NativeButton();
@@ -110,15 +188,11 @@ public class FavoritesEntry extends CustomComponent {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                if (isSelected() && !isEditable()) {
+                if (selected && !editable) {
                     setEditable(true);
                     return;
                 }
-                boolean titleHasChanged = !getTitleValue().equals(titleField.getValue());
-                if (isEditable() && titleHasChanged) {
-                    listener.editFavorite(getRelPath(), titleField.getValue());
-                }
-                setEditable(false);
+                doEditTitle(listener);
             }
         });
         editButton.setVisible(false);
@@ -132,7 +206,7 @@ public class FavoritesEntry extends CustomComponent {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                listener.removeFavorite(getRelPath());
+                listener.removeFavorite(relPath);
             }
         });
         removeButton.setVisible(false);
@@ -142,16 +216,19 @@ public class FavoritesEntry extends CustomComponent {
 
             @Override
             public void layoutClick(LayoutClickEvent event) {
-
-                if (event.getClickedComponent() == titleField && !isEditable()) {
+                if (event.getClickedComponent() == titleField && !editable) {
                     if (event.isDoubleClick()) {
                         // TODO fgrilli temporarily commented out as, besides making the text editable, it also goes to the saved location
                         // setEditable(true);
                     } else {
-                        listener.goToLocation(getLocationValue());
+                        listener.goToLocation(location);
                     }
                 } else if (event.getClickedComponent() == iconLabel) {
-                    setSelected(!isSelected());
+                    setSelected(!selected);
+                    setEditable(false);
+                    if (selected) {
+                        iconLabel.addShortcutListener(enterKeyShortcutListener);
+                    }
                 }
             }
         });
@@ -159,67 +236,46 @@ public class FavoritesEntry extends CustomComponent {
         setCompositionRoot(root);
     }
 
-    public String getLocationValue() {
-        return location;
-    }
-
-    public String getIconValue() {
-        return icon;
-    }
-
-    public String getTitleValue() {
-        return title;
-    }
-
-    public String getGroupValue() {
-        return group;
-    }
-
-    public String getRelPath() {
-        return relPath;
-    }
-
-    public void setEditable(boolean editable) {
-        this.editable = editable;
-        titleField.setReadOnly(!editable);
-        String icon = "";
-        if (editable) {
-            icon = "icon-tick";
-            titleField.addStyleName("editable");
-            titleField.focus();
-        } else {
-            icon = "icon-edit";
-            titleField.removeStyleName("editable");
+    private void doEditTitle(final FavoritesView.Listener listener) {
+        if (StringUtils.isBlank(titleField.getValue())) {
+            shell.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("favorites.title.required"));
+            return;
         }
-        editButton.setCaption("<span class=\"" + icon + "\"></span>");
-    }
 
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-        titleField.setReadOnly(true);
-        editButton.setVisible(selected);
-        editButton.setCaption("<span class=\"icon-edit\"></span>");
-        if (selected) {
-            addStyleName("selected");
-        } else {
-            removeStyleName("selected");
+        boolean titleHasChanged = !title.equals(titleField.getValue());
+        if (editable && titleHasChanged) {
+            listener.editFavorite(relPath, titleField.getValue());
         }
-        removeButton.setVisible(selected);
+        setEditable(false);
     }
 
-    /**
-     * @return true if this favorite is selected, meaning the available actions (edit, remove) are displayed next to the fav title. Bear in mind that selected does not necessarily mean editable.
-     * @see #isEditable()
-     */
-    public boolean isSelected() {
-        return selected;
+    private class EnterKeyShortcutListener extends ShortcutListener {
+        private FavoritesView.Listener listener;
+
+        public EnterKeyShortcutListener(final FavoritesView.Listener listener) {
+            super("", KeyCode.ENTER, null);
+            this.listener = listener;
+        }
+
+        @Override
+        public void handleAction(Object sender, Object target) {
+            if (editable) {
+                doEditTitle(listener);
+            } else {
+                setEditable(true);
+            }
+        }
     }
 
-    /**
-     * @return true if this fav is editable, meaning that its title can be changed in line.
-     * @see #isSelected()
-     */
-    public boolean isEditable() {
-        return editable;
+    private class EscapeKeyShortcutListener extends ShortcutListener {
+
+        public EscapeKeyShortcutListener() {
+            super("", KeyCode.ESCAPE, null);
+        }
+
+        @Override
+        public void handleAction(Object sender, Object target) {
+            reset();
+        }
     }
 }

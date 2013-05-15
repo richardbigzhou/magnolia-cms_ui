@@ -41,7 +41,6 @@ import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.actionbar.definition.SectionRestrictionsDefinition;
-import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.ContentSubAppView;
@@ -49,7 +48,6 @@ import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.vaadin.actionbar.ActionPopupView;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
@@ -65,18 +63,19 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.peter.contextmenu.ContextMenu;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent;
 
+import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Table;
 
 /**
  * Base implementation of a content subApp. A content subApp displays a collection of data represented inside a {@link info.magnolia.ui.workbench.ContentView}
- * created by {@link info.magnolia.ui.workbench.ContentViewBuilder}.
+ * created by the {@link info.magnolia.ui.workbench.WorkbenchPresenter}.
  * <pre>
  *  <p>
  *      This class Provides sensible implementation for services shared by all content subApps.
@@ -114,7 +113,7 @@ public class BrowserSubApp extends BaseSubApp {
     private final EventBus subAppEventBus;
     private ActionExecutor actionExecutor;
 
-    private ActionPopupView contextMenu;
+    private ContextMenu contextMenu;
 
     public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
         super(subAppContext, view);
@@ -150,13 +149,14 @@ public class BrowserSubApp extends BaseSubApp {
     }
 
     protected void createActionPopup() {
-        contextMenu = new ActionPopupView();
-        // contextMenu.addItem("item1");
-        // contextMenu.addItem("item2");
+        contextMenu = new ContextMenu();
+        contextMenu.addItem("item1");
+        contextMenu.addItem("item2");
         contextMenu.setOpenAutomatically(true);
         // Handle different list types.
         Component treeTable = browser.getView().getWorkbenchView().getSelectedView().asVaadinComponent();
-        contextMenu.setAsTableContextMenu((Table) treeTable);
+        // contextMenu.setAsTableContextMenu((Table) treeTable);
+        contextMenu.setAsContextMenuOf((AbstractClientConnector) treeTable);
 
         contextMenu.addItemClickListener(new ContextMenu.ContextMenuItemClickListener() {
 
@@ -164,66 +164,66 @@ public class BrowserSubApp extends BaseSubApp {
             public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
                 ContextMenuItem obj = (ContextMenuItem) event.getSource();
                 String eventActionName = (String) obj.getData();
-                browser.onExecute(eventActionName);
+                browser.onActionbarItemClicked(eventActionName);
             }
         });
 
     }
+
     protected void showActionPopup(String absItemPath) {
 
-
-
-        contextMenu.removeAllItems();
-
-        BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
-        WorkbenchDefinition workbench = subAppDescriptor.getWorkbench();
-        List<ActionbarSectionDefinition> sections = subAppDescriptor.getActionbar().getSections();
-
-        try {
-
-            Item item = null;
-            // String absItemPath = getBrowser().getSelectedItemId();
-            if (absItemPath != null && !absItemPath.equals(workbench.getPath())) {
-                final Session session = MgnlContext.getJCRSession(workbench.getWorkspace());
-                item = session.getItem(absItemPath);
-            }
-
-            // Figure out which section to show, only one
-            ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, item);
-
-            // If there no section matched the selection we just hide everything
-            if (sectionDefinition == null) {
-                for (ActionbarSectionDefinition section : sections) {
-                    // actionbar.hideSection(section.getName());
-                }
-                return;
-            }
-
-            // Evaluate availability of each action within the section
-            for (ActionbarGroupDefinition groupDefinition : sectionDefinition.getGroups()) {
-                for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
-
-                    String actionName = itemDefinition.getName();
-                    if (actionExecutor.isAvailable(actionName, item)) {
-                        // actionbar.enable(actionName);
-                        ActionDefinition action = subAppDescriptor.getActions().get(actionName);
-                        String label = action.getLabel();
-                        ContextMenuItem menuItem = contextMenu.addItem(label);
-                        // Set data so that the event handler can determine which action to launch.
-                        menuItem.setData(actionName);
-                    }
-                }
-            }
-        } catch (RepositoryException e) {
-            log.error("Failed to updated actionbar", e);
-            for (ActionbarSectionDefinition section : sections) {
-                // actionbar.hideSection(section.getName());
-            }
-        }
-
-
-
-
+        return;
+        //
+        // contextMenu.removeAllItems();
+        //
+        // BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
+        // WorkbenchDefinition workbench = subAppDescriptor.getWorkbench();
+        // List<ActionbarSectionDefinition> sections = subAppDescriptor.getActionbar().getSections();
+        //
+        // try {
+        //
+        // Item item = null;
+        // // String absItemPath = getBrowser().getSelectedItemId();
+        // if (absItemPath != null && !absItemPath.equals(workbench.getPath())) {
+        // final Session session = MgnlContext.getJCRSession(workbench.getWorkspace());
+        // item = session.getItem(absItemPath);
+        // }
+        //
+        // // Figure out which section to show, only one
+        // ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, item);
+        //
+        // // If there no section matched the selection we just hide everything
+        // if (sectionDefinition == null) {
+        // for (ActionbarSectionDefinition section : sections) {
+        // // actionbar.hideSection(section.getName());
+        // }
+        // return;
+        // }
+        //
+        // // Evaluate availability of each action within the section
+        // for (ActionbarGroupDefinition groupDefinition : sectionDefinition.getGroups()) {
+        // for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
+        //
+        // String actionName = itemDefinition.getName();
+        // if (actionExecutor.isAvailable(actionName, item)) {
+        // // actionbar.enable(actionName);
+        // ActionDefinition action = subAppDescriptor.getActions().get(actionName);
+        // String label = action.getLabel();
+        // String iconFontCode = ActionPopupView.ICON_FONT_CODE + action.getIcon();
+        // ExternalResource iconFontResource = new ExternalResource(iconFontCode);
+        // // ContextMenuItem menuItem = contextMenu.addItem(label, iconFontResource);
+        // ContextMenuItem menuItem = contextMenu.addItem(label);
+        // // Set data so that the event handler can determine which action to launch.
+        // menuItem.setData(actionName);
+        // }
+        // }
+        // }
+        // } catch (RepositoryException e) {
+        // log.error("Failed to updated actionbar", e);
+        // for (ActionbarSectionDefinition section : sections) {
+        // // actionbar.hideSection(section.getName());
+        // }
+        // }
     }
 
     /**
@@ -427,6 +427,9 @@ public class BrowserSubApp extends BaseSubApp {
             @Override
             public void onSearch(SearchEvent event) {
                 BrowserLocation location = getCurrentLocation();
+                if (StringUtils.isNotBlank(event.getSearchExpression())) {
+                    location.updateViewType(ViewType.SEARCH);
+                }
                 location.updateQuery(event.getSearchExpression());
                 getAppContext().updateSubAppLocation(getSubAppContext(), location);
                 updateActionbar(actionbar);

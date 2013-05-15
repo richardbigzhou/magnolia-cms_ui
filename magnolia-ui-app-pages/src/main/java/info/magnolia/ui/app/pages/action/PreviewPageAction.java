@@ -79,7 +79,7 @@ public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
                 return;
             }
 
-            DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.VIEW, nodeItemToPreview.getNode().getPath());
+            DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.VIEW, nodeItemToPreview.getNode().getPath(), "");
 
             log.debug("token is {}", location.getParameter());
 

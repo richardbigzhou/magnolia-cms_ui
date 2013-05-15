@@ -41,16 +41,10 @@ import com.vaadin.ui.Table;
 /**
  * MagnoliaTable.
  */
-// @ClientWidget(VMagnoliaTable.class)
 public class MagnoliaTable extends Table {
 
     public MagnoliaTable() {
         addStyleName("v-magnolia-table");
-        setEditable(false);
-        setSelectable(true);
-        setMultiSelect(true);
-        setDragMode(TableDragMode.NONE);
-        setImmediate(true);
     }
 
     @Override

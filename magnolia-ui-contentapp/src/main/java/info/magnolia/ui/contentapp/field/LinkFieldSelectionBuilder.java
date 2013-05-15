@@ -36,14 +36,11 @@ package info.magnolia.ui.contentapp.field;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder;
-import info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter;
 import info.magnolia.ui.form.field.builder.AbstractFieldBuilder;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.framework.app.AppController;
-import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.ChooseDialogEventBus;
+import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
-import info.magnolia.ui.workbench.WorkbenchViewImpl;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 
 import javax.inject.Inject;
@@ -70,24 +67,19 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
     private static final Logger log = LoggerFactory.getLogger(LinkFieldSelectionBuilder.class);
 
     private final EventBus chooseDialogEventBus;
-    private AppController appController;
-    private SubAppContext subAppContext;
 
-    private final ChooseDialogContentPresenter contentPresenter;
+    private final WorkbenchPresenter workbenchPresenter;
 
     private final String propertyName;
 
     private TextAndContentViewField textContent;
 
     @Inject
-    public LinkFieldSelectionBuilder(LinkFieldSelectionDefinition definition, Item relatedFieldItem,
-                                     ChooseDialogContentPresenter contentPresenter,
+    public LinkFieldSelectionBuilder(LinkFieldSelectionDefinition definition, Item relatedFieldItem, WorkbenchPresenter contentPresenter,
                                      @Named(ChooseDialogEventBus.NAME) final EventBus chooseDialogEventBus) {
         super(definition, relatedFieldItem);
-        this.contentPresenter = contentPresenter;
+        this.workbenchPresenter = contentPresenter;
         this.chooseDialogEventBus = chooseDialogEventBus;
-        this.appController = appController;
-        this.subAppContext = subAppContext;
         // Item is build by the LinkFieldBuilder and has only one property.
         // This property has the name of property we are supposed to propagate.
         propertyName = String.valueOf(relatedFieldItem.getItemPropertyIds().iterator().next());
@@ -98,12 +90,15 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
 
     @Override
     protected Field<String> buildField() {
-        final WorkbenchView parentView = new WorkbenchViewImpl();
         textContent = new TextAndContentViewField(definition.isDisplayTextField(), definition.isDisplayTextFieldOnTop());
-        contentPresenter.startChooseDialog(parentView);
-        textContent.setContentView(parentView);
+
+        // TODO 20130513 mgeljic restore choose dialogs as real dialogs with a configured workbench field or drop that field type completely.
+        WorkbenchView workbenchView = workbenchPresenter.start(null, null, null);
+        textContent.setContentView(workbenchView);
+
         // Set selected item.
         restoreContentSelection();
+
         // On a selected Item, propagate the specified Column Value to the TextField.
         chooseDialogEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
             @Override
@@ -133,7 +128,8 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
      */
     private void restoreContentSelection() {
         final String propertyValue = String.valueOf(item.getItemProperty(propertyName).getValue());
-        final String path = LinkFieldBuilder.PATH_PROPERTY_NAME.equals(propertyName) && StringUtils.isNotBlank(propertyValue) ? propertyValue : contentPresenter.getRootPath();
-        textContent.getContentView().selectPath(path);
+        // TODO 20130513 mgeljic get fallback root path from workbench definition
+        final String path = LinkFieldBuilder.PATH_PROPERTY_NAME.equals(propertyName) && StringUtils.isNotBlank(propertyValue) ? propertyValue : "/";
+        workbenchPresenter.selectPath(path);
     }
 }

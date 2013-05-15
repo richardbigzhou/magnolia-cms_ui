@@ -2,7 +2,6 @@ package org.vaadin.peter.contextmenu.client;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.ImageElement;
-import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -148,23 +147,28 @@ public class ContextMenuItemWidget extends FocusWidget {
 		text.setText(caption);
 	}
 
-	public void setIcon(String url) {
+    public void setIcon(String url) {
 		if (url == null) {
 			iconContainer.clear();
 			icon = null;
 		} else {
-            // >>> This is the Magnolia IconFont patch. What is replaced. (MGNLUI-1323)
 
-            // icon = Document.get().createImageElement();
-            // icon.setClassName("v-icon");
-            // icon.setSrc(url);
-            // iconContainer.getElement().appendChild(icon);
 
-            // >>> This is the Magnolia IconFont patch. The new code (MGNLUI-1323)
-            SpanElement iconFont;
-            iconFont = Document.get().createSpanElement();
-            iconFont.setClassName("v-icon " + url);
-            iconContainer.getElement().appendChild(iconFont);
+            // >>> This is the Magnolia IconFont patch. (MGNLUI-1323)
+            // if (url.startsWith(ActionPopupView.ICON_FONT_CODE)) {
+            // SpanElement iconFont;
+            // iconFont = Document.get().createSpanElement();
+            // String iconFontCssClass = url.substring(ActionPopupView.ICON_FONT_CODE.length());
+            // iconFont.setClassName("v-icon " + iconFontCssClass);
+            // iconContainer.getElement().appendChild(iconFont);
+            // } else {
+                // This is the code from before the patch. (MGNLUI-1323)
+                icon = Document.get().createImageElement();
+                icon.setClassName("v-icon");
+                icon.setSrc(url);
+                iconContainer.getElement().appendChild(icon);
+            // }
+
 		}
 	}
 
