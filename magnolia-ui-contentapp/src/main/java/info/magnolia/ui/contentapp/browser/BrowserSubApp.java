@@ -40,7 +40,7 @@ import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
-import info.magnolia.ui.actionbar.definition.SectionRestrictionsDefinition;
+import info.magnolia.ui.actionbar.definition.SectionAvailabilityDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
@@ -243,20 +243,36 @@ public class BrowserSubApp extends BaseSubApp {
     }
 
     private boolean isSectionVisible(ActionbarSectionDefinition section, Item item) throws RepositoryException {
-        SectionRestrictionsDefinition restrictions = section.getRestrictions();
+        SectionAvailabilityDefinition availability = section.getAvailability();
+
+        // Validate that the user has all required roles
+        if (!availability.getAccess().hasAccess(MgnlContext.getUser())) {
+            return false;
+        }
 
         // If this is the root item we display the section only if the root property is set
-        if (item == null)
-            return restrictions.isRoot();
+        if (item == null) {
+            return availability.isRoot();
+        }
 
         // If its a property we display it only if the properties property is set
-        if (!item.isNode())
-            return restrictions.isProperties();
+        if (!item.isNode()) {
+            return availability.isProperties();
+        }
 
-        // The node must match at least one of the configured node types
-        for (String nodeType : restrictions.getNodeTypes()) {
-            if (NodeUtil.isNodeType((Node)item, nodeType))
+        // If node is selected and the section is available for nodes
+        if (availability.isNodes()) {
+            // if no node type defined, the for all node types
+            if (availability.getNodeTypes().isEmpty()) {
                 return true;
+            }
+            // else the node must match at least one of the configured node types
+            for (String nodeType : availability.getNodeTypes()) {
+                if (NodeUtil.isNodeType((Node) item, nodeType)) {
+                    return true;
+                }
+            }
+
         }
         return false;
     }
