@@ -36,13 +36,15 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 
+import com.vaadin.client.ApplicationConnection;
+
 /**
  * Slide anumation of an element.
  */
 public class SlideAnimation extends JQueryAnimation {
 
-    public SlideAnimation(boolean clearTopOnComplete) {
-        super();
+    public SlideAnimation(boolean clearTopOnComplete, ApplicationConnection connection) {
+        super(connection);
         if (clearTopOnComplete) {
             addCallback(new JQueryCallback() {
                 @Override
@@ -51,6 +53,11 @@ public class SlideAnimation extends JQueryAnimation {
                 }
             });
         }
+    }
+
+    public SlideAnimation(boolean clearTopOnComplete) {
+        this(clearTopOnComplete, null);
+
     }
 
     public void setTargetTop(int top) {

@@ -59,7 +59,7 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
 
     private static final int CURTAIN_FADE_IN_DURATION = 500;
 
-    private static final int CURTAIN_FADE_OUT_DURATION = 400;
+    private static final int CURTAIN_FADE_OUT_DURATION = 500;
 
     private static final int CURTAIN_FADE_OUT_DELAY = 200;
 
@@ -89,8 +89,8 @@ public class AppsTransitionDelegate extends BaseTransitionDelegate {
         }
     };
 
-    private FadeAnimation curtainFadeOutAnimation = new FadeAnimation(0, true, false);
-    private FadeAnimation curtainFadeInAnimation = new FadeAnimation(CURTAIN_ALPHA, true, true) {
+    private FadeAnimation curtainFadeOutAnimation = new FadeAnimation(0, true);
+    private FadeAnimation curtainFadeInAnimation = new FadeAnimation(CURTAIN_ALPHA, true) {
         @Override
         protected void onStart() {
             super.onStart();

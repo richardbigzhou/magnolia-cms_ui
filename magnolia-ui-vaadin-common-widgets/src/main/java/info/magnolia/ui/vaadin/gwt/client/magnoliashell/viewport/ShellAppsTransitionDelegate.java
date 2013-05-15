@@ -42,52 +42,84 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.Viewport
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.ApplicationConnection;
 
 /**
  * The ShellAppsTransitionDelegate provides custom transition logic when activating viewport or a
  * specific app. It also defines its own slide and fade transitions (not those from JQueryWrapper)
  * because it might animate other CSS properties and can then result in CSS3 transitions through the
- * jquery.transition.js plugin.
+ * jquery.animate-enhanced.min.js plugin.
  */
 public class ShellAppsTransitionDelegate implements TransitionDelegate {
 
-    private final static int SLIDE_DURATION = 600;
+    private final static int SLIDE_DURATION = 400;
 
-    private final static int FADE_DURATION = 600;
+    private final static int FADE_DURATION = 400;
 
     private final static int ALPHA_MIN = 0;
 
     private final static int ALPHA_MAX = 1;
 
-    private SlideAnimation slideUpAnimation = new SlideAnimation(true);
-    private SlideAnimation slideDownAnimation = new SlideAnimation(true) {
-        @Override
-        protected void onStart() {
-            getCurrentElement().getStyle().setTop(-getCurrentElement().getOffsetHeight(), Style.Unit.PX);
-            super.onStart();
-        }
-    };
+    private SlideAnimation slideUpAnimation;
 
-    private FadeAnimation fadeOutAnimation = new FadeAnimation(ALPHA_MIN, true, false);
-    private FadeAnimation fadeInAnimation = new FadeAnimation(ALPHA_MAX, true, true) {
-        @Override
-        protected void onStart() {
-            super.onStart();
-            Style style = getCurrentElement().getStyle();
-            style.setOpacity(0d);
-            style.clearDisplay();
-        }
-    };
+    private SlideAnimation slideDownAnimation;
 
-    public ShellAppsTransitionDelegate(final ShellAppsViewportWidget viewport) {
+    private FadeAnimation fadeOutAnimation;
+
+    private FadeAnimation fadeInAnimation;
+
+    private ShellAppsViewportWidget viewport;
+
+    private final ApplicationConnection applicationConnection;
+
+    public ShellAppsTransitionDelegate(final ShellAppsViewportWidget viewport, ApplicationConnection connection) {
+        this.viewport = viewport;
+        this.applicationConnection = connection;
+        initAnimations();
+    }
+
+    private void initAnimations() {
+        this.fadeInAnimation = new FadeAnimation(ALPHA_MAX, true, applicationConnection) {
+            @Override
+            protected void onStart() {
+                super.onStart();
+                Style style = getCurrentElement().getStyle();
+                style.setOpacity(0d);
+                style.clearDisplay();
+            }
+        };
+        this.fadeInAnimation.addCallback(new JQueryCallback() {
+            @Override
+            public void execute(JQueryWrapper query) {
+                viewport.onShellAppLoaded(query.get(0));
+            }
+        });
+
+
+        this.slideUpAnimation = new SlideAnimation(true, applicationConnection);
         this.slideUpAnimation.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
                 viewport.setVisible(false);
-                viewport.setClosing(false);
             }
         });
 
+        this.slideDownAnimation = new SlideAnimation(true, applicationConnection) {
+            @Override
+            protected void onStart() {
+                getCurrentElement().getStyle().setTop(-getCurrentElement().getOffsetHeight(), Style.Unit.PX);
+                super.onStart();
+            }
+        };
+
+        this.slideDownAnimation.addCallback(new JQueryCallback() {
+            @Override
+            public void execute(JQueryWrapper query) {
+                viewport.onShellAppLoaded(viewport.getVisibleChild().getElement());
+            }
+        });
+
+        this.fadeOutAnimation = new FadeAnimation(ALPHA_MIN, true, applicationConnection);
         this.fadeOutAnimation.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
@@ -104,18 +136,12 @@ public class ShellAppsTransitionDelegate implements TransitionDelegate {
         slideDownAnimation.cancel();
         slideUpAnimation.cancel();
         if (active) {
-            viewport.setClosing(false);
             viewport.setVisible(true);
             slideDownAnimation.setTargetTop(0);
             slideDownAnimation.run(SLIDE_DURATION, viewport.getElement());
         } else {
-            // slide up only if closing shell app
-            if (viewport.isClosing()) {
-                slideUpAnimation.setTargetTop(-viewport.getOffsetHeight());
-                slideUpAnimation.run(SLIDE_DURATION, viewport.getElement());
-            } else {
-                fadeOutAnimation.run(FADE_DURATION, viewport.getElement());
-            }
+            slideUpAnimation.setTargetTop(-viewport.getOffsetHeight());
+            slideUpAnimation.run(SLIDE_DURATION, viewport.getElement());
         }
     }
 

@@ -39,17 +39,24 @@ import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
+import com.vaadin.client.ApplicationConnection;
 
 /**
  * GWT Animation wrapper for JQuery Animations.
  */
 public class JQueryAnimation extends Animation {
 
+    private Object lock = new Object();
+
     private AnimationSettings settings = new AnimationSettings();
 
     private JQueryWrapper jQueryWrapper;
 
     private Element currentElement;
+
+    private ApplicationConnection connection;
+
+    private boolean isBlocking = false;
 
     public void setProperty(String property, int value) {
         settings.setProperty(property, value);
@@ -63,20 +70,30 @@ public class JQueryAnimation extends Animation {
         settings.addCallback(callback);
     }
 
-    public JQueryAnimation() {
+    public JQueryAnimation(ApplicationConnection connection) {
+        this.connection = connection;
+        if (connection != null) {
+            this.isBlocking = true;
+        }
         addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
+                query.setCss("transition", "");
+                query.setCss("transform", "");
+                getJQueryWrapper().setCss("-webkit-transform", "");
                 onComplete();
             }
         });
+    }
+
+    public JQueryAnimation() {
+        this(null);
     }
 
     @Override
     public void run(int duration, double startTime, Element element) {
         this.currentElement = element;
         this.jQueryWrapper = null;
-        //super.run(duration, startTime, element);
         cancel();
         onStart();
         getJQueryWrapper().animate(duration, settings);
@@ -96,14 +113,26 @@ public class JQueryAnimation extends Animation {
     public void cancel() {
         if (getJQueryWrapper().isAnimationInProgress()) {
             getJQueryWrapper().stop();
+            getJQueryWrapper().setCss("transition", "");
+            getJQueryWrapper().setCss("transform", "");
+            getJQueryWrapper().setCss("-webkit-transform", "");
         }
         onComplete();
-        //super.cancel();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (isBlocking && connection != null) {
+            connection.suspendReponseHandling(lock);
+        }
     }
 
     @Override
     protected void onComplete() {
-        //super.onComplete();
+        if (isBlocking && connection != null) {
+            connection.resumeResponseHandling(lock);
+        }
     }
 
     public Element getCurrentElement() {
