@@ -58,9 +58,9 @@ public class ItemEditedEvent implements Event<ItemEditedEvent.Handler> {
      */
     public interface Notifier extends Serializable {
 
-        void addListener(ItemEditedEvent.Handler listener);
+        void addItemEditedListener(ItemEditedEvent.Handler listener);
 
-        void removeListener(ItemEditedEvent.Handler listener);
+        void removeItemEditedListener(ItemEditedEvent.Handler listener);
     }
 
     private final Item item;

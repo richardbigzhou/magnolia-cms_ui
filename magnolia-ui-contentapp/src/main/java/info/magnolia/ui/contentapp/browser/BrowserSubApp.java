@@ -41,6 +41,7 @@ import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.actionbar.definition.SectionRestrictionsDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
@@ -49,7 +50,6 @@ import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
@@ -61,12 +61,13 @@ import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Base implementation of a content subApp. A content subApp displays a collection of data represented inside a {@link info.magnolia.ui.workbench.ContentView}
- * created by {@link info.magnolia.ui.workbench.ContentViewBuilder}.
+ * created by the {@link info.magnolia.ui.workbench.WorkbenchPresenter}.
  * <pre>
  *  <p>
  *      This class Provides sensible implementation for services shared by all content subApps.
@@ -336,6 +337,9 @@ public class BrowserSubApp extends BaseSubApp {
             @Override
             public void onSearch(SearchEvent event) {
                 BrowserLocation location = getCurrentLocation();
+                if (StringUtils.isNotBlank(event.getSearchExpression())) {
+                    location.updateViewType(ViewType.SEARCH);
+                }
                 location.updateQuery(event.getSearchExpression());
                 getAppContext().updateSubAppLocation(getSubAppContext(), location);
                 updateActionbar(actionbar);
