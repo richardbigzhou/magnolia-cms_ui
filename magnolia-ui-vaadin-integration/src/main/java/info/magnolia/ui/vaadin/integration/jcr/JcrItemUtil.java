@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.integration.jcr;
 import info.magnolia.context.MgnlContext;
 
 import javax.jcr.Item;
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -123,4 +124,18 @@ public class JcrItemUtil {
         return null;
     }
 
+    public static boolean itemExists(String workspaceName, String itemId) throws RepositoryException {
+        if (itemId == null) {
+            return false;
+        }
+
+        final Node node;
+        try {
+            node = MgnlContext.getJCRSession(workspaceName).getNodeByIdentifier(getNodeUuidFrom(itemId));
+        } catch (ItemNotFoundException e) {
+            return false;
+        }
+
+        return !isPropertyId(itemId) || node.hasProperty(getPropertyName(itemId));
+    }
 }

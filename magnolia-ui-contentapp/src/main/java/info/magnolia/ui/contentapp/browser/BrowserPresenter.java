@@ -151,9 +151,23 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
             @Override
             public void onContentChanged(ContentChangedEvent event) {
                 if (event.getWorkspace().equals(getWorkspace())) {
-                    refreshActionbarPreviewImage(event.getPath(), event.getWorkspace());
-                    workbenchPresenter.select(event.getPath());
+
                     workbenchPresenter.refresh();
+
+                    String itemId = getSelectedItemId();
+                    try {
+
+                        if (!JcrItemUtil.itemExists(getWorkspace(), getSelectedItemId())) {
+                            // If the selected node no longer exists we revert selection to the root
+                            String workbenchRootItemId = JcrItemUtil.getItemId(JcrItemUtil.getNode(subAppDescriptor.getWorkbench().getWorkspace(), subAppDescriptor.getWorkbench().getPath()));
+                            workbenchPresenter.select(workbenchRootItemId);
+                        } else {
+                            // If the selected node does exists refresh the preview image in case it was changed
+                            refreshActionbarPreviewImage(itemId, event.getWorkspace());
+                        }
+                    } catch (RepositoryException e) {
+                        log.warn("Unable to get node or property [{}] for selection", itemId, e);
+                    }
                 }
             }
         });
@@ -254,6 +268,10 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
             try {
                 LastModified.update(node);
                 node.getSession().save();
+
+                // in case the node changed name
+                workbenchPresenter.select(JcrItemUtil.getItemId(node));
+
             } catch (RepositoryException e) {
                 log.error("Could not save changes to node.", e);
             }
@@ -267,6 +285,10 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
                 ((JcrPropertyAdapter) item).updateProperties();
                 LastModified.update(parent);
                 parent.getSession().save();
+
+                // in case the property changed name
+                workbenchPresenter.select(JcrItemUtil.getItemId(((JcrPropertyAdapter) item).getProperty()));
+
             } catch (RepositoryException e) {
                 log.error("Could not save changes to node.", e);
             }

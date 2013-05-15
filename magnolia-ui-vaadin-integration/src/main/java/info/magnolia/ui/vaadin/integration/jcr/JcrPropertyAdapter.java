@@ -41,6 +41,7 @@ import info.magnolia.ui.api.ModelConstants;
 import java.util.Collection;
 
 import javax.jcr.Item;
+import javax.jcr.Node;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -146,8 +147,10 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
                         return;
                     }
                     // make sure new path is clear
-                    jcrName = Path.getUniqueLabel(jcrProperty.getSession(), jcrProperty.getParent().getPath(), jcrName);
+                    Node parent = jcrProperty.getParent();
+                    jcrName = Path.getUniqueLabel(jcrProperty.getSession(), parent.getPath(), jcrName);
                     PropertyUtil.renameProperty(jcrProperty, jcrName);
+                    setPath(parent.getProperty(jcrName).getPath());
                 } catch (RepositoryException e) {
                     log.error("Could not rename JCR Property.", e);
                 }

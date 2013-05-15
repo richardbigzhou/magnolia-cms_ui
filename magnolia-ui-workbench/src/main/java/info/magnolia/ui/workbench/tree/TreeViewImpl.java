@@ -244,6 +244,7 @@ public class TreeViewImpl implements TreeView {
             expandTreeToNode(JcrItemUtil.getNodeUuidFrom(itemId));
             treeTable.setCurrentPageFirstItemId(itemId);
         }
+        treeTable.setValue(null);
         treeTable.select(itemId);
     }
 

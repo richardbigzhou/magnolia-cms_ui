@@ -88,16 +88,16 @@ public class ContentPresenter implements ContentView.Listener {
 
     @Override
     public void onItemSelection(Item item) {
-        if (item == null) {
-            log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
-            selectedItemPath = workbenchDefinition.getPath();
-            eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), null));
-            return;
-        }
         try {
-            selectedItemPath = ((JcrItemAdapter) item).getItemId();
-            log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemPath);
-            eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), (JcrItemAdapter) item));
+            if (item == null) {
+                log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
+                selectedItemPath = JcrItemUtil.getItemId(JcrItemUtil.getNode(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath()));
+                eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), null));
+            } else {
+                selectedItemPath = ((JcrItemAdapter) item).getItemId();
+                log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemPath);
+                eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), (JcrItemAdapter) item));
+            }
         } catch (Exception e) {
             log.error("An error occurred while selecting a row in the data grid", e);
         }

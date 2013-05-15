@@ -35,13 +35,21 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 import info.magnolia.ui.workbench.search.SearchView;
 
 import javax.inject.Inject;
+import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -115,6 +123,22 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     public void select(String itemId) {
         view.select(itemId);
         contentPresenter.setSelectedItemPath(itemId);
+
+        try {
+            Item jcrItem = JcrItemUtil.getJcrItem(getWorkspace(), itemId);
+
+            JcrItemAdapter itemAdapter;
+            if (jcrItem.isNode()) {
+                itemAdapter = new JcrNodeAdapter((Node) jcrItem);
+            } else {
+                itemAdapter = new JcrPropertyAdapter((Property) jcrItem);
+            }
+
+            eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), itemAdapter));
+
+        } catch (RepositoryException e) {
+            log.warn("Unable to get node or property [{}] for selection", itemId, e);
+        }
     }
 
     public void refresh() {

@@ -302,8 +302,12 @@ public class BrowserSubApp extends BaseSubApp {
             public void onItemSelected(ItemSelectedEvent event) {
                 BrowserLocation location = getCurrentLocation();
                 try {
-                    Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.getNodeUuidFrom(event.getItemId()));
-                    location.updateNodePath(selected.getPath());
+                    if (event.getItemId() == null) {
+                        location.updateNodePath("/");
+                    } else {
+                        Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.getNodeUuidFrom(event.getItemId()));
+                        location.updateNodePath(selected.getPath());
+                    }
                 } catch (RepositoryException e) {
                     log.warn("Could not get jcrItem with itemId " + event.getItemId() + " from workspace " + event.getWorkspace(), e);
                 }
