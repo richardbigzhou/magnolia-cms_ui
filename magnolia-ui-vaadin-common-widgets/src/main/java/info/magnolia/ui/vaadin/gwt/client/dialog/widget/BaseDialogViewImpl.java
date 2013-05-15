@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * {@link BaseDialogViewImpl}. Implements {@link BaseDialogView}.
+ * Basic implementation for {@link BaseDialogView}.
  */
 public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
 

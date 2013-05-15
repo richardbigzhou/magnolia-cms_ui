@@ -84,7 +84,7 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
         try {
             if (item == null) {
                 log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
-                selectedItemId = JcrItemUtil.getItemId(JcrItemUtil.getNode(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath()));
+                selectedItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
                 eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), null));
             } else {
                 selectedItemId = ((JcrItemAdapter) item).getItemId();

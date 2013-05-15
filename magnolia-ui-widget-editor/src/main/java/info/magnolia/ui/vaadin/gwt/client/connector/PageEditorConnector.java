@@ -41,8 +41,6 @@ import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.AbstractMgnlEleme
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.CommentProcessor;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.ElementProcessor;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.MgnlElementProcessorFactory;
-import info.magnolia.ui.vaadin.gwt.client.editor.event.DeleteComponentEvent;
-import info.magnolia.ui.vaadin.gwt.client.editor.event.DeleteComponentEventHandler;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEventHandler;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.FrameNavigationEvent;
@@ -62,10 +60,13 @@ import info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModel;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModelImpl;
 import info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorServerRpc;
+import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
+import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 import info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView;
 import info.magnolia.ui.vaadin.gwt.client.widget.PageEditorViewImpl;
-import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.PageBar;
 
 import java.util.List;
 
@@ -90,7 +91,7 @@ import com.vaadin.shared.ui.Connect;
 @Connect(PageEditor.class)
 public class PageEditorConnector extends AbstractComponentConnector implements PageEditorView.Listener {
 
-    private static final String PAGE_EDITOR_CSS = "/VAADIN/themes/admincentraltheme/pageeditor.css";
+    private static final String PAGE_EDITOR_CSS = "/VAADIN/themes/ui-app-pages/page-editor.css";
 
     private PageEditorServerRpc rpc = RpcProxy.create(PageEditorServerRpc.class, this);
 
@@ -135,9 +136,6 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
                 process(document);
                 if (!getState().parameters.isPreview()) {
                     view.initSelectionListener();
-                    if (model.getRootPage().getControlBar() != null) {
-                        ((PageBar) model.getRootPage().getControlBar()).setPageTitle(document.getTitle());
-                    }
                     focusModel.init();
                 }
                 else {
@@ -156,7 +154,16 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
         eventBus.addHandler(SelectElementEvent.TYPE, new SelectElementEventHandler() {
             @Override
             public void onSelectElement(SelectElementEvent selectElementEvent) {
-                rpc.selectElement(selectElementEvent.getType(), selectElementEvent.getAttributes());
+                AbstractElement element = selectElementEvent.getElement();
+                if (element instanceof PageElement) {
+                    rpc.selectPage((PageElement) selectElementEvent.getElement());
+                }
+                else if (element instanceof AreaElement) {
+                    rpc.selectArea((AreaElement) selectElementEvent.getElement());
+                }
+                else if (element instanceof ComponentElement) {
+                    rpc.selectComponent((ComponentElement) selectElementEvent.getElement());
+                }
             }
         });
 
@@ -181,12 +188,6 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
             }
         });
 
-        eventBus.addHandler(DeleteComponentEvent.TYPE, new DeleteComponentEventHandler() {
-            @Override
-            public void onDeleteComponent(DeleteComponentEvent deleteComponentEvent) {
-                rpc.deleteComponent(deleteComponentEvent.getWorkspace(), deleteComponentEvent.getPath());
-            }
-        });
         eventBus.addHandler(SortComponentEvent.TYPE, new SortComponentEventHandler() {
             @Override
             public void onSortComponent(SortComponentEvent sortComponentEvent) {
@@ -238,7 +239,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
             Node childNode = node.getChild(i);
             if (childNode.getNodeType() == Comment.COMMENT_NODE) {
                 try {
-                    mgnlElement = commentProcessor.process(model, childNode, mgnlElement);
+                    mgnlElement = commentProcessor.process(model, eventBus, childNode, mgnlElement);
                 } catch (IllegalArgumentException e) {
                     GWT.log("Not CMSComment element, skipping: " + e.toString());
                 } catch (Exception e) {
@@ -260,7 +261,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
         elements.add(root);
         for (CmsNode element : elements) {
             try {
-                AbstractMgnlElementProcessor processor = MgnlElementProcessorFactory.getProcessor(model, eventBus, element.asMgnlElement());
+                AbstractMgnlElementProcessor processor = MgnlElementProcessorFactory.getProcessor(model, element.asMgnlElement());
                 processor.process();
             } catch (IllegalArgumentException e) {
                 GWT.log("MgnlFactory could not instantiate class. The element is neither an area nor component.");

@@ -1,0 +1,272 @@
+@charset "UTF-8";
+
+@import "../magnolia/fonts.scss";
+@import "../admincentraltheme/fonts.scss";
+@import "../magnolia/colors.scss";
+
+/* ---------------------------
+ * Edit bars definitions
+ * ---------------------------
+ */
+
+/*
+ * This class should be added to all injected div elements, instead of tweaking each element individually.
+ * Makes it easier to maintain and all subsequent classes should only declare styles they actually use.
+ */
+.mgnlEditor, .mgnlEditor div {
+  float: none !important;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent none no-repeat !important;
+  outline: 0 !important;
+}
+
+a.disabled:hover {
+  cursor: default !important;
+}
+
+/*
+ * General appearance of edit bar.
+ */
+div.mgnlEditorBar {
+  /* Change the box model to include borders and paddings in the width and height set. */
+  /* Allows here for a more intuitive handling of place holder heights and widths. */
+  -webkit-box-sizing: border-box !important; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box !important;    /* Firefox, other Gecko */
+  box-sizing: border-box !important;         /* IE 8+ */
+  height: 25px !important;
+  /* vertical paddings minus borders -1. "-1" to make sure that FF properly align labels in all cases; for other */
+  /* browsers, this has no effect. This only works with single-line labels. */
+  background-color: #efefef !important;
+  color: #6a9090 !important;
+  text-transform: uppercase !important;
+  margin: 0 0 2px 0 !important;
+  font-family: DINWebPro, Verdana, sans-serif !important;
+  font-size: 12px !important;
+  clear: both;
+}
+
+div.mgnlEditorBar.area.init {
+  background-color: #a5bc66 !important;
+  color: #ffffff !important;
+}
+
+/* Selected Item (focus) */
+div.mgnlEditorBar.area.childFocus ~ * div.mgnlEditorBar.component.focus,
+div.mgnlEditorBar.area.childFocus ~ div.mgnlEditorBar.component.focus,
+div.mgnlEditorBar.area.focus
+{
+  background-color: #6a9000 !important;
+  color: #ffffff !important;
+}
+
+/* The parent of the focussed component */
+div.mgnlEditorBar.area.childFocus {
+  background-color: #e1e8cc !important;
+  color: #6a9000 !important;
+}
+
+/* Siblings of the selected area */
+div.mgnlEditorBar.area.childFocus ~ div.mgnlEditorBar.component,
+div.mgnlEditorBar.area.childFocus ~ * div.mgnlEditorBar.component,
+div.mgnlEditorBar.area.init ~ * div.mgnlPlaceholder div.mgnlEditorBar.component,
+div.mgnlEditorBar.area.init ~ div.mgnlPlaceholder div.mgnlEditorBar.component {
+  background-color: #e1e8cc !important;
+  color: #6a9000 !important;
+}
+
+div.mgnlEditorBar.area.childFocus ~ div.mgnlPlaceholder div.mgnlPlaceholderBox,
+div.mgnlEditorBar.area.childFocus ~ * div.mgnlPlaceholder div.mgnlPlaceholderBox,
+div.mgnlEditorBar.area.init ~ * div.mgnlPlaceholder div.mgnlPlaceholderBox,
+div.mgnlEditorBar.area.init ~ div.mgnlPlaceholder div.mgnlPlaceholderBox {
+  border: 2px dotted #e1e8cc !important;
+  border-top: none !important;
+}
+
+/*
+ * "Children" of an area - (which are actually any siblings or children of siblings
+ * in the dom structure, which contain a mgnlEditorBar component.)
+ */
+div.mgnlEditorBar.area.focus ~ div.mgnlEditorBar.component,
+div.mgnlEditorBar.area.focus ~ * div.mgnlEditorBar.component {
+  background-color: #a5bc66 !important;
+  color: #ffffff !important;
+}
+div.mgnlEditorBar.area.focus ~ * div.mgnlPlaceholder div.mgnlPlaceholderBox,
+div.mgnlEditorBar.area.focus ~ div.mgnlPlaceholder div.mgnlPlaceholderBox {
+  border: 2px dotted #a5bc66 !important;
+  border-top: none !important;
+}
+
+/* "Children" of a component */
+div.mgnlEditorBar.component.focus ~ * div.mgnlEditorBar.area,
+div.mgnlEditorBar.component.focus ~ div.mgnlEditorBar.area
+{
+  background-color: #a5bc66 !important;
+  color: #ffffff !important;
+}
+
+div.mgnlEditorBar.area {
+  background-color: #efefef !important;
+  color: #689600 !important;
+  clear: both !important;
+  border-radius: 5px 5px 0 0 !important;
+}
+
+div.mgnlEditorBar.area.end {
+  height: 10px !important;
+  margin: 0 0 10px 0 !important;
+  border-radius: 0 0 5px 5px !important;
+}
+
+/*
+ * Component edit bar.
+ */
+div.mgnlEditorBar.component {
+  background-color: #efefef !important;
+
+  /* See .mgnlEditorBar for an explanation of this */
+  color: #6a9000 !important;
+}
+
+div.mgnlPlaceholder {
+  margin: 0 0 2px 0 !important;
+}
+
+div.mgnlPlaceholder div.mgnlEditorBar{
+  margin: 0 !important;
+}
+
+div.mgnlPlaceholder div.mgnlPlaceholderBox {
+  border: 2px dotted #efefef !important;
+  border-top: none !important;
+  height: 20px !important;
+  background-color: white !important;
+}
+
+/*
+ * Div carrying buttons.
+ */
+div.mgnlEditorBarButtons {
+  float: right !important;
+  height: 25px;
+  overflow: hidden;
+  padding: 0 8px 0 0 !important;
+}
+
+
+/**
+ * Icon classes.
+ */
+div.editorIcon {
+  line-height: 25px !important;
+  padding: 0 0 0 11px !important;
+  cursor: pointer !important;
+  font-size: 18px !important;
+}
+
+
+/*
+ * Label on bars showing name of component or area.
+ */
+div.mgnlEditorBarLabel {
+  overflow: hidden !important;
+  padding: 5px 0 0 16px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/*
+ * Level defines the indentation of labels on control bars.
+ * Note: sass does not allow the important argument.
+ */
+
+div.mgnlLevel-1 {
+  margin: 0 !important;
+}
+
+div.mgnlLevel-2 {
+  margin: 0 0 0 5px !important;
+}
+
+div.mgnlLevel-3 {
+  margin: 0 0 0 10px !important;
+}
+
+div.mgnlLevel-4 {
+  margin: 0 0 0 15px !important;
+}
+
+div.mgnlLevel-5 {
+  margin: 0 0 0 20px !important;
+}
+
+div.mgnlLevel-6 {
+  margin: 0 0 0 20px !important;
+}
+
+div.mgnlLevel-max {
+  margin: 0 0 0 20px !important;
+}
+
+/* --- End of edit bars definitions --- */
+
+
+/* -------------------------------------
+ *  Drag and drop of component edit bar
+ * -------------------------------------
+ */
+
+/* drag source */
+.mgnlEditorBar.component.moveSource {
+  border-top: 1px solid #deeab7 !important;
+  border-left: 1px solid #deeab7 !important;
+  border-bottom: 1px solid #b3c587 !important;
+  border-right: 1px solid #b3c587 !important;
+  background-image: url("img/bars/mgnl-bar.component.deemphasized.png") !important;
+}
+
+/* possible drop targets */
+.mgnlEditorBar.component.moveTarget {
+  border: 1px solid #d0234b !important;
+}
+
+/* selected drop target */
+.mgnlEditorBar.component.moveOver {
+  line-height: 16px !important;
+  border: 3px solid #d0234b !important;
+}
+
+.mgnlEditorBar.component.moveOver .mgnlEditorBarLabel {
+  margin: 0 0 0 3px !important;
+}
+
+/* make component mgnlPlaceholder slightly less strong */
+.mgnlEditormgnlPlaceholder.component.moveOngoing .mgnlEditorBar {
+  border-top: 1px solid #deeab7 !important;
+  border-left: 1px solid #deeab7 !important;
+  border-bottom: 1px solid #b3c587 !important;
+  border-right: 1px solid #b3c587 !important;
+}
+
+.mgnlEditormgnlPlaceholder.component.moveOngoing .mgnlEditormgnlPlaceholderElements {
+  border: 2px dotted #b3c587 !important;
+  border-top: none;
+}
+
+.mgnlEditormgnlPlaceholder.component.moveOngoing .mgnlEditorBarLabel {
+  display: none !important;
+}
+
+.mgnlEditormgnlPlaceholder.component.moveOngoing .mgnlEditorPushButton {
+  display: none !important;
+}
+
+div.mgnlEditorMoveDiv {
+  position: absolute !important;
+  z-index: 1000 !important;
+}
+
+/* --- End of DnD definitions --- */

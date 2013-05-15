@@ -159,7 +159,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
 
                         if (!JcrItemUtil.itemExists(getWorkspace(), getSelectedItemId())) {
                             // If the selected node no longer exists we revert selection to the root
-                            String workbenchRootItemId = JcrItemUtil.getItemId(JcrItemUtil.getNode(subAppDescriptor.getWorkbench().getWorkspace(), subAppDescriptor.getWorkbench().getPath()));
+                            String workbenchRootItemId = JcrItemUtil.getItemId(subAppDescriptor.getWorkbench().getWorkspace(), subAppDescriptor.getWorkbench().getPath());
                             workbenchPresenter.select(workbenchRootItemId);
                         } else {
                             // If the selected node does exists refresh the preview image in case it was changed
@@ -230,11 +230,11 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
     }
 
     /**
-     * Synchronizes the underlying view to reflect the status extracted from the Location token, i.e. selected path,
+     * Synchronizes the underlying view to reflect the status extracted from the Location token, i.e. selected itemId,
      * view type and optional query (in case of a search view).
      */
-    public void resync(final String path, final ViewType viewType, final String query) {
-        workbenchPresenter.resynch(path, viewType, query);
+    public void resync(final String itemId, final ViewType viewType, final String query) {
+        workbenchPresenter.resynch(itemId, viewType, query);
     }
 
     private void refreshActionbarPreviewImage(final String itemId, final String workspace) {

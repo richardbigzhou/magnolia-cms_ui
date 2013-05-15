@@ -38,8 +38,10 @@ package info.magnolia.ui.vaadin.gwt.client.shared;
  */
 public class PageElement extends AbstractElement {
 
+    public PageElement() {
+    }
+
     public PageElement(String workspace, String path, String dialog) {
         super(workspace, path, dialog);
     }
-
 }
