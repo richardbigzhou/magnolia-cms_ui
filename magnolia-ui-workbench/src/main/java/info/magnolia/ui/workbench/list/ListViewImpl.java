@@ -36,11 +36,13 @@ package info.magnolia.ui.workbench.list;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.vaadin.grid.MagnoliaTable;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -119,6 +121,8 @@ public class ListViewImpl implements ListView {
         bindHandlers();
     }
 
+
+
     private boolean isDeletedNode(JcrNodeAdapter nodeAdapter) {
         Node node = nodeAdapter.getNode();
         try {
@@ -149,9 +153,12 @@ public class ListViewImpl implements ListView {
             public void itemClick(ItemClickEvent event) {
                 Object currentSelection = event.getItemId();
 
+                Point clickCoordinates = new Point(event.getClientX(), event.getClientY());
                 if (event.getButton() == MouseButton.RIGHT) {
                     if (listener != null) {
-                        listener.onRightClick(event.getItem());
+                        listener.onRightClick(event.getItem(), clickCoordinates);
+                        // Select clicked item so that user knows which item they are acting on.
+                        table.select(((JcrItemAdapter) event.getItem()).getPath());
                     }
                 } else if (event.isDoubleClick()) {
                     if (listener != null) {

@@ -111,6 +111,7 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
         return view;
     }
 
+
     @Override
     public void setSelectedItemPath(String itemId) {
         super.setSelectedItemPath(itemId);
@@ -132,5 +133,6 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     public AbstractJcrContainer getContainer() {
         return container;
     }
+
 
 }

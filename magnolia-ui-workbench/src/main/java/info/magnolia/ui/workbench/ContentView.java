@@ -35,6 +35,8 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.ui.api.view.View;
 
+import java.awt.Point;
+
 import com.vaadin.data.Item;
 
 /**
@@ -98,7 +100,7 @@ public interface ContentView extends View {
 
         void onDoubleClick(Item item);
 
-        void onRightClick(Item item);
+        void onRightClick(Item item, Point clickCoordinates);
 
     }
 }
