@@ -76,12 +76,17 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
     }
 
     @Override
+    public boolean isNode() {
+        return false;
+    }
+
+    @Override
     public javax.jcr.Property getJcrItem() {
         return (javax.jcr.Property)super.getJcrItem();
     }
 
     @Override
-    public javax.jcr.Property getModifiedJcrItem() throws RepositoryException {
+    public javax.jcr.Property applyChanges() throws RepositoryException {
         javax.jcr.Property jcrItem = getJcrItem();
         super.updateProperties(jcrItem);
         return getJcrItem();

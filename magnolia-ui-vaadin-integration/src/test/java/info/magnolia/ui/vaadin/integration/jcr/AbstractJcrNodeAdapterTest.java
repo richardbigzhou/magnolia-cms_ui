@@ -190,7 +190,7 @@ public class AbstractJcrNodeAdapterTest {
         item.getChangedProperties().put(propertyName, property);
 
         // WHEN
-        item.updateProperties(underlyingNode);
+        item.applyChanges();
 
         // THEN
         assertEquals(propertyValue, underlyingNode.getProperty(propertyName).getString());
@@ -221,7 +221,7 @@ public class AbstractJcrNodeAdapterTest {
         item.getChangedProperties().put(propertyNameBlank, propertyBlank);
 
         // WHEN
-        item.updateProperties(underlyingNode);
+        item.applyChanges();
 
         // THEN
         assertEquals(propertyValueNotEmpty, underlyingNode.getProperty(propertyNameNotEmpty).getString());
@@ -267,7 +267,7 @@ public class AbstractJcrNodeAdapterTest {
 
         // WHEN
         adapter.getItemProperty(ModelConstants.JCR_NAME).setValue(existingName);
-        adapter.updateProperties();
+        adapter.applyChanges();
 
         // THEN
         assertTrue(root.hasProperty(existingName));

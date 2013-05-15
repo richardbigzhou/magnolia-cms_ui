@@ -280,7 +280,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         property.setValue(Boolean.FALSE);
 
         // WHEN
-        Node res = adapter.getNode();
+        Node res = adapter.applyChanges();
 
         // THEN
         assertEquals(PropertyType.nameFromValue(PropertyType.BOOLEAN), property.getType().getSimpleName());
@@ -304,7 +304,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         propertyInitial.setValue(value.getBinary());
 
         // WHEN
-        Node res = adapter.getNode();
+        Node res = adapter.applyChanges();
 
         // THEN
         assertEquals(res.getProperty(id).getType(), PropertyType.BINARY);
@@ -326,7 +326,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         propertyInitial.setValue(new BinaryValue("newText").getBinary());
 
         // WHEN
-        Node res = adapter.getNode();
+        Node res = adapter.applyChanges();
 
         // THEN
         assertEquals(res.getProperty(id).getType(), PropertyType.BINARY);

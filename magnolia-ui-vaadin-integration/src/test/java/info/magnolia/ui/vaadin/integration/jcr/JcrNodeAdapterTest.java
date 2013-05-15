@@ -261,7 +261,7 @@ public class JcrNodeAdapterTest {
 
         // THEN
         assertTrue(res);
-        assertFalse(adapter.getNode().hasProperty(id));
+        assertFalse(adapter.applyChanges().hasProperty(id));
     }
 
     @Test
@@ -281,7 +281,7 @@ public class JcrNodeAdapterTest {
 
         // THEN
         assertFalse(res);
-        assertTrue(adapter.getNode().hasProperty(id));
+        assertTrue(adapter.applyChanges().hasProperty(id));
     }
 
     @Test
@@ -295,7 +295,7 @@ public class JcrNodeAdapterTest {
         property.setValue(propertyValue);
 
         // WHEN
-        Node res = adapter.getNode();
+        Node res = adapter.applyChanges();
 
         // THEN
         // should have the created property
@@ -320,7 +320,7 @@ public class JcrNodeAdapterTest {
         property.setValue(propertyValue + modified);
 
         // WHEN
-        Node res = adapter.getNode();
+        Node res = adapter.applyChanges();
 
         // THEN
         assertTrue(res.hasProperty(propertyName));
@@ -351,7 +351,7 @@ public class JcrNodeAdapterTest {
         newProperty.setValue(value_3);
         Property jcrProperty = adapter.getItemProperty(propertyName);
         jcrProperty.setValue(propertyValue + modified);
-        Node res = adapter.getNode();
+        Node res = adapter.applyChanges();
 
         // THEN
         // Vaadin property should be created
@@ -390,7 +390,7 @@ public class JcrNodeAdapterTest {
         DefaultProperty jcrProperty = (DefaultProperty) adapter.getItemProperty(propertyName);
         jcrProperty.setValue(propertyValue + modified);
         jcrProperty.setReadOnly(true);
-        Node res = adapter.getNode();
+        Node res = adapter.applyChanges();
 
         // THEN
         // Vaadin property should not be created
@@ -422,7 +422,7 @@ public class JcrNodeAdapterTest {
         adapter.removeItemProperty(id_2);
 
         // THEN
-        Node res = adapter.getNode();
+        Node res = adapter.applyChanges();
         // 2 previous JCR property (one modified, one not)
         assertTrue(res.hasProperty(propertyName));
         assertFalse(res.hasProperty(id_2));
@@ -457,7 +457,7 @@ public class JcrNodeAdapterTest {
         adapter.removeItemProperty("id_1");
 
         // THEN
-        Node res = adapter.getNode();
+        Node res = adapter.applyChanges();
         // 2 previous JCR property (one modified, one not)
         assertFalse(res.hasProperty("id_1"));
         assertTrue(res.hasProperty("id_2"));
@@ -492,7 +492,7 @@ public class JcrNodeAdapterTest {
         adapter.removeItemProperty("id_5");
 
         // THEN
-        Node res = adapter.getNode();
+        Node res = adapter.applyChanges();
         // should have only the created&set property not removed
         assertTrue(res.hasProperty("id_4"));
         assertFalse(res.hasProperty("id_5"));
@@ -511,7 +511,8 @@ public class JcrNodeAdapterTest {
         // WHEN
         Property<String> property = DefaultPropertyUtil.newDefaultProperty(propertyName, PropertyType.TYPENAME_STRING, null);
         adapter.addItemProperty(propertyName, property);
-        adapter.updateProperties();
+        adapter.applyChanges();
+
         // THEN
         assertFalse(node.hasProperty(propertyName));
         assertEquals(1, adapter.getChangedProperties().size());

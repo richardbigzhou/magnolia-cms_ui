@@ -261,7 +261,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
         }
 
         // don't save if no value changes occurred on adapter
-        if (!((JcrItemAdapter) item).isModified()) {
+        if (!((JcrItemAdapter) item).hasChangedProperties()) {
             return;
         }
 
@@ -271,7 +271,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
             try {
 
                 // get modifications
-                Node node = nodeAdapter.getModifiedJcrItem();
+                Node node = nodeAdapter.applyChanges();
 
                 LastModified.update(node);
                 node.getSession().save();
@@ -291,7 +291,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
                 Node parent = propertyAdapter.getJcrItem().getParent();
 
                 // get modifications
-                propertyAdapter.getModifiedJcrItem();
+                propertyAdapter.applyChanges();
 
                 LastModified.update(parent);
                 parent.getSession().save();

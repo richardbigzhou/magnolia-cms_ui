@@ -51,12 +51,15 @@ public interface JcrItemAdapter extends Item {
 
     String getItemId();
 
+    /**
+     * Returns the JCR Item represented by this adapter, or null in case of {@link RepositoryException}.
+     */
     javax.jcr.Item getJcrItem();
 
     /**
-     * Returns the JCR Item represented by this Item with any modifications applied.
+     * Returns the JCR Item represented by this Item with any changes applied.
      */
-    javax.jcr.Item getModifiedJcrItem() throws RepositoryException;
+    javax.jcr.Item applyChanges() throws RepositoryException;
 
-    boolean isModified();
+    boolean hasChangedProperties();
 }

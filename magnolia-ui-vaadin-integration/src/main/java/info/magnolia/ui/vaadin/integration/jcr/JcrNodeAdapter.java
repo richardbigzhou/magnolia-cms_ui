@@ -86,7 +86,7 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
         try {
             setNodeName(jcrNode.getName());
         } catch (RepositoryException e) {
-            log.error("Could not access the Node name.... Should never happen", e);
+            log.error("Could not access the node name", e);
         }
     }
 

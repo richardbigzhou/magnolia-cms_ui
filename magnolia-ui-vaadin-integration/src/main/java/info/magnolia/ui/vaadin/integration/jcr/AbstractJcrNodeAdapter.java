@@ -71,10 +71,15 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
 
     private JcrItemNodeAdapter parent;
 
-    private String nodeName = null;
+    private String nodeName;
 
     public AbstractJcrNodeAdapter(Node jcrNode) {
         super(jcrNode);
+    }
+
+    @Override
+    public boolean isNode() {
+        return true;
     }
 
     @Override
@@ -177,7 +182,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
     }
 
     @Override
-    public Node getModifiedJcrItem() throws RepositoryException {
+    public Node applyChanges() throws RepositoryException {
         // get Node from repository
         Node node = getJcrItem();
 
@@ -188,15 +193,10 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         return node;
     }
 
-    /**
-     * Gets the JCR Node and updates its properties and children. Update will create new properties,
-     * set new values and remove those requested for removal. Children will also be added, updated
-     * or removed.
-     */
     @Override
     public Node getNode() {
         try {
-            return getModifiedJcrItem();
+            return applyChanges();
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
@@ -209,7 +209,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         if (!children.isEmpty()) {
             for (JcrItemNodeAdapter child : children.values()) {
                 // Update child node as well
-                child.getNode();
+                child.applyChanges();
             }
         }
         // Remove child node if needed
@@ -257,15 +257,17 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
             try {
                 if (jcrName != null && !jcrName.isEmpty() && !jcrName.equals(node.getName())) {
 
-                    // make sure new path is clear
+                    // make sure new path is available
                     jcrName = Path.getUniqueLabel(node.getSession(), node.getParent().getPath(), jcrName);
                     String newPath = NodeUtil.combinePathAndName(node.getParent().getPath(), jcrName);
+
                     node.getSession().move(node.getPath(), newPath);
+
                     setItemId(JcrItemUtil.getItemId(node));
                 }
             } catch (RepositoryException e) {
-                    log.error("Could not rename JCR Node.", e);
-                }
+                log.error("Could not rename JCR Node.", e);
+            }
         } else if (propertyId != null && !propertyId.isEmpty()) {
             if (property.getValue() != null && StringUtils.isNotEmpty(property.getValue().toString())) {
                 try {
@@ -284,8 +286,8 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
     }
 
     @Override
-    public JcrItemNodeAdapter getChild(String id) {
-        return children.get(id);
+    public JcrItemNodeAdapter getChild(String nodeName) {
+        return children.get(nodeName);
     }
 
     @Override

@@ -42,8 +42,11 @@ import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.MockValue;
 import info.magnolia.ui.api.ModelConstants;
 
+import java.util.Collection;
+
 import javax.jcr.Node;
 import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 
@@ -55,6 +58,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.vaadin.data.Property;
+import com.vaadin.data.util.ObjectProperty;
 
 /**
  * Main test class for {@link JcrPropertyAdapter}.
@@ -137,7 +141,7 @@ public class JcrPropertyAdapterTest {
 
         // WHEN
         adapter.getItemProperty(ModelConstants.JCR_NAME).setValue(newJcrName);
-        adapter.updateProperties();
+        adapter.applyChanges();
 
         // THEN
         assertFalse(node.hasProperty(propertyName));
@@ -154,7 +158,7 @@ public class JcrPropertyAdapterTest {
 
         // WHEN
         adapter.getItemProperty(ModelConstants.JCR_NAME).setValue(newJcrName);
-        adapter.updateProperties();
+        adapter.applyChanges();
 
         // THEN
         assertTrue(node.hasProperty(propertyName));
@@ -172,7 +176,7 @@ public class JcrPropertyAdapterTest {
 
         // WHEN
         adapter.getItemProperty(ModelConstants.JCR_NAME).setValue(existingName);
-        adapter.updateProperties();
+        adapter.applyChanges();
 
         // THEN
         assertTrue(node.hasProperty(existingName));
@@ -189,11 +193,31 @@ public class JcrPropertyAdapterTest {
 
         // WHEN
         adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY).setValue(newValue);
-        adapter.updateProperties();
+        adapter.applyChanges();
 
         // THEN
         assertTrue(node.hasProperty(propertyName));
         assertEquals(newValue, node.getProperty(propertyName).getString());
+    }
+
+    @Test
+    public void testUpdateBothNameAndValue() throws Exception {
+        // GIVEN
+        Node node = session.getRootNode();
+        node.setProperty(propertyName, propertyValue);
+        JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
+        String newName = "newName";
+        String newValue = "newValue";
+
+        // WHEN
+        adapter.getItemProperty(ModelConstants.JCR_NAME).setValue(newName);
+        adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY).setValue(newValue);
+        javax.jcr.Property property = adapter.applyChanges();
+
+        // THEN
+        assertTrue(node.hasProperty(newName));
+        assertEquals(newName, property.getName());
+        assertEquals(newValue, property.getString());
     }
 
     @Ignore("http://jira.magnolia-cms.com/browse/MGNLUI-485")
@@ -212,10 +236,10 @@ public class JcrPropertyAdapterTest {
 
         // WHEN
         numericAdapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY).setValue(newIntValue);
-        numericAdapter.updateProperties();
+        numericAdapter.applyChanges();
 
         booleanAdapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY).setValue(newBooleanValue);
-        booleanAdapter.updateProperties();
+        booleanAdapter.applyChanges();
 
         // THEN
         assertTrue(node.hasProperty(numericPropertyName));
@@ -237,11 +261,51 @@ public class JcrPropertyAdapterTest {
 
         // WHEN
         adapter.getItemProperty(JcrPropertyAdapter.TYPE_PROPERTY).setValue(newType);
-        adapter.updateProperties();
+        adapter.applyChanges();
 
         // THEN
         assertTrue(node.hasProperty(propertyName));
         assertEquals(PropertyType.valueFromName(newType), node.getProperty(propertyName).getType());
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void testCannotRemoveItemProperty() throws RepositoryException {
+
+        // GIVEN
+        Node node = session.getRootNode();
+        node.setProperty(propertyName, propertyValue);
+        JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
+
+        // WHEN
+        adapter.removeItemProperty(ModelConstants.JCR_NAME);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testCannotAddItemProperty() throws RepositoryException {
+
+        // GIVEN
+        Node node = session.getRootNode();
+        node.setProperty(propertyName, propertyValue);
+        JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
+
+        // WHEN
+        adapter.addItemProperty("foobar", new ObjectProperty("value"));
+    }
+
+    @Test
+    public void testGetItemPropertyIds() throws RepositoryException {
+        // GIVEN
+        Node node = session.getRootNode();
+        node.setProperty(propertyName, propertyValue);
+        JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
+
+        // WHEN
+        Collection<?> propertyIds = adapter.getItemPropertyIds();
+
+        // THEN
+        assertEquals(3, propertyIds.size());
+        assertTrue(propertyIds.contains(ModelConstants.JCR_NAME));
+        assertTrue(propertyIds.contains(JcrPropertyAdapter.VALUE_PROPERTY));
+        assertTrue(propertyIds.contains(JcrPropertyAdapter.TYPE_PROPERTY));
+    }
 }

@@ -160,9 +160,9 @@ public class BrowserPresenterTest {
         Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
         node.addMixin(LastModified.NAME);
         AbstractJcrNodeAdapter adapter = mock(AbstractJcrNodeAdapter.class);
-        when(adapter.getModifiedJcrItem()).thenReturn(node);
+        when(adapter.applyChanges()).thenReturn(node);
         // simulate pending change
-        when(adapter.isModified()).thenReturn(true);
+        when(adapter.hasChangedProperties()).thenReturn(true);
 
         Calendar firstModified = LastModified.getLastModified(node);
         String firstModifiedBy = LastModified.getLastModifiedBy(node);
@@ -187,7 +187,7 @@ public class BrowserPresenterTest {
         JcrPropertyAdapter adapter = mock(JcrPropertyAdapter.class);
         when(adapter.getJcrItem()).thenReturn(property);
         // simulate pending change
-        when(adapter.isModified()).thenReturn(true);
+        when(adapter.hasChangedProperties()).thenReturn(true);
 
         Calendar firstModified = LastModified.getLastModified(node);
         String firstModifiedBy = LastModified.getLastModifiedBy(node);
@@ -209,7 +209,7 @@ public class BrowserPresenterTest {
         Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
         LastModified.update(node);
         AbstractJcrNodeAdapter adapter = mock(AbstractJcrNodeAdapter.class);
-        when(adapter.getNode()).thenReturn(node);
+        when(adapter.applyChanges()).thenReturn(node);
 
         Calendar firstModified = LastModified.getLastModified(node);
         String firstModifiedBy = LastModified.getLastModifiedBy(node);

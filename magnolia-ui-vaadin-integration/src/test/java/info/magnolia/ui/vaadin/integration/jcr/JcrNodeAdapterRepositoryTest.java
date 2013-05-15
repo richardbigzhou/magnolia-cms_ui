@@ -90,7 +90,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
         property.setValue(value);
 
         // WHEN
-        Node res = adapter.getNode();
+        Node res = adapter.applyChanges();
 
         // THEN
         // should have a new node name and still all its properties
@@ -114,7 +114,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
         property.setValue(value);
 
         // WHEN
-        Node res = adapter.getNode();
+        Node res = adapter.applyChanges();
 
         // THEN
         // should have a new NodeName

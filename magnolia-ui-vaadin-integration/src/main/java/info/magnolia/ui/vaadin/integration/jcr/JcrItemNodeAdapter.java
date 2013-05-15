@@ -59,22 +59,26 @@ public interface JcrItemNodeAdapter extends JcrItemAdapter {
     Node getJcrItem();
 
     /**
-     * Return the Jcr Node represented by this Item, Including the Modification done on Property and
-     * Child Nodes (added or removed).
+     * Returns the JCR Node represented by this Item with changes applied. Updates both properties and child nodes. Will
+     * create new properties, set new values and remove those requested for removal. Child nodes will also be added,
+     * updated or removed.
      */
-    Node getModifiedJcrItem() throws RepositoryException;
+    Node applyChanges() throws RepositoryException;
 
     /**
      * Return the Jcr Node represented by this Item, Including the Modification done on Property and
      * Child Nodes (added or removed).
+     *
+     * @deprecated use applyChanges instead
      */
+    @Deprecated
     Node getNode();
 
     /**
-     * @param nodeIdentifier AbstractJcrAdapter.getNodeIdentifier().
+     * @param nodeName name of the child node
      * @return child JcrItemNodeAdapter if part of the children, or null if not defined.
      */
-    JcrItemNodeAdapter getChild(String nodeIdentifier);
+    JcrItemNodeAdapter getChild(String nodeName);
 
     Map<String, JcrItemNodeAdapter> getChildren();
 

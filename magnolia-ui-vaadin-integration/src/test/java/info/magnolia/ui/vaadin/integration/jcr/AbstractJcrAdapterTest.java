@@ -173,6 +173,11 @@ public class AbstractJcrAdapterTest {
         }
 
         @Override
+        public boolean isNode() {
+            return !JcrItemUtil.isPropertyItemId(getItemId());
+        }
+
+        @Override
         public com.vaadin.data.Property getItemProperty(Object id) {
             return null;
         }
@@ -197,7 +202,7 @@ public class AbstractJcrAdapterTest {
         }
 
         @Override
-        public Item getModifiedJcrItem() throws RepositoryException {
+        public Item applyChanges() throws RepositoryException {
             return null;
         }
     }
