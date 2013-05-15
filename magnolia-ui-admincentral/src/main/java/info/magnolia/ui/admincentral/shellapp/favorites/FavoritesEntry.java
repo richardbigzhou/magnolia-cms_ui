@@ -218,7 +218,8 @@ public final class FavoritesEntry extends CustomComponent {
             public void layoutClick(LayoutClickEvent event) {
                 if (event.getClickedComponent() == titleField && !editable) {
                     if (event.isDoubleClick()) {
-                        // TODO fgrilli temporarily commented out as, besides making the text editable, it also goes to the saved location
+                        // TODO fgrilli commented out as, besides making the text editable, it also goes to the saved location
+                        // See MGNLUI-1317
                         // setEditable(true);
                     } else {
                         listener.goToLocation(location);
