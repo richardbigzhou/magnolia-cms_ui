@@ -38,12 +38,11 @@ import info.magnolia.commands.chain.Command;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.action.ActionBase;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.Collections;
@@ -51,6 +50,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -77,10 +77,10 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
     public static final String COMMAND_RESULT = "command_result";
 
     @Inject
-    public CommandActionBase(final D definition, final JcrItemNodeAdapter node, final CommandsManager commandsManager, SubAppContext subAppContext) {
+    public CommandActionBase(final D definition, final JcrItemAdapter item, final CommandsManager commandsManager, SubAppContext subAppContext) {
         super(definition);
         this.commandsManager = commandsManager;
-        this.params = buildParams(node.getNode());
+        this.params = buildParams(item.getJcrItem());
         this.subAppContext = subAppContext;
         // Init Command.
         String commandName = getDefinition().getCommand();
@@ -110,26 +110,22 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
      * }
      * </pre>
      */
-    protected Map<String, Object> buildParams(final Node node) {
+    protected Map<String, Object> buildParams(final Item jcrItem) {
         Map<String, Object> params = getDefinition().getParams() == null ? new HashMap<String, Object>() : getDefinition().getParams();
         try {
-            final String path = node.getPath();
-            final String workspace = node.getSession().getWorkspace().getName();
-            final String identifier = SessionUtil.getNode(workspace, path).getIdentifier();
+            final String path = jcrItem.getPath();
+            final String workspace = jcrItem.getSession().getWorkspace().getName();
+            final String identifier = jcrItem.isNode() ? ((Node) jcrItem).getIdentifier() : jcrItem.getParent().getIdentifier();
 
             params.put(Context.ATTRIBUTE_REPOSITORY, workspace);
-            // really only the uuid should be used to identify a piece of content and nothing else
+            // really only the identifier should be used to identify a piece of content and nothing else
             params.put(Context.ATTRIBUTE_UUID, identifier);
-            // retrieve content again using uuid and system context to get unaltered path.
-            final String realPath = MgnlContext.getSystemContext().getJCRSession(workspace).getNodeByIdentifier(identifier).getPath();
-            params.put(Context.ATTRIBUTE_PATH, realPath);
+            params.put(Context.ATTRIBUTE_PATH, path);
 
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
-
         return params;
-
     }
 
     /**
@@ -151,7 +147,7 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
      * @throws info.magnolia.ui.api.action.ActionExecutionException if no command is found or if command execution throws an exception.
      */
     @Override
-    public final void execute() throws ActionExecutionException {
+    public void execute() throws ActionExecutionException {
 
         if (command == null) {
             throw new ActionExecutionException(String.format("Could not find command [%s] in any catalog", getDefinition().getCommand()));

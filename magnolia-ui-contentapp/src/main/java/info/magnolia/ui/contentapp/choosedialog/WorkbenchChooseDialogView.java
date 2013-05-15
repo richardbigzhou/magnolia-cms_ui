@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,10 +33,8 @@
  */
 package info.magnolia.ui.contentapp.choosedialog;
 
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
-import info.magnolia.ui.workbench.WorkbenchView;
-
-import javax.inject.Inject;
 
 /**
  * Chooses an item from a workbench.
@@ -46,12 +44,16 @@ public class WorkbenchChooseDialogView extends BaseDialog implements ChooseDialo
     public static final String CHOOSE_ACTION_NAME = "commit";
     public static final String CANCEL_ACTION_NAME = "cancel";
 
-    @Inject
-    public WorkbenchChooseDialogView(WorkbenchView view) {
+    public WorkbenchChooseDialogView() {
+        setHeight("500px");
         addStyleName("choose-dialog");
-        setContent(view.asVaadinComponent());
         addAction(CHOOSE_ACTION_NAME, "Choose");
         addAction(CANCEL_ACTION_NAME, "Cancel");
+    }
+
+    @Override
+    public void setContent(View contentView) {
+        setContent(contentView.asVaadinComponent());
     }
 
 }

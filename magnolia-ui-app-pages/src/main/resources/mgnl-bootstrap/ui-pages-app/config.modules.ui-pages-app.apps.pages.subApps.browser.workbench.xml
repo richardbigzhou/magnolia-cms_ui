@@ -367,7 +367,7 @@
         <sv:value>54bb12dc-b7ad-4d36-89d1-d25d2b6047be</sv:value>
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
-        <sv:value>info.magnolia.ui.workbench.tree.TreeContentViewDefinition</sv:value>
+        <sv:value>info.magnolia.ui.workbench.tree.TreePresenterDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -396,7 +396,7 @@
         <sv:value>b465ee9e-8ee5-48da-bef4-c7b88f3f154a</sv:value>
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
-        <sv:value>info.magnolia.ui.workbench.list.ListContentViewDefinition</sv:value>
+        <sv:value>info.magnolia.ui.workbench.list.ListPresenterDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -425,7 +425,7 @@
         <sv:value>e9e5dee1-a90f-489a-9257-860e0065d5e7</sv:value>
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
-        <sv:value>info.magnolia.ui.workbench.search.SearchContentViewDefinition</sv:value>
+        <sv:value>info.magnolia.ui.workbench.search.SearchPresenterDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>

@@ -68,7 +68,7 @@ public class EditPageAction extends ActionBase<EditPageActionDefinition> {
             if (!NodeUtil.isNodeType(nodeItemToEdit.getNode(), NodeTypes.Content.NAME)) {
                 return;
             }
-            DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, nodeItemToEdit.getNode().getPath());
+            DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, nodeItemToEdit.getNode().getPath(), "");
             locationController.goTo(location);
 
         } catch (RepositoryException e) {

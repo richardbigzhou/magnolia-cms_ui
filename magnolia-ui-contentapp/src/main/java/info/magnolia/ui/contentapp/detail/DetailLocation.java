@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,27 +36,43 @@ package info.magnolia.ui.contentapp.detail;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * ItemLocation used in implementers of {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.
- * Extends the Default Location by adding fields for the nodePath and {@link DetailView.ViewType}.
+ * Extends the Default Location by adding fields for :
+ * <ul>
+ * <li>the nodePath (some/node/path)</li>
+ * <li>the {@link DetailView.ViewType} (viewType)</li>
+ * <li>the node version (version)</li>
+ * </ul>
+ * <p>
+ * {@code appType:appId:subAppId;some/node/path:viewType:version}
  */
 public class DetailLocation extends DefaultLocation {
 
     private DetailView.ViewType viewType;
     private String nodePath;
+    private String version;
+    // Position of the parameter based on the ':' used as separator.
+    private final static int NODE_PATH_PARAM_POSITION = 0;
+    private final static int VIEW_TYPE_PARAM_POSITION = 1;
+    private final static int VERSION_PARAM_POSITION = 2;
 
     public DetailLocation(String appId, String subAppId, String parameter) {
         super(LOCATION_TYPE_APP, appId, subAppId, parameter);
 
         setNodePath(extractNodePath(parameter));
         setViewType(extractViewType(parameter));
+        setVersion(extractVersion(parameter));
     }
 
-    public DetailLocation(String appId, String subAppId, DetailView.ViewType viewType, String nodePath) {
+    public DetailLocation(String appId, String subAppId, DetailView.ViewType viewType, String nodePath, String version) {
         super(LOCATION_TYPE_APP, appId, subAppId);
 
         setNodePath(nodePath);
         setViewType(viewType);
+        setVersion(version);
         updateParameter();
     }
 
@@ -79,21 +95,55 @@ public class DetailLocation extends DefaultLocation {
         this.viewType = viewType;
     }
 
-    private String extractNodePath(String parameter) {
-        int i = parameter.indexOf(':');
-        return i != -1 ? parameter.substring(0, i) : parameter;
+    public String getVersion() {
+        return version;
     }
 
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public boolean hasVersion() {
+        return StringUtils.isNotBlank(version);
+    }
+
+    /**
+     * Extract the Node path from the parameter.
+     * 
+     * @param parameter some/node/path:viewType:version
+     * @return some/node/path
+     */
+    private String extractNodePath(String parameter) {
+        return getParameter(parameter, NODE_PATH_PARAM_POSITION);
+    }
+
+    /**
+     * Extract the viewType from the parameter.
+     * 
+     * @param parameter some/node/path:viewType:version
+     * @return viewType
+     */
     private DetailView.ViewType extractViewType(String parameter) {
-        String action = "";
-        // nodePath
-        int i = parameter.indexOf(':');
-        if (i != -1) {
-            // view
-            int j = parameter.indexOf(':', i + 1);
-            action = (j != -1) ? parameter.substring(i + 1, j) : parameter.substring(i + 1);
-        }
+        String action = getParameter(parameter, VIEW_TYPE_PARAM_POSITION);
         return DetailView.ViewType.fromString(action);
+    }
+
+    /**
+     * Extract the Node Version from the parameter.
+     * 
+     * @param parameter some/node/path:viewType:version
+     * @return version
+     */
+    private String extractVersion(String parameter) {
+        return getParameter(parameter, VERSION_PARAM_POSITION);
+    }
+
+    private String getParameter(String parameter, int position) {
+        String arguments[] = StringUtils.split(parameter, ':');
+        if (position <= arguments.length - 1) {
+            return arguments[position];
+        }
+        return "";
     }
 
     protected void updateParameter() {
@@ -101,6 +151,10 @@ public class DetailLocation extends DefaultLocation {
         sb.append(nodePath);
         sb.append(":");
         sb.append(viewType.getText());
+        if (StringUtils.isNotBlank(version)) {
+            sb.append(":");
+            sb.append(version);
+        }
         super.setParameter(sb.toString());
     }
 
@@ -115,6 +169,11 @@ public class DetailLocation extends DefaultLocation {
 
     public void updateViewtype(DetailView.ViewType newViewType) {
         setViewType(newViewType);
+        updateParameter();
+    }
+
+    public void updateVersion(String newVersion) {
+        setVersion(newVersion);
         updateParameter();
     }
 
