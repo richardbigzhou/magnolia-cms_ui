@@ -35,6 +35,7 @@ package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
@@ -165,7 +166,17 @@ public class BrowserSubApp extends BaseSubApp {
             getAppContext().updateSubAppLocation(getSubAppContext(), location);
         }
         String query = location.getQuery();
-        getBrowser().resync(path, viewType, query);
+
+        BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
+        final String workspaceName = subAppDescriptor.getWorkbench().getWorkspace();
+
+        String itemId = null;
+        try {
+            itemId = JcrItemUtil.getItemId(SessionUtil.getNode(workspaceName, path));
+        } catch (RepositoryException e) {
+            log.warn("Could not retrieve item at path {} in workspace {}", path, workspaceName);
+        }
+        getBrowser().resync(itemId, viewType, query);
         updateActionbar(getBrowser().getActionbarPresenter());
     }
 
@@ -185,10 +196,9 @@ public class BrowserSubApp extends BaseSubApp {
         List<ActionbarSectionDefinition> sections = subAppDescriptor.getActionbar().getSections();
 
         try {
-
             Item item = null;
             String selectedItemId = getBrowser().getSelectedItemId();
-            String workbenchRootItemId = JcrItemUtil.getItemId(workbench.getWorkspace(), workbench.getPath());
+            String workbenchRootItemId = JcrItemUtil.getItemId(SessionUtil.getNode(workbench.getWorkspace(), workbench.getPath()));
             if (selectedItemId != null && !selectedItemId.equals(workbenchRootItemId)) {
                 item = JcrItemUtil.getJcrItem(workbench.getWorkspace(), selectedItemId);
             }

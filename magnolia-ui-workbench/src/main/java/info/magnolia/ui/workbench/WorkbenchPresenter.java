@@ -235,9 +235,9 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         return this.workbenchDefinition.getContentViews().get(0).getViewType();
     }
 
-    public void resynch(final String path, final ContentView.ViewType viewType, final String query) {
+    public void resynch(final String itemId, final ContentView.ViewType viewType, final String query) {
         setViewType(viewType);
-        select(path);
+        select(itemId);
 
         if (viewType == ViewType.SEARCH) {
             doSearch(query);

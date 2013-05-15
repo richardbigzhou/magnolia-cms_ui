@@ -230,11 +230,11 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
     }
 
     /**
-     * Synchronizes the underlying view to reflect the status extracted from the Location token, i.e. selected path,
+     * Synchronizes the underlying view to reflect the status extracted from the Location token, i.e. selected itemId,
      * view type and optional query (in case of a search view).
      */
-    public void resync(final String path, final ViewType viewType, final String query) {
-        workbenchPresenter.resynch(path, viewType, query);
+    public void resync(final String itemId, final ViewType viewType, final String query) {
+        workbenchPresenter.resynch(itemId, viewType, query);
     }
 
     private void refreshActionbarPreviewImage(final String itemId, final String workspace) {
