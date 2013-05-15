@@ -33,21 +33,22 @@
  */
 package info.magnolia.ui.app.config.browser;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.contentapp.browser.BrowserPresenter;
 import info.magnolia.ui.contentapp.browser.BrowserSubApp;
+import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Item;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,17 +69,24 @@ public class ConfigBrowserSubApp extends BrowserSubApp {
     public void updateActionbar(final ActionbarPresenter actionbar) {
         final String selectedItemId = getBrowser().getSelectedItemId();
         try {
+
+            Item jcrItem = null;
+            BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
+            WorkbenchDefinition workbench = subAppDescriptor.getWorkbench();
+            String workbenchRootItemId = JcrItemUtil.getItemId(JcrItemUtil.getNode(workbench.getWorkspace(), workbench.getPath()));
+            if (selectedItemId != null && !selectedItemId.equals(workbenchRootItemId)) {
+                jcrItem = JcrItemUtil.getJcrItem(workbench.getWorkspace(), selectedItemId);
+            }
+
             // disable All
             actionbar.disableGroup("addingActions");
             actionbar.disableGroup("duplicateActions");
             actionbar.disableGroup("activationActions");
             actionbar.disableGroup("importExportActions");
 
-            if (selectedItemId == null || "/".equals(selectedItemId)) {
+            if (jcrItem == null) {
                 actionbar.enable("addFolder");
             } else {
-                final Session session = MgnlContext.getJCRSession("config");
-                Item jcrItem = session.getItem(selectedItemId);
                 if (jcrItem.isNode()) {
                     // Handle Selected Node
                     actionbar.enableGroup("addingActions");
