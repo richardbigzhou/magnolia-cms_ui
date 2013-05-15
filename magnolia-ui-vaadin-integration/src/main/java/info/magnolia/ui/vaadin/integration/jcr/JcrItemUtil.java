@@ -102,17 +102,18 @@ public class JcrItemUtil {
         return uuid;
     }
 
-    public static String getItemId(final Item jcrItem) throws RepositoryException {
-        return jcrItem.isNode() ? ((Node) jcrItem).getIdentifier() : jcrItem.getParent().getIdentifier() + PROPERTY_NAME_AND_UUID_SEPARATOR + jcrItem.getName();
-    }
-
     public static Item getJcrItem(final String workspaceName, final String itemId) throws RepositoryException {
         if (itemId == null) {
             return null;
         }
         final String nodeId = getNodeUuidFrom(itemId);
 
-        final Node node = MgnlContext.getJCRSession(workspaceName).getNodeByIdentifier(nodeId);
+        Node node = null;
+        try {
+            node = MgnlContext.getJCRSession(workspaceName).getNodeByIdentifier(nodeId);
+        } catch (ItemNotFoundException e) {
+            log.debug("Couldn't find item with id {} in workspace {}.", itemId, workspaceName);
+        }
         if (node == null || !isPropertyId(itemId)) {
             return node;
         }
@@ -125,17 +126,15 @@ public class JcrItemUtil {
     }
 
     public static boolean itemExists(String workspaceName, String itemId) throws RepositoryException {
-        if (itemId == null) {
-            return false;
-        }
-
-        final Node node;
-        try {
-            node = MgnlContext.getJCRSession(workspaceName).getNodeByIdentifier(getNodeUuidFrom(itemId));
-        } catch (ItemNotFoundException e) {
-            return false;
-        }
-
-        return !isPropertyId(itemId) || node.hasProperty(getPropertyName(itemId));
+        return getJcrItem(workspaceName, itemId) != null;
     }
+
+    public static String getItemId(final Item jcrItem) throws RepositoryException {
+        return jcrItem.isNode() ? ((Node) jcrItem).getIdentifier() : jcrItem.getParent().getIdentifier() + PROPERTY_NAME_AND_UUID_SEPARATOR + jcrItem.getName();
+    }
+
+    public static String getItemId(final String workspaceName, final String itemId) throws RepositoryException {
+        return getItemId(getJcrItem(workspaceName, itemId));
+    }
+
 }

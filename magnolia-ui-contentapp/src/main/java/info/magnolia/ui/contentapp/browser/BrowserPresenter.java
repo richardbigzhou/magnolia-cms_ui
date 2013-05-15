@@ -159,7 +159,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
 
                         if (!JcrItemUtil.itemExists(getWorkspace(), getSelectedItemId())) {
                             // If the selected node no longer exists we revert selection to the root
-                            String workbenchRootItemId = JcrItemUtil.getItemId(JcrItemUtil.getNode(subAppDescriptor.getWorkbench().getWorkspace(), subAppDescriptor.getWorkbench().getPath()));
+                            String workbenchRootItemId = JcrItemUtil.getItemId(subAppDescriptor.getWorkbench().getWorkspace(), subAppDescriptor.getWorkbench().getPath());
                             workbenchPresenter.select(workbenchRootItemId);
                         } else {
                             // If the selected node does exists refresh the preview image in case it was changed

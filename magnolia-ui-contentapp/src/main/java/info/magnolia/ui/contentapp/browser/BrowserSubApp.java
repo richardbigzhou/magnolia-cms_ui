@@ -188,7 +188,7 @@ public class BrowserSubApp extends BaseSubApp {
 
             Item item = null;
             String selectedItemId = getBrowser().getSelectedItemId();
-            String workbenchRootItemId = JcrItemUtil.getItemId(JcrItemUtil.getNode(workbench.getWorkspace(), workbench.getPath()));
+            String workbenchRootItemId = JcrItemUtil.getItemId(workbench.getWorkspace(), workbench.getPath());
             if (selectedItemId != null && !selectedItemId.equals(workbenchRootItemId)) {
                 item = JcrItemUtil.getJcrItem(workbench.getWorkspace(), selectedItemId);
             }

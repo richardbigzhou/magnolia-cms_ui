@@ -73,7 +73,7 @@ public class ConfigBrowserSubApp extends BrowserSubApp {
             Item jcrItem = null;
             BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
             WorkbenchDefinition workbench = subAppDescriptor.getWorkbench();
-            String workbenchRootItemId = JcrItemUtil.getItemId(JcrItemUtil.getNode(workbench.getWorkspace(), workbench.getPath()));
+            String workbenchRootItemId = JcrItemUtil.getItemId(workbench.getWorkspace(), workbench.getPath());
             if (selectedItemId != null && !selectedItemId.equals(workbenchRootItemId)) {
                 jcrItem = JcrItemUtil.getJcrItem(workbench.getWorkspace(), selectedItemId);
             }
