@@ -43,7 +43,7 @@ import com.vaadin.shared.ui.AbstractLayoutState;
 import com.vaadin.shared.ui.Connect;
 
 /**
- * {@link CompositeIconConnector}.
+ * Client-side connector for {@link CompositeIcon} component.
  */
 @Connect(CompositeIcon.class)
 public class CompositeIconConnector extends AbstractLayoutConnector {

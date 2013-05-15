@@ -33,8 +33,10 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.model;
 
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlPage;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -54,13 +56,13 @@ public class ModelImpl implements Model {
 
     private Map<Element, MgnlElement> mgnlElements = new HashMap<Element, MgnlElement>();
 
-    public MgnlElement rootPage;
+    public MgnlPage rootPage;
 
-    public List<MgnlElement> rootAreas = new LinkedList<MgnlElement>();
+    public List<MgnlArea> rootAreas = new LinkedList<MgnlArea>();
 
-    private MgnlElement selectedMgnlAreaElement = null;
+    private MgnlArea selectedMgnlAreaElement = null;
 
-    private MgnlElement selectedMgnlComponentElement = null;
+    private MgnlComponent selectedMgnlComponentElement = null;
 
     @Override
     public void addElement(MgnlElement mgnlElement, Element element) {
@@ -103,32 +105,32 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public MgnlElement getRootPage() {
+    public MgnlPage getRootPage() {
         return rootPage;
     }
 
     @Override
-    public void setRootPage(MgnlElement rootPage) {
+    public void setRootPage(MgnlPage rootPage) {
         this.rootPage = rootPage;
     }
 
     @Override
-    public void addRootArea(MgnlElement area) {
+    public void addRootArea(MgnlArea area) {
         this.rootAreas.add(area);
     }
 
     @Override
-    public List<MgnlElement> getRootAreas() {
+    public List<MgnlArea> getRootAreas() {
         return rootAreas;
     }
 
     @Override
-    public void setSelectedMgnlAreaElement(MgnlElement selectedMgnlAreaElement) {
+    public void setSelectedArea(MgnlArea selectedMgnlAreaElement) {
         this.selectedMgnlAreaElement = selectedMgnlAreaElement;
     }
 
     @Override
-    public MgnlElement getSelectedMgnlAreaElement() {
+    public MgnlArea getSelectedArea() {
         return selectedMgnlAreaElement;
     }
 
@@ -143,22 +145,23 @@ public class ModelImpl implements Model {
         }
         elements.remove(mgnlElement);
 
+
         // if the element is a root node, add all children to root list
         if (rootAreas.contains(mgnlElement)) {
             rootAreas.remove(mgnlElement);
-            for (CmsNode childNode : mgnlElement.getChildren()) {
-                rootAreas.add(childNode.asMgnlElement());
+            for (MgnlArea childNode : mgnlElement.getAreas()) {
+                rootAreas.add(childNode);
             }
         }
     }
 
     @Override
-    public MgnlElement getSelectedMgnlComponentElement() {
+    public MgnlComponent getSelectedComponent() {
         return selectedMgnlComponentElement;
     }
 
     @Override
-    public void setSelectedMgnlComponentElement(MgnlElement selectedMgnlComponentElement) {
+    public void setSelectedComponent(MgnlComponent selectedMgnlComponentElement) {
         this.selectedMgnlComponentElement = selectedMgnlComponentElement;
     }
 
@@ -170,7 +173,7 @@ public class ModelImpl implements Model {
         this.elements = new HashMap<MgnlElement, List<Element>>();
         this.mgnlElements = new HashMap<Element, MgnlElement>();
         this.rootPage = null;
-        this.rootAreas = new LinkedList<MgnlElement>();
+        this.rootAreas = new LinkedList<MgnlArea>();
         this.selectedMgnlAreaElement = null;
         this.selectedMgnlComponentElement = null;
     }

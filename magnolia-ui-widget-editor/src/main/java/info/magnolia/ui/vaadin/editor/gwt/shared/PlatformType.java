@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,49 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.widget.placeholder;
-
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
-
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.web.bindery.event.shared.EventBus;
+package info.magnolia.ui.vaadin.editor.gwt.shared;
 
 /**
- * Abstract Widget for area and component placeholder.
+ * Enumerates the platforms available for preview in page editor. Provides their display names and
+ * attribute values to be used in the url.
  */
-public class AbstractPlaceHolder extends FlowPanel {
+public enum PlatformType {
 
-    private MgnlElement mgnlElement;
-    private EventBus eventBus;
+    DESKTOP("desktop", "Desktop"),
 
-    public AbstractPlaceHolder(EventBus eventBus, MgnlElement mgnlElement) {
-        super();
-        this.eventBus = eventBus;
+    TABLET("tablet", "Tablet") {
+        @Override
+        public String getStyleName(boolean isPortrait) {
+            return isPortrait ? "tabletPortrait" : "tabletLandscape";
+        }
+    },
 
-        this.setMgnlElement(mgnlElement);
+    MOBILE("smartphone", "Smartphone") {
+        @Override
+        public String getStyleName(boolean isPortrait) {
+            return isPortrait ? "smartphonePortrait" : "smartphoneLandscape";
+        }
+    };
 
-        setStyleName("mgnlEditor mgnlEditorPlaceholder");
+    private String id;
+
+    private String displayName;
+
+    PlatformType(String id, String displayName) {
+        this.id = id;
+        this.displayName = displayName;
     }
 
-    public void toggleVisible() {
-        isVisible();
-        setVisible(!isVisible());
+    public String getStyleName(boolean isPortrait) {
+        return "";
     }
 
     @Override
-    public void onAttach() {
-        super.onAttach();
+    public String toString() {
+        return displayName;
     }
 
-    public void setMgnlElement(MgnlElement mgnlElement) {
-        this.mgnlElement = mgnlElement;
-    }
-
-    public MgnlElement getMgnlElement() {
-        return mgnlElement;
-    }
-
-    public EventBus getEventBus() {
-        return eventBus;
+    public String getId() {
+        return id;
     }
 }

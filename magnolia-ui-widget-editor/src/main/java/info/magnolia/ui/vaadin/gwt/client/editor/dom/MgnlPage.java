@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,13 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor.event;
+package info.magnolia.ui.vaadin.gwt.client.editor.dom;
 
-import com.google.gwt.event.shared.EventHandler;
+import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 
 /**
- * DeleteComponentEventHandler.
+ * Represents the page node which is the root of the {@link CmsNode} tree-structure.
+ * The {@link info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AbstractBar} and all elements used to position it
+ * are null for this element.
  */
-public interface DeleteComponentEventHandler extends EventHandler {
-    void onDeleteComponent(DeleteComponentEvent deleteComponentEvent);
+public class MgnlPage extends MgnlElement {
+
+    public MgnlPage(MgnlElement parent) {
+        super(parent);
+    }
+
+    @Override
+    public AbstractElement getTypedElement() {
+        return new PageElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"));
+    }
 }

@@ -34,38 +34,42 @@
 package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 
 import info.magnolia.rendering.template.AreaDefinition;
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaBar;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaEndBar;
-import info.magnolia.ui.vaadin.gwt.client.widget.placeholder.ComponentPlaceHolder;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentPlaceHolder;
 
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
-import com.google.web.bindery.event.shared.EventBus;
 
 /**
- * Factory Class for MgnlElement processors.
+ * Processor for {@link MgnlArea}s. Extends the {@link AbstractMgnlElementProcessor} for handling widgets associated with areas.
+ * Removes areas which do not contain any {@link AreaBar} from the {@link Model}.
+ *
+ * @see AreaBar
+ * @see AreaEndBar
+ * @see ComponentPlaceHolder
  */
 public class AreaProcessor extends AbstractMgnlElementProcessor {
 
-    public AreaProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) {
-        super(model, eventBus, mgnlElement);
+    public AreaProcessor(Model model, MgnlArea mgnlElement) {
+        super(model, mgnlElement);
     }
 
     @Override
     public void process() {
 
         if (hasControlBar(getMgnlElement().getAttributes())) {
-            AreaBar areaBar = new AreaBar(getEventBus(), getMgnlElement());
+            AreaBar areaBar = new AreaBar(getMgnlElement());
             setEditBar(areaBar);
             attachWidget();
 
             if (hasComponentPlaceHolder(getMgnlElement().getAttributes())) {
-                ComponentPlaceHolder placeHolder = new ComponentPlaceHolder(getEventBus(), getMgnlElement());
+                ComponentPlaceHolder placeHolder = new ComponentPlaceHolder(getMgnlElement());
                 attachComponentPlaceHolder(placeHolder);
                 addToModel(placeHolder);
             }
@@ -102,7 +106,12 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
     private boolean hasComponentPlaceHolder(Map<String, String> attributes) {
 
         String type = attributes.get("type");
+        boolean optional = Boolean.parseBoolean(attributes.get("optional"));
+        boolean created = Boolean.parseBoolean(attributes.get("created"));
 
+        if (optional && !created) {
+            return false;
+        }
         String availableComponents = "";
         if (AreaDefinition.TYPE_NO_COMPONENT.equals(type)) {
             availableComponents = "";
@@ -176,7 +185,7 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
     }
 
     private void attachComponentPlaceHolder(ComponentPlaceHolder placeHolder) {
-        Element parent = getMgnlElement().getComponentElement();
+        Element parent = getMgnlElement().getComponentMarkerElement();
 
         if (parent == null) {
             if (getMgnlElement().getLastElement() != null && getMgnlElement().getFirstElement() == getMgnlElement().getLastElement()) {
@@ -196,4 +205,8 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
         getMgnlElement().setComponentPlaceHolder(placeHolder);
     }
 
+    @Override
+    public MgnlArea getMgnlElement() {
+        return (MgnlArea) super.getMgnlElement();
+    }
 }

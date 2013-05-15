@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,41 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor.event;
-
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.web.bindery.event.shared.Event;
+package info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener;
 
 /**
- * DeleteComponentEvent. Used for components and areas.
+ * AreaListener.
  */
-public class DeleteComponentEvent extends Event<DeleteComponentEventHandler> {
+public interface AreaListener {
+    void createOptionalArea();
 
-    public static GwtEvent.Type<DeleteComponentEventHandler> TYPE = new GwtEvent.Type<DeleteComponentEventHandler>();
+    void editArea();
 
-    private String workspace;
-    private String path;
+    void createNewComponent();
 
-    public DeleteComponentEvent(String workspace, String path) {
-        this.workspace = workspace;
-        this.path = path;
-    }
+    boolean hasAddButton();
 
-    @Override
-    public GwtEvent.Type<DeleteComponentEventHandler> getAssociatedType() {
-        return TYPE;
-    }
+    boolean hasEditButton();
 
-    @Override
-    protected void dispatch(DeleteComponentEventHandler handler) {
-        handler.onDeleteComponent(this);
-    }
+    String getLabel();
 
-    public String getPath() {
-        return path;
-    }
+    String getPlaceHolderLabel();
 
-    public String getWorkspace() {
-        return workspace;
-    }
+    boolean isBoxPlaceHolder();
+
+    boolean hasAddComponentButton();
 }

@@ -34,7 +34,10 @@
 package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.Comment;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlPage;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 
 import java.util.HashMap;
@@ -43,15 +46,19 @@ import java.util.Map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
-
 /**
- * Processor for comment elements.
+ * Processor for comment elements. This processor builds a {@link info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode}-tree
+ * based on {@link Comment} elements in the DOM structure. <br />
+ * The nesting of elements is given by the opening and closing of the {@link Comment} tags wrapped by {@link CMSComment}s.
+ * In case it processes a starting comment-tag a new {@link MgnlElement} is created and returned.
+ * In case of a closing comment-tag it will return the parent.
  */
 public class CommentProcessor {
 
-    public MgnlElement process(Model model, Node node, MgnlElement currentElement) throws IllegalArgumentException {
+    public MgnlElement process(Model model, EventBus eventBus, Node node, MgnlElement currentElement) throws IllegalArgumentException {
 
         CMSComment comment = getCmsComment(node);
 
@@ -62,14 +69,13 @@ public class CommentProcessor {
 
             try {
 
-                mgnlElement = createMgnlElement(comment, currentElement);
-                String nodeData = node.getNodeValue();
+                mgnlElement = createMgnlElement(comment, currentElement, eventBus);
                 mgnlElement.setStartComment((Element) node.cast());
 
                 if (mgnlElement.getParent() == null) {
-                    model.setRootPage(mgnlElement);
-                } else if (mgnlElement.getParent().isPage()) {
-                    model.addRootArea(mgnlElement);
+                    model.setRootPage((MgnlPage) mgnlElement);
+                } else if (mgnlElement.getParent().asMgnlElement().isPage()) {
+                    model.addRootArea((MgnlArea) mgnlElement);
                     mgnlElement.getParent().getChildren().add(mgnlElement);
                 } else {
                     mgnlElement.getParent().getChildren().add(mgnlElement);
@@ -130,6 +136,12 @@ public class CommentProcessor {
 
     }
 
+    /**
+     * Creates an attributes map by parsing the comment string for all relevant data.
+     * Overrides or adds attributes defined in {@link Model#INHERITED_ATTRIBUTES} from the parent element.
+     * @param attributeString a string containing all data associated with a {@link CMSComment}
+     * @param parent the parent element
+     */
     private Map<String, String> getAttributes(String attributeString, MgnlElement parent) {
         String[] keyValue;
         Map<String, String> attributes = new HashMap<String, String>();
@@ -148,27 +160,23 @@ public class CommentProcessor {
         }
         if (parent != null) {
             for (String inheritedAttribute : Model.INHERITED_ATTRIBUTES) {
-                if (parent.asMgnlElement().containsAttribute(inheritedAttribute)) {
-                    attributes.put(inheritedAttribute, parent.asMgnlElement().getAttribute(inheritedAttribute));
+                if (parent.containsAttribute(inheritedAttribute)) {
+                    attributes.put(inheritedAttribute, parent.getAttribute(inheritedAttribute));
                 }
             }
         }
         return attributes;
     }
 
-    private MgnlElement createMgnlElement(CMSComment comment, MgnlElement parent) throws IllegalArgumentException {
+    private MgnlElement createMgnlElement(CMSComment comment, MgnlElement parent, EventBus eventBus) throws IllegalArgumentException {
         String tagName = comment.getTagName();
         MgnlElement mgnlElement;
         if (Model.CMS_PAGE.equals(tagName)) {
-            mgnlElement = new MgnlElement(parent);
-            mgnlElement.setPage(true);
+            mgnlElement = new MgnlPage(parent);
         } else if (Model.CMS_AREA.equals(tagName)) {
-            mgnlElement = new MgnlElement(parent);
-            mgnlElement.setArea(true);
-
+            mgnlElement = new MgnlArea(parent, eventBus);
         } else if (Model.CMS_COMPONENT.equals(tagName)) {
-            mgnlElement = new MgnlElement(parent);
-            mgnlElement.setComponent(true);
+            mgnlElement = new MgnlComponent(parent, eventBus);
         } else {
             throw new IllegalArgumentException("The tagname must be one of the defined marker Strings.");
         }
@@ -179,7 +187,7 @@ public class CommentProcessor {
     }
 
     /**
-     * CmsComment.
+     * Wrapper element for {@link Comment}s.
      */
     private class CMSComment {
 

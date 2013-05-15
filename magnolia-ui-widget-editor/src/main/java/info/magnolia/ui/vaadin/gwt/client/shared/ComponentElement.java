@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,7 +34,8 @@
 package info.magnolia.ui.vaadin.gwt.client.shared;
 
 /**
- * Class for GSON serialization of area elements.
+ * A slimmed down representation of a {@link info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent}.
+ * Used for communication between server and client.
  */
 public class ComponentElement extends AbstractElement {
 
@@ -42,6 +43,9 @@ public class ComponentElement extends AbstractElement {
     private Boolean writable; // edit
     private Boolean moveable; // move
     private Boolean deletable; // delete
+    
+    public ComponentElement() {
+    }
 
     public ComponentElement(String workspace, String path, String dialog) {
         super(workspace, path, dialog);
