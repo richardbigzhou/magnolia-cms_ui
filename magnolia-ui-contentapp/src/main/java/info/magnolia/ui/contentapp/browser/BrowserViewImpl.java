@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,9 +33,15 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
+import info.magnolia.ui.vaadin.actionbar.ActionPopupView;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.workbench.WorkbenchView;
 
+import org.vaadin.peter.contextmenu.ContextMenu;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent;
+
+import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -47,9 +53,13 @@ public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
 
     private ActionbarView actionBar;
 
+    private ActionPopupView actionPopupView;
+
     private final CssLayout actionBarWrapper = new CssLayout();
 
     private WorkbenchView workbench;
+
+    private BrowserView.Listener listener;
 
     public BrowserViewImpl() {
         setSizeFull();
@@ -61,6 +71,9 @@ public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
         actionBarWrapper.addStyleName("actionbar");
         addComponent(actionBarWrapper);
         setExpandRatio(actionBarWrapper, 0);
+
+        createActionPopup();
+
     }
 
     @Override
@@ -81,6 +94,11 @@ public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
     }
 
     @Override
+    public void setListener(BrowserView.Listener listener) {
+        this.listener = listener;
+    }
+
+    @Override
     public void setWorkbenchView(WorkbenchView workbench) {
         if (this.workbench == null) {
             addComponent(workbench.asVaadinComponent(), 0); // add as first
@@ -94,5 +112,30 @@ public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
     @Override
     public WorkbenchView getWorkbenchView() {
         return workbench;
+    }
+
+    /**
+     * Create an ActionPopup which will be triggered by right-clicks on items in Content views.
+     */
+    protected void createActionPopup() {
+        actionPopupView = new ActionPopupView();
+        Component component = this.asVaadinComponent();
+        actionPopupView.setAsContextMenuOf((AbstractClientConnector) component);
+
+        actionPopupView.addItemClickListener(new ContextMenu.ContextMenuItemClickListener() {
+
+            @Override
+            public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
+                ContextMenuItem obj = (ContextMenuItem) event.getSource();
+                String eventActionName = (String) obj.getData();
+                listener.onActionBarSelection(eventActionName);
+            }
+        });
+
+    }
+
+    @Override
+    public ActionPopupView getActionPopupView() {
+        return actionPopupView;
     }
 }

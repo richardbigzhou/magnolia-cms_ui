@@ -66,12 +66,6 @@ import javax.jcr.Session;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.peter.contextmenu.ContextMenu;
-import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
-import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent;
-
-import com.vaadin.server.AbstractClientConnector;
-import com.vaadin.ui.Component;
 
 /**
  * Base implementation of a content subApp. A content subApp displays a collection of data represented inside a {@link info.magnolia.ui.workbench.ContentView}
@@ -113,7 +107,6 @@ public class BrowserSubApp extends BaseSubApp {
     private final EventBus subAppEventBus;
     private ActionExecutor actionExecutor;
 
-    private ContextMenu contextMenu;
 
     public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
         super(subAppContext, view);
@@ -143,88 +136,11 @@ public class BrowserSubApp extends BaseSubApp {
         restoreBrowser(l);
         registerSubAppEventsHandlers(subAppEventBus, this);
 
-        createActionPopup();
 
         return getView();
     }
 
-    protected void createActionPopup() {
-        contextMenu = new ContextMenu();
-        contextMenu.addItem("item1");
-        contextMenu.addItem("item2");
-        contextMenu.setOpenAutomatically(true);
-        // Handle different list types.
-        Component treeTable = browser.getView().getWorkbenchView().getSelectedView().asVaadinComponent();
-        // contextMenu.setAsTableContextMenu((Table) treeTable);
-        contextMenu.setAsContextMenuOf((AbstractClientConnector) treeTable);
 
-        contextMenu.addItemClickListener(new ContextMenu.ContextMenuItemClickListener() {
-
-            @Override
-            public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
-                ContextMenuItem obj = (ContextMenuItem) event.getSource();
-                String eventActionName = (String) obj.getData();
-                browser.onActionbarItemClicked(eventActionName);
-            }
-        });
-
-    }
-
-    protected void showActionPopup(String absItemPath) {
-
-        return;
-        //
-        // contextMenu.removeAllItems();
-        //
-        // BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
-        // WorkbenchDefinition workbench = subAppDescriptor.getWorkbench();
-        // List<ActionbarSectionDefinition> sections = subAppDescriptor.getActionbar().getSections();
-        //
-        // try {
-        //
-        // Item item = null;
-        // // String absItemPath = getBrowser().getSelectedItemId();
-        // if (absItemPath != null && !absItemPath.equals(workbench.getPath())) {
-        // final Session session = MgnlContext.getJCRSession(workbench.getWorkspace());
-        // item = session.getItem(absItemPath);
-        // }
-        //
-        // // Figure out which section to show, only one
-        // ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, item);
-        //
-        // // If there no section matched the selection we just hide everything
-        // if (sectionDefinition == null) {
-        // for (ActionbarSectionDefinition section : sections) {
-        // // actionbar.hideSection(section.getName());
-        // }
-        // return;
-        // }
-        //
-        // // Evaluate availability of each action within the section
-        // for (ActionbarGroupDefinition groupDefinition : sectionDefinition.getGroups()) {
-        // for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
-        //
-        // String actionName = itemDefinition.getName();
-        // if (actionExecutor.isAvailable(actionName, item)) {
-        // // actionbar.enable(actionName);
-        // ActionDefinition action = subAppDescriptor.getActions().get(actionName);
-        // String label = action.getLabel();
-        // String iconFontCode = ActionPopupView.ICON_FONT_CODE + action.getIcon();
-        // ExternalResource iconFontResource = new ExternalResource(iconFontCode);
-        // // ContextMenuItem menuItem = contextMenu.addItem(label, iconFontResource);
-        // ContextMenuItem menuItem = contextMenu.addItem(label);
-        // // Set data so that the event handler can determine which action to launch.
-        // menuItem.setData(actionName);
-        // }
-        // }
-        // }
-        // } catch (RepositoryException e) {
-        // log.error("Failed to updated actionbar", e);
-        // for (ActionbarSectionDefinition section : sections) {
-        // // actionbar.hideSection(section.getName());
-        // }
-        // }
-    }
 
     /**
      * Restores the browser status based on the information available in the location object. This is used e.g. when starting a subapp based on a
@@ -391,10 +307,7 @@ public class BrowserSubApp extends BaseSubApp {
 
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
-                BrowserLocation location = getCurrentLocation();
-                location.updateNodePath(event.getPath());
-                getAppContext().updateSubAppLocation(getSubAppContext(), location);
-                updateActionbar(actionbar);
+                handleItemSelected(actionbar, event.getPath());
             }
         });
 
@@ -403,7 +316,7 @@ public class BrowserSubApp extends BaseSubApp {
             @Override
             public void onItemRightClicked(ItemRightClickedEvent event) {
                 String absItemPath = event.getPath();
-                showActionPopup(absItemPath);
+                browser.showActionPopup(absItemPath, event.getClickCoordinates());
             }
         });
 
@@ -435,6 +348,13 @@ public class BrowserSubApp extends BaseSubApp {
                 updateActionbar(actionbar);
             }
         });
+    }
+
+    private void handleItemSelected(ActionbarPresenter actionbar, String itemPath) {
+        BrowserLocation location = getCurrentLocation();
+        location.updateNodePath(itemPath);
+        getAppContext().updateSubAppLocation(getSubAppContext(), location);
+        updateActionbar(actionbar);
     }
 
 }

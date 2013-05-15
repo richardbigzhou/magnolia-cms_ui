@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,8 +36,13 @@ package info.magnolia.ui.contentapp.browser;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
+import info.magnolia.ui.actionbar.definition.SectionRestrictionsDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
@@ -50,6 +55,7 @@ import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.vaadin.actionbar.ActionPopupView;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
@@ -58,10 +64,14 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
+
+import java.awt.Point;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -73,8 +83,10 @@ import javax.jcr.Session;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
 
 import com.vaadin.data.Item;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 
@@ -89,7 +101,7 @@ import com.vaadin.server.Resource;
  * <p>
  * Its main configuration point is the {@link info.magnolia.ui.workbench.definition.WorkbenchDefinition} through which one defines the JCR workspace to connect to, the columns/properties to display, the available actions and so on.
  */
-public class BrowserPresenter implements ActionbarPresenter.Listener {
+public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(BrowserPresenter.class);
 
@@ -111,12 +123,15 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
 
     private final AppContext appContext;
 
+    private final SubAppContext subAppContext;
+
     @Inject
     public BrowserPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final BrowserView view, @Named(AdmincentralEventBus.NAME) final EventBus adminCentralEventBus,
             final @Named(SubAppEventBus.NAME) EventBus subAppEventBus,
             final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider, WorkbenchPresenter workbenchPresenter) {
         this.workbenchPresenter = workbenchPresenter;
         this.actionExecutor = actionExecutor;
+        this.subAppContext = subAppContext;
         this.view = view;
         this.adminCentralEventBus = adminCentralEventBus;
         this.subAppEventBus = subAppEventBus;
@@ -140,6 +155,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
 
         view.setWorkbenchView(workbenchView);
         view.setActionbarView(actionbar);
+        view.setListener(this);
 
         bindHandlers();
         return view;
@@ -276,6 +292,11 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
     }
 
     @Override
+    public void onActionBarSelection(String actionName) {
+        executeAction(actionName);
+    }
+
+    @Override
     public String getLabel(String itemName) {
         ActionDefinition actionDefinition = actionExecutor.getActionDefinition(itemName);
         return actionDefinition != null ? actionDefinition.getLabel() : null;
@@ -332,4 +353,98 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
             appContext.sendLocalMessage(error);
         }
     }
+
+    /**
+     * Show the actionPopup for the specified item at the specified coordinates.
+     */
+    protected void showActionPopup(String absItemPath, Point clickCoordinates) {
+        ActionPopupView actionPopupView = view.getActionPopupView();
+
+        updateActionPopup(actionPopupView, absItemPath);
+        actionPopupView.open(clickCoordinates.x, clickCoordinates.y);
+    }
+
+    /**
+     * TODO: Eliminate redundancy with BrowserSubApp.updateActionBar (MGNLUI-1367) Christopher Zimmermann.
+     * Update the items in the actionPopup based on the specified item and the ActionPopup availability configuration.
+     */
+    protected void updateActionPopup(ActionPopupView actionPopupView, String absItemPath) {
+
+        actionPopupView.removeAllItems();
+
+        BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor();
+        WorkbenchDefinition workbench = subAppDescriptor.getWorkbench();
+        List<ActionbarSectionDefinition> sections = subAppDescriptor.getActionbar().getSections();
+
+        try {
+
+            javax.jcr.Item item = null;
+            if (absItemPath != null && !absItemPath.equals(workbench.getPath())) {
+                final Session session = MgnlContext.getJCRSession(workbench.getWorkspace());
+                item = session.getItem(absItemPath);
+            }
+
+            // Figure out which section to show, only one
+            ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, item);
+
+            // If there no section matched the selection we just hide everything
+            if (sectionDefinition == null) {
+                return;
+            }
+
+            // Evaluate availability of each action within the section
+            for (ActionbarGroupDefinition groupDefinition : sectionDefinition.getGroups()) {
+                for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
+
+                    String actionName = itemDefinition.getName();
+                    if (actionExecutor.isAvailable(actionName, item)) {
+                        ActionDefinition action = subAppDescriptor.getActions().get(actionName);
+                        String label = action.getLabel();
+                        String iconFontCode = ActionPopupView.ICON_FONT_CODE + action.getIcon();
+                        ExternalResource iconFontResource = new ExternalResource(iconFontCode);
+                        ContextMenuItem menuItem = actionPopupView.addItem(label, iconFontResource);
+                        // Set data so that the event handler can determine which action to launch.
+                        menuItem.setData(actionName);
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            log.error("Failed to updated actionbar", e);
+        }
+
+    }
+
+    /**
+     * TODO: Eliminate redundancy with BrowserSubApp.updateActionBar (MGNLUI-1367) Christopher Zimmermann.
+     */
+    private ActionbarSectionDefinition getVisibleSection(List<ActionbarSectionDefinition> sections, javax.jcr.Item item) throws RepositoryException {
+        for (ActionbarSectionDefinition section : sections) {
+            if (isSectionVisible(section, item))
+                return section;
+        }
+        return null;
+    }
+
+    /**
+     * TODO: Eliminate redundancy with BrowserSubApp.updateActionBar (MGNLUI-1367) Christopher Zimmermann.
+     */
+    private boolean isSectionVisible(ActionbarSectionDefinition section, javax.jcr.Item item) throws RepositoryException {
+        SectionRestrictionsDefinition restrictions = section.getRestrictions();
+
+        // If this is the root item we display the section only if the root property is set
+        if (item == null)
+            return restrictions.isRoot();
+
+        // If its a property we display it only if the properties property is set
+        if (!item.isNode())
+            return restrictions.isProperties();
+
+        // The node must match at least one of the configured node types
+        for (String nodeType : restrictions.getNodeTypes()) {
+            if (NodeUtil.isNodeType((Node) item, nodeType))
+                return true;
+        }
+        return false;
+    }
+
 }
