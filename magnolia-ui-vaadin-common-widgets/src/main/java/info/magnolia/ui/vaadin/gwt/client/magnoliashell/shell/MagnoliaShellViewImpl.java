@@ -35,7 +35,6 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.ShellMessageWidget;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.ShellMessageWidget.MessageType;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VInfoMessage;
@@ -43,8 +42,6 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VShellError
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.VWarningMessage;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.JQueryAnimation;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget.PreloaderCallback;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ShellAppsViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
@@ -58,15 +55,14 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
  */
-public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellView, ViewportCloseEvent.Handler {
+public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellView {
 
-    public static final String CLASSNAME = "v-magnolia-shell";
+    public static final String CLASS_NAME = "v-magnolia-shell";
 
     public static final String VIEWPORT_SLOT_CLASS_NAME = "v-shell-viewport-slot";
 
@@ -74,13 +70,9 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
 
     private final ShellAppLauncher mainAppLauncher;
 
-    private final EventBus eventBus;
-
     private ShellMessageWidget lowPriorityMessage;
 
     private ShellMessageWidget hiPriorityMessage;
-
-    private ViewportWidget activeViewport = null;
 
     private Presenter presenter;
 
@@ -88,11 +80,10 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
 
     private final Element viewportSlot = DOM.createDiv();
 
-    public MagnoliaShellViewImpl(final EventBus eventBus) {
+    public MagnoliaShellViewImpl() {
         super();
-        this.eventBus = eventBus;
-        this.mainAppLauncher = new ShellAppLauncher(eventBus);
-        getElement().setClassName(CLASSNAME);
+        this.mainAppLauncher = new ShellAppLauncher();
+        getElement().setClassName(CLASS_NAME);
         viewportSlot.setClassName(VIEWPORT_SLOT_CLASS_NAME);
 
         add(mainAppLauncher, getElement());
@@ -100,39 +91,13 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         viewportShifter.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
-                presenter.updateViewportLayout(getAppViewport());
+                presenter.updateViewportLayout(appViewport());
             }
         });
-        bindEventHandlers();
     }
 
-    private void bindEventHandlers() {
-        eventBus.addHandler(ViewportCloseEvent.TYPE, this);
-    }
-
-    protected AppsViewportWidget getAppViewport() {
+    protected AppsViewportWidget appViewport() {
         return (AppsViewportWidget) viewports.get(ViewportType.APP);
-    }
-
-    protected ShellAppsViewportWidget getShellAppViewport() {
-        return (ShellAppsViewportWidget) viewports.get(ViewportType.SHELL_APP);
-    }
-
-    @Override
-    public void setActiveViewport(ViewportWidget viewport) {
-        if (activeViewport != viewport) {
-            final ViewportWidget shellAppViewport = getShellAppViewport();
-            final ViewportWidget appViewport = getAppViewport();
-
-            boolean appViewportActive = appViewport == viewport;
-            if (appViewportActive) {
-                mainAppLauncher.deactivateControls();
-            }
-            shellAppViewport.setActive(!appViewportActive);
-            appViewport.setActive(appViewportActive);
-
-            activeViewport = viewport;
-        }
     }
 
     protected void replaceWidget(final Widget oldWidget, final Widget newWidget) {
@@ -149,6 +114,7 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+        mainAppLauncher.setListener(presenter);
     }
 
     @Override
@@ -208,22 +174,7 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         ViewportWidget oldViewport = viewports.get(type);
         if (oldViewport != viewport) {
             replaceWidget(oldViewport, viewport);
-            viewport.addCloseHandler(this);
             viewports.put(type, viewport);
-        }
-    }
-
-    @Override
-    public void onViewportClose(ViewportCloseEvent event) {
-        final ViewportType viewportType = event.getViewportType();
-        switch (viewportType) {
-        case SHELL_APP:
-            getShellAppViewport().setClosing(true);
-            presenter.closeCurrentShellApp();
-            break;
-        case APP:
-            presenter.closeCurrentApp();
-            break;
         }
     }
 
@@ -249,32 +200,23 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     }
 
     @Override
-    public void showAppPreloader(String prefix, PreloaderCallback preloaderCallback) {
-        getAppViewport().showAppPreloader(prefix, preloaderCallback);
-    }
-
-    @Override
     public void updateShellDivet() {
         mainAppLauncher.updateDivet();
     }
 
     @Override
     public void openOverlayOnWidget(Widget overlayWidget, Widget overlayParent) {
-        // Insert a child widget into a parent element.
         add(overlayWidget, overlayParent.getElement());
     }
 
     @Override
-    public void showShellApp(ShellAppType type) {
-        Widget shellApp = presenter.getShellAppWidget(type);
-        ShellAppsViewportWidget viewport = getShellAppViewport();
+    public void onShellAppStarting(ShellAppType type) {
         mainAppLauncher.activateControl(type);
-        viewport.setVisibleChild(shellApp);
     }
 
     @Override
-    public void setActiveViewport(boolean isAppViewport) {
-        setActiveViewport(isAppViewport ? getAppViewport() : getShellAppViewport());
+    public void onAppStarting() {
+        mainAppLauncher.deactivateControls();
     }
 
     @Override
@@ -287,4 +229,5 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     public boolean hasOverlay(Widget widget) {
         return getWidgetIndex(widget) != -1;
     }
+
 }
