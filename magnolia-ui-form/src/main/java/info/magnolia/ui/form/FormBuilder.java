@@ -135,7 +135,6 @@ public class FormBuilder {
                 view.setCurrentLocale(i18nContentSupport.getFallbackLocale());
             }
         }
-        view.focusFirstField();
         return view;
     }
 

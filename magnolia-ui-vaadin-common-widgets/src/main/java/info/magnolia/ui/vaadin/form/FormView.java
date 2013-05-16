@@ -72,7 +72,4 @@ public interface FormView extends View, Item.Editor {
     void setLocaleSelector(AbstractSelect languageChooser);
 
     boolean isValid();
-
-    void focusFirstField();
-
 }

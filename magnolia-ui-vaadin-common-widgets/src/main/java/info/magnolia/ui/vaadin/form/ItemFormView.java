@@ -165,9 +165,4 @@ public class ItemFormView implements FormView {
         dialog.setFooterToolbar(languageSelector);
     }
 
-    @Override
-    public void focusFirstField() {
-        form.focusFirstField();
-    }
-
 }
