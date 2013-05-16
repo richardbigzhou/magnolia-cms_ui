@@ -31,34 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
 
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
-
-import com.vaadin.client.ApplicationConnection;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.web.bindery.event.shared.Event;
 
 /**
- * Fades an element in or out.
+ * Fired when shell apps are requested to be hidden: it does not mean that they actually will:
+ * in case there are no regular apps to show instead - we should show the AppLauncher.
+ * Emitter:
+ * @see info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector
+ * Receiver:
+ * @see info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ShellAppsViewportConnector
  */
-public class FadeAnimation extends JQueryAnimation {
+public class HideShellAppsRequestedEvent extends Event<HideShellAppsRequestedEvent.Handler> {
 
-
-    public FadeAnimation(double opacityValue, boolean clearAfterCompleted, ApplicationConnection applicationConnection) {
-        super(applicationConnection);
-        setProperty("opacity", opacityValue);
-        if (clearAfterCompleted) {
-            addCallback(new JQueryCallback() {
-                @Override
-                public void execute(JQueryWrapper query) {
-                    query.get(0).getStyle().clearOpacity();
-                }
-            });
-        }
+    /**
+     * Handler interface for HideShellAppsRequestedEvent.
+     */
+    public interface Handler extends EventHandler {
+        void onHideShellAppsRequest(HideShellAppsRequestedEvent event);
     }
 
-    public FadeAnimation(double opacityValue, boolean clearAfterCompleted) {
-        this(opacityValue, clearAfterCompleted, null);
+    public static final Type<Handler> TYPE = new Type<Handler>();
+
+    @Override
+    protected void dispatch(Handler handler) {
+        handler.onHideShellAppsRequest(this);
     }
 
+    @Override
+    public Type<Handler> getAssociatedType() {
+        return TYPE;
+    }
 }

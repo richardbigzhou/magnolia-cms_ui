@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,55 +36,45 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.web.bindery.event.shared.Event;
 
 /**
- * Navigation event fired when the controls in the headers are triggered.
+ * Fired when a shell-app UI is loaded (transition is finished).
+ * Emitter:
+ * @see info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ShellAppsViewportConnector
+ * Receiver:
+ * @see info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector
  */
-public class ShellAppActivatedEvent extends GwtEvent<ShellAppActivatedEvent.Handler> {
-
-    /**
-     * Event handler for the header controls events.
-     */
-    public interface Handler extends EventHandler {
-
-        void onShellAppActivated(final ShellAppActivatedEvent event);
-
-    }
-
-    public static Type<Handler> TYPE = new Type<Handler>();
-
-    private ShellAppType type;
-
-    private String token;
-
-    public ShellAppActivatedEvent(final ShellAppType type, final String token) {
-        this.token = token;
-        this.type = type;
-    }
-
-    @Override
-    protected void dispatch(Handler handler) {
-        handler.onShellAppActivated(this);
-    }
-
-    @Override
-    public GwtEvent.Type<Handler> getAssociatedType() {
-        return TYPE;
-    }
+public class ShellAppStartedEvent extends Event<ShellAppStartedEvent.Handler> {
 
     public ShellAppType getType() {
         return type;
     }
 
-    public String getToken() {
-        return token;
+    /**
+     * Handler interface for ShellAppStartedEvent.
+     */
+    public interface Handler extends EventHandler {
+        void onShellAppStarted(ShellAppStartedEvent event);
+    }
+
+    public static final Type<Handler> TYPE = new Type<Handler>();
+
+    private ShellAppType type;
+
+    public ShellAppStartedEvent(ShellAppType type) {
+        this.type = type;
     }
 
     @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("[Shell App Navigation]");
-        sb.append("type: ").append(type).append(" token: ").append(token);
-        return sb.toString();
+    protected void dispatch(Handler handler) {
+        handler.onShellAppStarted(this);
     }
+
+    @Override
+    public Type<Handler> getAssociatedType() {
+        return TYPE;
+    }
+
+
 }

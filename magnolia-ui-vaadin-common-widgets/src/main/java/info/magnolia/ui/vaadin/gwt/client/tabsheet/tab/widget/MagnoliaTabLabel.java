@@ -102,7 +102,6 @@ public class MagnoliaTabLabel extends SimplePanel {
 
     private void bindHandlers() {
         touchDelegate.addTouchEndHandler(new TouchEndHandler() {
-
             @Override
             public void onTouchEnd(TouchEndEvent event) {
                 final Element target = (Element) event.getNativeEvent().getEventTarget().cast();
@@ -117,10 +116,6 @@ public class MagnoliaTabLabel extends SimplePanel {
 
     public void setTab(final MagnoliaTabWidget tab) {
         this.tab = tab;
-    }
-
-    public MagnoliaTabWidget getTab() {
-        return tab;
     }
 
     public void updateCaption(final String caption) {

@@ -31,34 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
-
-import com.vaadin.client.ApplicationConnection;
+import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
- * Fades an element in or out.
+ * TODO: Add JavaDoc for ShellAppDashboard.
  */
-public class FadeAnimation extends JQueryAnimation {
+public class ShellAppDashboard extends FlowPanel {
 
-
-    public FadeAnimation(double opacityValue, boolean clearAfterCompleted, ApplicationConnection applicationConnection) {
-        super(applicationConnection);
-        setProperty("opacity", opacityValue);
-        if (clearAfterCompleted) {
-            addCallback(new JQueryCallback() {
-                @Override
-                public void execute(JQueryWrapper query) {
-                    query.get(0).getStyle().clearOpacity();
-                }
-            });
-        }
+    public ShellAppDashboard() {
+        super();
     }
-
-    public FadeAnimation(double opacityValue, boolean clearAfterCompleted) {
-        this(opacityValue, clearAfterCompleted, null);
-    }
-
 }

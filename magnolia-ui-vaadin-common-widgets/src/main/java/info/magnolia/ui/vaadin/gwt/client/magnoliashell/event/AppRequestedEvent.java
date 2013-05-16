@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,42 +33,45 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
 
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
-
 import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.web.bindery.event.shared.Event;
 
 /**
- * Event fired when the viewport is closed.
+ * Fired when an app has to be loaded.
+ * Emitter:
+ * @see info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector
+ * Receiver:
+ * @see info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.AppsViewportConnector
  */
-public class ViewportCloseEvent extends GwtEvent<ViewportCloseEvent.Handler> {
+public class AppRequestedEvent extends Event<AppRequestedEvent.Handler> {
 
     /**
-     * Handler of the {@link ViewportCloseEvent}.
+     * Handler interface for AppRequestedEvent.
      */
     public interface Handler extends EventHandler {
-        void onViewportClose(final ViewportCloseEvent event);
+        void onAppRequested(AppRequestedEvent event);
     }
 
     public static final Type<Handler> TYPE = new Type<Handler>();
 
-    private final ViewportType viewportType;
+    private String appName;
 
-    public ViewportCloseEvent(final ViewportType viewportType) {
-        this.viewportType = viewportType;
+    public AppRequestedEvent(String appName) {
+        super();
+        this.appName = appName;
+    }
+
+    public String getAppName() {
+        return appName;
     }
 
     @Override
     protected void dispatch(Handler handler) {
-        handler.onViewportClose(this);
+        handler.onAppRequested(this);
     }
 
     @Override
-    public GwtEvent.Type<Handler> getAssociatedType() {
+    public Type<Handler> getAssociatedType() {
         return TYPE;
-    }
-
-    public ViewportType getViewportType() {
-        return viewportType;
     }
 }

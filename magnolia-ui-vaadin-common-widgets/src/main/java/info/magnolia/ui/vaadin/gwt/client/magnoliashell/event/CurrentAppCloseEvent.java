@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,34 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
 
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
-
-import com.vaadin.client.ApplicationConnection;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Fades an element in or out.
+ * Fired when current regular app is closing.
  */
-public class FadeAnimation extends JQueryAnimation {
+public class CurrentAppCloseEvent extends GwtEvent<CurrentAppCloseEvent.Handler> {
 
-
-    public FadeAnimation(double opacityValue, boolean clearAfterCompleted, ApplicationConnection applicationConnection) {
-        super(applicationConnection);
-        setProperty("opacity", opacityValue);
-        if (clearAfterCompleted) {
-            addCallback(new JQueryCallback() {
-                @Override
-                public void execute(JQueryWrapper query) {
-                    query.get(0).getStyle().clearOpacity();
-                }
-            });
-        }
+    /**
+     * Handler of the {@link CurrentAppCloseEvent}.
+     */
+    public interface Handler extends EventHandler {
+        void onViewportClose(final CurrentAppCloseEvent event);
     }
 
-    public FadeAnimation(double opacityValue, boolean clearAfterCompleted) {
-        this(opacityValue, clearAfterCompleted, null);
+    public static final Type<Handler> TYPE = new Type<Handler>();
+
+    public CurrentAppCloseEvent() {
     }
 
+    @Override
+    protected void dispatch(Handler handler) {
+        handler.onViewportClose(this);
+    }
+
+    @Override
+    public GwtEvent.Type<Handler> getAssociatedType() {
+        return TYPE;
+    }
 }

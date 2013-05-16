@@ -33,7 +33,11 @@
  */
 package info.magnolia.ui.vaadin.magnoliashell.viewport;
 
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ShellAppViewportState;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
+
+import com.vaadin.ui.Component;
 
 /**
  * Shell apps viewport.
@@ -43,5 +47,15 @@ public class ShellAppsViewport extends ShellViewport {
     public ShellAppsViewport() {
         addStyleName("shellapps");
         getState().type = ViewportType.SHELL_APP;
+    }
+
+    public void registerShellApp(ShellAppType type, Component component) {
+        addComponent(component);
+        getState().shellApps.put(type, component);
+    }
+
+    @Override
+    protected ShellAppViewportState getState() {
+        return (ShellAppViewportState)super.getState();
     }
 }
