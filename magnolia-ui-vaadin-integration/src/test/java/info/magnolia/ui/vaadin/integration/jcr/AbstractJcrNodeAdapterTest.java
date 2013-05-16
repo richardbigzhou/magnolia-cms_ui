@@ -85,8 +85,8 @@ public class AbstractJcrNodeAdapterTest {
         DummyJcrNodeAdapter adapter = new DummyJcrNodeAdapter(testNode);
 
         // THEN
-        assertEquals(testNode.getIdentifier(), adapter.getNodeIdentifier());
-        assertEquals(testNode.getIdentifier(), ((Node) adapter.getJcrItem()).getIdentifier());
+        assertEquals(testNode.getIdentifier(), adapter.getItemId());
+        assertEquals(testNode.getIdentifier(), adapter.getJcrItem().getIdentifier());
         assertEquals(testNode.getPrimaryNodeType().getName(), adapter.getPrimaryNodeTypeName());
     }
 
@@ -190,7 +190,7 @@ public class AbstractJcrNodeAdapterTest {
         item.getChangedProperties().put(propertyName, property);
 
         // WHEN
-        item.updateProperties(underlyingNode);
+        item.applyChanges();
 
         // THEN
         assertEquals(propertyValue, underlyingNode.getProperty(propertyName).getString());
@@ -221,7 +221,7 @@ public class AbstractJcrNodeAdapterTest {
         item.getChangedProperties().put(propertyNameBlank, propertyBlank);
 
         // WHEN
-        item.updateProperties(underlyingNode);
+        item.applyChanges();
 
         // THEN
         assertEquals(propertyValueNotEmpty, underlyingNode.getProperty(propertyNameNotEmpty).getString());
@@ -234,10 +234,9 @@ public class AbstractJcrNodeAdapterTest {
     @Test
     public void testUpdatePropertiesNameToAlreadyExisting() throws Exception {
 
-        // spy hooks for session move
+        // MockSession doesn't support move so we use a spy
         final MockSession session = spy(this.session);
         final Node root = new MockNode(session);
-        doReturn(root).when(session).getRootNode();
 
         MockContext ctx = (MockContext) MgnlContext.getInstance();
         ctx.addSession(WORKSPACE_NAME, session);
@@ -259,29 +258,29 @@ public class AbstractJcrNodeAdapterTest {
         // GIVEN
         String existingName = "existingName";
         String subNodeName = "subNode";
-        Node node = session.getRootNode();
-        node.setProperty(existingName, "42");
-        Node subNode = node.addNode(subNodeName);
-        long nodeCount = node.getNodes().getSize();
-        long propertyCount = node.getProperties().getSize();
+
+        root.setProperty(existingName, "42");
+        Node subNode = root.addNode(subNodeName);
+        long nodeCount = root.getNodes().getSize();
+        long propertyCount = root.getProperties().getSize();
         DummyJcrNodeAdapter adapter = new DummyJcrNodeAdapter(subNode);
 
         // WHEN
         adapter.getItemProperty(ModelConstants.JCR_NAME).setValue(existingName);
-        adapter.updateProperties();
+        adapter.applyChanges();
 
         // THEN
-        assertTrue(node.hasProperty(existingName));
-        assertFalse(node.hasNode(existingName));
-        assertFalse(node.hasNode(subNodeName));
-        assertEquals(nodeCount, node.getNodes().getSize());
-        assertEquals(propertyCount, node.getProperties().getSize());
+        assertTrue(root.hasProperty(existingName));
+        assertFalse(root.hasNode(existingName));
+        assertFalse(root.hasNode(subNodeName));
+        assertEquals(nodeCount, root.getNodes().getSize());
+        assertEquals(propertyCount, root.getProperties().getSize());
     }
 
     /**
      * Dummy implementation of the Abstract class.
      */
-    public class DummyJcrNodeAdapter extends AbstractJcrNodeAdapter {
+    public class DummyJcrNodeAdapter extends info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter {
 
         public DummyJcrNodeAdapter(Node jcrNode) {
             super(jcrNode);

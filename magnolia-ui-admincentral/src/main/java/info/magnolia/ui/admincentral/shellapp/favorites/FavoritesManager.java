@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import java.util.Map;
@@ -43,7 +43,7 @@ import java.util.Map;
  */
 public interface FavoritesManager {
 
-    JcrItemNodeAdapter getFavorites();
+    AbstractJcrNodeAdapter getFavorites();
 
     /**
      * @return A map whose key is the group jcr name and whose value is its title (human-readable) property. The map elements are sorted alphabetically (descending) by their value.

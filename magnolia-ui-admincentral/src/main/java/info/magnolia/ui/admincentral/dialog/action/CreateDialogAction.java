@@ -42,7 +42,7 @@ import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.api.action.ActionBase;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.overlay.OverlayLayer;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -55,13 +55,13 @@ import javax.inject.Named;
  */
 public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition> {
 
-    private final JcrItemNodeAdapter parentItem;
+    private final AbstractJcrNodeAdapter parentItem;
     private FormDialogPresenter formDialogPresenter;
 
     private final OverlayLayer overlayLayer;
     private EventBus eventBus;
 
-    public CreateDialogAction(CreateDialogActionDefinition definition, JcrItemNodeAdapter parentItem, FormDialogPresenter formDialogPresenter, final SubAppContext subAppContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
+    public CreateDialogAction(CreateDialogActionDefinition definition, AbstractJcrNodeAdapter parentItem, FormDialogPresenter formDialogPresenter, final SubAppContext subAppContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
         super(definition);
         this.parentItem = parentItem;
         this.formDialogPresenter = formDialogPresenter;
@@ -78,7 +78,7 @@ public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition>
 
             @Override
             public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getPath()));
+                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
                 formDialogPresenter.closeDialog();
             }
 

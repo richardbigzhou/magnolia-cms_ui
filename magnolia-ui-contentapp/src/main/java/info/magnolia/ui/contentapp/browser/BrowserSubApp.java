@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
@@ -48,6 +48,7 @@ import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
@@ -61,7 +62,6 @@ import javax.inject.Named;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -107,7 +107,6 @@ public class BrowserSubApp extends BaseSubApp {
     private final EventBus subAppEventBus;
     private ActionExecutor actionExecutor;
 
-
     public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
         super(subAppContext, view);
         if (subAppContext == null || view == null || browser == null || subAppEventBus == null) {
@@ -136,11 +135,8 @@ public class BrowserSubApp extends BaseSubApp {
         restoreBrowser(l);
         registerSubAppEventsHandlers(subAppEventBus, this);
 
-
         return getView();
     }
-
-
 
     /**
      * Restores the browser status based on the information available in the location object. This is used e.g. when starting a subapp based on a
@@ -171,7 +167,17 @@ public class BrowserSubApp extends BaseSubApp {
             getAppContext().updateSubAppLocation(getSubAppContext(), location);
         }
         String query = location.getQuery();
-        getBrowser().resync(path, viewType, query);
+
+        BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
+        final String workspaceName = subAppDescriptor.getWorkbench().getWorkspace();
+
+        String itemId = null;
+        try {
+            itemId = JcrItemUtil.getItemId(SessionUtil.getNode(workspaceName, path));
+        } catch (RepositoryException e) {
+            log.warn("Could not retrieve item at path {} in workspace {}", path, workspaceName);
+        }
+        getBrowser().resync(itemId, viewType, query);
         updateActionbar(getBrowser().getActionbarPresenter());
     }
 
@@ -191,12 +197,11 @@ public class BrowserSubApp extends BaseSubApp {
         List<ActionbarSectionDefinition> sections = subAppDescriptor.getActionbar().getSections();
 
         try {
-
             Item item = null;
-            String absItemPath = getBrowser().getSelectedItemId();
-            if (absItemPath != null && !absItemPath.equals(workbench.getPath())) {
-                final Session session = MgnlContext.getJCRSession(workbench.getWorkspace());
-                item = session.getItem(absItemPath);
+            String selectedItemId = getBrowser().getSelectedItemId();
+            String workbenchRootItemId = JcrItemUtil.getItemId(SessionUtil.getNode(workbench.getWorkspace(), workbench.getPath()));
+            if (selectedItemId != null && !selectedItemId.equals(workbenchRootItemId)) {
+                item = JcrItemUtil.getJcrItem(workbench.getWorkspace(), selectedItemId);
             }
 
             // Figure out which section to show, only one
@@ -307,7 +312,19 @@ public class BrowserSubApp extends BaseSubApp {
 
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
-                handleItemSelected(actionbar, event.getPath());
+                BrowserLocation location = getCurrentLocation();
+                try {
+                    if (event.getItemId() == null) {
+                        location.updateNodePath("/");
+                    } else {
+                        Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.parseNodeIdentifier(event.getItemId()));
+                        location.updateNodePath(selected.getPath());
+                    }
+                } catch (RepositoryException e) {
+                    log.warn("Could not get jcrItem with itemId " + event.getItemId() + " from workspace " + event.getWorkspace(), e);
+                }
+                getAppContext().updateSubAppLocation(getSubAppContext(), location);
+                updateActionbar(actionbar);
             }
         });
 
@@ -315,8 +332,14 @@ public class BrowserSubApp extends BaseSubApp {
 
             @Override
             public void onItemRightClicked(ItemRightClickedEvent event) {
-                String absItemPath = event.getPath();
-                browser.showActionPopup(absItemPath, event.getClickX(), event.getClickY());
+                String absItemPath;
+                try {
+                    absItemPath = event.getItem().getJcrItem().getPath();
+                    browser.showActionPopup(absItemPath, event.getClickX(), event.getClickY());
+                } catch (RepositoryException e) {
+                    log.warn("Could not get jcrItem with itemId " + event.getItemId() + " from workspace " + event.getWorkspace(), e);
+                }
+
             }
         });
 
@@ -348,13 +371,6 @@ public class BrowserSubApp extends BaseSubApp {
                 updateActionbar(actionbar);
             }
         });
-    }
-
-    private void handleItemSelected(ActionbarPresenter actionbar, String itemPath) {
-        BrowserLocation location = getCurrentLocation();
-        location.updateNodePath(itemPath);
-        getAppContext().updateSubAppLocation(getSubAppContext(), location);
-        updateActionbar(actionbar);
     }
 
 }

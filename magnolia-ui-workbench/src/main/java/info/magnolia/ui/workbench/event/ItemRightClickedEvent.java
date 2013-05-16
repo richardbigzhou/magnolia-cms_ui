@@ -35,6 +35,7 @@ package info.magnolia.ui.workbench.event;
 
 import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 /**
  * This event is fired when an item is right clicked (i.e. a row in the data grid within the workbench representing
@@ -52,14 +53,14 @@ public class ItemRightClickedEvent implements Event<ItemRightClickedEvent.Handle
 
     private String workspace;
 
-    private String path;
+    private final JcrItemAdapter item;
 
     private int clickX;
     private int clickY;
 
-    public ItemRightClickedEvent(String workspace, String path, int clickX, int ClickY) {
+    public ItemRightClickedEvent(String workspace, JcrItemAdapter item, int clickX, int clickY) {
         this.workspace = workspace;
-        this.path = path;
+        this.item = item;
         this.clickX = clickX;
         this.clickY = clickY;
     }
@@ -68,8 +69,12 @@ public class ItemRightClickedEvent implements Event<ItemRightClickedEvent.Handle
         return workspace;
     }
 
-    public String getPath() {
-        return path;
+    public JcrItemAdapter getItem() {
+        return item;
+    }
+
+    public String getItemId() {
+        return item != null ? item.getItemId() : null;
     }
 
     public int getClickX() {

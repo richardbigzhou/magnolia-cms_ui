@@ -40,8 +40,8 @@ import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.favorite.FavoriteStore;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -68,7 +68,7 @@ public final class FavoritesManagerImpl implements FavoritesManager {
     }
 
     @Override
-    public JcrItemNodeAdapter getFavorites() {
+    public AbstractJcrNodeAdapter getFavorites() {
         try {
             Node bookmarksNode = favoriteStore.getBookmarkRoot();
             JcrNodeAdapter favorites = new JcrNodeAdapter(bookmarksNode);

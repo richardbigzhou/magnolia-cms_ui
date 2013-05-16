@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -64,8 +64,8 @@ public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
         return workspace;
     }
 
-    public String getPath() {
-        return item != null ? item.getPath() : null;
+    public String getItemId() {
+        return item != null ? item.getItemId() : null;
     }
 
     public JcrItemAdapter getItem() {

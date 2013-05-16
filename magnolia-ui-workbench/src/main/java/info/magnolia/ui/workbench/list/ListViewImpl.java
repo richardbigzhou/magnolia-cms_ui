@@ -36,7 +36,6 @@ package info.magnolia.ui.workbench.list;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.vaadin.grid.MagnoliaTable;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.ContentView;
@@ -156,7 +155,7 @@ public class ListViewImpl implements ListView {
                     if (listener != null) {
                         listener.onRightClick(event.getItem(), event.getClientX(), event.getClientY());
                         // Select clicked item so that user knows which item they are acting on.
-                        table.select(((JcrItemAdapter) event.getItem()).getPath());
+                        table.select(event.getItemId());
                     }
                 } else if (event.isDoubleClick()) {
                     if (listener != null) {
