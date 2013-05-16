@@ -42,6 +42,7 @@ import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
@@ -133,14 +134,17 @@ public final class FavoritesEntry extends CustomComponent {
         final String nodeName = favorite.getNodeName();
         this.location = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.URL).getValue().toString();
         this.title = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue().toString();
-        this.group = "";
         this.relPath = nodeName;
         try {
             this.group = MgnlContext.doInSystemContext(new MgnlContext.Op<String, Throwable>() {
 
                 @Override
                 public String exec() throws Throwable {
-                    return favorite.getItemProperty(AdmincentralNodeTypes.Favorite.GROUP).getValue().toString();
+                    final Property<?> property = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.GROUP);
+                    if (property != null) {
+                        return property.getValue().toString();
+                    }
+                    return null;
                 }
             });
         } catch (Throwable e) {
@@ -150,6 +154,7 @@ public final class FavoritesEntry extends CustomComponent {
         if (StringUtils.isNotBlank(this.group)) {
             this.relPath = this.group + "/" + nodeName;
         }
+
 
         String icon = "icon-app";
         if (favorite.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue() != null) {
