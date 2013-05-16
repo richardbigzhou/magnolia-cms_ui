@@ -52,9 +52,9 @@ import com.vaadin.client.ApplicationConnection;
  */
 public class ShellAppsTransitionDelegate implements TransitionDelegate {
 
-    private final static int SLIDE_DURATION = 400;
+    private final static int SLIDE_DURATION = 600;
 
-    private final static int FADE_DURATION = 400;
+    private final static int FADE_DURATION = 600;
 
     private final static int ALPHA_MIN = 0;
 
@@ -96,15 +96,8 @@ public class ShellAppsTransitionDelegate implements TransitionDelegate {
         });
 
 
-        this.slideUpAnimation = new SlideAnimation(true, applicationConnection);
-        this.slideUpAnimation.addCallback(new JQueryCallback() {
-            @Override
-            public void execute(JQueryWrapper query) {
-                viewport.setVisible(false);
-            }
-        });
-
-        this.slideDownAnimation = new SlideAnimation(true, applicationConnection) {
+        this.slideUpAnimation = new SlideAnimation(false, applicationConnection);
+        this.slideDownAnimation = new SlideAnimation(false, applicationConnection) {
             @Override
             protected void onStart() {
                 getCurrentElement().getStyle().setTop(-getCurrentElement().getOffsetHeight(), Style.Unit.PX);
@@ -120,6 +113,7 @@ public class ShellAppsTransitionDelegate implements TransitionDelegate {
         });
 
         this.fadeOutAnimation = new FadeAnimation(ALPHA_MIN, true, applicationConnection);
+
         this.fadeOutAnimation.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
@@ -133,8 +127,6 @@ public class ShellAppsTransitionDelegate implements TransitionDelegate {
      */
     @Override
     public void setActive(final ViewportWidget viewport, boolean active) {
-        slideDownAnimation.cancel();
-        slideUpAnimation.cancel();
         if (active) {
             viewport.setVisible(true);
             slideDownAnimation.setTargetTop(0);
@@ -150,12 +142,20 @@ public class ShellAppsTransitionDelegate implements TransitionDelegate {
      */
     @Override
     public void setVisibleChild(final ViewportWidget viewport, final Widget visibleChild) {
-        if (viewport.getVisibleChild() == null || !viewport.isActive()) {
+        if (viewport.getVisibleChild() == null || !((ShellAppsViewportWidget)viewport).isActive()) {
             // do not fade if first widget or viewport not active yet
-            viewport.setChildVisibleNoTransition(visibleChild);
+            viewport.showChildNoTransition(visibleChild);
         } else {
             fadeInAnimation.run(FADE_DURATION, visibleChild.getElement());
             fadeOutAnimation.run(FADE_DURATION, viewport.getVisibleChild().getElement());
         }
+    }
+
+    @Override
+    public boolean inProgress() {
+        return fadeInAnimation.isRunning() ||
+               fadeOutAnimation.isRunning() ||
+               slideDownAnimation.isRunning() ||
+               slideUpAnimation.isRunning();
     }
 }

@@ -81,6 +81,7 @@ public class JQueryAnimation extends Animation {
                 query.setCss("transition", "");
                 query.setCss("transform", "");
                 getJQueryWrapper().setCss("-webkit-transform", "");
+                getJQueryWrapper().setCss("-webkit-transition", "");
                 onComplete();
             }
         });
@@ -111,11 +112,12 @@ public class JQueryAnimation extends Animation {
 
     @Override
     public void cancel() {
-        if (getJQueryWrapper().isAnimationInProgress()) {
+        if (isRunning()) {
             getJQueryWrapper().stop();
             getJQueryWrapper().setCss("transition", "");
             getJQueryWrapper().setCss("transform", "");
             getJQueryWrapper().setCss("-webkit-transform", "");
+            getJQueryWrapper().setCss("-webkit-transition", "");
         }
         onComplete();
     }
@@ -133,6 +135,11 @@ public class JQueryAnimation extends Animation {
         if (isBlocking && connection != null) {
             connection.resumeResponseHandling(lock);
         }
+    }
+
+    @Override
+    public boolean isRunning() {
+        return getJQueryWrapper().isAnimationInProgress();
     }
 
     public Element getCurrentElement() {

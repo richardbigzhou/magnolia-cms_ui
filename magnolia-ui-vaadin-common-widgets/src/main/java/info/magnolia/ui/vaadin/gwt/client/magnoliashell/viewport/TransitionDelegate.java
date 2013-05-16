@@ -47,6 +47,8 @@ public interface TransitionDelegate {
 
     void setVisibleChild(ViewportWidget viewport, Widget app);
 
+    boolean inProgress();
+
     /**
      * The Class BaseTransitionDelegate with the bypass mechanism.
      */
@@ -54,12 +56,17 @@ public interface TransitionDelegate {
 
         @Override
         public void setActive(ViewportWidget viewport, boolean active) {
-            viewport.setActiveNoTransition(active);
+            viewport.setVisible(active);
         }
 
         @Override
         public void setVisibleChild(ViewportWidget viewport, Widget app) {
-            viewport.setChildVisibleNoTransition(app);
+            viewport.showChildNoTransition(app);
+        }
+
+        @Override
+        public boolean inProgress() {
+            return false;
         }
     }
 
