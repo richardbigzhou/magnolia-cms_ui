@@ -41,7 +41,8 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 
 /**
- * Abstract Class for MgnlElement processors.
+ * Abstract processor for {@link MgnlElement}s.
+ * Takes care of adding the element the {@link Model} and attaching the widgets at the right place in the DOM.
  */
 public abstract class AbstractMgnlElementProcessor {
 

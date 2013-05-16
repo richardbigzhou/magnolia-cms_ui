@@ -41,7 +41,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * Edit bar.
+ * Control bar for components. Injected at the beginning of an area.
  */
 public class ComponentBar extends AbstractBar {
 

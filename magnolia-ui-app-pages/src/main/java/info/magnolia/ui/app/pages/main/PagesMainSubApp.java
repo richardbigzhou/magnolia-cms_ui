@@ -94,6 +94,7 @@ public class PagesMainSubApp extends BrowserSubApp {
                 actionbar.hideSection("pageDeleteActions");
                 actionbar.showSection("pageActions");
                 actionbar.disable(defaultPageActions);
+                actionbar.enable("add");                
             } else {
                 final Node page = (Node) jcrItem;
     

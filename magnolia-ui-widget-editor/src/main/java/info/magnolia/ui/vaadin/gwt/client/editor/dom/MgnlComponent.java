@@ -42,14 +42,14 @@ import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.ComponentLi
 import com.google.gwt.event.shared.EventBus;
 
 /**
- * MgnlComponent.
+ * Represents a component inside the {@link CmsNode}-tree.
+ * Implements a listener interface for the associated {@link info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar}
+ * and provides wrapper functions used by the {@link info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModel}.
  */
 public class MgnlComponent extends MgnlElement implements ComponentListener {
-    private EventBus eventBus;
 
-    /**
-     * MgnlElement. Represents a node in the tree built on cms-tags.
-     */
+    private final EventBus eventBus;
+
     public MgnlComponent(MgnlElement parent, EventBus eventBus) {
         super(parent);
         this.eventBus = eventBus;

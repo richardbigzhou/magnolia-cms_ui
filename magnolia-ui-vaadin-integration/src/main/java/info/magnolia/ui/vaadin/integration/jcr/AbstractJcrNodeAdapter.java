@@ -258,6 +258,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
                 if (jcrName != null && !jcrName.isEmpty() && !jcrName.equals(node.getName())) {
 
                     // make sure new path is available
+                    jcrName = Path.getValidatedLabel(jcrName);
                     jcrName = Path.getUniqueLabel(node.getSession(), node.getParent().getPath(), jcrName);
                     String newPath = NodeUtil.combinePathAndName(node.getParent().getPath(), jcrName);
 

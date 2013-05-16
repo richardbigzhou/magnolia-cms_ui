@@ -50,7 +50,11 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 /**
- * Processor for comment elements.
+ * Processor for comment elements. This processor builds a {@link info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode}-tree
+ * based on {@link Comment} elements in the DOM structure. <br />
+ * The nesting of elements is given by the opening and closing of the {@link Comment} tags wrapped by {@link CMSComment}s.
+ * In case it processes a starting comment-tag a new {@link MgnlElement} is created and returned.
+ * In case of a closing comment-tag it will return the parent.
  */
 public class CommentProcessor {
 
@@ -132,6 +136,12 @@ public class CommentProcessor {
 
     }
 
+    /**
+     * Creates an attributes map by parsing the comment string for all relevant data.
+     * Overrides or adds attributes defined in {@link Model#INHERITED_ATTRIBUTES} from the parent element.
+     * @param attributeString a string containing all data associated with a {@link CMSComment}
+     * @param parent the parent element
+     */
     private Map<String, String> getAttributes(String attributeString, MgnlElement parent) {
         String[] keyValue;
         Map<String, String> attributes = new HashMap<String, String>();
@@ -150,8 +160,8 @@ public class CommentProcessor {
         }
         if (parent != null) {
             for (String inheritedAttribute : Model.INHERITED_ATTRIBUTES) {
-                if (parent.asMgnlElement().containsAttribute(inheritedAttribute)) {
-                    attributes.put(inheritedAttribute, parent.asMgnlElement().getAttribute(inheritedAttribute));
+                if (parent.containsAttribute(inheritedAttribute)) {
+                    attributes.put(inheritedAttribute, parent.getAttribute(inheritedAttribute));
                 }
             }
         }
@@ -177,7 +187,7 @@ public class CommentProcessor {
     }
 
     /**
-     * CmsComment.
+     * Wrapper element for {@link Comment}s.
      */
     private class CMSComment {
 

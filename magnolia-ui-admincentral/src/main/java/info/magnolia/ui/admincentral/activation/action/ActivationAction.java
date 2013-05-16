@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.activation.action;
 
+import info.magnolia.cms.exchange.ExchangeException;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
@@ -80,7 +81,14 @@ public class ActivationAction extends CommandActionBase<ActivationActionDefiniti
 
     @Override
     protected void onError(Exception e) {
-        subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, getDefinition().getErrorMessage());
+        String errorMessage = null;
+        if (e.getCause() != null && e.getCause() instanceof ExchangeException) {
+            errorMessage = e.getCause().getLocalizedMessage();
+            errorMessage = StringUtils.substring(errorMessage, StringUtils.indexOf(errorMessage, "error detected:"));
+        } else {
+            errorMessage = getDefinition().getErrorMessage();
+        }
+        subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, errorMessage);
     }
 
     @Override

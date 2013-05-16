@@ -41,7 +41,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * Area bar.
+ * Control bar for areas. Injected at the beginning of an area.
  */
 public class AreaBar extends AbstractBar {
 
