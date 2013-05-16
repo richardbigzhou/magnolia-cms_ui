@@ -40,8 +40,6 @@ import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 
-import java.awt.Point;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,13 +112,13 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
     }
 
     @Override
-    public void onRightClick(Item item, Point clickCoordinates) {
+    public void onRightClick(Item item, int clickX, int clickY) {
         if (item != null) {
             try {
                 selectedItemPath = ((JcrItemAdapter) item).getPath();
                 String clickedItemPath = ((JcrItemAdapter) item).getPath();
                 log.debug("com.vaadin.data.Item at {} was right clicked. Firing ItemRightClickedEvent...", clickedItemPath);
-                eventBus.fireEvent(new ItemRightClickedEvent(workbenchDefinition.getWorkspace(), clickedItemPath, clickCoordinates));
+                eventBus.fireEvent(new ItemRightClickedEvent(workbenchDefinition.getWorkspace(), clickedItemPath, clickX, clickY));
             } catch (Exception e) {
                 log.error("An error occurred while right clicking on a row in the data grid", e);
             }

@@ -38,8 +38,6 @@ import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailDblClickListe
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailRightClickListener;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailSelectionListener;
 
-import java.awt.Point;
-
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
@@ -81,10 +79,10 @@ public class ThumbnailViewImpl implements ThumbnailView {
         thumbnailLayout.addRightClickListener(new ThumbnailRightClickListener() {
 
             @Override
-            public void onThumbnailRightClicked(final String thumbnailId, Point clickCoordinates) {
+            public void onThumbnailRightClicked(final String thumbnailId, int clickX, int clickY) {
                 Item node = thumbnailLayout.getContainerDataSource().getItem(thumbnailId);
                 listener.onItemSelection(node);
-                listener.onRightClick(node, clickCoordinates);
+                listener.onRightClick(node, clickX, clickY);
             }
         });
     }

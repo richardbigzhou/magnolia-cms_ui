@@ -43,8 +43,6 @@ import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.thumbnail.ThumbnailContainer.ThumbnailItem;
 
-import java.awt.Point;
-
 import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -122,9 +120,9 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     }
 
     @Override
-    public void onRightClick(Item item, Point clickCoordinates) {
+    public void onRightClick(Item item, int clickX, int clickY) {
         JcrItemAdapter jcrItem = getJcrItemByThumbnailItem(item);
-        super.onRightClick(jcrItem, clickCoordinates);
+        super.onRightClick(jcrItem, clickX, clickY);
     }
 
     /**

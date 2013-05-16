@@ -53,7 +53,7 @@ public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
 
     private ActionbarView actionBar;
 
-    private ActionPopup actionPopupView;
+    private ActionPopup actionPopup;
 
     private final CssLayout actionBarWrapper = new CssLayout();
 
@@ -113,11 +113,11 @@ public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
      * Create an ActionPopup which will be triggered by right-clicks on items in Content views.
      */
     protected void createActionPopup() {
-        actionPopupView = new ActionPopup();
+        actionPopup = new ActionPopup();
         Component component = this.asVaadinComponent();
-        actionPopupView.setAsContextMenuOf((AbstractClientConnector) component);
+        actionPopup.setAsContextMenuOf((AbstractClientConnector) component);
 
-        actionPopupView.addItemClickListener(new ContextMenu.ContextMenuItemClickListener() {
+        actionPopup.addItemClickListener(new ContextMenu.ContextMenuItemClickListener() {
 
             @Override
             public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
@@ -130,7 +130,7 @@ public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
     }
 
     @Override
-    public ActionPopup getActionPopupView() {
-        return actionPopupView;
+    public ActionPopup getActionPopup() {
+        return actionPopup;
     }
 }

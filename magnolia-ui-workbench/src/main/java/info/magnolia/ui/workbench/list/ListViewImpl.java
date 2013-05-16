@@ -42,7 +42,6 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -153,10 +152,9 @@ public class ListViewImpl implements ListView {
             public void itemClick(ItemClickEvent event) {
                 Object currentSelection = event.getItemId();
 
-                Point clickCoordinates = new Point(event.getClientX(), event.getClientY());
                 if (event.getButton() == MouseButton.RIGHT) {
                     if (listener != null) {
-                        listener.onRightClick(event.getItem(), clickCoordinates);
+                        listener.onRightClick(event.getItem(), event.getClientX(), event.getClientY());
                         // Select clicked item so that user knows which item they are acting on.
                         table.select(((JcrItemAdapter) event.getItem()).getPath());
                     }

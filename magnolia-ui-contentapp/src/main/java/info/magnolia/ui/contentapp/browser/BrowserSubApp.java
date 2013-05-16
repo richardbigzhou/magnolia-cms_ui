@@ -316,7 +316,7 @@ public class BrowserSubApp extends BaseSubApp {
             @Override
             public void onItemRightClicked(ItemRightClickedEvent event) {
                 String absItemPath = event.getPath();
-                browser.showActionPopup(absItemPath, event.getClickCoordinates());
+                browser.showActionPopup(absItemPath, event.getClickX(), event.getClickY());
             }
         });
 

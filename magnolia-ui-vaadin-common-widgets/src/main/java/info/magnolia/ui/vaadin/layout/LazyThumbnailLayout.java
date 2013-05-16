@@ -38,7 +38,6 @@ import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.rpc.ThumbnailLa
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.rpc.ThumbnailLayoutServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.shared.ThumbnailData;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,7 +83,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         public void onThumbnailRightClicked(String id, int clickX, int clickY) {
             final Object itemId = mapper.get(id);
             if (itemId != null) {
-                LazyThumbnailLayout.this.onThumbnailRightClicked(itemId, new Point(clickX, clickY));
+                LazyThumbnailLayout.this.onThumbnailRightClicked(itemId, clickX, clickY);
             }
         }
 
@@ -111,9 +110,9 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         }
     }
 
-    private void onThumbnailRightClicked(Object itemId, Point clickCoordinates) {
+    private void onThumbnailRightClicked(Object itemId, int clickX, int clickY) {
         for (final ThumbnailRightClickListener listener : rightClickListeners) {
-            listener.onThumbnailRightClicked(String.valueOf(itemId), clickCoordinates);
+            listener.onThumbnailRightClicked(String.valueOf(itemId), clickX, clickY);
         }
     }
 
@@ -233,7 +232,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
      * Listener for thumbnail right clicks.
      */
     public interface ThumbnailRightClickListener {
-        void onThumbnailRightClicked(String thumbnailId, Point clickCoordinates);
+        void onThumbnailRightClicked(String thumbnailId, int clickX, int clickY);
     }
 
     /**

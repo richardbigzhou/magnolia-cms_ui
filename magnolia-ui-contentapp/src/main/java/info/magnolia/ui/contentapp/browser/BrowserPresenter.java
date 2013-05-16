@@ -70,7 +70,6 @@ import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
 
-import java.awt.Point;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -358,30 +357,26 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
     /**
      * Show the actionPopup for the specified item at the specified coordinates.
      */
-    public void showActionPopup(String absItemPath, Point clickCoordinates) {
-        ActionPopup actionPopupView = view.getActionPopupView();
+    public void showActionPopup(String absItemPath, int x, int y) {
+        ActionPopup actionPopup = view.getActionPopup();
 
-        updateActionPopup(actionPopupView, absItemPath);
-        int x;
-        int y;
-        if (clickCoordinates != null) {
-            x = clickCoordinates.x;
-            y = clickCoordinates.y;
-        } else {
+        updateActionPopup(actionPopup, absItemPath);
+
+        if (x == -1 && y == -1) {
             // Center it if we don't have coordinates.
             x = Page.getCurrent().getBrowserWindowWidth() / 2;
             y = Page.getCurrent().getBrowserWindowHeight() / 2;
         }
-        actionPopupView.open(x, y);
+        actionPopup.open(x, y);
     }
 
     /**
      * TODO: Eliminate redundancy with BrowserSubApp.updateActionBar (MGNLUI-1367) Christopher Zimmermann.
      * Update the items in the actionPopup based on the specified item and the ActionPopup availability configuration.
      */
-    private void updateActionPopup(ActionPopup actionPopupView, String absItemPath) {
+    private void updateActionPopup(ActionPopup actionPopup, String absItemPath) {
 
-        actionPopupView.removeAllItems();
+        actionPopup.removeAllItems();
 
         BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor();
         WorkbenchDefinition workbench = subAppDescriptor.getWorkbench();
@@ -414,7 +409,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
                         String label = action.getLabel();
                         String iconFontCode = ActionPopup.ICON_FONT_CODE + action.getIcon();
                         ExternalResource iconFontResource = new ExternalResource(iconFontCode);
-                        menuItem = actionPopupView.addItem(label, iconFontResource);
+                        menuItem = actionPopup.addItem(label, iconFontResource);
                         // Set data so that the event handler can determine which action to launch.
                         menuItem.setData(actionName);
                     }

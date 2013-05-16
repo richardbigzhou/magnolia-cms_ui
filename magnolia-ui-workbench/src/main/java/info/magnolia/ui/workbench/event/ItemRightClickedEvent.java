@@ -36,8 +36,6 @@ package info.magnolia.ui.workbench.event;
 import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
 
-import java.awt.Point;
-
 /**
  * This event is fired when an item is right clicked (i.e. a row in the data grid within the workbench representing
  * either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
@@ -56,12 +54,14 @@ public class ItemRightClickedEvent implements Event<ItemRightClickedEvent.Handle
 
     private String path;
 
-    private Point clickCoordinates;
+    private int clickX;
+    private int clickY;
 
-    public ItemRightClickedEvent(String workspace, String path, Point clickCoordinates) {
+    public ItemRightClickedEvent(String workspace, String path, int clickX, int ClickY) {
         this.workspace = workspace;
         this.path = path;
-        this.clickCoordinates = clickCoordinates;
+        this.clickX = clickX;
+        this.clickY = clickY;
     }
 
     public String getWorkspace() {
@@ -72,8 +72,12 @@ public class ItemRightClickedEvent implements Event<ItemRightClickedEvent.Handle
         return path;
     }
 
-    public Point getClickCoordinates() {
-        return clickCoordinates;
+    public int getClickX() {
+        return clickX;
+    }
+
+    public int getClickY() {
+        return clickY;
     }
     @Override
     public void dispatch(Handler handler) {

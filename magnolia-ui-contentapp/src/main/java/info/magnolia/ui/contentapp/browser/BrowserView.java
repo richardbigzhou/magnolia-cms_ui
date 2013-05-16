@@ -55,7 +55,7 @@ public interface BrowserView extends ComponentContainer, View {
 
     void setListener(BrowserView.Listener listener);
 
-    ActionPopup getActionPopupView();
+    ActionPopup getActionPopup();
 
     /**
      * Listener for the BrowserView.
