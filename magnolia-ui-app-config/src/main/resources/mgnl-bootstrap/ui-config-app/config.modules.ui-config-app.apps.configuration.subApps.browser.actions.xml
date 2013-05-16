@@ -64,6 +64,23 @@
     <sv:property sv:name="nodeType" sv:type="String">
       <sv:value>mgnl:content</sv:value>
     </sv:property>
+    <sv:node sv:name="availability">
+      <sv:property sv:name="jcr:primaryType" sv:type="Name">
+        <sv:value>mgnl:contentNode</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+        <sv:value>mix:lockable</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:createdBy" sv:type="String">
+        <sv:value>admin</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+        <sv:value>superuser</sv:value>
+      </sv:property>
+      <sv:property sv:name="root" sv:type="String">
+        <sv:value>true</sv:value>
+      </sv:property>
+    </sv:node>
   </sv:node>
   <sv:node sv:name="addNode">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -105,6 +122,23 @@
     <sv:property sv:name="nodeType" sv:type="String">
       <sv:value>mgnl:contentNode</sv:value>
     </sv:property>
+    <sv:node sv:name="availability">
+      <sv:property sv:name="jcr:primaryType" sv:type="Name">
+        <sv:value>mgnl:contentNode</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+        <sv:value>mix:lockable</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:createdBy" sv:type="String">
+        <sv:value>admin</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+        <sv:value>superuser</sv:value>
+      </sv:property>
+      <sv:property sv:name="root" sv:type="String">
+        <sv:value>true</sv:value>
+      </sv:property>
+    </sv:node>
   </sv:node>
   <sv:node sv:name="addProperty">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -184,6 +218,23 @@
     <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
       <sv:value>superuser</sv:value>
     </sv:property>
+    <sv:node sv:name="availability">
+      <sv:property sv:name="jcr:primaryType" sv:type="Name">
+        <sv:value>mgnl:contentNode</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+        <sv:value>mix:lockable</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:createdBy" sv:type="String">
+        <sv:value>admin</sv:value>
+      </sv:property>
+      <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+        <sv:value>superuser</sv:value>
+      </sv:property>
+      <sv:property sv:name="properties" sv:type="String">
+        <sv:value>true</sv:value>
+      </sv:property>
+    </sv:node>
   </sv:node>
   <sv:node sv:name="duplicate">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
