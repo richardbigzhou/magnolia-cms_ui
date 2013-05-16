@@ -35,15 +35,21 @@ package info.magnolia.ui.actionbar.builder;
 
 import static org.junit.Assert.*;
 
+import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.MgnlTestCase;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarItemDefinition;
+import info.magnolia.ui.api.action.ActionAvailabilityDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ConfiguredActionAvailabilityDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition;
+import info.magnolia.ui.actionbar.definition.ConfiguredSectionAvailabilityDefinition;
+import info.magnolia.ui.actionbar.definition.SectionAvailabilityDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
@@ -55,13 +61,25 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.junit.Before;
 import org.junit.Test;
 
-public class ActionbarFactoryTest {
+/**
+ * Tests for the ActionbarFactory.
+ */
+public class ActionbarFactoryTest extends MgnlTestCase {
 
     private static final String SECTION_A = "sectionA";
 
     private static final String SECTION_B = "sectionB";
+
+    @Before
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        ComponentsTestUtil.setImplementation(ActionAvailabilityDefinition.class, ConfiguredActionAvailabilityDefinition.class);
+        ComponentsTestUtil.setImplementation(SectionAvailabilityDefinition.class, ConfiguredSectionAvailabilityDefinition.class);
+    }
 
     @Test
     public void testBuildingActionbar() {
@@ -72,7 +90,7 @@ public class ActionbarFactoryTest {
         actionDefs.put("1.0", new TestActionDefinition("1.0"));
         actionDefs.put("1.1", new TestActionDefinition("1.1"));
         actionDefs.put("2.0", new TestActionDefinition("2.0"));
-        
+
         final ConfiguredActionbarDefinition def = new ConfiguredActionbarDefinition();
 
         // common group
@@ -162,7 +180,7 @@ public class ActionbarFactoryTest {
             setLabel("label");
         }
     }
-    
+
     @Test
     public void testBuildingActionbarWithDuplicateAction() {
         // GIVEN
@@ -172,7 +190,7 @@ public class ActionbarFactoryTest {
         actionDefs.put("0.2", new TestActionDefinition("0.2"));
         actionDefs.put("0.3", new TestActionDefinition("0.3"));
         actionDefs.put("1.0", new TestActionDefinition("1.0"));
-        
+
         ConfiguredActionbarDefinition def = new ConfiguredActionbarDefinition();
         ActionbarSectionDefinition aSection = buildSection(SECTION_A,
                 buildGroup("0",
@@ -196,7 +214,7 @@ public class ActionbarFactoryTest {
         int aActionCount = getActionsCount(aSection);
         int bActionCount = getActionsCount(bSection);
 
-        
+
         // WHEN
         ActionbarView actionbar = ActionbarFactory.build(def, listener);
 

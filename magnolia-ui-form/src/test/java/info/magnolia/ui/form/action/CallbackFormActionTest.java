@@ -35,9 +35,13 @@ package info.magnolia.ui.form.action;
 
 import static org.junit.Assert.assertEquals;
 
+import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.MgnlTestCase;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
+import info.magnolia.ui.api.action.ActionAvailabilityDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ConfiguredActionAvailabilityDefinition;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,14 +49,17 @@ import org.junit.Test;
 /**
  * CallbackFormActionTest.
  */
-public class CallbackFormActionTest {
+public class CallbackFormActionTest extends MgnlTestCase {
 
     private CallbackFormAction formAction;
     private CallbackFormActionDefinition formActionDefinition;
     private TestEditorCallback presenter;
 
     @Before
-    public void setUp() {
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        ComponentsTestUtil.setImplementation(ActionAvailabilityDefinition.class, ConfiguredActionAvailabilityDefinition.class);
         this.formActionDefinition = new CallbackFormActionDefinition();
         this.presenter = new TestEditorCallback();
     }

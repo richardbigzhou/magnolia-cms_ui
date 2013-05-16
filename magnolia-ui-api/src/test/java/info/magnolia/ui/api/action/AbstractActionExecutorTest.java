@@ -43,6 +43,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockNode;
@@ -63,9 +64,12 @@ import org.junit.Test;
  */
 public class AbstractActionExecutorTest extends MgnlTestCase {
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
+
+        ComponentsTestUtil.setImplementation(ActionAvailabilityDefinition.class, ConfiguredActionAvailabilityDefinition.class);
 
         ArrayList<String> roles = new ArrayList<String>();
         roles.add("testRole");
