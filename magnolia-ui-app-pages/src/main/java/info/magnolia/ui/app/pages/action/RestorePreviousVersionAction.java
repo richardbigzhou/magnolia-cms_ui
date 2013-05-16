@@ -40,7 +40,7 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.api.action.ActionBase;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import javax.inject.Inject;
@@ -57,13 +57,13 @@ import org.slf4j.LoggerFactory;
  */
 public class RestorePreviousVersionAction extends ActionBase<RestorePreviousVersionActionDefinition> {
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final JcrItemNodeAdapter nodeItemToEdit;
+    private final AbstractJcrNodeAdapter nodeItemToEdit;
     private final LocationController locationController;
     private final VersionManager versionManager;
     private final SubAppContext subAppContext;
 
     @Inject
-    public RestorePreviousVersionAction(RestorePreviousVersionActionDefinition definition, JcrItemNodeAdapter nodeItemToEdit, LocationController locationController, VersionManager versionManager, SubAppContext subAppContext) {
+    public RestorePreviousVersionAction(RestorePreviousVersionActionDefinition definition, AbstractJcrNodeAdapter nodeItemToEdit, LocationController locationController, VersionManager versionManager, SubAppContext subAppContext) {
         super(definition);
         this.nodeItemToEdit = nodeItemToEdit;
         this.locationController = locationController;

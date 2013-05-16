@@ -1,5 +1,4 @@
 <module>
-<!-- WS Compiler: manually edited -->
      <!-- gecko handles Iframe loading and DOMContentLoaded event correctly-->
     <replace-with class="info.magnolia.ui.vaadin.gwt.client.editor.jsni.GenericFrameEventHandler">
         <when-type-is class="info.magnolia.ui.vaadin.gwt.client.editor.jsni.AbstractFrameEventHandler"/>
@@ -12,4 +11,6 @@
             <when-property-is name="user.agent" value="safari"/>
         </any>
     </replace-with>
+  <source path="client"/>
+  <source path="shared"/>
 </module>

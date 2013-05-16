@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import info.magnolia.context.MgnlContext;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -55,13 +53,11 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrAdapter.class);
 
-    static final String UNIDENTIFIED = "?";
-
-    private boolean isNode;
+    protected static final String UNIDENTIFIED = "?";
 
     private String workspace;
 
-    private String path;
+    private String itemId;
 
     private final Map<String, Property> changedProperties = new HashMap<String, Property>();
 
@@ -75,20 +71,14 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
      * Init common Item attributes.
      */
     protected void initCommonAttributes(Item jcrItem) {
-        isNode = jcrItem.isNode();
         try {
             workspace = jcrItem.getSession().getWorkspace().getName();
-            path = jcrItem.getPath();
+            itemId = JcrItemUtil.getItemId(jcrItem);
         } catch (RepositoryException e) {
             log.error("Could not retrieve workspace or path of JCR Item.", e);
-            path = UNIDENTIFIED;
+            itemId = UNIDENTIFIED;
             workspace = UNIDENTIFIED;
         }
-    }
-
-    @Override
-    public boolean isNode() {
-        return isNode;
     }
 
     @Override
@@ -97,32 +87,30 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
     }
 
     @Override
-    public String getPath() {
-        return path;
+    public String getItemId() {
+        return itemId;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
     }
 
-    /**
-     * @return The represented JCR Item, or null in case of {@link RepositoryException}.
-     */
     @Override
     public javax.jcr.Item getJcrItem() {
         try {
-            return MgnlContext.getJCRSession(workspace).getItem(path);
+            return JcrItemUtil.getJcrItem(workspace, itemId);
         } catch (RepositoryException re) {
             log.warn("Not able to retrieve the JcrItem ", re.getMessage());
             return null;
         }
     }
 
-    // ABSTRACT IMPLEMENTATION OF PROPERTY CHANGES
-
+    @Override
     public boolean hasChangedProperties() {
         return changedProperties.size() > 0;
     }
+
+    // ABSTRACT IMPLEMENTATION OF PROPERTY CHANGES
 
     protected Map<String, Property> getChangedProperties() {
         return changedProperties;
@@ -146,16 +134,9 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
     }
 
     /**
-     * Updates and removes properties on the JCR Item represented by this adapter, based on the {@link #changedProperties} and {@link #removedProperties} maps. Read-only properties will not be updated.
-     */
-    public void updateProperties() throws RepositoryException {
-        updateProperties(getJcrItem());
-    }
-
-    /**
      * Updates and removes properties on given item, based on the {@link #changedProperties} and {@link #removedProperties} maps. Read-only properties will not be updated and null valued properties will get removed.
      */
-    public void updateProperties(Item item) throws RepositoryException {
+    protected void updateProperties(Item item) throws RepositoryException {
         for (Entry<String, Property> entry : changedProperties.entrySet()) {
             if (entry.getValue().isReadOnly()) {
                 continue;
@@ -169,6 +150,6 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
      * Implementation should simply make sure that updated propertyIds are mapped to the correct actions (jcrName
      * property should be handled in a specific way).
      */
-    abstract protected void updateProperty(Item item, String propertyId, Property property);
+    protected abstract void updateProperty(Item item, String propertyId, Property property);
 
 }

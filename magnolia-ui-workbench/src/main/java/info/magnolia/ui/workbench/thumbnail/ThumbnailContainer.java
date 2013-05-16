@@ -35,11 +35,11 @@ package info.magnolia.ui.workbench.thumbnail;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.ui.workbench.container.AbstractJcrContainer;
-import info.magnolia.ui.workbench.thumbnail.ThumbnailContainer.ThumbnailItem;
 import info.magnolia.ui.imageprovider.ImageProvider;
+import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.thumbnail.ThumbnailContainer.ThumbnailItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,7 +83,6 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
         super();
         this.workbenchDefinition = workbenchDefinition;
         this.imageProvider = imageProvider;
-        getAllItemIds().addAll(getAllIdentifiers(workbenchDefinition.getWorkspace()));
     }
 
     @Override
@@ -129,7 +128,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
 
     /**
      * @return a List of JCR identifiers for all the nodes recursively found
-     *         under <code>initialPath</code>. This method is called in {@link info.magnolia.ui.workbench.thumbnail.LazyThumbnailViewImpl#refresh()}. You can override it, if
+     *         under <code>initialPath</code>. This method is called in {@link info.magnolia.ui.workbench.thumbnail.ThumbnailViewImpl#refresh()}. You can override it, if
      *         you need a different strategy than the default one to fetch the
      *         identifiers of the nodes for which thumbnails need to be
      *         displayed.
@@ -162,6 +161,11 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
 
     private String constructQuery() {
         return prepareSelectQueryStatement() + prepareFilterQueryStatement() + prepareOrderQueryStatement();
+    }
+
+    public void refresh() {
+        getAllItemIds().clear();
+        getAllItemIds().addAll(getAllIdentifiers(workbenchDefinition.getWorkspace()));
     }
 
     @Override
@@ -277,6 +281,10 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
                 return new ThumbnailContainerProperty(this.id, imageProvider);
             }
             return null;
+        }
+
+        public String getItemId() {
+            return id;
         }
 
         @Override

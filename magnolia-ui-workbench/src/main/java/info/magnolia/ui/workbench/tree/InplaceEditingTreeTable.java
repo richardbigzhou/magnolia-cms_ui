@@ -71,7 +71,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
     private Object editingPropertyId;
 
-    private List<Object> editableColumns;
+    private List<Object> editableColumns = new ArrayList<Object>();
 
     private ColumnGenerator bypassedColumnGenerator;
 
@@ -79,7 +79,6 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
     public InplaceEditingTreeTable() {
         super();
-        setEditable(true);
         setTableFieldFactory(new InplaceEditingFieldFactory());
         addItemClickListener(asItemClickListener());
         getActionManager().addActionHandler(new EditingKeyboardHandler());
@@ -88,12 +87,8 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
     // INPLACE EDITING ENTRY POINTS.
 
     public void setEditableColumns(Object... editablePropertyIds) {
-        if (editableColumns != null) {
-            this.editableColumns.clear();
-        } else {
-            editableColumns = new ArrayList<Object>();
-        }
-        this.editableColumns.addAll(Arrays.asList(editablePropertyIds));
+        editableColumns.clear();
+        editableColumns.addAll(Arrays.asList(editablePropertyIds));
     }
 
     /**
@@ -187,12 +182,12 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
     // FIRING ITEM EDITED EVENTS
 
     @Override
-    public void addListener(ItemEditedEvent.Handler listener) {
+    public void addItemEditedListener(ItemEditedEvent.Handler listener) {
         listeners.add(listener);
     }
 
     @Override
-    public void removeListener(ItemEditedEvent.Handler listener) {
+    public void removeItemEditedListener(ItemEditedEvent.Handler listener) {
         if (listeners.contains(listener)) {
             listeners.remove(listener);
         }

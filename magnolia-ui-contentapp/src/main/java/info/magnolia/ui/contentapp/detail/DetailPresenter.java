@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -138,7 +138,7 @@ public class DetailPresenter implements DialogActionListener, EditorCallback, Ed
 
     @Override
     public void onSuccess(String actionName) {
-        eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getPath()));
+        eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
         // setItemView(ItemView.ViewType.VIEW);
         subAppContext.close();
     }

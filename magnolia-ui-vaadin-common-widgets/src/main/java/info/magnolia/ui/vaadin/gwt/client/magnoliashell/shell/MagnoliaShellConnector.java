@@ -77,7 +77,9 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     private final ShellAppActivatedEvent.Handler navigationHandler = new ShellAppActivatedEvent.Handler() {
         @Override
         public void onShellAppActivated(final ShellAppActivatedEvent event) {
-            view.showShellApp(event.getType());
+            if (isHistoryInitialized) {
+                view.showShellApp(event.getType());
+            }
             lastHandledFragment = Fragment.fromString("shell:" + event.getType().name().toLowerCase() + ":" + event.getToken());
             activateShellApp(lastHandledFragment);
         }
@@ -162,8 +164,10 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             if (connector instanceof ViewportConnector) {
                 final ViewportConnector vc = (ViewportConnector) connector;
                 view.updateViewport(vc.getWidget(), vc.getType());
+                if (!isHistoryInitialized) {
+                    vc.getWidget().getElement().getStyle().setOpacity(0d);
+                }
             } else if (connector instanceof OverlayConnector) {
-                // MGNLUI-1274: Open overlay when it's not already existing in shell.
                 if (!view.hasOverlay(connector.getWidget())) {
                     final OverlayConnector oc = (OverlayConnector) connector;
                     ComponentConnector overlayParent = (ComponentConnector) oc.getState().overlayParent;
@@ -225,6 +229,11 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 if (!isHistoryInitialized) {
                     isHistoryInitialized = true;
                     History.fireCurrentHistoryState();
+                    Iterator<Widget> it = view.iterator();
+                    while (it.hasNext()) {
+                        Widget w = it.next();
+                        w.getElement().getStyle().clearOpacity();
+                    }
                 }
             }
         });

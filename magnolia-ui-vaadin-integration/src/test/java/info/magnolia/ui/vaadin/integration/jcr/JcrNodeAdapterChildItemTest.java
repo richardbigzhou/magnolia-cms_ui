@@ -86,7 +86,7 @@ public class JcrNodeAdapterChildItemTest {
         item.addChild(newChild);
 
         // WHEN
-        Map<String, JcrItemNodeAdapter> res = item.getChildren();
+        Map<String, AbstractJcrNodeAdapter> res = item.getChildren();
 
         // THEN
         assertNotNull(res);
@@ -113,13 +113,13 @@ public class JcrNodeAdapterChildItemTest {
         boolean resBoolean = item.removeChild(childItem);
 
         // THEN
-        Map<String, JcrItemNodeAdapter> res = item.getChildren();
+        Map<String, AbstractJcrNodeAdapter> res = item.getChildren();
         assertEquals(true, resBoolean);
         assertEquals(1, res.size());
         assertEquals(null, res.get(childItem.getNodeName()));
         assertEquals(newChild, res.get(newChild.getNodeName()));
         assertEquals(item, newChild.getParent());
-        Map<String, JcrItemNodeAdapter> resRemobed = item.getRemovedChildren();
+        Map<String, AbstractJcrNodeAdapter> resRemobed = item.getRemovedChildren();
         assertEquals(1, resRemobed.size());
         assertEquals(childItem, resRemobed.get(childItem.getNodeName()));
     }
@@ -139,7 +139,7 @@ public class JcrNodeAdapterChildItemTest {
         newChild.addItemProperty("childPropertyName", childProperty);
 
         // WHEN
-        Node res = item.getNode();
+        Node res = item.applyChanges();
 
         // THEN
         assertNotNull(res);
@@ -167,7 +167,7 @@ public class JcrNodeAdapterChildItemTest {
         childItem.addItemProperty("childPropertyName", childProperty);
 
         // WHEN
-        Node res = item.getNode();
+        Node res = item.applyChanges();
 
         // THEN
         assertNotNull(res);
@@ -201,7 +201,7 @@ public class JcrNodeAdapterChildItemTest {
         newChild.addItemProperty("childNewPropertyName", childPropertyNew);
 
         // WHEN
-        Node res = item.getNode();
+        Node res = item.applyChanges();
 
         // THEN
         assertNotNull(res);
@@ -235,7 +235,7 @@ public class JcrNodeAdapterChildItemTest {
 
         // THEN
         // Get node
-        Node res = item.getNode();
+        Node res = item.applyChanges();
         assertNotNull(res);
         assertEquals(baseNode, res);
         assertEquals(true, res.hasProperty("propertyName"));
@@ -265,7 +265,7 @@ public class JcrNodeAdapterChildItemTest {
 
         // THEN
         // Get node
-        Node res = item.getNode();
+        Node res = item.applyChanges();
         assertNotNull(res);
         assertEquals(baseNode, res);
         assertEquals(true, res.hasProperty("propertyName"));
@@ -296,7 +296,7 @@ public class JcrNodeAdapterChildItemTest {
 
         // THEN
         // Get node
-        Node res = item.getNode();
+        Node res = item.applyChanges();
         assertNotNull(res);
         assertEquals(baseNode, res);
         assertEquals(true, res.hasProperty("propertyName"));

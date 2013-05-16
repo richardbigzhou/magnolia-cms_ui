@@ -33,25 +33,30 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlPage;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 
-import com.google.web.bindery.event.shared.EventBus;
-
 /**
- * Factory Class for MgnlElement processors.
+ * Factory Class for {@link MgnlElement} processors.
+ *
+ * @see PageProcessor
+ * @see AreaProcessor
+ * @see ComponentProcessor
  */
 public class MgnlElementProcessorFactory {
 
-    public static AbstractMgnlElementProcessor getProcessor(Model model, EventBus eventBus, MgnlElement mgnlElement) throws IllegalArgumentException {
+    public static AbstractMgnlElementProcessor getProcessor(Model model, MgnlElement mgnlElement) throws IllegalArgumentException {
         AbstractMgnlElementProcessor processor;
 
         if (mgnlElement.isPage()) {
-            processor = new PageProcessor(model, eventBus, mgnlElement);
+            processor = new PageProcessor(model, (MgnlPage) mgnlElement);
         } else if (mgnlElement.isArea()) {
-            processor = new AreaProcessor(model, eventBus, mgnlElement);
+            processor = new AreaProcessor(model, (MgnlArea) mgnlElement);
         } else if (mgnlElement.isComponent()) {
-            processor = new ComponentProcessor(model, eventBus, mgnlElement);
+            processor = new ComponentProcessor(model, (MgnlComponent) mgnlElement);
         } else {
             throw new IllegalArgumentException("mgnlElement is not a Area nor Component");
         }

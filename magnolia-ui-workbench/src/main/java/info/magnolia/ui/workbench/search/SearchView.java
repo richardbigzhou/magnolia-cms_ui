@@ -40,7 +40,4 @@ import info.magnolia.ui.workbench.list.ListView;
  */
 public interface SearchView extends ListView {
 
-    void search(String queryTerms);
-
-    void clear();
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,24 +36,26 @@ package info.magnolia.ui.workbench.content;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.test.mock.MockContext;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.workbench.ContentPresenter;
-import info.magnolia.ui.workbench.ContentViewBuilder;
-import info.magnolia.ui.workbench.WorkbenchView;
+import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+
+import com.vaadin.data.Container;
 
 /**
  * Tests for ContentPresenter.
  */
 public class ContentPresenterTest {
-    protected ContentViewBuilder contentViewBuilder;
 
     protected EventBus eventBus;
 
@@ -61,28 +63,35 @@ public class ContentPresenterTest {
 
     protected static final String TEST_WORKSPACE_NAME = "test";
 
-    protected static final String TEST_ITEM_PATH = "2";
+    protected static final String TEST_ITEM_ID = "2";
 
     private static final String TEST_WORKBENCHDEF_PATH = "/path/to/somewhere";
 
     private WorkbenchDefinition workbench;
+
     @Before
     public void setUp() {
         this.workbench = mock(WorkbenchDefinition.class);
-        contentViewBuilder = mock(ContentViewBuilder.class);
         when(workbench.getWorkspace()).thenReturn(TEST_WORKSPACE_NAME);
         when(workbench.getPath()).thenReturn(TEST_WORKBENCHDEF_PATH);
         eventBus = mock(EventBus.class);
         item = mock(JcrItemAdapter.class);
-        when(item.getPath()).thenReturn(TEST_ITEM_PATH);
+        when(item.getItemId()).thenReturn(TEST_ITEM_ID);
 
+        MockContext ctx = new MockContext();
+        MgnlContext.setInstance(ctx);
+    }
+
+    @After
+    public void tearDown() {
+        MgnlContext.setInstance(null);
     }
 
     @Test
     public void testOnItemSelectionFiresOnEventBus() {
         // GIVEN
-        final ContentPresenter presenter = new ContentPresenter(contentViewBuilder);
-        presenter.start(mock(WorkbenchView.class), workbench, null, eventBus);
+        final AbstractContentPresenter presenter = new DummyContentPresenter();
+        presenter.start(workbench, eventBus);
         // WHEN
         presenter.onItemSelection(item);
 
@@ -90,14 +99,14 @@ public class ContentPresenterTest {
         ArgumentCaptor<ItemSelectedEvent> argument = ArgumentCaptor.forClass(ItemSelectedEvent.class);
         verify(eventBus).fireEvent(argument.capture());
         assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
-        assertEquals(TEST_ITEM_PATH, argument.getValue().getPath());
+        assertEquals(TEST_ITEM_ID, argument.getValue().getItemId());
     }
 
     @Test
     public void testOnDoubleClickFiresOnEventBus() {
         // GIVEN
-        final ContentPresenter presenter = new ContentPresenter(contentViewBuilder);
-        presenter.start(mock(WorkbenchView.class), workbench, null, eventBus);
+        final AbstractContentPresenter presenter = new DummyContentPresenter();
+        presenter.start(workbench, eventBus);
 
         // WHEN
         presenter.onDoubleClick(item);
@@ -106,18 +115,32 @@ public class ContentPresenterTest {
         ArgumentCaptor<ItemDoubleClickedEvent> argument = ArgumentCaptor.forClass(ItemDoubleClickedEvent.class);
         verify(eventBus).fireEvent(argument.capture());
         assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
-        assertEquals(TEST_ITEM_PATH, argument.getValue().getPath());
+        assertEquals(TEST_ITEM_ID, argument.getValue().getPath());
     }
 
     @Test
     public void testOnItemSelectionWithNullItemSetSelectedPath() {
         // GIVEN
-        ContentPresenter presenter = new ContentPresenter(contentViewBuilder);
-        presenter.start(mock(WorkbenchView.class), workbench, null, eventBus);
+        AbstractContentPresenter presenter = new DummyContentPresenter();
+        presenter.start(workbench, eventBus);
+
         // WHEN
         presenter.onItemSelection(null);
 
         // THEN
-        assertEquals(TEST_WORKBENCHDEF_PATH, presenter.getSelectedItemPath());
+        assertEquals(null, presenter.getSelectedItemId());
+    }
+
+    private static class DummyContentPresenter extends AbstractContentPresenter {
+
+        @Override
+        public void refresh() {
+        }
+
+        @Override
+        public Container getContainer() {
+            return mock(Container.class);
+        }
+
     }
 }

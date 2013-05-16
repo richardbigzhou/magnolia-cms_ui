@@ -34,12 +34,9 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import info.magnolia.cms.core.Path;
-import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.api.ModelConstants;
 
-import javax.jcr.AccessDeniedException;
 import javax.jcr.Item;
-import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -78,93 +75,69 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
     }
 
     /**
-     * Create pure Vaadin Property fully decoupled for Jcr.
+     * Creates a pure Vaadin Property fully decoupled from JCR.
      */
     @Override
     public Property getItemProperty(Object propertyId) {
-        DefaultProperty property = null;
-
         if (getChangedProperties().containsKey(propertyId)) {
-            property = (DefaultProperty) getChangedProperties().get(propertyId);
+            return getChangedProperties().get(propertyId);
         }
-
-        return property;
+        return null;
     }
 
     /**
-     * Create a new subNode of the parent Node or return the existing one if already created. In
-     * case of exception return null.
+     * Create a new subNode of the parent Node or return the existing one if already created.
      */
     @Override
-    public Node getNode() {
-        try {
-            if (getNodeName() != null && getParentNode().hasNode(getNodeName())) {
-                return getParentNode().getNode(getNodeName());
-            }
-        } catch (RepositoryException re) {
-            log.warn("Exception during access of the newly created node " + getNodeName(), re);
-            return null;
+    public Node applyChanges() throws RepositoryException {
+
+        if (getNodeName() != null && getJcrItem().hasNode(getNodeName())) {
+            return getJcrItem().getNode(getNodeName());
         }
 
-        return createNode();
-    }
+        Node parent = getJcrItem();
 
-    /**
-     * Return the parent Node.
-     */
-    public Node getParentNode() {
-        return (Node) getJcrItem();
-    }
+        // Create a Node Name if not defined
+        if (StringUtils.isBlank(getNodeName())) {
+            setNodeName(getUniqueNewItemName(parent));
+        }
 
-    /**
-     * Create a new node linked o the parent node used to initialized this NewNodeAdapter.
-     */
-    private Node createNode() {
-        Node node = null;
-        try {
-            Node parent = getParentNode();
+        Node node = parent.addNode(getNodeName(), getPrimaryNodeTypeName());
 
-            // Create a Node Name if not defined
-            if (StringUtils.isBlank(getNodeName())) {
-                setNodeName(getUniqueNewItemName(parent));
-            }
+        log.debug("create a new node for parent " + parent.getPath() + " with name " + getNodeName());
 
-            node = parent.addNode(getNodeName(), getPrimaryNodeTypeName());
+        // Update properties
+        updateProperties(node);
 
-            log.debug("create a new node for parent " + parent.getPath() + " with nodeId " + getNodeName());
-            // Update property
-            updateProperties(node);
-            // Update child nodes
-            if (!getChildren().isEmpty()) {
-                for (JcrItemNodeAdapter child : getChildren().values()) {
-                    if (child instanceof JcrNewNodeAdapter) {
-                        // Set parent node (parent could be newly created)
-                        ((AbstractJcrAdapter) child).initCommonAttributes(node);
-                    }
-                    child.getNode();
+        // Update child nodes
+        if (!getChildren().isEmpty()) {
+            for (AbstractJcrNodeAdapter child : getChildren().values()) {
+                if (child instanceof JcrNewNodeAdapter) {
+                    // Set parent node (parent could be newly created)
+                    ((JcrNewNodeAdapter) child).initCommonAttributes(node);
                 }
+                child.applyChanges();
             }
-
-            return node;
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
         }
+
+        return node;
     }
 
     /**
      * Create a new unique nodeName. If JCR_NAME if part of the properties, use this property as
      * desired nodeName.
      */
-    private String getUniqueNewItemName(final Item item) throws RepositoryException, ItemNotFoundException, AccessDeniedException {
+    private String getUniqueNewItemName(final Item item) throws RepositoryException {
         if (item == null) {
-            throw new IllegalArgumentException("Item cannot be null.");
+            throw new IllegalArgumentException("Item cannot be null");
         }
         String nodeName = "";
         if (getChangedProperties().containsKey(ModelConstants.JCR_NAME)) {
             nodeName = getChangedProperties().get(ModelConstants.JCR_NAME).toString();
             getChangedProperties().remove(ModelConstants.JCR_NAME);
+            nodeName = Path.getValidatedLabel(nodeName);
         }
 
-        return Path.getUniqueLabel(item.getSession(), item.getPath(), StringUtils.isNotBlank(nodeName) ? nodeName : "untitled");
+        return Path.getUniqueLabel(item.getSession(), item.getPath(), nodeName);
     }
 }

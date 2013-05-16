@@ -33,16 +33,28 @@
  */
 package info.magnolia.ui.workbench.tree;
 
-import info.magnolia.ui.workbench.ContentView;
+import info.magnolia.ui.workbench.list.ListView;
+
+import com.vaadin.data.Item;
+import com.vaadin.event.dd.DropHandler;
 
 /**
  * Tree view interface.
  */
-public interface TreeView extends ContentView {
+public interface TreeView extends ListView {
 
-     /**
-     * Deactivate the drag And Drop functionality.
+    void setEditable(boolean editable);
+
+    void setEditableColumns(Object... propertyIds);
+
+    void setDragAndDropHandler(DropHandler dropHandler);
+
+    /**
+     * Tree-view specific listener interface.
      */
-    public void deactivateDragAndDrop();
+    public interface Listener extends ListView.Listener {
+
+        void onItemEdited(Item item);
+    }
 
 }

@@ -36,11 +36,34 @@ package info.magnolia.ui.vaadin.gwt.client.shared;
 import java.io.Serializable;
 
 /**
- * AbstractElement.
+ * Abstract element used to communicate between client and server.
+ * It is a slimmed down version of the {@MgnlElement}.
  */
 public abstract class AbstractElement implements Serializable {
 
     private String workspace;
+    private String dialog;
+    private String path;
+
+    protected AbstractElement() {
+    }
+
+    public AbstractElement(String workspace, String path, String dialog) {
+        this.workspace = workspace;
+        this.path = path;
+        this.dialog = dialog;
+    }
+
+    public String getWorkspace() {
+        return workspace;
+    }
+    public String getPath() {
+        return path;
+    }
+
+    public String getDialog() {
+        return dialog;
+    }
 
     public void setWorkspace(String workspace) {
         this.workspace = workspace;
@@ -52,26 +75,5 @@ public abstract class AbstractElement implements Serializable {
 
     public void setDialog(String dialog) {
         this.dialog = dialog;
-    }
-
-    private String path;
-    private String dialog;
-
-    public AbstractElement(String workspace, String path, String dialog) {
-        this.workspace = workspace;
-        this.path = path;
-        this.dialog = dialog;
-    }
-
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public String getDialog() {
-        return dialog;
     }
 }

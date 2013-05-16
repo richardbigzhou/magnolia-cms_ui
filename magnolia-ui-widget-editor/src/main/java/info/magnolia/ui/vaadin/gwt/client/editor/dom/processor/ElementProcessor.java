@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.gwt.client.editor.dom.processor;
 
 import info.magnolia.rendering.template.AreaDefinition;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.FrameNavigationEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
@@ -94,14 +95,18 @@ public class ElementProcessor {
         }
 
         model.addElement(mgnlElement, element);
+        if (mgnlElement instanceof MgnlArea) {
+            MgnlArea area = (MgnlArea) mgnlElement;
 
-        if (element.hasAttribute(AreaDefinition.CMS_ADD)) {
-            mgnlElement.setComponentElement(element);
-        } else if (element.hasAttribute(AreaDefinition.CMS_PLACEHOLDER)) {
-            mgnlElement.setAreaElement(element);
-        } else if (element.hasAttribute(AreaDefinition.CMS_EDIT)) {
+            if (element.hasAttribute(AreaDefinition.CMS_ADD)) {
+                area.setComponentMarkerElement(element);
+                return;
+            }
+        }
+        if (element.hasAttribute(AreaDefinition.CMS_EDIT)) {
             mgnlElement.setEditElement(element);
-        } else {
+        }
+        else {
             if (mgnlElement.getFirstElement() == null) {
                 mgnlElement.setFirstElement(element);
             }

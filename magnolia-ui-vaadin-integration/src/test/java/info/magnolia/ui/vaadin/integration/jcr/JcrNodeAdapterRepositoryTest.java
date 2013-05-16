@@ -35,6 +35,7 @@ package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.*;
 
+import info.magnolia.cms.core.Path;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.repository.RepositoryConstants;
@@ -90,7 +91,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
         property.setValue(value);
 
         // WHEN
-        Node res = adapter.getNode();
+        Node res = adapter.applyChanges();
 
         // THEN
         // should have a new node name and still all its properties
@@ -104,7 +105,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
     public void testGetNode_NewProperty() throws Exception {
         // GIVEN
         String id = ModelConstants.JCR_NAME;
-        String value = "newParent";
+        String value = "new Parent { % !";
 
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         // Get the node name as property
@@ -114,11 +115,11 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
         property.setValue(value);
 
         // WHEN
-        Node res = adapter.getNode();
+        Node res = adapter.applyChanges();
 
         // THEN
         // should have a new NodeName
-        assertEquals(value, res.getName());
+        assertEquals(Path.getValidatedLabel(value), res.getName());
         assertEquals(true, res.hasProperty("propertyString"));
         assertEquals(true, res.hasNode("child"));
     }

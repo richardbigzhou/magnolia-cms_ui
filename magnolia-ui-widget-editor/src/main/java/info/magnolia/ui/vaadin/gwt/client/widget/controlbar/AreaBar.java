@@ -33,120 +33,62 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
-import info.magnolia.rendering.template.AreaDefinition;
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
-import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
-import info.magnolia.ui.vaadin.gwt.client.editor.event.NewAreaEvent;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.AreaListener;
 
-import java.util.Map;
-
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
-import com.google.web.bindery.event.shared.EventBus;
 
 /**
- * Area bar.
+ * Control bar for areas. Injected at the beginning of an area.
  */
 public class AreaBar extends AbstractBar {
 
-    private String name;
 
-    private String type;
+    private final AreaListener listener;
 
-    private String dialog;
+    public AreaBar(MgnlArea mgnlElement) {
+        super(mgnlElement);
+        this.listener = mgnlElement;
 
-    private String availableComponents;
-
-    private boolean optional;
-
-    private boolean created;
-
-    private boolean editable = true;
-
-    private static final String NODE_TYPE = "mgnl:area";
-
-    public AreaBar(EventBus eventBus, MgnlElement mgnlElement) {
-        super(eventBus, mgnlElement);
-
-        setFields(mgnlElement.getAttributes());
-
-        GWT.log("Area [" + this.name + "] is of type " + this.type);
-
-        this.addStyleName("area");
-
-        setVisible(false);
-        createControls();
-
-    }
-
-    private void createControls() {
-        if (this.optional) {
-            if (!this.created) {
-                final Label add = new Label();
-                add.setStyleName(ICON_CLASSNAME);
-                add.addStyleName(ADD_CLASSNAME);
-                add.addClickHandler(new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        getEventBus().fireEvent(new NewAreaEvent(getWorkspace(), NODE_TYPE, getPath()));
-                    }
-                });
-                addButton(add);
-            }
-        }
-
-        if (this.dialog != null) {
-            // do not show edit-icon if the area has not been created
-            if (!this.optional || (this.optional && this.created)) {
-                final Label edit = new Label();
-                edit.setStyleName(ICON_CLASSNAME);
-                edit.addStyleName(EDIT_CLASSNAME);
-                edit.addClickHandler(new ClickHandler() {
-
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        getEventBus().fireEvent(new EditComponentEvent(getWorkspace(), getPath(), dialog));
-                    }
-                });
-                addButton(edit);
-            }
-        }
-
-    }
-
-    private void setFields(Map<String, String> attributes) throws IllegalArgumentException {
-
-        setWorkspace(attributes.get("workspace"));
-        setPath(attributes.get("path"));
-
-        this.name = attributes.get("name");
-        this.type = attributes.get("type");
-
-        this.dialog = attributes.get("dialog");
-
-        if (attributes.containsKey("editable")) {
-            this.editable = Boolean.parseBoolean(attributes.get("editable"));
-        }
-
-        availableComponents = "";
-        if (!AreaDefinition.TYPE_NO_COMPONENT.equals(this.type)) {
-            availableComponents = attributes.get("availableComponents");
-        }
-
-        boolean showAddButton = Boolean.parseBoolean(attributes.get("showAddButton"));
-        this.optional = Boolean.parseBoolean(attributes.get("optional"));
-        this.created = Boolean.parseBoolean(attributes.get("created"));
+        this.addStyleName(AREA_CLASS_NAME);
+        initLayout();
     }
 
     @Override
-    public String getDialog() {
-        return editable ? dialog : null;
+    protected String getLabel() {
+        return listener.getLabel();
     }
 
-    public String getAvailableComponents() {
-        return availableComponents;
+    @Override
+    protected void createControls() {
+        if (listener.hasAddButton()) {
+            final Label add = new Label();
+            add.setStyleName(ICON_CLASS_NAME);
+            add.addStyleName(ADD_CLASS_NAME);
+            add.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    listener.createOptionalArea();
+                }
+            });
+            addButton(add);
+        }
+        if (listener.hasEditButton()) {
+            final Label edit = new Label();
+            edit.setStyleName(ICON_CLASS_NAME);
+            edit.addStyleName(EDIT_CLASS_NAME);
+            edit.addClickHandler(new ClickHandler() {
+
+                @Override
+                public void onClick(ClickEvent event) {
+                    listener.editArea();
+                }
+            });
+            addButton(edit);
+        }
+
     }
 
 }

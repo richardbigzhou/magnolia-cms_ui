@@ -34,11 +34,17 @@
 package info.magnolia.ui.workbench;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.test.MgnlTestCase;
+import info.magnolia.test.mock.MockUtil;
+import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.workbench.config.WorkbenchBuilder;
-import info.magnolia.ui.workbench.list.ListContentViewDefinition;
-import info.magnolia.ui.workbench.tree.TreeContentViewDefinition;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.list.ListPresenterDefinition;
+import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -46,35 +52,41 @@ import org.junit.Test;
 /**
  * Tests for {@link WorkbenchPresenter}.
  */
-public class WorkbenchPresenterTest {
+public class WorkbenchPresenterTest extends MgnlTestCase {
 
     private final static String WORKSPACE = "workspace";
 
     private final static String ROOT_PATH = "/";
 
+    private ComponentProvider componentProvider;
+
     private WorkbenchPresenter presenter;
 
     @Before
-    public void setUp() {
-        initWorkbenchPresenter();
-    }
-
-    private void initWorkbenchPresenter() {
+    public void setUp() throws Exception {
         WorkbenchView view = mock(WorkbenchView.class);
-        ContentPresenter contentPresenter = mock(ContentPresenter.class);
         WorkbenchStatusBarPresenter statusBarPresenter = mock(WorkbenchStatusBarPresenter.class);
-        this.presenter = new WorkbenchPresenter(view, contentPresenter, statusBarPresenter);
-        this.presenter.start(
-                new WorkbenchBuilder().workspace(WORKSPACE).path(ROOT_PATH).contentViews(new TreeContentViewDefinition(), new ListContentViewDefinition()).exec(),
-                null,
-                null
-        );
+
+        componentProvider = mock(ComponentProvider.class);
+        doReturn(mock(ContentPresenter.class)).when(componentProvider).newInstance(any(Class.class), anyVararg());
+
+        presenter = new WorkbenchPresenter(view, componentProvider, statusBarPresenter);
     }
 
     @Test
     public void testGetDefaultViewType() {
+
+        MockUtil.initMockContext();
+        MockUtil.setSessionAndHierarchyManager(new MockSession(WORKSPACE));
+
+
+        // GIVEN
+        WorkbenchDefinition workbenchDefinition = new WorkbenchBuilder().workspace(WORKSPACE).path(ROOT_PATH).contentViews(new TreePresenterDefinition(), new ListPresenterDefinition()).exec();
+        presenter.start(workbenchDefinition, null, null);
+
         // WHEN
         ContentView.ViewType viewType = presenter.getDefaultViewType();
+
         // THEN
         assertEquals(ContentView.ViewType.TREE, viewType);
     }

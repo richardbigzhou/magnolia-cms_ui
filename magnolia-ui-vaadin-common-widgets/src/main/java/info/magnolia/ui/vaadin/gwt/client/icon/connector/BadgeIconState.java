@@ -37,7 +37,7 @@ import com.vaadin.shared.AbstractComponentState;
 import com.vaadin.shared.annotations.DelegateToWidget;
 
 /**
- * {@link BadgeIconState}.
+ * State object for the {@link info.magnolia.ui.vaadin.icon.BadgeIcon}.
  */
 public class BadgeIconState extends AbstractComponentState {
 

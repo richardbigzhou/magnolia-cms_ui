@@ -33,49 +33,27 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
-import info.magnolia.cms.security.operations.OperationPermissionDefinition;
-import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
-import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
-import info.magnolia.ui.vaadin.gwt.client.widget.dnd.DragAndDrop;
-import info.magnolia.ui.vaadin.gwt.client.widget.dnd.LegacyDragAndDrop;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.ComponentListener;
 
-import java.util.Map;
-
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.DragDropEventBase;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.ui.Label;
-import com.google.web.bindery.event.shared.EventBus;
 
 /**
- * Edit bar.
+ * Control bar for components. Injected at the beginning of an area.
  */
 public class ComponentBar extends AbstractBar {
 
-    private String dialog;
+    private final ComponentListener listener;
 
-    private String nodeName;
+    public ComponentBar(MgnlComponent mgnlElement) {
+        super(mgnlElement);
 
-    private boolean isInherited;
+        this.listener = mgnlElement;
+        addStyleName(COMPONENT_CLASS_NAME);
 
-    private boolean editable = true;
-
-    private boolean writable = true;
-
-    public ComponentBar(EventBus eventBus, MgnlElement mgnlElement) {
-
-        super(eventBus, mgnlElement);
-
-        setFields(mgnlElement.getAttributes());
-        addStyleName("component");
+        initLayout();
 
         /*
          * if (DragDropEventBase.isSupported()) {
@@ -83,16 +61,35 @@ public class ComponentBar extends AbstractBar {
          *
          * }
          */
-        if (!this.isInherited) {
-            createControls();
-            // createMouseEventsHandlers();
-        }
-
-        setVisible(false);
 
     }
 
-    public void setDraggable(boolean draggable) {
+
+
+    @Override
+    protected String getLabel() {
+        return listener.getLabel();
+    }
+
+    @Override
+    protected void createControls() {
+        if (listener.hasEditButton()) {
+            final Label edit = new Label();
+            edit.setStyleName(ICON_CLASS_NAME);
+            edit.addStyleName(EDIT_CLASS_NAME);
+            edit.addClickHandler(new ClickHandler() {
+
+                @Override
+                public void onClick(ClickEvent event) {
+                    listener.editComponent();
+                }
+            });
+
+            addButton(edit);
+        }
+    }
+
+    /*    public void setDraggable(boolean draggable) {
         if (DragDropEventBase.isSupported()) {
             if (draggable) {
                 this.getElement().setDraggable(Element.DRAGGABLE_TRUE);
@@ -102,35 +99,9 @@ public class ComponentBar extends AbstractBar {
                 getStyle().setCursor(Cursor.DEFAULT);
             }
         }
-    }
+    }*/
 
-    private void setFields(Map<String, String> attributes) {
-
-        setWorkspace(attributes.get("workspace"));
-        setPath(attributes.get("path"));
-
-        this.nodeName = getPath().substring(getPath().lastIndexOf("/") + 1);
-
-        setId("__" + nodeName);
-
-        this.dialog = attributes.get("dialog");
-
-        this.isInherited = Boolean.parseBoolean(attributes.get("inherited"));
-
-        if (attributes.containsKey("editable")) {
-            this.editable = Boolean.parseBoolean(attributes.get("editable"));
-        }
-
-        if (attributes.containsKey(OperationPermissionDefinition.WRITABLE)) {
-            this.writable = Boolean.parseBoolean(attributes.get(OperationPermissionDefinition.WRITABLE));
-        }
-    }
-
-    public String getNodeName() {
-        return nodeName;
-    }
-
-    private void createDragAndDropHandlers() {
+/*    private void createDragAndDropHandlers() {
         DragAndDrop.dragAndDrop(getEventBus(), this);
     }
 
@@ -160,45 +131,6 @@ public class ComponentBar extends AbstractBar {
                 LegacyDragAndDrop.moveComponentOut(ComponentBar.this);
             }
         }, MouseOutEvent.getType());
-    }
+    }*/
 
-    private void createControls() {
-
-        /*
-         * final Label move = new Label();
-         * move.setStyleName("icon icon-trash");
-         * move.addClickHandler(new ClickHandler() {
-         * 
-         * @Override
-         * public void onClick(ClickEvent event) {
-         * getEventBus().fireEvent(new DeleteComponentEvent(getWorkspace(), getImagePathByNodePath()));
-         * }
-         * });
-         * if (!canMove) {
-         * move.setVisible(false);
-         * }
-         * addSecondaryButton(move);
-         */
-
-        final Label edit = new Label();
-        edit.setStyleName(ICON_CLASSNAME);
-        edit.addStyleName(EDIT_CLASSNAME);
-        edit.addClickHandler(new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                getEventBus().fireEvent(new EditComponentEvent(getWorkspace(), getPath(), dialog));
-            }
-        });
-        if (!writable) {
-            edit.setVisible(false);
-        }
-        addButton(edit);
-
-    }
-
-    @Override
-    public String getDialog() {
-        return dialog;
-    }
 }

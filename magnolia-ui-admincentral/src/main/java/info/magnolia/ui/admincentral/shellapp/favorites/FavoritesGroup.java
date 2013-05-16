@@ -37,7 +37,7 @@ import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.Iterator;
@@ -85,19 +85,19 @@ public final class FavoritesGroup extends CssLayout {
         addStyleName("no-group");
     }
 
-    public FavoritesGroup(final JcrItemNodeAdapter favoritesGroup, final FavoritesView.Listener listener, final Shell shell) {
+    public FavoritesGroup(final AbstractJcrNodeAdapter favoritesGroup, final FavoritesView.Listener listener, final Shell shell) {
         this.shell = shell;
 
         addStyleName("favorites-group");
 
         construct(favoritesGroup, listener);
 
-        final Map<String, JcrItemNodeAdapter> nodeAdapters = favoritesGroup.getChildren();
+        final Map<String, AbstractJcrNodeAdapter> nodeAdapters = favoritesGroup.getChildren();
         final SortedSet<String> keys = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
         keys.addAll(nodeAdapters.keySet());
 
         for (String key : keys) {
-            final JcrItemNodeAdapter fav = nodeAdapters.get(key);
+            final AbstractJcrNodeAdapter fav = nodeAdapters.get(key);
             final FavoritesEntry favEntry = new FavoritesEntry(fav, listener, shell);
             addComponent(favEntry);
         }
@@ -152,7 +152,7 @@ public final class FavoritesGroup extends CssLayout {
         removeButton.setVisible(selected);
     }
 
-    private void construct(final JcrItemNodeAdapter favoritesGroup, final FavoritesView.Listener listener) {
+    private void construct(final AbstractJcrNodeAdapter favoritesGroup, final FavoritesView.Listener listener) {
         wrapper = new CssLayout();
         wrapper.addStyleName("favorites-group-title");
 

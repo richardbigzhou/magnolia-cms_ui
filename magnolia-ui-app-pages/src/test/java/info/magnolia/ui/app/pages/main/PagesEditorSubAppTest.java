@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.app.pages.main;
 
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
@@ -46,6 +46,7 @@ import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.app.pages.editor.NodeSelectedEvent;
 import info.magnolia.ui.app.pages.editor.PageEditorPresenter;
 import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
@@ -62,6 +63,7 @@ import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 
 import javax.jcr.Session;
 
@@ -81,6 +83,8 @@ public class PagesEditorSubAppTest {
     private EventBus adminCentralEventBus;
     private ActionbarPresenter actionbarPresenter;
     private PageBarView pageBarView;
+    private I18NAuthoringSupport i18NAuthoringSupport;
+    private I18nContentSupport i18nContentSupport;
     private AbstractElement element;
     private final ConfiguredTemplateDefinition definition = new ConfiguredTemplateDefinition();
 
@@ -113,7 +117,9 @@ public class PagesEditorSubAppTest {
         when(pageEditorPresenter.getTemplateDefinitionRegistry()).thenReturn(registry);
         when(registry.getTemplateDefinition(anyString())).thenReturn(definition);
         actionbarPresenter = mock(ActionbarPresenter.class);
-
+        i18NAuthoringSupport = mock(I18NAuthoringSupport.class);
+        i18nContentSupport = mock(I18nContentSupport.class);
+        when(i18nContentSupport.getLocale()).thenReturn(new Locale("en"));
         pageBarView = mock(PageBarView.class);
     }
 
@@ -122,7 +128,7 @@ public class PagesEditorSubAppTest {
         // GIVEN
         element = new AreaElement(null, null, null, null);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport);
 
         // WHEN
         eventBus.fireEvent(new NodeSelectedEvent(element));
@@ -144,7 +150,7 @@ public class PagesEditorSubAppTest {
         element.setMoveable(true);
         element.setDeletable(false);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport);
 
         // WHEN
         eventBus.fireEvent(new NodeSelectedEvent(element));
@@ -167,7 +173,7 @@ public class PagesEditorSubAppTest {
         AreaElement element = new AreaElement(null, null, null, null);
         element.setAddible(false);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport);
 
         // WHEN
         eventBus.fireEvent(new NodeSelectedEvent(element));

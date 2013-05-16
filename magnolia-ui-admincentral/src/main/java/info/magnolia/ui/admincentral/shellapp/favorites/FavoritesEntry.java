@@ -37,7 +37,7 @@ import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import org.apache.commons.lang.StringUtils;
@@ -78,7 +78,7 @@ public final class FavoritesEntry extends CustomComponent {
     private Shell shell;
 
 
-    public FavoritesEntry(final JcrItemNodeAdapter favorite, final FavoritesView.Listener listener, final Shell shell) {
+    public FavoritesEntry(final AbstractJcrNodeAdapter favorite, final FavoritesView.Listener listener, final Shell shell) {
         super();
         this.shell = shell;
         construct(favorite, listener);
@@ -122,7 +122,7 @@ public final class FavoritesEntry extends CustomComponent {
         removeButton.setVisible(selected);
     }
 
-    private void construct(final JcrItemNodeAdapter favorite, final FavoritesView.Listener listener) {
+    private void construct(final AbstractJcrNodeAdapter favorite, final FavoritesView.Listener listener) {
         addStyleName("favorites-entry");
         setSizeUndefined();
         root.setSizeUndefined();
@@ -218,7 +218,8 @@ public final class FavoritesEntry extends CustomComponent {
             public void layoutClick(LayoutClickEvent event) {
                 if (event.getClickedComponent() == titleField && !editable) {
                     if (event.isDoubleClick()) {
-                        // TODO fgrilli temporarily commented out as, besides making the text editable, it also goes to the saved location
+                        // TODO fgrilli commented out as, besides making the text editable, it also goes to the saved location
+                        // See MGNLUI-1317
                         // setEditable(true);
                     } else {
                         listener.goToLocation(location);

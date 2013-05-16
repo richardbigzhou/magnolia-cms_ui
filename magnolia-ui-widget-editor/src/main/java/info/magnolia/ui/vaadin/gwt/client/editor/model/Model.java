@@ -33,7 +33,10 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.model;
 
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlPage;
 
 import java.util.List;
 
@@ -56,23 +59,23 @@ public interface Model {
 
     MgnlElement getMgnlElement(Element element);
 
-    void addRootArea(MgnlElement boundary);
+    void addRootArea(MgnlArea area);
 
-    List<MgnlElement> getRootAreas();
+    List<MgnlArea> getRootAreas();
 
-    void setSelectedMgnlAreaElement(MgnlElement selectedMgnlAreaElement);
+    void setSelectedArea(MgnlArea selectedMgnlAreaElement);
 
-    MgnlElement getSelectedMgnlAreaElement();
+    MgnlArea getSelectedArea();
 
-    void setSelectedMgnlComponentElement(MgnlElement selectedMgnlComponentElement);
+    void setSelectedComponent(MgnlComponent selectedMgnlComponentElement);
 
-    MgnlElement getSelectedMgnlComponentElement();
+    MgnlComponent getSelectedComponent();
 
     void removeMgnlElement(MgnlElement mgnlElement);
 
-    void setRootPage(MgnlElement mgnlElement);
+    void setRootPage(MgnlPage mgnlElement);
 
-    MgnlElement getRootPage();
+    MgnlPage getRootPage();
 
     void reset();
 }

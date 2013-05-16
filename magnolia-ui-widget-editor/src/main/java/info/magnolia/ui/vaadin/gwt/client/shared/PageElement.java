@@ -34,12 +34,15 @@
 package info.magnolia.ui.vaadin.gwt.client.shared;
 
 /**
- * Class for GSON serialization of area elements.
+ * A slimmed down representation of a {@link info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlPage}.
+ * Used for communication between server and client.
  */
 public class PageElement extends AbstractElement {
+
+    public PageElement() {
+    }
 
     public PageElement(String workspace, String path, String dialog) {
         super(workspace, path, dialog);
     }
-
 }

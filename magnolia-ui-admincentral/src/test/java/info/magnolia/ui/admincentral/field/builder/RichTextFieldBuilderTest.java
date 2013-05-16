@@ -45,7 +45,7 @@ import org.junit.Test;
 import com.vaadin.ui.Field;
 
 /**
- * Main testcase for {@link RichTextFieldBuilder}.
+ * Tests.
  */
 public class RichTextFieldBuilderTest extends AbstractBuilderTest<RichTextFieldDefinition> {
 

@@ -33,8 +33,9 @@
  */
 package info.magnolia.ui.app.pages.action;
 
-import static org.mockito.Mockito.mock;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
@@ -49,7 +50,7 @@ import info.magnolia.ui.api.action.ConfiguredActionAvailabilityDefinition;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
@@ -96,7 +97,8 @@ public class PreviewPreviousVersionActionTest extends RepositoryTestCase {
         // GIVEN
         VersionManager versionMan = VersionManager.getInstance();
         versionMan.addVersion(node);
-        JcrItemNodeAdapter item = new JcrNodeAdapter(node);
+
+        AbstractJcrNodeAdapter item = new JcrNodeAdapter(node);
         PreviewPreviousVersionAction action = new PreviewPreviousVersionAction(definition, item, locationController, versionMan);
 
         // WHEN
@@ -111,8 +113,10 @@ public class PreviewPreviousVersionActionTest extends RepositoryTestCase {
     public void testExecuteNoVersion() throws Exception {
         // GIVEN
         VersionManager versionMan = VersionManager.getInstance();
-        JcrItemNodeAdapter item = new JcrNodeAdapter(node);
+
+        AbstractJcrNodeAdapter item = new JcrNodeAdapter(node);
         PreviewPreviousVersionAction action = new PreviewPreviousVersionAction(definition, item, locationController, versionMan);
+
 
         // WHEN
         action.execute();
@@ -129,8 +133,10 @@ public class PreviewPreviousVersionActionTest extends RepositoryTestCase {
         versionMan.addVersion(node);
         versionMan.addVersion(node);
         versionMan.addVersion(node);
-        JcrItemNodeAdapter item = new JcrNodeAdapter(node);
+
+        AbstractJcrNodeAdapter item = new JcrNodeAdapter(node);
         PreviewPreviousVersionAction action = new PreviewPreviousVersionAction(definition, item, locationController, versionMan);
+
 
         // WHEN
         action.execute();

@@ -116,7 +116,7 @@ public class JcrNewNodeAdapterTest {
         adapter.removeItemProperty("modifyRemoved");
 
         // WHEN
-        Node res = adapter.getNode();
+        Node res = adapter.applyChanges();
 
         // THEN
         assertNotNull(res);
@@ -141,10 +141,10 @@ public class JcrNewNodeAdapterTest {
 
         Property propertyModified = DefaultPropertyUtil.newDefaultProperty("id", null, "");
         adapter.addItemProperty("id", propertyModified);
-        Node node1 = adapter.getNode();
+        Node node1 = adapter.applyChanges();
 
         // WHEN no duplicate call
-        Node node2 = adapter.getNode();
+        Node node2 = adapter.applyChanges();
 
         // THEN
         assertEquals(node1, node2);

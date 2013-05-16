@@ -7,7 +7,7 @@
   <class>info.magnolia.ui.contentapp.ContentAppModule</class>
   <versionHandler>info.magnolia.ui.contentapp.setup.ContentAppModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
-  
+
   <components>
     <id>main</id>
     <type-mapping>
@@ -38,10 +38,6 @@
     <component>
       <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenterFactory</type>
       <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogPresenterFactory</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter</type>
-      <implementation>info.magnolia.ui.contentapp.choosedialog.ChooseDialogContentPresenter</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogView</type>

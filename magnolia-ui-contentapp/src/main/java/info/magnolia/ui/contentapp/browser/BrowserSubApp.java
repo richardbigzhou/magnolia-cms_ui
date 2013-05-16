@@ -36,23 +36,28 @@ package info.magnolia.ui.contentapp.browser;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.actionbar.definition.GroupAvailabilityDefinition;
 import info.magnolia.ui.actionbar.definition.SectionAvailabilityDefinition;
+import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.ContentSubAppView;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.vaadin.actionbar.ActionPopup;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.ContentView.ViewType;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 
 import java.util.List;
@@ -61,14 +66,17 @@ import javax.inject.Named;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
+
+import com.vaadin.server.ExternalResource;
 
 /**
  * Base implementation of a content subApp. A content subApp displays a collection of data represented inside a {@link info.magnolia.ui.workbench.ContentView}
- * created by {@link info.magnolia.ui.workbench.ContentViewBuilder}.
+ * created by the {@link info.magnolia.ui.workbench.WorkbenchPresenter}.
  * <pre>
  *  <p>
  *      This class Provides sensible implementation for services shared by all content subApps.
@@ -166,15 +174,109 @@ public class BrowserSubApp extends BaseSubApp {
             getAppContext().updateSubAppLocation(getSubAppContext(), location);
         }
         String query = location.getQuery();
-        getBrowser().resync(path, viewType, query);
+
+        BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
+        final String workspaceName = subAppDescriptor.getWorkbench().getWorkspace();
+
+        String itemId = null;
+        try {
+            itemId = JcrItemUtil.getItemId(SessionUtil.getNode(workspaceName, path));
+        } catch (RepositoryException e) {
+            log.warn("Could not retrieve item at path {} in workspace {}", path, workspaceName);
+        }
+        getBrowser().resync(itemId, viewType, query);
         updateActionbar(getBrowser().getActionbarPresenter());
+    }
+
+
+    /**
+     * Show the actionPopup for the specified item at the specified coordinates.
+     * TODO: Move to BrowserPresenter. Christopher Zimmermann
+     */
+    public void showActionPopup(String absItemPath, int x, int y) {
+        ActionPopup actionPopup = browser.getView().getActionPopup();
+
+        updateActionPopup(actionPopup, absItemPath);
+        actionPopup.open(x, y);
+    }
+
+    /**
+     * TODO: Eliminate redundancy with BrowserSubApp.updateActionBar (MGNLUI-1367) Christopher Zimmermann.
+     * TODO: Move to BrowserPresenter. Christopher Zimmermann
+     * Update the items in the actionPopup based on the specified item and the ActionPopup availability configuration.
+     */
+    private void updateActionPopup(ActionPopup actionPopup, String absItemPath) {
+
+        actionPopup.removeAllItems();
+
+        BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
+        WorkbenchDefinition workbench = subAppDescriptor.getWorkbench();
+        List<ActionbarSectionDefinition> sections = subAppDescriptor.getActionbar().getSections();
+
+        try {
+            Item item = null;
+            String selectedItemId = getBrowser().getSelectedItemId();
+            String workbenchRootItemId = JcrItemUtil.getItemId(SessionUtil.getNode(workbench.getWorkspace(), workbench.getPath()));
+            if (selectedItemId != null && !selectedItemId.equals(workbenchRootItemId)) {
+                item = JcrItemUtil.getJcrItem(workbench.getWorkspace(), selectedItemId);
+            }
+
+            // Figure out which section to show, only one
+            ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, item);
+
+            // If there no section matched the selection we just hide everything
+            if (sectionDefinition == null) {
+                return;
+            }
+
+            // Evaluate availability of each action within the section
+            ContextMenuItem menuItem = null;
+            for (ActionbarGroupDefinition groupDefinition : sectionDefinition.getGroups()) {
+                if (isGroupEnabled(groupDefinition, item)) {
+                    for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
+
+                        String actionName = itemDefinition.getName();
+                        menuItem = addActionPopupItem(subAppDescriptor, actionPopup, itemDefinition, item);
+                        menuItem.setEnabled(actionExecutor.isAvailable(actionName, item));
+                    }
+
+                    // Add group separator.
+                    if (menuItem != null) {
+                        menuItem.setSeparatorVisible(true);
+                    }
+                }
+            }
+            if (menuItem != null) {
+                menuItem.setSeparatorVisible(false);
+            }
+        } catch (RepositoryException e) {
+            log.error("Failed to updated actionbar", e);
+        }
+    }
+
+    /**
+     * Add an additional menu item on the actionPopup.
+     * TODO: Move to BrowserPresenter. Christopher Zimmermann
+     */
+    private ContextMenuItem addActionPopupItem(BrowserSubAppDescriptor subAppDescriptor, ActionPopup actionPopup, ActionbarItemDefinition itemDefinition, javax.jcr.Item item) {
+        String actionName = itemDefinition.getName();
+
+        ActionDefinition action = subAppDescriptor.getActions().get(actionName);
+        String label = action.getLabel();
+        String iconFontCode = ActionPopup.ICON_FONT_CODE + action.getIcon();
+        ExternalResource iconFontResource = new ExternalResource(iconFontCode);
+        ContextMenuItem menuItem = actionPopup.addItem(label, iconFontResource);
+        // Set data variable so that the event handler can determine which action to launch.
+        menuItem.setData(actionName);
+
+        return menuItem;
     }
 
     /**
      * Updates the actions available in the browser's actionbar. Decides which section to show and which actions in the
      * section to enable based on the selection in the workbench. This method can be overridden to implement custom
      * conditions.
-     *
+     * 
      * @see #restoreBrowser(BrowserLocation)
      * @see #locationChanged(Location)
      * @see ActionbarPresenter
@@ -186,12 +288,11 @@ public class BrowserSubApp extends BaseSubApp {
         List<ActionbarSectionDefinition> sections = subAppDescriptor.getActionbar().getSections();
 
         try {
-
             Item item = null;
-            String absItemPath = getBrowser().getSelectedItemId();
-            if (absItemPath != null && !absItemPath.equals(workbench.getPath())) {
-                final Session session = MgnlContext.getJCRSession(workbench.getWorkspace());
-                item = session.getItem(absItemPath);
+            String selectedItemId = getBrowser().getSelectedItemId();
+            String workbenchRootItemId = JcrItemUtil.getItemId(SessionUtil.getNode(workbench.getWorkspace(), workbench.getPath()));
+            if (selectedItemId != null && !selectedItemId.equals(workbenchRootItemId)) {
+                item = JcrItemUtil.getJcrItem(workbench.getWorkspace(), selectedItemId);
             }
 
             // Figure out which section to show, only one
@@ -358,9 +459,34 @@ public class BrowserSubApp extends BaseSubApp {
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
                 BrowserLocation location = getCurrentLocation();
-                location.updateNodePath(event.getPath());
+                try {
+                    if (event.getItemId() == null) {
+                        location.updateNodePath("/");
+                    } else {
+                        Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.parseNodeIdentifier(event.getItemId()));
+                        location.updateNodePath(selected.getPath());
+                    }
+                } catch (RepositoryException e) {
+                    log.warn("Could not get jcrItem with itemId " + event.getItemId() + " from workspace " + event.getWorkspace(), e);
+                }
                 getAppContext().updateSubAppLocation(getSubAppContext(), location);
                 updateActionbar(actionbar);
+            }
+        });
+
+        subAppEventBus.addHandler(ItemRightClickedEvent.class, new ItemRightClickedEvent.Handler() {
+
+            @Override
+            public void onItemRightClicked(ItemRightClickedEvent event) {
+                String absItemPath;
+                try {
+                    absItemPath = event.getItem().getJcrItem().getPath();
+
+                    showActionPopup(absItemPath, event.getClickX(), event.getClickY());
+                } catch (RepositoryException e) {
+                    log.warn("Could not get jcrItem with itemId " + event.getItemId() + " from workspace " + event.getWorkspace(), e);
+                }
+
             }
         });
 
@@ -384,6 +510,9 @@ public class BrowserSubApp extends BaseSubApp {
             @Override
             public void onSearch(SearchEvent event) {
                 BrowserLocation location = getCurrentLocation();
+                if (StringUtils.isNotBlank(event.getSearchExpression())) {
+                    location.updateViewType(ViewType.SEARCH);
+                }
                 location.updateQuery(event.getSearchExpression());
                 getAppContext().updateSubAppLocation(getSubAppContext(), location);
                 updateActionbar(actionbar);

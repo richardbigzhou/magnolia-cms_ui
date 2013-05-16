@@ -6,6 +6,24 @@
   <description>Workbench Component for Content Apps.</description>
   <class>info.magnolia.ui.workbench.WorkbenchModule</class>
   <version>${project.version}</version>
+
+  <components>
+    <id>main</id>
+
+    <type-mapping>
+      <type>info.magnolia.ui.workbench.definition.WorkbenchDefinition</type>
+      <implementation>info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.workbench.definition.NodeTypeDefinition</type>
+      <implementation>info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.workbench.definition.ContentPresenterDefinition</type>
+      <implementation>info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition</implementation>
+    </type-mapping>
+  </components>
+
   <components>
     <id>app</id>
     <component>
@@ -19,8 +37,20 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.workbench.ContentPresenter</type>
-      <implementation>info.magnolia.ui.workbench.ContentPresenter</implementation>
+      <type>info.magnolia.ui.workbench.list.ListView</type>
+      <implementation>info.magnolia.ui.workbench.list.ListViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.workbench.tree.TreeView</type>
+      <implementation>info.magnolia.ui.workbench.tree.TreeViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.workbench.thumbnail.ThumbnailView</type>
+      <implementation>info.magnolia.ui.workbench.thumbnail.ThumbnailViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.workbench.search.SearchView</type>
+      <implementation>info.magnolia.ui.workbench.search.SearchViewImpl</implementation>
     </component>
 
     <component>

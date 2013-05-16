@@ -27,7 +27,7 @@
     </component>
     <component>
       <type>info.magnolia.ui.vaadin.editor.PageEditorView</type>
-      <implementation>info.magnolia.ui.vaadin.editor.PageEditor</implementation>
+      <implementation>info.magnolia.ui.vaadin.editor.PageEditorViewImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.app.pages.editor.PageEditorPresenter</type>

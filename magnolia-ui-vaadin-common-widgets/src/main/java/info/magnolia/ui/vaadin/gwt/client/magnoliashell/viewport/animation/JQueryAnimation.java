@@ -39,7 +39,6 @@ import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
-import com.vaadin.client.VConsole;
 
 /**
  * GWT Animation wrapper for JQuery Animations.
@@ -65,13 +64,21 @@ public class JQueryAnimation extends Animation {
     }
 
     public JQueryAnimation() {
+        addCallback(new JQueryCallback() {
+            @Override
+            public void execute(JQueryWrapper query) {
+                onComplete();
+            }
+        });
     }
 
     @Override
     public void run(int duration, double startTime, Element element) {
         this.currentElement = element;
         this.jQueryWrapper = null;
-        super.run(duration, startTime, element);
+        //super.run(duration, startTime, element);
+        cancel();
+        onStart();
         getJQueryWrapper().animate(duration, settings);
     }
 
@@ -88,15 +95,15 @@ public class JQueryAnimation extends Animation {
     @Override
     public void cancel() {
         if (getJQueryWrapper().isAnimationInProgress()) {
-            VConsole.log("Cancelling running animation");
             getJQueryWrapper().stop();
         }
-        super.cancel();
+        onComplete();
+        //super.cancel();
     }
 
     @Override
     protected void onComplete() {
-        super.onComplete();
+        //super.onComplete();
     }
 
     public Element getCurrentElement() {

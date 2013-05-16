@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -44,6 +44,7 @@ import java.util.Collection;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.Property;
+import javax.jcr.RepositoryException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -80,8 +81,8 @@ public class AbstractJcrAdapterTest {
         // THEN
         assertTrue(adapter.isNode());
         assertEquals(workspaceName, adapter.getWorkspace());
-        assertEquals(testNode.getPath(), adapter.getPath());
-        assertEquals(testNode.getPath(), ((Node) adapter.getJcrItem()).getPath());
+        assertEquals(testNode.getIdentifier(), adapter.getItemId());
+        assertEquals(testNode.getPath(), adapter.getJcrItem().getPath());
     }
 
     @Test
@@ -99,9 +100,8 @@ public class AbstractJcrAdapterTest {
         // THEN
         assertFalse(adapter.isNode());
         assertEquals(workspaceName, adapter.getWorkspace());
-        assertEquals(testProperty.getPath(), adapter.getPath());
+        assertEquals(JcrItemUtil.getItemId(testProperty), adapter.getItemId());
         assertEquals(testProperty.getPath(), adapter.getJcrItem().getPath());
-        assertEquals(testNode.getPath() + "/" + propertyName, adapter.getPath());
     }
 
     @Test
@@ -173,6 +173,11 @@ public class AbstractJcrAdapterTest {
         }
 
         @Override
+        public boolean isNode() {
+            return !JcrItemUtil.isPropertyItemId(getItemId());
+        }
+
+        @Override
         public com.vaadin.data.Property getItemProperty(Object id) {
             return null;
         }
@@ -194,6 +199,11 @@ public class AbstractJcrAdapterTest {
 
         @Override
         protected void updateProperty(Item item, String propertyId, com.vaadin.data.Property property) {
+        }
+
+        @Override
+        public Item applyChanges() throws RepositoryException {
+            return null;
         }
     }
 

@@ -7,9 +7,7 @@
 	background:$c10;
 	color:$c80;
 	font-size:14px;
-
-	overflow-x:visible;
-	overflow-y:hidden;
+	overflow:hidden;
 }
 .v-actionbar {width:50px; padding-top:24px;}
 .v-actionbar-open {width:270px; padding-top:0;}
@@ -141,6 +139,7 @@ span.icon-publish-incl-sub { text-indent: -27px !important; }
 	font-size:12px;
 	margin-top:18px;
 	padding-top:0;
+	overflow: visible;
 }
 
 .tablet .v-actionbar-section {padding:0;}
@@ -240,5 +239,61 @@ span.icon-publish-incl-sub { text-indent: -27px !important; }
 .tablet .v-actionbar .row-5 {top:400px;}
 .tablet .v-actionbar .row-6 {top:480px;}
 .tablet .v-actionbar .row-7 {top:560px;}
+
+
+/* Action Popup */
+
+.popupContent .v-context-menu{
+	box-shadow:4px 4px 10px $c91;
+	background:$c10;
+	border: solid 1px $c11;
+}
+
+.popupContent .v-context-menu .v-context-menu-item-basic,
+.popupContent .v-context-menu .v-context-menu-item-basic-submenu
+{
+    background:$c10;
+    color:$c80;
+    padding-left:10px;
+    font-size:14px;
+    font-family:DINWebPro-Light, DINWebPro, Verdana;
+}
+
+.popupContent .v-context-menu .v-context-menu-item-basic:focus,
+.popupContent .v-context-menu .v-context-menu-item-basic-submenu:focus,
+.popupContent .v-context-menu .v-context-menu-item-basic-open
+{
+    background:$c10;
+    color:$c50;
+}
+
+.popupContent .v-context-menu .v-context-menu-item-basic.v-context-menu-item-disabled:hover,
+.popupContent .v-context-menu .v-context-menu-item-basic-submenu.v-context-menu-item-disabled:hover {
+    background:$c10;
+}
+
+
+.popupContent .v-context-menu .v-context-menu-item-basic-text{
+	padding-left:0px;
+	white-space:nowrap;
+}
+.popupContent .v-context-menu .v-context-menu-item-basic-icon-container{
+	border-width:0px;
+	margin-right:0px;
+	width:34px;
+	font-size:19.6px;
+	line-height:14px;
+}
+
+.popupContent .v-context-menu .v-context-menu-item-basic-icon-container .icon-publish-incl-sub {
+    text-indent: 0px !important;
+}
+
+
+.popupContent .v-context-menu .v-context-menu-item-basic.v-context-menu-item-separator{
+	border-bottom: 1px solid $c11;
+}
+
+
 
 }

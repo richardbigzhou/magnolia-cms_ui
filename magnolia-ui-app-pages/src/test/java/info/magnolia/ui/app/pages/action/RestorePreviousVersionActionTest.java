@@ -33,8 +33,9 @@
  */
 package info.magnolia.ui.app.pages.action;
 
-import static org.mockito.Mockito.mock;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
@@ -59,7 +60,7 @@ import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
@@ -110,7 +111,7 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
         // GIVEN
         VersionManager versionMan = VersionManager.getInstance();
         versionMan.addVersion(node);
-        JcrItemNodeAdapter item = new JcrNodeAdapter(node);
+        AbstractJcrNodeAdapter item = new JcrNodeAdapter(node);
         RestorePreviousVersionAction action = new RestorePreviousVersionAction(definition, item, locationController, versionMan, subAppContext);
 
         // WHEN
@@ -126,7 +127,7 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
     public void testExecuteNoVersion() throws Exception {
         // GIVEN
         VersionManager versionMan = VersionManager.getInstance();
-        JcrItemNodeAdapter item = new JcrNodeAdapter(node);
+        AbstractJcrNodeAdapter item = new JcrNodeAdapter(node);
         RestorePreviousVersionAction action = new RestorePreviousVersionAction(definition, item, locationController, versionMan, subAppContext);
 
         // WHEN
@@ -144,8 +145,10 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
         versionMan.addVersion(node);
         versionMan.addVersion(node);
         versionMan.addVersion(node);
-        JcrItemNodeAdapter item = new JcrNodeAdapter(node);
+
+        AbstractJcrNodeAdapter item = new JcrNodeAdapter(node);
         RestorePreviousVersionAction action = new RestorePreviousVersionAction(definition, item, locationController, versionMan, subAppContext);
+
 
         // WHEN
         action.execute();

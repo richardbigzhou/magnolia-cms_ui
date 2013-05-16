@@ -35,9 +35,17 @@ package info.magnolia.ui.workbench.thumbnail;
 
 import info.magnolia.ui.workbench.ContentView;
 
+import com.vaadin.data.Container;
+
 /**
  * Thumbnail view interface.
  */
 public interface ThumbnailView extends ContentView {
+
+    void setContainer(Container container);
+
+    void setThumbnailSize(int width, int height);
+
+    void refresh();
 
 }

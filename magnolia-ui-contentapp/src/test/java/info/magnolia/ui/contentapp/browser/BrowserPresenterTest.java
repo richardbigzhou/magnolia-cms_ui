@@ -44,20 +44,20 @@ import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.contentapp.config.BrowserSubAppBuilder;
 import info.magnolia.ui.contentapp.config.ContentAppBuilder;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.config.WorkbenchBuilder;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
-import info.magnolia.ui.workbench.list.ListContentViewDefinition;
-import info.magnolia.ui.workbench.tree.TreeContentViewDefinition;
+import info.magnolia.ui.workbench.list.ListPresenterDefinition;
+import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 import java.util.Calendar;
 
@@ -108,7 +108,7 @@ public class BrowserPresenterTest {
     private void initBrowserPresenter() {
         // initialize test instance
         BrowserSubAppBuilder subAppBuilder = new ContentAppBuilder(APP_NAME).browserSubApp(SUB_APP_NAME);
-        subAppBuilder.workbench(new WorkbenchBuilder().workspace(WORKSPACE).path(ROOT_PATH).contentViews(new TreeContentViewDefinition(), new ListContentViewDefinition()));
+        subAppBuilder.workbench(new WorkbenchBuilder().workspace(WORKSPACE).path(ROOT_PATH).contentViews(new TreePresenterDefinition(), new ListPresenterDefinition()));
         Shell mockShell = mock(Shell.class);
         SubAppContext subAppContext = new SubAppContextImpl(subAppBuilder.exec(), mockShell);
 
@@ -160,7 +160,7 @@ public class BrowserPresenterTest {
         Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
         node.addMixin(LastModified.NAME);
         AbstractJcrNodeAdapter adapter = mock(AbstractJcrNodeAdapter.class);
-        when(adapter.getNode()).thenReturn(node);
+        when(adapter.applyChanges()).thenReturn(node);
         // simulate pending change
         when(adapter.hasChangedProperties()).thenReturn(true);
 
@@ -185,7 +185,7 @@ public class BrowserPresenterTest {
         node.addMixin(LastModified.NAME);
         Property property = node.setProperty(DUMMY_PROPERTY_NAME, true);
         JcrPropertyAdapter adapter = mock(JcrPropertyAdapter.class);
-        when(adapter.getProperty()).thenReturn(property);
+        when(adapter.getJcrItem()).thenReturn(property);
         // simulate pending change
         when(adapter.hasChangedProperties()).thenReturn(true);
 
@@ -209,7 +209,7 @@ public class BrowserPresenterTest {
         Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
         LastModified.update(node);
         AbstractJcrNodeAdapter adapter = mock(AbstractJcrNodeAdapter.class);
-        when(adapter.getNode()).thenReturn(node);
+        when(adapter.applyChanges()).thenReturn(node);
 
         Calendar firstModified = LastModified.getLastModified(node);
         String firstModifiedBy = LastModified.getLastModifiedBy(node);
