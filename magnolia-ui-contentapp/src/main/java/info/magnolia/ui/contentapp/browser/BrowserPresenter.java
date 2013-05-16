@@ -86,7 +86,6 @@ import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
 
 import com.vaadin.data.Item;
 import com.vaadin.server.ExternalResource;
-import com.vaadin.server.Page;
 import com.vaadin.server.Resource;
 
 
@@ -361,12 +360,6 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         ActionPopup actionPopup = view.getActionPopup();
 
         updateActionPopup(actionPopup, absItemPath);
-
-        if (x == -1 && y == -1) {
-            // Center it if we don't have coordinates.
-            x = Page.getCurrent().getBrowserWindowWidth() / 2;
-            y = Page.getCurrent().getBrowserWindowHeight() / 2;
-        }
         actionPopup.open(x, y);
     }
 
