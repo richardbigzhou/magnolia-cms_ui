@@ -105,7 +105,7 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
             }
         });
 
-        addActionCallback(WorkbenchChooseDialogView.CHOOSE_ACTION_NAME, new DialogActionListener() {
+        addActionCallback(WorkbenchChooseDialogView.COMMIT_ACTION_NAME, new DialogActionListener() {
             @Override
             public void onActionExecuted(final String actionName) {
                 closeDialog();
@@ -115,7 +115,7 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
         addDialogCloseHandler(new BaseDialog.DialogCloseEvent.Handler() {
             @Override
             public void onClose(BaseDialog.DialogCloseEvent event) {
-                event.getView().asVaadinComponent().removeDialogCloseHandler(this);
+                getBaseDialog().removeDialogCloseHandler(this);
                 listener.onClose();
             }
         });

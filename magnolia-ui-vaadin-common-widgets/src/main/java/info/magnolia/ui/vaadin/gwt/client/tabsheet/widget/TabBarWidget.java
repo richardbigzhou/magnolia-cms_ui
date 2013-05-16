@@ -58,7 +58,7 @@ import com.google.web.bindery.event.shared.EventBus;
  */
 public class TabBarWidget extends ComplexPanel {
 
-    private static final String SINGLE_TAB_CLASSNAME = "single-tab";
+    private static final String SINGLE_TAB_CLASS_NAME = "single-tab";
 
     private final List<MagnoliaTabLabel> tabLabels = new LinkedList<MagnoliaTabLabel>();
 
@@ -141,9 +141,9 @@ public class TabBarWidget extends ComplexPanel {
 
     public void updateSingleTabStyle() {
         if (tabLabels.size() <= 1) {
-            tabContainer.addClassName(SINGLE_TAB_CLASSNAME);
+            tabContainer.addClassName(SINGLE_TAB_CLASS_NAME);
         } else {
-            tabContainer.removeClassName(SINGLE_TAB_CLASSNAME);
+            tabContainer.removeClassName(SINGLE_TAB_CLASS_NAME);
         }
     }
 
@@ -178,7 +178,6 @@ public class TabBarWidget extends ComplexPanel {
 
         private void bindHandlers() {
             addDomHandler(new ClickHandler() {
-
                 @Override
                 public void onClick(ClickEvent event) {
                     eventBus.fireEvent(new ShowAllTabsEvent());

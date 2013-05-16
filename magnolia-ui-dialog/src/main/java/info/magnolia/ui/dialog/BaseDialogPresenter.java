@@ -33,11 +33,14 @@
  */
 package info.magnolia.ui.dialog;
 
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 import javax.inject.Inject;
+
+import com.vaadin.ui.Panel;
 
 /**
  * Base implementation of {@link DialogPresenter}.
@@ -58,29 +61,36 @@ public class BaseDialogPresenter implements DialogPresenter {
 
     @Override
     public void showCloseButton() {
-        view.asVaadinComponent().showCloseButton();
+        getBaseDialog().showCloseButton();
     }
 
     @Override
     public void addDialogCloseHandler(DialogCloseEvent.Handler handler) {
-        view.asVaadinComponent().addDialogCloseHandler(handler);
+        getBaseDialog().addDialogCloseHandler(handler);
     }
 
 
     @Override
     public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
-        view.asVaadinComponent().addAction(actionName, actionLabel, callback);
+        getBaseDialog().addAction(actionName, actionLabel, callback);
 
     }
 
     @Override
     public void addActionCallback(String actionName, DialogActionListener callback) {
-        view.asVaadinComponent().addActionCallback(actionName, callback);
+        getBaseDialog().addActionCallback(actionName, callback);
     }
 
     @Override
     public void closeDialog() {
-        view.asVaadinComponent().closeSelf();
+        getBaseDialog().closeSelf();
+    }
+
+    /**
+     * A convenience method to get hold of the BaseDialog.
+     */
+    protected BaseDialog getBaseDialog() {
+        return (BaseDialog) ((Panel) view.asVaadinComponent()).getContent();
     }
 
 }

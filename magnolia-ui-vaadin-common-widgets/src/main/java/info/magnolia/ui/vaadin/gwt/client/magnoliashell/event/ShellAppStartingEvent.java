@@ -31,34 +31,49 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
 
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
-import com.vaadin.client.ApplicationConnection;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.web.bindery.event.shared.Event;
 
 /**
- * Fades an element in or out.
+ * Fired when a shell-app starts to load (transition is triggered).
+ * Emitter:
+ * @see info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.ShellAppsViewportConnector
+ * Receiver:
+ * @see info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellConnector
  */
-public class FadeAnimation extends JQueryAnimation {
+public class ShellAppStartingEvent extends Event<ShellAppStartingEvent.Handler> {
 
-
-    public FadeAnimation(double opacityValue, boolean clearAfterCompleted, ApplicationConnection applicationConnection) {
-        super(applicationConnection);
-        setProperty("opacity", opacityValue);
-        if (clearAfterCompleted) {
-            addCallback(new JQueryCallback() {
-                @Override
-                public void execute(JQueryWrapper query) {
-                    query.get(0).getStyle().clearOpacity();
-                }
-            });
-        }
+    public ShellAppType getType() {
+        return type;
     }
 
-    public FadeAnimation(double opacityValue, boolean clearAfterCompleted) {
-        this(opacityValue, clearAfterCompleted, null);
+    /**
+     * Handler interface for ShellAppStartingEvent.
+     */
+    public interface Handler extends EventHandler {
+        void onShellAppStarting(ShellAppStartingEvent event);
     }
 
+    public static final Type<Handler> TYPE = new Type<Handler>();
+
+    private ShellAppType type;
+
+    public ShellAppStartingEvent(ShellAppType type) {
+        super();
+        this.type = type;
+    }
+
+    @Override
+    protected void dispatch(Handler handler) {
+        handler.onShellAppStarting(this);
+    }
+
+    @Override
+    public Event.Type<Handler> getAssociatedType() {
+        return TYPE;
+    }
 }

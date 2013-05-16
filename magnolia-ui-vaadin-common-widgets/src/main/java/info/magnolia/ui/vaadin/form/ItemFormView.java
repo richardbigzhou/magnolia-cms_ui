@@ -34,10 +34,10 @@
 package info.magnolia.ui.vaadin.form;
 
 import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DescriptionVisibilityEvent;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 
 import java.util.Collection;
 import java.util.Locale;
@@ -45,6 +45,7 @@ import java.util.Locale;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 
 /**
@@ -59,9 +60,12 @@ public class ItemFormView implements FormView {
     private Form form;
 
     public ItemFormView() {
+
         form = new Form();
+
         dialog = new DialogContainingForm();
         dialog.setContent(form);
+
         dialog.addDescriptionVisibilityHandler(new BaseDialog.DescriptionVisibilityEvent.Handler() {
 
             @Override
@@ -72,8 +76,8 @@ public class ItemFormView implements FormView {
     }
 
     @Override
-    public BaseDialog asVaadinComponent() {
-        return dialog;
+    public Component asVaadinComponent() {
+        return dialog.asVaadinComponent();
     }
 
     @Override
@@ -90,7 +94,6 @@ public class ItemFormView implements FormView {
     @Override
     public void addField(Field<?> field) {
         form.addField(field);
-
     }
 
     @Override
@@ -161,4 +164,5 @@ public class ItemFormView implements FormView {
         });
         dialog.setFooterToolbar(languageSelector);
     }
+
 }

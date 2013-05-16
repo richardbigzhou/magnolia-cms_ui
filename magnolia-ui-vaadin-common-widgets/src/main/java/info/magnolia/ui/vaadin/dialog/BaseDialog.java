@@ -40,16 +40,23 @@ import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.DialogServerRpc;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.ShortcutAction.ModifierKey;
+import com.vaadin.event.ShortcutListener;
+import com.vaadin.server.Sizeable;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractSingleComponentContainer;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -59,7 +66,12 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class BaseDialog extends AbstractComponent implements HasComponents, DialogView {
 
+    public static final String CANCEL_ACTION_NAME = "cancel";
+    public static final String COMMIT_ACTION_NAME = "commit";
+
     protected final ListMultimap<String, DialogActionListener> actionCallbackMap = ArrayListMultimap.<String, DialogActionListener> create();
+    private final Map<String, ShortcutListener> actionShortcutMap = new HashMap<String, ShortcutListener>();
+    private Panel panel;
 
     public BaseDialog() {
         super();
@@ -68,10 +80,7 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         registerRpc(new DialogServerRpc() {
             @Override
             public void fireAction(String actionId) {
-                Object[] array = actionCallbackMap.get(actionId).toArray();
-                for (Object l : array) {
-                    ((DialogActionListener)l).onActionExecuted(actionId);
-                }
+                doFireAction(actionId);
             }
 
             @Override
@@ -84,6 +93,11 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
                 BaseDialog.this.setDescriptionVisibility(isVisible);
             }
         });
+        // We use Panel to keep keystroke events scoped within the currently focused component. Without it, if you have more than one dialog open,
+        // i.e. in different apps running at the same time, then all open dialogs would react to the keyboard event sent on the dialog currently having the focus.
+        panel = new Panel(this);
+        panel.setWidth(Sizeable.SIZE_UNDEFINED, Unit.PIXELS);
+        panel.setHeight(100, Unit.PERCENTAGE);
     }
 
     @Override
@@ -92,8 +106,14 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
     }
 
     @Override
-    public BaseDialog asVaadinComponent() {
-        return this;
+    public void attach() {
+        super.attach();
+        panel.focus();
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return panel;
     }
 
     public void closeSelf() {
@@ -154,7 +174,7 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
      * </p>
      *
      * @param newContent
-     *            the root of the composition component tree.
+     * the root of the composition component tree.
      */
     protected void replaceComponent(Component newContent) {
         if (newContent != null) {
@@ -174,7 +194,6 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
 
     }
 
-
     public Component getContent() {
         return (Component) getState().content;
     }
@@ -187,10 +206,21 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
     public void removeAction(String actionName) {
         getState().actions.remove(actionName);
         actionCallbackMap.removeAll(actionName);
+        removeShortcut(actionName);
     }
 
+    /**
+     * If the action name is <code> {@value #COMMIT_ACTION_NAME}</code> a <code>CTRL+S</code> shortcut will be added to perform the action.<br>
+     * If the action name is <code> {@value #CANCEL_ACTION_NAME}</code> a <code>CTRL+C</code> and an <code>ESC</code> shortcuts will be added to perform the action.
+     */
     public void addAction(String actionName, String actionLabel) {
         getState().actions.put(actionName, actionLabel);
+        if (COMMIT_ACTION_NAME.equals(actionName)) {
+            addShortcut(actionName, KeyCode.S, ModifierKey.CTRL);
+        } else if (CANCEL_ACTION_NAME.equals(actionName)) {
+            addShortcut(actionName, KeyCode.ESCAPE);
+            addShortcut(actionName, KeyCode.C, ModifierKey.CTRL);
+        }
     }
 
     public void setDefaultAction(String actionName) {
@@ -253,6 +283,13 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         removeListener("descriptionVisibilityEvent", DescriptionVisibilityEvent.class, handler);
     }
 
+    private void doFireAction(final String actionId) {
+        Object[] array = actionCallbackMap.get(actionId).toArray();
+        for (Object l : array) {
+            ((DialogActionListener) l).onActionExecuted(actionId);
+        }
+    }
+
     /**
      * DialogCloseEvent.
      */
@@ -271,7 +308,7 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
 
         static {
             try {
-                ON_DIALOG_CLOSE = DialogCloseEvent.Handler.class.getDeclaredMethod("onClose", new Class[]{DialogCloseEvent.class});
+                ON_DIALOG_CLOSE = DialogCloseEvent.Handler.class.getDeclaredMethod("onClose", new Class[] { DialogCloseEvent.class });
             } catch (final java.lang.NoSuchMethodException e) {
                 throw new java.lang.RuntimeException(e);
             }
@@ -318,6 +355,23 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         public boolean isVisible() {
             return isVisible;
         }
-
     }
+
+    protected void addShortcut(final String actionName, final int keyCode, final int... modifiers) {
+        final ShortcutListener shortcut = new ShortcutListener("", keyCode, modifiers) {
+
+            @Override
+            public void handleAction(Object sender, Object target) {
+                doFireAction(actionName);
+            }
+        };
+        panel.addShortcutListener(shortcut);
+        actionShortcutMap.put(actionName, shortcut);
+    }
+
+    protected void removeShortcut(String actionName) {
+        removeShortcutListener(actionShortcutMap.get(actionName));
+        actionShortcutMap.remove(actionName);
+    }
+
 }
