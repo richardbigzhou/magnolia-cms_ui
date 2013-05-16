@@ -33,23 +33,66 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.ShellAppsTransitionDelegate;
-
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
+import com.vaadin.client.Util;
 
 /**
  * Shell apps viewport client side.
  */
 public class ShellAppsViewportWidget extends ViewportWidget {
 
-    public ShellAppsViewportWidget() {
-        super();
-        setTransitionDelegate(new ShellAppsTransitionDelegate(this));
+    private Listener listener;
+
+    private boolean active;
+
+    /**
+     * Listener interface for {@link ShellAppsViewportWidget}.
+     */
+    public interface Listener {
+
+        void onShellAppLoaded(Widget shellAppWidget);
+
+        void curtainClicked();
     }
 
-    @Override
-    public void setVisibleChild(Widget w) {
-        setClosing(false);
-        super.setVisibleChild(w);
+    public ShellAppsViewportWidget(final Listener listener) {
+        this.listener = listener;
+        new TouchDelegate(this).addTouchEndHandler(new TouchEndHandler() {
+            @Override
+            public void onTouchEnd(TouchEndEvent event) {
+                final Element target = event.getNativeEvent().getEventTarget().cast();
+                if (target.isOrHasChild(getElement())) {
+                    listener.curtainClicked();
+                }
+            }
+        });
+        DOM.sinkEvents(getElement(), Event.TOUCHEVENTS | Event.MOUSEEVENTS);
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActiveNoTransition(boolean isActive) {
+        setVisible(isActive);
+        this.active = isActive;
+    }
+
+    public void setActive(boolean active) {
+        getTransitionDelegate().setActive(this, active);
+        this.active = active;
+    }
+
+    public void onShellAppLoaded(Element element) {
+        Widget w = Util.findWidget(element, null);
+        if (w != null) {
+            listener.onShellAppLoaded(w);
+        }
     }
 }

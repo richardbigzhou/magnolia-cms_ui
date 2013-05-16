@@ -33,25 +33,115 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector;
 
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppRequestedEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.HideShellAppsEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.HideShellAppsRequestedEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppRequestedEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppStartedEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppStartingEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.ShellAppsTransitionDelegate;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ShellAppsViewportWidget;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
+import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellAppsViewport;
 
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
+import com.vaadin.client.ApplicationConnection;
+import com.vaadin.client.ComponentConnector;
+import com.vaadin.client.Util;
 import com.vaadin.shared.ui.Connect;
 
 /**
  * ShellAppsViewportConnector.
  */
 @Connect(ShellAppsViewport.class)
-public class ShellAppsViewportConnector extends ViewportConnector {
+public class ShellAppsViewportConnector extends ViewportConnector implements ShellAppsViewportWidget.Listener {
+
+    public boolean locked = false;
 
     @Override
-    protected ViewportWidget createWidget() {
-        return new ShellAppsViewportWidget();
+    protected void init() {
+        super.init();
+        getWidget().setTransitionDelegate(new ShellAppsTransitionDelegate(getWidget(), getConnection()));
+        getConnection().addHandler(ApplicationConnection.ResponseHandlingStartedEvent.TYPE, new ApplicationConnection.CommunicationHandler() {
+            @Override
+            public void onRequestStarting(ApplicationConnection.RequestStartingEvent e) {
+                locked = true;
+            }
+
+            @Override
+            public void onResponseHandlingStarted(ApplicationConnection.ResponseHandlingStartedEvent e) {
+                locked = false;
+            }
+
+            @Override
+            public void onResponseHandlingEnded(ApplicationConnection.ResponseHandlingEndedEvent e) {
+            }
+        });
+    }
+
+    public void showShellApp(ShellAppType type) {
+        ComponentConnector shellAppConnector = (ComponentConnector) getState().shellApps.get(type);
+        Widget w = shellAppConnector.getWidget();
+        getWidget().showChild(w);
+        if (!getWidget().isActive()) {
+            getWidget().setActive(true);
+        }
+        eventBus.fireEvent(new ShellAppStartingEvent(type));
+    }
+
+    @Override
+    public void setEventBus(EventBus eventBus) {
+        super.setEventBus(eventBus);
+        eventBus.addHandler(ShellAppRequestedEvent.TYPE, new ShellAppRequestedEvent.Handler() {
+            @Override
+            public void onShellAppRequested(ShellAppRequestedEvent event) {
+                if (!getWidget().isActive() || !getConnection().hasActiveRequest()) {
+                    showShellApp(event.getType());
+                }
+            }
+        });
+
+        eventBus.addHandler(HideShellAppsEvent.TYPE, new HideShellAppsEvent.Handler() {
+            @Override
+            public void onHideShellApps(HideShellAppsEvent event) {
+                getWidget().setActive(false);
+            }
+        });
+
+        eventBus.addHandler(AppRequestedEvent.TYPE, new AppRequestedEvent.Handler() {
+            @Override
+            public void onAppRequested(AppRequestedEvent event) {
+                getWidget().setActiveNoTransition(false);
+            }
+        });
+    }
+
+    @Override
+    public ShellAppsViewportWidget getWidget() {
+        return (ShellAppsViewportWidget)super.getWidget();
+    }
+
+    @Override
+    protected ShellAppsViewportWidget createWidget() {
+        return new ShellAppsViewportWidget(this);
     }
 
     @Override
     public ShellAppViewportState getState() {
         return (ShellAppViewportState) super.getState();
     }
+
+    @Override
+    public void onShellAppLoaded(Widget shellAppWidget) {
+        ComponentConnector shellAppConnector = Util.findConnectorFor(shellAppWidget);
+        getLayoutManager().setNeedsMeasure(shellAppConnector);
+        eventBus.fireEvent(new ShellAppStartedEvent(getState().getShellAppType(shellAppConnector)));
+    }
+
+    @Override
+    public void curtainClicked() {
+        eventBus.fireEvent(new HideShellAppsRequestedEvent());
+    }
+
 }

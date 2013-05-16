@@ -33,19 +33,10 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.TransitionDelegate;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.HandlerRegistration;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
-import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
  * An overlay that displays the open app in the shell on top of each other.
@@ -56,31 +47,9 @@ public class ViewportWidget extends FlowPanel {
 
     private TransitionDelegate transitionDelegate;
 
-    private boolean active;
-
-    private boolean closing;
-
     public ViewportWidget() {
         super();
         addStyleName("v-viewport");
-        DOM.sinkEvents(this.getElement(), Event.TOUCHEVENTS);
-        new TouchDelegate(this).addTouchEndHandler(new TouchEndHandler() {
-            @Override
-            public void onTouchEnd(TouchEndEvent event) {
-                final Element target = event.getNativeEvent().getEventTarget().cast();
-                if (target == getElement()) {
-                    fireEvent(new ViewportCloseEvent(ViewportType.SHELL_APP));
-                }
-            }
-        });
-    }
-
-    public boolean isClosing() {
-        return closing;
-    }
-
-    public void setClosing(boolean closing) {
-        this.closing = closing;
     }
 
     public TransitionDelegate getTransitionDelegate() {
@@ -91,61 +60,34 @@ public class ViewportWidget extends FlowPanel {
         this.transitionDelegate = transitionDelegate;
     }
 
-    /* VIEWPORT ACTIVATION */
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        transitionDelegate.setActive(this, active);
-        this.active = active;
-    }
-
-    /* CHANGING VISIBLE APP */
-
     public Widget getVisibleChild() {
         return visibleChild;
     }
 
-    public void setVisibleChild(Widget w) {
+    public void showChild(Widget w) {
         if (w != visibleChild) {
-            if (isActive()) {
-                transitionDelegate.setVisibleChild(this, w);
-            } else {
-                setChildVisibleNoTransition(w);
-            }
+            transitionDelegate.setVisibleChild(this, w);
             visibleChild = w;
         }
     }
 
-    /**
-     * Default non-transitioning behavior, accessible to transition delegates as a fall back.
-     */
-    public void setActiveNoTransition(boolean active) {
-        setVisible(active);
+    public void removeChild(Widget w) {
+        removeChildNoTransition(w);
     }
 
     /**
      * Default non-transitioning behavior, accessible to transition delegates as a fall back.
      */
-    public void setChildVisibleNoTransition(Widget w) {
+    public void showChildNoTransition(Widget w) {
         if (visibleChild != null) {
             visibleChild.setVisible(false);
         }
         w.setVisible(true);
     }
 
-    public void removeWidget(Widget w) {
-        removeWithoutTransition(w);
-    }
-
-    public void removeWithoutTransition(Widget w) {
+    public void removeChildNoTransition(Widget w) {
         super.remove(w);
     }
 
-    public HandlerRegistration addCloseHandler(ViewportCloseEvent.Handler handler) {
-        return addHandler(handler, ViewportCloseEvent.TYPE);
-    }
 
 }

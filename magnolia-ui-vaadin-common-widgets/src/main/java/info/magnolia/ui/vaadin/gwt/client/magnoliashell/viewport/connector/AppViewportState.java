@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,29 +33,15 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector;
 
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
-
-import java.util.EnumMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import com.vaadin.shared.Connector;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * ShellAppViewportState.
+ * TODO: Add JavaDoc for AppViewportState.
  */
-public class ShellAppViewportState extends ViewportState {
+public class AppViewportState extends ViewportState {
 
-    public Map<ShellAppType, Connector> shellApps = new EnumMap<ShellAppType, Connector>(ShellAppType.class);
+    public List<String> runningAppNames = new ArrayList<String>();
 
-    public ShellAppType getShellAppType(Connector connector) {
-        Iterator<Map.Entry<ShellAppType, Connector>> it = shellApps.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<ShellAppType, Connector> entry = it.next();
-            if (connector == entry.getValue()) {
-                return entry.getKey();
-            }
-        }
-        return null;
-    }
+    public List<String> registeredAppNames = new ArrayList<String>();
 }

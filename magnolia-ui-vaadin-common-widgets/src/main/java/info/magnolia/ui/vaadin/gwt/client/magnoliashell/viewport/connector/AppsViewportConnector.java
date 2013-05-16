@@ -33,20 +33,88 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector;
 
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppRequestedEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.CurrentAppCloseEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.HideShellAppsEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppStartingEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.AppsTransitionDelegate;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.AppsViewport;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Timer;
+import com.google.web.bindery.event.shared.EventBus;
+import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.LayoutManager;
+import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.shared.ui.Connect;
 
 /**
  * Client-side connector for {@link AppsViewport}.
  */
 @Connect(AppsViewport.class)
-public class AppsViewportConnector extends ViewportConnector {
+public class AppsViewportConnector extends ViewportConnector implements AppsViewportWidget.Listener {
+
+    @Override
+    protected void init() {
+        super.init();
+        getWidget().setTransitionDelegate(new AppsTransitionDelegate(getWidget()));
+        addStateChangeHandler("activeComponent", new StateChangeEvent.StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent event) {
+                final ComponentConnector newActiveComponent = (ComponentConnector) getState().activeComponent;
+                if (newActiveComponent != null && getWidget().getVisibleChild() != newActiveComponent) {
+                    getWidget().showChild(newActiveComponent.getWidget());
+                    newActiveComponent.getWidget().getElement().getStyle().clearOpacity();
+                }
+            }
+        });
+    }
+
+    private boolean isAppRunning(String appId) {
+        return getState().runningAppNames.contains(appId);
+    }
+
+    private boolean isAppRegistered(String appId) {
+        return getState().registeredAppNames.contains(appId);
+    }
+
+    @Override
+    public void setEventBus(EventBus eventBus) {
+        super.setEventBus(eventBus);
+        eventBus.addHandler(AppRequestedEvent.TYPE, new AppRequestedEvent.Handler() {
+            @Override
+            public void onAppRequested(AppRequestedEvent event) {
+                getWidget().setCurtainVisible(false);
+                final String appId = event.getAppName();
+                if (isAppRegistered(appId)) {
+                    if (!isAppRunning(appId)) {
+                        getWidget().showAppPreloader(appId);
+                    }
+                }
+            }
+        });
+
+        eventBus.addHandler(ShellAppStartingEvent.TYPE, new ShellAppStartingEvent.Handler() {
+            @Override
+            public void onShellAppStarting(ShellAppStartingEvent event) {
+                getWidget().setCurtainVisible(getWidget().getWidgetCount() > 1);
+            }
+        });
+
+        eventBus.addHandler(HideShellAppsEvent.TYPE, new HideShellAppsEvent.Handler() {
+            @Override
+            public void onHideShellApps(HideShellAppsEvent event) {
+                getWidget().setCurtainVisible(false);
+            }
+        });
+    }
+
+    @Override
+    public AppViewportState getState() {
+        return (AppViewportState)super.getState();
+    }
 
     @Override
     public void onConnectorHierarchyChange(final ConnectorHierarchyChangeEvent event) {
@@ -66,9 +134,19 @@ public class AppsViewportConnector extends ViewportConnector {
         return (AppsViewportWidget) super.getWidget();
     }
 
+    @Override
+    protected AppsViewportWidget createWidget() {
+        return new AppsViewportWidget(this);
+    }
+
     /**
      * Leave this empty so the viewport doesn't actually center out the children.
      */
     @Override
     protected void alignContent(Element e, LayoutManager layoutManager) {}
+
+    @Override
+    public void closeCurrentApp() {
+        eventBus.fireEvent(new CurrentAppCloseEvent());
+    }
 }
