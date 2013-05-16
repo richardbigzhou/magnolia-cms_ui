@@ -49,12 +49,7 @@ public class ShellViewport extends DeckLayout implements Viewport {
     private View view;
 
     public ShellViewport() {
-        super();
         setSizeFull();
-    }
-
-    public void setCurrentShellFragment(String currentShellFragment) {
-        getState().currentFragment = currentShellFragment;
     }
 
     @Override

@@ -33,7 +33,10 @@
  */
 package info.magnolia.ui.vaadin.magnoliashell.viewport;
 
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector.AppViewportState;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
+
+import java.util.List;
 
 /**
  * Apps viewport.
@@ -45,4 +48,22 @@ public class AppsViewport extends ShellViewport {
         getState().type = ViewportType.APP;
     }
 
+    @Override
+    protected AppViewportState getState() {
+        return (AppViewportState)super.getState();
+    }
+
+    public void addRunningApp(String appName) {
+        if (!getState().runningAppNames.contains(appName)) {
+            getState().runningAppNames.add(appName);
+        }
+    }
+
+    public void removeRunningApp(String appName) {
+        getState().runningAppNames.remove(appName);
+    }
+
+    public void setRegisteredApps(List<String> appNames) {
+        getState().registeredAppNames = appNames;
+    }
 }
