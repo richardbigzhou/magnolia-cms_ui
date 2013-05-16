@@ -40,6 +40,7 @@ import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
+import info.magnolia.ui.actionbar.definition.GroupAvailabilityDefinition;
 import info.magnolia.ui.actionbar.definition.SectionAvailabilityDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.contentapp.ContentSubAppView;
@@ -216,14 +217,19 @@ public class BrowserSubApp extends BaseSubApp {
 
             // Evaluate availability of each action within the section
             for (ActionbarGroupDefinition groupDefinition : sectionDefinition.getGroups()) {
-                for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
+                if (isGroupEnabled(groupDefinition, item)) {
+                    actionbar.enableGroup(groupDefinition.getName());
+                    for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
 
-                    String actionName = itemDefinition.getName();
-                    if (actionExecutor.isAvailable(actionName, item)) {
-                        actionbar.enable(actionName);
-                    } else {
-                        actionbar.disable(actionName);
+                        String actionName = itemDefinition.getName();
+                        if (actionExecutor.isAvailable(actionName, item)) {
+                            actionbar.enable(actionName);
+                        } else {
+                            actionbar.disable(actionName);
+                        }
                     }
+                } else {
+                    actionbar.disableGroup(groupDefinition.getName());
                 }
             }
         } catch (RepositoryException e) {
@@ -232,6 +238,40 @@ public class BrowserSubApp extends BaseSubApp {
                 actionbar.hideSection(section.getName());
             }
         }
+    }
+
+    protected boolean isGroupEnabled(ActionbarGroupDefinition def, Item item) throws RepositoryException {
+        GroupAvailabilityDefinition availability = def.getAvailability();
+
+        // Validate that the user has all required roles
+        if (!availability.getAccess().hasAccess(MgnlContext.getUser())) {
+            return false;
+        }
+
+        // If this is the root item we display the section only if the root property is set
+        if (item == null || "/".equals(item.getPath())) {
+            return availability.isRoot();
+        }
+
+        // If its a property we display it only if the properties property is set
+        if (!item.isNode()) {
+            return availability.isProperties();
+        }
+
+        // If node is selected and the section is available for nodes
+        if (availability.isNodes()) {
+            // if no node type defined, the for all node types
+            if (availability.getNodeTypes().isEmpty()) {
+                return true;
+            }
+            // else the node must match at least one of the configured node types
+            for (String nodeType : availability.getNodeTypes()) {
+                if (NodeUtil.isNodeType((Node) item, nodeType)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private ActionbarSectionDefinition getVisibleSection(List<ActionbarSectionDefinition> sections, Item item) throws RepositoryException {
