@@ -137,7 +137,6 @@ public class JQueryAnimation extends Animation {
         }
     }
 
-    @Override
     public boolean isRunning() {
         return getJQueryWrapper().isAnimationInProgress();
     }
