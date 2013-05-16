@@ -240,7 +240,7 @@
           <excludes>**/*Patched.java, **/org/vaadin/openesignforms/**/*.java</excludes>
         </configuration>
       </plugin>
-      <!--<plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>groovy-maven-plugin</artifactId>
         <executions>
@@ -268,7 +268,7 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>!-->
+      </plugin>
     </plugins>
 
     <pluginManagement>
