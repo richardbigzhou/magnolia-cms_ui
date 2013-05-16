@@ -36,10 +36,16 @@ package info.magnolia.ui.admincentral.tree.action;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
+import info.magnolia.cms.security.operations.AccessDefinition;
+import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.api.action.ActionAvailabilityDefinition;
+import info.magnolia.ui.api.action.ConfiguredActionAvailabilityDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
@@ -51,7 +57,7 @@ import org.junit.Test;
 /**
  * Tests covering execution of the {@link AddPropertyAction}.
  */
-public class AddPropertyActionTest {
+public class AddPropertyActionTest extends MgnlTestCase {
 
     private final static String WORKSPACE = "workspace";
 
@@ -61,14 +67,20 @@ public class AddPropertyActionTest {
 
     private final static String UNTITLED_PROPERTY_VALUE = "preset";
 
-    private static final AddPropertyActionDefinition DEFINITION = new AddPropertyActionDefinition();
+    private AddPropertyActionDefinition definition;
 
     private EventBus eventBus;
 
     private MockSession session;
 
     @Before
-    public void setUp() {
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
+        ComponentsTestUtil.setImplementation(ActionAvailabilityDefinition.class, ConfiguredActionAvailabilityDefinition.class);
+        definition = new AddPropertyActionDefinition();
+
         session = new MockSession(WORKSPACE);
         MockContext ctx = new MockContext();
         ctx.addSession(WORKSPACE, session);
@@ -87,7 +99,7 @@ public class AddPropertyActionTest {
         // GIVEN
         Node root = session.getRootNode();
         long propertiesCount = root.getProperties().getSize();
-        AddPropertyAction action = new AddPropertyAction(DEFINITION, new JcrNodeAdapter(root), eventBus);
+        AddPropertyAction action = new AddPropertyAction(definition, new JcrNodeAdapter(root), eventBus);
 
         // WHEN
         action.execute();
@@ -101,7 +113,7 @@ public class AddPropertyActionTest {
         // GIVEN
         Node root = session.getRootNode();
         long propertiesCount = root.getProperties().getSize();
-        AddPropertyAction action = new AddPropertyAction(DEFINITION, new JcrNodeAdapter(root), eventBus);
+        AddPropertyAction action = new AddPropertyAction(definition, new JcrNodeAdapter(root), eventBus);
 
         // WHEN
         action.execute();
@@ -117,7 +129,7 @@ public class AddPropertyActionTest {
         Node root = session.getRootNode();
         Node node = root.addNode(NODE_NAME);
         long propertiesCount = node.getProperties().getSize();
-        AddPropertyAction action = new AddPropertyAction(DEFINITION, new JcrNodeAdapter(node), eventBus);
+        AddPropertyAction action = new AddPropertyAction(definition, new JcrNodeAdapter(node), eventBus);
 
         // WHEN
         action.execute();
@@ -132,7 +144,7 @@ public class AddPropertyActionTest {
         Node root = session.getRootNode();
         Node node = root.addNode(NODE_NAME);
         long propertiesCount = node.getProperties().getSize();
-        AddPropertyAction action = new AddPropertyAction(DEFINITION, new JcrNodeAdapter(node), eventBus);
+        AddPropertyAction action = new AddPropertyAction(definition, new JcrNodeAdapter(node), eventBus);
 
         // WHEN
         action.execute();
@@ -149,7 +161,7 @@ public class AddPropertyActionTest {
         Node node = root.addNode(NODE_NAME);
         node.setProperty(UNTITLED_PROPERTY_NAME, UNTITLED_PROPERTY_VALUE);
         long propertiesCount = node.getProperties().getSize();
-        AddPropertyAction action = new AddPropertyAction(DEFINITION, new JcrNodeAdapter(node), eventBus);
+        AddPropertyAction action = new AddPropertyAction(definition, new JcrNodeAdapter(node), eventBus);
 
         // WHEN
         action.execute();

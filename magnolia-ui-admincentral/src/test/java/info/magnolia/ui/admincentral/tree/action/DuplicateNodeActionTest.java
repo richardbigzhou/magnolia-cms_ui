@@ -36,11 +36,16 @@ package info.magnolia.ui.admincentral.tree.action;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
+import info.magnolia.cms.security.operations.AccessDefinition;
+import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.api.action.ActionAvailabilityDefinition;
+import info.magnolia.ui.api.action.ConfiguredActionAvailabilityDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Calendar;
@@ -58,7 +63,7 @@ public class DuplicateNodeActionTest extends RepositoryTestCase {
 
     private Node nodeToCopy;
 
-    private static final DuplicateNodeActionDefinition DEFINITION = new DuplicateNodeActionDefinition();
+    private DuplicateNodeActionDefinition definition;
 
     private EventBus eventBus;
 
@@ -66,6 +71,10 @@ public class DuplicateNodeActionTest extends RepositoryTestCase {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
+        ComponentsTestUtil.setImplementation(ActionAvailabilityDefinition.class, ConfiguredActionAvailabilityDefinition.class);
+        definition = new DuplicateNodeActionDefinition();
+
         Session webSiteSession = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
         nodeToCopy = webSiteSession.getRootNode().addNode("nodeToCopy", NodeTypes.Page.NAME);
         NodeTypes.Created.set(nodeToCopy);
@@ -80,7 +89,7 @@ public class DuplicateNodeActionTest extends RepositoryTestCase {
     @Test
     public void testExecute() throws Exception {
         // GIVEN
-        DuplicateNodeAction action = new DuplicateNodeAction(DEFINITION, new JcrNodeAdapter(nodeToCopy), eventBus);
+        DuplicateNodeAction action = new DuplicateNodeAction(definition, new JcrNodeAdapter(nodeToCopy), eventBus);
 
         // WHEN
         action.execute();
@@ -100,7 +109,7 @@ public class DuplicateNodeActionTest extends RepositoryTestCase {
     @Test
     public void testExecuteUpdateDate() throws Exception {
         // GIVEN
-        DuplicateNodeAction action = new DuplicateNodeAction(DEFINITION, new JcrNodeAdapter(nodeToCopy), eventBus);
+        DuplicateNodeAction action = new DuplicateNodeAction(definition, new JcrNodeAdapter(nodeToCopy), eventBus);
 
         // WHEN
         action.execute();
@@ -111,17 +120,17 @@ public class DuplicateNodeActionTest extends RepositoryTestCase {
         Calendar duplicate = rootNode.getNode("nodeToCopy0").getProperty(NodeTypes.LastModified.LAST_MODIFIED).getDate();
         assertTrue(init.before(duplicate));
     }
-    
+
     @Test
     public void testExecuteUpdateMultipleCall() throws Exception {
         // GIVEN
-        DuplicateNodeAction action = new DuplicateNodeAction(DEFINITION, new JcrNodeAdapter(nodeToCopy), eventBus);
-        
+        DuplicateNodeAction action = new DuplicateNodeAction(definition, new JcrNodeAdapter(nodeToCopy), eventBus);
+
         // WHEN
         action.execute();
         action.execute();
         action.execute();
-        
+
         // THEN
         Node rootNode = nodeToCopy.getParent();
         assertEquals(4, rootNode.getNodes("nodeToCopy*").getSize());

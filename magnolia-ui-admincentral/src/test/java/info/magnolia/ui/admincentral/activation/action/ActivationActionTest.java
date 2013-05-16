@@ -37,6 +37,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.exchange.ExchangeException;
+import info.magnolia.cms.security.operations.AccessDefinition;
+import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.chain.Command;
 import info.magnolia.context.Context;
@@ -47,6 +49,8 @@ import info.magnolia.module.ModuleRegistry;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
+import info.magnolia.ui.api.action.ActionAvailabilityDefinition;
+import info.magnolia.ui.api.action.ConfiguredActionAvailabilityDefinition;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -75,6 +79,8 @@ public class ActivationActionTest {
     @Before
     public void setUp() throws Exception {
         session = SessionTestUtil.createSession("website", website);
+        ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
+        ComponentsTestUtil.setImplementation(ActionAvailabilityDefinition.class, ConfiguredActionAvailabilityDefinition.class);
 
         Context ctx = mock(Context.class);
         when(ctx.getJCRSession("website")).thenReturn(session);

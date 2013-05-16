@@ -36,12 +36,18 @@ package info.magnolia.ui.admincentral.dialog.action;
 import static org.junit.Assert.*;
 
 import info.magnolia.cms.security.MgnlUser;
+import info.magnolia.cms.security.operations.AccessDefinition;
+import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.api.action.ActionAvailabilityDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ConfiguredActionAvailabilityDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -61,7 +67,7 @@ import com.vaadin.data.Item;
 /**
  * Main test class for {@link SaveDialogAction} and {@link SaveDialogActionDefinition}.
  */
-public class SaveDialogActionTest {
+public class SaveDialogActionTest extends MgnlTestCase {
 
     private SaveDialogAction dialogAction;
     private SaveDialogActionDefinition dialogActionDefinition;
@@ -71,7 +77,12 @@ public class SaveDialogActionTest {
     private MockSession session;
 
     @Before
+    @Override
     public void setUp() throws Exception {
+        super.setUp();
+        ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
+        ComponentsTestUtil.setImplementation(ActionAvailabilityDefinition.class, ConfiguredActionAvailabilityDefinition.class);
+
         dialogActionDefinition = new SaveDialogActionDefinition();
         dialogActionDefinition.setLabel("label");
         dialogActionDefinition.setName("name");

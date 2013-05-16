@@ -36,6 +36,8 @@ package info.magnolia.ui.admincentral.tree.action;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.security.operations.AccessDefinition;
+import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.cms.util.ContentUtil;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.impl.DeleteCommand;
@@ -46,6 +48,8 @@ import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.api.action.ActionAvailabilityDefinition;
+import info.magnolia.ui.api.action.ConfiguredActionAvailabilityDefinition;
 import info.magnolia.ui.api.overlay.AlertCallback;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.api.overlay.MessageStyleType;
@@ -85,6 +89,9 @@ public class DeleteActionTest extends RepositoryTestCase {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
+        ComponentsTestUtil.setImplementation(ActionAvailabilityDefinition.class, ConfiguredActionAvailabilityDefinition.class);
+
         // Init Command
         Session webSiteSession = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
         referenceNode = webSiteSession.getRootNode().addNode("referenceNode");
