@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.browser;
+package info.magnolia.ui.vaadin.actionbar;
 
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.actionbar.ActionPopup;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.workbench.WorkbenchView;
-
-import com.vaadin.ui.ComponentContainer;
+import org.vaadin.peter.contextmenu.ContextMenu;
 
 /**
- * Implementations of this interface are responsible for building a workbench and handling the UI
- * actions associated with it.
+ * The ActionPopup.
  */
-public interface BrowserView extends ComponentContainer, View {
+public class ActionPopup extends ContextMenu {
 
-    /**
-     * Use this method to add an action bar to this sub app view.
-     */
-    void setActionbarView(ActionbarView actionbar);
+    public static String ICON_FONT_CODE = "iconfont#";
 
-    void setWorkbenchView(WorkbenchView workbenchView);
-
-    void setListener(BrowserView.Listener listener);
-
-    ActionPopup getActionPopup();
-
-    /**
-     * Listener for the BrowserView.
-     */
-    public interface Listener {
-
-        void onActionBarSelection(String actionName);
-
-    }
 }

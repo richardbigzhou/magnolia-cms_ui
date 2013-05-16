@@ -98,5 +98,7 @@ public interface ContentView extends View {
 
         void onDoubleClick(Item item);
 
+        void onRightClick(Item item, int clickX, int clickY);
+
     }
 }

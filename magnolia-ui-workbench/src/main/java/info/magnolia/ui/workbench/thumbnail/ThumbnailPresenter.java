@@ -119,6 +119,12 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
         super.onDoubleClick(jcrItem);
     }
 
+    @Override
+    public void onRightClick(Item item, int clickX, int clickY) {
+        JcrItemAdapter jcrItem = getJcrItemByThumbnailItem(item);
+        super.onRightClick(jcrItem, clickX, clickY);
+    }
+
     /**
      * Thumbnail container uses specific Thumbnail items, so we have to convert those into JcrItemAdapters.
      */

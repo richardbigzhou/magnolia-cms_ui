@@ -38,6 +38,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
+import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 
 import org.slf4j.Logger;
@@ -105,6 +106,23 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
                 eventBus.fireEvent(new ItemDoubleClickedEvent(workbenchDefinition.getWorkspace(), selectedItemId));
             } catch (Exception e) {
                 log.error("An error occurred while double clicking on a row in the data grid", e);
+            }
+        } else {
+            log.warn("Got null com.vaadin.data.Item. No event will be fired.");
+        }
+    }
+
+    @Override
+    public void onRightClick(Item item, int clickX, int clickY) {
+        if (item != null) {
+            try {
+                selectedItemId = ((JcrItemAdapter) item).getItemId();
+                // String clickedItemPath = ((JcrItemAdapter) item).getPath();
+                String clickedItemId = ((JcrItemAdapter) item).getItemId();
+                log.debug("com.vaadin.data.Item at {} was right clicked. Firing ItemRightClickedEvent...", clickedItemId);
+                eventBus.fireEvent(new ItemRightClickedEvent(workbenchDefinition.getWorkspace(), (JcrItemAdapter) item, clickX, clickY));
+            } catch (Exception e) {
+                log.error("An error occurred while right clicking on a row in the data grid", e);
             }
         } else {
             log.warn("Got null com.vaadin.data.Item. No event will be fired.");

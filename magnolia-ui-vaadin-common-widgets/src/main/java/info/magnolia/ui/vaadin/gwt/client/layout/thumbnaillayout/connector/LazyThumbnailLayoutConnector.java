@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -45,6 +45,8 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.event.dom.client.ContextMenuHandler;
 import com.google.gwt.user.client.Element;
 import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapEvent;
 import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapHandler;
@@ -74,10 +76,24 @@ public class LazyThumbnailLayoutConnector extends AbstractComponentConnector {
                 final ThumbnailWidget thumbnail = Util.findWidget(element, ThumbnailWidget.class);
                 if (thumbnail != null) {
                     getWidget().setSelectedThumbnail(thumbnail);
+
                     rpc.onThumbnailSelected(thumbnail.getId());
                 }
             }
         }, ClickEvent.getType());
+
+        getWidget().addDomHandler(new ContextMenuHandler() {
+
+            @Override
+            public void onContextMenu(ContextMenuEvent event) {
+                final Element element = event.getNativeEvent().getEventTarget().cast();
+                final ThumbnailWidget thumbnail = Util.findWidget(element, ThumbnailWidget.class);
+                if (thumbnail != null) {
+                    getWidget().setSelectedThumbnail(thumbnail);
+                    rpc.onThumbnailRightClicked(thumbnail.getId(), event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY());
+                }
+            }
+        }, ContextMenuEvent.getType());
 
         getWidget().addHandler(new MultiTapHandler() {
             @Override
