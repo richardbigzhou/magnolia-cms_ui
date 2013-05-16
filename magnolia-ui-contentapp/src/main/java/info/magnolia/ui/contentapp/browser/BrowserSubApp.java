@@ -244,18 +244,24 @@ public class BrowserSubApp extends BaseSubApp {
         GroupAvailabilityDefinition availability = def.getAvailability();
 
         // Validate that the user has all required roles
-        if (!availability.getAccess().hasAccess(MgnlContext.getUser())) {
+        if (availability != null && !availability.getAccess().hasAccess(MgnlContext.getUser())) {
             return false;
         }
 
         // If this is the root item we display the section only if the root property is set
-        if (item == null || "/".equals(item.getPath())) {
+        if (availability != null && (item == null || "/".equals(item.getPath()))) {
             return availability.isRoot();
         }
 
         // If its a property we display it only if the properties property is set
-        if (!item.isNode()) {
+        if (availability != null && !item.isNode()) {
             return availability.isProperties();
+        }
+
+        // we are on node
+        // so if no availability is defined, return true
+        if (availability == null) {
+            return true;
         }
 
         // If node is selected and the section is available for nodes
@@ -286,18 +292,24 @@ public class BrowserSubApp extends BaseSubApp {
         SectionAvailabilityDefinition availability = section.getAvailability();
 
         // Validate that the user has all required roles
-        if (!availability.getAccess().hasAccess(MgnlContext.getUser())) {
+        if (availability != null && !availability.getAccess().hasAccess(MgnlContext.getUser())) {
             return false;
         }
 
         // If this is the root item we display the section only if the root property is set
-        if (item == null || "/".equals(item.getPath())) {
+        if (availability != null && (item == null || "/".equals(item.getPath()))) {
             return availability.isRoot();
         }
 
         // If its a property we display it only if the properties property is set
-        if (!item.isNode()) {
+        if (availability != null && !item.isNode()) {
             return availability.isProperties();
+        }
+
+        // we are on node
+        // so if no availability is defined, return true
+        if (availability == null) {
+            return true;
         }
 
         // If node is selected and the section is available for nodes
