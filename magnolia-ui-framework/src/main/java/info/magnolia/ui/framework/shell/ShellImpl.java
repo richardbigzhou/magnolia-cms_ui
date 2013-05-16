@@ -256,12 +256,12 @@ public class ShellImpl implements Shell, MessageEventHandler {
 
     private void goToApp(Fragment fragment) {
         restoreAppParameter(fragment);
-        magnoliaShell.doNavigate(magnoliaShell.getAppViewport(), fragment);
+        magnoliaShell.notifyOnFragmentChanged(fragment.toFragment());
     }
 
     private void goToShellApp(Fragment fragment) {
         restoreShellAppParameter(fragment);
-        magnoliaShell.doNavigate(magnoliaShell.getShellAppViewport(), fragment);
+        magnoliaShell.notifyOnFragmentChanged(fragment.toFragment());
     }
 
     private void stopCurrentShellApp() {
