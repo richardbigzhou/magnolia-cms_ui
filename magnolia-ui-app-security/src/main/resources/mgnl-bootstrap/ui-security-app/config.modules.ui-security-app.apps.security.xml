@@ -54,7 +54,7 @@
         <sv:value>Users</sv:value>
       </sv:property>
       <sv:property sv:name="subAppClass" sv:type="String">
-        <sv:value>info.magnolia.ui.app.security.SecurityUsersSubApp</sv:value>
+        <sv:value>info.magnolia.ui.contentapp.browser.BrowserSubApp</sv:value>
       </sv:property>
       <sv:node sv:name="actions">
         <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -600,7 +600,7 @@
         <sv:value>System users</sv:value>
       </sv:property>
       <sv:property sv:name="subAppClass" sv:type="String">
-        <sv:value>info.magnolia.ui.app.security.SecurityUsersSubApp</sv:value>
+        <sv:value>info.magnolia.ui.contentapp.browser.BrowserSubApp</sv:value>
       </sv:property>
       <sv:node sv:name="actions">
         <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -1146,7 +1146,7 @@
         <sv:value>Groups</sv:value>
       </sv:property>
       <sv:property sv:name="subAppClass" sv:type="String">
-        <sv:value>info.magnolia.ui.app.security.SecurityGroupsSubApp</sv:value>
+        <sv:value>info.magnolia.ui.contentapp.browser.BrowserSubApp</sv:value>
       </sv:property>
       <sv:node sv:name="actions">
         <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -1663,7 +1663,7 @@
         <sv:value>Roles</sv:value>
       </sv:property>
       <sv:property sv:name="subAppClass" sv:type="String">
-        <sv:value>info.magnolia.ui.app.security.SecurityRolesSubApp</sv:value>
+        <sv:value>info.magnolia.ui.contentapp.browser.BrowserSubApp</sv:value>
       </sv:property>
       <sv:node sv:name="actions">
         <sv:property sv:name="jcr:primaryType" sv:type="Name">
