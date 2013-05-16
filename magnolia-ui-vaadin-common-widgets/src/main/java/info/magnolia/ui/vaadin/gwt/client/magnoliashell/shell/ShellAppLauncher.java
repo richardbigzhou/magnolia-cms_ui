@@ -57,6 +57,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
+import com.vaadin.client.VConsole;
 
 /**
  * Navigation bar.
@@ -204,7 +205,8 @@ public class ShellAppLauncher extends FlowPanel {
                 VShellImageBundle.BUNDLE.getDivetGreen() :
                 VShellImageBundle.BUNDLE.getDivetWhite();
         divet.setResource(res);
-        if (animated) {
+        if (animated && divet.getAbsoluteLeft() != divetPos) {
+            VConsole.error("DIVET POS: " + divetPos);
             divetAnimation.setProperty("left", divetPos);
             divetAnimation.run(DIVET_ANIMATION_SPEED, divetWrapper);
 
