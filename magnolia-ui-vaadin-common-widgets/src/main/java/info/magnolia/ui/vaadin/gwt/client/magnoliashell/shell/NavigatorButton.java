@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,31 +33,46 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
+import info.magnolia.ui.vaadin.gwt.client.icon.widget.BadgeIconWidget;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.vaadin.shared.Connector;
-import com.vaadin.shared.ui.AbstractLayoutState;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
- * MagnoliaShellState.
+ * NavigatorButton.
  */
-public class MagnoliaShellState extends AbstractLayoutState {
+public class NavigatorButton extends FlowPanel {
 
-    public Map<ShellAppType, Connector> shellApps = new EnumMap<ShellAppType, Connector>(ShellAppType.class);
+    private final BadgeIconWidget indicator = new BadgeIconWidget();
 
-    public Map<ShellAppType, Integer> indications = new HashMap<ShellAppType, Integer>();
+    private final TouchDelegate delegate = new TouchDelegate(this);
 
-    public Map<ViewportType, Connector> viewports = new EnumMap<ViewportType, Connector>(ViewportType.class);
+    public NavigatorButton(final ShellAppType type) {
+        super();
+        addStyleName("btn-shell");
+        Element root = getElement();
+        root.setId("btn-" + type.getCssClass());
+        root.addClassName("icon-" + type.getCssClass());
 
-    public List<Connector> overlays = new ArrayList<Connector>();
+        indicator.setFillColor("#fff");
+        indicator.setStrokeColor("#689600");
+        indicator.setOutline(true);
+        root.appendChild(indicator.getElement());
 
-    public Fragment uriFragment;
+        DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
+    }
+
+    public void setIndication(int indication) {
+        indicator.setValue(indication);
+    }
+
+    public HandlerRegistration addTouchEndHandler(TouchEndHandler handler) {
+        return delegate.addTouchEndHandler(handler);
+    }
 }

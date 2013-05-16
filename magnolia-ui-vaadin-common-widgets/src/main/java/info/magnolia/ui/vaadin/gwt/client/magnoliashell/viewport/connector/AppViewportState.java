@@ -31,34 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector;
 
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
-
-import com.vaadin.client.ApplicationConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Fades an element in or out.
+ * TODO: Add JavaDoc for AppViewportState.
  */
-public class FadeAnimation extends JQueryAnimation {
+public class AppViewportState extends ViewportState {
 
+    public List<String> runningAppNames = new ArrayList<String>();
 
-    public FadeAnimation(double opacityValue, boolean clearAfterCompleted, ApplicationConnection applicationConnection) {
-        super(applicationConnection);
-        setProperty("opacity", opacityValue);
-        if (clearAfterCompleted) {
-            addCallback(new JQueryCallback() {
-                @Override
-                public void execute(JQueryWrapper query) {
-                    query.get(0).getStyle().clearOpacity();
-                }
-            });
-        }
-    }
-
-    public FadeAnimation(double opacityValue, boolean clearAfterCompleted) {
-        this(opacityValue, clearAfterCompleted, null);
-    }
-
+    public List<String> registeredAppNames = new ArrayList<String>();
 }

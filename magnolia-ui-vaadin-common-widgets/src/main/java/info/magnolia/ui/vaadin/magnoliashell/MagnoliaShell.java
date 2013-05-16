@@ -64,7 +64,7 @@ import com.vaadin.ui.HasComponents;
 /**
  * Server side implementation of the MagnoliaShell container.
  */
-@JavaScript({"jquery-1.7.2.min.js", "jquery.transition.js"})
+@JavaScript({"jquery-1.7.2.min.js", "jquery.animate-enhanced.min.js"})
 public class MagnoliaShell extends AbstractComponent implements HasComponents, View {
 
     /**
@@ -127,11 +127,6 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
 
     public void goToShellApp(Fragment fragment) {
         listener.goToShellApp(fragment);
-    }
-
-    public void doNavigate(final ShellViewport viewport, Fragment fragment) {
-        viewport.setCurrentShellFragment(fragment.toFragment());
-        notifyOnFragmentChanged(fragment.toFragment());
     }
 
     public void showInfo(String id, String subject, String message) {
@@ -240,21 +235,20 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
     }
 
     public void doRegisterApps(List<String> appNames) {
-        getState().registeredAppNames = appNames;
+        ((AppsViewport)getAppViewport()).setRegisteredApps(appNames);
     }
 
     public void onAppStarted(String appName) {
-        if (!getState().runningAppNames.contains(appName)) {
-            getState().runningAppNames.add(appName);
-        }
+        ((AppsViewport)getAppViewport()).addRunningApp(appName);
     }
 
     public void onAppStopped(String appName) {
-        getState().runningAppNames.remove(appName);
+        ((AppsViewport)getAppViewport()).removeRunningApp(appName);
     }
 
     public void registerShellApp(ShellAppType type, Component component) {
         getState().shellApps.put(type, component);
+        getShellAppViewport().registerShellApp(type, component);
     }
 
     /**
@@ -283,8 +277,8 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
         return (ShellViewport) getState(false).viewports.get(ViewportType.APP);
     }
 
-    public ShellViewport getShellAppViewport() {
-        return (ShellViewport) getState(false).viewports.get(ViewportType.SHELL_APP);
+    public ShellAppsViewport getShellAppViewport() {
+        return (ShellAppsViewport) getState(false).viewports.get(ViewportType.SHELL_APP);
     }
 
     @Override

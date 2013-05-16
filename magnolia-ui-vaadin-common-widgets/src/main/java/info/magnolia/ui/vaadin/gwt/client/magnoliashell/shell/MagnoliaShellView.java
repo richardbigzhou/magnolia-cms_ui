@@ -34,7 +34,6 @@
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.ShellMessageWidget.MessageType;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppsViewportWidget.PreloaderCallback;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
@@ -51,8 +50,6 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
 
     void setPresenter(final Presenter presenter);
 
-    void setActiveViewport(ViewportWidget viewport);
-
     void updateViewport(ViewportWidget viewport, ViewportType type);
 
     void shiftViewportsVertically(int shiftPx, boolean animated);
@@ -67,8 +64,6 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
 
     void navigateToMessageDetails(String id);
 
-    void showAppPreloader(String prefix, PreloaderCallback preloaderCallback);
-
     void updateShellDivet();
 
     boolean hasOverlay(Widget widget);
@@ -81,18 +76,14 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
      */
     void openOverlayOnWidget(Widget overlayWidget, Widget overlayParent);
 
-    void showShellApp(ShellAppType type);
+    void onShellAppStarting(ShellAppType type);
 
-    void setActiveViewport(boolean isAppViewport);
+    void onAppStarting();
 
     /**
      * Presenter for {@link MagnoliaShellView}.
      */
-    interface Presenter {
-
-        Widget getShellAppWidget(ShellAppType type);
-
-        void activateApp(Fragment f);
+    interface Presenter extends ShellAppLauncher.Listener {
 
         void activateShellApp(Fragment f);
 
@@ -100,15 +91,10 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
 
         void closeCurrentApp();
 
-        void closeCurrentShellApp();
-
         void removeMessage(String id);
 
         void initHistory();
 
-        boolean isAppRegistered(String appName);
-
-        boolean isAppRunning(String appName);
-
+        void loadApp(String appId);
     }
 }

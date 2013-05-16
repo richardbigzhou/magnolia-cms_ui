@@ -31,34 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
 
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
-
-import com.vaadin.client.ApplicationConnection;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.web.bindery.event.shared.Event;
 
 /**
- * Fades an element in or out.
+ * Fired when transition that hides shell-apps is finished.
  */
-public class FadeAnimation extends JQueryAnimation {
+public class ShellAppsHiddenEvent extends Event<ShellAppsHiddenEvent.Handler> {
 
-
-    public FadeAnimation(double opacityValue, boolean clearAfterCompleted, ApplicationConnection applicationConnection) {
-        super(applicationConnection);
-        setProperty("opacity", opacityValue);
-        if (clearAfterCompleted) {
-            addCallback(new JQueryCallback() {
-                @Override
-                public void execute(JQueryWrapper query) {
-                    query.get(0).getStyle().clearOpacity();
-                }
-            });
-        }
+    /**
+     * Handler interface for ShellAppsHiddenEvent.
+     */
+    public interface Handler extends EventHandler {
+        void onShellAppsHidden(ShellAppsHiddenEvent event);
     }
 
-    public FadeAnimation(double opacityValue, boolean clearAfterCompleted) {
-        this(opacityValue, clearAfterCompleted, null);
+    public static final Type<Handler> TYPE = new Type<Handler>();
+
+    @Override
+    protected void dispatch(Handler handler) {
+        handler.onShellAppsHidden(this);
     }
 
+    @Override
+    public Type<Handler> getAssociatedType() {
+        return TYPE;
+    }
 }
