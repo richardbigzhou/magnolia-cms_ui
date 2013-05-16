@@ -43,6 +43,7 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.Viewport
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ApplicationConnection;
+import com.vaadin.client.Util;
 
 /**
  * The ShellAppsTransitionDelegate provides custom transition logic when activating viewport or a
@@ -91,35 +92,41 @@ public class ShellAppsTransitionDelegate implements TransitionDelegate {
         this.fadeInAnimation.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
-                viewport.onShellAppLoaded(query.get(0));
+                viewport.onShellAppLoaded(Util.<Widget>findWidget(query.get(0), null));
             }
         });
 
 
-        this.slideUpAnimation = new SlideAnimation(false, applicationConnection);
+        this.slideUpAnimation = new SlideAnimation(false, applicationConnection) {
+            @Override
+            protected void onStart() {
+                getCurrentElement().getStyle().setTop(0, Style.Unit.PX);
+                super.onStart();
+            }
+        };
         this.slideDownAnimation = new SlideAnimation(false, applicationConnection) {
             @Override
             protected void onStart() {
                 getCurrentElement().getStyle().setTop(-getCurrentElement().getOffsetHeight(), Style.Unit.PX);
                 super.onStart();
+
             }
         };
 
         this.slideDownAnimation.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
-                viewport.onShellAppLoaded(viewport.getVisibleChild().getElement());
+                viewport.onShellAppLoaded(viewport.getVisibleChild());
             }
         });
 
-        this.fadeOutAnimation = new FadeAnimation(ALPHA_MIN, true, applicationConnection);
-
-        this.fadeOutAnimation.addCallback(new JQueryCallback() {
+        this.slideUpAnimation.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
-                query.setCss("display", "none");
+                viewport.onShellAppsHidden();
             }
         });
+        this.fadeOutAnimation = new FadeAnimation(ALPHA_MIN, true, applicationConnection);
     }
 
     /**
@@ -129,9 +136,11 @@ public class ShellAppsTransitionDelegate implements TransitionDelegate {
     public void setActive(final ViewportWidget viewport, boolean active) {
         if (active) {
             viewport.setVisible(true);
+            slideUpAnimation.cancel();
             slideDownAnimation.setTargetTop(0);
             slideDownAnimation.run(SLIDE_DURATION, viewport.getElement());
         } else {
+            slideDownAnimation.cancel();
             slideUpAnimation.setTargetTop(-viewport.getOffsetHeight());
             slideUpAnimation.run(SLIDE_DURATION, viewport.getElement());
         }

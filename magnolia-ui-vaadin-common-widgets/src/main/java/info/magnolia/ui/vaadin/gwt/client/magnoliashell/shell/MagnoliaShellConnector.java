@@ -41,6 +41,7 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.HideShellAppsReque
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppRequestedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppStartedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppStartingEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppsHiddenEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.rpc.ShellServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage.ShellMessageWidget.MessageType;
@@ -158,6 +159,13 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             }
         });
 
+        eventBus.addHandler(ShellAppsHiddenEvent.TYPE, new ShellAppsHiddenEvent.Handler() {
+            @Override
+            public void onShellAppsHidden(ShellAppsHiddenEvent event) {
+                rpc.stopCurrentShellApp();
+            }
+        });
+
         History.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
@@ -205,7 +213,6 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 (ViewportWidget) ((ComponentConnector)getState().viewports.get(ViewportType.APP)).getWidget();
         if (viewportWidget.getWidgetCount() > 0) {
             view.onAppStarting();
-            rpc.stopCurrentShellApp();
             eventBus.fireEvent(new HideShellAppsEvent());
         } else {
             showShellApp(ShellAppType.APPLAUNCHER);

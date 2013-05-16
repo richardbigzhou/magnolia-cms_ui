@@ -37,7 +37,7 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.web.bindery.event.shared.Event;
 
 /**
- * Fired when the shell app viewport gets hidden.
+ * Fired when transition that hides shell-apps is finished.
  */
 public class ShellAppsHiddenEvent extends Event<ShellAppsHiddenEvent.Handler> {
 
@@ -45,18 +45,14 @@ public class ShellAppsHiddenEvent extends Event<ShellAppsHiddenEvent.Handler> {
      * Handler interface for ShellAppsHiddenEvent.
      */
     public interface Handler extends EventHandler {
-        void handle(ShellAppsHiddenEvent event);
+        void onShellAppsHidden(ShellAppsHiddenEvent event);
     }
 
     public static final Type<Handler> TYPE = new Type<Handler>();
 
-    public ShellAppsHiddenEvent() {
-        super();
-    }
-
     @Override
     protected void dispatch(Handler handler) {
-        handler.handle(this);
+        handler.onShellAppsHidden(this);
     }
 
     @Override

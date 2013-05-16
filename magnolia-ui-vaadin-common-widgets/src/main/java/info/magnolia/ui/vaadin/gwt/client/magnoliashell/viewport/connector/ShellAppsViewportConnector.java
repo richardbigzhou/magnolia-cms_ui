@@ -39,6 +39,7 @@ import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.HideShellAppsReque
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppRequestedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppStartedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppStartingEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppsHiddenEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.ShellAppsTransitionDelegate;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.ShellAppsViewportWidget;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
@@ -140,8 +141,13 @@ public class ShellAppsViewportConnector extends ViewportConnector implements She
     }
 
     @Override
-    public void curtainClicked() {
+    public void outerContentClicked() {
         eventBus.fireEvent(new HideShellAppsRequestedEvent());
+    }
+
+    @Override
+    public void onShellAppsHidden() {
+        eventBus.fireEvent(new ShellAppsHiddenEvent());
     }
 
 }

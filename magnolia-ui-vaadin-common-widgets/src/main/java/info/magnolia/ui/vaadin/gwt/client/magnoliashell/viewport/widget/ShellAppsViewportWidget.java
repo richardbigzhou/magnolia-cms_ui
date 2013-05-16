@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
+import java.util.Iterator;
+
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
@@ -40,7 +43,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
-import com.vaadin.client.Util;
 
 /**
  * Shell apps viewport client side.
@@ -51,6 +53,10 @@ public class ShellAppsViewportWidget extends ViewportWidget {
 
     private boolean active;
 
+    public void onShellAppsHidden() {
+        listener.onShellAppsHidden();
+    }
+
     /**
      * Listener interface for {@link ShellAppsViewportWidget}.
      */
@@ -58,7 +64,9 @@ public class ShellAppsViewportWidget extends ViewportWidget {
 
         void onShellAppLoaded(Widget shellAppWidget);
 
-        void curtainClicked();
+        void outerContentClicked();
+
+        void onShellAppsHidden();
     }
 
     public ShellAppsViewportWidget(final Listener listener) {
@@ -68,7 +76,7 @@ public class ShellAppsViewportWidget extends ViewportWidget {
             public void onTouchEnd(TouchEndEvent event) {
                 final Element target = event.getNativeEvent().getEventTarget().cast();
                 if (target.isOrHasChild(getElement())) {
-                    listener.curtainClicked();
+                    listener.outerContentClicked();
                 }
             }
         });
@@ -89,8 +97,12 @@ public class ShellAppsViewportWidget extends ViewportWidget {
         this.active = active;
     }
 
-    public void onShellAppLoaded(Element element) {
-        Widget w = Util.findWidget(element, null);
+    public void onShellAppLoaded(Widget w) {
+        Iterator<Widget> it = iterator();
+        while (it.hasNext() && w != null) {
+            Widget curW = it.next();
+            curW.getElement().getStyle().setDisplay(w == curW ? Style.Display.BLOCK : Style.Display.NONE);
+        }
         if (w != null) {
             listener.onShellAppLoaded(w);
         }
