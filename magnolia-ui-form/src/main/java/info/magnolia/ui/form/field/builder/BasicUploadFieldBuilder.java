@@ -42,7 +42,7 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.upload.basic.BasicFileItemWrapper;
 import info.magnolia.ui.form.field.upload.basic.BasicUploadField;
 import info.magnolia.ui.imageprovider.ImageProvider;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -83,7 +83,7 @@ public class BasicUploadFieldBuilder extends AbstractFieldBuilder<BasicUploadFie
     @Override
     protected Field<Byte[]> buildField() {
         // Get or create the File Node adapter.
-        JcrItemNodeAdapter binaryDataSubNodeItem = getOrCreateSubItemWithBinaryData();
+        AbstractJcrNodeAdapter binaryDataSubNodeItem = getOrCreateSubItemWithBinaryData();
         // Init the tmp upload path
         File tmpDirectory = new File(properties.getProperty(SystemProperty.MAGNOLIA_UPLOAD_TMPDIR));
 
@@ -104,17 +104,17 @@ public class BasicUploadFieldBuilder extends AbstractFieldBuilder<BasicUploadFie
      * Get or Create the Binary Item. If this Item doesn't exist yet,
      * initialize all fields (as Property).
      */
-    public JcrItemNodeAdapter getOrCreateSubItemWithBinaryData() {
+    public AbstractJcrNodeAdapter getOrCreateSubItemWithBinaryData() {
         // Get the related Node
         Node node = getRelatedNode(item);
-        JcrItemNodeAdapter child = null;
+        AbstractJcrNodeAdapter child = null;
         try {
             if (node.hasNode(definition.getBinaryNodeName()) && !(item instanceof JcrNewNodeAdapter)) {
                 child = new JcrNodeAdapter(node.getNode(definition.getBinaryNodeName()));
-                child.setParent((JcrItemNodeAdapter) item);
+                child.setParent((AbstractJcrNodeAdapter) item);
             } else {
                 child = new JcrNewNodeAdapter(node, NodeTypes.Resource.NAME, definition.getBinaryNodeName());
-                child.setParent((JcrItemNodeAdapter) item);
+                child.setParent((AbstractJcrNodeAdapter) item);
             }
         } catch (RepositoryException e) {
             log.error("Could get or create item", e);

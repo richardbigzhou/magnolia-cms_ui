@@ -50,8 +50,8 @@ import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
@@ -265,9 +265,9 @@ public class BrowserPresenter implements ActionbarPresenter.Listener {
             return;
         }
 
-        if (item instanceof JcrItemNodeAdapter) {
+        if (item instanceof AbstractJcrNodeAdapter) {
             // Saving JCR Node, getting updated node first
-            JcrItemNodeAdapter nodeAdapter = (JcrItemNodeAdapter) item;
+            AbstractJcrNodeAdapter nodeAdapter = (AbstractJcrNodeAdapter) item;
             try {
 
                 // get modifications

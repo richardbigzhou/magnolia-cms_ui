@@ -41,8 +41,8 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.action.CommandActionBase;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import javax.inject.Inject;
@@ -56,7 +56,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class DeactivationAction extends CommandActionBase<DeactivationActionDefinition> {
 
-    private final JcrItemNodeAdapter jcrNodeAdapter;
+    private final AbstractJcrNodeAdapter jcrNodeAdapter;
 
     private final EventBus eventBus;
 
@@ -65,7 +65,7 @@ public class DeactivationAction extends CommandActionBase<DeactivationActionDefi
     @Inject
     public DeactivationAction(final DeactivationActionDefinition definition, final JcrItemAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, SubAppContext subAppContext) {
         super(definition, item, commandsManager, subAppContext);
-        this.jcrNodeAdapter = (JcrItemNodeAdapter) item;
+        this.jcrNodeAdapter = (AbstractJcrNodeAdapter) item;
         this.eventBus = eventBus;
         this.subAppContext = subAppContext;
     }

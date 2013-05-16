@@ -280,7 +280,7 @@ public class AbstractJcrNodeAdapterTest {
     /**
      * Dummy implementation of the Abstract class.
      */
-    public class DummyJcrNodeAdapter extends AbstractJcrNodeAdapter {
+    public class DummyJcrNodeAdapter extends info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter {
 
         public DummyJcrNodeAdapter(Node jcrNode) {
             super(jcrNode);

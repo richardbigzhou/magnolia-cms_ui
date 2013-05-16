@@ -59,17 +59,17 @@ import com.vaadin.data.Property.ValueChangeEvent;
  * Abstract implementation of an {@link com.vaadin.data.Item} wrapping/representing a {@link javax.jcr.Node}. Implements {Property.ValueChangeListener} in order to inform/change JCR
  * property when a Vaadin property has changed. Access JCR repository for all read Jcr Property.
  */
-public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implements JcrItemNodeAdapter {
+public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrNodeAdapter.class);
 
     private String primaryNodeType;
 
-    private final Map<String, JcrItemNodeAdapter> children = new HashMap<String, JcrItemNodeAdapter>();
+    private final Map<String, AbstractJcrNodeAdapter> children = new HashMap<String, AbstractJcrNodeAdapter>();
 
-    private final Map<String, JcrItemNodeAdapter> removedChildren = new HashMap<String, JcrItemNodeAdapter>();
+    private final Map<String, AbstractJcrNodeAdapter> removedChildren = new HashMap<String, AbstractJcrNodeAdapter>();
 
-    private JcrItemNodeAdapter parent;
+    private AbstractJcrNodeAdapter parent;
 
     private String nodeName;
 
@@ -100,15 +100,25 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         this.primaryNodeType = primaryNodeTypeName;
     }
 
-    @Override
+    /**
+     * Return the Primary node type Name. This Node type is defined based on the related JCR Node.
+     * In case of new Node, the Type is passed during the construction of the new Item or if not
+     * defined, the Type is equivalent to the Parent Node Type.
+     */
     public String getPrimaryNodeTypeName() {
         return primaryNodeType;
     }
 
-    protected Map<String, JcrItemNodeAdapter> getRemovedChildren() {
+    protected Map<String, AbstractJcrNodeAdapter> getRemovedChildren() {
         return removedChildren;
     }
 
+    /**
+     * Return the corresponding node directly from the JCR repository. <b> The returned Node does
+     * not contains all changes done on the current Item, but it's a representation of the current
+     * stored Jcr node. </b> To get the Jcr Node including the changes done on the current Item, use
+     * getNode().
+     */
     @Override
     public Node getJcrItem() {
         return (Node)super.getJcrItem();
@@ -181,6 +191,11 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         }
     }
 
+    /**
+     * Returns the JCR Node represented by this Item with changes applied. Updates both properties and child nodes. Will
+     * create new properties, set new values and remove those requested for removal. Child nodes will also be added,
+     * updated or removed.
+     */
     @Override
     public Node applyChanges() throws RepositoryException {
         // get Node from repository
@@ -193,7 +208,13 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         return node;
     }
 
-    @Override
+    /**
+     * Return the Jcr Node represented by this Item, Including the Modification done on Property and
+     * Child Nodes (added or removed).
+     *
+     * @deprecated use applyChanges instead
+     */
+    @Deprecated
     public Node getNode() {
         try {
             return applyChanges();
@@ -207,14 +228,14 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
      */
     private void updateChildren(Node node) throws RepositoryException {
         if (!children.isEmpty()) {
-            for (JcrItemNodeAdapter child : children.values()) {
+            for (AbstractJcrNodeAdapter child : children.values()) {
                 // Update child node as well
                 child.applyChanges();
             }
         }
         // Remove child node if needed
         if (!removedChildren.isEmpty()) {
-            for (JcrItemNodeAdapter removedChild : removedChildren.values()) {
+            for (AbstractJcrNodeAdapter removedChild : removedChildren.values()) {
                 if (node.hasNode(removedChild.getNodeName())) {
                     node.getNode(removedChild.getNodeName()).remove();
                 }
@@ -286,21 +307,23 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
         }
     }
 
-    @Override
-    public JcrItemNodeAdapter getChild(String nodeName) {
+    /**
+     * @param nodeName name of the child node
+     * @return child if part of the children, or null if not defined.
+     */
+    public AbstractJcrNodeAdapter getChild(String nodeName) {
         return children.get(nodeName);
     }
 
-    @Override
-    public Map<String, JcrItemNodeAdapter> getChildren() {
+    public Map<String, AbstractJcrNodeAdapter> getChildren() {
         return children;
     }
 
     /**
-     * Add a Item in the child list. Remove this item from the removedChildren list if present.
+     * Add a child adapter to the current Item. <b>Only Child Nodes part of this Map will
+     * be persisted into Jcr.</b>
      */
-    @Override
-    public JcrItemNodeAdapter addChild(JcrItemNodeAdapter child) {
+    public AbstractJcrNodeAdapter addChild(AbstractJcrNodeAdapter child) {
         if (removedChildren.containsKey(child.getNodeName())) {
             removedChildren.remove(child.getNodeName());
         }
@@ -312,33 +335,35 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter implemen
     }
 
     /**
-     * Add the removed child in the removedChildren map.
+     * Remove a child Node from the child list. <b>When removing an JcrNodeAdapter, this child
+     * will be added to the Remove Child List even if this Item was not part of the current children
+     * list. All Item part from the removed list are removed from the Jcr repository.</b>
      */
-    @Override
-    public boolean removeChild(JcrItemNodeAdapter toRemove) {
+    public boolean removeChild(AbstractJcrNodeAdapter toRemove) {
         removedChildren.put(toRemove.getNodeName(), toRemove);
         return children.remove(toRemove.getNodeName()) != null;
     }
 
     /**
-     * Return the parent Item or Null if not yet set.
+     * Return the current Parent Item (If Item is a child). Parent is set by calling addChild(...
      */
-    @Override
-    public JcrItemNodeAdapter getParent() {
+    public AbstractJcrNodeAdapter getParent() {
         return parent;
     }
 
-    @Override
-    public void setParent(JcrItemNodeAdapter parent) {
+    public void setParent(AbstractJcrNodeAdapter parent) {
         this.parent = parent;
     }
 
-    @Override
+    /**
+     * Return the current Node Name. For new Item, this is the name set in the new Item constructor
+     * or null if not yet defined.
+     */
     public String getNodeName() {
         return this.nodeName;
     }
 
-    protected void setNodeName(String nodeName) {
+    public void setNodeName(String nodeName) {
         this.nodeName = nodeName;
     }
 }

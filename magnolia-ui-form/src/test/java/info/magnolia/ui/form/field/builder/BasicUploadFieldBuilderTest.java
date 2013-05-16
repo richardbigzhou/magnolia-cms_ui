@@ -33,9 +33,7 @@
  */
 package info.magnolia.ui.form.field.builder;
 
-import static org.junit.Assert.assertTrue;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.core.SystemProperty;

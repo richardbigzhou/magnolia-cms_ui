@@ -54,7 +54,7 @@ import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
@@ -101,7 +101,7 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
         // GIVEN
         VersionManager versionMan = VersionManager.getInstance();
         versionMan.addVersion(node);
-        JcrItemNodeAdapter item = new JcrNodeAdapter(node);
+        AbstractJcrNodeAdapter item = new JcrNodeAdapter(node);
         RestorePreviousVersionAction action = new RestorePreviousVersionAction(DEFINITION, item, locationController, versionMan, subAppContext);
 
         // WHEN
@@ -117,7 +117,7 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
     public void testExecuteNoVersion() throws Exception {
         // GIVEN
         VersionManager versionMan = VersionManager.getInstance();
-        JcrItemNodeAdapter item = new JcrNodeAdapter(node);
+        AbstractJcrNodeAdapter item = new JcrNodeAdapter(node);
         RestorePreviousVersionAction action = new RestorePreviousVersionAction(DEFINITION, item, locationController, versionMan, subAppContext);
 
         // WHEN
@@ -135,7 +135,7 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
         versionMan.addVersion(node);
         versionMan.addVersion(node);
         versionMan.addVersion(node);
-        JcrItemNodeAdapter item = new JcrNodeAdapter(node);
+        AbstractJcrNodeAdapter item = new JcrNodeAdapter(node);
         RestorePreviousVersionAction action = new RestorePreviousVersionAction(DEFINITION, item, locationController, versionMan, subAppContext);
 
         // WHEN

@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.shell.Shell;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed.FeedSection;
@@ -121,17 +121,17 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
     }
 
     @Override
-    public void init(JcrItemNodeAdapter favorites, JcrNewNodeAdapter favoriteSuggestion, JcrNewNodeAdapter groupSuggestion, Map<String, String> availableGroups) {
+    public void init(AbstractJcrNodeAdapter favorites, JcrNewNodeAdapter favoriteSuggestion, JcrNewNodeAdapter groupSuggestion, Map<String, String> availableGroups) {
         noGroup.removeAllComponents();
         leftColumn.removeAllComponents();
         rightColumn.removeAllComponents();
 
-        final Map<String, JcrItemNodeAdapter> nodeAdapters = favorites.getChildren();
+        final Map<String, AbstractJcrNodeAdapter> nodeAdapters = favorites.getChildren();
         final SortedSet<String> keys = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
         keys.addAll(nodeAdapters.keySet());
 
         for (String key : keys) {
-            final JcrItemNodeAdapter favoriteAdapter = nodeAdapters.get(key);
+            final AbstractJcrNodeAdapter favoriteAdapter = nodeAdapters.get(key);
             if (AdmincentralNodeTypes.Favorite.NAME.equals(favoriteAdapter.getPrimaryNodeTypeName())) {
                 final FavoritesEntry favEntry = new FavoritesEntry(favoriteAdapter, listener, shell);
                 noGroup.addComponent(favEntry);
