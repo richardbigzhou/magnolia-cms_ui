@@ -38,7 +38,7 @@ import org.vaadin.peter.contextmenu.ContextMenu;
 /**
  * The ActionPopup.
  */
-public class ActionPopupView extends ContextMenu {
+public class ActionPopup extends ContextMenu {
 
     public static String ICON_FONT_CODE = "iconfont#";
 

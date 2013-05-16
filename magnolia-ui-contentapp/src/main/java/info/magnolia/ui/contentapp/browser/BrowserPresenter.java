@@ -55,7 +55,7 @@ import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.actionbar.ActionPopupView;
+import info.magnolia.ui.vaadin.actionbar.ActionPopup;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
@@ -358,8 +358,8 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
     /**
      * Show the actionPopup for the specified item at the specified coordinates.
      */
-    protected void showActionPopup(String absItemPath, Point clickCoordinates) {
-        ActionPopupView actionPopupView = view.getActionPopupView();
+    public void showActionPopup(String absItemPath, Point clickCoordinates) {
+        ActionPopup actionPopupView = view.getActionPopupView();
 
         updateActionPopup(actionPopupView, absItemPath);
         int x;
@@ -379,7 +379,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
      * TODO: Eliminate redundancy with BrowserSubApp.updateActionBar (MGNLUI-1367) Christopher Zimmermann.
      * Update the items in the actionPopup based on the specified item and the ActionPopup availability configuration.
      */
-    protected void updateActionPopup(ActionPopupView actionPopupView, String absItemPath) {
+    private void updateActionPopup(ActionPopup actionPopupView, String absItemPath) {
 
         actionPopupView.removeAllItems();
 
@@ -412,7 +412,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
                     if (actionExecutor.isAvailable(actionName, item)) {
                         ActionDefinition action = subAppDescriptor.getActions().get(actionName);
                         String label = action.getLabel();
-                        String iconFontCode = ActionPopupView.ICON_FONT_CODE + action.getIcon();
+                        String iconFontCode = ActionPopup.ICON_FONT_CODE + action.getIcon();
                         ExternalResource iconFontResource = new ExternalResource(iconFontCode);
                         menuItem = actionPopupView.addItem(label, iconFontResource);
                         // Set data so that the event handler can determine which action to launch.

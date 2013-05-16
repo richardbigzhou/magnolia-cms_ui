@@ -62,6 +62,7 @@ import org.junit.Test;
  */
 public class AbstractActionExecutorTest extends MgnlTestCase {
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();

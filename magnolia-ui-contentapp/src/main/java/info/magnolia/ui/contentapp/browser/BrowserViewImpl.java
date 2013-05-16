@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
-import info.magnolia.ui.vaadin.actionbar.ActionPopupView;
+import info.magnolia.ui.vaadin.actionbar.ActionPopup;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.workbench.WorkbenchView;
 
@@ -53,7 +53,7 @@ public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
 
     private ActionbarView actionBar;
 
-    private ActionPopupView actionPopupView;
+    private ActionPopup actionPopupView;
 
     private final CssLayout actionBarWrapper = new CssLayout();
 
@@ -109,16 +109,11 @@ public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
         this.workbench = workbench;
     }
 
-    @Override
-    public WorkbenchView getWorkbenchView() {
-        return workbench;
-    }
-
     /**
      * Create an ActionPopup which will be triggered by right-clicks on items in Content views.
      */
     protected void createActionPopup() {
-        actionPopupView = new ActionPopupView();
+        actionPopupView = new ActionPopup();
         Component component = this.asVaadinComponent();
         actionPopupView.setAsContextMenuOf((AbstractClientConnector) component);
 
@@ -135,7 +130,7 @@ public class BrowserViewImpl extends HorizontalLayout implements BrowserView {
     }
 
     @Override
-    public ActionPopupView getActionPopupView() {
+    public ActionPopup getActionPopupView() {
         return actionPopupView;
     }
 }
