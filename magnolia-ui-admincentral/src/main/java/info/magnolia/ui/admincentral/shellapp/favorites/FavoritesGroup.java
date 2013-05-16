@@ -34,7 +34,6 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
@@ -89,7 +88,6 @@ public final class FavoritesGroup extends CssLayout {
         this.shell = shell;
 
         addStyleName("favorites-group");
-
         construct(favoritesGroup, listener);
 
         final Map<String, JcrItemNodeAdapter> nodeAdapters = favoritesGroup.getChildren();
@@ -159,7 +157,7 @@ public final class FavoritesGroup extends CssLayout {
         this.enterKeyShortcutListener = new EnterKeyShortcutListener(listener);
         this.escapeKeyShortcutListener = new EscapeKeyShortcutListener();
 
-        this.relPath = favoritesGroup.getItemProperty(ModelConstants.JCR_NAME).getValue().toString();
+        this.relPath = favoritesGroup.getNodeName();
         this.title = favoritesGroup.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue().toString();
 
         titleField = new TextField();

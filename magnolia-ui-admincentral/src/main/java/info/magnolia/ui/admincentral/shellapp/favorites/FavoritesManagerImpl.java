@@ -34,6 +34,8 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.cms.core.Path;
+import info.magnolia.cms.security.JCRSessionOp;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
@@ -121,11 +123,17 @@ public final class FavoritesManagerImpl implements FavoritesManager {
     }
 
     @Override
-    public void addFavorite(JcrNewNodeAdapter favorite) {
+    public void addFavorite(final JcrNewNodeAdapter favorite) {
         try {
             final String title = (String) favorite.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue();
             favorite.addItemProperty(DefaultPropertyUtil.newDefaultProperty(ModelConstants.JCR_NAME, "", Path.getValidatedLabel(title)));
-            Node newFavorite = favorite.getNode();
+            final Node newFavorite = MgnlContext.doInSystemContext(new JCRSessionOp<Node>(FavoriteStore.WORKSPACE_NAME) {
+                @Override
+                public Node exec(Session session) throws RepositoryException {
+                    return favorite.getNode();
+                }
+            });
+
             Session session = newFavorite.getSession();
             final String group = (String) favorite.getItemProperty(AdmincentralNodeTypes.Favorite.GROUP).getValue();
             if (StringUtils.isNotBlank(group)) {
@@ -210,14 +218,21 @@ public final class FavoritesManagerImpl implements FavoritesManager {
     }
 
     @Override
-    public void addGroup(JcrNewNodeAdapter newGroup) {
-        try {
-            final String title = (String) newGroup.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue();
-            newGroup.addItemProperty(DefaultPropertyUtil.newDefaultProperty(ModelConstants.JCR_NAME, "", Path.getValidatedLabel(title)));
-            newGroup.getNode().getSession().save();
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
+    public void addGroup(final JcrNewNodeAdapter newGroup) {
+        MgnlContext.doInSystemContext(new MgnlContext.VoidOp() {
+
+            @Override
+            public void doExec() {
+                final String title = (String) newGroup.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue();
+                newGroup.addItemProperty(DefaultPropertyUtil.newDefaultProperty(ModelConstants.JCR_NAME, "", Path.getValidatedLabel(title)));
+                try {
+                    newGroup.getNode().getSession().save();
+                } catch (RepositoryException e) {
+                    throw new RuntimeRepositoryException(e);
+                }
+            }
+        });
+
     }
 
 
