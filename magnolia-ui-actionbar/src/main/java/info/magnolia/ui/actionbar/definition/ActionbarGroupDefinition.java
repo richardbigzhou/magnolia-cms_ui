@@ -53,4 +53,6 @@ public interface ActionbarGroupDefinition {
      * @return the list of action items
      */
     List<ActionbarItemDefinition> getItems();
+
+    GroupAvailabilityDefinition getAvailability();
 }

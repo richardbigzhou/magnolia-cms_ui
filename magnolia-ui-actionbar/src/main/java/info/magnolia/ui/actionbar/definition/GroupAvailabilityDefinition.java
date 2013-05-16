@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,60 +33,37 @@
  */
 package info.magnolia.ui.actionbar.definition;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import info.magnolia.cms.security.operations.AccessDefinition;
+
+import java.util.Collection;
 
 /**
- * Simple implementation for {@link ActionbarGroupDefinition}.
+ * Definition of restrictions on when a group is shown.
  */
-public class ConfiguredActionbarGroupDefinition implements ActionbarGroupDefinition {
-
-    private String name;
-
-    private List<ActionbarItemDefinition> items = new ArrayList<ActionbarItemDefinition>();
-
-    private GroupAvailabilityDefinition availability;
-
-    @Override
-    public String getName() {
-        return name;
-    }
+public interface GroupAvailabilityDefinition {
 
     /**
-     * Sets the group name.
-     *
-     * @param name the new name
+     * If true the group is only displayed when there's no selection.
      */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public List<ActionbarItemDefinition> getItems() {
-        return Collections.unmodifiableList(items);
-    }
-
-    public void setItems(List<ActionbarItemDefinition> items) {
-        this.items = items;
-    }
+    boolean isRoot();
 
     /**
-     * Adds an action item to this group.
-     *
-     * @param itemDefinition the item definition
+     * If true the group is only displayed when a property is selected.
      */
-    public void addItem(ActionbarItemDefinition itemDefinition) {
-        items.add(itemDefinition);
-    }
+    boolean isProperties();
 
-    @Override
-    public GroupAvailabilityDefinition getAvailability() {
-        return this.availability;
-    }
+    /**
+     * If true (default) the group is displayed when a node is selected.
+     */
+    boolean isNodes();
 
-    public void setAvailability(GroupAvailabilityDefinition def) {
-        this.availability = def;
-    }
+    /**
+     * Defines access for user roles.
+     */
+    AccessDefinition getAccess();
 
+    /**
+     * The group is only displayed if a selected node has one of these node types.
+     */
+    Collection<String> getNodeTypes();
 }
