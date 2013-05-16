@@ -36,101 +36,59 @@ package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.AreaListener;
 
-import java.util.Map;
-
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * Area bar.
+ * Control bar for areas. Injected at the beginning of an area.
  */
 public class AreaBar extends AbstractBar {
 
-    private String name;
-
-    private String type;
-
-    private String dialog;
-
-    private boolean optional;
-
-    private boolean created;
-
-    private boolean editable = true;
 
     private final AreaListener listener;
 
     public AreaBar(MgnlArea mgnlElement) {
         super(mgnlElement);
-        listener = mgnlElement;
+        this.listener = mgnlElement;
 
-
-        GWT.log("Area [" + this.name + "] is of type " + this.type);
-
-        this.addStyleName("area");
-
-        setVisible(false);
-        createControls();
-
+        this.addStyleName(AREA_CLASS_NAME);
+        initLayout();
     }
 
     @Override
-    protected String createLabel(String label) {
-        return label + ((optional) ? " (optional)" : "");
-    }
-
-    private void createControls() {
-        if (this.optional) {
-            if (!this.created) {
-                final Label add = new Label();
-                add.setStyleName(ICON_CLASSNAME);
-                add.addStyleName(ADD_CLASSNAME);
-                add.addClickHandler(new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        listener.createOptionalArea();
-                    }
-                });
-                addButton(add);
-            }
-        }
-
-        if (this.dialog != null) {
-            // do not show edit-icon if the area has not been created
-            if (!this.optional || (this.optional && this.created)) {
-                final Label edit = new Label();
-                edit.setStyleName(ICON_CLASSNAME);
-                edit.addStyleName(EDIT_CLASSNAME);
-                edit.addClickHandler(new ClickHandler() {
-
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        listener.editArea();
-                    }
-                });
-                addButton(edit);
-            }
-        }
-
+    protected String getLabel() {
+        return listener.getLabel();
     }
 
     @Override
-    protected void setFields(Map<String, String> attributes) throws IllegalArgumentException {
+    protected void createControls() {
+        if (listener.hasAddButton()) {
+            final Label add = new Label();
+            add.setStyleName(ICON_CLASS_NAME);
+            add.addStyleName(ADD_CLASS_NAME);
+            add.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    listener.createOptionalArea();
+                }
+            });
+            addButton(add);
+        }
+        if (listener.hasEditButton()) {
+            final Label edit = new Label();
+            edit.setStyleName(ICON_CLASS_NAME);
+            edit.addStyleName(EDIT_CLASS_NAME);
+            edit.addClickHandler(new ClickHandler() {
 
-        this.name = attributes.get("name");
-        this.type = attributes.get("type");
-
-        this.dialog = attributes.get("dialog");
-
-        if (attributes.containsKey("editable")) {
-            this.editable = Boolean.parseBoolean(attributes.get("editable"));
+                @Override
+                public void onClick(ClickEvent event) {
+                    listener.editArea();
+                }
+            });
+            addButton(edit);
         }
 
-        boolean showAddButton = Boolean.parseBoolean(attributes.get("showAddButton"));
-        this.optional = Boolean.parseBoolean(attributes.get("optional"));
-        this.created = Boolean.parseBoolean(attributes.get("created"));
     }
 
 }

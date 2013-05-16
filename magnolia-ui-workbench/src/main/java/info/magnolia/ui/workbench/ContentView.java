@@ -34,7 +34,6 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 
 import com.vaadin.data.Item;
 
@@ -79,7 +78,7 @@ public interface ContentView extends View {
         }
     }
 
-    void setListener(Listener listener);
+    void setListener(ContentView.Listener listener);
 
     /**
      * Selects the item with given path in the content view.
@@ -87,10 +86,6 @@ public interface ContentView extends View {
      * @param path relative to the tree root, must start with '/'
      */
     void select(String path);
-
-    void refresh();
-
-    AbstractJcrContainer getContainer();
 
     ViewType getViewType();
 
@@ -102,10 +97,6 @@ public interface ContentView extends View {
         void onItemSelection(Item item);
 
         void onDoubleClick(Item item);
-
-        void onItemEdited(Item item);
-
-        String getItemIcon(Item item);
 
     }
 }

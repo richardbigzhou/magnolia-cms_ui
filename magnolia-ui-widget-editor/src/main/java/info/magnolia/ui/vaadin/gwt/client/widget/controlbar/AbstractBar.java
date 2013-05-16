@@ -35,8 +35,6 @@ package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 
-import java.util.Map;
-
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -47,43 +45,61 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class AbstractBar extends FlowPanel {
 
-    protected final static String ICON_CLASSNAME = "editorIcon";
-    protected final static String EDIT_CLASSNAME = "icon-edit";
-    protected final static String ADD_CLASSNAME = "icon-add-item";
-    private final static String FOCUS_CLASSNAME = "focus";
-    private final static String CHILD_FOCUS_CLASSNAME = "childFocus";
+    private final static String EDITOR_BAR_CLASS_NAME = "mgnlEditorBar";
+    private final static String EDITOR_BAR_LABEL_CLASS_NAME = "mgnlEditorBarLabel";
+    private final static String EDITOR_BAR_BUTTONS_CLASS_NAME = "mgnlEditorBarButtons";
+    private final static String FOCUS_CLASS_NAME = "focus";
+    private final static String CHILD_FOCUS_CLASS_NAME = "childFocus";
+    private final static String MGNL_LEVEL_CLASS_NAME = "mgnlLevel-";
+
+    protected final static String EDITOR_CLASS_NAME = "mgnlEditor";
+    protected final static String AREA_CLASS_NAME = "area";
+    protected final static String COMPONENT_CLASS_NAME = "component";
+
+    protected final static String ICON_CLASS_NAME = "editorIcon";
+    protected final static String EDIT_CLASS_NAME = "icon-edit";
+    protected final static String ADD_CLASS_NAME = "icon-add-item";
+    
+    private final static int MAX_LEVEL = 6;
+    private final int level;
 
     private FlowPanel buttonWrapper;
 
     public AbstractBar(MgnlElement mgnlElement) {
 
-        setStyleName("mgnlEditor mgnlEditorBar");
-        setFields(mgnlElement.getAttributes());
-        String label = createLabel(mgnlElement.getAttribute("label"));
-        initLayout(label);
+        setStyleName(EDITOR_BAR_CLASS_NAME);
+        addStyleName(EDITOR_CLASS_NAME);
+        this.level = mgnlElement.getLevel();
+
+        setVisible(false);
     }
 
-    private void initLayout(String label) {
+    protected void initLayout() {
         buttonWrapper = new FlowPanel();
-        buttonWrapper.setStylePrimaryName("mgnlEditorBarButtons");
+        buttonWrapper.setStylePrimaryName(EDITOR_BAR_BUTTONS_CLASS_NAME);
         add(buttonWrapper);
 
+        String label = getLabel();
         if (label != null && !label.isEmpty()) {
             Label areaName = new Label(label);
             // tooltip. Nice to have when area label is truncated because too long.
             areaName.setTitle(label);
-            areaName.setStylePrimaryName("mgnlEditorBarLabel");
-
+            areaName.setStylePrimaryName(EDITOR_BAR_LABEL_CLASS_NAME);
+            String mgnlLevel = String.valueOf(level);
+            if (level > MAX_LEVEL) {
+                mgnlLevel = "max";
+            }
+            areaName.addStyleName(MGNL_LEVEL_CLASS_NAME + mgnlLevel);
             // setStylePrimaryName(..) replaces gwt default css class, in this case gwt-Label
             add(areaName);
         }
+
+        createControls();
     }
 
-    protected abstract void setFields(Map<String, String> attributes) throws IllegalArgumentException;
+    protected abstract String getLabel();
 
-    protected String createLabel(String label) {
-        return label;
-    }
+    protected abstract void createControls();
 
     @Override
     public void onAttach() {
@@ -109,13 +125,12 @@ public abstract class AbstractBar extends FlowPanel {
     }
 
     public void removeFocus() {
-        removeStyleName(FOCUS_CLASSNAME);
-        removeStyleName(CHILD_FOCUS_CLASSNAME);
+        removeStyleName(FOCUS_CLASS_NAME);
+        removeStyleName(CHILD_FOCUS_CLASS_NAME);
     }
 
     public void setFocus(boolean child) {
-        String className = (child) ? CHILD_FOCUS_CLASSNAME : FOCUS_CLASSNAME;
-        addStyleName(className);
+        String CLASS_NAME = (child) ? CHILD_FOCUS_CLASS_NAME : FOCUS_CLASS_NAME;
+        addStyleName(CLASS_NAME);
     }
-
 }

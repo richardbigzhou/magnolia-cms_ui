@@ -33,9 +33,8 @@
  */
 package info.magnolia.ui.workbench.definition;
 
-import info.magnolia.ui.workbench.ContentViewDefinition;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
-import info.magnolia.ui.workbench.tree.TreeContentViewDefinition;
+import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 import java.util.ArrayList;
@@ -67,7 +66,7 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private Class<? extends DropConstraint> dropConstraintClass;
 
-    private List<ContentViewDefinition> contentViews = new LinkedList<ContentViewDefinition>();
+    private List<ContentPresenterDefinition> contentViews = new LinkedList<ContentPresenterDefinition>();
 
     @Override
     public String getName() {
@@ -164,19 +163,19 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     }
 
     @Override
-    public List<ContentViewDefinition> getContentViews() {
+    public List<ContentPresenterDefinition> getContentViews() {
         if (this.contentViews.isEmpty()) {
-            ContentViewDefinition defaultContentView = new TreeContentViewDefinition();
+            ContentPresenterDefinition defaultContentView = new TreePresenterDefinition();
             addContentView(defaultContentView);
         }
         return this.contentViews;
     }
 
-    public void setContentViews(List<ContentViewDefinition> contentViews) {
+    public void setContentViews(List<ContentPresenterDefinition> contentViews) {
         this.contentViews = contentViews;
     }
 
-    public void addContentView(ContentViewDefinition contentView) {
+    public void addContentView(ContentPresenterDefinition contentView) {
         this.contentViews.add(contentView);
     }
 }

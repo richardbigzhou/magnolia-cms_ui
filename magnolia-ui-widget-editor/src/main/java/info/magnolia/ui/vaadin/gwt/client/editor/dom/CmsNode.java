@@ -37,7 +37,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * CmsNode.
+ * Represents a node inside the tree structure built by the {@link info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.CommentProcessor}.
+ * Holds a reference to its parent node and a list to its children and allows navigating inside the tree structure.
+ *
+ * @see MgnlPage
+ * @see MgnlArea
+ * @see MgnlComponent
  */
 public class CmsNode {
     protected CmsNode parent;
@@ -91,6 +96,16 @@ public class CmsNode {
         return parentArea;
     }
 
+    public MgnlArea getRootArea() {
+        MgnlArea parentArea = (this instanceof MgnlArea) ? (MgnlArea) this : null;
+        for (CmsNode parent = getParent(); parent != null; parent = parent.getParent()) {
+            if (parent instanceof MgnlArea) {
+                parentArea = (MgnlArea) parent;
+            }
+        }
+        return parentArea;
+    }
+
     public List<MgnlComponent> getComponents() {
         List<MgnlComponent> components = new LinkedList<MgnlComponent>();
         for (CmsNode element : getChildren()) {
@@ -120,8 +135,7 @@ public class CmsNode {
     }
 
     public boolean isRelated(CmsNode relative) {
-
-        return relative != null && this.getRoot() == relative.getRoot();
+        return relative != null && this.getRootArea() == relative.getRootArea();
     }
 
     public void delete() {
@@ -136,4 +150,13 @@ public class CmsNode {
     public MgnlElement asMgnlElement() {
         return (MgnlElement) this;
     }
+
+    public int getLevel() {
+        int level = 0;
+        for (CmsNode parent = getParent(); parent != null; parent = parent.getParent()) {
+            level++;
+        }
+        return level;
+    }
+
 }

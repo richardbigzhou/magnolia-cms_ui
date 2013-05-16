@@ -33,24 +33,31 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
-import com.google.gwt.user.client.ui.FlowPanel;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
 
 /**
- * Area bar.
+ * Simple widget which marks the end of an area.
  */
-public class AreaEndBar extends FlowPanel {
+public class AreaEndBar extends AbstractBar {
 
-    private final static String FOCUS_CLASSNAME = "focus";
-    private final static String CHILD_FOCUS_CLASSNAME = "childFocus";
+    protected final static String AREA_END_CLASS_NAME = "end";
 
-    public AreaEndBar() {
+    public AreaEndBar(MgnlArea area) {
+        super(area);
 
-        this.setStyleName("mgnlEditor mgnlEditorBar");
-        this.addStyleName("area");
-        this.addStyleName("end");
+        this.addStyleName(AREA_CLASS_NAME);
+        this.addStyleName(AREA_END_CLASS_NAME);
+    }
 
-        setVisible(false);
+    @Override
+    protected String getLabel() {
+        // no label used in area end bars
+        return null;
+    }
 
+    @Override
+    protected void createControls() {
+        // no controls defined for area end bars
     }
 
     @Override
@@ -58,22 +65,4 @@ public class AreaEndBar extends FlowPanel {
         super.onAttach();
     }
 
-    public void setFocus(boolean focus, boolean child) {
-        String className = (child) ? CHILD_FOCUS_CLASSNAME : FOCUS_CLASSNAME;
-        if (focus) {
-            addStyleName(className);
-        } else {
-            removeStyleName(className);
-        }
-    }
-
-    public void removeFocus() {
-        removeStyleName(FOCUS_CLASSNAME);
-        removeStyleName(CHILD_FOCUS_CLASSNAME);
-    }
-
-    public void setFocus(boolean child) {
-        String className = (child) ? CHILD_FOCUS_CLASSNAME : FOCUS_CLASSNAME;
-        addStyleName(className);
-    }
 }

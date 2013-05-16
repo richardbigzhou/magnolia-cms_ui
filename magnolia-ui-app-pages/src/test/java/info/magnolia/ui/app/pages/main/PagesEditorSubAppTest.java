@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.app.pages.main;
 
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
@@ -46,6 +46,7 @@ import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.app.pages.editor.NodeSelectedEvent;
 import info.magnolia.ui.app.pages.editor.PageEditorPresenter;
 import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
@@ -57,9 +58,12 @@ import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
+
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 
 import javax.jcr.Session;
 
@@ -76,8 +80,11 @@ public class PagesEditorSubAppTest {
     private SubAppContext subAppContext;
     private PagesEditorSubAppView view;
     private EventBus eventBus;
+    private EventBus adminCentralEventBus;
     private ActionbarPresenter actionbarPresenter;
     private PageBarView pageBarView;
+    private I18NAuthoringSupport i18NAuthoringSupport;
+    private I18nContentSupport i18nContentSupport;
     private AbstractElement element;
     private final ConfiguredTemplateDefinition definition = new ConfiguredTemplateDefinition();
 
@@ -104,12 +111,15 @@ public class PagesEditorSubAppTest {
         subAppContext = new SubAppContextImpl(descriptor, null);
         view = mock(PagesEditorSubAppView.class);
         eventBus = new SimpleEventBus();
+        adminCentralEventBus = new SimpleEventBus();
         pageEditorPresenter = mock(PageEditorPresenter.class);
         TemplateDefinitionRegistry registry = mock(TemplateDefinitionRegistry.class);
         when(pageEditorPresenter.getTemplateDefinitionRegistry()).thenReturn(registry);
         when(registry.getTemplateDefinition(anyString())).thenReturn(definition);
         actionbarPresenter = mock(ActionbarPresenter.class);
-
+        i18NAuthoringSupport = mock(I18NAuthoringSupport.class);
+        i18nContentSupport = mock(I18nContentSupport.class);
+        when(i18nContentSupport.getLocale()).thenReturn(new Locale("en"));
         pageBarView = mock(PageBarView.class);
     }
 
@@ -118,17 +128,63 @@ public class PagesEditorSubAppTest {
         // GIVEN
         element = new AreaElement(null, null, null, null);
         when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
-        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, null, null);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport);
 
         // WHEN
         eventBus.fireEvent(new NodeSelectedEvent(element));
 
         // THEN
-        verify(actionbarPresenter).hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions");
+        verify(actionbarPresenter).hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions", "pageDeleteActions");
         verify(actionbarPresenter).showSection("areaActions");
         verify(actionbarPresenter).disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
+
+        verify(actionbarPresenter).enable(PagesEditorSubApp.ACTION_ADD_COMPONENT);
 
         verifyNoMoreInteractions(actionbarPresenter);
     }
 
+    @Test
+    public void testHidingButtonsBasedOnOperationPermissionsForComponent() {
+        // GIVEN
+        ComponentElement element = new ComponentElement(null, null, null);
+        element.setMoveable(true);
+        element.setDeletable(false);
+        when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport);
+
+        // WHEN
+        eventBus.fireEvent(new NodeSelectedEvent(element));
+
+        // THEN
+        verify(actionbarPresenter).hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions", "pageDeleteActions");
+        verify(actionbarPresenter).showSection("componentActions");
+        verify(actionbarPresenter).disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
+
+        verify(actionbarPresenter).disable(PagesEditorSubApp.ACTION_DELETE_COMPONENT);
+        verify(actionbarPresenter).enable(PagesEditorSubApp.ACTION_MOVE_COMPONENT);
+        verify(actionbarPresenter).enable(PagesEditorSubApp.ACTION_EDIT_COMPONENT);
+
+        verifyNoMoreInteractions(actionbarPresenter);
+    }
+
+    @Test
+    public void testHidingButtonsBasedOnOperationPermissionsForArea() {
+        // GIVEN
+        AreaElement element = new AreaElement(null, null, null, null);
+        element.setAddible(false);
+        when(pageEditorPresenter.getSelectedElement()).thenReturn(element);
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport);
+
+        // WHEN
+        eventBus.fireEvent(new NodeSelectedEvent(element));
+
+        // THEN
+        verify(actionbarPresenter).hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions", "pageDeleteActions");
+        verify(actionbarPresenter).showSection("areaActions");
+        verify(actionbarPresenter).disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
+
+        verify(actionbarPresenter).disable(PagesEditorSubApp.ACTION_ADD_COMPONENT);
+
+        verifyNoMoreInteractions(actionbarPresenter);
+    }
 }

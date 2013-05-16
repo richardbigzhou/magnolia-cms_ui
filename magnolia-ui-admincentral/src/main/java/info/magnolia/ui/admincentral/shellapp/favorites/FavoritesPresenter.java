@@ -58,7 +58,7 @@ import com.vaadin.server.Page;
 /**
  * Presenter for Favorites.
  */
-public class FavoritesPresenter implements FavoritesView.Listener {
+public final class FavoritesPresenter implements FavoritesView.Listener {
 
     private final Logger log = LoggerFactory.getLogger(FavoritesPresenter.class);
 
@@ -97,7 +97,7 @@ public class FavoritesPresenter implements FavoritesView.Listener {
         Page.getCurrent().setLocation(completeLocation);
     }
 
-    protected JcrNewNodeAdapter determinePreviousLocation() {
+    public JcrNewNodeAdapter determinePreviousLocation() {
         // at this point the current location in the browser hasn't yet changed to favorite shellapp,
         // so it is what we need to pre-populate the form for creating a new favorite
         final URI previousLocation = Page.getCurrent().getLocation();

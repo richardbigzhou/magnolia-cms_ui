@@ -116,8 +116,9 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
     }
 
     @Override
-    public void setPageName(String pageName) {
-        this.pageNameLabel.setValue(pageName.toUpperCase());
+    public void setPageName(String pageTitle, String path) {
+        String label = pageTitle.toUpperCase() + "  -  " + path;
+        this.pageNameLabel.setValue(label);
     }
 
     @Override

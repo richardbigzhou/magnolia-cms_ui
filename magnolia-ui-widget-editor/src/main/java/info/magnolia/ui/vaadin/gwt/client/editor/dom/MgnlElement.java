@@ -41,7 +41,10 @@ import java.util.Map;
 import com.google.gwt.dom.client.Element;
 
 /**
- * MgnlElement Constructor.
+ * Extends the {@link CmsNode} by objects used for positioning the associated {@link AbstractBar} inside the DOM structure.
+ * Has a map with all attributes extracted from the {@link Comment}.
+ *
+ * @see info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.AbstractMgnlElementProcessor
  */
 public abstract class MgnlElement extends CmsNode {
 
@@ -71,7 +74,7 @@ public abstract class MgnlElement extends CmsNode {
         return this.attributes;
     }
 
-    public AbstractBar getControlBar() {
+    protected AbstractBar getControlBar() {
         return controlBar;
     }
 
@@ -129,9 +132,16 @@ public abstract class MgnlElement extends CmsNode {
 
     public abstract AbstractElement getTypedElement();
 
-    public abstract boolean isPage();
+    public boolean isPage() {
+        return this instanceof MgnlPage;
+    }
 
-    public abstract boolean isArea();
+    public boolean isArea() {
+        return this instanceof MgnlArea;
+    }
 
-    public abstract boolean isComponent();
+    public boolean isComponent(){
+        return this instanceof MgnlComponent;
+    }
+
 }

@@ -38,4 +38,8 @@ package info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener;
  */
 public interface ComponentListener {
     void editComponent();
+
+    String getLabel();
+
+    boolean hasEditButton();
 }

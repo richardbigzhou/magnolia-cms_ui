@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.activation.action;
 
+import info.magnolia.cms.exchange.ExchangeException;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
@@ -41,14 +42,15 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.action.CommandActionBase;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.jcr.Node;
+import javax.jcr.Item;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -57,37 +59,41 @@ import org.apache.commons.lang.StringUtils;
  */
 public class ActivationAction extends CommandActionBase<ActivationActionDefinition> {
 
-    private final JcrItemNodeAdapter node;
+    private final JcrItemAdapter jcrItemAdapter;
 
-    private final EventBus eventBus;
-
+    private final EventBus admincentralEventBus;
     private final SubAppContext subAppContext;
 
     @Inject
-    public ActivationAction(final ActivationActionDefinition definition, final JcrItemNodeAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, SubAppContext subAppContext) {
+    public ActivationAction(final ActivationActionDefinition definition, final JcrItemAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, SubAppContext subAppContext) {
         super(definition, item, commandsManager, subAppContext);
-        this.node = item;
-        this.eventBus = eventBus;
+        this.jcrItemAdapter = item;
+        this.admincentralEventBus = admincentralEventBus;
         this.subAppContext = subAppContext;
     }
 
     @Override
-    protected Map<String, Object> buildParams(final Node node) {
-        Map<String, Object> params = super.buildParams(node);
+    protected Map<String, Object> buildParams(final Item jcrItem) {
+        Map<String, Object> params = super.buildParams(jcrItem);
         params.put(Context.ATTRIBUTE_RECURSIVE, getDefinition().isRecursive());
         return params;
     }
 
     @Override
     protected void onError(Exception e) {
-        subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, getDefinition().getErrorMessage());
+        String errorMessage = null;
+        if (e.getCause() != null && e.getCause() instanceof ExchangeException) {
+            errorMessage = e.getCause().getLocalizedMessage();
+            errorMessage = StringUtils.substring(errorMessage, StringUtils.indexOf(errorMessage, "error detected:"));
+        } else {
+            errorMessage = getDefinition().getErrorMessage();
+        }
+        subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, errorMessage);
     }
 
     @Override
     protected void onPostExecute() throws Exception {
-        Node jcrNode = node.getNodeFromRepository();
-        eventBus.fireEvent(new ContentChangedEvent(jcrNode.getSession().getWorkspace().getName(), jcrNode.getPath()));
-
+        admincentralEventBus.fireEvent(new ContentChangedEvent(((JcrNodeAdapter) jcrItemAdapter).getWorkspace(), ((JcrNodeAdapter) jcrItemAdapter).getPath()));
         // Display a notification
 
         Context context = MgnlContext.getInstance();

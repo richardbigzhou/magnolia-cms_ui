@@ -125,12 +125,12 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public void setSelectedMgnlAreaElement(MgnlArea selectedMgnlAreaElement) {
+    public void setSelectedArea(MgnlArea selectedMgnlAreaElement) {
         this.selectedMgnlAreaElement = selectedMgnlAreaElement;
     }
 
     @Override
-    public MgnlArea getSelectedMgnlAreaElement() {
+    public MgnlArea getSelectedArea() {
         return selectedMgnlAreaElement;
     }
 
@@ -156,12 +156,12 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public MgnlComponent getSelectedMgnlComponentElement() {
+    public MgnlComponent getSelectedComponent() {
         return selectedMgnlComponentElement;
     }
 
     @Override
-    public void setSelectedMgnlComponentElement(MgnlComponent selectedMgnlComponentElement) {
+    public void setSelectedComponent(MgnlComponent selectedMgnlComponentElement) {
         this.selectedMgnlComponentElement = selectedMgnlComponentElement;
     }
 

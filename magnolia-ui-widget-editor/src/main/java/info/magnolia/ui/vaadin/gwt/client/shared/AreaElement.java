@@ -34,11 +34,13 @@
 package info.magnolia.ui.vaadin.gwt.client.shared;
 
 /**
- * Class for GSON serialization of area elements.
+ * A slimmed down representation of a {@link info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea}.
+ * Used for communication between server and client.
  */
 public class AreaElement extends AbstractElement {
 
     private String availableComponents;
+    private Boolean addible; // add button operation permission
 
     public AreaElement() {
     }
@@ -54,5 +56,13 @@ public class AreaElement extends AbstractElement {
 
     public void setAvailableComponents(String availableComponents) {
         this.availableComponents = availableComponents;
+    }
+
+    public Boolean getAddible() {
+        return addible;
+    }
+
+    public void setAddible(Boolean addible) {
+        this.addible = addible;
     }
 }

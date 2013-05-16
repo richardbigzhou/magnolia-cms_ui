@@ -38,7 +38,7 @@ import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaBar;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaEndBar;
-import info.magnolia.ui.vaadin.gwt.client.widget.placeholder.ComponentPlaceHolder;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentPlaceHolder;
 
 import java.util.Map;
 
@@ -47,7 +47,12 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 
 /**
- * Factory Class for MgnlElement processors.
+ * Processor for {@link MgnlArea}s. Extends the {@link AbstractMgnlElementProcessor} for handling widgets associated with areas.
+ * Removes areas which do not contain any {@link AreaBar} from the {@link Model}.
+ *
+ * @see AreaBar
+ * @see AreaEndBar
+ * @see ComponentPlaceHolder
  */
 public class AreaProcessor extends AbstractMgnlElementProcessor {
 
@@ -69,7 +74,7 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
                 addToModel(placeHolder);
             }
 
-            AreaEndBar endBar = new AreaEndBar();
+            AreaEndBar endBar = new AreaEndBar(getMgnlElement());
             attachAreaEndBar(endBar);
             addToModel(endBar);
 

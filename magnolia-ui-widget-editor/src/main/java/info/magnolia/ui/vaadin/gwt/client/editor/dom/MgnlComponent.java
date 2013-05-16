@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.dom;
 
+import info.magnolia.cms.security.operations.OperationPermissionDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
@@ -41,14 +42,14 @@ import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.ComponentLi
 import com.google.gwt.event.shared.EventBus;
 
 /**
- * MgnlComponent.
+ * Represents a component inside the {@link CmsNode}-tree.
+ * Implements a listener interface for the associated {@link info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar}
+ * and provides wrapper functions used by the {@link info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModel}.
  */
 public class MgnlComponent extends MgnlElement implements ComponentListener {
-    private EventBus eventBus;
 
-    /**
-     * MgnlElement. Represents a node in the tree built on cms-tags.
-     */
+    private final EventBus eventBus;
+
     public MgnlComponent(MgnlElement parent, EventBus eventBus) {
         super(parent);
         this.eventBus = eventBus;
@@ -56,22 +57,27 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
 
     @Override
     public AbstractElement getTypedElement() {
-        return new ComponentElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"));
-    }
+        ComponentElement component = new ComponentElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"));
 
-    @Override
-    public boolean isPage() {
-        return false;
-    }
+        boolean deletable = true;
+        if (getAttributes().containsKey(OperationPermissionDefinition.DELETABLE)) {
+            deletable = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.DELETABLE));
+        }
 
-    @Override
-    public boolean isArea() {
-        return false;
-    }
+        boolean writable = true;
+        if (getAttributes().containsKey(OperationPermissionDefinition.WRITABLE)) {
+            writable = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.WRITABLE));
+        }
 
-    @Override
-    public boolean isComponent() {
-        return true;
+        boolean movable = true;
+        if (getAttributes().containsKey(OperationPermissionDefinition.MOVEABLE)) {
+            movable = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.MOVEABLE));
+        }
+
+        component.setDeletable(deletable);
+        component.setWritable(writable);
+        component.setMoveable(movable);
+        return component;
     }
 
     @Override
@@ -80,5 +86,38 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
         String path = getAttribute("path");
         String dialog = getAttribute("dialog");
         eventBus.fireEvent(new EditComponentEvent(workspace, path, dialog));
+    }
+
+    @Override
+    public String getLabel() {
+        return getAttribute("label");
+    }
+
+    @Override
+    public boolean hasEditButton() {
+        boolean inherited = Boolean.parseBoolean(getAttribute("inherited"));
+        boolean writable = true;
+        if (getAttributes().containsKey(OperationPermissionDefinition.WRITABLE)) {
+            writable = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.WRITABLE));
+        }
+        return !inherited && writable;
+    }
+
+    public void setVisible(boolean visible) {
+        if (getControlBar() != null) {
+            getControlBar().setVisible(visible);
+        }
+    }
+
+    public void removeFocus() {
+        if (getControlBar() != null) {
+            getControlBar().removeFocus();
+        }
+    }
+
+    public void setFocus() {
+        if (getControlBar() != null) {
+            getControlBar().setFocus(false);
+        }
     }
 }

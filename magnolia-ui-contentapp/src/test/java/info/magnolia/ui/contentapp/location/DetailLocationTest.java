@@ -48,19 +48,18 @@ public class DetailLocationTest {
 
     @Test
     public void testToString() {
-        assertEquals("app:someContentApp:browser;/some/node:edit", new DetailLocation("someContentApp", "browser", "/some/node:edit").toString());
-        assertEquals("app:someContentApp;/some/node:view", new DetailLocation("someContentApp", "", "/some/node:view").toString());
+        assertEquals("app:someContentApp:browser;/some/node:edit:1.1", new DetailLocation("someContentApp", "browser", "/some/node:edit:1.1").toString());
+        assertEquals("app:someContentApp;/some/node:view:1.0", new DetailLocation("someContentApp", "", "/some/node:view:1.0").toString());
         assertEquals("app:someContentApp", new DetailLocation("someContentApp", "", "").toString());
-
     }
 
     @Test
     public void testEqualsWithSameParameters() {
         // GIVEN
-        DefaultLocation defaultLocation = new DefaultLocation("app", "someApp", "someContentApp", "/some/node:edit");
+        DefaultLocation defaultLocation = new DefaultLocation("app", "someApp", "someContentApp", "/some/node:edit:1.1");
 
         // WHEN
-        DefaultLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/node:edit");
+        DefaultLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/node:edit:1.1");
 
         // TEST
         assertTrue(defaultLocation.equals(itemLocation));
@@ -70,10 +69,10 @@ public class DetailLocationTest {
     @Test
     public void testEqualsWithDifferentParameters() {
         // GIVEN
-        DefaultLocation defaultLocation = new DefaultLocation("app", "someApp", "someContentApp", "/some/node:view");
+        DefaultLocation defaultLocation = new DefaultLocation("app", "someApp", "someContentApp", "/some/node:view:1.1");
 
         // WHEN
-        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/node:edit");
+        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/node:view:1.0");
 
         // TEST
         assertFalse(defaultLocation.equals(itemLocation));
@@ -83,21 +82,28 @@ public class DetailLocationTest {
     @Test
     public void testGetNodePath() {
         // GIVEN
-        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:view");
+        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:view:1.0");
 
         // TEST
         assertEquals("/some/other/node/00", itemLocation.getNodePath());
+    }
 
+    @Test
+    public void testGetVersion() {
+        // GIVEN
+        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:view:1.0");
+
+        // TEST
+        assertEquals("1.0", itemLocation.getVersion());
     }
 
     @Test
     public void testGetAction() {
         // GIVEN
-        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:edit");
+        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:edit:1.0");
 
         // TEST
         assertEquals(DetailView.ViewType.EDIT, itemLocation.getViewType());
-
     }
 
     @Test
@@ -113,7 +119,7 @@ public class DetailLocationTest {
     @Test
     public void testUpdateNodePath() {
         // GIVEN
-        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:edit");
+        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:edit:1.1");
 
         // WHEN
         itemLocation.updateNodePath("/node/has/changes/01");
@@ -126,7 +132,7 @@ public class DetailLocationTest {
     @Test
     public void testUpdateAction() {
         // GIVEN
-        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:edit");
+        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:edit:1.1");
 
         // WHEN
         itemLocation.updateViewtype(DetailView.ViewType.VIEW);
@@ -136,27 +142,50 @@ public class DetailLocationTest {
     }
 
     @Test
+    public void testUpdateVersion() {
+        // GIVEN
+        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:edit:1.1");
+
+        // WHEN
+        itemLocation.updateVersion("2.0");
+
+        // TEST
+        assertEquals("2.0", itemLocation.getVersion());
+    }
+
+    @Test
     public void testUpdateNodePathParameter() {
         // GIVEN
-        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:view");
+        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:view:1.1");
 
         // WHEN
         itemLocation.updateNodePath("/some/other/node/01");
 
         // TEST
-        assertEquals("app:someApp:someContentApp;/some/other/node/01:view", itemLocation.toString());
+        assertEquals("app:someApp:someContentApp;/some/other/node/01:view:1.1", itemLocation.toString());
     }
 
     @Test
     public void testUpdateViewTypeParameter() {
         // GIVEN
-        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:view");
+        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:view:1.1");
 
         // WHEN
         itemLocation.updateViewtype(DetailView.ViewType.EDIT);
 
         // TEST
-        assertEquals("app:someApp:someContentApp;/some/other/node/00:edit", itemLocation.toString());
+        assertEquals("app:someApp:someContentApp;/some/other/node/00:edit:1.1", itemLocation.toString());
     }
 
+    @Test
+    public void testUpdateVersionParameter() {
+        // GIVEN
+        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:view:1.1");
+
+        // WHEN
+        itemLocation.updateVersion("2.0");
+
+        // TEST
+        assertEquals("app:someApp:someContentApp;/some/other/node/00:view:2.0", itemLocation.toString());
+    }
 }

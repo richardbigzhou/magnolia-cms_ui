@@ -40,24 +40,28 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed.FeedSection;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.inject.Inject;
 
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.VerticalLayout;
 
 /**
  * Default view implementation for favorites.
  */
-public class FavoritesViewImpl extends CustomComponent implements FavoritesView {
+public final class FavoritesViewImpl extends CustomComponent implements FavoritesView {
 
     private VerticalLayout layout = new VerticalLayout();
     private FavoritesView.Listener listener;
-    private FavoritesSection noGroup;
-    private Component favoriteForm;
+    private FavoritesGroup noGroup;
+    private FavoritesForm favoriteForm;
     private FeedSection leftColumn;
     private FeedSection rightColumn;
     private Shell shell;
@@ -88,10 +92,17 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         leftColumn = splitPanel.getLeftContainer();
         rightColumn = splitPanel.getRightContainer();
 
-        noGroup = new FavoritesSection();
-        noGroup.addStyleName("no-group");
+        noGroup = new FavoritesGroup();
         leftColumn.addComponent(noGroup);
 
+        layout.addLayoutClickListener(new LayoutClickListener() {
+
+            @Override
+            public void layoutClick(LayoutClickEvent event) {
+                Component clickedComponent = event.getClickedComponent();
+                reset(clickedComponent);
+            }
+        });
         layout.addComponent(splitPanel);
         layout.setExpandRatio(splitPanel, 1f);
 
@@ -115,17 +126,17 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
         leftColumn.removeAllComponents();
         rightColumn.removeAllComponents();
 
-        for (JcrItemNodeAdapter favoriteAdapter : favorites.getChildren().values()) {
+        final Map<String, JcrItemNodeAdapter> nodeAdapters = favorites.getChildren();
+        final SortedSet<String> keys = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+        keys.addAll(nodeAdapters.keySet());
+
+        for (String key : keys) {
+            final JcrItemNodeAdapter favoriteAdapter = nodeAdapters.get(key);
             if (AdmincentralNodeTypes.Favorite.NAME.equals(favoriteAdapter.getPrimaryNodeTypeName())) {
-                final FavoritesEntry favEntry = new FavoritesEntry(favoriteAdapter, listener);
+                final FavoritesEntry favEntry = new FavoritesEntry(favoriteAdapter, listener, shell);
                 noGroup.addComponent(favEntry);
             } else {
-                FavoritesSection group = new FavoritesSection();
-                group.setCaption(favoriteAdapter.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue().toString());
-                for (JcrItemNodeAdapter fav : favoriteAdapter.getChildren().values()) {
-                    final FavoritesEntry favEntry = new FavoritesEntry(fav, listener);
-                    group.addComponent(favEntry);
-                }
+                FavoritesGroup group = new FavoritesGroup(favoriteAdapter, listener, shell);
                 rightColumn.addComponent(group);
             }
         }
@@ -139,13 +150,21 @@ public class FavoritesViewImpl extends CustomComponent implements FavoritesView 
     }
 
     /**
-     * Favorite section.
+     * Clicking outside a group or favorite resets everything.
      */
-    private class FavoritesSection extends CssLayout {
+    private void reset(Component clickedComponent) {
+        if (!(clickedComponent instanceof SplitFeed.FeedSection)) {
+            return;
+        }
+        favoriteForm.close();
+        noGroup.reset();
+        Iterator<Component> components = rightColumn.getComponentIterator();
 
-        public FavoritesSection() {
-            addStyleName("favorites-section");
+        while (components.hasNext()) {
+            Component component = components.next();
+            if (component instanceof FavoritesGroup) {
+                ((FavoritesGroup) component).reset();
+            }
         }
     }
-
 }

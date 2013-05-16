@@ -37,12 +37,12 @@ import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 
 /**
- * MgnlPage.
+ * Represents the page node which is the root of the {@link CmsNode} tree-structure.
+ * The {@link info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AbstractBar} and all elements used to position it
+ * are null for this element.
  */
 public class MgnlPage extends MgnlElement {
-    /**
-     * MgnlElement. Represents a node in the tree built on cms-tags.
-     */
+
     public MgnlPage(MgnlElement parent) {
         super(parent);
     }
@@ -50,20 +50,5 @@ public class MgnlPage extends MgnlElement {
     @Override
     public AbstractElement getTypedElement() {
         return new PageElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"));
-    }
-
-    @Override
-    public boolean isPage() {
-        return true;
-    }
-
-    @Override
-    public boolean isArea() {
-        return false;
-    }
-
-    @Override
-    public boolean isComponent() {
-        return false;
     }
 }

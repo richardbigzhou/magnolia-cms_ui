@@ -116,16 +116,20 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
                     @Override
                     public void onItemChosen(final Item chosenValue) {
                         String propertyName = getPropertyName();
-                        javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
-                        if (jcrItem.isNode()) {
-                            final Node selected = (Node) jcrItem;
-                            try {
-                                boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) && !PATH_PROPERTY_NAME.equals(propertyName) && selected.hasProperty(propertyName);
-                                textButton.setValue(isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath());
-                            } catch (RepositoryException e) {
-                                log.error("Not able to access the configured property. Value will not be set.", e);
+                        String newValue = null;
+                        if (chosenValue != null) {
+                            javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
+                            if (jcrItem.isNode()) {
+                                final Node selected = (Node) jcrItem;
+                                try {
+                                    boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) && !PATH_PROPERTY_NAME.equals(propertyName) && selected.hasProperty(propertyName);
+                                    newValue = isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath();
+                                } catch (RepositoryException e) {
+                                    log.error("Not able to access the configured property. Value will not be set.", e);
+                                }
                             }
                         }
+                        textButton.setValue(newValue);
                     }
 
                     @Override

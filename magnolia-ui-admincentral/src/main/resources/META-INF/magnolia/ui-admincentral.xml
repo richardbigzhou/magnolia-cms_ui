@@ -66,30 +66,6 @@
       <implementation>info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor</type>
-      <implementation>info.magnolia.ui.contentapp.browser.ConfiguredBrowserSubAppDescriptor</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor</type>
-      <implementation>info.magnolia.ui.contentapp.detail.ConfiguredDetailSubAppDescriptor</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.contentapp.definition.EditorDefinition</type>
-      <implementation>info.magnolia.ui.contentapp.definition.ConfiguredEditorDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.contentapp.definition.FormActionItemDefinition</type>
-      <implementation>info.magnolia.ui.contentapp.definition.ConfiguredFormActionItemDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.workbench.definition.WorkbenchDefinition</type>
-      <implementation>info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.workbench.definition.NodeTypeDefinition</type>
-      <implementation>info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
       <type>info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition</type>
       <implementation>info.magnolia.ui.framework.app.launcherlayout.definition.ConfiguredAppLauncherLayoutDefinition</implementation>
     </type-mapping>
@@ -108,6 +84,10 @@
     <type-mapping>
       <type>info.magnolia.ui.api.action.ActionRestrictionsDefinition</type>
       <implementation>info.magnolia.ui.api.action.ConfiguredActionRestrictionsDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.imageprovider.definition.ImageProviderDefinition</type>
+      <implementation>info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
     </type-mapping>
   </components>
 
@@ -203,10 +183,6 @@
     <component>
       <type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
       <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.workbench.ContentViewBuilder</type>
-      <implementation>info.magnolia.ui.workbench.ContentViewBuilderImpl</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.form.validator.registry.FieldValidatorFactory</type>

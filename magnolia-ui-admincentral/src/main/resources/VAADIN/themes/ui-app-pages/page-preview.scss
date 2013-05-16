@@ -3,13 +3,13 @@
 @mixin page-preview {
 
   .pagebar > .v-label {
-    margin: 0 0 0 5px;
-    font-family: Verdana, sans-serif;
-    font-size: 11px;
+    margin: 0 0 0 16px;
+    font-family: DINWebPro, Verdana, sans-serif;
+    font-size: 12px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    line-height: 21px;
+    line-height: 28px;
   }
 
   .pagebar > .title {
@@ -24,6 +24,7 @@
   .pagebar {
     color: $c16;
     background-color: #6a9000;
+    height: 25px;
   }
 
   .pagebar.preview {
