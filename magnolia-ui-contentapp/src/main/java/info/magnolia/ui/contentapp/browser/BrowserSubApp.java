@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
@@ -44,14 +44,15 @@ import info.magnolia.ui.actionbar.definition.SectionRestrictionsDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.ContentSubAppView;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.workbench.ContentView.ViewType;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
-import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 
 import java.util.List;
@@ -60,7 +61,6 @@ import javax.inject.Named;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -166,7 +166,17 @@ public class BrowserSubApp extends BaseSubApp {
             getAppContext().updateSubAppLocation(getSubAppContext(), location);
         }
         String query = location.getQuery();
-        getBrowser().resync(path, viewType, query);
+
+        BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
+        final String workspaceName = subAppDescriptor.getWorkbench().getWorkspace();
+
+        String itemId = null;
+        try {
+            itemId = JcrItemUtil.getItemId(SessionUtil.getNode(workspaceName, path));
+        } catch (RepositoryException e) {
+            log.warn("Could not retrieve item at path {} in workspace {}", path, workspaceName);
+        }
+        getBrowser().resync(itemId, viewType, query);
         updateActionbar(getBrowser().getActionbarPresenter());
     }
 
@@ -186,12 +196,11 @@ public class BrowserSubApp extends BaseSubApp {
         List<ActionbarSectionDefinition> sections = subAppDescriptor.getActionbar().getSections();
 
         try {
-
             Item item = null;
-            String absItemPath = getBrowser().getSelectedItemId();
-            if (absItemPath != null && !absItemPath.equals(workbench.getPath())) {
-                final Session session = MgnlContext.getJCRSession(workbench.getWorkspace());
-                item = session.getItem(absItemPath);
+            String selectedItemId = getBrowser().getSelectedItemId();
+            String workbenchRootItemId = JcrItemUtil.getItemId(SessionUtil.getNode(workbench.getWorkspace(), workbench.getPath()));
+            if (selectedItemId != null && !selectedItemId.equals(workbenchRootItemId)) {
+                item = JcrItemUtil.getJcrItem(workbench.getWorkspace(), selectedItemId);
             }
 
             // Figure out which section to show, only one
@@ -303,7 +312,16 @@ public class BrowserSubApp extends BaseSubApp {
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
                 BrowserLocation location = getCurrentLocation();
-                location.updateNodePath(event.getPath());
+                try {
+                    if (event.getItemId() == null) {
+                        location.updateNodePath("/");
+                    } else {
+                        Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.parseNodeIdentifier(event.getItemId()));
+                        location.updateNodePath(selected.getPath());
+                    }
+                } catch (RepositoryException e) {
+                    log.warn("Could not get jcrItem with itemId " + event.getItemId() + " from workspace " + event.getWorkspace(), e);
+                }
                 getAppContext().updateSubAppLocation(getSubAppContext(), location);
                 updateActionbar(actionbar);
             }

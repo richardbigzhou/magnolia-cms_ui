@@ -93,7 +93,7 @@ public class ActivationAction extends CommandActionBase<ActivationActionDefiniti
 
     @Override
     protected void onPostExecute() throws Exception {
-        admincentralEventBus.fireEvent(new ContentChangedEvent(((JcrNodeAdapter) jcrItemAdapter).getWorkspace(), ((JcrNodeAdapter) jcrItemAdapter).getPath()));
+        admincentralEventBus.fireEvent(new ContentChangedEvent(((JcrNodeAdapter) jcrItemAdapter).getWorkspace(), ((JcrNodeAdapter) jcrItemAdapter).getItemId()));
         // Display a notification
 
         Context context = MgnlContext.getInstance();

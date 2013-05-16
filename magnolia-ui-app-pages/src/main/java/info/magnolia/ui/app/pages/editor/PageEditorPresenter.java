@@ -206,7 +206,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
             @Override
             public void onSuccess(String actionName) {
-                subAppEventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getPath()));
+                subAppEventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
                 formDialogPresenter.closeDialog();
             }
 

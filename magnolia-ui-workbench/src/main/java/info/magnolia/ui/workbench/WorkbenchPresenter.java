@@ -33,14 +33,18 @@
  */
 package info.magnolia.ui.workbench;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 import info.magnolia.ui.workbench.search.SearchPresenter;
@@ -50,6 +54,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
@@ -115,7 +122,12 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                 contentPresenters.put(presenterDefinition.getViewType().getText(), presenter);
                 if (presenterDefinition.isActive()) {
                     activePresenter = presenter;
-                    activePresenter.setSelectedItemPath(workbenchDefinition.getPath());
+                    try {
+                        String workbenchRootItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
+                        activePresenter.setSelectedItemId(workbenchRootItemId);
+                    } catch (RepositoryException e) {
+                        log.error("Could not find workbench root node", e);
+                    }
                 }
             } else {
                 throw new RuntimeException("The provided view type [" + presenterDefinition.getViewType().getText() + "] is not valid.");
@@ -161,14 +173,14 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     private void setViewType(ViewType viewType) {
         ContentPresenter oldPresenter = activePresenter;
-        String itemId = oldPresenter.getSelectedItemPath();
+        String itemId = oldPresenter.getSelectedItemId();
 
         activePresenter = contentPresenters.get(viewType.getText());
         activePresenter.refresh();
         view.setViewType(viewType);
 
         // make sure selection is kept when switching views
-        selectPath(itemId);
+        select(itemId);
     }
 
     public String getWorkspace() {
@@ -176,18 +188,37 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     }
 
     public String getSelectedId() {
-        return activePresenter.getSelectedItemPath();
+        return activePresenter.getSelectedItemId();
     }
 
-    public void selectPath(String itemId) {
-        // restore selection
-        boolean itemExists = itemExists(itemId);
-        if (!itemExists) {
-            log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.",
-                    new Object[] { itemId, workbenchDefinition.getWorkspace(), workbenchDefinition.getPath() });
-        }
+    public void select(String itemId) {
+        try {
 
-        activePresenter.setSelectedItemPath(itemExists ? itemId : workbenchDefinition.getPath());
+            // restore selection
+
+            if (JcrItemUtil.itemExists(getWorkspace(), itemId)) {
+                activePresenter.setSelectedItemId(itemId);
+            } else {
+                log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.",
+                        new Object[] { itemId, workbenchDefinition.getWorkspace(), workbenchDefinition.getPath() });
+                String workbenchRootItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
+                activePresenter.setSelectedItemId( workbenchRootItemId);
+            }
+
+            Item jcrItem = JcrItemUtil.getJcrItem(getWorkspace(), itemId);
+
+            JcrItemAdapter itemAdapter;
+            if (jcrItem.isNode()) {
+                itemAdapter = new JcrNodeAdapter((Node) jcrItem);
+            } else {
+                itemAdapter = new JcrPropertyAdapter((Property) jcrItem);
+            }
+
+            eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), itemAdapter));
+
+        } catch (RepositoryException e) {
+            log.warn("Unable to get node or property [{}] for selection", itemId, e);
+        }
     }
 
     public void refresh() {
@@ -203,9 +234,9 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         return this.workbenchDefinition.getContentViews().get(0).getViewType();
     }
 
-    public void resynch(final String path, final ContentView.ViewType viewType, final String query) {
+    public void resynch(final String itemId, final ContentView.ViewType viewType, final String query) {
         setViewType(viewType);
-        selectPath(path);
+        select(itemId);
 
         if (viewType == ViewType.SEARCH) {
             doSearch(query);
@@ -225,14 +256,5 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         } else {
             searchPresenter.search(searchExpression);
         }
-    }
-
-    private boolean itemExists(String path) {
-        try {
-            return StringUtils.isNotBlank(path) && MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).itemExists(path);
-        } catch (RepositoryException e) {
-            log.warn("", e);
-        }
-        return false;
     }
 }

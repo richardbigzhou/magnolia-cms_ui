@@ -35,9 +35,9 @@ package info.magnolia.ui.admincentral.i18n;
 
 
 import info.magnolia.ui.api.i18n.I18NAwareProperty;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
 
 import java.util.Locale;
 
@@ -60,13 +60,13 @@ public class I18NAwarePropertyImpl<T> extends AbstractProperty<T> implements I18
 
     private Class<T> type;
 
-    private JcrItemNodeAdapter parentNodeAdapter;
+    private AbstractJcrNodeAdapter parentNodeAdapter;
 
-    public I18NAwarePropertyImpl(String baseName, Class<T> type, JcrItemNodeAdapter parentNodeAdapter) {
+    public I18NAwarePropertyImpl(String baseName, Class<T> type, AbstractJcrNodeAdapter parentNodeAdapter) {
         this(baseName, type, parentNodeAdapter, "");
     }
 
-    public I18NAwarePropertyImpl(String baseName, Class<T> type, JcrItemNodeAdapter parentNodeAdapter, Object defaultValue) {
+    public I18NAwarePropertyImpl(String baseName, Class<T> type, AbstractJcrNodeAdapter parentNodeAdapter, Object defaultValue) {
         super();
         this.type = type;
         this.defaultValue = defaultValue;

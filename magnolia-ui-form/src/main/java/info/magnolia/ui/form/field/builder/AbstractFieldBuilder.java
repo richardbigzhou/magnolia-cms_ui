@@ -206,7 +206,7 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
      */
     protected Node getRelatedNode(Item fieldRelatedItem) {
         if (fieldRelatedItem instanceof JcrNewNodeAdapter) {
-            return ((JcrNewNodeAdapter) fieldRelatedItem).getParentNode();
+            return ((JcrNewNodeAdapter) fieldRelatedItem).getJcrItem();
         } else {
             return ((JcrNodeAdapter) fieldRelatedItem).getNode();
         }

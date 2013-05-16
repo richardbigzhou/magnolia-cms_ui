@@ -37,24 +37,32 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.contentapp.browser.BrowserPresenter;
 import info.magnolia.ui.contentapp.browser.BrowserSubApp;
+import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * PagesMainSubApp.
+ * Main SubApp for Pages - the Browser.
  */
 public class PagesMainSubApp extends BrowserSubApp {
+
+    private static final Logger log = LoggerFactory.getLogger(PagesMainSubApp.class);
 
     @Inject
     public PagesMainSubApp(ActionExecutor actionExecutor, final SubAppContext subappContext, ContentSubAppView view, BrowserPresenter workbench, @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
@@ -64,44 +72,52 @@ public class PagesMainSubApp extends BrowserSubApp {
     @Override
     public void updateActionbar(ActionbarPresenter actionbar) {
 
-        // actions currently always disabled
-        actionbar.disable("move", "duplicate");
+        final String selectedItemId = getBrowser().getSelectedItemId();
 
-        // actions disabled based on selection
-        final String[] defaultPageActions = new String[] { "delete", "preview", "edit", "export", "activate", "deactivate", "activateRecursive" };
-        final String[] defaultPageDeleteActions = new String[] { "activate", "activateRecursive", "showPreviousVersion", "restorePreviousVersion" };
-
-        if (getBrowser().getSelectedItemId() == null || "/".equals(getBrowser().getSelectedItemId())) {
-            actionbar.hideSection("pageDeleteActions");
-            actionbar.showSection("pageActions");
-            actionbar.disable(defaultPageActions);
-            actionbar.enable("add");
-        } else {
-
-            final String path = getBrowser().getSelectedItemId();
-            final String workspace = getBrowser().getWorkspace();
-            final Node page = SessionUtil.getNode(workspace, path);
-            if (page == null) {
-                return;
+        try {
+            Item jcrItem = null;
+            BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
+            WorkbenchDefinition workbench = subAppDescriptor.getWorkbench();
+            String workbenchRootItemId = JcrItemUtil.getItemId(workbench.getWorkspace(), workbench.getPath());
+            if (selectedItemId != null && !selectedItemId.equals(workbenchRootItemId)) {
+                jcrItem = JcrItemUtil.getJcrItem(workbench.getWorkspace(), selectedItemId);
             }
 
-            // if it's deleted, display the deleted section
-            if (isDeletedNode(page)) {
-                actionbar.showSection("pageDeleteActions");
-                actionbar.hideSection("pageActions");
-                actionbar.disable(defaultPageActions);
-                actionbar.disable("add");
-                actionbar.enable(defaultPageDeleteActions);
-
-            } else {
+            // actions currently always disabled
+            actionbar.disable("move", "duplicate");
+    
+            // actions disabled based on selection
+            final String[] defaultPageActions = new String[] { "delete", "preview", "edit", "export", "activate", "deactivate", "activateRecursive" };
+            final String[] defaultPageDeleteActions = new String[] { "activate", "activateRecursive", "showPreviousVersion", "restorePreviousVersion" };
+    
+            if (jcrItem == null) {
                 actionbar.hideSection("pageDeleteActions");
                 actionbar.showSection("pageActions");
-                actionbar.enable(defaultPageActions);
+                actionbar.disable(defaultPageActions);
+                actionbar.enable("add");                
+            } else {
+                final Node page = (Node) jcrItem;
+    
+                // if it's deleted, display the deleted section
+                if (isDeletedNode(page)) {
+                    actionbar.showSection("pageDeleteActions");
+                    actionbar.hideSection("pageActions");
+                    actionbar.disable(defaultPageActions);
+                    actionbar.disable("add");
+                    actionbar.enable(defaultPageDeleteActions);
+    
+                } else {
+                    actionbar.hideSection("pageDeleteActions");
+                    actionbar.showSection("pageActions");
+                    actionbar.enable(defaultPageActions);
+                }
+                // if it's a leaf recursive activation should not be available.
+                if (isLeaf(page)) {
+                    actionbar.disable("activateRecursive");
+                }
             }
-            // if it's a leaf recursive activation should not be available.
-            if (isLeaf(page)) {
-                actionbar.disable("activateRecursive");
-            }
+        } catch (RepositoryException e) {
+            log.warn("Unable to determine node type of {}", selectedItemId);
         }
     }
 

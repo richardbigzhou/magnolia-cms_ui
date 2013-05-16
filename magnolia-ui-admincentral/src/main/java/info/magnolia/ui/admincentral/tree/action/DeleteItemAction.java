@@ -44,6 +44,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import javax.inject.Named;
+import javax.jcr.Item;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -59,7 +60,7 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
 
     private final SubAppContext subAppContext;
 
-    private String path;
+    private String itemId;
     private final JcrItemAdapter item;
     private final EventBus eventBus;
 
@@ -70,17 +71,21 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
         this.eventBus = eventBus;
     }
 
-    protected String getItemPath() throws RepositoryException {
-        return path;
+    protected String getItemId() throws RepositoryException {
+        return itemId;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
 
-        // avoid JCR logging long stacktraces about root not being removable.
-        if ("/".equals(item.getPath())) {
-            path = item.getPath();
-            return;
+        try {
+            // avoid JCR logging long stacktraces about root not being removable.
+            if (item.getJcrItem().getDepth() == 0) {
+                itemId = item.getItemId();
+                return;
+            }
+        } catch (RepositoryException e) {
+            throw new ActionExecutionException("Problem accessing JCR", e);
         }
 
         subAppContext.openConfirmation(
@@ -102,11 +107,12 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
     protected void executeAfterConfirmation() {
 
         try {
-            path = item.getJcrItem().getParent().getPath();
-            Session session = item.getJcrItem().getSession();
-            item.getJcrItem().remove();
+            final Item jcrItem = item.getJcrItem();
+            itemId = jcrItem.getParent().getPath();
+            Session session = jcrItem.getSession();
+            jcrItem.remove();
             session.save();
-            eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), getItemPath()));
+            eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), getItemId()));
 
             // Show notification
             subAppContext.openNotification(MessageStyleTypeEnum.INFO, true, "Item deleted.");

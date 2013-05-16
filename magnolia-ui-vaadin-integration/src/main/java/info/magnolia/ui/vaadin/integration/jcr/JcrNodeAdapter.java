@@ -86,7 +86,7 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
         try {
             setNodeName(jcrNode.getName());
         } catch (RepositoryException e) {
-            log.error("Could not access the Node name.... Should never happen", e);
+            log.error("Could not access the node name", e);
         }
     }
 
@@ -160,9 +160,9 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
 
     private boolean jcrItemHasProperty(String propertyName) {
         try {
-            return ((Node) getJcrItem()).hasProperty(propertyName);
+            return getJcrItem().hasProperty(propertyName);
         } catch (RepositoryException e) {
-            log.error("", e);
+            log.error("Could not determine if property [{}] exists", propertyName, e);
             return false;
         }
     }

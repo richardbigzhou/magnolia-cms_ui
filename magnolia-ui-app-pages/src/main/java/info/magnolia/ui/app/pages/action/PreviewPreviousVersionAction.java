@@ -39,7 +39,7 @@ import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.api.action.ActionBase;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 
 import javax.inject.Inject;
 import javax.jcr.RepositoryException;
@@ -55,12 +55,12 @@ import org.slf4j.LoggerFactory;
  */
 public class PreviewPreviousVersionAction extends ActionBase<PreviewPreviousVersionActionDefinition> {
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final JcrItemNodeAdapter nodeItemToEdit;
+    private final AbstractJcrNodeAdapter nodeItemToEdit;
     private final LocationController locationController;
     private final VersionManager versionManager;
 
     @Inject
-    public PreviewPreviousVersionAction(PreviewPreviousVersionActionDefinition definition, JcrItemNodeAdapter nodeItemToEdit, LocationController locationController, VersionManager versionManager) {
+    public PreviewPreviousVersionAction(PreviewPreviousVersionActionDefinition definition, AbstractJcrNodeAdapter nodeItemToEdit, LocationController locationController, VersionManager versionManager) {
         super(definition);
         this.nodeItemToEdit = nodeItemToEdit;
         this.locationController = locationController;
