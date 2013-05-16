@@ -34,7 +34,8 @@
 package info.magnolia.ui.vaadin.gwt.client.shared;
 
 /**
- * Class for GSON serialization of area elements.
+ * A slimmed down representation of a {@link info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent}.
+ * Used for communication between server and client.
  */
 public class ComponentElement extends AbstractElement {
 

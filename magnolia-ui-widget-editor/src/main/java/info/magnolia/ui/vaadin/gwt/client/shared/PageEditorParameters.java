@@ -38,7 +38,7 @@ import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
 import java.io.Serializable;
 
 /**
- * PageEditorParameters.
+ * Used to synchronize the status of the page editor between server and client.
  */
 public class PageEditorParameters implements Serializable {
 

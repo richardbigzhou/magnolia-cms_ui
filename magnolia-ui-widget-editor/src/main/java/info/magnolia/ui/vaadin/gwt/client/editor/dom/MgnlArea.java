@@ -50,7 +50,17 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventBus;
 
 /**
- * MgnlArea.
+ * Represents an area inside the {@link CmsNode}-tree.
+ * An area can have 3 widgets associated with it:
+ * <pre>
+ *   <ul>
+ *     <li>{@link info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaBar}</li>
+ *     <li>{@link AreaEndBar}</li>
+ *     <li>{@link ComponentPlaceHolder}</li>
+ *   </ul>
+ * </pre>
+ * Implements a listener interface for the {@link info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaBar} and {@link ComponentPlaceHolder}.
+ * Provides wrapper functions used by the {@link info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModel}.
  */
 public class MgnlArea extends MgnlElement implements AreaListener {
 
@@ -68,7 +78,7 @@ public class MgnlArea extends MgnlElement implements AreaListener {
         this.eventBus = eventBus;
     }
 
-    public AreaEndBar getAreaEndBar() {
+    private AreaEndBar getAreaEndBar() {
         return areaEndBar;
     }
 
@@ -76,7 +86,7 @@ public class MgnlArea extends MgnlElement implements AreaListener {
         this.areaEndBar = areaEndBar;
     }
 
-    public ComponentPlaceHolder getComponentPlaceHolder() {
+    private ComponentPlaceHolder getComponentPlaceHolder() {
         return componentPlaceHolder;
     }
 
