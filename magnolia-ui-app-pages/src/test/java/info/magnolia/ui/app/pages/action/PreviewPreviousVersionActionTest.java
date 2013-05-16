@@ -36,11 +36,16 @@ package info.magnolia.ui.app.pages.action;
 import static org.mockito.Mockito.mock;
 import static org.junit.Assert.assertEquals;
 import info.magnolia.cms.core.version.VersionManager;
+import info.magnolia.cms.security.operations.AccessDefinition;
+import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.api.action.ActionAvailabilityDefinition;
+import info.magnolia.ui.api.action.ConfiguredActionAvailabilityDefinition;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.shell.Shell;
@@ -60,7 +65,7 @@ public class PreviewPreviousVersionActionTest extends RepositoryTestCase {
 
     private Node node;
 
-    private static final PreviewPreviousVersionActionDefinition DEFINITION = new PreviewPreviousVersionActionDefinition();
+    private PreviewPreviousVersionActionDefinition definition;
 
     private SimpleEventBus locationEventBus;
     private LocationController locationController;
@@ -69,6 +74,10 @@ public class PreviewPreviousVersionActionTest extends RepositoryTestCase {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
+        ComponentsTestUtil.setImplementation(ActionAvailabilityDefinition.class, ConfiguredActionAvailabilityDefinition.class);
+        definition = new PreviewPreviousVersionActionDefinition();
+
         Session webSiteSession = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
         node = webSiteSession.getRootNode().addNode("node", NodeTypes.Page.NAME);
         NodeTypes.Created.set(node);
@@ -88,7 +97,7 @@ public class PreviewPreviousVersionActionTest extends RepositoryTestCase {
         VersionManager versionMan = VersionManager.getInstance();
         versionMan.addVersion(node);
         JcrItemNodeAdapter item = new JcrNodeAdapter(node);
-        PreviewPreviousVersionAction action = new PreviewPreviousVersionAction(DEFINITION, item, locationController, versionMan);
+        PreviewPreviousVersionAction action = new PreviewPreviousVersionAction(definition, item, locationController, versionMan);
 
         // WHEN
         action.execute();
@@ -103,7 +112,7 @@ public class PreviewPreviousVersionActionTest extends RepositoryTestCase {
         // GIVEN
         VersionManager versionMan = VersionManager.getInstance();
         JcrItemNodeAdapter item = new JcrNodeAdapter(node);
-        PreviewPreviousVersionAction action = new PreviewPreviousVersionAction(DEFINITION, item, locationController, versionMan);
+        PreviewPreviousVersionAction action = new PreviewPreviousVersionAction(definition, item, locationController, versionMan);
 
         // WHEN
         action.execute();
@@ -121,7 +130,7 @@ public class PreviewPreviousVersionActionTest extends RepositoryTestCase {
         versionMan.addVersion(node);
         versionMan.addVersion(node);
         JcrItemNodeAdapter item = new JcrNodeAdapter(node);
-        PreviewPreviousVersionAction action = new PreviewPreviousVersionAction(DEFINITION, item, locationController, versionMan);
+        PreviewPreviousVersionAction action = new PreviewPreviousVersionAction(definition, item, locationController, versionMan);
 
         // WHEN
         action.execute();
