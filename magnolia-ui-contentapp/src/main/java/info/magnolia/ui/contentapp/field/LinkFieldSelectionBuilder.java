@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2011-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -103,7 +103,7 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
         chooseDialogEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
-                final Node selected = SessionUtil.getNode(event.getWorkspace(), event.getPath());
+                final Node selected = SessionUtil.getNodeByIdentifier(event.getWorkspace(), event.getItemId());
                 if (selected != null) {
                     try {
                         boolean isPropertyExisting = StringUtils.isNotBlank(propertyName)
@@ -130,6 +130,6 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
         final String propertyValue = String.valueOf(item.getItemProperty(propertyName).getValue());
         // TODO 20130513 mgeljic get fallback root path from workbench definition
         final String path = LinkFieldBuilder.PATH_PROPERTY_NAME.equals(propertyName) && StringUtils.isNotBlank(propertyValue) ? propertyValue : "/";
-        workbenchPresenter.selectPath(path);
+        workbenchPresenter.select(path);
     }
 }

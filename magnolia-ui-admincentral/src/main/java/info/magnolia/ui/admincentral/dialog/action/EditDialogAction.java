@@ -90,7 +90,7 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
             @Override
             public void onSuccess(String actionName) {
                 final String newItemId = (String) itemToEdit.getItemProperty(ModelConstants.JCR_NAME).getValue();
-                final String itemId = newItemId == null ? itemToEdit.getPath() : NodeUtil.combinePathAndName(parentNodePath, newItemId);
+                final String itemId = newItemId == null ? itemToEdit.getItemId() : NodeUtil.combinePathAndName(parentNodePath, newItemId);
 
                 eventBus.fireEvent(new ContentChangedEvent(itemToEdit.getWorkspace(), itemId));
                 formDialogPresenter.closeDialog();
