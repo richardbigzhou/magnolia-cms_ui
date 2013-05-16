@@ -37,57 +37,28 @@ import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.message.MessagesManager.MessageListener;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 /**
  * Dispatches events on an {@link EventBus} for a certain user.
  */
-@Singleton
 public class LocalMessageDispatcher implements MessageListener {
 
-    private BlockingQueue<MessageEvent> messageQueue = new LinkedBlockingQueue<MessageEvent>();
-
     private EventBus eventBus;
-
-    private final Thread messageQueueThread = new Thread() {
-
-        @Override
-        public void run() {
-            while (!Thread.currentThread().isInterrupted()) {
-                try {
-                    final MessageEvent msg = messageQueue.take();
-                    eventBus.fireEvent(msg);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-    };
 
     @Inject
     public LocalMessageDispatcher(@Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
         this.eventBus = eventBus;
-        messageQueueThread.setName("LocalMessageDispatcher");
-        messageQueueThread.setDaemon(true);
-        messageQueueThread.start();
     }
 
     @Override
     public void messageSent(Message message) {
-        queueEvent(new MessageEvent(message, false));
+        eventBus.fireEvent(new MessageEvent(message, false));
     }
 
     @Override
     public void messageCleared(Message message) {
-        queueEvent(new MessageEvent(message, true));
-    }
-
-    private void queueEvent(MessageEvent event) {
-        messageQueue.add(event);
+        eventBus.fireEvent(new MessageEvent(message, true));
     }
 }

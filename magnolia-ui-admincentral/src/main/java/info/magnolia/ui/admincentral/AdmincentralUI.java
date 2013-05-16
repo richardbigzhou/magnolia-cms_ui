@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.Components;
@@ -43,6 +44,8 @@ import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.framework.event.EventBusProtector;
+import info.magnolia.ui.framework.message.LocalMessageDispatcher;
+import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.view.View;
@@ -67,6 +70,9 @@ public class AdmincentralUI extends UI {
     private static final Logger log = LoggerFactory.getLogger(AdmincentralUI.class);
     private GuiceComponentProvider componentProvider;
     private EventBusProtector eventBusProtector;
+    private MessagesManager messagesManager;
+    private LocalMessageDispatcher messageDispatcher;
+    private String userName;
 
     @Override
     protected void init(VaadinRequest request) {
@@ -96,10 +102,16 @@ public class AdmincentralUI extends UI {
         AdmincentralPresenter presenter = componentProvider.newInstance(AdmincentralPresenter.class);
         View view = presenter.start();
         setContent(view.asVaadinComponent());
+
+        messageDispatcher = componentProvider.newInstance(LocalMessageDispatcher.class);
+        messagesManager = Components.getComponent(MessagesManager.class);
+        userName = MgnlContext.getUser().getName();
+        messagesManager.registerMessagesListener(userName, messageDispatcher);
     }
 
     @Override
     public void detach() {
+        messagesManager.unregisterMessagesListener(userName, messageDispatcher);
         try {
             // make sure the error handler covers the detach phase (it does not happen in service phase).
             super.detach();
