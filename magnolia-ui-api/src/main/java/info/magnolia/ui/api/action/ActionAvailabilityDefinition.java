@@ -37,6 +37,8 @@ import info.magnolia.cms.security.operations.AccessDefinition;
 
 import java.util.Collection;
 
+import javax.jcr.Item;
+
 /**
  * Definition of restrictions on when an action is available.
  */
@@ -66,4 +68,9 @@ public interface ActionAvailabilityDefinition {
      * Returns the AccessDefinition object for this action.
      */
     AccessDefinition getAccess();
+
+    /**
+     * Returns true if the action is available for the current user and item.
+     */
+    boolean isAvailable(Item item);
 }

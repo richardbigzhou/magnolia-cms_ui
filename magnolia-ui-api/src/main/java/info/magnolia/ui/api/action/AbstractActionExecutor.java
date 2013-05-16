@@ -33,16 +33,11 @@
  */
 package info.magnolia.ui.api.action;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.MgnlInstantiationException;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,41 +101,11 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
 
     @Override
     public boolean isAvailable(String actionName, Item item) {
-
         ActionDefinition actionDefinition = getActionDefinition(actionName);
         if (actionDefinition == null) {
             return false;
         }
-
         ActionAvailabilityDefinition availability = actionDefinition.getAvailability();
-
-        // Validate that the user has all required roles
-        if (!availability.getAccess().hasAccess(MgnlContext.getUser())) {
-            return false;
-        }
-
-        if (item == null) {
-            return availability.isRoot();
-        }
-
-        if (!item.isNode()) {
-            return availability.isProperties();
-        }
-
-        // Must have _any_ of the node types if any are specified, otherwise its available by default
-        if (availability.getNodeTypes().isEmpty())
-            return true;
-
-        for (String nodeType : availability.getNodeTypes()) {
-            try {
-                if (NodeUtil.isNodeType((Node)item, nodeType)) {
-                    return true;
-                }
-            } catch (RepositoryException e) {
-                log.error("Could not determine node type of node " + NodeUtil.getNodePathIfPossible((Node) item));
-            }
-        }
-
-        return false;
+        return availability.isAvailable(item);
     }
 }
