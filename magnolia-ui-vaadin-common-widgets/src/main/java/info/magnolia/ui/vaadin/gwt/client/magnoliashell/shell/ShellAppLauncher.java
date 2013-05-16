@@ -33,15 +33,10 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
-import info.magnolia.ui.vaadin.gwt.client.icon.widget.BadgeIconWidget;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppActivatedEvent;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.JQueryAnimation;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
 
 import java.util.EnumMap;
 import java.util.Iterator;
@@ -51,21 +46,16 @@ import java.util.Map.Entry;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
-import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
 
 /**
@@ -73,53 +63,17 @@ import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
  */
 public class ShellAppLauncher extends FlowPanel {
 
-    private final static int DIVET_ANIMATION_SPEED = 200;
+    /**
+     * Listener.
+     */
+    public interface Listener {
+        void onHideShellAppsRequested();
+        void showShellApp(ShellAppType type);
+    }
+
+    private final static int DIVET_ANIMATION_SPEED = 400;
 
     private final static String ID = "main-launcher";
-
-    private JQueryAnimation divetAnimation;
-
-    /**
-     * NavigatorButton.
-     */
-    public class NavigatorButton extends FlowPanel {
-
-        private final BadgeIconWidget indicator = new BadgeIconWidget();
-
-        private final TouchDelegate delegate = new TouchDelegate(this);
-
-        public NavigatorButton(final ShellAppType type) {
-            super();
-            addStyleName("btn-shell");
-            Element root = getElement();
-            root.setId("btn-" + type.getCssClass());
-            root.addClassName("icon-" + type.getCssClass());
-
-            indicator.setFillColor("#fff");
-            indicator.setStrokeColor("#689600");
-            indicator.setOutline(true);
-            root.appendChild(indicator.getElement());
-
-            DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
-            delegate.addTouchEndHandler(new TouchEndHandler() {
-                @Override
-                public void onTouchEnd(TouchEndEvent event) {
-                    // Has user clicked on the active shell app?
-                    if (type == getActiveShellType()) {
-                        // if open then close it.
-                        closeShellAppViewport();
-                    } else {
-                        // If closed, then open it.
-                        navigateToShellApp(type);
-                    }
-                }
-            });
-        }
-
-        public void setIndication(int indication) {
-            indicator.setValue(indication);
-        }
-    }
 
     private final Element divetWrapper = DOM.createDiv();
 
@@ -131,11 +85,12 @@ public class ShellAppLauncher extends FlowPanel {
 
     private final Map<ShellAppType, NavigatorButton> controlsMap = new EnumMap<ShellAppType, NavigatorButton>(ShellAppType.class);
 
-    private final EventBus eventBus;
+    private JQueryAnimation divetAnimation;
 
-    public ShellAppLauncher(final EventBus eventBus) {
+    private Listener listener;
+
+    public ShellAppLauncher() {
         super();
-        this.eventBus = eventBus;
         this.divetAnimation = new JQueryAnimation();
         getElement().setId(ID);
         construct();
@@ -154,6 +109,10 @@ public class ShellAppLauncher extends FlowPanel {
                 }});
             }
         });
+    }
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
     public final void updateDivet() {
@@ -176,8 +135,8 @@ public class ShellAppLauncher extends FlowPanel {
 
     public void deactivateControls() {
         divet.setVisible(false);
-        for (final ShellAppType appType : ShellAppType.values()) {
-            controlsMap.get(appType).removeStyleName("active");
+        for (final NavigatorButton button : controlsMap.values()) {
+            button.removeStyleName("active");
         }
     }
 
@@ -185,7 +144,7 @@ public class ShellAppLauncher extends FlowPanel {
         controlsMap.get(type).setIndication(indication);
     }
 
-    protected void activateControl(final ShellAppType type) {
+    public void activateControl(final ShellAppType type) {
         final ShellAppType currentActive = getActiveShellType();
         if (currentActive != null) {
             controlsMap.get(currentActive).removeStyleName("active");
@@ -193,14 +152,6 @@ public class ShellAppLauncher extends FlowPanel {
         doUpdateDivetPosition(type, currentActive != null);
         final Widget w = controlsMap.get(type);
         w.addStyleName("active");
-    }
-
-    private void navigateToShellApp(final ShellAppType type) {
-        eventBus.fireEvent(new ShellAppActivatedEvent(type, ""));
-    }
-
-    private void closeShellAppViewport() {
-        eventBus.fireEvent(new ViewportCloseEvent(ViewportType.SHELL_APP));
     }
 
     private void construct() {
@@ -216,6 +167,19 @@ public class ShellAppLauncher extends FlowPanel {
         add(divet, divetWrapper);
         for (final ShellAppType appType : ShellAppType.values()) {
             final NavigatorButton w = new NavigatorButton(appType);
+            w.addTouchEndHandler(new TouchEndHandler() {
+                @Override
+                public void onTouchEnd(TouchEndEvent event) {
+                    // Has user clicked on the active shell app?
+                    if (appType == getActiveShellType()) {
+                        // if open then close it.
+                        listener.onHideShellAppsRequested();
+                    } else {
+                        listener.showShellApp(appType);
+                        // If closed, then open it.
+                    }
+                }
+            });
             controlsMap.put(appType, w);
             add(w);
         }
@@ -229,16 +193,7 @@ public class ShellAppLauncher extends FlowPanel {
             public void onTouchEnd(TouchEndEvent event) {
                 emergencyRestartApplication();
             }
-        });
-        History.addValueChangeHandler(new ValueChangeHandler<String>() {
-            @Override
-            public void onValueChange(ValueChangeEvent<String> event) {
-                Fragment f = Fragment.fromString(event.getValue());
-                if (f.isShellApp()) {
-                    activateControl(f.resolveShellAppType());
-                }
-            }
-        });
+        });;
     }
 
     private void doUpdateDivetPosition(final ShellAppType type, boolean animated) {
