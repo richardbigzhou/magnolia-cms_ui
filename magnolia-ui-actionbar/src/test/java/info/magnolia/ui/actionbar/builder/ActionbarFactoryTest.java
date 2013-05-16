@@ -48,7 +48,9 @@ import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition;
+import info.magnolia.ui.actionbar.definition.ConfiguredGroupAvailabilityDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredSectionAvailabilityDefinition;
+import info.magnolia.ui.actionbar.definition.GroupAvailabilityDefinition;
 import info.magnolia.ui.actionbar.definition.SectionAvailabilityDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
@@ -79,6 +81,7 @@ public class ActionbarFactoryTest extends MgnlTestCase {
         super.setUp();
         ComponentsTestUtil.setImplementation(ActionAvailabilityDefinition.class, ConfiguredActionAvailabilityDefinition.class);
         ComponentsTestUtil.setImplementation(SectionAvailabilityDefinition.class, ConfiguredSectionAvailabilityDefinition.class);
+        ComponentsTestUtil.setImplementation(GroupAvailabilityDefinition.class, ConfiguredGroupAvailabilityDefinition.class);
     }
 
     @Test
