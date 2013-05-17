@@ -49,6 +49,11 @@
         @extend .icon-arrow1_n:before;
     }
     
+    .sortable:hover .v-table-sort-indicator:before {
+        @extend .icon-arrow1_n:before;
+        color: #DBDF7C;
+    }
+    
     .v-table-sort-indicator {
         margin-top:1px;
         background: none !important;
