@@ -145,7 +145,7 @@ public class CreateComponentAction extends ActionBase<CreateComponentActionDefin
                 }
             });
         } catch (RepositoryException e) {
-            log.error("Exception caught: {}", e.getMessage(), e);
+            throw new ActionExecutionException(e);
         }
     }
 

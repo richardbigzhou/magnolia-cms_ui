@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,40 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
-import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * PageEditorView.
+ * Defines an action for creating a area.
+ *
+ * @see CreateAreaAction
  */
-public interface PageEditorView extends View {
-
-    void setListener(Listener listener);
-
-    void refresh();
-
-    void load(PageEditorParameters parameters);
-
-    void init();
-
-    void update(PageEditorParameters parameters);
-
-    /**
-     * Listener.
-     */
-    public interface Listener {
-
-        void editComponent(String workspace, String path, String dialog);
-
-        void newArea();
-
-        void newComponent();
-
-        void sortComponent(String workspace, String parentPath, String source, String target, String order);
-
-        void selectElement(AbstractElement nodeSelection);
+public class CreateAreaActionDefinition extends ConfiguredActionDefinition{
+    public CreateAreaActionDefinition() {
+        setImplementationClass(CreateAreaAction.class);
     }
 }

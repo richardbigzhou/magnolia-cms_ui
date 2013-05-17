@@ -72,7 +72,7 @@ public class PageEditorPresenter implements PageEditorView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(PageEditorPresenter.class);
 
-    private ActionExecutor actionExecutor;
+    private final ActionExecutor actionExecutor;
     private final PageEditorView view;
 
     private final EventBus subAppEventBus;
@@ -133,22 +133,23 @@ public class PageEditorPresenter implements PageEditorView.Listener {
      */
     @Override
     public void newComponent() {
-
         try {
-            Session session = MgnlContext.getJCRSession(selectedElement.getWorkspace());
-            final javax.jcr.Item item = session.getItem(selectedElement.getPath());
-            if (item.isNode()) {
-                actionExecutor.execute("addComponent", selectedElement);
-            } else {
-                throw new IllegalArgumentException("Selected value is not a node. Can only operate on nodes.");
-            }
-        } catch (RepositoryException e) {
-            Message error = new Message(MessageType.ERROR, "Could not get item: " + selectedElement.getPath(), e.getMessage());
-            subAppContext.getAppContext().broadcastMessage(error);
+            actionExecutor.execute("addComponent", selectedElement);
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
             subAppContext.getAppContext().broadcastMessage(error);
         }
+    }
+
+    @Override
+    public void newArea() {
+        try {
+            actionExecutor.execute("addArea", selectedElement);
+        } catch (ActionExecutionException e) {
+            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            subAppContext.getAppContext().broadcastMessage(error);
+        }
+
     }
 
     /**
@@ -169,27 +170,6 @@ public class PageEditorPresenter implements PageEditorView.Listener {
                 formDialogPresenter.closeDialog();
             }
         });
-    }
-
-    @Override
-    public void newArea(String workspace, String nodeType, String path) {
-
-        int index = path.lastIndexOf("/");
-        String parent = path.substring(0, index);
-        String relPath = path.substring(index + 1);
-
-        try {
-            Session session = MgnlContext.getJCRSession(workspace);
-
-            Node parentNode = session.getNode(parent);
-
-            Node newNode = NodeUtil.createPath(parentNode, relPath, nodeType);
-            NodeTypes.LastModified.update(newNode);
-            session.save();
-            view.refresh();
-        } catch (RepositoryException e) {
-            log.error("Exception caught: {}", e.getMessage(), e);
-        }
     }
 
     @Override

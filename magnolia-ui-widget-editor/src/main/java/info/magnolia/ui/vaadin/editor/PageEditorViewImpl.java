@@ -127,7 +127,7 @@ public class PageEditorViewImpl extends CssLayout implements PageEditorView {
 
             @Override
             public void newArea(String workspace, String nodeType, String path) {
-                listener.newArea(workspace, nodeType, path);
+                listener.newArea();
             }
 
             @Override

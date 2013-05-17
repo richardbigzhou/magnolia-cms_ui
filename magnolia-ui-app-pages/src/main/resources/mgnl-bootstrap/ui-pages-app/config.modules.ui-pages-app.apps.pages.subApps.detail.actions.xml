@@ -260,16 +260,13 @@
       <sv:value>5bf6d7b5-c590-489a-9824-2c70edf03b60</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition</sv:value>
-    </sv:property>
-    <sv:property sv:name="dialogName" sv:type="String">
-      <sv:value>ui-pages-app:area</sv:value>
+      <sv:value>info.magnolia.ui.app.pages.action.CreateAreaActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-add-item</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-10T15:30:59.855+02:00</sv:value>
+      <sv:value>2013-05-17T10:46:27.523+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -284,40 +281,11 @@
       <sv:value>2013-02-25T13:07:48.849+01:00</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-      <sv:value>2013-02-25T13:21:30.513+01:00</sv:value>
+      <sv:value>2013-05-17T16:45:33.171+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
       <sv:value>superuser</sv:value>
     </sv:property>
-    <sv:property sv:name="nodeType" sv:type="String">
-      <sv:value>mgnl:area</sv:value>
-    </sv:property>
-    <sv:node sv:name="untitled">
-      <sv:property sv:name="jcr:primaryType" sv:type="Name">
-        <sv:value>mgnl:contentNode</sv:value>
-      </sv:property>
-      <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
-        <sv:value>mix:lockable</sv:value>
-      </sv:property>
-      <sv:property sv:name="jcr:uuid" sv:type="String">
-        <sv:value>4c4ed4c2-5e19-4fee-b275-8e4c9ef15b74</sv:value>
-      </sv:property>
-      <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-10T15:30:59.856+02:00</sv:value>
-      </sv:property>
-      <sv:property sv:name="jcr:createdBy" sv:type="String">
-        <sv:value>admin</sv:value>
-      </sv:property>
-      <sv:property sv:name="mgnl:created" sv:type="Date">
-        <sv:value>2013-02-25T13:20:54.143+01:00</sv:value>
-      </sv:property>
-      <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-        <sv:value>2013-02-25T13:20:54.143+01:00</sv:value>
-      </sv:property>
-      <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
-        <sv:value>superuser</sv:value>
-      </sv:property>
-    </sv:node>
   </sv:node>
   <sv:node sv:name="deleteArea">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
