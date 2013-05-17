@@ -122,7 +122,7 @@ public class PageEditorViewImpl extends CssLayout implements PageEditorView {
 
             @Override
             public void newComponent(String workspace, String eventType, String availableComponents) {
-                listener.newComponent(workspace, eventType, availableComponents);
+                listener.newComponent();
             }
 
             @Override

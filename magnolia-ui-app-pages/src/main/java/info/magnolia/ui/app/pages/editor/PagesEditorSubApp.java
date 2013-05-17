@@ -380,6 +380,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     @Override
     public void onActionbarItemClicked(String actionName) {
+        AbstractElement selectedElement = pageEditorPresenter.getSelectedElement();
 
         if (actionName.equals("editProperties") || actionName.equals("editComponent") || actionName.equals("editArea")) {
             pageEditorPresenter.editComponent(
@@ -387,25 +388,18 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                     pageEditorPresenter.getSelectedElement().getPath(),
                     pageEditorPresenter.getSelectedElement().getDialog());
         }
-        else if (actionName.equals("addComponent")) {
-            AreaElement areaElement = (AreaElement) pageEditorPresenter.getSelectedElement();
-            pageEditorPresenter.newComponent(
-                    workspace,
-                    areaElement.getPath(),
-                    areaElement.getAvailableComponents());
-        }
 
         else {
             try {
                 Session session = MgnlContext.getJCRSession(workspace);
-                final javax.jcr.Item item = session.getItem(pageEditorPresenter.getSelectedElement().getPath());
+                final javax.jcr.Item item = session.getItem(selectedElement.getPath());
                 if (item.isNode()) {
-                    actionExecutor.execute(actionName, new JcrNodeAdapter((Node)item));
+                    actionExecutor.execute(actionName, new JcrNodeAdapter((Node)item), selectedElement);
                 } else {
                     throw new IllegalArgumentException("Selected value is not a node. Can only operate on nodes.");
                 }
             } catch (RepositoryException e) {
-                Message error = new Message(MessageType.ERROR, "Could not get item: " + parameters.getNodePath(), e.getMessage());
+                Message error = new Message(MessageType.ERROR, "Could not get item: " + selectedElement.getPath(), e.getMessage());
                 appContext.broadcastMessage(error);
             } catch (ActionExecutionException e) {
                 Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());

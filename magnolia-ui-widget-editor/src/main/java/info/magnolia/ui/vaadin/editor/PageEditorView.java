@@ -61,7 +61,7 @@ public interface PageEditorView extends View {
 
         void newArea(String workspace, String nodeType, String path);
 
-        void newComponent(String workspace, String path, String availableComponents);
+        void newComponent();
 
         void sortComponent(String workspace, String parentPath, String source, String target, String order);
 

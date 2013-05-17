@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,9 +38,11 @@ import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 /**
  * Defines an action for adding a component in an area of the page editor.
  *
- * Does not have a concrete action implementation, but is intercepted by the editor subapp to
- * delegate execution to PageEditorPresenter.
+ * @see CreateComponentAction
  */
-public class AddComponentActionDefinition extends ConfiguredActionDefinition {
+public class CreateComponentActionDefinition extends ConfiguredActionDefinition {
 
+    public CreateComponentActionDefinition() {
+        setImplementationClass(CreateComponentAction.class);
+    }
 }

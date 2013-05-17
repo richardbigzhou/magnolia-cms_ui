@@ -184,7 +184,7 @@
       <sv:value>0ef572f7-fcb3-4b5e-b264-8bce5ccdc4b9</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.app.pages.action.AddComponentActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.app.pages.action.CreateComponentActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-add-item</sv:value>
