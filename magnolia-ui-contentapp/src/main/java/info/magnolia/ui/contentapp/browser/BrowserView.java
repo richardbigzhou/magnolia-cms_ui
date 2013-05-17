@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,6 +34,7 @@
 package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.vaadin.actionbar.ActionPopup;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.workbench.WorkbenchView;
 
@@ -52,10 +53,16 @@ public interface BrowserView extends ComponentContainer, View {
 
     void setWorkbenchView(WorkbenchView workbenchView);
 
-    /**
-     * TODO: refactor callers, so that they aren't trying to fetch workbench out out browser.
-     * @return workbench view.
-     */
-    WorkbenchView getWorkbenchView();
+    void setListener(BrowserView.Listener listener);
 
+    ActionPopup getActionPopup();
+
+    /**
+     * Listener for the BrowserView.
+     */
+    public interface Listener {
+
+        void onActionBarSelection(String actionName);
+
+    }
 }

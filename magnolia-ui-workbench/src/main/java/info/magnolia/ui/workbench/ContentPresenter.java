@@ -41,7 +41,9 @@ import com.vaadin.data.Container;
 /**
  * Defines the basic api for a workbench content presenter.
  */
+
 public interface ContentPresenter {
+
 
     ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus);
 

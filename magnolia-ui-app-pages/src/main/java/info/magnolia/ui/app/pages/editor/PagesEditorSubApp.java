@@ -263,7 +263,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             Node node = MgnlContext.getJCRSession(workspace).getNode(path);
             String uri = i18NAuthoringSupport.createI18NURI(node, currentLocale);
             StringBuffer sb = new StringBuffer(uri);
-            if (parameters.isPreview()) {              
+            if (parameters.isPreview()) {
                 LinkUtil.addParameter(sb, "mgnlIntercept", "PREVIEW");
                 LinkUtil.addParameter(sb, "mgnlChannel", targetPreviewPlatform.getId());
             }
@@ -313,9 +313,13 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             public void onContentChanged(ContentChangedEvent event) {
                 if (event.getWorkspace().equals(RepositoryConstants.WEBSITE)) {
                     // Check if the node still exist
-                    Node currentpage = SessionUtil.getNode(event.getWorkspace(), event.getItemId());
-                    if (getCurrentLocation().getNodePath().startsWith(event.getItemId()) && currentpage == null) {
-                        getSubAppContext().close();
+                    try {
+                        String currentNodePath = getCurrentLocation().getNodePath();
+                        if (!MgnlContext.getJCRSession(RepositoryConstants.WEBSITE).nodeExists(currentNodePath)) {
+                            getSubAppContext().close();
+                        }
+                    } catch (RepositoryException e) {
+                        log.warn("Could not determine if currently edited page exists", e);
                     }
                 }
             }

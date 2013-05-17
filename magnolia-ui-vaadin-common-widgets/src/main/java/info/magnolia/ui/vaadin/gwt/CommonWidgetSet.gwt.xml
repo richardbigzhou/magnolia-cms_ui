@@ -1,11 +1,6 @@
 <module>
 
-  <!-- WS Compiler: manually edited -->
   <inherits name="com.vaadin.DefaultWidgetSet" />
-
-  <!--<inherits name="org.vaadin.artur.icepush.IcepushaddonWidgetset" />
-    <inherits name='org.vaadin.artur.superdevmode.SuperdevmodeaddonWidgetset' /> -->
-
 
   <inherits name='org.vaadin.gwtgraphics.GWTGraphics' />
   <inherits name='com.googlecode.mgwt.dom.DOM' />
@@ -17,6 +12,8 @@
   <inherits name="com.google.gwt.resources.Resources" />
   <inherits name="org.vaadin.openesignforms.ckeditor.widgetset.VaadinCKEditorWidgetset" />
   <inherits name="org.vaadin.cssinject.Cssinject_addonWidgetset" />
+
+  <inherits name="org.vaadin.peter.contextmenu.ContextmenuWidgetset" />
 
   <stylesheet src="jcrop/jquery.Jcrop.css" />
 
@@ -42,5 +39,7 @@
   </replace-with>
 
   <set-configuration-property name="mgwt.css" value="pretty" />
+
+
 
 </module>

@@ -59,6 +59,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.TableDragMode;
 
@@ -118,6 +119,8 @@ public class ListViewImpl implements ListView {
         bindHandlers();
     }
 
+
+
     private boolean isDeletedNode(JcrNodeAdapter nodeAdapter) {
         Node node = nodeAdapter.getNode();
         try {
@@ -147,7 +150,14 @@ public class ListViewImpl implements ListView {
             @Override
             public void itemClick(ItemClickEvent event) {
                 Object currentSelection = event.getItemId();
-                if (event.isDoubleClick()) {
+
+                if (event.getButton() == MouseButton.RIGHT) {
+                    if (listener != null) {
+                        listener.onRightClick(event.getItem(), event.getClientX(), event.getClientY());
+                        // Select clicked item so that user knows which item they are acting on.
+                        table.select(event.getItemId());
+                    }
+                } else if (event.isDoubleClick()) {
                     if (listener != null) {
                         listener.onDoubleClick(event.getItem());
                     }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -56,6 +56,8 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
 
     private final List<ThumbnailDblClickListener> dblClickListeners = new ArrayList<LazyThumbnailLayout.ThumbnailDblClickListener>();
 
+    private final List<ThumbnailRightClickListener> rightClickListeners = new ArrayList<LazyThumbnailLayout.ThumbnailRightClickListener>();
+
     private Ordered container;
 
     private final KeyMapper<Object> mapper = new KeyMapper<Object>();
@@ -78,6 +80,14 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         }
 
         @Override
+        public void onThumbnailRightClicked(String id, int clickX, int clickY) {
+            final Object itemId = mapper.get(id);
+            if (itemId != null) {
+                LazyThumbnailLayout.this.onThumbnailRightClicked(itemId, clickX, clickY);
+            }
+        }
+
+        @Override
         public void loadThumbnails(int amount) {
             getRpcProxy(ThumbnailLayoutClientRpc.class).addThumbnails(fetchThumbnails(amount));
         }
@@ -86,6 +96,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         public void clearThumbnails() {
             LazyThumbnailLayout.this.clear();
         }
+
     };
 
     public LazyThumbnailLayout() {
@@ -96,6 +107,12 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
     private void onThumbnailDoubleClicked(Object itemId) {
         for (final ThumbnailDblClickListener listener : dblClickListeners) {
             listener.onThumbnailDblClicked(String.valueOf(itemId));
+        }
+    }
+
+    private void onThumbnailRightClicked(Object itemId, int clickX, int clickY) {
+        for (final ThumbnailRightClickListener listener : rightClickListeners) {
+            listener.onThumbnailRightClicked(String.valueOf(itemId), clickX, clickY);
         }
     }
 
@@ -168,6 +185,10 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         this.dblClickListeners.add(listener);
     }
 
+    public void addRightClickListener(final ThumbnailRightClickListener listener) {
+        this.rightClickListeners.add(listener);
+    }
+
     @Override
     public void setContainerDataSource(Container newDataSource) {
         if (newDataSource instanceof Ordered) {
@@ -205,6 +226,13 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
      */
     public interface ThumbnailDblClickListener {
         void onThumbnailDblClicked(String thumbnailId);
+    }
+
+    /**
+     * Listener for thumbnail right clicks.
+     */
+    public interface ThumbnailRightClickListener {
+        void onThumbnailRightClicked(String thumbnailId, int clickX, int clickY);
     }
 
     /**

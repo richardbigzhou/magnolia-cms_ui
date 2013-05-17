@@ -33,23 +33,78 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.ShellAppsTransitionDelegate;
+import java.util.Iterator;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
  * Shell apps viewport client side.
  */
 public class ShellAppsViewportWidget extends ViewportWidget {
 
-    public ShellAppsViewportWidget() {
-        super();
-        setTransitionDelegate(new ShellAppsTransitionDelegate(this));
+    private Listener listener;
+
+    private boolean active;
+
+    public void onShellAppsHidden() {
+        listener.onShellAppsHidden();
     }
 
-    @Override
-    public void setVisibleChild(Widget w) {
-        setClosing(false);
-        super.setVisibleChild(w);
+    /**
+     * Listener interface for {@link ShellAppsViewportWidget}.
+     */
+    public interface Listener {
+
+        void onShellAppLoaded(Widget shellAppWidget);
+
+        void outerContentClicked();
+
+        void onShellAppsHidden();
+    }
+
+    public ShellAppsViewportWidget(final Listener listener) {
+        this.listener = listener;
+        new TouchDelegate(this).addTouchEndHandler(new TouchEndHandler() {
+            @Override
+            public void onTouchEnd(TouchEndEvent event) {
+                final Element target = event.getNativeEvent().getEventTarget().cast();
+                if (target.isOrHasChild(getElement())) {
+                    listener.outerContentClicked();
+                }
+            }
+        });
+        DOM.sinkEvents(getElement(), Event.TOUCHEVENTS | Event.MOUSEEVENTS);
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActiveNoTransition(boolean isActive) {
+        setVisible(isActive);
+        this.active = isActive;
+    }
+
+    public void setActive(boolean active) {
+        getTransitionDelegate().setActive(this, active);
+        this.active = active;
+    }
+
+    public void onShellAppLoaded(Widget w) {
+        Iterator<Widget> it = iterator();
+        while (it.hasNext() && w != null) {
+            Widget curW = it.next();
+            curW.getElement().getStyle().setDisplay(w == curW ? Style.Display.BLOCK : Style.Display.NONE);
+        }
+        if (w != null) {
+            listener.onShellAppLoaded(w);
+        }
     }
 }

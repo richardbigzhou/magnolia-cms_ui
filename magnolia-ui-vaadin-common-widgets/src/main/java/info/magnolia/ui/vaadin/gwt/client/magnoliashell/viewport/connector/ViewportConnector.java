@@ -45,6 +45,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
 import com.vaadin.client.LayoutManager;
@@ -61,6 +62,8 @@ import com.vaadin.shared.ui.Connect;
 @Connect(ShellViewport.class)
 public class ViewportConnector extends AbstractLayoutConnector {
 
+    protected EventBus eventBus;
+
     protected ElementResizeListener childCenterer = new ElementResizeListener() {
         @Override
         public void onElementResize(ElementResizeEvent e) {
@@ -75,7 +78,6 @@ public class ViewportConnector extends AbstractLayoutConnector {
             public void onStateChanged(StateChangeEvent event) {
                 final ComponentConnector newActiveComponent = (ComponentConnector) getState().activeComponent;
                 if (newActiveComponent != null && getWidget().getVisibleChild() != newActiveComponent) {
-                    getWidget().setVisibleChild(newActiveComponent.getWidget());
                     newActiveComponent.getWidget().getElement().getStyle().clearOpacity();
                 }
             }
@@ -100,7 +102,6 @@ public class ViewportConnector extends AbstractLayoutConnector {
         final ViewportWidget viewport = getWidget();
         final List<ComponentConnector> children = getChildComponents();
         final List<ComponentConnector> oldChildren = event.getOldChildren();
-
         int index = 0;
         for (final ComponentConnector cc : children) {
             final Widget w = cc.getWidget();
@@ -125,8 +126,12 @@ public class ViewportConnector extends AbstractLayoutConnector {
         oldChildren.removeAll(children);
         for (final ComponentConnector cc : oldChildren) {
             cc.getLayoutManager().removeElementResizeListener(cc.getWidget().getElement(), childCenterer);
-            getWidget().removeWidget(cc.getWidget());
+            getWidget().removeChild(cc.getWidget());
         }
+    }
+
+    public void setEventBus(EventBus eventBus) {
+        this.eventBus = eventBus;
     }
 
     @Override

@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.api.ModelConstants;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
@@ -42,6 +42,7 @@ import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
@@ -130,18 +131,30 @@ public final class FavoritesEntry extends CustomComponent {
         this.enterKeyShortcutListener = new EnterKeyShortcutListener(listener);
         this.escapeKeyShortcutListener = new EscapeKeyShortcutListener();
 
-        String nodeName = favorite.getItemProperty(ModelConstants.JCR_NAME).getValue().toString();
+        final String nodeName = favorite.getNodeName();
         this.location = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.URL).getValue().toString();
         this.title = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue().toString();
-        this.group = "";
         this.relPath = nodeName;
+        try {
+            this.group = MgnlContext.doInSystemContext(new MgnlContext.Op<String, Throwable>() {
 
-        if (favorite.getItemProperty(AdmincentralNodeTypes.Favorite.GROUP) != null) {
-            this.group = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.GROUP).getValue().toString();
+                @Override
+                public String exec() throws Throwable {
+                    final Property<?> property = favorite.getItemProperty(AdmincentralNodeTypes.Favorite.GROUP);
+                    if (property != null) {
+                        return property.getValue().toString();
+                    }
+                    return null;
+                }
+            });
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
         }
+
         if (StringUtils.isNotBlank(this.group)) {
             this.relPath = this.group + "/" + nodeName;
         }
+
 
         String icon = "icon-app";
         if (favorite.getItemProperty(AdmincentralNodeTypes.Favorite.ICON).getValue() != null) {

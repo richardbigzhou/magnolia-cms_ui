@@ -38,10 +38,9 @@ import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.Callbacks;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
-import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ViewportCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.AppsTransitionDelegate;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.MagnoliaSwipeRecognizer;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.FadeAnimation;
 
 import java.util.Iterator;
 
@@ -60,6 +59,7 @@ import com.googlecode.mgwt.dom.client.event.touch.TouchCancelHandler;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.HasSwipeHandlers;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeEndEvent;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeEndHandler;
+import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeEvent;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeEvent.DIRECTION;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeMoveEvent;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeMoveHandler;
@@ -72,81 +72,110 @@ import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
  */
 public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandlers {
 
+    /**
+     * Listener interface for {@link AppsViewportWidget}.
+     */
+    public interface Listener {
+        void closeCurrentApp();
+    };
+
     private static final int SWIPE_OUT_THRESHOLD = 300;
 
     private final AppPreloader preloader = new AppPreloader();
 
+    private boolean isAppClosing = false;
+
+    private boolean isCurtainVisible = false;
+
+    private Listener listener;
+
     private final TouchDelegate delegate = new TouchDelegate(this);
 
     private final ClickHandler closeHandler = new ClickHandler() {
-
         @Override
         public void onClick(ClickEvent event) {
-            if (!isClosing()) {
-                setClosing(true);
-                fireEvent(new ViewportCloseEvent(ViewportType.APP));
+            if (!isAppClosing()) {
+                isAppClosing = true;
+                listener.closeCurrentApp();
+
             }
         }
     };
 
-    private Element curtain;
+    private CloseButton closeButton = new CloseButton(closeHandler);
 
-    public AppsViewportWidget() {
+    private Element curtain = DOM.createDiv();
+
+    public AppsViewportWidget(final Listener listener) {
         super();
+        this.listener = listener;
+        curtain.setClassName("v-curtain v-curtain-green");
+        closeButton.addStyleDependentName("app");
         bindTouchHandlers();
-        setTransitionDelegate(new AppsTransitionDelegate(this));
-    }
-
-    /* CURTAIN INTEGRATION */
-    @Override
-    public void setActiveNoTransition(boolean active) {
-        if (active) {
-            setCurtainVisible(false);
-        } else {
-            if (hasChildren()) {
-                setCurtainVisible(true);
-            }
-        }
     }
 
     public Element getCurtain() {
-        if (curtain == null) {
-            curtain = DOM.createDiv();
-            curtain.setClassName("v-curtain v-curtain-green");
-        }
         return curtain;
     }
 
     public void setCurtainVisible(boolean visible) {
-        ((AppsTransitionDelegate) getTransitionDelegate()).setCurtainVisible(visible);
-    }
-
-    private boolean hasChildren() {
-        return getWidgetCount() - (isClosing() ? 1 : 0) > 0;
+        if (isCurtainVisible != visible) {
+            this.isCurtainVisible = visible;
+            ((AppsTransitionDelegate) getTransitionDelegate()).setCurtainVisible(isCurtainVisible);
+        }
     }
 
     /* APP CLOSING */
     @Override
-    public void setChildVisibleNoTransition(Widget w) {
-        if (getVisibleChild() != null) {
-            // do not hide app if closing
-            if (!isClosing()) {
-                getVisibleChild().getElement().getStyle().setVisibility(Visibility.HIDDEN);
-            }
+    public void showChildNoTransition(Widget w) {
+        add(closeButton, w.getElement());
+        Widget formerVisible = getVisibleChild();
+        // do not hide app if closing
+        if (formerVisible != null && !isAppClosing()) {
+            formerVisible.getElement().getStyle().setVisibility(Visibility.HIDDEN);
         }
         w.setVisible(true);
         w.getElement().getStyle().clearVisibility();
     }
 
     @Override
-    public void removeWidget(Widget w) {
-       ((AppsTransitionDelegate) getTransitionDelegate()).removeWidget(w);
+    public void removeChild(Widget w) {
+        ((AppsTransitionDelegate) getTransitionDelegate()).removeWidget(w);
+        if (getWidgetCount() == 2) {
+            remove(closeButton);
+        }
     }
 
     @Override
-    public void removeWithoutTransition(Widget w) {
-        super.removeWithoutTransition(w);
-        setClosing(false);
+    public void removeChildNoTransition(Widget w) {
+        super.removeChildNoTransition(w);
+        isAppClosing = false;
+    }
+
+    public boolean isAppClosing() {
+        return isAppClosing;
+    }
+
+    /* APP PRELOADER */
+    public void showAppPreloader(final String appName) {
+        preloader.setCaption(appName);
+        preloader.addStyleName("zoom-in");
+        RootPanel.get().add(preloader);
+    }
+
+    public boolean hasPreloader() {
+        return RootPanel.get().getWidgetIndex(preloader) >= 0;
+    }
+
+    public void removePreloader() {
+        final FadeAnimation preloaderFadeOut = new FadeAnimation(0d, true);
+        preloaderFadeOut.addCallback(new JQueryCallback() {
+            @Override
+            public void execute(JQueryWrapper query) {
+                RootPanel.get().remove(preloader);
+            }
+        });
+        preloaderFadeOut.run(500, preloader.getElement());
     }
 
     /* SWIPE GESTURES */
@@ -166,7 +195,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
 
             @Override
             public void onSwipeMove(SwipeMoveEvent event) {
-                processSwipe(event.getDistance() * (event.getDirection() == DIRECTION.LEFT_TO_RIGHT ? 1 : -1));
+                processSwipe(event.getDistance() * (event.getDirection() == SwipeEvent.DIRECTION.LEFT_TO_RIGHT ? 1 : -1));
             }
         });
 
@@ -174,7 +203,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
 
             @Override
             public void onSwipeEnd(SwipeEndEvent event) {
-                final DIRECTION direction = event.getDirection();
+                final SwipeEvent.DIRECTION direction = event.getDirection();
                 final Widget newVisibleWidget = direction == DIRECTION.LEFT_TO_RIGHT ? getPreviousWidget() : getNextWidget();
                 if (event.isDistanceReached() && getWidgetCount() > 1) {
                     final JQueryWrapper jq = JQueryWrapper.select(getVisibleChild());
@@ -191,7 +220,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
                                     // query.setCss("opacity", "0");
                                     // query.setCss("visibility", "hidden");
                                     // do not trigger transitions
-                                    setVisibleChild(newVisibleWidget);
+                                    showChild(newVisibleWidget);
                                     dropZIndeces();
                                 }
                             }));
@@ -203,7 +232,6 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
                         query.setCss("-webkit-transform", "");
                         newVisibleWidget.addStyleName("app-slider");
                         new Timer() {
-
                             @Override
                             public void run() {
                                 newVisibleWidget.removeStyleName("app-slider");
@@ -290,47 +318,6 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     @Override
     public HandlerRegistration addSwipeEndHandler(SwipeEndHandler handler) {
         return addHandler(handler, SwipeEndEvent.getType());
-    }
-
-    /* APPEND CLOSE BUTTON */
-
-    @Override
-    public void insert(Widget w, int beforeIndex) {
-        super.insert(w, beforeIndex);
-        CloseButton closeButton = new CloseButton(closeHandler);
-        closeButton.addStyleDependentName("app");
-
-        // close buttons are children of apps viewport but are appended in apps' respective dom elements.
-        closeButton.removeFromParent();
-        getChildren().add(closeButton);
-        DOM.appendChild(w.getElement(), closeButton.getElement());
-        adopt(closeButton);
-    }
-
-    /* APP PRELOADER */
-
-    /**
-     * Called when the transition of preloader is finished.
-     */
-    public interface PreloaderCallback {
-
-        void onPreloaderShown(String appName);
-    }
-
-    public void showAppPreloader(final String appName, final PreloaderCallback callback) {
-        // hideEntireContents();
-        preloader.setCaption(appName);
-        preloader.addStyleName("zoom-in");
-        RootPanel.get().add(preloader);
-        callback.onPreloaderShown(appName);
-    }
-
-    public boolean hasPreloader() {
-        return RootPanel.get().getWidgetIndex(preloader) >= 0;
-    }
-
-    public void removePreloader() {
-        RootPanel.get().remove(preloader);
     }
 
 }

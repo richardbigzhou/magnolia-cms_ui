@@ -51,10 +51,6 @@ import com.vaadin.shared.ui.AbstractLayoutState;
  */
 public class MagnoliaShellState extends AbstractLayoutState {
 
-    public List<String> runningAppNames = new ArrayList<String>();
-
-    public List<String> registeredAppNames = new ArrayList<String>();
-
     public Map<ShellAppType, Connector> shellApps = new EnumMap<ShellAppType, Connector>(ShellAppType.class);
 
     public Map<ShellAppType, Integer> indications = new HashMap<ShellAppType, Integer>();

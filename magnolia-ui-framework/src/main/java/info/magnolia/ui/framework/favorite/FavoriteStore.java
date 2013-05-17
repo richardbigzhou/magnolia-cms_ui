@@ -60,17 +60,9 @@ public class FavoriteStore {
      * @return the bookmark node for all favorites
      */
     public Node getBookmarkRoot() throws RepositoryException {
-        final Node bookmarkRoot = MgnlContext.doInSystemContext(new JCRSessionOp<Node>(WORKSPACE_NAME) {
-            @Override
-            public Node exec(Session session) throws RepositoryException {
-                final Node bookmarkNode = JcrUtils.getOrAddNode(getFavoriteRoot(), BOOKMARKS_PATH, JcrConstants.NT_UNSTRUCTURED);
-                session.save();
-
-                return bookmarkNode;
-            }
-        });
+        final Node bookmarkRoot = JcrUtils.getOrAddNode(getFavoriteRoot(), BOOKMARKS_PATH, JcrConstants.NT_UNSTRUCTURED);
+        bookmarkRoot.getSession().save();
         return bookmarkRoot;
-
     }
 
     /**
@@ -79,11 +71,13 @@ public class FavoriteStore {
      * @return the root node for all favorites
      */
     public Node getFavoriteRoot() throws RepositoryException {
+        final String userName = MgnlContext.getUser().getName();
+        // Only system user has grants to add a node under the root of this workspace
         final Node favoriteRoot = MgnlContext.doInSystemContext(new JCRSessionOp<Node>(WORKSPACE_NAME) {
             @Override
             public Node exec(Session session) throws RepositoryException {
-                final String userName = MgnlContext.getInstance().getUser().getName();
-                final Node userNode =  JcrUtils.getOrAddNode(session.getRootNode(), userName, JcrConstants.NT_UNSTRUCTURED);
+
+                final Node userNode = JcrUtils.getOrAddNode(session.getRootNode(), userName, JcrConstants.NT_UNSTRUCTURED);
                 final Node favoriteNode = JcrUtils.getOrAddNode(userNode, FAVORITES_PATH, JcrConstants.NT_UNSTRUCTURED);
                 session.save();
 
@@ -91,5 +85,6 @@ public class FavoriteStore {
             }
         });
         return favoriteRoot;
+
     }
 }

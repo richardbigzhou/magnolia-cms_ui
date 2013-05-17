@@ -35,16 +35,16 @@ package info.magnolia.ui.dialog;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.overlay.OverlayCloser;
+import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.dialog.action.DialogActionExecutor;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.form.FormBuilder;
-import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.overlay.OverlayCloser;
-import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
@@ -113,14 +113,14 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
         final OverlayCloser overlayCloser = overlayLayer.openOverlay(view);
 
-         addDialogCloseHandler(new BaseDialog.DialogCloseEvent.Handler() {
-             @Override
-             public void onClose(BaseDialog.DialogCloseEvent event) {
+        addDialogCloseHandler(new BaseDialog.DialogCloseEvent.Handler() {
+            @Override
+            public void onClose(BaseDialog.DialogCloseEvent event) {
                 overlayCloser.close();
 
-                 event.getView().asVaadinComponent().removeDialogCloseHandler(this);
-             }
-         });
+                getBaseDialog().removeDialogCloseHandler(this);
+            }
+        });
         showCloseButton();
 
         initActions(dialogDefinition);
@@ -157,7 +157,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
                     try {
                         actionExecutor.execute(action.getName(), item, FormDialogPresenterImpl.this, callback);
                     } catch (ActionExecutionException e) {
-                         throw new RuntimeException("Could not execute action: ", e);
+                        throw new RuntimeException("Could not execute action: ", e);
                     }
                 }
             });

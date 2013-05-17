@@ -57,12 +57,6 @@ public class OverlayConnector extends AbstractSingleComponentContainerConnector 
     }
 
     @Override
-    public void onUnregister() {
-        getWidget().removeFromParent();
-        super.onUnregister();
-    }
-
-    @Override
     public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent e) {
         if (!e.getOldChildren().isEmpty()) {
             final ComponentConnector oldContent = e.getOldChildren().get(0);

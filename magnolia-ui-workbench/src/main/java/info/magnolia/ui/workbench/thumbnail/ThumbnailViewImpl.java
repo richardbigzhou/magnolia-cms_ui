@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,6 +35,7 @@ package info.magnolia.ui.workbench.thumbnail;
 
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailDblClickListener;
+import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailRightClickListener;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailSelectionListener;
 
 import com.vaadin.data.Container;
@@ -72,6 +73,16 @@ public class ThumbnailViewImpl implements ThumbnailView {
             public void onThumbnailDblClicked(final String thumbnailId) {
                 Item node = thumbnailLayout.getContainerDataSource().getItem(thumbnailId);
                 listener.onDoubleClick(node);
+            }
+        });
+
+        thumbnailLayout.addRightClickListener(new ThumbnailRightClickListener() {
+
+            @Override
+            public void onThumbnailRightClicked(final String thumbnailId, int clickX, int clickY) {
+                Item node = thumbnailLayout.getContainerDataSource().getItem(thumbnailId);
+                listener.onItemSelection(node);
+                listener.onRightClick(node, clickX, clickY);
             }
         });
     }
