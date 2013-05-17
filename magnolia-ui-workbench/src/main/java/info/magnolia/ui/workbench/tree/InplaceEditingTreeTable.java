@@ -81,8 +81,9 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         super();
         setTableFieldFactory(new InplaceEditingFieldFactory());
         addItemClickListener(asItemClickListener());
-        getActionManager().addActionHandler(new EditingKeyboardHandler());
     }
+
+
 
     // INPLACE EDITING ENTRY POINTS.
 
@@ -179,6 +180,10 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
     }
 
+    public void addKeyboardHandlers() {
+        getActionManager().addActionHandler(new EditingKeyboardHandler());
+    }
+
     // FIRING ITEM EDITED EVENTS
 
     @Override
@@ -251,13 +256,16 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
         private final ShortcutAction tabNext = new ShortcutAction("Tab", ShortcutAction.KeyCode.TAB, null);
 
-        private final ShortcutAction tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB, new int[]{ShortcutAction.ModifierKey.SHIFT});
+        private final ShortcutAction tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB, new int[] { ShortcutAction.ModifierKey.SHIFT });
 
         private final ShortcutAction escape = new ShortcutAction("Esc", ShortcutAction.KeyCode.ESCAPE, null);
 
         @Override
         public Action[] getActions(Object target, Object sender) {
-            return new Action[]{enter, tabNext, tabPrev, escape};
+            // TODO: Find a better solution for handling tab key events: MGNLUI-1384
+            // Removing tab actions so that tabbing between fields in forms work.
+            // return new Action[] { enter, tabNext, tabPrev, escape };
+            return new Action[] { enter, escape };
         }
 
         @Override

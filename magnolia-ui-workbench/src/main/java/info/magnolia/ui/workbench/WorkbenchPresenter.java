@@ -120,6 +120,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                     presenter = componentProvider.newInstance(presenterClass);
                 }
                 contentPresenters.put(presenterDefinition.getViewType().getText(), presenter);
+                ContentView contentView = presenter.start(workbenchDefinition, eventBus);
                 if (presenterDefinition.isActive()) {
                     activePresenter = presenter;
                     try {
@@ -129,16 +130,15 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                         log.error("Could not find workbench root node", e);
                     }
                 }
+                view.addContentView(presenterDefinition.getViewType(), contentView, presenterDefinition);
+
+                if (presenter instanceof TreePresenter && workbenchDefinition.isDialogWorkbench()) {
+                    ((TreePresenter) presenter).disableDragAndDrop();
+                }
             } else {
                 throw new RuntimeException("The provided view type [" + presenterDefinition.getViewType().getText() + "] is not valid.");
             }
 
-            ContentView contentView = presenter.start(workbenchDefinition, eventBus);
-            if (presenter instanceof TreePresenter && workbenchDefinition.isDialogWorkbench()) {
-                ((TreePresenter) presenter).disableDragAndDrop();
-            }
-
-            view.addContentView(presenterDefinition.getViewType(), contentView, presenterDefinition);
         }
 
         // add status bar
@@ -180,7 +180,9 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         view.setViewType(viewType);
 
         // make sure selection is kept when switching views
-        select(itemId);
+        if (itemId != null) {
+            select(itemId);
+        }
     }
 
     public String getWorkspace() {
