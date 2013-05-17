@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
@@ -209,7 +210,18 @@ public final class FavoritesGroup extends CssLayout {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                listener.removeGroup(relPath);
+                shell.openConfirmation(MessageStyleTypeEnum.WARNING, MessagesUtil.get("favorites.group.confirmation.title"), MessagesUtil.get("confirmation.cannot.undo"), MessagesUtil.get("confirmation.delete.yes"), MessagesUtil.get("confirmation.no"), true, new ConfirmationCallback() {
+
+                    @Override
+                    public void onSuccess() {
+                        listener.removeGroup(relPath);
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        // no op
+                    }
+                });
             }
         });
         removeButton.setVisible(false);

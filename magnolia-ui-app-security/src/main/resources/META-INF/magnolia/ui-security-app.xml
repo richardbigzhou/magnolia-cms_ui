@@ -13,38 +13,6 @@
     <id>app-security</id>
    </components>
 
-  <components>
-    <id>app-security-users</id> <!-- browser subapp -->
-    <component>
-      <type>info.magnolia.ui.app.security.SecurityUsersSubApp</type>
-      <implementation>info.magnolia.ui.app.security.SecurityUsersSubApp</implementation>
-    </component>
-
-  </components>
-
-  <components>
-    <id>app-security-systemUsers</id>
-    <component>
-      <type>info.magnolia.ui.app.security.SecurityUsersSubApp</type>
-      <implementation>info.magnolia.ui.app.security.SecurityUsersSubApp</implementation>
-    </component>
-  </components>
-
-  <components>
-    <id>app-security-groups</id>
-    <component>
-      <type>info.magnolia.ui.app.security.SecurityGroupsSubApp</type>
-      <implementation>info.magnolia.ui.app.security.SecurityGroupsSubApp</implementation>
-    </component>
-  </components>
-
-  <components>
-    <id>app-security-roles</id>
-    <component>
-      <type>info.magnolia.ui.app.security.SecurityRolesSubApp</type>
-      <implementation>info.magnolia.ui.app.security.SecurityRolesSubApp</implementation>
-    </component>
-  </components>
 
   <dependencies>
     <dependency>
