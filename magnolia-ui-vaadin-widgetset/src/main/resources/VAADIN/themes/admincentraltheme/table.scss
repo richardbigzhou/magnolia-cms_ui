@@ -40,22 +40,22 @@
       padding: 0 2px;
       width: 1px;
     }
-    
+
     .v-table-header-cell-desc .v-table-sort-indicator:before {
-        @extend .icon-arrow1_s:before;    
+      @extend .icon-arrow1_s:before;
     }
 
     .v-table-header-cell-asc .v-table-sort-indicator:before {
-        @extend .icon-arrow1_n:before;
+      @extend .icon-arrow1_n:before;
     }
-    
+
     .v-table-sort-indicator {
-        margin-top:1px;
-        background: none !important;
-        font-family: 'Mag-Icons';
-        font-size: 19px;
-        padding-right: 2px;
-        color: $c30;
+      margin-top:1px;
+      background: none !important;
+      font-family: 'Mag-Icons';
+      font-size: 19px;
+      padding-right: 2px;
+      color: $c30;
     }
 
     .v-table-caption-container {
@@ -100,7 +100,7 @@
       height: 20px;
       line-height: 20px;
       overflow: hidden;
-      text-overflow: ellipsis;
+      /* text-overflow: ellipsis; commented out until it can be disabled while editing cells */
     }
 
     tr.v-selected .v-table-cell-content {
@@ -188,16 +188,16 @@
 }
 
 .v-magnolia-table .tree-table-label.root .square {
-	background-color: #A7B900;
+  background-color: #A7B900;
 }
 
 .v-magnolia-table .tree-table-label.child .square {
-	background-color: blue;
+  background-color: blue;
 }
 
 .v-magnolia-table .tree-table-label {
-	display: inline-block;
-	vertical-align: middle;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 }
