@@ -47,7 +47,6 @@ import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.jcr.Node;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -78,8 +77,7 @@ public class DeactivationAction extends CommandActionBase<DeactivationActionDefi
 
     @Override
     protected void onPostExecute() throws Exception {
-        Node jcrNode = jcrNodeAdapter.getJcrItem();
-        eventBus.fireEvent(new ContentChangedEvent(jcrNode.getSession().getWorkspace().getName(), jcrNode.getPath()));
+        eventBus.fireEvent(new ContentChangedEvent(jcrNodeAdapter.getWorkspace(), jcrNodeAdapter.getItemId()));
 
         // Display a notification
 

@@ -313,8 +313,8 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             public void onContentChanged(ContentChangedEvent event) {
                 if (event.getWorkspace().equals(RepositoryConstants.WEBSITE)) {
                     // Check if the node still exist
-                    Node currentpage = SessionUtil.getNode(event.getWorkspace(), event.getPath());
-                    if (getCurrentLocation().getNodePath().startsWith(event.getPath()) && currentpage == null) {
+                    Node currentpage = SessionUtil.getNode(event.getWorkspace(), event.getItemId());
+                    if (getCurrentLocation().getNodePath().startsWith(event.getItemId()) && currentpage == null) {
                         getSubAppContext().close();
                     }
                 }

@@ -38,6 +38,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import javax.inject.Named;
 import javax.jcr.Node;
@@ -47,7 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The DuplicateNodeAction. Create a Copy of the selected Node. Use
+ * The DuplicateNodeAction. Create a Copy of the selected Node. Uses
  * {@link Path#getUniqueLabel} to create the new node Name.
  */
 public class DuplicateNodeAction extends RepositoryOperationAction<DuplicateNodeActionDefinition> {
@@ -61,12 +62,11 @@ public class DuplicateNodeAction extends RepositoryOperationAction<DuplicateNode
         super(definition, item, eventBus);
     }
 
-
     @Override
     protected void onExecute(JcrItemAdapter item) throws RepositoryException {
         if (item.getJcrItem().isNode()) {
             Node node = (Node) item.getJcrItem();
-            String newName = Path.getUniqueLabel(node.getSession(), node.getParent().getPath(), node.getName());
+            String newName = getUniqueNewItemName(node.getParent(), node.getName());
             String newPath = Path.getAbsolutePath(node.getParent().getPath(), newName);
             // Duplicate Node
             node.getSession().getWorkspace().copy(node.getPath(), newPath);
@@ -74,7 +74,7 @@ public class DuplicateNodeAction extends RepositoryOperationAction<DuplicateNode
             // Update dates.
             Node duplicateNode = node.getSession().getNode(newPath);
             NodeTypes.LastModified.update(duplicateNode);
+            setItemIdOfChangedItem(JcrItemUtil.getItemId(duplicateNode));
         }
     }
-
 }

@@ -43,7 +43,6 @@ import info.magnolia.ui.framework.app.action.CommandActionBase;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.Map;
@@ -93,7 +92,7 @@ public class ActivationAction extends CommandActionBase<ActivationActionDefiniti
 
     @Override
     protected void onPostExecute() throws Exception {
-        admincentralEventBus.fireEvent(new ContentChangedEvent(((JcrNodeAdapter) jcrItemAdapter).getWorkspace(), ((JcrNodeAdapter) jcrItemAdapter).getItemId()));
+        admincentralEventBus.fireEvent(new ContentChangedEvent(jcrItemAdapter.getWorkspace(), jcrItemAdapter.getItemId()));
         // Display a notification
 
         Context context = MgnlContext.getInstance();

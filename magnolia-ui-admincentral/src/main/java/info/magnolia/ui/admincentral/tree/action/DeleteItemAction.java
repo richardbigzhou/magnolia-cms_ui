@@ -41,6 +41,7 @@ import info.magnolia.ui.api.action.ActionBase;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import javax.inject.Named;
@@ -59,8 +60,6 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final SubAppContext subAppContext;
-
-    private String itemId;
     private final JcrItemAdapter item;
     private final EventBus eventBus;
 
@@ -71,17 +70,12 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
         this.eventBus = eventBus;
     }
 
-    protected String getItemId() throws RepositoryException {
-        return itemId;
-    }
-
     @Override
     public void execute() throws ActionExecutionException {
 
         try {
             // avoid JCR logging long stacktraces about root not being removable.
             if (item.getJcrItem().getDepth() == 0) {
-                itemId = item.getItemId();
                 return;
             }
         } catch (RepositoryException e) {
@@ -108,11 +102,11 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
 
         try {
             final Item jcrItem = item.getJcrItem();
-            itemId = jcrItem.getParent().getPath();
+            String itemIdOfChangedItem = JcrItemUtil.getItemId(jcrItem.getParent());
             Session session = jcrItem.getSession();
             jcrItem.remove();
             session.save();
-            eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), getItemId()));
+            eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), itemIdOfChangedItem));
 
             // Show notification
             subAppContext.openNotification(MessageStyleTypeEnum.INFO, true, "Item deleted.");

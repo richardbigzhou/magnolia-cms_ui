@@ -37,7 +37,9 @@ import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
 
 /**
- * Event fired when content is changed, deleted or added.
+ * Event fired when content is changed in a workspace. Holds an itemId of an item that is related to the changes made.
+ * If the change was a deletion the itemId is the parent of the deleted item. If something was added the itemId is for
+ * the new item.
  */
 public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
 
@@ -51,19 +53,19 @@ public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
 
     private String workspace;
 
-    private String path;
+    private String itemId;
 
-    public ContentChangedEvent(String workspace, String path) {
+    public ContentChangedEvent(String workspace, String itemId) {
         this.workspace = workspace;
-        this.path = path;
+        this.itemId = itemId;
     }
 
     public String getWorkspace() {
         return workspace;
     }
 
-    public String getPath() {
-        return path;
+    public String getItemId() {
+        return itemId;
     }
 
     @Override
