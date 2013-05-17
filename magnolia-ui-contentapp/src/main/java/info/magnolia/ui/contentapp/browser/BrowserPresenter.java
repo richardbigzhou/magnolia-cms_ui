@@ -179,6 +179,8 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
                             String workbenchRootItemId = JcrItemUtil.getItemId(subAppDescriptor.getWorkbench().getWorkspace(), subAppDescriptor.getWorkbench().getPath());
                             workbenchPresenter.select(workbenchRootItemId);
                         } else {
+                            // Select the Item to make sure the location is updated.
+                            workbenchPresenter.select(itemId);
                             // If the selected node does exists refresh the preview image in case it was changed
                             refreshActionbarPreviewImage(itemId, event.getWorkspace());
                         }
