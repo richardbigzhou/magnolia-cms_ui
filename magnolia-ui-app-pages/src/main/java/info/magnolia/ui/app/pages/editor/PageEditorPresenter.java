@@ -215,8 +215,6 @@ public class PageEditorPresenter implements PageEditorView.Listener {
                 formDialogPresenter.closeDialog();
             }
         });
-
-
     }
 
     /**
@@ -266,26 +264,6 @@ public class PageEditorPresenter implements PageEditorView.Listener {
         dialogBuilder.form(formBuilder);
         return dialogBuilder.exec();
 
-    }
-
-    @Override
-    public void deleteComponent(String workspace, String path) {
-
-        int index = path.lastIndexOf("/");
-        String parent = path.substring(0, index);
-
-        try {
-            Session session = MgnlContext.getJCRSession(workspace);
-
-            Node parentNode = session.getNode(parent);
-            session.removeItem(path);
-            NodeTypes.LastModified.update(parentNode);
-            session.save();
-            view.refresh();
-
-        } catch (RepositoryException e) {
-            log.error("Exception caught: {}", e.getMessage(), e);
-        }
     }
 
     @Override
