@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
@@ -219,7 +220,18 @@ public final class FavoritesEntry extends CustomComponent {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                listener.removeFavorite(relPath);
+                shell.openConfirmation(MessageStyleTypeEnum.WARNING, MessagesUtil.get("confirmation.title.generic"), MessagesUtil.get("confirmation.cannot.undo"), MessagesUtil.get("confirmation.delete.yes"), MessagesUtil.get("confirmation.no"), true, new ConfirmationCallback() {
+
+                    @Override
+                    public void onSuccess() {
+                        listener.removeFavorite(relPath);
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        // no op
+                    }
+                });
             }
         });
         removeButton.setVisible(false);
