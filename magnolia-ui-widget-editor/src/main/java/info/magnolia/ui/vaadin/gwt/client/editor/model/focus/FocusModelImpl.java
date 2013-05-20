@@ -224,6 +224,7 @@ public class FocusModelImpl implements FocusModel {
 
     @Override
     public void select(MgnlElement mgnlElement) {
+        mgnlElement = (mgnlElement != null) ? mgnlElement : model.getRootPage();
         eventBus.fireEvent(new SelectElementEvent(mgnlElement.getTypedElement()));
     }
 

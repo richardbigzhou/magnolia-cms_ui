@@ -63,8 +63,6 @@ public interface PageEditorView extends View {
 
         void newComponent(String workspace, String path, String availableComponents);
 
-        void deleteComponent(String workspace, String path);
-
         void sortComponent(String workspace, String parentPath, String source, String target, String order);
 
         void selectElement(AbstractElement nodeSelection);

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security;
+package info.magnolia.ui.app.pages.action;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.api.action.ActionExecutor;
-import info.magnolia.ui.contentapp.ContentSubAppView;
-import info.magnolia.ui.contentapp.browser.BrowserPresenter;
-import info.magnolia.ui.contentapp.browser.BrowserSubApp;
+import info.magnolia.ui.admincentral.tree.action.DeleteItemAction;
+import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- * Users Sub App (the main one) for the Security App.
+ * Action for deleting components. Overrides the default behaviour by sending the {@link info.magnolia.ui.framework.event.ContentChangedEvent} on the {@link SubAppEventBus}.
  */
-public class SecurityUsersSubApp extends BrowserSubApp {
+public class DeleteComponentAction extends DeleteItemAction {
 
-    private static final Logger log = LoggerFactory.getLogger(SecurityUsersSubApp.class);
-
-    @Inject
-    public SecurityUsersSubApp(ActionExecutor actionExecutor, SubAppContext subAppContext, ContentSubAppView view, BrowserPresenter workbench, @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
-        super(actionExecutor, subAppContext, view, workbench, subAppEventBus);
-    }
-
-    @Override
-    public void updateActionbar(ActionbarPresenter actionbar) {
-        String selectedItemId = getBrowser().getSelectedItemId();
-        // users can be created only under /admin or /system paths in users workspace
-        if ("/admin".equals(selectedItemId) || "/system".equals(selectedItemId)) {
-            actionbar.enableGroup("addActions");
-            actionbar.disableGroup("editActions");
-        } else {
-            actionbar.enableGroup("editActions");
-            actionbar.disableGroup("addActions");
-        }
+    public DeleteComponentAction(DeleteItemActionDefinition definition, JcrItemAdapter item, @Named(SubAppEventBus.NAME) EventBus eventBus, SubAppContext subAppContext) {
+        super(definition, item, eventBus, subAppContext);
     }
 }

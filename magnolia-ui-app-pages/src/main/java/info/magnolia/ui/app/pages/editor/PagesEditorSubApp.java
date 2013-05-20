@@ -394,14 +394,11 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                     areaElement.getPath(),
                     areaElement.getAvailableComponents());
         }
-        else if (actionName.equals("deleteItem")) {
-            pageEditorPresenter.deleteComponent(workspace, pageEditorPresenter.getSelectedElement().getPath());
-        }
 
         else {
             try {
                 Session session = MgnlContext.getJCRSession(workspace);
-                final javax.jcr.Item item = session.getItem(parameters.getNodePath());
+                final javax.jcr.Item item = session.getItem(pageEditorPresenter.getSelectedElement().getPath());
                 if (item.isNode()) {
                     actionExecutor.execute(actionName, new JcrNodeAdapter((Node)item));
                 } else {

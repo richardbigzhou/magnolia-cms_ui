@@ -35,14 +35,15 @@ package info.magnolia.ui.app.pages.action;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.location.LocationController;
-import info.magnolia.ui.api.action.ActionBase;
-import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 
 import javax.inject.Inject;
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
@@ -64,11 +65,16 @@ public class EditPageAction extends ActionBase<EditPageActionDefinition> {
     @Override
     public void execute() throws ActionExecutionException {
         try {
+            Node pageNode = nodeItemToEdit.getJcrItem();
 
-            if (!NodeUtil.isNodeType(nodeItemToEdit.getNode(), NodeTypes.Content.NAME)) {
-                return;
+            if (!NodeUtil.isNodeType(pageNode, NodeTypes.Page.NAME)) {
+                pageNode = NodeUtil.getNearestAncestorOfType(pageNode, NodeTypes.Page.NAME);
             }
-            DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, nodeItemToEdit.getNode().getPath(), "");
+            if (pageNode == null) {
+                throw new ActionExecutionException("Not able to resolve page node from " + nodeItemToEdit.getJcrItem().getPath());
+            }
+
+            DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, pageNode.getPath(), "");
             locationController.goTo(location);
 
         } catch (RepositoryException e) {
