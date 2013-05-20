@@ -47,6 +47,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -204,12 +205,8 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
      * If field is of type JcrNewNodeAdapter then return the parent node.
      * Else get the node associated with the Vaadin item.
      */
-    protected Node getRelatedNode(Item fieldRelatedItem) {
-        if (fieldRelatedItem instanceof JcrNewNodeAdapter) {
-            return ((JcrNewNodeAdapter) fieldRelatedItem).getJcrItem();
-        } else {
-            return ((JcrNodeAdapter) fieldRelatedItem).getNode();
-        }
+    protected Node getRelatedNode(Item fieldRelatedItem) throws RepositoryException {
+        return (fieldRelatedItem instanceof JcrNewNodeAdapter) ? ((JcrNewNodeAdapter) fieldRelatedItem).getJcrItem() : ((JcrNodeAdapter) fieldRelatedItem).applyChanges();
     }
 
     public String getPropertyName() {
