@@ -34,14 +34,13 @@
 package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.api.action.ActionBase;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.inject.Inject;
@@ -55,24 +54,23 @@ import javax.inject.Named;
 public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
     private final JcrNodeAdapter itemToEdit;
-    private FormDialogPresenter formDialogPresenter;
-
-    private final OverlayLayer overlayLayer;
-    private EventBus eventBus;
+    private final FormDialogPresenter formDialogPresenter;
+    private final UiContext uiContext;
+    private final EventBus eventBus;
 
     @Inject
-    public EditDialogAction(EditDialogActionDefinition definition, JcrNodeAdapter itemToEdit, FormDialogPresenter formDialogPresenter, final SubAppContext subAppContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
+    public EditDialogAction(EditDialogActionDefinition definition, JcrNodeAdapter itemToEdit, FormDialogPresenter formDialogPresenter, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
         super(definition);
         this.itemToEdit = itemToEdit;
         this.formDialogPresenter = formDialogPresenter;
-        this.overlayLayer = subAppContext;
+        this.uiContext = uiContext;
         this.eventBus = eventBus;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
 
-        formDialogPresenter.start(itemToEdit, getDefinition().getDialogName(), overlayLayer, new EditorCallback() {
+        formDialogPresenter.start(itemToEdit, getDefinition().getDialogName(), uiContext, new EditorCallback() {
 
             @Override
             public void onSuccess(String actionName) {

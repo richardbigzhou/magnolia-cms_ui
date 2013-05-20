@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.api.action.ActionBase;
@@ -61,14 +61,14 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final SubAppContext subAppContext;
+    private final UiContext uiContext;
     private final JcrItemAdapter item;
     private final EventBus eventBus;
 
-    public DeleteItemAction(DeleteItemActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, SubAppContext subAppContext) {
+    public DeleteItemAction(DeleteItemActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
         super(definition);
         this.item = item;
-        this.subAppContext = subAppContext;
+        this.uiContext = uiContext;
         this.eventBus = eventBus;
     }
 
@@ -84,7 +84,7 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
             throw new ActionExecutionException("Problem accessing JCR", e);
         }
 
-        subAppContext.openConfirmation(
+        uiContext.openConfirmation(
                 MessageStyleTypeEnum.WARNING, "Do you really want to delete this item?", "This action can't be undone.", "Yes, Delete", "No", true,
                 new ConfirmationCallback() {
 
@@ -111,7 +111,7 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
             eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), itemIdOfChangedItem));
 
             // Show notification
-            subAppContext.openNotification(MessageStyleTypeEnum.INFO, true, "Item deleted.");
+            uiContext.openNotification(MessageStyleTypeEnum.INFO, true, "Item deleted.");
 
         } catch (RepositoryException e) {
             log.error("Could not execute repository operation", e);

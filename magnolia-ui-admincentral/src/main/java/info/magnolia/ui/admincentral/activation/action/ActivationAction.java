@@ -38,6 +38,7 @@ import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.action.CommandActionBase;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
@@ -63,14 +64,14 @@ public class ActivationAction extends CommandActionBase<ActivationActionDefiniti
     private final JcrItemAdapter jcrItemAdapter;
 
     private final EventBus admincentralEventBus;
-    private final SubAppContext subAppContext;
+    private final UiContext uiContext;
 
     @Inject
-    public ActivationAction(final ActivationActionDefinition definition, final JcrItemAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, SubAppContext subAppContext) {
-        super(definition, item, commandsManager, subAppContext);
+    public ActivationAction(final ActivationActionDefinition definition, final JcrItemAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, SubAppContext uiContext) {
+        super(definition, item, commandsManager, uiContext);
         this.jcrItemAdapter = item;
         this.admincentralEventBus = admincentralEventBus;
-        this.subAppContext = subAppContext;
+        this.uiContext = uiContext;
     }
 
     @Override
@@ -89,7 +90,7 @@ public class ActivationAction extends CommandActionBase<ActivationActionDefiniti
         } else {
             errorMessage = getDefinition().getErrorMessage();
         }
-        subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, errorMessage);
+        uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, errorMessage);
     }
 
     @Override
@@ -110,7 +111,7 @@ public class ActivationAction extends CommandActionBase<ActivationActionDefiniti
         }
 
         if (StringUtils.isNotBlank(message)) {
-            subAppContext.openNotification(messageStyleType, true, message);
+            uiContext.openNotification(messageStyleType, true, message);
         }
 
     }

@@ -37,8 +37,8 @@ import info.magnolia.commands.CommandsManager;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.CommandActionDefinition;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
-import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.action.CommandActionBase;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
@@ -64,16 +64,16 @@ public class DeleteAction<D extends CommandActionDefinition> extends CommandActi
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    protected final SubAppContext subAppContext;
+    protected final UiContext uiContext;
     protected final Item jcrItem;
     protected final EventBus eventBus;
     private String itemIdOfChangedItem;
 
     @Inject
-    public DeleteAction(D definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, SubAppContext subAppContext) {
-        super(definition, item, commandsManager, subAppContext);
+    public DeleteAction(D definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
+        super(definition, item, commandsManager, uiContext);
         this.jcrItem = item.getJcrItem();
-        this.subAppContext = subAppContext;
+        this.uiContext = uiContext;
         this.eventBus = eventBus;
         try {
             itemIdOfChangedItem = JcrItemUtil.getItemId(jcrItem.getParent());
@@ -88,7 +88,7 @@ public class DeleteAction<D extends CommandActionDefinition> extends CommandActi
         // Warn if we try to remove the root node
         try {
             if (jcrItem.isNode() && jcrItem.getDepth() == 0) {
-                subAppContext.openNotification(MessageStyleTypeEnum.INFO, true, "Root node can't be deleted.");
+                uiContext.openNotification(MessageStyleTypeEnum.INFO, true, "Root node can't be deleted.");
                 return;
             }
 
@@ -102,7 +102,7 @@ public class DeleteAction<D extends CommandActionDefinition> extends CommandActi
             String confirmationMessage = createConfirmationMessage();
 
             // Open the Confirmation Dialog
-            subAppContext.openConfirmation(
+            uiContext.openConfirmation(
                     MessageStyleTypeEnum.WARNING, confirmationHeader, confirmationMessage, "Yes, Delete", "No", true,
                     new ConfirmationCallback() {
                         @Override

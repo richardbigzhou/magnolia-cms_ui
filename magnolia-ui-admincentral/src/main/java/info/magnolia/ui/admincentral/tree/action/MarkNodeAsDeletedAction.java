@@ -38,7 +38,7 @@ import info.magnolia.commands.impl.MarkNodeAsDeletedCommand;
 import info.magnolia.context.Context;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
@@ -64,8 +64,8 @@ public class MarkNodeAsDeletedAction extends DeleteAction<MarkNodeAsDeletedActio
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Inject
-    public MarkNodeAsDeletedAction(MarkNodeAsDeletedActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, SubAppContext subAppContext) {
-        super(definition, item, commandsManager, eventBus, subAppContext);
+    public MarkNodeAsDeletedAction(MarkNodeAsDeletedActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
+        super(definition, item, commandsManager, eventBus, uiContext);
         try {
             setItemIdOfChangedItem(JcrItemUtil.getItemId(jcrItem));
         } catch (RepositoryException e) {

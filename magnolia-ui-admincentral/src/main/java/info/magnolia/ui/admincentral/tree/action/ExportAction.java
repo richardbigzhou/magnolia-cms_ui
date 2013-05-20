@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.impl.ExportCommand;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.framework.app.action.CommandActionBase;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
@@ -60,8 +60,8 @@ import com.vaadin.server.StreamResource;
 public class ExportAction extends CommandActionBase<ExportActionDefinition> {
 
     @Inject
-    public ExportAction(ExportActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, SubAppContext subAppContext) {
-        super(definition, item, commandsManager, subAppContext);
+    public ExportAction(ExportActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext) {
+        super(definition, item, commandsManager, uiContext);
     }
 
     /**
