@@ -59,9 +59,11 @@ public abstract class RepositoryOperationAction<D extends ActionDefinition> exte
     private final EventBus eventBus;
 
     /**
-     * Holds the itemId to use for the ContentChangedEvent sent after the action is performed. This is initialized to
-     * the itemId the actions is executed for. If this action is deleted by the action it should set this to the itemId
-     * of its parent. If it adds an item it should set this to the itemId of the new item.
+     * Holds the itemId to use for the ContentChangedEvent sent after the action is performed. If the action deletes
+     * an item it should set this to the itemId of its parent. If it adds an item it should set this to the itemId
+     * of the new item.
+     *
+     * @see ContentChangedEvent
      */
     private String itemIdOfChangedItem;
 
@@ -69,7 +71,6 @@ public abstract class RepositoryOperationAction<D extends ActionDefinition> exte
         super(definition);
         this.item = item;
         this.eventBus = eventBus;
-        this.itemIdOfChangedItem = item.getItemId();
     }
 
     protected void setItemIdOfChangedItem(String itemIdOfChangedItem) {
@@ -85,7 +86,12 @@ public abstract class RepositoryOperationAction<D extends ActionDefinition> exte
             Session session = item.getJcrItem().getSession();
             onExecute(item);
             session.save();
-            eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), itemIdOfChangedItem));
+
+            // If the subclass set it to null this means no change was performed so we won't send an event
+            if (itemIdOfChangedItem != null) {
+                eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), itemIdOfChangedItem));
+            }
+
         } catch (RepositoryException e) {
             throw new ActionExecutionException("Can't execute repository operation.\n" + e.getMessage(), e);
         }

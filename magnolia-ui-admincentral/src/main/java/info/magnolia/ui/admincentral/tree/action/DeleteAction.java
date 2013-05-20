@@ -56,7 +56,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Deletes a node from the repository.
+ * Deletes a node from the repository usin the delete command.
  * 
  * @param <D> {@link info.magnolia.ui.api.action.CommandActionDefinition}.
  */
@@ -116,7 +116,7 @@ public class DeleteAction<D extends CommandActionDefinition> extends CommandActi
                         }
                     });
 
-        }catch(RepositoryException re) {
+        } catch (RepositoryException re) {
             log.error("Could not execute repository operation.", re);
             onError(re);
         }

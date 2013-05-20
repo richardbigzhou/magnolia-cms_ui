@@ -55,6 +55,8 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * UI action that allows to activate a single page (node) or recursively with all its sub-nodes depending on the value of {@link ActivationActionDefinition#isRecursive()}.
+ *
+ * @see ActivationActionDefinition
  */
 public class ActivationAction extends CommandActionBase<ActivationActionDefinition> {
 

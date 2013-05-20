@@ -56,6 +56,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Mark node as Deleted Action. This will create a new Node version marked as deleted.
+ *
+ * @see MarkNodeAsDeletedActionDefinition
  */
 public class MarkNodeAsDeletedAction extends DeleteAction<MarkNodeAsDeletedActionDefinition> {
 

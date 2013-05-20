@@ -53,7 +53,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Deletes a node from the repository.
+ * Deletes a node or property from the repository.
+ *
+ * @see DeleteItemActionDefinition
  */
 public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
 
@@ -74,7 +76,7 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
     public void execute() throws ActionExecutionException {
 
         try {
-            // avoid JCR logging long stacktraces about root not being removable.
+            // The root node cannot be deleted
             if (item.getJcrItem().getDepth() == 0) {
                 return;
             }
@@ -85,6 +87,7 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
         subAppContext.openConfirmation(
                 MessageStyleTypeEnum.WARNING, "Do you really want to delete this item?", "This action can't be undone.", "Yes, Delete", "No", true,
                 new ConfirmationCallback() {
+
                     @Override
                     public void onSuccess() {
                         DeleteItemAction.this.executeAfterConfirmation();
@@ -92,10 +95,8 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
 
                     @Override
                     public void onCancel() {
-                        // nothing
                     }
                 });
-
     }
 
     protected void executeAfterConfirmation() {
@@ -106,12 +107,14 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
             Session session = jcrItem.getSession();
             jcrItem.remove();
             session.save();
+
             eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), itemIdOfChangedItem));
 
             // Show notification
             subAppContext.openNotification(MessageStyleTypeEnum.INFO, true, "Item deleted.");
+
         } catch (RepositoryException e) {
-            log.error("Could not execute repository operation.", e);
+            log.error("Could not execute repository operation", e);
         }
     }
 }

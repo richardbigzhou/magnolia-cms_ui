@@ -52,6 +52,8 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * UI action that allows to deactivate pages (nodes).
+ *
+ * @see DeactivationActionDefinition
  */
 public class DeactivationAction extends CommandActionBase<DeactivationActionDefinition> {
 
