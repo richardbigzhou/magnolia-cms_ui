@@ -82,6 +82,17 @@
         color: $c11;
       }
     }
+    
+    .workbench-searchbox-clearbutton {
+      font-family: 'Mag-Icons';
+      font-size: 13px;
+      position: relative;
+      float: right;
+      right: -247px;
+      top: 3px;
+      background: none;
+      color: black;
+    }
 
     .activation-status {
       display: block !important;
