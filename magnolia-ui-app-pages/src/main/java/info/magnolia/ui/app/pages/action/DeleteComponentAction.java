@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,40 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.editor;
+package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
-import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.admincentral.tree.action.DeleteItemAction;
+import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
+import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.framework.app.SubAppEventBus;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+
+import javax.inject.Named;
 
 /**
- * PageEditorView.
+ * Action for deleting components. Overrides the default behaviour by sending the {@link info.magnolia.ui.framework.event.ContentChangedEvent} on the {@link SubAppEventBus}.
  */
-public interface PageEditorView extends View {
+public class DeleteComponentAction extends DeleteItemAction {
 
-    void setListener(Listener listener);
-
-    void refresh();
-
-    void load(PageEditorParameters parameters);
-
-    void init();
-
-    void update(PageEditorParameters parameters);
-
-    /**
-     * Listener.
-     */
-    public interface Listener {
-
-        void editComponent(String workspace, String path, String dialog);
-
-        void newArea(String workspace, String nodeType, String path);
-
-        void newComponent(String workspace, String path, String availableComponents);
-
-        void sortComponent(String workspace, String parentPath, String source, String target, String order);
-
-        void selectElement(AbstractElement nodeSelection);
+    public DeleteComponentAction(DeleteItemActionDefinition definition, JcrItemAdapter item, @Named(SubAppEventBus.NAME) EventBus eventBus, SubAppContext subAppContext) {
+        super(definition, item, eventBus, subAppContext);
     }
 }

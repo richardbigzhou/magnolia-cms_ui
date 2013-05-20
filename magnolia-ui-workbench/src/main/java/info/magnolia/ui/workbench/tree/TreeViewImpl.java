@@ -87,6 +87,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         treeTable.setEditable(editable);
         if (editable && treeTable instanceof InplaceEditingTreeTable) {
             ((InplaceEditingTreeTable) treeTable).addItemEditedListener(itemEditedListener);
+            ((InplaceEditingTreeTable) treeTable).addKeyboardHandlers();
         } else {
             ((InplaceEditingTreeTable) treeTable).removeItemEditedListener(itemEditedListener);
         }

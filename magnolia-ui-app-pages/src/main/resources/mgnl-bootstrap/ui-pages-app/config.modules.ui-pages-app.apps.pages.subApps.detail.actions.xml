@@ -373,6 +373,9 @@
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-delete</sv:value>
     </sv:property>
+    <sv:property sv:name="implementationClass" sv:type="String">
+      <sv:value>info.magnolia.ui.app.pages.action.DeleteComponentAction</sv:value>
+    </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
       <sv:value>2013-05-10T15:30:59.857+02:00</sv:value>
     </sv:property>
