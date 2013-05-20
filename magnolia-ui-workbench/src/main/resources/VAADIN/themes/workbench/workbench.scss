@@ -85,13 +85,19 @@
     
     .workbench-searchbox-clearbutton {
       font-family: 'Mag-Icons';
-      font-size: 13px;
+      font-size: 10px;
       position: relative;
       float: right;
-      right: -247px;
-      top: 3px;
+      right: -237px;
+      top: 8px;
       background: none;
-      color: black;
+      color: white;
+      background-color: black;
+      padding: 0px;
+      margin: 0px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
     }
 
     .activation-status {
