@@ -82,7 +82,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
         // Create the property
-        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, null, value);
+        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(null, value);
         adapter.addItemProperty(id, propertyInitial);
 
         // WHEN
@@ -105,7 +105,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
         // Create the property
-        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, "String", value);
+        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty("String", value);
         adapter.addItemProperty(id, propertyInitial);
 
         // WHEN
@@ -128,7 +128,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
         // Create the property
-        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, "Long", value);
+        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty("Long", value);
         adapter.addItemProperty(id, propertyInitial);
 
         // WHEN
@@ -151,7 +151,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
         // Create the property
-        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, "Double", value);
+        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty("Double", value);
         adapter.addItemProperty(id, propertyInitial);
 
         // WHEN
@@ -182,7 +182,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
         // Create the property
-        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, "Date", value);
+        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty("Date", value);
         adapter.addItemProperty(id, propertyInitial);
 
         // WHEN
@@ -205,7 +205,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
         // Create the property
-        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, "Boolean", value);
+        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty("Boolean", value);
         adapter.addItemProperty(id, propertyInitial);
 
         // WHEN
@@ -228,7 +228,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
         // Create the property
-        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, "Decimal", value);
+        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty("Decimal", value);
         adapter.addItemProperty(id, propertyInitial);
 
         // WHEN
@@ -299,7 +299,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
         // Create the property
-        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, "Binary", null);
+        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty("Binary", null);
         adapter.addItemProperty(id, propertyInitial);
         propertyInitial.setValue(value.getBinary());
 

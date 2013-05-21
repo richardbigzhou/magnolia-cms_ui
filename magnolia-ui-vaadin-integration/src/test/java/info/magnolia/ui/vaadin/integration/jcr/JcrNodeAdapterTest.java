@@ -78,7 +78,7 @@ public class JcrNodeAdapterTest {
     public void testAddItemProperty() throws Exception {
         // GIVEN
         final Node underlyingNode = session.getRootNode().addNode("underlying");
-        DefaultProperty<String> property = new DefaultProperty<String>(propertyName, String.class, propertyValue);
+        DefaultProperty<String> property = new DefaultProperty<String>(String.class, propertyValue);
         final JcrNodeAdapter item = new JcrNodeAdapter(underlyingNode);
 
         // WHEN
@@ -109,7 +109,7 @@ public class JcrNodeAdapterTest {
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
 
         // WHEN
-        Property<String> property = DefaultPropertyUtil.newDefaultProperty(propertyName, PropertyType.TYPENAME_STRING, "");
+        Property<String> property = DefaultPropertyUtil.newDefaultProperty(PropertyType.TYPENAME_STRING, "");
         adapter.addItemProperty(propertyName, property);
 
         // THEN
@@ -139,7 +139,7 @@ public class JcrNodeAdapterTest {
         Node node = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         // Get and modify property
-        Property<String> propertyInitial = DefaultPropertyUtil.newDefaultProperty(propertyName, PropertyType.TYPENAME_STRING, propertyValue);
+        Property<String> propertyInitial = DefaultPropertyUtil.newDefaultProperty(PropertyType.TYPENAME_STRING, propertyValue);
         adapter.addItemProperty(propertyName, propertyInitial);
 
         // WHEN get property again
@@ -157,7 +157,7 @@ public class JcrNodeAdapterTest {
         Node node = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         // Create a new property
-        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty(propertyName, null, "");
+        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty(null, "");
         adapter.addItemProperty(propertyName, property);
 
         // WHEN
@@ -252,7 +252,7 @@ public class JcrNodeAdapterTest {
         Node node = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         // Add a new property (Vaadin)
-        Property property = DefaultPropertyUtil.newDefaultProperty(propertyName, null, "");
+        Property property = DefaultPropertyUtil.newDefaultProperty(null, "");
         adapter.addItemProperty(propertyName, property);
         property.setValue(propertyValue);
 
@@ -305,7 +305,7 @@ public class JcrNodeAdapterTest {
         node.setProperty(id_2, value_2);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         // Create a new Vaadin property
-        Property newProperty = DefaultPropertyUtil.newDefaultProperty(id_3, null, "");
+        Property newProperty = DefaultPropertyUtil.newDefaultProperty(null, "");
         adapter.addItemProperty(id_3, newProperty);
 
         // WHEN
@@ -338,7 +338,7 @@ public class JcrNodeAdapterTest {
         node.setProperty(id_2, value_2);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         // Create a new Vaadin property
-        DefaultProperty newProperty = DefaultPropertyUtil.newDefaultProperty(id_3, null, "");
+        DefaultProperty newProperty = DefaultPropertyUtil.newDefaultProperty(null, "");
         newProperty.setReadOnly(true);
         adapter.addItemProperty(id_3, newProperty);
 
@@ -406,9 +406,9 @@ public class JcrNodeAdapterTest {
         adapter.getItemProperty("id_1").setValue("value_1_Modify");
         adapter.getItemProperty("id_2").setValue("value_2_Modify");
         // Create two 2 Vaadin property
-        Property newProperty_1 = DefaultPropertyUtil.newDefaultProperty("id_4", null, "");
+        Property newProperty_1 = DefaultPropertyUtil.newDefaultProperty(null, "");
         adapter.addItemProperty("id_4", newProperty_1);
-        Property newProperty_2 = DefaultPropertyUtil.newDefaultProperty("id_5", null, "");
+        Property newProperty_2 = DefaultPropertyUtil.newDefaultProperty(null, "");
         adapter.addItemProperty("id_5", newProperty_2);
         // Modify two Vaadin property.
         newProperty_1.setValue("value_4");
@@ -439,9 +439,9 @@ public class JcrNodeAdapterTest {
         Node node = session.getRootNode().addNode(nodeName);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         // Add two three property (Vaadin)
-        Property newProperty_1 = DefaultPropertyUtil.newDefaultProperty("id_4", null, "");
+        Property newProperty_1 = DefaultPropertyUtil.newDefaultProperty(null, "");
         adapter.addItemProperty("id_4", newProperty_1);
-        Property newProperty_2 = DefaultPropertyUtil.newDefaultProperty("id_5", null, "");
+        Property newProperty_2 = DefaultPropertyUtil.newDefaultProperty(null, "");
         adapter.addItemProperty("id_5", newProperty_2);
 
         adapter.getItemProperty("id_6");
@@ -471,7 +471,7 @@ public class JcrNodeAdapterTest {
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
 
         // WHEN
-        Property<String> property = DefaultPropertyUtil.newDefaultProperty(propertyName, PropertyType.TYPENAME_STRING, null);
+        Property<String> property = DefaultPropertyUtil.newDefaultProperty(PropertyType.TYPENAME_STRING, null);
         adapter.addItemProperty(propertyName, property);
         adapter.applyChanges();
 

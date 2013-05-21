@@ -117,7 +117,7 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
             throw new RuntimeRepositoryException(re);
         }
 
-        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty((String) id, type, value);
+        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty(type, value);
         getChangedProperties().put((String) id, property);
         return property;
     }

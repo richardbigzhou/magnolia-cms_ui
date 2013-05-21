@@ -172,7 +172,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
-        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty((String) id, type, value);
+        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty(type, value);
         getChangedProperties().put((String) id, property);
         return property;
     }

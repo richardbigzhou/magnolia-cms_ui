@@ -107,13 +107,6 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
         return Collections.unmodifiableCollection(getChangedProperties().keySet());
     }
 
-    /**
-     * Convenience - add the provided property using the contained propertyName as propertId.
-     */
-    public boolean addItemProperty(DefaultProperty property) throws UnsupportedOperationException {
-        return addItemProperty(property.getPropertyName(), property);
-    }
-
     @Override
     public boolean addItemProperty(Object propertyId, Property property) throws UnsupportedOperationException {
         log.debug("Adding new Property Item named [{}] with value [{}]", propertyId, property.getValue());
