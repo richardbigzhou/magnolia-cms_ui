@@ -39,11 +39,11 @@ import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.MessageActionExecutor;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.registry.MessageViewDefinitionRegistry;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.form.FormBuilder;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.view.View;
 
 import javax.inject.Inject;
 
@@ -88,7 +88,7 @@ public class MessagePresenter implements MessageView.Listener, ActionbarPresente
 
             messageActionExecutor.setMessageViewDefinition(messageViewDefinition);
 
-            BeanItem messageItem = new BeanItem<Message>(message);
+            BeanItem<Message> messageItem = new BeanItem<Message>(message);
             View mView = formbuilder.buildView(messageViewDefinition.getForm(), messageItem);
             view.setMessageView(mView);
 

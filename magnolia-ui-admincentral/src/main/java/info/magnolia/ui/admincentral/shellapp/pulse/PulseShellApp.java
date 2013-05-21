@@ -37,9 +37,9 @@ import info.magnolia.ui.admincentral.shellapp.ShellApp;
 import info.magnolia.ui.admincentral.shellapp.ShellAppContext;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.shell.ShellImpl;
-import info.magnolia.ui.api.view.View;
 
 import javax.inject.Inject;
 
@@ -50,7 +50,6 @@ public class PulseShellApp implements ShellApp, PulseMessagesPresenter.Listener,
 
     private PulseView pulseView;
 
-    private ShellAppContext context;
     private PulseMessagesPresenter messages;
     private MessagePresenter messagePresenter;
     private ShellImpl shell;
@@ -67,7 +66,6 @@ public class PulseShellApp implements ShellApp, PulseMessagesPresenter.Listener,
 
     @Override
     public View start(ShellAppContext context) {
-        this.context = context;
         pulseView.setPulseView(messages.start());
         return pulseView;
     }

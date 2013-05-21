@@ -46,7 +46,7 @@ import com.vaadin.ui.Label;
 /**
  * View implementation of {@link MessageView}.
  */
-public class MessageViewImpl  extends HorizontalLayout implements MessageView {
+public class MessageViewImpl extends HorizontalLayout implements MessageView {
 
     private CssLayout messageContainer = new CssLayout();
     private CssLayout actionbarContainer = new CssLayout();

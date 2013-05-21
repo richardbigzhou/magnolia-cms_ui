@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
+import static info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter.*;
+
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.CategoryChangedEvent;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
@@ -69,7 +71,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
 
     private static final String[] headers = new String[]{"New", "Type", "Message text", "Sender", "Date", "Quick action"};
 
-    private static final String[] order = new String[]{"new", "type", "text", "sender", "date", "quickdo"};
+    private static final String[] order = new String[] { NEW_PROPERTY_ID, TYPE_PROPERTY_ID, TEXT_PROPERTY_ID, SENDER_PROPERTY_ID, DATE_PROPERTY_ID, QUICKDO_PROPERTY_ID };
 
     private final TreeTable messageTable = new MagnoliaTreeTable();
 
@@ -102,7 +104,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
     public void setDataSource(Container dataSource) {
         messageTable.setContainerDataSource(dataSource);
         messageTable.setVisibleColumns(order);
-        messageTable.setSortContainerPropertyId("date");
+        messageTable.setSortContainerPropertyId(DATE_PROPERTY_ID);
         messageTable.setSortAscending(false);
         messageTable.setColumnHeaders(headers);
 
@@ -127,7 +129,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         root.addComponent(messageTable);
         root.setExpandRatio(messageTable, 1f);
         messageTable.setSizeFull();
-        messageTable.addGeneratedColumn("date", new DateColumnFormatter(null));
+        messageTable.addGeneratedColumn(DATE_PROPERTY_ID, new DateColumnFormatter(null));
         messageTable.setRowGenerator(groupingRowGenerator);
         messageTable.setCellStyleGenerator(cellStyleGenerator);
         navigator.addGroupingListener(groupingListener);
@@ -281,7 +283,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
     private Table.CellStyleGenerator cellStyleGenerator = new Table.CellStyleGenerator() {
         @Override
         public String getStyle(Table source, Object itemId, Object propertyId) {
-            if (grouping && propertyId != null && propertyId.equals(PulseMessagesPresenter.GROUP_COLUMN)) {
+            if (grouping && propertyId != null && propertyId.equals(TYPE_PROPERTY_ID)) {
                 return "v-cell-invisible";
             }
             return "";
@@ -303,7 +305,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
              */
             if (itemId.toString().startsWith(PulseMessagesPresenter.GROUP_PLACEHOLDER_ITEMID)) {
                 Item item = table.getItem(itemId);
-                Property property = item.getItemProperty(PulseMessagesPresenter.GROUP_COLUMN);
+                Property<?> property = item.getItemProperty(TYPE_PROPERTY_ID);
 
                 GeneratedRow generated = new GeneratedRow("", "", property.getValue().toString());
                 generated.setSpanColumns(false);

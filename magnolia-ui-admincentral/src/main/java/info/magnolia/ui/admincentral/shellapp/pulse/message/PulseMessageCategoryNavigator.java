@@ -71,7 +71,7 @@ public class PulseMessageCategoryNavigator extends CssLayout {
     }
 
     public void addGroupingListener(ValueChangeListener listener) {
-        groupByTypeCheckBox.addListener(listener);
+        groupByTypeCheckBox.addValueChangeListener(listener);
     }
 
     /**
@@ -158,7 +158,7 @@ public class PulseMessageCategoryNavigator extends CssLayout {
             addStyleName("navigator-button");
             this.category = category;
             this.setCaption(category.getCaption());
-            addListener(new ClickListener() {
+            addClickListener(new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
