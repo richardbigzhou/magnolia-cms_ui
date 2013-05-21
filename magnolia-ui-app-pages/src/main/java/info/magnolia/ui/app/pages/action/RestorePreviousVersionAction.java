@@ -74,13 +74,13 @@ public class RestorePreviousVersionAction extends ActionBase<RestorePreviousVers
     @Override
     public void execute() throws ActionExecutionException {
         try {
-            if (StringUtils.isNotBlank(getDefinition().getNodeType()) && !getDefinition().getNodeType().equals(nodeItemToEdit.getNode().getPrimaryNodeType().getName())) {
+            if (StringUtils.isNotBlank(getDefinition().getNodeType()) && !getDefinition().getNodeType().equals(nodeItemToEdit.applyChanges().getPrimaryNodeType().getName())) {
                 log.warn("EditItemAction requested for a node type definition {}. Current node type is {}. No action will be performed.",
-                        getDefinition().getNodeType(), nodeItemToEdit.getNode().
+                        getDefinition().getNodeType(), nodeItemToEdit.applyChanges().
                         getPrimaryNodeType().getName());
                 return;
             }
-            final String path = nodeItemToEdit.getNode().getPath();
+            final String path = nodeItemToEdit.applyChanges().getPath();
 
             // Get last version.
             Version version = getPreviousVersion();
@@ -90,7 +90,7 @@ public class RestorePreviousVersionAction extends ActionBase<RestorePreviousVers
                 return;
             }
             // Restore previous version
-            versionManager.restore(nodeItemToEdit.getNode(), version, true);
+            versionManager.restore(nodeItemToEdit.applyChanges(), version, true);
             DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, path, "");
             locationController.goTo(location);
 
@@ -105,7 +105,7 @@ public class RestorePreviousVersionAction extends ActionBase<RestorePreviousVers
      */
     private Version getPreviousVersion() throws RepositoryException {
         Version previousVersion = null;
-        VersionIterator versionIterator = versionManager.getAllVersions(nodeItemToEdit.getNode());
+        VersionIterator versionIterator = versionManager.getAllVersions(nodeItemToEdit.applyChanges());
         if (versionIterator == null) {
             return previousVersion;
         }

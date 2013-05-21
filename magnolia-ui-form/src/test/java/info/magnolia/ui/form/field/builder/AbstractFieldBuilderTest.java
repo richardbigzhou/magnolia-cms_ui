@@ -89,7 +89,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         field.setValue("new Value");
 
         // THEN
-        Node res = ((JcrNodeAdapter) baseItem).getNode();
+        Node res = ((JcrNodeAdapter) baseItem).applyChanges();
         assertEquals(true, res.hasProperty(propertyName));
         assertEquals("new Value", res.getProperty(propertyName).getString());
         assertEquals(PropertyType.STRING, res.getProperty(propertyName).getType());
@@ -114,7 +114,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         field.setValue("new Value");
 
         // THEN
-        Node res = ((JcrNodeAdapter) baseItem).getNode();
+        Node res = ((JcrNodeAdapter) baseItem).applyChanges();
         assertEquals(true, res.hasProperty(propertyName));
         assertEquals("new Value", res.getProperty(propertyName).getString());
         Property p = baseItem.getItemProperty(propertyName);
@@ -135,7 +135,7 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         field.setValue("21.98");
 
         // THEN
-        Node res = ((JcrNodeAdapter) baseItem).getNode();
+        Node res = ((JcrNodeAdapter) baseItem).applyChanges();
         assertEquals(true, res.hasProperty(propertyName));
         assertEquals(PropertyType.DOUBLE, res.getProperty(propertyName).getType());
         assertEquals(Double.parseDouble("21.98"), res.getProperty(propertyName).getDouble(), 0);

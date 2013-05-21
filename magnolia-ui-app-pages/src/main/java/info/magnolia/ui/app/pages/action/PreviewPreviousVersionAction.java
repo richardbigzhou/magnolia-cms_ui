@@ -70,13 +70,13 @@ public class PreviewPreviousVersionAction extends ActionBase<PreviewPreviousVers
     @Override
     public void execute() throws ActionExecutionException {
         try {
-            if (StringUtils.isNotBlank(getDefinition().getNodeType()) && !getDefinition().getNodeType().equals(nodeItemToEdit.getNode().getPrimaryNodeType().getName())) {
+            if (StringUtils.isNotBlank(getDefinition().getNodeType()) && !getDefinition().getNodeType().equals(nodeItemToEdit.applyChanges().getPrimaryNodeType().getName())) {
                 log.warn("EditItemAction requested for a node type definition {}. Current node type is {}. No action will be performed.",
-                        getDefinition().getNodeType(), nodeItemToEdit.getNode().
+                        getDefinition().getNodeType(), nodeItemToEdit.applyChanges().
                         getPrimaryNodeType().getName());
                 return;
             }
-            final String path = nodeItemToEdit.getNode().getPath();
+            final String path = nodeItemToEdit.applyChanges().getPath();
             final String previousVersion = getPreviousVersion();
             DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.VIEW, path, previousVersion);
             locationController.goTo(location);
@@ -91,7 +91,7 @@ public class PreviewPreviousVersionAction extends ActionBase<PreviewPreviousVers
      */
     private String getPreviousVersion() throws RepositoryException {
         String previousVersion = StringUtils.EMPTY;
-        VersionIterator versionIterator = versionManager.getAllVersions(nodeItemToEdit.getNode());
+        VersionIterator versionIterator = versionManager.getAllVersions(nodeItemToEdit.applyChanges());
         // Check.
         if (versionIterator == null) {
             return previousVersion;

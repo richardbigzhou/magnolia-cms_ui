@@ -77,7 +77,7 @@ public class SaveDialogAction extends ActionBase<SaveDialogActionDefinition> {
         if (validator.isValid()) {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
             try {
-                final Node node = itemChanged.getNode();
+                final Node node = itemChanged.applyChanges();
                 updateLastModified(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
