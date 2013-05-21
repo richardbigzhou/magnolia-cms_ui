@@ -87,7 +87,7 @@ public class SaveUserDialogAction extends SaveDialogAction {
 
     private void createOrUpdateUser(final JcrNodeAdapter userItem) throws ActionExecutionException {
         try {
-            final Node userNode = userItem.getNode();
+            final Node userNode = userItem.applyChanges();
             final String parentPath = userNode.getParent() != null ? userNode.getParent().getPath() : "/";
 
             if ("/".equals(parentPath)) {

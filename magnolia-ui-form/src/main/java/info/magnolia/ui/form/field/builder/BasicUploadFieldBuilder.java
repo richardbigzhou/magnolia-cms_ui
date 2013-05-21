@@ -106,9 +106,9 @@ public class BasicUploadFieldBuilder extends AbstractFieldBuilder<BasicUploadFie
      */
     public AbstractJcrNodeAdapter getOrCreateSubItemWithBinaryData() {
         // Get the related Node
-        Node node = getRelatedNode(item);
         AbstractJcrNodeAdapter child = null;
         try {
+            Node node = getRelatedNode(item);
             if (node.hasNode(definition.getBinaryNodeName()) && !(item instanceof JcrNewNodeAdapter)) {
                 child = new JcrNodeAdapter(node.getNode(definition.getBinaryNodeName()));
                 child.setParent((AbstractJcrNodeAdapter) item);

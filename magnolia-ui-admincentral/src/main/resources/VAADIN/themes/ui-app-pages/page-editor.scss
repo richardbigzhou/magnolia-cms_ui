@@ -20,6 +20,9 @@
   padding: 0 !important;
   background: transparent none no-repeat !important;
   outline: 0 !important;
+  /* Render bars always on top = z-index + position relative to make z-index work */
+  position: relative;
+  z-index: 65535;
 }
 
 a.disabled:hover {

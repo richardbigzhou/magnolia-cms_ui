@@ -63,7 +63,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
 
             try {
-                final Node node = itemChanged.getNode();
+                final Node node = itemChanged.applyChanges();
                 // the ACL handling has to be added here, once the ACLs are (re)defined for M5
                 MetaDataUtil.updateMetaData(node);
                 node.getSession().save();
