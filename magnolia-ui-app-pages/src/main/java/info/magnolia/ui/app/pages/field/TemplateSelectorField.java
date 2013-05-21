@@ -41,7 +41,6 @@ import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
 import info.magnolia.ui.form.field.builder.SelectFieldBuilder;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
@@ -49,6 +48,10 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 
@@ -58,6 +61,8 @@ import com.vaadin.data.Item;
  * related Item (Image of a JCR node) and {@link TemplateDefinitionAssignment}.
  */
 public class TemplateSelectorField extends SelectFieldBuilder<TemplateSelectorDefinition> {
+
+    private static final Logger log = LoggerFactory.getLogger(TemplateSelectorField.class);
 
     public TemplateSelectorField(TemplateSelectorDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
@@ -69,14 +74,23 @@ public class TemplateSelectorField extends SelectFieldBuilder<TemplateSelectorDe
     @Override
     public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
         List<SelectFieldOptionDefinition> res = new ArrayList<SelectFieldOptionDefinition>();
-        TemplateDefinitionAssignment templateAssignment = Components.getComponent(TemplateDefinitionAssignment.class);
-        Collection<TemplateDefinition> templates = templateAssignment.getAvailableTemplates(asNode(item));
 
-        for (TemplateDefinition templateDefinition : templates) {
-            SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
-            option.setValue(templateDefinition.getId());
-            option.setLabel(getI18nTitle(templateDefinition));
-            res.add(option);
+        if (item instanceof JcrNodeAdapter) {
+            TemplateDefinitionAssignment templateAssignment = Components.getComponent(TemplateDefinitionAssignment.class);
+            Node associatedNode = null;
+            try {
+                associatedNode = ((JcrNodeAdapter) item).applyChanges();
+            } catch (RepositoryException e) {
+                log.error("Could not apply changes to JcrNodeAdapter", e);
+            }
+            Collection<TemplateDefinition> templates = templateAssignment.getAvailableTemplates(associatedNode);
+
+            for (TemplateDefinition templateDefinition : templates) {
+                SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
+                option.setValue(templateDefinition.getId());
+                option.setLabel(getI18nTitle(templateDefinition));
+                res.add(option);
+            }
         }
         return res;
     }
@@ -93,13 +107,5 @@ public class TemplateSelectorField extends SelectFieldBuilder<TemplateSelectorDe
     public static synchronized String getI18nTitle(TemplateDefinition templateDefinition) {
         Messages messages = MessagesManager.getMessages(templateDefinition.getI18nBasename());
         return messages.getWithDefault(templateDefinition.getTitle(), templateDefinition.getTitle());
-    }
-
-    private Node asNode(final Item item) {
-        if (item instanceof JcrNewNodeAdapter) {
-            return ((JcrNewNodeAdapter) item).getNode();
-        } else {
-            return ((JcrNodeAdapter) item).getNode();
-        }
     }
 }

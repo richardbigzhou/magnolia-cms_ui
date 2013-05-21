@@ -131,7 +131,7 @@ public class PasswordFieldBuilderTest extends AbstractBuilderTest<PasswordFieldD
         field.validate();
 
         // WHEN
-        Node res = ((JcrNodeAdapter) baseItem).getNode();
+        Node res = ((JcrNodeAdapter) baseItem).applyChanges();
 
         // THEN
         assertEquals("awdYxe?m,483*", new String(Base64.decodeBase64(res.getProperty(propertyName).getString())));
@@ -149,7 +149,7 @@ public class PasswordFieldBuilderTest extends AbstractBuilderTest<PasswordFieldD
         field.validate();
 
         // WHEN
-        Node res = ((JcrNodeAdapter) baseItem).getNode();
+        Node res = ((JcrNodeAdapter) baseItem).applyChanges();
 
         // THEN
         assertEquals("awdYxe?m,483*", (res.getProperty(propertyName).getString()));

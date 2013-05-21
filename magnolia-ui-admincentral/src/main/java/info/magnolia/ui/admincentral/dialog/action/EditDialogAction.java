@@ -80,7 +80,7 @@ public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
     public void execute() throws ActionExecutionException {
         String tempParentNodePath;
         try {
-            tempParentNodePath = itemToEdit.getNode().getParent().getPath();
+            tempParentNodePath = itemToEdit.applyChanges().getParent().getPath();
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }

@@ -72,7 +72,7 @@ public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
         validator.showValidation(true);
         if (validator.isValid()) {
             try {
-                final Node node = item.getNode();
+                final Node node = item.applyChanges();
                 NodeTypes.LastModified.update(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {

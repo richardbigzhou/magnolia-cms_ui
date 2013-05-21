@@ -122,8 +122,8 @@ public class ListViewImpl implements ListView {
 
 
     private boolean isDeletedNode(JcrNodeAdapter nodeAdapter) {
-        Node node = nodeAdapter.getNode();
         try {
+            Node node = nodeAdapter.applyChanges();
             return NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
         } catch (RepositoryException re) {
             log.warn("Not able to check if node has MixIn");

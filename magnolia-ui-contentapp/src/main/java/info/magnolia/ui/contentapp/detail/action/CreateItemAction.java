@@ -70,7 +70,7 @@ public class CreateItemAction extends ActionBase<CreateItemActionDefinition> {
     public void execute() throws ActionExecutionException {
 
         try {
-            String path = Path.getAbsolutePath(parentItem.getNode().getPath(), NEW_NODE_NAME);
+            String path = Path.getAbsolutePath(parentItem.applyChanges().getPath(), NEW_NODE_NAME);
             DetailLocation location = new DetailLocation(getDefinition().getAppId(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path, "");
             locationController.goTo(location);
         } catch (RepositoryException e) {
