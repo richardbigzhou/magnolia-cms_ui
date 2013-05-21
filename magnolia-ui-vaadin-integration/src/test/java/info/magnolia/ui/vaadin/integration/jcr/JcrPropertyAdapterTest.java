@@ -128,7 +128,7 @@ public class JcrPropertyAdapterTest {
         assertEquals(propertyName, nameProperty.getValue());
         assertEquals(propertyValue, valueProperty.getValue());
         assertEquals(PropertyType.nameFromValue(PropertyType.STRING), typeProperty.getValue());
-        assertNotSame(nameProperty, adapter.getItemProperty(ModelConstants.JCR_NAME));
+        assertSame(nameProperty, adapter.getItemProperty(ModelConstants.JCR_NAME));
     }
 
     @Test
@@ -210,8 +210,8 @@ public class JcrPropertyAdapterTest {
         String newValue = "newValue";
 
         // WHEN
-        adapter.getItemProperty(ModelConstants.JCR_NAME).setValue(newName);
         adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY).setValue(newValue);
+        adapter.getItemProperty(ModelConstants.JCR_NAME).setValue(newName);
         javax.jcr.Property property = adapter.applyChanges();
 
         // THEN
@@ -307,5 +307,43 @@ public class JcrPropertyAdapterTest {
         assertTrue(propertyIds.contains(ModelConstants.JCR_NAME));
         assertTrue(propertyIds.contains(JcrPropertyAdapter.VALUE_PROPERTY));
         assertTrue(propertyIds.contains(JcrPropertyAdapter.TYPE_PROPERTY));
+    }
+
+    @Test
+    public void testReturnedPropertiesAreInSync() throws RepositoryException {
+
+        // GIVEN
+        Node node = session.getRootNode();
+        node.setProperty(propertyName, propertyValue);
+        JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
+
+        Property itemProperty1 = adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY);
+        Property itemProperty2 = adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY);
+
+        // WHEN
+        itemProperty1.setValue("changed");
+
+        // THEN
+        assertTrue(itemProperty1.getValue().equals("changed"));
+        assertTrue(itemProperty2.getValue().equals("changed"));
+    }
+
+    @Test
+    public void testReturnsPropertiesWithChangedValues() throws RepositoryException {
+
+        // GIVEN
+        Node node = session.getRootNode();
+        node.setProperty(propertyName, propertyValue);
+        JcrPropertyAdapter adapter = new JcrPropertyAdapter(node.getProperty(propertyName));
+
+        Property itemProperty1 = adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY);
+
+        // WHEN
+        itemProperty1.setValue("changed");
+
+        // THEN
+        assertTrue(itemProperty1.getValue().equals("changed"));
+        Property itemProperty2 = adapter.getItemProperty(JcrPropertyAdapter.VALUE_PROPERTY);
+        assertTrue(itemProperty2.getValue().equals("changed"));
     }
 }

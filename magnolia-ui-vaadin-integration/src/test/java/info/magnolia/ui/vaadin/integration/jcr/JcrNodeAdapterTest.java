@@ -41,6 +41,7 @@ import info.magnolia.test.mock.jcr.MockSession;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -517,5 +518,39 @@ public class JcrNodeAdapterTest {
         assertFalse(node.hasProperty(propertyName));
         assertEquals(1, adapter.getChangedProperties().size());
         assertEquals(0, adapter.getRemovedProperties().size());
+    }
+
+    @Test
+    public void testReturnedPropertiesAreInSync() throws RepositoryException {
+
+        // GIVEN
+        Node parentNode = session.getRootNode().addNode("node");
+        parentNode.setProperty("name", "");
+        JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
+
+        Property itemProperty1 = adapter.getItemProperty("name");
+        Property itemProperty2 = adapter.getItemProperty("name");
+
+        // WHEN
+        itemProperty1.setValue("changed");
+
+        // THEN
+        assertTrue(itemProperty2.getValue().equals("changed"));
+    }
+
+    @Test
+    public void testReturnsPropertiesWithChangedValues() throws RepositoryException {
+
+        Node parentNode = session.getRootNode().addNode("node");
+        parentNode.setProperty("name", "");
+        JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
+
+        Property itemProperty1 = adapter.getItemProperty("name");
+
+        itemProperty1.setValue("changed");
+
+        Property itemProperty2 = adapter.getItemProperty("name");
+
+        assertTrue(itemProperty2.getValue().equals("changed"));
     }
 }

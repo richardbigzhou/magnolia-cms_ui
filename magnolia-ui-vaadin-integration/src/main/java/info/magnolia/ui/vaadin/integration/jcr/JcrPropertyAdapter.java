@@ -94,6 +94,9 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
 
     @Override
     public Property getItemProperty(Object id) {
+        if (getChangedProperties().containsKey(id)) {
+            return getChangedProperties().get(id);
+        }
         Object value;
         int type = PropertyType.STRING;
         try {
@@ -114,8 +117,8 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
         }
 
         DefaultProperty property = DefaultPropertyUtil.newDefaultProperty((String) id, type, value);
-
         property.addValueChangeListener(this);
+        getChangedProperties().put((String) id, property);
         return property;
     }
 
