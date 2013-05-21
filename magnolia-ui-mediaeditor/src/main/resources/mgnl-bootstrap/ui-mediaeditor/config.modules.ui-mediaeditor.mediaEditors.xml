@@ -523,7 +523,7 @@
           <sv:value>admin</sv:value>
         </sv:property>
         <sv:property sv:name="label" sv:type="String">
-          <sv:value>Flip Horizontally</sv:value>
+          <sv:value>Flip horizontally</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
           <sv:value>false</sv:value>
@@ -532,7 +532,7 @@
           <sv:value>2010-09-08T15:02:53.617+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-          <sv:value>2013-03-07T11:22:55.173+01:00</sv:value>
+          <sv:value>2013-05-21T15:49:42.034+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
           <sv:value>superuser</sv:value>
@@ -564,7 +564,7 @@
           <sv:value>admin</sv:value>
         </sv:property>
         <sv:property sv:name="label" sv:type="String">
-          <sv:value>Flip Vertically</sv:value>
+          <sv:value>Flip vertically</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
           <sv:value>false</sv:value>
@@ -573,7 +573,7 @@
           <sv:value>2010-09-08T15:02:53.617+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-          <sv:value>2013-03-07T11:23:01.517+01:00</sv:value>
+          <sv:value>2013-05-21T15:49:48.673+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
           <sv:value>superuser</sv:value>
@@ -611,7 +611,7 @@
           <sv:value>2010-09-08T15:02:53.617+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-          <sv:value>2013-03-06T15:08:30.203+01:00</sv:value>
+          <sv:value>2013-05-21T15:53:53.404+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
           <sv:value>superuser</sv:value>
@@ -640,13 +640,13 @@
           <sv:value>admin</sv:value>
         </sv:property>
         <sv:property sv:name="label" sv:type="String">
-          <sv:value>Rotate</sv:value>
+          <sv:value>Rotate 90° to right</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:created" sv:type="Date">
           <sv:value>2013-02-07T16:57:47.434+01:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-          <sv:value>2013-03-06T15:08:45.723+01:00</sv:value>
+          <sv:value>2013-05-21T15:50:59.727+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
           <sv:value>superuser</sv:value>
@@ -675,7 +675,7 @@
           <sv:value>admin</sv:value>
         </sv:property>
         <sv:property sv:name="label" sv:type="String">
-          <sv:value>Scale to actual</sv:value>
+          <sv:value>Zoom to actual size</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
           <sv:value>false</sv:value>
@@ -684,7 +684,7 @@
           <sv:value>2010-09-08T15:02:53.617+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-          <sv:value>2013-03-06T16:21:27.255+01:00</sv:value>
+          <sv:value>2013-05-21T15:52:16.191+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
           <sv:value>superuser</sv:value>
@@ -713,7 +713,7 @@
           <sv:value>admin</sv:value>
         </sv:property>
         <sv:property sv:name="label" sv:type="String">
-          <sv:value>Scale to fit</sv:value>
+          <sv:value>Zoom to fit</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
           <sv:value>false</sv:value>
@@ -722,7 +722,7 @@
           <sv:value>2010-09-08T15:02:53.617+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-          <sv:value>2013-03-06T16:21:03.760+01:00</sv:value>
+          <sv:value>2013-05-21T15:52:04.550+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
           <sv:value>superuser</sv:value>
@@ -789,7 +789,7 @@
           <sv:value>admin</sv:value>
         </sv:property>
         <sv:property sv:name="label" sv:type="String">
-          <sv:value>Gray Scale</sv:value>
+          <sv:value>Convert to grayscale</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
           <sv:value>false</sv:value>
@@ -798,7 +798,7 @@
           <sv:value>2010-09-08T15:02:53.617+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-          <sv:value>2013-03-06T17:23:42.795+01:00</sv:value>
+          <sv:value>2013-05-21T15:54:00.307+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
           <sv:value>superuser</sv:value>
