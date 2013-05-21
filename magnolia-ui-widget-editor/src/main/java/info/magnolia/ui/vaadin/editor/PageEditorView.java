@@ -34,37 +34,19 @@
 package info.magnolia.ui.vaadin.editor;
 
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 
 /**
- * PageEditorView.
+ * Interface for {@link PageEditorViewImpl}.
  */
 public interface PageEditorView extends View {
 
-    void setListener(Listener listener);
+    void setListener(PageEditorListener listener);
 
     void refresh();
 
     void load(PageEditorParameters parameters);
 
-    void init();
-
     void update(PageEditorParameters parameters);
 
-    /**
-     * Listener.
-     */
-    public interface Listener {
-
-        void editComponent(String workspace, String path, String dialog);
-
-        void newArea();
-
-        void newComponent();
-
-        void sortComponent(String workspace, String parentPath, String source, String target, String order);
-
-        void selectElement(AbstractElement nodeSelection);
-    }
 }

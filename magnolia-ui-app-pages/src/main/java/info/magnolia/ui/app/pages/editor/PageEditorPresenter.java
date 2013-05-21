@@ -37,22 +37,18 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
-import info.magnolia.ui.dialog.FormDialogPresenter;
-import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
+import info.magnolia.ui.vaadin.editor.PageEditorListener;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -68,33 +64,29 @@ import org.slf4j.LoggerFactory;
  * Presenter for the server side {@link PageEditorView}.
  * Serves multiple methods for actions triggered from the page editor.
  */
-public class PageEditorPresenter implements PageEditorView.Listener {
+public class PageEditorPresenter implements PageEditorListener {
 
     private static final Logger log = LoggerFactory.getLogger(PageEditorPresenter.class);
 
     private final ActionExecutor actionExecutor;
     private final PageEditorView view;
-
     private final EventBus subAppEventBus;
-
-    private final TemplateDefinitionRegistry templateDefinitionRegistry;
+    private final SubAppContext subAppContext;
 
     private AbstractElement selectedElement;
 
-    private final SubAppContext subAppContext;
-
-    private final ComponentProvider componentProvider;
-
     @Inject
-    public PageEditorPresenter(final ActionExecutor actionExecutor, PageEditorView view, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, TemplateDefinitionRegistry templateDefinitionRegistry,
-            SubAppContext subAppContext, ComponentProvider componentProvider) {
+    public PageEditorPresenter(final ActionExecutor actionExecutor, PageEditorView view, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, SubAppContext subAppContext) {
         this.actionExecutor = actionExecutor;
         this.view = view;
         this.subAppEventBus = subAppEventBus;
-        this.templateDefinitionRegistry = templateDefinitionRegistry;
         this.subAppContext = subAppContext;
-        this.componentProvider = componentProvider;
         registerHandlers();
+    }
+
+    public PageEditorView start() {
+        view.setListener(this);
+        return view;
     }
 
     private void registerHandlers() {
@@ -103,73 +95,26 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             @Override
             public void onContentChanged(ContentChangedEvent event) {
                 if (event.getWorkspace().equals(RepositoryConstants.WEBSITE)) {
-                        view.refresh();
+                    view.refresh();
                 }
             }
         });
     }
 
     @Override
-    public void editComponent(String workspace, String path, String dialogName) {
-        final FormDialogPresenter formDialogPresenter = componentProvider.getComponent(FormDialogPresenter.class);
-
-        try {
-            Session session = MgnlContext.getJCRSession(workspace);
-            if (path == null || !session.itemExists(path)) {
-                path = "/";
-            }
-            final Node node = session.getNode(path);
-            final JcrNodeAdapter item = new JcrNodeAdapter(node);
-            openDialog(item, dialogName, formDialogPresenter);
-        } catch (RepositoryException e) {
-            log.error("Exception caught: {}", e.getMessage(), e);
-        }
+    public void onElementSelect(AbstractElement selectedElement) {
+        this.selectedElement = selectedElement;
+        subAppEventBus.fireEvent(new NodeSelectedEvent(selectedElement));
     }
 
-    /**
-     * Creates a chain of dialogs for creating new components.
-     * The first dialog is built on the fly based on the available components passed from the client.
-     * Based on the selection made in the first dialog the second dialog will be created, providing fields for the actual component.
-     */
     @Override
-    public void newComponent() {
+    public void onAction(String actionName, AbstractElement element) {
         try {
-            actionExecutor.execute("addComponent", selectedElement);
+            actionExecutor.execute(actionName, element);
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
             subAppContext.getAppContext().broadcastMessage(error);
         }
-    }
-
-    @Override
-    public void newArea() {
-        try {
-            actionExecutor.execute("addArea", selectedElement);
-        } catch (ActionExecutionException e) {
-            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
-            subAppContext.getAppContext().broadcastMessage(error);
-        }
-
-    }
-
-    /**
-     * Create a Dialog and define the call back actions.
-     */
-    private void openDialog(final JcrNodeAdapter item, final String dialogName, final FormDialogPresenter formDialogPresenter) {
-
-        formDialogPresenter.start(item, dialogName, subAppContext, new EditorCallback() {
-
-            @Override
-            public void onSuccess(String actionName) {
-                subAppEventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
-                formDialogPresenter.closeDialog();
-            }
-
-            @Override
-            public void onCancel() {
-                formDialogPresenter.closeDialog();
-            }
-        });
     }
 
     @Override
@@ -203,18 +148,6 @@ public class PageEditorPresenter implements PageEditorView.Listener {
         }
     }
 
-    @Override
-    public void selectElement(AbstractElement selectedElement) {
-        this.selectedElement = selectedElement;
-        subAppEventBus.fireEvent(new NodeSelectedEvent(selectedElement));
-    }
-
-    public PageEditorView start() {
-        view.setListener(this);
-        view.init();
-        return view;
-    }
-
     public AbstractElement getSelectedElement() {
         return selectedElement;
     }
@@ -226,10 +159,5 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     public void updateParameters(PageEditorParameters parameters) {
         view.update(parameters);
     }
-
-    public TemplateDefinitionRegistry getTemplateDefinitionRegistry() {
-        return templateDefinitionRegistry;
-    }
-
 
 }

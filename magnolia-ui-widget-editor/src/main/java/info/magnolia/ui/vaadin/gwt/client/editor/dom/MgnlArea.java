@@ -37,10 +37,9 @@ import static info.magnolia.ui.vaadin.gwt.client.editor.jsni.JavascriptUtils.get
 
 import info.magnolia.cms.security.operations.OperationPermissionDefinition;
 import info.magnolia.rendering.template.AreaDefinition;
-import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
+import info.magnolia.ui.vaadin.gwt.client.editor.event.EditAreaEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.NewAreaEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.NewComponentEvent;
-import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.AreaEndBar;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.AreaListener;
@@ -64,7 +63,7 @@ import com.google.gwt.event.shared.EventBus;
  */
 public class MgnlArea extends MgnlElement implements AreaListener {
 
-    private static final String NODE_TYPE = "mgnl:area";
+    public static final String EDITOR_INIT_CLASS_NAME = "init";
     private AreaEndBar areaEndBar;
     private ComponentPlaceHolder componentPlaceHolder;
     private Element componentMarkerElement;
@@ -103,7 +102,7 @@ public class MgnlArea extends MgnlElement implements AreaListener {
     }
 
     @Override
-    public AbstractElement getTypedElement() {
+    public AreaElement getTypedElement() {
         AreaElement area = new AreaElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"), getAttribute("availableComponents"));
 
         boolean addible = true;
@@ -117,28 +116,17 @@ public class MgnlArea extends MgnlElement implements AreaListener {
 
     @Override
     public void createOptionalArea() {
-        String workspace = getAttribute("workspace");
-        String path = getAttribute("path");
-        eventBus.fireEvent(new NewAreaEvent(workspace, NODE_TYPE, path));
-
+        eventBus.fireEvent(new NewAreaEvent(getTypedElement()));
     }
 
     @Override
     public void editArea() {
-        String workspace = getAttribute("workspace");
-        String path = getAttribute("path");
-        String dialog = getAttribute("dialog");
-        eventBus.fireEvent(new EditComponentEvent(workspace, path, dialog));
-
+        eventBus.fireEvent(new EditAreaEvent(getTypedElement()));
     }
 
     @Override
     public void createNewComponent() {
-        String workspace = getAttribute("workspace");
-        String path = getAttribute("path");
-        String availableComponents = getAttribute("availableComponents");
-
-        eventBus.fireEvent(new NewComponentEvent(workspace, path, availableComponents));
+        eventBus.fireEvent(new NewComponentEvent(getTypedElement()));
     }
 
     @Override
@@ -238,12 +226,12 @@ public class MgnlArea extends MgnlElement implements AreaListener {
 
     public void toggleInitFocus(boolean visible) {
         if (visible) {
-            getControlBar().addStyleName("init");
-            getAreaEndBar().addStyleName("init");
-            getAreaEndBar().addStyleName("init");
+            getControlBar().addStyleName(EDITOR_INIT_CLASS_NAME);
+            getAreaEndBar().addStyleName(EDITOR_INIT_CLASS_NAME);
+            getAreaEndBar().addStyleName(EDITOR_INIT_CLASS_NAME);
         } else {
-            getControlBar().removeStyleName("init");
-            getAreaEndBar().removeStyleName("init");
+            getControlBar().removeStyleName(EDITOR_INIT_CLASS_NAME);
+            getAreaEndBar().removeStyleName(EDITOR_INIT_CLASS_NAME);
         }
     }
 }

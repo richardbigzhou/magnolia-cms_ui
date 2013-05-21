@@ -36,7 +36,7 @@ package info.magnolia.ui.vaadin.gwt.client.editor.event;
 import com.google.gwt.event.shared.EventHandler;
 
 /**
- * EditComponentEventHandler.
+ * Event handler for {@link EditComponentEvent}.
  */
 public interface EditComponentEventHandler extends EventHandler {
     void onEditComponent(EditComponentEvent editComponentEvent);

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor.event;
+package info.magnolia.ui.vaadin.editor;
 
-import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
-
-import com.google.gwt.event.shared.GwtEvent;
+import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 
 /**
- * NewComponentEvent.
+ * Listener interface for handling events coming from the client side.
+ * Do not change the constant action names, without updating configuration of actions used in actionbar.
  */
-public class NewComponentEvent extends GwtEvent<NewComponentEventHandler> {
-    public static Type<NewComponentEventHandler> TYPE = new Type<NewComponentEventHandler>();
+public interface PageEditorListener {
 
-    private AreaElement areaElement;
+    static final String EDIT_ELEMENT = "editElement";
+    static final String ADD_COMPONENT = "addComponent";
+    static final String ADD_AREA = "addArea";
 
-    public NewComponentEvent(AreaElement areaElement) {
-        this.areaElement = areaElement;
-    }
+    void onElementSelect(AbstractElement nodeSelection);
 
-    @Override
-    public Type<NewComponentEventHandler> getAssociatedType() {
-        return TYPE;
-    }
+    void onAction(String actionName, AbstractElement element);
 
-    @Override
-    protected void dispatch(NewComponentEventHandler handler) {
-        handler.onNewComponent(this);
-    }
-
-    public AreaElement getParentAreaElement() {
-        return areaElement;
-    }
+    void sortComponent(String workspace, String parentPath, String source, String target, String order);
 }

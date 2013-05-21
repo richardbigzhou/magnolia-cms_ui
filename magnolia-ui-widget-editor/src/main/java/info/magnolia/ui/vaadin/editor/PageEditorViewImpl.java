@@ -34,23 +34,18 @@
 package info.magnolia.ui.vaadin.editor;
 
 import info.magnolia.ui.vaadin.editor.preview.PageEditorPreviewWrapper;
-import info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorServerRpc;
-import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
-import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
-import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 
 /**
- * Implements {@link PageEditorView}.
+ * Implements {@link PageEditorView}. Depending on current status defined in {@link info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters#isPreview()}
+ * the view will wrap the {@link PageEditor} inside the {@link PageEditorPreviewWrapper} for styling the preview.
  */
 public class PageEditorViewImpl extends CssLayout implements PageEditorView {
 
     private PageEditor pageEditor = new PageEditor();
-
-    private PageEditorView.Listener listener;
 
     private PageEditorPreviewWrapper previewChrome = new PageEditorPreviewWrapper();
 
@@ -61,8 +56,8 @@ public class PageEditorViewImpl extends CssLayout implements PageEditorView {
     }
 
     @Override
-    public void setListener(PageEditorView.Listener listener) {
-        this.listener = listener;
+    public void setListener(PageEditorListener listener) {
+        pageEditor.setListener(listener);
     }
 
     @Override
@@ -94,47 +89,5 @@ public class PageEditorViewImpl extends CssLayout implements PageEditorView {
     @Override
     public Component asVaadinComponent() {
         return this;
-    }
-
-    @Override
-    public void init() {
-        pageEditor.setServerRpc(new PageEditorServerRpc() {
-
-            @Override
-            public void sortComponent(String workspace, String parentPath, String sourcePath, String targetPath, String order) {
-                listener.sortComponent(workspace, parentPath, sourcePath, targetPath, order);
-            }
-
-            @Override
-            public void selectPage(PageElement element) {
-                listener.selectElement(element);
-            }
-
-            @Override
-            public void selectArea(AreaElement element) {
-                listener.selectElement(element);
-            }
-
-            @Override
-            public void selectComponent(ComponentElement element) {
-                listener.selectElement(element);
-            }
-
-            @Override
-            public void newComponent(String workspace, String eventType, String availableComponents) {
-                listener.newComponent();
-            }
-
-            @Override
-            public void newArea(String workspace, String nodeType, String path) {
-                listener.newArea();
-            }
-
-            @Override
-            public void editComponent(String workspace, String eventType, String dialog) {
-                listener.editComponent(workspace, eventType, dialog);
-            }
-
-        });
     }
 }
