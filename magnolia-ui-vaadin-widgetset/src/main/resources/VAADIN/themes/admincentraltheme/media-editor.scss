@@ -25,7 +25,11 @@
   .v-media-editor .dialog-footer {
     position: absolute;
     bottom: 0px;
-    background-color: $c12;
+    background-color: $c10;
+  }
+
+  .v-media-editor .btn-dialog {
+    background-color: #2d2d2d;
   }
 
   .v-media-editor {

@@ -33,12 +33,13 @@
  */
 package info.magnolia.ui.mediaeditor;
 
-import com.vaadin.data.Property.Transactional;
-import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.data.util.TransactionalPropertyWrapper;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent.CompletionType;
@@ -48,19 +49,20 @@ import info.magnolia.ui.mediaeditor.editmode.factory.EditModeProviderFactory;
 import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
 import info.magnolia.ui.mediaeditor.editmode.provider.EditModeProvider;
 import info.magnolia.ui.mediaeditor.editmode.provider.EditModeProvider.ActionContext;
-import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.action.ActionExecutor;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
+
+import com.vaadin.data.Property.Transactional;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.TransactionalPropertyWrapper;
 
 /**
  * Implementation of {@link MediaEditorPresenter}.
@@ -123,7 +125,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
             switchToDefaultMode();
             return view;
         } catch (IOException e) {
-            log.error("Error occured while editing media: " + e.getMessage(), e);
+            log.error("Error occurred while editing media: " + e.getMessage(), e);
         }
         return null;
     }

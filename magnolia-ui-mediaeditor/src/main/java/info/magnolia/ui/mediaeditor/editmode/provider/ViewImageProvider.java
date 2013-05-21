@@ -105,7 +105,7 @@ public class ViewImageProvider implements EditModeProvider {
 
         @Override
         public void onSizeChanged(ImageResizeEvent e) {
-            setValue(String.format("Size: %d x %d px", e.getWidth(), e.getHeight()));
+            setValue(String.format("Actual Size: %d x %d px", e.getWidth(), e.getHeight()));
         }
     }
 }
