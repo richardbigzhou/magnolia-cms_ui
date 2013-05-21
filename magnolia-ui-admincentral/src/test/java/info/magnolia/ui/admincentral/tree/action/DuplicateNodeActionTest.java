@@ -34,14 +34,16 @@
 package info.magnolia.ui.admincentral.tree.action;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.event.EventBus;
+import info.magnolia.event.RecordingEventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
 import java.util.Calendar;
 
@@ -56,29 +58,29 @@ import org.junit.Test;
  */
 public class DuplicateNodeActionTest extends RepositoryTestCase {
 
-    private Node nodeToCopy;
-
     private static final DuplicateNodeActionDefinition DEFINITION = new DuplicateNodeActionDefinition();
 
-    private EventBus eventBus;
+    private Node nodeToCopy;
+    private RecordingEventBus eventBus;
+    private Session session;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        Session webSiteSession = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
-        nodeToCopy = webSiteSession.getRootNode().addNode("nodeToCopy", NodeTypes.Page.NAME);
+        session = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
+        nodeToCopy = session.getRootNode().addNode("nodeToCopy", NodeTypes.Page.NAME);
         NodeTypes.Created.set(nodeToCopy);
         nodeToCopy.setProperty("property", "property");
         nodeToCopy.addNode("subNode", NodeTypes.Page.NAME);
         nodeToCopy.getNode("subNode").setProperty("property_subNode", "property_subNode");
-        webSiteSession.save();
-        eventBus = mock(EventBus.class);
+        session.save();
+
+        eventBus = new RecordingEventBus();
     }
 
-
     @Test
-    public void testExecute() throws Exception {
+    public void testDuplicatesNode() throws Exception {
         // GIVEN
         DuplicateNodeAction action = new DuplicateNodeAction(DEFINITION, new JcrNodeAdapter(nodeToCopy), eventBus);
 
@@ -86,49 +88,41 @@ public class DuplicateNodeActionTest extends RepositoryTestCase {
         action.execute();
 
         // THEN
-        Node rootNode = nodeToCopy.getParent();
-        assertEquals(2, rootNode.getNodes("nodeToCopy*").getSize());
-        assertTrue(rootNode.hasNode("nodeToCopy"));
-        assertTrue(rootNode.hasNode("nodeToCopy/subNode"));
-        assertTrue(rootNode.getNode("nodeToCopy/subNode").hasProperty("property_subNode"));
-        assertTrue(rootNode.hasNode("nodeToCopy0"));
-        assertEquals(NodeTypes.Page.NAME, rootNode.getNode("nodeToCopy0").getPrimaryNodeType().getName());
-        assertTrue(rootNode.hasNode("nodeToCopy0/subNode"));
-        assertTrue(rootNode.getNode("nodeToCopy0/subNode").hasProperty("property_subNode"));
-    }
-
-    @Test
-    public void testExecuteUpdateDate() throws Exception {
-        // GIVEN
-        DuplicateNodeAction action = new DuplicateNodeAction(DEFINITION, new JcrNodeAdapter(nodeToCopy), eventBus);
-
-        // WHEN
-        action.execute();
-
-        // THEN
-        Node rootNode = nodeToCopy.getParent();
-        Calendar init = rootNode.getNode("nodeToCopy").getProperty(NodeTypes.LastModified.LAST_MODIFIED).getDate();
-        Calendar duplicate = rootNode.getNode("nodeToCopy0").getProperty(NodeTypes.LastModified.LAST_MODIFIED).getDate();
+        Node parent = nodeToCopy.getParent();
+        assertEquals(2, parent.getNodes("nodeToCopy*").getSize());
+        assertTrue(parent.hasNode("nodeToCopy"));
+        assertTrue(parent.hasNode("nodeToCopy/subNode"));
+        assertTrue(parent.getNode("nodeToCopy/subNode").hasProperty("property_subNode"));
+        assertTrue(parent.hasNode("nodeToCopy0"));
+        assertTrue(parent.hasNode("nodeToCopy0/subNode"));
+        assertTrue(parent.getNode("nodeToCopy0/subNode").hasProperty("property_subNode"));
+        assertEquals(NodeTypes.Page.NAME, parent.getNode("nodeToCopy0").getPrimaryNodeType().getName());
+        assertTrue(parent.getNode("nodeToCopy0").hasProperty(NodeTypes.LastModified.LAST_MODIFIED));
+        assertTrue(parent.getNode("nodeToCopy0").hasProperty(NodeTypes.LastModified.LAST_MODIFIED_BY));
+        assertTrue(parent.getNode("nodeToCopy0").hasProperty(NodeTypes.Created.CREATED));
+        assertTrue(parent.getNode("nodeToCopy0").hasProperty(NodeTypes.Created.CREATED_BY));
+        Calendar init = parent.getNode("nodeToCopy").getProperty(NodeTypes.LastModified.LAST_MODIFIED).getDate();
+        Calendar duplicate = parent.getNode("nodeToCopy0").getProperty(NodeTypes.LastModified.LAST_MODIFIED).getDate();
         assertTrue(init.before(duplicate));
+        assertFalse(eventBus.isEmpty());
+        assertTrue(((ContentChangedEvent) eventBus.getEvent()).getItemId().equals(JcrItemUtil.getItemId(parent.getNode("nodeToCopy0"))));
     }
-    
+
     @Test
-    public void testExecuteUpdateMultipleCall() throws Exception {
+    public void testDoesNothingGivenProperty() throws Exception {
         // GIVEN
-        DuplicateNodeAction action = new DuplicateNodeAction(DEFINITION, new JcrNodeAdapter(nodeToCopy), eventBus);
-        
+        Node root = session.getRootNode();
+        Node node = root.addNode("nodeName");
+        node.setProperty("propertyName", "propertyValue");
+        long nodeCountBefore = node.getNodes().getSize();
+        DuplicateNodeAction action = new DuplicateNodeAction(DEFINITION, new JcrPropertyAdapter(node.getProperty("propertyName")), eventBus);
+
         // WHEN
         action.execute();
-        action.execute();
-        action.execute();
-        
+
         // THEN
-        Node rootNode = nodeToCopy.getParent();
-        assertEquals(4, rootNode.getNodes("nodeToCopy*").getSize());
-        assertTrue(rootNode.hasNode("nodeToCopy"));
-        assertTrue(rootNode.hasNode("nodeToCopy0"));
-        assertTrue(rootNode.hasNode("nodeToCopy1"));
-        assertTrue(rootNode.hasNode("nodeToCopy2"));
-        assertTrue(rootNode.getNode("nodeToCopy2/subNode").hasProperty("property_subNode"));
+        assertEquals(nodeCountBefore, node.getNodes().getSize());
+        assertFalse(node.hasNode("nodeName0"));
+        assertTrue(eventBus.isEmpty());
     }
 }

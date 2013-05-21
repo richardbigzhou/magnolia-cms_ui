@@ -71,7 +71,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Main Test class of {@link DeleteAction}.
+ * Tests for {@link DeleteAction}.
  */
 public class DeleteActionTest extends RepositoryTestCase {
     private CommandsManager commandsManager;
@@ -101,7 +101,6 @@ public class DeleteActionTest extends RepositoryTestCase {
 
         // Init Action and CommandManager
         definition = new DeleteActionDefinition();
-        definition.setCommand("delete");
 
         ComponentsTestUtil.setImplementation(CommandsManager.class, CommandsManager.class);
         // see for why this is needed.

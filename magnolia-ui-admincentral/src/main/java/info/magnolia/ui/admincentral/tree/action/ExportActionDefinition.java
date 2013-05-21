@@ -36,12 +36,13 @@ package info.magnolia.ui.admincentral.tree.action;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 
 /**
- * ExportActionDefinition used to configure Export Command.
+ * Used to configure an {@link ExportAction}.
+ *
+ * @see ExportAction
  */
 public class ExportActionDefinition extends CommandActionDefinition {
 
     public ExportActionDefinition() {
         setImplementationClass(ExportAction.class);
     }
-
 }

@@ -110,9 +110,9 @@ public class DetailPresenter implements DialogActionListener, EditorCallback, Ed
                 @Override
                 public void onActionExecuted(final String actionName) {
                     try {
-                        actionExecutor.execute(action.getName(), item, DetailPresenter.this);
+                        actionExecutor.execute(actionName, item, DetailPresenter.this);
                     } catch (ActionExecutionException e) {
-                        throw new RuntimeException("Could not execute action: ", e);
+                        throw new RuntimeException("Could not execute action: " + actionName, e);
                     }
                 }
             });
