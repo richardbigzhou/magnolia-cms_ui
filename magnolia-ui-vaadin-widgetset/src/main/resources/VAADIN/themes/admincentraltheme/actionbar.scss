@@ -128,9 +128,6 @@
 	padding-left:0;
 }
 
-/** FIXME This is a workaround to align the publish-incl-sub icon. It's an issue with the image itself **/
-span.icon-publish-incl-sub { text-indent: -27px !important; }
-
 /*********************** TABLET STYLES ***/
 
 .tablet .v-actionbar {
@@ -285,15 +282,9 @@ span.icon-publish-incl-sub { text-indent: -27px !important; }
 	line-height:14px;
 }
 
-.popupContent .v-context-menu .v-context-menu-item-basic-icon-container .icon-publish-incl-sub {
-    text-indent: 0px !important;
-}
-
-
 .popupContent .v-context-menu .v-context-menu-item-basic.v-context-menu-item-separator{
 	border-bottom: 1px solid $c11;
 }
-
 
 
 }
