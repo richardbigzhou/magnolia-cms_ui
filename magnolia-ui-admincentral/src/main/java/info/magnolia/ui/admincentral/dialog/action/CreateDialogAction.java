@@ -34,19 +34,23 @@
 package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.api.action.ActionBase;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.inject.Named;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Opens a dialog for creating a new node in a tree.
@@ -55,26 +59,35 @@ import javax.inject.Named;
  */
 public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition> {
 
+    private static final Logger log = LoggerFactory.getLogger(CreateDialogAction.class);
+
     private final AbstractJcrNodeAdapter parentItem;
-    private FormDialogPresenter formDialogPresenter;
+    private final FormDialogPresenter formDialogPresenter;
+    private final UiContext uiContext;
+    private final EventBus eventBus;
 
-    private final OverlayLayer overlayLayer;
-    private EventBus eventBus;
-
-    public CreateDialogAction(CreateDialogActionDefinition definition, AbstractJcrNodeAdapter parentItem, FormDialogPresenter formDialogPresenter, final SubAppContext subAppContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
+    public CreateDialogAction(CreateDialogActionDefinition definition, AbstractJcrNodeAdapter parentItem, FormDialogPresenter formDialogPresenter, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
         super(definition);
         this.parentItem = parentItem;
         this.formDialogPresenter = formDialogPresenter;
-        this.overlayLayer = subAppContext;
+        this.uiContext = uiContext;
         this.eventBus = eventBus;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
 
-        final JcrNodeAdapter item = new JcrNewNodeAdapter(parentItem.getNode(), getDefinition().getNodeType());
+        Node updatedNode;
+        try {
+            updatedNode = parentItem.applyChanges();
+        } catch (RepositoryException e) {
+            log.error("Cannot apply changes to " + parentItem.getItemId(), e);
+            return;
+        }
 
-        formDialogPresenter.start(item, getDefinition().getDialogName(), overlayLayer, new EditorCallback() {
+        final JcrNodeAdapter item = new JcrNewNodeAdapter(updatedNode, getDefinition().getNodeType());
+
+        formDialogPresenter.start(item, getDefinition().getDialogName(), uiContext, new EditorCallback() {
 
             @Override
             public void onSuccess(String actionName) {
@@ -87,7 +100,5 @@ public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition>
                 formDialogPresenter.closeDialog();
             }
         });
-
     }
-
 }

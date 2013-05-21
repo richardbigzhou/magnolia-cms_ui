@@ -41,7 +41,7 @@ import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.api.action.ActionBase;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.CommandActionDefinition;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
@@ -72,16 +72,16 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
 
     private Map<String, Object> params;
 
-    private final SubAppContext subAppContext;
+    private final UiContext uiContext;
 
     public static final String COMMAND_RESULT = "command_result";
 
     @Inject
-    public CommandActionBase(final D definition, final JcrItemAdapter item, final CommandsManager commandsManager, SubAppContext subAppContext) {
+    public CommandActionBase(final D definition, final JcrItemAdapter item, final CommandsManager commandsManager, UiContext uiContext) {
         super(definition);
         this.commandsManager = commandsManager;
         this.params = buildParams(item.getJcrItem());
-        this.subAppContext = subAppContext;
+        this.uiContext = uiContext;
         // Init Command.
         String commandName = getDefinition().getCommand();
         String catalog = getDefinition().getCatalog();
@@ -130,7 +130,7 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
 
     /**
      * @return the <em>immutable</em> map of parameters to be used for command execution.
-     * @see CommandActionBase#buildParams(Node).
+     * @see CommandActionBase#buildParams(javax.jcr.Item)
      */
     public final Map<String, Object> getParams() {
         return Collections.unmodifiableMap(params);
@@ -182,7 +182,7 @@ public class CommandActionBase<D extends CommandActionDefinition> extends Action
      */
     protected void onError(Exception e) {
         String message = "Action execution failed.";
-        subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, message);
+        uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, message);
     }
 
     /**

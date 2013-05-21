@@ -35,7 +35,8 @@ package info.magnolia.ui.api.action;
 
 /**
  * An action is executed in response to user interaction with the UI. For instance clicking on an item in a menu.
- * Virtually all actions have an associated {@link ActionDefinition} that is used to configure it.
+ * Virtually all actions have an associated {@link ActionDefinition} that is used to configure it. Actions are used only
+ * once, a new instance is created for every execution.
  *
  * @see ActionDefinition
  */

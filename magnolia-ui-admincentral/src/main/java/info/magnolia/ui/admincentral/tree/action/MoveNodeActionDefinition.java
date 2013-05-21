@@ -36,12 +36,13 @@ package info.magnolia.ui.admincentral.tree.action;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * The Class MoveNodeActionDefinition.
+ * Used to configure a {@link MoveNodeAction}.
+ *
+ * @see MoveNodeAction
  */
 public class MoveNodeActionDefinition extends ConfiguredActionDefinition {
 
     public MoveNodeActionDefinition() {
         setImplementationClass(MoveNodeAction.class);
     }
-
 }

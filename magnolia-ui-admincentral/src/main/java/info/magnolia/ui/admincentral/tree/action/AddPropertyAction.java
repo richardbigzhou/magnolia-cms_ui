@@ -34,11 +34,14 @@
 package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import javax.inject.Named;
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 /**
@@ -54,9 +57,12 @@ public class AddPropertyAction extends RepositoryOperationAction<AddPropertyActi
 
     @Override
     protected void onExecute(JcrItemAdapter item) throws RepositoryException {
-        Node node = (Node) item.getJcrItem();
-        String name = getUniqueNewItemName(item);
-        node.setProperty(name, "");
+        if (item.isNode()) {
+            Node node = (Node) item.getJcrItem();
+            String name = getUniqueNewItemName(node);
+            Property property = node.setProperty(name, "");
+            NodeTypes.LastModified.update(property.getParent());
+            setItemIdOfChangedItem(JcrItemUtil.getItemId(property));
+        }
     }
-
 }

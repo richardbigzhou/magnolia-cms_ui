@@ -37,6 +37,7 @@ import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.action.CommandActionBase;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
@@ -47,12 +48,13 @@ import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.jcr.Node;
 
 import org.apache.commons.lang.StringUtils;
 
 /**
  * UI action that allows to deactivate pages (nodes).
+ *
+ * @see DeactivationActionDefinition
  */
 public class DeactivationAction extends CommandActionBase<DeactivationActionDefinition> {
 
@@ -60,26 +62,25 @@ public class DeactivationAction extends CommandActionBase<DeactivationActionDefi
 
     private final EventBus eventBus;
 
-    private final SubAppContext subAppContext;
+    private final UiContext uiContext;
 
     @Inject
-    public DeactivationAction(final DeactivationActionDefinition definition, final JcrItemAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, SubAppContext subAppContext) {
-        super(definition, item, commandsManager, subAppContext);
+    public DeactivationAction(final DeactivationActionDefinition definition, final JcrItemAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, SubAppContext uiContext) {
+        super(definition, item, commandsManager, uiContext);
         this.jcrNodeAdapter = (AbstractJcrNodeAdapter) item;
         this.eventBus = eventBus;
-        this.subAppContext = subAppContext;
+        this.uiContext = uiContext;
     }
 
 
     @Override
     protected void onError(Exception e) {
-        subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, getDefinition().getErrorMessage());
+        uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, getDefinition().getErrorMessage());
     }
 
     @Override
     protected void onPostExecute() throws Exception {
-        Node jcrNode = jcrNodeAdapter.getJcrItem();
-        eventBus.fireEvent(new ContentChangedEvent(jcrNode.getSession().getWorkspace().getName(), jcrNode.getPath()));
+        eventBus.fireEvent(new ContentChangedEvent(jcrNodeAdapter.getWorkspace(), jcrNodeAdapter.getItemId()));
 
         // Display a notification
 
@@ -96,7 +97,7 @@ public class DeactivationAction extends CommandActionBase<DeactivationActionDefi
         }
 
         if (StringUtils.isNotBlank(message)) {
-            subAppContext.openNotification(messageStyleType, true, message);
+            uiContext.openNotification(messageStyleType, true, message);
         }
     }
 }

@@ -36,13 +36,13 @@ package info.magnolia.ui.admincentral.tree.action;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 
 /**
- * Delete Definition used to configure a {@link MarkNodeAsDeletedAction}. <br>
- * This action is used to create a new {@link javax.jcr.Item} version and mark them as deleted.
+ * Used to configure a {@link MarkNodeAsDeletedAction}.
+ *
+ * @see MarkNodeAsDeletedAction
  */
 public class MarkNodeAsDeletedActionDefinition extends CommandActionDefinition {
 
     public MarkNodeAsDeletedActionDefinition() {
         setImplementationClass(MarkNodeAsDeletedAction.class);
     }
-
 }

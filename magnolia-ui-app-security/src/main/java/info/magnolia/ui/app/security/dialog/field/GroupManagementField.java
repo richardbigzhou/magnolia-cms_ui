@@ -162,8 +162,8 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
 
     private Set<String> getAssignedGroups() {
         Set<String> groups = new HashSet<String>();
-        Node mainNode = getRelatedNode(item);
         try {
+            Node mainNode = getRelatedNode(item);
             if (mainNode.hasNode("groups")) {
                 Node groupsNode = mainNode.getNode("groups");
                 if (groupsNode == null) {
@@ -177,7 +177,7 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
                 }
             }
         } catch (RepositoryException re) {
-            log.error("Cannot read assigned groups of the node [" + mainNode + "].", re);
+            log.error("Cannot read assigned groups.", re);
         }
         return groups;
     }

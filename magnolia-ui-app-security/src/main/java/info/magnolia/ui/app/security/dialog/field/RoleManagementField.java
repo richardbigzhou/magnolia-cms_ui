@@ -136,8 +136,8 @@ public class RoleManagementField extends TwinColSelectFieldBuilder<RoleManagemen
 
     private Set<String> getAssignedRoles() {
         Set<String> roles = new HashSet<String>();
-        Node mainNode = getRelatedNode(item);
         try {
+            Node mainNode = getRelatedNode(item);
             if (mainNode.hasNode("roles")) {
                 Node rolesNode = mainNode.getNode("roles");
                 if (rolesNode == null) {
@@ -150,7 +150,7 @@ public class RoleManagementField extends TwinColSelectFieldBuilder<RoleManagemen
                 }
             }
         } catch (RepositoryException re) {
-            log.error("Cannot read assigned roles of the node [" + mainNode + "].", re);
+            log.error("Cannot read assigned roles.", re);
         }
         return roles;
     }

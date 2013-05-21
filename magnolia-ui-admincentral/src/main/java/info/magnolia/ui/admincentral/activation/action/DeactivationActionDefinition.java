@@ -39,6 +39,8 @@ import info.magnolia.ui.api.action.CommandActionDefinition;
 
 /**
  * The deactivation action, invoking the deactivation command, and updating the UI accordingly.
+ *
+ * @see DeactivationAction
  */
 public class DeactivationActionDefinition extends CommandActionDefinition {
 

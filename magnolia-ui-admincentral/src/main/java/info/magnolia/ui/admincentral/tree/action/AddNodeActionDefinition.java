@@ -37,7 +37,8 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Defines the type of the new node. Defaults to {@link NodeTypes.Content#NAME} if not set.
+ * Used to configure a {@link AddNodeAction}. Allows for configuring the type of the new node. Defaults to
+ * {@link NodeTypes.Content#NAME} if not set.
  */
 public class AddNodeActionDefinition extends ConfiguredActionDefinition {
 
@@ -54,5 +55,4 @@ public class AddNodeActionDefinition extends ConfiguredActionDefinition {
     public void setNodeType(String nodeType) {
         this.nodeType = nodeType;
     }
-
 }
