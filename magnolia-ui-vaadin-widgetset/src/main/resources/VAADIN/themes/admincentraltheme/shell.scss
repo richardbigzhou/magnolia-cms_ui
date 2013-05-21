@@ -49,15 +49,12 @@
 }
 
 .btn-shell {
-  position:relative; /* So that the indicators (position:absolute) are correctly positioned */
-  margin-top: 3px;
-  margin-left: 12px;
-  margin-right: 12px;
-  color:#48630a;
+  position: relative; /* So that the indicators (position:absolute) are correctly positioned */
+  padding: 10px 12px 14px;
+  color: #48630a;
   display: inline-block;
-  font-size: 13px;
   width: 36px;
-  height: 70px;
+  height: 1em;
   border: none;
   text-align: center;
   vertical-align: top;
