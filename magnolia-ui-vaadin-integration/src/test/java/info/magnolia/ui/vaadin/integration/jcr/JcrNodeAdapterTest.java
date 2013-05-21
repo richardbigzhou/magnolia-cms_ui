@@ -48,7 +48,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
 
 /**
  * Main test class for {@link JcrNodeAdapter}.
@@ -150,44 +149,6 @@ public class JcrNodeAdapterTest {
         assertEquals(propertyValue, property.getValue());
         // Should be the same property
         assertSame(property, propertyInitial);
-    }
-
-    @Test
-    public void testPropertyHasUniqueListener() throws Exception {
-        // GIVEN
-        Node node = session.getRootNode().addNode(nodeName);
-        node.setProperty(propertyName, propertyValue);
-        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
-        // Get property: add listener
-        DefaultProperty<String> propertyInitial = (DefaultProperty) adapter.getItemProperty(propertyName);
-        // Modify property --> add listener
-        propertyInitial.setValue(propertyValue);
-
-        // WHEN Modify property --> add listener
-        propertyInitial.setValue(propertyValue);
-
-        // THEN
-        assertEquals(1, propertyInitial.getListeners(ValueChangeEvent.class).size());
-        assertTrue(propertyInitial.getListeners(ValueChangeEvent.class).contains(adapter));
-    }
-
-    @Test
-    public void testPropertyHasUniqueListenerWithNewProperty() throws Exception {
-        // GIVEN
-        Node node = session.getRootNode().addNode(nodeName);
-        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
-        // Get property: add listener
-        DefaultProperty propertyInitial = DefaultPropertyUtil.newDefaultProperty(propertyName, null, propertyValue);
-        adapter.addItemProperty(propertyName, propertyInitial);
-        // Modify property --> add listener
-        propertyInitial.setValue(propertyValue);
-
-        // WHEN Modify property --> add listener
-        propertyInitial.setValue(propertyValue);
-
-        // THEN
-        assertEquals(1, propertyInitial.getListeners(ValueChangeEvent.class).size());
-        assertTrue(propertyInitial.getListeners(ValueChangeEvent.class).contains(adapter));
     }
 
     @Test

@@ -53,7 +53,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
 
 /**
  * Abstract implementation of an {@link com.vaadin.data.Item} wrapping/representing a {@link javax.jcr.Node}. Implements {Property.ValueChangeListener} in order to inform/change JCR
@@ -129,8 +128,6 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
      */
     @Override
     public boolean addItemProperty(Object id, Property property) {
-        // add PropertyChange Listener
-        addListenerIfNotYetSet(property, this);
 
         log.debug("Add new Property Item name " + id + " with value " + property.getValue());
         try {
@@ -139,6 +136,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
             if (!node.hasProperty(propertyName)) {
                 // Create Property.
                 node.setProperty(propertyName, (String) property.getValue());
+                getChangedProperties().put((String)id, property);
                 return true;
             } else {
                 log.warn("Property " + id + " already exist.");
@@ -175,20 +173,8 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
             throw new RuntimeRepositoryException(e);
         }
         DefaultProperty property = DefaultPropertyUtil.newDefaultProperty((String) id, type, value);
-        // add PropertyChange Listener
-        property.addValueChangeListener(this);
         getChangedProperties().put((String) id, property);
         return property;
-    }
-
-    /**
-     * Add a {(ValueChangeEvent}. listener if not yet set.
-     */
-    protected void addListenerIfNotYetSet(Property property, Property.ValueChangeListener listener) {
-        // add PropertyChange Listener
-        if (!((DefaultProperty) property).getListeners(ValueChangeEvent.class).contains(listener)) {
-            ((DefaultProperty) property).addValueChangeListener(listener);
-        }
     }
 
     /**
@@ -278,9 +264,6 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
         } else if (propertyId != null && !propertyId.isEmpty()) {
             if (property.getValue() != null && StringUtils.isNotEmpty(property.getValue().toString())) {
                 try {
-                    if (!node.hasProperty(propertyId)) {
-                        addListenerIfNotYetSet(property, this);
-                    }
                     PropertyUtil.setProperty(node, propertyId, property.getValue());
                 } catch (RepositoryException e) {
                     log.error("Could not set JCR Property", e);
