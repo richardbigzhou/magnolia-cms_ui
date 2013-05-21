@@ -75,11 +75,14 @@ public class DateColumnFormatter extends AbstractColumnFormatter<MetaDataColumnD
         if (prop != null && prop.getValue() != null && prop.getType().equals(Date.class)) {
             Label date = new Label(dateFormatter.format(prop.getValue()));
             Label time = new Label(timeFormatter.format(prop.getValue()));
+            date.setSizeUndefined();
+            time.setSizeUndefined();
             date.setStyleName("datefield");
             time.setStyleName("timefield");
-            CssLayout retval = new CssLayout(date, time);
-            retval.setStyleName("datetimefield");
-            return retval;
+            CssLayout layout = new CssLayout(date, time);
+            layout.setStyleName("datetimefield");
+            layout.setSizeUndefined();
+            return layout;
         }
 
         return null;
