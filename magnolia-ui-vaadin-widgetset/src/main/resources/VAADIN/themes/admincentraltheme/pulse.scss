@@ -191,6 +191,10 @@
 	width: 0 !important;
 }
 
+.v-pulse .v-treetable-treespacer {
+	width: 20px !important;
+}
+
 
 .v-pulse .v-table-generated-row .v-table-cell-content {
 	border-bottom: 1px solid $c11;
@@ -224,9 +228,6 @@
 }
 .v-pulse .message-type.warning {
 	color: #FFBF28;
-}
-.v-pulse .message-type.info {
-	color: #C9DDE1;
 }
 
 }
