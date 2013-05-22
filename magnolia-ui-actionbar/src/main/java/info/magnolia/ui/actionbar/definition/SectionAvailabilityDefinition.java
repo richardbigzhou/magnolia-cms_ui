@@ -34,6 +34,7 @@
 package info.magnolia.ui.actionbar.definition;
 
 import info.magnolia.cms.security.operations.AccessDefinition;
+import info.magnolia.ui.api.action.AvailabilityRule;
 
 import java.util.Collection;
 
@@ -66,4 +67,9 @@ public interface SectionAvailabilityDefinition {
      * The section is only displayed if a selected node has one of these node types.
      */
     Collection<String> getNodeTypes();
+
+    /**
+     * Returns the AvailabilityRule object for this section.
+     */
+    AvailabilityRule getRule();
 }

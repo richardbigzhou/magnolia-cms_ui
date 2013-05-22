@@ -35,6 +35,7 @@ package info.magnolia.ui.actionbar.definition;
 
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.action.AvailabilityRule;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,6 +50,7 @@ public class ConfiguredSectionAvailabilityDefinition implements SectionAvailabil
     private boolean nodes = true;
     private AccessDefinition access = Components.newInstance(AccessDefinition.class, new Object[] {});
     private Collection<String> nodeTypes = new ArrayList<String>();
+    private AvailabilityRule rule;
 
     @Override
     public boolean isRoot() {
@@ -97,5 +99,14 @@ public class ConfiguredSectionAvailabilityDefinition implements SectionAvailabil
     @Override
     public AccessDefinition getAccess() {
         return this.access;
+    }
+
+    public void setRule(AvailabilityRule rule) {
+        this.rule = rule;
+    }
+
+    @Override
+    public AvailabilityRule getRule() {
+        return this.rule;
     }
 }

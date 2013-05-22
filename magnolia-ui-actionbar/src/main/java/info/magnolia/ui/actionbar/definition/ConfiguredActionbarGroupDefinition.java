@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.actionbar.definition;
 
-import info.magnolia.objectfactory.Components;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,8 +45,6 @@ public class ConfiguredActionbarGroupDefinition implements ActionbarGroupDefinit
     private String name;
 
     private List<ActionbarItemDefinition> items = new ArrayList<ActionbarItemDefinition>();
-
-    private GroupAvailabilityDefinition availability = Components.newInstance(GroupAvailabilityDefinition.class, new Object[] {});;
 
     @Override
     public String getName() {
@@ -81,14 +77,4 @@ public class ConfiguredActionbarGroupDefinition implements ActionbarGroupDefinit
     public void addItem(ActionbarItemDefinition itemDefinition) {
         items.add(itemDefinition);
     }
-
-    @Override
-    public GroupAvailabilityDefinition getAvailability() {
-        return this.availability;
-    }
-
-    public void setAvailability(GroupAvailabilityDefinition def) {
-        this.availability = def;
-    }
-
 }

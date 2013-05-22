@@ -31,39 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.actionbar.definition;
+package info.magnolia.ui.api.action;
 
-import info.magnolia.cms.security.operations.AccessDefinition;
-
-import java.util.Collection;
+import javax.jcr.Item;
 
 /**
- * Definition of restrictions on when a group is shown.
+ * Defines the rule for action/section availability.
  */
-public interface GroupAvailabilityDefinition {
+public interface AvailabilityRule {
 
     /**
-     * If true the group is only displayed when there's no selection.
+     * Returns true if the action/section is available for the specified <code>item</code> (or for root node, if the <code>item</code> is null).
      */
-    boolean isRoot();
-
-    /**
-     * If true the group is only displayed when a property is selected.
-     */
-    boolean isProperties();
-
-    /**
-     * If true (default) the group is displayed when a node is selected.
-     */
-    boolean isNodes();
-
-    /**
-     * Defines access for user roles.
-     */
-    AccessDefinition getAccess();
-
-    /**
-     * The group is only displayed if a selected node has one of these node types.
-     */
-    Collection<String> getNodeTypes();
+    boolean isAvailable(Item item);
 }

@@ -386,6 +386,11 @@ public class BrowserSubApp extends BaseSubApp {
     private boolean isSectionVisible(ActionbarSectionDefinition section, Item item) throws RepositoryException {
         SectionAvailabilityDefinition availability = section.getAvailability();
 
+        // if a rule is set, verify it first - must return true to continue
+        if ((availability.getRule() != null) && !availability.getRule().isAvailable(item)) {
+            return false;
+        }
+
         // Validate that the user has all required roles
         if (!availability.getAccess().hasAccess(MgnlContext.getUser())) {
             return false;

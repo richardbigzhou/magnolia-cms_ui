@@ -49,6 +49,7 @@ public class ConfiguredActionAvailabilityDefinition implements ActionAvailabilit
     private boolean nodes = true;
     private Collection<String> nodeTypes = new ArrayList<String>();
     private AccessDefinition access = Components.newInstance(AccessDefinition.class, new Object[] {});
+    private AvailabilityRule rule;
 
     @Override
     public boolean isRoot() {
@@ -97,5 +98,14 @@ public class ConfiguredActionAvailabilityDefinition implements ActionAvailabilit
     @Override
     public AccessDefinition getAccess() {
         return this.access;
+    }
+
+    public void setRule(AvailabilityRule rule) {
+        this.rule = rule;
+    }
+
+    @Override
+    public AvailabilityRule getRule() {
+        return this.rule;
     }
 }

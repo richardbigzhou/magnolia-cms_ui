@@ -66,4 +66,9 @@ public interface ActionAvailabilityDefinition {
      * Returns the AccessDefinition object for this action.
      */
     AccessDefinition getAccess();
+
+    /**
+     * Returns the AvailabilityRule object for this action.
+     */
+    AvailabilityRule getRule();
 }

@@ -114,6 +114,11 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
 
         ActionAvailabilityDefinition availability = actionDefinition.getAvailability();
 
+        // if a rule is set, verify it first - must return true to continue
+        if ((availability.getRule() != null) && !availability.getRule().isAvailable(item)) {
+            return false;
+        }
+
         // Validate that the user has all required roles
         if (!availability.getAccess().hasAccess(MgnlContext.getUser())) {
             return false;
