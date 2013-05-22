@@ -37,6 +37,7 @@ import static info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessages
 
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.CategoryChangedEvent;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
+import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 import info.magnolia.ui.workbench.column.DateColumnFormatter;
 
@@ -129,9 +130,12 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         root.addComponent(messageTable);
         root.setExpandRatio(messageTable, 1f);
         messageTable.setSizeFull();
+        messageTable.addGeneratedColumn(NEW_PROPERTY_ID, newMessageColumnGenerator);
+        messageTable.addGeneratedColumn(TYPE_PROPERTY_ID, typeColumnGenerator);
         messageTable.addGeneratedColumn(DATE_PROPERTY_ID, new DateColumnFormatter(null));
         messageTable.setRowGenerator(groupingRowGenerator);
         messageTable.setCellStyleGenerator(cellStyleGenerator);
+
         navigator.addGroupingListener(groupingListener);
 
 
@@ -283,9 +287,11 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
     private Table.CellStyleGenerator cellStyleGenerator = new Table.CellStyleGenerator() {
         @Override
         public String getStyle(Table source, Object itemId, Object propertyId) {
-            if (grouping && propertyId != null && propertyId.equals(TYPE_PROPERTY_ID)) {
+            if (grouping && propertyId != null && TYPE_PROPERTY_ID.equals(propertyId)) {
                 return "v-cell-invisible";
             }
+
+
             return "";
         }
     };
@@ -312,6 +318,59 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
                 return generated;
             }
 
+            return null;
+        }
+    };
+
+    private Table.ColumnGenerator newMessageColumnGenerator = new Table.ColumnGenerator() {
+
+        @Override
+        public Object generateCell(Table source, Object itemId, Object columnId) {
+
+            if (NEW_PROPERTY_ID.equals(columnId)) {
+                final Property<Boolean> newProperty = source.getContainerProperty(itemId, columnId);
+                final Boolean isNew = newProperty != null && newProperty.getValue();
+                if (isNew) {
+                    final Label newMessage = new Label();
+                    newMessage.setSizeUndefined();
+                    newMessage.addStyleName("icon-tick");
+                    newMessage.addStyleName("new-message");
+                    return newMessage;
+                }
+            }
+            return null;
+        }
+    };
+    private Table.ColumnGenerator typeColumnGenerator = new Table.ColumnGenerator() {
+
+        @Override
+        public Object generateCell(Table source, Object itemId, Object columnId) {
+
+            if (TYPE_PROPERTY_ID.equals(columnId)) {
+                final Property<MessageType> typeProperty = source.getContainerProperty(itemId, columnId);
+
+                final MessageType messageType = typeProperty.getValue();
+                final Label messageTypeIcon = new Label();
+                messageTypeIcon.setSizeUndefined();
+                messageTypeIcon.addStyleName("icon");
+                messageTypeIcon.addStyleName("message-type");
+
+                switch (messageType) {
+                case ERROR:
+                    messageTypeIcon.addStyleName("icon-error");
+                    messageTypeIcon.addStyleName("error");
+                    break;
+                case INFO:
+                    messageTypeIcon.addStyleName("icon-info");
+                    messageTypeIcon.addStyleName("info");
+                    break;
+                case WARNING:
+                    messageTypeIcon.addStyleName("icon-warning");
+                    messageTypeIcon.addStyleName("warn");
+                    break;
+                }
+                return messageTypeIcon;
+            }
             return null;
         }
     };

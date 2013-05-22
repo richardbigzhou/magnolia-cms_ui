@@ -127,7 +127,7 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
 
     private HierarchicalContainer createMessageDataSource() {
         container = new HierarchicalContainer();
-        container.addContainerProperty(NEW_PROPERTY_ID, String.class, null);
+        container.addContainerProperty(NEW_PROPERTY_ID, Boolean.class, true);
         container.addContainerProperty(TYPE_PROPERTY_ID, MessageType.class, MessageType.UNKNOWN);
         container.addContainerProperty(TEXT_PROPERTY_ID, String.class, null);
         container.addContainerProperty(SENDER_PROPERTY_ID, String.class, null);
@@ -253,10 +253,10 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
 
     private void assignPropertiesFromMessage(Message message, final Item item) {
         if (item != null && message != null) {
-            item.getItemProperty(NEW_PROPERTY_ID).setValue(message.isCleared() ? "No" : "Yes");
+            item.getItemProperty(NEW_PROPERTY_ID).setValue(!message.isCleared());
             item.getItemProperty(TYPE_PROPERTY_ID).setValue(message.getType());
             item.getItemProperty(SENDER_PROPERTY_ID).setValue(message.getSender());
-            item.getItemProperty(TEXT_PROPERTY_ID).setValue(StringUtils.abbreviate(message.getMessage(), 70));
+            item.getItemProperty(TEXT_PROPERTY_ID).setValue(StringUtils.abbreviate(message.getMessage(), 50));
             item.getItemProperty(DATE_PROPERTY_ID).setValue(new Date(message.getTimestamp()));
         }
     }

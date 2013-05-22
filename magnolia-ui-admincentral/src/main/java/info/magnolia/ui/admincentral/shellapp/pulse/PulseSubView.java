@@ -42,6 +42,6 @@ import java.util.List;
  */
 public interface PulseSubView extends View {
 
-    void update(final List<String> params);
+    void update(List<String> params);
 
 }
