@@ -39,9 +39,9 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
-import info.magnolia.ui.api.action.ActionAvailabilityDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.action.ConfiguredActionAvailabilityDefinition;
+import info.magnolia.ui.api.availability.ActionAvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredActionAvailabilityDefinition;
 
 import org.junit.Before;
 import org.junit.Test;

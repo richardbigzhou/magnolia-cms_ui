@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -85,19 +85,19 @@ public class PageBrowserSubApp extends BrowserSubApp {
 
             // actions currently always disabled
             actionbar.disable("move", "duplicate");
-    
+
             // actions disabled based on selection
             final String[] defaultPageActions = new String[] { "delete", "preview", "edit", "export", "activate", "deactivate", "activateRecursive" };
             final String[] defaultPageDeleteActions = new String[] { "activate", "activateRecursive", "showPreviousVersion", "restorePreviousVersion" };
-    
+
             if (jcrItem == null) {
                 actionbar.hideSection("pageDeleteActions");
                 actionbar.showSection("pageActions");
                 actionbar.disable(defaultPageActions);
-                actionbar.enable("add");                
+                actionbar.enable("add");
             } else {
                 final Node page = (Node) jcrItem;
-    
+
                 // if it's deleted, display the deleted section
                 if (isDeletedNode(page)) {
                     actionbar.showSection("pageDeleteActions");
@@ -105,7 +105,7 @@ public class PageBrowserSubApp extends BrowserSubApp {
                     actionbar.disable(defaultPageActions);
                     actionbar.disable("add");
                     actionbar.enable(defaultPageDeleteActions);
-    
+
                 } else {
                     actionbar.hideSection("pageDeleteActions");
                     actionbar.showSection("pageActions");

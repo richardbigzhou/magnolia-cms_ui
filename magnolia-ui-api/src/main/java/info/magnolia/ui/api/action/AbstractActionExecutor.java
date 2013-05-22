@@ -37,6 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.MgnlInstantiationException;
+import info.magnolia.ui.api.availability.ActionAvailabilityDefinition;
 
 import javax.inject.Inject;
 import javax.jcr.Item;

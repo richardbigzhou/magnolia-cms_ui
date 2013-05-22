@@ -34,6 +34,7 @@
 package info.magnolia.ui.api.action;
 
 import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.availability.ActionAvailabilityDefinition;
 
 /**
  * Simple implementation of {@link ActionDefinition}.

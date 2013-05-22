@@ -35,7 +35,7 @@ package info.magnolia.ui.actionbar.definition;
 
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.objectfactory.Components;
-import info.magnolia.ui.api.action.AvailabilityRule;
+import info.magnolia.ui.api.availability.AvailabilityRule;
 
 import java.util.ArrayList;
 import java.util.Collection;

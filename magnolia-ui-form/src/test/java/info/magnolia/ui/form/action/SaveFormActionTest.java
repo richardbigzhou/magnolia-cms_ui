@@ -41,9 +41,9 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.api.action.ActionAvailabilityDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.action.ConfiguredActionAvailabilityDefinition;
+import info.magnolia.ui.api.availability.ActionAvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredActionAvailabilityDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 

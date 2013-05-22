@@ -48,8 +48,8 @@ import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.api.action.ActionAvailabilityDefinition;
-import info.magnolia.ui.api.action.ConfiguredActionAvailabilityDefinition;
+import info.magnolia.ui.api.availability.ActionAvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredActionAvailabilityDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.HashMap;

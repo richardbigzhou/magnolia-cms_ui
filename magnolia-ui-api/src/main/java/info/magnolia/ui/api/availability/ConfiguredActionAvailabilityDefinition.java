@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.action;
+package info.magnolia.ui.api.availability;
 
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.objectfactory.Components;

@@ -42,10 +42,10 @@ import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
-import info.magnolia.ui.api.action.ActionAvailabilityDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.action.ConfiguredActionAvailabilityDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.api.availability.ActionAvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredActionAvailabilityDefinition;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
 

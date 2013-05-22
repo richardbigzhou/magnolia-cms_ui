@@ -31,44 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.action;
+package info.magnolia.ui.api.availability;
 
-import info.magnolia.cms.security.operations.AccessDefinition;
-
-import java.util.Collection;
+import javax.jcr.Item;
 
 /**
- * Definition of restrictions on when an action is available.
+ * Defines the rule for action/section availability.
  */
-public interface ActionAvailabilityDefinition {
+public interface AvailabilityRule {
 
     /**
-     * If true the action is available when there's no selection.
+     * Returns true if the action/section is available for the specified <code>item</code> (or for root node, if the <code>item</code> is null).
      */
-    boolean isRoot();
-
-    /**
-     * If true the action is available for properties.
-     */
-    boolean isProperties();
-
-    /**
-     * If true the action is available for nodes.
-     */
-    boolean isNodes();
-
-    /**
-     * Unless this is empty the action is available only for these node types.
-     */
-    Collection<String> getNodeTypes();
-
-    /**
-     * Returns the AccessDefinition object for this action.
-     */
-    AccessDefinition getAccess();
-
-    /**
-     * Returns the AvailabilityRule object for this action.
-     */
-    AvailabilityRule getRule();
+    boolean isAvailable(Item item);
 }
