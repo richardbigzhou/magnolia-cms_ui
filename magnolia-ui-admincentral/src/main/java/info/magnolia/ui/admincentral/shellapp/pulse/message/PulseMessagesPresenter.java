@@ -61,6 +61,7 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
     public static final String GROUP_PLACEHOLDER_ITEMID = "##SUBSECTION##";
     public static final String NEW_PROPERTY_ID = "new";
     public static final String TYPE_PROPERTY_ID = "type";
+    public static final String SUBJECT_PROPERTY_ID = "subject";
     public static final String TEXT_PROPERTY_ID = "text";
     public static final String SENDER_PROPERTY_ID = "sender";
     public static final String DATE_PROPERTY_ID = "date";
@@ -128,6 +129,7 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
     private HierarchicalContainer createMessageDataSource() {
         container = new HierarchicalContainer();
         container.addContainerProperty(NEW_PROPERTY_ID, Boolean.class, true);
+        container.addContainerProperty(SUBJECT_PROPERTY_ID, String.class, "");
         container.addContainerProperty(TYPE_PROPERTY_ID, MessageType.class, MessageType.UNKNOWN);
         container.addContainerProperty(TEXT_PROPERTY_ID, String.class, null);
         container.addContainerProperty(SENDER_PROPERTY_ID, String.class, null);
@@ -256,6 +258,7 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
             item.getItemProperty(NEW_PROPERTY_ID).setValue(!message.isCleared());
             item.getItemProperty(TYPE_PROPERTY_ID).setValue(message.getType());
             item.getItemProperty(SENDER_PROPERTY_ID).setValue(message.getSender());
+            item.getItemProperty(SUBJECT_PROPERTY_ID).setValue(StringUtils.abbreviate(message.getSubject(), 50));
             item.getItemProperty(TEXT_PROPERTY_ID).setValue(StringUtils.abbreviate(message.getMessage(), 50));
             item.getItemProperty(DATE_PROPERTY_ID).setValue(new Date(message.getTimestamp()));
         }

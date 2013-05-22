@@ -57,6 +57,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ItemClickEvent;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Label;
@@ -132,8 +133,10 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         messageTable.setSizeFull();
         messageTable.addGeneratedColumn(NEW_PROPERTY_ID, newMessageColumnGenerator);
         messageTable.addGeneratedColumn(TYPE_PROPERTY_ID, typeColumnGenerator);
+        messageTable.addGeneratedColumn(TEXT_PROPERTY_ID, textColumnGenerator);
         messageTable.addGeneratedColumn(DATE_PROPERTY_ID, new DateColumnFormatter(null));
         messageTable.setRowGenerator(groupingRowGenerator);
+
 
         navigator.addGroupingListener(groupingListener);
 
@@ -302,7 +305,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
                 Item item = table.getItem(itemId);
                 Property<?> property = item.getItemProperty(TYPE_PROPERTY_ID);
 
-                GeneratedRow generated = new GeneratedRow(property.getValue().toString());
+                GeneratedRow generated = new GeneratedRow("", "", property.getValue().toString());
                 return generated;
             }
 
@@ -329,6 +332,29 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             return null;
         }
     };
+
+    private Table.ColumnGenerator textColumnGenerator = new Table.ColumnGenerator() {
+
+        @Override
+        public Object generateCell(Table source, Object itemId, Object columnId) {
+
+            if (TEXT_PROPERTY_ID.equals(columnId)) {
+                final Property<String> text = source.getContainerProperty(itemId, columnId);
+                final Property<String> subject = source.getContainerProperty(itemId, SUBJECT_PROPERTY_ID);
+
+                final Label textLabel = new Label();
+                textLabel.setSizeUndefined();
+                textLabel.addStyleName("message-subject-text");
+                textLabel.setContentMode(ContentMode.HTML);
+                textLabel.setValue("<strong>" + subject + "</strong><div>" + text + "</div>");
+
+                return textLabel;
+
+            }
+            return null;
+        }
+    };
+
     private Table.ColumnGenerator typeColumnGenerator = new Table.ColumnGenerator() {
 
         @Override

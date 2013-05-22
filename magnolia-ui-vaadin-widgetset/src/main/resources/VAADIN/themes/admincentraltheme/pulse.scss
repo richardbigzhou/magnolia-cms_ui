@@ -151,12 +151,43 @@
 .v-pulse .v-nativebutton::-moz-focus-inner {padding:0; border:0}
 .v-pulse .navigator-button .v-nativebutton-caption {text-decoration:none;}
 
-.v-pulse .v-table-generated-row {
-	background: $c12;
+.v-pulse .v-table-header-wrap {
+	background: none !important;
+    border-bottom: 1px solid #666 !important;
+    font-weight: bold;
 }
+
+.v-pulse .v-table-resizer {
+	display: none; /* Apparently one cannot disable column resizing via Table API*/
+}
+
+.v-pulse .v-table-cell-wrapper {
+	height: 35px !important;
+	font-size: 12px !important;
+}
+
+.v-pulse .v-table-cell-wrapper .message-subject-text {
+	font-size: 12px !important;
+}
+
+.v-pulse .v-table-generated-row {
+	background: none;
+}
+.v-pulse .v-table-generated-row.v-table-row, .v-pulse .v-table-generated-row.v-table-row-odd  {
+	border-bottom: 1px solid #666 !important;
+}
+
 .v-pulse .v-table-generated-row .v-table-cell-wrapper {
 	padding-left: 0 !important;
+	color: #C3C5C7;
+    font-weight: bold;
+    height: 20px !important;
 }
+
+.v-pulse .v-table-generated-row .v-table-cell-wrapper:empty:after {
+    display: none;
+}
+
 .v-pulse .v-table-generated-row .v-treetable-treespacer {
 	width: 0 !important;
 }
@@ -165,7 +196,7 @@
 .v-pulse .v-table-generated-row .v-table-cell-content {
 	border-bottom: 1px solid $c11;
 	font-family: Verdana, Helvetica, sans-serif;
-	color: white;
+	padding-top: 15px;
 }
 
 .v-pulse .navigator-grouping {
