@@ -40,6 +40,8 @@ import javax.inject.Inject;
 
 /**
  * Activation action definition. By default performs a non-recursive activation.
+ *
+ * @see ActivationAction
  */
 public class ActivationActionDefinition extends CommandActionDefinition {
 

@@ -33,15 +33,15 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.jcr.util.NodeTypes;
 
 /**
- * Definition for an action that creates a new folder.
+ * Used for configuring a {@link AddNodeAction} that creates a folder.
  */
-public class AddFolderActionDefinition extends ConfiguredActionDefinition {
+public class AddFolderActionDefinition extends AddNodeActionDefinition {
 
     public AddFolderActionDefinition() {
-        setImplementationClass(AddFolderAction.class);
+        setImplementationClass(AddNodeAction.class);
+        setNodeType(NodeTypes.Folder.NAME);
     }
-
 }

@@ -55,6 +55,7 @@ import info.magnolia.ui.contentapp.definition.ConfiguredEditorDefinition;
 import info.magnolia.ui.contentapp.detail.ConfiguredDetailSubAppDescriptor;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
+import info.magnolia.ui.vaadin.editor.PageEditorListener;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
@@ -114,7 +115,6 @@ public class PagesEditorSubAppTest {
         adminCentralEventBus = new SimpleEventBus();
         pageEditorPresenter = mock(PageEditorPresenter.class);
         TemplateDefinitionRegistry registry = mock(TemplateDefinitionRegistry.class);
-        when(pageEditorPresenter.getTemplateDefinitionRegistry()).thenReturn(registry);
         when(registry.getTemplateDefinition(anyString())).thenReturn(definition);
         actionbarPresenter = mock(ActionbarPresenter.class);
         i18NAuthoringSupport = mock(I18NAuthoringSupport.class);
@@ -138,7 +138,7 @@ public class PagesEditorSubAppTest {
         verify(actionbarPresenter).showSection("areaActions");
         verify(actionbarPresenter).disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
 
-        verify(actionbarPresenter).enable(PagesEditorSubApp.ACTION_ADD_COMPONENT);
+        verify(actionbarPresenter).enable(PageEditorListener.ADD_COMPONENT);
 
         verifyNoMoreInteractions(actionbarPresenter);
     }
@@ -162,7 +162,7 @@ public class PagesEditorSubAppTest {
 
         verify(actionbarPresenter).disable(PagesEditorSubApp.ACTION_DELETE_COMPONENT);
         verify(actionbarPresenter).enable(PagesEditorSubApp.ACTION_MOVE_COMPONENT);
-        verify(actionbarPresenter).enable(PagesEditorSubApp.ACTION_EDIT_COMPONENT);
+        verify(actionbarPresenter).enable(PageEditorListener.EDIT_ELEMENT);
 
         verifyNoMoreInteractions(actionbarPresenter);
     }
@@ -183,7 +183,7 @@ public class PagesEditorSubAppTest {
         verify(actionbarPresenter).showSection("areaActions");
         verify(actionbarPresenter).disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
 
-        verify(actionbarPresenter).disable(PagesEditorSubApp.ACTION_ADD_COMPONENT);
+        verify(actionbarPresenter).disable(PageEditorListener.ADD_COMPONENT);
 
         verifyNoMoreInteractions(actionbarPresenter);
     }

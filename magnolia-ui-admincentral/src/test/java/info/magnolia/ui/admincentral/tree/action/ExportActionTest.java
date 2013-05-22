@@ -60,9 +60,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Main Test class of {@link ExportAction}.
+ * Tests for {@link ExportAction}.
  */
 public class ExportActionTest extends RepositoryTestCase {
+
     private CommandsManager commandsManager;
     private ExportActionDefinition definition;
     private Map<String, Object> params = new HashMap<String, Object>();
@@ -107,8 +108,6 @@ public class ExportActionTest extends RepositoryTestCase {
         commandsManager = spy(commandsManagerTmp);
         when(commandsManager.getCommand(CommandsManager.DEFAULT_CATALOG, "export")).thenReturn(exportCommand);
         when(commandsManager.getCommand("export")).thenReturn(exportCommand);
-
-
     }
 
     @Override
@@ -123,6 +122,7 @@ public class ExportActionTest extends RepositoryTestCase {
         ExportAction exportActionTmp = new ExportAction(definition, new JcrNodeAdapter(toCopyNode), commandsManager, null);
         ExportAction exportAction = spy(exportActionTmp);
         doNothing().when(exportAction).onPostExecute();
+
         // WHEN
         exportAction.execute();
 
@@ -136,6 +136,5 @@ public class ExportActionTest extends RepositoryTestCase {
         String out = new String(((ByteArrayOutputStream) param.get("outputStream")).toByteArray(), "UTF-8");
         Assert.assertNotNull(out);
         Assert.assertTrue(out.contains("<sv:node sv:name=\"article\">"));
-
     }
 }

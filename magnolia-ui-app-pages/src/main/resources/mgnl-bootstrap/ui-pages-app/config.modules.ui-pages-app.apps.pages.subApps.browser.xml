@@ -28,6 +28,6 @@
     <sv:value>superuser</sv:value>
   </sv:property>
   <sv:property sv:name="subAppClass" sv:type="String">
-    <sv:value>info.magnolia.ui.app.pages.main.PagesMainSubApp</sv:value>
+    <sv:value>info.magnolia.ui.app.pages.main.PageBrowserSubApp</sv:value>
   </sv:property>
 </sv:node>

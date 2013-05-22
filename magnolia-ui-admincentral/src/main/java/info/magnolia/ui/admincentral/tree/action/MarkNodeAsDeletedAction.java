@@ -38,9 +38,10 @@ import info.magnolia.commands.impl.MarkNodeAsDeletedCommand;
 import info.magnolia.context.Context;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,23 +49,29 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Item;
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Mark node as Deleted Action. This will create a new Node version marked as deleted.
+ *
+ * @see MarkNodeAsDeletedActionDefinition
  */
 public class MarkNodeAsDeletedAction extends DeleteAction<MarkNodeAsDeletedActionDefinition> {
 
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
     @Inject
-    public MarkNodeAsDeletedAction(MarkNodeAsDeletedActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, SubAppContext subAppContext) {
-        super(definition, item, commandsManager, eventBus, subAppContext);
-    }
-
-
-    @Override
-    protected void setPathToFocusOn() throws RepositoryException {
-        this.pathToFocusOn = ((Node) jcrItem).getParent().getPath();
+    public MarkNodeAsDeletedAction(MarkNodeAsDeletedActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
+        super(definition, item, commandsManager, eventBus, uiContext);
+        try {
+            setItemIdOfChangedItem(JcrItemUtil.getItemId(jcrItem));
+        } catch (RepositoryException e) {
+            log.error("Could not execute repository operation.", e);
+            onError(e);
+        }
     }
 
     /**

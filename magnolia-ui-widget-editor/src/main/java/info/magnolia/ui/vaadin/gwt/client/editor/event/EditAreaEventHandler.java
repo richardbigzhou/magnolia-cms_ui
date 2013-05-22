@@ -31,45 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.activation.action;
+package info.magnolia.ui.vaadin.gwt.client.editor.event;
 
-import info.magnolia.jcr.util.SessionUtil;
-import info.magnolia.ui.api.action.CommandActionDefinition;
-
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * The deactivation action, invoking the deactivation command, and updating the UI accordingly.
- *
- * @see DeactivationAction
+ * Event handler for {@link EditAreaEvent}.
  */
-public class DeactivationActionDefinition extends CommandActionDefinition {
-
-    public DeactivationActionDefinition() {
-        setImplementationClass(DeactivationAction.class);
-    }
-
-    @Override
-    public String getSuccessMessage() {
-        if (workflowInstalled()) {
-            return "The workflow has been started.";
-        }
-        return "Deactivation has been started.";
-    }
-
-    @Override
-    public String getFailureMessage() {
-        if (workflowInstalled()) {
-            return "The workflow could not be launched.";
-        }
-        return "Deactivation has failed.";
-    }
-
-    @Override
-    public String getErrorMessage() {
-        return "Deactivation failed. Please contact the system administrator for assistance.";
-    }
-
-    private boolean workflowInstalled() {
-        return SessionUtil.getNode("config", "/modules/workflow-base") != null;
-    }
+public interface EditAreaEventHandler extends EventHandler {
+    void onEditArea(EditAreaEvent editAreaEvent);
 }

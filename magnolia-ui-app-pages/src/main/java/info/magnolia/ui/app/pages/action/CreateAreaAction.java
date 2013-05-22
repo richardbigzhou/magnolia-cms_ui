@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,57 +31,61 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog.action;
+package info.magnolia.ui.app.pages.action;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.dialog.FormDialogPresenter;
-import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.framework.event.AdmincentralEventBus;
-import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.api.action.ActionBase;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.framework.app.SubAppEventBus;
+import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 /**
- * Opens a dialog for editing a node.
+ * Creates an area which was optional and not yet existing.
  *
- * @see EditDialogActionDefinition
+ * @see CreateAreaAction
  */
-public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
+public class CreateAreaAction extends ActionBase<CreateAreaActionDefinition> {
 
-    private final JcrNodeAdapter itemToEdit;
-    private final FormDialogPresenter formDialogPresenter;
-    private final UiContext uiContext;
-    private final EventBus eventBus;
+    private AreaElement area;
+    private EventBus eventBus;
 
     @Inject
-    public EditDialogAction(EditDialogActionDefinition definition, JcrNodeAdapter itemToEdit, FormDialogPresenter formDialogPresenter, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
+    public CreateAreaAction(CreateAreaActionDefinition definition, AreaElement area, @Named(SubAppEventBus.NAME) EventBus eventBus) {
         super(definition);
-        this.itemToEdit = itemToEdit;
-        this.formDialogPresenter = formDialogPresenter;
-        this.uiContext = uiContext;
+        this.area = area;
         this.eventBus = eventBus;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
+        String workspace =area.getWorkspace();
+        String path = area.getPath();
+        int index = path.lastIndexOf("/");
+        String parent = path.substring(0, index);
+        String relPath = path.substring(index + 1);
 
-        formDialogPresenter.start(itemToEdit, getDefinition().getDialogName(), uiContext, new EditorCallback() {
+        try {
+            Session session = MgnlContext.getJCRSession(workspace);
 
-            @Override
-            public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(itemToEdit.getWorkspace(), itemToEdit.getItemId()));
-                formDialogPresenter.closeDialog();
-            }
+            Node parentNode = session.getNode(parent);
 
-            @Override
-            public void onCancel() {
-                formDialogPresenter.closeDialog();
-            }
-        });
+            Node newNode = NodeUtil.createPath(parentNode, relPath, NodeTypes.Area.NAME);
+            NodeTypes.LastModified.update(newNode);
+            session.save();
+
+            eventBus.fireEvent(new ContentChangedEvent(workspace, path));
+        } catch (RepositoryException e) {
+            throw new ActionExecutionException(e);
+        }
     }
 }

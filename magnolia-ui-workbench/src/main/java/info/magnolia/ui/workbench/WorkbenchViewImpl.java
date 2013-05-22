@@ -52,6 +52,7 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
 
 /**
@@ -64,6 +65,8 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
     private final CssLayout viewModes = new CssLayout();
 
     private TextField searchBox;
+
+    private Button clearSearchBoxButton;
 
     private StatusBarView statusBar;
 
@@ -83,6 +86,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
         @Override
         public void valueChange(Property.ValueChangeEvent event) {
             listener.onSearch(searchBox.getValue().toString());
+            clearSearchBoxButton.setVisible(!searchBox.getValue().isEmpty());
         }
     };
 
@@ -96,13 +100,30 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
 
         viewModes.setStyleName("view-modes");
 
+        clearSearchBoxButton = new Button();
+        clearSearchBoxButton.setStyleName("workbench-searchbox-clearbutton");
+        clearSearchBoxButton.addStyleName("icon-close");
+
         searchBox = buildBasicSearchBox();
         searchBox.setVisible(false);
+
+        clearSearchBoxButton.addClickListener(new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                searchBox.setValue("");
+                fireViewTypeChangedEvent(previousViewType);
+                clearSearchBoxButton.setVisible(false);
+            }
+        });
+
+        clearSearchBoxButton.setVisible(false);
 
         toolBar.addStyleName("toolbar");
         toolBar.setWidth(100, Unit.PERCENTAGE);
         toolBar.addComponent(viewModes);
         toolBar.addComponent(searchBox);
+        toolBar.addComponent(clearSearchBoxButton);
 
         addComponent(toolBar);
         setExpandRatio(toolBar, 0);
@@ -242,6 +263,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
                 // return to previous view type when leaving empty field
                 if (StringUtils.isBlank(searchBox.getValue().toString())) {
                     fireViewTypeChangedEvent(previousViewType);
+                    clearSearchBoxButton.setVisible(false);
                 }
             }
         });
@@ -252,6 +274,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
                 // put the cursor at the end of the field
                 TextField tf = (TextField) event.getSource();
                 tf.setCursorPosition(tf.getValue().length());
+                clearSearchBoxButton.setVisible(true);
             }
         });
         return searchBox;
