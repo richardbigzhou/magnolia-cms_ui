@@ -85,4 +85,94 @@
     vertical-align:middle;
 }
 
+
+
+/* transitions for overlays */
+
+.overlay.open .modal-curtain{
+  animation-duration: 1.2s;
+  animation-name: fadein-curtain;
+  -webkit-animation-duration: 1.2s;
+  -webkit-animation-name: fadein-curtain;
+}
+
+.overlay.open .light-dialog-panel.confirmation {
+  animation-duration: 1.2s;
+  animation-name: zoomin;
+  -webkit-animation-duration: 1.2s;
+  -webkit-animation-name: zoomin;
+}
+
+.overlay.open .dialog-panel {
+  animation-duration: 1.2s;
+  animation-name: slidedown;
+  -webkit-animation-duration: 1.2s;
+  -webkit-animation-name: slidedown;
+}
+
+@keyframes fadein-curtain {
+  from { 	opacity:0; }
+  to { 		opacity:0.8; }
+}
+@-webkit-keyframes fadein-curtain {
+  from { 	opacity:0; }
+  to { 		opacity:0.8; }
+}
+
+@keyframes fadein {
+  from { 	opacity:0; }
+  to { 		opacity:1.0; }
+}
+@-webkit-keyframes fadein {
+  from { 	opacity:0; }
+  to { 		opacity:1.0; }
+}
+
+@keyframes slidedown {
+  from { 	transform: translateY(-100%); }
+  to { 		transform: translateY(0); }
+}
+@-webkit-keyframes slidedown {
+  from { 	transform: translateY(-100%); }
+  to { 		transform: translateY(0); }
+}
+
+@keyframes zoomin {
+  from {	transform: scale(0.8);}
+  to {		transform: scale(1.0);}
+}
+@-webkit-keyframes zoomin {
+  from {	-webkit-transform: scale(0.8);}
+  to {		-webkit-transform: scale(1.0);}
+}
+
+.overlay.close {
+  animation-duration: 1.3s;
+  animation-name: zoomout,fadeout;
+  animation-fill-mode: forwards;
+
+  -webkit-animation-duration: 1.3s;
+  -webkit-animation-name: zoomout,fadeout;
+  -webkit-animation-fill-mode: forwards;
+}
+
+@keyframes zoomout {
+  from {	transform: scale(1.0);}
+  to {		transform: scale(0.8);}
+}
+@-webkit-keyframes zoomout {
+  from {	-webkit-transform: scale(1.0);}
+  to {		-webkit-transform: scale(0.8);}
+}
+@keyframes fadeout {
+  from { 	opacity:1.0; }
+  to { 		opacity:0; }
+}
+@-webkit-keyframes fadeout {
+  from { 	opacity:1.0; }
+  to { 		opacity:0; }
+}
+
+
+
 }
