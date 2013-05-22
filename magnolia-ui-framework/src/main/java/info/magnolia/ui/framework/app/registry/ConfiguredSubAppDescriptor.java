@@ -43,7 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * ConfiguredSubAppDescriptor.
+ * Simple implementation for {@link SubAppDescriptor}.
  */
 public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
 
@@ -55,6 +55,8 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
     private String label;
 
     private boolean enabled = true;
+
+    private boolean closable = true;
 
     private String icon;
 
@@ -79,6 +81,15 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    @Override
+    public boolean isClosable() {
+        return closable;
+    }
+
+    public void setClosable(boolean closable) {
+        this.closable = closable;
     }
 
     @Override

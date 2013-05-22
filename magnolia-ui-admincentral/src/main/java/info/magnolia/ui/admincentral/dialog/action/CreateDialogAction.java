@@ -47,10 +47,6 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.inject.Named;
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Opens a dialog for creating a new node in a tree.
@@ -58,8 +54,6 @@ import org.slf4j.LoggerFactory;
  * @see CreateDialogActionDefinition
  */
 public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition> {
-
-    private static final Logger log = LoggerFactory.getLogger(CreateDialogAction.class);
 
     private final AbstractJcrNodeAdapter parentItem;
     private final FormDialogPresenter formDialogPresenter;
@@ -77,15 +71,9 @@ public class CreateDialogAction extends ActionBase<CreateDialogActionDefinition>
     @Override
     public void execute() throws ActionExecutionException {
 
-        Node updatedNode;
-        try {
-            updatedNode = parentItem.applyChanges();
-        } catch (RepositoryException e) {
-            log.error("Cannot apply changes to " + parentItem.getItemId(), e);
-            return;
-        }
+        Node parentNode = parentItem.getJcrItem();
 
-        final JcrNodeAdapter item = new JcrNewNodeAdapter(updatedNode, getDefinition().getNodeType());
+        final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, getDefinition().getNodeType());
 
         formDialogPresenter.start(item, getDefinition().getDialogName(), uiContext, new EditorCallback() {
 

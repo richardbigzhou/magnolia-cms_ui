@@ -83,7 +83,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
     @Test
     public void buildFieldSimpleTest() {
         // GIVEN
-        baseItem.addItemProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, DefaultPropertyUtil.newDefaultProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, null, null));
+        baseItem.addItemProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, DefaultPropertyUtil.newDefaultProperty(null, null));
         builder = new LinkFieldSelectionBuilder(definition, baseItem, workbenchPresenter, eventBus);
         builder.setI18nContentSupport(i18nContentSupport);
 
@@ -98,7 +98,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
     @Test
     public void fieldEventTest() throws RepositoryException {
         // GIVEN
-        baseItem.addItemProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, DefaultPropertyUtil.newDefaultProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, null, null));
+        baseItem.addItemProperty(LinkFieldBuilder.PATH_PROPERTY_NAME, DefaultPropertyUtil.newDefaultProperty(null, null));
         builder = new LinkFieldSelectionBuilder(definition, baseItem, workbenchPresenter, eventBus);
         builder.setI18nContentSupport(i18nContentSupport);
         Field field = builder.getField();
@@ -116,7 +116,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
         // GIVEN
         baseNode.setProperty("newProperty", "initial");
         baseItem = new JcrNodeAdapter(baseNode);
-        baseItem.addItemProperty("newProperty", DefaultPropertyUtil.newDefaultProperty("newProperty", null, "initial"));
+        baseItem.addItemProperty("newProperty", DefaultPropertyUtil.newDefaultProperty(null, "initial"));
         builder = new LinkFieldSelectionBuilder(definition, baseItem, workbenchPresenter, eventBus);
         builder.setI18nContentSupport(i18nContentSupport);
         Field field = builder.getField();

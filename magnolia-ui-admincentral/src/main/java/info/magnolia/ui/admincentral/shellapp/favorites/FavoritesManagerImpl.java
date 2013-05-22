@@ -79,21 +79,21 @@ public final class FavoritesManagerImpl implements FavoritesManager {
             JcrNodeAdapter currentChild;
             for (Node bookmark : bookmarks) {
                 currentChild = new JcrNodeAdapter(bookmark);
-                currentChild.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", PropertyUtil.getString(bookmark, AdmincentralNodeTypes.Favorite.TITLE)));
+                currentChild.addItemProperty(AdmincentralNodeTypes.Favorite.TITLE, DefaultPropertyUtil.newDefaultProperty("", PropertyUtil.getString(bookmark, AdmincentralNodeTypes.Favorite.TITLE)));
 
                 final String bookmarkNodeType = bookmark.getPrimaryNodeType().getName();
 
                 if (AdmincentralNodeTypes.Favorite.NAME.equals(bookmarkNodeType)) {
-                    currentChild.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", PropertyUtil.getString(bookmark, AdmincentralNodeTypes.Favorite.URL)));
-                    currentChild.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", PropertyUtil.getString(bookmark, AdmincentralNodeTypes.Favorite.ICON)));
+                    currentChild.addItemProperty(AdmincentralNodeTypes.Favorite.URL, DefaultPropertyUtil.newDefaultProperty("", PropertyUtil.getString(bookmark, AdmincentralNodeTypes.Favorite.URL)));
+                    currentChild.addItemProperty(AdmincentralNodeTypes.Favorite.ICON, DefaultPropertyUtil.newDefaultProperty("", PropertyUtil.getString(bookmark, AdmincentralNodeTypes.Favorite.ICON)));
                 } else if (AdmincentralNodeTypes.FavoriteGroup.NAME.equals(bookmarkNodeType)) {
                     Iterable<Node> bookmarksWithGroup = NodeUtil.getNodes(bookmark, AdmincentralNodeTypes.Favorite.NAME);
                     JcrNodeAdapter favoriteChild;
                     for (Node bookmarkWithGroup : bookmarksWithGroup) {
                         favoriteChild = new JcrNodeAdapter(bookmarkWithGroup);
-                        favoriteChild.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", PropertyUtil.getString(bookmarkWithGroup, AdmincentralNodeTypes.Favorite.TITLE)));
-                        favoriteChild.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", PropertyUtil.getString(bookmarkWithGroup, AdmincentralNodeTypes.Favorite.URL)));
-                        favoriteChild.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", PropertyUtil.getString(bookmarkWithGroup, AdmincentralNodeTypes.Favorite.ICON)));
+                        favoriteChild.addItemProperty(AdmincentralNodeTypes.Favorite.TITLE, DefaultPropertyUtil.newDefaultProperty("", PropertyUtil.getString(bookmarkWithGroup, AdmincentralNodeTypes.Favorite.TITLE)));
+                        favoriteChild.addItemProperty(AdmincentralNodeTypes.Favorite.URL, DefaultPropertyUtil.newDefaultProperty("", PropertyUtil.getString(bookmarkWithGroup, AdmincentralNodeTypes.Favorite.URL)));
+                        favoriteChild.addItemProperty(AdmincentralNodeTypes.Favorite.ICON, DefaultPropertyUtil.newDefaultProperty("", PropertyUtil.getString(bookmarkWithGroup, AdmincentralNodeTypes.Favorite.ICON)));
                         currentChild.addChild(favoriteChild);
                     }
                 }
@@ -126,7 +126,7 @@ public final class FavoritesManagerImpl implements FavoritesManager {
     public void addFavorite(final JcrNewNodeAdapter favorite) {
         try {
             final String title = (String) favorite.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue();
-            favorite.addItemProperty(DefaultPropertyUtil.newDefaultProperty(ModelConstants.JCR_NAME, "", Path.getValidatedLabel(title)));
+            favorite.addItemProperty(ModelConstants.JCR_NAME, DefaultPropertyUtil.newDefaultProperty("", Path.getValidatedLabel(title)));
             final Node newFavorite = MgnlContext.doInSystemContext(new JCRSessionOp<Node>(FavoriteStore.WORKSPACE_NAME) {
                 @Override
                 public Node exec(Session session) throws RepositoryException {
@@ -156,10 +156,10 @@ public final class FavoritesManagerImpl implements FavoritesManager {
         }
 
         JcrNewNodeAdapter newFavorite = new JcrNewNodeAdapter(bookmarkRoot, AdmincentralNodeTypes.Favorite.NAME);
-        newFavorite.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", title));
-        newFavorite.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.URL, "", location));
-        newFavorite.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.GROUP, "", ""));
-        newFavorite.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.ICON, "", StringUtils.defaultIfEmpty(icon, "icon-app")));
+        newFavorite.addItemProperty(AdmincentralNodeTypes.Favorite.TITLE, DefaultPropertyUtil.newDefaultProperty("", title));
+        newFavorite.addItemProperty(AdmincentralNodeTypes.Favorite.URL, DefaultPropertyUtil.newDefaultProperty("", location));
+        newFavorite.addItemProperty(AdmincentralNodeTypes.Favorite.GROUP, DefaultPropertyUtil.newDefaultProperty("", ""));
+        newFavorite.addItemProperty(AdmincentralNodeTypes.Favorite.ICON, DefaultPropertyUtil.newDefaultProperty("", StringUtils.defaultIfEmpty(icon, "icon-app")));
         return newFavorite;
     }
 
@@ -212,7 +212,7 @@ public final class FavoritesManagerImpl implements FavoritesManager {
         }
 
         JcrNewNodeAdapter newGroup = new JcrNewNodeAdapter(bookmarkRoot, AdmincentralNodeTypes.FavoriteGroup.NAME);
-        newGroup.addItemProperty(DefaultPropertyUtil.newDefaultProperty(AdmincentralNodeTypes.Favorite.TITLE, "", title));
+        newGroup.addItemProperty(AdmincentralNodeTypes.Favorite.TITLE, DefaultPropertyUtil.newDefaultProperty("", title));
 
         return newGroup;
     }
@@ -224,7 +224,7 @@ public final class FavoritesManagerImpl implements FavoritesManager {
             @Override
             public void doExec() {
                 final String title = (String) newGroup.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue();
-                newGroup.addItemProperty(DefaultPropertyUtil.newDefaultProperty(ModelConstants.JCR_NAME, "", Path.getValidatedLabel(title)));
+                newGroup.addItemProperty(ModelConstants.JCR_NAME, DefaultPropertyUtil.newDefaultProperty("", Path.getValidatedLabel(title)));
                 try {
                     newGroup.applyChanges().getSession().save();
                 } catch (RepositoryException e) {

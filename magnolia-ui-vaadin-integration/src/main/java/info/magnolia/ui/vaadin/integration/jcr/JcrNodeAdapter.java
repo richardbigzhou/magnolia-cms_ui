@@ -43,7 +43,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
 
 /**
  * Base implementation of an {@link com.vaadin.data.Item} wrapping/representing a {@link javax.jcr.Node}.
@@ -108,21 +107,9 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
         return Collections.unmodifiableCollection(getChangedProperties().keySet());
     }
 
-    /**
-     * Convenience - add the provided property using the contained propertyName as propertId.
-     */
-    public boolean addItemProperty(DefaultProperty property) throws UnsupportedOperationException {
-        return addItemProperty(property.getPropertyName(), property);
-    }
-
     @Override
     public boolean addItemProperty(Object propertyId, Property property) throws UnsupportedOperationException {
         log.debug("Adding new Property Item named [{}] with value [{}]", propertyId, property.getValue());
-
-        // add PropertyChange Listener
-        if (!((DefaultProperty) property).getListeners(ValueChangeEvent.class).contains(this)) {
-            ((DefaultProperty) property).addValueChangeListener(this);
-        }
 
         // Store Property.
         getChangedProperties().put((String) propertyId, property);
@@ -147,15 +134,6 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
             res = true;
         }
         return res;
-    }
-
-    @Override
-    public void valueChange(ValueChangeEvent event) {
-        Property property = event.getProperty();
-        if (property instanceof DefaultProperty) {
-            String name = ((DefaultProperty) property).getPropertyName();
-            addItemProperty(name, property);
-        }
     }
 
     private boolean jcrItemHasProperty(String propertyName) {
