@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,33 +33,11 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.event;
 
-import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
-
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * NewComponentEvent.
+ * Event handler for {@link EditAreaEvent}.
  */
-public class NewComponentEvent extends GwtEvent<NewComponentEventHandler> {
-    public static Type<NewComponentEventHandler> TYPE = new Type<NewComponentEventHandler>();
-
-    private AreaElement areaElement;
-
-    public NewComponentEvent(AreaElement areaElement) {
-        this.areaElement = areaElement;
-    }
-
-    @Override
-    public Type<NewComponentEventHandler> getAssociatedType() {
-        return TYPE;
-    }
-
-    @Override
-    protected void dispatch(NewComponentEventHandler handler) {
-        handler.onNewComponent(this);
-    }
-
-    public AreaElement getParentAreaElement() {
-        return areaElement;
-    }
+public interface EditAreaEventHandler extends EventHandler {
+    void onEditArea(EditAreaEvent editAreaEvent);
 }

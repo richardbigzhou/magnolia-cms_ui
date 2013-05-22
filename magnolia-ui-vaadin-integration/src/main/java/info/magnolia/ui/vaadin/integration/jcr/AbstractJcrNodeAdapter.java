@@ -168,7 +168,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
                 }
             } else {
                 javax.jcr.Property property = jcrNode.getProperty(String.valueOf(id));
-                value = PropertyUtil.getValueObject(property.getValue());
+                value = PropertyUtil.getPropertyValueObject(jcrNode, String.valueOf(id));
                 type = property.getType();
             }
         } catch (RepositoryException e) {

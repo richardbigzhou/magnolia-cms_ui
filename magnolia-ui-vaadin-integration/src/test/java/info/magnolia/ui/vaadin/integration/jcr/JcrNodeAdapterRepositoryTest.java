@@ -42,6 +42,10 @@ import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.api.ModelConstants;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.jcr.Node;
 import javax.jcr.Session;
 
@@ -122,6 +126,51 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
         assertEquals(Path.getValidatedLabel(value), res.getName());
         assertEquals(true, res.hasProperty("propertyString"));
         assertEquals(true, res.hasNode("child"));
+    }
+
+    @Test
+    public void testGetMultiValueProperty() throws Exception {
+        // GIVEN
+        String[] values = { "Art", "Dan", "Jen" };
+        node.setProperty("multiple", values);
+
+        // WHEN
+        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
+
+        // THEN
+        Property property = adapter.getItemProperty("multiple");
+        assertTrue(property.getValue() instanceof Set);
+    }
+
+    @Test
+    public void testSetMultiValueProperty() throws Exception {
+        // GIVEN
+        String[] values = { "Art", "Dan", "Jen" };
+        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
+        DefaultProperty<String> property = DefaultPropertyUtil.newDefaultProperty("multiple", 1, new HashSet<String>(Arrays.asList(values)));
+        adapter.addItemProperty(property);
+
+        // WHEN
+        Node res = adapter.applyChanges();
+
+        // THEN
+        assertTrue(res.getProperty("multiple").isMultiple());
+    }
+
+    @Test
+    public void testChangeMultiValueProperty() throws Exception {
+        // GIVEN
+        String[] values = { "Art", "Dan", "Jen" };
+        node.setProperty("multiple", values);
+        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
+        Property property = adapter.getItemProperty("multiple");
+        ((Set) property.getValue()).add("Sun");
+        // WHEN
+        Node res = adapter.applyChanges();
+
+        // THEN
+        assertTrue(res.getProperty("multiple").isMultiple());
+        assertEquals(4, res.getProperty("multiple").getValues().length);
     }
 
 }
