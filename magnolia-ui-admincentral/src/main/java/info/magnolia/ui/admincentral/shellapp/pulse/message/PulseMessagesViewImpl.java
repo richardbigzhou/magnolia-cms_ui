@@ -134,17 +134,18 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         messageTable.addGeneratedColumn(TYPE_PROPERTY_ID, typeColumnGenerator);
         messageTable.addGeneratedColumn(DATE_PROPERTY_ID, new DateColumnFormatter(null));
         messageTable.setRowGenerator(groupingRowGenerator);
-        messageTable.setCellStyleGenerator(cellStyleGenerator);
 
         navigator.addGroupingListener(groupingListener);
-
-
 
         messageTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
             @Override
             public void itemClick(ItemClickEvent event) {
-                Object itemId = event.getItemId();
-                listener.onMessageClicked((String) itemId);
+                final String itemId = (String) event.getItemId();
+                if (itemId.startsWith(GROUP_PLACEHOLDER_ITEMID)) {
+                    // clicking on the group type header does nothing.
+                    return;
+                }
+                listener.onMessageClicked(itemId);
             }
         });
 
@@ -284,18 +285,6 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         }
     };
 
-    private Table.CellStyleGenerator cellStyleGenerator = new Table.CellStyleGenerator() {
-        @Override
-        public String getStyle(Table source, Object itemId, Object propertyId) {
-            if (grouping && propertyId != null && TYPE_PROPERTY_ID.equals(propertyId)) {
-                return "v-cell-invisible";
-            }
-
-
-            return "";
-        }
-    };
-
     /*
      * Row generator draws grouping headers if such are present in container
      */
@@ -309,12 +298,11 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
              * acts as a placeholder for grouping sub section. This row
              * generator must render those special items.
              */
-            if (itemId.toString().startsWith(PulseMessagesPresenter.GROUP_PLACEHOLDER_ITEMID)) {
+            if (itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID)) {
                 Item item = table.getItem(itemId);
                 Property<?> property = item.getItemProperty(TYPE_PROPERTY_ID);
 
-                GeneratedRow generated = new GeneratedRow("", "", property.getValue().toString());
-                generated.setSpanColumns(false);
+                GeneratedRow generated = new GeneratedRow(property.getValue().toString());
                 return generated;
             }
 

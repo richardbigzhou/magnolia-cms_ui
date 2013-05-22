@@ -152,20 +152,20 @@
 .v-pulse .navigator-button .v-nativebutton-caption {text-decoration:none;}
 
 .v-pulse .v-table-generated-row {
-	background: transparent;
+	background: $c12;
 }
+.v-pulse .v-table-generated-row .v-table-cell-wrapper {
+	padding-left: 0 !important;
+}
+.v-pulse .v-table-generated-row .v-treetable-treespacer {
+	width: 0 !important;
+}
+
+
 .v-pulse .v-table-generated-row .v-table-cell-content {
 	border-bottom: 1px solid $c11;
-	font-family: Verdana, Geneva, sans-serif;
-	color: $c12;
-	padding-top: 20px;
-	padding-bottom: 0px;
-}
-.v-pulse .v-table-cell-content-v-cell-invisible {
-	background: $c15;
-}
-.v-pulse .v-table-cell-content-v-cell-invisible div {
-	display: none;
+	font-family: Verdana, Helvetica, sans-serif;
+	color: white;
 }
 
 .v-pulse .navigator-grouping {
