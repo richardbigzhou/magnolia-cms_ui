@@ -31,35 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor.event;
+package info.magnolia.ui.admincentral.setup;
 
-import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
+import info.magnolia.module.DefaultModuleVersionHandler;
+import info.magnolia.module.InstallContext;
+import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
+import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
+import info.magnolia.module.delta.Task;
+import info.magnolia.repository.RepositoryConstants;
 
-import com.google.gwt.event.shared.GwtEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * NewComponentEvent.
+ * VersionHandler for the Admin Central module.
  */
-public class NewComponentEvent extends GwtEvent<NewComponentEventHandler> {
-    public static Type<NewComponentEventHandler> TYPE = new Type<NewComponentEventHandler>();
-
-    private AreaElement areaElement;
-
-    public NewComponentEvent(AreaElement areaElement) {
-        this.areaElement = areaElement;
-    }
+public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandler {
 
     @Override
-    public Type<NewComponentEventHandler> getAssociatedType() {
-        return TYPE;
-    }
+    protected List<Task> getExtraInstallTasks(InstallContext installContext) {
+        List<Task> list = new ArrayList<Task>();
 
-    @Override
-    protected void dispatch(NewComponentEventHandler handler) {
-        handler.onNewComponent(this);
-    }
+        list.add(new IsModuleInstalledOrRegistered(
+                "Replace login security pattern",
+                "Replaces old login security pattern '/.resources/loginForm' (if present) with the new one '/.resources/defaultLoginForm'.",
+                "adminInterface",
+                new CheckAndModifyPropertyValueTask(
+                        "",
+                        "",
+                        RepositoryConstants.CONFIG,
+                        "/server/filters/uriSecurity/bypasses/login",
+                        "pattern",
+                        "/.resources/loginForm",
+                        "/.resources/defaultLoginForm")));
 
-    public AreaElement getParentAreaElement() {
-        return areaElement;
+        return list;
     }
 }

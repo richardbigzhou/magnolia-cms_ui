@@ -31,41 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.setup;
+package info.magnolia.ui.vaadin.gwt.client.editor.event;
 
-import info.magnolia.module.DefaultModuleVersionHandler;
-import info.magnolia.module.InstallContext;
-import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
-import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
-import info.magnolia.module.delta.Task;
-import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * VersionHandler for the Admin Central module.
+ * Event used for editing an area.
  */
-public class AdminCentralModuleVersionHandler extends DefaultModuleVersionHandler {
+public class EditAreaEvent extends GwtEvent<EditAreaEventHandler> {
 
-    private CheckAndModifyPropertyValueTask replaceLoginUriPattern = new CheckAndModifyPropertyValueTask(
-            "",
-            "",
-            RepositoryConstants.CONFIG,
-            "/server/filters/uriSecurity/bypasses/login",
-            "pattern",
-            "/.resources/loginForm",
-            "/.resources/defaultLoginForm");
+    public static Type<EditAreaEventHandler> TYPE = new Type<EditAreaEventHandler>();
+
+    private AreaElement areaElement;
+
+    public EditAreaEvent(AreaElement AreaElement) {
+        this.areaElement = AreaElement;
+    }
 
     @Override
-    protected List<Task> getExtraInstallTasks(InstallContext installContext) {
-        List<Task> list = new ArrayList<Task>();
+    public Type<EditAreaEventHandler> getAssociatedType() {
+        return TYPE;
+    }
 
-        list.add(new IsModuleInstalledOrRegistered("Replace login security pattern",
-                "Replaces old login security pattern '/.resources/loginForm' (if present) with the new one '/.resources/defaultLoginForm'.",
-                "adminInterface", replaceLoginUriPattern));
-        // TODO if old adminInterface is around delete it
+    @Override
+    protected void dispatch(EditAreaEventHandler handler) {
+        handler.onEditArea(this);
+    }
 
-        return list;
+    public AreaElement getAreaElement() {
+        return areaElement;
     }
 }

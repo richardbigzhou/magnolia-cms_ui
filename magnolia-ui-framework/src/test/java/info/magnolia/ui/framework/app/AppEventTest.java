@@ -211,7 +211,7 @@ public class AppEventTest {
 
         components.registerImplementation(AppController.class, AppControllerImpl.class);
         components.registerImplementation(AppTestView.class, AppViewTestImpl.class);
-        components.registerImplementation(AppView.class, AppFrameView.class);
+        components.registerImplementation(AppView.class, DefaultAppView.class);
         components.registerImplementation(LocationController.class);
         components.registerImplementation(AppLauncherLayoutManager.class, AppLauncherLayoutManagerImpl.class);
 

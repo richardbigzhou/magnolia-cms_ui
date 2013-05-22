@@ -45,14 +45,12 @@ public class DefaultProperty<T> extends AbstractProperty<T> {
 
     private T value;
     private final Class<T> type;
-    private String propertyName;
 
     /**
      * Creates a typed DefaultProperty based on the properties name, it's type value and the actual class type.
      * Value can be null.
      */
-    public DefaultProperty(String propertyName, Class<T> type, T value) {
-        this.propertyName = propertyName;
+    public DefaultProperty(Class<T> type, T value) {
         this.type = type;
         this.value = value;
     }
@@ -77,10 +75,6 @@ public class DefaultProperty<T> extends AbstractProperty<T> {
     @Override
     public Class<T> getType() {
         return type;
-    }
-
-    public String getPropertyName() {
-        return this.propertyName;
     }
 
     @Override

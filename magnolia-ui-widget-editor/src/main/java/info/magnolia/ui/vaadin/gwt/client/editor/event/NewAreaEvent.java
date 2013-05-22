@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.event;
 
+import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
@@ -41,14 +43,11 @@ import com.google.gwt.event.shared.GwtEvent;
 public class NewAreaEvent extends GwtEvent<NewAreaEventHandler> {
 
     public static Type<NewAreaEventHandler> TYPE = new Type<NewAreaEventHandler>();
-    private String workspace;
-    private String nodeType;
-    private String path;
 
-    public NewAreaEvent(String workspace, String nodeType, String path) {
-        this.workspace = workspace;
-        this.nodeType = nodeType;
-        this.path = path;
+    private AreaElement areaElement;
+
+    public NewAreaEvent(AreaElement areaElement) {
+        this.areaElement = areaElement;
     }
 
     @Override
@@ -61,15 +60,7 @@ public class NewAreaEvent extends GwtEvent<NewAreaEventHandler> {
         handler.onNewArea(this);
     }
 
-    public String getWorkSpace() {
-        return workspace;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public String getNodeType() {
-        return nodeType;
+    public AreaElement getAreaElement() {
+        return areaElement;
     }
 }

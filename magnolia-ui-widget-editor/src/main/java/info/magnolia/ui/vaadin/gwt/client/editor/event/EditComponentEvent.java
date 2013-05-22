@@ -33,22 +33,21 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.event;
 
+import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * EditComponentEvent.
+ * Event used for editing a component.
  */
 public class EditComponentEvent extends GwtEvent<EditComponentEventHandler> {
 
     public static Type<EditComponentEventHandler> TYPE = new Type<EditComponentEventHandler>();
-    private String workspace;
-    private String path;
-    private String dialog;
 
-    public EditComponentEvent(String workspace, String path, String dialog) {
-        this.workspace = workspace;
-        this.path = path;
-        this.dialog = dialog;
+    private ComponentElement componentElement;
+
+    public EditComponentEvent(ComponentElement componentElement) {
+        this.componentElement = componentElement;
     }
 
     @Override
@@ -61,15 +60,7 @@ public class EditComponentEvent extends GwtEvent<EditComponentEventHandler> {
         handler.onEditComponent(this);
     }
 
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public String getDialog() {
-        return dialog;
+    public ComponentElement getComponentElement() {
+        return componentElement;
     }
 }

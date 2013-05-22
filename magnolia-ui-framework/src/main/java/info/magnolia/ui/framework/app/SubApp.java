@@ -57,4 +57,5 @@ public interface SubApp {
 
     View getView();
 
+    boolean isCloseable();
 }

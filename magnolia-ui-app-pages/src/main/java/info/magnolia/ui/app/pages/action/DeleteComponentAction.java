@@ -40,6 +40,7 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
@@ -47,6 +48,7 @@ import javax.inject.Named;
  */
 public class DeleteComponentAction extends DeleteItemAction {
 
+    @Inject
     public DeleteComponentAction(DeleteItemActionDefinition definition, JcrItemAdapter item, @Named(SubAppEventBus.NAME) EventBus eventBus, SubAppContext subAppContext) {
         super(definition, item, eventBus, subAppContext);
     }

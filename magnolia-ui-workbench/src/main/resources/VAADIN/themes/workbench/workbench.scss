@@ -82,6 +82,34 @@
         color: $c11;
       }
     }
+    
+    .workbench-searchbox-clearbutton:before {
+      margin: 0;
+      padding: 0;
+      width: 15px;
+      height: 15px;
+      line-height: 15px;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    
+    .workbench-searchbox-clearbutton {
+      font-family: 'Mag-Icons';
+      font-size: 13px;
+      position: relative;
+      float: right;
+      right: -237px;
+      top: 7px;
+      background: none;
+      color: white;
+      background-color: black;
+      padding: 0px;
+      margin: 0px;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+    }
 
     .activation-status {
       display: block !important;
@@ -113,6 +141,16 @@
       .v-spacing {
         width: 16px;
       }
+    }
+    
+    .datetimefield .datefield {
+      float: left;
+    }
+
+    .datetimefield .timefield {
+      display: block !important;
+      text-align: right;
+      padding-left: 5px;
     }
   }
 

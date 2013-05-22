@@ -75,7 +75,6 @@ public class AbstractFieldBuilderTest extends AbstractBuilderTest<ConfiguredFiel
         assertEquals("label", field.getCaption());
         assertEquals(false, field.getPropertyDataSource().isReadOnly());
         assertEquals(true, field.getPropertyDataSource() instanceof DefaultProperty);
-        assertEquals(propertyName, ((DefaultProperty) field.getPropertyDataSource()).getPropertyName());
     }
 
     @Test
