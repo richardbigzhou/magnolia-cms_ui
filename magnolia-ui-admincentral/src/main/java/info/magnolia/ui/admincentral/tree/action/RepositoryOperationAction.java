@@ -41,8 +41,7 @@ import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -53,14 +52,29 @@ import javax.jcr.Session;
  */
 public abstract class RepositoryOperationAction<D extends ActionDefinition> extends ActionBase<D> {
 
+    public static final String DEFAULT_NEW_ITEM_NAME = "untitled";
+
     protected final JcrItemAdapter item;
 
     private final EventBus eventBus;
 
-    public RepositoryOperationAction(D definition, JcrItemAdapter item, EventBus eventBus) {
+    /**
+     * Holds the itemId to use for the ContentChangedEvent sent after the action is performed. If the action deletes
+     * an item it should set this to the itemId of its parent. If it adds an item it should set this to the itemId
+     * of the new item.
+     *
+     * @see ContentChangedEvent
+     */
+    private String itemIdOfChangedItem;
+
+    protected RepositoryOperationAction(D definition, JcrItemAdapter item, EventBus eventBus) {
         super(definition);
         this.item = item;
         this.eventBus = eventBus;
+    }
+
+    protected void setItemIdOfChangedItem(String itemIdOfChangedItem) {
+        this.itemIdOfChangedItem = itemIdOfChangedItem;
     }
 
     /**
@@ -72,27 +86,27 @@ public abstract class RepositoryOperationAction<D extends ActionDefinition> exte
             Session session = item.getJcrItem().getSession();
             onExecute(item);
             session.save();
-            eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), getItemId()));
+
+            // If the subclass set it to null this means no change was performed so we won't send an event
+            if (itemIdOfChangedItem != null) {
+                eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), itemIdOfChangedItem));
+            }
+
         } catch (RepositoryException e) {
             throw new ActionExecutionException("Can't execute repository operation.\n" + e.getMessage(), e);
         }
     }
 
-    /**
-     * Used by subclasses to define the itemId (for a deleted item, this should be the parent's id).
-     * @return the itemId
-     */
-    protected String getItemId() throws RepositoryException {
-        return item.getItemId();
-    }
-
     protected abstract void onExecute(JcrItemAdapter item) throws RepositoryException;
 
-    protected String getUniqueNewItemName(JcrItemAdapter item) throws RepositoryException, ItemNotFoundException, AccessDeniedException {
+    protected String getUniqueNewItemName(Node parent) throws RepositoryException {
+        return getUniqueNewItemName(parent, DEFAULT_NEW_ITEM_NAME);
+    }
+
+    protected String getUniqueNewItemName(Node parent, String name) throws RepositoryException {
         if (item == null) {
             throw new IllegalArgumentException("Item cannot be null.");
         }
-        return Path.getUniqueLabel(item.getJcrItem().getSession(), item.getJcrItem().getPath(), "untitled");
+        return Path.getUniqueLabel(parent.getSession(), parent.getPath(), name);
     }
-
 }

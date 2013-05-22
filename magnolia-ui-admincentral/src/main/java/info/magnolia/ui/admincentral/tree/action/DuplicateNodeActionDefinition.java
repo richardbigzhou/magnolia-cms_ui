@@ -36,7 +36,9 @@ package info.magnolia.ui.admincentral.tree.action;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * The Class DuplicateNodeActionDefinition.
+ * Used to configure a {@link DuplicateNodeAction}.
+ *
+ * @see DuplicateNodeAction
  */
 public class DuplicateNodeActionDefinition extends ConfiguredActionDefinition {
 

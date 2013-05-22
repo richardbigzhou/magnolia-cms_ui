@@ -93,6 +93,7 @@ public class VMagnoliaTable extends VScrollTablePatched {
     public class MagnoliaHeaderCell extends HeaderCell {
 
         private Element caption = null;
+        private boolean canBeSorted = false;
 
         public MagnoliaHeaderCell(String colId, String headerText) {
             super(colId, headerText);
@@ -105,6 +106,20 @@ public class VMagnoliaTable extends VScrollTablePatched {
         public void setText(String headerText) {
             if (caption != null) {
                 caption.setInnerHTML(headerText);
+            }
+        }
+
+        @Override
+        protected void setSorted(boolean sorted) {
+            this.canBeSorted = true;
+            super.setSorted(sorted);
+        }
+
+        @Override
+        protected void updateStyleNames(String primaryStyleName) {
+            super.updateStyleNames(primaryStyleName);
+            if (this.canBeSorted) {
+                addStyleName("sortable");
             }
         }
     }

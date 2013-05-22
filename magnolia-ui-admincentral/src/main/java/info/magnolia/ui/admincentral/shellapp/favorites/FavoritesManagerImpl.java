@@ -130,7 +130,7 @@ public final class FavoritesManagerImpl implements FavoritesManager {
             final Node newFavorite = MgnlContext.doInSystemContext(new JCRSessionOp<Node>(FavoriteStore.WORKSPACE_NAME) {
                 @Override
                 public Node exec(Session session) throws RepositoryException {
-                    return favorite.getNode();
+                    return favorite.applyChanges();
                 }
             });
 
@@ -226,7 +226,7 @@ public final class FavoritesManagerImpl implements FavoritesManager {
                 final String title = (String) newGroup.getItemProperty(AdmincentralNodeTypes.Favorite.TITLE).getValue();
                 newGroup.addItemProperty(DefaultPropertyUtil.newDefaultProperty(ModelConstants.JCR_NAME, "", Path.getValidatedLabel(title)));
                 try {
-                    newGroup.getNode().getSession().save();
+                    newGroup.applyChanges().getSession().save();
                 } catch (RepositoryException e) {
                     throw new RuntimeRepositoryException(e);
                 }

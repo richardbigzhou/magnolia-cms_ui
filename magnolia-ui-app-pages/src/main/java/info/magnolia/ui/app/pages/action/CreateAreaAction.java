@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,56 +31,61 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.action;
+package info.magnolia.ui.app.pages.action;
 
+import info.magnolia.context.MgnlContext;
+import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.form.EditorValidator;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.api.action.ActionBase;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.framework.app.SubAppEventBus;
+import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.jcr.Session;
 
 /**
- * Action for saving Items in Forms.
+ * Creates an area which was optional and not yet existing.
  *
- * @see SaveFormActionDefinition
+ * @see CreateAreaAction
  */
-public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
+public class CreateAreaAction extends ActionBase<CreateAreaActionDefinition> {
 
-    private static final Logger log = LoggerFactory.getLogger(SaveFormAction.class);
+    private AreaElement area;
+    private EventBus eventBus;
 
-    protected EditorCallback callback;
-    protected final EditorValidator validator;
-    protected final JcrNodeAdapter item;
-
-    public SaveFormAction(SaveFormActionDefinition definition, JcrNodeAdapter item, EditorCallback callback, EditorValidator validator) {
+    @Inject
+    public CreateAreaAction(CreateAreaActionDefinition definition, AreaElement area, @Named(SubAppEventBus.NAME) EventBus eventBus) {
         super(definition);
-        this.callback = callback;
-        this.validator = validator;
-        this.item = item;
+        this.area = area;
+        this.eventBus = eventBus;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-        // First Validate
-        validator.showValidation(true);
-        if (validator.isValid()) {
-            try {
-                final Node node = item.applyChanges();
-                NodeTypes.LastModified.update(node);
-                node.getSession().save();
-            } catch (final RepositoryException e) {
-                throw new ActionExecutionException(e);
-            }
-            callback.onSuccess(getDefinition().getName());
-        } else {
-            log.info("Validation error(s) occurred. No save performed.");
+        String workspace =area.getWorkspace();
+        String path = area.getPath();
+        int index = path.lastIndexOf("/");
+        String parent = path.substring(0, index);
+        String relPath = path.substring(index + 1);
+
+        try {
+            Session session = MgnlContext.getJCRSession(workspace);
+
+            Node parentNode = session.getNode(parent);
+
+            Node newNode = NodeUtil.createPath(parentNode, relPath, NodeTypes.Area.NAME);
+            NodeTypes.LastModified.update(newNode);
+            session.save();
+
+            eventBus.fireEvent(new ContentChangedEvent(workspace, path));
+        } catch (RepositoryException e) {
+            throw new ActionExecutionException(e);
         }
     }
 }

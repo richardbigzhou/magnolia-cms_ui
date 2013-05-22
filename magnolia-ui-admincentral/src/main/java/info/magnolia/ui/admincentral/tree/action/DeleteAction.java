@@ -37,18 +37,18 @@ import info.magnolia.commands.CommandsManager;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.CommandActionDefinition;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
-import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.action.CommandActionBase;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Item;
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
@@ -56,7 +56,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Deletes a node from the repository.
+ * Deletes a node from the repository usin the delete command.
  * 
  * @param <D> {@link info.magnolia.ui.api.action.CommandActionDefinition}.
  */
@@ -64,19 +64,23 @@ public class DeleteAction<D extends CommandActionDefinition> extends CommandActi
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    protected final SubAppContext subAppContext;
+    protected final UiContext uiContext;
     protected final Item jcrItem;
     protected final EventBus eventBus;
-    // Used by the Event in order to put the focus on.
-    protected String pathToFocusOn;
-
+    private String itemIdOfChangedItem;
 
     @Inject
-    public DeleteAction(D definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, SubAppContext subAppContext) {
-        super(definition, item, commandsManager, subAppContext);
+    public DeleteAction(D definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
+        super(definition, item, commandsManager, uiContext);
         this.jcrItem = item.getJcrItem();
-        this.subAppContext = subAppContext;
+        this.uiContext = uiContext;
         this.eventBus = eventBus;
+        try {
+            itemIdOfChangedItem = JcrItemUtil.getItemId(jcrItem.getParent());
+        } catch (RepositoryException e) {
+            log.error("Could not execute repository operation.", e);
+            onError(e);
+        }
     }
 
     @Override
@@ -84,7 +88,7 @@ public class DeleteAction<D extends CommandActionDefinition> extends CommandActi
         // Warn if we try to remove the root node
         try {
             if (jcrItem.isNode() && jcrItem.getDepth() == 0) {
-                subAppContext.openNotification(MessageStyleTypeEnum.INFO, true, "Root node can't be deleted.");
+                uiContext.openNotification(MessageStyleTypeEnum.INFO, true, "Root node can't be deleted.");
                 return;
             }
 
@@ -93,15 +97,12 @@ public class DeleteAction<D extends CommandActionDefinition> extends CommandActi
                 throw new ActionExecutionException(" No Command defined for this action ");
             }
 
-            // Define the Path used by the Event.
-            setPathToFocusOn();
-
             // Get the related Confirmation Message
             String confirmationHeader = createConfirmationHeader();
             String confirmationMessage = createConfirmationMessage();
 
             // Open the Confirmation Dialog
-            subAppContext.openConfirmation(
+            uiContext.openConfirmation(
                     MessageStyleTypeEnum.WARNING, confirmationHeader, confirmationMessage, "Yes, Delete", "No", true,
                     new ConfirmationCallback() {
                         @Override
@@ -115,7 +116,7 @@ public class DeleteAction<D extends CommandActionDefinition> extends CommandActi
                         }
                     });
 
-        }catch(RepositoryException re) {
+        } catch (RepositoryException re) {
             log.error("Could not execute repository operation.", re);
             onError(re);
         }
@@ -130,22 +131,15 @@ public class DeleteAction<D extends CommandActionDefinition> extends CommandActi
             // Execute command
             super.execute();
             // Propagate event
-            eventBus.fireEvent(new ContentChangedEvent(jcrItem.getSession().getWorkspace().getName(), pathToFocusOn));
+            eventBus.fireEvent(new ContentChangedEvent(jcrItem.getSession().getWorkspace().getName(), itemIdOfChangedItem));
         } catch (Exception e) {
             log.error("Could not execute command operation.", e);
             onError(e);
         }
     }
 
-    /**
-     * Define the Path to focus on once the command is performed.
-     */
-    protected void setPathToFocusOn() throws RepositoryException {
-        if (jcrItem.isNode()) {
-            this.pathToFocusOn = ((Node) jcrItem).getPath();
-        } else {
-            this.pathToFocusOn = jcrItem.getParent().getPath();
-        }
+    protected void setItemIdOfChangedItem(String itemIdOfChangedItem) {
+        this.itemIdOfChangedItem = itemIdOfChangedItem;
     }
 
     /**

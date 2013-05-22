@@ -117,7 +117,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
      * Return the corresponding node directly from the JCR repository. <b> The returned Node does
      * not contains all changes done on the current Item, but it's a representation of the current
      * stored Jcr node. </b> To get the Jcr Node including the changes done on the current Item, use
-     * getNode().
+     * applyChanges().
      */
     @Override
     public Node getJcrItem() {
@@ -206,21 +206,6 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
         updateChildren(node);
 
         return node;
-    }
-
-    /**
-     * Return the Jcr Node represented by this Item, Including the Modification done on Property and
-     * Child Nodes (added or removed).
-     *
-     * @deprecated use applyChanges instead
-     */
-    @Deprecated
-    public Node getNode() {
-        try {
-            return applyChanges();
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
     }
 
     /**

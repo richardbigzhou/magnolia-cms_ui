@@ -31,46 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.action;
+package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.cms.core.Path;
 import info.magnolia.event.EventBus;
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.framework.event.AdmincentralEventBus;
+import info.magnolia.ui.admincentral.tree.action.DeleteItemAction;
+import info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition;
+import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
+import javax.inject.Inject;
 import javax.inject.Named;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 /**
- * Creates a folder either as a child if the node given is itself a folder or as a child of the nearest ancestor that
- * is a folder.
+ * Action for deleting components. Overrides the default behaviour by sending the {@link info.magnolia.ui.framework.event.ContentChangedEvent} on the {@link SubAppEventBus}.
  */
-public class AddFolderAction extends RepositoryOperationAction<AddFolderActionDefinition> {
+public class DeleteComponentAction extends DeleteItemAction {
 
-    private String itemId;
-
-    private static final String NEW_NODE_NAME = "untitled";
-
-    public AddFolderAction(AddFolderActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
-        super(definition, item, eventBus);
-    }
-
-    @Override
-    protected void onExecute(JcrItemAdapter item) throws RepositoryException {
-        if (item.getJcrItem().isNode()) {
-            Node node = (Node) item.getJcrItem();
-            String name = Path.getUniqueLabel(node.getSession(), node.getPath(), NEW_NODE_NAME);
-            Node newNode = node.addNode(name, NodeTypes.Folder.NAME);
-            NodeTypes.Created.set(newNode);
-            itemId = JcrItemUtil.getItemId(newNode);
-        }
-    }
-
-    @Override
-    protected String getItemId() throws RepositoryException {
-        return itemId;
+    @Inject
+    public DeleteComponentAction(DeleteItemActionDefinition definition, JcrItemAdapter item, @Named(SubAppEventBus.NAME) EventBus eventBus, SubAppContext subAppContext) {
+        super(definition, item, eventBus, subAppContext);
     }
 }

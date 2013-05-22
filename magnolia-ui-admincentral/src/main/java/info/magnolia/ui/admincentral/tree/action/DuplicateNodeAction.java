@@ -38,8 +38,10 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import javax.inject.Named;
+import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -47,34 +49,40 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The DuplicateNodeAction. Create a Copy of the selected Node. Use
- * {@link Path#getUniqueLabel} to create the new node Name.
+ * Action that creates a new node by duplicating an existing one.
+ *
+ * @see DuplicateNodeActionDefinition
  */
 public class DuplicateNodeAction extends RepositoryOperationAction<DuplicateNodeActionDefinition> {
 
     private static final Logger log = LoggerFactory.getLogger(DuplicateNodeAction.class);
 
-    /**
-     * Instantiates a new duplicate node action.
-     */
     public DuplicateNodeAction(DuplicateNodeActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
         super(definition, item, eventBus);
     }
 
-
     @Override
     protected void onExecute(JcrItemAdapter item) throws RepositoryException {
-        if (item.getJcrItem().isNode()) {
-            Node node = (Node) item.getJcrItem();
-            String newName = Path.getUniqueLabel(node.getSession(), node.getParent().getPath(), node.getName());
-            String newPath = Path.getAbsolutePath(node.getParent().getPath(), newName);
-            // Duplicate Node
+        Item jcrItem = item.getJcrItem();
+        if (jcrItem.isNode()) {
+            Node node = (Node) jcrItem;
+            Node parentNode = node.getParent();
+
+            // Generate name and path of the new node
+            String newName = getUniqueNewItemName(parentNode, node.getName());
+            String newPath = Path.getAbsolutePath(parentNode.getPath(), newName);
+
+            // Duplicate node
             node.getSession().getWorkspace().copy(node.getPath(), newPath);
-            log.debug("Create a copy of {} with new Path {}", node.getPath(), newPath);
-            // Update dates.
+
+            // Update metadata
             Node duplicateNode = node.getSession().getNode(newPath);
             NodeTypes.LastModified.update(duplicateNode);
+
+            // Set item of the new node for the ContentChangedEvent
+            setItemIdOfChangedItem(JcrItemUtil.getItemId(duplicateNode));
+
+            log.debug("Created a copy of {} with new path {}", node.getPath(), newPath);
         }
     }
-
 }

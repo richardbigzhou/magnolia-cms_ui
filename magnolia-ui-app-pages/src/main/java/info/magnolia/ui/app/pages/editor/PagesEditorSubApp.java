@@ -63,6 +63,7 @@ import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import info.magnolia.ui.vaadin.editor.PageEditorListener;
 import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
@@ -92,9 +93,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
 
     public static final String ACTION_DELETE_COMPONENT = "deleteComponent";
-    public static final String ACTION_EDIT_COMPONENT = "editComponent";
     public static final String ACTION_MOVE_COMPONENT = "moveComponent";
-    public static final String ACTION_ADD_COMPONENT = "addComponent";
 
     private final ActionExecutor actionExecutor;
     private final PagesEditorSubAppView view;
@@ -205,18 +204,18 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             }
 
             if (componentElement.getWritable() != null && !componentElement.getWritable()) {
-                actionbarPresenter.disable(PagesEditorSubApp.ACTION_EDIT_COMPONENT);
+                actionbarPresenter.disable(PageEditorListener.EDIT_ELEMENT);
             } else {
-                actionbarPresenter.enable(PagesEditorSubApp.ACTION_EDIT_COMPONENT);
+                actionbarPresenter.enable(PageEditorListener.EDIT_ELEMENT);
             }
 
         } else if (element instanceof AreaElement) {
             AreaElement areaElement = (AreaElement) element;
 
             if (areaElement.getAddible() != null && !areaElement.getAddible()) {
-                actionbarPresenter.disable(PagesEditorSubApp.ACTION_ADD_COMPONENT);
+                actionbarPresenter.disable(PageEditorListener.ADD_COMPONENT);
             } else {
-                actionbarPresenter.enable(PagesEditorSubApp.ACTION_ADD_COMPONENT);
+                actionbarPresenter.enable(PageEditorListener.ADD_COMPONENT);
             }
         }
     }
@@ -380,41 +379,23 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     @Override
     public void onActionbarItemClicked(String actionName) {
-
-        if (actionName.equals("editProperties") || actionName.equals("editComponent") || actionName.equals("editArea")) {
-            pageEditorPresenter.editComponent(
-                    workspace,
-                    pageEditorPresenter.getSelectedElement().getPath(),
-                    pageEditorPresenter.getSelectedElement().getDialog());
-        }
-        else if (actionName.equals("addComponent")) {
-            AreaElement areaElement = (AreaElement) pageEditorPresenter.getSelectedElement();
-            pageEditorPresenter.newComponent(
-                    workspace,
-                    areaElement.getPath(),
-                    areaElement.getAvailableComponents());
-        }
-        else if (actionName.equals("deleteItem")) {
-            pageEditorPresenter.deleteComponent(workspace, pageEditorPresenter.getSelectedElement().getPath());
-        }
-
-        else {
-            try {
-                Session session = MgnlContext.getJCRSession(workspace);
-                final javax.jcr.Item item = session.getItem(parameters.getNodePath());
-                if (item.isNode()) {
-                    actionExecutor.execute(actionName, new JcrNodeAdapter((Node)item));
-                } else {
-                    throw new IllegalArgumentException("Selected value is not a node. Can only operate on nodes.");
-                }
-            } catch (RepositoryException e) {
-                Message error = new Message(MessageType.ERROR, "Could not get item: " + parameters.getNodePath(), e.getMessage());
-                appContext.broadcastMessage(error);
-            } catch (ActionExecutionException e) {
-                Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
-                appContext.broadcastMessage(error);
+        AbstractElement selectedElement = pageEditorPresenter.getSelectedElement();
+        try {
+            Session session = MgnlContext.getJCRSession(workspace);
+            final javax.jcr.Item item = session.getItem(selectedElement.getPath());
+            if (item.isNode()) {
+                actionExecutor.execute(actionName, new JcrNodeAdapter((Node)item), selectedElement);
+            } else {
+                throw new IllegalArgumentException("Selected value is not a node. Can only operate on nodes.");
             }
+        } catch (RepositoryException e) {
+            Message error = new Message(MessageType.ERROR, "Could not get item: " + selectedElement.getPath(), e.getMessage());
+            appContext.broadcastMessage(error);
+        } catch (ActionExecutionException e) {
+            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            appContext.broadcastMessage(error);
         }
+
     }
 
     @Override

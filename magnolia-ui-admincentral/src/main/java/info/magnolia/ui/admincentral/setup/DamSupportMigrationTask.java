@@ -53,7 +53,7 @@ public class DamSupportMigrationTask extends AbstractTask {
     public void execute(InstallContext installContext) throws TaskExecutionException {
         /*
          * try {
-         * Node dialog = installContext.getJCRSession(RepositoryConstants.CONFIG).getNode("/modules/" + moduleName + "/dialogs");
+         * Node dialog = installContext.getJCRSession(RepositoryConstants.CONFIG).applyChanges("/modules/" + moduleName + "/dialogs");
          * // Copy to Dialog50
          * copyInSession(dialog, dialog.getPath()+"50");
          * NodeUtil.visit(dialog, new NodeVisitor() {
@@ -68,7 +68,7 @@ public class DamSupportMigrationTask extends AbstractTask {
          * // Try to resolve references for extends.
          * postProcessForExtendsAndReference();
          * } catch (Exception e) {
-         * installContext.warn("Could not Migrate Dialod for the following module " + moduleName);
+         * installContext.warn("Could not Migrate Dialog for the following module " + moduleName);
          * }
          */
     }

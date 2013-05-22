@@ -42,6 +42,7 @@ import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.apache.log4j.Logger;
 
@@ -64,8 +65,8 @@ public class TemplateTypeRestrictionDropConstraint implements DropConstraint {
 
     @Override
     public boolean allowedAsChild(Item sourceItem, Item targetItem) {
-        Node sourceNode = getJcrNode(sourceItem);
-        Node targetNode = getJcrNode(targetItem);
+        Node sourceNode = applyChanges(sourceItem);
+        Node targetNode = applyChanges(targetItem);
         if (sourceNode != null && targetNode != null) {
             try {
                 TemplateDefinition sourceTemplateDefinition = templateAssignment.getAssignedTemplateDefinition(sourceNode);
@@ -89,16 +90,18 @@ public class TemplateTypeRestrictionDropConstraint implements DropConstraint {
 
     @Override
     public boolean allowedToMove(Item sourceItem) {
-        return getJcrNode(sourceItem) != null;
+        return applyChanges(sourceItem) != null;
     }
 
-    private Node getJcrNode(Item item) {
-        Node result = null;
+    private Node applyChanges(final Item item) {
+        Node node = null;
         if (item instanceof JcrNodeAdapter) {
-            result =  ((JcrNodeAdapter) item).getNode();
-        } else if (item instanceof JcrNewNodeAdapter) {
-            result = ((JcrNodeAdapter) item).getNode();
+            try {
+                node = ((JcrNewNodeAdapter) item).applyChanges();
+            } catch (RepositoryException e) {
+                log.error("Cannot apply changes.", e);
+            }
         }
-        return result;
+        return node;
     }
 }

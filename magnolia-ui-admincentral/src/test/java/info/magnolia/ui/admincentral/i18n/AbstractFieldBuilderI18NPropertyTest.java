@@ -78,7 +78,7 @@ public class AbstractFieldBuilderI18NPropertyTest extends AbstractBuilderTest<Co
         Field<Object> field = abstractDialogField.getField();
         field.setValue("new Value");
         // WHEN
-        Node res = ((JcrNodeAdapter) baseItem).getNode();
+        Node res = ((JcrNodeAdapter) baseItem).applyChanges();
 
         // THEN
         assertEquals(true, res.hasProperty(propertyName));
@@ -93,7 +93,7 @@ public class AbstractFieldBuilderI18NPropertyTest extends AbstractBuilderTest<Co
         Field<Object> field = abstractDialogField.getField();
         field.setValue("new Value");
         // WHEN
-        Node res = ((JcrNodeAdapter) baseItem).getNode();
+        Node res = ((JcrNodeAdapter) baseItem).applyChanges();
 
         // THEN
         // Should not be sufixed by _fr --> setI18n(false)
@@ -108,7 +108,7 @@ public class AbstractFieldBuilderI18NPropertyTest extends AbstractBuilderTest<Co
         Field<Object> field = abstractDialogField.getField();
         field.setValue("new Value");
         // WHEN
-        Node res = ((JcrNodeAdapter) baseItem).getNode();
+        Node res = ((JcrNodeAdapter) baseItem).applyChanges();
 
         // THEN
         assertEquals(true, res.hasProperty(propertyName));
@@ -135,14 +135,14 @@ public class AbstractFieldBuilderI18NPropertyTest extends AbstractBuilderTest<Co
         initBuilder();
         Field<Object> field = abstractDialogField.getField();
         field.setValue("new Value");
-        Node res = ((JcrNodeAdapter) baseItem).getNode();
+        Node res = ((JcrNodeAdapter) baseItem).applyChanges();
         assertEquals(true, res.hasProperty(propertyName));
 
 
         ((I18NAwarePropertyImpl)field.getPropertyDataSource()).setI18NPropertyName(propertyName + "_fr");
         field.setValue("new Value FR");
         // WHEN
-        res = ((JcrNodeAdapter) baseItem).getNode();
+        res = ((JcrNodeAdapter) baseItem).applyChanges();
 
         // THEN
         assertEquals(true, res.hasProperty(propertyName + "_fr"));

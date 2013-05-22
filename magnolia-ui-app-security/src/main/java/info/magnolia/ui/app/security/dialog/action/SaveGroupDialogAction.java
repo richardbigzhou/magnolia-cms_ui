@@ -72,7 +72,7 @@ public class SaveGroupDialogAction extends SaveDialogAction {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
 
             try {
-                final Node node = itemChanged.getNode();
+                final Node node = itemChanged.applyChanges();
                 // the roles (that are assigned to this group) and groups (this group belongs to) handling has to be added here
                 // GROUPS
                 try {

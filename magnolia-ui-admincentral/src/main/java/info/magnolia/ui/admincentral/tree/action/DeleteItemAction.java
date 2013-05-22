@@ -34,13 +34,14 @@
 package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.api.action.ActionBase;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import javax.inject.Named;
@@ -52,45 +53,41 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Deletes a node from the repository.
+ * Deletes a node or property from the repository.
+ *
+ * @see DeleteItemActionDefinition
  */
 public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final SubAppContext subAppContext;
-
-    private String itemId;
+    private final UiContext uiContext;
     private final JcrItemAdapter item;
     private final EventBus eventBus;
 
-    public DeleteItemAction(DeleteItemActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, SubAppContext subAppContext) {
+    public DeleteItemAction(DeleteItemActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
         super(definition);
         this.item = item;
-        this.subAppContext = subAppContext;
+        this.uiContext = uiContext;
         this.eventBus = eventBus;
-    }
-
-    protected String getItemId() throws RepositoryException {
-        return itemId;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
 
         try {
-            // avoid JCR logging long stacktraces about root not being removable.
+            // The root node cannot be deleted
             if (item.getJcrItem().getDepth() == 0) {
-                itemId = item.getItemId();
                 return;
             }
         } catch (RepositoryException e) {
             throw new ActionExecutionException("Problem accessing JCR", e);
         }
 
-        subAppContext.openConfirmation(
+        uiContext.openConfirmation(
                 MessageStyleTypeEnum.WARNING, "Do you really want to delete this item?", "This action can't be undone.", "Yes, Delete", "No", true,
                 new ConfirmationCallback() {
+
                     @Override
                     public void onSuccess() {
                         DeleteItemAction.this.executeAfterConfirmation();
@@ -98,26 +95,26 @@ public class DeleteItemAction extends ActionBase<DeleteItemActionDefinition> {
 
                     @Override
                     public void onCancel() {
-                        // nothing
                     }
                 });
-
     }
 
     protected void executeAfterConfirmation() {
 
         try {
             final Item jcrItem = item.getJcrItem();
-            itemId = jcrItem.getParent().getPath();
+            String itemIdOfChangedItem = JcrItemUtil.getItemId(jcrItem.getParent());
             Session session = jcrItem.getSession();
             jcrItem.remove();
             session.save();
-            eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), getItemId()));
+
+            eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), itemIdOfChangedItem));
 
             // Show notification
-            subAppContext.openNotification(MessageStyleTypeEnum.INFO, true, "Item deleted.");
+            uiContext.openNotification(MessageStyleTypeEnum.INFO, true, "Item deleted.");
+
         } catch (RepositoryException e) {
-            log.error("Could not execute repository operation.", e);
+            log.error("Could not execute repository operation", e);
         }
     }
 }

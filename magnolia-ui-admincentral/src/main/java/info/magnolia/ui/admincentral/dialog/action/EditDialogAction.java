@@ -34,65 +34,47 @@
 package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
-import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.api.action.ActionBase;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.jcr.RepositoryException;
 
 /**
- * Opens a dialog for editing a node. We need to manually take care of nodeName changes. This must be properly solved by
- * passing the node Identifier to {@link ContentChangedEvent}.
- *
- * See MGNLUI-226.
+ * Opens a dialog for editing a node.
  *
  * @see EditDialogActionDefinition
  */
 public class EditDialogAction extends ActionBase<EditDialogActionDefinition> {
 
     private final JcrNodeAdapter itemToEdit;
-    private FormDialogPresenter formDialogPresenter;
-
-    private final OverlayLayer overlayLayer;
-    private EventBus eventBus;
+    private final FormDialogPresenter formDialogPresenter;
+    private final UiContext uiContext;
+    private final EventBus eventBus;
 
     @Inject
-    public EditDialogAction(EditDialogActionDefinition definition, JcrNodeAdapter itemToEdit, FormDialogPresenter formDialogPresenter, final SubAppContext subAppContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
+    public EditDialogAction(EditDialogActionDefinition definition, JcrNodeAdapter itemToEdit, FormDialogPresenter formDialogPresenter, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
         super(definition);
         this.itemToEdit = itemToEdit;
         this.formDialogPresenter = formDialogPresenter;
-        this.overlayLayer = subAppContext;
+        this.uiContext = uiContext;
         this.eventBus = eventBus;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-        String tempParentNodePath;
-        try {
-            tempParentNodePath = itemToEdit.getNode().getParent().getPath();
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
 
-        final String parentNodePath = tempParentNodePath;
-        formDialogPresenter.start(itemToEdit, getDefinition().getDialogName(), overlayLayer, new EditorCallback() {
+        formDialogPresenter.start(itemToEdit, getDefinition().getDialogName(), uiContext, new EditorCallback() {
+
             @Override
             public void onSuccess(String actionName) {
-                final String newItemId = (String) itemToEdit.getItemProperty(ModelConstants.JCR_NAME).getValue();
-                final String itemId = newItemId == null ? itemToEdit.getItemId() : NodeUtil.combinePathAndName(parentNodePath, newItemId);
-
-                eventBus.fireEvent(new ContentChangedEvent(itemToEdit.getWorkspace(), itemId));
+                eventBus.fireEvent(new ContentChangedEvent(itemToEdit.getWorkspace(), itemToEdit.getItemId()));
                 formDialogPresenter.closeDialog();
             }
 

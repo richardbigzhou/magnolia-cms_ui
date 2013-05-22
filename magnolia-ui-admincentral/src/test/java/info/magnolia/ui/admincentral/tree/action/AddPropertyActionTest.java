@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.*;
 
+import info.magnolia.cms.security.DummyUser;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
@@ -43,19 +43,24 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.ActionAvailabilityDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionAvailabilityDefinition;
+import info.magnolia.event.RecordingEventBus;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests covering execution of the {@link AddPropertyAction}.
+ * Tests covering execution of {@link AddPropertyAction}.
  */
 public class AddPropertyActionTest extends MgnlTestCase {
 
@@ -63,13 +68,13 @@ public class AddPropertyActionTest extends MgnlTestCase {
 
     private final static String NODE_NAME = "johnNode";
 
-    private final static String UNTITLED_PROPERTY_NAME = "untitled";
+    private final static String UNTITLED_PROPERTY_NAME = RepositoryOperationAction.DEFAULT_NEW_ITEM_NAME;
 
     private final static String UNTITLED_PROPERTY_VALUE = "preset";
 
     private AddPropertyActionDefinition definition;
 
-    private EventBus eventBus;
+    private RecordingEventBus eventBus;
 
     private MockSession session;
 
@@ -84,9 +89,10 @@ public class AddPropertyActionTest extends MgnlTestCase {
         session = new MockSession(WORKSPACE);
         MockContext ctx = new MockContext();
         ctx.addSession(WORKSPACE, session);
+        ctx.setUser(new DummyUser());
         MgnlContext.setInstance(ctx);
 
-        eventBus = mock(EventBus.class);
+        eventBus = new RecordingEventBus();
     }
 
     @After
@@ -95,17 +101,17 @@ public class AddPropertyActionTest extends MgnlTestCase {
     }
 
     @Test
-    public void testExecuteOnRootOnce() throws Exception {
+    public void testCanAddPropertyToRootNode() throws Exception {
         // GIVEN
         Node root = session.getRootNode();
-        long propertiesCount = root.getProperties().getSize();
+        long propertyCountBefore = root.getProperties().getSize();
         AddPropertyAction action = new AddPropertyAction(definition, new JcrNodeAdapter(root), eventBus);
 
         // WHEN
         action.execute();
 
         // THEN
-        assertEquals(propertiesCount + 1, root.getProperties().getSize());
+        assertAddedNewProperty(root, propertyCountBefore, RepositoryOperationAction.DEFAULT_NEW_ITEM_NAME);
     }
 
     @Test
@@ -128,47 +134,57 @@ public class AddPropertyActionTest extends MgnlTestCase {
         // GIVEN
         Node root = session.getRootNode();
         Node node = root.addNode(NODE_NAME);
-        long propertiesCount = node.getProperties().getSize();
+        long propertyCountBefore = node.getProperties().getSize();
         AddPropertyAction action = new AddPropertyAction(definition, new JcrNodeAdapter(node), eventBus);
 
         // WHEN
         action.execute();
 
         // THEN
-        assertEquals(propertiesCount + 1, node.getProperties().getSize());
+        assertAddedNewProperty(node, propertyCountBefore, RepositoryOperationAction.DEFAULT_NEW_ITEM_NAME);
     }
 
     @Test
-    public void testExecuteOnNodeTwice() throws Exception {
-        // GIVEN
-        Node root = session.getRootNode();
-        Node node = root.addNode(NODE_NAME);
-        long propertiesCount = node.getProperties().getSize();
-        AddPropertyAction action = new AddPropertyAction(definition, new JcrNodeAdapter(node), eventBus);
-
-        // WHEN
-        action.execute();
-        action.execute();
-
-        // THEN
-        assertEquals(propertiesCount + 2, node.getProperties().getSize());
-    }
-
-    @Test
-    public void testExecuteOnNodeWithExistingUntitled() throws Exception {
+    public void testGivesPropertyUniqueName() throws Exception {
         // GIVEN
         Node root = session.getRootNode();
         Node node = root.addNode(NODE_NAME);
         node.setProperty(UNTITLED_PROPERTY_NAME, UNTITLED_PROPERTY_VALUE);
-        long propertiesCount = node.getProperties().getSize();
+        long propertyCountBefore = node.getProperties().getSize();
         AddPropertyAction action = new AddPropertyAction(definition, new JcrNodeAdapter(node), eventBus);
 
         // WHEN
         action.execute();
 
         // THEN
-        assertEquals(propertiesCount + 1, node.getProperties().getSize());
-        assertEquals(node.getProperty(UNTITLED_PROPERTY_NAME).getString(), UNTITLED_PROPERTY_VALUE);
+        assertTrue(node.hasProperty(RepositoryOperationAction.DEFAULT_NEW_ITEM_NAME));
+        assertAddedNewProperty(node, propertyCountBefore, RepositoryOperationAction.DEFAULT_NEW_ITEM_NAME + "0");
     }
 
+    @Test
+    public void testDoesNothingGivenProperty() throws Exception {
+        // GIVEN
+        Node root = session.getRootNode();
+        Node node = root.addNode(NODE_NAME);
+        node.setProperty(UNTITLED_PROPERTY_NAME, UNTITLED_PROPERTY_VALUE);
+        long propertyCountBefore = node.getProperties().getSize();
+        AddPropertyAction action = new AddPropertyAction(definition, new JcrPropertyAdapter(node.getProperty(UNTITLED_PROPERTY_NAME)), eventBus);
+
+        // WHEN
+        action.execute();
+
+        // THEN
+        assertEquals(propertyCountBefore, node.getProperties().getSize());
+        assertEquals(node.getProperty(UNTITLED_PROPERTY_NAME).getString(), UNTITLED_PROPERTY_VALUE);
+        assertTrue(eventBus.isEmpty());
+    }
+
+    private void assertAddedNewProperty(Node root, long propertyCountBefore, String newPropertyName) throws RepositoryException {
+        assertEquals(propertyCountBefore + 3, root.getProperties().getSize());
+        assertTrue(root.hasProperty(newPropertyName));
+        assertTrue(root.hasProperty(NodeTypes.LastModified.LAST_MODIFIED));
+        assertTrue(root.hasProperty(NodeTypes.LastModified.LAST_MODIFIED_BY));
+        assertFalse(eventBus.isEmpty());
+        assertTrue(((ContentChangedEvent) eventBus.getEvent()).getItemId().equals(JcrItemUtil.getItemId(root.getProperty(newPropertyName))));
+    }
 }
