@@ -16,10 +16,6 @@
       <implementation>info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.actionbar.definition.GroupAvailabilityDefinition</type>
-      <implementation>info.magnolia.ui.actionbar.definition.ConfiguredGroupAvailabilityDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
       <type>info.magnolia.ui.actionbar.definition.SectionAvailabilityDefinition</type>
       <implementation>info.magnolia.ui.actionbar.definition.ConfiguredSectionAvailabilityDefinition</implementation>
     </type-mapping>
