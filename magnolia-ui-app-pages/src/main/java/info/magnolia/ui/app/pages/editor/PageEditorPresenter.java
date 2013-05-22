@@ -33,10 +33,7 @@
  */
 package info.magnolia.ui.app.pages.editor;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
@@ -52,11 +49,7 @@ import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,43 +101,12 @@ public class PageEditorPresenter implements PageEditorListener {
     }
 
     @Override
-    public void onAction(String actionName, AbstractElement element) {
+    public void onAction(String actionName, Object... args) {
         try {
-            actionExecutor.execute(actionName, element);
+            actionExecutor.execute(actionName, args);
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
             subAppContext.getAppContext().broadcastMessage(error);
-        }
-    }
-
-    @Override
-    public void sortComponent(String workspace, String parentPath, String source, String target, String order) {
-        try {
-
-            if (StringUtils.isBlank(order)) {
-                order = "before";
-            }
-
-            if (StringUtils.equalsIgnoreCase(target, "mgnlNew")) {
-                target = null;
-            }
-
-            Session session = MgnlContext.getJCRSession(workspace);
-
-            Node parent = session.getNode(parentPath);
-            Node component = parent.getNode(source);
-
-            if ("before".equals(order)) {
-                NodeUtil.orderBefore(component, target);
-            } else {
-                NodeUtil.orderAfter(component, target);
-            }
-
-            NodeTypes.LastModified.update(parent);
-            session.save();
-            view.refresh();
-        } catch (RepositoryException e) {
-            log.error("Exception caught: {}", e.getMessage(), e);
         }
     }
 

@@ -204,18 +204,18 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             }
 
             if (componentElement.getWritable() != null && !componentElement.getWritable()) {
-                actionbarPresenter.disable(PageEditorListener.EDIT_ELEMENT);
+                actionbarPresenter.disable(PageEditorListener.ACTION_EDIT_ELEMENT);
             } else {
-                actionbarPresenter.enable(PageEditorListener.EDIT_ELEMENT);
+                actionbarPresenter.enable(PageEditorListener.ACTION_EDIT_ELEMENT);
             }
 
         } else if (element instanceof AreaElement) {
             AreaElement areaElement = (AreaElement) element;
 
             if (areaElement.getAddible() != null && !areaElement.getAddible()) {
-                actionbarPresenter.disable(PageEditorListener.ADD_COMPONENT);
+                actionbarPresenter.disable(PageEditorListener.ACTION_ADD_COMPONENT);
             } else {
-                actionbarPresenter.enable(PageEditorListener.ADD_COMPONENT);
+                actionbarPresenter.enable(PageEditorListener.ACTION_ADD_COMPONENT);
             }
         }
     }

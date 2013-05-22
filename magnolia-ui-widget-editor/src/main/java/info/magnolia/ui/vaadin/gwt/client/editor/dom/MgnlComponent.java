@@ -35,6 +35,8 @@ package info.magnolia.ui.vaadin.gwt.client.editor.dom;
 
 import info.magnolia.cms.security.operations.OperationPermissionDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
+import info.magnolia.ui.vaadin.gwt.client.editor.event.SortComponentEvent;
+import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.ComponentListener;
 
@@ -85,6 +87,27 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
     }
 
     @Override
+    public void sortComponent(String sourcePath, String order) {
+        MgnlArea area = getParentArea();
+        if (area != null) {
+            area.onDragStart(true);
+
+            AreaElement areaElement = area.getTypedElement();
+            areaElement.setTargetComponent(getTypedElement());
+            areaElement.setSortOrder(order);
+
+            for (MgnlComponent component : area.getComponents()) {
+                if (component.getNodeName().equals(sourcePath)) {
+                    areaElement.setSourceComponent(component.getTypedElement());
+                    break;
+                }
+            }
+            SortComponentEvent sortComponentEvent = new SortComponentEvent(areaElement);
+            eventBus.fireEvent(sortComponentEvent);
+        }
+    }
+
+    @Override
     public String getLabel() {
         return getAttribute("label");
     }
@@ -97,6 +120,33 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
             writable = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.WRITABLE));
         }
         return !inherited && writable;
+    }
+
+    @Override
+    public void onDragStart() {
+        MgnlArea area = getParentArea();
+        if (area != null) {
+            area.onDragStart(true);
+            for (MgnlComponent component : area.getComponents()) {
+                component.setMoveTarget(true);
+            }
+        }
+    }
+
+    @Override
+    public String getNodeName() {
+        return getAttribute("path");
+    }
+
+    @Override
+    public void onDragEnd() {
+        MgnlArea area = getParentArea();
+        if (area != null) {
+            area.onDragStart(false);
+            for (MgnlComponent component : area.getComponents()) {
+                component.setMoveTarget(false);
+            }
+        }
     }
 
     public void setVisible(boolean visible) {
@@ -115,5 +165,9 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
         if (getControlBar() != null) {
             getControlBar().setFocus(false);
         }
+    }
+
+    public void setMoveTarget(boolean moveTarget) {
+        getControlBar().setStyleName("moveTarget", moveTarget);
     }
 }

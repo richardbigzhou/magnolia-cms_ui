@@ -138,7 +138,7 @@ public class PagesEditorSubAppTest {
         verify(actionbarPresenter).showSection("areaActions");
         verify(actionbarPresenter).disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
 
-        verify(actionbarPresenter).enable(PageEditorListener.ADD_COMPONENT);
+        verify(actionbarPresenter).enable(PageEditorListener.ACTION_ADD_COMPONENT);
 
         verifyNoMoreInteractions(actionbarPresenter);
     }
@@ -162,7 +162,7 @@ public class PagesEditorSubAppTest {
 
         verify(actionbarPresenter).disable(PagesEditorSubApp.ACTION_DELETE_COMPONENT);
         verify(actionbarPresenter).enable(PagesEditorSubApp.ACTION_MOVE_COMPONENT);
-        verify(actionbarPresenter).enable(PageEditorListener.EDIT_ELEMENT);
+        verify(actionbarPresenter).enable(PageEditorListener.ACTION_EDIT_ELEMENT);
 
         verifyNoMoreInteractions(actionbarPresenter);
     }
@@ -183,7 +183,7 @@ public class PagesEditorSubAppTest {
         verify(actionbarPresenter).showSection("areaActions");
         verify(actionbarPresenter).disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
 
-        verify(actionbarPresenter).disable(PageEditorListener.ADD_COMPONENT);
+        verify(actionbarPresenter).disable(PageEditorListener.ACTION_ADD_COMPONENT);
 
         verifyNoMoreInteractions(actionbarPresenter);
     }

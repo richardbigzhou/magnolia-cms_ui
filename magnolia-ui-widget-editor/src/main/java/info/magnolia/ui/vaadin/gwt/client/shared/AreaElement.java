@@ -42,6 +42,10 @@ public class AreaElement extends AbstractElement {
     private String availableComponents;
     private Boolean addible; // add button operation permission
 
+    private ComponentElement sourceComponent;
+    private ComponentElement targetComponent;
+    private String sortOrder;
+
     public AreaElement() {
     }
 
@@ -64,5 +68,29 @@ public class AreaElement extends AbstractElement {
 
     public void setAddible(Boolean addible) {
         this.addible = addible;
+    }
+
+    public ComponentElement getSourceComponent() {
+        return sourceComponent;
+    }
+
+    public void setSourceComponent(ComponentElement sourceComponent) {
+        this.sourceComponent = sourceComponent;
+    }
+
+    public ComponentElement getTargetComponent() {
+        return targetComponent;
+    }
+
+    public void setTargetComponent(ComponentElement targetComponent) {
+        this.targetComponent = targetComponent;
+    }
+
+    public String getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(String sortOrder) {
+        this.sortOrder = sortOrder;
     }
 }

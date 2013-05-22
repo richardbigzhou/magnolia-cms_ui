@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.widget.dnd;
+package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar;
-
-import com.google.gwt.core.client.GWT;
-import com.google.web.bindery.event.shared.EventBus;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * DragAndDrop.
+ * Action definition for {@link SortComponentAction}.
  */
-public abstract class DragAndDrop {
-
-    private static final DragAndDropImpl dndImpl = GWT.create(DragAndDropImpl.class);
-
-    public static void dragAndDrop(EventBus eventBus, final ComponentBar abstractBar) {
-        dndImpl.dragAndDrop(eventBus, abstractBar);
+public class SortComponentActionDefinition extends ConfiguredActionDefinition {
+    public SortComponentActionDefinition() {
+        setImplementationClass(SortComponentAction.class);
     }
 }

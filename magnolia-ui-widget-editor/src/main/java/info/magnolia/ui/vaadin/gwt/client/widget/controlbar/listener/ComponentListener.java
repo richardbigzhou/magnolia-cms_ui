@@ -42,4 +42,12 @@ public interface ComponentListener {
     String getLabel();
 
     boolean hasEditButton();
+
+    void onDragStart();
+
+    String getNodeName();
+
+    void onDragEnd();
+
+    void sortComponent(String sourceComponent, String order);
 }

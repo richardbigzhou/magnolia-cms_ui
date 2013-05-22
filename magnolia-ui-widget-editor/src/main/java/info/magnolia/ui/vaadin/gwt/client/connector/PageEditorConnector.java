@@ -201,7 +201,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
         eventBus.addHandler(SortComponentEvent.TYPE, new SortComponentEventHandler() {
             @Override
             public void onSortComponent(SortComponentEvent sortComponentEvent) {
-                rpc.sortComponent(sortComponentEvent.getWorkspace(), sortComponentEvent.getParentPath(), sortComponentEvent.getSourcePath(), sortComponentEvent.getTargetPath(), sortComponentEvent.getOrder());
+                rpc.sortComponent(sortComponentEvent.getAreaElement());
             }
         });
     }

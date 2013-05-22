@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.event;
 
+import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
@@ -42,18 +44,11 @@ public class SortComponentEvent extends GwtEvent<SortComponentEventHandler> {
 
     public static Type<SortComponentEventHandler> TYPE = new Type<SortComponentEventHandler>();
 
-    private String workspace;
-    private String parentPath;
-    private String sourcePath;
-    private String targetPath;
-    private String order;
+    private AreaElement areaElement;
 
-    public SortComponentEvent(String workspace, String parentPath, String sourcePath, String targetPath, String order) {
-        this.workspace = workspace;
-        this.parentPath = parentPath;
-        this.sourcePath = sourcePath;
-        this.targetPath = targetPath;
-        this.order = order;
+
+    public SortComponentEvent(AreaElement areaElement) {
+        this.areaElement = areaElement;
     }
 
     @Override
@@ -66,23 +61,8 @@ public class SortComponentEvent extends GwtEvent<SortComponentEventHandler> {
         handler.onSortComponent(this);
     }
 
-    public String getWorkspace() {
-        return workspace;
+    public AreaElement getAreaElement() {
+        return areaElement;
     }
 
-    public String getSourcePath() {
-        return sourcePath;
-    }
-
-    public String getTargetPath() {
-        return targetPath;
-    }
-
-    public String getOrder() {
-        return order;
-    }
-
-    public String getParentPath() {
-        return parentPath;
-    }
 }

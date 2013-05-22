@@ -58,5 +58,5 @@ public interface PageEditorServerRpc extends ServerRpc {
 
     void newComponent(AreaElement areaElement);
 
-    void sortComponent(String workspace, String parentPath, String sourcePath, String targetPath, String order);
+    void sortComponent(AreaElement areaElement);
 }
