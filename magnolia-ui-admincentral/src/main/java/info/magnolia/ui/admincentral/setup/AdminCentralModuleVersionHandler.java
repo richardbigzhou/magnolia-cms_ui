@@ -46,25 +46,24 @@ import java.util.List;
 /**
  * VersionHandler for the Admin Central module.
  */
-public class AdminCentralModuleVersionHandler extends DefaultModuleVersionHandler {
-
-    private CheckAndModifyPropertyValueTask replaceLoginUriPattern = new CheckAndModifyPropertyValueTask(
-            "",
-            "",
-            RepositoryConstants.CONFIG,
-            "/server/filters/uriSecurity/bypasses/login",
-            "pattern",
-            "/.resources/loginForm",
-            "/.resources/defaultLoginForm");
+public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandler {
 
     @Override
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
         List<Task> list = new ArrayList<Task>();
 
-        list.add(new IsModuleInstalledOrRegistered("Replace login security pattern",
+        list.add(new IsModuleInstalledOrRegistered(
+                "Replace login security pattern",
                 "Replaces old login security pattern '/.resources/loginForm' (if present) with the new one '/.resources/defaultLoginForm'.",
-                "adminInterface", replaceLoginUriPattern));
-        // TODO if old adminInterface is around delete it
+                "adminInterface",
+                new CheckAndModifyPropertyValueTask(
+                        "",
+                        "",
+                        RepositoryConstants.CONFIG,
+                        "/server/filters/uriSecurity/bypasses/login",
+                        "pattern",
+                        "/.resources/loginForm",
+                        "/.resources/defaultLoginForm")));
 
         return list;
     }
