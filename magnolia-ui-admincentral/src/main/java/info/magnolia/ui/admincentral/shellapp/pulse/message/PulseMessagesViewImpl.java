@@ -356,17 +356,20 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
                 messageTypeIcon.addStyleName("message-type");
 
                 switch (messageType) {
-                case ERROR:
-                    messageTypeIcon.addStyleName("icon-error");
-                    messageTypeIcon.addStyleName("error");
-                    break;
                 case INFO:
                     messageTypeIcon.addStyleName("icon-info");
                     messageTypeIcon.addStyleName("info");
                     break;
                 case WARNING:
                     messageTypeIcon.addStyleName("icon-warning");
-                    messageTypeIcon.addStyleName("warn");
+                    messageTypeIcon.addStyleName("warning");
+                    break;
+                case ERROR:
+                    messageTypeIcon.addStyleName("icon-error");
+                    messageTypeIcon.addStyleName("error");
+                    break;
+                case WORKITEM:
+                    messageTypeIcon.addStyleName("icon-work-item");
                     break;
                 }
                 return messageTypeIcon;
