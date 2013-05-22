@@ -31,16 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.action;
+package info.magnolia.ui.vaadin.gwt.client.editor.event;
 
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
+
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Defines an action for adding a component in an area of the page editor.
- *
- * Does not have a concrete action implementation, but is intercepted by the editor subapp to
- * delegate execution to PageEditorPresenter.
+ * Event used for editing an area.
  */
-public class AddComponentActionDefinition extends ConfiguredActionDefinition {
+public class EditAreaEvent extends GwtEvent<EditAreaEventHandler> {
 
+    public static Type<EditAreaEventHandler> TYPE = new Type<EditAreaEventHandler>();
+
+    private AreaElement areaElement;
+
+    public EditAreaEvent(AreaElement AreaElement) {
+        this.areaElement = AreaElement;
+    }
+
+    @Override
+    public Type<EditAreaEventHandler> getAssociatedType() {
+        return TYPE;
+    }
+
+    @Override
+    protected void dispatch(EditAreaEventHandler handler) {
+        handler.onEditArea(this);
+    }
+
+    public AreaElement getAreaElement() {
+        return areaElement;
+    }
 }

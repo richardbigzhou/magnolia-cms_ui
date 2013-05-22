@@ -35,12 +35,12 @@ package info.magnolia.ui.admincentral.tree.action;
 
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.impl.ExportCommand;
-import info.magnolia.ui.admincentral.tree.action.export.ExportStreamer;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.framework.app.action.CommandActionBase;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
-import java.io.OutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -48,34 +48,31 @@ import javax.jcr.Item;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
+import com.vaadin.server.Page;
+import com.vaadin.server.StreamResource;
+
 /**
- * UI action that allows to export a Node in a XML format.<br>
- * This Export Action calls the Export command in order to create an XML
- * representation of the node structure. <br>
- * Call then the {@link ExportStreamer#openFileInNewWindow} in order to push XML
- * representation to the Client side.
+ * Action for exporting a node to XML format. Uses the export command to perform the serialization to XML then sends the
+ * result to the client browser.
+ *
+ * @see ExportActionDefinition
  */
 public class ExportAction extends CommandActionBase<ExportActionDefinition> {
 
-    private OutputStream outputStream;
-
     @Inject
-    public ExportAction(ExportActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, SubAppContext subAppContext) {
-        super(definition, item, commandsManager, subAppContext);
+    public ExportAction(ExportActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext) {
+        super(definition, item, commandsManager, uiContext);
     }
 
     /**
-     * Execute Post Command action. The Command create and put the XML tree
-     * representation into the OutputStream<br>
-     * . Now we have to push it to the client side.
+     * After command execution we push the created XML to the client browser.
      */
     @Override
     protected void onPostExecute() throws Exception {
         ExportCommand exportCommand = (ExportCommand) getCommand();
-        ExportStreamer.openFileInBlankWindow(exportCommand.getFileName(), ((ByteArrayOutputStream) exportCommand.getOutputStream()).toByteArray(), exportCommand.getMimeExtension());
-        if (outputStream != null) {
-            outputStream.close();
-        }
+        ByteArrayOutputStream outputStream = (ByteArrayOutputStream) exportCommand.getOutputStream();
+        openFileInBlankWindow(exportCommand.getFileName(), outputStream.toByteArray(), exportCommand.getMimeExtension());
+        outputStream.close();
     }
 
     @Override
@@ -84,8 +81,23 @@ public class ExportAction extends CommandActionBase<ExportActionDefinition> {
         params.put(ExportCommand.EXPORT_EXTENSION, ".xml");
         params.put(ExportCommand.EXPORT_FORMAT, Boolean.TRUE);
         params.put(ExportCommand.EXPORT_KEEP_HISTORY, Boolean.TRUE);
-        outputStream = new ByteArrayOutputStream();
-        params.put(ExportCommand.EXPORT_OUTPUT_STREAM, outputStream);
+        params.put(ExportCommand.EXPORT_OUTPUT_STREAM, new ByteArrayOutputStream());
         return params;
+    }
+
+    protected void openFileInBlankWindow(String fileName, final byte[] fileContent, String mimeType) {
+        StreamResource.StreamSource source = new StreamResource.StreamSource() {
+            @Override
+            public InputStream getStream() {
+                return new ByteArrayInputStream(fileContent);
+            }
+        };
+
+        StreamResource resource = new StreamResource(source, fileName);
+        resource.getStream().setParameter("Content-Disposition", "attachment; filename=" + fileName + "\"");
+        resource.setMIMEType(mimeType);
+        resource.setCacheTime(0);
+
+        Page.getCurrent().open(resource, "", true);
     }
 }

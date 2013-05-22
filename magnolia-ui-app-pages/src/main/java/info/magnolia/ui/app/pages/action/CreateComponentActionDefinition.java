@@ -31,45 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.activation.action;
+package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.jcr.util.SessionUtil;
-import info.magnolia.ui.api.action.CommandActionDefinition;
-
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * The deactivation action, invoking the deactivation command, and updating the UI accordingly.
+ * Defines an action for adding a component in an area of the page editor.
  *
- * @see DeactivationAction
+ * @see CreateComponentAction
  */
-public class DeactivationActionDefinition extends CommandActionDefinition {
+public class CreateComponentActionDefinition extends ConfiguredActionDefinition {
 
-    public DeactivationActionDefinition() {
-        setImplementationClass(DeactivationAction.class);
-    }
-
-    @Override
-    public String getSuccessMessage() {
-        if (workflowInstalled()) {
-            return "The workflow has been started.";
-        }
-        return "Deactivation has been started.";
-    }
-
-    @Override
-    public String getFailureMessage() {
-        if (workflowInstalled()) {
-            return "The workflow could not be launched.";
-        }
-        return "Deactivation has failed.";
-    }
-
-    @Override
-    public String getErrorMessage() {
-        return "Deactivation failed. Please contact the system administrator for assistance.";
-    }
-
-    private boolean workflowInstalled() {
-        return SessionUtil.getNode("config", "/modules/workflow-base") != null;
+    public CreateComponentActionDefinition() {
+        setImplementationClass(CreateComponentAction.class);
     }
 }

@@ -36,12 +36,13 @@ package info.magnolia.ui.admincentral.tree.action;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Delete an {@link javax.jcr.Item}.
+ * Used to configure a {@link DeleteItemAction}.
+ *
+ * @see DeleteItemAction
  */
 public class DeleteItemActionDefinition extends ConfiguredActionDefinition {
 
     public DeleteItemActionDefinition() {
         setImplementationClass(DeleteItemAction.class);
     }
-
 }

@@ -31,17 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.tree.action;
+package info.magnolia.ui.vaadin.editor;
 
-import info.magnolia.ui.api.action.CommandActionDefinition;
+import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 
 /**
- * ExportActionDefinition used to configure Export Command.
+ * Listener interface for handling events coming from the client side.
+ * Do not change the constant action names, without updating configuration of actions used in actionbar.
  */
-public class ImportActionDefinition extends CommandActionDefinition {
+public interface PageEditorListener {
 
-    public ImportActionDefinition() {
-        setImplementationClass(ImportAction.class);
-    }
+    static final String EDIT_ELEMENT = "editElement";
+    static final String ADD_COMPONENT = "addComponent";
+    static final String ADD_AREA = "addArea";
 
+    void onElementSelect(AbstractElement nodeSelection);
+
+    void onAction(String actionName, AbstractElement element);
+
+    void sortComponent(String workspace, String parentPath, String source, String target, String order);
 }

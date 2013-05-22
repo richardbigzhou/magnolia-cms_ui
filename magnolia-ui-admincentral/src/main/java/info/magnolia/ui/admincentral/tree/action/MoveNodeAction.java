@@ -33,30 +33,26 @@
  */
 package info.magnolia.ui.admincentral.tree.action;
 
-import info.magnolia.ui.api.action.ActionBase;
-import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+
+import javax.inject.Named;
+import javax.jcr.RepositoryException;
 
 /**
- * The Class MoveNodeAction.
+ * Action that moves a node.
+ *
+ * @see MoveNodeActionDefinition
  */
-public class MoveNodeAction extends ActionBase<MoveNodeActionDefinition> {
+public class MoveNodeAction extends RepositoryOperationAction<MoveNodeActionDefinition> {
 
-    private final AbstractJcrNodeAdapter nodeItemToEdit;
-
-    /**
-     * Instantiates a new move node action.
-     *
-     * @param definition the definition
-     * @param nodeItemToEdit the node to edit
-     */
-    public MoveNodeAction(MoveNodeActionDefinition definition, AbstractJcrNodeAdapter nodeItemToEdit) {
-        super(definition);
-        this.nodeItemToEdit = nodeItemToEdit;
+    public MoveNodeAction(MoveNodeActionDefinition definition, AbstractJcrNodeAdapter nodeItemToEdit, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus) {
+        super(definition, nodeItemToEdit, admincentralEventBus);
     }
 
     @Override
-    public void execute() throws ActionExecutionException {
+    public void onExecute(JcrItemAdapter item) throws RepositoryException {
     }
-
 }
