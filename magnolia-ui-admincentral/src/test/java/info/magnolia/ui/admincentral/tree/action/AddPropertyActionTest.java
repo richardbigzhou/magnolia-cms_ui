@@ -115,22 +115,7 @@ public class AddPropertyActionTest extends MgnlTestCase {
     }
 
     @Test
-    public void testExecuteOnRootTwice() throws Exception {
-        // GIVEN
-        Node root = session.getRootNode();
-        long propertiesCount = root.getProperties().getSize();
-        AddPropertyAction action = new AddPropertyAction(definition, new JcrNodeAdapter(root), eventBus);
-
-        // WHEN
-        action.execute();
-        action.execute();
-
-        // THEN
-        assertEquals(propertiesCount + 2, root.getProperties().getSize());
-    }
-
-    @Test
-    public void testExecuteOnNodeOnce() throws Exception {
+    public void testCanAddPropertyOnNode() throws Exception {
         // GIVEN
         Node root = session.getRootNode();
         Node node = root.addNode(NODE_NAME);
