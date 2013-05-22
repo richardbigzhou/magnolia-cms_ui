@@ -36,19 +36,69 @@ package info.magnolia.ui.vaadin.editor;
 import info.magnolia.ui.vaadin.gwt.client.connector.PageEditorState;
 import info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorServerRpc;
+import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
+import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
+import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 
 import com.vaadin.ui.AbstractComponent;
 
 /**
  * PageEditor widget server side implementation.
+ * Uses the {@link PageEditorListener} interface to call back to page editor presenter.
  */
 public class PageEditor extends AbstractComponent {
 
 
+    private PageEditorListener listener;
+
     public PageEditor() {
         setSizeFull();
         setImmediate(true);
+
+        registerRpc(new PageEditorServerRpc() {
+
+            @Override
+            public void sortComponent(String workspace, String parentPath, String sourcePath, String targetPath, String order) {
+                listener.sortComponent(workspace, parentPath, sourcePath, targetPath, order);
+            }
+
+            @Override
+            public void selectPage(PageElement element) {
+                listener.onElementSelect(element);
+            }
+
+            @Override
+            public void selectArea(AreaElement element) {
+                listener.onElementSelect(element);
+            }
+
+            @Override
+            public void selectComponent(ComponentElement element) {
+                listener.onElementSelect(element);
+            }
+
+            @Override
+            public void newComponent(AreaElement areaElement) {
+                listener.onAction(PageEditorListener.ADD_COMPONENT, areaElement);
+            }
+
+            @Override
+            public void newArea(AreaElement areaElement) {
+                listener.onAction(PageEditorListener.ADD_AREA, areaElement);
+            }
+
+            @Override
+            public void editComponent(ComponentElement element) {
+                listener.onAction(PageEditorListener.EDIT_ELEMENT, element);
+            }
+
+            @Override
+            public void editArea(AreaElement element) {
+                listener.onAction(PageEditorListener.EDIT_ELEMENT, element);
+            }
+
+        });
     }
 
     /**
@@ -79,7 +129,7 @@ public class PageEditor extends AbstractComponent {
         getRpcProxy(PageEditorClientRpc.class).refresh();
     }
 
-    public void setServerRpc(PageEditorServerRpc rpc) {
-        registerRpc(rpc);
+    public void setListener(PageEditorListener listener) {
+        this.listener = listener;
     }
 }

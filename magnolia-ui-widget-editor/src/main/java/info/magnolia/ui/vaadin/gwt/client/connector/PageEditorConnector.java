@@ -41,6 +41,8 @@ import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.AbstractMgnlEleme
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.CommentProcessor;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.ElementProcessor;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.MgnlElementProcessorFactory;
+import info.magnolia.ui.vaadin.gwt.client.editor.event.EditAreaEvent;
+import info.magnolia.ui.vaadin.gwt.client.editor.event.EditAreaEventHandler;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEventHandler;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.FrameNavigationEvent;
@@ -170,21 +172,29 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
         eventBus.addHandler(NewAreaEvent.TYPE, new NewAreaEventHandler() {
             @Override
             public void onNewArea(NewAreaEvent newAreaEvent) {
-                rpc.newArea(newAreaEvent.getWorkSpace(), newAreaEvent.getNodeType(), newAreaEvent.getPath());
+                rpc.newArea(newAreaEvent.getAreaElement());
             }
         });
 
         eventBus.addHandler(NewComponentEvent.TYPE, new NewComponentEventHandler() {
             @Override
             public void onNewComponent(NewComponentEvent newComponentEvent) {
-                rpc.newComponent(newComponentEvent.getWorkSpace(), newComponentEvent.getPath(), newComponentEvent.getAvailableComponents());
+                rpc.newComponent(newComponentEvent.getParentAreaElement());
+            }
+        });
+
+
+        eventBus.addHandler(EditAreaEvent.TYPE, new EditAreaEventHandler() {
+            @Override
+            public void onEditArea(EditAreaEvent editAreaEvent) {
+                rpc.editArea(editAreaEvent.getAreaElement());
             }
         });
 
         eventBus.addHandler(EditComponentEvent.TYPE, new EditComponentEventHandler() {
             @Override
             public void onEditComponent(EditComponentEvent editComponentEvent) {
-                rpc.editComponent(editComponentEvent.getWorkspace(), editComponentEvent.getPath(), editComponentEvent.getDialog());
+                rpc.editComponent(editComponentEvent.getComponentElement());
             }
         });
 

@@ -58,14 +58,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Main SubApp for Pages - the Browser.
+ * Browser SubApp for Pages.
  */
-public class PagesMainSubApp extends BrowserSubApp {
+public class PageBrowserSubApp extends BrowserSubApp {
 
-    private static final Logger log = LoggerFactory.getLogger(PagesMainSubApp.class);
+    private static final Logger log = LoggerFactory.getLogger(PageBrowserSubApp.class);
 
     @Inject
-    public PagesMainSubApp(ActionExecutor actionExecutor, final SubAppContext subappContext, ContentSubAppView view, BrowserPresenter workbench, @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
+    public PageBrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subappContext, ContentSubAppView view, BrowserPresenter workbench, @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
         super(actionExecutor, subappContext, view, workbench, subAppEventBus);
     }
 

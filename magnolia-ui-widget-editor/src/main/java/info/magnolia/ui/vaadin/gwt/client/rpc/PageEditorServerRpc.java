@@ -50,11 +50,13 @@ public interface PageEditorServerRpc extends ServerRpc {
 
     void selectComponent(ComponentElement element);
 
-    void newArea(String workspace, String eventType, String path);
+    void editComponent(ComponentElement element);
 
-    void newComponent(String workspace, String eventType, String availableComponents);
+    void editArea(AreaElement element);
 
-    void editComponent(String workspace, String eventType, String dialog);
+    void newArea(AreaElement areaElement);
+
+    void newComponent(AreaElement areaElement);
 
     void sortComponent(String workspace, String parentPath, String sourcePath, String targetPath, String order);
 }

@@ -38,28 +38,29 @@ import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * NewComponentEvent.
+ * Event used for editing an area.
  */
-public class NewComponentEvent extends GwtEvent<NewComponentEventHandler> {
-    public static Type<NewComponentEventHandler> TYPE = new Type<NewComponentEventHandler>();
+public class EditAreaEvent extends GwtEvent<EditAreaEventHandler> {
+
+    public static Type<EditAreaEventHandler> TYPE = new Type<EditAreaEventHandler>();
 
     private AreaElement areaElement;
 
-    public NewComponentEvent(AreaElement areaElement) {
-        this.areaElement = areaElement;
+    public EditAreaEvent(AreaElement AreaElement) {
+        this.areaElement = AreaElement;
     }
 
     @Override
-    public Type<NewComponentEventHandler> getAssociatedType() {
+    public Type<EditAreaEventHandler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    protected void dispatch(NewComponentEventHandler handler) {
-        handler.onNewComponent(this);
+    protected void dispatch(EditAreaEventHandler handler) {
+        handler.onEditArea(this);
     }
 
-    public AreaElement getParentAreaElement() {
+    public AreaElement getAreaElement() {
         return areaElement;
     }
 }

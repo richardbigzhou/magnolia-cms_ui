@@ -37,34 +37,18 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.registry.RegistrationException;
-import info.magnolia.rendering.template.TemplateDefinition;
-import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinition;
-import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
-import info.magnolia.ui.api.ModelConstants;
-import info.magnolia.ui.app.pages.field.TemplateSelectorField;
-import info.magnolia.ui.dialog.FormDialogPresenter;
-import info.magnolia.ui.dialog.config.DialogBuilder;
-import info.magnolia.ui.dialog.definition.DialogDefinition;
-import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.form.config.FieldsConfig;
-import info.magnolia.ui.form.config.FormBuilder;
-import info.magnolia.ui.form.config.FormConfig;
-import info.magnolia.ui.form.config.OptionBuilder;
-import info.magnolia.ui.form.config.SelectFieldBuilder;
-import info.magnolia.ui.form.config.TabBuilder;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.message.MessageType;
+import info.magnolia.ui.vaadin.editor.PageEditorListener;
 import info.magnolia.ui.vaadin.editor.PageEditorView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -80,31 +64,29 @@ import org.slf4j.LoggerFactory;
  * Presenter for the server side {@link PageEditorView}.
  * Serves multiple methods for actions triggered from the page editor.
  */
-public class PageEditorPresenter implements PageEditorView.Listener {
+public class PageEditorPresenter implements PageEditorListener {
 
     private static final Logger log = LoggerFactory.getLogger(PageEditorPresenter.class);
 
+    private final ActionExecutor actionExecutor;
     private final PageEditorView view;
-
     private final EventBus subAppEventBus;
-
-    private final TemplateDefinitionRegistry templateDefinitionRegistry;
+    private final SubAppContext subAppContext;
 
     private AbstractElement selectedElement;
 
-    private final SubAppContext subAppContext;
-
-    private final ComponentProvider componentProvider;
-
     @Inject
-    public PageEditorPresenter(PageEditorView view, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, TemplateDefinitionRegistry templateDefinitionRegistry,
-            SubAppContext subAppContext, ComponentProvider componentProvider) {
+    public PageEditorPresenter(final ActionExecutor actionExecutor, PageEditorView view, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, SubAppContext subAppContext) {
+        this.actionExecutor = actionExecutor;
         this.view = view;
         this.subAppEventBus = subAppEventBus;
-        this.templateDefinitionRegistry = templateDefinitionRegistry;
         this.subAppContext = subAppContext;
-        this.componentProvider = componentProvider;
         registerHandlers();
+    }
+
+    public PageEditorView start() {
+        view.setListener(this);
+        return view;
     }
 
     private void registerHandlers() {
@@ -113,177 +95,25 @@ public class PageEditorPresenter implements PageEditorView.Listener {
             @Override
             public void onContentChanged(ContentChangedEvent event) {
                 if (event.getWorkspace().equals(RepositoryConstants.WEBSITE)) {
-                        view.refresh();
+                    view.refresh();
                 }
             }
         });
     }
 
     @Override
-    public void editComponent(String workspace, String path, String dialogName) {
-        final FormDialogPresenter formDialogPresenter = componentProvider.getComponent(FormDialogPresenter.class);
-
-        try {
-            Session session = MgnlContext.getJCRSession(workspace);
-            if (path == null || !session.itemExists(path)) {
-                path = "/";
-            }
-            final Node node = session.getNode(path);
-            final JcrNodeAdapter item = new JcrNodeAdapter(node);
-            openDialog(item, dialogName, formDialogPresenter);
-        } catch (RepositoryException e) {
-            log.error("Exception caught: {}", e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Creates a chain of dialogs for creating new components.
-     * The first dialog is built on the fly based on the available components passed from the client.
-     * Based on the selection made in the first dialog the second dialog will be created, providing fields for the actual component.
-     *
-     * @param workspace the workspace of the parent node
-     * @param path the parent node path
-     * @param availableComponents available components for the parent area
-     */
-    @Override
-    public void newComponent(String workspace, String path, String availableComponents) {
-
-        final DialogDefinition dialogDefinition = buildNewComponentDialog(availableComponents);
-
-        final FormDialogPresenter formDialogPresenter = componentProvider.getComponent(FormDialogPresenter.class);
-        try {
-            Session session = MgnlContext.getJCRSession(workspace);
-
-            if (path == null || !session.itemExists(path)) {
-                path = "/";
-            }
-            session = MgnlContext.getJCRSession(workspace);
-
-            Node parentNode = session.getNode(path);
-
-            final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, NodeTypes.Component.NAME);
-            DefaultProperty<String> property = new DefaultProperty<String>(String.class, "0");
-            item.addItemProperty(ModelConstants.JCR_NAME, property);
-
-            // perform custom chaining of dialogs
-            formDialogPresenter.start(item, dialogDefinition, subAppContext, new EditorCallback() {
-
-                @Override
-                public void onSuccess(String actionName) {
-                    String templateId = String.valueOf(item.getItemProperty("mgnl:template").getValue());
-                    try {
-                        TemplateDefinition templateDef = templateDefinitionRegistry.getTemplateDefinition(templateId);
-                        String dialogName = templateDef.getDialog();
-
-
-                        final FormDialogPresenter dialogPresenter = componentProvider.getComponent(FormDialogPresenter.class);
-
-                        openDialog(item, dialogName, dialogPresenter);
-                    } catch (RegistrationException e) {
-                        log.error("Exception caught: {}", e.getMessage(), e);
-                    } finally {
-                        formDialogPresenter.closeDialog();
-                    }
-                }
-
-                @Override
-                public void onCancel() {
-                    formDialogPresenter.closeDialog();
-                }
-            });
-        } catch (RepositoryException e) {
-            log.error("Exception caught: {}", e.getMessage(), e);
-        }
-
-    }
-
-    /**
-     * Create a Dialog and define the call back actions.
-     */
-    private void openDialog(final JcrNodeAdapter item, final String dialogName, final FormDialogPresenter formDialogPresenter) {
-
-        formDialogPresenter.start(item, dialogName, subAppContext, new EditorCallback() {
-
-            @Override
-            public void onSuccess(String actionName) {
-                subAppEventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
-                formDialogPresenter.closeDialog();
-            }
-
-            @Override
-            public void onCancel() {
-                formDialogPresenter.closeDialog();
-            }
-        });
-    }
-
-    /**
-     * Builds a new {@link DialogDefinition} containing actions and {@link info.magnolia.ui.form.definition.FormDefinition}.
-     * The definition will hold a {@link info.magnolia.ui.form.field.definition.SelectFieldDefinition} with the available components as options.
-     */
-    private DialogDefinition buildNewComponentDialog(String availableComponents) {
-
-        FormConfig formConfig = new FormConfig();
-        FieldsConfig fieldsConfig = new FieldsConfig();
-
-        DialogBuilder dialogBuilder = new DialogBuilder("newComponent");
-
-        CallbackDialogActionDefinition callbackAction = new CallbackDialogActionDefinition();
-        callbackAction.setName("commit");
-        callbackAction.setLabel("choose");
-
-        dialogBuilder.addAction(callbackAction);
-
-        CancelDialogActionDefinition cancelAction = new CancelDialogActionDefinition();
-        cancelAction.setName("cancel");
-        cancelAction.setLabel("cancel");
-        dialogBuilder.addAction(cancelAction);
-
-        FormBuilder formBuilder = formConfig.form().description("Select the Component to add to the page.");
-        TabBuilder tabBuilder = formConfig.tab("Components").label("Components");
-        SelectFieldBuilder fieldBuilder = fieldsConfig.select("mgnl:template").label("Component");
-
-        String[] tokens = availableComponents.split(",");
-
-        for (int i = 0; i < tokens.length; i++) {
-            try {
-                TemplateDefinition paragraphInfo = templateDefinitionRegistry.getTemplateDefinition(tokens[i]);
-
-                fieldBuilder.options(
-                        (new OptionBuilder()).value(paragraphInfo.getId()).label(TemplateSelectorField.getI18nTitle(paragraphInfo))
-                );
-
-            } catch (RegistrationException e) {
-                log.error("Exception caught: {}", e.getMessage(), e);
-            }
-
-        }
-
-        tabBuilder.fields(fieldBuilder);
-        formBuilder.tabs(tabBuilder);
-        dialogBuilder.form(formBuilder);
-        return dialogBuilder.exec();
-
+    public void onElementSelect(AbstractElement selectedElement) {
+        this.selectedElement = selectedElement;
+        subAppEventBus.fireEvent(new NodeSelectedEvent(selectedElement));
     }
 
     @Override
-    public void newArea(String workspace, String nodeType, String path) {
-
-        int index = path.lastIndexOf("/");
-        String parent = path.substring(0, index);
-        String relPath = path.substring(index + 1);
-
+    public void onAction(String actionName, AbstractElement element) {
         try {
-            Session session = MgnlContext.getJCRSession(workspace);
-
-            Node parentNode = session.getNode(parent);
-
-            Node newNode = NodeUtil.createPath(parentNode, relPath, nodeType);
-            NodeTypes.LastModified.update(newNode);
-            session.save();
-            view.refresh();
-        } catch (RepositoryException e) {
-            log.error("Exception caught: {}", e.getMessage(), e);
+            actionExecutor.execute(actionName, element);
+        } catch (ActionExecutionException e) {
+            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            subAppContext.getAppContext().broadcastMessage(error);
         }
     }
 
@@ -318,18 +148,6 @@ public class PageEditorPresenter implements PageEditorView.Listener {
         }
     }
 
-    @Override
-    public void selectElement(AbstractElement selectedElement) {
-        this.selectedElement = selectedElement;
-        subAppEventBus.fireEvent(new NodeSelectedEvent(selectedElement));
-    }
-
-    public PageEditorView start() {
-        view.setListener(this);
-        view.init();
-        return view;
-    }
-
     public AbstractElement getSelectedElement() {
         return selectedElement;
     }
@@ -341,10 +159,5 @@ public class PageEditorPresenter implements PageEditorView.Listener {
     public void updateParameters(PageEditorParameters parameters) {
         view.update(parameters);
     }
-
-    public TemplateDefinitionRegistry getTemplateDefinitionRegistry() {
-        return templateDefinitionRegistry;
-    }
-
 
 }

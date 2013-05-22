@@ -35,7 +35,6 @@ package info.magnolia.ui.vaadin.gwt.client.editor.dom;
 
 import info.magnolia.cms.security.operations.OperationPermissionDefinition;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
-import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.ComponentListener;
 
@@ -56,7 +55,7 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
     }
 
     @Override
-    public AbstractElement getTypedElement() {
+    public ComponentElement getTypedElement() {
         ComponentElement component = new ComponentElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"));
 
         boolean deletable = true;
@@ -82,10 +81,7 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
 
     @Override
     public void editComponent() {
-        String workspace = getAttribute("workspace");
-        String path = getAttribute("path");
-        String dialog = getAttribute("dialog");
-        eventBus.fireEvent(new EditComponentEvent(workspace, path, dialog));
+        eventBus.fireEvent(new EditComponentEvent(getTypedElement()));
     }
 
     @Override

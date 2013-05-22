@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,16 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.action;
+package info.magnolia.ui.vaadin.editor;
 
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 
 /**
- * Defines an action for adding a component in an area of the page editor.
- *
- * Does not have a concrete action implementation, but is intercepted by the editor subapp to
- * delegate execution to PageEditorPresenter.
+ * Listener interface for handling events coming from the client side.
+ * Do not change the constant action names, without updating configuration of actions used in actionbar.
  */
-public class AddComponentActionDefinition extends ConfiguredActionDefinition {
+public interface PageEditorListener {
 
+    static final String EDIT_ELEMENT = "editElement";
+    static final String ADD_COMPONENT = "addComponent";
+    static final String ADD_AREA = "addArea";
+
+    void onElementSelect(AbstractElement nodeSelection);
+
+    void onAction(String actionName, AbstractElement element);
+
+    void sortComponent(String workspace, String parentPath, String source, String target, String order);
 }
