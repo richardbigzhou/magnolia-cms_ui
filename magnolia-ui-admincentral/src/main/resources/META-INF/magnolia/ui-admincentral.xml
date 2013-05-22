@@ -118,7 +118,7 @@
     </component>
     <component>
       <type>info.magnolia.ui.framework.app.AppView</type>
-      <implementation>info.magnolia.ui.framework.app.AppFrameView</implementation>
+      <implementation>info.magnolia.ui.framework.app.DefaultAppView</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.ShellAppController</type>
