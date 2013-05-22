@@ -147,8 +147,8 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
         // GIVEN
         String[] values = { "Art", "Dan", "Jen" };
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
-        DefaultProperty<String> property = DefaultPropertyUtil.newDefaultProperty("multiple", 1, new HashSet<String>(Arrays.asList(values)));
-        adapter.addItemProperty(property);
+        DefaultProperty<String> property = DefaultPropertyUtil.newDefaultProperty(1, new HashSet<String>(Arrays.asList(values)));
+        adapter.addItemProperty("multiple", property);
 
         // WHEN
         Node res = adapter.applyChanges();
