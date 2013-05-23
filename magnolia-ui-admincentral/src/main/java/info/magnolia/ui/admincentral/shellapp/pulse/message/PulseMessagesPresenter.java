@@ -129,7 +129,7 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
     private HierarchicalContainer createMessageDataSource() {
         container = new HierarchicalContainer();
         container.addContainerProperty(NEW_PROPERTY_ID, Boolean.class, true);
-        container.addContainerProperty(SUBJECT_PROPERTY_ID, String.class, "");
+        container.addContainerProperty(SUBJECT_PROPERTY_ID, String.class, null);
         container.addContainerProperty(TYPE_PROPERTY_ID, MessageType.class, MessageType.UNKNOWN);
         container.addContainerProperty(TEXT_PROPERTY_ID, String.class, null);
         container.addContainerProperty(SENDER_PROPERTY_ID, String.class, null);

@@ -48,8 +48,6 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang.time.FastDateFormat;
-
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.ItemSetChangeEvent;
 import com.vaadin.data.Item;
@@ -82,8 +80,6 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
     private final PulseMessageCategoryNavigator navigator = new PulseMessageCategoryNavigator();
 
     private PulseMessagesView.Listener listener;
-
-    private final FastDateFormat dateFormatter = FastDateFormat.getInstance();
 
     private boolean grouping = false;
 
@@ -303,9 +299,9 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
              */
             if (itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID)) {
                 Item item = table.getItem(itemId);
-                Property<?> property = item.getItemProperty(TYPE_PROPERTY_ID);
+                Property<MessageType> property = item.getItemProperty(TYPE_PROPERTY_ID);
 
-                GeneratedRow generated = new GeneratedRow("", "", property.getValue().toString());
+                GeneratedRow generated = new GeneratedRow("", "", property.getValue().name());
                 return generated;
             }
 
