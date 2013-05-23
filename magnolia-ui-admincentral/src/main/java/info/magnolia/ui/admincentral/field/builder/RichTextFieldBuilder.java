@@ -39,6 +39,9 @@ import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.ItemChosenListener;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
+import info.magnolia.ui.imageprovider.DefaultImageProvider;
+import info.magnolia.ui.imageprovider.ImageProvider;
+import info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig;
@@ -143,10 +146,14 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
 
     private void openLinkDialog(String path) {
 
-        appController.openChooseDialog("pages", path, subAppContext, new ItemChosenListener() {
+        appController.openChooseDialog("assets-link", path, subAppContext, new ItemChosenListener() {
 
                 @Override
                 public void onItemChosen(Item chosenValue) {
+                String url = (String) chosenValue.getItemProperty("imagelink").getValue();
+                String repository = (String) chosenValue.getItemProperty("compositeid").getValue();
+                String path = (String) chosenValue.getItemProperty("path").getValue();
+
                     if (!(chosenValue instanceof JcrItemAdapter)) {
                                 richTextEditor
                                         .firePluginEvent(EVENT_CANCEL_LINK);
@@ -162,11 +169,25 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
                         }
 
                         final Node selected = (Node) jcrItem;
+
+                    ConfiguredImageProviderDefinition cipd = new ConfiguredImageProviderDefinition();
+                    cipd.setOriginalImageNodeName("jcr:content");
+                    cipd.setImageProviderClass(DefaultImageProvider.class);
+                    ImageProvider provider = new DefaultImageProvider(
+                            cipd);
+                    String thumbnailPath = provider
+                            .getThumbnailPath(selected.getSession()
+                                    .getWorkspace().getName(),
+                                    selected.getPath());
+
+                    System.out.println("image: " + thumbnailPath);
+                    String identifier = selected.getIdentifier();
+
                         Gson gson = new Gson();
                         MagnoliaLink mlink = new MagnoliaLink();
                         mlink.identifier = selected.getIdentifier();
                         mlink.repository = selected.getSession().getWorkspace().getName();
-                        mlink.path = selected.getPath();
+                    mlink.path = thumbnailPath;
                         if (selected.hasProperty("title")) {
                             mlink.caption = selected.getProperty("title").getString();
                         } else {
