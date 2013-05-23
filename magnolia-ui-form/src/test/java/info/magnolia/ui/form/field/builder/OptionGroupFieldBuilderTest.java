@@ -41,7 +41,6 @@ import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.vaadin.ui.Field;
@@ -67,7 +66,7 @@ public class OptionGroupFieldBuilderTest extends AbstractBuilderTest<OptionGroup
         assertEquals(true, field instanceof OptionGroup);
         Collection<?> items = ((OptionGroup) field).getItemIds();
         assertEquals(3, items.size());
-        assertEquals("[1]", field.getValue().toString());
+        assertEquals("1", field.getValue().toString());
     }
 
     @Test
@@ -81,11 +80,10 @@ public class OptionGroupFieldBuilderTest extends AbstractBuilderTest<OptionGroup
         Field field = dialogSelect.getField();
 
         // THEN
-        assertEquals("[3]", field.getValue().toString());
+        assertEquals("3", field.getValue().toString());
     }
 
     @Test
-    @Ignore("See http://dev.vaadin.com/ticket/10663")
     public void simpleCheckBoxFieldTest() throws Exception {
         // GIVEN
         definition.setMultiselect(true);
@@ -99,11 +97,10 @@ public class OptionGroupFieldBuilderTest extends AbstractBuilderTest<OptionGroup
         assertEquals(true, field instanceof OptionGroup);
         Collection<?> items = ((OptionGroup) field).getItemIds();
         assertEquals(3, items.size());
-        assertEquals("[]", field.getValue().toString());
+        assertEquals("[1]", field.getValue().toString());
     }
 
     @Test
-    @Ignore("See http://dev.vaadin.com/ticket/10663")
     public void multiSelectCheckBoxFieldTest() throws Exception {
         // GIVEN
         definition.setMultiselect(true);
