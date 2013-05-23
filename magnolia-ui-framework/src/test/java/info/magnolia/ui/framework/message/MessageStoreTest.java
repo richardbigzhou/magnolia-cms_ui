@@ -33,15 +33,24 @@
  */
 package info.magnolia.ui.framework.message;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.security.MgnlUserManager;
+import info.magnolia.cms.security.Realm;
+import info.magnolia.cms.security.SecuritySupport;
+import info.magnolia.cms.security.SecuritySupportImpl;
 import info.magnolia.cms.security.User;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockNode;
+import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
+
+import javax.jcr.Session;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -56,9 +65,29 @@ public class MessageStoreTest extends MgnlTestCase {
     public void setUp() throws Exception{
         super.setUp();
         MockContext ctx = MockUtil.getMockContext();
-        User usr = mock(User.class);
-        when(usr.getName()).thenReturn(Message.DEFAULT_SENDER);
-        ctx.setUser(usr);
+        final User user = mock(User.class);
+        when(user.getName()).thenReturn(Message.DEFAULT_SENDER);
+        ctx.setUser(user);
+
+        Session session = new MockSession(MessageStore.WORKSPACE_NAME);
+        MockUtil.getSystemMockContext().addSession(MessageStore.WORKSPACE_NAME, session);
+
+        final SecuritySupportImpl securitySupport = new SecuritySupportImpl();
+
+        MgnlUserManager userMgr = new MgnlUserManager() {
+            {
+                setRealmName(Realm.REALM_SYSTEM.getName());
+            }
+
+            @Override
+            public User getSystemUser() {
+                return user;
+            }
+        };
+
+        securitySupport.addUserManager(Realm.REALM_SYSTEM.getName(), userMgr);
+        ComponentsTestUtil.setInstance(SecuritySupport.class, securitySupport);
+        MockUtil.getMockContext().setUser(user);
     }
 
     @Test
@@ -132,6 +161,75 @@ public class MessageStoreTest extends MgnlTestCase {
 
         // THEN
         assertEquals(id, result.getId());
+    }
+
+    @Test
+    public void testSaveMessage() throws Exception {
+        // GIVEN
+        final MockNode messageNode = new MockNode();
+        final long now = System.currentTimeMillis();
+        final String id = "1234";
+        messageNode.setName(id);
+        // timestamp is mandatory...
+        messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.TIMESTAMP, now);
+
+        final String userName = MgnlContext.getUser().getName();
+        MessageStore store = new MessageStore();
+
+        // WHEN
+        boolean saved = store.saveMessage(userName, store.unmarshallMessage(messageNode));
+
+        // THEN
+        assertTrue(saved);
+        Message result = store.findMessageById(userName, id);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testFindMessageById() throws Exception {
+        // GIVEN
+        final MockNode messageNode = new MockNode();
+        final long now = System.currentTimeMillis();
+        final String id = "1234";
+        messageNode.setName(id);
+        // timestamp is mandatory...
+        messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.TIMESTAMP, now);
+
+        final String userName = MgnlContext.getUser().getName();
+        MessageStore store = new MessageStore();
+        boolean saved = store.saveMessage(userName, store.unmarshallMessage(messageNode));
+        assertTrue(saved);
+
+        // WHEN
+        Message result = store.findMessageById(userName, id);
+
+        // THEN
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testRemoveMessageById() throws Exception {
+        // GIVEN
+        final MockNode messageNode = new MockNode();
+        final long now = System.currentTimeMillis();
+        final String id = "1234";
+        messageNode.setName(id);
+        // timestamp is mandatory...
+        messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.TIMESTAMP, now);
+
+        final String userName = MgnlContext.getUser().getName();
+        MessageStore store = new MessageStore();
+        store.saveMessage(userName, store.unmarshallMessage(messageNode));
+
+        Message result = store.findMessageById(userName, id);
+        assertNotNull(result);
+
+        // WHEN
+        store.removeMessageById(userName, id);
+
+        // THEN
+        result = store.findMessageById(userName, id);
+        assertNull(result);
     }
 
 }
