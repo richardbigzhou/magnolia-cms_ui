@@ -321,10 +321,11 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
             if (message == null) {
                 continue;
             }
+            messagesManager.removeMessage(userName, messageId);
+
             if (message.getType().isSignificant()) {
                 significantMessagesDeleted++;
             }
-            messagesManager.removeMessage(userName, messageId);
         }
         shell.updateShellAppIndication(ShellAppType.PULSE, -significantMessagesDeleted);
         /*
