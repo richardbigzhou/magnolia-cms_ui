@@ -323,7 +323,7 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
             }
             messagesManager.removeMessage(userName, messageId);
 
-            if (message.getType().isSignificant()) {
+            if (!message.isCleared() && message.getType().isSignificant()) {
                 significantMessagesDeleted++;
             }
         }
