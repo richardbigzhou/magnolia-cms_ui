@@ -59,7 +59,7 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
 
     private AbstractSelect languageSelector;
 
-    private AbstractSelect platformSelector = new ComboBox();
+    private ComboBox platformSelector = new ComboBox();
 
     private PageBarView.Listener listener;
 
@@ -79,6 +79,7 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
             platformSelector.addItem(type);
         }
         platformSelector.setNullSelectionAllowed(false);
+        platformSelector.setTextInputAllowed(false);
         platformSelector.setImmediate(true);
         platformSelector.setSizeUndefined();
         platformSelector.addValueChangeListener(new Property.ValueChangeListener() {
