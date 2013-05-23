@@ -115,7 +115,7 @@ public class CreateComponentAction extends ActionBase<CreateComponentActionDefin
             Node areaNode = session.getNode(path);
 
             final JcrNodeAdapter item = new JcrNewNodeAdapter(areaNode, NodeTypes.Component.NAME);
-            DefaultProperty<String> property = new DefaultProperty<String>(ModelConstants.JCR_NAME, String.class, "0");
+            DefaultProperty<String> property = new DefaultProperty<String>(String.class, "0");
             item.addItemProperty(ModelConstants.JCR_NAME, property);
 
             // perform custom chaining of dialogs

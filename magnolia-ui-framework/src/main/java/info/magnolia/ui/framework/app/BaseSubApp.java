@@ -134,7 +134,7 @@ public class BaseSubApp implements SubApp {
         if (StringUtils.isNotBlank(label)) {
             return label;
         }
-        log.warn("No label could be found for subapp [{}] at app [{}]", subAppContext.getSubAppDescriptor().getName(), subAppContext.getAppContext().getName());
+        log.warn("No label could be found for sub app [{}] in app [{}]", subAppContext.getSubAppDescriptor().getName(), subAppContext.getAppContext().getName());
         return "";
     }
 
@@ -142,5 +142,8 @@ public class BaseSubApp implements SubApp {
         return getSubAppContext().getLocation();
     }
 
-
+    @Override
+    public boolean isCloseable() {
+        return subAppContext.getSubAppDescriptor().isClosable();
+    }
 }

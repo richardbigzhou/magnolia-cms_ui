@@ -40,6 +40,7 @@ import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -78,7 +79,7 @@ public class JcrNewNodeAdapterTest {
         Property propertyInitial = adapter.getItemProperty(id);
         // New property --> null.
         assertEquals(true, propertyInitial == null);
-        propertyInitial = DefaultPropertyUtil.newDefaultProperty(id, null, "test");
+        propertyInitial = DefaultPropertyUtil.newDefaultProperty(null, "test");
         adapter.addItemProperty(id, propertyInitial);
 
         propertyInitial.setValue("new");
@@ -99,18 +100,18 @@ public class JcrNewNodeAdapterTest {
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode, nodeType);
 
-        Property notModifyProperty = DefaultPropertyUtil.newDefaultProperty("notModify", null, "");
+        Property notModifyProperty = DefaultPropertyUtil.newDefaultProperty(null, "");
         adapter.addItemProperty("notModify", notModifyProperty);
 
-        Property notNotModifyRemovedProperty = DefaultPropertyUtil.newDefaultProperty("notModifyRemoved", null, "");
+        Property notNotModifyRemovedProperty = DefaultPropertyUtil.newDefaultProperty(null, "");
         adapter.addItemProperty("notModifyRemoved", notNotModifyRemovedProperty);
         adapter.removeItemProperty("notModifyRemoved");
 
-        Property notNewModifyProperty = DefaultPropertyUtil.newDefaultProperty("modify", null, "");
+        Property notNewModifyProperty = DefaultPropertyUtil.newDefaultProperty(null, "");
         adapter.addItemProperty("modify", notNewModifyProperty);
         notNewModifyProperty.setValue("newModify");
 
-        Property modifyRemovedProperty = DefaultPropertyUtil.newDefaultProperty("modifyRemoved", null, "");
+        Property modifyRemovedProperty = DefaultPropertyUtil.newDefaultProperty(null, "");
         adapter.addItemProperty("modifyRemoved", modifyRemovedProperty);
         modifyRemovedProperty.setValue("newModifyRemoved");
         adapter.removeItemProperty("modifyRemoved");
@@ -139,7 +140,7 @@ public class JcrNewNodeAdapterTest {
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode, nodeType);
 
-        Property propertyModified = DefaultPropertyUtil.newDefaultProperty("id", null, "");
+        Property propertyModified = DefaultPropertyUtil.newDefaultProperty(null, "");
         adapter.addItemProperty("id", propertyModified);
         Node node1 = adapter.applyChanges();
 
@@ -150,4 +151,37 @@ public class JcrNewNodeAdapterTest {
         assertEquals(node1, node2);
     }
 
+    @Test
+    public void testReturnedPropertiesAreInSync() throws RepositoryException {
+
+        // GIVEN
+        Node parentNode = session.getRootNode().addNode("node");
+        parentNode.setProperty("name", "");
+        JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
+
+        Property itemProperty1 = adapter.getItemProperty("name");
+        Property itemProperty2 = adapter.getItemProperty("name");
+
+        // WHEN
+        itemProperty1.setValue("changed");
+
+        // THEN
+        assertTrue(itemProperty2.getValue().equals("changed"));
+    }
+
+    @Test
+    public void testReturnsPropertiesWithChangedValues() throws RepositoryException {
+
+        Node parentNode = session.getRootNode().addNode("node");
+        parentNode.setProperty("name", "");
+        JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
+
+        Property itemProperty1 = adapter.getItemProperty("name");
+
+        itemProperty1.setValue("changed");
+
+        Property itemProperty2 = adapter.getItemProperty("name");
+
+        assertTrue(itemProperty2.getValue().equals("changed"));
+    }
 }

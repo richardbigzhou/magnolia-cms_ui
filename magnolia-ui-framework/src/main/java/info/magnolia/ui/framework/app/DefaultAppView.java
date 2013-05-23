@@ -47,9 +47,10 @@ import com.vaadin.ui.Component;
 
 /**
  * View used to give all apps a uniform look-and-feel.
+ *
  * @see AppView
  */
-public class AppFrameView implements AppView {
+public class DefaultAppView implements AppView {
 
     private Listener listener;
 
@@ -73,7 +74,7 @@ public class AppFrameView implements AppView {
         }
     };
 
-    public AppFrameView() {
+    public DefaultAppView() {
         super();
         tabsheet.setSizeFull();
         tabsheet.addStyleName("app");

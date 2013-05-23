@@ -63,21 +63,21 @@ public class DefaultPropertyUtil {
      * If fieldType is not defined, create a String Value.
      * If stringValue is defined, create a typed value based ont fieldType.
      */
-    public static DefaultProperty newDefaultProperty(String name, String fieldType, String stringValue) throws NumberFormatException {
+    public static DefaultProperty newDefaultProperty(String fieldType, String stringValue) throws NumberFormatException {
         Object value = "";
         try {
             value = createTypedValue(fieldType, stringValue);
         } catch (Exception e) {
             log.error("Exception during Value creation", e);
         }
-        return new DefaultProperty(name, getFieldTypeClass(fieldType), value);
+        return new DefaultProperty(getFieldTypeClass(fieldType), value);
     }
 
     /**
      * Create a DefaultProperty based on types defined in {@link PropertyType}.
      */
-    public static DefaultProperty newDefaultProperty(String name, int fieldType, Object value) throws NumberFormatException {
-        return new DefaultProperty(name, getFieldTypeClass(fieldType), value);
+    public static DefaultProperty newDefaultProperty(int fieldType, Object value) throws NumberFormatException {
+        return new DefaultProperty(getFieldTypeClass(fieldType), value);
     }
 
     /**

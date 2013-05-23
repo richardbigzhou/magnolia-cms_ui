@@ -314,7 +314,7 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         getView().closeSubAppView(instanceId);
     }
 
-    private SubAppContext startSubApp(Location location, boolean isClosable) {
+    private SubAppContext startSubApp(Location location, boolean allowClose) {
 
         SubAppDescriptor subAppDescriptor = getSubAppDescriptorById(location.getSubAppId());
 
@@ -332,7 +332,11 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         SubApp subApp = subAppDetails.componentProvider.newInstance(subAppDescriptor.getSubAppClass());
         subAppContext.setSubApp(subApp);
 
-        String instanceId = app.getView().addSubAppView(subApp.start(location), subApp.getCaption(), isClosable);
+        View subAppView = subApp.start(location);
+
+        boolean closable = allowClose && subApp.isCloseable();
+
+        String instanceId = app.getView().addSubAppView(subAppView, subApp.getCaption(), closable);
 
         subAppContext.setInstanceId(instanceId);
 

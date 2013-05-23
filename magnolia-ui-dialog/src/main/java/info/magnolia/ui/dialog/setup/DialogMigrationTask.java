@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.setup;
+package info.magnolia.ui.dialog.setup;
 
 import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.predicate.AbstractPredicate;
