@@ -40,10 +40,11 @@
 }
 
 .v-action {
-	margin-right:10px;
-	line-height:1.6em;
-	text-indent:33px;
-	cursor:pointer;
+	margin-right: 10px;
+	height: 25px;
+	text-indent: 33px;
+	overflow: hidden;
+	cursor: pointer;
 }
 .v-actionbar .v-action {text-align:center;}
 .v-actionbar-open .v-action {text-align:left;}
@@ -53,10 +54,11 @@
 .v-action.v-disabled:hover {color:$c80;}
 
 .v-action .v-icon {
-	display:inline-block;
-	font-size:1.4em;
-	text-indent:-29px;
-	vertical-align:middle;
+	display: inline-block;
+	font-size: 20px;
+	height: 1em;
+	text-indent: -29px;
+	vertical-align: top;
 }
 
 .v-action .v-text {
@@ -169,8 +171,9 @@
 .tablet .v-action.hover {color:$c10; background-color:$c15;}
 
 .tablet .v-action .v-icon {
-	text-indent:0;
-	font-size:32px;
+	text-indent: 0;
+	font-size: 32px;
+	margin-top: 8px;
 }
 
 .tablet .v-action img.v-icon {top:7px;}
