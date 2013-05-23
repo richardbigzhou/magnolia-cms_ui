@@ -47,7 +47,7 @@ div.mgnlEditorBar {
   margin: 0 0 2px 0 !important;
   font-family: DINWebPro, Verdana, sans-serif !important;
   font-size: 12px !important;
-  clear: both;
+  clear: both !important;
 }
 
 div.mgnlEditorBar.area.init {
@@ -135,6 +135,7 @@ div.mgnlEditorBar.component {
 
 div.mgnlPlaceholder {
   margin: 0 0 2px 0 !important;
+  clear: both !important;
 }
 
 div.mgnlPlaceholder div.mgnlEditorBar{
