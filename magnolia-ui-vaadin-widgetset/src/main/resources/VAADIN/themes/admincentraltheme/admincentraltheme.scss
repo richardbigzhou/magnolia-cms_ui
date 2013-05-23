@@ -151,16 +151,4 @@
   .cke_contents {
   	height: 120px !important;
   }
-
-
-  /*Due to implementation reasons this has to be here. For all other styles of thumbnail layout - see thumbnail.css file.*/
-  .thumbnail {
-  	border: 1px solid $c16;
-  	margin: 3px;
-  	padding: 5px;
-  	cursor:pointer;
-  	overflow:hidden;
-  	float:left;
-  }
-
 }
