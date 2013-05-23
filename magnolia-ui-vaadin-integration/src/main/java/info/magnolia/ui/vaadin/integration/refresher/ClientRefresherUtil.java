@@ -47,7 +47,7 @@ public class ClientRefresherUtil {
      * @param delayMsec When the server should update the client.
      * @param refreshee A component to host the refreshing logic.
      */
-    public static void addClientRefresher(int delayMsec, AbstractComponentContainer refreshee) {
+    public static ProgressIndicator addClientRefresher(int delayMsec, AbstractComponentContainer refreshee) {
 
         /*
          * Progressbar hack to cause client to update to server state.
@@ -61,7 +61,10 @@ public class ClientRefresherUtil {
         clientRefresher.setPollingInterval(delayMsec);
         clientRefresher.setIndeterminate(true);
         clientRefresher.setStyleName("progressbar-based-client-refresher");
+
         refreshee.addComponent(clientRefresher);
+
+        return clientRefresher;
     }
 
 

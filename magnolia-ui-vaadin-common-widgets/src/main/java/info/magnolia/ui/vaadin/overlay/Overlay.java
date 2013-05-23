@@ -43,6 +43,7 @@ import java.util.TimerTask;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.ProgressIndicator;
 
 /**
  * A Single component container that includes a "glass" or "curtain" which dims out and prevents interaction on the elements
@@ -52,14 +53,13 @@ import com.vaadin.ui.CssLayout;
  */
 public class Overlay extends CssLayout {
 
-
-
     final OverlayLayer.ModalityDomain modalityDomain;
 
-    public static final int OVERLAY_CLOSE_ANIMATION_DURATION_MSEC = 2000;
+    public static final int OVERLAY_CLOSE_ANIMATION_DURATION_MSEC = 500;
+
+    public ProgressIndicator clientRefresher;
 
     public Overlay(final Component content, final Component overlayParent, final OverlayLayer.ModalityDomain modalityDomain, final OverlayLayer.ModalityLevel modalityLevel) {
-        // setSizeFull();
         setImmediate(true);
 
         content.addStyleName("overlay-child");
@@ -74,8 +74,10 @@ public class Overlay extends CssLayout {
 
         // Set css classes of Modal
         this.addStyleName(modalityDomain.getCssClass());
-
         this.addStyleName(modalityLevel.getCssClass());
+
+        // Add a refresher for use when overlay is closed. Set delay to far in the future because we dont need it yet.
+        clientRefresher = ClientRefresherUtil.addClientRefresher(1000 * 10000, this);
     }
 
     @Override
@@ -87,9 +89,7 @@ public class Overlay extends CssLayout {
         final Timer timer = new Timer();
 
         // Start overlay close transition.
-        removeStyleName("open");
         addStyleName("close");
-        // ((Component) getState().overlayContent).addStyleName("overlay-child-close");
 
         // Allow time for the animation before actually destroying the overlay.
         int delay = OVERLAY_CLOSE_ANIMATION_DURATION_MSEC;
@@ -101,8 +101,8 @@ public class Overlay extends CssLayout {
             }
         }, delay);
 
-        // Add a refresher so that the client gets the change made in the timer above.
-        ClientRefresherUtil.addClientRefresher(delay, this);
+        // Set the time on the refresher so that the client gets the change made in the timer above.
+        clientRefresher.setPollingInterval(delay);
     }
 
 
