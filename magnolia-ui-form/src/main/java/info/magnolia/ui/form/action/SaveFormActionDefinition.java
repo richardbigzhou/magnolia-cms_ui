@@ -42,8 +42,21 @@ import info.magnolia.ui.api.action.ConfiguredActionDefinition;
  */
 public class SaveFormActionDefinition extends ConfiguredActionDefinition {
 
+    private String nodeNameProperty;
+
     public SaveFormActionDefinition() {
         setImplementationClass(SaveFormAction.class);
+    }
+
+    /**
+     * @return the jcr property name that should be used to define the Node name.
+     */
+    public String getNodeNameProperty() {
+        return nodeNameProperty;
+    }
+
+    public void setNodeNameProperty(String nodeNameProperty) {
+        this.nodeNameProperty = nodeNameProperty;
     }
 
 }

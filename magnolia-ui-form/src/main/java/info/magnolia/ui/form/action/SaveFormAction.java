@@ -33,16 +33,20 @@
  */
 package info.magnolia.ui.form.action;
 
+import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.form.EditorValidator;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.api.action.ActionBase;
 import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,6 +77,10 @@ public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
         if (validator.isValid()) {
             try {
                 final Node node = item.applyChanges();
+                // Handle the node name if required.
+                if (StringUtils.isNotBlank(getDefinition().getNodeNameProperty())) {
+                    handleNodeName(node, item, getDefinition().getNodeNameProperty());
+                }
                 NodeTypes.LastModified.update(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
@@ -81,6 +89,24 @@ public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
             callback.onSuccess(getDefinition().getName());
         } else {
             log.info("Validation error(s) occurred. No save performed.");
+        }
+    }
+
+    protected void handleNodeName(Node node, JcrNodeAdapter item, String propertyName) {
+        try {
+            String itemPath = node.getPath() + "/" + propertyName;
+            if (node.getSession().itemExists(itemPath) && !node.getSession().getItem(itemPath).isNode()) {
+                Property property = (Property) node.getSession().getItem(itemPath);
+                String newNodeName = property.getString();
+                if (!node.getName().equals(newNodeName)) {
+                    newNodeName = Path.getUniqueLabel(node.getSession(), node.getParent().getPath(), Path.getValidatedLabel(newNodeName));
+                    item.setNodeName(newNodeName);
+                    property.setValue(newNodeName);
+                    NodeUtil.renameNode(node, newNodeName);
+                }
+            }
+        } catch (RepositoryException re) {
+            log.warn("Not able to set the node name based on the specified getDefinition().getNodeNameProperty() '{}'", propertyName);
         }
     }
 }

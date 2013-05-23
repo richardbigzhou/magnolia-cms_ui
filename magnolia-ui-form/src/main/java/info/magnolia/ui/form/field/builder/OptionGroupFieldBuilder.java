@@ -76,7 +76,7 @@ public class OptionGroupFieldBuilder extends SelectFieldBuilder<OptionGroupField
         Class<?> fieldType = getFieldType(definition);
         Property<?> property = item.getItemProperty(propertyName);
         if (property == null) {
-            property = new DefaultProperty(propertyName, HashSet.class, new HashSet());
+            property = new DefaultProperty(HashSet.class, new HashSet());
             item.addItemProperty(propertyName, property);
         }
 

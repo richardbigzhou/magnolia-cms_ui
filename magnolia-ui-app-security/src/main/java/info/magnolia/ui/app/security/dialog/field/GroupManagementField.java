@@ -184,7 +184,7 @@ public class GroupManagementField extends TwinColSelectFieldBuilder<GroupManagem
 
     @Override
     public com.vaadin.data.Property<?> getOrCreateProperty() {
-        DefaultProperty<Set> prop = new DefaultProperty<Set>("groups", Set.class, getAssignedGroups());
+        DefaultProperty<Set> prop = new DefaultProperty<Set>(Set.class, getAssignedGroups());
         item.addItemProperty("groups", prop);
         return prop;
     }

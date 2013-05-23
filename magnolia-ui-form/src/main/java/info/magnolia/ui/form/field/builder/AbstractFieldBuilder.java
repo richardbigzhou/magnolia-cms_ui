@@ -177,7 +177,7 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
         } else {
             Property<?> property = item.getItemProperty(propertyName);
             if (property == null) {
-                property = DefaultPropertyUtil.newDefaultProperty(propertyName, fieldType.getSimpleName(), defaultValue);
+                property = DefaultPropertyUtil.newDefaultProperty(fieldType.getSimpleName(), defaultValue);
                 item.addItemProperty(propertyName, property);
             }
             return property;

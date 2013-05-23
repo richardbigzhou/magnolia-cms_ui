@@ -52,6 +52,8 @@ public interface SubAppDescriptor {
 
     boolean isEnabled();
 
+    boolean isClosable();
+
     String getIcon();
 
     Map<String, ActionDefinition> getActions();

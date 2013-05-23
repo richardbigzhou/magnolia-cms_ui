@@ -121,7 +121,7 @@ public class SaveFormActionTest extends RepositoryTestCase {
         node = session.getRootNode().addNode("underlying");
 
         item = new JcrNodeAdapter(node);
-        item.addItemProperty("property", DefaultPropertyUtil.newDefaultProperty("property", null, "changed"));
+        item.addItemProperty("property", DefaultPropertyUtil.newDefaultProperty(null, "changed"));
         initDefinition("name", "label");
         formAction = new SaveFormAction(formActionDefinition, item, callback, validator);
 

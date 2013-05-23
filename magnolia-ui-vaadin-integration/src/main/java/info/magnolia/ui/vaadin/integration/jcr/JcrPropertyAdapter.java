@@ -89,11 +89,15 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
     public javax.jcr.Property applyChanges() throws RepositoryException {
         javax.jcr.Property jcrItem = getJcrItem();
         super.updateProperties(jcrItem);
+        // We fetch it again from the JCR session in case the name changed
         return getJcrItem();
     }
 
     @Override
     public Property getItemProperty(Object id) {
+        if (getChangedProperties().containsKey(id)) {
+            return getChangedProperties().get(id);
+        }
         Object value;
         int type = PropertyType.STRING;
         try {
@@ -113,9 +117,8 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
             throw new RuntimeRepositoryException(re);
         }
 
-        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty((String) id, type, value);
-
-        property.addValueChangeListener(this);
+        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty(type, value);
+        getChangedProperties().put((String) id, property);
         return property;
     }
 
