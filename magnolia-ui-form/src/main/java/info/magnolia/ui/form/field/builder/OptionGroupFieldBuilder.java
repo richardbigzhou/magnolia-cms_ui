@@ -34,8 +34,12 @@
 package info.magnolia.ui.form.field.builder;
 
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+
+import java.util.HashSet;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.OptionGroup;
 
@@ -61,5 +65,21 @@ public class OptionGroupFieldBuilder extends SelectFieldBuilder<OptionGroupField
     @Override
     protected AbstractSelect createSelectionField() {
         return new OptionGroup();
+    }
+
+    @Override
+    protected Property<?> getOrCreateProperty() {
+        if (!select.isMultiSelect()) {
+            return super.getOrCreateProperty();
+        }
+        String propertyName = definition.getName();
+        Class<?> fieldType = getFieldType(definition);
+        Property<?> property = item.getItemProperty(propertyName);
+        if (property == null) {
+            property = new DefaultProperty(propertyName, HashSet.class, new HashSet());
+            item.addItemProperty(propertyName, property);
+        }
+
+        return property;
     }
 }
