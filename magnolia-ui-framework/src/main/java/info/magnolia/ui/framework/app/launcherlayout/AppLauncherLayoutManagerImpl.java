@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.framework.app.launcherlayout;
 
+import info.magnolia.cms.security.operations.AccessDefinition;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SystemEventBus;
 import info.magnolia.registry.RegistrationException;
@@ -83,22 +85,22 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
             @Override
             public void onAppRegistered(AppRegistryEvent event) {
                 String name = event.getAppDescriptor().getName();
-                logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for the following appDescriptor " + name);
-                sendEvent();
+                logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for app: " + name);
+                sendChangedEvent();
             }
 
             @Override
             public void onAppReregistered(AppRegistryEvent event) {
                 String name = event.getAppDescriptor().getName();
-                logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for the following appDescriptor " + name);
-                sendEvent();
+                logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for app: " + name);
+                sendChangedEvent();
             }
 
             @Override
             public void onAppUnregistered(AppRegistryEvent event) {
                 String name = event.getAppDescriptor().getName();
-                logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for the following appDescriptor " + name);
-                sendEvent();
+                logger.debug("Got AppLifecycleEvent." + event.getEventType() + " for app: " + name);
+                sendChangedEvent();
             }
         });
     }
@@ -124,7 +126,7 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
                     continue;
                 }
 
-                if (isAppEnabledForCurrentUser(entryDefinition)) {
+                if (isAppVisibleForCurrentUser(entryDefinition, appDescriptor)) {
                     AppLauncherGroupEntry entry = new AppLauncherGroupEntry();
                     entry.setName(entryDefinition.getName());
                     entry.setEnabled(entryDefinition.isEnabled());
@@ -150,17 +152,18 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
     @Override
     public void setLayout(AppLauncherLayoutDefinition layout) {
         this.layoutDefinitionReference.set(layout);
-        sendEvent();
+        sendChangedEvent();
     }
 
-    private boolean isAppEnabledForCurrentUser(AppLauncherGroupEntryDefinition entry) {
-        return entry.isEnabled();
+    private boolean isAppVisibleForCurrentUser(AppLauncherGroupEntryDefinition entry, AppDescriptor appDescriptor) {
+        AccessDefinition permissions = appDescriptor.getPermissions();
+        return entry.isEnabled() && appDescriptor.isEnabled() && (permissions == null || permissions.hasAccess(MgnlContext.getUser())) ;
     }
 
     /**
-     * Send an event to the system event bus.
+     * Send an event on the system event bus.
      */
-    private void sendEvent() {
+    private void sendChangedEvent() {
         logger.debug("Sending AppLauncherLayoutChangedEvent on the system bus");
         systemEventBus.fireEvent(new AppLauncherLayoutChangedEvent());
     }

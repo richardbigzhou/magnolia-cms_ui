@@ -44,8 +44,4 @@ public interface AppLauncherGroupEntryDefinition {
     String getName();
 
     boolean isEnabled();
-
-    String getIconFont();
-
-    String getIconCharacter();
 }
