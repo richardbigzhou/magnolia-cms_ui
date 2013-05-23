@@ -68,7 +68,7 @@ public interface PulseMessagesView extends PulseSubView {
 
         void setGrouping(boolean checked);
 
-        void deleteMessages(Set<String> selectedItems);
+        void deleteMessages(Set<String> messageIds);
     }
 
 }

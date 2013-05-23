@@ -309,14 +309,14 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
     }
 
     @Override
-    public void deleteMessages(final Set<String> selectedItems) {
-        if (selectedItems == null || selectedItems.isEmpty()) {
+    public void deleteMessages(final Set<String> messageIds) {
+        if (messageIds == null || messageIds.isEmpty()) {
             return;
         }
         final String userName = MgnlContext.getUser().getName();
         int significantMessagesDeleted = 0;
 
-        for (String messageId : selectedItems) {
+        for (String messageId : messageIds) {
             Message message = messagesManager.getMessageById(userName, messageId);
             if (message == null) {
                 continue;
