@@ -44,6 +44,12 @@
   }
 
   .v-filterselect {
+    padding-right: 0;
+
+    &.v-has-width {
+      padding-right: 11px;
+    }
+
     &.v-filterselect-focus, &.focus {
       .v-filterselect-input {
         margin: -1px;
