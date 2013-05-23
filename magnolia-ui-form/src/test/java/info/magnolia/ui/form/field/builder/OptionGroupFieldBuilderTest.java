@@ -67,13 +67,13 @@ public class OptionGroupFieldBuilderTest extends AbstractBuilderTest<OptionGroup
         assertEquals(true, field instanceof OptionGroup);
         Collection<?> items = ((OptionGroup) field).getItemIds();
         assertEquals(3, items.size());
-        assertEquals("1", field.getValue().toString());
+        assertEquals("[1]", field.getValue().toString());
     }
 
     @Test
     public void selectedRadioFieldTest() throws Exception {
         // GIVEN
-        definition.setDefaultValue("3");
+        definition.getOptions().get(2).setSelected(true);
         dialogSelect = new OptionGroupFieldBuilder(definition, baseItem);
         dialogSelect.setI18nContentSupport(i18nContentSupport);
 
@@ -81,7 +81,7 @@ public class OptionGroupFieldBuilderTest extends AbstractBuilderTest<OptionGroup
         Field field = dialogSelect.getField();
 
         // THEN
-        assertEquals("3", field.getValue().toString());
+        assertEquals("[3]", field.getValue().toString());
     }
 
     @Test
