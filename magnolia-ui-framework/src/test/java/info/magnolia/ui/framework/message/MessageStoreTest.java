@@ -147,12 +147,8 @@ public class MessageStoreTest extends MgnlTestCase {
     @Test
     public void testUnmarshallWorksEvenIfNotAllPropertiesAreSet() throws Exception {
         // GIVEN
-        final MockNode messageNode = new MockNode();
-        final long now = System.currentTimeMillis();
         final String id = "1234";
-        messageNode.setName(id);
-        // timestamp is mandatory...
-        messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.TIMESTAMP, now);
+        final MockNode messageNode = createEmptyMessageMockNode(id);
 
         MessageStore store = new MessageStore();
 
@@ -166,12 +162,8 @@ public class MessageStoreTest extends MgnlTestCase {
     @Test
     public void testSaveMessage() throws Exception {
         // GIVEN
-        final MockNode messageNode = new MockNode();
-        final long now = System.currentTimeMillis();
         final String id = "1234";
-        messageNode.setName(id);
-        // timestamp is mandatory...
-        messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.TIMESTAMP, now);
+        final MockNode messageNode = createEmptyMessageMockNode(id);
 
         final String userName = MgnlContext.getUser().getName();
         MessageStore store = new MessageStore();
@@ -188,12 +180,8 @@ public class MessageStoreTest extends MgnlTestCase {
     @Test
     public void testFindMessageById() throws Exception {
         // GIVEN
-        final MockNode messageNode = new MockNode();
-        final long now = System.currentTimeMillis();
         final String id = "1234";
-        messageNode.setName(id);
-        // timestamp is mandatory...
-        messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.TIMESTAMP, now);
+        final MockNode messageNode = createEmptyMessageMockNode(id);
 
         final String userName = MgnlContext.getUser().getName();
         MessageStore store = new MessageStore();
@@ -210,12 +198,8 @@ public class MessageStoreTest extends MgnlTestCase {
     @Test
     public void testRemoveMessageById() throws Exception {
         // GIVEN
-        final MockNode messageNode = new MockNode();
-        final long now = System.currentTimeMillis();
         final String id = "1234";
-        messageNode.setName(id);
-        // timestamp is mandatory...
-        messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.TIMESTAMP, now);
+        final MockNode messageNode = createEmptyMessageMockNode(id);
 
         final String userName = MgnlContext.getUser().getName();
         MessageStore store = new MessageStore();
@@ -230,6 +214,15 @@ public class MessageStoreTest extends MgnlTestCase {
         // THEN
         result = store.findMessageById(userName, id);
         assertNull(result);
+    }
+
+    private MockNode createEmptyMessageMockNode(final String id) {
+        MockNode messageNode = new MockNode();
+        final long now = System.currentTimeMillis();
+        messageNode.setName(id);
+        // timestamp is mandatory...
+        messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.TIMESTAMP, now);
+        return messageNode;
     }
 
 }
