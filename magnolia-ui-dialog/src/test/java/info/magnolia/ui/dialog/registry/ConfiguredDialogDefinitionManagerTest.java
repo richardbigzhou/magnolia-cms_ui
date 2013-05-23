@@ -52,7 +52,9 @@ import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
@@ -86,6 +88,7 @@ public class ConfiguredDialogDefinitionManagerTest {
     public void setUp() throws Exception {
 
         ComponentsTestUtil.setImplementation(DialogDefinition.class, ConfiguredDialogDefinition.class);
+        ComponentsTestUtil.setImplementation(FormDefinition.class, ConfiguredFormDefinition.class);
         ComponentsTestUtil.setImplementation(TabDefinition.class, ConfiguredTabDefinition.class);
         ComponentsTestUtil.setImplementation(ActionDefinition.class, ConfiguredActionDefinition.class);
 

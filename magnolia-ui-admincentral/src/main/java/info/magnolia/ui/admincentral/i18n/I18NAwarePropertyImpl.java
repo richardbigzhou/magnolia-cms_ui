@@ -110,7 +110,7 @@ public class I18NAwarePropertyImpl<T> extends AbstractProperty<T> implements I18
         String propertyName = getLocalizedPropertyName();
         DefaultProperty<T> property = (DefaultProperty<T>) parentNodeAdapter.getItemProperty(propertyName);
         if (property == null) {
-            property = DefaultPropertyUtil.newDefaultProperty(propertyName, type.getSimpleName(), String.valueOf(defaultValue));
+            property = DefaultPropertyUtil.newDefaultProperty(type.getSimpleName(), String.valueOf(defaultValue));
             parentNodeAdapter.addItemProperty(propertyName, property);
         }
         return property;
