@@ -197,7 +197,7 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
     }
 
     protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
-        throw new IllegalArgumentException("Unsupported type " + fieldDefinition.getClass().getName());
+        return String.class;
     }
 
     /**
