@@ -167,8 +167,12 @@
   height: 35px !important;
 }
 
-.v-pulse .v-table-generated-row {
-  background: none;
+.v-pulse .v-table-generated-row, .v-pulse tr.v-table-generated-row.v-selected .v-table-cell-content {
+  background: none !important;
+}
+
+.v-pulse .v-table-generated-row:hover {
+	background: none !important;
 }
 .v-pulse .v-table-generated-row.v-table-row, .v-pulse .v-table-generated-row.v-table-row-odd  {
   border-bottom: 1px solid #666 !important;
@@ -210,12 +214,12 @@
 }
 
 .v-pulse .new-message {
-  color: $c10;
+  color: #A3A3A3;
   font-size: 16px;
   padding-left: 5px;
 }
 .v-pulse .message-type {
-  color: $c10;
+  color: #A3A3A3;
   font-size: 30px;
   margin-top: -8px;
 }

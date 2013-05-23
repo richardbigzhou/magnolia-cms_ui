@@ -58,6 +58,9 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Label;
@@ -89,11 +92,11 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
 
     @Inject
     public PulseMessagesViewImpl() {
+        headers = new String[] { MessagesUtil.get("pulse.messages.new"), MessagesUtil.get("pulse.messages.type"), MessagesUtil.get("pulse.messages.text"), MessagesUtil.get("pulse.messages.sender"), MessagesUtil.get("pulse.messages.date") };
         setSizeFull();
         root.setSizeFull();
         setCompositionRoot(root);
         construct();
-        headers = new String[] { MessagesUtil.get("pulse.messages.new"), MessagesUtil.get("pulse.messages.type"), MessagesUtil.get("pulse.messages.text"), MessagesUtil.get("pulse.messages.sender"), MessagesUtil.get("pulse.messages.date") };
     }
 
     @Override
@@ -108,7 +111,6 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         messageTable.setSortContainerPropertyId(DATE_PROPERTY_ID);
         messageTable.setSortAscending(false);
         messageTable.setColumnHeaders(headers);
-
     }
 
     private void construct() {
@@ -130,14 +132,14 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         root.addComponent(messageTable);
         root.setExpandRatio(messageTable, 1f);
         messageTable.setSizeFull();
+        messageTable.setSelectable(true);
+        messageTable.setMultiSelect(true);
         messageTable.addGeneratedColumn(NEW_PROPERTY_ID, newMessageColumnGenerator);
         messageTable.addGeneratedColumn(TYPE_PROPERTY_ID, typeColumnGenerator);
         messageTable.addGeneratedColumn(TEXT_PROPERTY_ID, textColumnGenerator);
         messageTable.setColumnWidth(TEXT_PROPERTY_ID, 400);
         messageTable.addGeneratedColumn(DATE_PROPERTY_ID, new DateColumnFormatter(null));
         messageTable.setRowGenerator(groupingRowGenerator);
-
-
 
         navigator.addGroupingListener(groupingListener);
 
@@ -160,6 +162,16 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
                 setComponentVisibility(event.getContainer());
             }
         });
+        Button delete = new Button("Delete selected");
+        delete.addClickListener(new ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                Set<String> selectedItems = (Set<String>) messageTable.getValue();
+                listener.deleteMessages(selectedItems);
+            }
+        });
+        root.addComponent(delete);
     }
 
     private void setComponentVisibility(Container container) {

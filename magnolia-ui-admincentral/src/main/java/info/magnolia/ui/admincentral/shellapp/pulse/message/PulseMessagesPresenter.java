@@ -44,6 +44,7 @@ import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -305,6 +306,32 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
     public void onMessageClicked(String messageId) {
         listener.openMessage(messageId);
         messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
+    }
+
+    @Override
+    public void deleteMessages(final Set<String> selectedItems) {
+        if (selectedItems == null || selectedItems.isEmpty()) {
+            return;
+        }
+        final String userName = MgnlContext.getUser().getName();
+        int significantMessagesDeleted = 0;
+
+        for (String messageId : selectedItems) {
+            Message message = messagesManager.getMessageById(userName, messageId);
+            if (message == null) {
+                continue;
+            }
+            if (message.getType().isSignificant()) {
+                significantMessagesDeleted++;
+            }
+            messagesManager.removeMessage(userName, messageId);
+        }
+        shell.updateShellAppIndication(ShellAppType.PULSE, -significantMessagesDeleted);
+        /*
+         * Refreshes the view to display the updated underlying data.
+         */
+        container = createMessageDataSource();
+        view.setDataSource(container);
     }
 
     /**
