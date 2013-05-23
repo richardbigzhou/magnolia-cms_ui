@@ -243,28 +243,30 @@
 
 /* Action Popup */
 
-.popupContent .v-context-menu{
+.popupContent .v-context-menu {
 	box-shadow:4px 4px 10px $c91;
 	background:$c10;
 	border: solid 1px $c11;
+	padding-top: 5px;
+	padding-bottom: 2px;
 }
 
 .popupContent .v-context-menu .v-context-menu-item-basic,
-.popupContent .v-context-menu .v-context-menu-item-basic-submenu
-{
+.popupContent .v-context-menu .v-context-menu-item-basic-submenu {
     background:$c10;
     color:$c80;
     padding-left:10px;
     font-size:14px;
     font-family:DINWebPro-Light, DINWebPro, Verdana;
+    height: 24px;
+    line-height: 23px;
 }
 
 .popupContent .v-context-menu .v-context-menu-item-basic:focus,
 .popupContent .v-context-menu .v-context-menu-item-basic-submenu:focus,
-.popupContent .v-context-menu .v-context-menu-item-basic-open
-{
-    background:$c10;
-    color:$c50;
+.popupContent .v-context-menu .v-context-menu-item-basic-open {
+  background:$c10;
+  color:$c50;
 }
 
 .popupContent .v-context-menu .v-context-menu-item-basic.v-context-menu-item-disabled:hover,
@@ -273,20 +275,34 @@
 }
 
 
-.popupContent .v-context-menu .v-context-menu-item-basic-text{
-	padding-left:0px;
-	white-space:nowrap;
-}
-.popupContent .v-context-menu .v-context-menu-item-basic-icon-container{
-	border-width:0px;
-	margin-right:0px;
-	width:34px;
-	font-size:19.6px;
-	line-height:14px;
+.popupContent .v-context-menu .v-context-menu-item-basic-text {
+  height: auto;
+  line-height: inherit;
+	padding-left: 0;
+	white-space: nowrap;
 }
 
-.popupContent .v-context-menu .v-context-menu-item-basic.v-context-menu-item-separator{
+.popupContent .v-context-menu .v-context-menu-item-basic-icon-container {
+	border: none;
+	font-size: 20px;
+	width: 1em;
+	height: 1em;
+	line-height: 1em;
+	margin-right: 9px;
+}
+
+.popupContent .v-context-menu .v-context-menu-item-basic-icon-container .v-icon {
+  display: inline-block;
+  width: 1em;
+	height: 1em;
+	float: none;
+  padding: 0;
+}
+
+.popupContent .v-context-menu .v-context-menu-item-basic.v-context-menu-item-separator {
 	border-bottom: 1px solid $c11;
+	padding-bottom: 2px;
+	margin-bottom: 5px;
 }
 
 
