@@ -183,6 +183,12 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
                     System.out.println("image: " + thumbnailPath);
                     String identifier = selected.getIdentifier();
 
+                    // [2/14/13 2:23:34 PM] eric hechinger:
+                    // DamIdParser.createCompositeId(InternalAssetProvider.Id,
+                    // node.getIdentifier))
+                    // [2/14/13 2:23:55 PM] eric hechinger:
+                    // DamManager.getAsset(based on the id)
+
                         Gson gson = new Gson();
                         MagnoliaLink mlink = new MagnoliaLink();
                         mlink.identifier = selected.getIdentifier();

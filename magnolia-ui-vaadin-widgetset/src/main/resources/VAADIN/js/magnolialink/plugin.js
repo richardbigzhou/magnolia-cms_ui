@@ -32,6 +32,23 @@
     var EVENT_CANCEL_LINK = "mgnlLinkCancel";
     var EVENT_GET_MAGNOLIA_LINK = "mgnlGetLink";
     
+    CKEDITOR.on('dialogDefinition', function(event) {
+        if (event.data.name == 'image') {
+            event.data.definition.removeContents('advanced');
+            event.data.definition.addButton({
+                type: 'button',
+                id: 'newstuff',
+                disabled: false, 
+                label: 'extra btn',
+                onClick: function() {
+                    alert('clickki');
+                }
+                   
+            });
+        }
+    });
+
+    
     CKEDITOR.plugins.add('magnolialink', {
         init: function(editor) {
             editor.ui.addButton('InternalLink', {
@@ -48,6 +65,20 @@
                 group: 'mlinkgroup',
                 icon: "../../../themes/admincentraltheme/img/mlink.png"
             });
+            
+            editor.ui.addRichCombo('combo', {
+                icon: "http://localhost:8080/VAADIN/themes/admincentraltheme/img/mlink.png",
+                label: "kek",
+                title: 'cmb',
+                panel: {
+                    css : [ editor.config.contentsCss, CKEDITOR.getUrl(CKEDITOR.skinName.split(",")[1]||"skins/"+CKEDITOR.skinName.split(",")[0]+"/") + "editor.css" ]
+                },
+                init: function() {
+                    //this.startGroup('combo');
+                    this.add('a1', '<img src="http://localhost:8080/VAADIN/themes/admincentraltheme/img/mlink.png"></img>', 'c1');
+                    this.add('a2', 'b2', 'c2');
+                }
+            });
 
             /*
              * Firefox will lose focus when popping up a dialog. So a variable
@@ -62,14 +93,14 @@
                     var selectedElement = CKEDITOR.plugins.link.getSelectedLink(editor);
                     
                     if (isInternalLink(selectedElement)) {
-                        var href = selectedElement.getAttribute('href');		            	
+                        var href = selectedElement.getAttribute('href');                        
                         var path = href.match(/path\:\{([^\}]*)\}/);
 
                         if(!path) {
                             path = href.match(/handle\:\{([^\}]*)\}/);
                         }
 
-                        editor.fire(EVENT_GET_MAGNOLIA_LINK, path[1]);		            	
+                        editor.fire(EVENT_GET_MAGNOLIA_LINK, path[1]);                      
                     } else {
                         editor.fire(EVENT_GET_MAGNOLIA_LINK);
                     }
@@ -81,7 +112,7 @@
             // Respond from Pages app
             editor.on(EVENT_SEND_MAGNOLIA_LINK, function(e) {
                 setReadOnly(editor, false);
-                editor.getSelection().selectRanges(selectionRangeHack);		    	
+                editor.getSelection().selectRanges(selectionRangeHack);             
                 var selectedElement = CKEDITOR.plugins.link.getSelectedLink(editor);
                 var link = eval('('+e.data+')');
                 var href = '${link:{uuid:{'+link.identifier+
@@ -93,8 +124,8 @@
                     selectedElement.setAttribute('href', href);
                 } else {
                     var selectedText = editor.getSelection();
-                    var elem = editor.document.createElement('a');
-                    elem.setAttribute('href', href);
+                    var elem = editor.document.createElement('img');
+                    elem.setAttribute('src', link.path);
 
                     if (selectedText && selectedText.getSelectedText() != '') {
                         elem.setHtml(selectedText.getSelectedText());
@@ -115,7 +146,7 @@
             });
 
             // Double click
-            editor.on('doubleclick', function(ev) {				
+            editor.on('doubleclick', function(ev) {             
                 var selected = CKEDITOR.plugins.link.getSelectedLink(editor);
                 
                 if (isInternalLink(selected)) {
@@ -130,12 +161,12 @@
                     return;
                 }
 
-                var	element = evt.data.path.lastElement && evt.data.path.lastElement.getAscendant( 'a', true );
+                var element = evt.data.path.lastElement && evt.data.path.lastElement.getAscendant( 'a', true );
                 var internalLinkState = CKEDITOR.TRISTATE_OFF;
                 var externalLinkState = CKEDITOR.TRISTATE_OFF;
 
                 if (isLink(element) && !isInternalLink(element)) {
-                    internalLinkState = CKEDITOR.TRISTATE_DISABLED;					
+                    internalLinkState = CKEDITOR.TRISTATE_DISABLED;                 
                     }
 
                 if (isInternalLink(element)) {
@@ -143,11 +174,11 @@
                     }
 
                 editor.getCommand('magnolialink').setState(internalLinkState);
-                editor.getCommand('link').setState(externalLinkState);				
+                editor.getCommand('link').setState(externalLinkState);              
                 });
 
             // Context menu
-            editor.contextMenu.addListener(function(element, selection) {		
+            editor.contextMenu.addListener(function(element, selection) {       
                 if (!isInternalLink(element)) {
                     return null;
                 } 
