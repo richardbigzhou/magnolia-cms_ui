@@ -35,7 +35,9 @@ package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import static info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter.*;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.CategoryChangedEvent;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
@@ -69,9 +71,9 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class PulseMessagesViewImpl extends CustomComponent implements PulseMessagesView {
 
-    private static final String[] headers = new String[]{"New", "Type", "Message text", "Sender", "Date", "Quick action"};
+    private static String[] headers;
 
-    private static final String[] order = new String[] { NEW_PROPERTY_ID, TYPE_PROPERTY_ID, TEXT_PROPERTY_ID, SENDER_PROPERTY_ID, DATE_PROPERTY_ID, QUICKDO_PROPERTY_ID };
+    private static final String[] order = new String[] { NEW_PROPERTY_ID, TYPE_PROPERTY_ID, TEXT_PROPERTY_ID, SENDER_PROPERTY_ID, DATE_PROPERTY_ID };
 
     private final TreeTable messageTable = new MagnoliaTreeTable();
 
@@ -83,7 +85,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
 
     private boolean grouping = false;
 
-    private Label emptyPlaceHolder = new Label("No messages to display.");
+    private Label emptyPlaceHolder = new Label(MessagesUtil.get("pulse.messages.nomessage"));
 
     @Inject
     public PulseMessagesViewImpl() {
@@ -91,6 +93,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         root.setSizeFull();
         setCompositionRoot(root);
         construct();
+        headers = new String[] { MessagesUtil.get("pulse.messages.new"), MessagesUtil.get("pulse.messages.type"), MessagesUtil.get("pulse.messages.text"), MessagesUtil.get("pulse.messages.sender"), MessagesUtil.get("pulse.messages.date") };
     }
 
     @Override
@@ -300,8 +303,19 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             if (itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID)) {
                 Item item = table.getItem(itemId);
                 Property<MessageType> property = item.getItemProperty(TYPE_PROPERTY_ID);
-
-                GeneratedRow generated = new GeneratedRow("", "", property.getValue().name());
+                GeneratedRow generated = new GeneratedRow();
+                switch(property.getValue()) {
+                case ERROR  :
+                case WARNING:
+                    generated.setText("", "", MessageCategory.PROBLEM.getCaption());
+                    break;
+                case INFO:
+                    generated.setText("", "", MessageCategory.INFO.getCaption());
+                    break;
+                case WORKITEM:
+                    generated.setText("", "", MessageCategory.WORK_ITEM.getCaption());
+                    break;
+                }
                 return generated;
             }
 

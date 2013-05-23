@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
+import info.magnolia.cms.i18n.MessagesUtil;
+
 import java.util.Iterator;
 
 import com.vaadin.data.Property.ValueChangeListener;
@@ -64,7 +66,7 @@ public class PulseMessageCategoryNavigator extends CssLayout {
             addComponent(button);
         }
 
-        groupByTypeCheckBox = new CheckBox("group by type");
+        groupByTypeCheckBox = new CheckBox(MessagesUtil.get("pulse.messages.groupby"));
         groupByTypeCheckBox.addStyleName("navigator-grouping");
         groupByTypeCheckBox.setImmediate(true);
         addComponent(groupByTypeCheckBox);
@@ -78,10 +80,10 @@ public class PulseMessageCategoryNavigator extends CssLayout {
      * Enumeration for the category types.
      */
     public enum MessageCategory {
-        ALL("All messages"),
-        WORK_ITEM("Work items"),
-        PROBLEM("Problems"),
-        INFO("Info");
+        ALL(MessagesUtil.get("pulse.messages.all")),
+        WORK_ITEM(MessagesUtil.get("pulse.messages.workitems")),
+        PROBLEM(MessagesUtil.get("pulse.messages.problems")),
+        INFO(MessagesUtil.get("pulse.messages.info"));
 
         private String caption;
 
