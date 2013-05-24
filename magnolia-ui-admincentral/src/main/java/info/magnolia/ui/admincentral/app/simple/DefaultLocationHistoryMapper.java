@@ -81,9 +81,11 @@ public class DefaultLocationHistoryMapper implements LocationHistoryMapper {
             return true;
         }
 
+        if (!appType.equals(Location.LOCATION_TYPE_APP)) {
+            return false;
+        }
+
         AppLauncherLayout appLauncherLayout = appLauncherLayoutManager.getLayoutForCurrentUser();
-        return appType.equals(Location.LOCATION_TYPE_APP) && appLauncherLayout.containsApp(appId);
-
+        return appLauncherLayout.containsApp(appId);
     }
-
 }

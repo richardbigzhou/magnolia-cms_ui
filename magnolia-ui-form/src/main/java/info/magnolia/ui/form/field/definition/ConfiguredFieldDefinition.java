@@ -53,7 +53,7 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
 
     private String description; // not relevant for controlType=static
 
-    private String type = "String"; // JCR Property type name see javax.jcr.PropertyType
+    private String type; // JCR Property type name see javax.jcr.PropertyType
 
     private boolean required = false; // Not relevant for checkbox
 

@@ -20,6 +20,20 @@
 	margin: auto;
 }
 
+.thumbnail {
+  border: 1px solid $c16;
+  margin: 3px;
+  padding: 5px;
+  cursor:pointer;
+  overflow:hidden;
+  float:left;
+  text-align: center;
+}
+
+.thumbnail .icon {
+  font-size: inherit !important;
+}
+
 .thumbnail.selected {
 	background-color: $c50;
 }

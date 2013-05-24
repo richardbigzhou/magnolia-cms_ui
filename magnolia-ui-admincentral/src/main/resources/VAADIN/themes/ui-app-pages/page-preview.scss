@@ -34,16 +34,20 @@
   .pagebar > .v-filterselect {
     float: right;
     margin-right: 15px;
-    height: 23px;
-    padding: 0;
-    padding-top: 1px;
-    padding-bottom: 1px;
-  }
+    height: 21px;
+    padding-top: 2px;
 
-  .pagebar > .v-filterselect > input {
-    min-width: 70px;
-    max-width: 80px;
-    height: 12px;
+    input {
+      padding-top: 1px !important;
+      padding-bottom: 2px !important;
+      min-width: 100px;
+      max-width: 100px;
+    }
+
+    .v-filterselect-button {
+      background-position: 0 -8px;
+      height: 12px;
+    }
   }
 
   .preview.tabletLandscape {

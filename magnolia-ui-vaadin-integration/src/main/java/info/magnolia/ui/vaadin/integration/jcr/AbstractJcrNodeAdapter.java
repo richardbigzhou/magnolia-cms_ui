@@ -45,7 +45,6 @@ import java.util.Map.Entry;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
-import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
@@ -155,7 +154,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
     @Override
     public Property getItemProperty(Object id) {
         Object value;
-        int type = PropertyType.STRING;
+        Class type = String.class;
         try {
             final Node jcrNode = getJcrItem();
             if (!jcrNode.hasProperty((String) id)) {
@@ -165,14 +164,13 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
                     return null;
                 }
             } else {
-                javax.jcr.Property property = jcrNode.getProperty(String.valueOf(id));
                 value = PropertyUtil.getPropertyValueObject(jcrNode, String.valueOf(id));
-                type = property.getType();
+                type = value.getClass();
             }
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
-        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty(type, value);
+        DefaultProperty property = new DefaultProperty(type, value);
         getChangedProperties().put((String) id, property);
         return property;
     }

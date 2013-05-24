@@ -159,7 +159,7 @@ public class AppLauncherLayoutTest {
         return group;
     }
 
-    public static AppDescriptor createAppDescriptor(String name) {
+    public static ConfiguredAppDescriptor createAppDescriptor(String name) {
         ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
         descriptor.setName(name);
         return descriptor;
