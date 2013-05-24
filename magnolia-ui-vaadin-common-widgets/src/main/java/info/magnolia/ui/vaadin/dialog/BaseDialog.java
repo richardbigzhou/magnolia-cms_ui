@@ -97,7 +97,6 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         // i.e. in different apps running at the same time, then all open dialogs would react to the keyboard event sent on the dialog currently having the focus.
         panel = new Panel(this);
         panel.setWidth(Sizeable.SIZE_UNDEFINED, Unit.PIXELS);
-        panel.setHeight(Sizeable.SIZE_UNDEFINED, Unit.PIXELS);
         panel.setHeight(100, Unit.PERCENTAGE); // Required for dynamic dialog shrinking upon window resize.
     }
 
