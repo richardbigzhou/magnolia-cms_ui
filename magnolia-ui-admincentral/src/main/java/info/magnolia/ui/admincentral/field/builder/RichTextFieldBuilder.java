@@ -148,27 +148,27 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
 
         appController.openChooseDialog("assets-link", path, subAppContext, new ItemChosenListener() {
 
-                @Override
-                public void onItemChosen(Item chosenValue) {
+            @Override
+            public void onItemChosen(Item chosenValue) {
                 String url = (String) chosenValue.getItemProperty("imagelink").getValue();
                 String repository = (String) chosenValue.getItemProperty("compositeid").getValue();
                 String path = (String) chosenValue.getItemProperty("path").getValue();
 
-                    if (!(chosenValue instanceof JcrItemAdapter)) {
-                                richTextEditor
-                                        .firePluginEvent(EVENT_CANCEL_LINK);
+                if (!(chosenValue instanceof JcrItemAdapter)) {
+                    richTextEditor
+                            .firePluginEvent(EVENT_CANCEL_LINK);
+                    return;
+                }
+
+                try {
+
+                    javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
+
+                    if (!jcrItem.isNode()) {
                         return;
                     }
 
-                    try {
-
-                        javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
-
-                        if (!jcrItem.isNode()) {
-                            return;
-                        }
-
-                        final Node selected = (Node) jcrItem;
+                    final Node selected = (Node) jcrItem;
 
                     ConfiguredImageProviderDefinition cipd = new ConfiguredImageProviderDefinition();
                     cipd.setOriginalImageNodeName("jcr:content");
@@ -189,30 +189,30 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
                     // [2/14/13 2:23:55 PM] eric hechinger:
                     // DamManager.getAsset(based on the id)
 
-                        Gson gson = new Gson();
-                        MagnoliaLink mlink = new MagnoliaLink();
-                        mlink.identifier = selected.getIdentifier();
-                        mlink.repository = selected.getSession().getWorkspace().getName();
+                    Gson gson = new Gson();
+                    MagnoliaLink mlink = new MagnoliaLink();
+                    mlink.identifier = selected.getIdentifier();
+                    mlink.repository = selected.getSession().getWorkspace().getName();
                     mlink.path = thumbnailPath;
-                        if (selected.hasProperty("title")) {
-                            mlink.caption = selected.getProperty("title").getString();
-                        } else {
-                            mlink.caption = selected.getName();
-                        }
-
-                        richTextEditor.firePluginEvent(EVENT_SEND_MAGNOLIA_LINK, gson.toJson(mlink));
-                    } catch (Exception e) {
-                        String error = "Not able to access the selected item. Value will not be set.";
-                        log.error(error, e);
-                        richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, error);
+                    if (selected.hasProperty("title")) {
+                        mlink.caption = selected.getProperty("title").getString();
+                    } else {
+                        mlink.caption = selected.getName();
                     }
-                }
 
-                @Override
-                public void onChooseCanceled() {
-                    richTextEditor.firePluginEvent(EVENT_CANCEL_LINK);
+                    richTextEditor.firePluginEvent(EVENT_SEND_MAGNOLIA_LINK, gson.toJson(mlink));
+                } catch (Exception e) {
+                    String error = "Not able to access the selected item. Value will not be set.";
+                    log.error(error, e);
+                    richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, error);
                 }
-            });
+            }
+
+            @Override
+            public void onChooseCanceled() {
+                richTextEditor.firePluginEvent(EVENT_CANCEL_LINK);
+            }
+        });
     }
 
     private static class MagnoliaLink {
