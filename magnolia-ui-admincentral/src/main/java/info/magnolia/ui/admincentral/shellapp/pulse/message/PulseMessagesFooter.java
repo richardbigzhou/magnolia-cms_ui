@@ -147,9 +147,9 @@ public final class PulseMessagesFooter extends CustomComponent {
             }
             totalMessages++;
         }
-        for (Object id : (Set<String>) messageTable.getValue()) {
+        for (String id : (Set<String>) messageTable.getValue()) {
             // skip generated header rows when grouping messages
-            if (((String) id).startsWith(PulseMessagesPresenter.GROUP_PLACEHOLDER_ITEMID)) {
+            if (id.startsWith(PulseMessagesPresenter.GROUP_PLACEHOLDER_ITEMID)) {
                 continue;
             } else {
                 totalSelected++;

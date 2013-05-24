@@ -125,7 +125,8 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
                 listener.filterByMessageCategory(category);
                 // TODO fgrilli displaying the footer in categories other than ALL has tricky implications. See MGNLUI-1447
                 if (category == MessageCategory.ALL) {
-                    footer.setVisible(true);
+                    setComponentVisibility(messageTable.getContainerDataSource());
+                    updateStatus();
                 } else {
                     footer.setVisible(false);
                 }
@@ -175,7 +176,6 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
                 setComponentVisibility(event.getContainer());
             }
         });
-
     }
 
     private void setComponentVisibility(Container container) {
