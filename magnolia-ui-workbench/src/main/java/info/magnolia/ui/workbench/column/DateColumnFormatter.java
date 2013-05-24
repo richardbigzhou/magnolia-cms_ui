@@ -45,7 +45,7 @@ import org.apache.commons.lang.time.FastDateFormat;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.ui.CssLayout;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 
@@ -73,16 +73,12 @@ public class DateColumnFormatter extends AbstractColumnFormatter<MetaDataColumnD
 
         // Need to check prop.getValue() before prop.getType() to avoid nullpointerexception if value is null.
         if (prop != null && prop.getValue() != null && prop.getType().equals(Date.class)) {
-            Label date = new Label(dateFormatter.format(prop.getValue()));
-            Label time = new Label(timeFormatter.format(prop.getValue()));
-            date.setSizeUndefined();
-            time.setSizeUndefined();
-            date.setStyleName("datefield");
-            time.setStyleName("timefield");
-            CssLayout layout = new CssLayout(date, time);
-            layout.setStyleName("datetimefield");
-            layout.setSizeUndefined();
-            return layout;
+            String date = dateFormatter.format(prop.getValue());
+            String time = timeFormatter.format(prop.getValue());
+            String datetime = String.format("<span class='datefield'>%s</span><span class='timefield'>%s</span>", date, time);
+            Label label = new Label(datetime, ContentMode.HTML);
+            label.setStyleName("datetimefield");
+            return label;
         }
 
         return null;
