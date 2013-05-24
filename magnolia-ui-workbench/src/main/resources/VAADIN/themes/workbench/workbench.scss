@@ -114,7 +114,6 @@
     .activation-status {
       display: block !important;
       font-size: 18px;
-      line-height: 1;
       text-align: center;
 
       &.color-green {color: $c40;}
@@ -141,6 +140,10 @@
       .v-spacing {
         width: 16px;
       }
+    }
+    
+    .datetimefield {
+      cursor: pointer;
     }
     
     .datetimefield .datefield {

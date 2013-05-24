@@ -163,6 +163,7 @@ public class AbstractFieldBuilderI18NPropertyTest extends AbstractBuilderTest<Co
     protected void createConfiguredFieldDefinition() {
         ConfiguredFieldDefinition configureFieldDefinition = new ConfiguredFieldDefinition();
         configureFieldDefinition.setName(propertyName);
+        configureFieldDefinition.setType("String");
         this.definition = configureFieldDefinition;
     }
 }

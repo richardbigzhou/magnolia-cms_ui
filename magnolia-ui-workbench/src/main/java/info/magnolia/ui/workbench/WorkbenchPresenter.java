@@ -154,7 +154,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                 });
             }
         }
-        view.setStatusBarView(statusBarPresenter.start(eventBus));
+        view.setStatusBarView(statusBarPresenter.start(eventBus, workbenchDefinition));
 
         view.setListener(this);
         return view;
