@@ -82,6 +82,10 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
         return nodeTypes;
     }
 
+    public void setNodeTypes(List<NodeTypeDefinition> nodeTypes) {
+        this.nodeTypes = nodeTypes;
+    }
+
     @Override
     public boolean includeProperties() {
         return includeProperties;
