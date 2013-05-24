@@ -21,8 +21,8 @@
   background: transparent none no-repeat !important;
   outline: 0 !important;
   /* Render bars always on top = z-index + position relative to make z-index work */
-  position: relative;
-  z-index: 65535;
+  position: relative !important;
+  z-index: 65535 !important;
 }
 
 a.disabled:hover {
@@ -154,8 +154,8 @@ div.mgnlPlaceholder div.mgnlPlaceholderBox {
  */
 div.mgnlEditorBarButtons {
   float: right !important;
-  height: 25px;
-  overflow: hidden;
+  height: 25 px!important;
+  overflow: h idden!important;
   padding: 0 8px 0 0 !important;
 }
 
@@ -168,6 +168,7 @@ div.editorIcon {
   padding: 0 0 0 11px !important;
   cursor: pointer !important;
   font-size: 18px !important;
+  float: right !important;
 }
 
 
@@ -257,7 +258,7 @@ div.mgnlLevel-max {
 
 .mgnlEditormgnlPlaceholder.component.moveOngoing .mgnlEditormgnlPlaceholderElements {
   border: 2px dotted #b3c587 !important;
-  border-top: none;
+  border-top: none !important;
 }
 
 .mgnlEditormgnlPlaceholder.component.moveOngoing .mgnlEditorBarLabel {

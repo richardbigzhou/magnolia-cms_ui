@@ -38,7 +38,9 @@ import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.SortComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.ComponentListener;
+import info.magnolia.ui.vaadin.gwt.client.widget.dnd.ComponentMoveHelper;
 
 import com.google.gwt.event.shared.EventBus;
 
@@ -97,7 +99,7 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
             areaElement.setSortOrder(order);
 
             for (MgnlComponent component : area.getComponents()) {
-                if (component.getNodeName().equals(sourcePath)) {
+                if (component.getNodePath().equals(sourcePath)) {
                     areaElement.setSourceComponent(component.getTypedElement());
                     break;
                 }
@@ -129,12 +131,63 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
             area.onDragStart(true);
             for (MgnlComponent component : area.getComponents()) {
                 component.setMoveTarget(true);
+                component.registerDragAndDropHandlers();
             }
         }
     }
 
     @Override
-    public String getNodeName() {
+    public void startMove() {
+        MgnlArea area = getParentArea();
+        if (area != null) {
+            for (MgnlComponent component : area.getComponents()) {
+                component.setDraggable(false);
+                component.registerMoveHandlers();
+            }
+        }
+        ComponentMoveHelper.setNodePath(getNodePath());
+        ComponentMoveHelper.setAbsoluteLeft(getControlBar().getAbsoluteLeft());
+        ComponentMoveHelper.setAbsoluteTop(getControlBar().getAbsoluteTop());
+    }
+
+    @Override
+    public void stopMove() {
+        MgnlArea area = getParentArea();
+        if (area != null) {
+            for (MgnlComponent component : area.getComponents()) {
+                component.setDraggable(true);
+                component.unregisterMoveHandlers();
+            }
+        }
+        ComponentMoveHelper.setNodePath(null);
+        ComponentMoveHelper.setAbsoluteLeft(getControlBar().getAbsoluteLeft());
+        ComponentMoveHelper.setAbsoluteTop(getControlBar().getAbsoluteTop());
+    }
+
+    private void unregisterMoveHandlers() {
+        getControlBar().unregisterMoveHandlers();
+    }
+
+    private void registerMoveHandlers() {
+        getControlBar().registerMoveHandlers();
+    }
+
+    private void registerDragAndDropHandlers() {
+        getControlBar().registerDragAndDropHandlers();
+    }
+
+    private void unregisterDragAndDropHandlers() {
+        getControlBar().unregisterDragAndDropHandlers();
+    }
+
+    private void setDraggable(boolean draggable) {
+        if (getControlBar() != null) {
+            getControlBar().setDraggable(draggable);
+        }
+    }
+
+    @Override
+    public String getNodePath() {
         return getAttribute("path");
     }
 
@@ -145,6 +198,7 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
             area.onDragStart(false);
             for (MgnlComponent component : area.getComponents()) {
                 component.setMoveTarget(false);
+                component.unregisterDragAndDropHandlers();
             }
         }
     }
@@ -169,5 +223,10 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
 
     public void setMoveTarget(boolean moveTarget) {
         getControlBar().setStyleName("moveTarget", moveTarget);
+    }
+
+    @Override
+    protected ComponentBar getControlBar() {
+        return (ComponentBar) super.getControlBar();
     }
 }

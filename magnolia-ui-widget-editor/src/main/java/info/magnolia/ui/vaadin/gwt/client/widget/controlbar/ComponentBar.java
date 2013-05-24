@@ -35,6 +35,11 @@ package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.ComponentListener;
+import info.magnolia.ui.vaadin.gwt.client.widget.dnd.ComponentMoveHelper;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -50,6 +55,13 @@ import com.google.gwt.event.dom.client.DragStartEvent;
 import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.event.dom.client.DropEvent;
 import com.google.gwt.event.dom.client.DropHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Label;
 
@@ -58,7 +70,11 @@ import com.google.gwt.user.client.ui.Label;
  */
 public class ComponentBar extends AbstractBar {
 
+    private static final String MOVE_CLASS_NAME = "icon-move";
+
     private final ComponentListener listener;
+    List<HandlerRegistration> dndHandlers = new LinkedList<HandlerRegistration>();
+    List<HandlerRegistration> moveHandlers = new LinkedList<HandlerRegistration>();
 
     public ComponentBar(MgnlComponent mgnlElement) {
         super(mgnlElement);
@@ -69,14 +85,22 @@ public class ComponentBar extends AbstractBar {
         initLayout();
 
         if (DragDropEventBase.isSupported()) {
-            createDragAndDropHandlers();
-            this.getElement().setDraggable(Element.DRAGGABLE_TRUE);
-            getStyle().setCursor(Style.Cursor.MOVE);
-         }
-
+            registerDragStartHandler();
+            setDraggable(true);
+        }
     }
 
-
+    public void setDraggable(boolean draggable) {
+        if (DragDropEventBase.isSupported()) {
+            if (draggable) {
+                this.getElement().setDraggable(Element.DRAGGABLE_TRUE);
+                getStyle().setCursor(Style.Cursor.MOVE);
+            } else {
+                this.getElement().setDraggable(Element.DRAGGABLE_FALSE);
+                getStyle().setCursor(Style.Cursor.DEFAULT);
+            }
+        }
+    }
 
     @Override
     protected String getLabel() {
@@ -99,9 +123,28 @@ public class ComponentBar extends AbstractBar {
 
             addButton(edit);
         }
-    }
+        final Label move = new Label();
+        move.setStyleName(ICON_CLASS_NAME);
+        move.addStyleName(MOVE_CLASS_NAME);
 
-    private void createDragAndDropHandlers() {
+        move.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                //toggleButtons(false);
+                //toggleStyles(bar, true);
+
+                listener.startMove();
+
+                //int height = getOffsetHeight();
+                //int width = getOffsetWidth();
+                //moveDiv = new MoveWidget(height, width);
+            }
+        });
+        addButton(move);
+
+    }
+    private void registerDragStartHandler() {
+
         addDomHandler(new DragStartHandler() {
             @Override
             public void onDragStart(DragStartEvent event) {
@@ -113,13 +156,15 @@ public class ComponentBar extends AbstractBar {
 
                 int x = getAbsoluteLeft();
                 int y = getAbsoluteTop();
-                event.setData("text", listener.getNodeName() + "," + x + "," + y);
+                event.setData("text", listener.getNodePath() + "," + x + "," + y);
                 event.getDataTransfer().setDragImage(getElement(), 10, 10);
 
             }
         }, DragStartEvent.getType());
 
-        addDomHandler(new DragEndHandler() {
+    }
+    public void registerDragAndDropHandlers() {
+        dndHandlers.add(addDomHandler(new DragEndHandler() {
             @Override
             public void onDragEnd(DragEndEvent event) {
                 //toggleButtons(true);
@@ -128,93 +173,137 @@ public class ComponentBar extends AbstractBar {
 
                 listener.onDragEnd();
             }
-        }, DragEndEvent.getType());
+        }, DragEndEvent.getType()));
 
-        addDomHandler(new DragOverHandler() {
+        dndHandlers.add(addDomHandler(new DragOverHandler() {
             @Override
             public void onDragOver(DragOverEvent event) {
                 String data = event.getData("text");
                 String[] tokens = data.split(",");
                 String idSource = tokens[0];
 
-                if (!listener.getNodeName().equals(idSource)) {
+                if (!listener.getNodePath().equals(idSource)) {
                     setStyleName("moveOver", true);
                 }
                 event.stopPropagation();
             }
-        }, DragOverEvent.getType());
+        }, DragOverEvent.getType()));
 
-        addDomHandler(new DragLeaveHandler() {
+        dndHandlers.add(addDomHandler(new DragLeaveHandler() {
 
             @Override
             public void onDragLeave(DragLeaveEvent event) {
                 setStyleName("moveOver", false);
                 event.stopPropagation();
             }
-        }, DragLeaveEvent.getType());
+        }, DragLeaveEvent.getType()));
 
-        addDomHandler(new DropHandler() {
+        dndHandlers.add(addDomHandler(new DropHandler() {
             @Override
             public void onDrop(DropEvent event) {
                 String data = event.getData("text");
                 String[] tokens = data.split(",");
                 String sourcePath = tokens[0];
 
-                if (!listener.getNodeName().equals(sourcePath)) {
+                if (!listener.getNodePath().equals(sourcePath)) {
                     int xTarget = getAbsoluteLeft();
                     int yTarget = getAbsoluteTop();
                     int xOrigin = Integer.valueOf(tokens[1]);
                     int yOrigin = Integer.valueOf(tokens[2]);
 
-                    boolean isDragUp = yOrigin > yTarget;
-                    boolean isDragDown = !isDragUp;
-                    boolean isDragLeft = xOrigin > xTarget;
-                    boolean isDragRight = !isDragLeft;
-
-                    String order = null;
-
-                    if (isDragUp || isDragLeft) {
-                        order = "before";
-                    } else if (isDragDown || isDragRight) {
-                        order = "after";
-                    }
-                    //String parentPath = bar.getPath().substring(0, bar.getPath().lastIndexOf("/"));
+                    String order = getSortOrder(xOrigin, yOrigin, xTarget, yTarget);
 
                     listener.sortComponent(sourcePath, order);
                 }
 
                 event.preventDefault();
             }
-        }, DropEvent.getType());    }
+        }, DropEvent.getType()));
+    }
 
+    public void unregisterDragAndDropHandlers() {
+        Iterator<HandlerRegistration> it = dndHandlers.iterator();
+        while (it.hasNext()) {
+            it.next().removeHandler();
+            it.remove();
+        }
+    }
 
-   /*
-    private void createMouseEventsHandlers() {
+    public void registerMoveHandlers() {
 
-        addDomHandler(new MouseDownHandler() {
+        moveHandlers.add(addDomHandler(new MouseDownHandler() {
 
             @Override
             public void onMouseDown(MouseDownEvent event) {
-                LegacyDragAndDrop.moveComponentEnd(ComponentBar.this);
-            }
-        }, MouseDownEvent.getType());
+                if (ComponentMoveHelper.isMoving()) {
 
-        addDomHandler(new MouseOverHandler() {
+                    String idSource = ComponentMoveHelper.getNodePath();
+
+                    if (!listener.getNodePath().equals(idSource)) {
+                        int xTarget = getAbsoluteLeft();
+                        int yTarget = getAbsoluteTop();
+                        int xOrigin = ComponentMoveHelper.getAbsoluteLeft();
+                        int yOrigin = ComponentMoveHelper.getAbsoluteTop();
+
+                        String order = getSortOrder(xOrigin, yOrigin, xTarget, yTarget);
+
+                        listener.stopMove();
+                        listener.sortComponent(idSource, order);
+                    }
+                }
+            }
+        }, MouseDownEvent.getType()));
+
+        moveHandlers.add(addDomHandler(new MouseOverHandler() {
 
             @Override
             public void onMouseOver(MouseOverEvent event) {
-                LegacyDragAndDrop.moveComponentOver(ComponentBar.this);
+                if (ComponentMoveHelper.isMoving()) {
+                    String idSource = ComponentMoveHelper.getNodePath();
 
+                    if (!listener.getNodePath().equals(idSource)) {
+                        setStyleName("moveOver", true);
+                    }
+                }
             }
-        }, MouseOverEvent.getType());
+        }, MouseOverEvent.getType()));
 
-        addDomHandler(new MouseOutHandler() {
+        moveHandlers.add(addDomHandler(new MouseOutHandler() {
 
             @Override
             public void onMouseOut(MouseOutEvent event) {
-                LegacyDragAndDrop.moveComponentOut(ComponentBar.this);
-            }
-        }, MouseOutEvent.getType());
-    }*/
+                if (ComponentMoveHelper.isMoving()) {
+                    String idSource = ComponentMoveHelper.getNodePath();
 
+                    if (!listener.getNodePath().equals(idSource)) {
+                        setStyleName("moveOver", false);
+                    }
+                }
+            }
+        }, MouseOutEvent.getType()));
+    }
+
+    public void unregisterMoveHandlers() {
+        Iterator<HandlerRegistration> it = moveHandlers.iterator();
+        while (it.hasNext()) {
+            it.next().removeHandler();
+            it.remove();
+        }
+    }
+
+    private String getSortOrder(int xSource, int ySource, int xTarget, int yTarget) {
+        boolean isDragUp = ySource > yTarget;
+        boolean isDragDown = !isDragUp;
+        boolean isDragLeft = xSource > xTarget;
+        boolean isDragRight = !isDragLeft;
+
+        String order = null;
+
+        if (isDragUp || isDragLeft) {
+            order = "before";
+        } else if (isDragDown || isDragRight) {
+            order = "after";
+        }
+        return order;
+    }
 }

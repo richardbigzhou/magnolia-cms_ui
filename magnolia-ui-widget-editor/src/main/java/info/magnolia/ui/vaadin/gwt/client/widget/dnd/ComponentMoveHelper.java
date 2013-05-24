@@ -38,10 +38,40 @@ import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar;
 /**
  * DragAndDropLegacy. GWT port of legacy /magnolia-module-admininterface/src/main/resources/mgnl-resources/admin-js/inline.js
  */
-public class LegacyDragAndDrop {
+public class ComponentMoveHelper {
 
-    public static ComponentBar sourceBar;
-    private static MoveWidget moveDiv;
+    private static int absoluteLeft;
+
+    private static int absoluteTop;
+    private static String nodeName;
+
+    public static boolean isMoving() {
+        return nodeName != null;
+    }
+
+    public static int getAbsoluteLeft() {
+        return absoluteLeft;
+    }
+
+    public static int getAbsoluteTop() {
+        return absoluteTop;
+    }
+
+    public static String getNodePath() {
+        return nodeName;
+    }
+
+    public static void setAbsoluteLeft(int absoluteLeft) {
+        ComponentMoveHelper.absoluteLeft = absoluteLeft;
+    }
+
+    public static void setAbsoluteTop(int absoluteTop) {
+        ComponentMoveHelper.absoluteTop = absoluteTop;
+    }
+
+    public static void setNodePath(String nodeName) {
+        ComponentMoveHelper.nodeName = nodeName;
+    }
 
     public static void moveComponentStart(ComponentBar bar) {
 /*        toggleStyles(bar, true);
@@ -65,9 +95,9 @@ public class LegacyDragAndDrop {
 
     public static void moveComponentOver(ComponentBar bar) {
 /*        if (isMoving()) {
-            String idSource = sourceBar.getNodeName();
+            String idSource = sourceBar.getNodePath();
 
-            if (!bar.getNodeName().equals(idSource)) {
+            if (!bar.getNodePath().equals(idSource)) {
                 bar.setStyleName("moveOver", true);
             }
         }*/
@@ -75,9 +105,9 @@ public class LegacyDragAndDrop {
 
     public static void moveComponentOut(ComponentBar bar) {
 /*        if (isMoving()) {
-            String idSource = sourceBar.getNodeName();
+            String idSource = sourceBar.getNodePath();
 
-            if (!bar.getNodeName().equals(idSource)) {
+            if (!bar.getNodePath().equals(idSource)) {
                 bar.setStyleName("moveOver", false);
             }
         }*/
@@ -86,9 +116,9 @@ public class LegacyDragAndDrop {
     public static void moveComponentEnd(ComponentBar bar) {
 /*        if (isMoving()) {
 
-            String idSource = sourceBar.getNodeName();
+            String idSource = sourceBar.getNodePath();
 
-            if (!bar.getNodeName().equals(idSource)) {
+            if (!bar.getNodePath().equals(idSource)) {
                 int xTarget = bar.getAbsoluteLeft();
                 int yTarget = bar.getAbsoluteTop();
                 int xOrigin = sourceBar.getAbsoluteLeft();
@@ -107,7 +137,7 @@ public class LegacyDragAndDrop {
                     order = "after";
                 }
                 String parentPath = bar.getPath().substring(0, bar.getPath().lastIndexOf("/"));
-                moveComponent(bar.getNodeName(), idSource, parentPath, order);
+                moveComponent(bar.getNodePath(), idSource, parentPath, order);
             }
         }*/
     }
@@ -158,9 +188,4 @@ public class LegacyDragAndDrop {
             }
         }*/
     }
-
-    public static boolean isMoving() {
-        return sourceBar != null;
-    }
-
 }

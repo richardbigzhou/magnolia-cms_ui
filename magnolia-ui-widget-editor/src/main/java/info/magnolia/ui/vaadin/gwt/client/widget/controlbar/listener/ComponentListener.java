@@ -45,9 +45,13 @@ public interface ComponentListener {
 
     void onDragStart();
 
-    String getNodeName();
+    String getNodePath();
 
     void onDragEnd();
 
     void sortComponent(String sourceComponent, String order);
+
+    void startMove();
+
+    void stopMove();
 }
