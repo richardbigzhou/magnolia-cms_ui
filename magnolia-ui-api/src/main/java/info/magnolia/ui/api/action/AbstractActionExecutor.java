@@ -135,7 +135,7 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
 
         // Must have _any_ of the node types if any are specified, otherwise its available by default
         if (availability.getNodeTypes().isEmpty())
-            return true;
+            return availability.isNodes();
 
         for (String nodeType : availability.getNodeTypes()) {
             try {
