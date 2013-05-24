@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.cms.security.operations.AccessDefinition;
+
 import java.io.Serializable;
 import java.util.Map;
 
@@ -54,4 +56,6 @@ public interface AppDescriptor extends Serializable {
     Class<? extends App> getAppClass();
 
     Map<String, SubAppDescriptor> getSubApps();
+
+    AccessDefinition getPermissions();
 }

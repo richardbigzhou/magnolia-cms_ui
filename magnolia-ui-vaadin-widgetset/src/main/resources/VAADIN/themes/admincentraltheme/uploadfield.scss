@@ -67,10 +67,10 @@
 }
 
 .preview-image {
-  display: block;
-  margin: auto;
+  display: inline-block;
   max-width: 100%;
   max-height: 100%;
+  vertical-align: middle;
 }
 
 .file-preview {
@@ -81,9 +81,10 @@
   position: absolute;
   left: 20px;
   top:20px;
-    background-color: $c14;
+  background-color: $c14;
+  text-align: center;
+  line-height: 145px;
 }
-
 
 .upload-image-field .buttons {
   bottom:20px;
@@ -105,11 +106,6 @@
 .initial .v-button {
   margin-top:45px;
   margin-left:20px;
-  width: 180px;
-}
-
-.upload-image-field  .v-button .v-button-caption {
-  line-height: normal;
 }
 
 .upload-text {
