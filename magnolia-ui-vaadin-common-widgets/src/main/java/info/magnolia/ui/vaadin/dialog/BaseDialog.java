@@ -98,7 +98,7 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         panel = new Panel(this);
         panel.setWidth(Sizeable.SIZE_UNDEFINED, Unit.PIXELS);
         panel.setHeight(Sizeable.SIZE_UNDEFINED, Unit.PIXELS);
-        // panel.setHeight(100, Unit.PERCENTAGE);
+        panel.setHeight(100, Unit.PERCENTAGE); // Required for dynamic dialog shrinking upon window resize.
     }
 
     @Override

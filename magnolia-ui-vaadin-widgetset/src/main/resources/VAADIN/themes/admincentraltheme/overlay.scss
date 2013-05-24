@@ -56,15 +56,6 @@
   top:60px;
 }
 
-/* ensure light dialogs render properly on mobile safari (that buttons are displayed) */
-.overlay-child,
-.dialog-panel,
-.light-dialog-panel
-{
-	-webkit-backface-visibility: hidden;
-	-webkit-transform: translateZ(0);
-	-webkit-transform: translate3d(0,0,0);
-}
 
 /*
 * Forms in an Overlay.
@@ -101,6 +92,15 @@
 
 
 /* transitions for overlays */
+
+/* force curtain to be rendered in 3d to solve flash/flicker at the beginning of transitions with a curtain. */
+.overlay,
+.modal-curtain
+{
+	-webkit-backface-visibility: hidden;
+	-webkit-transform: translateZ(0);
+	-webkit-transform: translate3d(0,0,0);
+}
 
 .overlay.open .modal-curtain{
   @include prefix(animation-duration, 0.5s);
