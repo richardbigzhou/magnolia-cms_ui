@@ -47,7 +47,6 @@ import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -119,9 +118,8 @@ public final class FavoritesForm extends CustomComponent {
 
         final Label addNewIcon = new Label();
         addNewIcon.setSizeUndefined();
-        addNewIcon.setContentMode(ContentMode.HTML);
-        addNewIcon.setValue("<span class=\"icon-add-fav\"></span>");
         addNewIcon.addStyleName("icon");
+        addNewIcon.addStyleName("icon-add-fav");
 
         final Label addNewLabel = new Label(MessagesUtil.get("favorites.form.add"));
         addNewLabel.setSizeUndefined();
@@ -129,9 +127,9 @@ public final class FavoritesForm extends CustomComponent {
 
         arrowIcon = new Label();
         arrowIcon.setSizeUndefined();
-        arrowIcon.setContentMode(ContentMode.HTML);
         arrowIcon.addStyleName("icon");
         arrowIcon.addStyleName("arrow");
+        arrowIcon.addStyleName("icon-arrow2_n");
 
         header.addComponent(addNewIcon);
         header.addComponent(addNewLabel);
@@ -147,7 +145,8 @@ public final class FavoritesForm extends CustomComponent {
 
     public void close() {
         tabsheet.setVisible(false);
-        arrowIcon.setValue("<span class=\"icon-arrow2_n\"></span>");
+        arrowIcon.removeStyleName("icon-arrow2_s");
+        arrowIcon.addStyleName("icon-arrow2_n");
         // remove key shortcut listener or this might compete with the next element getting the focus.
         favoriteEntryForm.removeEnterKeyShortcutListener();
         favoriteGroupForm.removeEnterKeyShortcutListener();
@@ -155,7 +154,8 @@ public final class FavoritesForm extends CustomComponent {
 
     public void open() {
         tabsheet.setVisible(true);
-        arrowIcon.setValue("<span class=\"icon-arrow2_s\"></span>");
+        arrowIcon.removeStyleName("icon-arrow2_n");
+        arrowIcon.addStyleName("icon-arrow2_s");
         favoriteEntryForm.addEnterKeyShortcutListener();
         // the group form will get the key shortcut listener attached on selecting it.
     }

@@ -39,6 +39,7 @@ import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -217,12 +218,21 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
      */
     private void setDefaultSelectedItem(Property<?> dataSource) {
         Object selectedValue = null;
-        if (StringUtils.isNotEmpty(dataSource.toString())) {
-            selectedValue = dataSource.getValue();
+        Object datasourceValue = dataSource.getValue();
+
+        // If the current value is not null return
+        if (datasourceValue != null && ((datasourceValue instanceof Collection && !((Collection) datasourceValue).isEmpty()) || (!(datasourceValue instanceof Collection) && StringUtils.isNotEmpty(datasourceValue.toString())))) {
+            this.field.setValue(datasourceValue);
+            return;
         } else if (initialSelecteKey != null) {
             selectedValue = initialSelecteKey;
         } else if (definition.getOptions() != null && !definition.getOptions().isEmpty()) {
             selectedValue = definition.getOptions().get(0).getValue();
+        }
+        // Set the selected value
+        if (datasourceValue != null && datasourceValue instanceof Collection) {
+                ((Collection) datasourceValue).add(selectedValue);
+                selectedValue = datasourceValue;
         }
         this.field.setValue(selectedValue);
     }

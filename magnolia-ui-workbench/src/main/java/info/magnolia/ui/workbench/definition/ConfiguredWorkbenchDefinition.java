@@ -50,7 +50,7 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private String workspace;
 
-    private String path = "";
+    private String path = "/";
 
     private String defaultOrder;
 
