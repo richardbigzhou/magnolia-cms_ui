@@ -130,7 +130,7 @@ public class AbstractJcrNodeAdapterTest {
         final String propertyName = "TEST";
         final String propertyValue = "value";
         final DummyJcrNodeAdapter item = new DummyJcrNodeAdapter(underlyingNode);
-        Property property = DefaultPropertyUtil.newDefaultProperty(propertyName, PropertyType.TYPENAME_STRING, propertyValue);
+        Property property = DefaultPropertyUtil.newDefaultProperty(PropertyType.TYPENAME_STRING, propertyValue);
         item.addItemProperty(propertyName, property);
 
         // WHEN
@@ -168,7 +168,7 @@ public class AbstractJcrNodeAdapterTest {
         DummyJcrNodeAdapter item = new DummyJcrNodeAdapter(underlyingNode);
 
         // WHEN
-        Property itemProperty = DefaultPropertyUtil.newDefaultProperty(propertyName, PropertyType.TYPENAME_STRING, propertyName);
+        Property itemProperty = DefaultPropertyUtil.newDefaultProperty(PropertyType.TYPENAME_STRING, propertyName);
         item.addItemProperty(propertyName, itemProperty);
         itemProperty.setValue("newValue");
 
@@ -186,7 +186,7 @@ public class AbstractJcrNodeAdapterTest {
         final String propertyName = "TEST";
         final String propertyValue = "value";
         final DummyJcrNodeAdapter item = new DummyJcrNodeAdapter(underlyingNode);
-        Property property = DefaultPropertyUtil.newDefaultProperty(propertyName, PropertyType.TYPENAME_STRING, propertyValue);
+        Property property = DefaultPropertyUtil.newDefaultProperty(PropertyType.TYPENAME_STRING, propertyValue);
         item.getChangedProperties().put(propertyName, property);
 
         // WHEN
@@ -213,11 +213,11 @@ public class AbstractJcrNodeAdapterTest {
         underlyingNode.getSession().save();
 
         final DummyJcrNodeAdapter item = new DummyJcrNodeAdapter(underlyingNode);
-        Property propertyNotEmpty = DefaultPropertyUtil.newDefaultProperty(propertyNameNotEmpty, PropertyType.TYPENAME_STRING, propertyValueNotEmpty);
+        Property propertyNotEmpty = DefaultPropertyUtil.newDefaultProperty(PropertyType.TYPENAME_STRING, propertyValueNotEmpty);
         item.getChangedProperties().put(propertyNameNotEmpty, propertyNotEmpty);
-        Property propertyEmpty = DefaultPropertyUtil.newDefaultProperty(propertyNameEmpty, PropertyType.TYPENAME_STRING, "");
+        Property propertyEmpty = DefaultPropertyUtil.newDefaultProperty(PropertyType.TYPENAME_STRING, "");
         item.getChangedProperties().put(propertyNameEmpty, propertyEmpty);
-        Property propertyBlank = DefaultPropertyUtil.newDefaultProperty(propertyNameBlank, PropertyType.TYPENAME_STRING, " ");
+        Property propertyBlank = DefaultPropertyUtil.newDefaultProperty(PropertyType.TYPENAME_STRING, " ");
         item.getChangedProperties().put(propertyNameBlank, propertyBlank);
 
         // WHEN

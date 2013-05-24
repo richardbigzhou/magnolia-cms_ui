@@ -31,24 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
+package info.magnolia.ui.vaadin.integration.refresher;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.vaadin.ui.AbstractComponentContainer;
+import com.vaadin.ui.ProgressIndicator;
 
 /**
- * OverlayWidget.
+ * A util class which enables the server to update the client.
  */
-public class OverlayWidget extends SimplePanel {
+public class ClientRefresherUtil {
 
-    private final Element modalityCurtain = DOM.createDiv();
+    /**
+     * Effectively, the server will push any updates to its state to the client after the delayMsec elapses.
+     * 
+     * @param delayMsec When the server should update the client.
+     * @param refreshee A component to host the refreshing logic.
+     */
+    public static ProgressIndicator addClientRefresher(int delayMsec, AbstractComponentContainer refreshee) {
 
-    public OverlayWidget() {
-        super();
+        /*
+         * Progressbar hack to cause client to update to server state.
+         * Progressbar helps simply because it uses polling to initiate a client/server transaction,
+         * this transaction enables the client to refresh itself to the changes we perform in the timer.
+         * 
+         * When Vaadin 7.1 with built-in push is out this code can be refactored to use it.
+         * See ticket MGNLUI-1112
+         */
+        ProgressIndicator clientRefresher = new ProgressIndicator();
+        clientRefresher.setPollingInterval(delayMsec);
+        clientRefresher.setIndeterminate(true);
+        clientRefresher.setStyleName("progressbar-based-client-refresher");
 
-        modalityCurtain.setClassName("modal-curtain");
-        this.getElement().appendChild(modalityCurtain);
+        refreshee.addComponent(clientRefresher);
+
+        return clientRefresher;
     }
+
 
 }

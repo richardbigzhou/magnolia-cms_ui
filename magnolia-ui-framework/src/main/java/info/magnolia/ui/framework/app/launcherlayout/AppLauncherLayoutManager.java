@@ -36,8 +36,8 @@ package info.magnolia.ui.framework.app.launcherlayout;
 import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition;
 
 /**
- * Manages the launcher layout displayed in the app launcher. Fires an {@link AppLauncherLayoutChangedEvent} of the system event bus
- * when the layout changes.
+ * Manages the launcher layout displayed in the app launcher. Fires an {@link AppLauncherLayoutChangedEvent} on the
+ * system event bus when the layout changes.
  *
  * @see AppLauncherLayout
  * @see AppLauncherLayoutChangedEvent
@@ -46,7 +46,7 @@ import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayou
 public interface AppLauncherLayoutManager {
 
     /**
-     * Returns the {@link AppLauncherLayout} defined for the current user. Empty groups or groups where the current user doesn't
+     * Returns the {@link AppLauncherLayout} for the current user. Empty groups or groups where the current user doesn't
      * have access to any of the apps are not returned. Disabled apps are not included in the response nor are apps that
      * are not present in the {@link info.magnolia.ui.framework.app.registry.AppDescriptorRegistry}. The returned object
      * is also populated with {@link info.magnolia.ui.framework.app.AppDescriptor} for quick access.

@@ -157,7 +157,7 @@ public class RoleManagementField extends TwinColSelectFieldBuilder<RoleManagemen
 
     @Override
     public com.vaadin.data.Property<Set> getOrCreateProperty() {
-        DefaultProperty<Set> prop = new DefaultProperty<Set>("roles", Set.class, getAssignedRoles());
+        DefaultProperty<Set> prop = new DefaultProperty<Set>(Set.class, getAssignedRoles());
         item.addItemProperty("roles", prop);
         return prop;
     }

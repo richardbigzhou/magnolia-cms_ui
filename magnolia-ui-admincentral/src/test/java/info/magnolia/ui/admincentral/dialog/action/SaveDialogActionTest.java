@@ -143,7 +143,7 @@ public class SaveDialogActionTest extends MgnlTestCase {
         node = session.getRootNode().addNode("underlying");
 
         item = new JcrNodeAdapter(node);
-        item.addItemProperty("property", DefaultPropertyUtil.newDefaultProperty("property", null, "changed"));
+        item.addItemProperty("property", DefaultPropertyUtil.newDefaultProperty(null, "changed"));
         dialogAction = new SaveDialogAction(dialogActionDefinition, item, presenter, presenter.getCallback());
 
         // WHEN

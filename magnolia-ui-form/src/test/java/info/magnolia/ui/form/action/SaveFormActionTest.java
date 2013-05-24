@@ -33,25 +33,21 @@
  */
 package info.magnolia.ui.form.action;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
-import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.test.mock.MockContext;
-import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.availability.ActionAvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredActionAvailabilityDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +59,7 @@ public class SaveFormActionTest extends RepositoryTestCase {
     private SaveFormActionDefinition formActionDefinition;
     private CallbackFormActionTest.TestEditorCallback callback;
     private CallbackFormActionTest.TestEditorValidator validator;
-    private MockSession session;
+    private Session session;
     private Node node;
     private JcrNodeAdapter item;
     private SaveFormAction formAction;
@@ -77,11 +73,7 @@ public class SaveFormActionTest extends RepositoryTestCase {
         this.callback = new CallbackFormActionTest.TestEditorCallback();
         this.validator = new CallbackFormActionTest.TestEditorValidator();
         // Init Node
-        session = new MockSession("config");
-        MockContext ctx = new MockContext();
-        ctx.setUser(new MgnlUser("userName", "realm", new ArrayList<String>(), new ArrayList<String>(), new HashMap<String, String>()));
-        ctx.addSession("config", session);
-        MgnlContext.setInstance(ctx);
+        session = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
     }
 
     @Test
@@ -98,6 +90,45 @@ public class SaveFormActionTest extends RepositoryTestCase {
 
         // THEN
         assertEquals("onSuccess(name)", this.callback.getCallbackActionCalled());
+    }
+
+    @Test
+    public void executeSaveChangeNodeNameBasedOnPropertyNameTest() throws RepositoryException, ActionExecutionException {
+        // GIVEN
+        node = session.getRootNode().addNode("underlying");
+        node.setProperty("name", "newNodeName");
+        item = new JcrNodeAdapter(node);
+        item.getItemProperty("name").setValue("newNodeNameChanged");
+        initDefinition("name", "label");
+        formAction = new SaveFormAction(formActionDefinition, item, callback, validator);
+
+        // WHEN
+        formAction.execute();
+
+        // THEN
+        assertFalse(session.getRootNode().hasNode("underlying"));
+        assertTrue(session.getRootNode().hasNode("newNodeNameChanged"));
+    }
+
+    @Test
+    public void executeSaveChangeNodeNameBasedOnPropertyJcrNameTest() throws RepositoryException, ActionExecutionException {
+        // GIVEN
+        node = session.getRootNode().addNode("underlying");
+        node.setProperty("name", "newNodeName");
+        node.setProperty("jcrName", "newNodeJcrName");
+        item = new JcrNodeAdapter(node);
+        item.getItemProperty("name").setValue("newNodeNameChanged");
+        item.getItemProperty("jcrName").setValue("newNodeJcrNameChanged");
+        initDefinition("name", "label");
+        formAction = new SaveFormAction(formActionDefinition, item, callback, validator);
+
+        // WHEN
+        formAction.execute();
+
+        // THEN
+        assertFalse(session.getRootNode().hasNode("underlying"));
+        assertFalse(session.getRootNode().hasNode("newNodeNameChanged"));
+        assertTrue(session.getRootNode().hasNode("newNodeJcrNameChanged"));
     }
 
     @Test
@@ -125,7 +156,7 @@ public class SaveFormActionTest extends RepositoryTestCase {
         node = session.getRootNode().addNode("underlying");
 
         item = new JcrNodeAdapter(node);
-        item.addItemProperty("property", DefaultPropertyUtil.newDefaultProperty("property", null, "changed"));
+        item.addItemProperty("property", DefaultPropertyUtil.newDefaultProperty(null, "changed"));
         initDefinition("name", "label");
         formAction = new SaveFormAction(formActionDefinition, item, callback, validator);
 

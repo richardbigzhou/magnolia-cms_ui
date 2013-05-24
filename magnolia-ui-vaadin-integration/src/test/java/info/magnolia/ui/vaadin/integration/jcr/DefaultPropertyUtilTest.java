@@ -74,7 +74,7 @@ public class DefaultPropertyUtilTest {
     @Test
     public void createDefaultPropertyByPropertyType() {
         //WHEN
-        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty("property_name", PropertyType.LONG, 123);
+        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty(PropertyType.LONG, 123);
 
         //THEN
         assertEquals(123, property.getValue());
@@ -84,7 +84,7 @@ public class DefaultPropertyUtilTest {
     @Test
     public void createDefaultPropertyByPropertyTypeWithNullValue() {
         //WHEN
-        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty("property_name", PropertyType.LONG, null);
+        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty(PropertyType.LONG, null);
 
         //THEN
         assertEquals(null, property.getValue());

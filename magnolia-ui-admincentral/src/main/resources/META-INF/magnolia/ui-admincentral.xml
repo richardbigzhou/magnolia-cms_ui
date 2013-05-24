@@ -5,7 +5,7 @@
   <displayName>Magnolia AdminCentral</displayName>
   <description>New Magnolia Administration GUI</description>
   <class>info.magnolia.ui.admincentral.module.AdminCentralModule</class>
-  <versionHandler>info.magnolia.ui.admincentral.setup.AdminCentralModuleVersionHandler</versionHandler>
+  <versionHandler>info.magnolia.ui.admincentral.setup.AdmincentralModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 
   <components>
@@ -118,7 +118,7 @@
     </component>
     <component>
       <type>info.magnolia.ui.framework.app.AppView</type>
-      <implementation>info.magnolia.ui.framework.app.AppFrameView</implementation>
+      <implementation>info.magnolia.ui.framework.app.DefaultAppView</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.ShellAppController</type>

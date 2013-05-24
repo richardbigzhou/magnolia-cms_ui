@@ -44,12 +44,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
 
 /**
  * Common base for {@link JcrItemAdapter} implementation.
  */
-public abstract class AbstractJcrAdapter implements Property.ValueChangeListener, JcrItemAdapter {
+public abstract class AbstractJcrAdapter implements JcrItemAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrAdapter.class);
 
@@ -118,19 +117,6 @@ public abstract class AbstractJcrAdapter implements Property.ValueChangeListener
 
     protected Map<String, Property> getRemovedProperties() {
         return removedProperties;
-    }
-
-    /**
-     * Listener to DefaultProperty value change event. Get this event when a property has changed, and propagate this
-     * Vaadin Property value change to the corresponding JCR property.
-     */
-    @Override
-    public void valueChange(ValueChangeEvent event) {
-        Property property = event.getProperty();
-        if (property instanceof DefaultProperty) {
-            String propertyId = ((DefaultProperty) property).getPropertyName();
-            getChangedProperties().put(propertyId, property);
-        }
     }
 
     /**

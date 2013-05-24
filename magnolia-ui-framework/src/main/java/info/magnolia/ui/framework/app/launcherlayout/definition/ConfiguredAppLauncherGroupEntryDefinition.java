@@ -40,8 +40,6 @@ public class ConfiguredAppLauncherGroupEntryDefinition implements AppLauncherGro
 
     private String name;
     private boolean enabled = true;
-    private String iconFont;
-    private String iconCharacter;
 
     @Override
     public String getName() {
@@ -59,23 +57,5 @@ public class ConfiguredAppLauncherGroupEntryDefinition implements AppLauncherGro
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    @Override
-    public String getIconFont() {
-        return iconFont;
-    }
-
-    public void setIconFont(String iconFont) {
-        this.iconFont = iconFont;
-    }
-
-    @Override
-    public String getIconCharacter() {
-        return iconCharacter;
-    }
-
-    public void setIconCharacter(String iconCharacter) {
-        this.iconCharacter = iconCharacter;
     }
 }

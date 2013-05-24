@@ -38,15 +38,12 @@ import info.magnolia.ui.workbench.event.ItemEditedEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.util.AbstractProperty;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.FieldEvents;
@@ -158,7 +155,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
                         @Override
                         public void blur(BlurEvent event) {
-                            fireItemEditedEvent(getItemFromField(tf));
+                            fireItemEditedEvent(tf.getPropertyDataSource());
                             setEditing(null, null);
                         }
                     });
@@ -198,38 +195,29 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         }
     }
 
-    private void fireItemEditedEvent(Item item) {
-        if (item != null) {
-            ItemEditedEvent event = new ItemEditedEvent(item);
-            for (ItemEditedEvent.Handler listener : listeners) {
-                listener.onItemEdited(event);
-            }
-        }
-    }
-
     /**
-     * Gets the item whose property is currently being edited in the given field. Since the {{Table}} doesn't keep
-     * references to its items, the only way to get it back is to ask the property datasource for its listeners and see
-     * if the Item is there.
-     *
-     * @param source the vaadin {{Field}} where the editing occured
-     * @return the vaadin {{Item}} if it could be fetched, null otherwise.
+     * Fires an {@link ItemEditedEvent} to all listeners. Since the property does not contain a reference to the item
+     * it came from we need to fetch the item from the container and change the property before we send the item in the
+     * event.
      */
-    private Item getItemFromField(Field<?> source) {
-        if (source != null) {
-            Property<?> property = source.getPropertyDataSource();
-            if (property != null && property instanceof AbstractProperty) {
-                Collection<?> listeners = ((AbstractProperty<?>) property).getListeners(Property.ValueChangeEvent.class);
-                Iterator<?> iterator = listeners.iterator();
-                while (iterator.hasNext()) {
-                    Object listener = iterator.next();
-                    if (listener instanceof Item) {
-                        return (Item) listener;
-                    }
-                }
-            }
+    private void fireItemEditedEvent(Property property) {
+
+        Item item = getContainerDataSource().getItem(editingItemId);
+        if (item == null) {
+            return;
         }
-        return null;
+
+        Property itemProperty = item.getItemProperty(editingPropertyId);
+        if (itemProperty == null) {
+            return;
+        }
+
+        itemProperty.setValue(property.getValue());
+
+        ItemEditedEvent event = new ItemEditedEvent(item);
+        for (ItemEditedEvent.Handler listener : listeners) {
+            listener.onItemEdited(event);
+        }
     }
 
     // DOUBLE CLICK
@@ -284,7 +272,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                 Field<?> field = (Field<?>) target;
 
                 if (shortcut == enter || shortcut.getKeyCode() == enter.getKeyCode()) {
-                    fireItemEditedEvent(getItemFromField(field));
+                    fireItemEditedEvent(field.getPropertyDataSource());
                     setEditing(null, null);
 
                 } else if (action == tabNext) {
@@ -292,7 +280,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                     TableCell nextCell = getNextEditableCandidate(editingItemId, editingPropertyId);
 
                     // Then saves
-                    fireItemEditedEvent(getItemFromField(field));
+                    fireItemEditedEvent(field.getPropertyDataSource());
 
                     setEditing(nextCell.getItemId(), nextCell.getPropertyId());
 
@@ -301,7 +289,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                     TableCell previousCell = getPreviousEditableCandidate(editingItemId, editingPropertyId);
 
                     // Then saves
-                    fireItemEditedEvent(getItemFromField(field));
+                    fireItemEditedEvent(field.getPropertyDataSource());
 
                     setEditing(previousCell.getItemId(), previousCell.getPropertyId());
 
