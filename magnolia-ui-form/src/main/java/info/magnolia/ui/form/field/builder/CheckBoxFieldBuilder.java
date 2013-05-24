@@ -61,4 +61,5 @@ public class CheckBoxFieldBuilder extends AbstractFieldBuilder<CheckboxFieldDefi
     protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
         return Boolean.class;
     }
+
 }

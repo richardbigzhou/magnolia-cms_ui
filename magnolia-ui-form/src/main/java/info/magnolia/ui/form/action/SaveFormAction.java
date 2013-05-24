@@ -33,22 +33,38 @@
  */
 package info.magnolia.ui.form.action;
 
+import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.form.EditorValidator;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.api.action.ActionBase;
 import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Action for saving Items in Forms.
- *
+ * Action for saving Items in Forms.<br>
+ * The name of the created node will be set to:<br>
+ * <b>the value of the property called 'jcrName' if</b>
+ * <ul>
+ * <li>the node has no property called 'jcrName'</li>
+ * </ul>
+ * <b>the value of the property called 'name' if</b>
+ * <ul>
+ * <li>the node has a property called 'name' AND</li>
+ * <li>the node has no property called 'jcrName' AND</li>
+ * </ul>
+ * <b>a default name if non of these conditions are valid</b> <br>
+ * To change this behavior extend this Action and override {@link SaveFormAction#setNodeName(Node, JcrNodeAdapter)}
+ * 
  * @see SaveFormActionDefinition
  */
 public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
@@ -73,6 +89,8 @@ public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
         if (validator.isValid()) {
             try {
                 final Node node = item.applyChanges();
+                // Set the Node name.
+                setNodeName(node, item);
                 NodeTypes.LastModified.update(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
@@ -82,5 +100,25 @@ public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
         } else {
             log.info("Validation error(s) occurred. No save performed.");
         }
+    }
+
+    /**
+     * Set the node Name.
+     * Node name is set to: <br>
+     * the value of the property 'name' if it is present.
+     */
+    protected void setNodeName(Node node, JcrNodeAdapter item) throws RepositoryException {
+        String propertyName = "name";
+        if (node.hasProperty(propertyName) && !node.hasProperty(ModelConstants.JCR_NAME)) {
+            Property property = node.getProperty(propertyName);
+            String newNodeName = property.getString();
+            if (!node.getName().equals(newNodeName)) {
+                newNodeName = Path.getUniqueLabel(node.getSession(), node.getParent().getPath(), Path.getValidatedLabel(newNodeName));
+                item.setNodeName(newNodeName);
+                property.setValue(newNodeName);
+                NodeUtil.renameNode(node, newNodeName);
+            }
+        }
+
     }
 }

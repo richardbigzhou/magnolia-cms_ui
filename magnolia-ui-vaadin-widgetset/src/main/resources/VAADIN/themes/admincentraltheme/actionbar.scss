@@ -40,10 +40,11 @@
 }
 
 .v-action {
-	margin-right:10px;
-	line-height:1.6em;
-	text-indent:33px;
-	cursor:pointer;
+	margin-right: 10px;
+	height: 25px;
+	text-indent: 33px;
+	overflow: hidden;
+	cursor: pointer;
 }
 .v-actionbar .v-action {text-align:center;}
 .v-actionbar-open .v-action {text-align:left;}
@@ -53,10 +54,11 @@
 .v-action.v-disabled:hover {color:$c80;}
 
 .v-action .v-icon {
-	display:inline-block;
-	font-size:1.4em;
-	text-indent:-29px;
-	vertical-align:middle;
+	display: inline-block;
+	font-size: 20px;
+	height: 1em;
+	text-indent: -29px;
+	vertical-align: top;
 }
 
 .v-action .v-text {
@@ -128,9 +130,6 @@
 	padding-left:0;
 }
 
-/** FIXME This is a workaround to align the publish-incl-sub icon. It's an issue with the image itself **/
-span.icon-publish-incl-sub { text-indent: -27px !important; }
-
 /*********************** TABLET STYLES ***/
 
 .tablet .v-actionbar {
@@ -172,8 +171,9 @@ span.icon-publish-incl-sub { text-indent: -27px !important; }
 .tablet .v-action.hover {color:$c10; background-color:$c15;}
 
 .tablet .v-action .v-icon {
-	text-indent:0;
-	font-size:32px;
+	text-indent: 0;
+	font-size: 32px;
+	margin-top: 8px;
 }
 
 .tablet .v-action img.v-icon {top:7px;}
@@ -243,28 +243,30 @@ span.icon-publish-incl-sub { text-indent: -27px !important; }
 
 /* Action Popup */
 
-.popupContent .v-context-menu{
+.popupContent .v-context-menu {
 	box-shadow:4px 4px 10px $c91;
 	background:$c10;
 	border: solid 1px $c11;
+	padding-top: 5px;
+	padding-bottom: 2px;
 }
 
 .popupContent .v-context-menu .v-context-menu-item-basic,
-.popupContent .v-context-menu .v-context-menu-item-basic-submenu
-{
+.popupContent .v-context-menu .v-context-menu-item-basic-submenu {
     background:$c10;
     color:$c80;
     padding-left:10px;
     font-size:14px;
     font-family:DINWebPro-Light, DINWebPro, Verdana;
+    height: 24px;
+    line-height: 23px;
 }
 
 .popupContent .v-context-menu .v-context-menu-item-basic:focus,
 .popupContent .v-context-menu .v-context-menu-item-basic-submenu:focus,
-.popupContent .v-context-menu .v-context-menu-item-basic-open
-{
-    background:$c10;
-    color:$c50;
+.popupContent .v-context-menu .v-context-menu-item-basic-open {
+  background:$c10;
+  color:$c50;
 }
 
 .popupContent .v-context-menu .v-context-menu-item-basic.v-context-menu-item-disabled:hover,
@@ -273,27 +275,35 @@ span.icon-publish-incl-sub { text-indent: -27px !important; }
 }
 
 
-.popupContent .v-context-menu .v-context-menu-item-basic-text{
-	padding-left:0px;
-	white-space:nowrap;
-}
-.popupContent .v-context-menu .v-context-menu-item-basic-icon-container{
-	border-width:0px;
-	margin-right:0px;
-	width:34px;
-	font-size:19.6px;
-	line-height:14px;
+.popupContent .v-context-menu .v-context-menu-item-basic-text {
+  height: auto;
+  line-height: inherit;
+	padding-left: 0;
+	white-space: nowrap;
 }
 
-.popupContent .v-context-menu .v-context-menu-item-basic-icon-container .icon-publish-incl-sub {
-    text-indent: 0px !important;
+.popupContent .v-context-menu .v-context-menu-item-basic-icon-container {
+	border: none;
+	font-size: 20px;
+	width: 1em;
+	height: 1em;
+	line-height: 1em;
+	margin-right: 9px;
 }
 
+.popupContent .v-context-menu .v-context-menu-item-basic-icon-container .v-icon {
+  display: inline-block;
+  width: 1em;
+	height: 1em;
+	float: none;
+  padding: 0;
+}
 
-.popupContent .v-context-menu .v-context-menu-item-basic.v-context-menu-item-separator{
+.popupContent .v-context-menu .v-context-menu-item-basic.v-context-menu-item-separator {
 	border-bottom: 1px solid $c11;
+	padding-bottom: 2px;
+	margin-bottom: 5px;
 }
-
 
 
 }
