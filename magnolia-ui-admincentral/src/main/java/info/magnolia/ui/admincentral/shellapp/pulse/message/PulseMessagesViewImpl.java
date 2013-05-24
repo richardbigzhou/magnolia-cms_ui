@@ -40,12 +40,12 @@ import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategory
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
 import info.magnolia.ui.framework.message.MessageType;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 import info.magnolia.ui.workbench.column.DateColumnFormatter;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -58,9 +58,6 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Label;
@@ -90,9 +87,12 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
 
     private Label emptyPlaceHolder = new Label(MessagesUtil.get("pulse.messages.nomessage"));
 
+    private PulseMessagesFooter footer;
+
     @Inject
-    public PulseMessagesViewImpl() {
+    public PulseMessagesViewImpl(Shell shell) {
         headers = new String[] { MessagesUtil.get("pulse.messages.new"), MessagesUtil.get("pulse.messages.type"), MessagesUtil.get("pulse.messages.text"), MessagesUtil.get("pulse.messages.sender"), MessagesUtil.get("pulse.messages.date") };
+        footer = new PulseMessagesFooter(shell, messageTable);
         setSizeFull();
         root.setSizeFull();
         setCompositionRoot(root);
@@ -102,6 +102,8 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
     @Override
     public void setListener(PulseMessagesView.Listener listener) {
         this.listener = listener;
+        this.footer.setListener(listener);
+
     }
 
     @Override
@@ -119,13 +121,24 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
 
             @Override
             public void messageCategoryChanged(CategoryChangedEvent event) {
-                listener.filterByMessageCategory(event.getCategory());
+                final MessageCategory category = event.getCategory();
+                listener.filterByMessageCategory(category);
+                // TODO fgrilli displaying the footer in categories other than ALL has tricky implications. See MGNLUI-1447
+                if (category == MessageCategory.ALL) {
+                    footer.setVisible(true);
+                } else {
+                    footer.setVisible(false);
+                }
             }
         });
+
         constructTable();
+        root.addComponent(footer);
+
         emptyPlaceHolder.addStyleName("emptyplaceholder");
         root.addComponent(emptyPlaceHolder);
         setComponentVisibility(messageTable.getContainerDataSource());
+
     }
 
     private void constructTable() {
@@ -162,16 +175,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
                 setComponentVisibility(event.getContainer());
             }
         });
-        Button delete = new Button("Delete selected");
-        delete.addClickListener(new ClickListener() {
 
-            @Override
-            public void buttonClick(ClickEvent event) {
-                Set<String> selectedItems = (Set<String>) messageTable.getValue();
-                listener.deleteMessages(selectedItems);
-            }
-        });
-        root.addComponent(delete);
     }
 
     private void setComponentVisibility(Container container) {
@@ -181,12 +185,15 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             // Use expand ratio to hide message table.
             // setVisible() would cause rendering issues.
             root.setExpandRatio(messageTable, 0f);
+            root.setExpandRatio(footer, 0f);
         } else {
             root.setExpandRatio(emptyPlaceHolder, 0f);
             root.setExpandRatio(messageTable, 1f);
+            root.setExpandRatio(footer, .1f);
         }
 
         messageTable.setVisible(!isEmptyList);
+        footer.setVisible(!isEmptyList);
         emptyPlaceHolder.setVisible(isEmptyList);
     }
 
@@ -244,6 +251,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             }
 
             messageTable.addValueChangeListener(this);
+            footer.updateStatus();
         }
 
         private boolean isAllChildrenSelected(Object parent) {
@@ -298,6 +306,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
                     messageTable.setCollapsed(itemId, false);
                 }
             }
+            footer.updateStatus();
         }
     };
 
@@ -421,17 +430,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
     }
 
     @Override
-    public void update(List<String> params) {
-        if (params != null && !params.isEmpty()) {
-            final Set<Object> values = new HashSet<Object>();
-            String messageId = params.get(0);
-            values.add(messageId);
-            /**
-             * This is a multi-select table, calling select would just add this
-             * message to the current set of selected rows so setting the value
-             * explicitly this way makes only this one selected.
-             */
-            messageTable.setValue(values);
-        }
+    public void updateStatus() {
+        footer.updateStatus();
     }
 }

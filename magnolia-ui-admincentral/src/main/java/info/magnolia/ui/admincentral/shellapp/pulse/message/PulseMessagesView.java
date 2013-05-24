@@ -39,19 +39,17 @@ import java.util.Collection;
 import java.util.Set;
 
 import com.vaadin.data.Container;
-import com.vaadin.ui.HasComponents;
 
 /**
  * Messages Pulse tab UI.
  */
 public interface PulseMessagesView extends PulseSubView {
 
-    @Override
-    public HasComponents asVaadinComponent();
-
     void setDataSource(Container dataSource);
 
     void setListener(Listener listener);
+
+    void updateStatus();
 
     /**
      * Listener interface to call back to {@link PulseMessagesPresenter}.

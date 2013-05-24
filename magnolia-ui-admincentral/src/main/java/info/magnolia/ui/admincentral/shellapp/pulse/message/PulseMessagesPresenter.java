@@ -118,7 +118,7 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
         view.setListener(this);
         container = createMessageDataSource();
         view.setDataSource(container);
-
+        view.updateStatus();
         return view;
     }
 
@@ -285,7 +285,7 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
                 case WORK_ITEM:
                     return type == MessageType.WORKITEM;
                 case PROBLEM:
-                    return type == MessageType.ERROR;
+                    return type == MessageType.ERROR || type == MessageType.WARNING;
                 case INFO:
                     return type == MessageType.INFO;
                 default:
@@ -323,7 +323,7 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
             }
             messagesManager.removeMessage(userName, messageId);
 
-            if (!message.isCleared() && message.getType().isSignificant()) {
+            if (message.getType().isSignificant() && !message.isCleared()) {
                 significantMessagesDeleted++;
             }
         }
