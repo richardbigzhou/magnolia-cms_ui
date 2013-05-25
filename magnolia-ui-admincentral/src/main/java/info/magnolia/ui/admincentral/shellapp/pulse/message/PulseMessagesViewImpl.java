@@ -103,7 +103,6 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
     public void setListener(PulseMessagesView.Listener listener) {
         this.listener = listener;
         this.footer.setListener(listener);
-
     }
 
     @Override
@@ -123,13 +122,16 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             public void messageCategoryChanged(CategoryChangedEvent event) {
                 final MessageCategory category = event.getCategory();
                 listener.filterByMessageCategory(category);
-                // TODO fgrilli displaying the footer in categories other than ALL has tricky implications. See MGNLUI-1447
-                if (category == MessageCategory.ALL) {
-                    setComponentVisibility(messageTable.getContainerDataSource());
-                    updateStatus();
-                } else {
-                    footer.setVisible(false);
+                // TODO fgrilli Unselect all when switching categories or nasty side effects will happen. See MGNLUI-1447
+                for (String id : (Set<String>) messageTable.getValue()) {
+                    messageTable.unselect(id);
                 }
+                if (category == MessageCategory.ALL) {
+                    navigator.showGroupByType(true);
+                } else {
+                    navigator.showGroupByType(false);
+                }
+                refresh();
             }
         });
 
@@ -161,11 +163,10 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             @Override
             public void itemClick(ItemClickEvent event) {
                 final String itemId = (String) event.getItemId();
-                if (itemId.startsWith(GROUP_PLACEHOLDER_ITEMID)) {
-                    // clicking on the group type header does nothing.
-                    return;
+                // clicking on the group type header does nothing.
+                if (event.isDoubleClick() && !itemId.startsWith(GROUP_PLACEHOLDER_ITEMID)) {
+                    listener.onMessageClicked(itemId);
                 }
-                listener.onMessageClicked(itemId);
             }
         });
 
@@ -298,15 +299,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         @Override
         public void valueChange(ValueChangeEvent event) {
             boolean checked = event.getProperty().getValue().equals(Boolean.TRUE);
-            listener.setGrouping(checked);
-            grouping = checked;
-
-            if (checked) {
-                for (Object itemId : messageTable.getItemIds()) {
-                    messageTable.setCollapsed(itemId, false);
-                }
-            }
-            footer.updateStatus();
+            doGrouping(checked);
         }
     };
 
@@ -430,7 +423,19 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
     }
 
     @Override
-    public void updateStatus() {
+    public void refresh() {
         footer.updateStatus();
+        messageTable.sort();
+        doGrouping(false);
+    }
+
+    private void doGrouping(boolean checked) {
+        listener.setGrouping(checked);
+
+        if (checked) {
+            for (Object itemId : messageTable.getItemIds()) {
+                messageTable.setCollapsed(itemId, false);
+            }
+        }
     }
 }

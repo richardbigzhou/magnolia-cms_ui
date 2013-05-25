@@ -73,6 +73,7 @@ public class PulseShellApp implements ShellApp, PulseMessagesPresenter.Listener,
     @Override
     public void locationChanged(Location location) {
         shell.hideAllMessages();
+        showList();
     }
 
     @Override

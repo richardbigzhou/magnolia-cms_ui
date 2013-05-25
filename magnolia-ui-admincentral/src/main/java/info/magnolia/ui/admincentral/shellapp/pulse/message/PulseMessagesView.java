@@ -49,7 +49,7 @@ public interface PulseMessagesView extends PulseSubView {
 
     void setListener(Listener listener);
 
-    void updateStatus();
+    void refresh();
 
     /**
      * Listener interface to call back to {@link PulseMessagesPresenter}.

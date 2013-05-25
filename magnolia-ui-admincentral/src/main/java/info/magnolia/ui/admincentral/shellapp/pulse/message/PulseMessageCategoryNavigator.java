@@ -60,7 +60,7 @@ public class PulseMessageCategoryNavigator extends CssLayout {
     private void construct() {
         for (final MessageCategory category : MessageCategory.values()) {
             MessageCategoryButton button = new MessageCategoryButton(category);
-            if (category.equals(MessageCategory.ALL)) {
+            if (category == MessageCategory.ALL) {
                 button.setActive(true);
             }
             addComponent(button);
@@ -74,6 +74,10 @@ public class PulseMessageCategoryNavigator extends CssLayout {
 
     public void addGroupingListener(ValueChangeListener listener) {
         groupByTypeCheckBox.addValueChangeListener(listener);
+    }
+
+    public void showGroupByType(boolean show) {
+        groupByTypeCheckBox.setVisible(show);
     }
 
     /**

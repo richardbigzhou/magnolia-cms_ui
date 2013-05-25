@@ -151,9 +151,8 @@ public final class PulseMessagesFooter extends CustomComponent {
             // skip generated header rows when grouping messages
             if (id.startsWith(PulseMessagesPresenter.GROUP_PLACEHOLDER_ITEMID)) {
                 continue;
-            } else {
-                totalSelected++;
             }
+            totalSelected++;
         }
         status.setValue(String.format("%d messages, %d selected", totalMessages, totalSelected));
     }

@@ -118,7 +118,7 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
         view.setListener(this);
         container = createMessageDataSource();
         view.setDataSource(container);
-        view.updateStatus();
+        view.refresh();
         return view;
     }
 
