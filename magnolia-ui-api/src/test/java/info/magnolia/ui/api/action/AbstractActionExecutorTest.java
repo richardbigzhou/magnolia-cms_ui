@@ -48,8 +48,8 @@ import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockProperty;
-import info.magnolia.ui.api.availability.ActionAvailabilityDefinition;
-import info.magnolia.ui.api.availability.ConfiguredActionAvailabilityDefinition;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,7 +71,7 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
     public void setUp() throws Exception {
         super.setUp();
 
-        ComponentsTestUtil.setImplementation(ActionAvailabilityDefinition.class, ConfiguredActionAvailabilityDefinition.class);
+        ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
 
         ArrayList<String> roles = new ArrayList<String>();
         roles.add("testRole");
@@ -255,7 +255,7 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
         actionDefinition.setName("foobar");
-        ConfiguredActionAvailabilityDefinition restrictions = (ConfiguredActionAvailabilityDefinition) actionDefinition.getAvailability();
+        ConfiguredAvailabilityDefinition restrictions = (ConfiguredAvailabilityDefinition) actionDefinition.getAvailability();
         restrictions.setAccess(new ConfiguredAccessDefinition());
         restrictions.setRoot(true);
         actionExecutor.add(actionDefinition);
@@ -274,7 +274,7 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
         actionDefinition.setName("foobar");
-        ConfiguredActionAvailabilityDefinition restrictions = (ConfiguredActionAvailabilityDefinition) actionDefinition.getAvailability();
+        ConfiguredAvailabilityDefinition restrictions = (ConfiguredAvailabilityDefinition) actionDefinition.getAvailability();
         restrictions.setProperties(true);
         restrictions.setAccess(new ConfiguredAccessDefinition());
         actionExecutor.add(actionDefinition);
@@ -293,7 +293,7 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
         actionDefinition.setName("foobar");
-        ((ConfiguredActionAvailabilityDefinition) actionDefinition.getAvailability()).setAccess(new ConfiguredAccessDefinition());
+        ((ConfiguredAvailabilityDefinition) actionDefinition.getAvailability()).setAccess(new ConfiguredAccessDefinition());
         actionExecutor.add(actionDefinition);
 
         // THEN
@@ -310,7 +310,7 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
         actionDefinition.setName("foobar");
-        ConfiguredActionAvailabilityDefinition restrictions = (ConfiguredActionAvailabilityDefinition) actionDefinition.getAvailability();
+        ConfiguredAvailabilityDefinition restrictions = (ConfiguredAvailabilityDefinition) actionDefinition.getAvailability();
         restrictions.getNodeTypes().add(NodeTypes.Content.NAME);
         restrictions.setAccess(new ConfiguredAccessDefinition());
         actionExecutor.add(actionDefinition);
@@ -330,7 +330,7 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
         actionDefinition.setName("requiresTestRole");
-        ConfiguredActionAvailabilityDefinition availability = (ConfiguredActionAvailabilityDefinition) actionDefinition.getAvailability();
+        ConfiguredAvailabilityDefinition availability = (ConfiguredAvailabilityDefinition) actionDefinition.getAvailability();
         availability.setRoot(true);
         ConfiguredAccessDefinition access = new ConfiguredAccessDefinition();
         access.addRole("testRole");
@@ -339,7 +339,7 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         ConfiguredActionDefinition actionDefinition2 = new ConfiguredActionDefinition();
         actionDefinition2.setName("requiresTestRole2");
-        availability = (ConfiguredActionAvailabilityDefinition) actionDefinition2.getAvailability();
+        availability = (ConfiguredAvailabilityDefinition) actionDefinition2.getAvailability();
         availability.setRoot(true);
         access = new ConfiguredAccessDefinition();
         access.addRole("testRole2");

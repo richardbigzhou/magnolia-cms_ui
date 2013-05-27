@@ -40,8 +40,8 @@ import info.magnolia.test.MgnlTestCase;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.availability.ActionAvailabilityDefinition;
-import info.magnolia.ui.api.availability.ConfiguredActionAvailabilityDefinition;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +59,7 @@ public class CallbackFormActionTest extends MgnlTestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        ComponentsTestUtil.setImplementation(ActionAvailabilityDefinition.class, ConfiguredActionAvailabilityDefinition.class);
+        ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
         this.formActionDefinition = new CallbackFormActionDefinition();
         this.presenter = new TestEditorCallback();
     }

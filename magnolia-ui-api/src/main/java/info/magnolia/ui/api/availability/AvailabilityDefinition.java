@@ -40,7 +40,7 @@ import java.util.Collection;
 /**
  * Definition of restrictions on when an action is available.
  */
-public interface ActionAvailabilityDefinition {
+public interface AvailabilityDefinition {
 
     /**
      * If true the action is available when there's no selection.

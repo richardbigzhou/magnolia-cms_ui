@@ -37,7 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.MgnlInstantiationException;
-import info.magnolia.ui.api.availability.ActionAvailabilityDefinition;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
@@ -113,7 +113,7 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
             return false;
         }
 
-        ActionAvailabilityDefinition availability = actionDefinition.getAvailability();
+        AvailabilityDefinition availability = actionDefinition.getAvailability();
 
         // if a rule is set, verify it first - must return true to continue
         if ((availability.getRule() != null) && !availability.getRule().isAvailable(item)) {

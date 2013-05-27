@@ -41,15 +41,13 @@ import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarItemDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.api.availability.ActionAvailabilityDefinition;
-import info.magnolia.ui.api.availability.ConfiguredActionAvailabilityDefinition;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition;
-import info.magnolia.ui.actionbar.definition.ConfiguredSectionAvailabilityDefinition;
-import info.magnolia.ui.actionbar.definition.SectionAvailabilityDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
@@ -77,8 +75,7 @@ public class ActionbarFactoryTest extends MgnlTestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        ComponentsTestUtil.setImplementation(ActionAvailabilityDefinition.class, ConfiguredActionAvailabilityDefinition.class);
-        ComponentsTestUtil.setImplementation(SectionAvailabilityDefinition.class, ConfiguredSectionAvailabilityDefinition.class);
+        ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
     }
 
     @Test

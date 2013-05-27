@@ -43,8 +43,8 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.api.availability.ActionAvailabilityDefinition;
-import info.magnolia.ui.api.availability.ConfiguredActionAvailabilityDefinition;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -74,7 +74,7 @@ public class DuplicateNodeActionTest extends RepositoryTestCase {
     public void setUp() throws Exception {
         super.setUp();
         ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
-        ComponentsTestUtil.setImplementation(ActionAvailabilityDefinition.class, ConfiguredActionAvailabilityDefinition.class);
+        ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
         definition = new DuplicateNodeActionDefinition();
 
         session = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);

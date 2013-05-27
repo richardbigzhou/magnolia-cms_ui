@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.api.action;
 
-import info.magnolia.ui.api.availability.ActionAvailabilityDefinition;
-import info.magnolia.ui.api.availability.ConfiguredActionAvailabilityDefinition;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 
 /**
  * Simple implementation of {@link ActionDefinition}.
@@ -47,7 +47,7 @@ public class ConfiguredActionDefinition implements ActionDefinition {
     private String icon;
     private String i18nBasename;
     private Class<? extends Action> implementationClass;
-    private ActionAvailabilityDefinition availability = new ConfiguredActionAvailabilityDefinition();
+    private AvailabilityDefinition availability = new ConfiguredAvailabilityDefinition();
     private String successMessage;
     private String failureMessage;
     private String errorMessage;
@@ -107,11 +107,11 @@ public class ConfiguredActionDefinition implements ActionDefinition {
     }
 
     @Override
-    public ActionAvailabilityDefinition getAvailability() {
+    public AvailabilityDefinition getAvailability() {
         return availability;
     }
 
-    public void setAvailability(ActionAvailabilityDefinition availability) {
+    public void setAvailability(AvailabilityDefinition availability) {
         this.availability = availability;
     }
 

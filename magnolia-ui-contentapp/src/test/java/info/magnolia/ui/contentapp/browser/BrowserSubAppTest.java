@@ -60,13 +60,11 @@ import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarItemDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition;
-import info.magnolia.ui.actionbar.definition.ConfiguredSectionAvailabilityDefinition;
-import info.magnolia.ui.actionbar.definition.SectionAvailabilityDefinition;
 import info.magnolia.ui.api.action.AbstractActionExecutor;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.api.availability.ActionAvailabilityDefinition;
-import info.magnolia.ui.api.availability.ConfiguredActionAvailabilityDefinition;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.availability.IsDeletedRule;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.SubAppContext;
@@ -135,24 +133,24 @@ public class BrowserSubAppTest extends MgnlTestCase {
     private ConfiguredActionDefinition actDeletedPages;
 
     // action availability
-    private ConfiguredActionAvailabilityDefinition availabilityAlways;
-    private ConfiguredActionAvailabilityDefinition availabilityRootOnly;
-    private ConfiguredActionAvailabilityDefinition availabilityRootAndNodes;
-    private ConfiguredActionAvailabilityDefinition availabilityNodesAndProperties;
-    private ConfiguredActionAvailabilityDefinition availabilityPropertiesOnly;
-    private ConfiguredActionAvailabilityDefinition availabilityOnlyPages;
-    private ConfiguredActionAvailabilityDefinition availabilityRoleLimited;
-    private ConfiguredActionAvailabilityDefinition availabilityDeletedPages;
+    private ConfiguredAvailabilityDefinition availabilityAlways;
+    private ConfiguredAvailabilityDefinition availabilityRootOnly;
+    private ConfiguredAvailabilityDefinition availabilityRootAndNodes;
+    private ConfiguredAvailabilityDefinition availabilityNodesAndProperties;
+    private ConfiguredAvailabilityDefinition availabilityPropertiesOnly;
+    private ConfiguredAvailabilityDefinition availabilityOnlyPages;
+    private ConfiguredAvailabilityDefinition availabilityRoleLimited;
+    private ConfiguredAvailabilityDefinition availabilityDeletedPages;
 
     // section availability
-    private ConfiguredSectionAvailabilityDefinition sAvailabilityAlways;
-    private ConfiguredSectionAvailabilityDefinition sAvailabilityRootOnly;
-    private ConfiguredSectionAvailabilityDefinition sAvailabilityRootAndNodes;
-    private ConfiguredSectionAvailabilityDefinition sAvailabilityNodesAndProperties;
-    private ConfiguredSectionAvailabilityDefinition sAvailabilityPropertiesOnly;
-    private ConfiguredSectionAvailabilityDefinition sAvailabilityOnlyPages;
-    private ConfiguredSectionAvailabilityDefinition sAvailabilityRoleLimited;
-    private ConfiguredSectionAvailabilityDefinition sAvailabilityDeletedPages;
+    private ConfiguredAvailabilityDefinition sAvailabilityAlways;
+    private ConfiguredAvailabilityDefinition sAvailabilityRootOnly;
+    private ConfiguredAvailabilityDefinition sAvailabilityRootAndNodes;
+    private ConfiguredAvailabilityDefinition sAvailabilityNodesAndProperties;
+    private ConfiguredAvailabilityDefinition sAvailabilityPropertiesOnly;
+    private ConfiguredAvailabilityDefinition sAvailabilityOnlyPages;
+    private ConfiguredAvailabilityDefinition sAvailabilityRoleLimited;
+    private ConfiguredAvailabilityDefinition sAvailabilityDeletedPages;
 
     // users
     User normalUser;
@@ -173,8 +171,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        ComponentsTestUtil.setImplementation(ActionAvailabilityDefinition.class, ConfiguredActionAvailabilityDefinition.class);
-        ComponentsTestUtil.setImplementation(SectionAvailabilityDefinition.class, ConfiguredSectionAvailabilityDefinition.class);
+        ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
 
         initActionAvailabilityDefs();
         initSectionAvailabilityDefs();
@@ -340,65 +337,65 @@ public class BrowserSubAppTest extends MgnlTestCase {
     }
 
     private void initActionAvailabilityDefs() {
-        availabilityAlways = new ConfiguredActionAvailabilityDefinition();
+        availabilityAlways = new ConfiguredAvailabilityDefinition();
         availabilityAlways.setRoot(true);
         availabilityAlways.setProperties(true);
 
-        availabilityRootOnly = new ConfiguredActionAvailabilityDefinition();
+        availabilityRootOnly = new ConfiguredAvailabilityDefinition();
         availabilityRootOnly.setRoot(true);
         availabilityRootOnly.setNodes(false);
 
-        availabilityRootAndNodes = new ConfiguredActionAvailabilityDefinition();
+        availabilityRootAndNodes = new ConfiguredAvailabilityDefinition();
         availabilityRootAndNodes.setRoot(true);
 
-        availabilityNodesAndProperties = new ConfiguredActionAvailabilityDefinition();
+        availabilityNodesAndProperties = new ConfiguredAvailabilityDefinition();
         availabilityNodesAndProperties.setProperties(true);
 
-        availabilityPropertiesOnly = new ConfiguredActionAvailabilityDefinition();
+        availabilityPropertiesOnly = new ConfiguredAvailabilityDefinition();
         availabilityPropertiesOnly.setNodes(false);
         availabilityPropertiesOnly.setProperties(true);
 
-        availabilityOnlyPages = new ConfiguredActionAvailabilityDefinition();
+        availabilityOnlyPages = new ConfiguredAvailabilityDefinition();
         availabilityOnlyPages.setNodeTypes(Arrays.asList(new String[] { NodeTypes.Page.NAME }));
 
-        availabilityRoleLimited = new ConfiguredActionAvailabilityDefinition();
+        availabilityRoleLimited = new ConfiguredAvailabilityDefinition();
         ConfiguredAccessDefinition access = new ConfiguredAccessDefinition();
         access.setRoles(Arrays.asList(new String[] { REQUIRED_ROLE }));
         availabilityRoleLimited.setAccess(access);
 
-        availabilityDeletedPages = new ConfiguredActionAvailabilityDefinition();
+        availabilityDeletedPages = new ConfiguredAvailabilityDefinition();
         availabilityDeletedPages.setNodeTypes(Arrays.asList(new String[] { NodeTypes.Page.NAME }));
         availabilityDeletedPages.setRule(new IsDeletedRule());
     }
 
     private void initSectionAvailabilityDefs() {
-        sAvailabilityAlways = new ConfiguredSectionAvailabilityDefinition();
+        sAvailabilityAlways = new ConfiguredAvailabilityDefinition();
         sAvailabilityAlways.setRoot(true);
         sAvailabilityAlways.setProperties(true);
 
-        sAvailabilityRootOnly = new ConfiguredSectionAvailabilityDefinition();
+        sAvailabilityRootOnly = new ConfiguredAvailabilityDefinition();
         sAvailabilityRootOnly.setRoot(true);
         sAvailabilityRootOnly.setNodes(false);
 
-        sAvailabilityRootAndNodes = new ConfiguredSectionAvailabilityDefinition();
+        sAvailabilityRootAndNodes = new ConfiguredAvailabilityDefinition();
         sAvailabilityRootAndNodes.setRoot(true);
 
-        sAvailabilityNodesAndProperties = new ConfiguredSectionAvailabilityDefinition();
+        sAvailabilityNodesAndProperties = new ConfiguredAvailabilityDefinition();
         sAvailabilityNodesAndProperties.setProperties(true);
 
-        sAvailabilityPropertiesOnly = new ConfiguredSectionAvailabilityDefinition();
+        sAvailabilityPropertiesOnly = new ConfiguredAvailabilityDefinition();
         sAvailabilityPropertiesOnly.setNodes(false);
         sAvailabilityPropertiesOnly.setProperties(true);
 
-        sAvailabilityOnlyPages = new ConfiguredSectionAvailabilityDefinition();
+        sAvailabilityOnlyPages = new ConfiguredAvailabilityDefinition();
         sAvailabilityOnlyPages.setNodeTypes(Arrays.asList(new String[] { NodeTypes.Page.NAME }));
 
-        sAvailabilityRoleLimited = new ConfiguredSectionAvailabilityDefinition();
+        sAvailabilityRoleLimited = new ConfiguredAvailabilityDefinition();
         ConfiguredAccessDefinition access = new ConfiguredAccessDefinition();
         access.setRoles(Arrays.asList(new String[] { REQUIRED_ROLE }));
         sAvailabilityRoleLimited.setAccess(access);
 
-        sAvailabilityDeletedPages = new ConfiguredSectionAvailabilityDefinition();
+        sAvailabilityDeletedPages = new ConfiguredAvailabilityDefinition();
         sAvailabilityDeletedPages.setNodeTypes(Arrays.asList(new String[] { NodeTypes.Page.NAME }));
         sAvailabilityDeletedPages.setRule(new IsDeletedRule());
     }

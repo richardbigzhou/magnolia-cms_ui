@@ -60,8 +60,8 @@ import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.api.availability.ActionAvailabilityDefinition;
-import info.magnolia.ui.api.availability.ConfiguredActionAvailabilityDefinition;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -91,7 +91,7 @@ public class ConfiguredMessageViewDefinitionManagerTest extends MgnlTestCase {
     public void setUp() throws Exception {
         super.setUp();
         ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
-        ComponentsTestUtil.setImplementation(ActionAvailabilityDefinition.class, ConfiguredActionAvailabilityDefinition.class);
+        ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
 
         ComponentsTestUtil.setImplementation(MessageViewDefinition.class, ConfiguredMessageViewDefinition.class);
         ComponentsTestUtil.setImplementation(FormDefinition.class, ConfiguredFormDefinition.class);

@@ -40,9 +40,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * Simple implementation for {@link ActionAvailabilityDefinition}.
+ * Simple implementation for {@link AvailabilityDefinition}.
  */
-public class ConfiguredActionAvailabilityDefinition implements ActionAvailabilityDefinition {
+public class ConfiguredAvailabilityDefinition implements AvailabilityDefinition {
 
     private boolean root = false;
     private boolean properties = false;

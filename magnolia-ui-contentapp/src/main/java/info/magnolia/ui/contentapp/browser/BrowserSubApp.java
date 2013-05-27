@@ -41,9 +41,9 @@ import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
-import info.magnolia.ui.actionbar.definition.SectionAvailabilityDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
@@ -342,7 +342,7 @@ public class BrowserSubApp extends BaseSubApp {
     }
 
     private boolean isSectionVisible(ActionbarSectionDefinition section, Item item) throws RepositoryException {
-        SectionAvailabilityDefinition availability = section.getAvailability();
+        AvailabilityDefinition availability = section.getAvailability();
 
         // if a rule is set, verify it first - must return true to continue
         if ((availability.getRule() != null) && !availability.getRule().isAvailable(item)) {

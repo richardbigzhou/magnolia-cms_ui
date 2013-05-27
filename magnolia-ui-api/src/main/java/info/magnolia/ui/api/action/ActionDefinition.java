@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.api.action;
 
-import info.magnolia.ui.api.availability.ActionAvailabilityDefinition;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
 
 /**
  * Action definitions are used to configure actions in many parts of the UI. The definition holds a name which is used
@@ -65,5 +65,5 @@ public interface ActionDefinition {
 
     Class<? extends Action> getImplementationClass();
 
-    ActionAvailabilityDefinition getAvailability();
+    AvailabilityDefinition getAvailability();
 }
