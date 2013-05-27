@@ -150,9 +150,20 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
 
             @Override
             public void onItemChosen(Item chosenValue) {
-                String url = (String) chosenValue.getItemProperty("imagelink").getValue();
-                String repository = (String) chosenValue.getItemProperty("compositeid").getValue();
-                String path = (String) chosenValue.getItemProperty("path").getValue();
+                /*
+                 * url to the original image?
+                 */
+                // String url = (String) chosenValue.getItemProperty("imagelink").getValue();
+
+                /*
+                 * Repository is 'dam' or 'dms' in practice? Same as Node.getSession().getWorkspace().getName()?
+                 */
+                // String repository = (String) chosenValue.getItemProperty("compositeid").getValue();
+
+                /*
+                 * Path in repository like Node.getPath()?
+                 */
+                // String path = (String) chosenValue.getItemProperty("path").getValue();
 
                 if (!(chosenValue instanceof JcrItemAdapter)) {
                     richTextEditor
@@ -173,8 +184,7 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
                     ConfiguredImageProviderDefinition cipd = new ConfiguredImageProviderDefinition();
                     cipd.setOriginalImageNodeName("jcr:content");
                     cipd.setImageProviderClass(DefaultImageProvider.class);
-                    ImageProvider provider = new DefaultImageProvider(
-                            cipd);
+                    ImageProvider provider = new DefaultImageProvider(cipd);
                     String thumbnailPath = provider
                             .getThumbnailPath(selected.getSession()
                                     .getWorkspace().getName(),
