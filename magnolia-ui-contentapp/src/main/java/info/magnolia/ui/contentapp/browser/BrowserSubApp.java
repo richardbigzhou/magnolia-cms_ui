@@ -355,7 +355,7 @@ public class BrowserSubApp extends BaseSubApp {
         }
 
         // If this is the root item we display the section only if the root property is set
-        if (item == null || "/".equals(item.getPath())) {
+        if (item == null) {
             return availability.isRoot();
         }
 
