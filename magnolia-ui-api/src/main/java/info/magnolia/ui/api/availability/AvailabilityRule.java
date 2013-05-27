@@ -35,13 +35,31 @@ package info.magnolia.ui.api.availability;
 
 import javax.jcr.Item;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Defines the rule for additional availability restrictions.
  */
-public interface AvailabilityRule {
+public abstract class AvailabilityRule {
+
+    private static final Logger log = LoggerFactory.getLogger(AvailabilityRule.class);
+
+    /**
+     * This method returns an instance of a rule class specified, or null if no such class exists (or any other error).
+     */
+    public static AvailabilityRule getRule(String ruleClass) {
+        AvailabilityRule rule = null;
+        try {
+            rule = (AvailabilityRule) Class.forName(ruleClass).newInstance();
+        } catch (Exception e) {
+            log.error("Cannot instantiate AvailabilityRule [{}]. Error: {}", ruleClass, e.getMessage());
+        }
+        return rule;
+    }
 
     /**
      * Returns true if the availability subject (e.g. action) is available for the specified <code>item</code> (or for root node, if the <code>item</code> is null).
      */
-    boolean isAvailable(Item item);
+    public abstract boolean isAvailable(Item item);
 }

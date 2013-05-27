@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -44,6 +44,7 @@ import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.AvailabilityRule;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
@@ -344,9 +345,12 @@ public class BrowserSubApp extends BaseSubApp {
     private boolean isSectionVisible(ActionbarSectionDefinition section, Item item) throws RepositoryException {
         AvailabilityDefinition availability = section.getAvailability();
 
-        // if a rule is set, verify it first - must return true to continue
-        if ((availability.getRule() != null) && !availability.getRule().isAvailable(item)) {
-            return false;
+        // if a rule class is set, verify it first
+        if ((availability.getRuleClass() != null)) {
+            // if the rule class cannot be instantiated, or the rule returns false
+            if (AvailabilityRule.getRule(availability.getRuleClass()) == null || !AvailabilityRule.getRule(availability.getRuleClass()).isAvailable(item)) {
+                return false;
+            }
         }
 
         // Validate that the user has all required roles

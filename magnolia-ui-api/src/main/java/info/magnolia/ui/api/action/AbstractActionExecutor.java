@@ -38,6 +38,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.MgnlInstantiationException;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.AvailabilityRule;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
@@ -115,9 +116,12 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
 
         AvailabilityDefinition availability = actionDefinition.getAvailability();
 
-        // if a rule is set, verify it first - must return true to continue
-        if ((availability.getRule() != null) && !availability.getRule().isAvailable(item)) {
-            return false;
+        // if a rule class is set, verify it first
+        if ((availability.getRuleClass() != null)) {
+            // if the rule class cannot be instantiated, or the rule returns false
+            if (AvailabilityRule.getRule(availability.getRuleClass()) == null || !AvailabilityRule.getRule(availability.getRuleClass()).isAvailable(item)) {
+                return false;
+            }
         }
 
         // Validate that the user has all required roles

@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This rule returns true only if item is node and has all the specified node types.
  */
-public class AllNodeTypesRule implements AvailabilityRule {
+public class AllNodeTypesRule extends AvailabilityRule {
 
     private static final Logger log = LoggerFactory.getLogger(AllNodeTypesRule.class);
 

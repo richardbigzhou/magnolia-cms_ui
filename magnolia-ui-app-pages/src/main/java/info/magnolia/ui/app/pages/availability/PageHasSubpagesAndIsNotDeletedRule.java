@@ -31,39 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.availability;
+package info.magnolia.ui.app.pages.availability;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import info.magnolia.ui.api.availability.AvailabilityRule;
+import info.magnolia.ui.api.availability.IsNotDeletedRule;
 
 import javax.jcr.Item;
 
 /**
- * This rule returns true only if all subrules return true.
+ * This rule returns true, if the item is node of the mgnl:page type, has a subnode of the same type, and is not deleted (i.e. has not the mgnl:deleted mixin type).
  */
-public class AllRulesRule implements AvailabilityRule {
-
-    private Collection<AvailabilityRule> rules = new ArrayList<AvailabilityRule>();
+public class PageHasSubpagesAndIsNotDeletedRule extends AvailabilityRule {
 
     @Override
     public boolean isAvailable(Item item) {
-        // evaluate all rules
-        for (AvailabilityRule rule : rules) {
-            // if any returns false
-            if (!rule.isAvailable(item)) {
-                return false;
-            }
-        }
-        // all rules have returned true
-        return true;
+        AvailabilityRule hasSubpages = new PageHasSubpagesRule();
+        AvailabilityRule isNotDeleted = new IsNotDeletedRule();
+        return (hasSubpages.isAvailable(item) && isNotDeleted.isAvailable(item));
     }
-
-    public void setRules(Collection<AvailabilityRule> rules) {
-        this.rules = rules;
-    }
-
-    public Collection<AvailabilityRule> getRules() {
-        return this.rules;
-    }
-
 }

@@ -365,7 +365,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
         availabilityDeletedPages = new ConfiguredAvailabilityDefinition();
         availabilityDeletedPages.setNodeTypes(Arrays.asList(new String[] { NodeTypes.Page.NAME }));
-        availabilityDeletedPages.setRule(new IsDeletedRule());
+        availabilityDeletedPages.setRuleClass(IsDeletedRule.class.getCanonicalName());
     }
 
     private void initSectionAvailabilityDefs() {
@@ -397,7 +397,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
         sAvailabilityDeletedPages = new ConfiguredAvailabilityDefinition();
         sAvailabilityDeletedPages.setNodeTypes(Arrays.asList(new String[] { NodeTypes.Page.NAME }));
-        sAvailabilityDeletedPages.setRule(new IsDeletedRule());
+        sAvailabilityDeletedPages.setRuleClass(IsDeletedRule.class.getCanonicalName());
     }
 
     private void initActions() {
