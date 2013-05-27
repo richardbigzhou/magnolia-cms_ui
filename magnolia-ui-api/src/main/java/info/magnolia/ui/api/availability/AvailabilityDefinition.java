@@ -38,37 +38,37 @@ import info.magnolia.cms.security.operations.AccessDefinition;
 import java.util.Collection;
 
 /**
- * Definition of restrictions on when an action is available.
+ * Definition of restrictions on when subject is available.
  */
 public interface AvailabilityDefinition {
 
     /**
-     * If true the action is available when there's no selection.
+     * If true the subject is available when there's no selection.
      */
     boolean isRoot();
 
     /**
-     * If true the action is available for properties.
+     * If true the subject is available for properties.
      */
     boolean isProperties();
 
     /**
-     * If true the action is available for nodes.
+     * If true the subject is available for nodes.
      */
     boolean isNodes();
 
     /**
-     * Unless this is empty the action is available only for these node types.
+     * Unless this is empty the subject is available only for these node types.
      */
     Collection<String> getNodeTypes();
 
     /**
-     * Returns the AccessDefinition object for this action.
+     * Returns the AccessDefinition object for this subject.
      */
     AccessDefinition getAccess();
 
     /**
-     * Returns the AvailabilityRule object for this action.
+     * Returns the AvailabilityRule object for this subject.
      */
     AvailabilityRule getRule();
 }

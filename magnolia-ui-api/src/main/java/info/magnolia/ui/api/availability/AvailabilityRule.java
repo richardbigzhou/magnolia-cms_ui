@@ -36,12 +36,12 @@ package info.magnolia.ui.api.availability;
 import javax.jcr.Item;
 
 /**
- * Defines the rule for action/section availability.
+ * Defines the rule for additional availability restrictions.
  */
 public interface AvailabilityRule {
 
     /**
-     * Returns true if the action/section is available for the specified <code>item</code> (or for root node, if the <code>item</code> is null).
+     * Returns true if the availability subject (e.g. action) is available for the specified <code>item</code> (or for root node, if the <code>item</code> is null).
      */
     boolean isAvailable(Item item);
 }
