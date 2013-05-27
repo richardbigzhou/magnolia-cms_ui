@@ -166,6 +166,10 @@
   background-color: #E0E0E0;
 }
 
+.v-pulse .v-table-row.v-selected:hover .v-table-cell-content-sorted, .v-pulse .v-table-row-odd.v-selected:hover .v-table-cell-content-sorted {
+  background-color: #666666 ;
+}
+
 .v-pulse .v-table-cell-wrapper {
   height: 50px !important;
 }
@@ -174,7 +178,8 @@
   background-color: #EFEFEF;
 }
 
-.v-pulse .v-table-generated-row, .v-pulse tr.v-table-generated-row.v-selected .v-table-cell-content {
+.v-pulse .v-table-generated-row, .v-pulse tr.v-table-generated-row.v-selected .v-table-cell-content,
+.v-pulse tr.v-table-generated-row .v-table-cell-content-sorted {
   background: none !important;
 }
 
