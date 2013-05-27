@@ -178,38 +178,12 @@
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
             </sv:property>
+            <sv:property sv:name="nodes" sv:type="String">
+              <sv:value>false</sv:value>
+            </sv:property>
             <sv:property sv:name="root" sv:type="String">
               <sv:value>true</sv:value>
             </sv:property>
-            <sv:node sv:name="nodeTypes">
-              <sv:property sv:name="jcr:primaryType" sv:type="Name">
-                <sv:value>mgnl:contentNode</sv:value>
-              </sv:property>
-              <sv:property sv:name="jcr:uuid" sv:type="String">
-                <sv:value>46c41f54-4ebb-494c-985b-e70599afff7b</sv:value>
-              </sv:property>
-              <sv:property sv:name="jcr:created" sv:type="Date">
-                <sv:value>2013-05-22T11:04:44.026+02:00</sv:value>
-              </sv:property>
-              <sv:property sv:name="jcr:createdBy" sv:type="String">
-                <sv:value>admin</sv:value>
-              </sv:property>
-              <sv:property sv:name="mgnl:created" sv:type="Date">
-                <sv:value>2013-05-03T10:48:20.732+02:00</sv:value>
-              </sv:property>
-              <sv:property sv:name="mgnl:createdBy" sv:type="String">
-                <sv:value>superuser</sv:value>
-              </sv:property>
-              <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-                <sv:value>2013-05-17T08:53:32.371+02:00</sv:value>
-              </sv:property>
-              <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
-                <sv:value>superuser</sv:value>
-              </sv:property>
-              <sv:property sv:name="user" sv:type="String">
-                <sv:value>mgnl:user</sv:value>
-              </sv:property>
-            </sv:node>
           </sv:node>
         </sv:node>
         <sv:node sv:name="deleteUser">
@@ -954,35 +928,12 @@
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
             </sv:property>
+            <sv:property sv:name="nodes" sv:type="String">
+              <sv:value>false</sv:value>
+            </sv:property>
             <sv:property sv:name="root" sv:type="String">
               <sv:value>true</sv:value>
             </sv:property>
-            <sv:node sv:name="nodeTypes">
-              <sv:property sv:name="jcr:primaryType" sv:type="Name">
-                <sv:value>mgnl:contentNode</sv:value>
-              </sv:property>
-              <sv:property sv:name="jcr:uuid" sv:type="String">
-                <sv:value>b39f29c0-2410-43db-876b-878c0039f902</sv:value>
-              </sv:property>
-              <sv:property sv:name="jcr:createdBy" sv:type="String">
-                <sv:value>admin</sv:value>
-              </sv:property>
-              <sv:property sv:name="mgnl:created" sv:type="Date">
-                <sv:value>2013-05-03T10:48:20.732+02:00</sv:value>
-              </sv:property>
-              <sv:property sv:name="mgnl:createdBy" sv:type="String">
-                <sv:value>superuser</sv:value>
-              </sv:property>
-              <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-                <sv:value>2013-05-17T08:53:32.371+02:00</sv:value>
-              </sv:property>
-              <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
-                <sv:value>superuser</sv:value>
-              </sv:property>
-              <sv:property sv:name="user" sv:type="String">
-                <sv:value>mgnl:user</sv:value>
-              </sv:property>
-            </sv:node>
           </sv:node>
         </sv:node>
         <sv:node sv:name="deleteUser">
@@ -1665,35 +1616,12 @@
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
             </sv:property>
+            <sv:property sv:name="nodes" sv:type="String">
+              <sv:value>false</sv:value>
+            </sv:property>
             <sv:property sv:name="root" sv:type="String">
               <sv:value>true</sv:value>
             </sv:property>
-            <sv:node sv:name="nodeTypes">
-              <sv:property sv:name="jcr:primaryType" sv:type="Name">
-                <sv:value>mgnl:contentNode</sv:value>
-              </sv:property>
-              <sv:property sv:name="jcr:uuid" sv:type="String">
-                <sv:value>b37d5b6b-99ef-4d95-b02c-6dd8d066a28b</sv:value>
-              </sv:property>
-              <sv:property sv:name="group" sv:type="String">
-                <sv:value>mgnl:group</sv:value>
-              </sv:property>
-              <sv:property sv:name="jcr:createdBy" sv:type="String">
-                <sv:value>admin</sv:value>
-              </sv:property>
-              <sv:property sv:name="mgnl:created" sv:type="Date">
-                <sv:value>2013-05-03T10:48:20.732+02:00</sv:value>
-              </sv:property>
-              <sv:property sv:name="mgnl:createdBy" sv:type="String">
-                <sv:value>superuser</sv:value>
-              </sv:property>
-              <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-                <sv:value>2013-05-17T09:10:19.372+02:00</sv:value>
-              </sv:property>
-              <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
-                <sv:value>superuser</sv:value>
-              </sv:property>
-            </sv:node>
           </sv:node>
         </sv:node>
         <sv:node sv:name="deleteGroup">
@@ -2440,35 +2368,12 @@
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
             </sv:property>
+            <sv:property sv:name="nodes" sv:type="String">
+              <sv:value>false</sv:value>
+            </sv:property>
             <sv:property sv:name="root" sv:type="String">
               <sv:value>true</sv:value>
             </sv:property>
-            <sv:node sv:name="nodeTypes">
-              <sv:property sv:name="jcr:primaryType" sv:type="Name">
-                <sv:value>mgnl:contentNode</sv:value>
-              </sv:property>
-              <sv:property sv:name="jcr:uuid" sv:type="String">
-                <sv:value>68125f00-a6aa-4d4c-975d-f7d8b841b7a8</sv:value>
-              </sv:property>
-              <sv:property sv:name="group" sv:type="String">
-                <sv:value>mgnl:role</sv:value>
-              </sv:property>
-              <sv:property sv:name="jcr:createdBy" sv:type="String">
-                <sv:value>admin</sv:value>
-              </sv:property>
-              <sv:property sv:name="mgnl:created" sv:type="Date">
-                <sv:value>2013-05-03T10:48:20.732+02:00</sv:value>
-              </sv:property>
-              <sv:property sv:name="mgnl:createdBy" sv:type="String">
-                <sv:value>superuser</sv:value>
-              </sv:property>
-              <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-                <sv:value>2013-05-17T09:25:07.125+02:00</sv:value>
-              </sv:property>
-              <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
-                <sv:value>superuser</sv:value>
-              </sv:property>
-            </sv:node>
           </sv:node>
         </sv:node>
       </sv:node>
