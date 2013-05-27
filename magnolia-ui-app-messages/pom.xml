@@ -13,7 +13,7 @@
   <dependencies>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-admincentral</artifactId>
+      <artifactId>magnolia-ui-framework</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
