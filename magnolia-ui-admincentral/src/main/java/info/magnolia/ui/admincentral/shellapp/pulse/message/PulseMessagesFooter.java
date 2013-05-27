@@ -79,7 +79,7 @@ public final class PulseMessagesFooter extends CustomComponent {
         footer.setSizeUndefined();
         footer.addStyleName("footer");
 
-        final Label actionLabel = new Label("With checked do:");
+        final Label actionLabel = new Label(MessagesUtil.get("pulse.footer.title"));
 
         actionPopupTrigger = new NativeButton();
         actionPopupTrigger.setHtmlContentAllowed(true);
@@ -92,7 +92,7 @@ public final class PulseMessagesFooter extends CustomComponent {
         final String iconFontCode = ActionPopup.ICON_FONT_CODE + "icon-delete";
         final ExternalResource iconFontResource = new ExternalResource(iconFontCode);
 
-        final ContextMenuItem menuItem = contextMenu.addItem("Remove selected", iconFontResource);
+        final ContextMenuItem menuItem = contextMenu.addItem(MessagesUtil.get("pulse.actionpop.delete.selected"), iconFontResource);
         menuItem.addItemClickListener(new ContextMenuItemClickListener() {
 
             @Override
@@ -102,7 +102,7 @@ public final class PulseMessagesFooter extends CustomComponent {
                     // nothing to do here
                     return;
                 }
-                shell.openConfirmation(MessageStyleTypeEnum.WARNING, MessagesUtil.get("confirmation.title.generic"), MessagesUtil.get("confirmation.cannot.undo"), MessagesUtil.get("confirmation.delete.yes"), MessagesUtil.get("confirmation.no"), true, new ConfirmationCallback() {
+                shell.openConfirmation(MessageStyleTypeEnum.WARNING, MessagesUtil.get("pulse.confirmation.messages.delete.title"), MessagesUtil.get("confirmation.cannot.undo"), MessagesUtil.get("confirmation.delete.yes"), MessagesUtil.get("confirmation.no"), true, new ConfirmationCallback() {
 
                     @Override
                     public void onSuccess() {
@@ -154,7 +154,9 @@ public final class PulseMessagesFooter extends CustomComponent {
             }
             totalSelected++;
         }
-        status.setValue(String.format("%d messages, %d selected", totalMessages, totalSelected));
+        final String totalMessagesAsString = totalMessages > 0 ? Integer.toString(totalMessages) : MessagesUtil.get("pulse.footer.status.no");
+        final String selectedMessagesAsString = totalSelected > 0 ? Integer.toString(totalSelected) : MessagesUtil.get("pulse.footer.status.none");
+        status.setValue(MessagesUtil.get("pulse.footer.status", new String[] { totalMessagesAsString, selectedMessagesAsString }));
     }
 
     public void setListener(final PulseMessagesView.Listener listener) {
