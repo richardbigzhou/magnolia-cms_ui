@@ -65,19 +65,13 @@ public class AllNodeTypesRule implements AvailabilityRule {
         for (String nodeType : nodeTypes) {
             try {
                 // if the node is of the reguired node type, or has the required mixin
-                if (NodeUtil.isNodeType(node, nodeType) || NodeUtil.hasMixin(node, nodeType)) {
+                if (NodeUtil.isNodeType(node, nodeType)) {
                     continue;
                 }
                 // else return false
                 return false;
             } catch (RepositoryException e) {
-                String path = "unknown";
-                try {
-                    path = node.getPath();
-                } catch (RepositoryException e1) {
-                    // nothing to do
-                }
-                log.warn("Error evaluating availability for node [{}], returning false: {}", path, e.getMessage());
+                log.warn("Error evaluating availability for node [{}], returning false: {}", NodeUtil.getPathIfPossible(node), e.getMessage());
                 return false;
             }
         }

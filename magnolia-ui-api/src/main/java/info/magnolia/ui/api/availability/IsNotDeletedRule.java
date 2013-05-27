@@ -57,13 +57,7 @@ public class IsNotDeletedRule implements AvailabilityRule {
             try {
                 return !NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
             } catch (RepositoryException e) {
-                String path = "unknown";
-                try {
-                    path = node.getPath();
-                } catch (RepositoryException e1) {
-                    // nothing to do
-                }
-                log.warn("Error evaluating availability for node [{}], returning false: {}", path, e.getMessage());
+                log.warn("Error evaluating availability for node [{}], returning false: {}", NodeUtil.getPathIfPossible(node), e.getMessage());
             }
         }
         return true;
