@@ -54,6 +54,7 @@ public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
 
     public MagnoliaRichTextFieldConfig() {
         addToRemovePlugins("elementspath");
+        addToRemovePlugins("image");
     }
 
     /**

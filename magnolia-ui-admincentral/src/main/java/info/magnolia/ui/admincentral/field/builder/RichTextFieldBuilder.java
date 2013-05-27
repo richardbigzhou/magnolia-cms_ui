@@ -70,6 +70,10 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
 
     private static final String PLUGIN_PATH_MAGNOLIALINK = "/VAADIN/js/magnolialink/";
 
+    private static final String PLUGIN_NAME_DAMIMAGE = "damimage";
+
+    private static final String PLUGIN_PATH_DAMIMAGE = "/VAADIN/js/damimage/";
+
     /**
      * Event is emit from server to client when link has been selected.
      */
@@ -87,6 +91,17 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
      * Event carries optional link that should be treated as default link value.
      */
     public static final String EVENT_GET_MAGNOLIA_LINK = "mgnlGetLink";
+
+    /**
+     * Event is emit from client to server when user requests a DAM chooser dialog.
+     * Event carries optional link that should be treated as default link value.
+     */
+    public static final String EVENT_GET_DAM_IMAGE = "mgnlGetDamImage";
+
+    /**
+     * Event is emit from server to client when link has been selected.
+     */
+    public static final String EVENT_SEND_DAM_IMAGE = "mgnDamImageSelected";
 
     private final AppController appController;
     private MagnoliaRichTextField richTextEditor;
@@ -107,14 +122,15 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
         final MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
 
         List<ToolbarGroup> toolbars = new ArrayList<ToolbarGroup>();
-        toolbars.add(new ToolbarGroup("basictyles", new String[]{"Bold", "Italic", "Underline", "SpecialChar"}));
-        toolbars.add(new ToolbarGroup("paragraph", new String[]{"NumberedList", "BulletedList"}));
-        toolbars.add(new ToolbarGroup("insert", new String[]{"Link", "InternalLink", "Unlink"}));
-        toolbars.add(new ToolbarGroup("clipboard", new String[]{"Cut", "Copy", "Paste", "PasteText", "PasteFromWord"}));
-        toolbars.add(new ToolbarGroup("objects", new String[]{"Image", "Table"}));
-        toolbars.add(new ToolbarGroup("special", new String[]{"Undo", "Redo"}));
+        toolbars.add(new ToolbarGroup("basictyles", new String[] { "Bold", "Italic", "Underline", "SpecialChar" }));
+        toolbars.add(new ToolbarGroup("paragraph", new String[] { "NumberedList", "BulletedList" }));
+        toolbars.add(new ToolbarGroup("insert", new String[] { "Link", "InternalLink", "DamImage", "Unlink" }));
+        toolbars.add(new ToolbarGroup("clipboard", new String[] { "Cut", "Copy", "Paste", "PasteText", "PasteFromWord" }));
+        toolbars.add(new ToolbarGroup("objects", new String[] { "Table" }));
+        toolbars.add(new ToolbarGroup("special", new String[] { "Undo", "Redo" }));
         config.addToolbarLine(toolbars);
         config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
+        config.addListenedEvent(EVENT_GET_DAM_IMAGE);
         config.setResizeEnabled(false);
 
         richTextEditor = new MagnoliaRichTextField(config) {
@@ -123,6 +139,7 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
                 super.attach();
                 String path = VaadinService.getCurrentRequest().getContextPath();
                 config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path + PLUGIN_PATH_MAGNOLIALINK);
+                config.addPlugin(PLUGIN_NAME_DAMIMAGE, path + PLUGIN_PATH_DAMIMAGE);
             }
         };
 
@@ -137,7 +154,10 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
                         log.error("openLinkDialog failed", e);
                         richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, "Could not open target App");
                     }
+                } else if (eventName.equals(EVENT_GET_DAM_IMAGE)) {
+                    openDamDialog(value);
                 }
+
             }
         });
 
@@ -146,7 +166,54 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
 
     private void openLinkDialog(String path) {
 
-        appController.openChooseDialog("assets-link", path, subAppContext, new ItemChosenListener() {
+        appController.openChooseDialog("pages", path, subAppContext, new ItemChosenListener() {
+
+            @Override
+            public void onItemChosen(Item chosenValue) {
+                if (!(chosenValue instanceof JcrItemAdapter)) {
+                    richTextEditor
+                            .firePluginEvent(EVENT_CANCEL_LINK);
+                    return;
+                }
+
+                try {
+
+                    javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
+
+                    if (!jcrItem.isNode()) {
+                        return;
+                    }
+
+                    final Node selected = (Node) jcrItem;
+                    Gson gson = new Gson();
+                    MagnoliaLink mlink = new MagnoliaLink();
+                    mlink.identifier = selected.getIdentifier();
+                    mlink.repository = selected.getSession().getWorkspace().getName();
+                    mlink.path = selected.getPath();
+                    if (selected.hasProperty("title")) {
+                        mlink.caption = selected.getProperty("title").getString();
+                    } else {
+                        mlink.caption = selected.getName();
+                    }
+
+                    richTextEditor.firePluginEvent(EVENT_SEND_MAGNOLIA_LINK, gson.toJson(mlink));
+                } catch (Exception e) {
+                    String error = "Not able to access the selected item. Value will not be set.";
+                    log.error(error, e);
+                    richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, error);
+                }
+            }
+
+            @Override
+            public void onChooseCanceled() {
+                richTextEditor.firePluginEvent(EVENT_CANCEL_LINK);
+            }
+        });
+    }
+
+    private void openDamDialog(String path) {
+
+        appController.openChooseDialog("assets", path, subAppContext, new ItemChosenListener() {
 
             @Override
             public void onItemChosen(Item chosenValue) {
@@ -210,7 +277,7 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
                         mlink.caption = selected.getName();
                     }
 
-                    richTextEditor.firePluginEvent(EVENT_SEND_MAGNOLIA_LINK, gson.toJson(mlink));
+                    richTextEditor.firePluginEvent(EVENT_SEND_DAM_IMAGE, gson.toJson(mlink));
                 } catch (Exception e) {
                     String error = "Not able to access the selected item. Value will not be set.";
                     log.error(error, e);

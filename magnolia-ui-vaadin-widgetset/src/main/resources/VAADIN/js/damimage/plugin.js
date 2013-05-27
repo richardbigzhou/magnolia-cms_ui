@@ -28,24 +28,24 @@
  */
 
 (function() {
-    var EVENT_SEND_MAGNOLIA_LINK = "mgnlLinkSelected";
+    var EVENT_SEND_MAGNOLIA_LINK = "mgnDamImageSelected";
     var EVENT_CANCEL_LINK = "mgnlLinkCancel";
-    var EVENT_GET_MAGNOLIA_LINK = "mgnlGetLink";
+    var EVENT_GET_MAGNOLIA_LINK = "mgnlGetDamImage";
     
-    CKEDITOR.plugins.add('magnolialink', {
+    CKEDITOR.plugins.add('damimage', {
         init: function(editor) {
-            editor.ui.addButton('InternalLink', {
-                label: 'Link to Magnolia page',
-                command: 'magnolialink',
+            editor.ui.addButton('DamImage', {
+                label: 'Image from DAM',
+                command: 'damimage',
                 icon: "../../../themes/admincentraltheme/img/s02-internal-link.png"
             });
 
-            editor.addMenuGroup('mlinkgroup');
+            editor.addMenuGroup('damgroup');
 
-            editor.addMenuItem('magnolialink', { 
-                label: 'Edit Magnolia Link',
-                command: 'magnolialink',
-                group: 'mlinkgroup',
+            editor.addMenuItem('damimage', { 
+                label: 'Edit DAM image link',
+                command: 'damimage',
+                group: 'damgroup',
                 icon: "../../../themes/admincentraltheme/img/s02-internal-link.png"
             });
 
@@ -55,21 +55,15 @@
              */
             var selectionRangeHack = null;
 
-            // Request Pages app dialog
-            editor.addCommand('magnolialink', {
+            // Request DAM App dialog
+            editor.addCommand('damimage', {
                 exec: function(editor) {
                     selectionRangeHack = editor.getSelection().getRanges(true);
                     var selectedElement = CKEDITOR.plugins.link.getSelectedLink(editor);
                     
-                    if (isInternalLink(selectedElement)) {
-                        var href = selectedElement.getAttribute('href');                        
-                        var path = href.match(/path\:\{([^\}]*)\}/);
-
-                        if(!path) {
-                            path = href.match(/handle\:\{([^\}]*)\}/);
-                        }
-
-                        editor.fire(EVENT_GET_MAGNOLIA_LINK, path[1]);                      
+                    if (isImage(selectedElement)) {
+                        var href = selectedElement.getAttribute('src');
+                        editor.fire(EVENT_GET_MAGNOLIA_LINK, href);                      
                     } else {
                         editor.fire(EVENT_GET_MAGNOLIA_LINK);
                     }
@@ -78,28 +72,24 @@
                 }
             });
 
-            // Respond from Pages app
+            // Respond from DAM App
             editor.on(EVENT_SEND_MAGNOLIA_LINK, function(e) {
                 setReadOnly(editor, false);
                 editor.getSelection().selectRanges(selectionRangeHack);             
                 var selectedElement = CKEDITOR.plugins.link.getSelectedLink(editor);
                 var link = eval('('+e.data+')');
-                var href = '${link:{uuid:{'+link.identifier+
-                    '},repository:{'+link.repository+
-                    '},path:{'+link.path+
-                    '},nodeData:{},extension:{html}}}';
 
-                if (isLink(selectedElement)) {
-                    selectedElement.setAttribute('href', href);
+                if (isImage(selectedElement)) {
+                    selectedElement.setAttribute('src', link.path);
                 } else {
                     var selectedText = editor.getSelection();
-                    var elem = editor.document.createElement('a');
-                    elem.setAttribute('href', href);
+                    var elem = editor.document.createElement('img');
+                    elem.setAttribute('src', link.path);
 
                     if (selectedText && selectedText.getSelectedText() != '') {
-                        elem.setHtml(selectedText.getSelectedText());
-                    } else {
-                        elem.setHtml(link.caption);
+                        elem.setAttribute('alt', selectedText.getSelectedText());                        
+                    } else {                        
+                        elem.setAttribute('alt', link.caption);
                     }
 
                     editor.insertElement(elem);
@@ -114,46 +104,14 @@
                 setReadOnly(editor, false);
             });
 
-            // Double click
-            editor.on('doubleclick', function(ev) {             
-                var selected = CKEDITOR.plugins.link.getSelectedLink(editor);
-                
-                if (isInternalLink(selected)) {
-                    ev.data.dialog = null; // Eat the CK link dialog
-                    editor.getCommand('magnolialink').exec(editor);
-                }
-            });
-
-            // Selection change
-            editor.on( 'selectionChange', function( evt ) {
-                if ( editor.readOnly ) {
-                    return;
-                }
-
-                var element = evt.data.path.lastElement && evt.data.path.lastElement.getAscendant( 'a', true );
-                var internalLinkState = CKEDITOR.TRISTATE_OFF;
-                var externalLinkState = CKEDITOR.TRISTATE_OFF;
-
-                if (isLink(element) && !isInternalLink(element)) {
-                    internalLinkState = CKEDITOR.TRISTATE_DISABLED;                 
-                    }
-
-                if (isInternalLink(element)) {
-                    externalLinkState = CKEDITOR.TRISTATE_DISABLED;
-                    }
-
-                editor.getCommand('magnolialink').setState(internalLinkState);
-                editor.getCommand('link').setState(externalLinkState);              
-                });
-
             // Context menu
             editor.contextMenu.addListener(function(element, selection) {       
-                if (!isInternalLink(element)) {
+                if (!isImage(element)) {
                     return null;
                 } 
 
                 return {
-                    magnolialink: CKEDITOR.TRISTATE_OFF
+                    damimage: CKEDITOR.TRISTATE_OFF
                 };
             });
         }
@@ -166,17 +124,9 @@
             editor.element.removeStyle('opacity');
         }
     }
-
-    function isInternalLink(element) {
-        if (isLink(element) && element.getAttribute('href').substring(0,1) == '$') {
-            return true;
-        }
-
-        return false;
-    };
-
-    function isLink(element) {
-        if (element && element.getName().toLowerCase() == 'a' && element.getAttribute('href') && element.getChildCount()) {
+   
+    function isImage(element) {
+        if (element && element.getName().toLowerCase() == 'img') {
             return true;
         } else {
             return false;
