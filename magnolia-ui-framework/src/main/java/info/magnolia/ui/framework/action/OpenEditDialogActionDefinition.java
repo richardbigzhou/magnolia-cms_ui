@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.action;
+package info.magnolia.ui.framework.action;
 
-import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * CancelFormAction.
+ * Defines an action for opening a dialog for editing a node.
  */
-public class CancelFormAction extends AbstractAction<CancelFormActionDefinition> {
+public class OpenEditDialogActionDefinition extends ConfiguredActionDefinition {
 
-    private EditorCallback callback;
+    private String dialogName;
 
-    public CancelFormAction(CancelFormActionDefinition definition, EditorCallback callback) {
-        super(definition);
-        this.callback = callback;
+    public OpenEditDialogActionDefinition() {
+        setImplementationClass(OpenEditDialogAction.class);
     }
 
-    @Override
-    public void execute() throws ActionExecutionException {
-        callback.onCancel();
+    public String getDialogName() {
+        return dialogName;
     }
+
+    public void setDialogName(String dialogName) {
+        this.dialogName = dialogName;
+    }
+
 }

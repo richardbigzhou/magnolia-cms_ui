@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.action;
-
-import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.api.action.ActionExecutionException;
+package info.magnolia.ui.api.action;
 
 /**
- * CancelFormAction.
+ * Abstract {@link Action} base class holding a reference to its {@link ActionDefinition}.
+ * 
+ * @param <D> the action definition type
  */
-public class CancelFormAction extends AbstractAction<CancelFormActionDefinition> {
+public abstract class AbstractAction<D extends ActionDefinition> implements Action {
 
-    private EditorCallback callback;
+    private D definition;
 
-    public CancelFormAction(CancelFormActionDefinition definition, EditorCallback callback) {
-        super(definition);
-        this.callback = callback;
+    public AbstractAction(D definition) {
+        this.definition = definition;
     }
 
-    @Override
-    public void execute() throws ActionExecutionException {
-        callback.onCancel();
+    protected D getDefinition() {
+        return definition;
     }
 }

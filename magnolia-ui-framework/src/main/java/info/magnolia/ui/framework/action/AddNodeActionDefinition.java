@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.action;
+package info.magnolia.ui.framework.action;
 
-import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * CancelFormAction.
+ * Used to configure a {@link AddNodeAction}. Allows for configuring the type of the new node. Defaults to
+ * {@link NodeTypes.Content#NAME} if not set.
  */
-public class CancelFormAction extends AbstractAction<CancelFormActionDefinition> {
+public class AddNodeActionDefinition extends ConfiguredActionDefinition {
 
-    private EditorCallback callback;
+    private String nodeType = NodeTypes.Content.NAME;
 
-    public CancelFormAction(CancelFormActionDefinition definition, EditorCallback callback) {
-        super(definition);
-        this.callback = callback;
+    public AddNodeActionDefinition() {
+        setImplementationClass(AddNodeAction.class);
     }
 
-    @Override
-    public void execute() throws ActionExecutionException {
-        callback.onCancel();
+    public String getNodeType() {
+        return nodeType;
+    }
+
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
     }
 }

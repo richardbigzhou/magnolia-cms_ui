@@ -31,26 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.action;
+package info.magnolia.ui.framework.action;
 
-import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * CancelFormAction.
+ * Defines a dialog action that opens a dialog for adding a new node.
  */
-public class CancelFormAction extends AbstractAction<CancelFormActionDefinition> {
+public class OpenCreateDialogActionDefinition extends ConfiguredActionDefinition {
 
-    private EditorCallback callback;
+    private String dialogName;
 
-    public CancelFormAction(CancelFormActionDefinition definition, EditorCallback callback) {
-        super(definition);
-        this.callback = callback;
+    /**
+     * The node type to use when saving the dialog results in adding a new node.
+     *
+     * @see info.magnolia.jcr.util.NodeTypes
+     */
+    private String nodeType;
+
+    public OpenCreateDialogActionDefinition() {
+        setImplementationClass(OpenCreateDialogAction.class);
     }
 
-    @Override
-    public void execute() throws ActionExecutionException {
-        callback.onCancel();
+    public String getDialogName() {
+        return dialogName;
     }
+
+    public void setDialogName(String dialogName) {
+        this.dialogName = dialogName;
+    }
+
+    public String getNodeType() {
+        return nodeType;
+    }
+
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
+    }
+
 }

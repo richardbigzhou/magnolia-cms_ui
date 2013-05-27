@@ -31,26 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.action;
+package info.magnolia.ui.framework.action;
 
-import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * CancelFormAction.
+ * Used to configure a {@link DuplicateNodeAction}.
+ *
+ * @see DuplicateNodeAction
  */
-public class CancelFormAction extends AbstractAction<CancelFormActionDefinition> {
+public class DuplicateNodeActionDefinition extends ConfiguredActionDefinition {
 
-    private EditorCallback callback;
-
-    public CancelFormAction(CancelFormActionDefinition definition, EditorCallback callback) {
-        super(definition);
-        this.callback = callback;
-    }
-
-    @Override
-    public void execute() throws ActionExecutionException {
-        callback.onCancel();
+    public DuplicateNodeActionDefinition() {
+        setImplementationClass(DuplicateNodeAction.class);
     }
 }

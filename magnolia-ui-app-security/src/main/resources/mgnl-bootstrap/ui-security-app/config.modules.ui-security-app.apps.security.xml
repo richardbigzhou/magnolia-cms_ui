@@ -89,7 +89,7 @@
             <sv:value>6edfe385-6f3d-4e72-a6b5-cdc82e041361</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition</sv:value>
+            <sv:value>info.magnolia.ui.framework.action.OpenEditDialogActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="dialogName" sv:type="String">
             <sv:value>ui-security-app:userEdit</sv:value>
@@ -115,7 +115,7 @@
             <sv:value>1f4e2327-7862-4cec-a08e-4e8153c30016</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition</sv:value>
+            <sv:value>info.magnolia.ui.framework.action.OpenCreateDialogActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="dialogName" sv:type="String">
             <sv:value>ui-security-app:userAdd</sv:value>
@@ -196,7 +196,7 @@
             <sv:value>e70c4831-aee1-4207-a13f-4fc7233b014c</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition</sv:value>
+            <sv:value>info.magnolia.ui.framework.action.DeleteItemActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>Delete user</sv:value>
@@ -817,7 +817,7 @@
             <sv:value>9811ed18-4fc2-43b0-a38c-e2ffccea10da</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition</sv:value>
+            <sv:value>info.magnolia.ui.framework.action.OpenEditDialogActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="dialogName" sv:type="String">
             <sv:value>ui-security-app:userEdit</sv:value>
@@ -843,7 +843,7 @@
             <sv:value>6827144f-eedd-44e5-b890-74af329fab8f</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition</sv:value>
+            <sv:value>info.magnolia.ui.framework.action.OpenCreateDialogActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="dialogName" sv:type="String">
             <sv:value>ui-security-app:userAdd</sv:value>
@@ -924,7 +924,7 @@
             <sv:value>4b5aa7d1-7452-4818-bb32-faa6db1e8c49</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition</sv:value>
+            <sv:value>info.magnolia.ui.framework.action.DeleteItemActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>Delete user</sv:value>
@@ -1545,7 +1545,7 @@
             <sv:value>1e3c978d-b002-46d6-b95b-6291b0d6fe2d</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition</sv:value>
+            <sv:value>info.magnolia.ui.framework.action.OpenCreateDialogActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="dialogName" sv:type="String">
             <sv:value>ui-security-app:groupAdd</sv:value>
@@ -1626,7 +1626,7 @@
             <sv:value>3b4fd922-2b79-4d08-ae54-a51db7eb6ada</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition</sv:value>
+            <sv:value>info.magnolia.ui.framework.action.DeleteItemActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>Delete group</sv:value>
@@ -1649,7 +1649,7 @@
             <sv:value>9a18fb53-e1d8-46ca-a871-2f2ebfbade11</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition</sv:value>
+            <sv:value>info.magnolia.ui.framework.action.OpenEditDialogActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="dialogName" sv:type="String">
             <sv:value>ui-security-app:groupEdit</sv:value>
@@ -2262,7 +2262,7 @@
             <sv:value>1b1cdee3-a18f-44fe-bb55-d5eeccc7879c</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition</sv:value>
+            <sv:value>info.magnolia.ui.framework.action.DeleteItemActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>Delete role</sv:value>
@@ -2285,7 +2285,7 @@
             <sv:value>f6e28014-aac5-449c-9d5f-ab9ae9774d14</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.admincentral.dialog.action.EditDialogActionDefinition</sv:value>
+            <sv:value>info.magnolia.ui.framework.action.OpenEditDialogActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="dialogName" sv:type="String">
             <sv:value>ui-security-app:roleEdit</sv:value>
@@ -2311,7 +2311,7 @@
             <sv:value>58f2e374-a658-4fbf-bdbc-2fc21a08569a</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition</sv:value>
+            <sv:value>info.magnolia.ui.framework.action.OpenCreateDialogActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="dialogName" sv:type="String">
             <sv:value>ui-security-app:roleAdd</sv:value>

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.action;
+package info.magnolia.ui.framework.action;
 
-import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.ui.api.action.CommandActionDefinition;
+
 
 /**
- * CancelFormAction.
+ * The deactivation action, invoking the deactivation command, and updating the UI accordingly.
+ *
+ * @see DeactivationAction
  */
-public class CancelFormAction extends AbstractAction<CancelFormActionDefinition> {
+public class DeactivationActionDefinition extends CommandActionDefinition {
 
-    private EditorCallback callback;
-
-    public CancelFormAction(CancelFormActionDefinition definition, EditorCallback callback) {
-        super(definition);
-        this.callback = callback;
+    public DeactivationActionDefinition() {
+        setImplementationClass(DeactivationAction.class);
     }
 
     @Override
-    public void execute() throws ActionExecutionException {
-        callback.onCancel();
+    public String getSuccessMessage() {
+        if (workflowInstalled()) {
+            return "The workflow has been started.";
+        }
+        return "Deactivation has been started.";
+    }
+
+    @Override
+    public String getFailureMessage() {
+        if (workflowInstalled()) {
+            return "The workflow could not be launched.";
+        }
+        return "Deactivation has failed.";
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return "Deactivation failed. Please contact the system administrator for assistance.";
+    }
+
+    private boolean workflowInstalled() {
+        return SessionUtil.getNode("config", "/modules/workflow-base") != null;
     }
 }

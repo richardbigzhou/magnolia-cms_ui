@@ -34,13 +34,13 @@
 package info.magnolia.ui.mediaeditor.action.feature;
 
 import info.magnolia.ui.mediaeditor.action.feature.definition.ScaleToFitActionDefinition;
-import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 
 /**
  * Forces an instance of {@link Scalable} to scale to fit the available space.
  */
-public class ScaleToFitAction extends ActionBase<ScaleToFitActionDefinition> {
+public class ScaleToFitAction extends AbstractAction<ScaleToFitActionDefinition> {
 
     private Scalable scalable;
     

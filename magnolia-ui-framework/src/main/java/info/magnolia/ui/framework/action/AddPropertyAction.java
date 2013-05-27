@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.action;
+package info.magnolia.ui.framework.action;
 
-import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.event.EventBus;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+
+import javax.inject.Named;
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
 
 /**
- * CancelFormAction.
+ * Action for adding a new property.
+ *
+ * @see AddPropertyActionDefinition
  */
-public class CancelFormAction extends AbstractAction<CancelFormActionDefinition> {
+public class AddPropertyAction extends AbstractRepositoryAction<AddPropertyActionDefinition> {
 
-    private EditorCallback callback;
-
-    public CancelFormAction(CancelFormActionDefinition definition, EditorCallback callback) {
-        super(definition);
-        this.callback = callback;
+    public AddPropertyAction(AddPropertyActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
+        super(definition, item, eventBus);
     }
 
     @Override
-    public void execute() throws ActionExecutionException {
-        callback.onCancel();
+    protected void onExecute(JcrItemAdapter item) throws RepositoryException {
+        if (item.isNode()) {
+            Node node = (Node) item.getJcrItem();
+            String name = getUniqueNewItemName(node);
+            Property property = node.setProperty(name, "");
+            NodeTypes.LastModified.update(property.getParent());
+            setItemIdOfChangedItem(JcrItemUtil.getItemId(property));
+        }
     }
 }

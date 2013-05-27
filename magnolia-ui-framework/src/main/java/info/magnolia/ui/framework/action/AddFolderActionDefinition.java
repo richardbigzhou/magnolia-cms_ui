@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.action;
+package info.magnolia.ui.framework.action;
 
-import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.jcr.util.NodeTypes;
 
 /**
- * CancelFormAction.
+ * Used for configuring a {@link AddNodeAction} that creates a folder.
  */
-public class CancelFormAction extends AbstractAction<CancelFormActionDefinition> {
+public class AddFolderActionDefinition extends AddNodeActionDefinition {
 
-    private EditorCallback callback;
-
-    public CancelFormAction(CancelFormActionDefinition definition, EditorCallback callback) {
-        super(definition);
-        this.callback = callback;
-    }
-
-    @Override
-    public void execute() throws ActionExecutionException {
-        callback.onCancel();
+    public AddFolderActionDefinition() {
+        setImplementationClass(AddNodeAction.class);
+        setNodeType(NodeTypes.Folder.NAME);
     }
 }

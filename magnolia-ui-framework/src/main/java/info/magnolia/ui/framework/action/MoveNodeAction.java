@@ -31,26 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.action;
+package info.magnolia.ui.framework.action;
 
-import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+
+import javax.inject.Named;
+import javax.jcr.RepositoryException;
 
 /**
- * CancelFormAction.
+ * Action that moves a node.
+ *
+ * @see MoveNodeActionDefinition
  */
-public class CancelFormAction extends AbstractAction<CancelFormActionDefinition> {
+public class MoveNodeAction extends AbstractRepositoryAction<MoveNodeActionDefinition> {
 
-    private EditorCallback callback;
-
-    public CancelFormAction(CancelFormActionDefinition definition, EditorCallback callback) {
-        super(definition);
-        this.callback = callback;
+    public MoveNodeAction(MoveNodeActionDefinition definition, AbstractJcrNodeAdapter nodeItemToEdit, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus) {
+        super(definition, nodeItemToEdit, admincentralEventBus);
     }
 
     @Override
-    public void execute() throws ActionExecutionException {
-        callback.onCancel();
+    public void onExecute(JcrItemAdapter item) throws RepositoryException {
     }
 }

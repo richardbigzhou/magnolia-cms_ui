@@ -39,7 +39,7 @@ import info.magnolia.commands.chain.Command;
 import info.magnolia.commands.impl.ImportCommand;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
-import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -61,7 +61,7 @@ import com.vaadin.data.Item;
  * Call Import Command in order to perform the import action.
  *
  */
-public class SaveImportDialogAction extends ActionBase<SaveImportDialogActionDefinition> {
+public class SaveImportDialogAction extends AbstractAction<SaveImportDialogActionDefinition> {
 
     private static final Logger log = LoggerFactory.getLogger(SaveImportDialogAction.class);
 
