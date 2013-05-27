@@ -35,7 +35,7 @@
       <sv:value>913226f7-e366-4cbb-9b4e-8c9c8d97d918</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.framework.action.OpenCreateDialogActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="dialogName" sv:type="String">
       <sv:value>ui-pages-app:pages</sv:value>
@@ -79,7 +79,7 @@
       <sv:value>18a1eca6-4060-496c-8635-b4ee060cf2ba</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.tree.action.MarkNodeAsDeletedActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.framework.action.MarkNodeAsDeletedActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="command" sv:type="String">
       <sv:value>markAsDeleted</sv:value>
@@ -187,7 +187,7 @@
       <sv:value>114c8733-d82a-497b-ab12-f3c63ea21af4</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.tree.action.MoveNodeActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.framework.action.MoveNodeActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-move</sv:value>
@@ -222,7 +222,7 @@
       <sv:value>b6e801c7-11a8-4192-94d5-a920c86b827f</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.tree.action.DuplicateNodeActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.framework.action.DuplicateNodeActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-duplicate</sv:value>
@@ -260,7 +260,7 @@
       <sv:value>website</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.activation.action.ActivationActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.framework.action.ActivationActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="command" sv:type="String">
       <sv:value>activate</sv:value>
@@ -301,7 +301,7 @@
       <sv:value>website</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.activation.action.ActivationActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.framework.action.ActivationActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="command" sv:type="String">
       <sv:value>activate</sv:value>
@@ -345,7 +345,7 @@
       <sv:value>website</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.activation.action.DeactivationActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.framework.action.DeactivationActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="command" sv:type="String">
       <sv:value>deactivate</sv:value>

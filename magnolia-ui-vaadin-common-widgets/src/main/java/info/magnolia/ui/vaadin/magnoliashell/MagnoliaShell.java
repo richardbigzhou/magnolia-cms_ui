@@ -205,11 +205,16 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
      * 
      * @param overlayComponent The component of the view which was opened in an overlay.
      */
-    public void closeOverlay(Component overlayComponent) {
-        Overlay overlay = (Overlay) overlayComponent.getParent();
+    public void closeOverlay(final Component overlayComponent) {
+        final Overlay overlay = (Overlay) overlayComponent.getParent();
+        overlay.closeWithTransition(this);
+    }
+
+    public void removeOverlay(Overlay overlay) {
         getState().overlays.remove(overlay);
         overlay.setParent(null);
     }
+
 
     @Override
     protected MagnoliaShellState createState() {

@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.framework.app.registry;
 
+import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.ui.framework.app.App;
 import info.magnolia.ui.framework.app.AppDescriptor;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
@@ -45,9 +46,6 @@ import java.util.Map;
  */
 public class ConfiguredAppDescriptor implements AppDescriptor {
 
-    /**
-     * unique identifier.
-     */
     private String name;
 
     private String label;
@@ -61,6 +59,8 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
     private Class<? extends App> appClass;
 
     private Map<String, SubAppDescriptor> subApps = new LinkedHashMap<String, SubAppDescriptor>();
+
+    private AccessDefinition permissions;
 
     @Override
     public String getName() {
@@ -127,6 +127,15 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
 
     public void addSubApp(SubAppDescriptor subApp) {
         subApps.put(subApp.getName(), subApp);
+    }
+
+    @Override
+    public AccessDefinition getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(AccessDefinition permissions) {
+        this.permissions = permissions;
     }
 
     @Override

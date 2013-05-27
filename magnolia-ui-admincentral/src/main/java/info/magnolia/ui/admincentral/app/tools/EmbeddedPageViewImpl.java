@@ -67,7 +67,7 @@ public class EmbeddedPageViewImpl implements EmbeddedPageView {
         }
 
         log.debug("Opening page in an iframe with url [{}]...", url);
-        final BrowserFrame page = new BrowserFrame("", new ExternalResource(url));
+        final BrowserFrame page = new BrowserFrame(null, new ExternalResource(url));
         page.setSizeFull();
 
         layout.addComponent(page);

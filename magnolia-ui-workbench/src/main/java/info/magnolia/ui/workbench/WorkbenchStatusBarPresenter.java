@@ -36,11 +36,13 @@ package info.magnolia.ui.workbench;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.statusbar.StatusBarView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 
 import javax.inject.Inject;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +71,8 @@ public class WorkbenchStatusBarPresenter {
 
     private JcrItemAdapter selectedItem;
 
+    private String workbenchRootPath;
+
     @Inject
     public WorkbenchStatusBarPresenter(StatusBarView view) {
         this.view = view;
@@ -86,12 +90,16 @@ public class WorkbenchStatusBarPresenter {
         });
     }
 
-    public StatusBarView start(EventBus eventBus) {
+    public StatusBarView start(EventBus eventBus, WorkbenchDefinition workbenchDefinition) {
+        workbenchRootPath = StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/");
+
         this.eventBus = eventBus;
+
         view.addComponent(selectionLabel, Alignment.MIDDLE_LEFT);
         ((HorizontalLayout) view).setExpandRatio(selectionLabel, 1);
         view.addComponent(countLabel, Alignment.MIDDLE_RIGHT);
         ((HorizontalLayout) view).setExpandRatio(countLabel, 0);
+
         bindHandlers();
 
         return view;
@@ -105,6 +113,11 @@ public class WorkbenchStatusBarPresenter {
                 javax.jcr.Item jcrItem = item.getJcrItem();
                 try {
                     newValue = jcrItem.getPath();
+
+                    if (!workbenchRootPath.equals("/")) {
+                        newValue = StringUtils.removeStart(newValue, workbenchRootPath);
+                    }
+
                     newDescription = newValue;
                 } catch (RepositoryException e) {
                     log.warn("Could not retrieve path from item with id " + item.getItemId(), e);

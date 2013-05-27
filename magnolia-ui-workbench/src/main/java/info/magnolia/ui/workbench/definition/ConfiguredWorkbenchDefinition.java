@@ -50,7 +50,7 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     private String workspace;
 
-    private String path = "";
+    private String path = "/";
 
     private String defaultOrder;
 
@@ -80,6 +80,10 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     @Override
     public List<NodeTypeDefinition> getNodeTypes() {
         return nodeTypes;
+    }
+
+    public void setNodeTypes(List<NodeTypeDefinition> nodeTypes) {
+        this.nodeTypes = nodeTypes;
     }
 
     @Override

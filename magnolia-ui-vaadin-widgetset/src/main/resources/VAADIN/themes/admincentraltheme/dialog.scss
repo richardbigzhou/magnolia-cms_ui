@@ -131,6 +131,11 @@ button.btn-dialog-help {
     padding-bottom:5px;
     border: solid 1px;
     box-shadow: 7px 7px 10px $c10;
+
+    margin-right:15px; /* so that the box-shadow does not get cut off by a parent with overflow:hidden. */
+    margin-bottom:15px; /* so that the box-shadow does not get cut off by a parent with overflow:hidden. */
+    margin-top:5px; /* so that the box-shadow does not get cut off by a parent with overflow:hidden. */
+    margin-left:5px; /* so that the box-shadow does not get cut off by a parent with overflow:hidden. */
  }
 
 .light-dialog-panel .dialog-header {
@@ -206,13 +211,6 @@ content:"]";
 .light-dialog-panel.msgerror .btn-dialog-default {  background:     $c70;}
 .light-dialog-panel.msgerror button {               background:     #AE9D9D;}
 
-
-/* Alerts */
-
-.alert-progressbar {
-    display: none;
-}
-
 /* Notifications */
 
 .notification-dialog {
@@ -242,6 +240,11 @@ content:"]";
     border-width: 2px;
     margin-left: -1px;
 }
+
+.progressbar-based-client-refresher{
+	display:none;
+}
+
 
 /* Lightbox */
 
