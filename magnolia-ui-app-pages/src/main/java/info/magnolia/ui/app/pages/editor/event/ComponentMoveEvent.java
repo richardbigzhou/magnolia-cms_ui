@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,40 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.editor;
+package info.magnolia.ui.app.pages.editor.event;
 
-import info.magnolia.ui.contentapp.ContentSubAppView;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.editor.PageEditorView;
-import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
+import info.magnolia.event.Event;
+import info.magnolia.event.EventHandler;
 
 /**
- * PagesEditorSubAppView.
+ * ComponentMoveEvent.
  */
-public interface PagesEditorSubAppView extends ContentSubAppView {
+public class ComponentMoveEvent implements Event<ComponentMoveEvent.Handler> {
 
-    /**
-     * Listener.
-     */
-    public interface Listener extends PageBarView.Listener {
+    private boolean start;
 
-        void onEscape();
+    public ComponentMoveEvent(boolean start) {
+        this.start = start;
     }
 
-    void setListener(Listener listener);
+    public boolean isStart() {
+        return start;
+    }
 
-    void setPageBarView(PageBarView pageBarView);
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onStart(this);
 
-    void setPageEditorView(PageEditorView pageEditor);
+    }
 
     /**
-     * Use this method to add an action bar to this sub app view.
+     * Handler.
      */
-    void setActionbarView(ActionbarView actionbar);
-
-    /**
-     * Shows/hides the actionbar. It has no effect if the actionbar hasn't yet been set.
-     */
-    void hideActionbar(boolean hide);
+    public static interface Handler extends EventHandler {
+        void onStart(ComponentMoveEvent event);
+    }
 
 }

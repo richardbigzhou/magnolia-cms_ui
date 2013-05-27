@@ -40,6 +40,8 @@ import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
 
 import javax.inject.Inject;
 
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -75,6 +77,12 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
         root.setExpandRatio(container, 1);
         root.setSpacing(true);
         root.setMargin(false);
+        root.addShortcutListener(new ShortcutListener("", ShortcutAction.KeyCode.ENTER, null) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                listener.onEscape();
+            }
+        });
 
         container.setSizeFull();
         container.addStyleName("editor");

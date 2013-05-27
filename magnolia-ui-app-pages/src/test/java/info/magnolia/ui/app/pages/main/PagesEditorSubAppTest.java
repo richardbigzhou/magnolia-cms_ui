@@ -47,7 +47,7 @@ import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
-import info.magnolia.ui.app.pages.editor.NodeSelectedEvent;
+import info.magnolia.ui.app.pages.editor.event.NodeSelectedEvent;
 import info.magnolia.ui.app.pages.editor.PageEditorPresenter;
 import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
 import info.magnolia.ui.app.pages.editor.PagesEditorSubAppView;

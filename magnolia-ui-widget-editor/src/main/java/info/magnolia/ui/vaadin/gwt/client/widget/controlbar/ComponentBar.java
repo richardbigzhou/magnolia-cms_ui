@@ -35,7 +35,6 @@ package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.ComponentListener;
-import info.magnolia.ui.vaadin.gwt.client.widget.dnd.ComponentMoveHelper;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -66,11 +65,14 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * Control bar for components. Injected at the beginning of an area.
+ * Control bar for components. Injected at the beginning of a component.
  */
 public class ComponentBar extends AbstractBar {
 
-    private static final String MOVE_CLASS_NAME = "icon-move";
+    private static final String MOVE_ICON_CLASS_NAME = "icon-move";
+    private static final String MOVE_SOURCE_CLASS_NAME = "moveSource";
+    private static final String MOVE_TARGET_CLASS_NAME = "moveTarget";
+    private static final String MOVE_OVER_CLASS_NAME = "moveOver";
 
     private final ComponentListener listener;
     List<HandlerRegistration> dndHandlers = new LinkedList<HandlerRegistration>();
@@ -84,7 +86,7 @@ public class ComponentBar extends AbstractBar {
 
         initLayout();
 
-        if (DragDropEventBase.isSupported()) {
+        if (listener.isMovable() && DragDropEventBase.isSupported()) {
             registerDragStartHandler();
             setDraggable(true);
         }
@@ -123,24 +125,26 @@ public class ComponentBar extends AbstractBar {
 
             addButton(edit);
         }
-        final Label move = new Label();
-        move.setStyleName(ICON_CLASS_NAME);
-        move.addStyleName(MOVE_CLASS_NAME);
+        if (listener.isMovable()) {
+            final Label move = new Label();
+            move.setStyleName(ICON_CLASS_NAME);
+            move.addStyleName(MOVE_ICON_CLASS_NAME);
 
-        move.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                //toggleButtons(false);
-                //toggleStyles(bar, true);
+            move.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    //toggleButtons(false);
+                    //toggleStyles(bar, true);
 
-                listener.startMove();
+                    listener.onMoveStart(false);
 
-                //int height = getOffsetHeight();
-                //int width = getOffsetWidth();
-                //moveDiv = new MoveWidget(height, width);
-            }
-        });
-        addButton(move);
+                    //int height = getOffsetHeight();
+                    //int width = getOffsetWidth();
+                    //moveDiv = new MoveWidget(height, width);
+                }
+            });
+            addButton(move);
+        }
 
     }
     private void registerDragStartHandler() {
@@ -150,41 +154,34 @@ public class ComponentBar extends AbstractBar {
             public void onDragStart(DragStartEvent event) {
                 //bar.toggleButtons(false);
 
-                setStyleName("moveSource", true);
-
-                listener.onDragStart();
-
-                int x = getAbsoluteLeft();
-                int y = getAbsoluteTop();
-                event.setData("text", listener.getNodePath() + "," + x + "," + y);
+                setStyleName(MOVE_SOURCE_CLASS_NAME, true);
+                event.setData("text", "dummyPayload");
                 event.getDataTransfer().setDragImage(getElement(), 10, 10);
+
+                listener.onMoveStart(true);
+
 
             }
         }, DragStartEvent.getType());
 
-    }
-    public void registerDragAndDropHandlers() {
-        dndHandlers.add(addDomHandler(new DragEndHandler() {
+        addDomHandler(new DragEndHandler() {
             @Override
             public void onDragEnd(DragEndEvent event) {
                 //toggleButtons(true);
 
-                setStyleName("moveSource", false);
+                setStyleName(MOVE_SOURCE_CLASS_NAME, false);
 
-                listener.onDragEnd();
+                listener.onMoveCancel();
             }
-        }, DragEndEvent.getType()));
+        }, DragEndEvent.getType());
+
+    }
+    public void registerDragAndDropHandlers() {
 
         dndHandlers.add(addDomHandler(new DragOverHandler() {
             @Override
             public void onDragOver(DragOverEvent event) {
-                String data = event.getData("text");
-                String[] tokens = data.split(",");
-                String idSource = tokens[0];
-
-                if (!listener.getNodePath().equals(idSource)) {
-                    setStyleName("moveOver", true);
-                }
+                setStyleName(MOVE_OVER_CLASS_NAME, true);
                 event.stopPropagation();
             }
         }, DragOverEvent.getType()));
@@ -193,7 +190,7 @@ public class ComponentBar extends AbstractBar {
 
             @Override
             public void onDragLeave(DragLeaveEvent event) {
-                setStyleName("moveOver", false);
+                setStyleName(MOVE_OVER_CLASS_NAME, false);
                 event.stopPropagation();
             }
         }, DragLeaveEvent.getType()));
@@ -201,21 +198,7 @@ public class ComponentBar extends AbstractBar {
         dndHandlers.add(addDomHandler(new DropHandler() {
             @Override
             public void onDrop(DropEvent event) {
-                String data = event.getData("text");
-                String[] tokens = data.split(",");
-                String sourcePath = tokens[0];
-
-                if (!listener.getNodePath().equals(sourcePath)) {
-                    int xTarget = getAbsoluteLeft();
-                    int yTarget = getAbsoluteTop();
-                    int xOrigin = Integer.valueOf(tokens[1]);
-                    int yOrigin = Integer.valueOf(tokens[2]);
-
-                    String order = getSortOrder(xOrigin, yOrigin, xTarget, yTarget);
-
-                    listener.sortComponent(sourcePath, order);
-                }
-
+                listener.onMoveStop();
                 event.preventDefault();
             }
         }, DropEvent.getType()));
@@ -235,22 +218,7 @@ public class ComponentBar extends AbstractBar {
 
             @Override
             public void onMouseDown(MouseDownEvent event) {
-                if (ComponentMoveHelper.isMoving()) {
-
-                    String idSource = ComponentMoveHelper.getNodePath();
-
-                    if (!listener.getNodePath().equals(idSource)) {
-                        int xTarget = getAbsoluteLeft();
-                        int yTarget = getAbsoluteTop();
-                        int xOrigin = ComponentMoveHelper.getAbsoluteLeft();
-                        int yOrigin = ComponentMoveHelper.getAbsoluteTop();
-
-                        String order = getSortOrder(xOrigin, yOrigin, xTarget, yTarget);
-
-                        listener.stopMove();
-                        listener.sortComponent(idSource, order);
-                    }
-                }
+                listener.onMoveStop();
             }
         }, MouseDownEvent.getType()));
 
@@ -258,13 +226,7 @@ public class ComponentBar extends AbstractBar {
 
             @Override
             public void onMouseOver(MouseOverEvent event) {
-                if (ComponentMoveHelper.isMoving()) {
-                    String idSource = ComponentMoveHelper.getNodePath();
-
-                    if (!listener.getNodePath().equals(idSource)) {
-                        setStyleName("moveOver", true);
-                    }
-                }
+                setStyleName(MOVE_OVER_CLASS_NAME, true);
             }
         }, MouseOverEvent.getType()));
 
@@ -272,13 +234,7 @@ public class ComponentBar extends AbstractBar {
 
             @Override
             public void onMouseOut(MouseOutEvent event) {
-                if (ComponentMoveHelper.isMoving()) {
-                    String idSource = ComponentMoveHelper.getNodePath();
-
-                    if (!listener.getNodePath().equals(idSource)) {
-                        setStyleName("moveOver", false);
-                    }
-                }
+                setStyleName(MOVE_OVER_CLASS_NAME, false);
             }
         }, MouseOutEvent.getType()));
     }
@@ -291,19 +247,7 @@ public class ComponentBar extends AbstractBar {
         }
     }
 
-    private String getSortOrder(int xSource, int ySource, int xTarget, int yTarget) {
-        boolean isDragUp = ySource > yTarget;
-        boolean isDragDown = !isDragUp;
-        boolean isDragLeft = xSource > xTarget;
-        boolean isDragRight = !isDragLeft;
-
-        String order = null;
-
-        if (isDragUp || isDragLeft) {
-            order = "before";
-        } else if (isDragDown || isDragRight) {
-            order = "after";
-        }
-        return order;
+    public void setMoveTarget(boolean moveTarget) {
+        setStyleName(MOVE_TARGET_CLASS_NAME, moveTarget);
     }
 }

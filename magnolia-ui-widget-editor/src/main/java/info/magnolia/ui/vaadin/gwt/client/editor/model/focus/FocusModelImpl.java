@@ -49,10 +49,9 @@ import com.google.web.bindery.event.shared.EventBus;
 public class FocusModelImpl implements FocusModel {
 
     private final Model model;
+    private final EventBus eventBus;
 
     private boolean rootSelected = false;
-
-    private final EventBus eventBus;
 
     public FocusModelImpl(EventBus eventBus, Model model) {
         super();
@@ -62,6 +61,10 @@ public class FocusModelImpl implements FocusModel {
 
     @Override
     public void selectElement(Element element) {
+
+        if (model.isMoving()) {
+            return;
+        }
 
         MgnlElement mgnlElement = model.getMgnlElement(element);
 

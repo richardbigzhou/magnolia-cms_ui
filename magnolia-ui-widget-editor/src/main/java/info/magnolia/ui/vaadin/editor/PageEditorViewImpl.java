@@ -87,6 +87,11 @@ public class PageEditorViewImpl extends CssLayout implements PageEditorView {
     }
 
     @Override
+    public void moveComponent() {
+        pageEditor.moveComponent();
+    }
+
+    @Override
     public Component asVaadinComponent() {
         return this;
     }

@@ -34,15 +34,21 @@
 package info.magnolia.ui.vaadin.gwt.client.editor.dom;
 
 import info.magnolia.cms.security.operations.OperationPermissionDefinition;
+import info.magnolia.ui.vaadin.gwt.client.editor.event.ComponentStartMoveEvent;
+import info.magnolia.ui.vaadin.gwt.client.editor.event.ComponentStopMoveEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.SortComponentEvent;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.ComponentListener;
-import info.magnolia.ui.vaadin.gwt.client.widget.dnd.ComponentMoveHelper;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * Represents a component inside the {@link CmsNode}-tree.
@@ -52,6 +58,7 @@ import com.google.gwt.event.shared.EventBus;
 public class MgnlComponent extends MgnlElement implements ComponentListener {
 
     private final EventBus eventBus;
+    private List<HandlerRegistration> handlers = new LinkedList<HandlerRegistration>();
 
     public MgnlComponent(MgnlElement parent, EventBus eventBus) {
         super(parent);
@@ -72,14 +79,9 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
             writable = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.WRITABLE));
         }
 
-        boolean movable = true;
-        if (getAttributes().containsKey(OperationPermissionDefinition.MOVEABLE)) {
-            movable = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.MOVEABLE));
-        }
-
         component.setDeletable(deletable);
         component.setWritable(writable);
-        component.setMoveable(movable);
+        component.setMoveable(isMovable());
         return component;
     }
 
@@ -88,22 +90,16 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
         eventBus.fireEvent(new EditComponentEvent(getTypedElement()));
     }
 
-    @Override
-    public void sortComponent(String sourcePath, String order) {
+    private void sortComponent(MgnlComponent target) {
         MgnlArea area = getParentArea();
         if (area != null) {
-            area.onDragStart(true);
+            //area.onDragStart(true);
 
             AreaElement areaElement = area.getTypedElement();
-            areaElement.setTargetComponent(getTypedElement());
-            areaElement.setSortOrder(order);
+            areaElement.setSourceComponent(getTypedElement());
+            areaElement.setTargetComponent(target.getTypedElement());
+            areaElement.setSortOrder(getSortOrder(target));
 
-            for (MgnlComponent component : area.getComponents()) {
-                if (component.getNodePath().equals(sourcePath)) {
-                    areaElement.setSourceComponent(component.getTypedElement());
-                    break;
-                }
-            }
             SortComponentEvent sortComponentEvent = new SortComponentEvent(areaElement);
             eventBus.fireEvent(sortComponentEvent);
         }
@@ -125,81 +121,110 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
     }
 
     @Override
-    public void onDragStart() {
-        MgnlArea area = getParentArea();
-        if (area != null) {
-            area.onDragStart(true);
-            for (MgnlComponent component : area.getComponents()) {
-                component.setMoveTarget(true);
-                component.registerDragAndDropHandlers();
-            }
+    public boolean isMovable() {
+        boolean movable = true;
+        if (getAttributes().containsKey(OperationPermissionDefinition.MOVEABLE)) {
+            movable = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.MOVEABLE));
         }
+        return movable;
     }
 
     @Override
-    public void startMove() {
-        MgnlArea area = getParentArea();
-        if (area != null) {
-            for (MgnlComponent component : area.getComponents()) {
-                component.setDraggable(false);
-                component.registerMoveHandlers();
-            }
+    public void onMoveStart(boolean isDrag) {
+        if (isDrag) {
+            doMove(isDrag);
+        } else {
+            eventBus.fireEvent(new ComponentStartMoveEvent(isDrag));
         }
-        ComponentMoveHelper.setNodePath(getNodePath());
-        ComponentMoveHelper.setAbsoluteLeft(getControlBar().getAbsoluteLeft());
-        ComponentMoveHelper.setAbsoluteTop(getControlBar().getAbsoluteTop());
+    }
+
+    public void doMove(boolean isDrag) {
+        for (MgnlComponent component : getSiblingComponents()) {
+            component.registerMoveTarget(isDrag);
+        }
+
+        handlers.add(eventBus.addHandler(ComponentStopMoveEvent.TYPE, new ComponentStopMoveEvent.CompnentStopMoveEventHandler() {
+            @Override
+            public void onStop(ComponentStopMoveEvent componentStopMoveEvent) {
+                MgnlComponent target = componentStopMoveEvent.getTargetComponent();
+                if (target != null) {
+                    sortComponent(target);
+                }
+            }
+        }));
     }
 
     @Override
-    public void stopMove() {
-        MgnlArea area = getParentArea();
-        if (area != null) {
-            for (MgnlComponent component : area.getComponents()) {
-                component.setDraggable(true);
-                component.unregisterMoveHandlers();
-            }
-        }
-        ComponentMoveHelper.setNodePath(null);
-        ComponentMoveHelper.setAbsoluteLeft(getControlBar().getAbsoluteLeft());
-        ComponentMoveHelper.setAbsoluteTop(getControlBar().getAbsoluteTop());
+    public void onMoveStop() {
+        eventBus.fireEvent(new ComponentStopMoveEvent(this));
     }
 
-    private void unregisterMoveHandlers() {
-        getControlBar().unregisterMoveHandlers();
+    @Override
+    public void onMoveCancel() {
+        eventBus.fireEvent(new ComponentStopMoveEvent());
+    }
+
+    private void registerMoveTarget(final boolean isDrag) {
+        setMoveTarget(true);
+
+        if (isDrag) {
+            registerDragAndDropHandlers();
+        } else {
+            setDraggable(false);
+            registerMoveHandlers();
+        }
+        handlers.add(eventBus.addHandler(ComponentStopMoveEvent.TYPE, new ComponentStopMoveEvent.CompnentStopMoveEventHandler() {
+            @Override
+            public void onStop(ComponentStopMoveEvent componentMoveEvent) {
+                unregisterMoveTarget(isDrag);
+            }
+        }));
+    }
+
+    private void unregisterMoveTarget(boolean isDrag) {
+        setMoveTarget(false);
+
+        if (isDrag) {
+            unregisterDragAndDropHandlers();
+        } else {
+            setDraggable(true);
+            unregisterMoveHandlers();
+        }
+
+        Iterator<HandlerRegistration> it = handlers.iterator();
+        while (it.hasNext()) {
+            it.next().removeHandler();
+            it.remove();
+        }
     }
 
     private void registerMoveHandlers() {
-        getControlBar().registerMoveHandlers();
+        if (getControlBar() != null) {
+            getControlBar().registerMoveHandlers();
+        }
+    }
+
+    private void unregisterMoveHandlers() {
+        if (getControlBar() != null) {
+            getControlBar().unregisterMoveHandlers();
+        }
     }
 
     private void registerDragAndDropHandlers() {
-        getControlBar().registerDragAndDropHandlers();
+        if (getControlBar() != null) {
+            getControlBar().registerDragAndDropHandlers();
+        }
     }
 
     private void unregisterDragAndDropHandlers() {
-        getControlBar().unregisterDragAndDropHandlers();
+        if (getControlBar() != null) {
+            getControlBar().unregisterDragAndDropHandlers();
+        }
     }
 
     private void setDraggable(boolean draggable) {
         if (getControlBar() != null) {
             getControlBar().setDraggable(draggable);
-        }
-    }
-
-    @Override
-    public String getNodePath() {
-        return getAttribute("path");
-    }
-
-    @Override
-    public void onDragEnd() {
-        MgnlArea area = getParentArea();
-        if (area != null) {
-            area.onDragStart(false);
-            for (MgnlComponent component : area.getComponents()) {
-                component.setMoveTarget(false);
-                component.unregisterDragAndDropHandlers();
-            }
         }
     }
 
@@ -222,11 +247,46 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
     }
 
     public void setMoveTarget(boolean moveTarget) {
-        getControlBar().setStyleName("moveTarget", moveTarget);
+        if (getControlBar() != null) {
+            getControlBar().setMoveTarget(moveTarget);
+        }
     }
 
     @Override
     protected ComponentBar getControlBar() {
         return (ComponentBar) super.getControlBar();
+    }
+
+    private String getSortOrder(MgnlComponent target) {
+
+        int xTarget = target.getControlBar().getAbsoluteLeft();
+        int yTarget = target.getControlBar().getAbsoluteTop();
+        int xThis = getControlBar().getAbsoluteLeft();
+        int yThis = getControlBar().getAbsoluteTop();
+
+        boolean isDragUp = yThis > yTarget;
+        boolean isDragDown = !isDragUp;
+        boolean isDragLeft = xThis > xTarget;
+        boolean isDragRight = !isDragLeft;
+
+        String order = null;
+
+        if (isDragUp || isDragLeft) {
+            order = "before";
+        } else if (isDragDown || isDragRight) {
+            order = "after";
+        }
+        return order;
+    }
+
+    private List<MgnlComponent> getSiblingComponents() {
+        List<MgnlComponent> siblings = new LinkedList<MgnlComponent>();
+        MgnlArea area = getParentArea();
+        for(MgnlComponent component : area.getComponents()) {
+            if (component != this) {
+                siblings.add(component);
+            }
+        }
+        return siblings;
     }
 }

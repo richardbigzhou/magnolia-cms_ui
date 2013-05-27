@@ -41,6 +41,8 @@ import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.AbstractMgnlEleme
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.CommentProcessor;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.ElementProcessor;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.MgnlElementProcessorFactory;
+import info.magnolia.ui.vaadin.gwt.client.editor.event.ComponentStartMoveEvent;
+import info.magnolia.ui.vaadin.gwt.client.editor.event.ComponentStopMoveEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditAreaEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditAreaEventHandler;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.EditComponentEvent;
@@ -128,6 +130,13 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
             public void refresh() {
                 view.reload();
             }
+            @Override
+            public void moveComponent() {
+                if (model.getSelectedComponent() != null) {
+                    model.getSelectedComponent().doMove(false);
+                    model.setMoving(true);
+                }
+            }
         });
 
         eventBus.addHandler(FrameLoadedEvent.TYPE, new FrameLoadedEvent.Handler() {
@@ -204,6 +213,22 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
                 rpc.sortComponent(sortComponentEvent.getAreaElement());
             }
         });
+
+        eventBus.addHandler(ComponentStartMoveEvent.TYPE, new ComponentStartMoveEvent.CompnentStartMoveEventHandler() {
+            @Override
+            public void onStart(ComponentStartMoveEvent componentStartMoveEvent) {
+                rpc.startMoveComponent();
+            }
+        });
+
+        eventBus.addHandler(ComponentStopMoveEvent.TYPE, new ComponentStopMoveEvent.CompnentStopMoveEventHandler() {
+            @Override
+            public void onStop(ComponentStopMoveEvent componentStopMoveEvent) {
+                rpc.stopMoveComponent();
+                model.setMoving(false);
+            }
+        });
+
     }
 
     @Override

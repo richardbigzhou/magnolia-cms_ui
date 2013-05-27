@@ -45,6 +45,8 @@ public interface PageEditorListener {
     static final String ACTION_ADD_COMPONENT = "addComponent";
     static final String ACTION_ADD_AREA = "addArea";
     static final String ACTION_SORT_COMPONENT = "sortComponent";
+    static final String ACTION_START_MOVE_COMPONENT = "startMoveComponent";
+    static final String ACTION_STOP_MOVE_COMPONENT = "stopMoveComponent";
 
     void onElementSelect(AbstractElement nodeSelection);
 

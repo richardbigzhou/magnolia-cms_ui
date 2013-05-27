@@ -49,6 +49,8 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.app.pages.editor.event.NodeSelectedEvent;
+import info.magnolia.ui.app.pages.editor.event.ComponentMoveEvent;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
@@ -166,7 +168,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private void updateActions() {
         updateActionsAccordingToOperationPermissions();
         // actions currently always disabled
-        actionbarPresenter.disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
+        actionbarPresenter.disable("copyComponent", "pasteComponent", "undo", "redo");
     }
 
     /**
@@ -324,6 +326,18 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             }
         });
 
+        subAppEventBus.addHandler(ComponentMoveEvent.class, new ComponentMoveEvent.Handler() {
+            @Override
+            public void onStart(ComponentMoveEvent event) {
+                if (event.isStart()) {
+                    actionbarPresenter.disable(PagesEditorSubApp.ACTION_MOVE_COMPONENT);
+                } else {
+                    actionbarPresenter.enable(PagesEditorSubApp.ACTION_MOVE_COMPONENT);
+
+                }
+            }
+        });
+
         subAppEventBus.addHandler(NodeSelectedEvent.class, new NodeSelectedEvent.Handler() {
 
             @Override
@@ -383,17 +397,16 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         try {
             Session session = MgnlContext.getJCRSession(workspace);
             final javax.jcr.Item item = session.getItem(selectedElement.getPath());
-            if (item.isNode()) {
-                actionExecutor.execute(actionName, new JcrNodeAdapter((Node)item), selectedElement);
-            } else {
-                throw new IllegalArgumentException("Selected value is not a node. Can only operate on nodes.");
-            }
+            actionExecutor.execute(actionName, new JcrNodeAdapter((Node)item), selectedElement, pageEditorPresenter);
+
         } catch (RepositoryException e) {
-            Message error = new Message(MessageType.ERROR, "Could not get item: " + selectedElement.getPath(), e.getMessage());
-            appContext.broadcastMessage(error);
+            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            log.error("An error occurred while executing action [{}]", actionName, e);
+            appContext.sendLocalMessage(error);
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
-            appContext.broadcastMessage(error);
+            log.error("An error occurred while executing action [{}]", actionName, e);
+            appContext.sendLocalMessage(error);
         }
 
     }
@@ -443,5 +456,10 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             log.warn("Not able to check if node has MixIn");
             return false;
         }
+    }
+
+    @Override
+    public void onEscape() {
+        pageEditorPresenter.onEscape();
     }
 }

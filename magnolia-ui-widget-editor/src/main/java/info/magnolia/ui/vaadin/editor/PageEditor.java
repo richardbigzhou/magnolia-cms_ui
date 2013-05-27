@@ -98,6 +98,15 @@ public class PageEditor extends AbstractComponent {
                 listener.onAction(PageEditorListener.ACTION_EDIT_ELEMENT, element);
             }
 
+            @Override
+            public void startMoveComponent() {
+                listener.onAction(PageEditorListener.ACTION_START_MOVE_COMPONENT);
+            }
+
+            @Override
+            public void stopMoveComponent() {
+                listener.onAction(PageEditorListener.ACTION_STOP_MOVE_COMPONENT);
+            }
         });
     }
 
@@ -127,6 +136,10 @@ public class PageEditor extends AbstractComponent {
 
     public void refresh() {
         getRpcProxy(PageEditorClientRpc.class).refresh();
+    }
+
+    public void moveComponent() {
+        getRpcProxy(PageEditorClientRpc.class).moveComponent();
     }
 
     public void setListener(PageEditorListener listener) {

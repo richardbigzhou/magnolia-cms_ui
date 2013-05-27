@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,39 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.editor;
+package info.magnolia.ui.vaadin.gwt.client.editor.event;
 
-import info.magnolia.event.Event;
-import info.magnolia.event.EventHandler;
-import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent;
+
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * This event is fired when an element is selected in page editor.
- * @see info.magnolia.ui.vaadin.gwt.client.shared.PageElement
- * @see info.magnolia.ui.vaadin.gwt.client.shared.AreaElement
- * @see info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement
+ * ComponentStartMoveEvent.
  */
-public class NodeSelectedEvent implements Event<NodeSelectedEvent.Handler> {
+public class ComponentStopMoveEvent extends GwtEvent<ComponentStopMoveEvent.CompnentStopMoveEventHandler> {
 
-    private final AbstractElement element;
+    public static Type<CompnentStopMoveEventHandler> TYPE = new Type<CompnentStopMoveEventHandler>();
 
-    public NodeSelectedEvent(AbstractElement element) {
-        this.element = element;
+    private MgnlComponent component;
+
+    public ComponentStopMoveEvent(MgnlComponent component) {
+        this.component = component;
+    }
+
+    public ComponentStopMoveEvent() {
+        this(null);
     }
 
     @Override
-    public void dispatch(Handler handler) {
-        handler.onItemSelected(this);
+    public Type<CompnentStopMoveEventHandler> getAssociatedType() {
+        return TYPE;
     }
 
-    public AbstractElement getElement() {
-        return element;
+    @Override
+    protected void dispatch(CompnentStopMoveEventHandler handler) {
+        handler.onStop(this);
+    }
+
+    public MgnlComponent getTargetComponent() {
+        return component;
     }
 
     /**
-     * Handles {@link NodeSelectedEvent} events.
+     * CompnentStopMoveEventHandler.
      */
-    public static interface Handler extends EventHandler {
-        void onItemSelected(NodeSelectedEvent event);
+    public static interface CompnentStopMoveEventHandler extends EventHandler {
+        void onStop(ComponentStopMoveEvent componentMoveEvent);
     }
 }

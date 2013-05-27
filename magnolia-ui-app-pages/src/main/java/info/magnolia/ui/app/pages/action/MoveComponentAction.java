@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,40 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.editor;
+package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.contentapp.ContentSubAppView;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.editor.PageEditorView;
-import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.app.pages.editor.event.ComponentMoveEvent;import info.magnolia.ui.framework.app.SubAppEventBus;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
- * PagesEditorSubAppView.
+ * MoveComponentAction.
  */
-public interface PagesEditorSubAppView extends ContentSubAppView {
+public class MoveComponentAction extends ActionBase<MoveComponentActionDefinition> {
 
-    /**
-     * Listener.
-     */
-    public interface Listener extends PageBarView.Listener {
+    private final EventBus eventBus;
 
-        void onEscape();
+    @Inject
+    public MoveComponentAction(MoveComponentActionDefinition definition, @Named(SubAppEventBus.NAME) EventBus eventBus) {
+        super(definition);
+        this.eventBus = eventBus;
     }
 
-    void setListener(Listener listener);
 
-    void setPageBarView(PageBarView pageBarView);
-
-    void setPageEditorView(PageEditorView pageEditor);
-
-    /**
-     * Use this method to add an action bar to this sub app view.
-     */
-    void setActionbarView(ActionbarView actionbar);
-
-    /**
-     * Shows/hides the actionbar. It has no effect if the actionbar hasn't yet been set.
-     */
-    void hideActionbar(boolean hide);
-
+    @Override
+    public void execute() throws ActionExecutionException {
+        eventBus.fireEvent(new ComponentMoveEvent(getDefinition().isStart()));
+    }
 }

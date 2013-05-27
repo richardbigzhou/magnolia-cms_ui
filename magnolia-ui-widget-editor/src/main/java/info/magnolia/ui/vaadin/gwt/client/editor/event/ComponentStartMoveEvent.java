@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,40 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.editor;
+package info.magnolia.ui.vaadin.gwt.client.editor.event;
 
-import info.magnolia.ui.contentapp.ContentSubAppView;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.editor.PageEditorView;
-import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * PagesEditorSubAppView.
+ * ComponentStartMoveEvent.
  */
-public interface PagesEditorSubAppView extends ContentSubAppView {
+public class ComponentStartMoveEvent extends GwtEvent<ComponentStartMoveEvent.CompnentStartMoveEventHandler> {
 
-    /**
-     * Listener.
-     */
-    public interface Listener extends PageBarView.Listener {
+    public static Type<CompnentStartMoveEventHandler> TYPE = new Type<CompnentStartMoveEventHandler>();
 
-        void onEscape();
+    private boolean drag;
+
+    public ComponentStartMoveEvent(boolean drag) {
+        this.drag = drag;
     }
 
-    void setListener(Listener listener);
+    @Override
+    public Type<CompnentStartMoveEventHandler> getAssociatedType() {
+        return TYPE;
+    }
 
-    void setPageBarView(PageBarView pageBarView);
+    @Override
+    protected void dispatch(CompnentStartMoveEventHandler handler) {
+        handler.onStart(this);
+    }
 
-    void setPageEditorView(PageEditorView pageEditor);
+    public boolean isDrag() {
+        return drag;
+    }
 
     /**
-     * Use this method to add an action bar to this sub app view.
+     * CompnentStopMoveEventHandler.
      */
-    void setActionbarView(ActionbarView actionbar);
-
-    /**
-     * Shows/hides the actionbar. It has no effect if the actionbar hasn't yet been set.
-     */
-    void hideActionbar(boolean hide);
-
+    public static interface CompnentStartMoveEventHandler extends EventHandler {
+        void onStart(ComponentStartMoveEvent componentStartMoveEvent);
+    }
 }

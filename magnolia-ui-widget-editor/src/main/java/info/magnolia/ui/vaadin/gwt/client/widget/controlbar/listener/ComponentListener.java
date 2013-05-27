@@ -43,15 +43,11 @@ public interface ComponentListener {
 
     boolean hasEditButton();
 
-    void onDragStart();
+    boolean isMovable();
 
-    String getNodePath();
+    void onMoveStart(boolean isDrag);
 
-    void onDragEnd();
+    void onMoveStop();
 
-    void sortComponent(String sourceComponent, String order);
-
-    void startMove();
-
-    void stopMove();
+    void onMoveCancel();
 }

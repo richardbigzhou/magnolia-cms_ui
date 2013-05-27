@@ -31,40 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.editor;
+package info.magnolia.ui.app.pages.editor.event;
 
-import info.magnolia.ui.contentapp.ContentSubAppView;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.editor.PageEditorView;
-import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
+import info.magnolia.event.Event;
+import info.magnolia.event.EventHandler;
+import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 
 /**
- * PagesEditorSubAppView.
+ * This event is fired when an element is selected in page editor.
+ * @see info.magnolia.ui.vaadin.gwt.client.shared.PageElement
+ * @see info.magnolia.ui.vaadin.gwt.client.shared.AreaElement
+ * @see info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement
  */
-public interface PagesEditorSubAppView extends ContentSubAppView {
+public class NodeSelectedEvent implements Event<NodeSelectedEvent.Handler> {
 
-    /**
-     * Listener.
-     */
-    public interface Listener extends PageBarView.Listener {
+    private final AbstractElement element;
 
-        void onEscape();
+    public NodeSelectedEvent(AbstractElement element) {
+        this.element = element;
     }
 
-    void setListener(Listener listener);
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onItemSelected(this);
+    }
 
-    void setPageBarView(PageBarView pageBarView);
-
-    void setPageEditorView(PageEditorView pageEditor);
-
-    /**
-     * Use this method to add an action bar to this sub app view.
-     */
-    void setActionbarView(ActionbarView actionbar);
+    public AbstractElement getElement() {
+        return element;
+    }
 
     /**
-     * Shows/hides the actionbar. It has no effect if the actionbar hasn't yet been set.
+     * Handles {@link NodeSelectedEvent} events.
      */
-    void hideActionbar(boolean hide);
-
+    public static interface Handler extends EventHandler {
+        void onItemSelected(NodeSelectedEvent event);
+    }
 }

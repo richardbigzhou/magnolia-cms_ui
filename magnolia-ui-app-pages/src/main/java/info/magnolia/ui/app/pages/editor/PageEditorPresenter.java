@@ -37,6 +37,8 @@ import info.magnolia.event.EventBus;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.app.pages.editor.event.ComponentMoveEvent;
+import info.magnolia.ui.app.pages.editor.event.NodeSelectedEvent;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
@@ -67,6 +69,7 @@ public class PageEditorPresenter implements PageEditorListener {
     private final SubAppContext subAppContext;
 
     private AbstractElement selectedElement;
+    private boolean isMoving;
 
     @Inject
     public PageEditorPresenter(final ActionExecutor actionExecutor, PageEditorView view, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, SubAppContext subAppContext) {
@@ -92,6 +95,15 @@ public class PageEditorPresenter implements PageEditorListener {
                 }
             }
         });
+        subAppEventBus.addHandler(ComponentMoveEvent.class, new ComponentMoveEvent.Handler() {
+            @Override
+            public void onStart(ComponentMoveEvent event) {
+                if (event.isStart()) {
+                    moveComponent();
+                }
+                isMoving = event.isStart();
+            }
+        });
     }
 
     @Override
@@ -106,7 +118,8 @@ public class PageEditorPresenter implements PageEditorListener {
             actionExecutor.execute(actionName, args);
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
-            subAppContext.getAppContext().broadcastMessage(error);
+            log.error("An error occurred while executing action [{}]", actionName, e);
+            subAppContext.getAppContext().sendLocalMessage(error);
         }
     }
 
@@ -122,4 +135,13 @@ public class PageEditorPresenter implements PageEditorListener {
         view.update(parameters);
     }
 
+    public void moveComponent() {
+        view.moveComponent();
+    }
+
+    public void onEscape() {
+        if (isMoving) {
+            view.moveComponent();
+        }
+    }
 }

@@ -59,4 +59,8 @@ public interface PageEditorServerRpc extends ServerRpc {
     void newComponent(AreaElement areaElement);
 
     void sortComponent(AreaElement areaElement);
+
+    void startMoveComponent();
+
+    void stopMoveComponent();
 }

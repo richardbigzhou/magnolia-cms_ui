@@ -42,4 +42,6 @@ public interface PageEditorClientRpc extends ClientRpc {
 
     void refresh();
 
+    void moveComponent();
+
 }
