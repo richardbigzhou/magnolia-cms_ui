@@ -43,7 +43,7 @@ import javax.jcr.Item;
  */
 public class AllRulesRule implements AvailabilityRule {
 
-    Collection<AvailabilityRule> rules = new ArrayList<AvailabilityRule>();
+    private Collection<AvailabilityRule> rules = new ArrayList<AvailabilityRule>();
 
     @Override
     public boolean isAvailable(Item item) {

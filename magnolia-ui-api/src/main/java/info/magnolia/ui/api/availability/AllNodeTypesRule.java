@@ -52,7 +52,7 @@ public class AllNodeTypesRule implements AvailabilityRule {
 
     private static final Logger log = LoggerFactory.getLogger(AllNodeTypesRule.class);
 
-    Collection<String> nodeTypes = new ArrayList<String>();
+    private Collection<String> nodeTypes = new ArrayList<String>();
 
     @Override
     public boolean isAvailable(Item item) {
