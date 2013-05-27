@@ -167,6 +167,14 @@
   height: 50px !important;
 }
 
+.v-pulse .v-table-cell-content-sorted {
+  background-color: #EFEFEF;
+}
+
+.v-pulse .v-table-cell-content-sorted:hover{
+  background-color: #E0E0E0;
+}
+
 .v-pulse .v-table-generated-row, .v-pulse tr.v-table-generated-row.v-selected .v-table-cell-content {
   background: none !important;
 }
