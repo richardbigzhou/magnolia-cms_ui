@@ -151,10 +151,13 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         messageTable.setSelectable(true);
         messageTable.setMultiSelect(true);
         messageTable.addGeneratedColumn(NEW_PROPERTY_ID, newMessageColumnGenerator);
+        messageTable.setColumnWidth(NEW_PROPERTY_ID, 100);
         messageTable.addGeneratedColumn(TYPE_PROPERTY_ID, typeColumnGenerator);
+        messageTable.setColumnWidth(TYPE_PROPERTY_ID, 50);
         messageTable.addGeneratedColumn(TEXT_PROPERTY_ID, textColumnGenerator);
-        messageTable.setColumnWidth(TEXT_PROPERTY_ID, 400);
+        messageTable.setColumnWidth(TEXT_PROPERTY_ID, 450);
         messageTable.addGeneratedColumn(DATE_PROPERTY_ID, new DateColumnFormatter(null));
+        messageTable.setColumnWidth(DATE_PROPERTY_ID, 150);
         messageTable.setRowGenerator(groupingRowGenerator);
 
         navigator.addGroupingListener(groupingListener);
