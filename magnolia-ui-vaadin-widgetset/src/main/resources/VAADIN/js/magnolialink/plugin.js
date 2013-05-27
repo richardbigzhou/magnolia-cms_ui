@@ -54,7 +54,7 @@
             editor.ui.addButton('InternalLink', {
                 label: 'Link to Magnolia page',
                 command: 'magnolialink',
-                icon: "../../../themes/admincentraltheme/img/mlink.png"
+                icon: "../../../themes/admincentraltheme/img/s02-internal-link.png"
             });
 
             editor.addMenuGroup('mlinkgroup');
@@ -63,7 +63,7 @@
                 label: 'Edit Magnolia Link',
                 command: 'magnolialink',
                 group: 'mlinkgroup',
-                icon: "../../../themes/admincentraltheme/img/mlink.png"
+                icon: "../../../themes/admincentraltheme/img/s02-internal-link.png"
             });
             
             editor.ui.addRichCombo('combo', {
