@@ -107,7 +107,7 @@
             <sv:value>ui-security-app:userEdit</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
-            <sv:value>Edit user</sv:value>
+            <sv:value>icon-edit</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:created" sv:type="Date">
             <sv:value>2013-05-22T11:04:44.024+02:00</sv:value>
@@ -136,7 +136,7 @@
             <sv:value>ui-security-app:userAdd</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
-            <sv:value>New user</sv:value>
+            <sv:value>icon-add-item</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:created" sv:type="Date">
             <sv:value>2013-05-22T11:04:44.025+02:00</sv:value>
@@ -200,7 +200,7 @@
             <sv:value>info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
-            <sv:value>Delete user</sv:value>
+            <sv:value>icon-delete</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:created" sv:type="Date">
             <sv:value>2013-05-22T11:04:44.027+02:00</sv:value>
@@ -869,7 +869,7 @@
             <sv:value>ui-security-app:userEdit</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
-            <sv:value>Edit user</sv:value>
+            <sv:value>icon-edit</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -895,7 +895,7 @@
             <sv:value>ui-security-app:userAdd</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
-            <sv:value>New user</sv:value>
+            <sv:value>icon-add-item</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -950,7 +950,7 @@
             <sv:value>info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
-            <sv:value>Delete user</sv:value>
+            <sv:value>icon-delete</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -1580,7 +1580,7 @@
             <sv:value>ui-security-app:groupAdd</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
-            <sv:value>New group</sv:value>
+            <sv:value>icon-add-item</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -1638,7 +1638,7 @@
             <sv:value>info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
-            <sv:value>Delete group</sv:value>
+            <sv:value>icon-delete</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -1664,7 +1664,7 @@
             <sv:value>ui-security-app:groupEdit</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
-            <sv:value>Edit group</sv:value>
+            <sv:value>icon-edit</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -2280,7 +2280,7 @@
             <sv:value>info.magnolia.ui.admincentral.tree.action.DeleteItemActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
-            <sv:value>Delete role</sv:value>
+            <sv:value>icon-delete</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -2306,7 +2306,7 @@
             <sv:value>ui-security-app:roleEdit</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
-            <sv:value>Edit role</sv:value>
+            <sv:value>icon-edit</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -2332,7 +2332,7 @@
             <sv:value>ui-security-app:roleAdd</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
-            <sv:value>New role</sv:value>
+            <sv:value>icon-add-item</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
