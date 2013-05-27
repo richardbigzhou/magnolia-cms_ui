@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.api.action;
 
-import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.availability.ActionAvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredActionAvailabilityDefinition;
 
 /**
  * Simple implementation of {@link ActionDefinition}.
@@ -47,7 +47,7 @@ public class ConfiguredActionDefinition implements ActionDefinition {
     private String icon;
     private String i18nBasename;
     private Class<? extends Action> implementationClass;
-    private ActionAvailabilityDefinition availability = Components.newInstance(ActionAvailabilityDefinition.class, new Object[] {});
+    private ActionAvailabilityDefinition availability = new ConfiguredActionAvailabilityDefinition();
     private String successMessage;
     private String failureMessage;
     private String errorMessage;

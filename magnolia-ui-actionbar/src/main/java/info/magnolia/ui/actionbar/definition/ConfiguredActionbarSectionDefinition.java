@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.actionbar.definition;
 
-import info.magnolia.objectfactory.Components;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -52,7 +50,7 @@ public class ConfiguredActionbarSectionDefinition implements ActionbarSectionDef
 
     private List<ActionbarGroupDefinition> groups = new ArrayList<ActionbarGroupDefinition>();
 
-    private SectionAvailabilityDefinition availability = Components.newInstance(SectionAvailabilityDefinition.class, new Object[] {});
+    private SectionAvailabilityDefinition availability = new ConfiguredSectionAvailabilityDefinition();
 
     @Override
     public String getName() {

@@ -34,7 +34,7 @@
 package info.magnolia.ui.api.availability;
 
 import info.magnolia.cms.security.operations.AccessDefinition;
-import info.magnolia.objectfactory.Components;
+import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,7 +48,7 @@ public class ConfiguredActionAvailabilityDefinition implements ActionAvailabilit
     private boolean properties = false;
     private boolean nodes = true;
     private Collection<String> nodeTypes = new ArrayList<String>();
-    private AccessDefinition access = Components.newInstance(AccessDefinition.class, new Object[] {});
+    private AccessDefinition access = new ConfiguredAccessDefinition();
     private AvailabilityRule rule;
 
     @Override
