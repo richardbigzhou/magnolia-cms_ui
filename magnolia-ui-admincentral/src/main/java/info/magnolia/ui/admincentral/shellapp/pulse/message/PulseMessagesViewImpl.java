@@ -372,7 +372,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
                 textLabel.setSizeUndefined();
                 textLabel.addStyleName("message-subject-text");
                 textLabel.setContentMode(ContentMode.HTML);
-                textLabel.setValue("<strong>" + subject + "</strong><div>" + text + "</div>");
+                textLabel.setValue("<strong>" + subject.getValue() + "</strong><div>" + text.getValue() + "</div>");
 
                 return textLabel;
 
