@@ -34,9 +34,10 @@
 package info.magnolia.ui.app.pages.action;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.app.pages.editor.event.ComponentMoveEvent;import info.magnolia.ui.framework.app.SubAppEventBus;
+import info.magnolia.ui.app.pages.editor.event.ComponentMoveEvent;
+import info.magnolia.ui.framework.app.SubAppEventBus;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -53,7 +54,7 @@ import javax.inject.Named;
  * </pre>
  * @see MoveComponentActionDefinition
  */
-public class MoveComponentAction extends ActionBase<MoveComponentActionDefinition> {
+public class MoveComponentAction extends AbstractAction<MoveComponentActionDefinition> {
 
     private final EventBus eventBus;
 

@@ -37,7 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
@@ -54,7 +54,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * Action for sorting components inside an area.
  */
-public class SortComponentAction extends ActionBase<SortComponentActionDefinition> {
+public class SortComponentAction extends AbstractAction<SortComponentActionDefinition> {
 
     private AreaElement areaElement;
     private EventBus eventBus;
