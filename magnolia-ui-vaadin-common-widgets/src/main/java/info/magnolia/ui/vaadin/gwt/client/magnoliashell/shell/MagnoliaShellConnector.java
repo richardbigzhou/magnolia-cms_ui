@@ -125,7 +125,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
 
             @Override
             public void setFullScreen(boolean isFullScreen) {
-                MagnoliaShellConnector.this.setFullScreen2(isFullScreen);
+                MagnoliaShellConnector.this.doFullScreen(isFullScreen);
             }
         });
 
@@ -213,7 +213,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
         eventBus.fireEvent(new ShellAppRequestedEvent(shellAppType));
     }
 
-    public void setFullScreen2(boolean isFullScreen) {
+    private void doFullScreen(boolean isFullScreen) {
         eventBus.fireEvent(new FullScreenEvent(isFullScreen));
     }
 
