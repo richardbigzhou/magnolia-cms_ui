@@ -35,8 +35,8 @@ package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -164,32 +164,29 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
         add(footerToolbarWidget, footerToolbarEl);
     }
 
-    public Element getContentEl() {
-        return contentEl;
-    }
-
     @Override
-    public void setActions(Map<String, String> actions, String defaultActionName) {
+    public void setActions(Map<String, String> actions, List<String> actionOrder, String defaultActionName) {
         for (final Button actionButton : this.actionMap.values()) {
             remove(actionButton);
         }
         actionMap.clear();
-        final Iterator<Entry<String, String>> it = actions.entrySet().iterator();
-        while (it.hasNext()) {
-            final Entry<String, String> entry = it.next();
-            final Button button = new Button(entry.getValue());
+        final Iterator<String> orderIt = actionOrder.iterator();
+        while (orderIt.hasNext()) {
+            final String actionId = orderIt.next();
+            final String actionLabel = actions.get(actionId);
+            final Button button = new Button(actionLabel);
             button.setStyleName(CLASSNAME_BUTTON);
-            button.addStyleDependentName(entry.getKey());
-            if (entry.getKey().equalsIgnoreCase(defaultActionName)) {
+            button.addStyleDependentName(actionId);
+            if (actionId.equalsIgnoreCase(defaultActionName)) {
                 button.addStyleDependentName("default");
             }
             button.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(final ClickEvent event) {
-                    getPresenter().fireAction(entry.getKey());
+                    getPresenter().fireAction(actionId);
                 }
             });
-            actionMap.put(entry.getKey(), button);
+            actionMap.put(actionId, button);
             add(button, footerEl);
         }
     }
