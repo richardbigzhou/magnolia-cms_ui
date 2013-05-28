@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,6 +35,7 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.connector;
 
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppRequestedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.CurrentAppCloseEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.FullScreenEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.HideShellAppsEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppStartingEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.AppsTransitionDelegate;
@@ -109,6 +110,13 @@ public class AppsViewportConnector extends ViewportConnector implements AppsView
                 getWidget().setCurtainVisible(false);
             }
         });
+
+        eventBus.addHandler(FullScreenEvent.TYPE, new FullScreenEvent.Handler() {
+            @Override
+            public void onChangeFullScreen(FullScreenEvent event) {
+                getWidget().setFullScreen(event.getIsFullScreen());
+            }
+        });
     }
 
     @Override
@@ -149,4 +157,6 @@ public class AppsViewportConnector extends ViewportConnector implements AppsView
     public void closeCurrentApp() {
         eventBus.fireEvent(new CurrentAppCloseEvent());
     }
+
+
 }

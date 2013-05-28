@@ -64,10 +64,6 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
         setImmediate(true);
         setOpened(true);
         registerRpc(new ActionbarServerRpc() {
-            @Override
-            public void onFullScreenModeToggle(boolean isFullScreen) {
-                listener.onChangeFullScreen(isFullScreen);
-            }
 
             @Override
             public void onActionTriggered(String actionToken) {

@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 import info.magnolia.ui.vaadin.gwt.client.dialog.connector.OverlayConnector;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppRequestedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.CurrentAppCloseEvent;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.FullScreenEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.HideShellAppsEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.HideShellAppsRequestedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ShellAppRequestedEvent;
@@ -121,6 +122,11 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             public void hideAllMessages() {
                 view.hideAllMessages();
             }
+
+            @Override
+            public void setFullScreen(boolean isFullScreen) {
+                MagnoliaShellConnector.this.setFullScreen2(isFullScreen);
+            }
         });
 
         getLayoutManager().addElementResizeListener(getWidget().getElement(), new ElementResizeListener() {
@@ -205,6 +211,10 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     @Override
     public void showShellApp(ShellAppType shellAppType) {
         eventBus.fireEvent(new ShellAppRequestedEvent(shellAppType));
+    }
+
+    public void setFullScreen2(boolean isFullScreen) {
+        eventBus.fireEvent(new FullScreenEvent(isFullScreen));
     }
 
     @Override
