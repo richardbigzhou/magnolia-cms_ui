@@ -31,24 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.action.feature.definition;
+package info.magnolia.ui.mediaeditor.action.definition;
 
-import info.magnolia.ui.mediaeditor.action.feature.Scalable;
-import info.magnolia.ui.mediaeditor.action.feature.ScaleToFitAction;
+import info.magnolia.ui.mediaeditor.action.RotateImageAction;
+import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 
 
 /**
- * Definition of {@link info.magnolia.ui.mediaeditor.action.feature.ScaleToFitAction}.
+ * Definition for {@link info.magnolia.ui.mediaeditor.action.RotateImageAction}.
  */
-public class ScaleToFitActionDefinition extends ConfiguredMediaEditorFeatureDefinition {
-    
-    public ScaleToFitActionDefinition() {
-        setImplementationClass(ScaleToFitAction.class);
+public class RotateImageActionDefinition extends MediaEditorActionDefinition {
+
+    public RotateImageActionDefinition() {
+        setImplementationClass(RotateImageAction.class);
     }
-    
-    @Override
-    public String getRequiredInterfaceName() {
-        return Scalable.class.getName();
-    }
-    
 }

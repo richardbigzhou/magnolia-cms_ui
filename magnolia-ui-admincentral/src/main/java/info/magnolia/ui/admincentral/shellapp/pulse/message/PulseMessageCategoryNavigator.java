@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
+import info.magnolia.cms.i18n.MessagesUtil;
+
 import java.util.Iterator;
 
 import com.vaadin.data.Property.ValueChangeListener;
@@ -45,7 +47,7 @@ import com.vaadin.ui.themes.BaseTheme;
 /**
  * Message category navigation component in Pulse.
  */
-public class PulseMessageCategoryNavigator extends CssLayout {
+public final class PulseMessageCategoryNavigator extends CssLayout {
 
     private CheckBox groupByTypeCheckBox;
 
@@ -58,30 +60,34 @@ public class PulseMessageCategoryNavigator extends CssLayout {
     private void construct() {
         for (final MessageCategory category : MessageCategory.values()) {
             MessageCategoryButton button = new MessageCategoryButton(category);
-            if (category.equals(MessageCategory.ALL)) {
+            if (category == MessageCategory.ALL) {
                 button.setActive(true);
             }
             addComponent(button);
         }
 
-        groupByTypeCheckBox = new CheckBox("group by type");
+        groupByTypeCheckBox = new CheckBox(MessagesUtil.get("pulse.messages.groupby"));
         groupByTypeCheckBox.addStyleName("navigator-grouping");
         groupByTypeCheckBox.setImmediate(true);
         addComponent(groupByTypeCheckBox);
     }
 
     public void addGroupingListener(ValueChangeListener listener) {
-        groupByTypeCheckBox.addListener(listener);
+        groupByTypeCheckBox.addValueChangeListener(listener);
+    }
+
+    public void showGroupByType(boolean show) {
+        groupByTypeCheckBox.setVisible(show);
     }
 
     /**
      * Enumeration for the category types.
      */
     public enum MessageCategory {
-        ALL("All messages"),
-        WORK_ITEM("Work items"),
-        PROBLEM("Problems"),
-        INFO("Info");
+        ALL(MessagesUtil.get("pulse.messages.all")),
+        WORK_ITEM(MessagesUtil.get("pulse.messages.workitems")),
+        PROBLEM(MessagesUtil.get("pulse.messages.problems")),
+        INFO(MessagesUtil.get("pulse.messages.info"));
 
         private String caption;
 
@@ -158,7 +164,7 @@ public class PulseMessageCategoryNavigator extends CssLayout {
             addStyleName("navigator-button");
             this.category = category;
             this.setCaption(category.getCaption());
-            addListener(new ClickListener() {
+            addClickListener(new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {

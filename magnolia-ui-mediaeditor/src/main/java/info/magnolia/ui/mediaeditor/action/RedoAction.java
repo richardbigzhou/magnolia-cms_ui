@@ -31,33 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.editmode.field.image;
+package info.magnolia.ui.mediaeditor.action;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
+import info.magnolia.ui.mediaeditor.action.definition.RedoActionDefinition;
+import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
+import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent;
 
-import javax.imageio.ImageIO;
-
-import com.jhlabs.image.GrayscaleFilter;
-import com.vaadin.data.Property;
+import com.google.inject.name.Named;
 
 /**
- * Provides the functionality for image gray-scaling.
+ * Redoes a latest undone operation.
  */
-public class GrayScaleField extends ViewImageField {
+public class RedoAction extends MediaEditorAction {
+
+    public RedoAction(RedoActionDefinition definition, EditHistoryTrackingProperty dataSource, @Named(MediaEditorEventBus.NAME) EventBus eventBus) {
+        super(definition, dataSource, eventBus);
+    }
 
     @Override
-    @SuppressWarnings("rawtypes")
-    public void setPropertyDataSource(Property newDataSource) {
-        super.setPropertyDataSource(newDataSource);
-        execute();
-    }
-    
-    
-    @Override
-    protected BufferedImage executeImageModification() throws IOException {
-        final BufferedImage img = ImageIO.read(new ByteArrayInputStream(getValue()));
-        return new GrayscaleFilter().filter(img, null);
+    public void execute() throws ActionExecutionException {
+        dataSource.redo();
+        eventBus.fireEvent(new MediaEditorInternalEvent(MediaEditorInternalEvent.EventType.APPLY));
     }
 }

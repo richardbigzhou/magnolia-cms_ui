@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,17 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.mediaeditor.action.definition;
 
-import info.magnolia.ui.api.view.View;
-
-import com.vaadin.ui.HasComponents;
+import info.magnolia.ui.mediaeditor.action.FlipImageAction;
+import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 
 /**
- * Interface for the tabs in the Pulse.
+ * Definition for {@link info.magnolia.ui.mediaeditor.action.FlipImageAction}.
  */
-public interface PulseSubView extends View {
+public class FlipImageActionDefinition extends MediaEditorActionDefinition {
 
-    @Override
-    HasComponents asVaadinComponent();
+    public FlipImageActionDefinition() {
+        setImplementationClass(FlipImageAction.class);
+    }
+
+    private boolean flipHorizontal = true;
+
+    public void setFlipHorizontal(boolean isFlipHorizontal) {
+        this.flipHorizontal = isFlipHorizontal;
+    }
+
+    public boolean getFlipHorizontal() {
+        return flipHorizontal;
+    }
 }

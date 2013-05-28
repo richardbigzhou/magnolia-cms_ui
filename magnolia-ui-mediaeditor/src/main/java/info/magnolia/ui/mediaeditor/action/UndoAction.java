@@ -33,15 +33,27 @@
  */
 package info.magnolia.ui.mediaeditor.action;
 
-import info.magnolia.ui.mediaeditor.provider.EditModeProviderActionDefinition;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
+import info.magnolia.ui.mediaeditor.action.definition.UndoActionDefinition;
+import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
+import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent;
 
+import com.google.inject.name.Named;
 
 /**
- * Definition for {@link info.magnolia.ui.mediaeditor.editmode.provider.CropImageProvider}.
+ * Undoes the latest performed operation on the data-source.
  */
-public class CropImageActionDefinition extends EditModeProviderActionDefinition {
-    
-    public CropImageActionDefinition() {
-        setImplementationClass(EditModeProviderAction.class);
+public class UndoAction extends MediaEditorAction {
+
+    public UndoAction(UndoActionDefinition definition, EditHistoryTrackingProperty dataSource, @Named(MediaEditorEventBus.NAME) EventBus eventBus) {
+        super(definition, dataSource, eventBus);
+    }
+
+    @Override
+    public void execute() throws ActionExecutionException {
+        dataSource.undo();
+        eventBus.fireEvent(new MediaEditorInternalEvent(MediaEditorInternalEvent.EventType.APPLY));
     }
 }

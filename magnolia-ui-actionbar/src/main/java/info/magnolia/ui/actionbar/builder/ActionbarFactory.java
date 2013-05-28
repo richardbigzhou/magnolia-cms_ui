@@ -61,7 +61,7 @@ public class ActionbarFactory {
     public static ActionbarView build(ActionbarDefinition definition, ActionbarPresenter.Listener listener) {
         Actionbar actionbar = new Actionbar();
         if (definition == null) {
-            log.warn("No actionbar definition found. This will result in an empty action bar. Is that intended?");
+            log.debug("No actionbar definition found. This will result in an empty action bar. Is that intended?");
             return actionbar;
         } else {
 

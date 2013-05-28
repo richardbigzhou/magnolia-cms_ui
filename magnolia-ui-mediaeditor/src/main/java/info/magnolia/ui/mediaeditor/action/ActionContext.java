@@ -31,24 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.action.feature.definition;
+package info.magnolia.ui.mediaeditor.action;
 
-import info.magnolia.ui.mediaeditor.action.feature.Scalable;
-import info.magnolia.ui.mediaeditor.action.feature.ScaleToActualSizeAction;
-
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 /**
- * Definition of {@link info.magnolia.ui.mediaeditor.action.feature.ScaleToActualSizeAction}.
+ * Helper class for storing the dialog actions within media editor.
  */
-public class ScaleToActualSizeActionDefinition extends ConfiguredMediaEditorFeatureDefinition {
-    
-    public ScaleToActualSizeActionDefinition() {
-        setImplementationClass(ScaleToActualSizeAction.class);
+public class ActionContext {
+
+    private String actionId;
+
+    private String label;
+
+    private DialogActionListener listener;
+
+    public ActionContext(String id, String label, DialogActionListener listener) {
+        this.actionId = id;
+        this.label = label;
+        this.listener = listener;
     }
-    
-    @Override
-    public String getRequiredInterfaceName() {
-        return Scalable.class.getName();
+
+    /**
+     * @return the actionId
+     */
+    public String getActionId() {
+        return actionId;
     }
-    
+
+    /**
+     * @return the label
+     */
+    public String getLabel() {
+        return label;
+    }
+
+    /**
+     * @return the listener
+     */
+    public DialogActionListener getListener() {
+        return listener;
+    }
 }

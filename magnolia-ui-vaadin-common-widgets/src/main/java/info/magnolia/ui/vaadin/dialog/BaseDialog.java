@@ -143,28 +143,35 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
             };
         };
 
-        Collections.<Component> addAll(components, (Component) getState().content, (Component) getState().headerToolbar, (Component) getState().footerToolbar);
+        Collections.addAll(components, (Component) getState().content, (Component) getState().headerToolbar, (Component) getState().footerToolbar);
         return components.iterator();
     }
 
     public void setContent(Component newContent) {
         final Component actualContent = newContent == null ? createDefaultContent() : newContent;
+        if (getState().content != null) {
+            ((Component)getState().content).setParent(null);
+        }
         getState().content = actualContent;
-
-        replaceComponent((Component) getState().content);
+        adoptComponent((Component) getState().content);
     }
 
     public void setHeaderToolbar(Component newHeader) {
         final Component actualHeader = newHeader == null ? createDefaultHeader() : newHeader;
+        if (getState().headerToolbar != null) {
+            ((Component)getState().headerToolbar).setParent(null);
+        }
         getState().headerToolbar = actualHeader;
-
-        replaceComponent((Component) getState().headerToolbar);
+        adoptComponent((Component) getState().headerToolbar);
     }
 
     public void setFooterToolbar(Component newFooter) {
         final Component actualFooter = newFooter == null ? createDefaultFooter() : newFooter;
+        if (getState().footerToolbar != null) {
+            ((Component)getState().footerToolbar).setParent(null);
+        }
         getState().footerToolbar = actualFooter;
-        replaceComponent((Component) getState().footerToolbar);
+        adoptComponent((Component) getState().footerToolbar);
     }
 
     /**
@@ -176,7 +183,7 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
      * @param newContent
      * the root of the composition component tree.
      */
-    protected void replaceComponent(Component newContent) {
+    protected void adoptComponent(Component newContent) {
         if (newContent != null) {
             // set new component
             if (newContent.getParent() != null) {
@@ -199,11 +206,13 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
     }
 
     public void removeAllActions() {
+        getState().actionOrder.clear();
         getState().actions.clear();
         actionCallbackMap.clear();
     }
 
     public void removeAction(String actionName) {
+        getState().actionOrder.remove(actionName);
         getState().actions.remove(actionName);
         actionCallbackMap.removeAll(actionName);
         removeShortcut(actionName);
@@ -214,6 +223,9 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
      * If the action name is <code> {@value #CANCEL_ACTION_NAME}</code> a <code>CTRL+C</code> and an <code>ESC</code> shortcuts will be added to perform the action.
      */
     public void addAction(String actionName, String actionLabel) {
+        if (!getState().actionOrder.contains(actionName)) {
+            getState().actionOrder.add(actionName);
+        }
         getState().actions.put(actionName, actionLabel);
         if (COMMIT_ACTION_NAME.equals(actionName)) {
             addShortcut(actionName, KeyCode.S, ModifierKey.CTRL);
