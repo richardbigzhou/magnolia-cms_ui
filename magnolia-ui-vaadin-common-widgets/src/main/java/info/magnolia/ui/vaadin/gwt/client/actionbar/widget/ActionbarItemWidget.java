@@ -175,7 +175,9 @@ public class ActionbarItemWidget extends Widget {
         text.setInnerText(data.getLabel());
         if (data.getIconFontId() != null) {
             icon.setClassName("v-icon");
-            icon.addClassName(data.getIconFontId());
+            if (data.getIconFontId() != null && !data.getIconFontId().isEmpty()) {
+                icon.addClassName(data.getIconFontId());
+            }
         } else if (iconImage != null) {
             iconImage.setUri(data.getResourceUrl());
         }
