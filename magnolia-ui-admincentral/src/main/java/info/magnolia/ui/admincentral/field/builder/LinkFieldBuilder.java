@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.field.builder;
 
-import info.magnolia.ui.form.field.TextAndButtonField;
+import info.magnolia.ui.form.field.LinkField;
 import info.magnolia.ui.form.field.builder.AbstractFieldBuilder;
 import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
@@ -67,7 +67,7 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
 
     public static final String PATH_PROPERTY_NAME = "transientPathProperty";
 
-    private TextAndButtonField textButton;
+    private LinkField linkField;
 
     private final AppController appController;
 
@@ -87,15 +87,15 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
         if (definition.isIdentifier()) {
             converter = new IdentifierToPathConverter(definition.getWorkspace());
         }
-        textButton = new TextAndButtonField(converter, getMessage(definition.getButtonSelectNewLabel()), getMessage(definition.getButtonSelectOtherLabel()));
-        final Button selectButton = textButton.getSelectButton();
+        linkField = new LinkField(converter, getMessage(definition.getButtonSelectNewLabel()), getMessage(definition.getButtonSelectOtherLabel()), true);
+        final Button selectButton = linkField.getSelectButton();
 
         if (StringUtils.isNotBlank(definition.getDialogName()) || StringUtils.isNotBlank(definition.getAppName())) {
             selectButton.addClickListener(createButtonClickListener(definition.getDialogName(), definition.getAppName()));
         } else {
             selectButton.setCaption(getMessage("field.link.select.error"));
         }
-        return textButton;
+        return linkField;
     }
 
     @Override
@@ -129,7 +129,7 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
                                 }
                             }
                         }
-                        textButton.setValue(newValue);
+                        linkField.setValue(newValue);
                     }
 
                     @Override

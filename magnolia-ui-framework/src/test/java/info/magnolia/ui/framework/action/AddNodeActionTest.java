@@ -39,8 +39,12 @@ import info.magnolia.cms.security.DummyUser;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.RecordingEventBus;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -56,7 +60,7 @@ import org.junit.Test;
 /**
  * Tests covering execution of {@link info.magnolia.ui.framework.action.AddNodeAction}.
  */
-public class AddNodeActionTest {
+public class AddNodeActionTest extends MgnlTestCase {
 
     private final static String WORKSPACE = "workspace";
 
@@ -64,14 +68,18 @@ public class AddNodeActionTest {
 
     private final static String NEW_NODE_NAME = AbstractRepositoryAction.DEFAULT_NEW_ITEM_NAME;
 
-    private static final AddNodeActionDefinition DEFINITION = new AddNodeActionDefinition();
+    private static AddNodeActionDefinition definition;
 
     private RecordingEventBus eventBus;
 
     private MockSession session;
 
     @Before
-    public void setUp() {
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
+        definition = new AddNodeActionDefinition();
         session = new MockSession(WORKSPACE);
         MockContext ctx = new MockContext();
         ctx.addSession(WORKSPACE, session);
@@ -91,7 +99,7 @@ public class AddNodeActionTest {
         // GIVEN
         Node root = session.getRootNode();
         long nodeCountBefore = root.getNodes().getSize();
-        AddNodeAction action = new AddNodeAction(DEFINITION, new JcrNodeAdapter(root), eventBus);
+        AddNodeAction action = new AddNodeAction(definition, new JcrNodeAdapter(root), eventBus);
 
         // WHEN
         action.execute();
@@ -106,7 +114,7 @@ public class AddNodeActionTest {
         Node root = session.getRootNode();
         Node node = root.addNode(NODE_NAME);
         long nodeCountBefore = node.getNodes().getSize();
-        AddNodeAction action = new AddNodeAction(DEFINITION, new JcrNodeAdapter(node), eventBus);
+        AddNodeAction action = new AddNodeAction(definition, new JcrNodeAdapter(node), eventBus);
 
         // WHEN
         action.execute();
@@ -139,7 +147,7 @@ public class AddNodeActionTest {
         Node node = root.addNode(NODE_NAME);
         node.addNode(NEW_NODE_NAME);
         long nodeCountBefore = node.getNodes().getSize();
-        AddNodeAction action = new AddNodeAction(DEFINITION, new JcrNodeAdapter(node), eventBus);
+        AddNodeAction action = new AddNodeAction(definition, new JcrNodeAdapter(node), eventBus);
 
         // WHEN
         action.execute();
@@ -156,7 +164,7 @@ public class AddNodeActionTest {
         Node node = root.addNode(NODE_NAME);
         node.setProperty("propertyName", "propertyValue");
         long nodeCountBefore = node.getNodes().getSize();
-        AddNodeAction action = new AddNodeAction(DEFINITION, new JcrPropertyAdapter(node.getProperty("propertyName")), eventBus);
+        AddNodeAction action = new AddNodeAction(definition, new JcrPropertyAdapter(node.getProperty("propertyName")), eventBus);
 
         // WHEN
         action.execute();
