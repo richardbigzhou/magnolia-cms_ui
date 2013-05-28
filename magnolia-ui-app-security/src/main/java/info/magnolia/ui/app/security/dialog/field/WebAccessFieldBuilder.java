@@ -84,7 +84,7 @@ public class WebAccessFieldBuilder extends AbstractAclFieldBuilder<WebAccessFiel
 
             final VerticalLayout aclLayout = new VerticalLayout();
 
-            final Label emptyLabel = new Label("No access");
+            final Label emptyLabel = new Label("No access.");
 
             if (roleNode.hasNode(ACL_NODE_NAME)) {
 
