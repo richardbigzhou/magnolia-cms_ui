@@ -490,7 +490,7 @@
       <sv:value>info.magnolia.ui.admincentral.field.builder.MultiLinkFieldBuilder</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.field.definition.MultiLinkFieldBuilderDefinition</sv:value>
+      <sv:value>info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
       <sv:value>2013-05-28T09:43:59.270+02:00</sv:value>
