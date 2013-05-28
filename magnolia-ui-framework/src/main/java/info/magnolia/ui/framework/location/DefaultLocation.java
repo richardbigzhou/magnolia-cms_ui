@@ -33,9 +33,15 @@
  */
 package info.magnolia.ui.framework.location;
 
+import info.magnolia.context.MgnlContext;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.StringTokenizer;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default location implementation.
@@ -43,6 +49,8 @@ import org.apache.commons.lang.StringUtils;
  * {@code appType:appId:subAppId;some/parameter}
  */
 public class DefaultLocation implements Location {
+
+    private static Logger log = LoggerFactory.getLogger(DefaultLocation.class);
 
     private String appType;
 
@@ -64,10 +72,10 @@ public class DefaultLocation implements Location {
     }
 
     public DefaultLocation(String appType, String appId, String subAppId, String parameter) {
-        this.appType = appType;
-        this.appId = appId;
-        this.subAppId = subAppId;
-        this.parameter = parameter;
+        this.appType = decodeFragment(appType);
+        this.appId = decodeFragment(appId);
+        this.subAppId = decodeFragment(subAppId);
+        this.parameter = decodeFragment(parameter);
     }
 
     /**
@@ -84,15 +92,15 @@ public class DefaultLocation implements Location {
         String[] split = StringUtils.split(fragment, ";");
         setAppParams(split[0]);
         if (split.length == 2) {
-            this.parameter = split[1];
+            this.parameter = decodeFragment(split[1]);
         }
     }
 
     private void setAppParams(String appParams) {
         StringTokenizer tokenizer = new StringTokenizer(appParams, ":");
-        this.appType = (tokenizer.hasMoreTokens()) ? tokenizer.nextToken() : "";
-        this.appId = (tokenizer.hasMoreTokens()) ? tokenizer.nextToken() : "";
-        this.subAppId = (tokenizer.hasMoreTokens()) ? tokenizer.nextToken() : "";
+        this.appType = decodeFragment((tokenizer.hasMoreTokens()) ? tokenizer.nextToken() : "");
+        this.appId = decodeFragment((tokenizer.hasMoreTokens()) ? tokenizer.nextToken() : "");
+        this.subAppId = decodeFragment((tokenizer.hasMoreTokens()) ? tokenizer.nextToken() : "");
     }
 
     @Override
@@ -116,19 +124,19 @@ public class DefaultLocation implements Location {
     }
 
     public void setParameter(String parameter) {
-        this.parameter = parameter;
+        this.parameter = decodeFragment(parameter);
     }
 
     public void setSubAppId(String subAppId) {
-        this.subAppId = subAppId;
+        this.subAppId = decodeFragment(subAppId);
     }
 
     public void setAppType(String appType) {
-        this.appType = appType;
+        this.appType = decodeFragment(appType);
     }
 
     public void setAppId(String appId) {
-        this.appId = appId;
+        this.appId = decodeFragment(appId);
     }
 
     @Override
@@ -226,6 +234,26 @@ public class DefaultLocation implements Location {
     private static String removeParameter(String fragment) {
         int i = fragment.indexOf(';');
         return i != -1 ? fragment.substring(0, i) : fragment;
+    }
+
+    public static String decodeFragment(String fragment, String encoding) {
+        if (fragment == null) {
+            return fragment;
+        }
+
+        if (fragment.indexOf('%') > -1) {
+            try {
+                fragment = URLDecoder.decode(fragment, encoding);
+            } catch (UnsupportedEncodingException e) {
+                log.error("Error decoding fragment '" + fragment + "' with encoding '" + encoding + "'", e);
+            }
+        }
+
+        return fragment;
+    }
+
+    public static String decodeFragment(String fragment) {
+        return decodeFragment(fragment, MgnlContext.getAggregationState().getCharacterEncoding());
     }
 
 }
