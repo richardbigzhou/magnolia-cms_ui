@@ -31,24 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.action.feature.definition;
+package info.magnolia.ui.mediaeditor.action.definition;
 
-import info.magnolia.ui.mediaeditor.action.feature.Scalable;
-import info.magnolia.ui.mediaeditor.action.feature.ScaleToActualSizeAction;
-
+import info.magnolia.ui.mediaeditor.action.FlipImageAction;
+import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 
 /**
- * Definition of {@link info.magnolia.ui.mediaeditor.action.feature.ScaleToActualSizeAction}.
+ * Definition for {@link info.magnolia.ui.mediaeditor.action.FlipImageAction}.
  */
-public class ScaleToActualSizeActionDefinition extends ConfiguredMediaEditorFeatureDefinition {
-    
-    public ScaleToActualSizeActionDefinition() {
-        setImplementationClass(ScaleToActualSizeAction.class);
+public class FlipImageActionDefinition extends MediaEditorActionDefinition {
+
+    public FlipImageActionDefinition() {
+        setImplementationClass(FlipImageAction.class);
     }
-    
-    @Override
-    public String getRequiredInterfaceName() {
-        return Scalable.class.getName();
+
+    private boolean flipHorizontal = true;
+
+    public void setFlipHorizontal(boolean isFlipHorizontal) {
+        this.flipHorizontal = isFlipHorizontal;
     }
-    
+
+    public boolean getFlipHorizontal() {
+        return flipHorizontal;
+    }
 }

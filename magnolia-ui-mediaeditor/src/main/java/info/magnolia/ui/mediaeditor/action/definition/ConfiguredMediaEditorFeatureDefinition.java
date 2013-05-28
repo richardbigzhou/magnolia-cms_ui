@@ -31,17 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.action;
+package info.magnolia.ui.mediaeditor.action.definition;
 
-import info.magnolia.ui.mediaeditor.provider.EditModeProviderActionDefinition;
-
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Definition for {@link info.magnolia.ui.mediaeditor.editmode.provider.RotateImageProvider}.
+ * Implementation of {@link MediaEditorFeatureDefinition}.
  */
-public class RotateImageActionDefinition extends EditModeProviderActionDefinition {
+public class ConfiguredMediaEditorFeatureDefinition extends ConfiguredActionDefinition implements MediaEditorFeatureDefinition {
 
-    public RotateImageActionDefinition() {
-        setImplementationClass(EditModeProviderAction.class);
+    private String requiredInterfaceName;
+
+    public void setRequiredInterfaceName(String requiredInterfaceName) {
+        this.requiredInterfaceName = requiredInterfaceName;
     }
+
+    @Override
+    public String getRequiredInterfaceName() {
+        return requiredInterfaceName;
+    }
+
 }

@@ -31,24 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.action.feature.definition;
+package info.magnolia.ui.mediaeditor.action.definition;
 
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.mediaeditor.action.CropImageAction;
+import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
+
 
 /**
- * Implementation of {@link MediaEditorFeatureDefinition}.
+ * Definition for {@link info.magnolia.ui.mediaeditor.action.CropImageAction}.
  */
-public class ConfiguredMediaEditorFeatureDefinition extends ConfiguredActionDefinition implements MediaEditorFeatureDefinition {
-
-    private String requiredInterfaceName;
-
-    public void setRequiredInterfaceName(String requiredInterfaceName) {
-        this.requiredInterfaceName = requiredInterfaceName;
+public class CropImageActionDefinition extends MediaEditorActionDefinition {
+    
+    public CropImageActionDefinition() {
+        setImplementationClass(CropImageAction.class);
     }
-
-    @Override
-    public String getRequiredInterfaceName() {
-        return requiredInterfaceName;
-    }
-
 }

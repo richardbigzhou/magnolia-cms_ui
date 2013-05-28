@@ -31,19 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.action.feature.definition;
+package info.magnolia.ui.mediaeditor.action.definition;
 
 import info.magnolia.ui.mediaeditor.action.feature.Scalable;
-import info.magnolia.ui.mediaeditor.action.feature.ScaleToFitAction;
+import info.magnolia.ui.mediaeditor.action.feature.ScaleToActualSizeAction;
 
 
 /**
- * Definition of {@link info.magnolia.ui.mediaeditor.action.feature.ScaleToFitAction}.
+ * Definition of {@link info.magnolia.ui.mediaeditor.action.feature.ScaleToActualSizeAction}.
  */
-public class ScaleToFitActionDefinition extends ConfiguredMediaEditorFeatureDefinition {
+public class ScaleToActualSizeActionDefinition extends ConfiguredMediaEditorFeatureDefinition {
     
-    public ScaleToFitActionDefinition() {
-        setImplementationClass(ScaleToFitAction.class);
+    public ScaleToActualSizeActionDefinition() {
+        setImplementationClass(ScaleToActualSizeAction.class);
     }
     
     @Override
