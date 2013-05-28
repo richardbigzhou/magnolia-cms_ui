@@ -31,17 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.action;
+package info.magnolia.ui.mediaeditor.action.definition;
 
-import info.magnolia.ui.mediaeditor.provider.EditModeProviderActionDefinition;
+import info.magnolia.ui.mediaeditor.action.feature.Scalable;
+import info.magnolia.ui.mediaeditor.action.feature.ScaleToActualSizeAction;
 
 
 /**
- * Definition for {@link info.magnolia.ui.mediaeditor.editmode.provider.GrayScaleProvider}.
+ * Definition of {@link info.magnolia.ui.mediaeditor.action.feature.ScaleToActualSizeAction}.
  */
-public class GrayScaleActionDefinition extends EditModeProviderActionDefinition {
-
-    public GrayScaleActionDefinition() {
-        setImplementationClass(EditModeProviderAction.class);
+public class ScaleToActualSizeActionDefinition extends ConfiguredMediaEditorFeatureDefinition {
+    
+    public ScaleToActualSizeActionDefinition() {
+        setImplementationClass(ScaleToActualSizeAction.class);
     }
+    
+    @Override
+    public String getRequiredInterfaceName() {
+        return Scalable.class.getName();
+    }
+    
 }

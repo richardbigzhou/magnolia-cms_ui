@@ -36,21 +36,20 @@ package info.magnolia.ui.admincentral.shellapp.pulse.message;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseSubView;
 
 import java.util.Collection;
+import java.util.Set;
 
 import com.vaadin.data.Container;
-import com.vaadin.ui.HasComponents;
 
 /**
  * Messages Pulse tab UI.
  */
 public interface PulseMessagesView extends PulseSubView {
 
-    @Override
-    public HasComponents asVaadinComponent();
-
     void setDataSource(Container dataSource);
 
     void setListener(Listener listener);
+
+    void refresh();
 
     /**
      * Listener interface to call back to {@link PulseMessagesPresenter}.
@@ -66,5 +65,8 @@ public interface PulseMessagesView extends PulseSubView {
         Collection<?> getGroup(Object parent);
 
         void setGrouping(boolean checked);
+
+        void deleteMessages(Set<String> messageIds);
     }
+
 }

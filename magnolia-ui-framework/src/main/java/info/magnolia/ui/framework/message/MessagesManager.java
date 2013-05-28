@@ -107,4 +107,6 @@ public interface MessagesManager {
      * @param messageId id of message
      */
     void clearMessage(String userName, String messageId);
+
+    void removeMessage(String userName, String messageId);
 }

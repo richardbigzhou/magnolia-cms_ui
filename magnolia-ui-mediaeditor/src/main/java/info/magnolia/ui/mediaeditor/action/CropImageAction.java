@@ -31,81 +31,74 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.editmode.provider;
+package info.magnolia.ui.mediaeditor.action;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
+import info.magnolia.ui.mediaeditor.MediaEditorView;
+import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent;
-import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent.EventType;
 import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
-import info.magnolia.ui.mediaeditor.editmode.field.image.ViewImageField;
-import info.magnolia.ui.mediaeditor.editmode.field.image.ViewImageField.ImageResizeEvent;
-import info.magnolia.ui.mediaeditor.editmode.field.image.ViewImageField.ImageSizeChangeListener;
+import info.magnolia.ui.mediaeditor.editmode.field.image.CropField;
+import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import com.google.inject.name.Named;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 
 /**
- * Provides UI and necessary logic for simple image previewing operation.
+ * Installs UI components necessary for conducting the image crop operations.
  */
-public class ViewImageProvider implements EditModeProvider {
+public class CropImageAction extends MediaEditorUIAction {
 
-    private ViewImageField viewField = new ViewImageField();
-   
-    private ImageSizeLabel imageSizeLabel = new ImageSizeLabel();
-    
-    private EventBus eventBus;
-    
-    @Inject
-    public ViewImageProvider(@Named(MediaEditorEventBus.NAME) EventBus eventBus) {
-        this.eventBus = eventBus;
-        viewField.addImageResizeListener(imageSizeLabel);
+    private CropField cropField = new CropField();
+
+    public CropImageAction(MediaEditorActionDefinition definition, MediaEditorView view, @Named(MediaEditorEventBus.NAME) EventBus eventBus, EditHistoryTrackingProperty dataSource) {
+        super(definition, view, dataSource, eventBus);
     }
-    
+
+
     @Override
-    public MediaField getMediaField() {
-        return viewField;
+    public void execute() throws ActionExecutionException {
+        super.execute();
+        view.getDialog().addStyleName("active-footer");
     }
 
     @Override
-    public Component getStatusControls() {
-        return imageSizeLabel;
-    }
-
-    @Override
-    public List<ActionContext> getActionContextList() {
-        List<ActionContext> result = new ArrayList<EditModeProvider.ActionContext>();
+    protected List<ActionContext> getActionContextList() {
+        List<ActionContext> result = new ArrayList<ActionContext>();
         result.add(new ActionContext("cancel", "Cancel", new DialogActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
-                eventBus.fireEvent(new MediaEditorInternalEvent(EventType.CANCEL_ALL));
+                cropField.revertChanges();
+                eventBus.fireEvent(new MediaEditorInternalEvent(MediaEditorInternalEvent.EventType.CANCEL_LAST));
             }
         }));
-        
-        result.add(new ActionContext("save", "Save", new DialogActionListener() {
+        result.add(new ActionContext("crop", "Crop Image", new DialogActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
-                eventBus.fireEvent(new MediaEditorInternalEvent(EventType.SUBMIT));
+                cropField.execute();
+                cropField.applyChanges();
+                eventBus.fireEvent(new MediaEditorInternalEvent(MediaEditorInternalEvent.EventType.APPLY));
             }
         }));
         return result;
     }
-   
-    /**
-     * ImageSizeLabel.
-     */
-    public static class ImageSizeLabel extends Label implements ImageSizeChangeListener {
 
-        @Override
-        public void onSizeChanged(ImageResizeEvent e) {
-            setValue(String.format("Size: %d x %d px", e.getWidth(), e.getHeight()));
-        }
+    @Override
+    protected Component getStatusControls() {
+        Label l = new Label();
+        cropField.setStatusComponent(l);
+        return l;
+    }
+
+    @Override
+    protected MediaField createMediaField() {
+        return cropField;
     }
 }

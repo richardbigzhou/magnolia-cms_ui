@@ -59,9 +59,9 @@ public class MediaEditorInternalEvent implements Event<MediaEditorInternalEvent.
         
         void onSubmit(MediaEditorInternalEvent e);
         
-        void onCancelLast(MediaEditorInternalEvent e);
+        void onLastActionCancelled(MediaEditorInternalEvent e);
         
-        void onApply(MediaEditorInternalEvent e);
+        void onLastActionApplied(MediaEditorInternalEvent e);
         
         void onCancelAll(MediaEditorInternalEvent e);
     }
@@ -83,10 +83,10 @@ public class MediaEditorInternalEvent implements Event<MediaEditorInternalEvent.
             handler.onSubmit(this);
             break;
         case CANCEL_LAST:
-            handler.onCancelLast(this);
+            handler.onLastActionCancelled(this);
             break;
         case APPLY:
-            handler.onApply(this);
+            handler.onLastActionApplied(this);
             break;
         case CANCEL_ALL:
             handler.onCancelAll(this);

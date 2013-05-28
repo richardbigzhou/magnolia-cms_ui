@@ -50,7 +50,11 @@ import com.vaadin.ui.Component;
  * Provides the functionality for image crop.
  */
 public class CropField extends ImageMediaField {
-    
+
+    private final static int DEFAULT_CROP_OFFSET = 50;
+
+    private final static int DEFAULT_CROP_DIMENSION = 200;
+
     private SelectionArea selectedArea = null;
 
     private JCropField jcropField = new JCropField();
@@ -67,7 +71,7 @@ public class CropField extends ImageMediaField {
     }
 
     @Override
-    protected Component createField() {
+    protected Component createImage() {
         return jcropField;
     }
 
@@ -78,6 +82,11 @@ public class CropField extends ImageMediaField {
             jcropField.setTrueHeight(image.getHeight());
             jcropField.setTrueWidth(image.getWidth());
             jcropField.setImageSource(createResourceFromValue());
+            jcropField.select(new SelectionArea(
+                    DEFAULT_CROP_OFFSET,
+                    DEFAULT_CROP_OFFSET,
+                    DEFAULT_CROP_DIMENSION,
+                    DEFAULT_CROP_DIMENSION));
         } catch (IOException e) {
             log.error("Error reading the image data: " + e.getMessage(), e);
         }

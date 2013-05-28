@@ -136,6 +136,10 @@ public class JCropField extends CustomField<SelectionArea> {
         jcrop.setAspectRatio(ratio);
     }
 
+    public void select(SelectionArea area) {
+        jcrop.select(area);
+    }
+
     @Override
     public void setWidth(float width, Unit unit) {
         super.setWidth(width, unit);

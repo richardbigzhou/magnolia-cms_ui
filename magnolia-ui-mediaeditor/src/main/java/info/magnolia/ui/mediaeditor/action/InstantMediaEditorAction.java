@@ -31,67 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.editmode.field.image;
+package info.magnolia.ui.mediaeditor.action;
 
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
+import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
+import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent;
+import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
-import javax.imageio.ImageIO;
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 
-import com.jhlabs.image.RotateFilter;
-import com.vaadin.data.Property;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Image;
+import com.google.inject.name.Named;
 
 /**
- * Provides the functionality for image rotation.
+ * Instantly modifies the data without installation of any UI components.
  */
-public class RotationField extends ImageMediaField {
+public abstract class InstantMediaEditorAction extends MediaEditorAction {
 
-    private Image rotationImage = new Image();
+    private Logger log = Logger.getLogger(getClass());
 
-    private double angle = -90;
-
-    public RotationField() {
-        setBuffered(true);
+    public InstantMediaEditorAction(MediaEditorActionDefinition definition, EditHistoryTrackingProperty dataSource, @Named(MediaEditorEventBus.NAME) EventBus eventBus) {
+        super(definition, dataSource, eventBus);
     }
 
     @Override
-    public void setPropertyDataSource(@SuppressWarnings("rawtypes") Property newDataSource) {
-        super.setPropertyDataSource(newDataSource);
-        execute();
-    }
-    
-    @Override
-    protected Component createField() {
-        return rotationImage;
-    }
-
-    public BufferedImage performRotation() throws IOException {
-        final BufferedImage img = ImageIO.read(new ByteArrayInputStream(getValue()));
-        return new RotateFilter((float)(angle * Math.PI) / 180f, true).filter(img, null);
-    }
-
-    @Override
-    public void execute() {
-        super.execute();
-        commit();
-    }
-    
-    @Override
-    public void refreshImageSource() {
-        rotationImage.setSource(createResourceFromValue());
-    }
-
-    @Override
-    protected BufferedImage executeImageModification() {
+    public void execute() throws ActionExecutionException {
         try {
-            return performRotation();
+            super.execute();
+            InputStream result = performModification(new ByteArrayInputStream(dataSource.getValue()));
+            dataSource.setValue(IOUtils.toByteArray(result));
+            eventBus.fireEvent(new MediaEditorInternalEvent(MediaEditorInternalEvent.EventType.APPLY));
         } catch (IOException e) {
-            log.error("Error occurred while performing rotation: " + e.getMessage(), e);
+            log.error("Failed to perform instant operation on media.", e);
         }
-        return null;
     }
+
+    protected abstract InputStream performModification(InputStream stream) throws IOException;
 }

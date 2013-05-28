@@ -63,7 +63,7 @@ public class ConfiguredMediaEditorDefinition implements MediaEditorDefinition {
     }
 
     @Override
-    public String getDefaultEditModeProvider() {
+    public String getDefaultAction() {
         return defaultProvider;
     }
     

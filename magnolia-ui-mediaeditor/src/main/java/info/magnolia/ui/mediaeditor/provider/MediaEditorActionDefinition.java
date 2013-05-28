@@ -31,46 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.editmode.field.image;
+package info.magnolia.ui.mediaeditor.provider;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
-import com.jhlabs.image.FlipFilter;
-import com.vaadin.data.Property;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Provides the functionality for image flip.
+ * Basic definition for all the actions that cause the change of edit mode in
+ * {@link info.magnolia.ui.mediaeditor.MediaEditorPresenter}.
  */
-public class FlipField extends ViewImageField {
+public class MediaEditorActionDefinition extends ConfiguredActionDefinition {
 
-    private boolean isFlipHorizontal;
+    private String trackingLabel = null;
 
-    public FlipField(boolean isFlipHorizontal) {
-        this.isFlipHorizontal = isFlipHorizontal;
-        setBuffered(true);
+    public String getTrackingLabel() {
+        return trackingLabel;
     }
 
-    @Override
-    @SuppressWarnings("rawtypes")
-    public void setPropertyDataSource(Property newDataSource) {
-        super.setPropertyDataSource(newDataSource);
-        execute();
-    }
-
-    @Override
-    protected BufferedImage executeImageModification() throws IOException {
-        final BufferedImage img = ImageIO.read(new ByteArrayInputStream(getValue()));
-        final FlipFilter flipFilter = new FlipFilter(isFlipHorizontal ? FlipFilter.FLIP_H : FlipFilter.FLIP_V);
-        return flipFilter.filter(img, null);
-    }
-    
-    @Override
-    public void execute() {
-        super.execute();
-        commit();
+    public void setTrackingLabel(String trackingLabel) {
+        this.trackingLabel = trackingLabel;
     }
 }

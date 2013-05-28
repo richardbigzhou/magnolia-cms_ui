@@ -170,10 +170,6 @@ public class PulseDashboardViewImpl extends CustomComponent implements PulseDash
         return this;
     }
 
-    @Override
-    public void update(List<String> params) {
-    }
-
     /**
      * The Class DashboardSection.
      */

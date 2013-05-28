@@ -193,4 +193,8 @@ public class JCrop extends AbstractJavaScriptExtension {
     public void setTrueWidth(int width) {
         getState().trueWidth = width;
     }
+
+    public void select(SelectionArea area) {
+        getState().selection = area;
+    }
 }

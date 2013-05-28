@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,17 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.mediaeditor.action.definition;
 
-import info.magnolia.ui.api.view.View;
-
-import com.vaadin.ui.HasComponents;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Interface for the tabs in the Pulse.
+ * Implementation of {@link MediaEditorFeatureDefinition}.
  */
-public interface PulseSubView extends View {
+public class ConfiguredMediaEditorFeatureDefinition extends ConfiguredActionDefinition implements MediaEditorFeatureDefinition {
+
+    private String requiredInterfaceName;
+
+    public void setRequiredInterfaceName(String requiredInterfaceName) {
+        this.requiredInterfaceName = requiredInterfaceName;
+    }
 
     @Override
-    HasComponents asVaadinComponent();
+    public String getRequiredInterfaceName() {
+        return requiredInterfaceName;
+    }
+
 }

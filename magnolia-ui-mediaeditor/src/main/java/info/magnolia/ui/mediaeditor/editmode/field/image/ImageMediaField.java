@@ -70,7 +70,7 @@ public abstract class ImageMediaField extends CustomField<byte[]> implements Med
 
     protected Logger log = Logger.getLogger(getClass());
 
-    private Transactional<Byte[]> transactionHandler;
+    private Transactional<byte[]> transactionHandler;
 
     private Component fieldComponent;
 
@@ -81,18 +81,18 @@ public abstract class ImageMediaField extends CustomField<byte[]> implements Med
         VerticalLayout mediaContentWrapper = new VerticalLayout();
         mediaContentWrapper.addStyleName("media-wrapper");
         mediaContentWrapper.setSizeFull();
-        fieldComponent = createField();
+        fieldComponent = createImage();
         mediaContentWrapper.addComponent(fieldComponent);
         mediaContentWrapper.setComponentAlignment(fieldComponent, Alignment.MIDDLE_CENTER);
         return mediaContentWrapper;
     }
 
-    protected abstract Component createField();
+    protected abstract Component createImage();
 
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void setPropertyDataSource(Property newDataSource) {
-        this.transactionHandler = new TransactionalPropertyWrapper<Byte[]>(newDataSource);
+        this.transactionHandler = new TransactionalPropertyWrapper<byte[]>(newDataSource);
         this.transactionHandler.startTransaction();
         super.setPropertyDataSource(transactionHandler);
     }
@@ -166,7 +166,7 @@ public abstract class ImageMediaField extends CustomField<byte[]> implements Med
                 refreshImageSource();
             }
         } catch (IOException e) {
-            log.error("Error occured while converting opertaion result into stream: " + e.getMessage(), e);
+            log.error("Error occurred while converting operation result into stream: " + e.getMessage(), e);
             revertChanges();
         }
     }
