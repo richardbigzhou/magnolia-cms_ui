@@ -34,6 +34,7 @@
 package info.magnolia.ui.mediaeditor.action;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.MediaEditorView;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
@@ -59,6 +60,13 @@ public class CropImageAction extends MediaEditorUIAction {
 
     public CropImageAction(MediaEditorActionDefinition definition, MediaEditorView view, @Named(MediaEditorEventBus.NAME) EventBus eventBus, EditHistoryTrackingProperty dataSource) {
         super(definition, view, dataSource, eventBus);
+    }
+
+
+    @Override
+    public void execute() throws ActionExecutionException {
+        super.execute();
+        view.getDialog().addStyleName("active-footer");
     }
 
     @Override

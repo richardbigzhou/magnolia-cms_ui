@@ -103,8 +103,9 @@ public class ViewImageAction extends MediaEditorUIAction {
 
         actionbar.setActionEnabled("undo", dataSource.getLastDoneActionName() != null);
         actionbar.setActionEnabled("redo", dataSource.getLastUnDoneActionName() != null);
-
+        view.getDialog().removeStyleName("active-footer");
         super.execute();
+
     }
 
     @Override
