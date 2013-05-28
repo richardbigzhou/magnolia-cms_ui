@@ -39,6 +39,12 @@
                 command: 'magnolialink',
                 icon: "../../../themes/admincentraltheme/img/s02-internal-link.png"
             });
+            
+            editor.ui.addButton('DamLink', {
+                label: 'Link to DAM document',
+                command: 'damlink',
+                icon: "../../../themes/admincentraltheme/img/damdoc.png"
+            });
 
             editor.addMenuGroup('mlinkgroup');
 
@@ -48,16 +54,22 @@
                 group: 'mlinkgroup',
                 icon: "../../../themes/admincentraltheme/img/s02-internal-link.png"
             });
+            
+            editor.addMenuItem('damlink', { 
+                label: 'Edit DAM Link',
+                command: 'damlink',
+                group: 'mlinkgroup',
+                icon: "../../../themes/admincentraltheme/img/damdoc.png"
+            });
 
             /*
              * Firefox will lose focus when popping up a dialog. So a variable
              * is needed to restore selection after dialog has closed.
              */
             var selectionRangeHack = null;
-
-            // Request Pages app dialog
-            editor.addCommand('magnolialink', {
-                exec: function(editor) {
+            
+            function reqDialog(app) {
+                return function(editor) {
                     selectionRangeHack = editor.getSelection().getRanges(true);
                     var selectedElement = CKEDITOR.plugins.link.getSelectedLink(editor);
                     
@@ -69,13 +81,22 @@
                             path = href.match(/handle\:\{([^\}]*)\}/);
                         }
 
-                        editor.fire(EVENT_GET_MAGNOLIA_LINK, path[1]);                      
+                        editor.fire(EVENT_GET_MAGNOLIA_LINK, '{\'app\' :\''+ app+'\', \'path\': \''+path[1]+'\'}');                      
                     } else {
-                        editor.fire(EVENT_GET_MAGNOLIA_LINK);
+                        editor.fire(EVENT_GET_MAGNOLIA_LINK, '{\'app\' :\''+ app+'\'}');
                     }
 
                     setReadOnly(editor, true);
-                }
+                };
+            }
+
+            // Request Pages app dialog
+            editor.addCommand('magnolialink', {
+                exec: reqDialog("pages")
+            });
+            
+            editor.addCommand('damlink', {
+                exec: reqDialog("assets")
             });
 
             // Respond from Pages app
@@ -157,7 +178,7 @@
                 };
             });
         }
-    });
+    });    
 
     function setReadOnly(editor, isReadOnly) {
         if (isReadOnly) {

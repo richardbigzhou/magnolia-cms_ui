@@ -37,7 +37,7 @@
             editor.ui.addButton('DamImage', {
                 label: 'Image from DAM',
                 command: 'damimage',
-                icon: "../../../themes/admincentraltheme/img/s02-internal-link.png"
+                icon: "../../../themes/admincentraltheme/img/damimage.png"
             });
 
             editor.addMenuGroup('damgroup');
@@ -46,7 +46,7 @@
                 label: 'Edit DAM image link',
                 command: 'damimage',
                 group: 'damgroup',
-                icon: "../../../themes/admincentraltheme/img/s02-internal-link.png"
+                icon: "../../../themes/admincentraltheme/img/damimage.png"
             });
 
             /*
