@@ -31,34 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.admincentral.shellapp.pulse.message.action;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition;
-import info.magnolia.ui.api.action.AbstractActionExecutor;
-import info.magnolia.ui.api.action.ActionDefinition;
-
-import javax.inject.Inject;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * MessageActionExecutor.
+ * Used to configure a {@link DeleteMessageAction}.
+ * 
+ * @see DeleteMessageAction
  */
-public class MessageActionExecutor extends AbstractActionExecutor {
+public class DeleteMessageActionDefinition extends ConfiguredActionDefinition {
 
-    private MessageViewDefinition messageViewDefinition;
-
-    @Inject
-    public MessageActionExecutor(ComponentProvider componentProvider) {
-        super(componentProvider);
-
-    }
-
-    @Override
-    public ActionDefinition getActionDefinition(String actionName) {
-        return messageViewDefinition.getActions().get(actionName);
-    }
-
-    public void setMessageViewDefinition(MessageViewDefinition messageViewDefinition) {
-        this.messageViewDefinition = messageViewDefinition;
+    public DeleteMessageActionDefinition() {
+        setImplementationClass(DeleteMessageAction.class);
     }
 }

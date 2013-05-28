@@ -61,9 +61,7 @@ public class MessageViewImpl extends HorizontalLayout implements MessageView {
 
     private void setupLayout() {
         setSizeFull();
-        setMargin(true);
-        setSpacing(true);
-
+        addStyleName("message-detail");
         messageContainer.setSizeFull();
         title.setStyleName("message-title");
 

@@ -79,23 +79,6 @@
   font-size: 12px;
 }
 
-.v-pulse .back-button {
-  display: inline-block;
-  cursor: pointer;
-}
-
-.v-pulse .back-button .v-label {
-  padding-left: 5px;
-  cursor: inherit;
-}
-
-.v-pulse .message-title {
-  font-weight: bold;
-  margin: 25px 0 30px 150px;
-  text-align: left;
-  width: 100%;
-}
-
 .v-pulse .v-feed-title-link {
     width: 16px;
     height: 16px;
@@ -150,6 +133,39 @@
 .v-pulse .v-nativebutton::-moz-focus-inner {padding:0; border:0}
 .v-pulse .navigator-button .v-nativebutton-caption {text-decoration:none;}
 
+.v-pulse .back-button {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.v-pulse .back-button .v-label {
+  padding-left: 5px;
+  cursor: inherit;
+}
+
+.v-pulse .message-title {
+  font-weight: bold;
+  margin: 25px 0 30px 150px;
+  text-align: left;
+  text-overflow: ellipsis;
+  width: 430px;
+}
+
+.v-pulse .message-detail {
+  margin-top: 30px;
+  padding-left: 10px;
+}
+
+.v-pulse .v-actionbar {
+  min-height: 450px;
+  font-size: 14px !important;
+}
+
+/*temporarily hide fullscreen and minimize options*/
+.v-pulse .v-actionbar .v-actionbar-fullscreen, .v-pulse .v-actionbar .v-actionbar-toggle {
+  display: none;
+}
+
 .v-pulse .field-view {
   margin-bottom: 10px;
 }
@@ -161,9 +177,10 @@
 
 .v-pulse .field-view .v-label.textarea {
   height: 200px;
+  width: 430px;
   padding: 0 5px 5px 5px;
-  border: 1px solid #666666 !important;
-  overflow-y: auto;
+
+  overflow: auto;
 }
 
 .v-pulse .field-view .v-caption {
