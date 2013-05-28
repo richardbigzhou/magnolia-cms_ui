@@ -36,7 +36,7 @@ package info.magnolia.ui.mediaeditor.action;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 /**
- * Hel
+ * Helper class for storing the dialog actions within media editor.
  */
 public class ActionContext {
 
