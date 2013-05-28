@@ -33,12 +33,13 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.connector;
 
-import com.vaadin.shared.AbstractComponentState;
 import com.vaadin.shared.Connector;
+import com.vaadin.shared.ui.csslayout.CssLayoutState;
 
 /**
  * OverlayState.
  */
-public class OverlayState extends AbstractComponentState {
+public class OverlayState extends CssLayoutState {
     public Connector overlayParent = null;
+    public Connector overlayContent = null;
 }

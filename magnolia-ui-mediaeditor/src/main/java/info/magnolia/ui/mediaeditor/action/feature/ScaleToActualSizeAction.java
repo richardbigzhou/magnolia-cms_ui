@@ -34,13 +34,13 @@
 package info.magnolia.ui.mediaeditor.action.feature;
 
 import info.magnolia.ui.mediaeditor.action.feature.definition.ScaleToActualSizeActionDefinition;
-import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 
 /**
  * Forces an instance of {@link Scalable} to scale to its natural size.
  */
-public class ScaleToActualSizeAction extends ActionBase<ScaleToActualSizeActionDefinition> {
+public class ScaleToActualSizeAction extends AbstractAction<ScaleToActualSizeActionDefinition> {
 
     private Scalable scalable;
     

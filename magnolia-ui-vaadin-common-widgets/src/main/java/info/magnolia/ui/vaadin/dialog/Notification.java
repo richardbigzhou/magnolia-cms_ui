@@ -37,6 +37,7 @@ import info.magnolia.objectfactory.Classes;
 import info.magnolia.ui.api.overlay.MessageStyleType;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
+import info.magnolia.ui.vaadin.integration.refresher.ClientRefresherUtil;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -47,7 +48,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.ProgressIndicator;
 
 /**
  * Component for showing notification messages.
@@ -120,19 +120,6 @@ public class Notification implements View {
         }
         int timeoutMsec = timeoutSeconds * 1000;
 
-        /*
-         * Using the progressbar here like this is a hack.
-         * When Vaadin 7.1 with built-in push is out
-         * this code can be refactored to use it.
-         * Second alternative is to use Refresher add-on,
-         * but as a temp solution the stock progressbar is simpler.
-         * 
-         * See ticket MGNLUI-1112
-         */
-        ProgressIndicator progress = new ProgressIndicator();
-        progress.setPollingInterval(timeoutMsec);
-        progress.setIndeterminate(true);
-        progress.setStyleName("alert-progressbar");
         timer.schedule(new TimerTask() {
 
             @Override
@@ -140,10 +127,10 @@ public class Notification implements View {
                 listener.onClose();
                 timer.cancel();
             }
-
         }, timeoutMsec);
 
-        layout.addComponent(progress);
+        // Add a refresher so that the client gets the change made in the timer above.
+        ClientRefresherUtil.addClientRefresher(timeoutMsec, layout);
     }
 
     /**

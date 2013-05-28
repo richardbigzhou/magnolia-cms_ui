@@ -5,5 +5,55 @@
 @mixin prefix ($property, $value) {
   -webkit-#{$property}: $value;
   -moz-#{$property}: $value;
+  -ms-#{$property}: $value;
+  -o-#{$property}: $value;
   #{$property}: $value;
 }
+
+/* Create prefixed animation keyframes for all browser vendors for an animation
+	including a tansform and an opacity change.
+*/
+@mixin keyframesTransformOpacity($name, $transFrom, $transTo, $opacityFrom, $opacityTo) {
+  @-webkit-keyframes #{$name} {
+    from {	-webkit-transform: $transFrom;
+            opacity:$opacityFrom;
+    }
+    to {	-webkit-transform: $transTo;
+            opacity:$opacityTo;
+    }
+  }
+  @-moz-keyframes #{$name} {
+    from {	-moz-transform: $transFrom;
+            opacity:$opacityFrom;
+    }
+    to {	-moz-transform: $transTo;
+            opacity:$opacityTo;
+    }
+  }
+  @-ms-keyframes #{$name} {
+    from {	-ms-transform: $transFrom;
+            opacity:$opacityFrom;
+    }
+    to {	-ms-transform: $transTo;
+            opacity:$opacityTo;
+    }
+  }
+  @-o-keyframes #{$name} {
+    from {	-o-transform: $transFrom;
+            opacity:$opacityFrom;
+    }
+    to {	-o-transform: $transTo;
+            opacity:$opacityTo;
+    }
+  }
+  @keyframes #{$name} {
+    from {	transform: $transFrom;
+            opacity:$opacityFrom;
+    }
+    to {	transform: $transTo;
+            opacity:$opacityTo;
+    }
+  }
+}
+
+
