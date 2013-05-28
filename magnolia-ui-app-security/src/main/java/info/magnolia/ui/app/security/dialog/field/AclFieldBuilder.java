@@ -35,26 +35,19 @@ package info.magnolia.ui.app.security.dialog.field;
 
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.repository.RepositoryManager;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import java.util.Collection;
-
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
@@ -73,13 +66,8 @@ public class AclFieldBuilder extends AbstractAclFieldBuilder<AclFieldDefinition>
     private static final String PERMISSIONS_PROPERTY_NAME = "permissions";
     private static final String PATH_PROPERTY_NAME = "path";
 
-    private static final String[] EXCLUDED_WORKSPACES = new String[] {"mgnlSystem", RepositoryConstants.VERSION_STORE};
-
-    private final RepositoryManager repositoryManager;
-
-    public AclFieldBuilder(AclFieldDefinition definition, Item relatedFieldItem, RepositoryManager repositoryManager) {
+    public AclFieldBuilder(AclFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
-        this.repositoryManager = repositoryManager;
     }
 
     @Override
@@ -93,53 +81,52 @@ public class AclFieldBuilder extends AbstractAclFieldBuilder<AclFieldDefinition>
             final JcrNodeAdapter roleItem = (JcrNodeAdapter) item;
             Node roleNode = roleItem.getJcrItem();
 
-            Collection<String> workspaceNames = repositoryManager.getWorkspaceNames();
-            for (String workspaceName : workspaceNames) {
+            final VerticalLayout aclLayout = new VerticalLayout();
 
-                if (ArrayUtils.contains(EXCLUDED_WORKSPACES, workspaceName)) {
-                    continue;
+            final Label emptyLabel = new Label("No access.");
+
+            final String aclName = getFieldDefinition().getAclName();
+            if (roleNode.hasNode(aclName)) {
+
+                final Node aclNode = roleNode.getNode(aclName);
+                AbstractJcrNodeAdapter aclItem = new JcrNodeAdapter(aclNode);
+                roleItem.addChild(aclItem);
+
+                for (Node entryNode : NodeUtil.getNodes(aclNode)) {
+
+                    AbstractJcrNodeAdapter entryItem = new JcrNodeAdapter(entryNode);
+                    aclItem.addChild(entryItem);
+
+                    Component ruleRow = createRuleRow(aclLayout, entryItem, emptyLabel);
+                    aclLayout.addComponent(ruleRow);
                 }
-
-                final VerticalLayout aclLayout = new VerticalLayout();
-                aclLayout.addComponent(new Label(StringUtils.capitalize(workspaceName) + " workspace"));
-
-                final String aclName = "acl_" + workspaceName;
-                if (roleNode.hasNode(aclName)) {
-
-                    final Node aclNode = roleNode.getNode(aclName);
-                    AbstractJcrNodeAdapter aclItem = new JcrNodeAdapter(aclNode);
-                    roleItem.addChild(aclItem);
-
-                    for (Node entryNode : NodeUtil.getNodes(aclNode)) {
-
-                        AbstractJcrNodeAdapter entryItem = new JcrNodeAdapter(entryNode);
-                        aclItem.addChild(entryItem);
-
-                        Component ruleRow = createRuleRow(aclLayout, entryItem);
-                        aclLayout.addComponent(ruleRow);
-                    }
-                }
-
-                final HorizontalLayout buttons = new HorizontalLayout();
-                final Button addButton = new Button("Add new");
-                addButton.addClickListener(new Button.ClickListener() {
-
-                    @Override
-                    public void buttonClick(Button.ClickEvent event) {
-                        try {
-                            JcrNewNodeAdapter newItem = addAclEntryItem(roleItem, aclName);
-                            Component ruleRow = createRuleRow(aclLayout, newItem);
-                            aclLayout.addComponent(ruleRow, aclLayout.getComponentCount() - 1);
-                        } catch (RepositoryException e) {
-                            throw new RuntimeRepositoryException(e);
-                        }
-                    }
-                });
-                buttons.addComponent(addButton);
-                aclLayout.addComponent(buttons);
-
-                layout.addComponent(aclLayout);
             }
+
+            if (aclLayout.getComponentCount() == 0) {
+                aclLayout.addComponent(emptyLabel);
+            }
+
+            final HorizontalLayout buttons = new HorizontalLayout();
+            final Button addButton = new Button("Add new");
+            addButton.addClickListener(new Button.ClickListener() {
+
+                @Override
+                public void buttonClick(Button.ClickEvent event) {
+                    try {
+                        JcrNewNodeAdapter newItem = addAclEntryItem(roleItem, aclName);
+                        Component ruleRow = createRuleRow(aclLayout, newItem, emptyLabel);
+                        aclLayout.removeComponent(emptyLabel);
+                        aclLayout.addComponent(ruleRow, aclLayout.getComponentCount() - 1);
+                    } catch (RepositoryException e) {
+                        throw new RuntimeRepositoryException(e);
+                    }
+                }
+            });
+            buttons.addComponent(addButton);
+            aclLayout.addComponent(buttons);
+
+            layout.addComponent(aclLayout);
+
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
@@ -158,7 +145,7 @@ public class AclFieldBuilder extends AbstractAclFieldBuilder<AclFieldDefinition>
         };
     }
 
-    private Component createRuleRow(final ComponentContainer parentContainer, final AbstractJcrNodeAdapter ruleItem) {
+    private Component createRuleRow(final AbstractOrderedLayout parentContainer, final AbstractJcrNodeAdapter ruleItem, final Label emptyLabel) {
 
         final HorizontalLayout ruleLayout = new HorizontalLayout();
         ruleLayout.setSpacing(true);
@@ -203,6 +190,9 @@ public class AclFieldBuilder extends AbstractAclFieldBuilder<AclFieldDefinition>
             public void buttonClick(Button.ClickEvent event) {
                 parentContainer.removeComponent(ruleLayout);
                 ruleItem.getParent().removeChild(ruleItem);
+                if (parentContainer.getComponentCount() == 1) {
+                    parentContainer.addComponent(emptyLabel, 0);
+                }
             }
         });
         ruleLayout.addComponent(deleteButton);

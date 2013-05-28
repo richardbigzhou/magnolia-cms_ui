@@ -41,4 +41,14 @@ import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
  * @see AclFieldBuilder
  */
 public class AclFieldDefinition extends ConfiguredFieldDefinition {
+
+    private String aclName;
+
+    public String getAclName() {
+        return aclName;
+    }
+
+    public void setAclName(String aclName) {
+        this.aclName = aclName;
+    }
 }
