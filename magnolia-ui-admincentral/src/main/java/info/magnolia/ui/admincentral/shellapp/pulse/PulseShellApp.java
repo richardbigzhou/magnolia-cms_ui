@@ -46,7 +46,7 @@ import javax.inject.Inject;
 /**
  * Pulse shell app.
  */
-public class PulseShellApp implements ShellApp, PulseMessagesPresenter.Listener, MessagePresenter.Listener {
+public final class PulseShellApp implements ShellApp, PulseMessagesPresenter.Listener, MessagePresenter.Listener {
 
     private PulseView pulseView;
 

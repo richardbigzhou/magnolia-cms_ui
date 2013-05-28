@@ -52,7 +52,7 @@ import com.vaadin.data.util.BeanItem;
 /**
  * MessagePresenter.
  */
-public class MessagePresenter implements MessageView.Listener, ActionbarPresenter.Listener {
+public final class MessagePresenter implements MessageView.Listener, ActionbarPresenter.Listener {
 
     private final MessageView view;
     private MessagesManager messagesManager;

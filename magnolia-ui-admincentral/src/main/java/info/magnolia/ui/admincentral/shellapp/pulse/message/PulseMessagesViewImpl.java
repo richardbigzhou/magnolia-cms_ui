@@ -69,7 +69,7 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * Implementation of {@link PulseMessagesView}.
  */
-public class PulseMessagesViewImpl extends CustomComponent implements PulseMessagesView {
+public final class PulseMessagesViewImpl extends CustomComponent implements PulseMessagesView {
 
     private static String[] headers;
 

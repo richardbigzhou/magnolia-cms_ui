@@ -57,7 +57,7 @@ import com.vaadin.data.util.HierarchicalContainer;
 /**
  * Presenter of {@link PulseMessagesView}.
  */
-public class PulseMessagesPresenter implements PulseMessagesView.Listener {
+public final class PulseMessagesPresenter implements PulseMessagesView.Listener {
 
     public static final String GROUP_PLACEHOLDER_ITEMID = "##SUBSECTION##";
     public static final String NEW_PROPERTY_ID = "new";
