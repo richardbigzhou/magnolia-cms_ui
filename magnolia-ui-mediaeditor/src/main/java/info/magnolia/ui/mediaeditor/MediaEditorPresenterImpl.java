@@ -40,15 +40,14 @@ import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
+import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingPropertyImpl;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent.CompletionType;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent.Handler;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent;
-import info.magnolia.ui.mediaeditor.editmode.factory.EditModeProviderFactory;
-import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
-import info.magnolia.ui.mediaeditor.editmode.provider.EditModeProvider;
-import info.magnolia.ui.mediaeditor.editmode.provider.EditModeProvider.ActionContext;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
 import java.io.ByteArrayInputStream;
@@ -60,9 +59,7 @@ import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
-import com.vaadin.data.Property.Transactional;
-import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.data.util.TransactionalPropertyWrapper;
+import com.vaadin.server.ClientConnector;
 
 /**
  * Implementation of {@link MediaEditorPresenter}.
@@ -70,27 +67,14 @@ import com.vaadin.data.util.TransactionalPropertyWrapper;
 public class MediaEditorPresenterImpl implements MediaEditorPresenter, ActionbarPresenter.Listener, MediaEditorInternalEvent.Handler {
 
     private Logger log = Logger.getLogger(getClass());
-
     private MediaEditorView view;
-
     private ActionbarPresenter actionbarPresenter;
-
     private MediaEditorDefinition definition;
-
-    private MediaField currentMediaField;
-
-    private ObjectProperty<byte[]> dataSource;
-
-    private Transactional<byte[]> transactionHandler;
-
+    private AppContext appContext;
+    private EditHistoryTrackingProperty dataSource;
     private EventBus eventBus;
-
     private ActionExecutor actionExecutor;
-
-    private EditModeProviderFactory providerFactory;
-
     private HandlerRegistration internalMediaEditorEventHandlerRegistration;
-
     private Set<HandlerRegistration> completionHandlers = new HashSet<HandlerRegistration>();
 
     public MediaEditorPresenterImpl(
@@ -98,29 +82,32 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
             EventBus eventBus,
             MediaEditorView view,
             ActionbarPresenter actionbarPresenter,
-            EditModeProviderFactory providerFactory) {
+            AppContext appContext) {
         this.eventBus = eventBus;
         this.view = view;
         this.actionbarPresenter = actionbarPresenter;
         this.definition = definition;
+        this.appContext = appContext;
         this.actionbarPresenter.setListener(this);
-        this.providerFactory = providerFactory;
         this.internalMediaEditorEventHandlerRegistration = eventBus.addHandler(MediaEditorInternalEvent.class, this);
+        this.view.asVaadinComponent().addDetachListener(new ClientConnector.DetachListener() {
+            @Override
+            public void detach(ClientConnector.DetachEvent event) {
+                dataSource.purgeHistory();
+            }
+        });
     }
 
     @Override
     public void setActionExecutor(ActionExecutor actionExecutor) {
         this.actionExecutor = actionExecutor;
     }
-    
+
     @Override
     public View start(final InputStream stream) {
         try {
             final ActionbarView actionbar = actionbarPresenter.start(definition.getActionBar());
-            final byte[] bytes = IOUtils.toByteArray(stream);
-            dataSource = new ObjectProperty<byte[]>(bytes);
-            transactionHandler = new TransactionalPropertyWrapper<byte[]>(dataSource);
-            transactionHandler.startTransaction();
+            dataSource = new EditHistoryTrackingPropertyImpl(IOUtils.toByteArray(stream));
             view.setActionBar(actionbar);
             switchToDefaultMode();
             return view;
@@ -131,53 +118,34 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     }
 
     @Override
+    public View getView() {
+        return view;
+    }
+
+    @Override
     public void onSubmit(MediaEditorInternalEvent event) {
-        transactionHandler.commit();
-        InputStream is = new ByteArrayInputStream(transactionHandler.getValue());
-        eventBus.fireEvent(new MediaEditorCompletedEvent(CompletionType.SUBMIT, is));
-        clearEventHandlers();
+        dataSource.commit();
+        complete(CompletionType.SUBMIT);
     }
 
     @Override
     public void onCancelAll(MediaEditorInternalEvent event) {
-        transactionHandler.rollback();
-        transactionHandler.startTransaction();
-        InputStream is = new ByteArrayInputStream(transactionHandler.getValue());
-        eventBus.fireEvent(new MediaEditorCompletedEvent(CompletionType.CANCEL, is));
-        clearEventHandlers();
+        dataSource.revert();
+        complete(CompletionType.CANCEL);
     }
 
     @Override
-    public void onCancelLast(MediaEditorInternalEvent e) {
+    public void onLastActionCancelled(MediaEditorInternalEvent e) {
         switchToDefaultMode();
     }
 
     @Override
-    public void onApply(MediaEditorInternalEvent e) {
+    public void onLastActionApplied(MediaEditorInternalEvent e) {
         switchToDefaultMode();
-    }
-
-    @Override
-    public void switchEditMode(EditModeProvider provider) {
-        MediaField newMediaField = provider.getMediaField();
-        if (newMediaField != null) {
-            this.currentMediaField = newMediaField;
-
-            view.clearActions();
-            view.setMediaContent(currentMediaField);
-            view.setToolbar(provider.getStatusControls());
-
-            for (ActionContext ctx : provider.getActionContextList()) {
-                view.getDialog().addAction(ctx.getActionId(), ctx.getLabel(), ctx.getListener());
-            }
-            currentMediaField.setPropertyDataSource(dataSource);
-        } else {
-            log.warn("Provider did not provide any content UI ");
-        }
     }
 
     private void switchToDefaultMode() {
-        doExecuteMediaEditorAction(definition.getDefaultEditModeProvider());
+        doExecuteMediaEditorAction(definition.getDefaultAction());
     }
 
     @Override
@@ -206,7 +174,11 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
 
     @Override
     public void setFullScreen(boolean fullscreen) {
-        // TODO Auto-generated method stub
+        if (fullscreen) {
+            appContext.enterFullScreenMode();
+        } else {
+            appContext.exitFullScreenMode();
+        }
 
     }
 
@@ -215,9 +187,10 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
         return definition;
     }
 
-    @Override
-    public MediaField getCurrentMediaField() {
-        return currentMediaField;
+    private void complete(CompletionType completionType) {
+        InputStream is = new ByteArrayInputStream(dataSource.getValue());
+        eventBus.fireEvent(new MediaEditorCompletedEvent(completionType, is));
+        clearEventHandlers();
     }
 
     private void clearEventHandlers() {
@@ -229,14 +202,9 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
 
     private void doExecuteMediaEditorAction(String actionName) {
         try {
-            if (currentMediaField != null) {
-                actionExecutor.execute(actionName, this, providerFactory, currentMediaField);
-            } else {
-                actionExecutor.execute(actionName, this, providerFactory);
-            }
-
+            actionExecutor.execute(actionName, this, view, dataSource);
         } catch (ActionExecutionException e) {
-            log.warn("Unable to execute action [" + actionName + "]");
+            log.warn("Unable to execute action [" + actionName + "]", e);
         }
     }
 }
