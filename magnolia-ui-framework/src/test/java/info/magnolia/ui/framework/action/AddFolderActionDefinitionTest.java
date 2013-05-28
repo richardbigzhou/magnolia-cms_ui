@@ -39,8 +39,12 @@ import info.magnolia.cms.security.DummyUser;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.RecordingEventBus;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -54,20 +58,24 @@ import org.junit.Test;
 /**
  * Tests.
  */
-public class AddFolderActionDefinitionTest {
+public class AddFolderActionDefinitionTest extends MgnlTestCase {
 
     private final static String WORKSPACE = "workspace";
 
     private final static String NODE_NAME = "johnNode";
 
-    private static final AddFolderActionDefinition DEFINITION = new AddFolderActionDefinition();
+    private static AddFolderActionDefinition definition;
 
     private RecordingEventBus eventBus;
 
     private MockSession session;
 
     @Before
-    public void setUp() {
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
+        definition = new AddFolderActionDefinition();
         session = new MockSession(WORKSPACE);
         MockContext ctx = new MockContext();
         ctx.addSession(WORKSPACE, session);
@@ -88,7 +96,7 @@ public class AddFolderActionDefinitionTest {
         Node root = session.getRootNode();
         Node node = root.addNode(NODE_NAME);
         long nodeCount = node.getNodes().getSize();
-        AddNodeAction action = new AddNodeAction(DEFINITION, new JcrNodeAdapter(node), eventBus);
+        AddNodeAction action = new AddNodeAction(definition, new JcrNodeAdapter(node), eventBus);
 
         // WHEN
         action.execute();

@@ -35,8 +35,8 @@ package info.magnolia.ui.admincentral.field.builder;
 
 import static org.junit.Assert.assertEquals;
 
+import info.magnolia.ui.form.field.LinkField;
 import info.magnolia.ui.form.field.builder.AbstractBuilderTest;
-import info.magnolia.ui.form.field.TextAndButtonField;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -60,7 +60,7 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
         Field field = linkFieldBuilder.getField();
 
         // THEN
-        assertEquals(true, field instanceof TextAndButtonField);
+        assertEquals(true, field instanceof LinkField);
     }
 
     @Test
@@ -77,7 +77,7 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
         Field field = linkFieldBuilder.getField();
 
         // THEN
-        assertEquals(true, field instanceof TextAndButtonField);
+        assertEquals(true, field instanceof LinkField);
         // Propert way set to the UUID baseNode.getIdentifier() and we display the path
         assertEquals(baseNode.getPath(), field.getValue());
     }
@@ -93,8 +93,8 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
         Field field = linkFieldBuilder.getField();
 
         // THEN
-        assertEquals(true, field instanceof TextAndButtonField);
-        assertEquals("New", ((TextAndButtonField) field).getSelectButton().getCaption());
+        assertEquals(true, field instanceof LinkField);
+        assertEquals("New", ((LinkField) field).getSelectButton().getCaption());
     }
 
     @Test
@@ -111,8 +111,8 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
         Field field = linkFieldBuilder.getField();
 
         // THEN
-        assertEquals(true, field instanceof TextAndButtonField);
-        assertEquals("Other", ((TextAndButtonField) field).getSelectButton().getCaption());
+        assertEquals(true, field instanceof LinkField);
+        assertEquals("Other", ((LinkField) field).getSelectButton().getCaption());
     }
 
     @Test
@@ -124,9 +124,9 @@ public class LinkFieldBuilderTest extends AbstractBuilderTest<LinkFieldDefinitio
         linkFieldBuilder = new LinkFieldBuilder(definition, baseItem, null, null);
         linkFieldBuilder.setI18nContentSupport(i18nContentSupport);
         Field field = linkFieldBuilder.getField();
-        assertEquals("notChanged", ((TextAndButtonField) field).getTextField().getValue());
+        assertEquals("notChanged", ((LinkField) field).getTextField().getValue());
         // WHEN
-        ((TextAndButtonField) field).getTextField().setValue("Changed");
+        ((LinkField) field).getTextField().setValue("Changed");
 
         // THEN
         assertEquals("Changed", baseItem.getItemProperty(propertyName).getValue());

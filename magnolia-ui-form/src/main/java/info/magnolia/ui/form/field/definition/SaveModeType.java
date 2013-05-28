@@ -31,32 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.action;
+package info.magnolia.ui.form.field.definition;
 
-import java.util.Collection;
+import info.magnolia.ui.form.field.property.MultiValueHandler;
 
 /**
- * Definition of restrictions on when an action is available.
+ * Save mode definition of the Multi-Link field.
  */
-public interface ActionRestrictionsDefinition {
+public class SaveModeType {
 
-    /**
-     * If true the action is available when there's no selection.
-     */
-    boolean isRoot();
+    private Class<? extends MultiValueHandler> multiPropertyDelegateClass;
 
-    /**
-     * If true the action is available for properties.
-     */
-    boolean isProperties();
+    public Class<? extends MultiValueHandler> getMultiPropertyDelegateClass() {
+        return multiPropertyDelegateClass;
+    }
 
-    /**
-     * Unless this is empty the action is available only for these node types.
-     */
-    Collection<String> getNodeTypes();
+    public void setMultiPropertyDelegateClass(Class<? extends MultiValueHandler> multiPropertyDelegateClass) {
+        this.multiPropertyDelegateClass = multiPropertyDelegateClass;
+    }
 
-    /**
-     * Unless this is empty the action is available for the current user only if he/she has one of these roles.
-     */
-    Collection<String> getRoles();
 }

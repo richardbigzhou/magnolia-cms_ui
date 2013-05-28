@@ -31,27 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.actionbar.definition;
+package info.magnolia.ui.form.field.property;
 
-import java.util.Collection;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.inject.Inject;
 
 /**
- * Definition of restrictions on when a section is shown.
+ * Multi values properties implementation of {@link MultiValueHandler}.<br>
+ * Store the list of values as Jcr Multi-property value.<br>
+ * Retrieve the Jcr Multi-property value as a list.
  */
-public interface SectionRestrictionsDefinition {
+@SuppressWarnings("unchecked")
+public class MultiValuesHandler extends SingleValueHandler {
 
-    /**
-     * If true the section is only displayed when there's no selection.
-     */
-    boolean isRoot();
+    @Inject
+    public MultiValuesHandler(JcrNodeAdapter parent, String propertyName) {
+        super(parent, propertyName);
+    }
 
-    /**
-     * If true the section is only displayed when a property is selected.
-     */
-    boolean isProperties();
+    @Override
+    public void setValue(List<String> newValue) {
+        DefaultProperty<LinkedList> property = getOrCreateProperty(LinkedList.class, new LinkedList());
+        property.setValue(new LinkedList(newValue));
+    }
 
-    /**
-     * The section is only displayed if a selected node has one of these node types.
-     */
-    Collection<String> getNodeTypes();
+    @Override
+    public List<String> getValue() {
+        DefaultProperty<LinkedList> property = getOrCreateProperty(LinkedList.class, new LinkedList());
+        return new ArrayList<String>(property.getValue());
+    }
+
 }

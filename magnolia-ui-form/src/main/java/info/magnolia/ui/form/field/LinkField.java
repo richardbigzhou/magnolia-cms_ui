@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,7 +33,9 @@
  */
 package info.magnolia.ui.form.field;
 
+
 import org.apache.commons.lang.StringUtils;
+
 
 import com.vaadin.data.Property;
 import com.vaadin.data.util.converter.Converter;
@@ -51,43 +53,48 @@ import com.vaadin.ui.TextField;
  * A {@link PropertyTranslator} can be set in order to have a different display and property stored.
  * For example, display can be the Item path and value stored is the identifier of the Item.
  */
-public class TextAndButtonField extends CustomField<String> {
+public class LinkField extends CustomField<String> {
 
-    private final TextField textField = new TextField();;
-
+    private final HorizontalLayout root = new HorizontalLayout();
+    private final TextField textField = new TextField();
     private final Button selectButton = new NativeButton();
 
     private final Converter<String, ?> converter;
 
     private final String buttonCaptionNew;
-
     private final String buttonCaptionOther;
+    private boolean allowChangesOnSelected;
 
-    public TextAndButtonField(Converter<String, ?> converter, String buttonCaptionNew, String buttonCaptionOther) {
+
+    public LinkField(Converter<String, ?> converter, String buttonCaptionNew, String buttonCaptionOther, boolean allowChangesOnSelected) {
         this.converter = converter;
         this.buttonCaptionNew = buttonCaptionNew;
         this.buttonCaptionOther = buttonCaptionOther;
+        this.allowChangesOnSelected = allowChangesOnSelected;
+        setImmediate(true);
     }
 
     @Override
     protected Component initContent() {
         addStyleName("linkfield");
-
-        HorizontalLayout root = new HorizontalLayout();
+        // Initialize root
         root.setSizeFull();
         root.setSpacing(true);
-
+        // Handle Text Field
         textField.setImmediate(true);
         textField.setWidth(100, Unit.PERCENTAGE);
         textField.setNullRepresentation("");
-        selectButton.addStyleName("magnoliabutton");
-
         root.addComponent(textField);
-        root.addComponent(selectButton);
         root.setExpandRatio(textField, 1);
-        root.setExpandRatio(selectButton, 0);
         root.setComponentAlignment(textField, Alignment.MIDDLE_LEFT);
-        root.setComponentAlignment(selectButton, Alignment.MIDDLE_RIGHT);
+        // Only Handle Select button if the Text field is not Read Only.
+        if (!textField.isReadOnly()) {
+            selectButton.addStyleName("magnoliabutton");
+            root.addComponent(selectButton);
+            root.setExpandRatio(selectButton, 0);
+            root.setComponentAlignment(selectButton, Alignment.MIDDLE_RIGHT);
+        }
+
         return root;
     }
 
@@ -107,7 +114,14 @@ public class TextAndButtonField extends CustomField<String> {
     @Override
     public void setValue(String newValue) throws ReadOnlyException, ConversionException {
         textField.setValue(newValue);
+        if (!allowChangesOnSelected && StringUtils.isNotBlank(newValue)) {
+            textField.setReadOnly(true);
+            if (root.getComponentIndex(selectButton) != -1) {
+                root.removeComponent(selectButton);
+            }
+        }
         setButtonCaption(newValue);
+        fireValueChange(false);
     }
 
     /**

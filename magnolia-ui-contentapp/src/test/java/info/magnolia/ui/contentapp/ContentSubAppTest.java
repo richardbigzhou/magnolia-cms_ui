@@ -33,15 +33,20 @@
  */
 package info.magnolia.ui.contentapp;
 
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.api.availability.AvailabilityRule;
 import info.magnolia.ui.contentapp.browser.BrowserPresenter;
 import info.magnolia.ui.contentapp.browser.BrowserSubApp;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.event.EventBus;
+
+import javax.jcr.Item;
 
 import org.junit.Before;
 
@@ -60,11 +65,15 @@ public class ContentSubAppTest {
     private EventBus subAppEventBus;
     private DummyContentSubApp subApp;
     private SubAppContext subAppContext;
+    private ComponentProvider componentProvider;
 
     @Before
     public void setUp() throws Exception {
         appContext = mock(AppContext.class);
         subAppContext = mock(SubAppContext.class);
+
+        componentProvider = mock(ComponentProvider.class);
+        doReturn(mock(DummyRule.class)).when(componentProvider).newInstance(any(Class.class), anyVararg());
 
         view = mock(ContentSubAppView.class);
         workbench = mock(BrowserPresenter.class);
@@ -80,7 +89,7 @@ public class ContentSubAppTest {
         public int foo = 0;
 
         public DummyContentSubApp(ActionExecutor actionExecutor, SubAppContext subAppContext, ContentSubAppView view, BrowserPresenter workbench, EventBus subAppEventBus) {
-            super(actionExecutor, subAppContext, view, workbench, subAppEventBus);
+            super(actionExecutor, subAppContext, view, workbench, subAppEventBus, componentProvider);
         }
 
         @Override
@@ -96,6 +105,13 @@ public class ContentSubAppTest {
         @Override
         protected void onSubAppStart() {
             foo++;
+        }
+    }
+
+    private class DummyRule implements AvailabilityRule {
+        @Override
+        public boolean isAvailable(Item item) {
+            return true;
         }
     }
 }

@@ -31,62 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.action;
+package info.magnolia.ui.api.availability;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
+
+import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Simple implementation for {@link ActionRestrictionsDefinition}.
+ * This rule returns true if the item is not a node, or if it is a node and has NOT the mgnl:deleted mixin type.
  */
-public class ConfiguredActionRestrictionsDefinition implements ActionRestrictionsDefinition {
+public class IsNotDeletedRule implements AvailabilityRule {
 
-    private boolean root = false;
-    private boolean properties = false;
-    private Collection<String> nodeTypes = new ArrayList<String>();
-    private Collection<String> roles = new ArrayList<String>();
+    private static final Logger log = LoggerFactory.getLogger(IsNotDeletedRule.class);
 
     @Override
-    public boolean isRoot() {
-        return root;
-    }
-
-    public void setRoot(boolean root) {
-        this.root = root;
-    }
-
-    @Override
-    public boolean isProperties() {
-        return properties;
-    }
-
-    public void setProperties(boolean properties) {
-        this.properties = properties;
-    }
-
-    @Override
-    public Collection<String> getNodeTypes() {
-        return nodeTypes;
-    }
-
-    public void setNodeTypes(Collection<String> nodeTypes) {
-        this.nodeTypes = nodeTypes;
-    }
-
-    public void addNodeType(String nodeType) {
-        nodeTypes.add(nodeType);
-    }
-
-    @Override
-    public Collection<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Collection<String> roles) {
-        this.roles = roles;
-    }
-
-    public void addRole(String role) {
-        roles.add(role);
+    public boolean isAvailable(Item item) {
+        if (item != null && item.isNode()) {
+            Node node = (Node) item;
+            try {
+                return !NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
+            } catch (RepositoryException e) {
+                log.warn("Error evaluating availability for node [{}], returning false: {}", NodeUtil.getPathIfPossible(node), e.getMessage());
+            }
+        }
+        return true;
     }
 }
