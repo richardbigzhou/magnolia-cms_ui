@@ -31,55 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.editmode.provider;
+package info.magnolia.ui.mediaeditor.action;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
+import info.magnolia.ui.mediaeditor.action.definition.UndoActionDefinition;
+import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent;
-import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent.EventType;
-import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
-import info.magnolia.ui.mediaeditor.editmode.field.image.RotationField;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.ui.Component;
+import com.google.inject.name.Named;
 
 /**
- * Provides UI and necessary logic for image rotation operation.
+ * Undoes the latest performed operation on the data-source.
  */
-public class RotateImageProvider implements EditModeProvider {
-    
-    private RotationField rotationField = new RotationField();
-    
-    @Inject
-    public RotateImageProvider(final @Named(MediaEditorEventBus.NAME) EventBus eventBus) {
-        rotationField.addValueChangeListener(new ValueChangeListener() {
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-                rotationField.applyChanges();
-                eventBus.fireEvent(new MediaEditorInternalEvent(EventType.APPLY));    
-            }
-        });
-    }
-    
-    @Override
-    public MediaField getMediaField() {
-        return rotationField;
+public class UndoAction extends MediaEditorAction {
+
+    public UndoAction(UndoActionDefinition definition, EditHistoryTrackingProperty dataSource, @Named(MediaEditorEventBus.NAME) EventBus eventBus) {
+        super(definition, dataSource, eventBus);
     }
 
     @Override
-    public Component getStatusControls() {       
-        return null;
-    }
-
-    @Override
-    public List<ActionContext> getActionContextList() {
-        return new ArrayList<EditModeProvider.ActionContext>();
+    public void execute() throws ActionExecutionException {
+        dataSource.undo();
+        eventBus.fireEvent(new MediaEditorInternalEvent(MediaEditorInternalEvent.EventType.APPLY));
     }
 }
