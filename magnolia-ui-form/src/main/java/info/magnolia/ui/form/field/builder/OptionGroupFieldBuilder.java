@@ -35,8 +35,10 @@ package info.magnolia.ui.form.field.builder;
 
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -67,18 +69,23 @@ public class OptionGroupFieldBuilder extends SelectFieldBuilder<OptionGroupField
         return new OptionGroup();
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     protected Property<?> getOrCreateProperty() {
         if (!select.isMultiSelect()) {
             return super.getOrCreateProperty();
         }
         String propertyName = definition.getName();
-        Class<?> fieldType = getFieldType(definition);
         Property<?> property = item.getItemProperty(propertyName);
         if (property == null) {
             property = new DefaultProperty(HashSet.class, new HashSet());
-            item.addItemProperty(propertyName, property);
+        } else {
+            // Convert LinkedList to HashSet. (Vaadin Select support only Set)
+            LinkedList value = (LinkedList) property.getValue();
+            property = new DefaultProperty(HashSet.class, new HashSet(value));
+            ((JcrNodeAdapter) item).removeItemProperty(propertyName);
         }
+        item.addItemProperty(propertyName, property);
 
         return property;
     }
