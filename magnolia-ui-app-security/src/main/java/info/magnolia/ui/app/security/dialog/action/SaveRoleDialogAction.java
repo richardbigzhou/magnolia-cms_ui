@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.security.dialog.action;
 
-import info.magnolia.jcr.util.MetaDataUtil;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 import info.magnolia.ui.form.EditorCallback;
@@ -64,8 +64,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
 
             try {
                 final Node node = itemChanged.applyChanges();
-                // the ACL handling has to be added here, once the ACLs are (re)defined for M5
-                MetaDataUtil.updateMetaData(node);
+                NodeTypes.LastModified.update(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);
