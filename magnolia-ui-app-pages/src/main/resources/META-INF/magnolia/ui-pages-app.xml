@@ -17,14 +17,6 @@
 
   <components>
     <id>app-pages-browser</id>
-    <component>
-      <type>info.magnolia.ui.app.pages.availability.PageHasSubpagesRule</type>
-      <implementation>info.magnolia.ui.app.pages.availability.PageHasSubpagesRule</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.app.pages.availability.PageHasSubpagesAndIsNotDeletedRule</type>
-      <implementation>info.magnolia.ui.app.pages.availability.PageHasSubpagesAndIsNotDeletedRule</implementation>
-    </component>
   </components>
 
   <components>
