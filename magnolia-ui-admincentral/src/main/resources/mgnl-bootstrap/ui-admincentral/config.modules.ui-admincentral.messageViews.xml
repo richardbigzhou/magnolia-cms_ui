@@ -7,7 +7,7 @@
     <sv:value>8dc0dd88-bc40-48d6-9488-91914054bf61</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:created" sv:type="Date">
-    <sv:value>2013-04-09T14:44:40.067+02:00</sv:value>
+    <sv:value>2013-05-23T10:17:09.999+02:00</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
@@ -32,7 +32,7 @@
       <sv:value>ec2e7e2f-344a-485d-bd4e-903889b839f1</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-04-09T14:45:16.225+02:00</sv:value>
+      <sv:value>2013-05-23T10:17:10.000+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -57,7 +57,7 @@
         <sv:value>ee03955d-1d66-4d65-8d6b-d4a65c7d25cc</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-04-09T14:45:31.739+02:00</sv:value>
+        <sv:value>2013-05-23T10:17:10.001+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -83,7 +83,7 @@
         <sv:value>67e45db5-dd7f-4d0a-ac4d-b9c0cbe3cc02</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-04-09T14:45:34.314+02:00</sv:value>
+        <sv:value>2013-05-23T10:17:10.003+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -108,7 +108,7 @@
           <sv:value>26cc5ec9-ffeb-4bd9-803e-66612d57a394</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:created" sv:type="Date">
-          <sv:value>2013-04-09T14:46:52.672+02:00</sv:value>
+          <sv:value>2013-05-23T10:17:10.004+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
@@ -133,7 +133,7 @@
             <sv:value>158b9d6a-5ba1-4180-9acc-23573a7abaf6</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:created" sv:type="Date">
-            <sv:value>2013-04-09T14:47:14.564+02:00</sv:value>
+            <sv:value>2013-05-23T10:17:10.005+02:00</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -158,7 +158,7 @@
               <sv:value>a1b02eca-2a17-484f-bdd0-32b2311169ce</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:created" sv:type="Date">
-              <sv:value>2013-04-09T14:47:35.278+02:00</sv:value>
+              <sv:value>2013-05-23T10:17:10.006+02:00</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
@@ -175,6 +175,38 @@
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
             </sv:property>
+            <sv:node sv:name="sender">
+              <sv:property sv:name="jcr:primaryType" sv:type="Name">
+                <sv:value>mgnl:contentNode</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:uuid" sv:type="String">
+                <sv:value>0f38e156-72c9-4999-b992-52a763416a9d</sv:value>
+              </sv:property>
+              <sv:property sv:name="class" sv:type="String">
+                <sv:value>info.magnolia.ui.form.field.definition.TextFieldDefinition</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:created" sv:type="Date">
+                <sv:value>2013-05-23T10:17:10.007+02:00</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:createdBy" sv:type="String">
+                <sv:value>admin</sv:value>
+              </sv:property>
+              <sv:property sv:name="label" sv:type="String">
+                <sv:value>Sender</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:created" sv:type="Date">
+                <sv:value>2013-04-09T14:48:33.269+02:00</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:createdBy" sv:type="String">
+                <sv:value>superuser</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+                <sv:value>2013-05-27T14:56:51.738+02:00</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+                <sv:value>superuser</sv:value>
+              </sv:property>
+            </sv:node>
             <sv:node sv:name="message">
               <sv:property sv:name="jcr:primaryType" sv:type="Name">
                 <sv:value>mgnl:contentNode</sv:value>
@@ -186,7 +218,7 @@
                 <sv:value>info.magnolia.ui.form.field.definition.TextFieldDefinition</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:created" sv:type="Date">
-                <sv:value>2013-04-09T14:48:33.269+02:00</sv:value>
+                <sv:value>2013-05-23T10:17:10.007+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>

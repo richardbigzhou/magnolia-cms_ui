@@ -68,6 +68,7 @@ public class MessageViewImpl extends HorizontalLayout implements MessageView {
         title.setStyleName("message-title");
 
         messageContainer.addComponent(new SimpleButton());
+        title.setSizeUndefined();
         messageContainer.addComponent(title);
 
         addComponent(messageContainer);
@@ -85,8 +86,10 @@ public class MessageViewImpl extends HorizontalLayout implements MessageView {
     public void setMessageView(View view) {
         if(messageView != null) {
             messageContainer.replaceComponent(messageView.asVaadinComponent(), view.asVaadinComponent());
+        } else {
+            messageContainer.addComponent(view.asVaadinComponent());
         }
-        else {messageContainer.addComponent(view.asVaadinComponent());}
+
         this.messageView = view;
     }
 
