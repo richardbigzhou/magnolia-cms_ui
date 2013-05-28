@@ -218,4 +218,18 @@
   vertical-align: middle;
 }
 
+.datetimefield {
+  cursor: pointer;
+}
+
+.datetimefield .datefield {
+  float: left;
+}
+
+.datetimefield .timefield {
+  display: block !important;
+  text-align: right;
+  padding-left: 5px;
+}
+
 }
