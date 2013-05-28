@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 
 /**
@@ -42,7 +42,7 @@ import info.magnolia.ui.api.action.ActionExecutionException;
  *
  * @see CancelDialogActionDefinition
  */
-public class CancelDialogAction extends ActionBase<CancelDialogActionDefinition> {
+public class CancelDialogAction extends AbstractAction<CancelDialogActionDefinition> {
 
     private EditorCallback callback;
 

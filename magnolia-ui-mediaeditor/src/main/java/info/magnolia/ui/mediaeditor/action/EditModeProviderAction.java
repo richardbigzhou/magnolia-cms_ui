@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.mediaeditor.action;
 
+import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.mediaeditor.MediaEditorPresenter;
 import info.magnolia.ui.mediaeditor.editmode.factory.EditModeProviderFactory;
 import info.magnolia.ui.mediaeditor.editmode.provider.EditModeProvider;
-import info.magnolia.ui.api.action.ActionBase;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.mediaeditor.provider.EditModeProviderActionDefinition;
 
@@ -45,7 +45,7 @@ import org.apache.log4j.Logger;
 /**
  * Causes the {@link MediaEditorPresenter} to switch the edit mode.
  */
-public class EditModeProviderAction extends ActionBase<EditModeProviderActionDefinition> {
+public class EditModeProviderAction extends AbstractAction<EditModeProviderActionDefinition> {
 
     private Logger log = Logger.getLogger(getClass());
     
