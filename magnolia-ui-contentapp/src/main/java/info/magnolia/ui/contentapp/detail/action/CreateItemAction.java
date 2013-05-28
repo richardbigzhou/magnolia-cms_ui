@@ -37,7 +37,7 @@ import info.magnolia.cms.core.Path;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.location.LocationController;
-import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 
@@ -52,7 +52,7 @@ import javax.jcr.RepositoryException;
  *
  * @see CreateItemActionDefinition
  */
-public class CreateItemAction extends ActionBase<CreateItemActionDefinition> {
+public class CreateItemAction extends AbstractAction<CreateItemActionDefinition> {
 
     private static final String NEW_NODE_NAME = "untitled";
 

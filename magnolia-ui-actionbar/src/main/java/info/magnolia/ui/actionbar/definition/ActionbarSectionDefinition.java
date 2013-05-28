@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.actionbar.definition;
 
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
+
 import java.util.List;
 
 /**
@@ -53,5 +55,5 @@ public interface ActionbarSectionDefinition {
      */
     List<ActionbarGroupDefinition> getGroups();
 
-    SectionRestrictionsDefinition getRestrictions();
+    AvailabilityDefinition getAvailability();
 }

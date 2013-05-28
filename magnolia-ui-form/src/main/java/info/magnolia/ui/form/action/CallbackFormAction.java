@@ -34,13 +34,13 @@
 package info.magnolia.ui.form.action;
 
 import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 
 /**
  * CallbackFormAction.
  */
-public class CallbackFormAction extends ActionBase<CallbackFormActionDefinition> {
+public class CallbackFormAction extends AbstractAction<CallbackFormActionDefinition> {
 
     private EditorCallback callback;
 

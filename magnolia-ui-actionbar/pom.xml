@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-actionbar</artifactId>
   <name>magnolia-ui-actionbar</name>
   <properties>
-    <cloverCoverageThreshold>25</cloverCoverageThreshold>
+    <cloverCoverageThreshold>26</cloverCoverageThreshold>
   </properties>
 
   <dependencies>
@@ -31,6 +31,13 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-core</artifactId>
+      <version>${magnoliaVersion}</version>
+      <type>test-jar</type>
       <scope>test</scope>
     </dependency>
 

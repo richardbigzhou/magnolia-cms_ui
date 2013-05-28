@@ -40,17 +40,29 @@ import static org.mockito.Mockito.*;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.MgnlTestCase;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Test case for SubAppActionExecutor.
  */
-public class SubAppActionExecutorTest {
+public class SubAppActionExecutorTest extends MgnlTestCase {
+
+    @Before
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
+    }
 
     @Test
     public void testCanResolveActionFromSubAppDescriptor() {

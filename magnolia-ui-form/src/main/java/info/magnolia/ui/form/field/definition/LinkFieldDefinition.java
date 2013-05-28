@@ -39,24 +39,22 @@ package info.magnolia.ui.form.field.definition;
  */
 public class LinkFieldDefinition extends ConfiguredFieldDefinition {
 
-    // Define the target link workspace.
-    private String workspace = "website";
     // Sub Dialog Name. Used by the LinkField to create the
     // sub dialog. like 'ui-admincentral:link'
     private String dialogName;
     // Target App Name used to create the ContentView.
     // 'pages'
     private String appName;
+    // Define the target link workspace.
+    private String workspace = "website";
+
     // Button Label displayed when no link is yet selected.
     private String buttonSelectNewLabel = "field.link.select.new";
     // Button Label displayed when a link is selected.
     private String buttonSelectOtherLabel = "field.link.select.another";
     // Define if we should store the Identifier of the selected Item
     private boolean identifier = false;
-    // Name of the list property to populate.
-    // If empty, and identifier is false, populate the Node path
-    // otherwise, populate the Identifier.
-    private String propertyName;
+
 
     public String getWorkspace() {
         return workspace;
@@ -104,13 +102,5 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setButtonSelectOtherLabel(String buttonSelectOtherLabel) {
         this.buttonSelectOtherLabel = buttonSelectOtherLabel;
-    }
-
-    public String getPropertyName() {
-        return propertyName;
-    }
-
-    public void setPropertyName(String propertyName) {
-        this.propertyName = propertyName;
     }
 }
