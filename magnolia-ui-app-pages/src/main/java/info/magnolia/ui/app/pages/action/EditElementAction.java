@@ -35,7 +35,7 @@ package info.magnolia.ui.app.pages.action;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.form.EditorCallback;
@@ -54,7 +54,7 @@ import javax.jcr.Session;
 /**
  * EditElementAction.
  */
-public class EditElementAction extends ActionBase<EditElementActionDefinition> {
+public class EditElementAction extends AbstractAction<EditElementActionDefinition> {
 
     private AbstractElement element;
     private FormDialogPresenter formDialogPresenter;

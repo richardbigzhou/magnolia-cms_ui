@@ -34,11 +34,11 @@
 package info.magnolia.ui.app.pages.action;
 
 import info.magnolia.cms.core.version.VersionManager;
+import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.location.LocationController;
-import info.magnolia.ui.api.action.ActionBase;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Restore the previous version of a page and edit it.
  */
-public class RestorePreviousVersionAction extends ActionBase<RestorePreviousVersionActionDefinition> {
+public class RestorePreviousVersionAction extends AbstractAction<RestorePreviousVersionActionDefinition> {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final AbstractJcrNodeAdapter nodeItemToEdit;
     private final LocationController locationController;

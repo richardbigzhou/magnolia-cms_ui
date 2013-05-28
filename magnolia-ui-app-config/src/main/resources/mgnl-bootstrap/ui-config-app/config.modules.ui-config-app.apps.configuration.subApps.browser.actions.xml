@@ -35,7 +35,7 @@
       <sv:value>02c27a4e-f7cb-4263-bfd6-4e04ff7d8667</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.tree.action.AddNodeActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.framework.action.AddNodeActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-add-folder</sv:value>
@@ -93,7 +93,7 @@
       <sv:value>e42cf22c-caa7-4bdd-9206-17eb008456a4</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.tree.action.AddNodeActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.framework.action.AddNodeActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-add-node-content</sv:value>
@@ -151,7 +151,7 @@
       <sv:value>a6012e6d-a736-462c-8e35-6127ebd47a2f</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.tree.action.AddPropertyActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.framework.action.AddPropertyActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-add-node-data</sv:value>
@@ -189,7 +189,7 @@
       <sv:value>71a102c9-382e-451b-a48a-bf80f49fec64</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.tree.action.DeleteActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.framework.action.DeleteActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="command" sv:type="String">
       <sv:value>delete</sv:value>
@@ -247,7 +247,7 @@
       <sv:value>63cd3eae-4b7c-42e1-beb0-6f439bdeff33</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.tree.action.DuplicateNodeActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.framework.action.DuplicateNodeActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="icon" sv:type="String">
       <sv:value>icon-duplicate</sv:value>
@@ -285,7 +285,7 @@
       <sv:value>89032a32-431f-4aed-866d-8f1ee6b69f1f</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.activation.action.ActivationActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.framework.action.ActivationActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="command" sv:type="String">
       <sv:value>activate</sv:value>
@@ -326,7 +326,7 @@
       <sv:value>1d200b12-8413-4321-b491-45ca64d6ccd6</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.activation.action.ActivationActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.framework.action.ActivationActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="command" sv:type="String">
       <sv:value>activate</sv:value>
@@ -370,7 +370,7 @@
       <sv:value>77b4a59d-f7e5-40cb-9e65-8c32540b3aea</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.activation.action.DeactivationActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.framework.action.DeactivationActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="command" sv:type="String">
       <sv:value>deactivate</sv:value>
@@ -411,7 +411,7 @@
       <sv:value>5e53b5ef-077e-48f1-8332-b7f2f717ca08</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.tree.action.ExportActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.framework.action.ExportActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="command" sv:type="String">
       <sv:value>export</sv:value>
@@ -452,7 +452,7 @@
       <sv:value>907ada72-20a6-43a7-b7e1-39bf1405b05f</sv:value>
     </sv:property>
     <sv:property sv:name="class" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.dialog.action.CreateDialogActionDefinition</sv:value>
+      <sv:value>info.magnolia.ui.framework.action.OpenCreateDialogActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="dialogName" sv:type="String">
       <sv:value>ui-admincentral:import</sv:value>

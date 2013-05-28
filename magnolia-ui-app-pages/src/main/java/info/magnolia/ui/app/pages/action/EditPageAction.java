@@ -35,7 +35,7 @@ package info.magnolia.ui.app.pages.action;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
@@ -49,7 +49,7 @@ import javax.jcr.RepositoryException;
 /**
  * Opens a page for editing.
  */
-public class EditPageAction extends ActionBase<EditPageActionDefinition> {
+public class EditPageAction extends AbstractAction<EditPageActionDefinition> {
 
     private final AbstractJcrNodeAdapter nodeItemToEdit;
 

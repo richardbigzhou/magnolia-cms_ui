@@ -35,7 +35,7 @@ package info.magnolia.ui.app.pages.action;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
@@ -50,7 +50,7 @@ import com.google.inject.Inject;
 /**
  * Opens a preview of the selected page.
  */
-public class PreviewPageAction extends ActionBase<PreviewPageActionDefinition> {
+public class PreviewPageAction extends AbstractAction<PreviewPageActionDefinition> {
 
 
     private final AbstractJcrNodeAdapter nodeItemToPreview;
