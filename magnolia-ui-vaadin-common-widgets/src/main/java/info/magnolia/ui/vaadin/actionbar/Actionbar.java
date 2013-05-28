@@ -134,6 +134,13 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
     }
 
     @Override
+    public void removeAction(String actionName) {
+        for (ActionbarSection section : getState().sections.values()) {
+            section.removeAction(actionName);
+        }
+    }
+
+    @Override
     public void addSection(String sectionName, String caption) {
         getState().sections.put(sectionName, new ActionbarSection(sectionName, caption));
         getState().sectionOrder.add(sectionName);
@@ -215,10 +222,9 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
     }
 
     private void doSetActionEnabled(boolean isEnabled, ActionbarItem action) {
-        if (!isEnabled && !getState().disabledActions.contains(action)) {
+        getState().disabledActions.remove(action);
+        if (!isEnabled) {
             getState().disabledActions.add(action);
-        } else if (isEnabled) {
-            getState().disabledActions.remove(action);
         }
     }
 

@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.api.action;
 
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
+
 /**
  * Simple implementation of {@link ActionDefinition}.
  */
@@ -44,7 +47,7 @@ public class ConfiguredActionDefinition implements ActionDefinition {
     private String icon;
     private String i18nBasename;
     private Class<? extends Action> implementationClass;
-    private ActionRestrictionsDefinition restrictions = new ConfiguredActionRestrictionsDefinition();
+    private AvailabilityDefinition availability = new ConfiguredAvailabilityDefinition();
     private String successMessage;
     private String failureMessage;
     private String errorMessage;
@@ -104,12 +107,12 @@ public class ConfiguredActionDefinition implements ActionDefinition {
     }
 
     @Override
-    public ActionRestrictionsDefinition getRestrictions() {
-        return restrictions;
+    public AvailabilityDefinition getAvailability() {
+        return availability;
     }
 
-    public void setRestrictions(ActionRestrictionsDefinition restrictions) {
-        this.restrictions = restrictions;
+    public void setAvailability(AvailabilityDefinition availability) {
+        this.availability = availability;
     }
 
     @Override

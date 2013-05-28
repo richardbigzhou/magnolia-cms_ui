@@ -9,7 +9,6 @@
   <version>${project.version}</version>
   <components>
     <id>main</id>
-    <!-- MEDIA EDITOR CONFIG HERE -->
     <component>
       <type>info.magnolia.ui.mediaeditor.registry.ConfiguredMediaEditorDefinitionManager</type>
       <implementation>info.magnolia.ui.mediaeditor.registry.ConfiguredMediaEditorDefinitionManager</implementation>
@@ -22,20 +21,12 @@
       <scope>singleton</scope>
     </component>
 
-    <component>
-      <type>info.magnolia.ui.mediaeditor.editmode.factory.EditModeRegistry</type>
-      <workspace>config</workspace>
-      <path>/modules/ui-mediaeditor/mediaEditorModeRegistry</path>
-      <observed>true</observed>
-      <scope>singleton</scope>
-    </component>
-
     <type-mapping>
       <type>info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition</type>
       <implementation>info.magnolia.ui.mediaeditor.definition.ConfiguredMediaEditorDefinition</implementation>
     </type-mapping>
-    <!-- ENDOF MEDIA EDITOR CONFIG -->
   </components>
+
   <components>
   <id>subapp</id>
     <component>
@@ -60,11 +51,6 @@
     <component>
       <type>info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition</type>
       <implementation>info.magnolia.ui.mediaeditor.definition.ConfiguredMediaEditorDefinition</implementation>
-    </component>
-
-    <component>
-      <type>info.magnolia.ui.mediaeditor.editmode.factory.EditModeProviderFactory</type>
-      <implementation>info.magnolia.ui.mediaeditor.editmode.factory.EditModeProviderFactory</implementation>
     </component>
 
   </components>
