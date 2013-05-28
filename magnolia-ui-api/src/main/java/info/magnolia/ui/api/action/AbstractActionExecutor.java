@@ -119,7 +119,7 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
         // if a rule class is set, verify it first
         if ((availability.getRuleClass() != null)) {
             // if the rule class cannot be instantiated, or the rule returns false
-            AvailabilityRule rule = componentProvider.newInstance(availability.getRuleClass(), new Object[] {});
+            AvailabilityRule rule = componentProvider.newInstance(availability.getRuleClass());
             if (rule == null || !rule.isAvailable(item)) {
                 return false;
             }
