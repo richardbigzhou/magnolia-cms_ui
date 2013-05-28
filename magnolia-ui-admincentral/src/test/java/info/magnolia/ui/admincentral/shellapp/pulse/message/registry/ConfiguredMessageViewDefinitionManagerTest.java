@@ -36,6 +36,8 @@ package info.magnolia.ui.admincentral.shellapp.pulse.message.registry;
 import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.security.operations.AccessDefinition;
+import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
 import info.magnolia.jcr.node2bean.TypeMapping;
 import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
@@ -45,6 +47,7 @@ import info.magnolia.module.ModuleRegistry;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockEvent;
 import info.magnolia.test.mock.jcr.MockObservationManager;
@@ -57,6 +60,8 @@ import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -71,7 +76,7 @@ import org.junit.Test;
 /**
  * ConfiguredMessageViewDefinitionManagerTest.
  */
-public class ConfiguredMessageViewDefinitionManagerTest {
+public class ConfiguredMessageViewDefinitionManagerTest extends MgnlTestCase {
 
     private static final String A_MESSAGE_VIEW_PATH = "/modules/aModule/" + ConfiguredMessageViewDefinitionManager.MESSAGE_VIEW_CONFIG_NODE_NAME + "/aMessageView";
     private static final String B_MESSAGE_VIEW_PATH = "/modules/bModule/" + ConfiguredMessageViewDefinitionManager.MESSAGE_VIEW_CONFIG_NODE_NAME + "/bMessageView";
@@ -82,7 +87,11 @@ public class ConfiguredMessageViewDefinitionManagerTest {
 
 
     @Before
+    @Override
     public void setUp() throws Exception {
+        super.setUp();
+        ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
+        ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
 
         ComponentsTestUtil.setImplementation(MessageViewDefinition.class, ConfiguredMessageViewDefinition.class);
         ComponentsTestUtil.setImplementation(FormDefinition.class, ConfiguredFormDefinition.class);

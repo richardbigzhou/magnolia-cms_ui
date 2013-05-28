@@ -13,7 +13,6 @@
     <id>app-security</id>
    </components>
 
-
   <dependencies>
     <dependency>
       <name>ui-admincentral</name>

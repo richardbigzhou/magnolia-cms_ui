@@ -17,6 +17,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <magnoliaVersion>5.0-SNAPSHOT</magnoliaVersion>
+    <imagingVersion>3.0-SNAPSHOT</imagingVersion>
     <vaadinVersion>7.0.2</vaadinVersion>
     <scmTagPrefix>magnolia-ui</scmTagPrefix>
   </properties>
@@ -36,7 +37,7 @@
       <dependency>
         <groupId>info.magnolia</groupId>
         <artifactId>magnolia-module-imaging</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <version>${imagingVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.vaadin.addons</groupId>

@@ -36,6 +36,8 @@ package info.magnolia.ui.framework.action;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.security.operations.AccessDefinition;
+import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.MgnlCommand;
 import info.magnolia.context.Context;
@@ -46,6 +48,8 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.api.action.CommandActionDefinition;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
@@ -72,6 +76,8 @@ public class AbstractCommandActionTest {
     @Before
     public void setUp() throws Exception {
         session = SessionTestUtil.createSession("website", website);
+        ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
+        ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
 
         WebContext webContext = mock(WebContext.class);
         when(webContext.getContextPath()).thenReturn("/foo");
