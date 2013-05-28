@@ -29,7 +29,11 @@
   }
 
   .v-media-editor .btn-dialog {
-    background-color: #2d2d2d;
+    background-color: $c90;
+  }
+
+  .v-media-editor .btn-dialog-default {
+    background-color: $c40;
   }
 
   .v-media-editor {
