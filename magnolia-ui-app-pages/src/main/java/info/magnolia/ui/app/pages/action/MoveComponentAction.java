@@ -42,7 +42,16 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * MoveComponentAction.
+ * Action used for starting and stopping move events components.
+ * Usages:
+ * <pre>
+ *     <ul>
+ *         <li>{@link info.magnolia.ui.app.pages.editor.PagesEditorSubApp#onActionbarItemClicked(String)} when action triggered from actionbar.</li>
+ *         <li>{@link info.magnolia.ui.app.pages.editor.PagesEditorSubApp#onEscape()} when action by escape key.</li>
+ *         <li>{@link info.magnolia.ui.vaadin.editor.PageEditor} when move action coming from client side.</li>
+ *     </ul>
+ * </pre>
+ * @see MoveComponentActionDefinition
  */
 public class MoveComponentAction extends ActionBase<MoveComponentActionDefinition> {
 
@@ -54,9 +63,10 @@ public class MoveComponentAction extends ActionBase<MoveComponentActionDefinitio
         this.eventBus = eventBus;
     }
 
-
     @Override
     public void execute() throws ActionExecutionException {
-        eventBus.fireEvent(new ComponentMoveEvent(getDefinition().isStart()));
+        boolean start = getDefinition().isStart();
+        boolean serverSide = getDefinition().isServerSide();
+        eventBus.fireEvent(new ComponentMoveEvent(start, serverSide));
     }
 }

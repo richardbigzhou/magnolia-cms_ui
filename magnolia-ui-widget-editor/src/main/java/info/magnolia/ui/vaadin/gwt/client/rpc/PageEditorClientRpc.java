@@ -36,12 +36,22 @@ package info.magnolia.ui.vaadin.gwt.client.rpc;
 import com.vaadin.shared.communication.ClientRpc;
 
 /**
- * PageEditorClientRpc.
+ * RPC interface for calls to client.
+ *
+ * @see info.magnolia.ui.vaadin.gwt.client.connector.PageEditorConnector
  */
 public interface PageEditorClientRpc extends ClientRpc {
 
     void refresh();
 
-    void moveComponent();
+    /**
+     * Notify the client when starting to move a component. Even if the event was started on client side
+     * it will run in here after the round trip.
+     */
+    void startMoveComponent();
 
+    /**
+     * Notify the client when a move event has been cancelled from server side.
+     */
+    void cancelMoveComponent();
 }

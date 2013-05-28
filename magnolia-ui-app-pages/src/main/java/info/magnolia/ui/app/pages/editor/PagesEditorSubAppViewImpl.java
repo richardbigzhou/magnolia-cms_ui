@@ -77,7 +77,7 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
         root.setExpandRatio(container, 1);
         root.setSpacing(true);
         root.setMargin(false);
-        root.addShortcutListener(new ShortcutListener("", ShortcutAction.KeyCode.ENTER, null) {
+        root.addShortcutListener(new ShortcutListener("", ShortcutAction.KeyCode.ESCAPE, null) {
             @Override
             public void handleAction(Object sender, Object target) {
                 listener.onEscape();

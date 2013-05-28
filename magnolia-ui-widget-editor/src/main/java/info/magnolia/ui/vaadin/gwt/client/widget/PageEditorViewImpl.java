@@ -50,6 +50,7 @@ import com.vaadin.client.BrowserInfo;
  */
 public class PageEditorViewImpl extends Composite implements PageEditorView {
 
+    public static final String PAGE_EDITOR_CLASS_NAME = "pageEditor";
     private Listener listener;
 
     private Frame iframe = new Frame();
@@ -68,7 +69,7 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
         handler.setEventBus(eventBus);
         content.setWidget(iframe);
         initWidget(content);
-        setStyleName("pageEditor");
+        setStyleName(PAGE_EDITOR_CLASS_NAME);
 
         final Element iframeElement = iframe.getElement();
         iframeElement.setAttribute("width", "100%");
@@ -120,6 +121,7 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
         } else {
             handler.initNativeMouseSelectionListener(iframe.getElement(), listener);
         }
+        handler.initNativeKeyListener(iframe.getElement());
     }
 
 }

@@ -39,29 +39,50 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * ComponentStartMoveEvent.
- */
-public class ComponentStopMoveEvent extends GwtEvent<ComponentStopMoveEvent.CompnentStopMoveEventHandler> {
+ * Event to notify the system that the move has been stopped.
+ * Event holds contextual information about the stop:
+ * <pre>
+ *  <ul>
+ *      <li>Whether it was a server or client side action causing it.</li>
+ *      <li>Whether the move was cancelled (by dropping it outside the drop zone, hitting ESC, "Cancel move" by action bar
+ *      or stop the drag of the component).</li>
+ *  </ul>
 
-    public static Type<CompnentStopMoveEventHandler> TYPE = new Type<CompnentStopMoveEventHandler>();
+ *  fired by:
+ *  <ul>
+ *      <li>{@link info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent#onMoveStop} to notify about a sort</li>
+ *      <li>{@link info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent#onMoveCancel()} when cancelled from clientside</li>
+ *      <li>{@link info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorClientRpc#cancelMoveComponent} when cancelled from serverside</li>
+ *  </ul>
+ *  handler registered in:
+ *  <ul>
+ *      <li>info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent#doStartMove(boolean) for notifying the source component</li>
+ *      <li>{@link info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent#registerMoveTarget(boolean)} by all move target components.</li>
+ *      <li>{@link info.magnolia.ui.vaadin.gwt.client.connector.PageEditorConnector} to reset the {@link info.magnolia.ui.vaadin.gwt.client.editor.model.Model}
+ *      and notify the server when client side action.</li>
+ *  </ul>
+ * </pre>
+ */
+public class ComponentStopMoveEvent extends GwtEvent<ComponentStopMoveEvent.ComponentStopMoveEventHandler> {
+
+    public static Type<ComponentStopMoveEventHandler> TYPE = new Type<ComponentStopMoveEventHandler>();
 
     private MgnlComponent component;
 
-    public ComponentStopMoveEvent(MgnlComponent component) {
-        this.component = component;
-    }
+    private boolean serverSide;
 
-    public ComponentStopMoveEvent() {
-        this(null);
+    public ComponentStopMoveEvent(MgnlComponent component, boolean serverSide) {
+        this.component = component;
+        this.serverSide = serverSide;
     }
 
     @Override
-    public Type<CompnentStopMoveEventHandler> getAssociatedType() {
+    public Type<ComponentStopMoveEventHandler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    protected void dispatch(CompnentStopMoveEventHandler handler) {
+    protected void dispatch(ComponentStopMoveEventHandler handler) {
         handler.onStop(this);
     }
 
@@ -69,10 +90,14 @@ public class ComponentStopMoveEvent extends GwtEvent<ComponentStopMoveEvent.Comp
         return component;
     }
 
+    public boolean isServerSide() {
+        return serverSide;
+    }
+
     /**
-     * CompnentStopMoveEventHandler.
+     * Handler for {@link ComponentStopMoveEvent}.
      */
-    public static interface CompnentStopMoveEventHandler extends EventHandler {
+    public static interface ComponentStopMoveEventHandler extends EventHandler {
         void onStop(ComponentStopMoveEvent componentMoveEvent);
     }
 }

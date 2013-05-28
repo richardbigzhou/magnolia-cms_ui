@@ -69,7 +69,7 @@ public class PageEditorPresenter implements PageEditorListener {
     private final SubAppContext subAppContext;
 
     private AbstractElement selectedElement;
-    private boolean isMoving;
+    private boolean moving = false;
 
     @Inject
     public PageEditorPresenter(final ActionExecutor actionExecutor, PageEditorView view, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, SubAppContext subAppContext) {
@@ -97,13 +97,17 @@ public class PageEditorPresenter implements PageEditorListener {
         });
         subAppEventBus.addHandler(ComponentMoveEvent.class, new ComponentMoveEvent.Handler() {
             @Override
-            public void onStart(ComponentMoveEvent event) {
-                if (event.isStart()) {
-                    moveComponent();
+            public void onMove(ComponentMoveEvent event) {
+                moving = event.isStart();
+                if (moving) {
+                    view.startMoveComponent();
                 }
-                isMoving = event.isStart();
+                else if (event.isServerSide()) {
+                    view.cancelMoveComponent();
+                }
             }
         });
+
     }
 
     @Override
@@ -135,13 +139,7 @@ public class PageEditorPresenter implements PageEditorListener {
         view.update(parameters);
     }
 
-    public void moveComponent() {
-        view.moveComponent();
-    }
-
-    public void onEscape() {
-        if (isMoving) {
-            view.moveComponent();
-        }
+    public boolean isMoving() {
+        return moving;
     }
 }

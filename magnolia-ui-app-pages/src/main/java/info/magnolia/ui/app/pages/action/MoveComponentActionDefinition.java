@@ -36,11 +36,13 @@ package info.magnolia.ui.app.pages.action;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * MoveComponentActionDefinition.
+ * Action definition for {@link MoveComponentAction}.
  */
 public class MoveComponentActionDefinition extends ConfiguredActionDefinition{
 
-    private boolean start = true;
+    private boolean start = false;
+
+    private boolean serverSide = false;
 
     public MoveComponentActionDefinition() {
         setImplementationClass(MoveComponentAction.class);
@@ -52,5 +54,13 @@ public class MoveComponentActionDefinition extends ConfiguredActionDefinition{
 
     public void setStart(boolean start) {
         this.start = start;
+    }
+
+    public boolean isServerSide() {
+        return serverSide;
+    }
+
+    public void setServerSide(boolean serverSide) {
+        this.serverSide = serverSide;
     }
 }

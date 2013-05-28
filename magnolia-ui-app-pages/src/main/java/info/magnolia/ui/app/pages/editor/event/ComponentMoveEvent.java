@@ -37,31 +37,51 @@ import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
 
 /**
- * ComponentMoveEvent.
+ * Event to notify the system that the move has been started or stopped.
+ * Event holds contextual information about the events cause:
+ * <pre>
+ *  <ul>
+ *      <li>Whether it was a server or client side action causing it.</li>
+ *      <li>Whether the move was stopped or started.</li>
+ *  </ul>
+ *
+ *  fired by: {@link info.magnolia.ui.app.pages.action.MoveComponentAction}
+ *  handler registered in:
+ *  <ul>
+ *      <li>{@link info.magnolia.ui.app.pages.editor.PagesEditorSubApp#bindHandlers}</li>
+ *      <li>{@link info.magnolia.ui.app.pages.editor.PageEditorPresenter#registerHandlers}</li>
+ *  </ul>
+ * </pre>
  */
 public class ComponentMoveEvent implements Event<ComponentMoveEvent.Handler> {
 
     private boolean start;
 
-    public ComponentMoveEvent(boolean start) {
+    private boolean serverSide;
+
+    public ComponentMoveEvent(boolean start, boolean serverSide) {
         this.start = start;
+        this.serverSide = serverSide;
     }
 
     public boolean isStart() {
         return start;
     }
 
+    public boolean isServerSide() {
+        return serverSide;
+    }
+
     @Override
     public void dispatch(Handler handler) {
-        handler.onStart(this);
-
+        handler.onMove(this);
     }
 
     /**
      * Handler.
      */
     public static interface Handler extends EventHandler {
-        void onStart(ComponentMoveEvent event);
+        void onMove(ComponentMoveEvent event);
     }
 
 }

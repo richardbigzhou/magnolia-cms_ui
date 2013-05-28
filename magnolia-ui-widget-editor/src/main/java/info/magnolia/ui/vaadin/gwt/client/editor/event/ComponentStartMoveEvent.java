@@ -37,17 +37,21 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * ComponentStartMoveEvent.
+ * Event used to notify the system, that a move has started. Not used for DnD events.
+ * Initiated by a client side move, when clicking on the move button on the {@link info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar}.
+ * The event will cause a server round trip to notify the server which will in return start the move on client side.
+ *
+ * @see info.magnolia.ui.vaadin.gwt.client.rpc.PageEditorClientRpc
+ * <pre>
+ *  <ul>
+ *      <li>fired by {@link info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent#onMoveStart(boolean)}</li>
+ *      <li>handled by {@link info.magnolia.ui.vaadin.gwt.client.connector.PageEditorConnector}</li>
+ *  </ul>
+ * </pre>
  */
 public class ComponentStartMoveEvent extends GwtEvent<ComponentStartMoveEvent.CompnentStartMoveEventHandler> {
 
     public static Type<CompnentStartMoveEventHandler> TYPE = new Type<CompnentStartMoveEventHandler>();
-
-    private boolean drag;
-
-    public ComponentStartMoveEvent(boolean drag) {
-        this.drag = drag;
-    }
 
     @Override
     public Type<CompnentStartMoveEventHandler> getAssociatedType() {
@@ -59,12 +63,8 @@ public class ComponentStartMoveEvent extends GwtEvent<ComponentStartMoveEvent.Co
         handler.onStart(this);
     }
 
-    public boolean isDrag() {
-        return drag;
-    }
-
     /**
-     * CompnentStopMoveEventHandler.
+     * Handler for {@link ComponentStartMoveEvent}.
      */
     public static interface CompnentStartMoveEventHandler extends EventHandler {
         void onStart(ComponentStartMoveEvent componentStartMoveEvent);

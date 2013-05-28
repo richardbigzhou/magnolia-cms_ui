@@ -38,7 +38,12 @@ import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * SortComponentEvent.
+ * Event fired when the {@link info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent} of an
+ * {@link info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea} should be sorted.
+ * The event will be sent to server side.
+ *
+ * fired by: {@link info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent#sortComponent(info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent)}
+ * handler registered in: {@link info.magnolia.ui.vaadin.gwt.client.connector.PageEditorConnector}.
  */
 public class SortComponentEvent extends GwtEvent<SortComponentEventHandler> {
 

@@ -48,6 +48,10 @@ public interface PageEditorListener {
     static final String ACTION_START_MOVE_COMPONENT = "startMoveComponent";
     static final String ACTION_STOP_MOVE_COMPONENT = "stopMoveComponent";
 
+    // only used server side,
+    static final String ACTION_CANCEL_MOVE_COMPONENT =  "cancelMoveComponent";
+    static final String ACTION_DELETE_COMPONENT = "deleteComponent";
+
     void onElementSelect(AbstractElement nodeSelection);
 
     void onAction(String actionName, Object... args);

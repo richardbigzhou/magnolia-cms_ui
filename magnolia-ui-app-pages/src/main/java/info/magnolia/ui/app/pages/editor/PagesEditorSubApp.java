@@ -94,15 +94,10 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
 
-    public static final String ACTION_DELETE_COMPONENT = "deleteComponent";
-    public static final String ACTION_MOVE_COMPONENT = "moveComponent";
-
     private final ActionExecutor actionExecutor;
     private final PagesEditorSubAppView view;
-
     private final EventBus subAppEventBus;
     private final EventBus admincentralEventBus;
-
     private final PageEditorPresenter pageEditorPresenter;
     private final ActionbarPresenter actionbarPresenter;
     private final PageBarView pageBarView;
@@ -113,7 +108,6 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private final AppContext appContext;
 
     private PageEditorParameters parameters;
-
     private PlatformType targetPreviewPlatform = PlatformType.DESKTOP;
     private Locale currentLocale;
     private String caption;
@@ -168,7 +162,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private void updateActions() {
         updateActionsAccordingToOperationPermissions();
         // actions currently always disabled
-        actionbarPresenter.disable("copyComponent", "pasteComponent", "undo", "redo");
+        actionbarPresenter.disable(PageEditorListener.ACTION_CANCEL_MOVE_COMPONENT, "copyComponent", "pasteComponent", "undo", "redo");
     }
 
     /**
@@ -194,15 +188,15 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             ComponentElement componentElement = (ComponentElement) element;
 
             if (componentElement.getDeletable() != null && !componentElement.getDeletable()) {
-                actionbarPresenter.disable(PagesEditorSubApp.ACTION_DELETE_COMPONENT);
+                actionbarPresenter.disable(PageEditorListener.ACTION_DELETE_COMPONENT);
             } else {
-                actionbarPresenter.enable(PagesEditorSubApp.ACTION_DELETE_COMPONENT);
+                actionbarPresenter.enable(PageEditorListener.ACTION_DELETE_COMPONENT);
             }
 
             if (componentElement.getMoveable() != null && !componentElement.getMoveable()) {
-                actionbarPresenter.disable(PagesEditorSubApp.ACTION_MOVE_COMPONENT);
+                actionbarPresenter.disable(PageEditorListener.ACTION_START_MOVE_COMPONENT);
             } else {
-                actionbarPresenter.enable(PagesEditorSubApp.ACTION_MOVE_COMPONENT);
+                actionbarPresenter.enable(PageEditorListener.ACTION_START_MOVE_COMPONENT);
             }
 
             if (componentElement.getWritable() != null && !componentElement.getWritable()) {
@@ -328,12 +322,13 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
         subAppEventBus.addHandler(ComponentMoveEvent.class, new ComponentMoveEvent.Handler() {
             @Override
-            public void onStart(ComponentMoveEvent event) {
+            public void onMove(ComponentMoveEvent event) {
                 if (event.isStart()) {
-                    actionbarPresenter.disable(PagesEditorSubApp.ACTION_MOVE_COMPONENT);
+                    actionbarPresenter.disable(PageEditorListener.ACTION_START_MOVE_COMPONENT);
+                    actionbarPresenter.enable(PageEditorListener.ACTION_CANCEL_MOVE_COMPONENT);
                 } else {
-                    actionbarPresenter.enable(PagesEditorSubApp.ACTION_MOVE_COMPONENT);
-
+                    actionbarPresenter.enable(PageEditorListener.ACTION_START_MOVE_COMPONENT);
+                    actionbarPresenter.disable(PageEditorListener.ACTION_CANCEL_MOVE_COMPONENT);
                 }
             }
         });
@@ -460,6 +455,8 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     @Override
     public void onEscape() {
-        pageEditorPresenter.onEscape();
+        if (pageEditorPresenter.isMoving()) {
+            pageEditorPresenter.onAction(PageEditorListener.ACTION_CANCEL_MOVE_COMPONENT);
+        }
     }
 }

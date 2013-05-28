@@ -52,8 +52,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * Represents a component inside the {@link CmsNode}-tree.
- * Implements a listener interface for the associated {@link info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar}
- * and provides wrapper functions used by the {@link info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModel}.
+ * Implements a listener interface for the associated {@link info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar}.
+ * Handles DnD and move Events for components and provides wrapper functions used by the {@link info.magnolia.ui.vaadin.gwt.client.editor.model.focus.FocusModel}.
  */
 public class MgnlComponent extends MgnlElement implements ComponentListener {
 
@@ -90,6 +90,11 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
         eventBus.fireEvent(new EditComponentEvent(getTypedElement()));
     }
 
+    /**
+     * Fires a {@link SortComponentEvent} with the parent {@link AreaElement}.
+     * Sets the source component this component and the target to the component passed with the
+     * {@link ComponentStopMoveEvent}.
+     */
     private void sortComponent(MgnlComponent target) {
         MgnlArea area = getParentArea();
         if (area != null) {
@@ -129,23 +134,43 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
         return movable;
     }
 
+    /**
+     * Callback for {@link ComponentBar} when starting a drag or move event. Depending on whether it is a drag or a move
+     * it will either notify the server by firing a {@link ComponentStartMoveEvent} or register the handlers in
+     * {@link #doStartMove(boolean)}.
+     *
+     * @param isDrag whether we are dragging the component or moving it
+     */
     @Override
     public void onMoveStart(boolean isDrag) {
         if (isDrag) {
-            doMove(isDrag);
+            doStartMove(isDrag);
         } else {
-            eventBus.fireEvent(new ComponentStartMoveEvent(isDrag));
+            eventBus.fireEvent(new ComponentStartMoveEvent());
         }
     }
 
-    public void doMove(boolean isDrag) {
+    /**
+     * Registers the sibling components as move targets and registers a handler for {@link ComponentStopMoveEvent}
+     * on the source component which will call {@link #sortComponent(MgnlComponent)}.
+     *
+     * @param isDrag whether we are dragging the component or moving it
+     */
+    public void doStartMove(boolean isDrag) {
         for (MgnlComponent component : getSiblingComponents()) {
             component.registerMoveTarget(isDrag);
         }
 
-        handlers.add(eventBus.addHandler(ComponentStopMoveEvent.TYPE, new ComponentStopMoveEvent.CompnentStopMoveEventHandler() {
+        handlers.add(eventBus.addHandler(ComponentStopMoveEvent.TYPE, new ComponentStopMoveEvent.ComponentStopMoveEventHandler() {
             @Override
             public void onStop(ComponentStopMoveEvent componentStopMoveEvent) {
+
+                Iterator<HandlerRegistration> it = handlers.iterator();
+                while (it.hasNext()) {
+                    it.next().removeHandler();
+                    it.remove();
+                }
+
                 MgnlComponent target = componentStopMoveEvent.getTargetComponent();
                 if (target != null) {
                     sortComponent(target);
@@ -154,16 +179,32 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
         }));
     }
 
+    /**
+     * Callback for {@link ComponentBar} targets when a move or drag event is dropped on or moved to this target.
+     * Fires {@link ComponentStopMoveEvent} to notify the system. Holds itself as payload for handling by the source,
+     * see handler registered in {@link #doStartMove}.
+     */
     @Override
     public void onMoveStop() {
-        eventBus.fireEvent(new ComponentStopMoveEvent(this));
+        eventBus.fireEvent(new ComponentStopMoveEvent(this, false));
     }
 
+    /**
+     * Callback for {@link ComponentBar} source when a drag is stopped.
+     * Fires {@link ComponentStopMoveEvent} to notify the system about the cancel. Will cause target components to
+     * unregister themselves as targets.
+     *
+     * @see #unregisterMoveTarget(boolean)
+     */
     @Override
     public void onMoveCancel() {
-        eventBus.fireEvent(new ComponentStopMoveEvent());
+        eventBus.fireEvent(new ComponentStopMoveEvent(null, false));
     }
 
+    /**
+     * Registers a {@link MgnlComponent} as a target.
+     * Registers the ui events for move or DnD on {@link ComponentBar} and adds an handler for {@link ComponentStopMoveEvent}.
+     */
     private void registerMoveTarget(final boolean isDrag) {
         setMoveTarget(true);
 
@@ -173,7 +214,7 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
             setDraggable(false);
             registerMoveHandlers();
         }
-        handlers.add(eventBus.addHandler(ComponentStopMoveEvent.TYPE, new ComponentStopMoveEvent.CompnentStopMoveEventHandler() {
+        handlers.add(eventBus.addHandler(ComponentStopMoveEvent.TYPE, new ComponentStopMoveEvent.ComponentStopMoveEventHandler() {
             @Override
             public void onStop(ComponentStopMoveEvent componentMoveEvent) {
                 unregisterMoveTarget(isDrag);
@@ -181,6 +222,10 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
         }));
     }
 
+    /**
+     * Unregisters a {@link MgnlComponent} as a target.
+     * Removes the ui event handlers for move or DnD on {@link ComponentBar} and removes the handler for {@link ComponentStopMoveEvent}.
+     */
     private void unregisterMoveTarget(boolean isDrag) {
         setMoveTarget(false);
 

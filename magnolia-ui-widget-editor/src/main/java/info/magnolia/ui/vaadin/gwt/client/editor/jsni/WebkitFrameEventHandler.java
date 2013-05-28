@@ -180,6 +180,27 @@ public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
         }
     }-*/;
 
+    @Override
+    public native void initNativeKeyListener(Element element) /*-{
+        if (element != 'undefined') {
+            element.contentDocument.onkeydown = function(event) {
+                var eventObj = document.createEventObject ?
+                    document.createEventObject() : document.createEvent("Events");
+
+                if(eventObj.initEvent){
+                    eventObj.initEvent("keydown", true, true);
+                }
+
+                eventObj.keyCode = event.keyCode;
+                eventObj.which = event.keyCode;
+
+                element.dispatchEvent ? element.dispatchEvent(eventObj) : element.fireEvent("onkeydown", eventObj);
+
+                element.dispatchEvent(event);
+            }
+        }
+    }-*/;
+
     public boolean isTouchScrolling() {
         return touchScrolling;
     }

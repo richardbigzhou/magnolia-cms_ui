@@ -138,8 +138,12 @@ public class PageEditor extends AbstractComponent {
         getRpcProxy(PageEditorClientRpc.class).refresh();
     }
 
-    public void moveComponent() {
-        getRpcProxy(PageEditorClientRpc.class).moveComponent();
+    public void startMoveComponent() {
+        getRpcProxy(PageEditorClientRpc.class).startMoveComponent();
+    }
+
+    public void cancelMoveComponent() {
+        getRpcProxy(PageEditorClientRpc.class).cancelMoveComponent();
     }
 
     public void setListener(PageEditorListener listener) {

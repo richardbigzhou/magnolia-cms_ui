@@ -37,6 +37,7 @@ import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlPage;
+import info.magnolia.ui.vaadin.gwt.client.editor.event.ComponentStopMoveEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.event.SelectElementEvent;
 import info.magnolia.ui.vaadin.gwt.client.editor.model.Model;
 
@@ -62,11 +63,16 @@ public class FocusModelImpl implements FocusModel {
     @Override
     public void selectElement(Element element) {
 
-        if (model.isMoving()) {
-            return;
-        }
 
         MgnlElement mgnlElement = model.getMgnlElement(element);
+
+        if (model.isMoving()) {
+            // cancel move if click was outside the moving components relatives or null
+            if (mgnlElement == null || !mgnlElement.isRelated(model.getSelectedComponent())) {
+                eventBus.fireEvent(new ComponentStopMoveEvent(null, false));
+            }
+            return;
+        }
 
         MgnlPage page = null;
         MgnlArea area = null;

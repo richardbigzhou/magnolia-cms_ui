@@ -130,12 +130,18 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
             public void refresh() {
                 view.reload();
             }
+
             @Override
-            public void moveComponent() {
+            public void startMoveComponent() {
                 if (model.getSelectedComponent() != null) {
-                    model.getSelectedComponent().doMove(false);
+                    model.getSelectedComponent().doStartMove(false);
                     model.setMoving(true);
                 }
+            }
+
+            @Override
+            public void cancelMoveComponent() {
+                eventBus.fireEvent(new ComponentStopMoveEvent(null, true));
             }
         });
 
@@ -221,10 +227,12 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
             }
         });
 
-        eventBus.addHandler(ComponentStopMoveEvent.TYPE, new ComponentStopMoveEvent.CompnentStopMoveEventHandler() {
+        eventBus.addHandler(ComponentStopMoveEvent.TYPE, new ComponentStopMoveEvent.ComponentStopMoveEventHandler() {
             @Override
             public void onStop(ComponentStopMoveEvent componentStopMoveEvent) {
-                rpc.stopMoveComponent();
+                if (!componentStopMoveEvent.isServerSide()) {
+                    rpc.stopMoveComponent();
+                }
                 model.setMoving(false);
             }
         });

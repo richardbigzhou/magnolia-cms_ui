@@ -136,7 +136,7 @@ public class PagesEditorSubAppTest {
         // THEN
         verify(actionbarPresenter).hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions", "pageDeleteActions");
         verify(actionbarPresenter).showSection("areaActions");
-        verify(actionbarPresenter).disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
+        verify(actionbarPresenter).disable("cancelMoveComponent", "copyComponent", "pasteComponent", "undo", "redo");
 
         verify(actionbarPresenter).enable(PageEditorListener.ACTION_ADD_COMPONENT);
 
@@ -158,10 +158,10 @@ public class PagesEditorSubAppTest {
         // THEN
         verify(actionbarPresenter).hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions", "pageDeleteActions");
         verify(actionbarPresenter).showSection("componentActions");
-        verify(actionbarPresenter).disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
+        verify(actionbarPresenter).disable("cancelMoveComponent", "copyComponent", "pasteComponent", "undo", "redo");
 
-        verify(actionbarPresenter).disable(PagesEditorSubApp.ACTION_DELETE_COMPONENT);
-        verify(actionbarPresenter).enable(PagesEditorSubApp.ACTION_MOVE_COMPONENT);
+        verify(actionbarPresenter).disable(PageEditorListener.ACTION_DELETE_COMPONENT);
+        verify(actionbarPresenter).enable(PageEditorListener.ACTION_START_MOVE_COMPONENT);
         verify(actionbarPresenter).enable(PageEditorListener.ACTION_EDIT_ELEMENT);
 
         verifyNoMoreInteractions(actionbarPresenter);
@@ -181,7 +181,7 @@ public class PagesEditorSubAppTest {
         // THEN
         verify(actionbarPresenter).hideSection("pagePreviewActions", "pageActions", "areaActions", "optionalAreaActions", "editableAreaActions", "optionalEditableAreaActions", "componentActions", "pageDeleteActions");
         verify(actionbarPresenter).showSection("areaActions");
-        verify(actionbarPresenter).disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
+        verify(actionbarPresenter).disable("cancelMoveComponent", "copyComponent", "pasteComponent", "undo", "redo");
 
         verify(actionbarPresenter).disable(PageEditorListener.ACTION_ADD_COMPONENT);
 
