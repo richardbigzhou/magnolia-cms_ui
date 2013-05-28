@@ -118,7 +118,14 @@
   font-size: 20px;
 }
 
-.v-pulse .navigator {padding:13px 0 20px;}
+.v-pulse .navigator {
+  padding:13px 0 20px;
+  height:25px;
+}
+.v-pulse .navigator > * {
+  vertical-align:top;
+}
+
 .v-pulse .navigator-button {
   height:12px;
   border-right:1px solid $c13;
@@ -128,6 +135,7 @@
   font-size:14px;
   line-height:1;
   text-transform:uppercase;
+
 }
 .v-pulse .v-nativebutton-active {color:$c10;}
 .v-pulse .v-nativebutton::-moz-focus-inner {padding:0; border:0}
@@ -257,6 +265,7 @@
 .v-pulse .navigator-grouping {
   display: inline-block;
   margin-left: 50px;
+  margin-top:-5px;
 }
 
 .v-pulse .emptyplaceholder {
