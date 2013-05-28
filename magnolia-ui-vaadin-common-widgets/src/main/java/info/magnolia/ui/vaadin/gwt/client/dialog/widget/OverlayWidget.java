@@ -46,7 +46,7 @@ public class OverlayWidget extends SimplePanel {
 
     public OverlayWidget() {
         super();
-        setStyleName("overlay");
+
         modalityCurtain.setClassName("modal-curtain");
         this.getElement().appendChild(modalityCurtain);
     }

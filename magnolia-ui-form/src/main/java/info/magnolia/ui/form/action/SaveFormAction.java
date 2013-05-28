@@ -37,7 +37,7 @@ import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.api.ModelConstants;
-import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
@@ -67,7 +67,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @see SaveFormActionDefinition
  */
-public class SaveFormAction extends ActionBase<SaveFormActionDefinition> {
+public class SaveFormAction extends AbstractAction<SaveFormActionDefinition> {
 
     private static final Logger log = LoggerFactory.getLogger(SaveFormAction.class);
 

@@ -107,6 +107,10 @@
 
 /* tab text */
 .v-shell-tabsheet .tab-title {
+	display:inline-block;
+	max-width:200px;
+	overflow: hidden;
+	text-overflow: ellipsis;
     font-family:DINWebPro;
     font-size: 14px;
     text-transform:uppercase;

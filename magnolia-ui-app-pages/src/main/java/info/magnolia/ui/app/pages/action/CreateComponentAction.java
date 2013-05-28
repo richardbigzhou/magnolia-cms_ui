@@ -43,7 +43,7 @@ import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.api.ModelConstants;
-import info.magnolia.ui.api.action.ActionBase;
+import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.app.pages.field.TemplateSelectorField;
 import info.magnolia.ui.dialog.FormDialogPresenter;
@@ -77,7 +77,7 @@ import org.slf4j.LoggerFactory;
  * Adds a component underneath the area passed in {@link AreaElement}.
  * Gets a list of available components for this area and creates a select field.
  */
-public class CreateComponentAction extends ActionBase<CreateComponentActionDefinition> {
+public class CreateComponentAction extends AbstractAction<CreateComponentActionDefinition> {
 
     private static final Logger log = LoggerFactory.getLogger(CreateComponentAction.class);
 

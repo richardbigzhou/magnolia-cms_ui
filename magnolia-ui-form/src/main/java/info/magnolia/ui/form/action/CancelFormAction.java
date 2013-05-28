@@ -33,14 +33,14 @@
  */
 package info.magnolia.ui.form.action;
 
+import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.api.action.ActionBase;
 import info.magnolia.ui.api.action.ActionExecutionException;
 
 /**
  * CancelFormAction.
  */
-public class CancelFormAction extends ActionBase<CancelFormActionDefinition> {
+public class CancelFormAction extends AbstractAction<CancelFormActionDefinition> {
 
     private EditorCallback callback;
 

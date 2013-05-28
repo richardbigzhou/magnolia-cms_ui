@@ -36,9 +36,12 @@ package info.magnolia.ui.form.action;
 import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -65,6 +68,7 @@ public class SaveFormActionTest extends RepositoryTestCase {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
         this.formActionDefinition = new SaveFormActionDefinition();
         this.callback = new CallbackFormActionTest.TestEditorCallback();
         this.validator = new CallbackFormActionTest.TestEditorValidator();

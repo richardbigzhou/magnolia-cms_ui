@@ -35,9 +35,15 @@ package info.magnolia.ui.vaadin.overlay;
 
 import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.vaadin.gwt.client.dialog.connector.OverlayState;
+import info.magnolia.ui.vaadin.integration.refresher.ClientRefresherUtil;
+import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 
-import com.vaadin.ui.AbstractSingleComponentContainer;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.ProgressIndicator;
 
 /**
  * A Single component container that includes a "glass" or "curtain" which dims out and prevents interaction on the elements
@@ -45,30 +51,59 @@ import com.vaadin.ui.Component;
  * It is only modal within the component that it is added to.
  * Positioning of the glass and component depends on one of the parents having css position set to relative or absolute.
  */
-public class Overlay extends AbstractSingleComponentContainer {
-
-
+public class Overlay extends CssLayout {
 
     final OverlayLayer.ModalityDomain modalityDomain;
 
+    public static final int OVERLAY_CLOSE_ANIMATION_DURATION_MSEC = 500;
+
+    public ProgressIndicator clientRefresher;
+
     public Overlay(final Component content, final Component overlayParent, final OverlayLayer.ModalityDomain modalityDomain, final OverlayLayer.ModalityLevel modalityLevel) {
-        // setSizeFull();
         setImmediate(true);
 
         content.addStyleName("overlay-child");
-        setContent(content);
+        addComponent(content);
+        getState().overlayContent = content;
 
         this.modalityDomain = modalityDomain;
         getState().overlayParent = overlayParent;
 
+        this.addStyleName("overlay");
+        this.addStyleName("open");
+
         // Set css classes of Modal
         this.addStyleName(modalityDomain.getCssClass());
-
         this.addStyleName(modalityLevel.getCssClass());
+
+        // Add a refresher for use when overlay is closed. Set delay to far in the future because we dont need it yet.
+        clientRefresher = ClientRefresherUtil.addClientRefresher(1000 * 10000, this);
     }
 
     @Override
     protected OverlayState getState() {
         return (OverlayState) super.getState();
     }
+
+    public void closeWithTransition(final MagnoliaShell magnoliaShell) {
+        final Timer timer = new Timer();
+
+        // Start overlay close transition.
+        addStyleName("close");
+
+        // Allow time for the animation before actually destroying the overlay.
+        int delay = OVERLAY_CLOSE_ANIMATION_DURATION_MSEC;
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                magnoliaShell.removeOverlay(Overlay.this);
+                timer.cancel();
+            }
+        }, delay);
+
+        // Set the time on the refresher so that the client gets the change made in the timer above.
+        clientRefresher.setPollingInterval(delay);
+    }
+
+
 }

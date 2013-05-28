@@ -36,16 +36,20 @@ package info.magnolia.ui.api.action;
 import static org.junit.Assert.*;
 
 import info.magnolia.cms.security.MgnlUser;
+import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockProperty;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,6 +70,8 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+
+        ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
 
         ArrayList<String> roles = new ArrayList<String>();
         roles.add("testRole");
@@ -249,7 +255,8 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
         actionDefinition.setName("foobar");
-        ConfiguredActionRestrictionsDefinition restrictions = (ConfiguredActionRestrictionsDefinition) actionDefinition.getRestrictions();
+        ConfiguredAvailabilityDefinition restrictions = (ConfiguredAvailabilityDefinition) actionDefinition.getAvailability();
+        restrictions.setAccess(new ConfiguredAccessDefinition());
         restrictions.setRoot(true);
         actionExecutor.add(actionDefinition);
 
@@ -267,8 +274,9 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
         actionDefinition.setName("foobar");
-        ConfiguredActionRestrictionsDefinition restrictions = (ConfiguredActionRestrictionsDefinition) actionDefinition.getRestrictions();
+        ConfiguredAvailabilityDefinition restrictions = (ConfiguredAvailabilityDefinition) actionDefinition.getAvailability();
         restrictions.setProperties(true);
+        restrictions.setAccess(new ConfiguredAccessDefinition());
         actionExecutor.add(actionDefinition);
 
         // THEN
@@ -285,6 +293,7 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
         actionDefinition.setName("foobar");
+        ((ConfiguredAvailabilityDefinition) actionDefinition.getAvailability()).setAccess(new ConfiguredAccessDefinition());
         actionExecutor.add(actionDefinition);
 
         // THEN
@@ -301,8 +310,9 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
         actionDefinition.setName("foobar");
-        ConfiguredActionRestrictionsDefinition restrictions = (ConfiguredActionRestrictionsDefinition) actionDefinition.getRestrictions();
+        ConfiguredAvailabilityDefinition restrictions = (ConfiguredAvailabilityDefinition) actionDefinition.getAvailability();
         restrictions.getNodeTypes().add(NodeTypes.Content.NAME);
+        restrictions.setAccess(new ConfiguredAccessDefinition());
         actionExecutor.add(actionDefinition);
 
         // THEN
@@ -320,16 +330,20 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
         actionDefinition.setName("requiresTestRole");
-        ConfiguredActionRestrictionsDefinition restrictions = (ConfiguredActionRestrictionsDefinition) actionDefinition.getRestrictions();
-        restrictions.setRoot(true);
-        restrictions.getRoles().add("testRole");
+        ConfiguredAvailabilityDefinition availability = (ConfiguredAvailabilityDefinition) actionDefinition.getAvailability();
+        availability.setRoot(true);
+        ConfiguredAccessDefinition access = new ConfiguredAccessDefinition();
+        access.addRole("testRole");
+        availability.setAccess(access);
         actionExecutor.add(actionDefinition);
 
         ConfiguredActionDefinition actionDefinition2 = new ConfiguredActionDefinition();
         actionDefinition2.setName("requiresTestRole2");
-        restrictions = (ConfiguredActionRestrictionsDefinition) actionDefinition2.getRestrictions();
-        restrictions.setRoot(true);
-        restrictions.getRoles().add("testRole2");
+        availability = (ConfiguredAvailabilityDefinition) actionDefinition2.getAvailability();
+        availability.setRoot(true);
+        access = new ConfiguredAccessDefinition();
+        access.addRole("testRole2");
+        availability.setAccess(access);
         actionExecutor.add(actionDefinition2);
 
         // THEN
