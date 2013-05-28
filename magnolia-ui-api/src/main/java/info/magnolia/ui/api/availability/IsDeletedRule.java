@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This rule returns true if the item is node and has the mgnl:deleted mixin type.
  */
-public class IsDeletedRule extends AvailabilityRule {
+public class IsDeletedRule implements AvailabilityRule {
 
     private static final Logger log = LoggerFactory.getLogger(IsDeletedRule.class);
 

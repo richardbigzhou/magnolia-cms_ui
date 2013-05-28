@@ -44,7 +44,8 @@ import info.magnolia.ui.api.ModelConstants;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
@@ -139,7 +140,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
 
         // THEN
         Property property = adapter.getItemProperty("multiple");
-        assertTrue(property.getValue() instanceof Set);
+        assertTrue(property.getValue() instanceof LinkedList);
     }
 
     @Test
@@ -164,7 +165,7 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
         node.setProperty("multiple", values);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         Property property = adapter.getItemProperty("multiple");
-        ((Set) property.getValue()).add("Sun");
+        ((List) property.getValue()).add("Sun");
         // WHEN
         Node res = adapter.applyChanges();
 

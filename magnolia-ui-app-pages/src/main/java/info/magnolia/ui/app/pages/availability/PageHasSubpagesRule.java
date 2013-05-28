@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This rule returns true, if the item is node of the mgnl:page type and has a subnode of the same type.
  */
-public class PageHasSubpagesRule extends AvailabilityRule {
+public class PageHasSubpagesRule implements AvailabilityRule {
 
     private static final Logger log = LoggerFactory.getLogger(PageHasSubpagesRule.class);
 

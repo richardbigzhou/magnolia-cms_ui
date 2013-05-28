@@ -52,6 +52,14 @@
       <type>info.magnolia.ui.admincentral.shellapp.pulse.message.registry.MessageViewDefinitionRegistry</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.registry.MessageViewDefinitionRegistry</implementation>
     </component>
+    <component>
+      <type>info.magnolia.ui.api.availability.IsDeletedRule</type>
+      <implementation>info.magnolia.ui.api.availability.IsDeletedRule</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.api.availability.IsNotDeletedRule</type>
+      <implementation>info.magnolia.ui.api.availability.IsNotDeletedRule</implementation>
+    </component>
 
     <type-mapping>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition</type>

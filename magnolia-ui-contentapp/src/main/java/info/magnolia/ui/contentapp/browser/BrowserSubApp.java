@@ -37,6 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
@@ -62,6 +63,7 @@ import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Item;
 import javax.jcr.Node;
@@ -113,8 +115,10 @@ public class BrowserSubApp extends BaseSubApp {
     private final BrowserPresenter browser;
     private final EventBus subAppEventBus;
     private ActionExecutor actionExecutor;
+    private ComponentProvider componentProvider;
 
-    public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
+    @Inject
+    public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, ComponentProvider componentProvider) {
         super(subAppContext, view);
         if (subAppContext == null || view == null || browser == null || subAppEventBus == null) {
             throw new IllegalArgumentException("Constructor does not allow for null args. Found SubAppContext = " + subAppContext + ", ContentSubAppView = " + view + ", BrowserPresenter = " + browser + ", EventBus = " + subAppEventBus);
@@ -122,6 +126,7 @@ public class BrowserSubApp extends BaseSubApp {
         this.browser = browser;
         this.subAppEventBus = subAppEventBus;
         this.actionExecutor = actionExecutor;
+        this.componentProvider = componentProvider;
     }
 
     /**
@@ -348,7 +353,8 @@ public class BrowserSubApp extends BaseSubApp {
         // if a rule class is set, verify it first
         if ((availability.getRuleClass() != null)) {
             // if the rule class cannot be instantiated, or the rule returns false
-            if (AvailabilityRule.getRule(availability.getRuleClass()) == null || !AvailabilityRule.getRule(availability.getRuleClass()).isAvailable(item)) {
+            AvailabilityRule rule = componentProvider.newInstance(availability.getRuleClass(), new Object[] {});
+            if (rule == null || !rule.isAvailable(item)) {
                 return false;
             }
         }

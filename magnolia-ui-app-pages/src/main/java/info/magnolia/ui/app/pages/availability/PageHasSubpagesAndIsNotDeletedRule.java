@@ -41,7 +41,7 @@ import javax.jcr.Item;
 /**
  * This rule returns true, if the item is node of the mgnl:page type, has a subnode of the same type, and is not deleted (i.e. has not the mgnl:deleted mixin type).
  */
-public class PageHasSubpagesAndIsNotDeletedRule extends AvailabilityRule {
+public class PageHasSubpagesAndIsNotDeletedRule implements AvailabilityRule {
 
     @Override
     public boolean isAvailable(Item item) {

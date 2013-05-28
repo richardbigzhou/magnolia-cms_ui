@@ -8,8 +8,8 @@
   <version>${project.version}</version>
 
   <!-- App components definition. -->
-  <!-- id of the components should be app-'appname'. 'appname' is the name 
-    of the app configured in the apps configuration repository of the admin central. 
+  <!-- id of the components should be app-'appname'. 'appname' is the name
+    of the app configured in the apps configuration repository of the admin central.
     (config/module/apps/appname/name:appname) -->
   <components>
     <id>app-pages</id>
@@ -17,6 +17,14 @@
 
   <components>
     <id>app-pages-browser</id>
+    <component>
+      <type>info.magnolia.ui.app.pages.availability.PageHasSubpagesRule</type>
+      <implementation>info.magnolia.ui.app.pages.availability.PageHasSubpagesRule</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.app.pages.availability.PageHasSubpagesAndIsNotDeletedRule</type>
+      <implementation>info.magnolia.ui.app.pages.availability.PageHasSubpagesAndIsNotDeletedRule</implementation>
+    </component>
   </components>
 
   <components>
@@ -33,7 +41,7 @@
       <type>info.magnolia.ui.app.pages.editor.PageEditorPresenter</type>
       <implementation>info.magnolia.ui.app.pages.editor.PageEditorPresenter</implementation>
     </component>
-    
+
   </components>
 
   <dependencies>

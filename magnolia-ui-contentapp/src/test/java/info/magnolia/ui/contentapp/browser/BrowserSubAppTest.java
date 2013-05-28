@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.doReturn;
+
 import static org.mockito.Mockito.when;
 
 import static org.mockito.Mockito.mock;
@@ -121,6 +124,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
     private ContentSubAppView view;
     private BrowserPresenter workbench;
     private TestActionbarPresenter actionbar;
+    private ComponentProvider componentProvider;
 
     // actions
     private ConfiguredActionDefinition actAlways;
@@ -173,6 +177,9 @@ public class BrowserSubAppTest extends MgnlTestCase {
         super.setUp();
         ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
 
+        componentProvider = mock(ComponentProvider.class);
+        doReturn(mock(IsDeletedRule.class)).when(componentProvider).newInstance(any(Class.class), anyVararg());
+
         initActionAvailabilityDefs();
         initSectionAvailabilityDefs();
         initActions();
@@ -210,7 +217,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
         sectionToShow.setAvailability(sAvailabilityAlways);
         sectionToHide.setAvailability(sAvailabilityDeletedPages);
         initActionbar();
-        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, workbench, subAppEventBus);
+        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, workbench, subAppEventBus, componentProvider);
 
         // WHEN
         // root
@@ -365,7 +372,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
         availabilityDeletedPages = new ConfiguredAvailabilityDefinition();
         availabilityDeletedPages.setNodeTypes(Arrays.asList(new String[] { NodeTypes.Page.NAME }));
-        availabilityDeletedPages.setRuleClass(IsDeletedRule.class.getCanonicalName());
+        availabilityDeletedPages.setRuleClass(IsDeletedRule.class);
     }
 
     private void initSectionAvailabilityDefs() {
@@ -397,7 +404,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
         sAvailabilityDeletedPages = new ConfiguredAvailabilityDefinition();
         sAvailabilityDeletedPages.setNodeTypes(Arrays.asList(new String[] { NodeTypes.Page.NAME }));
-        sAvailabilityDeletedPages.setRuleClass(IsDeletedRule.class.getCanonicalName());
+        sAvailabilityDeletedPages.setRuleClass(IsDeletedRule.class);
     }
 
     private void initActions() {

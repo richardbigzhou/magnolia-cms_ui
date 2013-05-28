@@ -49,7 +49,7 @@ public class ConfiguredAvailabilityDefinition implements AvailabilityDefinition 
     private boolean nodes = true;
     private Collection<String> nodeTypes = new ArrayList<String>();
     private AccessDefinition access = new ConfiguredAccessDefinition();
-    private String ruleClass;
+    private Class<? extends AvailabilityRule> ruleClass;
 
     @Override
     public boolean isRoot() {
@@ -100,12 +100,12 @@ public class ConfiguredAvailabilityDefinition implements AvailabilityDefinition 
         return this.access;
     }
 
-    public void setRuleClass(String ruleClass) {
+    public void setRuleClass(Class<? extends AvailabilityRule> ruleClass) {
         this.ruleClass = ruleClass;
     }
 
     @Override
-    public String getRuleClass() {
+    public Class<? extends AvailabilityRule> getRuleClass() {
         return this.ruleClass;
     }
 }

@@ -70,5 +70,5 @@ public interface AvailabilityDefinition {
     /**
      * Returns the AvailabilityRule object for this subject.
      */
-    String getRuleClass();
+    Class<? extends AvailabilityRule> getRuleClass();
 }
