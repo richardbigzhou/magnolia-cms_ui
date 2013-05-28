@@ -54,6 +54,10 @@
     </component>
 
     <type-mapping>
+      <type>info.magnolia.ui.api.action.ActionDefinition</type>
+      <implementation>info.magnolia.ui.api.action.ConfiguredActionDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.definition.ConfiguredMessageViewDefinition</implementation>
     </type-mapping>

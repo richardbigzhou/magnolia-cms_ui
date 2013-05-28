@@ -15,9 +15,6 @@
   <sv:property sv:name="icon" sv:type="String">
     <sv:value>icon-security-app</sv:value>
   </sv:property>
-  <sv:property sv:name="jcr:created" sv:type="Date">
-    <sv:value>2013-05-22T11:04:44.022+02:00</sv:value>
-  </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
   </sv:property>
@@ -34,9 +31,6 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>9c37a89f-fc4e-4acf-bb3f-a574e54cc6ac</sv:value>
     </sv:property>
-    <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-22T11:04:44.022+02:00</sv:value>
-    </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
     </sv:property>
@@ -52,9 +46,6 @@
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
         <sv:value>info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor</sv:value>
-      </sv:property>
-      <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-22T11:04:44.023+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="closable" sv:type="String">
         <sv:value>false</sv:value>
@@ -84,9 +75,6 @@
         <sv:property sv:name="jcr:uuid" sv:type="String">
           <sv:value>5fa3ab51-0f46-49c6-9a7e-59cbc2427851</sv:value>
         </sv:property>
-        <sv:property sv:name="jcr:created" sv:type="Date">
-          <sv:value>2013-05-22T11:04:44.024+02:00</sv:value>
-        </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
         </sv:property>
@@ -108,9 +96,6 @@
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>icon-edit</sv:value>
-          </sv:property>
-          <sv:property sv:name="jcr:created" sv:type="Date">
-            <sv:value>2013-05-22T11:04:44.024+02:00</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -138,9 +123,6 @@
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>icon-add-item</sv:value>
           </sv:property>
-          <sv:property sv:name="jcr:created" sv:type="Date">
-            <sv:value>2013-05-22T11:04:44.025+02:00</sv:value>
-          </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
           </sv:property>
@@ -159,9 +141,6 @@
             </sv:property>
             <sv:property sv:name="jcr:uuid" sv:type="String">
               <sv:value>83c41c5a-9bbf-4555-89a7-8ec2c8ec7e0f</sv:value>
-            </sv:property>
-            <sv:property sv:name="jcr:created" sv:type="Date">
-              <sv:value>2013-05-22T11:04:44.025+02:00</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
@@ -202,9 +181,6 @@
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>icon-delete</sv:value>
           </sv:property>
-          <sv:property sv:name="jcr:created" sv:type="Date">
-            <sv:value>2013-05-22T11:04:44.027+02:00</sv:value>
-          </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
           </sv:property>
@@ -226,9 +202,6 @@
         <sv:property sv:name="imageProviderClass" sv:type="String">
           <sv:value>info.magnolia.ui.imageprovider.DefaultImageProvider</sv:value>
         </sv:property>
-        <sv:property sv:name="jcr:created" sv:type="Date">
-          <sv:value>2013-05-22T11:04:44.027+02:00</sv:value>
-        </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
         </sv:property>
@@ -249,9 +222,6 @@
         <sv:property sv:name="defaultOrder" sv:type="String">
           <sv:value>jcrName</sv:value>
         </sv:property>
-        <sv:property sv:name="jcr:created" sv:type="Date">
-          <sv:value>2013-05-22T11:04:44.028+02:00</sv:value>
-        </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
         </sv:property>
@@ -271,9 +241,6 @@
           <sv:property sv:name="jcr:uuid" sv:type="String">
             <sv:value>ad4eb6bd-0d53-4afa-a57c-406f63d3c1b8</sv:value>
           </sv:property>
-          <sv:property sv:name="jcr:created" sv:type="Date">
-            <sv:value>2013-05-22T11:04:44.028+02:00</sv:value>
-          </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
           </sv:property>
@@ -289,9 +256,6 @@
             </sv:property>
             <sv:property sv:name="icon" sv:type="String">
               <sv:value>icon-user-magnolia</sv:value>
-            </sv:property>
-            <sv:property sv:name="jcr:created" sv:type="Date">
-              <sv:value>2013-05-22T11:04:44.029+02:00</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
@@ -313,9 +277,6 @@
             <sv:property sv:name="icon" sv:type="String">
               <sv:value>icon-folder</sv:value>
             </sv:property>
-            <sv:property sv:name="jcr:created" sv:type="Date">
-              <sv:value>2013-05-22T11:04:44.029+02:00</sv:value>
-            </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
             </sv:property>
@@ -333,9 +294,6 @@
           </sv:property>
           <sv:property sv:name="jcr:uuid" sv:type="String">
             <sv:value>e5f7672a-067e-4425-b8c5-51a6968b080d</sv:value>
-          </sv:property>
-          <sv:property sv:name="jcr:created" sv:type="Date">
-            <sv:value>2013-05-22T11:04:44.030+02:00</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -358,9 +316,6 @@
             </sv:property>
             <sv:property sv:name="formatterClass" sv:type="String">
               <sv:value>info.magnolia.ui.app.security.column.UserNameColumnFormatter</sv:value>
-            </sv:property>
-            <sv:property sv:name="jcr:created" sv:type="Date">
-              <sv:value>2013-05-22T11:04:44.030+02:00</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
@@ -391,9 +346,6 @@
             <sv:property sv:name="expandRatio" sv:type="String">
               <sv:value>2.0</sv:value>
             </sv:property>
-            <sv:property sv:name="jcr:created" sv:type="Date">
-              <sv:value>2013-05-22T11:04:44.031+02:00</sv:value>
-            </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
             </sv:property>
@@ -422,9 +374,6 @@
             </sv:property>
             <sv:property sv:name="displayInChooseDialog" sv:type="String">
               <sv:value>false</sv:value>
-            </sv:property>
-            <sv:property sv:name="jcr:created" sv:type="Date">
-              <sv:value>2013-05-22T11:04:44.031+02:00</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
@@ -461,9 +410,6 @@
             <sv:property sv:name="formatterClass" sv:type="String">
               <sv:value>info.magnolia.ui.workbench.column.StatusColumnFormatter</sv:value>
             </sv:property>
-            <sv:property sv:name="jcr:created" sv:type="Date">
-              <sv:value>2013-05-22T11:04:44.032+02:00</sv:value>
-            </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
             </sv:property>
@@ -496,9 +442,6 @@
             <sv:property sv:name="formatterClass" sv:type="String">
               <sv:value>info.magnolia.ui.workbench.column.DateColumnFormatter</sv:value>
             </sv:property>
-            <sv:property sv:name="jcr:created" sv:type="Date">
-              <sv:value>2013-05-22T11:04:44.033+02:00</sv:value>
-            </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
             </sv:property>
@@ -529,9 +472,6 @@
         </sv:property>
         <sv:property sv:name="defaultAction" sv:type="String">
           <sv:value>editUser</sv:value>
-        </sv:property>
-        <sv:property sv:name="jcr:created" sv:type="Date">
-          <sv:value>2013-05-22T11:04:44.033+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
@@ -2299,20 +2239,23 @@
           <sv:property sv:name="jcr:uuid" sv:type="String">
             <sv:value>f6e28014-aac5-449c-9d5f-ab9ae9774d14</sv:value>
           </sv:property>
-          <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.framework.action.OpenEditDialogActionDefinition</sv:value>
-          </sv:property>
-          <sv:property sv:name="dialogName" sv:type="String">
-            <sv:value>ui-security-app:roleEdit</sv:value>
-          </sv:property>
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>icon-edit</sv:value>
+          </sv:property>
+          <sv:property sv:name="implementationClass" sv:type="String">
+            <sv:value>info.magnolia.ui.app.security.action.OpenRoleEditDialogAction</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
           </sv:property>
           <sv:property sv:name="label" sv:type="String">
             <sv:value>Edit role</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+            <sv:value>2013-05-28T18:02:52.520+02:00</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+            <sv:value>superuser</sv:value>
           </sv:property>
         </sv:node>
         <sv:node sv:name="addRole">

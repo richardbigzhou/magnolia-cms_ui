@@ -47,6 +47,8 @@ import com.vaadin.data.Item;
 
 /**
  * Abstract super class for field builder that provide fields for editing ACLs.
+ *
+ * @param <D> definition type
  */
 public abstract class AbstractAclFieldBuilder<D extends FieldDefinition> extends AbstractFieldBuilder<D, Object> {
 
