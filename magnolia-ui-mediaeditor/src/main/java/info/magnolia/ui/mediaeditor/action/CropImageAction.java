@@ -31,65 +31,66 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.editmode.provider;
+package info.magnolia.ui.mediaeditor.action;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
+import info.magnolia.ui.mediaeditor.MediaEditorView;
+import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
 import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent;
-import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent.EventType;
 import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
-import info.magnolia.ui.mediaeditor.editmode.field.image.GrayScaleField;
+import info.magnolia.ui.mediaeditor.editmode.field.image.CropField;
+import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Named;
-
+import com.google.inject.name.Named;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 
 /**
- * Provides UI and necessary logic for image gray-scaling operation.
+ * Installs UI components necessary for conducting the image crop operations.
  */
-public class GrayScaleProvider implements EditModeProvider {
+public class CropImageAction extends MediaEditorUIAction {
 
-    private EventBus eventBus;
-    
-    private GrayScaleField  field =  new GrayScaleField();
-    
-    public GrayScaleProvider(@Named(MediaEditorEventBus.NAME) EventBus eventBus) {
-        this.eventBus = eventBus;
-    }
-    
-    @Override
-    public MediaField getMediaField() {
-        return field;
+    private CropField cropField = new CropField();
+
+    public CropImageAction(MediaEditorActionDefinition definition, MediaEditorView view, @Named(MediaEditorEventBus.NAME) EventBus eventBus, EditHistoryTrackingProperty dataSource) {
+        super(definition, view, dataSource, eventBus);
     }
 
     @Override
-    public Component getStatusControls() {
-        return null;
-    }
-
-    @Override
-    public List<ActionContext> getActionContextList() {
-        List<ActionContext> result = new ArrayList<EditModeProvider.ActionContext>();
+    protected List<ActionContext> getActionContextList() {
+        List<ActionContext> result = new ArrayList<ActionContext>();
         result.add(new ActionContext("cancel", "Cancel", new DialogActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
-                field.revertChanges();
-                eventBus.fireEvent(new MediaEditorInternalEvent(EventType.CANCEL_LAST));
+                cropField.revertChanges();
+                eventBus.fireEvent(new MediaEditorInternalEvent(MediaEditorInternalEvent.EventType.CANCEL_LAST));
             }
         }));
-        
-        result.add(new ActionContext("save", "Apply", new DialogActionListener() {
+        result.add(new ActionContext("crop", "Crop Image", new DialogActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
-                field.applyChanges();
-                eventBus.fireEvent(new MediaEditorInternalEvent(EventType.APPLY));
+                cropField.execute();
+                cropField.applyChanges();
+                eventBus.fireEvent(new MediaEditorInternalEvent(MediaEditorInternalEvent.EventType.APPLY));
             }
         }));
         return result;
     }
 
+    @Override
+    protected Component getStatusControls() {
+        Label l = new Label();
+        cropField.setStatusComponent(l);
+        return l;
+    }
+
+    @Override
+    protected MediaField createMediaField() {
+        return cropField;
+    }
 }

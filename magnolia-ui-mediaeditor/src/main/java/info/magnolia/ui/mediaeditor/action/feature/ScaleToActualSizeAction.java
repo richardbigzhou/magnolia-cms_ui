@@ -33,7 +33,8 @@
  */
 package info.magnolia.ui.mediaeditor.action.feature;
 
-import info.magnolia.ui.mediaeditor.action.feature.definition.ScaleToActualSizeActionDefinition;
+import info.magnolia.ui.mediaeditor.MediaEditorView;
+import info.magnolia.ui.mediaeditor.action.definition.ScaleToActualSizeActionDefinition;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 
@@ -42,16 +43,18 @@ import info.magnolia.ui.api.action.ActionExecutionException;
  */
 public class ScaleToActualSizeAction extends AbstractAction<ScaleToActualSizeActionDefinition> {
 
-    private Scalable scalable;
-    
-    public ScaleToActualSizeAction(ScaleToActualSizeActionDefinition definition, Scalable scalable) {
+    private MediaEditorView view;
+
+    public ScaleToActualSizeAction(ScaleToActualSizeActionDefinition definition, MediaEditorView view) {
         super(definition);
-        this.scalable = scalable;
+        this.view = view;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-        scalable.scaleToActualSize();
+        if (view.getDialog().getContent() instanceof  Scalable) {
+            ((Scalable)view.getDialog().getContent()).scaleToActualSize();
+        }
     }
 
 }

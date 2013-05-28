@@ -31,29 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.action.feature;
+package info.magnolia.ui.mediaeditor.action;
 
-import info.magnolia.ui.mediaeditor.MediaEditorView;
-import info.magnolia.ui.mediaeditor.action.definition.ScaleToFitActionDefinition;
-import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
+import info.magnolia.ui.mediaeditor.action.definition.GrayScaleActionDefinition;
+import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
+
+import com.google.inject.name.Named;
+import com.jhlabs.image.GrayscaleFilter;
 
 /**
- * Forces an instance of {@link Scalable} to scale to fit the available space.
+ * Converts image color scheme to gray scale.
  */
-public class ScaleToFitAction extends AbstractAction<ScaleToFitActionDefinition> {
+public class ConvertImageToGrayScaleAction extends InstantMediaEditorAction {
 
-    private MediaEditorView view;
-
-    public ScaleToFitAction(ScaleToFitActionDefinition def, MediaEditorView view) {
-        super(def);
-        this.view = view;
+    public ConvertImageToGrayScaleAction(GrayScaleActionDefinition definition, EditHistoryTrackingProperty dataSource, @Named(MediaEditorEventBus.NAME) EventBus eventBus) {
+        super(definition, dataSource, eventBus);
     }
-    
+
     @Override
-    public void execute() throws ActionExecutionException {
-        if (view.getDialog().getContent() instanceof Scalable) {
-            ((Scalable)view.getDialog().getContent()).scaleToFit();
-        }
+    protected InputStream performModification(InputStream stream) throws IOException {
+        final BufferedImage img = ImageIO.read(stream);
+        return createStreamSource(new GrayscaleFilter().filter(img, null), DEFAULT_FORMAT);
     }
 }

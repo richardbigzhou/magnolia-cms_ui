@@ -31,29 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.action.feature;
+package info.magnolia.ui.mediaeditor.action;
 
-import info.magnolia.ui.mediaeditor.MediaEditorView;
-import info.magnolia.ui.mediaeditor.action.definition.ScaleToFitActionDefinition;
-import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
+import info.magnolia.ui.mediaeditor.action.definition.RotateImageActionDefinition;
+import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
+
+import com.google.inject.name.Named;
+import com.jhlabs.image.RotateFilter;
 
 /**
- * Forces an instance of {@link Scalable} to scale to fit the available space.
+ * Rotates an image 90 degrees clockwise.
  */
-public class ScaleToFitAction extends AbstractAction<ScaleToFitActionDefinition> {
+public class RotateImageAction extends InstantMediaEditorAction {
 
-    private MediaEditorView view;
+    private double angle = -90;
 
-    public ScaleToFitAction(ScaleToFitActionDefinition def, MediaEditorView view) {
-        super(def);
-        this.view = view;
+    public RotateImageAction(RotateImageActionDefinition definition, EditHistoryTrackingProperty dataSource, @Named(MediaEditorEventBus.NAME) EventBus eventBus) {
+        super(definition, dataSource, eventBus);
     }
-    
+
     @Override
-    public void execute() throws ActionExecutionException {
-        if (view.getDialog().getContent() instanceof Scalable) {
-            ((Scalable)view.getDialog().getContent()).scaleToFit();
-        }
+    protected InputStream performModification(InputStream stream) throws IOException {
+        final BufferedImage img = ImageIO.read(stream);
+        return createStreamSource(new RotateFilter((float)(angle * Math.PI) / 180f, true).filter(img, null), DEFAULT_FORMAT);
     }
 }
