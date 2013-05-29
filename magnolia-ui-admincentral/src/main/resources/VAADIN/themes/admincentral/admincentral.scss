@@ -5,6 +5,8 @@
 @import "../workbench/workbench.scss";
 
 @import "field/linkfield.scss";
+@import "overlay/overlay-admincentral.scss";
+
 
 @import "../dam-app-assets/dam-app-assets.scss";
 @import "../ui-contentapp/ui-contentapp.scss";
@@ -16,6 +18,7 @@
 
 @mixin admincentral {
   @include linkfield;
+  @include overlay-admincentral;
 }
 
 .v-app:first-child {

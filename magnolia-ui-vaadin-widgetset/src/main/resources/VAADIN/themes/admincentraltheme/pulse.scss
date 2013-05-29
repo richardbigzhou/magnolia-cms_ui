@@ -118,6 +118,10 @@
   font-size: 20px;
 }
 
+.v-pulse .v-table-cell-wrapper > .icon{
+	padding-top:3px;
+}
+
 .v-pulse .navigator {
   padding:13px 0 20px;
   height:25px;
@@ -164,9 +168,20 @@
   width: 430px;
 }
 
+.v-pulse .message-detail  .message-title {
+	text-overflow:auto;
+	white-space:auto;
+}
+
 .v-pulse .message-detail {
   padding-top: 30px;
   padding-left: 10px;
+}
+
+.v-pulse .message-actionbar-container {
+  height: 100%;
+  margin-bottom: 0;
+  padding-bottom: 40px;
 }
 
 .v-pulse .v-actionbar {
@@ -189,7 +204,7 @@
 }
 
 .v-pulse .field-view .v-label.textarea {
-  height: 200px;
+  height: 400px;
   width: 430px;
   padding: 0 5px 5px 5px;
 
