@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.magnoliashell;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
+
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * The type of message.
+ * FullScreenEvent is used to communicate that the fullscreen mode should be changed.
  */
-public enum MessageType {
-    UNKNOWN(""),
-    ERROR("Error"),
-    WARNING("Warning"),
-    INFO("Info");
+public class FullScreenEvent extends GwtEvent<FullScreenEvent.Handler> {
 
-    private String caption;
+    /**
+     * Handler of the {@link FullScreenEvent}.
+     */
+    public interface Handler extends EventHandler {
+        void onChangeFullScreen(final FullScreenEvent event);
+    }
 
-    private MessageType(final String caption) {
-        this.caption = caption;
+    public static final Type<Handler> TYPE = new Type<Handler>();
+
+    private final boolean isFullScreen;
+
+    public FullScreenEvent(boolean isFullScreen) {
+        this.isFullScreen = isFullScreen;
+    }
+
+    public boolean getIsFullScreen() {
+        return isFullScreen;
     }
 
     @Override
-    public String toString() {
-        return caption;
+    protected void dispatch(Handler handler) {
+        handler.onChangeFullScreen(this);
     }
 
-    public boolean isSignificant() {
-        switch (this) {
-        case INFO:
-        case UNKNOWN:
-            return false;
-        default:
-            return true;
-        }
+    @Override
+    public GwtEvent.Type<Handler> getAssociatedType() {
+        return TYPE;
     }
 }

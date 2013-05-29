@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,15 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.tabsheet.rpc;
+package info.magnolia.ui.admincentral.shellapp.pulse.message.action;
 
-import com.vaadin.shared.Connector;
-import com.vaadin.shared.communication.ClientRpc;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * MagnoliaTabSheetClientRpc.
+ * Used to configure a {@link DeleteMessageAction}.
+ * 
+ * @see DeleteMessageAction
  */
-public interface MagnoliaTabSheetClientRpc extends ClientRpc {
+public class DeleteMessageActionDefinition extends ConfiguredActionDefinition {
 
-    void closeTab(Connector tabConnector);
+    public DeleteMessageActionDefinition() {
+        setImplementationClass(DeleteMessageAction.class);
+    }
 }

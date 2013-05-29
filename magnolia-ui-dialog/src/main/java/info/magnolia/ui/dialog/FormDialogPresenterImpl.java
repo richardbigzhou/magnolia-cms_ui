@@ -155,9 +155,9 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
                 public void onActionExecuted(final String actionName) {
 
                     try {
-                        actionExecutor.execute(action.getName(), item, FormDialogPresenterImpl.this, callback);
+                        actionExecutor.execute(actionName, item, FormDialogPresenterImpl.this, callback);
                     } catch (ActionExecutionException e) {
-                        throw new RuntimeException("Could not execute action: ", e);
+                        throw new RuntimeException("Could not execute action: " + actionName, e);
                     }
                 }
             });

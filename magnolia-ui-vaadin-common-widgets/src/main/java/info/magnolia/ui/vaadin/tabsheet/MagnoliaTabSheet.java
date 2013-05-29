@@ -116,10 +116,6 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
         getState().showAllLabel = label;
     }
 
-    public void setFullscreen(boolean isFullscreen) {
-        getRpcProxy(MagnoliaTabSheetClientRpc.class).toggleFullScreenMode(isFullscreen);
-    }
-
     protected void closeTab(MagnoliaTab tab) {
         if (getState().activeTab == tab) {
             final MagnoliaTab nextTab = getNextTab(tab);

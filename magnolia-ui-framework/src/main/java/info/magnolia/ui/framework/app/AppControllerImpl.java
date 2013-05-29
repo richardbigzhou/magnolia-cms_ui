@@ -43,6 +43,9 @@ import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.overlay.OverlayLayer;
+import info.magnolia.ui.api.view.Viewport;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.EventBusProtector;
@@ -54,9 +57,6 @@ import info.magnolia.ui.framework.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.api.overlay.OverlayLayer;
-import info.magnolia.ui.api.view.Viewport;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -298,10 +298,6 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         AppDescriptor nextApp = getAppForLocation(newLocation);
         if (nextApp == null) {
             return;
-        }
-
-        if (currentAppInstanceController != null) {
-            ((AppContext) currentAppInstanceController).exitFullScreenMode();
         }
 
         AppInstanceController nextAppContext = getAppInstance(nextApp.getName());
