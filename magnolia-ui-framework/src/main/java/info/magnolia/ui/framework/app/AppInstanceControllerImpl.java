@@ -393,16 +393,6 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
     }
 
     @Override
-    public void enterFullScreenMode() {
-        app.getView().setFullscreen(true);
-    }
-
-    @Override
-    public void exitFullScreenMode() {
-        app.getView().setFullscreen(false);
-    }
-
-    @Override
     public SubAppContext getActiveSubAppContext() {
         return currentSubAppContext;
     }

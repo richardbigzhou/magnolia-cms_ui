@@ -97,17 +97,6 @@
 	display:none;
 }
 
-.v-actionbar-fullscreen {
-    position:absolute;
-	bottom:0;
-    right:0;
-    padding:10px;
-    font-size:20px;
-    height:1em;
-    line-height:1;
-    cursor:pointer;
-}
-
 .v-actionbar-section.preview {
     position:absolute;
     left:0;
@@ -207,8 +196,6 @@
 	width:20px;
 	height:20px;
 }
-
-.tablet .v-actionbar-fullscreen {right:30px; margin-top:2px;}
 
 .tablet .v-action.flyout {
 	background-image: url("img/actionbar-tablet-flyout-toggle-open.png");

@@ -262,6 +262,7 @@ public class ShellImpl implements Shell, MessageEventHandler {
     private void goToShellApp(Fragment fragment) {
         restoreShellAppParameter(fragment);
         magnoliaShell.notifyOnFragmentChanged(fragment.toFragment());
+        exitFullScreenMode();
     }
 
     private void stopCurrentShellApp() {
@@ -332,6 +333,10 @@ public class ShellImpl implements Shell, MessageEventHandler {
         magnoliaShell.hideAllMessages();
     }
 
+    public void setFullScreen(boolean isFullScreen) {
+        magnoliaShell.setFullScreen(isFullScreen);
+    }
+
     @Override
     public void showInfo(Message message) {
         magnoliaShell.showInfo(message.getId(), message.getSubject(), message.getMessage());
@@ -394,6 +399,17 @@ public class ShellImpl implements Shell, MessageEventHandler {
     @Override
     public void openNotification(MessageStyleType type, boolean doesTimeout, String title, String linkText, NotificationCallback cb) {
         overlayPresenter.openNotification(type, doesTimeout, title, linkText, cb);
+    }
+
+    @Override
+    public void enterFullScreenMode() {
+        setFullScreen(true);
+
+    }
+
+    @Override
+    public void exitFullScreenMode() {
+        setFullScreen(false);
     }
 
 }

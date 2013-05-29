@@ -53,8 +53,6 @@ public interface MagnoliaTabSheetView extends HasWidgets, IsWidget, HasTabSetCha
 
     void updateTab(MagnoliaTabWidget tab);
 
-    void setShowActiveTabFullscreen(boolean isFullscreen);
-
     void setActiveTab(MagnoliaTabWidget tab);
 
     void removeTab(MagnoliaTabWidget tabToOrphan);
