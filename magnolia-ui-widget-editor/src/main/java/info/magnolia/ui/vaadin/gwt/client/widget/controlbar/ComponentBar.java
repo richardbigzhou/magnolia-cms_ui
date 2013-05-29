@@ -133,14 +133,7 @@ public class ComponentBar extends AbstractBar {
             move.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    //toggleButtons(false);
-                    //toggleStyles(bar, true);
-
                     listener.onMoveStart(false);
-
-                    //int height = getOffsetHeight();
-                    //int width = getOffsetWidth();
-                    //moveDiv = new MoveWidget(height, width);
                 }
             });
             addButton(move);
@@ -152,25 +145,16 @@ public class ComponentBar extends AbstractBar {
         addDomHandler(new DragStartHandler() {
             @Override
             public void onDragStart(DragStartEvent event) {
-                //bar.toggleButtons(false);
-
-                setStyleName(MOVE_SOURCE_CLASS_NAME, true);
                 event.setData("text", "dummyPayload");
                 event.getDataTransfer().setDragImage(getElement(), 10, 10);
 
                 listener.onMoveStart(true);
-
-
             }
         }, DragStartEvent.getType());
 
         addDomHandler(new DragEndHandler() {
             @Override
             public void onDragEnd(DragEndEvent event) {
-                //toggleButtons(true);
-
-                setStyleName(MOVE_SOURCE_CLASS_NAME, false);
-
                 listener.onMoveCancel();
             }
         }, DragEndEvent.getType());
@@ -181,7 +165,7 @@ public class ComponentBar extends AbstractBar {
         dndHandlers.add(addDomHandler(new DragOverHandler() {
             @Override
             public void onDragOver(DragOverEvent event) {
-                setStyleName(MOVE_OVER_CLASS_NAME, true);
+                setMoveOver(true);
                 event.stopPropagation();
             }
         }, DragOverEvent.getType()));
@@ -190,7 +174,7 @@ public class ComponentBar extends AbstractBar {
 
             @Override
             public void onDragLeave(DragLeaveEvent event) {
-                setStyleName(MOVE_OVER_CLASS_NAME, false);
+                setMoveOver(false);
                 event.stopPropagation();
             }
         }, DragLeaveEvent.getType()));
@@ -226,7 +210,7 @@ public class ComponentBar extends AbstractBar {
 
             @Override
             public void onMouseOver(MouseOverEvent event) {
-                setStyleName(MOVE_OVER_CLASS_NAME, true);
+                setMoveOver(true);
             }
         }, MouseOverEvent.getType()));
 
@@ -234,7 +218,7 @@ public class ComponentBar extends AbstractBar {
 
             @Override
             public void onMouseOut(MouseOutEvent event) {
-                setStyleName(MOVE_OVER_CLASS_NAME, false);
+                setMoveOver(false);
             }
         }, MouseOutEvent.getType()));
     }
@@ -247,7 +231,16 @@ public class ComponentBar extends AbstractBar {
         }
     }
 
-    public void setMoveTarget(boolean moveTarget) {
-        setStyleName(MOVE_TARGET_CLASS_NAME, moveTarget);
+    public void setMoveTarget(boolean target) {
+        setStyleName(MOVE_TARGET_CLASS_NAME, target);
     }
+
+    public void setMoveOver(boolean over) {
+        setStyleName(MOVE_OVER_CLASS_NAME, over);
+    }
+
+    public void setMoveSource(boolean source) {
+        setStyleName(MOVE_SOURCE_CLASS_NAME, source);
+    }
+
 }

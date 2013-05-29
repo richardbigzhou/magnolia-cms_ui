@@ -157,6 +157,8 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
      * @param isDrag whether we are dragging the component or moving it
      */
     public void doStartMove(boolean isDrag) {
+        setMoveSource(true);
+
         for (MgnlComponent component : getSiblingComponents()) {
             component.registerMoveTarget(isDrag);
         }
@@ -165,12 +167,13 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
             @Override
             public void onStop(ComponentStopMoveEvent componentStopMoveEvent) {
 
+                setMoveSource(false);
+
                 Iterator<HandlerRegistration> it = handlers.iterator();
                 while (it.hasNext()) {
                     it.next().removeHandler();
                     it.remove();
                 }
-
                 MgnlComponent target = componentStopMoveEvent.getTargetComponent();
                 if (target != null) {
                     sortComponent(target);
@@ -218,6 +221,7 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
             @Override
             public void onStop(ComponentStopMoveEvent componentMoveEvent) {
                 unregisterMoveTarget(isDrag);
+                setMoveOver(false);
             }
         }));
     }
@@ -297,8 +301,21 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
         }
     }
 
+    public void setMoveOver(boolean moveTarget) {
+        if (getControlBar() != null) {
+            getControlBar().setMoveOver(moveTarget);
+        }
+    }
+
+    private void setMoveSource(boolean source) {
+        if (getControlBar() != null) {
+            getControlBar().setMoveSource(source);
+        }
+    }
+
+
     @Override
-    protected ComponentBar getControlBar() {
+    public ComponentBar getControlBar() {
         return (ComponentBar) super.getControlBar();
     }
 
@@ -333,5 +350,19 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
             }
         }
         return siblings;
+    }
+
+    public int getHeight() {
+        if (getControlBar() != null) {
+            return getControlBar().getOffsetHeight();
+        }
+        return 0;
+    }
+
+    public int getWidth() {
+        if (getControlBar() != null) {
+            return getControlBar().getOffsetWidth();
+        }
+        return 0;
     }
 }

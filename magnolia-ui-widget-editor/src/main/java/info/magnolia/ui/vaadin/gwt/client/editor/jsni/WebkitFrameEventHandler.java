@@ -69,7 +69,7 @@ public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
 
                 @Override
                 public void handle(FrameLoadedEvent event) {
-                    addIframeTouchMoveListener(event.getFrameDocument(), getView().getContent().getElement());
+                    addIframeTouchMoveListener(event.getFrame().getContentDocument(), getView().getContent().getElement());
                 }
             });
         }

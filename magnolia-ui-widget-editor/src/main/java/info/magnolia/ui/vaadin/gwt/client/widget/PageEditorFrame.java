@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.editor.jsni.event;
+package info.magnolia.ui.vaadin.gwt.client.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.widget.PageEditorFrame;
-
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.web.bindery.event.shared.Event;
+import com.google.gwt.dom.client.BodyElement;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.user.client.ui.Frame;
 
 /**
- * FrameLoadedEvent. Fired when the iFrame is loaded.
+ * Wraps the {@link Frame} widget with convenient methods.
  */
-public class FrameLoadedEvent extends Event<FrameLoadedEvent.Handler> {
+public class PageEditorFrame extends Frame {
 
-    private PageEditorFrame frame;
-
-    public static GwtEvent.Type<Handler> TYPE = new GwtEvent.Type<Handler>();
-
-    public FrameLoadedEvent(PageEditorFrame frame) {
-        this.frame = frame;
+    public Document getContentDocument() {
+        return getFrameElement().getContentDocument();
     }
 
-    @Override
-    public GwtEvent.Type<Handler> getAssociatedType() {
-        return TYPE;
+    public BodyElement getBody() {
+        return getContentDocument().getBody();
     }
 
-    @Override
-    protected void dispatch(Handler handler) {
-        handler.handle(this);
+    public IFrameElement getFrameElement() {
+        return getElement().cast();
     }
 
-    public PageEditorFrame getFrame() {
-        return frame;
-    }
 
-    /**
-     * Handler.
-     */
-    public interface Handler extends EventHandler {
-        void handle(FrameLoadedEvent frameLoadedEvent);
-    }
 }

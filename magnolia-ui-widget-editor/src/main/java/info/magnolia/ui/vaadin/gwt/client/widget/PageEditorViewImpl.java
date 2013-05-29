@@ -38,7 +38,6 @@ import info.magnolia.ui.vaadin.gwt.client.editor.jsni.AbstractFrameEventHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -53,7 +52,7 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
     public static final String PAGE_EDITOR_CLASS_NAME = "pageEditor";
     private Listener listener;
 
-    private Frame iframe = new Frame();
+    private PageEditorFrame iframe = new PageEditorFrame();
 
     private String url;
 
@@ -82,7 +81,7 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
     }
 
     @Override
-    public Frame getFrame() {
+    public PageEditorFrame getFrame() {
         return iframe;
     }
 

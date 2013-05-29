@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.gwt.client.connector;
 import info.magnolia.ui.vaadin.editor.PageEditor;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.CmsNode;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.Comment;
+import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.AbstractMgnlElementProcessor;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.processor.CommentProcessor;
@@ -71,6 +72,7 @@ import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 import info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView;
 import info.magnolia.ui.vaadin.gwt.client.widget.PageEditorViewImpl;
+import info.magnolia.ui.vaadin.gwt.client.widget.dnd.MoveWidget;
 
 import java.util.List;
 
@@ -82,6 +84,7 @@ import com.google.gwt.dom.client.LinkElement;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
@@ -102,6 +105,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
     private EventBus eventBus = new SimpleEventBus();
 
     private PageEditorView view;
+    private MoveWidget moveWidget;
 
     private Model model;
 
@@ -126,6 +130,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
         });
 
         registerRpc(PageEditorClientRpc.class, new PageEditorClientRpc() {
+
             @Override
             public void refresh() {
                 view.reload();
@@ -133,9 +138,14 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
 
             @Override
             public void startMoveComponent() {
-                if (model.getSelectedComponent() != null) {
-                    model.getSelectedComponent().doStartMove(false);
+                MgnlComponent component = model.getSelectedComponent();
+                if (component != null) {
+                    component.doStartMove(false);
                     model.setMoving(true);
+
+                    Element element = DOM.clone(model.getSelectedComponent().getControlBar().getElement(), true);
+                    moveWidget = new MoveWidget(element);
+                    moveWidget.attach(view.getFrame(), component.getWidth(), component.getHeight());
                 }
             }
 
@@ -149,7 +159,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
             @Override
             public void handle(FrameLoadedEvent event) {
                 model.reset();
-                Document document = event.getFrameDocument();
+                Document document = event.getFrame().getContentDocument();
                 process(document);
                 if (!getState().parameters.isPreview()) {
                     view.initSelectionListener();
@@ -234,6 +244,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
                     rpc.stopMoveComponent();
                 }
                 model.setMoving(false);
+                moveWidget.detach();
             }
         });
 
