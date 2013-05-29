@@ -34,10 +34,14 @@
 package info.magnolia.ui.app.security.dialog.field;
 
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
+import java.util.List;
+
 /**
- * Field definition for the ACL field.
+ * Field definition for the workspace ACL field. Allows configuring either node types or a complete workbench to use
+ * when choosing nodes in the dialog.
  *
  * @see WorkspaceAccessFieldBuilder
  */
@@ -45,6 +49,7 @@ public class WorkspaceAccessFieldDefinition extends ConfiguredFieldDefinition {
 
     private String workspace;
     private WorkbenchDefinition workbench;
+    private List<NodeTypeDefinition> nodeTypes;
 
     public String getWorkspace() {
         return workspace;
@@ -52,6 +57,14 @@ public class WorkspaceAccessFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setWorkspace(String workspace) {
         this.workspace = workspace;
+    }
+
+    public List<NodeTypeDefinition> getNodeTypes() {
+        return nodeTypes;
+    }
+
+    public void setNodeTypes(List<NodeTypeDefinition> nodeTypes) {
+        this.nodeTypes = nodeTypes;
     }
 
     public WorkbenchDefinition getWorkbench() {

@@ -37,6 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.node2bean.Node2BeanException;
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.repository.RepositoryManager;
@@ -53,6 +54,8 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
+import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,7 +73,7 @@ import org.apache.commons.lang.StringUtils;
  *
  * @see OpenRoleEditDialogActionDefinition
  */
-public class OpenRoleEditDialogAction extends AbstractAction<OpenRoleEditDialogActionDefinition> {
+public class OpenRoleEditDialogAction<D extends OpenRoleEditDialogActionDefinition> extends AbstractAction<D> {
 
     private final JcrNodeAdapter itemToEdit;
     private final FormDialogPresenter formDialogPresenter;
@@ -79,7 +82,7 @@ public class OpenRoleEditDialogAction extends AbstractAction<OpenRoleEditDialogA
     private RepositoryManager repositoryManager;
 
     @Inject
-    public OpenRoleEditDialogAction(OpenRoleEditDialogActionDefinition definition, JcrNodeAdapter itemToEdit, FormDialogPresenter formDialogPresenter, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, RepositoryManager repositoryManager) {
+    public OpenRoleEditDialogAction(D definition, JcrNodeAdapter itemToEdit, FormDialogPresenter formDialogPresenter, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, RepositoryManager repositoryManager) {
         super(definition);
         this.itemToEdit = itemToEdit;
         this.formDialogPresenter = formDialogPresenter;
@@ -127,6 +130,7 @@ public class OpenRoleEditDialogAction extends AbstractAction<OpenRoleEditDialogA
                             field.setName(workspaceName);
                             field.setLabel(StringUtils.capitalize(workspaceName));
                             field.setWorkspace(workspaceName);
+                            field.setNodeTypes(getNodeTypesForWorkspace(workspaceName));
                             tab.getFields().add(field);
                         }
                     }
@@ -152,5 +156,41 @@ public class OpenRoleEditDialogAction extends AbstractAction<OpenRoleEditDialogA
                 formDialogPresenter.closeDialog();
             }
         });
+    }
+
+    protected List<NodeTypeDefinition> getNodeTypesForWorkspace(String workspaceName) {
+
+        List<NodeTypeDefinition> nodeTypes = new ArrayList<NodeTypeDefinition>();
+
+        if (workspaceName.equals(RepositoryConstants.WEBSITE)) {
+            addNodeType(nodeTypes, NodeTypes.Content.NAME, "icon-file-webpage", false);
+        } else if (workspaceName.equals(RepositoryConstants.CONFIG)) {
+            addNodeType(nodeTypes, NodeTypes.ContentNode.NAME, "icon-node-content");
+            addNodeType(nodeTypes, NodeTypes.Content.NAME, "icon-folder");
+        } else if (workspaceName.equals(RepositoryConstants.USERS)) {
+            addNodeType(nodeTypes, NodeTypes.Folder.NAME, "icon-folder");
+            addNodeType(nodeTypes, NodeTypes.User.NAME, "icon-user-magnolia");
+        } else if (workspaceName.equals(RepositoryConstants.USER_ROLES)) {
+            addNodeType(nodeTypes, NodeTypes.Role.NAME, "icon-user-role");
+        } else if (workspaceName.equals(RepositoryConstants.USER_GROUPS)) {
+            addNodeType(nodeTypes, NodeTypes.Group.NAME, "icon-user-group");
+        } else {
+            // Let the field use a default set of node types instead
+            return null;
+        }
+
+        return nodeTypes;
+    }
+
+    protected void addNodeType(List<NodeTypeDefinition> nodeTypes, String nodeTypeName, String icon) {
+        addNodeType(nodeTypes, nodeTypeName, icon, true);
+    }
+
+    protected void addNodeType(List<NodeTypeDefinition> nodeTypes, String nodeTypeName, String icon, boolean strict) {
+        ConfiguredNodeTypeDefinition nodeType = new ConfiguredNodeTypeDefinition();
+        nodeType.setName(nodeTypeName);
+        nodeType.setIcon(icon);
+        nodeType.setStrict(strict);
+        nodeTypes.add(nodeType);
     }
 }

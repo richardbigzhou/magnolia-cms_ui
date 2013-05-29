@@ -34,13 +34,13 @@
 package info.magnolia.ui.app.security.dialog.field;
 
 import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenter;
+import info.magnolia.ui.contentapp.choosedialog.ChooseDialogView;
 import info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogPresenter;
 import info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogView;
 import info.magnolia.ui.framework.app.ItemChosenListener;
@@ -59,10 +59,12 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +82,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * Field builder for the ACL field.
+ * Field builder for the workspace ACL field.
  *
  * @see WorkspaceAccessFieldDefinition
  */
@@ -282,7 +284,10 @@ public class WorkspaceAccessFieldBuilder<D extends WorkspaceAccessFieldDefinitio
             }
         });
 
-        final OverlayCloser overlayCloser = uiContext.openOverlay(workbenchChooseDialogPresenter.start());
+        ChooseDialogView chooseDialogView = workbenchChooseDialogPresenter.start();
+        chooseDialogView.setCaption(StringUtils.capitalize(getFieldDefinition().getWorkspace()));
+
+        final OverlayCloser overlayCloser = uiContext.openOverlay(chooseDialogView);
 
         workbenchChooseDialogPresenter.setListener(new ChooseDialogPresenter.Listener() {
 
@@ -318,17 +323,28 @@ public class WorkspaceAccessFieldBuilder<D extends WorkspaceAccessFieldDefinitio
         workbenchDefinition.setColumns(columns);
 
         // node types
-        ArrayList<NodeTypeDefinition> nodeTypes = new ArrayList<NodeTypeDefinition>();
-        ConfiguredNodeTypeDefinition nodeType = new ConfiguredNodeTypeDefinition();
-        nodeType.setIcon("icon-folder");
-        nodeType.setName(NodeTypes.Content.NAME);
-        nodeTypes.add(nodeType);
-        workbenchDefinition.setNodeTypes(nodeTypes);
+        workbenchDefinition.setNodeTypes(resolveNodeTypes());
 
         // content views
         ArrayList<ContentPresenterDefinition> contentViews = new ArrayList<ContentPresenterDefinition>();
         contentViews.add(new TreePresenterDefinition());
         workbenchDefinition.setContentViews(contentViews);
         return workbenchDefinition;
+    }
+
+    private List<NodeTypeDefinition> resolveNodeTypes() {
+
+        if (getFieldDefinition().getNodeTypes() != null) {
+            return getFieldDefinition().getNodeTypes();
+        }
+
+        ArrayList<NodeTypeDefinition> nodeTypes = new ArrayList<NodeTypeDefinition>();
+        ConfiguredNodeTypeDefinition nodeType = new ConfiguredNodeTypeDefinition();
+        nodeType.setName("nt:base");
+        nodeType.setIcon("icon-folder");
+        nodeType.setStrict(false);
+        nodeTypes.add(nodeType);
+
+        return nodeTypes;
     }
 }
