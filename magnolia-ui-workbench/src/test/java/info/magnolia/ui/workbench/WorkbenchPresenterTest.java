@@ -62,6 +62,7 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
 
     private WorkbenchPresenter presenter;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         WorkbenchView view = mock(WorkbenchView.class);
