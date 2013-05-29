@@ -184,7 +184,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
             NodeIterator iterator = node.getNodes();
             while (iterator.hasNext()) {
                 Node next = iterator.nextNode();
-                if (matchesNodeTypes(next)) {
+                if (getNodeTypeDefinitionForNode(next) != null) {
                     items.add(next);
                 }
             }
@@ -210,18 +210,18 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         return Collections.unmodifiableCollection(items);
     }
 
-    private boolean matchesNodeTypes(Node node) throws RepositoryException {
+    private NodeTypeDefinition getNodeTypeDefinitionForNode(Node node) throws RepositoryException {
         String primaryNodeTypeName = node.getPrimaryNodeType().getName();
         for (NodeTypeDefinition nodeTypeDefinition : getWorkbenchDefinition().getNodeTypes()) {
             if (nodeTypeDefinition.isStrict()) {
                 if (primaryNodeTypeName.equals(nodeTypeDefinition.getName())) {
-                    return true;
+                    return nodeTypeDefinition;
                 }
             } else if (NodeUtil.isNodeType(node, nodeTypeDefinition.getName())) {
-                return true;
+                return nodeTypeDefinition;
             }
         }
-        return false;
+        return null;
     }
 
     public Collection<Item> getRootItemIds() throws RepositoryException {
