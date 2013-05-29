@@ -42,6 +42,10 @@ import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategory
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
+import info.magnolia.ui.vaadin.icon.CompositeIcon;
+import info.magnolia.ui.vaadin.icon.ErrorIcon;
+import info.magnolia.ui.vaadin.icon.InfoIcon;
+import info.magnolia.ui.vaadin.icon.WarningIcon;
 import info.magnolia.ui.workbench.column.DateColumnFormatter;
 
 import java.util.Collection;
@@ -398,23 +402,31 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
                 messageTypeIcon.addStyleName("icon");
                 messageTypeIcon.addStyleName("message-type");
 
+                CompositeIcon icon = null;
+
                 switch (messageType) {
                 case INFO:
                     messageTypeIcon.addStyleName("icon-info");
+                    icon = new InfoIcon();
                     break;
                 case WARNING:
                     messageTypeIcon.addStyleName("icon-warning");
                     messageTypeIcon.addStyleName("warning");
+                    icon = new WarningIcon();
                     break;
                 case ERROR:
                     messageTypeIcon.addStyleName("icon-error");
                     messageTypeIcon.addStyleName("error");
+                    icon = new ErrorIcon();
                     break;
                 case WORKITEM:
                     messageTypeIcon.addStyleName("icon-work-item");
+                    icon = new InfoIcon();
                     break;
+
                 }
-                return messageTypeIcon;
+                // return messageTypeIcon;
+                return icon;
             }
             return null;
         }
