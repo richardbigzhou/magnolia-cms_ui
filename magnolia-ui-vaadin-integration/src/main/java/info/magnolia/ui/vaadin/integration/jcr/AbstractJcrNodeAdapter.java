@@ -330,6 +330,10 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
     }
 
     public void setNodeName(String nodeName) {
-        this.nodeName = nodeName;
+        if (StringUtils.isNotBlank(nodeName)) {
+            this.nodeName = Path.getValidatedLabel(nodeName);
+        } else {
+            this.nodeName = nodeName;
+        }
     }
 }
