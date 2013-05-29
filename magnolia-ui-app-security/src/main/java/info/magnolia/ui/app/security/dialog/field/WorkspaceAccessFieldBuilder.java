@@ -215,9 +215,7 @@ public class WorkspaceAccessFieldBuilder<D extends WorkspaceAccessFieldDefinitio
         textField.setPropertyDataSource(pathProperty);
         ruleLayout.addComponent(textField);
 
-        Button chooseButton = new Button();
-        chooseButton.addStyleName("inline");
-        chooseButton.setCaption("Choose...");
+        Button chooseButton = new Button("Choose...");
         chooseButton.addClickListener(new Button.ClickListener() {
 
             @Override
