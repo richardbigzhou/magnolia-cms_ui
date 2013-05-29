@@ -127,15 +127,33 @@
 }
 
 .v-pulse .navigator-button {
-  height:12px;
+  height:25px;
   border-right:1px solid $c13;
   padding:0 42px 0 20px;
   color:$c13;
   font-family:DINWebPro, sans-serif;
-  font-size:14px;
   line-height:1;
   text-transform:uppercase;
+  width: 150px !important;
+}
 
+.v-pulse .navigator-button.active {
+  color: #000;
+}
+
+.v-pulse .navigator-button .v-nativebutton {
+  font-size:13px;
+}
+
+.v-pulse .navigator-button .badge {
+    background-color: #689600;
+    border-radius: 2em;
+    color: white;
+    height: 18px;
+    width: 18px !important;
+    padding-top: 2px;
+    text-align: center;
+    margin-left: 60px;
 }
 .v-pulse .v-nativebutton-active {color:$c10;}
 .v-pulse .v-nativebutton::-moz-focus-inner {padding:0; border:0}
