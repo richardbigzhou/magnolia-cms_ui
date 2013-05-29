@@ -14,4 +14,25 @@
     }
   }
 
+  .m-fullscreen-app{
+    position: absolute;
+    top: 0;
+    right: 25px;
+    padding: 4px 6px 5px;
+    color: $c10;
+
+    &:hover, &:focus, &:active {
+	    opacity: 0.6;
+    }
+
+    display: inline-block;
+    font-size: 14px;
+    line-height: 1;
+    width: 1em;
+    height: 1em;
+    cursor: pointer;
+    z-index:100;
+    outline:0;
+  }
+
 }

@@ -93,8 +93,7 @@ public class SubNodesValueHandlerTest extends RepositoryTestCase {
 
         // THEN
         assertTrue(parent.getItemProperty(subNodeName) == null);
-        assertTrue(parent.applyChanges().hasNode(subNodeName));
-        assertTrue(!parent.applyChanges().getNode(subNodeName).hasNodes());
+        assertTrue(!parent.applyChanges().hasNode(subNodeName));
     }
 
     @Test

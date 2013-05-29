@@ -34,10 +34,10 @@
 package info.magnolia.ui.framework.shell;
 
 import info.magnolia.event.HandlerRegistration;
-import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.framework.message.Message;
 
 import java.util.List;
 
@@ -68,6 +68,10 @@ public interface Shell extends UiContext {
 
     void showWarning(Message message);
 
+    void enterFullScreenMode();
+
+    void exitFullScreenMode();
+    
     /**
      * Open an Overlay on top of a specific View.
      * 

@@ -44,16 +44,13 @@ import java.util.Map;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
-import com.googlecode.mgwt.ui.client.MGWT;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
-import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
 
 /**
  * The Class VActionbarViewImpl, GWT implementation for the VActionbarView interface.
@@ -64,17 +61,11 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
 
     public static final String CLASSNAME_TOGGLE = "v-actionbar-toggle";
 
-    public static final String CLASSNAME_FULLSCREEN = "v-actionbar-fullscreen";
-
     private final Element root = DOM.createElement("section");
 
     private final FlowPanel toggleButton = new FlowPanel(); // Must be a widget so that it can capture events
 
     private final Element toggleButtonIcon = DOM.createElement("span");
-
-    private final TouchPanel fullScreenButton = new TouchPanel(); // Must be a widget so that it can capture events
-
-    private final Element fullScreenButtonIcon = DOM.createElement("span");
 
     private final EventBus eventBus;
 
@@ -84,11 +75,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
 
     private int tabletColumn = 0;
 
-    private final boolean isDeviceTablet = isDeviceTablet();
-
     private boolean isToggledOpen = false;
-
-    private boolean isFullScreen = false;
 
     private final TouchDelegate delegate = new TouchDelegate(toggleButton);
 
@@ -103,22 +90,11 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
         this.eventBus.addHandler(ActionTriggerEvent.TYPE, this);
 
         createToggleControl();
-        createFullScreenControl();
 
-        isToggledOpen = !isDeviceTablet;
+        isToggledOpen = !presenter.isDeviceTablet();
         actualizeToggleState(isToggledOpen);
     }
 
-    /**
-     * Determine if device is tablet. Allows option to add a querystring parameter of tablet=true
-     * for testing.
-     * TODO: Christopher Zimmermann - there should be only one instance of this code ithe project.
-     *
-     * @return Whether device is tablet.
-     */
-    private boolean isDeviceTablet() {
-        return !(MGWT.getOsDetection().isDesktop() || Window.Location.getQueryString().indexOf("tablet=true") >= 0);
-    }
 
     private void createToggleControl() {
 
@@ -145,7 +121,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
     @Override
     public void refreshActionsPositionsTablet() {
 
-        if (!isDeviceTablet) {
+        if (!presenter.isDeviceTablet()) {
             return;
         }
 
@@ -179,38 +155,7 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
                 }
             }
         }
-        setToggleAndFullScreenButtonHeights(tabletRow);
-    }
-
-    private void createFullScreenControl() {
-        DOM.sinkEvents(fullScreenButton.getElement(), Event.TOUCHEVENTS);
-        add(fullScreenButton, root);
-
-        fullScreenButton.addStyleName(CLASSNAME_FULLSCREEN);
-        fullScreenButtonIcon.addClassName("v-actionbar-fullscreen-icon");
-        fullScreenButtonIcon.addClassName("icon-open-fullscreen");
-        fullScreenButton.getElement().appendChild(fullScreenButtonIcon);
-        fullScreenButton.addTouchStartHandler(new TouchStartHandler() {
-            @Override
-            public void onTouchStart(TouchStartEvent event) {
-                isFullScreen = !isFullScreen;
-                actualizeFullScreenState(isFullScreen);
-            }
-        });
-    }
-
-    /**
-     * Actualize the state of the actionbar fullscreen button.
-     */
-    private void actualizeFullScreenState(boolean isFullScreen) {
-        if (isFullScreen) {
-            fullScreenButtonIcon.addClassName("icon-close-fullscreen");
-            fullScreenButtonIcon.removeClassName("icon-open-fullscreen");
-        } else {
-            fullScreenButtonIcon.addClassName("icon-open-fullscreen");
-            fullScreenButtonIcon.removeClassName("icon-close-fullscreen");
-        }
-        presenter.changeFullScreen(isFullScreen);
+        setToggleButtonHeights(tabletRow);
     }
 
     /**
@@ -218,11 +163,11 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
      */
     private void actualizeToggleState(boolean isOpen) {
         if (isOpen) {
-            toggleButtonIcon.addClassName("open");// NOTE:CLZ:With icon fonts this class name will change.
+            toggleButtonIcon.addClassName("open");
         } else {
-            toggleButtonIcon.removeClassName("open");// NOTE:CLZ:With icon fonts this class name will change.
+            toggleButtonIcon.removeClassName("open");
         }
-        if (isDeviceTablet) {
+        if (presenter.isDeviceTablet()) {
             for (final ActionbarSectionWidget section : sections.values()) {
                 for (final VActionbarGroup group : section.getGroups().values()) {
                     group.setOpenHorizontally(isOpen);
@@ -256,11 +201,11 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
                 tabletRow++;
                 group = new VActionbarGroup(actionParams.getGroupName());
                 section.addGroup(group);
-                setToggleAndFullScreenButtonHeights(tabletRow);
+                setToggleButtonHeights(tabletRow);
             }
 
             ActionbarItemWidget action;
-            if (isDeviceTablet) {
+            if (presenter.isDeviceTablet()) {
                 action = new VActionbarItemTablet(actionParams, group, eventBus);
                 ((VActionbarItemTablet) action).setRow(tabletRow);
                 ((VActionbarItemTablet) action).setColumn(tabletColumn);
@@ -275,10 +220,9 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
     /**
      * For tablet mode, position these buttons at the bottom of the button stack.
      */
-    private void setToggleAndFullScreenButtonHeights(int tabletRow) {
-        // Position toggleButton and fullScreenButton at bottom of stack.
+    private void setToggleButtonHeights(int tabletRow) {
+        // Position toggleButton at bottom of stack.
         toggleButton.setStyleName(CLASSNAME_TOGGLE + " row-" + (tabletRow + 1));
-        fullScreenButton.setStyleName(CLASSNAME_FULLSCREEN + " row-" + (tabletRow + 1));
     }
 
     @Override

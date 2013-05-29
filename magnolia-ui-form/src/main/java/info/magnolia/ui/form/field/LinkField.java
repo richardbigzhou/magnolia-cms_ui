@@ -94,7 +94,6 @@ public class LinkField extends CustomField<String> {
             root.setExpandRatio(selectButton, 0);
             root.setComponentAlignment(selectButton, Alignment.MIDDLE_RIGHT);
         }
-
         return root;
     }
 
@@ -114,14 +113,21 @@ public class LinkField extends CustomField<String> {
     @Override
     public void setValue(String newValue) throws ReadOnlyException, ConversionException {
         textField.setValue(newValue);
-        if (!allowChangesOnSelected && StringUtils.isNotBlank(newValue)) {
+        updateComponents(newValue);
+        setButtonCaption(newValue);
+    }
+
+    /**
+     * Set text Field as read only if desired.
+     * In thsi case remove the add button.
+     */
+    private void updateComponents(String currentValue) {
+        if (!allowChangesOnSelected && StringUtils.isNotBlank(currentValue)) {
             textField.setReadOnly(true);
             if (root.getComponentIndex(selectButton) != -1) {
                 root.removeComponent(selectButton);
             }
         }
-        setButtonCaption(newValue);
-        fireValueChange(false);
     }
 
     /**
@@ -135,6 +141,7 @@ public class LinkField extends CustomField<String> {
             textField.setConverter(converter);
         }
         textField.setPropertyDataSource(newDataSource);
+        updateComponents(newDataSource.toString());
         setButtonCaption(newDataSource.toString());
         super.setPropertyDataSource(newDataSource);
     }
