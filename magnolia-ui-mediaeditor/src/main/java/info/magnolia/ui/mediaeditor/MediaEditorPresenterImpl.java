@@ -173,16 +173,6 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     }
 
     @Override
-    public void setFullScreen(boolean fullscreen) {
-        if (fullscreen) {
-            appContext.enterFullScreenMode();
-        } else {
-            appContext.exitFullScreenMode();
-        }
-
-    }
-
-    @Override
     public MediaEditorDefinition getDefinition() {
         return definition;
     }

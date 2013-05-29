@@ -153,6 +153,12 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
         VaadinSession.getCurrent().unlock();
     }
 
+    public void setFullScreen(boolean isFullScreen) {
+        VaadinSession.getCurrent().lock();
+        getRpcProxy(ShellClientRpc.class).setFullScreen(isFullScreen);
+        VaadinSession.getCurrent().unlock();
+    }
+
     public void updateShellAppIndication(ShellAppType type, int incrementOrDecrement) {
         Integer value = getState().indications.get(type);
 

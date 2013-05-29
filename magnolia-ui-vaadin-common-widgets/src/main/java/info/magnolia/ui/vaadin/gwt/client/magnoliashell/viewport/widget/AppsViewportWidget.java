@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
 import info.magnolia.ui.vaadin.gwt.client.CloseButton;
+import info.magnolia.ui.vaadin.gwt.client.FullScreenButton;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.Callbacks;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
@@ -102,7 +103,40 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
         }
     };
 
+    private final ClickHandler fullscreenHandler = new ClickHandler() {
+        @Override
+        public void onClick(ClickEvent event) {
+            String cssClasses = RootPanel.get().getStyleName();
+            boolean isFullScreen = cssClasses.contains("fullscreen");
+            // toggle.
+            setFullScreen(!isFullScreen);
+        }
+    };
+
+    /**
+     * Set the look of the application and the state of the button.
+     */
+    public void setFullScreen(boolean isFullScreen) {
+
+        if (isFullScreen) {
+            // enable fullscreen
+            RootPanel.get().addStyleName("fullscreen");
+
+            fullScreenButton.getElement().addClassName("icon-close-fullscreen_2");
+            fullScreenButton.getElement().removeClassName("icon-open-fullscreen_2");
+        } else {
+
+            // disable fullscreen
+            RootPanel.get().removeStyleName("fullscreen");
+
+            fullScreenButton.getElement().addClassName("icon-open-fullscreen_2");
+            fullScreenButton.getElement().removeClassName("icon-close-fullscreen_2");
+        }
+    }
+
     private CloseButton closeButton = new CloseButton(closeHandler);
+
+    private FullScreenButton fullScreenButton;
 
     private Element curtain = DOM.createDiv();
 
@@ -111,6 +145,10 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
         this.listener = listener;
         curtain.setClassName("v-curtain v-curtain-green");
         closeButton.addStyleDependentName("app");
+
+        fullScreenButton = new FullScreenButton();
+        fullScreenButton.addClickHandler(fullscreenHandler);
+
         bindTouchHandlers();
     }
 
@@ -129,6 +167,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     @Override
     public void showChildNoTransition(Widget w) {
         add(closeButton, w.getElement());
+        add(fullScreenButton, w.getElement());
         Widget formerVisible = getVisibleChild();
         // do not hide app if closing
         if (formerVisible != null && !isAppClosing()) {

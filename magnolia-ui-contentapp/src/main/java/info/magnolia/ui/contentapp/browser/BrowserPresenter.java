@@ -333,15 +333,6 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         return actionDefinition != null ? actionDefinition.getIcon() : null;
     }
 
-    @Override
-    public void setFullScreen(boolean fullScreen) {
-        if (fullScreen) {
-            appContext.enterFullScreenMode();
-        } else {
-            appContext.exitFullScreenMode();
-        }
-    }
-
     /**
      * Executes the default action, as configured in the {@link info.magnolia.ui.actionbar.definition.ActionbarDefinition}.
      */

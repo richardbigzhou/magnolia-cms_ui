@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,15 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.tabsheet.rpc;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
 
-import com.vaadin.shared.Connector;
-import com.vaadin.shared.communication.ClientRpc;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * MagnoliaTabSheetClientRpc.
+ * FullScreenEvent is used to communicate that the fullscreen mode should be changed.
  */
-public interface MagnoliaTabSheetClientRpc extends ClientRpc {
+public class FullScreenEvent extends GwtEvent<FullScreenEvent.Handler> {
 
-    void closeTab(Connector tabConnector);
+    /**
+     * Handler of the {@link FullScreenEvent}.
+     */
+    public interface Handler extends EventHandler {
+        void onChangeFullScreen(final FullScreenEvent event);
+    }
+
+    public static final Type<Handler> TYPE = new Type<Handler>();
+
+    private final boolean isFullScreen;
+
+    public FullScreenEvent(boolean isFullScreen) {
+        this.isFullScreen = isFullScreen;
+    }
+
+    public boolean getIsFullScreen() {
+        return isFullScreen;
+    }
+
+    @Override
+    protected void dispatch(Handler handler) {
+        handler.onChangeFullScreen(this);
+    }
+
+    @Override
+    public GwtEvent.Type<Handler> getAssociatedType() {
+        return TYPE;
+    }
 }

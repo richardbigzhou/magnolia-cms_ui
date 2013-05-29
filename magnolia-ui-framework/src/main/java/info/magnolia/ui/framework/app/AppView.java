@@ -54,8 +54,6 @@ public interface AppView extends View {
 
     }
 
-    void setFullscreen(boolean fullscreen);
-
     void setTheme(String value);
 
     void setAppLogo(String logo, String bgcolor);

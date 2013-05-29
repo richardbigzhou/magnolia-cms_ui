@@ -128,10 +128,6 @@ public final class MessagePresenter implements MessageView.Listener, ActionbarPr
         return messageActionExecutor.getActionDefinition(actionName).getIcon();
     }
 
-    @Override
-    public void setFullScreen(boolean fullscreen) {
-
-    }
 
     /**
      * Listener interface used to call back to parent presenter.
