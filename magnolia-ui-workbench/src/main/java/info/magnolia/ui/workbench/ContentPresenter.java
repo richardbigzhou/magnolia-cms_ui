@@ -34,7 +34,10 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+
+import java.util.Iterator;
 
 import com.vaadin.data.Container;
 
@@ -45,7 +48,7 @@ import com.vaadin.data.Container;
 public interface ContentPresenter {
 
 
-    ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus);
+    ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName);
 
     Container getContainer();
 
@@ -54,5 +57,7 @@ public interface ContentPresenter {
     String getSelectedItemId();
 
     void setSelectedItemId(String itemId);
+
+    Iterator<ColumnDefinition> getColumnsIterator();
 
 }

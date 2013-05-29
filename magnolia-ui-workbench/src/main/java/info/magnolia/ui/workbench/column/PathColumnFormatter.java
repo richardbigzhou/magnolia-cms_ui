@@ -31,26 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.definition;
+package info.magnolia.ui.workbench.column;
 
-import info.magnolia.ui.workbench.ContentPresenter;
-import info.magnolia.ui.workbench.ContentView.ViewType;
-import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
+import info.magnolia.ui.workbench.column.definition.MetaDataColumnDefinition;
 
-import java.util.List;
+import javax.jcr.Item;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.ui.Table;
 
 /**
- * Definition for a workbench generic content view.
+ * Displays the path of the item.
  */
-public interface ContentPresenterDefinition {
+public class PathColumnFormatter extends AbstractColumnFormatter<MetaDataColumnDefinition> {
 
-    ViewType getViewType();
+    private static final Logger log = LoggerFactory.getLogger(PathColumnFormatter.class);
 
-    List<ColumnDefinition> getColumns();
+    public PathColumnFormatter(MetaDataColumnDefinition definition) {
+        super(definition);
+    }
 
-    Class<? extends ContentPresenter> getImplementationClass();
+    @Override
+    public Object generateCell(Table source, Object itemId, Object columnId) {
 
-    String getIcon();
+        final Item jcrItem = getJcrItem(source, itemId);
+        if (jcrItem != null) {
+            try {
+                return jcrItem.getPath();
+            } catch (RepositoryException re) {
+                log.info("Failed to retrieve path for item '{}':", jcrItem.toString(), re);
+            }
+        }
+        return null;
 
-    boolean isActive();
+    }
 }

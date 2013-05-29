@@ -65,17 +65,21 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     }
 
     @Override
-    public ListView start(WorkbenchDefinition workbench, EventBus eventBus) {
-        super.start(workbench, eventBus);
+    public ListView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName) {
+        super.start(workbench, eventBus, viewTypeName);
 
         this.container = createContainer(workbench);
         view.setListener(this);
         view.setContainer(container);
 
         // build columns
+
         List<Object> editableColumns = new ArrayList<Object>();
 
-        Iterator<ColumnDefinition> it = workbench.getColumns().iterator();
+        Iterator<ColumnDefinition> it = null;
+        // was it = = workbench.getColumns().iterator();
+        it = getColumnsIterator();
+
         while (it.hasNext()) {
             ColumnDefinition column = it.next();
 

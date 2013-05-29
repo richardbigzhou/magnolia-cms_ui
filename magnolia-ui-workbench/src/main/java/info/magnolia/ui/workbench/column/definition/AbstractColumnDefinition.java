@@ -60,6 +60,8 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     private boolean editable;
 
+    private boolean enabled = true;
+
     @Override
     public String getPropertyName() {
         return propertyName;
@@ -176,5 +178,13 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     public void setEditable(boolean editable) {
         this.editable = editable;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }
