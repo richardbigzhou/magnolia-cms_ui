@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -35,13 +35,14 @@ package info.magnolia.ui.form.field.builder;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.i18n.I18NAwareProperty;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.form.AbstractFormItem;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.form.validator.builder.FieldValidatorBuilder;
 import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
 import info.magnolia.ui.form.validator.registry.FieldValidatorFactory;
-import info.magnolia.ui.api.i18n.I18NAwareProperty;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -141,6 +142,13 @@ public abstract class AbstractFieldBuilder<D extends FieldDefinition, T> extends
         Label label = new Label();
         label.setSizeUndefined();
         label.setCaption(getFieldDefinition().getLabel());
+
+        if (getFieldDefinition().getClass().isAssignableFrom(TextFieldDefinition.class)) {
+            final TextFieldDefinition textFieldDefinition = (TextFieldDefinition) getFieldDefinition();
+            if (textFieldDefinition.getRows() > 0) {
+                label.addStyleName("textarea");
+            }
+        }
         label.setPropertyDataSource(property);
 
         fieldView.addComponent(label);

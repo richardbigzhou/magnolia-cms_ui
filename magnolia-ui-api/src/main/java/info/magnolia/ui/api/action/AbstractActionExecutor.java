@@ -37,8 +37,8 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.MgnlInstantiationException;
-
-import java.util.Collection;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.AvailabilityRule;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
@@ -114,30 +114,35 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
             return false;
         }
 
-        ActionRestrictionsDefinition restrictions = actionDefinition.getRestrictions();
+        AvailabilityDefinition availability = actionDefinition.getAvailability();
 
-        // Validate that the user has all required roles
-        Collection<String> assignedRoles = MgnlContext.getUser().getAllRoles();
-        Collection<String> requiredRoles = restrictions.getRoles();
-        for (String requiredRole : requiredRoles) {
-            if (!assignedRoles.contains(requiredRole)) {
+        // if a rule class is set, verify it first
+        if ((availability.getRuleClass() != null)) {
+            // if the rule class cannot be instantiated, or the rule returns false
+            AvailabilityRule rule = componentProvider.newInstance(availability.getRuleClass());
+            if (rule == null || !rule.isAvailable(item)) {
                 return false;
             }
         }
 
+        // Validate that the user has all required roles
+        if (!availability.getAccess().hasAccess(MgnlContext.getUser())) {
+            return false;
+        }
+
         if (item == null) {
-            return restrictions.isRoot();
+            return availability.isRoot();
         }
 
         if (!item.isNode()) {
-            return restrictions.isProperties();
+            return availability.isProperties();
         }
 
         // Must have _any_ of the node types if any are specified, otherwise its available by default
-        if (restrictions.getNodeTypes().isEmpty())
-            return true;
+        if (availability.getNodeTypes().isEmpty())
+            return availability.isNodes();
 
-        for (String nodeType : restrictions.getNodeTypes()) {
+        for (String nodeType : availability.getNodeTypes()) {
             try {
                 if (NodeUtil.isNodeType((Node)item, nodeType)) {
                     return true;

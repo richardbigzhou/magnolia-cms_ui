@@ -151,6 +151,11 @@ public class MessagesManagerImpl implements MessagesManager {
         }
     }
 
+    @Override
+    public void removeMessage(String userName, String messageId) {
+        messageStore.removeMessageById(userName, messageId);
+    }
+
     private void sendMessageClearedEvent(String userName, Message message) {
         synchronized (listeners) {
             final List<MessageListener> listenerList = listeners.get(userName);

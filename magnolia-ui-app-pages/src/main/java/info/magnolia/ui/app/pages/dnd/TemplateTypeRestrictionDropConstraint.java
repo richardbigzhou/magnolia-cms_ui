@@ -36,7 +36,6 @@ package info.magnolia.ui.app.pages.dnd;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
@@ -97,7 +96,7 @@ public class TemplateTypeRestrictionDropConstraint implements DropConstraint {
         Node node = null;
         if (item instanceof JcrNodeAdapter) {
             try {
-                node = ((JcrNewNodeAdapter) item).applyChanges();
+                node = ((JcrNodeAdapter) item).applyChanges();
             } catch (RepositoryException e) {
                 log.error("Cannot apply changes.", e);
             }

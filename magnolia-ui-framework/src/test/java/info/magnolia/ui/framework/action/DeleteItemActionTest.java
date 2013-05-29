@@ -39,8 +39,12 @@ import static org.mockito.Mockito.*;
 import info.magnolia.cms.security.DummyUser;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.RecordingEventBus;
+import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
@@ -63,13 +67,17 @@ import org.mockito.stubbing.Answer;
 /**
  * Tests for {@link info.magnolia.ui.framework.action.DeleteItemAction}.
  */
-public class DeleteItemActionTest {
+public class DeleteItemActionTest extends MgnlTestCase {
 
     private RecordingEventBus eventBus;
     private Session session;
 
     @Before
-    public void setUp() {
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
+
         session = new MockSession("workspace");
         MockContext ctx = new MockContext();
         ctx.addSession("workspace", session);

@@ -77,5 +77,4 @@ public class ConfiguredActionbarGroupDefinition implements ActionbarGroupDefinit
     public void addItem(ActionbarItemDefinition itemDefinition) {
         items.add(itemDefinition);
     }
-
 }

@@ -220,7 +220,7 @@ public final class FavoritesEntry extends CustomComponent {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                shell.openConfirmation(MessageStyleTypeEnum.WARNING, MessagesUtil.get("confirmation.title.generic"), MessagesUtil.get("confirmation.cannot.undo"), MessagesUtil.get("confirmation.delete.yes"), MessagesUtil.get("confirmation.no"), true, new ConfirmationCallback() {
+                shell.openConfirmation(MessageStyleTypeEnum.WARNING, MessagesUtil.get("confirmation.delete.title.generic"), MessagesUtil.get("confirmation.cannot.undo"), MessagesUtil.get("confirmation.delete.yes"), MessagesUtil.get("confirmation.no"), true, new ConfirmationCallback() {
 
                     @Override
                     public void onSuccess() {
