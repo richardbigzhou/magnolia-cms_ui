@@ -181,22 +181,13 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         ArrayList<Item> items = new ArrayList<Item>();
 
         try {
-            ArrayList<Node> nodesWithMatchingTypes = new ArrayList<Node>();
             NodeIterator iterator = node.getNodes();
-            final List<NodeTypeDefinition> nodeTypes = getWorkbenchDefinition().getNodeTypes();
-            String currentNodeTypeName;
             while (iterator.hasNext()) {
                 Node next = iterator.nextNode();
-                currentNodeTypeName = next.getPrimaryNodeType().getName();
-                for (NodeTypeDefinition current : nodeTypes) {
-                    if (current.getName().equals(currentNodeTypeName)) {
-                        nodesWithMatchingTypes.add(next);
-                        break;
-                    }
+                if (matchesNodeTypes(node)) {
+                    items.add(next);
                 }
             }
-
-            items.addAll(nodesWithMatchingTypes);
 
             if (getWorkbenchDefinition().includeProperties()) {
                 ArrayList<Property> properties = new ArrayList<Property>();
@@ -217,6 +208,20 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         }
 
         return Collections.unmodifiableCollection(items);
+    }
+
+    private boolean matchesNodeTypes(Node node) throws RepositoryException {
+        String primaryNodeTypeName = node.getPrimaryNodeType().getName();
+        for (NodeTypeDefinition nodeTypeDefinition : getWorkbenchDefinition().getNodeTypes()) {
+            if (nodeTypeDefinition.isStrict()) {
+                if (primaryNodeTypeName.equals(nodeTypeDefinition.getName())) {
+                    return true;
+                }
+            } else if (NodeUtil.isNodeType(node, nodeTypeDefinition.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Collection<Item> getRootItemIds() throws RepositoryException {

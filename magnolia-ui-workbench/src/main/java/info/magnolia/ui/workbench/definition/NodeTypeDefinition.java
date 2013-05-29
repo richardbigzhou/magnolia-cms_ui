@@ -37,11 +37,24 @@ package info.magnolia.ui.workbench.definition;
  * Defines a node type to be displayed in a workbench.
  *
  * @see WorkbenchDefinition
- * @see info.magnolia.jcr.util.NodeTypes
  */
 public interface NodeTypeDefinition {
 
+    /**
+     * Specifies the the name of the node type. For instance <code>mgnl:content</code>.
+     *
+     * @see info.magnolia.jcr.util.NodeTypes
+     * @see org.apache.jackrabbit.JcrConstants
+     */
     String getName();
 
+    /**
+     * Specifies the icon to use for this node type.
+     */
     String getIcon();
+
+    /**
+     * Specifies whether to include only the exact node type and ignore sub types. Default is true.
+     */
+    boolean isStrict();
 }
