@@ -41,15 +41,15 @@ import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.repository.RepositoryManager;
 import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.app.security.dialog.field.AclFieldDefinition;
+import info.magnolia.ui.app.security.dialog.field.WorkspaceAccessFieldDefinition;
 import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.definition.TabDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -67,8 +67,10 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * Action for opening the role edit dialog.
+ *
+ * @see OpenRoleEditDialogActionDefinition
  */
-public class OpenRoleEditDialogAction extends AbstractAction<ActionDefinition> {
+public class OpenRoleEditDialogAction extends AbstractAction<OpenRoleEditDialogActionDefinition> {
 
     private final JcrNodeAdapter itemToEdit;
     private final FormDialogPresenter formDialogPresenter;
@@ -77,7 +79,7 @@ public class OpenRoleEditDialogAction extends AbstractAction<ActionDefinition> {
     private RepositoryManager repositoryManager;
 
     @Inject
-    public OpenRoleEditDialogAction(ActionDefinition definition, JcrNodeAdapter itemToEdit, FormDialogPresenter formDialogPresenter, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, RepositoryManager repositoryManager) {
+    public OpenRoleEditDialogAction(OpenRoleEditDialogActionDefinition definition, JcrNodeAdapter itemToEdit, FormDialogPresenter formDialogPresenter, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, RepositoryManager repositoryManager) {
         super(definition);
         this.itemToEdit = itemToEdit;
         this.formDialogPresenter = formDialogPresenter;
@@ -113,12 +115,20 @@ public class OpenRoleEditDialogAction extends AbstractAction<ActionDefinition> {
                             continue;
                         }
 
-                        AclFieldDefinition field = new AclFieldDefinition();
-                        field.setName(workspaceName);
-                        field.setLabel(StringUtils.capitalize(workspaceName));
-                        field.setAclName("acl_" + workspaceName);
+                        boolean hasFieldForWorkspace = false;
+                        for (FieldDefinition fieldDefinition : tab.getFields()) {
+                            if (fieldDefinition.getName().equals(workspaceName)) {
+                                hasFieldForWorkspace = true;
+                            }
+                        }
 
-                        tab.getFields().add(field);
+                        if (!hasFieldForWorkspace) {
+                            WorkspaceAccessFieldDefinition field = new WorkspaceAccessFieldDefinition();
+                            field.setName(workspaceName);
+                            field.setLabel(StringUtils.capitalize(workspaceName));
+                            field.setWorkspace(workspaceName);
+                            tab.getFields().add(field);
+                        }
                     }
                 }
             }

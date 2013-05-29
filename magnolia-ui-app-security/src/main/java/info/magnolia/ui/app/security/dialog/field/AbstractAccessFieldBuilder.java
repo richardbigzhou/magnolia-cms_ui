@@ -50,9 +50,9 @@ import com.vaadin.data.Item;
  *
  * @param <D> definition type
  */
-public abstract class AbstractAclFieldBuilder<D extends FieldDefinition> extends AbstractFieldBuilder<D, Object> {
+public abstract class AbstractAccessFieldBuilder<D extends FieldDefinition> extends AbstractFieldBuilder<D, Object> {
 
-    protected AbstractAclFieldBuilder(D definition, Item relatedFieldItem) {
+    protected AbstractAccessFieldBuilder(D definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 

@@ -31,24 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.security.dialog.field;
+package info.magnolia.ui.app.security.action;
 
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Field definition for the ACL field.
+ * Defines an action for opening the role edit dialog.
  *
- * @see AclFieldBuilder
+ * @see OpenRoleEditDialogAction
  */
-public class AclFieldDefinition extends ConfiguredFieldDefinition {
+public class OpenRoleEditDialogActionDefinition extends ConfiguredActionDefinition {
 
-    private String aclName;
-
-    public String getAclName() {
-        return aclName;
-    }
-
-    public void setAclName(String aclName) {
-        this.aclName = aclName;
+    public OpenRoleEditDialogActionDefinition() {
+        setImplementationClass(OpenRoleEditDialogAction.class);
     }
 }

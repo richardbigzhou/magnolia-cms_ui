@@ -117,7 +117,7 @@
       <sv:value>superuser</sv:value>
     </sv:property>
   </sv:node>
-  <sv:node sv:name="aclField">
+  <sv:node sv:name="workspaceAccessField">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
       <sv:value>mgnl:contentNode</sv:value>
     </sv:property>
@@ -128,10 +128,10 @@
       <sv:value>230ec144-e4ef-4cb9-92b1-fa1ee2d33a85</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.app.security.dialog.field.AclFieldBuilder</sv:value>
+      <sv:value>info.magnolia.ui.app.security.dialog.field.WorkspaceAccessFieldBuilder</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
-      <sv:value>info.magnolia.ui.app.security.dialog.field.AclFieldDefinition</sv:value>
+      <sv:value>info.magnolia.ui.app.security.dialog.field.WorkspaceAccessFieldDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>

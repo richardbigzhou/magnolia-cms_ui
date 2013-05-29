@@ -34,14 +34,37 @@
 package info.magnolia.ui.app.security.dialog.field;
 
 import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.ModelConstants;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.overlay.OverlayCloser;
+import info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenter;
+import info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogPresenter;
+import info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogView;
+import info.magnolia.ui.framework.app.ItemChosenListener;
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
+import info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition;
+import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
+import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
+import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
+
+import java.util.ArrayList;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -59,19 +82,28 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * Field builder for the ACL field.
  *
- * @see AclFieldDefinition
+ * @see WorkspaceAccessFieldDefinition
  */
-public class AclFieldBuilder extends AbstractAclFieldBuilder<AclFieldDefinition> {
+public class WorkspaceAccessFieldBuilder<D extends WorkspaceAccessFieldDefinition> extends AbstractAccessFieldBuilder<D> {
+
+    private static final Logger log = LoggerFactory.getLogger(WorkspaceAccessFieldBuilder.class);
 
     private static final String PERMISSIONS_PROPERTY_NAME = "permissions";
     private static final String PATH_PROPERTY_NAME = "path";
 
-    public AclFieldBuilder(AclFieldDefinition definition, Item relatedFieldItem) {
+    private final ComponentProvider componentProvider;
+    private final UiContext uiContext;
+
+    public WorkspaceAccessFieldBuilder(D definition, Item relatedFieldItem, ComponentProvider componentProvider, UiContext uiContext) {
         super(definition, relatedFieldItem);
+        this.componentProvider = componentProvider;
+        this.uiContext = uiContext;
     }
 
     @Override
     protected Field<Object> buildField() {
+
+        final String aclName = "acl_" + getFieldDefinition().getWorkspace();
 
         final VerticalLayout layout = new VerticalLayout();
         layout.setSpacing(true);
@@ -85,7 +117,6 @@ public class AclFieldBuilder extends AbstractAclFieldBuilder<AclFieldDefinition>
 
             final Label emptyLabel = new Label("No access.");
 
-            final String aclName = getFieldDefinition().getAclName();
             if (roleNode.hasNode(aclName)) {
 
                 final Node aclNode = roleNode.getNode(aclName);
@@ -145,7 +176,7 @@ public class AclFieldBuilder extends AbstractAclFieldBuilder<AclFieldDefinition>
         };
     }
 
-    private Component createRuleRow(final AbstractOrderedLayout parentContainer, final AbstractJcrNodeAdapter ruleItem, final Label emptyLabel) {
+    protected Component createRuleRow(final AbstractOrderedLayout parentContainer, final AbstractJcrNodeAdapter ruleItem, final Label emptyLabel) {
 
         final HorizontalLayout ruleLayout = new HorizontalLayout();
         ruleLayout.setSpacing(true);
@@ -169,8 +200,11 @@ public class AclFieldBuilder extends AbstractAclFieldBuilder<AclFieldDefinition>
         select.setPropertyDataSource(permissionsProperty);
         ruleLayout.addComponent(select);
 
-        TextField textField = new TextField();
-        textField.setWidth("350px");
+        NativeSelect select2 = new NativeSelect();
+        ruleLayout.addComponent(select2);
+
+        final TextField textField = new TextField();
+        textField.setWidth("150px");
         Property pathProperty = ruleItem.getItemProperty(PATH_PROPERTY_NAME);
         if (pathProperty == null) {
             pathProperty = new DefaultProperty<String>(String.class, "/*");
@@ -178,6 +212,18 @@ public class AclFieldBuilder extends AbstractAclFieldBuilder<AclFieldDefinition>
         }
         textField.setPropertyDataSource(pathProperty);
         ruleLayout.addComponent(textField);
+
+        Button chooseButton = new Button();
+        chooseButton.addStyleName("inline");
+        chooseButton.setCaption("Choose...");
+        chooseButton.addClickListener(new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                openChooseDialog(textField);
+            }
+        });
+        ruleLayout.addComponent(chooseButton);
 
         Button deleteButton = new Button();
         deleteButton.setHtmlContentAllowed(true);
@@ -197,6 +243,92 @@ public class AclFieldBuilder extends AbstractAclFieldBuilder<AclFieldDefinition>
         });
         ruleLayout.addComponent(deleteButton);
 
+
         return ruleLayout;
+    }
+
+    protected void openChooseDialog(final TextField textField) {
+
+        final ItemChosenListener listener = new ItemChosenListener() {
+
+            @Override
+            public void onItemChosen(Item item) {
+                try {
+                    textField.setValue(((AbstractJcrNodeAdapter)item).getJcrItem().getPath());
+                } catch (RepositoryException e) {
+                    log.error("Failed to read chosen node", e);
+                }
+            }
+
+            @Override
+            public void onChooseCanceled() {
+            }
+        };
+
+        final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = componentProvider.newInstance(WorkbenchChooseDialogPresenter.class);
+        workbenchChooseDialogPresenter.setWorkbenchDefinition(resolveWorkbenchDefinition());
+
+        workbenchChooseDialogPresenter.addActionCallback(WorkbenchChooseDialogView.COMMIT_ACTION_NAME, new DialogActionListener() {
+            @Override
+            public void onActionExecuted(final String actionName) {
+                listener.onItemChosen(workbenchChooseDialogPresenter.getValue());
+            }
+        });
+
+        workbenchChooseDialogPresenter.addActionCallback(WorkbenchChooseDialogView.CANCEL_ACTION_NAME, new DialogActionListener() {
+            @Override
+            public void onActionExecuted(final String actionName) {
+                listener.onChooseCanceled();
+            }
+        });
+
+        final OverlayCloser overlayCloser = uiContext.openOverlay(workbenchChooseDialogPresenter.start());
+
+        workbenchChooseDialogPresenter.setListener(new ChooseDialogPresenter.Listener() {
+
+            @Override
+            public void onClose() {
+                overlayCloser.close();
+            }
+        });
+    }
+
+    protected WorkbenchDefinition resolveWorkbenchDefinition() {
+
+        if (getFieldDefinition().getWorkbench() != null) {
+            return getFieldDefinition().getWorkbench();
+        }
+
+        ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
+        workbenchDefinition.setWorkspace(getFieldDefinition().getWorkspace());
+        workbenchDefinition.setPath("/");
+        workbenchDefinition.setDialogWorkbench(true);
+        workbenchDefinition.setEditable(false);
+        workbenchDefinition.setDefaultOrder(ModelConstants.JCR_NAME);
+
+        // columns
+        ArrayList<ColumnDefinition> columns = new ArrayList<ColumnDefinition>();
+        PropertyColumnDefinition column = new PropertyColumnDefinition();
+        column.setEditable(false);
+        column.setDisplayInChooseDialog(true);
+        column.setLabel("Node name");
+        column.setPropertyName(ModelConstants.JCR_NAME);
+        column.setName(ModelConstants.JCR_NAME);
+        columns.add(column);
+        workbenchDefinition.setColumns(columns);
+
+        // node types
+        ArrayList<NodeTypeDefinition> nodeTypes = new ArrayList<NodeTypeDefinition>();
+        ConfiguredNodeTypeDefinition nodeType = new ConfiguredNodeTypeDefinition();
+        nodeType.setIcon("icon-folder");
+        nodeType.setName(NodeTypes.Content.NAME);
+        nodeTypes.add(nodeType);
+        workbenchDefinition.setNodeTypes(nodeTypes);
+
+        // content views
+        ArrayList<ContentPresenterDefinition> contentViews = new ArrayList<ContentPresenterDefinition>();
+        contentViews.add(new TreePresenterDefinition());
+        workbenchDefinition.setContentViews(contentViews);
+        return workbenchDefinition;
     }
 }

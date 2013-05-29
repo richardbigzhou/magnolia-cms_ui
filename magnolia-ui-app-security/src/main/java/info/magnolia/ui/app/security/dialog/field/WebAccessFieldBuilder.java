@@ -61,7 +61,7 @@ import com.vaadin.ui.VerticalLayout;
  *
  * @see WebAccessFieldDefinition
  */
-public class WebAccessFieldBuilder extends AbstractAclFieldBuilder<WebAccessFieldDefinition> {
+public class WebAccessFieldBuilder extends AbstractAccessFieldBuilder<WebAccessFieldDefinition> {
 
     private static final String ACL_NODE_NAME = "acl_uri";
     private static final String PERMISSIONS_PROPERTY_NAME = "permissions";
