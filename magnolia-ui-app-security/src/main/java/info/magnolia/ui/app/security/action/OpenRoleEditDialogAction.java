@@ -71,6 +71,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * Action for opening the role edit dialog.
  *
+ * @param <D> the action definition type
  * @see OpenRoleEditDialogActionDefinition
  */
 public class OpenRoleEditDialogAction<D extends OpenRoleEditDialogActionDefinition> extends AbstractAction<D> {
