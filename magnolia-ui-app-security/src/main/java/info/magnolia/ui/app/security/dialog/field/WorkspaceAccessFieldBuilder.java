@@ -84,6 +84,7 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * Field builder for the workspace ACL field.
  *
+ * @param <D> definition type
  * @see WorkspaceAccessFieldDefinition
  */
 public class WorkspaceAccessFieldBuilder<D extends WorkspaceAccessFieldDefinition> extends AbstractAccessFieldBuilder<D> {
@@ -254,7 +255,7 @@ public class WorkspaceAccessFieldBuilder<D extends WorkspaceAccessFieldDefinitio
             @Override
             public void onItemChosen(Item item) {
                 try {
-                    textField.setValue(((AbstractJcrNodeAdapter)item).getJcrItem().getPath());
+                    textField.setValue(((AbstractJcrNodeAdapter) item).getJcrItem().getPath());
                 } catch (RepositoryException e) {
                     log.error("Failed to read chosen node", e);
                 }
