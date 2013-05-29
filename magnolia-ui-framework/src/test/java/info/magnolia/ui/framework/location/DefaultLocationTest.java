@@ -69,6 +69,9 @@ public class DefaultLocationTest {
         assertEquals("", new DefaultLocation("", "", "", "").toString());
         assertEquals("", new DefaultLocation(null, null, "", null).toString());
         assertEquals("", new DefaultLocation(null, null, null, null).toString());
+
+        assertEquals("appType:appId:subAppId;parameter one", new DefaultLocation("appType", "appId", "subAppId", "parameter%20one").toString());
+        assertEquals("appType:appId:subAppId;parameter one", new DefaultLocation("appType", "appId", "subAppId", "parameter one").toString());
     }
 
     @Test

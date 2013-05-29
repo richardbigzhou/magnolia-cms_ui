@@ -236,6 +236,9 @@ public class DefaultLocation implements Location {
         return i != -1 ? fragment.substring(0, i) : fragment;
     }
 
+    /**
+     * Decodes <code>application/x-www-form-urlencoded</code> fragment string using a specified encoding scheme if necessary.
+     */
     public static String decodeFragment(String fragment, String encoding) {
         if (fragment == null) {
             return fragment;
@@ -252,6 +255,9 @@ public class DefaultLocation implements Location {
         return fragment;
     }
 
+    /**
+     * Decodes a fragment using the character encoding from the {@link info.magnolia.cms.core.AggregationState}.
+     */
     public static String decodeFragment(String fragment) {
         return decodeFragment(fragment, MgnlContext.getAggregationState().getCharacterEncoding());
     }
