@@ -184,7 +184,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
             NodeIterator iterator = node.getNodes();
             while (iterator.hasNext()) {
                 Node next = iterator.nextNode();
-                if (matchesNodeTypes(node)) {
+                if (matchesNodeTypes(next)) {
                     items.add(next);
                 }
             }
