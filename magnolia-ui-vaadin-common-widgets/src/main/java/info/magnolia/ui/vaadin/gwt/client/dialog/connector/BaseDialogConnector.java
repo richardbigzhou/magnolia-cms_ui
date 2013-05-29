@@ -124,7 +124,7 @@ public class BaseDialogConnector extends AbstractLayoutConnector implements Base
     }
 
     protected void updateActionsFromState() {
-        view.setActions(getState().actions, getState().defaultActionName);
+        view.setActions(getState().actions, getState().actionOrder, getState().defaultActionName);
     }
 
     @Override

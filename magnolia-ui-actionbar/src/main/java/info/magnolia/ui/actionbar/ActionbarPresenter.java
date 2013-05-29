@@ -60,8 +60,6 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
         String getIcon(String itemName);
 
-        void setFullScreen(boolean fullscreen);
-
     }
 
     private static final Logger log = LoggerFactory.getLogger(ActionbarPresenter.class);
@@ -166,11 +164,6 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     public void onActionbarItemClicked(String actionToken) {
         String actionName = getActionName(actionToken);
         listener.onActionbarItemClicked(actionName);
-    }
-
-    @Override
-    public void onChangeFullScreen(boolean isFullScreen) {
-        listener.setFullScreen(isFullScreen);
     }
 
     private String getActionName(String actionToken) {

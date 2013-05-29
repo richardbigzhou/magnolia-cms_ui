@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -43,4 +43,6 @@ public interface ShellClientRpc extends ClientRpc {
     void showMessage(String type, String topic, String msg, String id);
 
     void hideAllMessages();
+
+    void setFullScreen(boolean isFullScreen);
 }

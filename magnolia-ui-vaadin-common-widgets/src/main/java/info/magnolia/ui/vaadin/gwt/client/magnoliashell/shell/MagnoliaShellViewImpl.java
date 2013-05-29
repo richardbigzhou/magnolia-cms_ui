@@ -181,6 +181,9 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     @Override
     public void shiftViewportsVertically(int shiftPx, boolean animated) {
         viewportShifter.setProperty("top", mainAppLauncher.getOffsetHeight() + shiftPx);
+        if (shiftPx == 0 || shiftPx == 60) {
+            viewportShifter.clearTopAfterThisAnimation();
+        }
         viewportShifter.run(animated ? 300 : 0, viewportSlot);
     }
 

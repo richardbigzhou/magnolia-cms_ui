@@ -31,46 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.editmode.field.image;
+package info.magnolia.ui.mediaeditor.action;
+
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
+import info.magnolia.ui.mediaeditor.action.definition.GrayScaleActionDefinition;
+import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-import com.jhlabs.image.FlipFilter;
-import com.vaadin.data.Property;
+import com.google.inject.name.Named;
+import com.jhlabs.image.GrayscaleFilter;
 
 /**
- * Provides the functionality for image flip.
+ * Converts image color scheme to gray scale.
  */
-public class FlipField extends ViewImageField {
+public class ConvertImageToGrayScaleAction extends InstantMediaEditorAction {
 
-    private boolean isFlipHorizontal;
-
-    public FlipField(boolean isFlipHorizontal) {
-        this.isFlipHorizontal = isFlipHorizontal;
-        setBuffered(true);
+    public ConvertImageToGrayScaleAction(GrayScaleActionDefinition definition, EditHistoryTrackingProperty dataSource, @Named(MediaEditorEventBus.NAME) EventBus eventBus) {
+        super(definition, dataSource, eventBus);
     }
 
     @Override
-    @SuppressWarnings("rawtypes")
-    public void setPropertyDataSource(Property newDataSource) {
-        super.setPropertyDataSource(newDataSource);
-        execute();
-    }
-
-    @Override
-    protected BufferedImage executeImageModification() throws IOException {
-        final BufferedImage img = ImageIO.read(new ByteArrayInputStream(getValue()));
-        final FlipFilter flipFilter = new FlipFilter(isFlipHorizontal ? FlipFilter.FLIP_H : FlipFilter.FLIP_V);
-        return flipFilter.filter(img, null);
-    }
-    
-    @Override
-    public void execute() {
-        super.execute();
-        commit();
+    protected InputStream performModification(InputStream stream) throws IOException {
+        final BufferedImage img = ImageIO.read(stream);
+        return createStreamSource(new GrayscaleFilter().filter(img, null), DEFAULT_FORMAT);
     }
 }

@@ -107,11 +107,6 @@ public class DefaultAppView implements AppView {
     }
 
     @Override
-    public void setFullscreen(boolean fullscreen) {
-        tabsheet.setFullscreen(fullscreen);
-    }
-
-    @Override
     public void setTheme(String themeName) {
         String stylename = String.format("app-%s", themeName);
         final String themeUrl = String.format("../%s/styles.css", themeName);

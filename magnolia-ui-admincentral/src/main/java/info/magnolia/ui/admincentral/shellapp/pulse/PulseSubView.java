@@ -35,13 +35,13 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.ui.api.view.View;
 
-import java.util.List;
+import com.vaadin.ui.HasComponents;
 
 /**
  * Interface for the tabs in the Pulse.
  */
 public interface PulseSubView extends View {
 
-    void update(final List<String> params);
-
+    @Override
+    HasComponents asVaadinComponent();
 }

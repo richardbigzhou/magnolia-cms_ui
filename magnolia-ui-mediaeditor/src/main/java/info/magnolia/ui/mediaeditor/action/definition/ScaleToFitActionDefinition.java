@@ -31,17 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.action;
+package info.magnolia.ui.mediaeditor.action.definition;
 
-import info.magnolia.ui.mediaeditor.provider.EditModeProviderActionDefinition;
+import info.magnolia.ui.mediaeditor.action.feature.Scalable;
+import info.magnolia.ui.mediaeditor.action.feature.ScaleToFitAction;
 
 
 /**
- * Definition for {@link info.magnolia.ui.mediaeditor.editmode.provider.CropImageProvider}.
+ * Definition of {@link info.magnolia.ui.mediaeditor.action.feature.ScaleToFitAction}.
  */
-public class CropImageActionDefinition extends EditModeProviderActionDefinition {
+public class ScaleToFitActionDefinition extends ConfiguredMediaEditorFeatureDefinition {
     
-    public CropImageActionDefinition() {
-        setImplementationClass(EditModeProviderAction.class);
+    public ScaleToFitActionDefinition() {
+        setImplementationClass(ScaleToFitAction.class);
     }
+    
+    @Override
+    public String getRequiredInterfaceName() {
+        return Scalable.class.getName();
+    }
+    
 }

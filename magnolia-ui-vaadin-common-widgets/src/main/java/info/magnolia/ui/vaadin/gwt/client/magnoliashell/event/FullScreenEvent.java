@@ -31,27 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.action;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
 
-import info.magnolia.ui.mediaeditor.provider.EditModeProviderActionDefinition;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Definition for
- * {@link info.magnolia.ui.mediaeditor.editmode.provider.FlipImageProvider}.
+ * FullScreenEvent is used to communicate that the fullscreen mode should be changed.
  */
-public class FlipImageActionDefinition extends EditModeProviderActionDefinition {
+public class FullScreenEvent extends GwtEvent<FullScreenEvent.Handler> {
 
-    public FlipImageActionDefinition() {
-        setImplementationClass(EditModeProviderAction.class);
+    /**
+     * Handler of the {@link FullScreenEvent}.
+     */
+    public interface Handler extends EventHandler {
+        void onChangeFullScreen(final FullScreenEvent event);
     }
 
-    private boolean flipHorizontal = true;
+    public static final Type<Handler> TYPE = new Type<Handler>();
 
-    public void setFlipHorizontal(boolean isFlipHorizontal) {
-        this.flipHorizontal = isFlipHorizontal;
+    private final boolean isFullScreen;
+
+    public FullScreenEvent(boolean isFullScreen) {
+        this.isFullScreen = isFullScreen;
     }
 
-    public boolean getFlipHorizontal() {
-        return flipHorizontal;
+    public boolean getIsFullScreen() {
+        return isFullScreen;
+    }
+
+    @Override
+    protected void dispatch(Handler handler) {
+        handler.onChangeFullScreen(this);
+    }
+
+    @Override
+    public GwtEvent.Type<Handler> getAssociatedType() {
+        return TYPE;
     }
 }

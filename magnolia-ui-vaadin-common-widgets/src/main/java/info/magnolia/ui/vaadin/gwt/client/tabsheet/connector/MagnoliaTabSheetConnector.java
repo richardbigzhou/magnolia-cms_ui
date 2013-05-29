@@ -111,11 +111,6 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
         });
 
         registerRpc(MagnoliaTabSheetClientRpc.class, new MagnoliaTabSheetClientRpc() {
-            @Override
-            public void toggleFullScreenMode(boolean isFullScreen) {
-                view.setShowActiveTabFullscreen(isFullScreen);
-                getLayoutManager().setNeedsMeasure(MagnoliaTabSheetConnector.this);
-            }
 
             @Override
             public void closeTab(Connector tabConnector) {

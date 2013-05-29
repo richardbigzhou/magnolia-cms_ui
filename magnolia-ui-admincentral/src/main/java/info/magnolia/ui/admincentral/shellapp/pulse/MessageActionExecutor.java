@@ -43,13 +43,14 @@ import javax.inject.Inject;
 /**
  * MessageActionExecutor.
  */
-public class MessageActionExecutor extends AbstractActionExecutor {
+public final class MessageActionExecutor extends AbstractActionExecutor {
 
     private MessageViewDefinition messageViewDefinition;
 
     @Inject
     public MessageActionExecutor(ComponentProvider componentProvider) {
         super(componentProvider);
+
     }
 
     @Override

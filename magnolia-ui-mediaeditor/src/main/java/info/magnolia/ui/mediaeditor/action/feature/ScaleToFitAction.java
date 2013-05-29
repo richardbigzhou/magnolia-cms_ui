@@ -33,7 +33,8 @@
  */
 package info.magnolia.ui.mediaeditor.action.feature;
 
-import info.magnolia.ui.mediaeditor.action.feature.definition.ScaleToFitActionDefinition;
+import info.magnolia.ui.mediaeditor.MediaEditorView;
+import info.magnolia.ui.mediaeditor.action.definition.ScaleToFitActionDefinition;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 
@@ -42,15 +43,17 @@ import info.magnolia.ui.api.action.ActionExecutionException;
  */
 public class ScaleToFitAction extends AbstractAction<ScaleToFitActionDefinition> {
 
-    private Scalable scalable;
-    
-    public ScaleToFitAction(ScaleToFitActionDefinition def, Scalable scalable) {
+    private MediaEditorView view;
+
+    public ScaleToFitAction(ScaleToFitActionDefinition def, MediaEditorView view) {
         super(def);
-        this.scalable = scalable;
+        this.view = view;
     }
     
     @Override
     public void execute() throws ActionExecutionException {
-        scalable.scaleToFit();
+        if (view.getDialog().getContent() instanceof Scalable) {
+            ((Scalable)view.getDialog().getContent()).scaleToFit();
+        }
     }
 }
