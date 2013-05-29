@@ -139,7 +139,7 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
     @Override
     protected void init() {
         super.init();
-        addStateChangeHandler("resources", previewChangeHandler);
+        addStateChangeHandler(previewChangeHandler);
         addStateChangeHandler("sections", sectionRearrangementHandler);
         addStateChangeHandler("visibleSections", visibleSectionSetChangeHandler);
         addStateChangeHandler("disabledActions", enabledActionSetChangeHandler);
