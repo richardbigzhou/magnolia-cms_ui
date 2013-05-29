@@ -1,0 +1,123 @@
+@charset "UTF-8";
+
+@mixin overlay-admincentral {
+
+
+/* Set proper stacking for overlays */
+.overlay.app,
+.overlay.sub-app {
+    z-index: 110;
+}
+
+.overlay.shell{
+    z-index:500;
+}
+
+.overlay.shell .overlay-child{
+  top:60px;
+}
+
+
+/*
+* Forms in an Overlay.
+*/
+
+.overlay .v-form-layout {
+    background-color: $c15;
+}
+
+.overlay .form-panel .v-shell-tabsheet,
+.overlay .form-panel .v-shell-tabsheet .nav li.active {
+    background-color: $c15;
+}
+
+
+/* Vertical centering - The ghost, nudged to maintain perfect centering  - http://css-tricks.com/centering-in-the-unknown */
+.overlay.center-vertical:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    margin-right: -0.25em; /* Adjusts for spacing */
+}
+
+/* vertical centering */
+.overlay.center-vertical .overlay-child {
+    vertical-align:middle;
+}
+
+
+
+
+
+
+
+/* transitions for overlays */
+
+/* force curtain to be rendered in 3d to solve flash/flicker at the beginning of transitions with a curtain. */
+.overlay,
+.modal-curtain
+{
+	-webkit-backface-visibility: hidden;
+	-webkit-transform: translateZ(0);
+	-webkit-transform: translate3d(0,0,0);
+}
+
+.overlay.open .modal-curtain{
+  @include prefix(animation-duration, 0.5s);
+  @include prefix(animation-name, overlay-fadein-curtain);
+}
+.overlay.close .modal-curtain{
+  @include prefix(animation-duration, 0.5s);
+  @include prefix(animation-name, overlay-fadeout-curtain);
+  @include prefix(animation-fill-mode, forwards);
+}
+
+.overlay.open .light-dialog-panel.confirmation,
+.overlay.open .light-dialog-panel.alert
+{
+  @include prefix(animation-duration, 0.3s);
+  @include prefix(animation-name, overlay-zoomin-fadein );
+}
+.overlay.close .light-dialog-panel.confirmation,
+.overlay.close .light-dialog-panel.alert {
+  @include prefix(animation-duration, 0.3s);
+  @include prefix(animation-name, overlay-zoomout-fadeout);
+  @include prefix(animation-fill-mode, forwards);
+}
+
+
+.overlay.open .dialog-panel,
+.overlay.open .notification-dialog{
+  @include prefix(animation-duration, 0.3s);
+  @include prefix(animation-name, overlay-slidedown );
+}
+.overlay.close .dialog-panel{
+  @include prefix(animation-duration, 0.3s);
+  @include prefix(animation-name, overlay-slideup);
+  @include prefix(animation-fill-mode, forwards);
+}
+.overlay.close .notification-dialog {
+  @include prefix(animation-duration, 0.3s);
+  @include prefix(animation-name, overlay-fadeout);
+  @include prefix(animation-fill-mode, forwards);
+}
+
+
+@include keyframesTransformOpacity(overlay-fadein-curtain, scale(1.0), scale(1.0), 0, 0.8);
+
+@include keyframesTransformOpacity(overlay-fadeout-curtain, scale(1.0), scale(1.0), 0.8, 0);
+
+@include keyframesTransformOpacity(overlay-slidedown, translateY(-110%), translateY(0), 1.0, 1.0);
+
+@include keyframesTransformOpacity(overlay-slideup, translateY(0), translateY(-110%), 1.0, 1.0);
+
+@include keyframesTransformOpacity(overlay-fadeout, scale(1.0), scale(1.0), 1.0, 0);
+
+@include keyframesTransformOpacity(overlay-zoomin-fadein, scale(0.8), scale(1.0), 0, 1.0);
+
+@include keyframesTransformOpacity(overlay-zoomout-fadeout,scale(1.0),scale(0.8),1.0,0);
+
+
+
+}
