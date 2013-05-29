@@ -62,9 +62,9 @@ public class MessageStore {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    static final String WORKSPACE_NAME = "messages";
     static final String MESSAGE_NODE_TYPE = AdmincentralNodeTypes.SystemMessage.NAME;
 
-    private static final String WORKSPACE_NAME = "messages";
     private static final String WORKSPACE_PATH = "/";
     private static final String USER_NODE_TYPE = NodeTypes.Content.NAME;
 
@@ -186,6 +186,33 @@ public class MessageStore {
         });
     }
 
+    public void removeMessageById(final String userName, final String messageId) {
+        MgnlContext.doInSystemContext(new MgnlContext.Op<Void, RuntimeException>() {
+
+            @Override
+            public Void exec() {
+                try {
+                    Session session = MgnlContext.getJCRSession(WORKSPACE_NAME);
+
+                    Node messageNode = getMessageNode(session, userName, messageId);
+
+                    if (messageNode == null) {
+                        return null;
+                    }
+
+                    messageNode.remove();
+
+                    session.save();
+
+                } catch (RepositoryException e) {
+                    logger.error("Unable to read message: " + messageId + " for user: " + userName, e);
+                }
+                return null;
+            }
+        });
+
+    }
+
     void marshallMessage(Message message, Node node) throws RepositoryException {
         Node2MapUtil.map2node(node, message);
     }
@@ -230,4 +257,5 @@ public class MessageStore {
         }
         return String.valueOf(largestIdFound + 1);
     }
+
 }

@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
 
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -44,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public interface BaseDialogView extends IsWidget, HasWidgets {
 
-    void setActions(Map<String, String> actionMap, String defaultButtonName);
+    void setActions(Map<String, String> actionMap, List<String> actionOrder, String defaultButtonName);
 
     void setDescription(String description);
 

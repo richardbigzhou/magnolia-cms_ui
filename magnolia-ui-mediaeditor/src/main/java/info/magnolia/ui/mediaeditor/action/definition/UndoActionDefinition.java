@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,17 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.mediaeditor.action.definition;
 
-import info.magnolia.ui.api.view.View;
-
-import com.vaadin.ui.HasComponents;
+import info.magnolia.ui.mediaeditor.action.UndoAction;
+import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 
 /**
- * Interface for the tabs in the Pulse.
+ * Definition of {@link UndoAction}.
  */
-public interface PulseSubView extends View {
+public class UndoActionDefinition extends MediaEditorActionDefinition {
 
-    @Override
-    HasComponents asVaadinComponent();
+    public UndoActionDefinition() {
+        super();
+        setImplementationClass(UndoAction.class);
+    }
 }

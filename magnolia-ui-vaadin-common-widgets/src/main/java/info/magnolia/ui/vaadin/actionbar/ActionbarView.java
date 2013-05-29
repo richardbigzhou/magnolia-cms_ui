@@ -53,6 +53,8 @@ public interface ActionbarView extends View {
 
     void addAction(ActionbarItem action, String sectionName);
 
+    void removeAction(String actionName);
+
     // ENABLE / DISABLE
     void setActionEnabled(String actionName, boolean isEnabled);
 

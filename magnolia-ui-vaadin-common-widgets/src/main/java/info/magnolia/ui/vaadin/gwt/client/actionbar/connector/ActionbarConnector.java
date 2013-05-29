@@ -84,6 +84,7 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
                 }
             });
             view.setSections(sections);
+            view.setDisabledActions(getState().disabledActions);
         }
     };
 

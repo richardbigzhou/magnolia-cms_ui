@@ -31,17 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.action;
+package info.magnolia.ui.mediaeditor.action.definition;
 
-import info.magnolia.ui.mediaeditor.provider.EditModeProviderActionDefinition;
-
+import info.magnolia.ui.mediaeditor.action.RedoAction;
+import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 
 /**
- * Definition for {@link info.magnolia.ui.mediaeditor.editmode.provider.ViewImageProvider}.
+ * Definition of {@link RedoAction}.
  */
-public class ViewImageActionDefinition extends EditModeProviderActionDefinition {
-    
-    public ViewImageActionDefinition() {
-        setImplementationClass(EditModeProviderAction.class);
+public class RedoActionDefinition extends MediaEditorActionDefinition {
+
+    public RedoActionDefinition() {
+        super();
+        setImplementationClass(RedoAction.class);
     }
 }

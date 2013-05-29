@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.magnoliashell;
+package info.magnolia.ui.mediaeditor.action;
+
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
+import info.magnolia.ui.mediaeditor.action.definition.GrayScaleActionDefinition;
+import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
+
+import com.google.inject.name.Named;
+import com.jhlabs.image.GrayscaleFilter;
 
 /**
- * The type of message.
+ * Converts image color scheme to gray scale.
  */
-public enum MessageType {
-    UNKNOWN(""),
-    ERROR("Error"),
-    WARNING("Warning"),
-    INFO("Info");
+public class ConvertImageToGrayScaleAction extends InstantMediaEditorAction {
 
-    private String caption;
-
-    private MessageType(final String caption) {
-        this.caption = caption;
+    public ConvertImageToGrayScaleAction(GrayScaleActionDefinition definition, EditHistoryTrackingProperty dataSource, @Named(MediaEditorEventBus.NAME) EventBus eventBus) {
+        super(definition, dataSource, eventBus);
     }
 
     @Override
-    public String toString() {
-        return caption;
-    }
-
-    public boolean isSignificant() {
-        switch (this) {
-        case INFO:
-        case UNKNOWN:
-            return false;
-        default:
-            return true;
-        }
+    protected InputStream performModification(InputStream stream) throws IOException {
+        final BufferedImage img = ImageIO.read(stream);
+        return createStreamSource(new GrayscaleFilter().filter(img, null), DEFAULT_FORMAT);
     }
 }

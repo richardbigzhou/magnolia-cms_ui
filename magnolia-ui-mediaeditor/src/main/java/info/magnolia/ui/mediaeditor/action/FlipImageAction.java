@@ -31,24 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.action.feature.definition;
+package info.magnolia.ui.mediaeditor.action;
 
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
+import info.magnolia.ui.mediaeditor.action.definition.FlipImageActionDefinition;
+import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
+
+import com.google.inject.name.Named;
+import com.jhlabs.image.FlipFilter;
 
 /**
- * Implementation of {@link MediaEditorFeatureDefinition}.
+ * Flips the image pixels in either vertical or horizontal direction.
  */
-public class ConfiguredMediaEditorFeatureDefinition extends ConfiguredActionDefinition implements MediaEditorFeatureDefinition {
+public class FlipImageAction extends InstantMediaEditorAction {
 
-    private String requiredInterfaceName;
-
-    public void setRequiredInterfaceName(String requiredInterfaceName) {
-        this.requiredInterfaceName = requiredInterfaceName;
+    public FlipImageAction(FlipImageActionDefinition definition, EditHistoryTrackingProperty dataSource, @Named(MediaEditorEventBus.NAME) EventBus eventBus) {
+        super(definition, dataSource, eventBus);
     }
 
     @Override
-    public String getRequiredInterfaceName() {
-        return requiredInterfaceName;
+    protected InputStream performModification(InputStream stream) throws IOException {
+        final BufferedImage img = ImageIO.read(stream);
+        final FlipFilter flipFilter = new FlipFilter(getDefinition().getFlipHorizontal() ? FlipFilter.FLIP_H : FlipFilter.FLIP_V);
+        return createStreamSource(flipFilter.filter(img, null), DEFAULT_FORMAT);
     }
 
+    @Override
+    protected FlipImageActionDefinition getDefinition() {
+        return (FlipImageActionDefinition) super.getDefinition();
+    }
 }

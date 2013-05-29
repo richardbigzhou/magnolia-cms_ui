@@ -52,7 +52,7 @@ import com.vaadin.data.util.BeanItem;
 /**
  * MessagePresenter.
  */
-public class MessagePresenter implements MessageView.Listener, ActionbarPresenter.Listener {
+public final class MessagePresenter implements MessageView.Listener, ActionbarPresenter.Listener {
 
     private final MessageView view;
     private MessagesManager messagesManager;
@@ -88,7 +88,7 @@ public class MessagePresenter implements MessageView.Listener, ActionbarPresente
 
             messageActionExecutor.setMessageViewDefinition(messageViewDefinition);
 
-            BeanItem messageItem = new BeanItem<Message>(message);
+            BeanItem<Message> messageItem = new BeanItem<Message>(message);
             View mView = formbuilder.buildView(messageViewDefinition.getForm(), messageItem);
             view.setMessageView(mView);
 
@@ -111,7 +111,8 @@ public class MessagePresenter implements MessageView.Listener, ActionbarPresente
     @Override
     public void onActionbarItemClicked(String actionName) {
         try {
-            messageActionExecutor.execute(actionName, message);
+            messageActionExecutor.execute(actionName, message, this);
+
         } catch (ActionExecutionException e) {
             throw new RuntimeException("Could not execute action " + actionName, e);
         }

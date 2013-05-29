@@ -192,11 +192,17 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
      * The View to open the Overlay on top of.
      */
     public OverlayCloser openOverlay(final View child, View parent, OverlayLayer.ModalityDomain modalityLocation, OverlayLayer.ModalityLevel modalityLevel) {
-        Overlay overlay = new Overlay(child.asVaadinComponent(), parent.asVaadinComponent(), modalityLocation, modalityLevel);
+        final Overlay overlay = new Overlay(child.asVaadinComponent(), parent.asVaadinComponent(), modalityLocation, modalityLevel);
         getState().overlays.add(overlay);
 
         // overlay has Vaadin parent of MagnoliaShell
         overlay.setParent(this);
+        parent.asVaadinComponent().addDetachListener(new DetachListener() {
+            @Override
+            public void detach(DetachEvent event) {
+                removeOverlay(overlay);
+            }
+        });
 
         return new OverlayCloser() {
             @Override
