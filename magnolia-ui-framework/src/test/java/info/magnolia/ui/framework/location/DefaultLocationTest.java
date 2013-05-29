@@ -34,13 +34,30 @@
 package info.magnolia.ui.framework.location;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
+import info.magnolia.context.MgnlContext;
+import info.magnolia.test.mock.MockWebContext;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Test case for {@link DefaultLocation}.
  */
 public class DefaultLocationTest {
+
+    @Before
+    public void setUp() throws Exception {
+        MockWebContext ctx = new MockWebContext();
+        MgnlContext.setInstance(ctx);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        MgnlContext.setInstance(null);
+    }
 
     @Test
     public void testToString() {
@@ -52,6 +69,9 @@ public class DefaultLocationTest {
         assertEquals("", new DefaultLocation("", "", "", "").toString());
         assertEquals("", new DefaultLocation(null, null, "", null).toString());
         assertEquals("", new DefaultLocation(null, null, null, null).toString());
+
+        assertEquals("appType:appId:subAppId;parameter one", new DefaultLocation("appType", "appId", "subAppId", "parameter%20one").toString());
+        assertEquals("appType:appId:subAppId;parameter one", new DefaultLocation("appType", "appId", "subAppId", "parameter one").toString());
     }
 
     @Test
@@ -158,5 +178,35 @@ public class DefaultLocationTest {
     @Test(expected = IllegalArgumentException.class)
     public void testDefaultLocationFromNullFragmentThrowsException() throws Exception {
         new DefaultLocation(null);
+    }
+
+    @Test
+    public void testDefaultLocationDecodeFragment() {
+        // GIVEN
+        String fragment = "appType:appId:subAppId:/more%20parameters";
+
+        // WHEN
+        String decodedFragment = DefaultLocation.decodeFragment(fragment);
+
+        // THEN
+        assertEquals("appType:appId:subAppId:/more parameters", decodedFragment);
+    }
+
+    @Test
+    public void testDefaultLocationDecodeFragmentFromFragment() {
+        // GIVEN
+        DefaultLocation location = new DefaultLocation("invalid%20appType:invalid%20appId:invalid%20subAppId;parameter%20one:parameter%20two");
+
+        // WHEN
+        String decodedAppType = location.getAppType();
+        String decodedAppId = location.getAppId();
+        String decodedSubAppId = location.getSubAppId();
+        String decodedParameter = location.getParameter();
+
+        // THEN
+        assertEquals("invalid appType", decodedAppType);
+        assertEquals("invalid appId", decodedAppId);
+        assertEquals("invalid subAppId", decodedSubAppId);
+        assertEquals("parameter one:parameter two", decodedParameter);
     }
 }

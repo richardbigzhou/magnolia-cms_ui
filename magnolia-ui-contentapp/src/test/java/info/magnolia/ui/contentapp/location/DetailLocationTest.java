@@ -35,16 +35,31 @@ package info.magnolia.ui.contentapp.location;
 
 import static org.junit.Assert.*;
 
+import info.magnolia.context.MgnlContext;
+import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.location.DefaultLocation;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  * ItemLocationTest.
  */
 public class DetailLocationTest {
+
+    @Before
+    public void setUp() throws Exception {
+        MockWebContext ctx = new MockWebContext();
+        MgnlContext.setInstance(ctx);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        MgnlContext.setInstance(null);
+    }
 
     @Test
     public void testToString() {
