@@ -90,9 +90,7 @@ public class LazyThumbnailLayoutWidget extends FlowPanel {
 
     private final ScrollPanel scroller = new ScrollPanel();
 
-    private final SliderClientBundle thumbnailBundle = GWT.create(SliderClientBundle.class);
-
-    private final MSlider thumbnailSizeSlider = new MSlider(thumbnailBundle.css());
+    private final Slider thumbnailSizeSlider = new Slider();
 
     private final CssRule thumbnailImageStyle = CssRule.create(".thumbnail-image");
 
@@ -106,26 +104,13 @@ public class LazyThumbnailLayoutWidget extends FlowPanel {
 
         addStyleName("thumbnail-layout");
 
-        thumbnailSizeSlider.setWidth("125px");
-        IconWidget iconSizeSmall = new IconWidget();
-        iconSizeSmall.setIconName("slider-min");
-        iconSizeSmall.setSize(30);
-        iconSizeSmall.setColor("#aaaaaa");
-
-        IconWidget iconSizeLarge = new IconWidget();
-        iconSizeLarge.setIconName("slider-max");
-        iconSizeLarge.setSize(30);
-        iconSizeLarge.setColor("#aaaaaa");
-
         thumbnailStyle.setProperty("margin", "3px");
 
         scroller.setWidget(imageContainer);
         scroller.addStyleName("thumbnail-scroller");
         scroller.getElement().getStyle().setPosition(Position.ABSOLUTE);
 
-        add(iconSizeSmall);
         add(thumbnailSizeSlider);
-        add(iconSizeLarge);
         add(scroller);
 
         bindHandlers();
