@@ -39,9 +39,6 @@ import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.ItemChosenListener;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
-import info.magnolia.ui.imageprovider.DefaultImageProvider;
-import info.magnolia.ui.imageprovider.ImageProvider;
-import info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig;
@@ -70,10 +67,6 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
 
     private static final String PLUGIN_PATH_MAGNOLIALINK = "/VAADIN/js/magnolialink/";
 
-    private static final String PLUGIN_NAME_DAMIMAGE = "damimage";
-
-    private static final String PLUGIN_PATH_DAMIMAGE = "/VAADIN/js/damimage/";
-
     /**
      * Event is emit from server to client when link has been selected.
      */
@@ -91,17 +84,6 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
      * Event carries optional link that should be treated as default link value.
      */
     public static final String EVENT_GET_MAGNOLIA_LINK = "mgnlGetLink";
-
-    /**
-     * Event is emit from client to server when user requests a DAM chooser dialog.
-     * Event carries optional link that should be treated as default link value.
-     */
-    public static final String EVENT_GET_DAM_IMAGE = "mgnlGetDamImage";
-
-    /**
-     * Event is emit from server to client when link has been selected.
-     */
-    public static final String EVENT_SEND_DAM_IMAGE = "mgnDamImageSelected";
 
     private final AppController appController;
     private MagnoliaRichTextField richTextEditor;
@@ -130,7 +112,6 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
         toolbars.add(new ToolbarGroup("special", new String[] { "Undo", "Redo" }));
         config.addToolbarLine(toolbars);
         config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
-        config.addListenedEvent(EVENT_GET_DAM_IMAGE);
         config.setResizeEnabled(false);
 
         richTextEditor = new MagnoliaRichTextField(config) {
@@ -139,7 +120,6 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
                 super.attach();
                 String path = VaadinService.getCurrentRequest().getContextPath();
                 config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path + PLUGIN_PATH_MAGNOLIALINK);
-                config.addPlugin(PLUGIN_NAME_DAMIMAGE, path + PLUGIN_PATH_DAMIMAGE);
             }
         };
 
@@ -147,7 +127,6 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
 
             @Override
             public void onPluginEvent(String eventName, String value) {
-                System.out.println("value: " + value);
 
                 if (eventName.equals(EVENT_GET_MAGNOLIA_LINK)) {
                     try {
@@ -158,10 +137,7 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
                         log.error("openLinkDialog failed", e);
                         richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, "Could not open target App");
                     }
-                } else if (eventName.equals(EVENT_GET_DAM_IMAGE)) {
-                    openDamDialog(value);
                 }
-
             }
         });
 
@@ -206,87 +182,6 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
                     }
 
                     richTextEditor.firePluginEvent(EVENT_SEND_MAGNOLIA_LINK, gson.toJson(mlink));
-                } catch (Exception e) {
-                    String error = "Not able to access the selected item. Value will not be set.";
-                    log.error(error, e);
-                    richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, error);
-                }
-            }
-
-            @Override
-            public void onChooseCanceled() {
-                richTextEditor.firePluginEvent(EVENT_CANCEL_LINK);
-            }
-        });
-    }
-
-    private void openDamDialog(String path) {
-
-        appController.openChooseDialog("assets", path, subAppContext, new ItemChosenListener() {
-
-            @Override
-            public void onItemChosen(Item chosenValue) {
-                /*
-                 * url to the original image?
-                 */
-                // String url = (String) chosenValue.getItemProperty("imagelink").getValue();
-
-                /*
-                 * Repository is 'dam' or 'dms' in practice? Same as Node.getSession().getWorkspace().getName()?
-                 */
-                // String repository = (String) chosenValue.getItemProperty("compositeid").getValue();
-
-                /*
-                 * Path in repository like Node.getPath()?
-                 */
-                // String path = (String) chosenValue.getItemProperty("path").getValue();
-
-                if (!(chosenValue instanceof JcrItemAdapter)) {
-                    richTextEditor
-                            .firePluginEvent(EVENT_CANCEL_LINK);
-                    return;
-                }
-
-                try {
-
-                    javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
-
-                    if (!jcrItem.isNode()) {
-                        return;
-                    }
-
-                    final Node selected = (Node) jcrItem;
-
-                    ConfiguredImageProviderDefinition cipd = new ConfiguredImageProviderDefinition();
-                    cipd.setOriginalImageNodeName("jcr:content");
-                    cipd.setImageProviderClass(DefaultImageProvider.class);
-                    ImageProvider provider = new DefaultImageProvider(cipd);
-                    String thumbnailPath = provider
-                            .getThumbnailPath(selected.getSession()
-                                    .getWorkspace().getName(),
-                                    selected.getPath());
-
-                    System.out.println("image: " + thumbnailPath);
-                    String identifier = selected.getIdentifier();
-
-                    // [2/14/13 2:23:34 PM] eric hechinger:
-                    // DamIdParser.createCompositeId(InternalAssetProvider.Id,
-                    // node.getIdentifier))
-                    // [2/14/13 2:23:55 PM] eric hechinger:
-                    // DamManager.getAsset(based on the id)
-
-                    Gson gson = new Gson();
-                    MagnoliaLink mlink = new MagnoliaLink();
-                    mlink.identifier = selected.getIdentifier();
-                    mlink.repository = selected.getSession().getWorkspace().getName();
-                    mlink.path = thumbnailPath;
-                    if (selected.hasProperty("title")) {
-                        mlink.caption = selected.getProperty("title").getString();
-                    } else {
-                        mlink.caption = selected.getName();
-                    }
-
-                    richTextEditor.firePluginEvent(EVENT_SEND_DAM_IMAGE, gson.toJson(mlink));
                 } catch (Exception e) {
                     String error = "Not able to access the selected item. Value will not be set.";
                     log.error(error, e);

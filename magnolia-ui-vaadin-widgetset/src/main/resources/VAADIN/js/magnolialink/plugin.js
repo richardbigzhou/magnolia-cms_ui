@@ -76,12 +76,19 @@
                     if (isInternalLink(selectedElement)) {
                         var href = selectedElement.getAttribute('href');                        
                         var path = href.match(/path\:\{([^\}]*)\}/);
+                        var repository = href.match(/repository\:\{([^\}]*)\}/);
+                        var source = app;
 
                         if(!path) {
                             path = href.match(/handle\:\{([^\}]*)\}/);
                         }
+                        
+                        switch (repository[1]) {
+                        case "dam": source = "assets"; break;
+                        case "website": source = "pages"; break;
+                        }
 
-                        editor.fire(EVENT_GET_MAGNOLIA_LINK, '{\'app\' :\''+ app+'\', \'path\': \''+path[1]+'\'}');                      
+                        editor.fire(EVENT_GET_MAGNOLIA_LINK, '{\'app\' :\''+ source+'\', \'path\': \''+path[1]+'\'}');                      
                     } else {
                         editor.fire(EVENT_GET_MAGNOLIA_LINK, '{\'app\' :\''+ app+'\'}');
                     }
