@@ -42,7 +42,6 @@ import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategory
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
-import info.magnolia.ui.vaadin.icon.CompositeIcon;
 import info.magnolia.ui.vaadin.icon.ErrorIcon;
 import info.magnolia.ui.vaadin.icon.InfoIcon;
 import info.magnolia.ui.vaadin.icon.WarningIcon;
@@ -395,38 +394,28 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
 
             if (TYPE_PROPERTY_ID.equals(columnId)) {
                 final Property<MessageType> typeProperty = source.getContainerProperty(itemId, columnId);
-
                 final MessageType messageType = typeProperty.getValue();
-                final Label messageTypeIcon = new Label();
-                messageTypeIcon.setSizeUndefined();
-                messageTypeIcon.addStyleName("icon");
-                messageTypeIcon.addStyleName("message-type");
-
-                CompositeIcon icon = null;
 
                 switch (messageType) {
                 case INFO:
-                    messageTypeIcon.addStyleName("icon-info");
-                    icon = new InfoIcon();
-                    break;
+                    return new InfoIcon();
+
                 case WARNING:
-                    messageTypeIcon.addStyleName("icon-warning");
-                    messageTypeIcon.addStyleName("warning");
-                    icon = new WarningIcon();
-                    break;
+                    return new WarningIcon();
+
                 case ERROR:
-                    messageTypeIcon.addStyleName("icon-error");
-                    messageTypeIcon.addStyleName("error");
-                    icon = new ErrorIcon();
-                    break;
+                    return new ErrorIcon();
+
                 case WORKITEM:
+
+                    final Label messageTypeIcon = new Label();
+                    messageTypeIcon.setSizeUndefined();
+                    messageTypeIcon.addStyleName("icon");
+                    messageTypeIcon.addStyleName("message-type");
                     messageTypeIcon.addStyleName("icon-work-item");
-                    icon = new InfoIcon();
-                    break;
+                    return messageTypeIcon;
 
                 }
-                // return messageTypeIcon;
-                return icon;
             }
             return null;
         }
