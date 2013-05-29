@@ -35,7 +35,9 @@ package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Button.ClickEvent;
@@ -56,6 +58,8 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
 
     private CheckBox groupByTypeCheckBox;
 
+    private Map<MessageCategory, MessageCategoryButton> messageCategoryButtonMap = new HashMap<MessageCategory, MessageCategoryButton>();
+
     public PulseMessageCategoryNavigator() {
         super();
         setStyleName("navigator");
@@ -68,6 +72,7 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
             if (category == MessageCategory.ALL) {
                 button.setActive(true);
             }
+            messageCategoryButtonMap.put(category, button);
             addComponent(button);
         }
 
@@ -212,5 +217,9 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
                 badge.setVisible(true);
             }
         }
+    }
+
+    public void updateCategoryBadgeCount(MessageCategory category, int count) {
+        messageCategoryButtonMap.get(category).updateMessagesCount(count);
     }
 }

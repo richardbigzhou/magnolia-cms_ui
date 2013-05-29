@@ -63,8 +63,13 @@ public interface MessagesManager {
     int getNumberOfUnclearedMessagesForUser(String userName);
 
     /**
+     * Returns how many of the messages of the given type kept for a specific user that haven't been cleared.
+     */
+    int getNumberOfUnclearedMessagesForUserAndByType(String userName, MessageType type);
+
+    /**
      * Returns all messages kept for a specific user.
-     *
+     * 
      * @param userName name of the user
      * @return list of messages kept for the user
      */

@@ -94,18 +94,24 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener 
                 if (grouping) {
                     buildTree();
                 }
+                final MessageType type = message.getType();
 
-                if (message.getType().isSignificant()) {
+                if (type.isSignificant()) {
                     shell.updateShellAppIndication(ShellAppType.PULSE, 1);
                 }
+                doUpdateCategoryBadgeCount(type);
+
             }
 
             @Override
             public void messageCleared(Message message) {
                 assignPropertiesFromMessage(message, container.getItem(message.getId()));
-                if (message.getType().isSignificant()) {
+
+                final MessageType type = message.getType();
+                if (type.isSignificant()) {
                     shell.updateShellAppIndication(ShellAppType.PULSE, -1);
                 }
+                doUpdateCategoryBadgeCount(type);
             }
         });
 
@@ -333,6 +339,27 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener 
          */
         container = createMessageDataSource();
         view.setDataSource(container);
+    }
+
+    private void doUpdateCategoryBadgeCount(final MessageType type) {
+        int count = 0;
+        switch (type) {
+
+        case ERROR:
+        case WARNING:
+            count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(MgnlContext.getUser().getName(), MessageType.ERROR);
+            count += messagesManager.getNumberOfUnclearedMessagesForUserAndByType(MgnlContext.getUser().getName(), MessageType.WARNING);
+            view.updateCategoryBadgeCount(MessageCategory.PROBLEM, count);
+            break;
+        case INFO:
+            count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(MgnlContext.getUser().getName(), type);
+            view.updateCategoryBadgeCount(MessageCategory.INFO, count);
+            break;
+        case WORKITEM:
+            count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(MgnlContext.getUser().getName(), type);
+            view.updateCategoryBadgeCount(MessageCategory.WORK_ITEM, count);
+            break;
+        }
     }
 
     /**

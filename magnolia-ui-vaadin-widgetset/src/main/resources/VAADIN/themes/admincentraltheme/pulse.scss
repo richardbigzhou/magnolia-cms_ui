@@ -133,10 +133,13 @@
   color:$c13;
   font-family:DINWebPro, sans-serif;
   line-height:1;
-  text-transform:uppercase;
   width: 150px !important;
 }
 
+.v-pulse .navigator-button .v-nativebutton-caption {
+  text-decoration:none;
+  text-transform: uppercase;
+}
 .v-pulse .navigator-button.active {
   color: #000;
 }
@@ -155,9 +158,9 @@
     text-align: center;
     margin-left: 60px;
 }
+
 .v-pulse .v-nativebutton-active {color:$c10;}
 .v-pulse .v-nativebutton::-moz-focus-inner {padding:0; border:0}
-.v-pulse .navigator-button .v-nativebutton-caption {text-decoration:none;}
 
 .v-pulse .back-button {
   display: inline-block;

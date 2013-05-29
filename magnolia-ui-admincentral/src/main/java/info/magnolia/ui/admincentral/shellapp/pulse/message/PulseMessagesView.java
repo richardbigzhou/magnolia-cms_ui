@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseSubView;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategory;
 
 import java.util.Collection;
 import java.util.Set;
@@ -50,6 +51,8 @@ public interface PulseMessagesView extends PulseSubView {
     void setListener(Listener listener);
 
     void refresh();
+
+    void updateCategoryBadgeCount(MessageCategory type, int count);
 
     /**
      * Listener interface to call back to {@link PulseMessagesPresenter}.
@@ -68,5 +71,6 @@ public interface PulseMessagesView extends PulseSubView {
 
         void deleteMessages(Set<String> messageIds);
     }
+
 
 }
