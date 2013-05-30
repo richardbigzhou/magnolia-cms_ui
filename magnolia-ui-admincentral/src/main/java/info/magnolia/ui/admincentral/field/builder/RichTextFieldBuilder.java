@@ -132,7 +132,7 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
                     try {
                         Gson gson = new Gson();
                         PluginData pluginData = gson.fromJson(value, PluginData.class);
-                        openLinkDialog(pluginData.path, pluginData.app);
+                        openLinkDialog(pluginData.path, pluginData.workspace);
                     } catch (Exception e) {
                         log.error("openLinkDialog failed", e);
                         richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, "Could not open target App");
@@ -145,13 +145,23 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
     }
 
     private static class PluginData {
-        public String app;
+        public String workspace;
         public String path;
     }
 
-    private void openLinkDialog(String path, String app) {
+    private String mapWorkSpaceToApp(String workspace) {
+        if (workspace.equalsIgnoreCase("dam")) {
+            return "assets";
+        } else if (workspace.equalsIgnoreCase("website")) {
+            return "pages";
+        }
 
-        appController.openChooseDialog(app, path, subAppContext, new ItemChosenListener() {
+        return "";
+    }
+
+    private void openLinkDialog(String path, String workspace) {
+
+        appController.openChooseDialog(mapWorkSpaceToApp(workspace), path, subAppContext, new ItemChosenListener() {
 
             @Override
             public void onItemChosen(Item chosenValue) {
