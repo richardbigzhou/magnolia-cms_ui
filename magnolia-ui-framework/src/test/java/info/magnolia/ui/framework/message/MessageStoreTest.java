@@ -50,8 +50,6 @@ import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 
-import java.util.Random;
-
 import javax.jcr.Session;
 
 import org.junit.Before;
@@ -238,14 +236,13 @@ public class MessageStoreTest extends MgnlTestCase {
     @Test
     public void testGetNumberOfUnclearedMessagesForUserAndByType() throws Exception {
         // GIVEN
-        Random random = new Random();
-        final MockNode errorMessage = createEmptyMessageMockNode(Integer.toString(random.nextInt(10000)));
+        final MockNode errorMessage = createEmptyMessageMockNode("1");
         errorMessage.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE, MessageType.ERROR.name());
 
-        final MockNode errorMessage2 = createEmptyMessageMockNode(Integer.toString(random.nextInt(10000)));
+        final MockNode errorMessage2 = createEmptyMessageMockNode("2");
         errorMessage2.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE, MessageType.ERROR.name());
 
-        final MockNode infoMessage = createEmptyMessageMockNode(Integer.toString(random.nextInt(10000)));
+        final MockNode infoMessage = createEmptyMessageMockNode("3");
         infoMessage.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE, MessageType.INFO.name());
 
         final String userName = MgnlContext.getUser().getName();
