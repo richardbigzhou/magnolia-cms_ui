@@ -33,9 +33,7 @@
  */
 package info.magnolia.ui.framework.action;
 
-import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.action.CommandActionDefinition;
-
 
 /**
  * The deactivation action, invoking the deactivation command, and updating the UI accordingly.
@@ -44,32 +42,14 @@ import info.magnolia.ui.api.action.CommandActionDefinition;
  */
 public class DeactivationActionDefinition extends CommandActionDefinition {
 
+    private static final String MESSAGE_KEY_SUCCESS = "action.deactivation.success";
+    private static final String MESSAGE_KEY_FAILURE = "action.deactivation.failure";
+    private static final String MESSAGE_KEY_ERROR = "action.deactivation.error";
+
     public DeactivationActionDefinition() {
         setImplementationClass(DeactivationAction.class);
-    }
-
-    @Override
-    public String getSuccessMessage() {
-        if (workflowInstalled()) {
-            return "The workflow has been started.";
-        }
-        return "Deactivation has been started.";
-    }
-
-    @Override
-    public String getFailureMessage() {
-        if (workflowInstalled()) {
-            return "The workflow could not be launched.";
-        }
-        return "Deactivation has failed.";
-    }
-
-    @Override
-    public String getErrorMessage() {
-        return "Deactivation failed. Please contact the system administrator for assistance.";
-    }
-
-    private boolean workflowInstalled() {
-        return SessionUtil.getNode("config", "/modules/workflow-base") != null;
+        setSuccessMessage(MESSAGE_KEY_SUCCESS);
+        setFailureMessage(MESSAGE_KEY_FAILURE);
+        setErrorMessage(MESSAGE_KEY_ERROR);
     }
 }

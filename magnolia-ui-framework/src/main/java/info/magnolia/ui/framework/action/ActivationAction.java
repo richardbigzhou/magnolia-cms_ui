@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.action;
 
 import info.magnolia.cms.exchange.ExchangeException;
+import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
@@ -87,7 +88,7 @@ public class ActivationAction extends AbstractCommandAction<ActivationActionDefi
             errorMessage = e.getCause().getLocalizedMessage();
             errorMessage = StringUtils.substring(errorMessage, StringUtils.indexOf(errorMessage, "error detected:"));
         } else {
-            errorMessage = getDefinition().getErrorMessage();
+            errorMessage = MessagesManager.get(getDefinition().getErrorMessage());
         }
         uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, errorMessage);
     }
@@ -102,10 +103,10 @@ public class ActivationAction extends AbstractCommandAction<ActivationActionDefi
         String message;
         MessageStyleTypeEnum messageStyleType;
         if (!result) {
-            message = getDefinition().getSuccessMessage();
+            message = MessagesManager.get(getDefinition().getSuccessMessage());
             messageStyleType = MessageStyleTypeEnum.INFO;
         } else {
-            message = getDefinition().getFailureMessage();
+            message = MessagesManager.get(getDefinition().getFailureMessage());
             messageStyleType = MessageStyleTypeEnum.ERROR;
         }
 

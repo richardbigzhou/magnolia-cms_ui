@@ -371,7 +371,7 @@
         <sv:value>3ede7e65-23a8-4da1-9035-135f13691453</sv:value>
       </sv:property>
       <sv:property sv:name="icon" sv:type="String">
-        <sv:value>icon-folder</sv:value>
+        <sv:value>icon-folder-l</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:created" sv:type="Date">
         <sv:value>2013-05-30T08:56:39.261+02:00</sv:value>
