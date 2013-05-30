@@ -39,7 +39,7 @@ import static org.mockito.Mockito.*;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionExecutor;
-import info.magnolia.ui.api.availability.AvailabilityRule;
+import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.contentapp.browser.BrowserPresenter;
 import info.magnolia.ui.contentapp.browser.BrowserSubApp;
 import info.magnolia.ui.framework.app.AppContext;
@@ -108,9 +108,9 @@ public class ContentSubAppTest {
         }
     }
 
-    private class DummyRule implements AvailabilityRule {
+    private class DummyRule extends AbstractAvailabilityRule {
         @Override
-        public boolean isAvailable(Item item) {
+        public boolean isAvailableForItem(Item item) {
             return true;
         }
     }

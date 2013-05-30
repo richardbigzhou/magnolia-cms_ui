@@ -66,5 +66,5 @@ public interface ActionExecutor {
      *
      * @see AvailabilityDefinition
      */
-    boolean isAvailable(String actionName, Item item);
+    boolean isAvailable(String actionName, Item... items);
 }

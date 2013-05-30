@@ -31,46 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.availability;
+package info.magnolia.ui.api.availability;
 
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import javax.jcr.Item;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * This rule returns true, if the item is node of the mgnl:page type and has a subnode of the same type.
+ * Abstract rule class.
  */
-public class PageHasSubpagesRule extends AbstractAvailabilityRule {
-
-    private static final Logger log = LoggerFactory.getLogger(PageHasSubpagesRule.class);
+public abstract class AbstractAvailabilityRule implements AvailabilityRule {
 
     @Override
-    public boolean isAvailableForItem(Item item) {
-        // item must be a Node
-        if (item != null && item.isNode()) {
-            Node node = (Node) item;
-            try {
-                // node must be of the Page type
-                if (NodeUtil.isNodeType(node, NodeTypes.Page.NAME)) {
-                    // has sub-pages?
-                    return NodeUtil.getNodes(node, NodeTypes.Page.NAME).iterator().hasNext();
-                }
-            } catch (RepositoryException e) {
-                String path = "unknown";
-                try {
-                    path = node.getPath();
-                } catch (RepositoryException e1) {
-                    // nothing to do
-                }
-                log.warn("Error evaluating availability for node [{}], returning false: {}", path, e.getMessage());
+    public boolean isAvailable(Item... items) {
+        // sanity check
+        if (items == null || items.length == 0) {
+            return false;
+        }
+        // for selected items
+        for (Item item : items) {
+            // if not available for any of the items, not available at all
+            if (!isAvailableForItem(item)) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
+
+    /**
+     * This method defines the actual evaluation logic for one item.
+     */
+    protected abstract boolean isAvailableForItem(Item item);
+
 }

@@ -107,7 +107,12 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
     }
 
     @Override
-    public boolean isAvailable(String actionName, Item item) {
+    public boolean isAvailable(String actionName, Item... items) {
+
+        // sanity check
+        if (items == null || items.length == 0) {
+            return false;
+        }
 
         ActionDefinition actionDefinition = getActionDefinition(actionName);
         if (actionDefinition == null) {
@@ -120,15 +125,31 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
         if ((availability.getRuleClass() != null)) {
             // if the rule class cannot be instantiated, or the rule returns false
             AvailabilityRule rule = componentProvider.newInstance(availability.getRuleClass());
-            if (rule == null || !rule.isAvailable(item)) {
+            if (rule == null || !rule.isAvailable(items)) {
                 return false;
             }
+        }
+
+        if (items != null && items.length > 1) {
+            // WE DO NOT SUPPORT BULK ACTIONS NOW
+            return false;
         }
 
         // Validate that the user has all required roles
         if (!availability.getAccess().hasAccess(MgnlContext.getUser())) {
             return false;
         }
+
+        for (Item item : items) {
+            if (!isAvailableForItem(availability, item)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isAvailableForItem(AvailabilityDefinition availability, Item item) {
 
         if (item == null) {
             return availability.isRoot();
@@ -153,5 +174,6 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
         }
 
         return false;
+
     }
 }
