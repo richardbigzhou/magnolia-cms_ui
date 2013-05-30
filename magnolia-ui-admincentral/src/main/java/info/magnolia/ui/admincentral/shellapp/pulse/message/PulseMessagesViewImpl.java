@@ -151,6 +151,7 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
         root.addComponent(messageTable);
         root.setExpandRatio(messageTable, 1f);
         messageTable.setSizeFull();
+        messageTable.addStyleName("message-table");
         messageTable.setSelectable(true);
         messageTable.setMultiSelect(true);
         messageTable.addGeneratedColumn(NEW_PROPERTY_ID, newMessageColumnGenerator);

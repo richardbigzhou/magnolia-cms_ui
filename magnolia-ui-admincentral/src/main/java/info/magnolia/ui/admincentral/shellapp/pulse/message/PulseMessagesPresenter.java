@@ -122,10 +122,17 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener 
 
     public View start() {
         view.setListener(this);
+        initView();
+        return view;
+    }
+
+    private void initView() {
         container = createMessageDataSource();
         view.setDataSource(container);
         view.refresh();
-        return view;
+        for (MessageType type : MessageType.values()) {
+            doUpdateCategoryBadgeCount(type);
+        }
     }
 
 
@@ -337,8 +344,7 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener 
         /*
          * Refreshes the view to display the updated underlying data.
          */
-        container = createMessageDataSource();
-        view.setDataSource(container);
+        initView();
     }
 
     private void doUpdateCategoryBadgeCount(final MessageType type) {
