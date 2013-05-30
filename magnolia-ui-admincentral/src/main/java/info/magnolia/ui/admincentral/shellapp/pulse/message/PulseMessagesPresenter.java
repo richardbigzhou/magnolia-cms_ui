@@ -94,18 +94,17 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener 
                 if (grouping) {
                     buildTree();
                 }
+                final MessageType type = message.getType();
+                doUnreadMessagesUpdate(type, 1);
 
-                if (message.getType().isSignificant()) {
-                    shell.updateShellAppIndication(ShellAppType.PULSE, 1);
-                }
             }
 
             @Override
             public void messageCleared(Message message) {
                 assignPropertiesFromMessage(message, container.getItem(message.getId()));
-                if (message.getType().isSignificant()) {
-                    shell.updateShellAppIndication(ShellAppType.PULSE, -1);
-                }
+
+                final MessageType type = message.getType();
+                doUnreadMessagesUpdate(type, -1);
             }
         });
 
@@ -116,10 +115,17 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener 
 
     public View start() {
         view.setListener(this);
+        initView();
+        return view;
+    }
+
+    private void initView() {
         container = createMessageDataSource();
         view.setDataSource(container);
         view.refresh();
-        return view;
+        for (MessageType type : MessageType.values()) {
+            doUnreadMessagesUpdate(type, 0);
+        }
     }
 
 
@@ -314,7 +320,7 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener 
             return;
         }
         final String userName = MgnlContext.getUser().getName();
-        int significantMessagesDeleted = 0;
+        int messagesDeleted = 0;
 
         for (String messageId : messageIds) {
             Message message = messagesManager.getMessageById(userName, messageId);
@@ -323,16 +329,41 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener 
             }
             messagesManager.removeMessage(userName, messageId);
 
-            if (message.getType().isSignificant() && !message.isCleared()) {
-                significantMessagesDeleted++;
+            if (!message.isCleared()) {
+                messagesDeleted++;
             }
         }
-        shell.updateShellAppIndication(ShellAppType.PULSE, -significantMessagesDeleted);
+        shell.updateShellAppIndication(ShellAppType.PULSE, -messagesDeleted);
         /*
          * Refreshes the view to display the updated underlying data.
          */
-        container = createMessageDataSource();
-        view.setDataSource(container);
+        initView();
+    }
+
+    private void doUnreadMessagesUpdate(final MessageType type, int decrementOrIncrement) {
+
+        shell.updateShellAppIndication(ShellAppType.PULSE, decrementOrIncrement);
+
+        int count = 0;
+        final String userName = MgnlContext.getUser().getName();
+
+        switch (type) {
+
+        case ERROR:
+        case WARNING:
+            count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userName, MessageType.ERROR);
+            count += messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userName, MessageType.WARNING);
+            view.updateCategoryBadgeCount(MessageCategory.PROBLEM, count);
+            break;
+        case INFO:
+            count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userName, type);
+            view.updateCategoryBadgeCount(MessageCategory.INFO, count);
+            break;
+        case WORKITEM:
+            count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userName, type);
+            view.updateCategoryBadgeCount(MessageCategory.WORK_ITEM, count);
+            break;
+        }
     }
 
     /**

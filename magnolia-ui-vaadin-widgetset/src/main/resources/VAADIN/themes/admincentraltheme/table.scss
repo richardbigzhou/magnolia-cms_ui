@@ -46,11 +46,11 @@
       color: $c50;
       position: relative;
       right: 16px;
-    } 
-    
+    }
+
     .v-table-header-cell-desc.sortable .v-table-sort-indicator:before {
       @extend .icon-arrow1_s:before;
-      color: $c30;    
+      color: $c30;
       right: 0;
     }
 
@@ -130,6 +130,7 @@
 
     .v-table-cell-wrapper:empty:after {
       color: $c13;
+      font-size: 11px;
       content: '\2014';
     }
 
@@ -144,11 +145,15 @@
       display: inline-block;
       margin-left: 0;
       margin-right: 4px;
-      color: $c12;
+      color: $c11;
       font-size: 19px;
       height: 22px;
       width: 1em;
       vertical-align: text-bottom;
+    }
+
+    tr.v-selected .v-table-icon-element {
+      color: $c13;
     }
 
     .v-table-cell-wrapper .v-textfield {
@@ -171,10 +176,14 @@
       position: static;
       display: inline-block;
       background: none;
-      color: $c12;
+      color: $c13;
       font-size: 20px;
       text-align: right;
       width: 20px;
+    }
+
+    tr.v-selected .v-treetable-treespacer {
+      color: $c12;
     }
   }
 
@@ -195,41 +204,5 @@
       font-size: 28px;
     }
   }
-
-.v-magnolia-table .square {
-  width: 15px;
-  height: 15px;
-  display: inline-block;
-  margin-left: 5px;
-  margin-right: 5px;
-  margin-top: 5px;
-}
-
-.v-magnolia-table .tree-table-label.root .square {
-  background-color: #A7B900;
-}
-
-.v-magnolia-table .tree-table-label.child .square {
-  background-color: blue;
-}
-
-.v-magnolia-table .tree-table-label {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.datetimefield {
-  cursor: pointer;
-}
-
-.datetimefield .datefield {
-  float: left;
-}
-
-.datetimefield .timefield {
-  display: block !important;
-  text-align: right;
-  padding-left: 5px;
-}
 
 }

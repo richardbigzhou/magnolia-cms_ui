@@ -151,6 +151,7 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
         root.addComponent(messageTable);
         root.setExpandRatio(messageTable, 1f);
         messageTable.setSizeFull();
+        messageTable.addStyleName("message-table");
         messageTable.setSelectable(true);
         messageTable.setMultiSelect(true);
         messageTable.addGeneratedColumn(NEW_PROPERTY_ID, newMessageColumnGenerator);
@@ -433,6 +434,11 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
         doGrouping(false);
     }
 
+    @Override
+    public void updateCategoryBadgeCount(MessageCategory category, int count) {
+        navigator.updateCategoryBadgeCount(category, count);
+    }
+
     private void doGrouping(boolean checked) {
         listener.setGrouping(checked);
 
@@ -442,4 +448,5 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
             }
         }
     }
+
 }
