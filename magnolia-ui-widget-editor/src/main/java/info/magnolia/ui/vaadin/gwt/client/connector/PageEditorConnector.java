@@ -243,8 +243,10 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
                 if (!componentStopMoveEvent.isServerSide()) {
                     rpc.stopMoveComponent();
                 }
+                if (moveWidget != null && moveWidget.isAttached()) {
+                    moveWidget.detach();
+                }
                 model.setMoving(false);
-                moveWidget.detach();
             }
         });
 
