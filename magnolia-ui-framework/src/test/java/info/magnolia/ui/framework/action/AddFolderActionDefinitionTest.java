@@ -85,6 +85,7 @@ public class AddFolderActionDefinitionTest extends MgnlTestCase {
         eventBus = new RecordingEventBus();
     }
 
+    @Override
     @After
     public void tearDown() {
         MgnlContext.setInstance(null);

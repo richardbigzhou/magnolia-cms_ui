@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2011-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -218,8 +218,10 @@ public class ListViewImpl implements ListView {
     }
 
     @Override
-    public void select(String path) {
-        table.select(path);
+    public void select(String itemId) {
+        table.setValue(null);
+        table.select(itemId);
+        // do not #setCurrentPageFirstItemId because AbstractJcrContainer's index resolution is super slow.
     }
 
     @Override
