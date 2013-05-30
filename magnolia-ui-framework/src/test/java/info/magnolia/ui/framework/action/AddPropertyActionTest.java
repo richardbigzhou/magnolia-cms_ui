@@ -95,6 +95,7 @@ public class AddPropertyActionTest extends MgnlTestCase {
         eventBus = new RecordingEventBus();
     }
 
+    @Override
     @After
     public void tearDown() {
         MgnlContext.setInstance(null);
