@@ -260,7 +260,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
                 log.error("Could not rename JCR Node.", e);
             }
         } else if (propertyId != null && !propertyId.isEmpty()) {
-            if (property.getValue() != null && StringUtils.isNotEmpty(property.getValue().toString())) {
+            if (property.getValue() != null) {
                 try {
                     PropertyUtil.setProperty(node, propertyId, property.getValue());
                 } catch (RepositoryException e) {
