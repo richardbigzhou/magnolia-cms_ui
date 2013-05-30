@@ -55,16 +55,21 @@ public interface MessagesManager {
     void unregisterMessagesListener(String userName, MessageListener listener);
 
     /**
-     * Returns how many of the messages kept for a specific user that hasn't been cleared.
-     *
+     * Returns the number of uncleared (unread) messages for this user.
+     * 
      * @param userName name of the user
      * @return number of uncleared messages
      */
     int getNumberOfUnclearedMessagesForUser(String userName);
 
     /**
+     * Returns the number of uncleared (unread) messages for this user and for the specific message type.
+     */
+    int getNumberOfUnclearedMessagesForUserAndByType(String userName, MessageType type);
+
+    /**
      * Returns all messages kept for a specific user.
-     *
+     * 
      * @param userName name of the user
      * @return list of messages kept for the user
      */

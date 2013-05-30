@@ -46,10 +46,45 @@ public class DeactivationActionDefinition extends CommandActionDefinition {
     private static final String MESSAGE_KEY_FAILURE = "action.deactivation.failure";
     private static final String MESSAGE_KEY_ERROR = "action.deactivation.error";
 
+    private static final String MESSAGE_KEY_WORKFLOW_SUCCESS = "action.deactivation.workflow.success";
+    private static final String MESSAGE_KEY_WORKFLOW_FAILURE = "action.deactivation.workflow.failure";
+    private static final String MESSAGE_KEY_WORKFLOW_ERROR = "action.deactivation.workflow.error";
+
+    private String workflowSuccessMessage;
+    private String workflowFailureMessage;
+    private String workflowErrorMessage;
+
     public DeactivationActionDefinition() {
         setImplementationClass(DeactivationAction.class);
         setSuccessMessage(MESSAGE_KEY_SUCCESS);
         setFailureMessage(MESSAGE_KEY_FAILURE);
         setErrorMessage(MESSAGE_KEY_ERROR);
+        setWorkflowSuccessMessage(MESSAGE_KEY_WORKFLOW_SUCCESS);
+        setWorkflowFailureMessage(MESSAGE_KEY_WORKFLOW_FAILURE);
+        setWorkflowErrorMessage(MESSAGE_KEY_WORKFLOW_ERROR);
+    }
+
+    public String getWorkflowSuccessMessage() {
+        return workflowSuccessMessage;
+    }
+
+    public void setWorkflowSuccessMessage(String workflowSuccessMessage) {
+        this.workflowSuccessMessage = workflowSuccessMessage;
+    }
+
+    public String getWorkflowFailureMessage() {
+        return workflowFailureMessage;
+    }
+
+    public void setWorkflowFailureMessage(String workflowFailureMessage) {
+        this.workflowFailureMessage = workflowFailureMessage;
+    }
+
+    public String getWorkflowErrorMessage() {
+        return workflowErrorMessage;
+    }
+
+    public void setWorkflowErrorMessage(String workflowErrorMessage) {
+        this.workflowErrorMessage = workflowErrorMessage;
     }
 }

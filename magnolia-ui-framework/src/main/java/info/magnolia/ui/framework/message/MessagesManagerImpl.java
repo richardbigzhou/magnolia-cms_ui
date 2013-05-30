@@ -156,6 +156,11 @@ public class MessagesManagerImpl implements MessagesManager {
         messageStore.removeMessageById(userName, messageId);
     }
 
+    @Override
+    public int getNumberOfUnclearedMessagesForUserAndByType(String userName, MessageType type) {
+        return messageStore.getNumberOfUnclearedMessagesForUserAndByType(userName, type);
+    }
+
     private void sendMessageClearedEvent(String userName, Message message) {
         synchronized (listeners) {
             final List<MessageListener> listenerList = listeners.get(userName);
@@ -184,4 +189,5 @@ public class MessagesManagerImpl implements MessagesManager {
     private Message cloneMessage(Message message) throws CloneNotSupportedException {
         return message.clone();
     }
+
 }
