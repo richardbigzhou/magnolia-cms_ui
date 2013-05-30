@@ -213,6 +213,30 @@ public class MessageStore {
 
     }
 
+    public int getNumberOfUnclearedMessagesForUserAndByType(final String userName, final MessageType type) {
+        return MgnlContext.doInSystemContext(new MgnlContext.Op<Integer, RuntimeException>() {
+
+            @Override
+            public Integer exec() throws RuntimeException {
+                try {
+                    Session session = MgnlContext.getJCRSession(WORKSPACE_NAME);
+
+                    int n = 0;
+                    for (Node messageNode : NodeUtil.getNodes(getOrCreateUserNode(session, userName), MESSAGE_NODE_TYPE)) {
+                        if (messageNode.getProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE).getString().equals(type.name()) && !messageNode.getProperty(AdmincentralNodeTypes.SystemMessage.CLEARED).getBoolean()) {
+                            n++;
+                        }
+                    }
+                    return n;
+
+                } catch (RepositoryException e) {
+                    logger.warn("Failed to find the number of uncleared messages for user: " + userName, e);
+                    return 0;
+                }
+            }
+        });
+    }
+
     void marshallMessage(Message message, Node node) throws RepositoryException {
         Node2MapUtil.map2node(node, message);
     }
