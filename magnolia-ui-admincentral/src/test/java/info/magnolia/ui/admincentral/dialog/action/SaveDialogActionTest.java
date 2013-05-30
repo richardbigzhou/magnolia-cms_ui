@@ -96,6 +96,7 @@ public class SaveDialogActionTest extends MgnlTestCase {
         MgnlContext.setInstance(ctx);
     }
 
+    @Override
     @After
     public void tearDown() throws Exception {
         dialogActionDefinition = null;

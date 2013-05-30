@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.activation.action;
+package info.magnolia.ui.framework.action;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
@@ -45,14 +45,11 @@ import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
 import info.magnolia.event.EventBus;
-import info.magnolia.module.ModuleRegistry;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
-import info.magnolia.ui.framework.action.ActivationAction;
-import info.magnolia.ui.framework.action.ActivationActionDefinition;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -94,7 +91,7 @@ public class ActivationActionTest {
 
         commandsManager = mock(CommandsManager.class);
 
-        definition = new ActivationActionDefinition(mock(ModuleRegistry.class));
+        definition = new ActivationActionDefinition();
         definition.setCommand("activate");
 
         activationCommand = mock(Command.class);

@@ -24,6 +24,7 @@
       border-left: 1px solid $c13;
       color: $c11;
       line-height: 1;
+      outline: none !important;
 
       .v-nativebutton-caption {
         text-decoration: none;
@@ -82,7 +83,7 @@
         color: $c11;
       }
     }
-    
+
     .workbench-searchbox-clearbutton:before {
       margin: 0;
       padding: 0;
@@ -93,7 +94,7 @@
       top: 0;
       left: 0;
     }
-    
+
     .workbench-searchbox-clearbutton {
       font-family: 'Mag-Icons';
       font-size: 13px;
@@ -140,6 +141,20 @@
       .v-spacing {
         width: 16px;
       }
+    }
+
+    .datetimefield {
+      cursor: pointer;
+    }
+    
+    .datetimefield .datefield {
+      float: left;
+    }
+
+    .datetimefield .timefield {
+      display: block !important;
+      text-align: right;
+      padding-left: 5px;
     }
   }
 
