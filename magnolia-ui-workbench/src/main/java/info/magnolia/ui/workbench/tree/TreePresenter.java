@@ -107,8 +107,8 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
     }
 
     @Override
-    protected HierarchicalJcrContainer createContainer(WorkbenchDefinition workbench) {
-        return new HierarchicalJcrContainer(workbench);
+    protected HierarchicalJcrContainer createContainer(WorkbenchDefinition workbench, String viewTypeName) {
+        return new HierarchicalJcrContainer(workbench, viewTypeName);
     }
 
     // TREE VIEW LISTENER IMPL

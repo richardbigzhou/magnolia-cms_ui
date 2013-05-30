@@ -68,7 +68,7 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     public ListView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName) {
         super.start(workbench, eventBus, viewTypeName);
 
-        this.container = createContainer(workbench);
+        this.container = createContainer(workbench, viewTypeName);
         view.setListener(this);
         view.setContainer(container);
 
@@ -129,8 +129,8 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
         container.fireItemSetChange();
     }
 
-    protected AbstractJcrContainer createContainer(WorkbenchDefinition workbench) {
-        return new FlatJcrContainer(workbench);
+    protected AbstractJcrContainer createContainer(WorkbenchDefinition workbench, String viewTypeName) {
+        return new FlatJcrContainer(workbench, viewTypeName);
     }
 
     @Override

@@ -21,6 +21,9 @@
   <sv:property sv:name="includeProperties" sv:type="String">
     <sv:value>true</sv:value>
   </sv:property>
+  <sv:property sv:name="jcr:created" sv:type="Date">
+    <sv:value>2013-05-30T08:56:39.237+02:00</sv:value>
+  </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
   </sv:property>
@@ -51,6 +54,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>c26c0f3d-e0c6-4439-a76f-3faa680190d0</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-05-30T08:56:39.247+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -85,6 +91,9 @@
       </sv:property>
       <sv:property sv:name="expandRatio" sv:type="Double">
         <sv:value>2.0</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:created" sv:type="Date">
+        <sv:value>2013-05-30T08:56:39.248+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -130,6 +139,9 @@
       <sv:property sv:name="expandRatio" sv:type="Double">
         <sv:value>2.0</sv:value>
       </sv:property>
+      <sv:property sv:name="jcr:created" sv:type="Date">
+        <sv:value>2013-05-30T08:56:39.249+02:00</sv:value>
+      </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
@@ -171,6 +183,9 @@
       <sv:property sv:name="expandRatio" sv:type="Double">
         <sv:value>0.0</sv:value>
       </sv:property>
+      <sv:property sv:name="jcr:created" sv:type="Date">
+        <sv:value>2013-05-30T08:56:39.250+02:00</sv:value>
+      </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
@@ -208,6 +223,9 @@
       </sv:property>
       <sv:property sv:name="formatterClass" sv:type="String">
         <sv:value>info.magnolia.ui.workbench.column.StatusColumnFormatter</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:created" sv:type="Date">
+        <sv:value>2013-05-30T08:56:39.258+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -250,6 +268,9 @@
       <sv:property sv:name="formatterClass" sv:type="String">
         <sv:value>info.magnolia.ui.workbench.column.DateColumnFormatter</sv:value>
       </sv:property>
+      <sv:property sv:name="jcr:created" sv:type="Date">
+        <sv:value>2013-05-30T08:56:39.259+02:00</sv:value>
+      </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
@@ -289,6 +310,9 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>a32aeb07-8cd0-4b8a-b50c-f2b3af3eefa1</sv:value>
     </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-05-30T08:56:39.260+02:00</sv:value>
+    </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
     </sv:property>
@@ -313,6 +337,9 @@
       </sv:property>
       <sv:property sv:name="icon" sv:type="String">
         <sv:value>icon-node-content</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:created" sv:type="Date">
+        <sv:value>2013-05-30T08:56:39.260+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -346,6 +373,9 @@
       <sv:property sv:name="icon" sv:type="String">
         <sv:value>icon-folder</sv:value>
       </sv:property>
+      <sv:property sv:name="jcr:created" sv:type="Date">
+        <sv:value>2013-05-30T08:56:39.261+02:00</sv:value>
+      </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
@@ -376,6 +406,9 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>00869e47-364d-4d04-b644-902e58d19588</sv:value>
     </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-05-30T08:56:39.262+02:00</sv:value>
+    </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
     </sv:property>
@@ -400,6 +433,9 @@
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
         <sv:value>info.magnolia.ui.workbench.tree.TreePresenterDefinition</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:created" sv:type="Date">
+        <sv:value>2013-05-30T08:56:39.275+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -430,6 +466,9 @@
       <sv:property sv:name="class" sv:type="String">
         <sv:value>info.magnolia.ui.workbench.list.ListPresenterDefinition</sv:value>
       </sv:property>
+      <sv:property sv:name="jcr:created" sv:type="Date">
+        <sv:value>2013-05-30T08:56:39.276+02:00</sv:value>
+      </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
@@ -458,6 +497,9 @@
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
         <sv:value>info.magnolia.ui.workbench.search.SearchPresenterDefinition</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:created" sv:type="Date">
+        <sv:value>2013-05-30T08:56:39.277+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>

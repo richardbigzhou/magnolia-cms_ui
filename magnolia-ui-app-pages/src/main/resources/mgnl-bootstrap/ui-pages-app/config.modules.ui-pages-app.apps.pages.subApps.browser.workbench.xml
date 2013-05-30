@@ -19,7 +19,7 @@
     <sv:value>false</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:created" sv:type="Date">
-    <sv:value>2013-05-06T09:36:40.322+02:00</sv:value>
+    <sv:value>2013-05-30T08:56:40.480+02:00</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
@@ -53,7 +53,7 @@
       <sv:value>0879f334-ecf9-45c7-9c46-76257a26840f</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-06T09:36:40.323+02:00</sv:value>
+      <sv:value>2013-05-30T08:56:40.481+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -87,7 +87,7 @@
         <sv:value>2.0</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-06T09:36:40.324+02:00</sv:value>
+        <sv:value>2013-05-30T08:56:40.482+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -131,7 +131,7 @@
         <sv:value>2.0</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-06T09:36:40.325+02:00</sv:value>
+        <sv:value>2013-05-30T08:56:40.483+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -181,7 +181,7 @@
         <sv:value>info.magnolia.ui.app.pages.column.TemplateColumnFormatter</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-06T09:36:40.326+02:00</sv:value>
+        <sv:value>2013-05-30T08:56:40.484+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -228,7 +228,7 @@
         <sv:value>info.magnolia.ui.workbench.column.StatusColumnFormatter</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-06T09:36:40.327+02:00</sv:value>
+        <sv:value>2013-05-30T08:56:40.486+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -272,7 +272,7 @@
         <sv:value>info.magnolia.ui.workbench.column.DateColumnFormatter</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-06T09:36:40.328+02:00</sv:value>
+        <sv:value>2013-05-30T08:56:40.487+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -314,7 +314,7 @@
       <sv:value>9492d214-a1c8-4920-8513-0aef36809aaf</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-06T09:36:40.328+02:00</sv:value>
+      <sv:value>2013-05-30T08:56:40.487+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -342,7 +342,7 @@
         <sv:value>icon-file-webpage</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-06T09:36:40.329+02:00</sv:value>
+        <sv:value>2013-05-30T08:56:40.488+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -375,7 +375,7 @@
       <sv:value>8759bcb9-fb1b-4e38-b3f4-5ebdd89387d8</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-06T09:36:40.330+02:00</sv:value>
+      <sv:value>2013-05-30T08:56:40.489+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -409,7 +409,7 @@
         <sv:value>info.magnolia.ui.workbench.tree.TreePresenterDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-06T09:36:40.330+02:00</sv:value>
+        <sv:value>2013-05-30T08:56:40.490+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -421,7 +421,7 @@
         <sv:value>2013-03-28T14:23:12.139+01:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-        <sv:value>2013-03-28T15:13:45.723+01:00</sv:value>
+        <sv:value>2013-05-30T10:42:04.232+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
         <sv:value>superuser</sv:value>
@@ -441,7 +441,7 @@
         <sv:value>info.magnolia.ui.workbench.list.ListPresenterDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-06T09:36:40.331+02:00</sv:value>
+        <sv:value>2013-05-30T08:56:40.490+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -453,7 +453,7 @@
         <sv:value>2013-03-28T14:23:12.139+01:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-        <sv:value>2013-03-28T15:13:45.723+01:00</sv:value>
+        <sv:value>2013-05-30T10:30:56.193+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
         <sv:value>superuser</sv:value>
@@ -473,7 +473,7 @@
         <sv:value>info.magnolia.ui.workbench.search.SearchPresenterDefinition</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-06T09:36:40.332+02:00</sv:value>
+        <sv:value>2013-05-30T08:56:40.491+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>

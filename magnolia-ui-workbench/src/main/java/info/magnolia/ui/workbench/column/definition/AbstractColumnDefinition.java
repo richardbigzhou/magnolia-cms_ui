@@ -58,7 +58,7 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     private boolean searchable = true;
 
-    private boolean editable;
+    private boolean editable = false;
 
     private boolean enabled = true;
 

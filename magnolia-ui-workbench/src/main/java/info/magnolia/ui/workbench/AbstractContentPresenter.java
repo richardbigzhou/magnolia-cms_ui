@@ -137,10 +137,7 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
     }
 
     public Iterator<ColumnDefinition> getColumnsIterator() {
-
         Iterator<ColumnDefinition> it = null;
-
-
         Iterator<ContentPresenterDefinition> viewsIterator = workbenchDefinition.getContentViews().iterator();
         while (viewsIterator.hasNext()) {
             ContentPresenterDefinition contentView = viewsIterator.next();
@@ -148,12 +145,6 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
                 it = contentView.getColumns().iterator();
                 break;
             }
-        }
-
-        // TODO CLZ Remove this once all apps have their columns configured on the viewtypes instead of the workbench.
-        if (!it.hasNext()) {
-            // Columns not configured on node yet.
-            it = workbenchDefinition.getColumns().iterator();
         }
         return it;
     }
