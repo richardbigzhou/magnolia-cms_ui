@@ -136,7 +136,7 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
         }
     }
 
-    public Iterator<ColumnDefinition> getColumnsIterator() {
+    protected Iterator<ColumnDefinition> getColumnsIterator() {
         Iterator<ColumnDefinition> it = null;
         Iterator<ContentPresenterDefinition> viewsIterator = workbenchDefinition.getContentViews().iterator();
         while (viewsIterator.hasNext()) {

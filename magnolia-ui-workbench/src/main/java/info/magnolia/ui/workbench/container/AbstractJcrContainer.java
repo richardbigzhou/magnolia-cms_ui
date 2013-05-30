@@ -171,7 +171,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         return workbenchDefinition;
     }
 
-    public Iterator<ColumnDefinition> getColumnsIterator() {
+    protected Iterator<ColumnDefinition> getColumnsIterator() {
         Iterator<ColumnDefinition> it = null;
         Iterator<ContentPresenterDefinition> viewsIterator = workbenchDefinition.getContentViews().iterator();
         while (viewsIterator.hasNext()) {
