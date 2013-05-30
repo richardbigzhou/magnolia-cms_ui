@@ -56,15 +56,12 @@ public abstract class AbstractAccessFieldBuilder<D extends FieldDefinition> exte
         super(definition, relatedFieldItem);
     }
 
-    protected JcrNewNodeAdapter addAclEntryItem(JcrNodeAdapter roleItem, String aclName) throws RepositoryException {
-
-        Node aclNode = null;
-
+    protected AbstractJcrNodeAdapter getOrAddAclItem(JcrNodeAdapter roleItem, String aclName) throws RepositoryException {
         AbstractJcrNodeAdapter aclItem = roleItem.getChild(aclName);
         if (aclItem == null) {
             Node roleNode = roleItem.getJcrItem();
             if (roleNode.hasNode(aclName)) {
-                aclNode = roleNode.getNode(aclName);
+                Node aclNode = roleNode.getNode(aclName);
                 aclItem = new JcrNodeAdapter(aclNode);
                 roleItem.addChild(aclItem);
             } else {
@@ -73,16 +70,24 @@ public abstract class AbstractAccessFieldBuilder<D extends FieldDefinition> exte
                 roleItem.addChild(aclItem);
             }
         }
+        return aclItem;
+    }
 
+    protected JcrNewNodeAdapter addAclEntryItem(AbstractJcrNodeAdapter aclItem) throws RepositoryException {
         JcrNewNodeAdapter newItem = new JcrNewNodeAdapter(aclItem.getJcrItem(), NodeTypes.ContentNode.NAME);
-        newItem.setNodeName(getUniqueNodeNameForChild(aclItem, aclNode));
+        newItem.setNodeName(getUniqueNodeNameForChild(aclItem));
         aclItem.addChild(newItem);
         return newItem;
     }
 
-    private String getUniqueNodeNameForChild(AbstractJcrNodeAdapter parentItem, Node parentNode) throws RepositoryException {
+    protected String getUniqueNodeNameForChild(AbstractJcrNodeAdapter parentItem) throws RepositoryException {
 
         // The adapter cannot handle more than one unnamed child, see MGNLUI-1459, so we have to generate unique ones
+
+        Node parentNode = null;
+        if (!(parentItem instanceof JcrNewNodeAdapter)) {
+            parentNode = parentItem.getJcrItem();
+        }
 
         int newNodeName = 0;
         while (true) {

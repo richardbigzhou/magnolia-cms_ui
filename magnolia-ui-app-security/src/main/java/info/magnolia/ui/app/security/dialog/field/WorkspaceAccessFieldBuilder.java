@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.app.security.dialog.field;
 
+import info.magnolia.cms.security.Permission;
 import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.api.context.UiContext;
@@ -82,17 +82,19 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * Field builder for the workspace ACL field.
+ * Field builder for the workspace ACL field.  Adds data to the item in an intermediary format that is transformed to the
+ * final format by {@link info.magnolia.ui.app.security.dialog.action.SaveRoleDialogAction}.
  *
  * @param <D> definition type
  * @see WorkspaceAccessFieldDefinition
+ * @see info.magnolia.ui.app.security.dialog.action.SaveRoleDialogAction
  */
 public class WorkspaceAccessFieldBuilder<D extends WorkspaceAccessFieldDefinition> extends AbstractAccessFieldBuilder<D> {
 
     private static final Logger log = LoggerFactory.getLogger(WorkspaceAccessFieldBuilder.class);
 
-    private static final String PERMISSIONS_PROPERTY_NAME = "permissions";
-    private static final String PATH_PROPERTY_NAME = "path";
+    public static final String INTERMEDIARY_FORMAT_PROPERTY_NAME = "__intermediary_format";
+    public static final String ACCESS_TYPE_PROPERTY_NAME = "accessType";
 
     private final ComponentProvider componentProvider;
     private final UiContext uiContext;
@@ -123,13 +125,26 @@ public class WorkspaceAccessFieldBuilder<D extends WorkspaceAccessFieldDefinitio
             if (roleNode.hasNode(aclName)) {
 
                 final Node aclNode = roleNode.getNode(aclName);
+
+                AccessControlList acl = new AccessControlList();
+                acl.readEntries(aclNode);
+
                 AbstractJcrNodeAdapter aclItem = new JcrNodeAdapter(aclNode);
                 roleItem.addChild(aclItem);
 
-                for (Node entryNode : NodeUtil.getNodes(aclNode)) {
+                aclItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
 
-                    AbstractJcrNodeAdapter entryItem = new JcrNodeAdapter(entryNode);
-                    aclItem.addChild(entryItem);
+                for (AccessControlList.Entry entry : acl.getEntries()) {
+
+                    long permissions = entry.getPermissions();
+                    long accessType = entry.getAccessType();
+                    String path = entry.getPath();
+
+                    JcrNewNodeAdapter entryItem = addAclEntryItem(aclItem);
+                    entryItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
+                    entryItem.addItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, permissions));
+                    entryItem.addItemProperty(ACCESS_TYPE_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, accessType));
+                    entryItem.addItemProperty(AccessControlList.PATH_PROPERTY_NAME, new DefaultProperty<String>(String.class, path));
 
                     Component ruleRow = createRuleRow(aclLayout, entryItem, emptyLabel);
                     aclLayout.addComponent(ruleRow);
@@ -147,8 +162,19 @@ public class WorkspaceAccessFieldBuilder<D extends WorkspaceAccessFieldDefinitio
                 @Override
                 public void buttonClick(Button.ClickEvent event) {
                     try {
-                        JcrNewNodeAdapter newItem = addAclEntryItem(roleItem, aclName);
-                        Component ruleRow = createRuleRow(aclLayout, newItem, emptyLabel);
+
+                        AbstractJcrNodeAdapter aclItem = getOrAddAclItem(roleItem, aclName);
+                        if (aclItem.getItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME) == null) {
+                            aclItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
+                        }
+
+                        JcrNewNodeAdapter entryItem = addAclEntryItem(aclItem);
+                        entryItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
+                        entryItem.addItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, Permission.ALL));
+                        entryItem.addItemProperty(ACCESS_TYPE_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN));
+                        entryItem.addItemProperty(AccessControlList.PATH_PROPERTY_NAME, new DefaultProperty<String>(String.class, ""));
+
+                        Component ruleRow = createRuleRow(aclLayout, entryItem, emptyLabel);
                         aclLayout.removeComponent(emptyLabel);
                         aclLayout.addComponent(ruleRow, aclLayout.getComponentCount() - 1);
                     } catch (RepositoryException e) {
@@ -184,36 +210,39 @@ public class WorkspaceAccessFieldBuilder<D extends WorkspaceAccessFieldDefinitio
         final HorizontalLayout ruleLayout = new HorizontalLayout();
         ruleLayout.setSpacing(true);
 
-        NativeSelect select = new NativeSelect();
-        select.addItem(63L);
-        select.setItemCaption(63L, "Read/Write");
-        select.addItem(8L);
-        select.setItemCaption(8L, "Read-only");
-        select.addItem(0L);
-        select.setItemCaption(0L, "Deny access");
-        select.setNullSelectionAllowed(false);
-        select.setImmediate(true);
-        select.setInvalidAllowed(false);
-        select.setNewItemsAllowed(false);
-        Property permissionsProperty = ruleItem.getItemProperty(PERMISSIONS_PROPERTY_NAME);
-        if (permissionsProperty == null) {
-            permissionsProperty = new DefaultProperty<Long>(Long.class, 63L);
-            ruleItem.addItemProperty(PERMISSIONS_PROPERTY_NAME, permissionsProperty);
-        }
-        select.setPropertyDataSource(permissionsProperty);
-        ruleLayout.addComponent(select);
+        NativeSelect accessRights = new NativeSelect();
+        accessRights.setNullSelectionAllowed(false);
+        accessRights.setImmediate(true);
+        accessRights.setInvalidAllowed(false);
+        accessRights.setNewItemsAllowed(false);
+        accessRights.addItem(Permission.ALL);
+        accessRights.setItemCaption(Permission.ALL, "Read/Write");
+        accessRights.addItem(Permission.READ);
+        accessRights.setItemCaption(Permission.READ, "Read-only");
+        accessRights.addItem(Permission.NONE);
+        accessRights.setItemCaption(Permission.NONE, "Deny access");
+        accessRights.setPropertyDataSource(ruleItem.getItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME));
+        ruleLayout.addComponent(accessRights);
 
-        NativeSelect select2 = new NativeSelect();
-        ruleLayout.addComponent(select2);
+        NativeSelect accessType = new NativeSelect();
+        accessType.setNullSelectionAllowed(false);
+        accessType.setImmediate(true);
+        accessType.setInvalidAllowed(false);
+        accessType.setNewItemsAllowed(false);
+        accessType.setWidth("150px");
+        accessType.addItem(AccessControlList.ACCESS_TYPE_NODE);
+        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_NODE, "Selected");
+        accessType.addItem(AccessControlList.ACCESS_TYPE_CHILDREN);
+        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_CHILDREN, "Sub nodes");
+        accessType.addItem(AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN);
+        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, "Selected and sub nodes");
+        Property accessTypeProperty = ruleItem.getItemProperty(ACCESS_TYPE_PROPERTY_NAME);
+        accessType.setPropertyDataSource(accessTypeProperty);
+        ruleLayout.addComponent(accessType);
 
         final TextField textField = new TextField();
-        textField.setWidth("150px");
-        Property pathProperty = ruleItem.getItemProperty(PATH_PROPERTY_NAME);
-        if (pathProperty == null) {
-            pathProperty = new DefaultProperty<String>(String.class, "/*");
-            ruleItem.addItemProperty(PATH_PROPERTY_NAME, pathProperty);
-        }
-        textField.setPropertyDataSource(pathProperty);
+        textField.setWidth("125px");
+        textField.setPropertyDataSource(ruleItem.getItemProperty(AccessControlList.PATH_PROPERTY_NAME));
         ruleLayout.addComponent(textField);
 
         Button chooseButton = new Button("Choose...");

@@ -114,7 +114,8 @@ public class WebAccessFieldBuilder extends AbstractAccessFieldBuilder<WebAccessF
                 public void buttonClick(Button.ClickEvent event) {
 
                     try {
-                        JcrNewNodeAdapter newItem = addAclEntryItem(roleItem, ACL_NODE_NAME);
+                        AbstractJcrNodeAdapter aclItem = getOrAddAclItem(roleItem, ACL_NODE_NAME);
+                        JcrNewNodeAdapter newItem = addAclEntryItem(aclItem);
                         Component ruleRow = createRuleRow(aclLayout, newItem, emptyLabel);
                         aclLayout.removeComponent(emptyLabel);
                         aclLayout.addComponent(ruleRow, aclLayout.getComponentCount() - 1);
