@@ -95,11 +95,7 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener 
                     buildTree();
                 }
                 final MessageType type = message.getType();
-
-                if (type.isSignificant()) {
-                    shell.updateShellAppIndication(ShellAppType.PULSE, 1);
-                }
-                doUpdateCategoryBadgeCount(type);
+                doUnreadMessagesUpdate(type, 1);
 
             }
 
@@ -108,10 +104,7 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener 
                 assignPropertiesFromMessage(message, container.getItem(message.getId()));
 
                 final MessageType type = message.getType();
-                if (type.isSignificant()) {
-                    shell.updateShellAppIndication(ShellAppType.PULSE, -1);
-                }
-                doUpdateCategoryBadgeCount(type);
+                doUnreadMessagesUpdate(type, -1);
             }
         });
 
@@ -131,7 +124,7 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener 
         view.setDataSource(container);
         view.refresh();
         for (MessageType type : MessageType.values()) {
-            doUpdateCategoryBadgeCount(type);
+            doUnreadMessagesUpdate(type, 0);
         }
     }
 
@@ -327,7 +320,7 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener 
             return;
         }
         final String userName = MgnlContext.getUser().getName();
-        int significantMessagesDeleted = 0;
+        int messagesDeleted = 0;
 
         for (String messageId : messageIds) {
             Message message = messagesManager.getMessageById(userName, messageId);
@@ -336,33 +329,38 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener 
             }
             messagesManager.removeMessage(userName, messageId);
 
-            if (message.getType().isSignificant() && !message.isCleared()) {
-                significantMessagesDeleted++;
+            if (!message.isCleared()) {
+                messagesDeleted++;
             }
         }
-        shell.updateShellAppIndication(ShellAppType.PULSE, -significantMessagesDeleted);
+        shell.updateShellAppIndication(ShellAppType.PULSE, -messagesDeleted);
         /*
          * Refreshes the view to display the updated underlying data.
          */
         initView();
     }
 
-    private void doUpdateCategoryBadgeCount(final MessageType type) {
+    private void doUnreadMessagesUpdate(final MessageType type, int decrementOrIncrement) {
+
+        shell.updateShellAppIndication(ShellAppType.PULSE, decrementOrIncrement);
+
         int count = 0;
+        final String userName = MgnlContext.getUser().getName();
+
         switch (type) {
 
         case ERROR:
         case WARNING:
-            count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(MgnlContext.getUser().getName(), MessageType.ERROR);
-            count += messagesManager.getNumberOfUnclearedMessagesForUserAndByType(MgnlContext.getUser().getName(), MessageType.WARNING);
+            count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userName, MessageType.ERROR);
+            count += messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userName, MessageType.WARNING);
             view.updateCategoryBadgeCount(MessageCategory.PROBLEM, count);
             break;
         case INFO:
-            count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(MgnlContext.getUser().getName(), type);
+            count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userName, type);
             view.updateCategoryBadgeCount(MessageCategory.INFO, count);
             break;
         case WORKITEM:
-            count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(MgnlContext.getUser().getName(), type);
+            count = messagesManager.getNumberOfUnclearedMessagesForUserAndByType(userName, type);
             view.updateCategoryBadgeCount(MessageCategory.WORK_ITEM, count);
             break;
         }

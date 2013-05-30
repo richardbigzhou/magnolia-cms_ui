@@ -50,6 +50,8 @@ import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 
+import java.util.Random;
+
 import javax.jcr.Session;
 
 import org.junit.Before;
@@ -214,6 +216,51 @@ public class MessageStoreTest extends MgnlTestCase {
         // THEN
         result = store.findMessageById(userName, id);
         assertNull(result);
+    }
+
+    @Test
+    public void testGetNumberOfUnclearedMessagesForUser() throws Exception {
+        // GIVEN
+        final String id = "1234";
+        final MockNode messageNode = createEmptyMessageMockNode(id);
+
+        final String userName = MgnlContext.getUser().getName();
+        MessageStore store = new MessageStore();
+        store.saveMessage(userName, store.unmarshallMessage(messageNode));
+
+        // WHEN
+        int count = store.getNumberOfUnclearedMessagesForUser(userName);
+
+        // THEN
+        assertEquals(1, count);
+    }
+
+    @Test
+    public void testGetNumberOfUnclearedMessagesForUserAndByType() throws Exception {
+        // GIVEN
+        Random random = new Random();
+        final MockNode errorMessage = createEmptyMessageMockNode(Integer.toString(random.nextInt(10000)));
+        errorMessage.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE, MessageType.ERROR.name());
+
+        final MockNode errorMessage2 = createEmptyMessageMockNode(Integer.toString(random.nextInt(10000)));
+        errorMessage2.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE, MessageType.ERROR.name());
+
+        final MockNode infoMessage = createEmptyMessageMockNode(Integer.toString(random.nextInt(10000)));
+        infoMessage.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE, MessageType.INFO.name());
+
+        final String userName = MgnlContext.getUser().getName();
+        MessageStore store = new MessageStore();
+        store.saveMessage(userName, store.unmarshallMessage(errorMessage));
+        store.saveMessage(userName, store.unmarshallMessage(errorMessage2));
+        store.saveMessage(userName, store.unmarshallMessage(infoMessage));
+
+        // WHEN
+        int errors = store.getNumberOfUnclearedMessagesForUserAndByType(userName, MessageType.ERROR);
+        int info = store.getNumberOfUnclearedMessagesForUserAndByType(userName, MessageType.INFO);
+
+        // THEN
+        assertEquals(2, errors);
+        assertEquals(1, info);
     }
 
     private MockNode createEmptyMessageMockNode(final String id) {
