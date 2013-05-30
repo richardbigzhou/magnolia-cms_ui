@@ -266,7 +266,7 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener 
             item.getItemProperty(TYPE_PROPERTY_ID).setValue(message.getType());
             item.getItemProperty(SENDER_PROPERTY_ID).setValue(message.getSender());
             item.getItemProperty(SUBJECT_PROPERTY_ID).setValue(StringUtils.abbreviate(message.getSubject(), 55));
-            item.getItemProperty(TEXT_PROPERTY_ID).setValue(StringUtils.abbreviate(message.getMessage(), 60));
+            item.getItemProperty(TEXT_PROPERTY_ID).setValue(StringUtils.abbreviate(message.getMessage(), 75));
             item.getItemProperty(DATE_PROPERTY_ID).setValue(new Date(message.getTimestamp()));
         }
     }
