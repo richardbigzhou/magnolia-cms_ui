@@ -112,15 +112,6 @@
       border-radius: 50%;
     }
 
-    .activation-status {
-      display: block !important;
-      font-size: 18px;
-      text-align: center;
-
-      &.color-green {color: $c40;}
-      &.color-yellow {color: $c60;}
-      &.color-red {color: $c70;}
-    }
 
     .v-horizontallayout-statusbar {
       height: 40px !important;
@@ -143,19 +134,38 @@
       }
     }
 
-    .datetimefield {
-      cursor: pointer;
-    }
-    
-    .datetimefield .datefield {
-      float: left;
-    }
+  }
 
-    .datetimefield .timefield {
-      display: block !important;
-      text-align: right;
-      padding-left: 5px;
-    }
+  /* COLUMN FORMATTERS */
+  .activation-status {
+    display: block !important;
+    font-size: 18px;
+    text-align: center;
+
+    &.color-green {color: $c40;}
+    &.color-yellow {color: $c60;}
+    &.color-red {color: $c70;}
+  }
+
+  .datetimefield {
+    cursor: pointer;
+  }
+
+  .datetimefield .datefield {
+    float: left;
+  }
+
+  .datetimefield .timefield {
+    display: block !important;
+    text-align: right;
+    padding-left: 5px;
+  }
+
+  /* ICON COLOR TUNING FOR WORKBENCH TREES */
+  .v-magnolia-table .v-table-icon-element {
+    &.icon-node-data {color: $c10;}
+    &.icon-folder, &.icon-node-folder {color: $c13;}
+    &.icon-folder-l, &.icon-node-folder-l {color: $c12;}
   }
 
 }
