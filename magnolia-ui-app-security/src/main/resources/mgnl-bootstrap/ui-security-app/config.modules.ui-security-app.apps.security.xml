@@ -311,7 +311,7 @@
               <sv:value>efc9aa8c-179f-4225-9921-4f2886aa794b</sv:value>
             </sv:property>
             <sv:property sv:name="icon" sv:type="String">
-              <sv:value>icon-folder</sv:value>
+              <sv:value>icon-folder-l</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:created" sv:type="Date">
               <sv:value>2013-05-22T11:04:44.029+02:00</sv:value>
@@ -1046,7 +1046,7 @@
               <sv:value>2df6c3d4-be3b-4cb5-9e99-25c9756b2cb0</sv:value>
             </sv:property>
             <sv:property sv:name="icon" sv:type="String">
-              <sv:value>icon-folder</sv:value>
+              <sv:value>icon-folder-l</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
@@ -1760,7 +1760,7 @@
               <sv:value>8055e0e9-ab8e-40e0-bf96-7904e9eae1ba</sv:value>
             </sv:property>
             <sv:property sv:name="icon" sv:type="String">
-              <sv:value>icon-folder</sv:value>
+              <sv:value>icon-folder-l</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
@@ -2463,7 +2463,7 @@
               <sv:value>60d6a3c1-fe45-429d-97b1-3824a7b63bdc</sv:value>
             </sv:property>
             <sv:property sv:name="icon" sv:type="String">
-              <sv:value>icon-folder</sv:value>
+              <sv:value>icon-folder-l</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
