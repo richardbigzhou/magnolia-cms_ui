@@ -36,6 +36,7 @@ package info.magnolia.ui.framework.app;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.InvocationCountingTestEventHandler;
 import info.magnolia.event.SimpleEventBus;
@@ -49,6 +50,7 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.registry.RegistrationException;
+import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.framework.app.AppControllerImplTest.AppEventCollector;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImpl;
@@ -88,6 +90,7 @@ public class AppEventTest {
     private SimpleEventBus eventBus;
     private ModuleRegistry moduleRegistry;
     private AppDescriptorRegistry appRegistry;
+    private MockWebContext ctx;
 
     @Before
     public void setUp() throws Exception {
@@ -113,9 +116,11 @@ public class AppEventTest {
         eventCollector = new AppEventCollector();
         eventBus.addHandler(AppLifecycleEvent.class, eventCollector);
 
-
         this.appController = (AppControllerImpl) componentProvider.getComponent(AppController.class);
         appController.setViewport(mock(Viewport.class));
+
+        ctx = new MockWebContext();
+        MgnlContext.setInstance(ctx);
     }
 
     @After
@@ -124,6 +129,8 @@ public class AppEventTest {
         // Reset the static fields
         AppTestImpl.appNumber = 0;
         AppTestImpl.res = new HashMap<String, Object>();
+
+        MgnlContext.setInstance(null);
     }
 
     @Test

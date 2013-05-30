@@ -58,6 +58,8 @@ public class JQueryAnimation extends Animation {
 
     private boolean isBlocking = false;
 
+    private boolean isClearTopAfterThisAnimation = false;
+
     public void setProperty(String property, int value) {
         settings.setProperty(property, value);
     }
@@ -70,6 +72,14 @@ public class JQueryAnimation extends Animation {
         settings.addCallback(callback);
     }
 
+    public void clearCallbacks() {
+        settings.setCallbacks(null);
+    }
+
+    public void clearTopAfterThisAnimation() {
+        isClearTopAfterThisAnimation = true;
+    }
+
     public JQueryAnimation(ApplicationConnection connection) {
         this.connection = connection;
         if (connection != null) {
@@ -80,8 +90,14 @@ public class JQueryAnimation extends Animation {
             public void execute(JQueryWrapper query) {
                 query.setCss("transition", "");
                 query.setCss("transform", "");
+
                 getJQueryWrapper().setCss("-webkit-transform", "");
                 getJQueryWrapper().setCss("-webkit-transition", "");
+
+                if (isClearTopAfterThisAnimation) {
+                    currentElement.getStyle().clearTop();
+                }
+                isClearTopAfterThisAnimation = false;
                 onComplete();
             }
         });
@@ -116,6 +132,7 @@ public class JQueryAnimation extends Animation {
             getJQueryWrapper().stop();
             getJQueryWrapper().setCss("transition", "");
             getJQueryWrapper().setCss("transform", "");
+            getJQueryWrapper().setCss("top", "");
             getJQueryWrapper().setCss("-webkit-transform", "");
             getJQueryWrapper().setCss("-webkit-transition", "");
         }
