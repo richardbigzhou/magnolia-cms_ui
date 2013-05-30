@@ -46,13 +46,23 @@ public class ActivationActionDefinition extends CommandActionDefinition {
     private static final String MESSAGE_KEY_FAILURE = "action.activation.failure";
     private static final String MESSAGE_KEY_ERROR = "action.activation.error";
 
+    private static final String MESSAGE_KEY_WORKFLOW_SUCCESS = "action.activation.workflow.success";
+    private static final String MESSAGE_KEY_WORKFLOW_FAILURE = "action.activation.workflow.failure";
+    private static final String MESSAGE_KEY_WORKFLOW_ERROR = "action.activation.workflow.error";
+
     private boolean recursive = false;
+    private String workflowSuccessMessage;
+    private String workflowFailureMessage;
+    private String workflowErrorMessage;
 
     public ActivationActionDefinition() {
         setImplementationClass(ActivationAction.class);
         setSuccessMessage(MESSAGE_KEY_SUCCESS);
         setFailureMessage(MESSAGE_KEY_FAILURE);
         setErrorMessage(MESSAGE_KEY_ERROR);
+        setWorkflowSuccessMessage(MESSAGE_KEY_WORKFLOW_SUCCESS);
+        setWorkflowFailureMessage(MESSAGE_KEY_WORKFLOW_FAILURE);
+        setWorkflowErrorMessage(MESSAGE_KEY_WORKFLOW_ERROR);
     }
 
     public void setRecursive(boolean recursive) {
@@ -61,5 +71,29 @@ public class ActivationActionDefinition extends CommandActionDefinition {
 
     public boolean isRecursive() {
         return recursive;
+    }
+
+    public String getWorkflowSuccessMessage() {
+        return workflowSuccessMessage;
+    }
+
+    public void setWorkflowSuccessMessage(String workflowSuccessMessage) {
+        this.workflowSuccessMessage = workflowSuccessMessage;
+    }
+
+    public String getWorkflowFailureMessage() {
+        return workflowFailureMessage;
+    }
+
+    public void setWorkflowFailureMessage(String workflowFailureMessage) {
+        this.workflowFailureMessage = workflowFailureMessage;
+    }
+
+    public String getWorkflowErrorMessage() {
+        return workflowErrorMessage;
+    }
+
+    public void setWorkflowErrorMessage(String workflowErrorMessage) {
+        this.workflowErrorMessage = workflowErrorMessage;
     }
 }
