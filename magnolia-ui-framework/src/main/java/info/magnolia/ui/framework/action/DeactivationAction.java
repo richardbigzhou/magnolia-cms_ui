@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.framework.action;
 
+import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
@@ -71,10 +72,9 @@ public class DeactivationAction extends AbstractCommandAction<DeactivationAction
         this.uiContext = uiContext;
     }
 
-
     @Override
     protected void onError(Exception e) {
-        uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, getDefinition().getErrorMessage());
+        uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesManager.get(getDefinition().getErrorMessage()));
     }
 
     @Override
@@ -82,16 +82,15 @@ public class DeactivationAction extends AbstractCommandAction<DeactivationAction
         eventBus.fireEvent(new ContentChangedEvent(jcrNodeAdapter.getWorkspace(), jcrNodeAdapter.getItemId()));
 
         // Display a notification
-
         Context context = MgnlContext.getInstance();
         boolean result = (Boolean) context.getAttribute(COMMAND_RESULT);
         String message;
         MessageStyleTypeEnum messageStyleType;
         if (!result) {
-            message = getDefinition().getSuccessMessage();
+            message = MessagesManager.get(getDefinition().getSuccessMessage());
             messageStyleType = MessageStyleTypeEnum.INFO;
         } else {
-            message = getDefinition().getFailureMessage();
+            message = MessagesManager.get(getDefinition().getFailureMessage());
             messageStyleType = MessageStyleTypeEnum.ERROR;
         }
 

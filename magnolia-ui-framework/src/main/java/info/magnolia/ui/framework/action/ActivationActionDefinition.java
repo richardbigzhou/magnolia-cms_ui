@@ -33,10 +33,7 @@
  */
 package info.magnolia.ui.framework.action;
 
-import info.magnolia.module.ModuleRegistry;
 import info.magnolia.ui.api.action.CommandActionDefinition;
-
-import javax.inject.Inject;
 
 /**
  * Activation action definition. By default performs a non-recursive activation.
@@ -45,14 +42,17 @@ import javax.inject.Inject;
  */
 public class ActivationActionDefinition extends CommandActionDefinition {
 
+    private static final String MESSAGE_KEY_SUCCESS = "action.activation.success";
+    private static final String MESSAGE_KEY_FAILURE = "action.activation.failure";
+    private static final String MESSAGE_KEY_ERROR = "action.activation.error";
+
     private boolean recursive = false;
 
-    private ModuleRegistry moduleRegistry;
-
-    @Inject
-    public ActivationActionDefinition(ModuleRegistry moduleRegistry) {
-        this.moduleRegistry = moduleRegistry;
+    public ActivationActionDefinition() {
         setImplementationClass(ActivationAction.class);
+        setSuccessMessage(MESSAGE_KEY_SUCCESS);
+        setFailureMessage(MESSAGE_KEY_FAILURE);
+        setErrorMessage(MESSAGE_KEY_ERROR);
     }
 
     public void setRecursive(boolean recursive) {
@@ -62,30 +62,4 @@ public class ActivationActionDefinition extends CommandActionDefinition {
     public boolean isRecursive() {
         return recursive;
     }
-
-    @Override
-    public String getSuccessMessage() {
-        if (isWorkflowInstalled()) {
-            return "The workflow has been started.";
-        }
-        return "Activation has been started.";
-    }
-
-    @Override
-    public String getFailureMessage() {
-        if (isWorkflowInstalled()) {
-            return "The workflow could not be launched.";
-        }
-        return "Activation has failed.";
-    }
-
-    @Override
-    public String getErrorMessage() {
-        return "Activation failed. Please contact the system administrator for assistance.";
-    }
-
-    private boolean isWorkflowInstalled() {
-        return moduleRegistry.isModuleRegistered("workflow-base");
-    }
-
 }
