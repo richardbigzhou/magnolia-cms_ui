@@ -102,7 +102,7 @@ public class MagnoliaTreeTable extends TreeTable {
 
         // enforce partial updates - those were disabled in Vaadin 7 but they are safe as long as we don't generate vaadin components in table cells.
         try {
-            Field f = getClass().getSuperclass().getDeclaredField("containerSupportsPartialUpdates");
+            Field f = TreeTable.class.getDeclaredField("containerSupportsPartialUpdates");
             f.setAccessible(true);
             f.setBoolean(this, true);
         } catch (SecurityException e) {
