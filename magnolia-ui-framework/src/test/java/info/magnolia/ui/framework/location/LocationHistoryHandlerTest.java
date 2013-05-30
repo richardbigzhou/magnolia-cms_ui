@@ -36,12 +36,16 @@ package info.magnolia.ui.framework.location;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.event.SimpleEventBus;
+import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.framework.shell.FragmentChangedEvent;
 import info.magnolia.ui.framework.shell.FragmentChangedHandler;
 import info.magnolia.ui.framework.shell.Shell;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -51,6 +55,17 @@ import org.mockito.stubbing.Answer;
  * Test case for {@link LocationHistoryHandler}.
  */
 public class LocationHistoryHandlerTest {
+
+    @Before
+    public void setUp() throws Exception {
+        MockWebContext ctx = new MockWebContext();
+        MgnlContext.setInstance(ctx);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        MgnlContext.setInstance(null);
+    }
 
     // fragment update as result of location change
 

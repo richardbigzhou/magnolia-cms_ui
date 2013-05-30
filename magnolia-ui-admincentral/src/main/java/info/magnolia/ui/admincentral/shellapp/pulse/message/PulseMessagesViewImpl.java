@@ -33,19 +33,25 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
+import static info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter.*;
+
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.CategoryChangedEvent;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
+import info.magnolia.ui.framework.message.MessageType;
+import info.magnolia.ui.framework.shell.Shell;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
+import info.magnolia.ui.vaadin.icon.ErrorIcon;
+import info.magnolia.ui.vaadin.icon.InfoIcon;
+import info.magnolia.ui.vaadin.icon.WarningIcon;
 import info.magnolia.ui.workbench.column.DateColumnFormatter;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
-
-import org.apache.commons.lang.time.FastDateFormat;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.ItemSetChangeEvent;
@@ -54,6 +60,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ItemClickEvent;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Label;
@@ -65,11 +72,11 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * Implementation of {@link PulseMessagesView}.
  */
-public class PulseMessagesViewImpl extends CustomComponent implements PulseMessagesView {
+public final class PulseMessagesViewImpl extends CustomComponent implements PulseMessagesView {
 
-    private static final String[] headers = new String[]{"New", "Type", "Message text", "Sender", "Date", "Quick action"};
+    private static String[] headers;
 
-    private static final String[] order = new String[]{"new", "type", "text", "sender", "date", "quickdo"};
+    private static final String[] order = new String[] { NEW_PROPERTY_ID, TYPE_PROPERTY_ID, TEXT_PROPERTY_ID, SENDER_PROPERTY_ID, DATE_PROPERTY_ID };
 
     private final TreeTable messageTable = new MagnoliaTreeTable();
 
@@ -79,14 +86,16 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
 
     private PulseMessagesView.Listener listener;
 
-    private final FastDateFormat dateFormatter = FastDateFormat.getInstance();
-
     private boolean grouping = false;
 
-    private Label emptyPlaceHolder = new Label("No messages to display.");
+    private Label emptyPlaceHolder = new Label(MessagesUtil.get("pulse.messages.nomessage"));
+
+    private PulseMessagesFooter footer;
 
     @Inject
-    public PulseMessagesViewImpl() {
+    public PulseMessagesViewImpl(Shell shell) {
+        headers = new String[] { MessagesUtil.get("pulse.messages.new"), MessagesUtil.get("pulse.messages.type"), MessagesUtil.get("pulse.messages.text"), MessagesUtil.get("pulse.messages.sender"), MessagesUtil.get("pulse.messages.date") };
+        footer = new PulseMessagesFooter(shell, messageTable);
         setSizeFull();
         root.setSizeFull();
         setCompositionRoot(root);
@@ -96,16 +105,16 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
     @Override
     public void setListener(PulseMessagesView.Listener listener) {
         this.listener = listener;
+        this.footer.setListener(listener);
     }
 
     @Override
     public void setDataSource(Container dataSource) {
         messageTable.setContainerDataSource(dataSource);
         messageTable.setVisibleColumns(order);
-        messageTable.setSortContainerPropertyId("date");
+        messageTable.setSortContainerPropertyId(DATE_PROPERTY_ID);
         messageTable.setSortAscending(false);
         messageTable.setColumnHeaders(headers);
-
     }
 
     private void construct() {
@@ -114,31 +123,56 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
 
             @Override
             public void messageCategoryChanged(CategoryChangedEvent event) {
-                listener.filterByMessageCategory(event.getCategory());
+                final MessageCategory category = event.getCategory();
+                listener.filterByMessageCategory(category);
+                // TODO fgrilli Unselect all when switching categories or nasty side effects will happen. See MGNLUI-1447
+                for (String id : (Set<String>) messageTable.getValue()) {
+                    messageTable.unselect(id);
+                }
+                if (category == MessageCategory.ALL) {
+                    navigator.showGroupByType(true);
+                } else {
+                    navigator.showGroupByType(false);
+                }
+                refresh();
             }
         });
+
         constructTable();
+        root.addComponent(footer);
+
         emptyPlaceHolder.addStyleName("emptyplaceholder");
         root.addComponent(emptyPlaceHolder);
         setComponentVisibility(messageTable.getContainerDataSource());
+
     }
 
     private void constructTable() {
         root.addComponent(messageTable);
         root.setExpandRatio(messageTable, 1f);
         messageTable.setSizeFull();
-        messageTable.addGeneratedColumn("date", new DateColumnFormatter(null));
+        messageTable.setSelectable(true);
+        messageTable.setMultiSelect(true);
+        messageTable.addGeneratedColumn(NEW_PROPERTY_ID, newMessageColumnGenerator);
+        messageTable.setColumnWidth(NEW_PROPERTY_ID, 100);
+        messageTable.addGeneratedColumn(TYPE_PROPERTY_ID, typeColumnGenerator);
+        messageTable.setColumnWidth(TYPE_PROPERTY_ID, 50);
+        messageTable.addGeneratedColumn(TEXT_PROPERTY_ID, textColumnGenerator);
+        messageTable.setColumnWidth(TEXT_PROPERTY_ID, 450);
+        messageTable.addGeneratedColumn(DATE_PROPERTY_ID, new DateColumnFormatter(null));
+        messageTable.setColumnWidth(DATE_PROPERTY_ID, 150);
         messageTable.setRowGenerator(groupingRowGenerator);
-        messageTable.setCellStyleGenerator(cellStyleGenerator);
+
         navigator.addGroupingListener(groupingListener);
-
-
 
         messageTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
             @Override
             public void itemClick(ItemClickEvent event) {
-                Object itemId = event.getItemId();
-                listener.onMessageClicked((String) itemId);
+                final String itemId = (String) event.getItemId();
+                // clicking on the group type header does nothing.
+                if (event.isDoubleClick() && !itemId.startsWith(GROUP_PLACEHOLDER_ITEMID)) {
+                    listener.onMessageClicked(itemId);
+                }
             }
         });
 
@@ -158,12 +192,15 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             // Use expand ratio to hide message table.
             // setVisible() would cause rendering issues.
             root.setExpandRatio(messageTable, 0f);
+            root.setExpandRatio(footer, 0f);
         } else {
             root.setExpandRatio(emptyPlaceHolder, 0f);
             root.setExpandRatio(messageTable, 1f);
+            root.setExpandRatio(footer, .1f);
         }
 
         messageTable.setVisible(!isEmptyList);
+        footer.setVisible(!isEmptyList);
         emptyPlaceHolder.setVisible(isEmptyList);
     }
 
@@ -221,6 +258,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
             }
 
             messageTable.addValueChangeListener(this);
+            footer.updateStatus();
         }
 
         private boolean isAllChildrenSelected(Object parent) {
@@ -267,24 +305,7 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
         @Override
         public void valueChange(ValueChangeEvent event) {
             boolean checked = event.getProperty().getValue().equals(Boolean.TRUE);
-            listener.setGrouping(checked);
-            grouping = checked;
-
-            if (checked) {
-                for (Object itemId : messageTable.getItemIds()) {
-                    messageTable.setCollapsed(itemId, false);
-                }
-            }
-        }
-    };
-
-    private Table.CellStyleGenerator cellStyleGenerator = new Table.CellStyleGenerator() {
-        @Override
-        public String getStyle(Table source, Object itemId, Object propertyId) {
-            if (grouping && propertyId != null && propertyId.equals(PulseMessagesPresenter.GROUP_COLUMN)) {
-                return "v-cell-invisible";
-            }
-            return "";
+            doGrouping(checked);
         }
     };
 
@@ -301,15 +322,101 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
              * acts as a placeholder for grouping sub section. This row
              * generator must render those special items.
              */
-            if (itemId.toString().startsWith(PulseMessagesPresenter.GROUP_PLACEHOLDER_ITEMID)) {
+            if (itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID)) {
                 Item item = table.getItem(itemId);
-                Property property = item.getItemProperty(PulseMessagesPresenter.GROUP_COLUMN);
-
-                GeneratedRow generated = new GeneratedRow("", "", property.getValue().toString());
-                generated.setSpanColumns(false);
+                Property<MessageType> property = item.getItemProperty(TYPE_PROPERTY_ID);
+                GeneratedRow generated = new GeneratedRow();
+                switch(property.getValue()) {
+                case ERROR  :
+                case WARNING:
+                    generated.setText("", "", MessageCategory.PROBLEM.getCaption());
+                    break;
+                case INFO:
+                    generated.setText("", "", MessageCategory.INFO.getCaption());
+                    break;
+                case WORKITEM:
+                    generated.setText("", "", MessageCategory.WORK_ITEM.getCaption());
+                    break;
+                }
                 return generated;
             }
 
+            return null;
+        }
+    };
+
+    private Table.ColumnGenerator newMessageColumnGenerator = new Table.ColumnGenerator() {
+
+        @Override
+        public Object generateCell(Table source, Object itemId, Object columnId) {
+
+            if (NEW_PROPERTY_ID.equals(columnId)) {
+                final Property<Boolean> newProperty = source.getContainerProperty(itemId, columnId);
+                final Boolean isNew = newProperty != null && newProperty.getValue();
+                if (isNew) {
+                    final Label newMessage = new Label();
+                    newMessage.setSizeUndefined();
+                    newMessage.addStyleName("icon-tick");
+                    newMessage.addStyleName("new-message");
+                    return newMessage;
+                }
+            }
+            return null;
+        }
+    };
+
+    private Table.ColumnGenerator textColumnGenerator = new Table.ColumnGenerator() {
+
+        @Override
+        public Object generateCell(Table source, Object itemId, Object columnId) {
+
+            if (TEXT_PROPERTY_ID.equals(columnId)) {
+                final Property<String> text = source.getContainerProperty(itemId, columnId);
+                final Property<String> subject = source.getContainerProperty(itemId, SUBJECT_PROPERTY_ID);
+
+                final Label textLabel = new Label();
+                textLabel.setSizeUndefined();
+                textLabel.addStyleName("message-subject-text");
+                textLabel.setContentMode(ContentMode.HTML);
+                textLabel.setValue("<strong>" + subject.getValue() + "</strong><div>" + text.getValue() + "</div>");
+
+                return textLabel;
+
+            }
+            return null;
+        }
+    };
+
+    private Table.ColumnGenerator typeColumnGenerator = new Table.ColumnGenerator() {
+
+        @Override
+        public Object generateCell(Table source, Object itemId, Object columnId) {
+
+            if (TYPE_PROPERTY_ID.equals(columnId)) {
+                final Property<MessageType> typeProperty = source.getContainerProperty(itemId, columnId);
+                final MessageType messageType = typeProperty.getValue();
+
+                switch (messageType) {
+                case INFO:
+                    return new InfoIcon();
+
+                case WARNING:
+                    return new WarningIcon();
+
+                case ERROR:
+                    return new ErrorIcon();
+
+                case WORKITEM:
+
+                    final Label messageTypeIcon = new Label();
+                    messageTypeIcon.setSizeUndefined();
+                    messageTypeIcon.addStyleName("icon");
+                    messageTypeIcon.addStyleName("message-type");
+                    messageTypeIcon.addStyleName("icon-work-item");
+                    return messageTypeIcon;
+
+                }
+            }
             return null;
         }
     };
@@ -320,17 +427,19 @@ public class PulseMessagesViewImpl extends CustomComponent implements PulseMessa
     }
 
     @Override
-    public void update(List<String> params) {
-        if (params != null && !params.isEmpty()) {
-            final Set<Object> values = new HashSet<Object>();
-            String messageId = params.get(0);
-            values.add(messageId);
-            /**
-             * This is a multi-select table, calling select would just add this
-             * message to the current set of selected rows so setting the value
-             * explicitly this way makes only this one selected.
-             */
-            messageTable.setValue(values);
+    public void refresh() {
+        footer.updateStatus();
+        messageTable.sort();
+        doGrouping(false);
+    }
+
+    private void doGrouping(boolean checked) {
+        listener.setGrouping(checked);
+
+        if (checked) {
+            for (Object itemId : messageTable.getItemIds()) {
+                messageTable.setCollapsed(itemId, false);
+            }
         }
     }
 }

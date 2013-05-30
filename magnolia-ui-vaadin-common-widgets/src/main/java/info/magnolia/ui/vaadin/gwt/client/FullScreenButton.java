@@ -31,24 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.action.feature.definition;
+package info.magnolia.ui.vaadin.gwt.client;
 
-import info.magnolia.ui.mediaeditor.action.feature.Scalable;
-import info.magnolia.ui.mediaeditor.action.feature.ScaleToActualSizeAction;
-
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.ButtonBase;
 
 /**
- * Definition of {@link info.magnolia.ui.mediaeditor.action.feature.ScaleToActualSizeAction}.
+ * The FullScreenButton common widget.
  */
-public class ScaleToActualSizeActionDefinition extends ConfiguredMediaEditorFeatureDefinition {
-    
-    public ScaleToActualSizeActionDefinition() {
-        setImplementationClass(ScaleToActualSizeAction.class);
+public class FullScreenButton extends ButtonBase {
+
+    private static final String STYLE_NAME = "m-fullscreen-app";
+    private static final String ICON_STYLE_NAME = "icon-open-fullscreen_2";
+
+    public FullScreenButton() {
+        this(DOM.createSpan());
     }
-    
-    @Override
-    public String getRequiredInterfaceName() {
-        return Scalable.class.getName();
+
+    public FullScreenButton(ClickHandler handler) {
+        this();
+        addClickHandler(handler);
     }
-    
+
+    protected FullScreenButton(Element elem) {
+        super(elem);
+        setStylePrimaryName(STYLE_NAME);
+        addStyleName(ICON_STYLE_NAME);
+    }
+
 }

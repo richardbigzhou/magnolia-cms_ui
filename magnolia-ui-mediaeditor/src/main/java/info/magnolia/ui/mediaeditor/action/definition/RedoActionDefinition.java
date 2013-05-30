@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.magnoliashell;
+package info.magnolia.ui.mediaeditor.action.definition;
+
+import info.magnolia.ui.mediaeditor.action.RedoAction;
+import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 
 /**
- * The type of message.
+ * Definition of {@link RedoAction}.
  */
-public enum MessageType {
-    UNKNOWN(""),
-    ERROR("Error"),
-    WARNING("Warning"),
-    INFO("Info");
+public class RedoActionDefinition extends MediaEditorActionDefinition {
 
-    private String caption;
-
-    private MessageType(final String caption) {
-        this.caption = caption;
-    }
-
-    @Override
-    public String toString() {
-        return caption;
-    }
-
-    public boolean isSignificant() {
-        switch (this) {
-        case INFO:
-        case UNKNOWN:
-            return false;
-        default:
-            return true;
-        }
+    public RedoActionDefinition() {
+        super();
+        setImplementationClass(RedoAction.class);
     }
 }

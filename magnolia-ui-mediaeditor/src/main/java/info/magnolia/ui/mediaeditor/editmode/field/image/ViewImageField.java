@@ -74,7 +74,7 @@ public class ViewImageField extends ImageMediaField {
     }
     
     @Override
-    protected Component createField() {
+    protected Component createImage() {
         return image;
     }
     

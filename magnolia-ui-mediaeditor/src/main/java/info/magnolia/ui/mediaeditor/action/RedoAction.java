@@ -31,24 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.action.feature.definition;
+package info.magnolia.ui.mediaeditor.action;
 
-import info.magnolia.ui.mediaeditor.action.feature.Scalable;
-import info.magnolia.ui.mediaeditor.action.feature.ScaleToFitAction;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
+import info.magnolia.ui.mediaeditor.action.definition.RedoActionDefinition;
+import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
+import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent;
 
+import com.google.inject.name.Named;
 
 /**
- * Definition of {@link info.magnolia.ui.mediaeditor.action.feature.ScaleToFitAction}.
+ * Redoes a latest undone operation.
  */
-public class ScaleToFitActionDefinition extends ConfiguredMediaEditorFeatureDefinition {
-    
-    public ScaleToFitActionDefinition() {
-        setImplementationClass(ScaleToFitAction.class);
+public class RedoAction extends MediaEditorAction {
+
+    public RedoAction(RedoActionDefinition definition, EditHistoryTrackingProperty dataSource, @Named(MediaEditorEventBus.NAME) EventBus eventBus) {
+        super(definition, dataSource, eventBus);
     }
-    
+
     @Override
-    public String getRequiredInterfaceName() {
-        return Scalable.class.getName();
+    public void execute() throws ActionExecutionException {
+        dataSource.redo();
+        eventBus.fireEvent(new MediaEditorInternalEvent(MediaEditorInternalEvent.EventType.APPLY));
     }
-    
 }

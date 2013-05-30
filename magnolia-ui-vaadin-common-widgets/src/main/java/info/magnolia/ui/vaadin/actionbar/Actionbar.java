@@ -64,10 +64,6 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
         setImmediate(true);
         setOpened(true);
         registerRpc(new ActionbarServerRpc() {
-            @Override
-            public void onFullScreenModeToggle(boolean isFullScreen) {
-                listener.onChangeFullScreen(isFullScreen);
-            }
 
             @Override
             public void onActionTriggered(String actionToken) {
@@ -130,6 +126,13 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
             section.addAction(action);
         } else {
             log.warn("Action was not added: no section found with name '" + sectionName + "'.");
+        }
+    }
+
+    @Override
+    public void removeAction(String actionName) {
+        for (ActionbarSection section : getState().sections.values()) {
+            section.removeAction(actionName);
         }
     }
 
@@ -215,10 +218,9 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
     }
 
     private void doSetActionEnabled(boolean isEnabled, ActionbarItem action) {
-        if (!isEnabled && !getState().disabledActions.contains(action)) {
+        getState().disabledActions.remove(action);
+        if (!isEnabled) {
             getState().disabledActions.add(action);
-        } else if (isEnabled) {
-            getState().disabledActions.remove(action);
         }
     }
 

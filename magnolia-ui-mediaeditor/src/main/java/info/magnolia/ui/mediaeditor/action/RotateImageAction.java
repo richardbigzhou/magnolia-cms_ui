@@ -31,33 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.editmode.field.image;
+package info.magnolia.ui.mediaeditor.action;
+
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
+import info.magnolia.ui.mediaeditor.action.definition.RotateImageActionDefinition;
+import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-import com.jhlabs.image.GrayscaleFilter;
-import com.vaadin.data.Property;
+import com.google.inject.name.Named;
+import com.jhlabs.image.RotateFilter;
 
 /**
- * Provides the functionality for image gray-scaling.
+ * Rotates an image 90 degrees clockwise.
  */
-public class GrayScaleField extends ViewImageField {
+public class RotateImageAction extends InstantMediaEditorAction {
+
+    private double angle = -90;
+
+    public RotateImageAction(RotateImageActionDefinition definition, EditHistoryTrackingProperty dataSource, @Named(MediaEditorEventBus.NAME) EventBus eventBus) {
+        super(definition, dataSource, eventBus);
+    }
 
     @Override
-    @SuppressWarnings("rawtypes")
-    public void setPropertyDataSource(Property newDataSource) {
-        super.setPropertyDataSource(newDataSource);
-        execute();
-    }
-    
-    
-    @Override
-    protected BufferedImage executeImageModification() throws IOException {
-        final BufferedImage img = ImageIO.read(new ByteArrayInputStream(getValue()));
-        return new GrayscaleFilter().filter(img, null);
+    protected InputStream performModification(InputStream stream) throws IOException {
+        final BufferedImage img = ImageIO.read(stream);
+        return createStreamSource(new RotateFilter((float)(angle * Math.PI) / 180f, true).filter(img, null), DEFAULT_FORMAT);
     }
 }

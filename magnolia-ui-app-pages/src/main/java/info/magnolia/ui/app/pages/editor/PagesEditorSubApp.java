@@ -34,14 +34,14 @@
 package info.magnolia.ui.app.pages.editor;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
-import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.link.LinkUtil;
 import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.link.LinkUtil;
+import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
@@ -416,15 +416,6 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     public String getIcon(String actionName) {
         ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
         return (actionDefinition != null) ? actionDefinition.getIcon() : null;
-    }
-
-    @Override
-    public void setFullScreen(boolean fullScreen) {
-        if (fullScreen) {
-            getSubAppContext().getAppContext().enterFullScreenMode();
-        } else {
-            getSubAppContext().getAppContext().exitFullScreenMode();
-        }
     }
 
     @Override

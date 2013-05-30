@@ -53,6 +53,8 @@ public interface ActionbarView extends View {
 
     void addAction(ActionbarItem action, String sectionName);
 
+    void removeAction(String actionName);
+
     // ENABLE / DISABLE
     void setActionEnabled(String actionName, boolean isEnabled);
 
@@ -80,13 +82,5 @@ public interface ActionbarView extends View {
          * @param actionToken the action token
          */
         void onActionbarItemClicked(String actionToken);
-
-        /**
-         * Event handler invoked on clicking full screen button on actionbar.
-         *
-         * @param isFullScreen whether to activate or deactivate full screen mode
-         */
-        void onChangeFullScreen(boolean isFullScreen);
-
     }
 }

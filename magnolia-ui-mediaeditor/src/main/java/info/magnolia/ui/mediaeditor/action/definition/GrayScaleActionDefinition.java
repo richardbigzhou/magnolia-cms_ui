@@ -31,62 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.editmode.provider;
+package info.magnolia.ui.mediaeditor.action.definition;
 
-import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
-import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
+import info.magnolia.ui.mediaeditor.action.ConvertImageToGrayScaleAction;
+import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 
-import java.util.List;
-
-import com.vaadin.ui.Component;
 
 /**
- * Provides UI and logic for some kind of image editing.
+ * Definition for {@link info.magnolia.ui.mediaeditor.action.ConvertImageToGrayScaleAction}.
  */
-public interface EditModeProvider {
-   
-    MediaField getMediaField();
-    
-    Component getStatusControls();
-    
-    List<ActionContext> getActionContextList();
+public class GrayScaleActionDefinition extends MediaEditorActionDefinition {
 
-    /**
-     * ActionContext.
-     */
-    public static class ActionContext {
-
-        private String actionId;
-
-        private String label;
-        
-        private DialogActionListener listener;
-
-        public ActionContext(String id, String label, DialogActionListener listener) {
-            this.actionId = id;
-            this.label = label;
-            this.listener = listener;
-        }
-
-        /**
-         * @return the actionId
-         */
-        public String getActionId() {
-            return actionId;
-        }
-
-        /**
-         * @return the label
-         */
-        public String getLabel() {
-            return label;
-        }
-
-        /**
-         * @return the listener
-         */
-        public DialogActionListener getListener() {
-            return listener;
-        }
+    public GrayScaleActionDefinition() {
+        setImplementationClass(ConvertImageToGrayScaleAction.class);
     }
 }

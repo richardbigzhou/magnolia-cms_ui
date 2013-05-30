@@ -31,13 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.provider;
+package info.magnolia.ui.admincentral.shellapp.pulse.message.action;
 
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Basic definition for all the acctions that cause the change of edit mode in
- * {@link info.magnolia.ui.mediaeditor.MediaEditorPresenter}.
+ * Used to configure a {@link DeleteMessageAction}.
+ * 
+ * @see DeleteMessageAction
  */
-public class EditModeProviderActionDefinition extends ConfiguredActionDefinition {
+public class DeleteMessageActionDefinition extends ConfiguredActionDefinition {
+
+    public DeleteMessageActionDefinition() {
+        setImplementationClass(DeleteMessageAction.class);
+    }
 }

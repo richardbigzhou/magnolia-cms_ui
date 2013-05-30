@@ -42,7 +42,5 @@ public interface ActionbarServerRpc extends ServerRpc {
 
     void onActionTriggered(String actionToken);
 
-    void onFullScreenModeToggle(boolean isFullScreen);
-
     void setOpen(boolean isOpen);
 }

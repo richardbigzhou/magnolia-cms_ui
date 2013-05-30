@@ -31,17 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.action;
+package info.magnolia.ui.mediaeditor.action.definition;
 
-import info.magnolia.ui.mediaeditor.provider.EditModeProviderActionDefinition;
+import info.magnolia.ui.mediaeditor.action.RotateImageAction;
+import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 
 
 /**
- * Definition for {@link info.magnolia.ui.mediaeditor.editmode.provider.GrayScaleProvider}.
+ * Definition for {@link info.magnolia.ui.mediaeditor.action.RotateImageAction}.
  */
-public class GrayScaleActionDefinition extends EditModeProviderActionDefinition {
+public class RotateImageActionDefinition extends MediaEditorActionDefinition {
 
-    public GrayScaleActionDefinition() {
-        setImplementationClass(EditModeProviderAction.class);
+    public RotateImageActionDefinition() {
+        setImplementationClass(RotateImageAction.class);
     }
 }

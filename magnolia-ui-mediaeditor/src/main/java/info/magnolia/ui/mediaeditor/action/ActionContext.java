@@ -33,15 +33,43 @@
  */
 package info.magnolia.ui.mediaeditor.action;
 
-import info.magnolia.ui.mediaeditor.provider.EditModeProviderActionDefinition;
-
+import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 /**
- * Definition for {@link info.magnolia.ui.mediaeditor.editmode.provider.RotateImageProvider}.
+ * Helper class for storing the dialog actions within media editor.
  */
-public class RotateImageActionDefinition extends EditModeProviderActionDefinition {
+public class ActionContext {
 
-    public RotateImageActionDefinition() {
-        setImplementationClass(EditModeProviderAction.class);
+    private String actionId;
+
+    private String label;
+
+    private DialogActionListener listener;
+
+    public ActionContext(String id, String label, DialogActionListener listener) {
+        this.actionId = id;
+        this.label = label;
+        this.listener = listener;
+    }
+
+    /**
+     * @return the actionId
+     */
+    public String getActionId() {
+        return actionId;
+    }
+
+    /**
+     * @return the label
+     */
+    public String getLabel() {
+        return label;
+    }
+
+    /**
+     * @return the listener
+     */
+    public DialogActionListener getListener() {
+        return listener;
     }
 }

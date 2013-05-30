@@ -35,16 +35,34 @@ package info.magnolia.ui.contentapp.location;
 
 import static org.junit.Assert.*;
 
+import info.magnolia.context.MgnlContext;
+import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.contentapp.browser.BrowserLocation;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.workbench.ContentView;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Test case for {@link info.magnolia.ui.contentapp.browser.BrowserLocation}.
  */
 public class BrowserLocationTest {
+
+    private MockWebContext ctx;
+
+    @Before
+    public void setUp() throws Exception {
+        ctx = new MockWebContext();
+        MgnlContext.setInstance(ctx);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        MgnlContext.setInstance(null);
+    }
+
     @Test
     public void testToString() {
         assertEquals("app:someContentApp:browser;/some/node:treeview", new BrowserLocation("someContentApp", "browser", "/some/node:treeview").toString());

@@ -69,6 +69,8 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
 
     private final ActionbarServerRpc rpc = RpcProxy.create(ActionbarServerRpc.class, this);
 
+    private final boolean isTablet = !(MGWT.getOsDetection().isDesktop() || Window.Location.getQueryString().indexOf("tablet=true") >= 0);
+
     private final StateChangeHandler sectionRearrangementHandler = new StateChangeHandler() {
         @Override
         public void onStateChanged(StateChangeEvent stateChangeEvent) {
@@ -82,6 +84,7 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
                 }
             });
             view.setSections(sections);
+            view.setDisabledActions(getState().disabledActions);
         }
     };
 
@@ -136,7 +139,7 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
     @Override
     protected void init() {
         super.init();
-        addStateChangeHandler("resources", previewChangeHandler);
+        addStateChangeHandler(previewChangeHandler);
         addStateChangeHandler("sections", sectionRearrangementHandler);
         addStateChangeHandler("visibleSections", visibleSectionSetChangeHandler);
         addStateChangeHandler("disabledActions", enabledActionSetChangeHandler);
@@ -168,11 +171,6 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
     }
 
     @Override
-    public void changeFullScreen(boolean isFullScreen) {
-        rpc.onFullScreenModeToggle(isFullScreen);
-    }
-
-    @Override
     public void setOpened(boolean isOpen) {
         rpc.setOpen(isOpen);
     }
@@ -190,11 +188,11 @@ public class ActionbarConnector extends AbstractComponentConnector implements Ac
     /**
      * Determine if device is tablet. Allows option to add a querystring parameter of tablet=true
      * for testing.
-     * TODO: Christopher Zimmermann - there should be only one instance of this code in the project.
      *
      * @return Whether device is tablet.
      */
-    private boolean isDeviceTablet() {
-        return !(MGWT.getOsDetection().isDesktop() || Window.Location.getQueryString().indexOf("tablet=true") >= 0);
+    @Override
+    public boolean isDeviceTablet() {
+        return isTablet;
     }
 }
