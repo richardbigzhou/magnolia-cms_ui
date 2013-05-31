@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.mediaeditor.data;
 
+import info.magnolia.ui.api.action.ActionExecutionException;
+
 import com.vaadin.data.Property;
 
 /**
@@ -76,12 +78,12 @@ public interface EditHistoryTrackingProperty extends Property<byte[]> {
     /**
      * Undo last step.
      */
-    void undo();
+    void undo() throws ActionExecutionException;
 
     /**
      * Redo last step.
      */
-    void redo();
+    void redo() throws ActionExecutionException;
 
     /**
      * Propagate changes to the original value.
