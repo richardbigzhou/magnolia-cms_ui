@@ -44,10 +44,10 @@ import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingPropertyImpl;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
-import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent;
-import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent.CompletionType;
-import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorCompletedEvent.Handler;
-import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent;
+import info.magnolia.ui.mediaeditor.event.MediaEditorCompletedEvent;
+import info.magnolia.ui.mediaeditor.event.MediaEditorCompletedEvent.CompletionType;
+import info.magnolia.ui.mediaeditor.event.MediaEditorCompletedEvent.Handler;
+import info.magnolia.ui.mediaeditor.event.MediaEditorInternalEvent;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
 import java.io.ByteArrayInputStream;

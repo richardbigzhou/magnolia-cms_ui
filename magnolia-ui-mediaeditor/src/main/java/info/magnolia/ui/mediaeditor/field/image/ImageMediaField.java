@@ -31,10 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.editmode.field.image;
+package info.magnolia.ui.mediaeditor.field.image;
 
 import info.magnolia.ui.mediaeditor.action.feature.Scalable;
-import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
+import info.magnolia.ui.mediaeditor.field.MediaField;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;

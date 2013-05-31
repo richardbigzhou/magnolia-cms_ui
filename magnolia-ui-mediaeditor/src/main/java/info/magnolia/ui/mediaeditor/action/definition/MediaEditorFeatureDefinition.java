@@ -39,7 +39,7 @@ import info.magnolia.ui.api.action.ActionDefinition;
  * Definition of media editor actions that do not cause the edit mode to switch
  * but rather perform some operation on the current state of media
  * editor. Require a certain interface to be implemented by current
- * {@link info.magnolia.ui.mediaeditor.editmode.field.MediaField} displayed by
+ * {@link info.magnolia.ui.mediaeditor.field.MediaField} displayed by
  * {@link info.magnolia.ui.mediaeditor.MediaEditorPresenter}.
  */
 public interface MediaEditorFeatureDefinition extends ActionDefinition {

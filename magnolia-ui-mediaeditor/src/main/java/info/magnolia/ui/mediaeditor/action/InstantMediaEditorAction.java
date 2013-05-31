@@ -37,7 +37,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
-import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent;
+import info.magnolia.ui.mediaeditor.event.MediaEditorInternalEvent;
 import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 
 import java.io.ByteArrayInputStream;
