@@ -84,3 +84,8 @@
 
 /* Fix for twitter bootstrap et al. */
 .jcrop-holder img,img.jcrop-preview{ max-width: none; }
+
+.jcrop-holder > input {
+    display: none !important;
+    left: -10000px !important;
+}
