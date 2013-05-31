@@ -33,34 +33,99 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.widget.dnd;
 
-import com.google.gwt.dom.client.Document;
+import info.magnolia.ui.vaadin.gwt.client.widget.PageEditorFrame;
+
+import com.google.gwt.dom.client.BodyElement;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.event.dom.client.HasMouseMoveHandlers;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * MoveWidget. Used for the legacy moving.
+ * Widget used for moving {@link info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar}.
+ * Wraps the moved widget and attaches {@link MouseMoveHandler} to the {@link BodyElement} of the {@link PageEditorFrame}.
  */
-public class MoveWidget extends FlowPanel {
+public class MoveWidget extends Widget {
 
-    public MoveWidget(int height, int width) {
+    public static final String CLASS_NAME = "mgnlEditorMoveDiv";
 
-        setStyleName("mgnlEditorMoveDiv");
+    private FrameBodyWrapper wrapper;
+    private PageEditorFrame frame;
+    private HandlerRegistration moveHandler;
 
-        getElement().getStyle().setWidth(width, Unit.PX);
-        getElement().getStyle().setHeight(height, Unit.PX);
-        getElement().setId("mgnlEditorMoveDiv");
 
-        attach();
+    public MoveWidget(Element element) {
+        setElement(element);
+        getElement().setId(CLASS_NAME);
     }
 
-    private void attach() {
-        Document.get().getBody().appendChild(this.getElement());
+    public void attach(final PageEditorFrame frame, final int width, final int height) {
+        this.frame = frame;
+
+        // no other way to get the value marked !important
+        String widthImp = "width: " +  width + Unit.PX.getType() + " !important;";
+        String heightImp = "height: " +  height + Unit.PX.getType() + " !important;";
+        getElement().setAttribute("style", widthImp + heightImp);
+
+        final BodyElement frameBody = frame.getBody();
+        frameBody.appendChild(this.getElement());
+
+        this.wrapper = new FrameBodyWrapper(frameBody);
+        wrapper.onAttach();
+
+        this.moveHandler = wrapper.addMouseMoveHandler(new MouseMoveHandler() {
+            @Override
+            public void onMouseMove(MouseMoveEvent event) {
+                int x = event.getNativeEvent().getClientX() + frame.getContentDocument().getScrollLeft();
+                int y = event.getNativeEvent().getClientY() + 15 + frame.getContentDocument().getScrollTop();
+                int maxX = frame.getBody().getOffsetWidth() - width;
+                int maxY = frame.getBody().getOffsetHeight() - height - 15;
+
+                x = (x > maxX) ? maxX : x;
+                y = (y > maxY) ? maxY : y;
+
+                getElement().getStyle().setTop(y, Unit.PX);
+                getElement().getStyle().setLeft(x, Unit.PX);
+            }
+        });
+
         super.onAttach();
+
     }
 
     public void detach() {
-        Document.get().getBody().removeChild(this.getElement());
+        frame.getBody().removeChild(this.getElement());
+        moveHandler.removeHandler();
+        wrapper.onDetach();
         super.onDetach();
+    }
+
+    /**
+     * Wrapper to attach {@link HasMouseMoveHandlers} to the frames body element.
+     */
+    class FrameBodyWrapper extends Widget implements HasMouseMoveHandlers {
+
+        FrameBodyWrapper(Element frame) {
+            setElement(frame);
+        }
+
+        @Override
+        public HandlerRegistration addMouseMoveHandler(MouseMoveHandler handler) {
+            return addDomHandler(handler, MouseMoveEvent.getType());
+        }
+
+        @Override
+        protected void onAttach() {
+            super.onAttach();
+        }
+
+        @Override
+        protected void onDetach() {
+            super.onDetach();
+        }
     }
 
 }

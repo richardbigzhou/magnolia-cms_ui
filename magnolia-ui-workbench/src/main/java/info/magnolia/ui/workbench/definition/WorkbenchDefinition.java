@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.workbench.definition;
 
-import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 import java.io.Serializable;
@@ -62,8 +61,6 @@ public interface WorkbenchDefinition extends Serializable {
      * @return whether properties should be displayed as well (or just nodes)
      */
     boolean includeProperties();
-
-    List<ColumnDefinition> getColumns();
 
     /**
      * Define if this workbench is used for Dialog. This is set during the cloning of the workbench in

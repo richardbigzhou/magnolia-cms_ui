@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.widget.dnd;
+package info.magnolia.ui.app.pages.editor.event;
 
-import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar;
-
-import com.google.gwt.core.client.GWT;
-import com.google.web.bindery.event.shared.EventBus;
+import info.magnolia.event.Event;
+import info.magnolia.event.EventHandler;
+import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 
 /**
- * DragAndDrop.
+ * This event is fired when an element is selected in page editor.
+ * @see info.magnolia.ui.vaadin.gwt.client.shared.PageElement
+ * @see info.magnolia.ui.vaadin.gwt.client.shared.AreaElement
+ * @see info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement
  */
-public abstract class DragAndDrop {
+public class NodeSelectedEvent implements Event<NodeSelectedEvent.Handler> {
 
-    private static final DragAndDropImpl dndImpl = GWT.create(DragAndDropImpl.class);
+    private final AbstractElement element;
 
-    public static void dragAndDrop(EventBus eventBus, final ComponentBar abstractBar) {
-        dndImpl.dragAndDrop(eventBus, abstractBar);
+    public NodeSelectedEvent(AbstractElement element) {
+        this.element = element;
+    }
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onItemSelected(this);
+    }
+
+    public AbstractElement getElement() {
+        return element;
+    }
+
+    /**
+     * Handles {@link NodeSelectedEvent} events.
+     */
+    public static interface Handler extends EventHandler {
+        void onItemSelected(NodeSelectedEvent event);
     }
 }

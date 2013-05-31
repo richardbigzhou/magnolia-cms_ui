@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,40 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.editor;
+package info.magnolia.ui.app.pages.action;
 
-import info.magnolia.ui.contentapp.ContentSubAppView;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.editor.PageEditorView;
-import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * PagesEditorSubAppView.
+ * Action definition for {@link SortComponentAction}.
  */
-public interface PagesEditorSubAppView extends ContentSubAppView {
-
-    /**
-     * Listener.
-     */
-    public interface Listener extends PageBarView.Listener {
-
-        void onEscape();
+public class SortComponentActionDefinition extends ConfiguredActionDefinition {
+    public SortComponentActionDefinition() {
+        setImplementationClass(SortComponentAction.class);
     }
-
-    void setListener(Listener listener);
-
-    void setPageBarView(PageBarView pageBarView);
-
-    void setPageEditorView(PageEditorView pageEditor);
-
-    /**
-     * Use this method to add an action bar to this sub app view.
-     */
-    void setActionbarView(ActionbarView actionbar);
-
-    /**
-     * Shows/hides the actionbar. It has no effect if the actionbar hasn't yet been set.
-     */
-    void hideActionbar(boolean hide);
-
 }

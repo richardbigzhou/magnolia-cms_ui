@@ -31,26 +31,57 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.definition;
+package info.magnolia.ui.app.pages.editor.event;
 
-import info.magnolia.ui.workbench.ContentPresenter;
-import info.magnolia.ui.workbench.ContentView.ViewType;
-import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
-
-import java.util.List;
+import info.magnolia.event.Event;
+import info.magnolia.event.EventHandler;
 
 /**
- * Definition for a workbench generic content view.
+ * Event to notify the system that the move has been started or stopped.
+ * Event holds contextual information about the events cause:
+ * <pre>
+ *  <ul>
+ *      <li>Whether it was a server or client side action causing it.</li>
+ *      <li>Whether the move was stopped or started.</li>
+ *  </ul>
+ *
+ *  fired by: {@link info.magnolia.ui.app.pages.action.MoveComponentAction}
+ *  handler registered in:
+ *  <ul>
+ *      <li>{@link info.magnolia.ui.app.pages.editor.PagesEditorSubApp#bindHandlers}</li>
+ *      <li>{@link info.magnolia.ui.app.pages.editor.PageEditorPresenter#registerHandlers}</li>
+ *  </ul>
+ * </pre>
  */
-public interface ContentPresenterDefinition {
+public class ComponentMoveEvent implements Event<ComponentMoveEvent.Handler> {
 
-    ViewType getViewType();
+    private boolean start;
 
-    List<ColumnDefinition> getColumns();
+    private boolean serverSide;
 
-    Class<? extends ContentPresenter> getImplementationClass();
+    public ComponentMoveEvent(boolean start, boolean serverSide) {
+        this.start = start;
+        this.serverSide = serverSide;
+    }
 
-    String getIcon();
+    public boolean isStart() {
+        return start;
+    }
 
-    boolean isActive();
+    public boolean isServerSide() {
+        return serverSide;
+    }
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onMove(this);
+    }
+
+    /**
+     * Handler.
+     */
+    public static interface Handler extends EventHandler {
+        void onMove(ComponentMoveEvent event);
+    }
+
 }

@@ -78,4 +78,8 @@ public interface Model {
     MgnlPage getRootPage();
 
     void reset();
+
+    boolean isMoving();
+
+    void setMoving(boolean isMoving);
 }

@@ -43,7 +43,7 @@ public class FlatJcrContainer extends AbstractJcrContainer {
     /**
      * Constructor for {@link FlatJcrContainer}.
      */
-    public FlatJcrContainer(WorkbenchDefinition workbenchDefinition) {
-        super(workbenchDefinition);
+    public FlatJcrContainer(WorkbenchDefinition workbenchDefinition, String viewTypeName) {
+        super(workbenchDefinition, viewTypeName);
     }
 }
