@@ -213,7 +213,11 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
             if (count <= 0) {
                 badge.setVisible(false);
             } else {
-                badge.setValue(String.valueOf(count));
+                String countAsString = String.valueOf(count);
+                if (count > 99) {
+                    countAsString = "99+";
+                }
+                badge.setValue(countAsString);
                 badge.setVisible(true);
             }
         }
