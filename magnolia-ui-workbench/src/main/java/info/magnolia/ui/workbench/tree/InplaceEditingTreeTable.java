@@ -121,6 +121,40 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         refreshRowCache();
     }
 
+    // PARTIAL UPDATES
+
+    @Override
+    protected int getFirstUpdatedItemIndex() {
+        if (editingItemId != null) {
+            return indexOfId(editingItemId);
+        }
+        return super.getFirstUpdatedItemIndex();
+    }
+
+    @Override
+    protected int getUpdatedRowCount() {
+        if (editingItemId != null) {
+            return 1;
+        }
+        return super.getUpdatedRowCount();
+    }
+
+    @Override
+    protected int getFirstAddedItemIndex() {
+        if (editingItemId != null) {
+            return 0;
+        }
+        return super.getFirstAddedItemIndex();
+    }
+
+    @Override
+    protected int getAddedRowCount() {
+        if (editingItemId != null) {
+            return 0;
+        }
+        return super.getAddedRowCount();
+    }
+
     @Override
     protected boolean isPartialRowUpdate() {
         return editingItemId != null || super.isPartialRowUpdate();
