@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.mediaeditor.data;
 
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -64,11 +65,18 @@ public class EditHistoryTrackingPropertyImpl extends TransactionalPropertyWrappe
 
     private boolean currentActionInitialized;
 
+    private Listener listener;
+
     public EditHistoryTrackingPropertyImpl(byte[] bytes) {
         super(new ObjectProperty<byte[]>(bytes));
         startTransaction();
         startAction("");
         setValue(bytes);
+    }
+
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -106,7 +114,7 @@ public class EditHistoryTrackingPropertyImpl extends TransactionalPropertyWrappe
             doneActions.push(record);
             currentActionInitialized = false;
         } catch (IOException e) {
-            log.error("Failed to create temp file.", e);
+            logErrorAndNotify("Failed to create temp file.", e);
         }
     }
 
@@ -116,26 +124,17 @@ public class EditHistoryTrackingPropertyImpl extends TransactionalPropertyWrappe
             Record lastDone = doneActions.peek();
             unDoneActions.push(lastDone);
             doneActions.remove(lastDone);
-            try {
-                final Record newLastDone = doneActions.peek();
-                super.setValue(IOUtils.toByteArray(new FileInputStream(newLastDone.file)));
-            } catch (IOException e) {
-                log.error(e);
-            }
+            updateValue(doneActions.peek());
         }
     }
 
     @Override
     public void redo() {
         if (!unDoneActions.isEmpty()) {
-            try {
-                final Record toBeRedone = unDoneActions.peek();
-                doneActions.push(toBeRedone);
-                unDoneActions.remove(toBeRedone);
-                super.setValue(IOUtils.toByteArray(new FileInputStream(toBeRedone.file)));
-            } catch (IOException e) {
-                log.error(e);
-            }
+            final Record toBeRedone = unDoneActions.peek();
+            updateValue(toBeRedone);
+            doneActions.push(toBeRedone);
+            unDoneActions.remove(toBeRedone);
         }
     }
 
@@ -158,13 +157,34 @@ public class EditHistoryTrackingPropertyImpl extends TransactionalPropertyWrappe
             unDoneActions.clear();
         }
         currentActionInitialized = true;
+        FileOutputStream fos = null;
         try {
-            FileOutputStream fis = new FileOutputStream(doneActions.peek().file);
-            IOUtils.write(bytes, fis);
-            fis.close();
+            fos = new FileOutputStream(doneActions.peek().file);
+            IOUtils.write(bytes, fos);
             super.setValue(bytes);
         } catch (IOException e) {
-            log.error(e);
+            logErrorAndNotify("Input/Output exception during media editor data handling", e);
+        } finally {
+            IOUtils.closeQuietly(fos);
+        }
+    }
+
+    private void logErrorAndNotify(String message, Exception e) {
+        log.error(e);
+        if (listener != null) {
+            listener.errorOccurred(message, e);
+        }
+    }
+
+    private void updateValue(Record newLastDone) {
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(newLastDone.file);
+            super.setValue(IOUtils.toByteArray(fis));
+        } catch (IOException e) {
+            logErrorAndNotify("Input/Output exception during media editor data handling", e);
+        } finally {
+            IOUtils.closeQuietly(fis);
         }
     }
 
