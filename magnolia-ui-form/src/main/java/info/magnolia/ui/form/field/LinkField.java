@@ -141,8 +141,10 @@ public class LinkField extends CustomField<String> {
             textField.setConverter(converter);
         }
         textField.setPropertyDataSource(newDataSource);
-        updateComponents(newDataSource.getValue().toString());
-        setButtonCaption(newDataSource.getValue().toString());
+        if (newDataSource.getValue() != null) {
+            updateComponents(newDataSource.getValue().toString());
+            setButtonCaption(newDataSource.getValue().toString());
+        }
         super.setPropertyDataSource(newDataSource);
     }
 
