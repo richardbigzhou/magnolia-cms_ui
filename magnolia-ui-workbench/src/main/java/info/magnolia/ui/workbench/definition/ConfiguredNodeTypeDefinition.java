@@ -44,7 +44,7 @@ public class ConfiguredNodeTypeDefinition implements NodeTypeDefinition {
 
     private String icon;
 
-    private boolean strict = true;
+    private boolean strict;
 
     @Override
     public String getName() {

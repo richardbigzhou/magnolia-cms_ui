@@ -54,7 +54,7 @@ public interface NodeTypeDefinition {
     String getIcon();
 
     /**
-     * Specifies whether to include only the exact node type and ignore sub types. Default is true.
+     * Specifies whether to include only the exact node type and ignore sub types.
      */
     boolean isStrict();
 }
