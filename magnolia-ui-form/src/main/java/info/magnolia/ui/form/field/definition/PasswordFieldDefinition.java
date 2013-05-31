@@ -39,7 +39,6 @@ package info.magnolia.ui.form.field.definition;
 public class PasswordFieldDefinition extends ConfiguredFieldDefinition {
 
     private boolean verification = true;
-    private boolean encode = true;
     private String verificationMessage = "field.password.verificationMessage";
     private String verificationErrorMessage = "field.password.verificationErrorMessage";
 
@@ -66,13 +65,4 @@ public class PasswordFieldDefinition extends ConfiguredFieldDefinition {
     public void setVerificationErrorMessage(String verificationErrorMessage) {
         this.verificationErrorMessage = verificationErrorMessage;
     }
-
-    public boolean isEncode() {
-        return encode;
-    }
-
-    public void setEncode(boolean encode) {
-        this.encode = encode;
-    }
-
 }
