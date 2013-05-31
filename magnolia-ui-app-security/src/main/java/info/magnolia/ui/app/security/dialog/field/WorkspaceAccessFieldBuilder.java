@@ -370,7 +370,6 @@ public class WorkspaceAccessFieldBuilder<D extends WorkspaceAccessFieldDefinitio
         ConfiguredNodeTypeDefinition nodeType = new ConfiguredNodeTypeDefinition();
         nodeType.setName("nt:base");
         nodeType.setIcon("icon-folder");
-        nodeType.setStrict(false);
         nodeTypes.add(nodeType);
 
         return nodeTypes;
