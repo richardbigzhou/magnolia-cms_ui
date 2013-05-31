@@ -49,7 +49,10 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.event.ItemsSelectedEvent;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.jcr.RepositoryException;
 
@@ -69,11 +72,14 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
 
     private EventBus eventBus;
 
+    private Set<JcrItemAdapter> items;
+
     @Override
     public void setUp() throws Exception {
         super.setUp();
         workbenchPresenter = mock(WorkbenchPresenter.class);
         eventBus = new SimpleEventBus();
+        items = new HashSet<JcrItemAdapter>();
         // make sure that workbench view registers a content view so that restore selection doesn't fail.
         WorkbenchView workbenchView = mock(WorkbenchView.class);
         doReturn(mock(Component.class)).when(workbenchView).asVaadinComponent();
@@ -102,9 +108,10 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
         builder = new LinkFieldSelectionBuilder(definition, baseItem, workbenchPresenter, eventBus);
         builder.setI18nContentSupport(i18nContentSupport);
         Field field = builder.getField();
+        items.add((JcrItemAdapter) baseItem);
 
         // WHEN
-        eventBus.fireEvent(new ItemSelectedEvent(baseNode.getSession().getWorkspace().getName(), (JcrItemAdapter) baseItem));
+        eventBus.fireEvent(new ItemsSelectedEvent(baseNode.getSession().getWorkspace().getName(), items));
 
         // THEN
         // as No columnName defined return the Item path as Value property
@@ -120,9 +127,10 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
         builder = new LinkFieldSelectionBuilder(definition, baseItem, workbenchPresenter, eventBus);
         builder.setI18nContentSupport(i18nContentSupport);
         Field field = builder.getField();
+        items.add((JcrItemAdapter) baseItem);
 
         // WHEN
-        eventBus.fireEvent(new ItemSelectedEvent(baseNode.getSession().getWorkspace().getName(), (JcrItemAdapter) baseItem));
+        eventBus.fireEvent(new ItemsSelectedEvent(baseNode.getSession().getWorkspace().getName(), items));
 
         // THEN
         assertEquals("initial", field.getValue());

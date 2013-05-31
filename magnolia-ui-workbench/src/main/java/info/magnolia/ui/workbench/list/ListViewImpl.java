@@ -44,8 +44,10 @@ import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -89,7 +91,7 @@ public class ListViewImpl implements ListView {
 
         table.setImmediate(true);
         table.setSelectable(true);
-        table.setMultiSelect(false);
+        table.setMultiSelect(true);
         table.setNullSelectionAllowed(true);
 
         table.setDragMode(TableDragMode.NONE);
@@ -135,10 +137,19 @@ public class ListViewImpl implements ListView {
         table.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {
-                log.debug("Handle value change Event: {}", event.getProperty().getValue());
+                Object value = event.getProperty().getValue();
+
+                log.debug("Handle value change Event: {}", value);
 
                 if (listener != null) {
-                    listener.onItemSelection(table.getItem(event.getProperty().getValue()));
+                    Set<String> items;
+                    if (value instanceof Set) {
+                        items = (Set) value;
+                    } else {
+                        items = new HashSet<String>();
+                        items.add((String) value);
+                    }
+                    listener.onItemSelection(items);
                 }
             }
         });

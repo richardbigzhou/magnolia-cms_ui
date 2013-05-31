@@ -60,8 +60,11 @@ import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
-import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.event.ItemsSelectedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -158,16 +161,19 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
                     workbenchPresenter.refresh();
 
-                    String itemId = getSelectedItemId();
+                    // use just the first item
+                    String itemId = getSelectedItemIds().get(0);
                     try {
-
-                        if (!JcrItemUtil.itemExists(getWorkspace(), getSelectedItemId())) {
+                        List<String> ids = new ArrayList<String>();
+                        if (!JcrItemUtil.itemExists(getWorkspace(), getSelectedItemIds().get(0))) {
                             // If the selected node no longer exists we revert selection to the root
                             String workbenchRootItemId = JcrItemUtil.getItemId(subAppDescriptor.getWorkbench().getWorkspace(), subAppDescriptor.getWorkbench().getPath());
-                            workbenchPresenter.select(workbenchRootItemId);
+                            ids.add(workbenchRootItemId);
+                            workbenchPresenter.select(ids);
                         } else {
                             // Select the Item to make sure the location is updated.
-                            workbenchPresenter.select(itemId);
+                            ids.add(itemId);
+                            workbenchPresenter.select(ids);
                             // If the selected node does exists refresh the preview image in case it was changed
                             refreshActionbarPreviewImage(itemId, event.getWorkspace());
                         }
@@ -178,11 +184,12 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
             }
         });
 
-        subAppEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
+        subAppEventBus.addHandler(ItemsSelectedEvent.class, new ItemsSelectedEvent.Handler() {
 
             @Override
-            public void onItemSelected(ItemSelectedEvent event) {
-                refreshActionbarPreviewImage(event.getItemId(), event.getWorkspace());
+            public void onItemSelected(ItemsSelectedEvent event) {
+                // if exactly one node is selected, use it for preview
+                refreshActionbarPreviewImage(event.getItemIds().size() == 1 ? event.getItemIds().iterator().next() : null, event.getWorkspace());
             }
         });
 
@@ -211,8 +218,8 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         });
     }
 
-    public String getSelectedItemId() {
-        return workbenchPresenter.getSelectedId();
+    public List<String> getSelectedItemIds() {
+        return workbenchPresenter.getSelectedIds();
     }
 
     /**
@@ -239,8 +246,8 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
      * Synchronizes the underlying view to reflect the status extracted from the Location token, i.e. selected itemId,
      * view type and optional query (in case of a search view).
      */
-    public void resync(final String itemId, final ViewType viewType, final String query) {
-        workbenchPresenter.resynch(itemId, viewType, query);
+    public void resync(final List<String> itemIds, final ViewType viewType, final String query) {
+        workbenchPresenter.resynch(itemIds, viewType, query);
     }
 
     private void refreshActionbarPreviewImage(final String itemId, final String workspace) {
@@ -283,7 +290,9 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
                 node.getSession().save();
 
                 // update workbench selection in case the node changed name
-                workbenchPresenter.select(JcrItemUtil.getItemId(node));
+                List<String> ids = new ArrayList<String>();
+                ids.add(JcrItemUtil.getItemId(node));
+                workbenchPresenter.select(ids);
 
             } catch (RepositoryException e) {
                 log.error("Could not save changes to node", e);
@@ -303,7 +312,9 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
                 parent.getSession().save();
 
                 // update workbench selection in case the property changed name
-                workbenchPresenter.select(JcrItemUtil.getItemId(propertyAdapter.getJcrItem()));
+                List<String> ids = new ArrayList<String>();
+                ids.add(JcrItemUtil.getItemId(propertyAdapter.getJcrItem()));
+                workbenchPresenter.select(ids);
 
             } catch (RepositoryException e) {
                 log.error("Could not save changes to property", e);
@@ -347,13 +358,15 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
     private void executeAction(String actionName) {
         try {
-            javax.jcr.Item item = JcrItemUtil.getJcrItem(getWorkspace(), getSelectedItemId());
+            // TODO MGNLUI-1515 support actions on more items
+            // now, use just the first item
+            javax.jcr.Item item = JcrItemUtil.getJcrItem(getWorkspace(), getSelectedItemIds().get(0));
             actionExecutor.execute(actionName, item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((Property) item));
         } catch (PathNotFoundException p) {
-            Message error = new Message(MessageType.ERROR, "Could not get item ", "Following Item not found :" + getSelectedItemId());
+            Message error = new Message(MessageType.ERROR, "Could not get item ", "Following Item not found :" + getSelectedItemIds().get(0));
             appContext.sendLocalMessage(error);
         } catch (RepositoryException e) {
-            Message error = new Message(MessageType.ERROR, "Could not get item: " + getSelectedItemId(), e.getMessage());
+            Message error = new Message(MessageType.ERROR, "Could not get item: " + getSelectedItemIds().get(0), e.getMessage());
             log.error("An error occurred while executing action [{}]", actionName, e);
             appContext.sendLocalMessage(error);
         } catch (ActionExecutionException e) {

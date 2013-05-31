@@ -35,6 +35,9 @@ package info.magnolia.ui.vaadin.integration.jcr;
 
 import info.magnolia.context.MgnlContext;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.jcr.Item;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
@@ -129,5 +132,42 @@ public class JcrItemUtil {
         }
 
         return getItemId(session.getNode(absPath));
+    }
+
+    public static List<Item> getItems(final String workspaceName, List<String> ids, String rootId) {
+        List<Item> items = getItems(workspaceName, ids);
+        if (rootId == null) {
+            return items;
+        }
+        for (int i = 0; i < items.size(); i++) {
+            try {
+                if (rootId.equals(getItemId(items.get(i)))) {
+                    items.set(i, null);
+                }
+            } catch (RepositoryException e) {
+                log.debug("Cannot get item ID for item [{}].", items.get(i));
+            }
+        }
+        return items;
+    }
+
+    public static List<Item> getItems(final String workspaceName, List<String> ids) {
+        // sanity check
+        if (StringUtils.isBlank(workspaceName) || ids == null) {
+            return null;
+        }
+        List<Item> items = new ArrayList<Item>();
+        for (String id : ids) {
+            Item item;
+            try {
+                item = getJcrItem(workspaceName, id);
+                if (item != null) {
+                    items.add(item);
+                }
+            } catch (RepositoryException e) {
+                log.debug("Cannot find item with id [{}] in workspace [{}].", id, workspaceName);
+            }
+        }
+        return items;
     }
 }

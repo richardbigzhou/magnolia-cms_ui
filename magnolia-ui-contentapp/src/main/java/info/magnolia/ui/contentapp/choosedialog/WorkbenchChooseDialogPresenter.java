@@ -47,7 +47,7 @@ import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.event.ItemsSelectedEvent;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -91,10 +91,10 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
 
     private void bindHandlers() {
 
-        eventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
+        eventBus.addHandler(ItemsSelectedEvent.class, new ItemsSelectedEvent.Handler() {
             @Override
-            public void onItemSelected(ItemSelectedEvent event) {
-                currentValue = event.getItem();
+            public void onItemSelected(ItemsSelectedEvent event) {
+                currentValue = event.getItems().iterator().next();
             }
         });
 

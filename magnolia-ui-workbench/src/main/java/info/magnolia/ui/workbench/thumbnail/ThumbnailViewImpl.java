@@ -38,6 +38,9 @@ import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailDblClickListe
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailRightClickListener;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailSelectionListener;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
@@ -63,7 +66,9 @@ public class ThumbnailViewImpl implements ThumbnailView {
             @Override
             public void onThumbnailSelected(final String thumbnailId) {
                 Item node = thumbnailLayout.getContainerDataSource().getItem(thumbnailId);
-                listener.onItemSelection(node);
+                Set<Item> items = new HashSet<Item>();
+                items.add(node);
+                listener.onItemSelection(items);
             }
         });
 
@@ -81,7 +86,9 @@ public class ThumbnailViewImpl implements ThumbnailView {
             @Override
             public void onThumbnailRightClicked(final String thumbnailId, int clickX, int clickY) {
                 Item node = thumbnailLayout.getContainerDataSource().getItem(thumbnailId);
-                listener.onItemSelection(node);
+                Set<Item> items = new HashSet<Item>();
+                items.add(node);
+                listener.onItemSelection(items);
                 listener.onRightClick(node, clickX, clickY);
             }
         });

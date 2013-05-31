@@ -221,7 +221,9 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
         // WHEN
         // root
-        when(workbench.getSelectedItemId()).thenReturn(JcrItemUtil.getItemId(session.getRootNode()));
+        List<String> ids = new ArrayList<String>(1);
+        ids.add(JcrItemUtil.getItemId(session.getRootNode()));
+        when(workbench.getSelectedItemIds()).thenReturn(ids);
         subApp.updateActionbar(workbench.getActionbarPresenter());
 
         // THEN
@@ -238,7 +240,9 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
         // WHEN
         // node
-        when(workbench.getSelectedItemId()).thenReturn(JcrItemUtil.getItemId(testContentNode));
+        ids = new ArrayList<String>(1);
+        ids.add(JcrItemUtil.getItemId(testContentNode));
+        when(workbench.getSelectedItemIds()).thenReturn(ids);
         subApp.updateActionbar(workbench.getActionbarPresenter());
 
         // THEN
@@ -256,7 +260,9 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
         // WHEN
         // property
-        when(workbench.getSelectedItemId()).thenReturn(JcrItemUtil.getItemId(testContentNode.getProperty(TEST_PROPERTY)));
+        ids = new ArrayList<String>(1);
+        ids.add(JcrItemUtil.getItemId(testContentNode.getProperty(TEST_PROPERTY)));
+        when(workbench.getSelectedItemIds()).thenReturn(ids);
         subApp.updateActionbar(workbench.getActionbarPresenter());
 
         // THEN

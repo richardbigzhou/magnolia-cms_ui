@@ -35,6 +35,8 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.ui.api.view.View;
 
+import java.util.Set;
+
 import com.vaadin.data.Item;
 
 /**
@@ -94,7 +96,8 @@ public interface ContentView extends View {
      */
     public interface Listener {
 
-        void onItemSelection(Item item);
+        // void onItemSelection(Item item);
+        void onItemSelection(Set items);
 
         void onDoubleClick(Item item);
 

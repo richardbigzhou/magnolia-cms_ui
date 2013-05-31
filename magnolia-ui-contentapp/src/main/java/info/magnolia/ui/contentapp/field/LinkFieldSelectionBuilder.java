@@ -41,7 +41,7 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.framework.event.ChooseDialogEventBus;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
-import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.event.ItemsSelectedEvent;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -100,10 +100,10 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
         restoreContentSelection();
 
         // On a selected Item, propagate the specified Column Value to the TextField.
-        chooseDialogEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
+        chooseDialogEventBus.addHandler(ItemsSelectedEvent.class, new ItemsSelectedEvent.Handler() {
             @Override
-            public void onItemSelected(ItemSelectedEvent event) {
-                final Node selected = SessionUtil.getNodeByIdentifier(event.getWorkspace(), event.getItemId());
+            public void onItemSelected(ItemsSelectedEvent event) {
+                final Node selected = SessionUtil.getNodeByIdentifier(event.getWorkspace(), event.getItemIds().iterator().next());
                 if (selected != null) {
                     try {
                         boolean isPropertyExisting = StringUtils.isNotBlank(propertyName)

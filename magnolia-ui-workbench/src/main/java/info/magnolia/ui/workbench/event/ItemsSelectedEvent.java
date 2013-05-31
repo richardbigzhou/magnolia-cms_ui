@@ -37,39 +37,46 @@ import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * This event is fired when an item is selected (i.e. a row in the data grid within the workbench
  * representing either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
  */
-public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
+public class ItemsSelectedEvent implements Event<ItemsSelectedEvent.Handler> {
 
     /**
-     * Handles {@link ItemSelectedEvent} events.
+     * Handles {@link ItemsSelectedEvent} events.
      */
     public interface Handler extends EventHandler {
 
-        void onItemSelected(ItemSelectedEvent event);
+        void onItemSelected(ItemsSelectedEvent event);
     }
 
     private final String workspace;
 
-    private final JcrItemAdapter item;
+    private final Set<JcrItemAdapter> items;
 
-    public ItemSelectedEvent(String workspace, JcrItemAdapter item) {
+    public ItemsSelectedEvent(String workspace, Set<JcrItemAdapter> items) {
         this.workspace = workspace;
-        this.item = item;
+        this.items = items;
     }
 
     public String getWorkspace() {
         return workspace;
     }
 
-    public String getItemId() {
-        return item != null ? item.getItemId() : null;
+    public Set<String> getItemIds() {
+        Set<String> itemIds = new HashSet<String>();
+        for (JcrItemAdapter item : items) {
+            itemIds.add(item.getItemId());
+        }
+        return itemIds;
     }
 
-    public JcrItemAdapter getItem() {
-        return item;
+    public Set<JcrItemAdapter> getItems() {
+        return items;
     }
 
     @Override

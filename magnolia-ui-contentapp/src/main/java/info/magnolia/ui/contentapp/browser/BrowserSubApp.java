@@ -57,10 +57,11 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
-import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.event.ItemsSelectedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -91,7 +92,7 @@ import com.vaadin.server.ExternalResource;
  *  </ul>
  * In order to perform those tasks this class registers non-overridable handlers for the following events:
  *  <ul>
- *      <li> {@link ItemSelectedEvent}
+ *      <li> {@link ItemsSelectedEvent}
  *      <li> {@link ViewTypeChangedEvent}
  *      <li> {@link SearchEvent}
  *  </ul>
@@ -189,7 +190,9 @@ public class BrowserSubApp extends BaseSubApp {
         } catch (RepositoryException e) {
             log.warn("Could not retrieve item at path {} in workspace {}", path, workspaceName);
         }
-        getBrowser().resync(itemId, viewType, query);
+        List<String> ids = new ArrayList<String>();
+        ids.add(itemId);
+        getBrowser().resync(ids, viewType, query);
         updateActionbar(getBrowser().getActionbarPresenter());
     }
 
@@ -219,15 +222,12 @@ public class BrowserSubApp extends BaseSubApp {
         List<ActionbarSectionDefinition> sections = subAppDescriptor.getActionbar().getSections();
 
         try {
-            Item item = null;
-            String selectedItemId = getBrowser().getSelectedItemId();
-            String workbenchRootItemId = JcrItemUtil.getItemId(SessionUtil.getNode(workbench.getWorkspace(), workbench.getPath()));
-            if (selectedItemId != null && !selectedItemId.equals(workbenchRootItemId)) {
-                item = JcrItemUtil.getJcrItem(workbench.getWorkspace(), selectedItemId);
-            }
+            String rootId = JcrItemUtil.getItemId(workbench.getWorkspace(), workbench.getPath());
+            List<String> selectedItemIds = getBrowser().getSelectedItemIds();
+            List<Item> items = JcrItemUtil.getItems(workbench.getWorkspace(), selectedItemIds, rootId);
 
             // Figure out which section to show, only one
-            ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, item);
+            ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, items);
 
             // If there no section matched the selection we just hide everything
             if (sectionDefinition == null) {
@@ -240,8 +240,8 @@ public class BrowserSubApp extends BaseSubApp {
                 for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
 
                     String actionName = itemDefinition.getName();
-                    menuItem = addActionPopupItem(subAppDescriptor, actionPopup, itemDefinition, item);
-                    menuItem.setEnabled(actionExecutor.isAvailable(actionName, item));
+                    menuItem = addActionPopupItem(subAppDescriptor, actionPopup, itemDefinition, items);
+                    menuItem.setEnabled(actionExecutor.isAvailable(actionName, items.toArray(new Item[0])));
                 }
 
                 // Add group separator.
@@ -261,7 +261,7 @@ public class BrowserSubApp extends BaseSubApp {
      * Add an additional menu item on the actionPopup.
      * TODO: Move to BrowserPresenter. Christopher Zimmermann
      */
-    private ContextMenuItem addActionPopupItem(BrowserSubAppDescriptor subAppDescriptor, ActionPopup actionPopup, ActionbarItemDefinition itemDefinition, javax.jcr.Item item) {
+    private ContextMenuItem addActionPopupItem(BrowserSubAppDescriptor subAppDescriptor, ActionPopup actionPopup, ActionbarItemDefinition itemDefinition, List<javax.jcr.Item> items) {
         String actionName = itemDefinition.getName();
 
         ActionDefinition action = subAppDescriptor.getActions().get(actionName);
@@ -291,15 +291,12 @@ public class BrowserSubApp extends BaseSubApp {
         List<ActionbarSectionDefinition> sections = subAppDescriptor.getActionbar().getSections();
 
         try {
-            Item item = null;
-            String selectedItemId = getBrowser().getSelectedItemId();
-            String workbenchRootItemId = JcrItemUtil.getItemId(SessionUtil.getNode(workbench.getWorkspace(), workbench.getPath()));
-            if (selectedItemId != null && !selectedItemId.equals(workbenchRootItemId)) {
-                item = JcrItemUtil.getJcrItem(workbench.getWorkspace(), selectedItemId);
-            }
+            String rootId = JcrItemUtil.getItemId(workbench.getWorkspace(), workbench.getPath());
+            List<String> selectedItemIds = getBrowser().getSelectedItemIds();
+            List<Item> items = JcrItemUtil.getItems(workbench.getWorkspace(), selectedItemIds, rootId);
 
             // Figure out which section to show, only one
-            ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, item);
+            ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, items);
 
             // If there no section matched the selection we just hide everything
             if (sectionDefinition == null) {
@@ -324,7 +321,7 @@ public class BrowserSubApp extends BaseSubApp {
                 for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
 
                     String actionName = itemDefinition.getName();
-                    if (actionExecutor.isAvailable(actionName, item)) {
+                    if (actionExecutor.isAvailable(actionName, items.toArray(new Item[0]))) {
                         actionbar.enable(actionName);
                     } else {
                         actionbar.disable(actionName);
@@ -339,12 +336,29 @@ public class BrowserSubApp extends BaseSubApp {
         }
     }
 
-    private ActionbarSectionDefinition getVisibleSection(List<ActionbarSectionDefinition> sections, Item item) throws RepositoryException {
+    private ActionbarSectionDefinition getVisibleSection(List<ActionbarSectionDefinition> sections, List<Item> items) throws RepositoryException {
         for (ActionbarSectionDefinition section : sections) {
-            if (isSectionVisible(section, item))
+            if (isSectionVisible(section, items))
                 return section;
         }
         return null;
+    }
+
+    private boolean isSectionVisible(ActionbarSectionDefinition section, List<Item> items) throws RepositoryException {
+        AvailabilityDefinition availability = section.getAvailability();
+
+        // Validate that the user has all required roles - only once
+        if (!availability.getAccess().hasAccess(MgnlContext.getUser())) {
+            return false;
+        }
+
+        // section must be visible for all items
+        for (Item item : items) {
+            if (!isSectionVisible(section, item)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean isSectionVisible(ActionbarSectionDefinition section, Item item) throws RepositoryException {
@@ -357,11 +371,6 @@ public class BrowserSubApp extends BaseSubApp {
             if (rule == null || !rule.isAvailable(item)) {
                 return false;
             }
-        }
-
-        // Validate that the user has all required roles
-        if (!availability.getAccess().hasAccess(MgnlContext.getUser())) {
-            return false;
         }
 
         // If this is the root item we display the section only if the root property is set
@@ -427,20 +436,20 @@ public class BrowserSubApp extends BaseSubApp {
      */
     private void registerSubAppEventsHandlers(final EventBus subAppEventBus, final BrowserSubApp subApp) {
         final ActionbarPresenter actionbar = subApp.getBrowser().getActionbarPresenter();
-        subAppEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
+        subAppEventBus.addHandler(ItemsSelectedEvent.class, new ItemsSelectedEvent.Handler() {
 
             @Override
-            public void onItemSelected(ItemSelectedEvent event) {
+            public void onItemSelected(ItemsSelectedEvent event) {
                 BrowserLocation location = getCurrentLocation();
                 try {
-                    if (event.getItemId() == null) {
+                    if (event.getItemIds().isEmpty()) {
                         location.updateNodePath("/");
                     } else {
-                        Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.parseNodeIdentifier(event.getItemId()));
+                        Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.parseNodeIdentifier(event.getItemIds().iterator().next()));
                         location.updateNodePath(selected.getPath());
                     }
                 } catch (RepositoryException e) {
-                    log.warn("Could not get jcrItem with itemId " + event.getItemId() + " from workspace " + event.getWorkspace(), e);
+                    log.warn("Could not get jcrItem with itemId " + event.getItemIds().iterator().next() + " from workspace " + event.getWorkspace(), e);
                 }
                 getAppContext().updateSubAppLocation(getSubAppContext(), location);
                 updateActionbar(actionbar);

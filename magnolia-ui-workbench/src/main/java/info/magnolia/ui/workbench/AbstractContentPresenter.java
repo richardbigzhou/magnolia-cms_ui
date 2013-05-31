@@ -33,13 +33,25 @@
  */
 package info.magnolia.ui.workbench;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
-import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.event.ItemsSelectedEvent;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +69,7 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
 
     protected WorkbenchDefinition workbenchDefinition;
 
-    private String selectedItemId;
+    private List<String> selectedItemIds = new ArrayList<String>();
 
     // CONTENT PRESENTER
 
@@ -69,32 +81,65 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
     }
 
     @Override
+    public List<String> getSelectedItemIds() {
+        return this.selectedItemIds;
+    }
+
     public String getSelectedItemId() {
-        return selectedItemId;
+        return selectedItemIds.isEmpty() ? null : selectedItemIds.get(0);
     }
 
     @Override
     public void setSelectedItemId(String selectedItemId) {
-        this.selectedItemId = selectedItemId;
+        this.selectedItemIds = new ArrayList<String>();
+        this.selectedItemIds.add(selectedItemId);
     }
 
     // CONTENT VIEW LISTENER
 
     @Override
-    public void onItemSelection(Item item) {
+    public void onItemSelection(Set items) {
         try {
-            if (item == null) {
+            Set<JcrItemAdapter> jcrItems = new HashSet<JcrItemAdapter>();
+            if (items == null || items.isEmpty()) {
                 log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
-                selectedItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
-                eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), null));
+                setSelectedItemId(getWorkbenchRoot().getIdentifier());
+                jcrItems.add(toJcrItemAdapter(getWorkbenchRoot()));
             } else {
-                selectedItemId = ((JcrItemAdapter) item).getItemId();
-                log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemId);
-                eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), (JcrItemAdapter) item));
+                selectedItemIds = new ArrayList<String>(items.size());
+                for (Object o : items) {
+                    String item = (String) o;
+                    selectedItemIds.add(item);
+                    jcrItems.add(toJcrItemAdapter(JcrItemUtil.getJcrItem(workbenchDefinition.getWorkspace(), item)));
+                }
+                log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemIds.toArray());
             }
+            eventBus.fireEvent(new ItemsSelectedEvent(workbenchDefinition.getWorkspace(), jcrItems));
         } catch (Exception e) {
             log.error("An error occurred while selecting a row in the data grid", e);
         }
+    }
+
+    private Node getWorkbenchRoot() {
+        try {
+            return MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getNode(workbenchDefinition.getPath());
+        } catch (RepositoryException e) {
+            log.debug("Cannot find workbench root node for workspace=[" + workbenchDefinition.getWorkspace() + "] and path=[" + workbenchDefinition.getPath() + "]. Error: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private JcrItemAdapter toJcrItemAdapter(javax.jcr.Item item) {
+        if (item == null) {
+            return null;
+        }
+        JcrItemAdapter adapter = null;
+        if (item.isNode()) {
+            adapter = new JcrNodeAdapter((Node) item);
+        } else {
+            adapter = new JcrPropertyAdapter((Property) item);
+        }
+        return adapter;
     }
 
     @Override
@@ -102,8 +147,8 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
         if (item != null) {
             try {
                 setSelectedItemId(((JcrItemAdapter) item).getItemId());
-                log.debug("com.vaadin.data.Item at {} was double clicked. Firing ItemDoubleClickedEvent...", selectedItemId);
-                eventBus.fireEvent(new ItemDoubleClickedEvent(workbenchDefinition.getWorkspace(), selectedItemId));
+                log.debug("com.vaadin.data.Item at {} was double clicked. Firing ItemDoubleClickedEvent...", getSelectedItemId());
+                eventBus.fireEvent(new ItemDoubleClickedEvent(workbenchDefinition.getWorkspace(), getSelectedItemId()));
             } catch (Exception e) {
                 log.error("An error occurred while double clicking on a row in the data grid", e);
             }
@@ -116,7 +161,7 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
     public void onRightClick(Item item, int clickX, int clickY) {
         if (item != null) {
             try {
-                selectedItemId = ((JcrItemAdapter) item).getItemId();
+                setSelectedItemId(((JcrItemAdapter) item).getItemId());
                 // String clickedItemPath = ((JcrItemAdapter) item).getPath();
                 String clickedItemId = ((JcrItemAdapter) item).getItemId();
                 log.debug("com.vaadin.data.Item at {} was right clicked. Firing ItemRightClickedEvent...", clickedItemId);

@@ -37,7 +37,9 @@ import info.magnolia.event.EventBus;
 import info.magnolia.ui.statusbar.StatusBarView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.event.ItemsSelectedEvent;
+
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.jcr.RepositoryException;
@@ -69,7 +71,7 @@ public class WorkbenchStatusBarPresenter {
     private final Label selectionLabel = new Label();
     private final Label countLabel = new Label();
 
-    private JcrItemAdapter selectedItem;
+    private Set<JcrItemAdapter> selectedItems;
 
     private String workbenchRootPath;
 
@@ -80,12 +82,12 @@ public class WorkbenchStatusBarPresenter {
     }
 
     private void bindHandlers() {
-        eventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
+        eventBus.addHandler(ItemsSelectedEvent.class, new ItemsSelectedEvent.Handler() {
 
             @Override
-            public void onItemSelected(ItemSelectedEvent event) {
-                setSelectedItem(event.getItem());
-                setSelectionCount(event.getItem() != null ? 1 : 0);
+            public void onItemSelected(ItemsSelectedEvent event) {
+                setSelectedItems(event.getItems());
+                setSelectionCount(event.getItems().size());
             }
         });
     }
@@ -105,28 +107,30 @@ public class WorkbenchStatusBarPresenter {
         return view;
     }
 
+    public void setSelectedItems(Set<JcrItemAdapter> items) {
+        this.selectedItems = items;
+        setSelectedItem(items.iterator().next());
+    }
+
     public void setSelectedItem(JcrItemAdapter item) {
-        if (item != selectedItem) {
-            String newValue = "";
-            String newDescription = null;
-            if (item != null) {
-                javax.jcr.Item jcrItem = item.getJcrItem();
-                try {
-                    newValue = jcrItem.getPath();
+        String newValue = "";
+        String newDescription = null;
+        if (item != null) {
+            javax.jcr.Item jcrItem = item.getJcrItem();
+            try {
+                newValue = jcrItem.getPath();
 
-                    if (!workbenchRootPath.equals("/")) {
-                        newValue = StringUtils.removeStart(newValue, workbenchRootPath);
-                    }
-
-                    newDescription = newValue;
-                } catch (RepositoryException e) {
-                    log.warn("Could not retrieve path from item with id " + item.getItemId(), e);
+                if (!workbenchRootPath.equals("/")) {
+                    newValue = StringUtils.removeStart(newValue, workbenchRootPath);
                 }
+
+                newDescription = newValue;
+            } catch (RepositoryException e) {
+                log.warn("Could not retrieve path from item with id " + item.getItemId(), e);
             }
-            selectionLabel.setValue(newValue);
-            selectionLabel.setDescription(newDescription);
-            this.selectedItem = item;
         }
+        selectionLabel.setValue(newValue);
+        selectionLabel.setDescription(newDescription);
     }
 
     public void setSelectionCount(int selectionCount) {

@@ -36,6 +36,8 @@ package info.magnolia.ui.workbench;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
+import java.util.List;
+
 import com.vaadin.data.Container;
 
 /**
@@ -51,7 +53,7 @@ public interface ContentPresenter {
 
     void refresh();
 
-    String getSelectedItemId();
+    List<String> getSelectedItemIds();
 
     void setSelectedItemId(String itemId);
 
