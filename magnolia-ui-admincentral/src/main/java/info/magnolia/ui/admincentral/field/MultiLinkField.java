@@ -106,11 +106,11 @@ public class MultiLinkField extends CustomField<List> {
     protected Component initContent() {
         addStyleName("linkfield");
         root = new VerticalLayout();
-        root.setSizeFull();
-        root.setSpacing(true);
+        root.setSizeUndefined();
 
         addButton.setCaption(buttonCaptionAdd);
         addButton.addStyleName("magnoliabutton");
+        addButton.addStyleName("add");
         addButton.addClickListener(addButtonClickListener());
 
         root.addComponent(addButton);
@@ -196,7 +196,7 @@ public class MultiLinkField extends CustomField<List> {
         Button deleteButton = new Button();
         deleteButton.setHtmlContentAllowed(true);
         deleteButton.setCaption("<span class=\"" + "icon-trash" + "\"></span>");
-        deleteButton.addStyleName("inline");
+        deleteButton.addStyleName("remove");
         deleteButton.setDescription("Remove");
         deleteButton.addClickListener(removeButtonClickListener(layout));
         layout.addComponent(deleteButton);
