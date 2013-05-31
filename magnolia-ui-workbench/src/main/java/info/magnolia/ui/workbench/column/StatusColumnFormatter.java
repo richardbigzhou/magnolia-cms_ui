@@ -42,8 +42,6 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 
 /**
@@ -63,61 +61,52 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
         final Item jcrItem = getJcrItem(source, itemId);
         if (jcrItem != null && jcrItem.isNode()) {
             Node node = (Node) jcrItem;
-            Label activationStatus = null;
-            Label permissionStatus = null;
+
+            String activationStatus = "";
+            String permissionStatus = "";
+
+            // activation status
             if (definition.isActivation()) {
-                activationStatus = new Label();
-                activationStatus.setSizeUndefined();
-                activationStatus.setStyleName("icon-shape-circle");
-                activationStatus.addStyleName("activation-status");
-                // Get Status
-                String color = "";
+                activationStatus += "icon-shape-circle activation-status ";
+
                 Integer status;
                 try {
                     status = NodeTypes.Activatable.getActivationStatus(node);
                 } catch (RepositoryException e) {
                     status = NodeTypes.Activatable.ACTIVATION_STATUS_NOT_ACTIVATED;
                 }
+
                 switch (status) {
                 case NodeTypes.Activatable.ACTIVATION_STATUS_MODIFIED:
-                    color = "color-yellow";
+                    activationStatus += "color-yellow";
                     break;
                 case NodeTypes.Activatable.ACTIVATION_STATUS_ACTIVATED:
-                    color = "color-green";
+                    activationStatus += "color-green";
                     break;
                 default:
-                    color = "color-red";
+                    activationStatus += "color-red";
                 }
-
-                activationStatus.addStyleName(color);
+                activationStatus = "<span class=\"" + activationStatus + "\"></span>";
             }
+
+            // permission status
             if (definition.isPermissions()) {
                 try {
-                    permissionStatus = new Label();
-                    permissionStatus.setSizeUndefined();
-                    permissionStatus.setStyleName("icon-edit");
+                    permissionStatus += "icon-edit ";
                     // TODO dlipp: MGNLUI-864 verify, this shows the same behavior as old Content-API based
                     // implementation:
                     // if (permissions && !node.isGranted(info.magnolia.cms.security.Permission.WRITE))
                     node.getSession().checkPermission(node.getPath(), Session.ACTION_SET_PROPERTY);
-                    permissionStatus.addStyleName("color-blue");
+                    permissionStatus += "color-blue";
                 } catch (RepositoryException e) {
                     // does not have permission to set properties - in that case will return two Icons
                     // in a layout for being displayed...
-                    permissionStatus.addStyleName("color-red");
+                    permissionStatus += "color-red";
                 }
+                permissionStatus = "<span class=\"" + permissionStatus + "\"></span>";
             }
-            if (definition.isActivation() && definition.isPermissions()) {
-                CssLayout root = new CssLayout();
-                root.addComponent(activationStatus);
-                root.addComponent(permissionStatus);
-                return root;
-            } else if (definition.isActivation()) {
-                return activationStatus;
-            } else if (definition.isPermissions()) {
-                return permissionStatus;
-            }
-            return new CssLayout();
+
+            return activationStatus + permissionStatus;
         }
         return null;
     }

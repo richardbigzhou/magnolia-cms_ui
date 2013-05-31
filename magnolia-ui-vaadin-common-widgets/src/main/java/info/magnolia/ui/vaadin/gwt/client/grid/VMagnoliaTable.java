@@ -306,6 +306,12 @@ public class VMagnoliaTable extends VScrollTablePatched {
                 MagnoliaTableHead head = (MagnoliaTableHead) tHead;
                 head.getSelectAllCB().setValue(selectedRowKeys.size() == scrollBody.renderedRows.size(), false);
             }
+
+            @Override
+            protected boolean isRenderHtmlInCells() {
+                return true;
+            }
         }
+
     }
 }
