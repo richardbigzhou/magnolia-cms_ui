@@ -48,7 +48,6 @@ import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
-import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.AbstractTextField;
@@ -57,6 +56,10 @@ import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TableFieldFactory;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Tree.CollapseEvent;
+import com.vaadin.ui.Tree.CollapseListener;
+import com.vaadin.ui.Tree.ExpandEvent;
+import com.vaadin.ui.Tree.ExpandListener;
 
 /**
  * The Inplace-editing TreeTable, for editing item properties inplace, on double click or via keyboard shortcuts.
@@ -81,6 +84,26 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         fieldFactory = new InplaceEditingFieldFactory();
         setTableFieldFactory(fieldFactory);
         addItemClickListener(asItemClickListener());
+
+        addExpandListener(new ExpandListener() {
+
+            @Override
+            public void nodeExpand(ExpandEvent event) {
+                if (editingItemId != null) {
+                    setEditing(null, null);
+                }
+            }
+        });
+
+        addCollapseListener(new CollapseListener() {
+
+            @Override
+            public void nodeCollapse(CollapseEvent event) {
+                if (editingItemId != null) {
+                    setEditing(null, null);
+                }
+            }
+        });
     }
 
     // INPLACE EDITING ENTRY POINTS.
@@ -183,17 +206,9 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                 field.setSizeFull();
             }
 
-            // set TextField Focus listeners
+            // set TextField listeners
             if (field instanceof AbstractTextField) {
                 final AbstractTextField tf = (AbstractTextField) field;
-                tf.addFocusListener(new FieldEvents.FocusListener() {
-
-                    @Override
-                    public void focus(FocusEvent event) {
-                        tf.setCursorPosition(tf.getValue().length());
-                    }
-                });
-
                 tf.addBlurListener(new FieldEvents.BlurListener() {
 
                     @Override
@@ -203,6 +218,18 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                     }
                 });
                 tf.focus();
+
+                tf.addValueChangeListener(new ValueChangeListener() {
+
+                    @Override
+                    public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
+                        final Object text = event.getProperty().getValue();
+                        if (text instanceof String) {
+                            tf.setCursorPosition(((String) text).length());
+                        }
+                        tf.removeValueChangeListener(this);
+                    }
+                });
             }
 
             // register component on the table
