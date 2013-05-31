@@ -68,6 +68,7 @@ import javax.inject.Named;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Workspace;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -186,9 +187,24 @@ public class BrowserSubApp extends BaseSubApp {
         String itemId = null;
         try {
             itemId = JcrItemUtil.getItemId(SessionUtil.getNode(workspaceName, path));
+
+            // MGNLUI-1475: item might have not be found if path doesn't exist
+            // TODO: fire UriFragmentChangedEvent
+            if (itemId == null) {
+                String newPath = Workspace.PATH_WORKSPACE_ROOT;
+                itemId = JcrItemUtil.getItemId(SessionUtil.getNode(workspaceName, newPath));
+                String newParameter = location.getParameter().replaceAll(path, newPath);
+
+                BrowserLocation newLocation = getCurrentLocation();
+                newLocation.setParameter(newParameter);
+                newLocation.updateNodePath(newPath);
+
+                getAppContext().updateSubAppLocation(getSubAppContext(), newLocation);
+            }
         } catch (RepositoryException e) {
             log.warn("Could not retrieve item at path {} in workspace {}", path, workspaceName);
         }
+
         getBrowser().resync(itemId, viewType, query);
         updateActionbar(getBrowser().getActionbarPresenter());
     }
