@@ -110,7 +110,6 @@ public class MultiLinkField extends CustomField<List> {
 
         addButton.setCaption(buttonCaptionAdd);
         addButton.addStyleName("magnoliabutton");
-        addButton.addStyleName("add");
         addButton.addClickListener(addButtonClickListener());
 
         root.addComponent(addButton);
