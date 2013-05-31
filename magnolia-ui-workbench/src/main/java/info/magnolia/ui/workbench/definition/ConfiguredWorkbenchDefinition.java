@@ -67,6 +67,7 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     private Class<? extends DropConstraint> dropConstraintClass;
 
     private List<ContentPresenterDefinition> contentViews = new LinkedList<ContentPresenterDefinition>();
+    private boolean includeSystemNodes;
 
     @Override
     public String getName() {
@@ -86,6 +87,10 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
         this.nodeTypes = nodeTypes;
     }
 
+    public void addNodeType(NodeTypeDefinition nodeTypeDefinition) {
+        nodeTypes.add(nodeTypeDefinition);
+    }
+
     @Override
     public boolean isIncludeProperties() {
         return includeProperties;
@@ -95,8 +100,13 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
         this.includeProperties = includeProperties;
     }
 
-    public void addNodeType(NodeTypeDefinition nodeTypeDefinition) {
-        nodeTypes.add(nodeTypeDefinition);
+    @Override
+    public boolean isIncludeSystemNodes() {
+        return includeSystemNodes;
+    }
+
+    public void setIncludeSystemNodes(boolean includeSystemNodes) {
+        this.includeSystemNodes = includeSystemNodes;
     }
 
     @Override

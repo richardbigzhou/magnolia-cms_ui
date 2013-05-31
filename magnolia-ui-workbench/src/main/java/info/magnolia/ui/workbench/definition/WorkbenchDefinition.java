@@ -63,6 +63,11 @@ public interface WorkbenchDefinition extends Serializable {
      */
     boolean isIncludeProperties();
 
+    /**
+     * @return whether nodes used by the system should be included, for instance nodes internal to the operations of the JCR implementation.
+     */
+    boolean isIncludeSystemNodes();
+
     List<ColumnDefinition> getColumns();
 
     /**
