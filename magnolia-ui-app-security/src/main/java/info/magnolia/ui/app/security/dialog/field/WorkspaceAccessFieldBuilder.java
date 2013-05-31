@@ -65,6 +65,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.JcrConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -368,7 +369,7 @@ public class WorkspaceAccessFieldBuilder<D extends WorkspaceAccessFieldDefinitio
 
         ArrayList<NodeTypeDefinition> nodeTypes = new ArrayList<NodeTypeDefinition>();
         ConfiguredNodeTypeDefinition nodeType = new ConfiguredNodeTypeDefinition();
-        nodeType.setName("nt:base");
+        nodeType.setName(JcrConstants.NT_BASE);
         nodeType.setIcon("icon-folder");
         nodeTypes.add(nodeType);
 

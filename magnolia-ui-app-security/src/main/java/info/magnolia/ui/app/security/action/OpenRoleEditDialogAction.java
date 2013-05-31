@@ -119,16 +119,18 @@ public class OpenRoleEditDialogAction<D extends OpenRoleEditDialogActionDefiniti
                             continue;
                         }
 
-                        boolean hasFieldForWorkspace = false;
+                        String aclName = "acl_" + workspaceName;
+
+                        boolean hasFieldForAcl = false;
                         for (FieldDefinition fieldDefinition : tab.getFields()) {
-                            if (fieldDefinition.getName().equals(workspaceName)) {
-                                hasFieldForWorkspace = true;
+                            if (fieldDefinition.getName().equals(aclName)) {
+                                hasFieldForAcl = true;
                             }
                         }
 
-                        if (!hasFieldForWorkspace) {
+                        if (!hasFieldForAcl) {
                             WorkspaceAccessFieldDefinition field = new WorkspaceAccessFieldDefinition();
-                            field.setName(workspaceName);
+                            field.setName(aclName);
                             field.setLabel(StringUtils.capitalize(workspaceName));
                             field.setWorkspace(workspaceName);
                             field.setNodeTypes(getNodeTypesForWorkspace(workspaceName));
