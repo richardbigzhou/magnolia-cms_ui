@@ -115,7 +115,10 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
             switchToDefaultMode();
             return view;
         } catch (IOException e) {
+            errorOccurred("Error occurred while editing media: ", e);
             log.error("Error occurred while editing media: " + e.getMessage(), e);
+        } finally {
+            IOUtils.closeQuietly(stream);
         }
         return null;
     }
@@ -197,8 +200,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
         try {
             actionExecutor.execute(actionName, this, view, dataSource);
         } catch (ActionExecutionException e) {
-            Message error = new Message(MessageType.ERROR, "Failed to execute media editor action ", e.getMessage());
-            appContext.sendLocalMessage(error);
+            errorOccurred("Failed to execute media editor action ", e);
             log.warn("Unable to execute action [" + actionName + "]", e);
         }
     }
