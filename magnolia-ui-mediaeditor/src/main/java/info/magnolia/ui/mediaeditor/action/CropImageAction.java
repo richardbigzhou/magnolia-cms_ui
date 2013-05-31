@@ -62,7 +62,6 @@ public class CropImageAction extends MediaEditorUIAction {
         super(definition, view, dataSource, eventBus);
     }
 
-
     @Override
     public void execute() throws ActionExecutionException {
         super.execute();
@@ -75,15 +74,14 @@ public class CropImageAction extends MediaEditorUIAction {
         result.add(new ActionContext("cancel", "Cancel", new DialogActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
-                cropField.revertChanges();
                 eventBus.fireEvent(new MediaEditorInternalEvent(MediaEditorInternalEvent.EventType.CANCEL_LAST));
             }
         }));
         result.add(new ActionContext("crop", "Crop Image", new DialogActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
+                dataSource.startAction(getDefinition().getTrackingLabel());
                 cropField.execute();
-                cropField.applyChanges();
                 eventBus.fireEvent(new MediaEditorInternalEvent(MediaEditorInternalEvent.EventType.APPLY));
             }
         }));

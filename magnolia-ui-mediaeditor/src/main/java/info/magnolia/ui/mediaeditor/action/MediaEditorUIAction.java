@@ -65,7 +65,6 @@ public abstract class MediaEditorUIAction extends MediaEditorAction {
 
     @Override
     public void execute() throws ActionExecutionException {
-        super.execute();
         MediaField newMediaField = createMediaField();
         if (newMediaField != null) {
             view.clearActions();
