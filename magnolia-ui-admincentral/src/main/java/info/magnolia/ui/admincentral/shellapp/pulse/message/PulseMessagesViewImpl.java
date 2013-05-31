@@ -437,10 +437,11 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
         if (currentlySelectedCategory != MessageCategory.ALL && !categoryFilterAlreadyApplied) {
             listener.filterByMessageCategory(currentlySelectedCategory);
         }
+        // now this can be reset to its initial value
+        categoryFilterAlreadyApplied = false;
         footer.updateStatus();
         messageTable.sort();
         doGrouping(false);
-        categoryFilterAlreadyApplied = false;
     }
 
     @Override
