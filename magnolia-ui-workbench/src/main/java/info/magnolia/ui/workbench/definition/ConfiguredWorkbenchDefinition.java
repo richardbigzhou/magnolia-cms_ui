@@ -87,7 +87,7 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     }
 
     @Override
-    public boolean includeProperties() {
+    public boolean isIncludeProperties() {
         return includeProperties;
     }
 

@@ -43,7 +43,7 @@ import info.magnolia.ui.workbench.tree.drop.AlwaysTrueDropConstraint;
 import org.junit.Test;
 
 /**
- * Main test class for {@link WorkbenchBuilder.
+ * Main test class for {@link WorkbenchBuilder}.
  */
 public class WorkbenchBuilderTest {
     
@@ -65,7 +65,7 @@ public class WorkbenchBuilderTest {
         assertEquals("/path", definition.getPath());
         assertEquals(ModelConstants.JCR_NAME, definition.getDefaultOrder());
         assertEquals("mgnl:folder", definition.getNodeTypes().get(0).getName());
-        assertEquals(false, definition.includeProperties());
+        assertEquals(false, definition.isIncludeProperties());
         assertEquals(true, definition.isEditable());
         assertEquals(true, definition.isDialogWorkbench());
         assertEquals(AlwaysTrueDropConstraint.class.getName(), definition.getDropConstraintClass().getName());

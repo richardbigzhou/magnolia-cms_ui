@@ -189,7 +189,7 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
                 }
             }
 
-            if (getWorkbenchDefinition().includeProperties()) {
+            if (getWorkbenchDefinition().isIncludeProperties()) {
                 ArrayList<Property> properties = new ArrayList<Property>();
                 PropertyIterator propertyIterator = node.getProperties();
                 while (propertyIterator.hasNext()) {

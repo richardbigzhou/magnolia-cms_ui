@@ -61,7 +61,7 @@ public interface WorkbenchDefinition extends Serializable {
     /**
      * @return whether properties should be displayed as well (or just nodes)
      */
-    boolean includeProperties();
+    boolean isIncludeProperties();
 
     List<ColumnDefinition> getColumns();
 
