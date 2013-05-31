@@ -234,4 +234,10 @@ public class MgnlArea extends MgnlElement implements AreaListener {
             getAreaEndBar().removeStyleName(EDITOR_INIT_CLASS_NAME);
         }
     }
+
+    public void onDragStart(boolean isDrag) {
+        if (getComponentPlaceHolder() != null) {
+            getComponentPlaceHolder().setStyleName("moveOngoing", isDrag);
+        }
+    }
 }

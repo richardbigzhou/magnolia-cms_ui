@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,40 +31,41 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.editor;
+package info.magnolia.ui.workbench.column;
 
-import info.magnolia.ui.contentapp.ContentSubAppView;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.editor.PageEditorView;
-import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
+import info.magnolia.ui.workbench.column.definition.MetaDataColumnDefinition;
+
+import javax.jcr.Item;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.ui.Table;
 
 /**
- * PagesEditorSubAppView.
+ * Displays the path of the item.
  */
-public interface PagesEditorSubAppView extends ContentSubAppView {
+public class PathColumnFormatter extends AbstractColumnFormatter<MetaDataColumnDefinition> {
 
-    /**
-     * Listener.
-     */
-    public interface Listener extends PageBarView.Listener {
+    private static final Logger log = LoggerFactory.getLogger(PathColumnFormatter.class);
 
-        void onEscape();
+    public PathColumnFormatter(MetaDataColumnDefinition definition) {
+        super(definition);
     }
 
-    void setListener(Listener listener);
+    @Override
+    public Object generateCell(Table source, Object itemId, Object columnId) {
 
-    void setPageBarView(PageBarView pageBarView);
+        final Item jcrItem = getJcrItem(source, itemId);
+        if (jcrItem != null) {
+            try {
+                return jcrItem.getPath();
+            } catch (RepositoryException re) {
+                log.info("Failed to retrieve path for item '{}':", jcrItem.toString(), re);
+            }
+        }
+        return null;
 
-    void setPageEditorView(PageEditorView pageEditor);
-
-    /**
-     * Use this method to add an action bar to this sub app view.
-     */
-    void setActionbarView(ActionbarView actionbar);
-
-    /**
-     * Shows/hides the actionbar. It has no effect if the actionbar hasn't yet been set.
-     */
-    void hideActionbar(boolean hide);
-
+    }
 }

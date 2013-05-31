@@ -49,4 +49,7 @@ public interface PageEditorView extends View {
 
     void update(PageEditorParameters parameters);
 
+    void startMoveComponent();
+
+    void cancelMoveComponent();
 }

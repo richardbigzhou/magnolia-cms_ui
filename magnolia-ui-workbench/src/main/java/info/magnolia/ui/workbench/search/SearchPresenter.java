@@ -50,8 +50,8 @@ public class SearchPresenter extends ListPresenter implements SearchView.Listene
     }
 
     @Override
-    protected SearchJcrContainer createContainer(WorkbenchDefinition workbench) {
-        return new SearchJcrContainer(workbench);
+    protected SearchJcrContainer createContainer(WorkbenchDefinition workbench, String viewTypeName) {
+        return new SearchJcrContainer(workbench, viewTypeName);
     }
 
     @Override

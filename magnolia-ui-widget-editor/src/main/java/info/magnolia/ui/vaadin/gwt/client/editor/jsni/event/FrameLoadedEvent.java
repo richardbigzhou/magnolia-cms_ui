@@ -33,12 +33,10 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.jsni.event;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.IFrameElement;
+import info.magnolia.ui.vaadin.gwt.client.widget.PageEditorFrame;
+
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.user.client.ui.Frame;
 import com.google.web.bindery.event.shared.Event;
 
 /**
@@ -46,18 +44,11 @@ import com.google.web.bindery.event.shared.Event;
  */
 public class FrameLoadedEvent extends Event<FrameLoadedEvent.Handler> {
 
-    private Frame frame;
-
-    /**
-     * Handler.
-     */
-    public interface Handler extends EventHandler {
-        void handle(FrameLoadedEvent frameLoadedEvent);
-    }
+    private PageEditorFrame frame;
 
     public static GwtEvent.Type<Handler> TYPE = new GwtEvent.Type<Handler>();
 
-    public FrameLoadedEvent(Frame frame) {
+    public FrameLoadedEvent(PageEditorFrame frame) {
         this.frame = frame;
     }
 
@@ -71,13 +62,14 @@ public class FrameLoadedEvent extends Event<FrameLoadedEvent.Handler> {
         handler.handle(this);
     }
 
-    public Frame getFrame() {
+    public PageEditorFrame getFrame() {
         return frame;
     }
 
-    public Document getFrameDocument() {
-        Element element = frame.getElement();
-        IFrameElement iframeElement = IFrameElement.as(element);
-        return iframeElement.getContentDocument();
+    /**
+     * Handler.
+     */
+    public interface Handler extends EventHandler {
+        void handle(FrameLoadedEvent frameLoadedEvent);
     }
 }

@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.editor.jsni;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.ui.Frame;
@@ -61,5 +62,28 @@ public class GenericFrameEventHandler extends AbstractFrameEventHandler {
     public void notifyUrlChange() {
 
     }
+
+    @Override
+    public native void initNativeKeyListener(Element element) /*-{
+        if (element != 'undefined') {
+            element.contentDocument.onkeydown = function(event) {
+                var keyboardEvent = element.ownerDocument.createEvent("KeyboardEvent");
+                var initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? "initKeyboardEvent" : "initKeyEvent";
+                keyboardEvent[initMethod](
+                    "keydown", // event type : keydown, keyup, keypress
+                    true, // bubbles
+                    true, // cancelable
+                    window, // viewArg: should be window
+                    false, // ctrlKeyArg
+                    false, // altKeyArg
+                    false, // shiftKeyArg
+                    false, // metaKeyArg
+                    event.keyCode, // keyCodeArg : unsigned long the virtual key code, else 0
+                    0 // charCodeArgs : unsigned long the Unicode character associated with the depressed key, else 0
+                );
+                element.dispatchEvent(keyboardEvent);
+            }
+        }
+    }-*/;
 
 }

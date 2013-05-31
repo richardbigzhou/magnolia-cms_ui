@@ -59,11 +59,6 @@ public class PageEditor extends AbstractComponent {
         registerRpc(new PageEditorServerRpc() {
 
             @Override
-            public void sortComponent(String workspace, String parentPath, String sourcePath, String targetPath, String order) {
-                listener.sortComponent(workspace, parentPath, sourcePath, targetPath, order);
-            }
-
-            @Override
             public void selectPage(PageElement element) {
                 listener.onElementSelect(element);
             }
@@ -80,24 +75,38 @@ public class PageEditor extends AbstractComponent {
 
             @Override
             public void newComponent(AreaElement areaElement) {
-                listener.onAction(PageEditorListener.ADD_COMPONENT, areaElement);
+                listener.onAction(PageEditorListener.ACTION_ADD_COMPONENT, areaElement);
+            }
+
+            @Override
+            public void sortComponent(AreaElement areaElement) {
+                listener.onAction(PageEditorListener.ACTION_SORT_COMPONENT, areaElement);
             }
 
             @Override
             public void newArea(AreaElement areaElement) {
-                listener.onAction(PageEditorListener.ADD_AREA, areaElement);
+                listener.onAction(PageEditorListener.ACTION_ADD_AREA, areaElement);
             }
 
             @Override
             public void editComponent(ComponentElement element) {
-                listener.onAction(PageEditorListener.EDIT_ELEMENT, element);
+                listener.onAction(PageEditorListener.ACTION_EDIT_ELEMENT, element);
             }
 
             @Override
             public void editArea(AreaElement element) {
-                listener.onAction(PageEditorListener.EDIT_ELEMENT, element);
+                listener.onAction(PageEditorListener.ACTION_EDIT_ELEMENT, element);
             }
 
+            @Override
+            public void startMoveComponent() {
+                listener.onAction(PageEditorListener.ACTION_START_MOVE_COMPONENT);
+            }
+
+            @Override
+            public void stopMoveComponent() {
+                listener.onAction(PageEditorListener.ACTION_STOP_MOVE_COMPONENT);
+            }
         });
     }
 
@@ -127,6 +136,14 @@ public class PageEditor extends AbstractComponent {
 
     public void refresh() {
         getRpcProxy(PageEditorClientRpc.class).refresh();
+    }
+
+    public void startMoveComponent() {
+        getRpcProxy(PageEditorClientRpc.class).startMoveComponent();
+    }
+
+    public void cancelMoveComponent() {
+        getRpcProxy(PageEditorClientRpc.class).cancelMoveComponent();
     }
 
     public void setListener(PageEditorListener listener) {

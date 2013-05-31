@@ -81,4 +81,12 @@ public interface ColumnDefinition {
      * @see info.magnolia.ui.workbench.definition.WorkbenchDefinition#isEditable()
      */
     boolean isEditable();
+
+    /**
+     * If false - the column will not be displayed.
+     * useful for turning a column off when extending a columns configuration.
+     * 
+     * @return
+     */
+    boolean isEnabled();
 }

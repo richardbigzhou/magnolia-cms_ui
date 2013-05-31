@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,39 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.editor;
+package info.magnolia.ui.vaadin.gwt.client.widget;
 
-import info.magnolia.event.Event;
-import info.magnolia.event.EventHandler;
-import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
+import com.google.gwt.dom.client.BodyElement;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.user.client.ui.Frame;
 
 /**
- * This event is fired when an element is selected in page editor.
- * @see info.magnolia.ui.vaadin.gwt.client.shared.PageElement
- * @see info.magnolia.ui.vaadin.gwt.client.shared.AreaElement
- * @see info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement
+ * Wraps the {@link Frame} widget with convenient methods.
  */
-public class NodeSelectedEvent implements Event<NodeSelectedEvent.Handler> {
+public class PageEditorFrame extends Frame {
 
-    private final AbstractElement element;
-
-    public NodeSelectedEvent(AbstractElement element) {
-        this.element = element;
+    public Document getContentDocument() {
+        return getFrameElement().getContentDocument();
     }
 
-    @Override
-    public void dispatch(Handler handler) {
-        handler.onItemSelected(this);
+    public BodyElement getBody() {
+        return getContentDocument().getBody();
     }
 
-    public AbstractElement getElement() {
-        return element;
+    public IFrameElement getFrameElement() {
+        return getElement().cast();
     }
 
-    /**
-     * Handles {@link NodeSelectedEvent} events.
-     */
-    public static interface Handler extends EventHandler {
-        void onItemSelected(NodeSelectedEvent event);
-    }
+
 }

@@ -49,6 +49,8 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.app.pages.editor.event.NodeSelectedEvent;
+import info.magnolia.ui.app.pages.editor.event.ComponentMoveEvent;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
@@ -92,15 +94,10 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
 
-    public static final String ACTION_DELETE_COMPONENT = "deleteComponent";
-    public static final String ACTION_MOVE_COMPONENT = "moveComponent";
-
     private final ActionExecutor actionExecutor;
     private final PagesEditorSubAppView view;
-
     private final EventBus subAppEventBus;
     private final EventBus admincentralEventBus;
-
     private final PageEditorPresenter pageEditorPresenter;
     private final ActionbarPresenter actionbarPresenter;
     private final PageBarView pageBarView;
@@ -111,7 +108,6 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private final AppContext appContext;
 
     private PageEditorParameters parameters;
-
     private PlatformType targetPreviewPlatform = PlatformType.DESKTOP;
     private Locale currentLocale;
     private String caption;
@@ -166,7 +162,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private void updateActions() {
         updateActionsAccordingToOperationPermissions();
         // actions currently always disabled
-        actionbarPresenter.disable("moveComponent", "copyComponent", "pasteComponent", "undo", "redo");
+        actionbarPresenter.disable(PageEditorListener.ACTION_CANCEL_MOVE_COMPONENT, "copyComponent", "pasteComponent", "undo", "redo");
     }
 
     /**
@@ -192,30 +188,30 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             ComponentElement componentElement = (ComponentElement) element;
 
             if (componentElement.getDeletable() != null && !componentElement.getDeletable()) {
-                actionbarPresenter.disable(PagesEditorSubApp.ACTION_DELETE_COMPONENT);
+                actionbarPresenter.disable(PageEditorListener.ACTION_DELETE_COMPONENT);
             } else {
-                actionbarPresenter.enable(PagesEditorSubApp.ACTION_DELETE_COMPONENT);
+                actionbarPresenter.enable(PageEditorListener.ACTION_DELETE_COMPONENT);
             }
 
             if (componentElement.getMoveable() != null && !componentElement.getMoveable()) {
-                actionbarPresenter.disable(PagesEditorSubApp.ACTION_MOVE_COMPONENT);
+                actionbarPresenter.disable(PageEditorListener.ACTION_START_MOVE_COMPONENT);
             } else {
-                actionbarPresenter.enable(PagesEditorSubApp.ACTION_MOVE_COMPONENT);
+                actionbarPresenter.enable(PageEditorListener.ACTION_START_MOVE_COMPONENT);
             }
 
             if (componentElement.getWritable() != null && !componentElement.getWritable()) {
-                actionbarPresenter.disable(PageEditorListener.EDIT_ELEMENT);
+                actionbarPresenter.disable(PageEditorListener.ACTION_EDIT_ELEMENT);
             } else {
-                actionbarPresenter.enable(PageEditorListener.EDIT_ELEMENT);
+                actionbarPresenter.enable(PageEditorListener.ACTION_EDIT_ELEMENT);
             }
 
         } else if (element instanceof AreaElement) {
             AreaElement areaElement = (AreaElement) element;
 
             if (areaElement.getAddible() != null && !areaElement.getAddible()) {
-                actionbarPresenter.disable(PageEditorListener.ADD_COMPONENT);
+                actionbarPresenter.disable(PageEditorListener.ACTION_ADD_COMPONENT);
             } else {
-                actionbarPresenter.enable(PageEditorListener.ADD_COMPONENT);
+                actionbarPresenter.enable(PageEditorListener.ACTION_ADD_COMPONENT);
             }
         }
     }
@@ -324,6 +320,19 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             }
         });
 
+        subAppEventBus.addHandler(ComponentMoveEvent.class, new ComponentMoveEvent.Handler() {
+            @Override
+            public void onMove(ComponentMoveEvent event) {
+                if (event.isStart()) {
+                    actionbarPresenter.disable(PageEditorListener.ACTION_START_MOVE_COMPONENT);
+                    actionbarPresenter.enable(PageEditorListener.ACTION_CANCEL_MOVE_COMPONENT);
+                } else {
+                    actionbarPresenter.enable(PageEditorListener.ACTION_START_MOVE_COMPONENT);
+                    actionbarPresenter.disable(PageEditorListener.ACTION_CANCEL_MOVE_COMPONENT);
+                }
+            }
+        });
+
         subAppEventBus.addHandler(NodeSelectedEvent.class, new NodeSelectedEvent.Handler() {
 
             @Override
@@ -383,17 +392,16 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         try {
             Session session = MgnlContext.getJCRSession(workspace);
             final javax.jcr.Item item = session.getItem(selectedElement.getPath());
-            if (item.isNode()) {
-                actionExecutor.execute(actionName, new JcrNodeAdapter((Node)item), selectedElement);
-            } else {
-                throw new IllegalArgumentException("Selected value is not a node. Can only operate on nodes.");
-            }
+            actionExecutor.execute(actionName, new JcrNodeAdapter((Node)item), selectedElement, pageEditorPresenter);
+
         } catch (RepositoryException e) {
-            Message error = new Message(MessageType.ERROR, "Could not get item: " + selectedElement.getPath(), e.getMessage());
-            appContext.broadcastMessage(error);
+            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            log.error("An error occurred while executing action [{}]", actionName, e);
+            appContext.sendLocalMessage(error);
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
-            appContext.broadcastMessage(error);
+            log.error("An error occurred while executing action [{}]", actionName, e);
+            appContext.sendLocalMessage(error);
         }
 
     }
@@ -433,6 +441,13 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         } catch (RepositoryException re) {
             log.warn("Not able to check if node has MixIn");
             return false;
+        }
+    }
+
+    @Override
+    public void onEscape() {
+        if (pageEditorPresenter.isMoving()) {
+            pageEditorPresenter.onAction(PageEditorListener.ACTION_CANCEL_MOVE_COMPONENT);
         }
     }
 }
