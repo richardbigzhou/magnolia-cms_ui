@@ -105,7 +105,7 @@
     position:absolute;
     left:0;
     right:0;
-	bottom:40px;
+	bottom:0px;
     display:block;
     max-height:184px;
     overflow:hidden;
@@ -114,7 +114,21 @@
 	padding-right:14px;
 	background-color:$c91;
 	text-align:center;
+	height: 200px;
+	line-height: 200px;
 }
+
+.preview h3 {
+    position: absolute;
+    top: -85px;
+}
+
+.preview img {
+    vertical-align: middle;
+    max-height: 200px;
+    max-width: 240px;
+}
+
 .v-actionbar .v-actionbar-section.preview {display:none;}
 .v-actionbar-open .v-actionbar-section.preview {display:block;}
 
