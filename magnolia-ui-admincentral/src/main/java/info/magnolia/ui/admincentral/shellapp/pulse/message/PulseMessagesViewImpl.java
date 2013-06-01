@@ -177,6 +177,10 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
                 // clicking on the group type header does nothing.
                 if (event.isDoubleClick() && !itemId.startsWith(GROUP_PLACEHOLDER_ITEMID)) {
                     listener.onMessageClicked(itemId);
+                } else {
+                    if (messageTable.isSelected(itemId)) {
+                        messageTable.unselect(itemId);
+                    }
                 }
             }
         });
