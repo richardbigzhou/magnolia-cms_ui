@@ -175,7 +175,10 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
             public void itemClick(ItemClickEvent event) {
                 final String itemId = (String) event.getItemId();
                 // clicking on the group type header does nothing.
-                if (event.isDoubleClick() && !itemId.startsWith(GROUP_PLACEHOLDER_ITEMID)) {
+                if (itemId.startsWith(GROUP_PLACEHOLDER_ITEMID)) {
+                    return;
+                }
+                if (event.isDoubleClick()) {
                     listener.onMessageClicked(itemId);
                 } else {
                     if (messageTable.isSelected(itemId)) {
