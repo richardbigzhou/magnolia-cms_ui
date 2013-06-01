@@ -331,16 +331,19 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
                 Item item = table.getItem(itemId);
                 Property<MessageType> property = item.getItemProperty(TYPE_PROPERTY_ID);
                 GeneratedRow generated = new GeneratedRow();
+
                 switch(property.getValue()) {
                 case ERROR  :
+                    generated.setText("", "", MessagesUtil.get("pulse.messages.errors"));
+                    break;
                 case WARNING:
-                    generated.setText("", "", MessageCategory.PROBLEM.getCaption());
+                    generated.setText("", "", MessagesUtil.get("pulse.messages.warnings"));
                     break;
                 case INFO:
-                    generated.setText("", "", MessageCategory.INFO.getCaption());
+                    generated.setText("", "", MessagesUtil.get("pulse.messages.info"));
                     break;
                 case WORKITEM:
-                    generated.setText("", "", MessageCategory.WORK_ITEM.getCaption());
+                    generated.setText("", "", MessagesUtil.get("pulse.messages.workitems"));
                     break;
                 }
                 return generated;
