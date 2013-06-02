@@ -35,14 +35,19 @@ package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.NativeButton;
-import com.vaadin.ui.themes.BaseTheme;
+import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 
 /**
  * Message category navigation component in Pulse.
@@ -51,6 +56,8 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
 
     private CheckBox groupByTypeCheckBox;
 
+    private Map<MessageCategory, MessageCategoryTab> messageCategoryTabs = new HashMap<MessageCategory, MessageCategoryTab>();
+
     public PulseMessageCategoryNavigator() {
         super();
         setStyleName("navigator");
@@ -58,18 +65,21 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
     }
 
     private void construct() {
+        setSizeUndefined();
         for (final MessageCategory category : MessageCategory.values()) {
-            MessageCategoryButton button = new MessageCategoryButton(category);
+            MessageCategoryTab tab = new MessageCategoryTab(category);
             if (category == MessageCategory.ALL) {
-                button.setActive(true);
+                tab.setActive(true);
             }
-            addComponent(button);
+            messageCategoryTabs.put(category, tab);
+            addComponent(tab);
         }
 
         groupByTypeCheckBox = new CheckBox(MessagesUtil.get("pulse.messages.groupby"));
         groupByTypeCheckBox.addStyleName("navigator-grouping");
         groupByTypeCheckBox.setImmediate(true);
         addComponent(groupByTypeCheckBox);
+
     }
 
     public void addGroupingListener(ValueChangeListener listener) {
@@ -143,8 +153,8 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
         Iterator<Component> iterator = getComponentIterator();
         while (iterator.hasNext()) {
             Component component = iterator.next();
-            if (component instanceof MessageCategoryButton) {
-                MessageCategoryButton button = (MessageCategoryButton) component;
+            if (component instanceof MessageCategoryTab) {
+                MessageCategoryTab button = (MessageCategoryTab) component;
                 button.setActive(button.category == category);
             }
         }
@@ -154,23 +164,37 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
     /**
      * Message category button.
      */
-    public class MessageCategoryButton extends NativeButton {
+    public class MessageCategoryTab extends CustomComponent {
 
+        private final HorizontalLayout root = new HorizontalLayout();
         private final MessageCategory category;
+        private final Label categoryLabel;
+        private final Label badge;
 
-        public MessageCategoryButton(MessageCategory category) {
+        public MessageCategoryTab(MessageCategory category) {
             super();
-            setStyleName(BaseTheme.BUTTON_LINK);
-            addStyleName("navigator-button");
             this.category = category;
-            this.setCaption(category.getCaption());
-            addClickListener(new ClickListener() {
+            addStyleName("navigator-tab");
+            root.setSizeUndefined();
+
+            categoryLabel = new Label(category.getCaption());
+            categoryLabel.addStyleName("category");
+
+            badge = new Label();
+            badge.addStyleName("badge");
+            badge.setVisible(false);
+
+            root.addComponent(categoryLabel);
+            root.addComponent(badge);
+            root.addLayoutClickListener(new LayoutClickListener() {
 
                 @Override
-                public void buttonClick(ClickEvent event) {
-                    fireCategoryChangedEvent(MessageCategoryButton.this.category);
+                public void layoutClick(LayoutClickEvent event) {
+                    fireCategoryChangedEvent(MessageCategoryTab.this.category);
                 }
             });
+
+            setCompositionRoot(root);
         }
 
         public void setActive(boolean active) {
@@ -180,5 +204,22 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
                 removeStyleName("active");
             }
         }
+
+        public void updateMessagesCount(int count) {
+            if (count <= 0) {
+                badge.setVisible(false);
+            } else {
+                String countAsString = String.valueOf(count);
+                if (count > 99) {
+                    countAsString = "99+";
+                }
+                badge.setValue(countAsString);
+                badge.setVisible(true);
+            }
+        }
+    }
+
+    public void updateCategoryBadgeCount(MessageCategory category, int count) {
+        messageCategoryTabs.get(category).updateMessagesCount(count);
     }
 }

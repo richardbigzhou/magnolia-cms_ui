@@ -42,4 +42,12 @@ public interface ComponentListener {
     String getLabel();
 
     boolean hasEditButton();
+
+    boolean isMovable();
+
+    void onMoveStart(boolean isDrag);
+
+    void onMoveStop();
+
+    void onMoveCancel();
 }

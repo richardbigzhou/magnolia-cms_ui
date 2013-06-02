@@ -63,6 +63,7 @@ public class ModelImpl implements Model {
     private MgnlArea selectedMgnlAreaElement = null;
 
     private MgnlComponent selectedMgnlComponentElement = null;
+    private boolean moving = false;
 
     @Override
     public void addElement(MgnlElement mgnlElement, Element element) {
@@ -176,5 +177,16 @@ public class ModelImpl implements Model {
         this.rootAreas = new LinkedList<MgnlArea>();
         this.selectedMgnlAreaElement = null;
         this.selectedMgnlComponentElement = null;
+        this.moving = false;
+    }
+
+    @Override
+    public boolean isMoving() {
+        return moving;
+    }
+
+    @Override
+    public void setMoving(boolean moving) {
+        this.moving = moving;
     }
 }

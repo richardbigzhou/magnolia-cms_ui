@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.workbench.config;
 
-import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 /**
@@ -64,13 +64,6 @@ public class WorkbenchBuilder {
 
     public WorkbenchBuilder defaultOrder(String defaultOrder) {
         definition.setDefaultOrder(defaultOrder);
-        return this;
-    }
-
-    public WorkbenchBuilder columns(ColumnBuilder... columns) {
-        for (ColumnBuilder column : columns) {
-            definition.addColumn(column.exec());
-        }
         return this;
     }
 
@@ -104,7 +97,7 @@ public class WorkbenchBuilder {
         definition.setDropConstraintClass(dropConstraintClass);
         return this;
     }
-    
+
     public WorkbenchBuilder contentViews(ContentPresenterDefinition... views) {
         for (ContentPresenterDefinition view : views) {
             definition.addContentView(view);

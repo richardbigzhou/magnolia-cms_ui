@@ -35,6 +35,11 @@ package info.magnolia.ui.workbench.definition;
 
 import info.magnolia.ui.workbench.ContentPresenter;
 import info.magnolia.ui.workbench.ContentView.ViewType;
+import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Default configured implementation for {@link ContentPresenterDefinition}.
@@ -48,6 +53,8 @@ public class ConfiguredContentPresenterDefinition implements ContentPresenterDef
     private String icon;
 
     private boolean active;
+
+    private List<ColumnDefinition> columns = new ArrayList<ColumnDefinition>();
 
     @Override
     public ViewType getViewType() {
@@ -83,6 +90,31 @@ public class ConfiguredContentPresenterDefinition implements ContentPresenterDef
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    @Override
+    /**
+     * Only return the enabled columns.
+     */
+    public List<ColumnDefinition> getColumns() {
+        ArrayList<ColumnDefinition> enabledColumns = new ArrayList<ColumnDefinition>();
+        Iterator<ColumnDefinition> it = columns.iterator();
+
+        while (it.hasNext()) {
+            ColumnDefinition column = it.next();
+            if (column.isEnabled()) {
+                enabledColumns.add(column);
+            }
+        }
+        return enabledColumns;
+    }
+
+    public void addColumn(ColumnDefinition columnDefinition) {
+        columns.add(columnDefinition);
+    }
+
+    public void setColumns(List<ColumnDefinition> columns) {
+        this.columns = columns;
     }
 
 }

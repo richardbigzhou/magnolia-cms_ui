@@ -21,8 +21,8 @@
   background: transparent none no-repeat !important;
   outline: 0 !important;
   /* Render bars always on top = z-index + position relative to make z-index work */
-  position: relative;
-  z-index: 65535;
+  position: relative !important;
+  z-index: 65535 !important;
 }
 
 a.disabled:hover {
@@ -47,7 +47,7 @@ div.mgnlEditorBar {
   margin: 0 0 2px 0 !important;
   font-family: DINWebPro, Verdana, sans-serif !important;
   font-size: 12px !important;
-  clear: both;
+  clear: both !important;
 }
 
 div.mgnlEditorBar.area.init {
@@ -58,7 +58,8 @@ div.mgnlEditorBar.area.init {
 /* Selected Item (focus) */
 div.mgnlEditorBar.area.childFocus ~ * div.mgnlEditorBar.component.focus,
 div.mgnlEditorBar.area.childFocus ~ div.mgnlEditorBar.component.focus,
-div.mgnlEditorBar.area.focus
+div.mgnlEditorBar.area.focus,
+div.mgnlEditorBar.component.focus
 {
   background-color: #6a9000 !important;
   color: #ffffff !important;
@@ -77,6 +78,16 @@ div.mgnlEditorBar.area.init ~ * div.mgnlPlaceholder div.mgnlEditorBar.component,
 div.mgnlEditorBar.area.init ~ div.mgnlPlaceholder div.mgnlEditorBar.component {
   background-color: #e1e8cc !important;
   color: #6a9000 !important;
+}
+
+div.mgnlEditorBar.area.childFocus ~ div.mgnlEditorBar.component.moveTarget,
+div.mgnlEditorBar.area.childFocus ~ * div.mgnlEditorBar.component.moveTarget {
+  border: 1px solid #568706 !important;
+}
+
+div.mgnlEditorBar.area.childFocus ~ div.mgnlEditorBar.component.moveOver,
+div.mgnlEditorBar.area.childFocus ~ * div.mgnlEditorBar.component.moveOver {
+  background-color: #88ab50 !important;
 }
 
 div.mgnlEditorBar.area.childFocus ~ div.mgnlPlaceholder div.mgnlPlaceholderBox,
@@ -135,6 +146,7 @@ div.mgnlEditorBar.component {
 
 div.mgnlPlaceholder {
   margin: 0 0 2px 0 !important;
+  clear: both !important;
 }
 
 div.mgnlPlaceholder div.mgnlEditorBar{
@@ -153,8 +165,8 @@ div.mgnlPlaceholder div.mgnlPlaceholderBox {
  */
 div.mgnlEditorBarButtons {
   float: right !important;
-  height: 25px;
-  overflow: hidden;
+  height: 25px !important;
+  overflow: hidden !important;
   padding: 0 8px 0 0 !important;
 }
 
@@ -167,6 +179,7 @@ div.editorIcon {
   padding: 0 0 0 11px !important;
   cursor: pointer !important;
   font-size: 18px !important;
+  float: right !important;
 }
 
 
@@ -224,52 +237,17 @@ div.mgnlLevel-max {
 
 /* drag source */
 .mgnlEditorBar.component.moveSource {
-  border-top: 1px solid #deeab7 !important;
-  border-left: 1px solid #deeab7 !important;
-  border-bottom: 1px solid #b3c587 !important;
-  border-right: 1px solid #b3c587 !important;
-  background-image: url("img/bars/mgnl-bar.component.deemphasized.png") !important;
-}
-
-/* possible drop targets */
-.mgnlEditorBar.component.moveTarget {
-  border: 1px solid #d0234b !important;
+  opacity: 0.9 !important;
 }
 
 /* selected drop target */
 .mgnlEditorBar.component.moveOver {
-  line-height: 16px !important;
-  border: 3px solid #d0234b !important;
+  background-color: #88ab50 !important;
 }
 
-.mgnlEditorBar.component.moveOver .mgnlEditorBarLabel {
-  margin: 0 0 0 3px !important;
-}
-
-/* make component mgnlPlaceholder slightly less strong */
-.mgnlEditormgnlPlaceholder.component.moveOngoing .mgnlEditorBar {
-  border-top: 1px solid #deeab7 !important;
-  border-left: 1px solid #deeab7 !important;
-  border-bottom: 1px solid #b3c587 !important;
-  border-right: 1px solid #b3c587 !important;
-}
-
-.mgnlEditormgnlPlaceholder.component.moveOngoing .mgnlEditormgnlPlaceholderElements {
-  border: 2px dotted #b3c587 !important;
-  border-top: none;
-}
-
-.mgnlEditormgnlPlaceholder.component.moveOngoing .mgnlEditorBarLabel {
-  display: none !important;
-}
-
-.mgnlEditormgnlPlaceholder.component.moveOngoing .mgnlEditorPushButton {
-  display: none !important;
-}
-
-div.mgnlEditorMoveDiv {
+div#mgnlEditorMoveDiv {
   position: absolute !important;
-  z-index: 1000 !important;
+  opacity: 0.7 !important;
 }
 
 /* --- End of DnD definitions --- */

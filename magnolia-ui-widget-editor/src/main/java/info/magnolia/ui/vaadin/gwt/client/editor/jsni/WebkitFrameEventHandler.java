@@ -69,7 +69,7 @@ public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
 
                 @Override
                 public void handle(FrameLoadedEvent event) {
-                    addIframeTouchMoveListener(event.getFrameDocument(), getView().getContent().getElement());
+                    addIframeTouchMoveListener(event.getFrame().getContentDocument(), getView().getContent().getElement());
                 }
             });
         }
@@ -176,6 +176,27 @@ public class WebkitFrameEventHandler extends AbstractFrameEventHandler {
                     that.@info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView.Listener::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
                     ref.@info.magnolia.ui.vaadin.gwt.client.editor.jsni.WebkitFrameEventHandler::resetScrollTop()();
                 }
+            }
+        }
+    }-*/;
+
+    @Override
+    public native void initNativeKeyListener(Element element) /*-{
+        if (element != 'undefined') {
+            element.contentDocument.onkeydown = function(event) {
+                var eventObj = document.createEventObject ?
+                    document.createEventObject() : document.createEvent("Events");
+
+                if(eventObj.initEvent){
+                    eventObj.initEvent("keydown", true, true);
+                }
+
+                eventObj.keyCode = event.keyCode;
+                eventObj.which = event.keyCode;
+
+                element.dispatchEvent ? element.dispatchEvent(eventObj) : element.fireEvent("onkeydown", eventObj);
+
+                element.dispatchEvent(event);
             }
         }
     }-*/;
