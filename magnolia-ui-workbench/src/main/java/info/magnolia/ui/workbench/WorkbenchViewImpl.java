@@ -35,6 +35,7 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.statusbar.StatusBarView;
+import info.magnolia.ui.vaadin.icon.Icon;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 
@@ -47,12 +48,12 @@ import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
 
 /**
@@ -64,9 +65,15 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
 
     private final CssLayout viewModes = new CssLayout();
 
-    private TextField searchBox;
+    private final CssLayout searchBox = new CssLayout();
+
+    private TextField searchField;
 
     private Button clearSearchBoxButton;
+
+    private Icon searchIcon;
+
+    private Icon searchArrow;
 
     private StatusBarView statusBar;
 
@@ -81,12 +88,19 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
      */
     private ViewType previousViewType = currentViewType;
 
-    private final Property.ValueChangeListener searchBoxListener = new Property.ValueChangeListener() {
+    private final Property.ValueChangeListener searchFieldListener = new Property.ValueChangeListener() {
 
         @Override
         public void valueChange(Property.ValueChangeEvent event) {
-            listener.onSearch(searchBox.getValue().toString());
-            clearSearchBoxButton.setVisible(!searchBox.getValue().isEmpty());
+            listener.onSearch(searchField.getValue().toString());
+
+            boolean hasSearchContent = !searchField.getValue().isEmpty();
+            if (hasSearchContent) {
+                searchBox.addStyleName("has-content");
+            } else {
+                searchBox.removeStyleName("has-content");
+            }
+            searchField.focus();
         }
     };
 
@@ -101,48 +115,59 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
         viewModes.setStyleName("view-modes");
 
         clearSearchBoxButton = new Button();
-        clearSearchBoxButton.setStyleName("workbench-searchbox-clearbutton");
-        clearSearchBoxButton.addStyleName("icon-close");
-
-        searchBox = buildBasicSearchBox();
-        searchBox.setVisible(false);
-
+        clearSearchBoxButton.setStyleName("m-closebutton");
+        clearSearchBoxButton.addStyleName("icon-delete-search");
+        clearSearchBoxButton.addStyleName("searchbox-clearbutton");
         clearSearchBoxButton.addClickListener(new Button.ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                searchBox.setValue("");
-                fireViewTypeChangedEvent(previousViewType);
-                clearSearchBoxButton.setVisible(false);
+                searchField.setValue("");
             }
         });
 
-        clearSearchBoxButton.setVisible(false);
+        searchIcon = new Icon("search");
+        searchIcon.addStyleName("searchbox-icon");
+
+        searchArrow = new Icon("arrow2_s");
+        searchArrow.addStyleName("searchbox-arrow");
+
+        searchField = buildSearchField();
+        searchField.setVisible(false);
+
+        searchBox.addComponent(searchField);
+        searchBox.addComponent(clearSearchBoxButton);
+        searchBox.addComponent(searchIcon);
+        searchBox.addComponent(searchArrow);
+        searchBox.setStyleName("searchbox");
 
         toolBar.addStyleName("toolbar");
         toolBar.setWidth(100, Unit.PERCENTAGE);
         toolBar.addComponent(viewModes);
         toolBar.addComponent(searchBox);
-        toolBar.addComponent(clearSearchBoxButton);
 
         addComponent(toolBar);
         setExpandRatio(toolBar, 0);
+
+
     }
 
     @Override
     public void setSearchQuery(String query) {
-        if (searchBox == null) {
+        if (searchField == null) {
             return;
         }
         // turn off value change listener, so that presenter does not think there was user input and searches again
-        searchBox.removeValueChangeListener(searchBoxListener);
+        searchField.removeValueChangeListener(searchFieldListener);
         if (StringUtils.isNotBlank(query)) {
-            searchBox.setValue(query);
-            searchBox.focus();
+            searchField.setValue(query);
+            searchField.focus();
         } else {
-            searchBox.setValue("");
+            searchField.setValue("");
+            searchBox.removeStyleName("has-content");
         }
-        searchBox.addValueChangeListener(searchBoxListener);
+        searchField.addValueChangeListener(searchFieldListener);
+
     }
 
     @Override
@@ -154,7 +179,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
             return;
         }
         if (viewType.equals(ViewType.LIST)) {
-            searchBox.setVisible(true);
+            searchField.setVisible(true);
         }
 
         // set button
@@ -177,6 +202,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
         if (type != ViewType.SEARCH) {
             previousViewType = type;
             setSearchQuery(null);
+            searchBox.removeStyleName("focus");
         }
         setViewTypeStyling(type);
 
@@ -245,38 +271,30 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
         }
     }
 
-    private TextField buildBasicSearchBox() {
-        final TextField searchBox = new TextField();
+    private TextField buildSearchField() {
+        final TextField field = new TextField();
         final String inputPrompt = MessagesUtil.getWithDefault("toolbar.search.prompt", "Search");
 
-        searchBox.setInputPrompt(inputPrompt);
-        searchBox.setSizeUndefined();
-        searchBox.addStyleName("searchbox");
+        field.setInputPrompt(inputPrompt);
+        field.setSizeUndefined();
+        field.addStyleName("searchfield");
 
         // TextField has to be immediate to fire value changes when pressing Enter, avoiding ShortcutListener overkill.
-        searchBox.setImmediate(true);
-        searchBox.addListener(searchBoxListener);
+        field.setImmediate(true);
+        field.addListener(searchFieldListener);
 
-        searchBox.addBlurListener(new FieldEvents.BlurListener() {
-            @Override
-            public void blur(FieldEvents.BlurEvent event) {
-                // return to previous view type when leaving empty field
-                if (StringUtils.isBlank(searchBox.getValue().toString())) {
-                    fireViewTypeChangedEvent(previousViewType);
-                    clearSearchBoxButton.setVisible(false);
-                }
-            }
-        });
-
-        searchBox.addFocusListener(new FieldEvents.FocusListener() {
+        field.addFocusListener(new FieldEvents.FocusListener() {
             @Override
             public void focus(FieldEvents.FocusEvent event) {
                 // put the cursor at the end of the field
                 TextField tf = (TextField) event.getSource();
                 tf.setCursorPosition(tf.getValue().length());
-                clearSearchBoxButton.setVisible(true);
+                searchBox.addStyleName("focus");
             }
         });
-        return searchBox;
+
+        // No blur handler.
+
+        return field;
     }
 }

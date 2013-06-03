@@ -67,51 +67,84 @@
       }
     }
 
-    .v-textfield-searchbox {
+	.searchbox {
       float: right;
-      width: 246px;
+      position:relative;
+      overflow:visible;
+    }
+
+    .v-textfield-searchfield {
+      float: right;
+      width: 202 px;
       height: 22px !important;
       margin: 0;
-      padding: 0 2px 1px;
+      padding-left:22px !important;
+      padding-right: 22px !important;
       border: none;
-      background: url("img/icon-search.png") no-repeat right center $c80;
-      color: $c10;
-      font-size:12px;
+      font-size: 12px;
+
+	  background-color: $c16;
+      color: $c11;
 
       &.v-textfield-prompt {
-        background-color: $c16;
-        color: $c11;
+		/* All handled with .searchbox.focus */
       }
     }
-
-    .workbench-searchbox-clearbutton:before {
-      margin: 0;
-      padding: 0;
-      width: 15px;
-      height: 15px;
-      line-height: 15px;
-      position: absolute;
-      top: 0;
-      left: 0;
+    .searchbox.focus .v-textfield-searchfield,
+    .searchbox.has-content .v-textfield-searchfield
+    {
+    	color: $c90;
+    	background-color: $c80;
     }
 
-    .workbench-searchbox-clearbutton {
-      font-family: 'Mag-Icons';
-      font-size: 13px;
-      position: relative;
-      float: right;
-      right: -237px;
-      top: 7px;
+    .searchbox-clearbutton {
+      position: absolute;
+      right: -1px;
+      top: 2px;
       background: none;
-      color: white;
-      background-color: black;
+      color: $c90;
+      padding: 0px;
+      margin: 0px;
+      width: 25px;
+      height: 25px;
+      line-height: 25px;
+      font-size: 21px;
+      display: none;
+    }
+    .searchbox.focus .searchbox-clearbutton,
+    .searchbox.has-content .searchbox-clearbutton
+    {
+    	display:block;
+    }
+
+
+    .searchbox-icon {
+      position: absolute;
+      font-size:18px !important;
+      left: 3px;
+      top: 6px;
+      background: none;
+      color: $c11;
       padding: 0px;
       margin: 0px;
       width: 15px;
       height: 15px;
-      border-radius: 50%;
+    }
+    .searchbox.focus .searchbox-icon,
+    .searchbox.has-content .searchbox-icon{
+    	color:$c90;
     }
 
+    .searchbox-arrow {
+      position: absolute;
+      left: 16px;
+      top: 22px;
+      color:$c80;
+      display:none;
+    }
+    .searchbox.has-content .searchbox-arrow{
+    	display:block;
+    }
 
     .v-horizontallayout-statusbar {
       height: 40px !important;
