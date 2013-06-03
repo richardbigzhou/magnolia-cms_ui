@@ -51,6 +51,7 @@ import info.magnolia.ui.dialog.setup.migration.DateControlMigration;
 import info.magnolia.ui.dialog.setup.migration.EditControlMigration;
 import info.magnolia.ui.dialog.setup.migration.FckEditControlMigration;
 import info.magnolia.ui.dialog.setup.migration.FileControlMigration;
+import info.magnolia.ui.dialog.setup.migration.HiddenControlMigration;
 import info.magnolia.ui.dialog.setup.migration.LinkControlMigration;
 import info.magnolia.ui.dialog.setup.migration.MultiSelectControlMigration;
 import info.magnolia.ui.dialog.setup.migration.SelectControlMigration;
@@ -147,6 +148,7 @@ public class DialogMigrationTask extends AbstractTask {
         this.controlMigrationMap.put("multiselect", new MultiSelectControlMigration(false));
         this.controlMigrationMap.put("file", new FileControlMigration());
         this.controlMigrationMap.put("static", new StaticControlMigration());
+        this.controlMigrationMap.put("hidden", new HiddenControlMigration());
     }
 
     /**
