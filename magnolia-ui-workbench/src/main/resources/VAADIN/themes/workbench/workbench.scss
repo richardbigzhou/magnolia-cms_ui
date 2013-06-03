@@ -75,7 +75,7 @@
 
     .v-textfield-searchfield {
       float: right;
-      width: 202 px;
+      width: 210px;
       height: 22px !important;
       margin: 0;
       padding-left:22px !important;
@@ -83,18 +83,13 @@
       border: none;
       font-size: 12px;
 
-	  background-color: $c16;
-      color: $c11;
+      color: $c90;
+      background-color: $c80;
 
       &.v-textfield-prompt {
-		/* All handled with .searchbox.focus */
+		background-color: $c16;
+        color: $c11;
       }
-    }
-    .searchbox.focus .v-textfield-searchfield,
-    .searchbox.has-content .v-textfield-searchfield
-    {
-    	color: $c90;
-    	background-color: $c80;
     }
 
     .searchbox-clearbutton {
@@ -109,12 +104,11 @@
       height: 25px;
       line-height: 25px;
       font-size: 21px;
-      display: none;
+      display: block;
     }
-    .searchbox.focus .searchbox-clearbutton,
-    .searchbox.has-content .searchbox-clearbutton
+    .v-textfield-prompt ~ .searchbox-clearbutton
     {
-    	display:block;
+    	display:none;
     }
 
 
@@ -124,15 +118,15 @@
       left: 3px;
       top: 6px;
       background: none;
-      color: $c11;
+      color:$c90;
       padding: 0px;
       margin: 0px;
       width: 15px;
       height: 15px;
     }
-    .searchbox.focus .searchbox-icon,
-    .searchbox.has-content .searchbox-icon{
-    	color:$c90;
+    .v-textfield-prompt ~ .searchbox-icon
+    {
+    	color: $c11;
     }
 
     .searchbox-arrow {
@@ -142,7 +136,8 @@
       color:$c80;
       display:none;
     }
-    .searchbox.has-content .searchbox-arrow{
+    .searchbox.has-content .searchbox-arrow
+    {
     	display:block;
     }
 
@@ -169,6 +164,7 @@
     }
 
   }
+
 
   /* COLUMN FORMATTERS */
   .activation-status {

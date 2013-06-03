@@ -202,7 +202,6 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
         if (type != ViewType.SEARCH) {
             previousViewType = type;
             setSearchQuery(null);
-            searchBox.removeStyleName("focus");
         }
         setViewTypeStyling(type);
 
@@ -289,7 +288,6 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
                 // put the cursor at the end of the field
                 TextField tf = (TextField) event.getSource();
                 tf.setCursorPosition(tf.getValue().length());
-                searchBox.addStyleName("focus");
             }
         });
 
