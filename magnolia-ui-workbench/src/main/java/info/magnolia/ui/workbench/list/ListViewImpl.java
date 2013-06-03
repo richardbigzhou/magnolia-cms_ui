@@ -33,22 +33,13 @@
  */
 package info.magnolia.ui.workbench.list;
 
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.vaadin.grid.MagnoliaTable;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,15 +59,9 @@ import com.vaadin.ui.Table.TableDragMode;
  */
 public class ListViewImpl implements ListView {
 
-    private static final String ICON_PROPERTY = "icon-node-data";
-
-    private static final String ICON_TRASH = "icon-trash";
-
     private static final Logger log = LoggerFactory.getLogger(ListViewImpl.class);
 
     private final Table table;
-
-    private final Map<String, String> nodeIcons = new HashMap<String, String>();
 
     private ListView.Listener listener;
 
@@ -99,36 +84,17 @@ public class ListViewImpl implements ListView {
         table.setSortEnabled(true);
 
         table.setCellStyleGenerator(new Table.CellStyleGenerator() {
+
             @Override
             public String getStyle(Table source, Object itemId, Object propertyId) {
 
                 final Item item = source.getContainerDataSource().getItem(itemId);
-                if (item instanceof JcrPropertyAdapter) {
-                    return ICON_PROPERTY;
-                } else if (item instanceof JcrNodeAdapter) {
-                    if (isDeletedNode((JcrNodeAdapter) item)) {
-                        return ICON_TRASH;
-                    }
-                    return nodeIcons.get(((JcrNodeAdapter) item).getPrimaryNodeTypeName());
-                }
-                return null;
+                return listener.getIcon(item);
             }
         });
 
         this.table = table;
         bindHandlers();
-    }
-
-
-
-    private boolean isDeletedNode(JcrNodeAdapter nodeAdapter) {
-        try {
-            Node node = nodeAdapter.applyChanges();
-            return NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
-        } catch (RepositoryException re) {
-            log.warn("Not able to check if node has MixIn");
-            return false;
-        }
     }
 
     protected void bindHandlers() {
@@ -210,11 +176,6 @@ public class ListViewImpl implements ListView {
     @Override
     public void setColumnFormatter(String propertyId, ColumnFormatter formatter) {
         table.addGeneratedColumn(propertyId, formatter);
-    }
-
-    @Override
-    public void setNodeIcon(String primaryNodeType, String iconName) {
-        nodeIcons.put(primaryNodeType, iconName);
     }
 
     @Override

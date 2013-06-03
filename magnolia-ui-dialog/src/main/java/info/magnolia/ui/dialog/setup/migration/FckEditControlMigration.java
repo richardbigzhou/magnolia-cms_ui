@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,51 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.converter;
+package info.magnolia.ui.dialog.setup.migration;
 
-import java.util.Locale;
+import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
-
-import com.vaadin.data.util.converter.Converter;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
- * {@link Converter} used to encode and decode password fields see {link Base64}.
- * In general, if the translation is not possible, return emptyString.
+ * Migrate an FckEdit control to a RichTextField.
  */
-public class Base64Converter implements Converter<String, String> {
+public class FckEditControlMigration implements ControlMigration {
 
-    /**
-     * Encode.
-     */
-    @Override
-
-    public String convertToModel(String decoded, Locale locale) throws Converter.ConversionException {
-        if (StringUtils.isBlank(decoded)) {
-            return StringUtils.EMPTY;
-        }
-        return new String(Base64.encodeBase64(decoded.getBytes()));
-    }
-
-    /**
-     * Decode.
-     */
-    @Override
-    public String convertToPresentation(String encoded, Locale locale) throws Converter.ConversionException {
-        if (StringUtils.isBlank(encoded)) {
-            return StringUtils.EMPTY;
-        }
-        return new String(Base64.decodeBase64(encoded.getBytes()));
-    }
 
     @Override
-    public Class<String> getModelType() {
-        return String.class;
+    public void migrate(Node controlNode) throws RepositoryException {
+        controlNode.getProperty("controlType").remove();
+        controlNode.setProperty("class", RichTextFieldDefinition.class.getName());
     }
 
-    @Override
-    public Class<String> getPresentationType() {
-        return String.class;
-    }
 }

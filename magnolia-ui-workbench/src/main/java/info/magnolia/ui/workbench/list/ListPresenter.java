@@ -38,7 +38,6 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.util.ArrayList;
@@ -101,14 +100,6 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
 
             if (column.isEditable()) {
                 editableColumns.add(propertyId);
-            }
-        }
-
-        // node icons
-        List<NodeTypeDefinition> nodeTypes = workbench.getNodeTypes();
-        for (NodeTypeDefinition nodeType : nodeTypes) {
-            if (nodeType.getIcon() != null) {
-                view.setNodeIcon(nodeType.getName(), nodeType.getIcon());
             }
         }
 
