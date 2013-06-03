@@ -62,13 +62,17 @@ public abstract class InstantMediaEditorAction extends MediaEditorAction {
 
     @Override
     public void execute() throws ActionExecutionException {
+        if (getDefinition().getTrackingLabel() != null) {
+            dataSource.startAction(getDefinition().getTrackingLabel());
+        }
+        InputStream result = new ByteArrayInputStream(dataSource.getValue());
         try {
-            super.execute();
-            InputStream result = performModification(new ByteArrayInputStream(dataSource.getValue()));
+            result = performModification(result);
             dataSource.setValue(IOUtils.toByteArray(result));
             eventBus.fireEvent(new MediaEditorInternalEvent(MediaEditorInternalEvent.EventType.APPLY));
         } catch (IOException e) {
             log.error("Failed to perform instant operation on media.", e);
+            IOUtils.closeQuietly(result);
         }
     }
 

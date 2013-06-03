@@ -86,11 +86,13 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
 
     private PulseMessagesView.Listener listener;
 
-    private boolean grouping = false;
-
     private Label emptyPlaceHolder = new Label(MessagesUtil.get("pulse.messages.nomessage"));
 
     private PulseMessagesFooter footer;
+
+    private MessageCategory currentlySelectedCategory = MessageCategory.ALL;
+
+    private boolean categoryFilterAlreadyApplied;
 
     @Inject
     public PulseMessagesViewImpl(Shell shell) {
@@ -124,7 +126,9 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
             @Override
             public void messageCategoryChanged(CategoryChangedEvent event) {
                 final MessageCategory category = event.getCategory();
+                currentlySelectedCategory = category;
                 listener.filterByMessageCategory(category);
+                categoryFilterAlreadyApplied = true;
                 // TODO fgrilli Unselect all when switching categories or nasty side effects will happen. See MGNLUI-1447
                 for (String id : (Set<String>) messageTable.getValue()) {
                     messageTable.unselect(id);
@@ -171,8 +175,15 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
             public void itemClick(ItemClickEvent event) {
                 final String itemId = (String) event.getItemId();
                 // clicking on the group type header does nothing.
-                if (event.isDoubleClick() && !itemId.startsWith(GROUP_PLACEHOLDER_ITEMID)) {
+                if (itemId.startsWith(GROUP_PLACEHOLDER_ITEMID)) {
+                    return;
+                }
+                if (event.isDoubleClick()) {
                     listener.onMessageClicked(itemId);
+                } else {
+                    if (messageTable.isSelected(itemId)) {
+                        messageTable.unselect(itemId);
+                    }
                 }
             }
         });
@@ -327,16 +338,19 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
                 Item item = table.getItem(itemId);
                 Property<MessageType> property = item.getItemProperty(TYPE_PROPERTY_ID);
                 GeneratedRow generated = new GeneratedRow();
+
                 switch(property.getValue()) {
                 case ERROR  :
+                    generated.setText("", "", MessagesUtil.get("pulse.messages.errors"));
+                    break;
                 case WARNING:
-                    generated.setText("", "", MessageCategory.PROBLEM.getCaption());
+                    generated.setText("", "", MessagesUtil.get("pulse.messages.warnings"));
                     break;
                 case INFO:
-                    generated.setText("", "", MessageCategory.INFO.getCaption());
+                    generated.setText("", "", MessagesUtil.get("pulse.messages.info"));
                     break;
                 case WORKITEM:
-                    generated.setText("", "", MessageCategory.WORK_ITEM.getCaption());
+                    generated.setText("", "", MessagesUtil.get("pulse.messages.workitems"));
                     break;
                 }
                 return generated;
@@ -429,6 +443,12 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
 
     @Override
     public void refresh() {
+        // skip this if we're displaying all messages or if the category category filter has just been applied (i.e. after clicking on a different tab)
+        if (currentlySelectedCategory != MessageCategory.ALL && !categoryFilterAlreadyApplied) {
+            listener.filterByMessageCategory(currentlySelectedCategory);
+        }
+        // now this can be reset to its initial value
+        categoryFilterAlreadyApplied = false;
         footer.updateStatus();
         messageTable.sort();
         doGrouping(false);

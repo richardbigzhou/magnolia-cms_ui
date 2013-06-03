@@ -43,6 +43,17 @@ import com.vaadin.data.Property;
 public interface EditHistoryTrackingProperty extends Property<byte[]> {
 
     /**
+     * Listener interface that receives important information
+     * about the property workflow.
+     */
+    interface Listener {
+
+        void errorOccurred(String message, Throwable e);
+    }
+
+    public void setListener(Listener listener);
+
+    /**
      * Gets the last done action name.
      * @return last action name.
      */

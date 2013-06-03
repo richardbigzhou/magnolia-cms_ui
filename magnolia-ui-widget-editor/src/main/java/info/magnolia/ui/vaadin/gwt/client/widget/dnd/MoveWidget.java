@@ -51,6 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class MoveWidget extends Widget {
 
     public static final String CLASS_NAME = "mgnlEditorMoveDiv";
+    public static final int OFFSET_FROM_MOUSE = 15;
 
     private FrameBodyWrapper wrapper;
     private PageEditorFrame frame;
@@ -80,9 +81,9 @@ public class MoveWidget extends Widget {
             @Override
             public void onMouseMove(MouseMoveEvent event) {
                 int x = event.getNativeEvent().getClientX() + frame.getContentDocument().getScrollLeft();
-                int y = event.getNativeEvent().getClientY() + 15 + frame.getContentDocument().getScrollTop();
+                int y = event.getNativeEvent().getClientY() + OFFSET_FROM_MOUSE + frame.getContentDocument().getScrollTop();
                 int maxX = frame.getBody().getOffsetWidth() - width;
-                int maxY = frame.getBody().getOffsetHeight() - height - 15;
+                int maxY = frame.getBody().getOffsetHeight() - height - OFFSET_FROM_MOUSE;
 
                 x = (x > maxX) ? maxX : x;
                 y = (y > maxY) ? maxY : y;
