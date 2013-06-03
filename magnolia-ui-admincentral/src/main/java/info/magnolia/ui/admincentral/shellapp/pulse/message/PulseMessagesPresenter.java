@@ -156,9 +156,10 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener 
 
     private void createSuperItems() {
         for (MessageType type : MessageType.values()) {
-            Item item = container.addItem(getSuperItem(type));
+            Object itemId = getSuperItem(type);
+            Item item = container.addItem(itemId);
             item.getItemProperty(TYPE_PROPERTY_ID).setValue(type);
-            container.setChildrenAllowed(getSuperItem(type), true);
+            container.setChildrenAllowed(itemId, true);
         }
     }
 
@@ -243,9 +244,10 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener 
             if (!itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID)) {
                 Item item = container.getItem(itemId);
                 MessageType type = (MessageType) item.getItemProperty(TYPE_PROPERTY_ID).getValue();
-                Item parentItem = container.getItem(getSuperItem(type));
+                Object parentItemId = getSuperItem(type);
+                Item parentItem = container.getItem(parentItemId);
                 if (parentItem != null) {
-                    container.setParent(itemId, getSuperItem(type));
+                    container.setParent(itemId, parentItemId);
                 }
             }
         }

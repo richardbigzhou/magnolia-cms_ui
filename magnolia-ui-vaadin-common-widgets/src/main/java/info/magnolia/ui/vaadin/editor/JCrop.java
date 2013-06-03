@@ -43,7 +43,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.vaadin.annotations.JavaScript;
-import com.vaadin.annotations.StyleSheet;
 import com.vaadin.server.AbstractJavaScriptExtension;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Image;
@@ -53,7 +52,6 @@ import com.vaadin.ui.JavaScriptFunction;
  * An {@link Image} extension that operates JCrop JQuery plugin ({@link http://deepliquid.com/content/Jcrop.html}). 
  */
 @JavaScript({"js/jquery.color.js", "js/jquery.Jcrop.js", "js/jcrop_connector.js"})
-@StyleSheet("css/jquery.Jcrop.css")
 public class JCrop extends AbstractJavaScriptExtension {
 
     @Override
