@@ -38,6 +38,8 @@ import static org.mockito.Mockito.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -49,9 +51,10 @@ import info.magnolia.ui.workbench.event.ItemsSelectedEvent;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.jcr.Node;
+
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -69,24 +72,26 @@ public class ContentPresenterTest {
 
     protected static final String TEST_WORKSPACE_NAME = "test";
 
-    protected static final String TEST_ITEM_ID = "2";
-
     private static final String TEST_WORKBENCHDEF_PATH = "/path/to/somewhere";
 
     private WorkbenchDefinition workbench;
+    private Node workbenchRoot;
+    private Node testNode;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
+        MockSession session = new MockSession(TEST_WORKSPACE_NAME);
+        workbenchRoot = NodeUtil.createPath(session.getRootNode(), TEST_WORKBENCHDEF_PATH.substring(1), NodeTypes.Content.NAME);
+        testNode = NodeUtil.createPath(workbenchRoot, "testNode", NodeTypes.Content.NAME);
+
         this.workbench = mock(WorkbenchDefinition.class);
         when(workbench.getWorkspace()).thenReturn(TEST_WORKSPACE_NAME);
         when(workbench.getPath()).thenReturn(TEST_WORKBENCHDEF_PATH);
         eventBus = mock(EventBus.class);
         item = mock(JcrItemAdapter.class);
-        when(item.getItemId()).thenReturn(TEST_ITEM_ID);
+        when(item.getItemId()).thenReturn(testNode.getIdentifier());
         items = new HashSet<String>();
         items.add(item.getItemId());
-
-        MockSession session = new MockSession(TEST_WORKSPACE_NAME);
 
         MockContext ctx = new MockContext();
         ctx.addSession(TEST_WORKSPACE_NAME, session);
@@ -99,8 +104,7 @@ public class ContentPresenterTest {
     }
 
     @Test
-    @Ignore
-    public void testOnItemSelectionFiresOnEventBus() {
+    public void testOnItemSelectionFiresOnEventBus() throws Exception {
         // GIVEN
         final AbstractContentPresenter presenter = new DummyContentPresenter();
         presenter.start(workbench, eventBus);
@@ -108,15 +112,15 @@ public class ContentPresenterTest {
         presenter.onItemSelection(items);
 
         // THEN
-        // TODO MGNLUI-1516 fix the ItemSelectedEvent initialization
         ArgumentCaptor<ItemsSelectedEvent> argument = ArgumentCaptor.forClass(ItemsSelectedEvent.class);
         verify(eventBus).fireEvent(argument.capture());
         assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
-        assertEquals(TEST_ITEM_ID, argument.getValue().getItemIds().iterator().next());
+        assertEquals(items.size(), argument.getValue().getItemIds().size());
+        assertEquals(testNode.getIdentifier(), argument.getValue().getItemIds().iterator().next());
     }
 
     @Test
-    public void testOnDoubleClickFiresOnEventBus() {
+    public void testOnDoubleClickFiresOnEventBus() throws Exception {
         // GIVEN
         final AbstractContentPresenter presenter = new DummyContentPresenter();
         presenter.start(workbench, eventBus);
@@ -128,7 +132,7 @@ public class ContentPresenterTest {
         ArgumentCaptor<ItemDoubleClickedEvent> argument = ArgumentCaptor.forClass(ItemDoubleClickedEvent.class);
         verify(eventBus).fireEvent(argument.capture());
         assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
-        assertEquals(TEST_ITEM_ID, argument.getValue().getPath());
+        assertEquals(testNode.getIdentifier(), argument.getValue().getPath());
     }
 
     @Test
