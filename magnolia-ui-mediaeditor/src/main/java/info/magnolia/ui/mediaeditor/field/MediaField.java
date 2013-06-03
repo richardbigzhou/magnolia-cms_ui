@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2010-2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,51 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.converter;
+package info.magnolia.ui.mediaeditor.field;
 
-import java.util.Locale;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
-
-import com.vaadin.data.util.converter.Converter;
+import com.vaadin.ui.Field;
 
 /**
- * {@link Converter} used to encode and decode password fields see {link Base64}.
- * In general, if the translation is not possible, return emptyString.
+ * Base interface for media editor fields.
  */
-public class Base64Converter implements Converter<String, String> {
+public interface MediaField extends Field<byte[]> {
 
-    /**
-     * Encode.
-     */
-    @Override
+    void applyChanges();
 
-    public String convertToModel(String decoded, Locale locale) throws Converter.ConversionException {
-        if (StringUtils.isBlank(decoded)) {
-            return StringUtils.EMPTY;
-        }
-        return new String(Base64.encodeBase64(decoded.getBytes()));
-    }
+    void revertChanges();
 
-    /**
-     * Decode.
-     */
-    @Override
-    public String convertToPresentation(String encoded, Locale locale) throws Converter.ConversionException {
-        if (StringUtils.isBlank(encoded)) {
-            return StringUtils.EMPTY;
-        }
-        return new String(Base64.decodeBase64(encoded.getBytes()));
-    }
-
-    @Override
-    public Class<String> getModelType() {
-        return String.class;
-    }
-
-    @Override
-    public Class<String> getPresentationType() {
-        return String.class;
-    }
 }

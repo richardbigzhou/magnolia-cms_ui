@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.definition;
+package info.magnolia.ui.app.security.dialog.field;
+
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+
+import java.util.List;
 
 /**
- * Defines a node type to be displayed in a workbench.
+ * Field definition for the workspace ACL field. Allows configuring either node types or a complete workbench to use
+ * when choosing nodes in the dialog.
  *
- * @see WorkbenchDefinition
+ * @see WorkspaceAccessFieldBuilder
  */
-public interface NodeTypeDefinition {
+public class WorkspaceAccessFieldDefinition extends ConfiguredFieldDefinition {
 
-    /**
-     * Specifies the the name of the node type. For instance <code>mgnl:content</code>.
-     *
-     * @see info.magnolia.jcr.util.NodeTypes
-     * @see org.apache.jackrabbit.JcrConstants
-     */
-    String getName();
+    private String workspace;
+    private WorkbenchDefinition workbench;
+    private List<NodeTypeDefinition> nodeTypes;
 
-    /**
-     * Specifies the icon to use for this node type.
-     */
-    String getIcon();
+    public String getWorkspace() {
+        return workspace;
+    }
 
-    /**
-     * Specifies whether to include only the exact node type and ignore sub types.
-     */
-    boolean isStrict();
+    public void setWorkspace(String workspace) {
+        this.workspace = workspace;
+    }
+
+    public List<NodeTypeDefinition> getNodeTypes() {
+        return nodeTypes;
+    }
+
+    public void setNodeTypes(List<NodeTypeDefinition> nodeTypes) {
+        this.nodeTypes = nodeTypes;
+    }
+
+    public WorkbenchDefinition getWorkbench() {
+        return workbench;
+    }
+
+    public void setWorkbench(WorkbenchDefinition workbench) {
+        this.workbench = workbench;
+    }
 }

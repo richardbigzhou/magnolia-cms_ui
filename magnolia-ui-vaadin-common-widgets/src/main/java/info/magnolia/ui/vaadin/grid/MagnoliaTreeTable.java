@@ -49,7 +49,7 @@ public class MagnoliaTreeTable extends TreeTable {
 
     public MagnoliaTreeTable() {
         addStyleName("v-magnolia-table");
-        setCacheRate(5);
+        setCacheRate(4);
     }
 
     @Override
