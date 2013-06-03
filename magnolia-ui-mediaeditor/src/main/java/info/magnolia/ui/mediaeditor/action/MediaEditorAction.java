@@ -33,46 +33,62 @@
  */
 package info.magnolia.ui.mediaeditor.action;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.mediaeditor.MediaEditorPresenter;
-import info.magnolia.ui.mediaeditor.editmode.factory.EditModeProviderFactory;
-import info.magnolia.ui.mediaeditor.editmode.provider.EditModeProvider;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.mediaeditor.provider.EditModeProviderActionDefinition;
+import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
+import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
+import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 
+import com.google.inject.name.Named;
+
 /**
- * Causes the {@link MediaEditorPresenter} to switch the edit mode.
+ * Abstract action for media editor related operations.
  */
-public class EditModeProviderAction extends AbstractAction<EditModeProviderActionDefinition> {
+public abstract class MediaEditorAction extends AbstractAction<MediaEditorActionDefinition> {
 
     private Logger log = Logger.getLogger(getClass());
-    
-    private EditModeProviderFactory factory;
-    
-    private EditModeProviderActionDefinition editModeDefinition;
-    
-    private MediaEditorPresenter mediaEditor;
-    
-    public EditModeProviderAction(
-            EditModeProviderActionDefinition definition, 
-            EditModeProviderFactory factory,
-            MediaEditorPresenter mediaEditor) {
+
+    protected final static String DEFAULT_FORMAT = "png";
+
+    protected EditHistoryTrackingProperty dataSource;
+
+    protected EventBus eventBus;
+
+    public MediaEditorAction(MediaEditorActionDefinition definition, EditHistoryTrackingProperty dataSource, @Named(MediaEditorEventBus.NAME) EventBus eventBus) {
         super(definition);
-        this.factory = factory;
-        this.editModeDefinition = definition;
-        this.mediaEditor = mediaEditor;
+        this.dataSource = dataSource;
+        this.eventBus = eventBus;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-        EditModeProvider provider = factory.getEditModeProvider(editModeDefinition);
-        if (provider != null) {
-            mediaEditor.switchEditMode(provider);   
-        } else {
-            log.warn("No provider was found for definition " + editModeDefinition.getClass().getName());
+        if (getDefinition().getTrackingLabel() != null) {
+            dataSource.startAction(getDefinition().getTrackingLabel());
         }
     }
 
+    protected InputStream createStreamSource(final BufferedImage img, final String formatName) {
+        try {
+            if (img == null) {
+                return null;
+            }
+            ByteArrayOutputStream out2 = new ByteArrayOutputStream();
+            ImageIO.write(img, formatName, out2);
+            return new ByteArrayInputStream(out2.toByteArray());
+        } catch (IOException e) {
+            log.error("Error occurred while creating image stream: " + e.getMessage(), e);
+        }
+        return null;
+    }
 }

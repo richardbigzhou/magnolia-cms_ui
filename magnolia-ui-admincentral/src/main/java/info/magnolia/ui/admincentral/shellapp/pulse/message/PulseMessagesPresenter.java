@@ -35,15 +35,16 @@ package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategory;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.ShellImpl;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -56,15 +57,20 @@ import com.vaadin.data.util.HierarchicalContainer;
 /**
  * Presenter of {@link PulseMessagesView}.
  */
-public class PulseMessagesPresenter implements PulseMessagesView.Listener {
+public final class PulseMessagesPresenter implements PulseMessagesView.Listener {
 
     public static final String GROUP_PLACEHOLDER_ITEMID = "##SUBSECTION##";
-
-    public static final String GROUP_COLUMN = "type";
+    public static final String NEW_PROPERTY_ID = "new";
+    public static final String TYPE_PROPERTY_ID = "type";
+    public static final String SUBJECT_PROPERTY_ID = "subject";
+    public static final String TEXT_PROPERTY_ID = "text";
+    public static final String SENDER_PROPERTY_ID = "sender";
+    public static final String DATE_PROPERTY_ID = "date";
+    public static final String QUICKDO_PROPERTY_ID = "quickdo";
 
     private final PulseMessagesView view;
 
-    private HierarchicalContainer container = null;
+    private HierarchicalContainer container;
 
     private final MessagesManager messagesManager;
 
@@ -112,7 +118,7 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
         view.setListener(this);
         container = createMessageDataSource();
         view.setDataSource(container);
-
+        view.refresh();
         return view;
     }
 
@@ -123,12 +129,13 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
 
     private HierarchicalContainer createMessageDataSource() {
         container = new HierarchicalContainer();
-        container.addContainerProperty("new", String.class, null);
-        container.addContainerProperty("type", MessageType.class, MessageType.UNKNOWN);
-        container.addContainerProperty("text", String.class, null);
-        container.addContainerProperty("sender", String.class, null);
-        container.addContainerProperty("date", Date.class, null);
-        container.addContainerProperty("quickdo", String.class, null);
+        container.addContainerProperty(NEW_PROPERTY_ID, Boolean.class, true);
+        container.addContainerProperty(SUBJECT_PROPERTY_ID, String.class, null);
+        container.addContainerProperty(TYPE_PROPERTY_ID, MessageType.class, MessageType.UNKNOWN);
+        container.addContainerProperty(TEXT_PROPERTY_ID, String.class, null);
+        container.addContainerProperty(SENDER_PROPERTY_ID, String.class, null);
+        container.addContainerProperty(DATE_PROPERTY_ID, Date.class, null);
+        container.addContainerProperty(QUICKDO_PROPERTY_ID, String.class, null);
 
         createSuperItems();
 
@@ -144,7 +151,7 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
     private void createSuperItems() {
         for (MessageType type : MessageType.values()) {
             Item item = container.addItem(getSuperItem(type));
-            item.getItemProperty(GROUP_COLUMN).setValue(type);
+            item.getItemProperty(TYPE_PROPERTY_ID).setValue(type);
             container.setChildrenAllowed(getSuperItem(type), true);
         }
     }
@@ -211,7 +218,7 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
 
         @Override
         public boolean appliesToProperty(Object propertyId) {
-            return "type".equals(propertyId);
+            return TYPE_PROPERTY_ID.equals(propertyId);
         }
 
         private boolean isTypeGroupEmpty(Object typeId) {
@@ -229,7 +236,7 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
             // Skip super items
             if (!itemId.toString().startsWith(GROUP_PLACEHOLDER_ITEMID)) {
                 Item item = container.getItem(itemId);
-                MessageType type = (MessageType) item.getItemProperty("type").getValue();
+                MessageType type = (MessageType) item.getItemProperty(TYPE_PROPERTY_ID).getValue();
                 Item parentItem = container.getItem(getSuperItem(type));
                 if (parentItem != null) {
                     container.setParent(itemId, getSuperItem(type));
@@ -249,11 +256,12 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
 
     private void assignPropertiesFromMessage(Message message, final Item item) {
         if (item != null && message != null) {
-            item.getItemProperty("new").setValue(message.isCleared() ? "No" : "Yes");
-            item.getItemProperty("type").setValue(message.getType());
-            item.getItemProperty("sender").setValue(message.getSender());
-            item.getItemProperty("text").setValue(StringUtils.abbreviate(message.getMessage(), 40));
-            item.getItemProperty("date").setValue(new Date(message.getTimestamp()));
+            item.getItemProperty(NEW_PROPERTY_ID).setValue(!message.isCleared());
+            item.getItemProperty(TYPE_PROPERTY_ID).setValue(message.getType());
+            item.getItemProperty(SENDER_PROPERTY_ID).setValue(message.getSender());
+            item.getItemProperty(SUBJECT_PROPERTY_ID).setValue(StringUtils.abbreviate(message.getSubject(), 55));
+            item.getItemProperty(TEXT_PROPERTY_ID).setValue(StringUtils.abbreviate(message.getMessage(), 60));
+            item.getItemProperty(DATE_PROPERTY_ID).setValue(new Date(message.getTimestamp()));
         }
     }
 
@@ -271,13 +279,13 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
 
             @Override
             public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
-                final MessageType type = (MessageType) item.getItemProperty("type").getValue();
+                final MessageType type = (MessageType) item.getItemProperty(TYPE_PROPERTY_ID).getValue();
 
                 switch (category) {
                 case WORK_ITEM:
                     return type == MessageType.WORKITEM;
                 case PROBLEM:
-                    return type == MessageType.ERROR;
+                    return type == MessageType.ERROR || type == MessageType.WARNING;
                 case INFO:
                     return type == MessageType.INFO;
                 default:
@@ -287,7 +295,7 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
 
             @Override
             public boolean appliesToProperty(Object propertyId) {
-                return "type".equals(propertyId);
+                return TYPE_PROPERTY_ID.equals(propertyId);
             }
 
         };
@@ -298,6 +306,33 @@ public class PulseMessagesPresenter implements PulseMessagesView.Listener {
     public void onMessageClicked(String messageId) {
         listener.openMessage(messageId);
         messagesManager.clearMessage(MgnlContext.getUser().getName(), messageId);
+    }
+
+    @Override
+    public void deleteMessages(final Set<String> messageIds) {
+        if (messageIds == null || messageIds.isEmpty()) {
+            return;
+        }
+        final String userName = MgnlContext.getUser().getName();
+        int significantMessagesDeleted = 0;
+
+        for (String messageId : messageIds) {
+            Message message = messagesManager.getMessageById(userName, messageId);
+            if (message == null) {
+                continue;
+            }
+            messagesManager.removeMessage(userName, messageId);
+
+            if (message.getType().isSignificant() && !message.isCleared()) {
+                significantMessagesDeleted++;
+            }
+        }
+        shell.updateShellAppIndication(ShellAppType.PULSE, -significantMessagesDeleted);
+        /*
+         * Refreshes the view to display the updated underlying data.
+         */
+        container = createMessageDataSource();
+        view.setDataSource(container);
     }
 
     /**

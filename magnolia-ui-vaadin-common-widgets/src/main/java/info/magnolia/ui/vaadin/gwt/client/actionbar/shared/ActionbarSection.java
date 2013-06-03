@@ -89,6 +89,12 @@ public class ActionbarSection implements Serializable {
         actions.put(action.getName(), action);
     }
 
+
+    public void removeAction(String actionName) {
+        actionOrder.remove(actionName);
+        actions.remove(actionName);
+    }
+
     public List<String> getActionOrder() {
         return actionOrder;
     }

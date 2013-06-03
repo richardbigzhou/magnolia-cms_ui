@@ -55,9 +55,6 @@ info_magnolia_ui_vaadin_editor_JCrop = function() {
     };
 
     this.onSelect = function(coords) {
-    	var trueSize = jcrop.tellSelect();
-    	var scaled = jcrop.tellScaled();
-    	var param = coords;
     	that.doOnSelect(coords);
     }
     

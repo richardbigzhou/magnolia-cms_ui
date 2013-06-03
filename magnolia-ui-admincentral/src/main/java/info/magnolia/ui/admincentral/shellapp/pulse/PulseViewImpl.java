@@ -43,7 +43,7 @@ import com.vaadin.ui.CssLayout;
 /**
  * Default view implementation for Pulse.
  */
-public class PulseViewImpl implements PulseView {
+public final class PulseViewImpl implements PulseView {
 
     private final CssLayout layout = new CssLayout();
 

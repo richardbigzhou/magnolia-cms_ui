@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,17 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.mediaeditor.action.definition;
 
-import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.mediaeditor.action.CropImageAction;
+import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 
-import com.vaadin.ui.HasComponents;
 
 /**
- * Interface for the tabs in the Pulse.
+ * Definition for {@link info.magnolia.ui.mediaeditor.action.CropImageAction}.
  */
-public interface PulseSubView extends View {
-
-    @Override
-    HasComponents asVaadinComponent();
+public class CropImageActionDefinition extends MediaEditorActionDefinition {
+    
+    public CropImageActionDefinition() {
+        setImplementationClass(CropImageAction.class);
+    }
 }

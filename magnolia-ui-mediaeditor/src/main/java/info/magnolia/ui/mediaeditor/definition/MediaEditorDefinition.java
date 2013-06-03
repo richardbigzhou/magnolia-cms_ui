@@ -49,9 +49,9 @@ public interface MediaEditorDefinition {
     
     String getId();
 
-    ActionbarDefinition getActionBar();
+    String getDefaultAction();
 
-    String getDefaultEditModeProvider();
+    ActionbarDefinition getActionBar();
 
     Map<String, ActionDefinition> getActions(); 
 }

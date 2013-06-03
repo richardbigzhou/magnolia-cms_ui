@@ -31,19 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.action.feature.definition;
+package info.magnolia.ui.mediaeditor.action.definition;
 
-import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.mediaeditor.action.ConvertImageToGrayScaleAction;
+import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
+
 
 /**
- * Definition of media editor actions that do not cause the edit mode to switch
- * but rather perform some operation on the current state of media
- * editor. Require a certain interface to be implemented by current
- * {@link info.magnolia.ui.mediaeditor.editmode.field.MediaField} displayed by
- * {@link info.magnolia.ui.mediaeditor.MediaEditorPresenter}.
+ * Definition for {@link info.magnolia.ui.mediaeditor.action.ConvertImageToGrayScaleAction}.
  */
-public interface MediaEditorFeatureDefinition extends ActionDefinition {
- 
-    String getRequiredInterfaceName();
-    
+public class GrayScaleActionDefinition extends MediaEditorActionDefinition {
+
+    public GrayScaleActionDefinition() {
+        setImplementationClass(ConvertImageToGrayScaleAction.class);
+    }
 }

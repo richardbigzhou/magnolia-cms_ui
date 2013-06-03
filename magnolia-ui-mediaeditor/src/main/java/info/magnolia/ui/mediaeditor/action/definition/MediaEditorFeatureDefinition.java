@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,17 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.shellapp.pulse;
+package info.magnolia.ui.mediaeditor.action.definition;
 
-import info.magnolia.ui.api.view.View;
-
-import com.vaadin.ui.HasComponents;
+import info.magnolia.ui.api.action.ActionDefinition;
 
 /**
- * Interface for the tabs in the Pulse.
+ * Definition of media editor actions that do not cause the edit mode to switch
+ * but rather perform some operation on the current state of media
+ * editor. Require a certain interface to be implemented by current
+ * {@link info.magnolia.ui.mediaeditor.editmode.field.MediaField} displayed by
+ * {@link info.magnolia.ui.mediaeditor.MediaEditorPresenter}.
  */
-public interface PulseSubView extends View {
-
-    @Override
-    HasComponents asVaadinComponent();
+public interface MediaEditorFeatureDefinition extends ActionDefinition {
+ 
+    String getRequiredInterfaceName();
+    
 }
