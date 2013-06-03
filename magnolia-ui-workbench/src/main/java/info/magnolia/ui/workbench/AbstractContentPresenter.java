@@ -109,6 +109,12 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
                 selectedItemIds = new ArrayList<String>(items.size());
                 for (Object o : items) {
                     String item = (String) o;
+                    // if the selection is done by clicking the checkbox, the root item is added to the set - so it has to be ignored
+                    // but only if there is any other item in the set
+                    // TODO MGNLUI-1521
+                    if (getWorkbenchRoot().getIdentifier().equals(item) && items.size() > 1) {
+                        continue;
+                    }
                     selectedItemIds.add(item);
                     jcrItems.add(toJcrItemAdapter(JcrItemUtil.getJcrItem(workbenchDefinition.getWorkspace(), item)));
                 }
@@ -161,8 +167,10 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
     public void onRightClick(Item item, int clickX, int clickY) {
         if (item != null) {
             try {
-                setSelectedItemId(((JcrItemAdapter) item).getItemId());
-                // String clickedItemPath = ((JcrItemAdapter) item).getPath();
+                // if the right-clicket item is not yet selected
+                if (!selectedItemIds.contains(((JcrItemAdapter) item).getItemId())) {
+                    setSelectedItemId(((JcrItemAdapter) item).getItemId());
+                }
                 String clickedItemId = ((JcrItemAdapter) item).getItemId();
                 log.debug("com.vaadin.data.Item at {} was right clicked. Firing ItemRightClickedEvent...", clickedItemId);
                 eventBus.fireEvent(new ItemRightClickedEvent(workbenchDefinition.getWorkspace(), (JcrItemAdapter) item, clickX, clickY));
