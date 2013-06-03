@@ -130,31 +130,31 @@
   vertical-align:top;
 }
 
-.v-pulse .navigator-button {
+.v-pulse .navigator-tab {
   height:25px;
   border-right:1px solid $c13;
-  padding:0 42px 0 20px;
+  padding-left:20px;
   color:$c13;
   font-family:DINWebPro, sans-serif;
   line-height:1;
   width: 150px !important;
 }
 
-.v-pulse .navigator-button .v-nativebutton-caption {
-  text-decoration:none;
-  text-transform: uppercase;
+.v-pulse .navigator-tab * {
+  cursor: pointer;
 }
 
-.v-pulse .navigator-button.active {
+.v-pulse .navigator-tab .category {
+  text-transform: uppercase;
+  font-size:13px;
+  width: 100px;
+}
+
+.v-pulse .navigator-tab.active {
   color: #000;
 }
 
-.v-pulse .navigator-button .v-nativebutton {
-  font-size:13px;
-  outline: none;
-}
-
-.v-pulse .navigator-button .badge {
+.v-pulse .navigator-tab .badge {
     background-color: #689600;
     border-radius: 2em;
     color: white;
@@ -162,7 +162,6 @@
     width: 18px !important;
     padding-top: 2px;
     text-align: center;
-    margin-left: 60px;
 }
 
 .v-pulse .v-nativebutton-active {color:$c10;}
@@ -170,9 +169,6 @@
 
 .v-pulse .v-nativebutton-active {color:$c10;}
 .v-pulse .v-nativebutton::-moz-focus-inner {padding:0; border:0}
-
-.v-pulse .navigator-button .v-nativebutton-caption {text-decoration:none;}
-
 
 .v-pulse .back-button {
   display: inline-block;
