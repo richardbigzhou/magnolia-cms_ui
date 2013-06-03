@@ -340,7 +340,12 @@ public class WorkspaceAccessFieldBuilder<D extends WorkspaceAccessFieldDefinitio
         workbenchDefinition.setEditable(false);
         workbenchDefinition.setDefaultOrder(ModelConstants.JCR_NAME);
 
-        // columns
+        // node types
+        workbenchDefinition.setNodeTypes(resolveNodeTypes());
+
+        // content views
+        ArrayList<ContentPresenterDefinition> contentViews = new ArrayList<ContentPresenterDefinition>();
+        TreePresenterDefinition treeView = new TreePresenterDefinition();
         ArrayList<ColumnDefinition> columns = new ArrayList<ColumnDefinition>();
         PropertyColumnDefinition column = new PropertyColumnDefinition();
         column.setEditable(false);
@@ -349,15 +354,10 @@ public class WorkspaceAccessFieldBuilder<D extends WorkspaceAccessFieldDefinitio
         column.setPropertyName(ModelConstants.JCR_NAME);
         column.setName(ModelConstants.JCR_NAME);
         columns.add(column);
-        workbenchDefinition.setColumns(columns);
-
-        // node types
-        workbenchDefinition.setNodeTypes(resolveNodeTypes());
-
-        // content views
-        ArrayList<ContentPresenterDefinition> contentViews = new ArrayList<ContentPresenterDefinition>();
-        contentViews.add(new TreePresenterDefinition());
+        treeView.setColumns(columns);
+        contentViews.add(treeView);
         workbenchDefinition.setContentViews(contentViews);
+
         return workbenchDefinition;
     }
 
