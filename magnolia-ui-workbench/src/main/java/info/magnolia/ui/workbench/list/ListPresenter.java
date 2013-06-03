@@ -95,7 +95,7 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
             }
 
             if (column.getFormatterClass() != null) {
-                // view.setColumnFormatter(propertyId, componentProvider.newInstance(column.getFormatterClass(), column));
+                view.setColumnFormatter(propertyId, componentProvider.newInstance(column.getFormatterClass(), column));
             }
 
             if (column.isEditable()) {

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.editmode.field;
+package info.magnolia.ui.mediaeditor.field;
 
 import com.vaadin.ui.Field;
 

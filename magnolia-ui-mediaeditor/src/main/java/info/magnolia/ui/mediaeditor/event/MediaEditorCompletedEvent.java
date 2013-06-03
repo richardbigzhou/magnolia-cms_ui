@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.editmode.event;
+package info.magnolia.ui.mediaeditor.event;
 
 import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;

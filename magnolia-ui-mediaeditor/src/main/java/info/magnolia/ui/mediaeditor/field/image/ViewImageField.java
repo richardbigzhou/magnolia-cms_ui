@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.editmode.field.image;
+package info.magnolia.ui.mediaeditor.field.image;
 
 
 import java.awt.image.BufferedImage;

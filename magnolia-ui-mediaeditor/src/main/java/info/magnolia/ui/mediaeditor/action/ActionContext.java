@@ -52,23 +52,15 @@ public class ActionContext {
         this.listener = listener;
     }
 
-    /**
-     * @return the actionId
-     */
     public String getActionId() {
         return actionId;
     }
 
-    /**
-     * @return the label
-     */
+
     public String getLabel() {
         return label;
     }
 
-    /**
-     * @return the listener
-     */
     public DialogActionListener getListener() {
         return listener;
     }
