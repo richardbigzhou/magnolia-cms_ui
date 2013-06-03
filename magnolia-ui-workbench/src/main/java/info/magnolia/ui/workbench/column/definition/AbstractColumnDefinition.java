@@ -180,6 +180,7 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
         this.editable = editable;
     }
 
+    @Override
     public boolean isEnabled() {
         return enabled;
     }
