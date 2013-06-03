@@ -91,8 +91,8 @@ public class MultiLinkFieldBuilder extends AbstractFieldBuilder<MultiLinkFieldDe
         Class<? extends MultiValueHandler> multiDelegate = null;
         String itemName = definition.getName();
         // Get configured MultiPropertyDelegate class
-        if (definition.getSaveModeType() != null && definition.getSaveModeType().getMultiPropertyDelegateClass() != null) {
-            multiDelegate = definition.getSaveModeType().getMultiPropertyDelegateClass();
+        if (definition.getSaveModeType() != null && definition.getSaveModeType().getMultiValueHandlerClass() != null) {
+            multiDelegate = definition.getSaveModeType().getMultiValueHandlerClass();
         } else {
             multiDelegate = SingleValueHandler.class;
             log.warn("No SaveModeType defined for this Multiselect Field definition. Default one will be taken: '{}'", SingleValueHandler.class.getSimpleName());

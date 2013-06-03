@@ -101,6 +101,8 @@ public class SubNodesValueHandler implements MultiValueHandler {
             // Attach the child item to the root item
             if (rootChild.getChildren() != null && !rootChild.getChildren().isEmpty()) {
                 parent.addChild(rootChild);
+            } else {
+                parent.removeChild(rootChild);
             }
         } catch (RepositoryException e) {
             log.error("Could get or create related items", e);

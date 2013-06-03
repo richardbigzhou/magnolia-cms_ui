@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -330,6 +330,10 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
     }
 
     public void setNodeName(String nodeName) {
-        this.nodeName = nodeName;
+        if (StringUtils.isNotBlank(nodeName)) {
+            this.nodeName = Path.getValidatedLabel(nodeName);
+        } else {
+            this.nodeName = nodeName;
+        }
     }
 }

@@ -36,26 +36,27 @@ package info.magnolia.ui.contentapp.detail;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
-import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.action.ActionExecutor;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Presenter for the workbench displayed in the {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.
@@ -159,12 +160,4 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
         return actionDefinition != null ? actionDefinition.getIcon() : null;
     }
 
-    @Override
-    public void setFullScreen(boolean fullScreen) {
-        if (fullScreen) {
-            appContext.enterFullScreenMode();
-        } else {
-            appContext.exitFullScreenMode();
-        }
-    }
 }

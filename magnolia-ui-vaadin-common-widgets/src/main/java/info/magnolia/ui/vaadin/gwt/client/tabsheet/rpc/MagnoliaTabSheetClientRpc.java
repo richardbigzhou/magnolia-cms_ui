@@ -41,7 +41,5 @@ import com.vaadin.shared.communication.ClientRpc;
  */
 public interface MagnoliaTabSheetClientRpc extends ClientRpc {
 
-    void toggleFullScreenMode(boolean isFullScreen);
-
     void closeTab(Connector tabConnector);
 }

@@ -33,9 +33,7 @@
  */
 package info.magnolia.ui.framework.action;
 
-import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.action.CommandActionDefinition;
-
 
 /**
  * The deactivation action, invoking the deactivation command, and updating the UI accordingly.
@@ -44,32 +42,49 @@ import info.magnolia.ui.api.action.CommandActionDefinition;
  */
 public class DeactivationActionDefinition extends CommandActionDefinition {
 
+    private static final String MESSAGE_KEY_SUCCESS = "action.deactivation.success";
+    private static final String MESSAGE_KEY_FAILURE = "action.deactivation.failure";
+    private static final String MESSAGE_KEY_ERROR = "action.deactivation.error";
+
+    private static final String MESSAGE_KEY_WORKFLOW_SUCCESS = "action.deactivation.workflow.success";
+    private static final String MESSAGE_KEY_WORKFLOW_FAILURE = "action.deactivation.workflow.failure";
+    private static final String MESSAGE_KEY_WORKFLOW_ERROR = "action.deactivation.workflow.error";
+
+    private String workflowSuccessMessage;
+    private String workflowFailureMessage;
+    private String workflowErrorMessage;
+
     public DeactivationActionDefinition() {
         setImplementationClass(DeactivationAction.class);
+        setSuccessMessage(MESSAGE_KEY_SUCCESS);
+        setFailureMessage(MESSAGE_KEY_FAILURE);
+        setErrorMessage(MESSAGE_KEY_ERROR);
+        setWorkflowSuccessMessage(MESSAGE_KEY_WORKFLOW_SUCCESS);
+        setWorkflowFailureMessage(MESSAGE_KEY_WORKFLOW_FAILURE);
+        setWorkflowErrorMessage(MESSAGE_KEY_WORKFLOW_ERROR);
     }
 
-    @Override
-    public String getSuccessMessage() {
-        if (workflowInstalled()) {
-            return "The workflow has been started.";
-        }
-        return "Deactivation has been started.";
+    public String getWorkflowSuccessMessage() {
+        return workflowSuccessMessage;
     }
 
-    @Override
-    public String getFailureMessage() {
-        if (workflowInstalled()) {
-            return "The workflow could not be launched.";
-        }
-        return "Deactivation has failed.";
+    public void setWorkflowSuccessMessage(String workflowSuccessMessage) {
+        this.workflowSuccessMessage = workflowSuccessMessage;
     }
 
-    @Override
-    public String getErrorMessage() {
-        return "Deactivation failed. Please contact the system administrator for assistance.";
+    public String getWorkflowFailureMessage() {
+        return workflowFailureMessage;
     }
 
-    private boolean workflowInstalled() {
-        return SessionUtil.getNode("config", "/modules/workflow-base") != null;
+    public void setWorkflowFailureMessage(String workflowFailureMessage) {
+        this.workflowFailureMessage = workflowFailureMessage;
+    }
+
+    public String getWorkflowErrorMessage() {
+        return workflowErrorMessage;
+    }
+
+    public void setWorkflowErrorMessage(String workflowErrorMessage) {
+        this.workflowErrorMessage = workflowErrorMessage;
     }
 }

@@ -38,16 +38,16 @@ import static org.junit.Assert.*;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.actionbar.definition.ConfiguredActionbarItemDefinition;
-import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.api.availability.AvailabilityDefinition;
-import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarGroupDefinition;
+import info.magnolia.ui.actionbar.definition.ConfiguredActionbarItemDefinition;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
@@ -290,10 +290,6 @@ public class ActionbarFactoryTest extends MgnlTestCase {
             return actionDefinitions.get(actionName).getLabel();
         }
 
-        @Override
-        public void setFullScreen(boolean fullscreen) {
-
-        }
     }
 
 }

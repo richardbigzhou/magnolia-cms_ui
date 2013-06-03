@@ -39,6 +39,8 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
+import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
@@ -49,6 +51,8 @@ import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+
+import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,14 +74,17 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
 
     protected WorkbenchDefinition workbenchDefinition;
 
+    protected String viewTypeName;
+
     private String selectedItemId;
 
     // CONTENT PRESENTER
 
     @Override
-    public ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus) {
+    public ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName) {
         this.workbenchDefinition = workbenchDefinition;
         this.eventBus = eventBus;
+        this.viewTypeName = viewTypeName;
         return null;
     }
 
@@ -140,6 +147,19 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
         } else {
             log.warn("Got null com.vaadin.data.Item. No event will be fired.");
         }
+    }
+
+    protected Iterator<ColumnDefinition> getColumnsIterator() {
+        Iterator<ColumnDefinition> it = null;
+        Iterator<ContentPresenterDefinition> viewsIterator = workbenchDefinition.getContentViews().iterator();
+        while (viewsIterator.hasNext()) {
+            ContentPresenterDefinition contentView = viewsIterator.next();
+            if (contentView.getViewType().getText().equals(viewTypeName)) {
+                it = contentView.getColumns().iterator();
+                break;
+            }
+        }
+        return it;
     }
 
     @Override

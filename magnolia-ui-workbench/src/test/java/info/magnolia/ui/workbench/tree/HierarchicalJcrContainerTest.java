@@ -40,9 +40,11 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.container.AbstractJcrContainerTest;
+import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
@@ -88,6 +90,10 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         configuredWorkbench.setWorkspace(WORKSPACE);
         configuredWorkbench.setPath("/");
 
+        // Add view
+        ConfiguredContentPresenterDefinition contentView = new TreePresenterDefinition();
+        configuredWorkbench.addContentView(contentView);
+
 
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
         colDef1.setSortable(true);
@@ -98,8 +104,8 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         colDef2.setName(PROPERTY_2);
         colDef2.setLabel("Label_" + PROPERTY_2);
 
-        configuredWorkbench.addColumn(colDef1);
-        configuredWorkbench.addColumn(colDef2);
+        contentView.addColumn(colDef1);
+        contentView.addColumn(colDef2);
 
         NodeTypeDefinition nodeTypeDefinition = new ConfiguredNodeTypeDefinition();
         ((ConfiguredNodeTypeDefinition) nodeTypeDefinition).setName(NodeTypes.Content.NAME);
@@ -107,7 +113,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         workbenchDefinition = configuredWorkbench;
 
-        hierarchicalJcrContainer = new HierarchicalJcrContainer(workbenchDefinition);
+        hierarchicalJcrContainer = new HierarchicalJcrContainer(workbenchDefinition, ViewType.TREE.getText());
 
         // Init session
         session = MgnlContext.getJCRSession(WORKSPACE);

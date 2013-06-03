@@ -54,7 +54,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.client.BrowserInfo;
@@ -165,15 +164,6 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
     protected void onLoad() {
         super.onLoad();
         fireEvent(new TabSetChangedEvent(this));
-    }
-
-    @Override
-    public void setShowActiveTabFullscreen(boolean isFullscreen) {
-        if (isFullscreen) {
-            RootPanel.get().addStyleName("fullscreen");
-        } else {
-            RootPanel.get().removeStyleName("fullscreen");
-        }
     }
 
     @Override

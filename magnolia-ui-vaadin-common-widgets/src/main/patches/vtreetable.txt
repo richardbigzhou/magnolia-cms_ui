@@ -1,5 +1,5 @@
---- k1/src/main/java/com/vaadin/client/ui/VTreeTable.java	2013-03-25 18:03:58.000000000 +0100
-+++ k2/src/main/java/com/vaadin/client/ui/VTreeTable.java	2013-03-26 15:46:24.000000000 +0100
+--- k1/src/main/java/com/vaadin/client/ui/VTreeTable.java	2013-03-06 04:00:32.000000000 +0100
++++ k2/src/main/java/com/vaadin/client/ui/VTreeTable.java	2013-05-30 15:38:31.000000000 +0200
 @@ -16,6 +16,8 @@
 
  package com.vaadin.client.ui;
@@ -135,16 +135,3 @@
          collapsedRowKey = rowKey;
          collapseRequest = true;
          client.updateVariable(paintableId, "toggleCollapsed", rowKey, true);
-@@ -903,4 +905,12 @@
-         setTotalRows(newTotalRows);
-     }
-+
-+    /**
-+     * MGNLUI-961 Disables ScrollTable's lazy-loading for trees, by preventing the client from updating pagelength
-+     * variable (should be kept to 0 on the server).
-+     */
-+    @Override
-+    public void updatePageLength() {
-+    }
-
- }

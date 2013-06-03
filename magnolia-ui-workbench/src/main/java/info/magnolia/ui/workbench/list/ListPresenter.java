@@ -64,17 +64,21 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     }
 
     @Override
-    public ListView start(WorkbenchDefinition workbench, EventBus eventBus) {
-        super.start(workbench, eventBus);
+    public ListView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName) {
+        super.start(workbench, eventBus, viewTypeName);
 
-        this.container = createContainer(workbench);
+        this.container = createContainer(workbench, viewTypeName);
         view.setListener(this);
         view.setContainer(container);
 
         // build columns
+
         List<Object> editableColumns = new ArrayList<Object>();
 
-        Iterator<ColumnDefinition> it = workbench.getColumns().iterator();
+        Iterator<ColumnDefinition> it = null;
+        // was it = = workbench.getColumns().iterator();
+        it = getColumnsIterator();
+
         while (it.hasNext()) {
             ColumnDefinition column = it.next();
 
@@ -91,7 +95,7 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
             }
 
             if (column.getFormatterClass() != null) {
-                view.setColumnFormatter(propertyId, componentProvider.newInstance(column.getFormatterClass(), column));
+                // view.setColumnFormatter(propertyId, componentProvider.newInstance(column.getFormatterClass(), column));
             }
 
             if (column.isEditable()) {
@@ -116,8 +120,8 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
         container.fireItemSetChange();
     }
 
-    protected AbstractJcrContainer createContainer(WorkbenchDefinition workbench) {
-        return new FlatJcrContainer(workbench);
+    protected AbstractJcrContainer createContainer(WorkbenchDefinition workbench, String viewTypeName) {
+        return new FlatJcrContainer(workbench, viewTypeName);
     }
 
     @Override

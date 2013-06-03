@@ -9,7 +9,7 @@
 	font-size:14px;
 	overflow:hidden;
 }
-.v-actionbar {width:50px; padding-top:24px;}
+.v-actionbar {width:36px; padding-top:24px;}
 .v-actionbar-open {width:270px; padding-top:0;}
 
 .v-actionbar.stub{
@@ -17,7 +17,11 @@
 }
 
 .v-actionbar-section {
-	padding:11px 0 10px 10px;
+	padding:11px 0 10px 0px;
+}
+
+.v-actionbar-open .v-actionbar-section {
+    padding-left: 10px;
 }
 
 .v-actionbar .v-actionbar-section-title {
@@ -40,7 +44,7 @@
 }
 
 .v-action {
-	margin-right: 10px;
+	margin-right: 5px;
 	height: 25px;
 	text-indent: 33px;
 	overflow: hidden;
@@ -86,7 +90,7 @@
     height:1em;
     padding:10px;
 	background-image:url("img/actionbar-toggle-open.png");
-	background-position:center center;
+	background-position:11px center;
 	background-repeat:no-repeat;
 }
 
@@ -97,22 +101,11 @@
 	display:none;
 }
 
-.v-actionbar-fullscreen {
-    position:absolute;
-	bottom:0;
-    right:0;
-    padding:10px;
-    font-size:20px;
-    height:1em;
-    line-height:1;
-    cursor:pointer;
-}
-
 .v-actionbar-section.preview {
     position:absolute;
     left:0;
     right:0;
-	bottom:40px;
+	bottom:0px;
     display:block;
     max-height:184px;
     overflow:hidden;
@@ -121,7 +114,21 @@
 	padding-right:14px;
 	background-color:$c91;
 	text-align:center;
+	height: 200px;
+	line-height: 200px;
 }
+
+.preview h3 {
+    position: absolute;
+    top: -85px;
+}
+
+.preview img {
+    vertical-align: middle;
+    max-height: 200px;
+    max-width: 240px;
+}
+
 .v-actionbar .v-actionbar-section.preview {display:none;}
 .v-actionbar-open .v-actionbar-section.preview {display:block;}
 
@@ -207,8 +214,6 @@
 	width:20px;
 	height:20px;
 }
-
-.tablet .v-actionbar-fullscreen {right:30px; margin-top:2px;}
 
 .tablet .v-action.flyout {
 	background-image: url("img/actionbar-tablet-flyout-toggle-open.png");

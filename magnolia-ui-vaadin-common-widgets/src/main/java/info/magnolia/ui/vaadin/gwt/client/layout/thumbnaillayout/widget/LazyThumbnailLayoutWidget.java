@@ -33,11 +33,9 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.widget;
 
-import info.magnolia.ui.vaadin.gwt.client.icon.widget.IconWidget;
 import info.magnolia.ui.vaadin.gwt.client.layout.CssRule;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.connector.LazyThumbnailLayoutConnector.ThumbnailService;
 import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.shared.ThumbnailData;
-import info.magnolia.ui.vaadin.gwt.client.mgwt.SliderClientBundle;
 import info.magnolia.ui.vaadin.gwt.client.pinch.MagnoliaPinchMoveEvent;
 import info.magnolia.ui.vaadin.gwt.client.pinch.MagnoliaPinchRecognizer;
 
@@ -45,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ScrollEvent;
@@ -59,7 +56,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.googlecode.mgwt.dom.client.recognizer.pinch.UIObjectToOffsetProvider;
 import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapRecognizer;
-import com.googlecode.mgwt.ui.client.widget.MSlider;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.client.ComputedStyle;
 import com.vaadin.client.ServerConnector;
@@ -90,9 +86,7 @@ public class LazyThumbnailLayoutWidget extends FlowPanel {
 
     private final ScrollPanel scroller = new ScrollPanel();
 
-    private final SliderClientBundle thumbnailBundle = GWT.create(SliderClientBundle.class);
-
-    private final MSlider thumbnailSizeSlider = new MSlider(thumbnailBundle.css());
+    private final Slider thumbnailSizeSlider = new Slider();
 
     private final CssRule thumbnailImageStyle = CssRule.create(".thumbnail-image");
 
@@ -106,26 +100,13 @@ public class LazyThumbnailLayoutWidget extends FlowPanel {
 
         addStyleName("thumbnail-layout");
 
-        thumbnailSizeSlider.setWidth("125px");
-        IconWidget iconSizeSmall = new IconWidget();
-        iconSizeSmall.setIconName("slider-min");
-        iconSizeSmall.setSize(30);
-        iconSizeSmall.setColor("#aaaaaa");
-
-        IconWidget iconSizeLarge = new IconWidget();
-        iconSizeLarge.setIconName("slider-max");
-        iconSizeLarge.setSize(30);
-        iconSizeLarge.setColor("#aaaaaa");
-
         thumbnailStyle.setProperty("margin", "3px");
 
         scroller.setWidget(imageContainer);
         scroller.addStyleName("thumbnail-scroller");
         scroller.getElement().getStyle().setPosition(Position.ABSOLUTE);
 
-        add(iconSizeSmall);
         add(thumbnailSizeSlider);
-        add(iconSizeLarge);
         add(scroller);
 
         bindHandlers();

@@ -40,14 +40,14 @@ import info.magnolia.ui.form.field.property.MultiValueHandler;
  */
 public class SaveModeType {
 
-    private Class<? extends MultiValueHandler> multiPropertyDelegateClass;
+    private Class<? extends MultiValueHandler> multiValueHandlerClass;
 
-    public Class<? extends MultiValueHandler> getMultiPropertyDelegateClass() {
-        return multiPropertyDelegateClass;
+    public Class<? extends MultiValueHandler> getMultiValueHandlerClass() {
+        return multiValueHandlerClass;
     }
 
-    public void setMultiPropertyDelegateClass(Class<? extends MultiValueHandler> multiPropertyDelegateClass) {
-        this.multiPropertyDelegateClass = multiPropertyDelegateClass;
+    public void setMultiValueHandlerClass(Class<? extends MultiValueHandler> multiValueHandlerClass) {
+        this.multiValueHandlerClass = multiValueHandlerClass;
     }
 
 }

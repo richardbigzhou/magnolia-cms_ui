@@ -45,7 +45,7 @@ import com.vaadin.data.Container;
 public interface ContentPresenter {
 
 
-    ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus);
+    ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName);
 
     Container getContainer();
 

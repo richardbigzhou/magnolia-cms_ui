@@ -86,11 +86,11 @@ public interface ActionbarWidgetView extends HasWidgets, IsWidget {
 
         void triggerAction(String actionToken);
 
-        void changeFullScreen(boolean isFullScreen);
-
         void forceLayout();
 
         void setOpened(boolean opened);
+
+        boolean isDeviceTablet();
 
         String getIconResourceURL(String actionName);
     }

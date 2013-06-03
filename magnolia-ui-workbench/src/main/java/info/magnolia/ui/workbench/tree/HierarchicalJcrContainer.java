@@ -81,8 +81,8 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         }
     }
 
-    public HierarchicalJcrContainer(WorkbenchDefinition workbenchDefinition) {
-        super(workbenchDefinition);
+    public HierarchicalJcrContainer(WorkbenchDefinition workbenchDefinition, String viewTypeName) {
+        super(workbenchDefinition, viewTypeName);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.widget.dnd;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
 
-import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar;
-
-import com.google.gwt.core.client.GWT;
-import com.google.web.bindery.event.shared.EventBus;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * DragAndDrop.
+ * FullScreenEvent is used to communicate that the fullscreen mode should be changed.
  */
-public abstract class DragAndDrop {
+public class FullScreenEvent extends GwtEvent<FullScreenEvent.Handler> {
 
-    private static final DragAndDropImpl dndImpl = GWT.create(DragAndDropImpl.class);
+    /**
+     * Handler of the {@link FullScreenEvent}.
+     */
+    public interface Handler extends EventHandler {
+        void onChangeFullScreen(final FullScreenEvent event);
+    }
 
-    public static void dragAndDrop(EventBus eventBus, final ComponentBar abstractBar) {
-        dndImpl.dragAndDrop(eventBus, abstractBar);
+    public static final Type<Handler> TYPE = new Type<Handler>();
+
+    private final boolean isFullScreen;
+
+    public FullScreenEvent(boolean isFullScreen) {
+        this.isFullScreen = isFullScreen;
+    }
+
+    public boolean getIsFullScreen() {
+        return isFullScreen;
+    }
+
+    @Override
+    protected void dispatch(Handler handler) {
+        handler.onChangeFullScreen(this);
+    }
+
+    @Override
+    public GwtEvent.Type<Handler> getAssociatedType() {
+        return TYPE;
     }
 }

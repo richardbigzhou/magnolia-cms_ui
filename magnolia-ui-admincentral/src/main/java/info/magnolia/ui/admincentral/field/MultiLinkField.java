@@ -52,12 +52,13 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.converter.Converter;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
-import com.vaadin.ui.Field;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeButton;
@@ -95,12 +96,17 @@ public class MultiLinkField extends CustomField<List> {
         this.allowChangesOnSelected = allowChangesOnSelected;
     }
 
+    /**
+     * Initialize the basic component.<br>
+     * - Root layout (contains all fields)<br>
+     * - Add button (add a single linkField)<br>
+     * - Add linkField for already stored values (initFields)
+     */
     @Override
     protected Component initContent() {
         addStyleName("linkfield");
         root = new VerticalLayout();
-        root.setSizeFull();
-        root.setSpacing(true);
+        root.setSizeUndefined();
 
         addButton.setCaption(buttonCaptionAdd);
         addButton.addStyleName("magnoliabutton");
@@ -129,8 +135,8 @@ public class MultiLinkField extends CustomField<List> {
     private Property.ValueChangeListener selectionListener = new ValueChangeListener() {
         @Override
         public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
-            List<String> newValue = updateValue(root);
-            setValue(newValue);
+            List<String> currentValues = getCurrentValues(root);
+            setValue(currentValues);
         }
     };
 
@@ -139,7 +145,7 @@ public class MultiLinkField extends CustomField<List> {
      */
     private void initFields() {
         List<String> newValue = (List<String>) getPropertyDataSource().getValue();
-        List<String> currentValues = updateValue(root);
+        List<String> currentValues = getCurrentValues(root);
         Iterator<String> it = newValue.iterator();
         while (it.hasNext()) {
             String entry = it.next();
@@ -152,15 +158,15 @@ public class MultiLinkField extends CustomField<List> {
     /**
      * Retrieve the Values stored into the text field.
      */
-    private List<String> updateValue(HasComponents root) {
+    private List<String> getCurrentValues(HasComponents root) {
         Iterator<Component> it = root.iterator();
         List<String> newValue = new ArrayList<String>();
         while (it.hasNext()) {
             Component c = it.next();
-            if (c instanceof Field) {
-                newValue.add(String.valueOf(((Field) c).getValue()));
+            if (c instanceof AbstractField) {
+                newValue.add(String.valueOf(((AbstractField<?>) c).getConvertedValue()));
             } else if (c instanceof HasComponents) {
-                newValue.addAll(updateValue((HasComponents) c));
+                newValue.addAll(getCurrentValues((HasComponents) c));
             }
         }
         return newValue;
@@ -174,6 +180,7 @@ public class MultiLinkField extends CustomField<List> {
      */
     private Component createSelectCompoment(String entry) {
         HorizontalLayout layout = new HorizontalLayout();
+        // Create a single LinkFild and set DataSource and ValueChangeListener.
         LinkField linkField = new LinkField(converter, buttonCaptionNew, buttonCaptionOther, allowChangesOnSelected);
         final Button selectButton = linkField.getSelectButton();
         if (StringUtils.isNotBlank(dialogName) || StringUtils.isNotBlank(appName)) {
@@ -181,19 +188,18 @@ public class MultiLinkField extends CustomField<List> {
         } else {
             selectButton.setCaption("No Target App Configured");
         }
-
         layout.addComponent(linkField);
-        linkField.setValue(entry);
+        linkField.setPropertyDataSource(new ObjectProperty<String>(entry));
         linkField.addValueChangeListener(selectionListener);
-
+        // Delete Button
         Button deleteButton = new Button();
         deleteButton.setHtmlContentAllowed(true);
         deleteButton.setCaption("<span class=\"" + "icon-trash" + "\"></span>");
-        deleteButton.addStyleName("inline");
+        deleteButton.addStyleName("remove");
         deleteButton.setDescription("Remove");
         deleteButton.addClickListener(removeButtonClickListener(layout));
-
         layout.addComponent(deleteButton);
+
         return layout;
     }
 
@@ -205,7 +211,7 @@ public class MultiLinkField extends CustomField<List> {
             @Override
             public void buttonClick(ClickEvent event) {
                 root.removeComponent(layout);
-                setValue(updateValue(root));
+                setValue(getCurrentValues(root));
             };
         };
     }

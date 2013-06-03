@@ -41,6 +41,8 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingPropertyImpl;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
@@ -64,7 +66,7 @@ import com.vaadin.server.ClientConnector;
 /**
  * Implementation of {@link MediaEditorPresenter}.
  */
-public class MediaEditorPresenterImpl implements MediaEditorPresenter, ActionbarPresenter.Listener, MediaEditorInternalEvent.Handler {
+public class MediaEditorPresenterImpl implements MediaEditorPresenter, ActionbarPresenter.Listener, MediaEditorInternalEvent.Handler, EditHistoryTrackingProperty.Listener {
 
     private Logger log = Logger.getLogger(getClass());
     private MediaEditorView view;
@@ -107,12 +109,16 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     public View start(final InputStream stream) {
         try {
             final ActionbarView actionbar = actionbarPresenter.start(definition.getActionBar());
-            dataSource = new EditHistoryTrackingPropertyImpl(IOUtils.toByteArray(stream));
+            this.dataSource = new EditHistoryTrackingPropertyImpl(IOUtils.toByteArray(stream));
+            this.dataSource.setListener(this);
             view.setActionBar(actionbar);
             switchToDefaultMode();
             return view;
         } catch (IOException e) {
+            errorOccurred("Error occurred while editing media: ", e);
             log.error("Error occurred while editing media: " + e.getMessage(), e);
+        } finally {
+            IOUtils.closeQuietly(stream);
         }
         return null;
     }
@@ -173,16 +179,6 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     }
 
     @Override
-    public void setFullScreen(boolean fullscreen) {
-        if (fullscreen) {
-            appContext.enterFullScreenMode();
-        } else {
-            appContext.exitFullScreenMode();
-        }
-
-    }
-
-    @Override
     public MediaEditorDefinition getDefinition() {
         return definition;
     }
@@ -204,7 +200,14 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
         try {
             actionExecutor.execute(actionName, this, view, dataSource);
         } catch (ActionExecutionException e) {
+            errorOccurred("Failed to execute media editor action ", e);
             log.warn("Unable to execute action [" + actionName + "]", e);
         }
+    }
+
+    @Override
+    public void errorOccurred(String message, Throwable e) {
+        Message error = new Message(MessageType.ERROR, message, e.getMessage());
+        appContext.sendLocalMessage(error);
     }
 }

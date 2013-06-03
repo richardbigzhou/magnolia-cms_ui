@@ -33,10 +33,7 @@
  */
 package info.magnolia.ui.framework.action;
 
-import info.magnolia.module.ModuleRegistry;
 import info.magnolia.ui.api.action.CommandActionDefinition;
-
-import javax.inject.Inject;
 
 /**
  * Activation action definition. By default performs a non-recursive activation.
@@ -45,14 +42,27 @@ import javax.inject.Inject;
  */
 public class ActivationActionDefinition extends CommandActionDefinition {
 
+    private static final String MESSAGE_KEY_SUCCESS = "action.activation.success";
+    private static final String MESSAGE_KEY_FAILURE = "action.activation.failure";
+    private static final String MESSAGE_KEY_ERROR = "action.activation.error";
+
+    private static final String MESSAGE_KEY_WORKFLOW_SUCCESS = "action.activation.workflow.success";
+    private static final String MESSAGE_KEY_WORKFLOW_FAILURE = "action.activation.workflow.failure";
+    private static final String MESSAGE_KEY_WORKFLOW_ERROR = "action.activation.workflow.error";
+
     private boolean recursive = false;
+    private String workflowSuccessMessage;
+    private String workflowFailureMessage;
+    private String workflowErrorMessage;
 
-    private ModuleRegistry moduleRegistry;
-
-    @Inject
-    public ActivationActionDefinition(ModuleRegistry moduleRegistry) {
-        this.moduleRegistry = moduleRegistry;
+    public ActivationActionDefinition() {
         setImplementationClass(ActivationAction.class);
+        setSuccessMessage(MESSAGE_KEY_SUCCESS);
+        setFailureMessage(MESSAGE_KEY_FAILURE);
+        setErrorMessage(MESSAGE_KEY_ERROR);
+        setWorkflowSuccessMessage(MESSAGE_KEY_WORKFLOW_SUCCESS);
+        setWorkflowFailureMessage(MESSAGE_KEY_WORKFLOW_FAILURE);
+        setWorkflowErrorMessage(MESSAGE_KEY_WORKFLOW_ERROR);
     }
 
     public void setRecursive(boolean recursive) {
@@ -63,29 +73,27 @@ public class ActivationActionDefinition extends CommandActionDefinition {
         return recursive;
     }
 
-    @Override
-    public String getSuccessMessage() {
-        if (isWorkflowInstalled()) {
-            return "The workflow has been started.";
-        }
-        return "Activation has been started.";
+    public String getWorkflowSuccessMessage() {
+        return workflowSuccessMessage;
     }
 
-    @Override
-    public String getFailureMessage() {
-        if (isWorkflowInstalled()) {
-            return "The workflow could not be launched.";
-        }
-        return "Activation has failed.";
+    public void setWorkflowSuccessMessage(String workflowSuccessMessage) {
+        this.workflowSuccessMessage = workflowSuccessMessage;
     }
 
-    @Override
-    public String getErrorMessage() {
-        return "Activation failed. Please contact the system administrator for assistance.";
+    public String getWorkflowFailureMessage() {
+        return workflowFailureMessage;
     }
 
-    private boolean isWorkflowInstalled() {
-        return moduleRegistry.isModuleRegistered("workflow-base");
+    public void setWorkflowFailureMessage(String workflowFailureMessage) {
+        this.workflowFailureMessage = workflowFailureMessage;
     }
 
+    public String getWorkflowErrorMessage() {
+        return workflowErrorMessage;
+    }
+
+    public void setWorkflowErrorMessage(String workflowErrorMessage) {
+        this.workflowErrorMessage = workflowErrorMessage;
+    }
 }

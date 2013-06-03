@@ -41,13 +41,18 @@ import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
  */
 public interface PageEditorListener {
 
-    static final String EDIT_ELEMENT = "editElement";
-    static final String ADD_COMPONENT = "addComponent";
-    static final String ADD_AREA = "addArea";
+    static final String ACTION_EDIT_ELEMENT = "editElement";
+    static final String ACTION_ADD_COMPONENT = "addComponent";
+    static final String ACTION_ADD_AREA = "addArea";
+    static final String ACTION_SORT_COMPONENT = "sortComponent";
+    static final String ACTION_START_MOVE_COMPONENT = "startMoveComponent";
+    static final String ACTION_STOP_MOVE_COMPONENT = "stopMoveComponent";
+
+    // only used server side,
+    static final String ACTION_CANCEL_MOVE_COMPONENT =  "cancelMoveComponent";
+    static final String ACTION_DELETE_COMPONENT = "deleteComponent";
 
     void onElementSelect(AbstractElement nodeSelection);
 
-    void onAction(String actionName, AbstractElement element);
-
-    void sortComponent(String workspace, String parentPath, String source, String target, String order);
+    void onAction(String actionName, Object... args);
 }

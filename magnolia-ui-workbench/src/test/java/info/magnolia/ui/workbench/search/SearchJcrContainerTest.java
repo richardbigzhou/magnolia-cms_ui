@@ -37,7 +37,9 @@ import static org.junit.Assert.assertEquals;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
+import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 
 import javax.jcr.Session;
@@ -63,7 +65,12 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         configuredWorkbench = new ConfiguredWorkbenchDefinition();
         configuredWorkbench.setWorkspace(workspace);
         configuredWorkbench.setPath("/");
-        // Init col
+
+        // Add view
+        ConfiguredContentPresenterDefinition contentView = new SearchPresenterDefinition();
+        configuredWorkbench.addContentView(contentView);
+
+        // Add columns
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
         colDef1.setSortable(true);
         colDef1.setName(colName1);
@@ -73,10 +80,10 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         colDef2.setName(colName2);
         colDef2.setLabel("Label_" + colName2);
 
-        configuredWorkbench.addColumn(colDef1);
-        configuredWorkbench.addColumn(colDef2);
+        contentView.addColumn(colDef1);
+        contentView.addColumn(colDef2);
 
-        jcrContainer = new SearchJcrContainer(configuredWorkbench);
+        jcrContainer = new SearchJcrContainer(configuredWorkbench, ViewType.SEARCH.getText());
 
         // Init session
         session = MgnlContext.getJCRSession(workspace);

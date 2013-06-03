@@ -2793,7 +2793,7 @@
                 <sv:value>superuser</sv:value>
               </sv:property>
             </sv:node>
-            <sv:node sv:name="moveComponent">
+            <sv:node sv:name="startMoveComponent">
               <sv:property sv:name="jcr:primaryType" sv:type="Name">
                 <sv:value>mgnl:contentNode</sv:value>
               </sv:property>
@@ -2814,6 +2814,32 @@
               </sv:property>
               <sv:property sv:name="mgnl:lastModified" sv:type="Date">
                 <sv:value>2013-02-27T17:35:10.618+01:00</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+                <sv:value>superuser</sv:value>
+              </sv:property>
+            </sv:node>
+            <sv:node sv:name="cancelMoveComponent">
+              <sv:property sv:name="jcr:primaryType" sv:type="Name">
+                <sv:value>mgnl:contentNode</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+                <sv:value>mix:lockable</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:uuid" sv:type="String">
+                <sv:value>d3f4d023-7795-4884-b282-bdc03866100f</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:created" sv:type="Date">
+                <sv:value>2013-05-27T12:28:13.647+02:00</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:createdBy" sv:type="String">
+                <sv:value>admin</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:created" sv:type="Date">
+                <sv:value>2013-02-27T17:34:53.229+01:00</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+                <sv:value>2013-05-28T15:05:54.841+02:00</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
                 <sv:value>superuser</sv:value>

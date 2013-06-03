@@ -91,7 +91,7 @@ public class ContentPresenterTest {
     public void testOnItemSelectionFiresOnEventBus() {
         // GIVEN
         final AbstractContentPresenter presenter = new DummyContentPresenter();
-        presenter.start(workbench, eventBus);
+        presenter.start(workbench, eventBus, "");
         // WHEN
         presenter.onItemSelection(item);
 
@@ -106,7 +106,7 @@ public class ContentPresenterTest {
     public void testOnDoubleClickFiresOnEventBus() {
         // GIVEN
         final AbstractContentPresenter presenter = new DummyContentPresenter();
-        presenter.start(workbench, eventBus);
+        presenter.start(workbench, eventBus, "");
 
         // WHEN
         presenter.onDoubleClick(item);
@@ -122,7 +122,7 @@ public class ContentPresenterTest {
     public void testOnItemSelectionWithNullItemSetSelectedPath() {
         // GIVEN
         AbstractContentPresenter presenter = new DummyContentPresenter();
-        presenter.start(workbench, eventBus);
+        presenter.start(workbench, eventBus, "");
 
         // WHEN
         presenter.onItemSelection(null);

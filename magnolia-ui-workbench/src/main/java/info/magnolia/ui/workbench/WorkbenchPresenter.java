@@ -38,9 +38,9 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
@@ -120,7 +120,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                     presenter = componentProvider.newInstance(presenterClass);
                 }
                 contentPresenters.put(presenterDefinition.getViewType().getText(), presenter);
-                ContentView contentView = presenter.start(workbenchDefinition, eventBus);
+                ContentView contentView = presenter.start(workbenchDefinition, eventBus, presenterDefinition.getViewType().getText());
                 if (presenterDefinition.isActive()) {
                     activePresenter = presenter;
                     try {

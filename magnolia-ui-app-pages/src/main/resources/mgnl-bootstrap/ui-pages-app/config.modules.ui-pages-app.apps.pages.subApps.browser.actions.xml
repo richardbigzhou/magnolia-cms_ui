@@ -10,7 +10,7 @@
     <sv:value>10205fcf-2a4b-42da-9d3c-c97d8641d353</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:created" sv:type="Date">
-    <sv:value>2013-05-22T11:04:42.999+02:00</sv:value>
+    <sv:value>2013-05-29T17:21:45.005+02:00</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
@@ -44,7 +44,7 @@
       <sv:value>icon-add-item</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-22T11:04:43.000+02:00</sv:value>
+      <sv:value>2013-05-29T17:21:45.006+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -75,7 +75,7 @@
         <sv:value>e1408867-84e3-4aab-993d-c2911d2054df</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-22T14:58:10.265+02:00</sv:value>
+        <sv:value>2013-05-29T17:21:45.007+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -120,7 +120,7 @@
       <sv:value>icon-delete</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-22T11:04:43.001+02:00</sv:value>
+      <sv:value>2013-05-29T17:21:45.008+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -145,7 +145,7 @@
         <sv:value>5debd4b5-d968-414f-98fb-54f8d7d91f8a</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-22T16:38:42.323+02:00</sv:value>
+        <sv:value>2013-05-29T17:21:45.010+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -184,7 +184,7 @@
       <sv:value>icon-view</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-22T11:04:43.002+02:00</sv:value>
+      <sv:value>2013-05-29T17:21:45.011+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -209,7 +209,7 @@
         <sv:value>016b6c12-bc5d-4b99-9204-ae5254fc5345</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-22T16:38:42.323+02:00</sv:value>
+        <sv:value>2013-05-29T17:21:45.012+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -248,7 +248,7 @@
       <sv:value>icon-edit</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-22T11:04:43.003+02:00</sv:value>
+      <sv:value>2013-05-29T17:21:45.014+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -273,7 +273,7 @@
         <sv:value>bc106ad6-b6d0-4f25-8965-c595c2149ec6</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-22T16:38:42.323+02:00</sv:value>
+        <sv:value>2013-05-29T17:21:45.015+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -312,7 +312,7 @@
       <sv:value>icon-move</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-22T11:04:43.004+02:00</sv:value>
+      <sv:value>2013-05-29T17:21:45.016+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -337,7 +337,7 @@
         <sv:value>9311ca40-cbd3-451b-b8dd-fa34d010d828</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-22T16:38:42.323+02:00</sv:value>
+        <sv:value>2013-05-29T17:21:45.017+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -376,7 +376,7 @@
       <sv:value>icon-duplicate</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-22T11:04:43.004+02:00</sv:value>
+      <sv:value>2013-05-29T17:21:45.018+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -401,7 +401,7 @@
         <sv:value>bbb00e8e-a02d-425b-9115-73ea66dd4552</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-22T16:38:42.323+02:00</sv:value>
+        <sv:value>2013-05-29T17:21:45.019+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -446,7 +446,7 @@
       <sv:value>icon-publish</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-22T11:04:43.005+02:00</sv:value>
+      <sv:value>2013-05-29T17:21:45.032+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -487,7 +487,7 @@
       <sv:value>icon-publish-incl-sub</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-22T11:04:43.006+02:00</sv:value>
+      <sv:value>2013-05-29T17:21:45.034+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -515,7 +515,7 @@
         <sv:value>f7d5c28b-f32b-4428-9680-d1aa6330c75f</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-22T14:59:05.897+02:00</sv:value>
+        <sv:value>2013-05-29T17:21:45.035+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -560,7 +560,7 @@
       <sv:value>icon-unpublish</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-22T11:04:43.007+02:00</sv:value>
+      <sv:value>2013-05-29T17:21:45.035+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -585,7 +585,7 @@
         <sv:value>8d121b45-18f7-4306-b433-30b23d58c185</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:created" sv:type="Date">
-        <sv:value>2013-05-22T16:38:42.323+02:00</sv:value>
+        <sv:value>2013-05-29T17:21:45.036+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -624,7 +624,7 @@
       <sv:value>icon-undo</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-22T11:04:43.008+02:00</sv:value>
+      <sv:value>2013-05-29T17:21:45.038+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -659,7 +659,7 @@
       <sv:value>icon-view</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-22T11:04:43.009+02:00</sv:value>
+      <sv:value>2013-05-29T17:21:45.039+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -700,7 +700,7 @@
       <sv:value>icon-publish</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-22T11:04:43.005+02:00</sv:value>
+      <sv:value>2013-05-29T17:21:45.041+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -716,6 +716,91 @@
     </sv:property>
     <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
       <sv:value>superuser</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="export">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>mgnl:contentNode</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+      <sv:value>mix:lockable</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:uuid" sv:type="String">
+      <sv:value>929c097b-e521-4068-ab09-66ad7b35f072</sv:value>
+    </sv:property>
+    <sv:property sv:name="class" sv:type="String">
+      <sv:value>info.magnolia.ui.framework.action.ExportActionDefinition</sv:value>
+    </sv:property>
+    <sv:property sv:name="command" sv:type="String">
+      <sv:value>export</sv:value>
+    </sv:property>
+    <sv:property sv:name="icon" sv:type="String">
+      <sv:value>icon-export</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-05-29T17:21:44.126+02:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:createdBy" sv:type="String">
+      <sv:value>admin</sv:value>
+    </sv:property>
+    <sv:property sv:name="label" sv:type="String">
+      <sv:value>Export</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
+      <sv:value>false</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:created" sv:type="Date">
+      <sv:value>2010-09-08T15:02:53.617+02:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+      <sv:value>2013-05-29T18:02:04.754+02:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+      <sv:value>superuser</sv:value>
+    </sv:property>
+  </sv:node>
+  <sv:node sv:name="import">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>mgnl:contentNode</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+      <sv:value>mix:lockable</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:uuid" sv:type="String">
+      <sv:value>59481ebf-b4b5-433b-a79a-52b403b863c0</sv:value>
+    </sv:property>
+    <sv:property sv:name="class" sv:type="String">
+      <sv:value>info.magnolia.ui.framework.action.OpenCreateDialogActionDefinition</sv:value>
+    </sv:property>
+    <sv:property sv:name="dialogName" sv:type="String">
+      <sv:value>ui-admincentral:import</sv:value>
+    </sv:property>
+    <sv:property sv:name="icon" sv:type="String">
+      <sv:value>icon-import</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-05-29T17:21:44.127+02:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:createdBy" sv:type="String">
+      <sv:value>admin</sv:value>
+    </sv:property>
+    <sv:property sv:name="label" sv:type="String">
+      <sv:value>Import</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
+      <sv:value>false</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:created" sv:type="Date">
+      <sv:value>2010-09-08T15:02:53.617+02:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+      <sv:value>2013-05-29T18:02:14.443+02:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+      <sv:value>superuser</sv:value>
+    </sv:property>
+    <sv:property sv:name="name" sv:type="String">
+      <sv:value>import</sv:value>
     </sv:property>
   </sv:node>
 </sv:node>

@@ -33,10 +33,12 @@
  */
 package info.magnolia.ui.framework.action;
 
+import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.module.ModuleRegistry;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
@@ -58,23 +60,22 @@ import org.apache.commons.lang.StringUtils;
 public class DeactivationAction extends AbstractCommandAction<DeactivationActionDefinition> {
 
     private final AbstractJcrNodeAdapter jcrNodeAdapter;
-
     private final EventBus eventBus;
-
     private final UiContext uiContext;
+    private ModuleRegistry moduleRegistry;
 
     @Inject
-    public DeactivationAction(final DeactivationActionDefinition definition, final JcrItemAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, SubAppContext uiContext) {
+    public DeactivationAction(final DeactivationActionDefinition definition, final JcrItemAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, SubAppContext uiContext, ModuleRegistry moduleRegistry) {
         super(definition, item, commandsManager, uiContext);
         this.jcrNodeAdapter = (AbstractJcrNodeAdapter) item;
         this.eventBus = eventBus;
         this.uiContext = uiContext;
+        this.moduleRegistry = moduleRegistry;
     }
-
 
     @Override
     protected void onError(Exception e) {
-        uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, getDefinition().getErrorMessage());
+        uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesManager.get(isWorkflowInstalled() ? getDefinition().getWorkflowErrorMessage() : getDefinition().getErrorMessage()));
     }
 
     @Override
@@ -82,21 +83,24 @@ public class DeactivationAction extends AbstractCommandAction<DeactivationAction
         eventBus.fireEvent(new ContentChangedEvent(jcrNodeAdapter.getWorkspace(), jcrNodeAdapter.getItemId()));
 
         // Display a notification
-
         Context context = MgnlContext.getInstance();
         boolean result = (Boolean) context.getAttribute(COMMAND_RESULT);
         String message;
         MessageStyleTypeEnum messageStyleType;
         if (!result) {
-            message = getDefinition().getSuccessMessage();
+            message = MessagesManager.get(isWorkflowInstalled() ? getDefinition().getWorkflowSuccessMessage() : getDefinition().getSuccessMessage());
             messageStyleType = MessageStyleTypeEnum.INFO;
         } else {
-            message = getDefinition().getFailureMessage();
+            message = MessagesManager.get(isWorkflowInstalled() ? getDefinition().getWorkflowFailureMessage() : getDefinition().getFailureMessage());
             messageStyleType = MessageStyleTypeEnum.ERROR;
         }
 
         if (StringUtils.isNotBlank(message)) {
             uiContext.openNotification(messageStyleType, true, message);
         }
+    }
+
+    private boolean isWorkflowInstalled() {
+        return moduleRegistry.isModuleRegistered("workflow-base");
     }
 }

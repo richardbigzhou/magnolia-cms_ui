@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.workbench.definition;
 
-import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
@@ -55,8 +54,6 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
     private String defaultOrder;
 
     private List<NodeTypeDefinition> nodeTypes = new ArrayList<NodeTypeDefinition>();
-
-    private List<ColumnDefinition> columns = new ArrayList<ColumnDefinition>();
 
     private boolean dialogWorkbench = false;
 
@@ -125,19 +122,6 @@ public class ConfiguredWorkbenchDefinition implements WorkbenchDefinition {
 
     public void setPath(String path) {
         this.path = path;
-    }
-
-    @Override
-    public List<ColumnDefinition> getColumns() {
-        return columns;
-    }
-
-    public void addColumn(ColumnDefinition columnDefinition) {
-        columns.add(columnDefinition);
-    }
-
-    public void setColumns(List<ColumnDefinition> columns) {
-        this.columns = columns;
     }
 
     @Override

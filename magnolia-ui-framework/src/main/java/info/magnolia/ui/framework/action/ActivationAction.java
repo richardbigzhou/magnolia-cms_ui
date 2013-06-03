@@ -34,10 +34,12 @@
 package info.magnolia.ui.framework.action;
 
 import info.magnolia.cms.exchange.ExchangeException;
+import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.module.ModuleRegistry;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
@@ -64,13 +66,15 @@ public class ActivationAction extends AbstractCommandAction<ActivationActionDefi
 
     private final EventBus admincentralEventBus;
     private final UiContext uiContext;
+    private ModuleRegistry moduleRegistry;
 
     @Inject
-    public ActivationAction(final ActivationActionDefinition definition, final JcrItemAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, SubAppContext uiContext) {
+    public ActivationAction(final ActivationActionDefinition definition, final JcrItemAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, SubAppContext uiContext, ModuleRegistry moduleRegistry) {
         super(definition, item, commandsManager, uiContext);
         this.jcrItemAdapter = item;
         this.admincentralEventBus = admincentralEventBus;
         this.uiContext = uiContext;
+        this.moduleRegistry = moduleRegistry;
     }
 
     @Override
@@ -87,7 +91,7 @@ public class ActivationAction extends AbstractCommandAction<ActivationActionDefi
             errorMessage = e.getCause().getLocalizedMessage();
             errorMessage = StringUtils.substring(errorMessage, StringUtils.indexOf(errorMessage, "error detected:"));
         } else {
-            errorMessage = getDefinition().getErrorMessage();
+            errorMessage = MessagesManager.get(isWorkflowInstalled() ? getDefinition().getWorkflowErrorMessage() : getDefinition().getErrorMessage());
         }
         uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, errorMessage);
     }
@@ -102,16 +106,19 @@ public class ActivationAction extends AbstractCommandAction<ActivationActionDefi
         String message;
         MessageStyleTypeEnum messageStyleType;
         if (!result) {
-            message = getDefinition().getSuccessMessage();
+            message = MessagesManager.get(isWorkflowInstalled() ? getDefinition().getWorkflowSuccessMessage() : getDefinition().getSuccessMessage());
             messageStyleType = MessageStyleTypeEnum.INFO;
         } else {
-            message = getDefinition().getFailureMessage();
+            message = MessagesManager.get(isWorkflowInstalled() ? getDefinition().getWorkflowFailureMessage() : getDefinition().getFailureMessage());
             messageStyleType = MessageStyleTypeEnum.ERROR;
         }
 
         if (StringUtils.isNotBlank(message)) {
             uiContext.openNotification(messageStyleType, true, message);
         }
+    }
 
+    private boolean isWorkflowInstalled() {
+        return moduleRegistry.isModuleRegistered("workflow-base");
     }
 }
