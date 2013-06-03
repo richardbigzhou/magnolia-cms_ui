@@ -145,42 +145,53 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
     }
 
     // PARTIAL UPDATES
+    // MGNLUI-282 partial updates are disabled for inplace-editing to prevent tree from turning unstable.
 
     @Override
     protected int getFirstUpdatedItemIndex() {
-        if (editingItemId != null) {
-            return indexOfId(editingItemId);
-        }
+        // if (editingItemId != null) {
+        // return indexOfId(editingItemId);
+        // }
         return super.getFirstUpdatedItemIndex();
     }
 
     @Override
     protected int getUpdatedRowCount() {
-        if (editingItemId != null) {
-            return 1;
-        }
+        // if (editingItemId != null) {
+        // return 1;
+        // }
         return super.getUpdatedRowCount();
     }
 
     @Override
     protected int getFirstAddedItemIndex() {
-        if (editingItemId != null) {
-            return 0;
-        }
+        // if (editingItemId != null) {
+        // return indexOfId(editingItemId);
+        // }
         return super.getFirstAddedItemIndex();
     }
 
     @Override
     protected int getAddedRowCount() {
-        if (editingItemId != null) {
-            return 0;
-        }
+        // if (editingItemId != null) {
+        // return 0;
+        // }
         return super.getAddedRowCount();
     }
 
     @Override
+    protected boolean shouldHideAddedRows() {
+        // if (editingItemId != null) {
+        // return false;
+        // }
+        return super.shouldHideAddedRows();
+    }
+
+    @Override
     protected boolean isPartialRowUpdate() {
-        return editingItemId != null || super.isPartialRowUpdate();
+        return
+        // editingItemId != null ||
+        super.isPartialRowUpdate();
     }
 
     // INPLACE EDITING FIELD FACTORY
