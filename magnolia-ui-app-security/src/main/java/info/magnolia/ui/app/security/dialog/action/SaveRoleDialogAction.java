@@ -33,9 +33,12 @@
  */
 package info.magnolia.ui.app.security.dialog.action;
 
-import info.magnolia.jcr.util.MetaDataUtil;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
+import info.magnolia.ui.app.security.dialog.field.AccessControlList;
+import info.magnolia.ui.app.security.dialog.field.WorkspaceAccessFieldBuilder;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -43,11 +46,14 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
 
 /**
- * Save role dialog action.
+ * Save role dialog action. Transforms nodes added by {@link WorkspaceAccessFieldBuilder} to its final representation.
  */
 public class SaveRoleDialogAction extends SaveDialogAction {
 
@@ -63,9 +69,46 @@ public class SaveRoleDialogAction extends SaveDialogAction {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
 
             try {
+
                 final Node node = itemChanged.applyChanges();
-                // the ACL handling has to be added here, once the ACLs are (re)defined for M5
-                MetaDataUtil.updateMetaData(node);
+
+                for (Node aclNode : NodeUtil.getNodes(node)) {
+
+                    // Any node marked as using the intermediary format we read in, remove all its sub nodes and then
+                    // add new sub nodes based on the read in ACL
+                    if (aclNode.hasProperty(WorkspaceAccessFieldBuilder.INTERMEDIARY_FORMAT_PROPERTY_NAME)) {
+
+                        AccessControlList acl = new AccessControlList();
+
+                        for (Node entryNode : NodeUtil.getNodes(aclNode)) {
+
+                            if (entryNode.hasProperty(WorkspaceAccessFieldBuilder.INTERMEDIARY_FORMAT_PROPERTY_NAME)) {
+                                String path = entryNode.getProperty(AccessControlList.PATH_PROPERTY_NAME).getString();
+                                long accessType = (int) entryNode.getProperty(WorkspaceAccessFieldBuilder.ACCESS_TYPE_PROPERTY_NAME).getLong();
+                                long permissions = entryNode.getProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME).getLong();
+
+                                if (path.equals("/")) {
+                                } else if (path.equals("/*")) {
+                                    path = "/";
+                                } else {
+                                    path = StringUtils.removeEnd(path, "/*");
+                                    path = StringUtils.removeEnd(path, "/");
+                                }
+
+                                if (StringUtils.isNotBlank(path)) {
+                                    acl.addEntry(new AccessControlList.Entry(permissions, accessType, path));
+                                }
+                            }
+
+                            entryNode.remove();
+                        }
+
+                        aclNode.setProperty(WorkspaceAccessFieldBuilder.INTERMEDIARY_FORMAT_PROPERTY_NAME, (Value)null);
+                        acl.saveEntries(aclNode);
+                    }
+                }
+
+                NodeTypes.LastModified.update(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);

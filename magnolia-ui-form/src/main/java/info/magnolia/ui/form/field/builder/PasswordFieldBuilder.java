@@ -58,7 +58,7 @@ public class PasswordFieldBuilder extends AbstractFieldBuilder<PasswordFieldDefi
             verificationMessage = getMessage(definition.getVerificationMessage());
         }
         // Create Field
-        return new PasswordFields(definition.isVerification(), verificationMessage, verificationErrorMessage, definition.isEncode());
+        return new PasswordFields(definition.isVerification(), verificationMessage, verificationErrorMessage);
     }
 
     @Override

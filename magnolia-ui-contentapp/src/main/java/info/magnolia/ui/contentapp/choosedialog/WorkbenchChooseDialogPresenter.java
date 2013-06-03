@@ -34,10 +34,7 @@
 package info.magnolia.ui.contentapp.choosedialog;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.dialog.BaseDialogPresenter;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.SubAppDescriptor;
 import info.magnolia.ui.framework.event.ChooseDialogEventBus;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
@@ -45,25 +42,18 @@ import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
-import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.rits.cloning.Cloner;
 import com.vaadin.data.Item;
 
 /**
  * Factory for creating workbench choose dialog presenters.
  */
 public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implements ChooseDialogPresenter {
-
-    private static final Logger log = LoggerFactory.getLogger(WorkbenchChooseDialogPresenter.class);
 
     private Item currentValue = null;
 
@@ -73,16 +63,17 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
 
     private final WorkbenchPresenter workbenchPresenter;
 
-    private final AppContext appContext;
-
     private final EventBus eventBus;
 
+    private WorkbenchDefinition workbenchDefinition;
+
+    private ImageProviderDefinition imageProviderDefinition;
+
     @Inject
-    public WorkbenchChooseDialogPresenter(ChooseDialogView view, WorkbenchPresenter workbenchPresenter, AppContext appContext, final @Named(ChooseDialogEventBus.NAME) EventBus eventBus) {
+    public WorkbenchChooseDialogPresenter(ChooseDialogView view, WorkbenchPresenter workbenchPresenter, final @Named(ChooseDialogEventBus.NAME) EventBus eventBus) {
         super(view);
         this.chooseDialogView = view;
         this.workbenchPresenter = workbenchPresenter;
-        this.appContext = appContext;
         this.eventBus = eventBus;
 
         showCloseButton();
@@ -126,20 +117,17 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
         this.listener = listener;
     }
 
+    public void setWorkbenchDefinition(WorkbenchDefinition workbenchDefinition) {
+        this.workbenchDefinition = workbenchDefinition;
+    }
+
+    public void setImageProviderDefinition(ImageProviderDefinition imageProviderDefinition) {
+        this.imageProviderDefinition = imageProviderDefinition;
+    }
+
     @Override
     public ChooseDialogView start() {
-        SubAppDescriptor subAppContext = appContext.getDefaultSubAppDescriptor();
-        if (!(subAppContext instanceof BrowserSubAppDescriptor)) {
-            log.error("Cannot start workbench choose dialog since targeted app is not a content app");
-            return null;
-        }
-
-        BrowserSubAppDescriptor subApp = (BrowserSubAppDescriptor) subAppContext;
-        WorkbenchDefinition workbench = new Cloner().deepClone(subApp.getWorkbench());
-        // mark definition as a dialog workbench so that workbench presenter can disable drag n drop
-        ((ConfiguredWorkbenchDefinition) workbench).setDialogWorkbench(true);
-        ImageProviderDefinition imageProvider = new Cloner().deepClone(subApp.getImageProvider());
-        WorkbenchView view = workbenchPresenter.start(workbench, imageProvider, eventBus);
+        WorkbenchView view = workbenchPresenter.start(workbenchDefinition, imageProviderDefinition, eventBus);
         view.setViewType(ViewType.TREE);
 
         chooseDialogView.setContent(view);

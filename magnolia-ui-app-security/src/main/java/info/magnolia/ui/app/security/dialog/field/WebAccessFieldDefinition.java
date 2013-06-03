@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,30 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.definition;
+package info.magnolia.ui.app.security.dialog.field;
+
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 
 /**
- * Defines a node type to be displayed in a workbench.
+ * Field definition for the web access field.
  *
- * @see WorkbenchDefinition
+ * @see WebAccessFieldBuilder
  */
-public interface NodeTypeDefinition {
-
-    /**
-     * Specifies the the name of the node type. For instance <code>mgnl:content</code>.
-     *
-     * @see info.magnolia.jcr.util.NodeTypes
-     * @see org.apache.jackrabbit.JcrConstants
-     */
-    String getName();
-
-    /**
-     * Specifies the icon to use for this node type.
-     */
-    String getIcon();
-
-    /**
-     * Specifies whether to include only the exact node type and ignore sub types.
-     */
-    boolean isStrict();
+public class WebAccessFieldDefinition extends ConfiguredFieldDefinition  {
 }

@@ -92,7 +92,7 @@ public class JcrNewNodeAdapterTest {
     }
 
     @Test
-    public void testGetNodeUpdatesNode() throws Exception {
+    public void testApplyChangesUpdatesNode() throws Exception {
         // GIVEN
         // Create a NewNodeAdapter
         String nodeName = "rootNode";
@@ -122,8 +122,7 @@ public class JcrNewNodeAdapterTest {
         // THEN
         assertNotNull(res);
         assertSame(res, parentNode.getNode(res.getName()));
-        // new property and Empty: not stored
-        assertFalse(res.hasProperty("notModify"));
+        assertTrue(res.hasProperty("notModify"));
         assertFalse(res.hasProperty("notModifyRemoved"));
         assertTrue(res.hasProperty("modify"));
         assertEquals("newModify", res.getProperty("modify").getString());
@@ -132,7 +131,7 @@ public class JcrNewNodeAdapterTest {
     }
 
     @Test
-    public void testGetNodeTwice() throws Exception {
+    public void testApplyChangesTwice() throws Exception {
         // GIVEN
         // Create a NewNodeAdapter
         String nodeName = "rootNode";
