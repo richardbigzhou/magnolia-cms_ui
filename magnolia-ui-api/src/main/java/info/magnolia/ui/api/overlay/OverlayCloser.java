@@ -40,4 +40,5 @@ public interface OverlayCloser {
 
     void close();
 
+    void setCloseTimeout(int seconds);
 }

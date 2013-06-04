@@ -49,6 +49,7 @@ import info.magnolia.ui.vaadin.dialog.Notification;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
 
+import com.vaadin.event.LayoutEvents;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -65,6 +66,7 @@ import com.vaadin.ui.themes.BaseTheme;
  */
 public abstract class OverlayPresenter implements OverlayLayer {
 
+    public static final int TIMEOUT_SECONDS_DEFAULT = 3;
     private static final String ACTION_CONFIRM = "confirm";
 
     /**
@@ -86,7 +88,6 @@ public abstract class OverlayPresenter implements OverlayLayer {
         final OverlayCloser overlayCloser = openOverlay(dialog, ModalityLevel.LIGHT);
         dialog.addDialogCloseHandler(createCloseHandler(overlayCloser));
         dialog.addActionCallback(ACTION_CONFIRM, new DialogActionListener() {
-
             @Override
             public void onActionExecuted(String actionName) {
                 overlayCloser.close();
@@ -95,7 +96,6 @@ public abstract class OverlayPresenter implements OverlayLayer {
                 }
             }
         });
-
     }
 
     /**
@@ -108,24 +108,21 @@ public abstract class OverlayPresenter implements OverlayLayer {
 
     private ConfirmationDialog.ConfirmationEvent.Handler createHandler(final OverlayCloser overlayCloser, final ConfirmationCallback callback) {
         return new ConfirmationDialog.ConfirmationEvent.Handler() {
-
             @Override
             public void onConfirmation(ConfirmationEvent event) {
-
                 if (event.isConfirmed()) {
                     callback.onSuccess();
                 } else {
                     callback.onCancel();
                 }
-
                 overlayCloser.close();
             }
         };
     }
 
-    private ConfirmationDialog createConfirmationDialog(View contentView, String confirmButtonText, String cancelButtonText, String stylename, boolean cancelIsDefault) {
+    private ConfirmationDialog createConfirmationDialog(View contentView, String confirmButtonText, String cancelButtonText, String styleName, boolean cancelIsDefault) {
         ConfirmationDialog dialog = new ConfirmationDialog(contentView, cancelIsDefault);
-        dialog.addStyleName(stylename);
+        dialog.addStyleName(styleName);
         dialog.addStyleName("confirmation");
         dialog.setConfirmActionLabel(confirmButtonText);
         if (cancelButtonText != null) {
@@ -135,9 +132,9 @@ public abstract class OverlayPresenter implements OverlayLayer {
         return dialog;
     }
 
-    private BaseDialog createAlertDialog(View contentView, String confirmButtonText, String stylename) {
+    private BaseDialog createAlertDialog(View contentView, String confirmButtonText, String styleName) {
         BaseDialog dialog = new LightDialog();
-        dialog.addStyleName(stylename);
+        dialog.addStyleName(styleName);
         dialog.addStyleName("alert");
         dialog.setContent(contentView.asVaadinComponent());
         dialog.addAction(ACTION_CONFIRM, confirmButtonText);
@@ -183,7 +180,7 @@ public abstract class OverlayPresenter implements OverlayLayer {
      */
     @Override
     public void openConfirmation(MessageStyleType type, View contentView, String confirmButtonText, String cancelButtonText,
-            boolean cancelIsDefault, final ConfirmationCallback callback) {
+                                 boolean cancelIsDefault, final ConfirmationCallback callback) {
         ConfirmationDialog dialog = createConfirmationDialog(contentView, confirmButtonText, cancelButtonText, type.getCssClass(), cancelIsDefault);
         dialog.showCloseButton();
 
@@ -201,38 +198,31 @@ public abstract class OverlayPresenter implements OverlayLayer {
         openConfirmation(type, createConfirmationView(type, title, body), confirmButtonText, cancelButtonText, cancelIsDefault, cb);
     }
 
-
     /**
      * Present notification indicator with no modality. Close after timeout expires.
      */
     @Override
     public void openNotification(final MessageStyleType type, final boolean doesTimeout, final View viewToShow) {
-        new OverlayCloser() {
-            private OverlayCloser compositeCloser;
-
-            {
-                Notification dialog = new Notification(type);
-                dialog.setContent(viewToShow.asVaadinComponent());
-                if (doesTimeout) {
-                    dialog.setTimeout(Notification.TIMEOUT_SECONDS_DEFAULT);
-                }
-
-                dialog.setConfirmationListener(new Notification.ConfirmationListener() {
-
-                    @Override
-                    public void onClose() {
-                        compositeCloser.close();
-                    }
-                });
-
-                compositeCloser = openOverlay(dialog, ModalityLevel.NON_MODAL);
-            }
-
+        final Notification notification = new Notification(type);
+        final OverlayCloser closer = openOverlay(notification, ModalityLevel.NON_MODAL);
+        notification.setContent(viewToShow.asVaadinComponent());
+        notification.addCloseButtonListener(new ClickListener() {
             @Override
-            public void close() {
-                compositeCloser.close();
+            public void buttonClick(ClickEvent clickEvent) {
+                closer.close();
             }
-        };
+        });
+
+        notification.addNotificationBodyClickListener(new LayoutEvents.LayoutClickListener() {
+            @Override
+            public void layoutClick(LayoutEvents.LayoutClickEvent layoutClickEvent) {
+                closer.setCloseTimeout(-1);
+            }
+        });
+
+        if (doesTimeout) {
+            closer.setCloseTimeout(TIMEOUT_SECONDS_DEFAULT);
+        }
     }
 
     /**

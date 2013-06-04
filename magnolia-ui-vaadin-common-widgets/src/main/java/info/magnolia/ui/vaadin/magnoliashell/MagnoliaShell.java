@@ -191,35 +191,39 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
      * @param parent
      * The View to open the Overlay on top of.
      */
-    public OverlayCloser openOverlay(final View child, View parent, OverlayLayer.ModalityDomain modalityLocation, OverlayLayer.ModalityLevel modalityLevel) {
-        final Overlay overlay = new Overlay(child.asVaadinComponent(), parent.asVaadinComponent(), modalityLocation, modalityLevel);
-        getState().overlays.add(overlay);
-
-        // overlay has Vaadin parent of MagnoliaShell
-        overlay.setParent(this);
+    public OverlayCloser openOverlay(final View child, View parent, OverlayLayer.ModalityDomain modalityDomain, OverlayLayer.ModalityLevel modalityLevel) {
+        final Overlay overlay = new Overlay(child.asVaadinComponent(), parent.asVaadinComponent(), modalityDomain, modalityLevel);
+        addOverlay(overlay);
         parent.asVaadinComponent().addDetachListener(new DetachListener() {
             @Override
             public void detach(DetachEvent event) {
                 removeOverlay(overlay);
             }
         });
-
-        return new OverlayCloser() {
+        final OverlayCloser closer = new OverlayCloser() {
             @Override
             public void close() {
-                MagnoliaShell.this.closeOverlay(child.asVaadinComponent());
+                overlay.close();
+            }
+
+            @Override
+            public void setCloseTimeout(int timeoutMillis) {
+                overlay.setCloseTimeout(timeoutMillis);
             }
         };
+        overlay.setListener(new Overlay.Listener() {
+            @Override
+            public void onOverlayClosed() {
+                removeOverlay(overlay);
+            }
+        });
+
+        return closer;
     }
 
-    /**
-     * Close an open overlay, such as a dialog.
-     * 
-     * @param overlayComponent The component of the view which was opened in an overlay.
-     */
-    public void closeOverlay(final Component overlayComponent) {
-        final Overlay overlay = (Overlay) overlayComponent.getParent();
-        overlay.closeWithTransition(this);
+    private void addOverlay(Overlay overlay) {
+        getState().overlays.add(overlay);
+        overlay.setParent(this);
     }
 
     public void removeOverlay(Overlay overlay) {

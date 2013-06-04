@@ -33,19 +33,77 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.connector;
 
+import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.OverlayClientRpc;
+import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.OverlayServerRpc;
 import info.magnolia.ui.vaadin.gwt.client.dialog.widget.OverlayWidget;
 import info.magnolia.ui.vaadin.overlay.Overlay;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
+import com.vaadin.client.communication.RpcProxy;
+import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.AbstractSingleComponentContainerConnector;
 import com.vaadin.shared.ui.Connect;
 
 /**
- * Connector for Overlay - Takes care of unregistering the widget at the proper time - so the overlay dissapears when it is ready.
+ * Client-side connector for Overlay component.
  */
 @Connect(Overlay.class)
 public class OverlayConnector extends AbstractSingleComponentContainerConnector {
+
+    public static final int OVERLAY_CLOSE_ANIMATION_DURATION_MSEC = 500;
+
+    private OverlayServerRpc rpc = RpcProxy.create(OverlayServerRpc.class, this);
+
+    private Timer automaticRemovalTimer = new Timer() {
+        @Override
+        public void run() {
+            removeSelf();
+        }
+    };
+
+    @Override
+    protected void init() {
+        super.init();
+        registerRpc(OverlayClientRpc.class, new OverlayClientRpc() {
+            @Override
+            public void close() {
+                removeSelf();
+            }
+        });
+    }
+
+    public void removeSelf() {
+        final Object lock = new Object();
+        getWidget().addStyleName("close");
+        getConnection().suspendReponseHandling(lock);
+        final Widget w = getWidget();
+        Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
+            @Override
+            public boolean execute() {
+                getConnection().resumeResponseHandling(lock);
+                w.removeFromParent();
+                rpc.onClosed();
+                return false;
+            }
+        }, OVERLAY_CLOSE_ANIMATION_DURATION_MSEC);
+    }
+
+    @Override
+    public void onStateChanged(StateChangeEvent event) {
+        super.onStateChanged(event);
+        if (event.hasPropertyChanged("closeTimeout")) {
+            int timeout = getState().closeTimeout;
+            if (timeout < 0) {
+                automaticRemovalTimer.cancel();
+            } else {
+                automaticRemovalTimer.schedule(timeout * 1000);
+            }
+        }
+    }
 
     @Override
     public void updateCaption(ComponentConnector connector) {
@@ -57,12 +115,7 @@ public class OverlayConnector extends AbstractSingleComponentContainerConnector 
     }
 
     @Override
-    public void onConnectorHierarchyChange(ConnectorHierarchyChangeEvent e) {
-        if (!e.getOldChildren().isEmpty()) {
-            final ComponentConnector oldContent = e.getOldChildren().get(0);
-            getWidget().remove(oldContent.getWidget());
-        }
-
+    public void onConnectorHierarchyChange(final ConnectorHierarchyChangeEvent e) {
         if (getContent() != null) {
             getWidget().setWidget(getContent().getWidget());
         }

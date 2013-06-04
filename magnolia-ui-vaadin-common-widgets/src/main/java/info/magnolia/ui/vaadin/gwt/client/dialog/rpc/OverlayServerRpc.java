@@ -31,20 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.dialog.connector;
+package info.magnolia.ui.vaadin.gwt.client.dialog.rpc;
 
-import com.vaadin.shared.Connector;
-import com.vaadin.shared.ui.csslayout.CssLayoutState;
+import com.vaadin.shared.communication.ServerRpc;
 
 /**
- * OverlayState.
+ * Server-side RPC interface for overlays.
  */
-public class OverlayState extends CssLayoutState {
+public interface OverlayServerRpc extends ServerRpc {
 
-    public Connector overlayParent = null;
-
-    public Connector overlayContent = null;
-
-    public int closeTimeout = -1;
+    void onClosed();
 
 }
