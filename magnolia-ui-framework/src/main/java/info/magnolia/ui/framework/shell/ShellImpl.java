@@ -96,7 +96,7 @@ public class ShellImpl extends AbstractUIContext implements Shell, MessageEventH
     private ShellAppLocationProvider shellAppLocationProvider;
 
     @Inject
-    public ShellImpl(@Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final AppController appController, final MessagesManager messagesManager, final MagnoliaShell magnoliaShell) {
+    public ShellImpl(@Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final AppController appController, final MessagesManager messagesManager) {
         super();
         this.messagesManager = messagesManager;
         this.admincentralEventBus = admincentralEventBus;
