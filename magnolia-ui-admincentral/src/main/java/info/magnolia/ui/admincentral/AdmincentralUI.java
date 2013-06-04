@@ -116,7 +116,8 @@ public class AdmincentralUI extends UI {
             // make sure the error handler covers the detach phase (it does not happen in service phase).
             super.detach();
         } catch (Exception e) {
-            getErrorHandler().error(new com.vaadin.server.ErrorEvent(e));
+            // todo dlipp: we should revert to using errorHandler + logging the stacktrace once MGNLUI-1532 is fixed
+            log.warn("Could not properly detach UI with caption '" + getCaption() + "': " + e.toString());
         }
         eventBusProtector.resetEventBuses();
         componentProvider.destroy();
