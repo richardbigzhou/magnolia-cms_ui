@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
@@ -76,15 +77,17 @@ public abstract class AbstractDataTypeMigrationTask extends AbstractTask {
     private String newWorkspaceName;
     private Session dataSession;
     private Session newSession;
+    private boolean isTargetRoot;
 
     /**
      * @param dataPath path from the data to migrate ('/category'). If set to root, the task will not be executed.
-     * @param newPath new path where the content of dataPath will be copied. <b>if empty or equal to root, the dataPath will be taken instead</b>
+     * @param newPath new path where the content of dataPath will be copied.
      * @param newWorkspaceName new workspace name.
      */
     public AbstractDataTypeMigrationTask(String taskName, String taskDescription, String dataPath, String newPath, String newWorkspaceName) {
         super(taskName, taskDescription);
         this.dataRootPath = dataPath;
+        this.isTargetRoot = (StringUtils.isBlank(newPath) || "/".equals(newPath));
         this.newRootPath = (StringUtils.isNotBlank(newPath) && !"/".equals(newPath)) ? newPath : dataPath;
         this.newWorkspaceName = newWorkspaceName;
         this.oldToNewNodeTypeMapping = new HashMap<String, String>();
@@ -156,6 +159,18 @@ public abstract class AbstractDataTypeMigrationTask extends AbstractTask {
         }
         newWorkspace.clone("data", dataRootPath, newRootPath, true);
         log.info("Following data workspace part {}: is now movet to the following workspace '{}' location '{}'", Arrays.asList(dataRootPath, newWorkspace.getName(), newRootPath).toArray());
+
+        if (this.isTargetRoot) {
+            // move to root
+            NodeIterator nodeIterator = newSession.getNode(newRootPath).getNodes();
+            while (nodeIterator.hasNext()) {
+                Node node = nodeIterator.nextNode();
+                newSession.getWorkspace().move(node.getPath(), "/" + node.getName());
+            }
+            newSession.removeItem(newRootPath);
+            newRootPath = "/";
+        }
+
         newSession.save();
     }
 
