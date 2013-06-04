@@ -72,10 +72,6 @@ public class JQueryAnimation extends Animation {
         settings.addCallback(callback);
     }
 
-    public void clearCallbacks() {
-        settings.setCallbacks(null);
-    }
-
     public void clearTopAfterThisAnimation() {
         isClearTopAfterThisAnimation = true;
     }

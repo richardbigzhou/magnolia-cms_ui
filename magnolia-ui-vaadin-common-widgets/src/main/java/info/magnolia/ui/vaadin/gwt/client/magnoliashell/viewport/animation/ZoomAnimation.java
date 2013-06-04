@@ -51,7 +51,6 @@ public class ZoomAnimation extends Animation {
 
     private Element element;
 
-
     public ZoomAnimation(boolean isZoomIn) {
         this.isZoomIn = isZoomIn;
     }

@@ -33,30 +33,19 @@
  */
 package info.magnolia.ui.vaadin.gwt.client;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.ButtonBase;
+import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * The FullScreenButton common widget.
  */
-public class FullScreenButton extends ButtonBase {
+public class FullScreenButton extends UIObject {
 
     private static final String STYLE_NAME = "m-fullscreen-app";
     private static final String ICON_STYLE_NAME = "icon-open-fullscreen_2";
 
     public FullScreenButton() {
-        this(DOM.createSpan());
-    }
-
-    public FullScreenButton(ClickHandler handler) {
-        this();
-        addClickHandler(handler);
-    }
-
-    protected FullScreenButton(Element elem) {
-        super(elem);
+        setElement(DOM.createSpan());
         setStylePrimaryName(STYLE_NAME);
         addStyleName(ICON_STYLE_NAME);
     }
