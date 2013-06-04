@@ -238,7 +238,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
         final Refresher refresher = new Refresher();
         refresher.setRefreshInterval(500);
         refresher.addListener(new InProgressRefreshListener());
-        //addExtension(refresher);
+        addExtension(refresher);
         return this.dropZone;
     }
 
