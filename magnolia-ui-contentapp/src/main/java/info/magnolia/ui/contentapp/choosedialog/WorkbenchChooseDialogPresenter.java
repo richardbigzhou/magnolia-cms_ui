@@ -128,6 +128,7 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
     @Override
     public ChooseDialogView start() {
         WorkbenchView view = workbenchPresenter.start(workbenchDefinition, imageProviderDefinition, eventBus);
+        view.setMultiselect(false);
         view.setViewType(ViewType.TREE);
 
         chooseDialogView.setContent(view);

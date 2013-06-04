@@ -208,4 +208,9 @@ public class ListViewImpl implements ListView {
         return table;
     }
 
+    @Override
+    public void setMultiselect(boolean multiselect) {
+        table.setMultiSelect(multiselect);
+    }
+
 }

@@ -129,4 +129,9 @@ public class ThumbnailViewImpl implements ThumbnailView {
     public Component asVaadinComponent() {
         return thumbnailLayout;
     }
+
+    @Override
+    public void setMultiselect(boolean multiselect) {
+        // does nothing
+    }
 }

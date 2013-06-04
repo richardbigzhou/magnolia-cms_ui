@@ -296,4 +296,11 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
         return field;
     }
+
+    @Override
+    public void setMultiselect(boolean multiselect) {
+        for (ViewType type : contentViews.keySet()) {
+            contentViews.get(type).setMultiselect(multiselect);
+        }
+    }
 }

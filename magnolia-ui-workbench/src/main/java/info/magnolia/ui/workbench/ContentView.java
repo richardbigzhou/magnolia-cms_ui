@@ -93,6 +93,11 @@ public interface ContentView extends View {
     ViewType getViewType();
 
     /**
+     * Decides whether the user can select multiple items.
+     */
+    void setMultiselect(boolean multiselect);
+
+    /**
      * Listener for the ContentView.
      */
     public interface Listener {
