@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.module;
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.registry.ConfiguredMessageViewDefinitionManager;
+import info.magnolia.ui.admincentral.usermenu.definition.UserMenuDefinition;
 import info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition;
@@ -53,6 +54,7 @@ public class AdminCentralModule implements ModuleLifecycle {
     private ConfiguredAppDescriptorManager configuredAppDescriptorManager;
     private ConfiguredDialogDefinitionManager configuredDialogDefinitionManager;
     private ConfiguredMessageViewDefinitionManager configuredMessageViewDefinitionManager;
+    private UserMenuDefinition userControl;
 
     @Inject
     public AdminCentralModule(AppLauncherLayoutManager appLauncherLayoutManager, ConfiguredAppDescriptorManager configuredAppDescriptorManager, ConfiguredDialogDefinitionManager configuredDialogDefinitionManager, ConfiguredMessageViewDefinitionManager configuredMessageViewDefinitionManager) {
@@ -85,5 +87,13 @@ public class AdminCentralModule implements ModuleLifecycle {
 
     public void setAppLauncherLayout(AppLauncherLayoutDefinition appLauncherLayout) {
         this.appLauncherLayout = appLauncherLayout;
+    }
+
+    public UserMenuDefinition getUserMenu() {
+        return userControl;
+    }
+
+    public void setUserMenu(UserMenuDefinition userControl) {
+        this.userControl = userControl;
     }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
+package info.magnolia.ui.admincentral.usermenu.action;
 
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
+import info.magnolia.audit.AuditLoggingUtil;
+import info.magnolia.context.Context;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.context.UserContext;
+import info.magnolia.ui.api.action.AbstractAction;
+import info.magnolia.ui.api.action.ActionExecutionException;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.vaadin.shared.Connector;
-import com.vaadin.shared.ui.AbstractLayoutState;
+import com.vaadin.ui.UI;
 
 /**
- * MagnoliaShellState.
+ * Action for logging out of the admin central. Closes the current vaadin session and performs a system logout
+ * using {@link info.magnolia.context.UserContext#logout()}.
+ * Redirects to {@link MgnlContext#getContextPath()}.
  */
-public class MagnoliaShellState extends AbstractLayoutState {
+public class LogoutAction extends AbstractAction<LogoutActionDefinition> {
+    public LogoutAction(LogoutActionDefinition definition) {
+        super(definition);
+    }
 
-    public Map<ShellAppType, Connector> shellApps = new EnumMap<ShellAppType, Connector>(ShellAppType.class);
-
-    public Map<ShellAppType, Integer> indications = new HashMap<ShellAppType, Integer>();
-
-    public Map<ViewportType, Connector> viewports = new EnumMap<ViewportType, Connector>(ViewportType.class);
-
-    public List<Connector> overlays = new ArrayList<Connector>();
-
-    public Fragment uriFragment;
-
-    public Connector userMenu;
+    @Override
+    public void execute() throws ActionExecutionException {
+        Context ctx = MgnlContext.getInstance();
+        if (ctx instanceof UserContext) {
+            // log before actual op, to preserve username for logging
+            AuditLoggingUtil.log((UserContext) ctx);
+            ((UserContext) ctx).logout();
+        }
+        UI.getCurrent().getSession().close();
+        UI.getCurrent().getPage().setLocation(MgnlContext.getContextPath());
+    }
 }

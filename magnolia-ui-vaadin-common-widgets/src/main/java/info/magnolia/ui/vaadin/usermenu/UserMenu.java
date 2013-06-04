@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
+package info.magnolia.ui.vaadin.usermenu;
 
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
+import info.magnolia.ui.vaadin.gwt.client.usermenu.UserMenuClientRpc;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.vaadin.shared.Connector;
-import com.vaadin.shared.ui.AbstractLayoutState;
+import org.vaadin.peter.contextmenu.ContextMenu;
 
 /**
- * MagnoliaShellState.
+ * Extends the {@link ContextMenu} add-on to allow placing the widget based on the
+ * the component passed by {@link #setAsContextMenuOf} instead of using the mouse cursors position.
  */
-public class MagnoliaShellState extends AbstractLayoutState {
+public class UserMenu extends ContextMenu {
 
-    public Map<ShellAppType, Connector> shellApps = new EnumMap<ShellAppType, Connector>(ShellAppType.class);
+    public void open() {
+        getRpcProxy(UserMenuClientRpc.class).showContextMenu();
+    }
 
-    public Map<ShellAppType, Integer> indications = new HashMap<ShellAppType, Integer>();
-
-    public Map<ViewportType, Connector> viewports = new EnumMap<ViewportType, Connector>(ViewportType.class);
-
-    public List<Connector> overlays = new ArrayList<Connector>();
-
-    public Fragment uriFragment;
-
-    public Connector userMenu;
 }

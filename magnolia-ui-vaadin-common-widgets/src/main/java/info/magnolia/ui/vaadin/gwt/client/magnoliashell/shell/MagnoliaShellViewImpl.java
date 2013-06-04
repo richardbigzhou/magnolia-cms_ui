@@ -85,7 +85,6 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         this.mainAppLauncher = new ShellAppLauncher();
         getElement().setClassName(CLASS_NAME);
         viewportSlot.setClassName(VIEWPORT_SLOT_CLASS_NAME);
-
         add(mainAppLauncher, getElement());
         getElement().appendChild(viewportSlot);
         viewportShifter.addCallback(new JQueryCallback() {
@@ -220,6 +219,11 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     @Override
     public void onAppStarting() {
         mainAppLauncher.deactivateControls();
+    }
+
+    @Override
+    public void setUserMenu(Widget widget) {
+        mainAppLauncher.setUserMenu(widget);
     }
 
     @Override

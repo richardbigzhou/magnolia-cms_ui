@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
+package info.magnolia.ui.admincentral.usermenu;
 
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
-
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.vaadin.shared.Connector;
-import com.vaadin.shared.ui.AbstractLayoutState;
+import info.magnolia.ui.api.view.View;
 
 /**
- * MagnoliaShellState.
+ * View displaying the current logged in user and providing user related actions.
+ * Allows registering actions.
  */
-public class MagnoliaShellState extends AbstractLayoutState {
+public interface UserMenuView extends View {
 
-    public Map<ShellAppType, Connector> shellApps = new EnumMap<ShellAppType, Connector>(ShellAppType.class);
+    void setListener(Listener listener);
 
-    public Map<ShellAppType, Integer> indications = new HashMap<ShellAppType, Integer>();
+    void addAction(String name, String label);
 
-    public Map<ViewportType, Connector> viewports = new EnumMap<ViewportType, Connector>(ViewportType.class);
+    void setCaption(String caption);
 
-    public List<Connector> overlays = new ArrayList<Connector>();
-
-    public Fragment uriFragment;
-
-    public Connector userMenu;
+    /**
+     * Listener callback interface for presenter.
+     */
+    interface Listener {
+        void onAction(String actionName);
+    }
 }

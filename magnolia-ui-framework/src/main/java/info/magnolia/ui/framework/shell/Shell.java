@@ -82,4 +82,6 @@ public interface Shell extends UiContext {
      */
     OverlayCloser openOverlayOnView(View view, View parent, ModalityDomain modalityLocation, ModalityLevel modalityLevel);
 
+    void setUserMenu(View view);
+
 }

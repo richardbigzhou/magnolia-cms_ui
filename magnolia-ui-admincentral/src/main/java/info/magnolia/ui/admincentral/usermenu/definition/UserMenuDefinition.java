@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
+package info.magnolia.ui.admincentral.usermenu.definition;
 
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
-import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ViewportType;
+import info.magnolia.ui.api.action.ActionDefinition;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import com.vaadin.shared.Connector;
-import com.vaadin.shared.ui.AbstractLayoutState;
-
 /**
- * MagnoliaShellState.
+ * Definition registered under the config node of {@link info.magnolia.ui.admincentral.module.AdminCentralModule}.
+ * Holds actions used by the {@link info.magnolia.ui.admincentral.usermenu.action.UserActionExecutor}.
  */
-public class MagnoliaShellState extends AbstractLayoutState {
-
-    public Map<ShellAppType, Connector> shellApps = new EnumMap<ShellAppType, Connector>(ShellAppType.class);
-
-    public Map<ShellAppType, Integer> indications = new HashMap<ShellAppType, Integer>();
-
-    public Map<ViewportType, Connector> viewports = new EnumMap<ViewportType, Connector>(ViewportType.class);
-
-    public List<Connector> overlays = new ArrayList<Connector>();
-
-    public Fragment uriFragment;
-
-    public Connector userMenu;
+public interface UserMenuDefinition {
+    Map<String, ActionDefinition> getActions();
 }
