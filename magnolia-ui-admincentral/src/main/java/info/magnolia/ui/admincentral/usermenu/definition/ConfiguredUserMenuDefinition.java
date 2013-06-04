@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.builder;
+package info.magnolia.ui.admincentral.usermenu.definition;
 
-import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
+import info.magnolia.ui.api.action.ActionDefinition;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.TwinColSelect;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
- * Creates and initializes a select field based on a field definition.
- *
- * @param <T> the definition
+ * Implementation of {@link UserMenuDefinition}.
  */
-public class TwinColSelectFieldBuilder<T extends TwinColSelectFieldDefinition> extends SelectFieldBuilder<TwinColSelectFieldDefinition> {
+public class ConfiguredUserMenuDefinition implements UserMenuDefinition {
 
-    public TwinColSelectFieldBuilder(TwinColSelectFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
-    }
+    private Map<String, ActionDefinition> actions = new LinkedHashMap<String, ActionDefinition>();
 
     @Override
-    protected AbstractSelect buildField() {
-        super.buildField();
-        ((TwinColSelect) select).setRows(select.getContainerDataSource().size());
-        select.setMultiSelect(definition.isMultiselect());
-        select.setNullSelectionAllowed(true);
-        ((TwinColSelect) select).setLeftColumnCaption(getMessage(definition.getLeftColumnCaption()));
-        ((TwinColSelect) select).setRightColumnCaption(getMessage(definition.getRightColumnCaption()));
-        return select;
+    public Map<String, ActionDefinition> getActions() {
+        return actions;
     }
 
-    @Override
-    protected AbstractSelect createSelectionField() {
-        return new TwinColSelect();
+    public void setActions(Map<String, ActionDefinition> actions) {
+        this.actions = actions;
     }
+
+
 }

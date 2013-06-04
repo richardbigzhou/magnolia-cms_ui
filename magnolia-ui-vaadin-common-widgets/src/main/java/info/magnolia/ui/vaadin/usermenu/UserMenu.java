@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.builder;
+package info.magnolia.ui.vaadin.usermenu;
 
-import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
+import info.magnolia.ui.vaadin.gwt.client.usermenu.UserMenuClientRpc;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.TwinColSelect;
+import org.vaadin.peter.contextmenu.ContextMenu;
 
 /**
- * Creates and initializes a select field based on a field definition.
- *
- * @param <T> the definition
+ * Extends the {@link ContextMenu} add-on to allow placing the widget based on the
+ * the component passed by {@link #setAsContextMenuOf} instead of using the mouse cursors position.
  */
-public class TwinColSelectFieldBuilder<T extends TwinColSelectFieldDefinition> extends SelectFieldBuilder<TwinColSelectFieldDefinition> {
+public class UserMenu extends ContextMenu {
 
-    public TwinColSelectFieldBuilder(TwinColSelectFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
+    public void open() {
+        getRpcProxy(UserMenuClientRpc.class).showContextMenu();
     }
 
-    @Override
-    protected AbstractSelect buildField() {
-        super.buildField();
-        ((TwinColSelect) select).setRows(select.getContainerDataSource().size());
-        select.setMultiSelect(definition.isMultiselect());
-        select.setNullSelectionAllowed(true);
-        ((TwinColSelect) select).setLeftColumnCaption(getMessage(definition.getLeftColumnCaption()));
-        ((TwinColSelect) select).setRightColumnCaption(getMessage(definition.getRightColumnCaption()));
-        return select;
-    }
-
-    @Override
-    protected AbstractSelect createSelectionField() {
-        return new TwinColSelect();
-    }
 }

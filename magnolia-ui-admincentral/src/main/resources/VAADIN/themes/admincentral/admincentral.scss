@@ -1,6 +1,7 @@
 @charset "UTF-8";
 
 @import "../admincentraltheme/admincentraltheme.scss";
+@import "user-menu";
 @import "../magnolia/magnolia.scss";
 @import "../workbench/workbench.scss";
 
@@ -15,6 +16,7 @@
 @include magnolia;
 @include admincentraltheme;
 @include workbench;
+@include user-menu;
 
 @mixin admincentral {
   @include linkfield;

@@ -96,7 +96,7 @@ public class ShellImpl extends AbstractUIContext implements Shell, MessageEventH
     private ShellAppLocationProvider shellAppLocationProvider;
 
     @Inject
-    public ShellImpl(@Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, final AppController appController, final MessagesManager messagesManager) {
+    public ShellImpl(@Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final AppController appController, final MessagesManager messagesManager, final MagnoliaShell magnoliaShell) {
         super();
         this.messagesManager = messagesManager;
         this.admincentralEventBus = admincentralEventBus;
@@ -118,9 +118,9 @@ public class ShellImpl extends AbstractUIContext implements Shell, MessageEventH
             }
         });
 
+        this.magnoliaShell = new MagnoliaShell();
         this.admincentralEventBus.addHandler(MessageEvent.class, this);
 
-        this.magnoliaShell = new MagnoliaShell();
         this.magnoliaShell.setListener(new MagnoliaShell.Listener() {
 
             @Override
@@ -221,6 +221,11 @@ public class ShellImpl extends AbstractUIContext implements Shell, MessageEventH
     @Override
     public OverlayCloser openOverlayOnView(View view, View parent, ModalityDomain modalityLocation, ModalityLevel modalityLevel) {
         return magnoliaShell.openOverlay(view, parent, modalityLocation, modalityLevel);
+    }
+
+    @Override
+    public void setUserMenu(View view) {
+        magnoliaShell.setUserMenu(view);
     }
 
     @Override

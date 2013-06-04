@@ -63,11 +63,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Container.ItemSetChangeEvent;
-import com.vaadin.data.Container.ItemSetChangeListener;
-import com.vaadin.data.Container.ItemSetChangeNotifier;
-
 /**
  * The WorkbenchPresenter is responsible for creating, configuring and updating the workbench view, as well as handling its interaction.
  */
@@ -142,18 +137,6 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         }
 
         // add status bar
-        if (activePresenter != null) {
-            Container container = activePresenter.getContainer();
-            if (container instanceof ItemSetChangeNotifier) {
-                ((ItemSetChangeNotifier) container).addItemSetChangeListener(new ItemSetChangeListener() {
-
-                    @Override
-                    public void containerItemSetChange(ItemSetChangeEvent event) {
-                        statusBarPresenter.setItemCount(event.getContainer().size());
-                    }
-                });
-            }
-        }
         view.setStatusBarView(statusBarPresenter.start(eventBus, workbenchDefinition));
 
         view.setListener(this);

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.builder;
+package info.magnolia.ui.admincentral.usermenu;
 
-import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
-
-import com.vaadin.data.Item;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.TwinColSelect;
+import info.magnolia.ui.api.view.View;
 
 /**
- * Creates and initializes a select field based on a field definition.
- *
- * @param <T> the definition
+ * View displaying the current logged in user and providing user related actions.
+ * Allows registering actions.
  */
-public class TwinColSelectFieldBuilder<T extends TwinColSelectFieldDefinition> extends SelectFieldBuilder<TwinColSelectFieldDefinition> {
+public interface UserMenuView extends View {
 
-    public TwinColSelectFieldBuilder(TwinColSelectFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
-    }
+    void setListener(Listener listener);
 
-    @Override
-    protected AbstractSelect buildField() {
-        super.buildField();
-        ((TwinColSelect) select).setRows(select.getContainerDataSource().size());
-        select.setMultiSelect(definition.isMultiselect());
-        select.setNullSelectionAllowed(true);
-        ((TwinColSelect) select).setLeftColumnCaption(getMessage(definition.getLeftColumnCaption()));
-        ((TwinColSelect) select).setRightColumnCaption(getMessage(definition.getRightColumnCaption()));
-        return select;
-    }
+    void addAction(String name, String label);
 
-    @Override
-    protected AbstractSelect createSelectionField() {
-        return new TwinColSelect();
+    void setCaption(String caption);
+
+    /**
+     * Listener callback interface for presenter.
+     */
+    interface Listener {
+        void onAction(String actionName);
     }
 }

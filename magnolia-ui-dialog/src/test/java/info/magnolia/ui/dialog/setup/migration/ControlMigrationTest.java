@@ -41,6 +41,7 @@ import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 import info.magnolia.ui.form.field.definition.DateFieldDefinition;
+import info.magnolia.ui.form.field.definition.HiddenFieldDefinition;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
@@ -93,6 +94,21 @@ public class ControlMigrationTest {
         assertFalse(controlNode.hasProperty("controlType"));
         assertTrue(controlNode.hasProperty("class"));
         assertEquals(TextFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
+    }
+
+    @Test
+    public void HiddenControlMigrationTest() throws RepositoryException {
+        // GIVEN
+        controlNode.setProperty("controlType", "hidden");
+        ControlMigration controlMigration = new HiddenControlMigration();
+
+        // WHEN
+        controlMigration.migrate(controlNode);
+
+        // THEN
+        assertFalse(controlNode.hasProperty("controlType"));
+        assertTrue(controlNode.hasProperty("class"));
+        assertEquals(HiddenFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
     }
 
     @Test

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.builder;
+package info.magnolia.ui.admincentral.usermenu.action;
 
-import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.module.AdminCentralModule;
+import info.magnolia.ui.admincentral.usermenu.definition.UserMenuDefinition;
+import info.magnolia.ui.api.action.AbstractActionExecutor;
+import info.magnolia.ui.api.action.ActionDefinition;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.TwinColSelect;
+import java.util.Collection;
+import java.util.Collections;
+
+import javax.inject.Inject;
 
 /**
- * Creates and initializes a select field based on a field definition.
- *
- * @param <T> the definition
+ * Action Executor for actions registered in {@link UserMenuDefinition} and obtained by {@link info.magnolia.ui.admincentral.module.AdminCentralModule#getUserMenu()}.
  */
-public class TwinColSelectFieldBuilder<T extends TwinColSelectFieldDefinition> extends SelectFieldBuilder<TwinColSelectFieldDefinition> {
+public class UserActionExecutor extends AbstractActionExecutor {
 
-    public TwinColSelectFieldBuilder(TwinColSelectFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
+    private final UserMenuDefinition userMenuDefinition;
+
+    @Inject
+    public UserActionExecutor(ComponentProvider componentProvider, AdminCentralModule module) {
+        super(componentProvider);
+        this.userMenuDefinition = module.getUserMenu();
     }
 
     @Override
-    protected AbstractSelect buildField() {
-        super.buildField();
-        ((TwinColSelect) select).setRows(select.getContainerDataSource().size());
-        select.setMultiSelect(definition.isMultiselect());
-        select.setNullSelectionAllowed(true);
-        ((TwinColSelect) select).setLeftColumnCaption(getMessage(definition.getLeftColumnCaption()));
-        ((TwinColSelect) select).setRightColumnCaption(getMessage(definition.getRightColumnCaption()));
-        return select;
+    public ActionDefinition getActionDefinition(String actionName) {
+
+        return (userMenuDefinition != null) ? userMenuDefinition.getActions().get(actionName) : null;
     }
 
-    @Override
-    protected AbstractSelect createSelectionField() {
-        return new TwinColSelect();
+    public Collection<ActionDefinition> getActions() {
+        return (userMenuDefinition != null) ? userMenuDefinition.getActions().values() : Collections.EMPTY_LIST;
     }
 }
