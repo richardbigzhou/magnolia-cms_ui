@@ -16,7 +16,7 @@
   <meta name="ctxPath" content="${contextPath}"/>
 
   <link rel="stylesheet" type="text/css" media="screen" href="${contextPath}/.resources/defaultLoginForm/css/reset.css" />
-  <link rel="stylesheet" type="text/css" media="screen" href="${contextPath}/.resources/defaultLoginForm/css/login.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="${contextPath}/.resources/defaultLoginForm/css/login.css?b" />
   <link rel="stylesheet" type="text/css" href="${contextPath}/.resources/defaultLoginForm/css/fonts.css" />
 
 </head>
@@ -44,11 +44,14 @@
           <br class="float-clear" />
       </form>
       [#if loginError]
-      <div id="error-divet" class="divet"></div>
+	  <div id="error-divet" class="divet"></div>
       <div id="error-message">
-        <span class="icon-error"></span><span>Username and/or password are incorrect</span>
+        <div class="icon-error"><img src="${contextPath}/.resources/defaultLoginForm/img/icon-error-white.png"/></div>
+        <span>Username and/or password are incorrect.</span>
       </div>
       [/#if]
+
+
   </div>
   <div id="footer">
         [#if serviceContact?exists]
