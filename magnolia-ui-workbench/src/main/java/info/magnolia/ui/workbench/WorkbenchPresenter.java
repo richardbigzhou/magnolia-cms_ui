@@ -51,7 +51,7 @@ import info.magnolia.ui.workbench.search.SearchPresenter;
 import info.magnolia.ui.workbench.tree.TreePresenter;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -218,7 +218,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     public void select(List<String> itemIds) {
         try {
             // restore selection
-            Set<JcrItemAdapter> items = new HashSet<JcrItemAdapter>();
+            Set<JcrItemAdapter> items = new LinkedHashSet<JcrItemAdapter>();
             for (String itemId : itemIds) {
                 if (JcrItemUtil.itemExists(getWorkspace(), itemId)) {
                     activePresenter.setSelectedItemId(itemId);

@@ -51,7 +51,7 @@ import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
 import info.magnolia.ui.workbench.event.ItemsSelectedEvent;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -115,7 +115,7 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
     @Override
     public void onItemSelection(Set items) {
         try {
-            Set<JcrItemAdapter> jcrItems = new HashSet<JcrItemAdapter>();
+            Set<JcrItemAdapter> jcrItems = new LinkedHashSet<JcrItemAdapter>();
             if (items == null || items.isEmpty()) {
                 log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
                 setSelectedItemId(getWorkbenchRoot().getIdentifier());

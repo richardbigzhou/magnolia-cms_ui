@@ -37,7 +37,7 @@ import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -68,7 +68,7 @@ public class ItemsSelectedEvent implements Event<ItemsSelectedEvent.Handler> {
     }
 
     public Set<String> getItemIds() {
-        Set<String> itemIds = new HashSet<String>();
+        Set<String> itemIds = new LinkedHashSet<String>();
         for (JcrItemAdapter item : items) {
             itemIds.add(item.getItemId());
         }
