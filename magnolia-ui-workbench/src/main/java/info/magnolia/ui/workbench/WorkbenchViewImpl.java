@@ -134,8 +134,8 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         searchArrow.addStyleName("searchbox-arrow");
 
         searchField = buildSearchField();
-        searchField.setVisible(false);
 
+        searchBox.setVisible(false);
         searchBox.addComponent(searchField);
         searchBox.addComponent(clearSearchBoxButton);
         searchBox.addComponent(searchIcon);
@@ -180,7 +180,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
             return;
         }
         if (viewType.equals(ViewType.LIST)) {
-            searchField.setVisible(true);
+            searchBox.setVisible(true);
         }
 
         // set button
