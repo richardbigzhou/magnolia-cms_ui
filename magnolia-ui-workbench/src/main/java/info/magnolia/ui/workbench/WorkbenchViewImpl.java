@@ -39,6 +39,7 @@ import info.magnolia.ui.vaadin.icon.Icon;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 
+import java.io.Serializable;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -59,7 +60,7 @@ import com.vaadin.ui.themes.BaseTheme;
 /**
  * Implementation of the workbench view.
  */
-public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView {
+public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, Serializable {
 
     private final CssLayout toolBar = new CssLayout();
 
