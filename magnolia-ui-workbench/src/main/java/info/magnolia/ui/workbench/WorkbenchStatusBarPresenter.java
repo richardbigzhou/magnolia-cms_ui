@@ -61,13 +61,7 @@ public class WorkbenchStatusBarPresenter {
 
     private EventBus eventBus;
 
-    private int selectionCount;
-    private int itemCount;
-
-    private String countPattern = "%d item(s), %d selected";
-
     private final Label selectionLabel = new Label();
-    private final Label countLabel = new Label();
 
     private JcrItemAdapter selectedItem;
 
@@ -76,7 +70,6 @@ public class WorkbenchStatusBarPresenter {
     @Inject
     public WorkbenchStatusBarPresenter(StatusBarView view) {
         this.view = view;
-        countLabel.setSizeUndefined();
     }
 
     private void bindHandlers() {
@@ -85,7 +78,6 @@ public class WorkbenchStatusBarPresenter {
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
                 setSelectedItem(event.getItem());
-                setSelectionCount(event.getItem() != null ? 1 : 0);
             }
         });
     }
@@ -97,8 +89,6 @@ public class WorkbenchStatusBarPresenter {
 
         view.addComponent(selectionLabel, Alignment.TOP_LEFT);
         ((HorizontalLayout) view).setExpandRatio(selectionLabel, 1);
-        view.addComponent(countLabel, Alignment.TOP_RIGHT);
-        ((HorizontalLayout) view).setExpandRatio(countLabel, 0);
 
         bindHandlers();
 
@@ -127,15 +117,5 @@ public class WorkbenchStatusBarPresenter {
             selectionLabel.setDescription(newDescription);
             this.selectedItem = item;
         }
-    }
-
-    public void setSelectionCount(int selectionCount) {
-        countLabel.setValue(String.format(countPattern, itemCount, selectionCount));
-        this.selectionCount = selectionCount;
-    }
-
-    public void setItemCount(int itemCount) {
-        countLabel.setValue(String.format(countPattern, itemCount, selectionCount));
-        this.itemCount = itemCount;
     }
 }

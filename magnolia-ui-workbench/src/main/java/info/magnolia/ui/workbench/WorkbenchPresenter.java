@@ -142,18 +142,6 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         }
 
         // add status bar
-        if (activePresenter != null) {
-            Container container = activePresenter.getContainer();
-            if (container instanceof ItemSetChangeNotifier) {
-                ((ItemSetChangeNotifier) container).addItemSetChangeListener(new ItemSetChangeListener() {
-
-                    @Override
-                    public void containerItemSetChange(ItemSetChangeEvent event) {
-                        statusBarPresenter.setItemCount(event.getContainer().size());
-                    }
-                });
-            }
-        }
         view.setStatusBarView(statusBarPresenter.start(eventBus, workbenchDefinition));
 
         view.setListener(this);
