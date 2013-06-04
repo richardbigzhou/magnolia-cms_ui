@@ -10,7 +10,7 @@
   <packaging>jar</packaging>
   <name>magnolia-ui-admincentral</name>
   <properties>
-    <cloverCoverageThreshold>15.5</cloverCoverageThreshold>
+    <cloverCoverageThreshold>15.4</cloverCoverageThreshold>
   </properties>
   <dependencies>
     <dependency>

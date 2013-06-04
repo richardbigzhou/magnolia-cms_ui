@@ -68,17 +68,21 @@ public class ShellAppLauncher extends FlowPanel {
      * Listener.
      */
     public interface Listener {
+
         void onHideShellAppsRequested();
         void showShellApp(ShellAppType type);
     }
-
     private final static int DIVET_ANIMATION_SPEED = 400;
+
+    public static final String USER_MENU_CLASS_NAME = "v-shell-user-menu-wrapper";
 
     private final static String ID = "main-launcher";
 
     private final Element divetWrapper = DOM.createDiv();
 
     private final TouchPanel logo = new TouchPanel();
+
+    private final Element userMenu = DOM.createDiv();
 
     private final Element logoImg = DOM.createImg();
 
@@ -123,6 +127,10 @@ public class ShellAppLauncher extends FlowPanel {
         }
     }
 
+    public void setUserMenu(Widget widget) {
+        add(widget, userMenu);
+    }
+
     public ShellAppType getActiveShellType() {
         final Iterator<Entry<ShellAppType, NavigatorButton>> it = controlsMap.entrySet().iterator();
         while (it.hasNext()) {
@@ -164,6 +172,8 @@ public class ShellAppLauncher extends FlowPanel {
         logo.getElement().appendChild(logoImg);
         add(logo);
 
+        userMenu.setClassName(USER_MENU_CLASS_NAME);
+        getElement().appendChild(userMenu);
         getElement().appendChild(divetWrapper);
         add(divet, divetWrapper);
         for (final ShellAppType appType : ShellAppType.values()) {

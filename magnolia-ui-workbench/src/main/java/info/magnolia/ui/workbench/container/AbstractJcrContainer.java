@@ -645,12 +645,16 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      */
     public void refresh() {
         resetOffset();
-        itemIndexes.clear();
+        clearItemIndexes();
         updateSize();
     }
 
     protected void resetOffset() {
         currentOffset = 0;
+    }
+
+    protected void clearItemIndexes() {
+        itemIndexes.clear();
     }
 
     protected int getCurrentOffset() {

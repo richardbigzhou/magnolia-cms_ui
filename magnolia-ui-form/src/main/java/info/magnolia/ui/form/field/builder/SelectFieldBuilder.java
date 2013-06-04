@@ -67,7 +67,7 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
 
     private static final Logger log = LoggerFactory.getLogger(SelectFieldBuilder.class);
 
-    private String initialSelecteKey;
+    private String initialSelectedKey;
     private String optionValueName;
     private String optionLabelName;
     private String optionIconName = SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME;
@@ -153,7 +153,7 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
                 option.setValue(getValue(option));
                 option.setLabel(getMessage(getLabel(option)));
                 if (option.isSelected()) {
-                    initialSelecteKey = getValue(option);
+                    initialSelectedKey = getValue(option);
                 }
                 if (!hasOptionIcon && StringUtils.isNotBlank(option.getIconSrc())) {
                     hasOptionIcon = true;
@@ -224,13 +224,13 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
         if (datasourceValue != null && ((datasourceValue instanceof Collection && !((Collection) datasourceValue).isEmpty()) || (!(datasourceValue instanceof Collection) && StringUtils.isNotEmpty(datasourceValue.toString())))) {
             this.field.setValue(datasourceValue);
             return;
-        } else if (initialSelecteKey != null) {
-            selectedValue = initialSelecteKey;
-        } else if (definition.getOptions() != null && !definition.getOptions().isEmpty()) {
+        } else if (initialSelectedKey != null) {
+            selectedValue = initialSelectedKey;
+        } else if (!select.isNullSelectionAllowed() && definition.getOptions() != null && !definition.getOptions().isEmpty()) {
             selectedValue = definition.getOptions().get(0).getValue();
         }
-        // Set the selected value
-        if (datasourceValue != null && datasourceValue instanceof Collection) {
+        // Set the selected value (if not null)
+        if (datasourceValue != null && datasourceValue instanceof Collection && selectedValue != null) {
                 ((Collection) datasourceValue).add(selectedValue);
                 selectedValue = datasourceValue;
         }
@@ -258,7 +258,7 @@ public class SelectFieldBuilder<D extends SelectFieldDefinition> extends Abstrac
 
                         if (child.hasProperty(SelectFieldDefinition.OPTION_SELECTED_PROPERTY_NAME)) {
                             option.setSelected(true);
-                            initialSelecteKey = option.getValue();
+                            initialSelectedKey = option.getValue();
                         }
                         if (child.hasProperty(SelectFieldDefinition.OPTION_NAME_PROPERTY_NAME)) {
                             option.setName(child.getProperty(SelectFieldDefinition.OPTION_NAME_PROPERTY_NAME).getString());

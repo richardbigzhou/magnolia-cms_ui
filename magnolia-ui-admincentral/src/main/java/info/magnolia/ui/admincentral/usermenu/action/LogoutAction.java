@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.builder;
+package info.magnolia.ui.admincentral.usermenu.action;
 
-import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
+import info.magnolia.audit.AuditLoggingUtil;
+import info.magnolia.context.Context;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.context.UserContext;
+import info.magnolia.ui.api.action.AbstractAction;
+import info.magnolia.ui.api.action.ActionExecutionException;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.TwinColSelect;
+import com.vaadin.ui.UI;
 
 /**
- * Creates and initializes a select field based on a field definition.
- *
- * @param <T> the definition
+ * Action for logging out of the admin central. Closes the current vaadin session and performs a system logout
+ * using {@link info.magnolia.context.UserContext#logout()}.
+ * Redirects to {@link MgnlContext#getContextPath()}.
  */
-public class TwinColSelectFieldBuilder<T extends TwinColSelectFieldDefinition> extends SelectFieldBuilder<TwinColSelectFieldDefinition> {
-
-    public TwinColSelectFieldBuilder(TwinColSelectFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
+public class LogoutAction extends AbstractAction<LogoutActionDefinition> {
+    public LogoutAction(LogoutActionDefinition definition) {
+        super(definition);
     }
 
     @Override
-    protected AbstractSelect buildField() {
-        super.buildField();
-        ((TwinColSelect) select).setRows(select.getContainerDataSource().size());
-        select.setMultiSelect(definition.isMultiselect());
-        select.setNullSelectionAllowed(true);
-        ((TwinColSelect) select).setLeftColumnCaption(getMessage(definition.getLeftColumnCaption()));
-        ((TwinColSelect) select).setRightColumnCaption(getMessage(definition.getRightColumnCaption()));
-        return select;
-    }
-
-    @Override
-    protected AbstractSelect createSelectionField() {
-        return new TwinColSelect();
+    public void execute() throws ActionExecutionException {
+        Context ctx = MgnlContext.getInstance();
+        if (ctx instanceof UserContext) {
+            // log before actual op, to preserve username for logging
+            AuditLoggingUtil.log((UserContext) ctx);
+            ((UserContext) ctx).logout();
+        }
+        UI.getCurrent().getSession().close();
+        UI.getCurrent().getPage().setLocation(MgnlContext.getContextPath());
     }
 }

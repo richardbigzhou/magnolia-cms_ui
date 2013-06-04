@@ -1,0 +1,26 @@
+@charset "UTF-8";
+
+@mixin user-menu {
+  .v-shell-user-menu-wrapper{
+    position: absolute;
+    right: 10px;
+    top: 20px;
+    z-index: 450;
+  }
+
+  button.v-nativebutton-user-menu {
+    background: transparent;
+    border: none;
+    color: #48630A;
+  }
+
+  button.v-nativebutton-user-menu:hover {
+    color: $c80;
+  }
+
+  button.v-nativebutton-user-menu span.v-nativebutton-caption span {
+    padding-left: 5px;
+    vertical-align: middle;
+  }
+
+}
