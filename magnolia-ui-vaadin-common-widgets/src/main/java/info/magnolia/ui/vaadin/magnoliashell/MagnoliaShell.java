@@ -227,8 +227,10 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
     }
 
     public void removeOverlay(Overlay overlay) {
-        getState().overlays.remove(overlay);
-        overlay.setParent(null);
+        if (overlay.getParent() == this) {
+            getState().overlays.remove(overlay);
+            overlay.setParent(null);
+        }
     }
 
 
