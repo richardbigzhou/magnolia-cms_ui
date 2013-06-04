@@ -44,6 +44,7 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.thumbnail.ThumbnailContainer.ThumbnailItem;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -94,9 +95,9 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     }
 
     @Override
-    public void setSelectedItemId(String itemId) {
-        super.setSelectedItemId(itemId);
-        view.select(itemId);
+    public void setSelectedItemIds(List<String> itemIds) {
+        super.setSelectedItemIds(itemIds);
+        view.select(itemIds);
     }
 
     @Override

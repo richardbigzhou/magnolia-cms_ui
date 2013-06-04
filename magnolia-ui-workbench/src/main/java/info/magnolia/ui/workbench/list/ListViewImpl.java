@@ -190,9 +190,11 @@ public class ListViewImpl implements ListView {
     }
 
     @Override
-    public void select(String itemId) {
+    public void select(List<String> itemIds) {
         table.setValue(null);
-        table.select(itemId);
+        for (String id : itemIds) {
+            table.select(id);
+        }
         // do not #setCurrentPageFirstItemId because AbstractJcrContainer's index resolution is super slow.
     }
 

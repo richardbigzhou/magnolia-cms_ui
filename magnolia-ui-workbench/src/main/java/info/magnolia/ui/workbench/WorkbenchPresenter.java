@@ -129,7 +129,9 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                     activePresenter = presenter;
                     try {
                         String workbenchRootItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
-                        activePresenter.setSelectedItemId(workbenchRootItemId);
+                        List<String> ids = new ArrayList<String>(1);
+                        ids.add(workbenchRootItemId);
+                        activePresenter.setSelectedItemIds(ids);
                     } catch (RepositoryException e) {
                         log.error("Could not find workbench root node", e);
                     }
@@ -219,14 +221,17 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         try {
             // restore selection
             Set<JcrItemAdapter> items = new LinkedHashSet<JcrItemAdapter>();
+            List<String> selectedIds = new ArrayList<String>();
             for (String itemId : itemIds) {
                 if (JcrItemUtil.itemExists(getWorkspace(), itemId)) {
-                    activePresenter.setSelectedItemId(itemId);
+                    selectedIds.add(itemId);
                 } else {
                     log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.",
                             new Object[] { itemId, workbenchDefinition.getWorkspace(), workbenchDefinition.getPath() });
                     String workbenchRootItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
-                    activePresenter.setSelectedItemId(workbenchRootItemId);
+                    if (!selectedIds.contains(workbenchRootItemId)) {
+                        selectedIds.add(workbenchRootItemId);
+                    }
                 }
 
                 Item jcrItem = JcrItemUtil.getJcrItem(getWorkspace(), itemId);
@@ -239,6 +244,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                 }
                 items.add(itemAdapter);
             }
+            activePresenter.setSelectedItemIds(selectedIds);
 
             eventBus.fireEvent(new ItemsSelectedEvent(workbenchDefinition.getWorkspace(), items));
 

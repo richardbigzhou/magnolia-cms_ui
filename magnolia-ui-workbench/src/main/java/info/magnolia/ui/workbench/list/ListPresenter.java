@@ -108,9 +108,9 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
 
 
     @Override
-    public void setSelectedItemId(String itemId) {
-        super.setSelectedItemId(itemId);
-        view.select(itemId);
+    public void setSelectedItemIds(List<String> itemIds) {
+        super.setSelectedItemIds(itemIds);
+        view.select(itemIds);
     }
 
     @Override

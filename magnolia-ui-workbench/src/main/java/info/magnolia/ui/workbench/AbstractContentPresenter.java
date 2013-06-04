@@ -105,9 +105,8 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
     }
 
     @Override
-    public void setSelectedItemId(String selectedItemId) {
-        this.selectedItemIds = new ArrayList<String>();
-        this.selectedItemIds.add(selectedItemId);
+    public void setSelectedItemIds(List<String> selectedItemIds) {
+        this.selectedItemIds = selectedItemIds;
     }
 
     // CONTENT VIEW LISTENER
@@ -118,7 +117,9 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
             Set<JcrItemAdapter> jcrItems = new LinkedHashSet<JcrItemAdapter>();
             if (items == null || items.isEmpty()) {
                 log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
-                setSelectedItemId(getWorkbenchRoot().getIdentifier());
+                List<String> ids = new ArrayList<String>(1);
+                ids.add(getWorkbenchRoot().getIdentifier());
+                setSelectedItemIds(ids);
                 jcrItems.add(toJcrItemAdapter(getWorkbenchRoot()));
             } else {
                 selectedItemIds = new ArrayList<String>(items.size());
@@ -167,7 +168,9 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
     public void onDoubleClick(Item item) {
         if (item != null) {
             try {
-                setSelectedItemId(((JcrItemAdapter) item).getItemId());
+                List<String> ids = new ArrayList<String>(1);
+                ids.add(((JcrItemAdapter) item).getItemId());
+                setSelectedItemIds(ids);
                 log.debug("com.vaadin.data.Item at {} was double clicked. Firing ItemDoubleClickedEvent...", getSelectedItemId());
                 eventBus.fireEvent(new ItemDoubleClickedEvent(workbenchDefinition.getWorkspace(), getSelectedItemId()));
             } catch (Exception e) {
@@ -184,7 +187,9 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
             try {
                 // if the right-clicket item is not yet selected
                 if (!selectedItemIds.contains(((JcrItemAdapter) item).getItemId())) {
-                    setSelectedItemId(((JcrItemAdapter) item).getItemId());
+                    List<String> ids = new ArrayList<String>(1);
+                    ids.add(((JcrItemAdapter) item).getItemId());
+                    setSelectedItemIds(ids);
                 }
                 String clickedItemId = ((JcrItemAdapter) item).getItemId();
                 log.debug("com.vaadin.data.Item at {} was right clicked. Firing ItemRightClickedEvent...", clickedItemId);

@@ -39,6 +39,7 @@ import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailRightClickLis
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailSelectionListener;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.vaadin.data.Container;
@@ -100,7 +101,7 @@ public class ThumbnailViewImpl implements ThumbnailView {
     }
 
     @Override
-    public void select(String path) {
+    public void select(List<String> itemIds) {
         // do something?
     }
 

@@ -35,6 +35,7 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.ui.api.view.View;
 
+import java.util.List;
 import java.util.Set;
 
 import com.vaadin.data.Item;
@@ -83,11 +84,11 @@ public interface ContentView extends View {
     void setListener(ContentView.Listener listener);
 
     /**
-     * Selects the item with given path in the content view.
-     *
-     * @param path relative to the tree root, must start with '/'
+     * Selects the items with given IDs in the content view.
+     * 
+     * @param item IDs
      */
-    void select(String path);
+    void select(List<String> itemIds);
 
     ViewType getViewType();
 
