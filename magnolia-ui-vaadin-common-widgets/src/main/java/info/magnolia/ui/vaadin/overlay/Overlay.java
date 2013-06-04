@@ -38,8 +38,8 @@ import info.magnolia.ui.vaadin.gwt.client.dialog.connector.OverlayState;
 import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.OverlayClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.OverlayServerRpc;
 
+import com.vaadin.ui.AbstractSingleComponentContainer;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
 
 /**
  * A Single component container that includes a "glass" or "curtain" which dims out and prevents interaction on the elements
@@ -47,7 +47,7 @@ import com.vaadin.ui.CssLayout;
  * It is only modal within the component that it is added to.
  * Positioning of the glass and component depends on one of the parents having css position set to relative or absolute.
  */
-public class Overlay extends CssLayout {
+public class Overlay extends AbstractSingleComponentContainer {
 
     /**
      * Timeout listener interface.
@@ -62,7 +62,7 @@ public class Overlay extends CssLayout {
         setImmediate(true);
 
         content.addStyleName("overlay-child");
-        addComponent(content);
+        setContent(content);
         getState().overlayContent = content;
         getState().overlayParent = overlayParent;
 
@@ -98,5 +98,12 @@ public class Overlay extends CssLayout {
 
     public void close() {
         getRpcProxy(OverlayClientRpc.class).close();
+    }
+
+    @Override
+    public void detach() {
+        if (getParent() != null) {
+            super.detach();
+        }
     }
 }
