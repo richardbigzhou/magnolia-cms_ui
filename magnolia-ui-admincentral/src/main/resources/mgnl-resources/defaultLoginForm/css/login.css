@@ -176,12 +176,14 @@ body{
 }
 
 #login-divet{
-  background: url(../img/style-divet-login-up-green.png) no-repeat;
-  position:absolute;
-  top:-9.5px;
-  left:74px;
-  width:19px;
-  height:10px;
+  border-bottom: 10px solid #739821;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  width: 0;
+  height: 0;
+  left: 74px;
+  position: absolute;
+  top: -9.5px;
 }
 
 .float-clear{

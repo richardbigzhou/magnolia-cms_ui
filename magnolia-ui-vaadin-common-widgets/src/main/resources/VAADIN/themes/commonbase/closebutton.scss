@@ -11,6 +11,10 @@
     cursor: pointer;
     z-index:100;
     outline: none !important;
+
+    &:hover, &:focus, &:active {
+	    opacity: 0.6;
+    }
   }
 
 }
