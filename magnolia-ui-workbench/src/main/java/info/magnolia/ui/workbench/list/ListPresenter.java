@@ -38,7 +38,6 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.util.ArrayList;
@@ -65,17 +64,21 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     }
 
     @Override
-    public ListView start(WorkbenchDefinition workbench, EventBus eventBus) {
-        super.start(workbench, eventBus);
+    public ListView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName) {
+        super.start(workbench, eventBus, viewTypeName);
 
-        this.container = createContainer(workbench);
+        this.container = createContainer(workbench, viewTypeName);
         view.setListener(this);
         view.setContainer(container);
 
         // build columns
+
         List<Object> editableColumns = new ArrayList<Object>();
 
-        Iterator<ColumnDefinition> it = workbench.getColumns().iterator();
+        Iterator<ColumnDefinition> it = null;
+        // was it = = workbench.getColumns().iterator();
+        it = getColumnsIterator();
+
         while (it.hasNext()) {
             ColumnDefinition column = it.next();
 
@@ -100,14 +103,6 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
             }
         }
 
-        // node icons
-        List<NodeTypeDefinition> nodeTypes = workbench.getNodeTypes();
-        for (NodeTypeDefinition nodeType : nodeTypes) {
-            if (nodeType.getIcon() != null) {
-                view.setNodeIcon(nodeType.getName(), nodeType.getIcon());
-            }
-        }
-
         return view;
     }
 
@@ -125,8 +120,8 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
         container.fireItemSetChange();
     }
 
-    protected AbstractJcrContainer createContainer(WorkbenchDefinition workbench) {
-        return new FlatJcrContainer(workbench);
+    protected AbstractJcrContainer createContainer(WorkbenchDefinition workbench, String viewTypeName) {
+        return new FlatJcrContainer(workbench, viewTypeName);
     }
 
     @Override

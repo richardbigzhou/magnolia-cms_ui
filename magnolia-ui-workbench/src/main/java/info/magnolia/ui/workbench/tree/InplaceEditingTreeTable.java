@@ -48,7 +48,6 @@ import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
-import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.AbstractTextField;
@@ -57,6 +56,10 @@ import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TableFieldFactory;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Tree.CollapseEvent;
+import com.vaadin.ui.Tree.CollapseListener;
+import com.vaadin.ui.Tree.ExpandEvent;
+import com.vaadin.ui.Tree.ExpandListener;
 
 /**
  * The Inplace-editing TreeTable, for editing item properties inplace, on double click or via keyboard shortcuts.
@@ -70,17 +73,38 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
     private List<Object> editableColumns = new ArrayList<Object>();
 
+    private InplaceEditingFieldFactory fieldFactory;
+
     private ColumnGenerator bypassedColumnGenerator;
 
     private final List<ItemEditedEvent.Handler> listeners = new ArrayList<ItemEditedEvent.Handler>();
 
     public InplaceEditingTreeTable() {
         super();
-        setTableFieldFactory(new InplaceEditingFieldFactory());
+        fieldFactory = new InplaceEditingFieldFactory();
+        setTableFieldFactory(fieldFactory);
         addItemClickListener(asItemClickListener());
+
+        addExpandListener(new ExpandListener() {
+
+            @Override
+            public void nodeExpand(ExpandEvent event) {
+                if (editingItemId != null) {
+                    setEditing(null, null);
+                }
+            }
+        });
+
+        addCollapseListener(new CollapseListener() {
+
+            @Override
+            public void nodeCollapse(CollapseEvent event) {
+                if (editingItemId != null) {
+                    setEditing(null, null);
+                }
+            }
+        });
     }
-
-
 
     // INPLACE EDITING ENTRY POINTS.
 
@@ -106,6 +130,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
             if ((bypassedColumnGenerator = getColumnGenerator(propertyId)) != null) {
                 removeGeneratedColumn(propertyId);
             }
+            fieldFactory.createFieldAndRegister(getContainerDataSource(), itemId, propertyId, this);
         } else {
             if (bypassedColumnGenerator != null) {
                 addGeneratedColumn(editingPropertyId, bypassedColumnGenerator);
@@ -119,6 +144,56 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         refreshRowCache();
     }
 
+    // PARTIAL UPDATES
+    // MGNLUI-282 partial updates are disabled for inplace-editing to prevent tree from turning unstable.
+
+    @Override
+    protected int getFirstUpdatedItemIndex() {
+        // if (editingItemId != null) {
+        // return indexOfId(editingItemId);
+        // }
+        return super.getFirstUpdatedItemIndex();
+    }
+
+    @Override
+    protected int getUpdatedRowCount() {
+        // if (editingItemId != null) {
+        // return 1;
+        // }
+        return super.getUpdatedRowCount();
+    }
+
+    @Override
+    protected int getFirstAddedItemIndex() {
+        // if (editingItemId != null) {
+        // return indexOfId(editingItemId);
+        // }
+        return super.getFirstAddedItemIndex();
+    }
+
+    @Override
+    protected int getAddedRowCount() {
+        // if (editingItemId != null) {
+        // return 0;
+        // }
+        return super.getAddedRowCount();
+    }
+
+    @Override
+    protected boolean shouldHideAddedRows() {
+        // if (editingItemId != null) {
+        // return false;
+        // }
+        return super.shouldHideAddedRows();
+    }
+
+    @Override
+    protected boolean isPartialRowUpdate() {
+        return
+        // editingItemId != null ||
+        super.isPartialRowUpdate();
+    }
+
     // INPLACE EDITING FIELD FACTORY
 
     /**
@@ -126,44 +201,64 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
      */
     private class InplaceEditingFieldFactory implements TableFieldFactory {
 
+        private Field<?> inplaceEditingField;
+
+        /**
+         * For partial updates to work, we need to perform a dry run to attach the component to the table beforehand,
+         * i.e. before it is actually requested at paint phase by the table.
+         */
+        public void createFieldAndRegister(Container container, Object itemId, Object propertyId, Component uiContext) {
+
+            Property<?> containerProperty = container.getContainerProperty(itemId, propertyId);
+            Class<?> type = containerProperty.getType();
+            final Field<?> field = createFieldByPropertyType(type);
+            if (field != null) {
+                field.setCaption(DefaultFieldFactory.createCaptionByPropertyId(propertyId));
+                field.setSizeFull();
+            }
+
+            // set TextField listeners
+            if (field instanceof AbstractTextField) {
+                final AbstractTextField tf = (AbstractTextField) field;
+                tf.addBlurListener(new FieldEvents.BlurListener() {
+
+                    @Override
+                    public void blur(BlurEvent event) {
+                        fireItemEditedEvent(tf.getPropertyDataSource());
+                        setEditing(null, null);
+                    }
+                });
+                tf.focus();
+
+                tf.addValueChangeListener(new ValueChangeListener() {
+
+                    @Override
+                    public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
+                        final Object text = event.getProperty().getValue();
+                        if (text instanceof String) {
+                            tf.setCursorPosition(((String) text).length());
+                        }
+                        tf.removeValueChangeListener(this);
+                    }
+                });
+            }
+
+            // register component on the table
+            if (field.getParent() != uiContext) {
+                field.setParent(uiContext);
+            }
+
+            inplaceEditingField = field;
+        }
+
         @Override
         public Field<?> createField(Container container, Object itemId, Object propertyId, Component uiContext) {
 
             // add TextField only for selected row/column.
             if (editableColumns.contains(propertyId) && itemId.equals(editingItemId) && propertyId.equals(editingPropertyId)) {
-
-                Property<?> containerProperty = container.getContainerProperty(itemId, propertyId);
-                Class<?> type = containerProperty.getType();
-                final Field<?> field = createFieldByPropertyType(type);
-                if (field != null) {
-                    field.setCaption(DefaultFieldFactory.createCaptionByPropertyId(propertyId));
-                    field.setSizeFull();
-                }
-
-                // set TextField Focus listeners
-                if (field instanceof AbstractTextField) {
-                    final AbstractTextField tf = (AbstractTextField) field;
-                    tf.addFocusListener(new FieldEvents.FocusListener() {
-
-                        @Override
-                        public void focus(FocusEvent event) {
-                            tf.setCursorPosition(tf.getValue().length());
-                        }
-                    });
-
-                    tf.addBlurListener(new FieldEvents.BlurListener() {
-
-                        @Override
-                        public void blur(BlurEvent event) {
-                            fireItemEditedEvent(tf.getPropertyDataSource());
-                            setEditing(null, null);
-                        }
-                    });
-                    tf.focus();
-                }
-
-                return field;
+                return inplaceEditingField;
             }
+
             return null;
         }
 

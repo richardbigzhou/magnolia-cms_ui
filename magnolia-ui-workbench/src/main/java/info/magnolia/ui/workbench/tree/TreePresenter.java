@@ -68,15 +68,15 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
     }
 
     @Override
-    public TreeView start(WorkbenchDefinition workbench, EventBus eventBus) {
-        TreeView view = (TreeView) super.start(workbench, eventBus);
+    public TreeView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName) {
+        TreeView view = (TreeView) super.start(workbench, eventBus, viewTypeName);
 
         // inplace-editing
         if (workbench.isEditable()) {
 
             List<Object> editableColumns = new ArrayList<Object>();
 
-            Iterator<ColumnDefinition> it = workbench.getColumns().iterator();
+            Iterator<ColumnDefinition> it = getColumnsIterator();
             while (it.hasNext()) {
                 ColumnDefinition column = it.next();
 
@@ -107,8 +107,8 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
     }
 
     @Override
-    protected HierarchicalJcrContainer createContainer(WorkbenchDefinition workbench) {
-        return new HierarchicalJcrContainer(workbench);
+    protected HierarchicalJcrContainer createContainer(WorkbenchDefinition workbench, String viewTypeName) {
+        return new HierarchicalJcrContainer(workbench, viewTypeName);
     }
 
     // TREE VIEW LISTENER IMPL

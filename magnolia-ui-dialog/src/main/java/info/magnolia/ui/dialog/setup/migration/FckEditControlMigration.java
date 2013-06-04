@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,21 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.widget.dnd;
+package info.magnolia.ui.dialog.setup.migration;
 
-import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar;
+import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
 
-import com.google.gwt.core.client.GWT;
-import com.google.web.bindery.event.shared.EventBus;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
- * DragAndDrop.
+ * Migrate an FckEdit control to a RichTextField.
  */
-public abstract class DragAndDrop {
+public class FckEditControlMigration implements ControlMigration {
 
-    private static final DragAndDropImpl dndImpl = GWT.create(DragAndDropImpl.class);
 
-    public static void dragAndDrop(EventBus eventBus, final ComponentBar abstractBar) {
-        dndImpl.dragAndDrop(eventBus, abstractBar);
+    @Override
+    public void migrate(Node controlNode) throws RepositoryException {
+        controlNode.getProperty("controlType").remove();
+        controlNode.setProperty("class", RichTextFieldDefinition.class.getName());
     }
+
 }

@@ -97,9 +97,9 @@ public class WorkbenchStatusBarPresenter {
 
         this.eventBus = eventBus;
 
-        view.addComponent(selectionLabel, Alignment.MIDDLE_LEFT);
+        view.addComponent(selectionLabel, Alignment.TOP_LEFT);
         ((HorizontalLayout) view).setExpandRatio(selectionLabel, 1);
-        view.addComponent(countLabel, Alignment.MIDDLE_RIGHT);
+        view.addComponent(countLabel, Alignment.TOP_RIGHT);
         ((HorizontalLayout) view).setExpandRatio(countLabel, 0);
 
         bindHandlers();

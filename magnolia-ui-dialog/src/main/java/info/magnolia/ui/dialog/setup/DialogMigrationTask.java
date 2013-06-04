@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -43,11 +43,25 @@ import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.AbstractTask;
 import info.magnolia.module.delta.TaskExecutionException;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.dialog.setup.migration.CheckBoxRadioControlMigration;
+import info.magnolia.ui.dialog.setup.migration.CheckBoxSwitchControlMigration;
+import info.magnolia.ui.dialog.setup.migration.ControlMigration;
+import info.magnolia.ui.dialog.setup.migration.DamControlMigration;
+import info.magnolia.ui.dialog.setup.migration.DateControlMigration;
+import info.magnolia.ui.dialog.setup.migration.EditControlMigration;
+import info.magnolia.ui.dialog.setup.migration.FckEditControlMigration;
+import info.magnolia.ui.dialog.setup.migration.FileControlMigration;
+import info.magnolia.ui.dialog.setup.migration.HiddenControlMigration;
+import info.magnolia.ui.dialog.setup.migration.LinkControlMigration;
+import info.magnolia.ui.dialog.setup.migration.MultiSelectControlMigration;
+import info.magnolia.ui.dialog.setup.migration.SelectControlMigration;
+import info.magnolia.ui.dialog.setup.migration.StaticControlMigration;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -71,10 +85,12 @@ public class DialogMigrationTask extends AbstractTask {
     private static final Logger log = LoggerFactory.getLogger(DialogMigrationTask.class);
     private final String moduleName;
     private final HashSet<Property> extendsAndReferenceProperty = new HashSet<Property>();
+    private HashMap<String, ControlMigration> controlMigrationMap;
 
     public DialogMigrationTask(String moduleName) {
         super("Dialog Migration for 5.x", "Migrate dialog for the following module: " + moduleName);
         this.moduleName = moduleName;
+        this.controlMigrationMap = new HashMap<String, ControlMigration>();
     }
 
     /**
@@ -83,6 +99,7 @@ public class DialogMigrationTask extends AbstractTask {
     @Override
     public void execute(InstallContext installContext) throws TaskExecutionException {
         try {
+            initializeControlMigrationMap();
             String dialogNodeName = "dialogs";
             String dialogPath = "/modules/" + moduleName + "/" + dialogNodeName;
 
@@ -109,6 +126,29 @@ public class DialogMigrationTask extends AbstractTask {
             log.error("", e);
             installContext.warn("Could not Migrate Dialog for the following module " + moduleName);
         }
+    }
+
+    /**
+     * Initialize the map used to migrate controls to Fields.<br>
+     * Each control is link to a specific {@link ControlMigration}.
+     * <b>Override this class in order to add your own controls migration task.</b>
+     */
+    protected void initializeControlMigrationMap() {
+        this.controlMigrationMap.put("edit", new EditControlMigration());
+        this.controlMigrationMap.put("fckEdit", new FckEditControlMigration());
+        this.controlMigrationMap.put("date", new DateControlMigration());
+        this.controlMigrationMap.put("select", new SelectControlMigration());
+        this.controlMigrationMap.put("checkbox", new CheckBoxRadioControlMigration(true));
+        this.controlMigrationMap.put("checkboxSwitch", new CheckBoxSwitchControlMigration());
+        this.controlMigrationMap.put("radio", new CheckBoxRadioControlMigration(false));
+        this.controlMigrationMap.put("dam", new DamControlMigration("image.*"));
+        this.controlMigrationMap.put("uuidLink", new LinkControlMigration());
+        this.controlMigrationMap.put("link", new LinkControlMigration());
+        this.controlMigrationMap.put("categorizationUUIDMultiSelect", new MultiSelectControlMigration(true));
+        this.controlMigrationMap.put("multiselect", new MultiSelectControlMigration(false));
+        this.controlMigrationMap.put("file", new FileControlMigration());
+        this.controlMigrationMap.put("static", new StaticControlMigration());
+        this.controlMigrationMap.put("hidden", new HiddenControlMigration());
     }
 
     /**
@@ -207,68 +247,17 @@ public class DialogMigrationTask extends AbstractTask {
      */
     private void handleField(Node fieldNode) throws RepositoryException {
         if (fieldNode.hasProperty("controlType")) {
-            if (fieldNode.getProperty("controlType").getString().equals("edit")) {
-                fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.TextFieldDefinition");
-            } else if (fieldNode.getProperty("controlType").getString().equals("fckEdit")) {
-                fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.RichTextFieldDefinition");
-            } else if (fieldNode.getProperty("controlType").getString().equals("date")) {
-                fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.DateFieldDefinition");
-            } else if (fieldNode.getProperty("controlType").getString().equals("select")) {
-                fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.SelectFieldDefinition");
-            } else if (fieldNode.getProperty("controlType").getString().equals("checkbox")) {
-                fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition");
-                fieldNode.setProperty("multiselect", "true");
-            } else if (fieldNode.getProperty("controlType").getString().equals("checkboxSwitch")) {
-                fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.CheckboxFieldDefinition");
-            } else if (fieldNode.getProperty("controlType").getString().equals("radio")) {
-                fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition");
-            } else if (fieldNode.getProperty("controlType").getString().equals("dam")) {
-                fieldNode.getProperty("controlType").remove();
-                setDamField(fieldNode, "image.*");
-            } else if (fieldNode.getProperty("controlType").getString().equals("hidden")) {
-                fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.HiddenFieldDefinition");
-            } else if (fieldNode.getProperty("controlType").getString().equals("uuidLink") || fieldNode.getProperty("controlType").getString().equals("link")) {
-                fieldNode.setProperty("identifier", fieldNode.getProperty("controlType").getString().equals("uuidLink") ? "true" : "false");
-                fieldNode.getProperty("controlType").remove();
-                if (fieldNode.hasProperty("repository")) {
-                    if (fieldNode.getProperty("repository").getString().equals("website")) {
-                        fieldNode.setProperty("appName", "pages");
-                        fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.LinkFieldDefinition");
-                        fieldNode.setProperty("dialogName", "ui-pages-app:link");
-                    } else if (fieldNode.getProperty("repository").getString().equals("data")) {
-                        // Handle contacts
-                        if (fieldNode.hasProperty("tree") && fieldNode.getProperty("tree").getString().equals("Contact")) {
-                            fieldNode.setProperty("appName", "contacts");
-                            fieldNode.setProperty("workspace", "contacts");
-                            fieldNode.setProperty("dialogName", "ui-contacts-app:link");
-                            fieldNode.setProperty("class", "info.magnolia.ui.app.contacts.field.definition.ContactLinkFieldDefinition");
-                        }
-                    } else if (fieldNode.getProperty("repository").getString().equals("dms")) {
-                        setDamField(fieldNode, null);
-                    }
-                } else {
-                    // Set repository to website
-                    fieldNode.setProperty("repository", "website");
-                    fieldNode.setProperty("appName", "pages");
-                    fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.LinkFieldDefinition");
-                    fieldNode.setProperty("dialogName", "ui-pages-app:link");
-                }
-            } else if (fieldNode.getProperty("controlType").getString().equals("file")) {
-                fieldNode.getProperty("controlType").remove();
-                fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition");
+            String controlTypeName = fieldNode.getProperty("controlType").getString();
+
+            if (controlMigrationMap.containsKey(controlTypeName)) {
+                ControlMigration controlMigration = controlMigrationMap.get(controlTypeName);
+                controlMigration.migrate(fieldNode);
             } else {
                 fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.StaticFieldDefinition");
                 if (!fieldNode.hasProperty("value")) {
                     fieldNode.setProperty("value", "Field not yet supported");
                 }
+                log.warn("No dialog define for control '{}' for node '{}'", controlTypeName, fieldNode.getPath());
             }
         } else {
             // Handle Field Extends/Reference
@@ -276,23 +265,6 @@ public class DialogMigrationTask extends AbstractTask {
         }
     }
 
-    private void setDamField(Node fieldNode, String allowedMimeType) throws RepositoryException {
-        fieldNode.setProperty("class", "info.magnolia.dam.app.assets.field.definition.AssetLinkFieldDefinition");
-        if (!fieldNode.hasProperty("description")) {
-            fieldNode.setProperty("description", "Select an asset");
-        }
-        fieldNode.setProperty("identifier", "true");
-        if (!fieldNode.hasProperty("label")) {
-            fieldNode.setProperty("label", "Image");
-        }
-        fieldNode.setProperty("repository", "data");
-        fieldNode.setProperty("type", "String");
-        fieldNode.setProperty("workspace", "dam");
-        if (allowedMimeType != null) {
-            fieldNode.setProperty("allowedMimeType", "image.*");
-        }
-        fieldNode.setProperty("appName", "assets");
-    }
 
     private void handleExtendsAndReference(Node node) throws RepositoryException {
         if (node.hasProperty("extends")) {

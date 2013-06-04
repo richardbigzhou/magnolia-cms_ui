@@ -36,23 +36,29 @@ package info.magnolia.ui.app.security.dialog.action;
 import static info.magnolia.cms.security.MgnlUserManager.*;
 import static info.magnolia.cms.security.SecurityConstants.*;
 
-import info.magnolia.cms.security.Security;
+import info.magnolia.cms.security.MgnlUser;
+import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
+import info.magnolia.cms.security.UserManager;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
+import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import java.util.Collection;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,8 +72,11 @@ public class SaveUserDialogAction extends SaveDialogAction {
 
     private static final Logger log = LoggerFactory.getLogger(SaveUserDialogAction.class);
 
-    public SaveUserDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback) {
+    private SecuritySupport securitySupport;
+
+    public SaveUserDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback, SecuritySupport securitySupport) {
         super(definition, item, validator, callback);
+        this.securitySupport = securitySupport;
     }
 
     @Override
@@ -87,103 +96,90 @@ public class SaveUserDialogAction extends SaveDialogAction {
 
     private void createOrUpdateUser(final JcrNodeAdapter userItem) throws ActionExecutionException {
         try {
-            final Node userNode = userItem.applyChanges();
-            final String parentPath = userNode.getParent() != null ? userNode.getParent().getPath() : "/";
 
-            if ("/".equals(parentPath)) {
-                throw new ActionExecutionException("Users cannot be created directly under root. Path to new user was [" + userNode.getPath() + "]");
-            }
+            UserManager userManager = securitySupport.getUserManager();
 
-            final String userName = userNode.getName();
-            log.debug("User name is [{}]", userName);
+            String userName = (String) userItem.getItemProperty(ModelConstants.JCR_NAME).getValue();
+            String password = (String) userItem.getItemProperty(PROPERTY_PASSWORD).getValue();
 
-            // on user creation or when a user changes it this will be in clear, on all other cases this will be encoded
-            final String passwordFromForm = userItem.getItemProperty(PROPERTY_PASSWORD).getValue().toString();
-            final String encodedPassword = encodePassword(passwordFromForm);
+            User user;
+            Node parentNode;
+            if (userItem instanceof JcrNewNodeAdapter) {
 
-            if (userNode.isNew()) {
-                log.debug("User is new, setting his/her password...");
-                PropertyUtil.setProperty(userNode, PROPERTY_PASSWORD, encodedPassword);
+                // JcrNewNodeAdapter returns the parent JCR item here
+                parentNode = userItem.getJcrItem();
+                String parentPath = parentNode.getPath();
+
+                if ("/".equals(parentPath)) {
+                    throw new ActionExecutionException("Users cannot be created directly under root");
+                }
+
+                user = userManager.createUser(parentPath, userName, password);
             } else {
-                final User user = Security.getUserManager().getUser(userName);
-                final String existingEncodedPassword = user.getPassword();
-                // if user exists compare the existing password with the one coming from the form
-                // if they're not equal change password
-                boolean passwordChanged = !existingEncodedPassword.equals(passwordFromForm);
-                if (passwordChanged) {
-                    log.debug("Updating password for existing user [{}]", userName);
-                    PropertyUtil.setProperty(userNode, PROPERTY_PASSWORD, encodedPassword);
+                user = userManager.getUser(userName);
+                parentNode = userItem.getJcrItem().getParent();
+
+                String existingPasswordHash = user.getProperty(PROPERTY_PASSWORD);
+                if (!StringUtils.equals(password, existingPasswordHash)) {
+                    userManager.setProperty(user, PROPERTY_PASSWORD, password);
                 }
             }
 
-            final String enabled = userItem.getItemProperty(PROPERTY_ENABLED).toString();
-            log.debug("Is user enabled? {}", enabled);
-            PropertyUtil.setProperty(userNode, PROPERTY_ENABLED, Boolean.parseBoolean(enabled));
+            String enabled = userItem.getItemProperty(PROPERTY_ENABLED).toString();
+            userManager.setProperty(user, PROPERTY_ENABLED, enabled);
 
-            final String email = userItem.getItemProperty(PROPERTY_EMAIL).toString();
-            log.debug("Setting user email as [{}]", email);
-            PropertyUtil.setProperty(userNode, PROPERTY_EMAIL, email);
+            String title = userItem.getItemProperty(PROPERTY_TITLE).toString();
+            userManager.setProperty(user, PROPERTY_TITLE, title);
 
-            final String fullName = userItem.getItemProperty(PROPERTY_TITLE).toString();
-            log.debug("Setting user title as [{}]", fullName);
-            PropertyUtil.setProperty(userNode, PROPERTY_TITLE, fullName);
+            String email = userItem.getItemProperty(PROPERTY_EMAIL).toString();
+            userManager.setProperty(user, PROPERTY_EMAIL, email);
 
-            final String[] groups = itemPropertyToArray(userItem, NODE_GROUPS);
-            log.debug("Assigning user the following groups [{}]", groups);
-            replacePropertyWithSubnode(userNode, NODE_GROUPS, groups);
+            String language = userItem.getItemProperty(PROPERTY_LANGUAGE).toString();
+            userManager.setProperty(user, PROPERTY_LANGUAGE, language);
 
-            final String[] roles = itemPropertyToArray(userItem, NODE_ROLES);
-            log.debug("Assigning user the following roles [{}]", roles);
-            replacePropertyWithSubnode(userNode, NODE_ROLES, roles);
+            if (user instanceof MgnlUser) {
+                String path = ((MgnlUser) user).getPath();
+                Session session = parentNode.getSession();
+                Node userNode = session.getNode(path);
 
-            NodeTypes.LastModified.update(userNode);
-            userNode.getSession().save();
+                final Collection<String> groups = (Collection<String>) userItem.getItemProperty(NODE_GROUPS).getValue();
+                log.debug("Assigning user the following groups [{}]", groups);
+                storeCollectionAsNodeWithProperties(userNode, NODE_GROUPS, groups);
+
+                final Collection<String> roles = (Collection<String>) userItem.getItemProperty(NODE_ROLES).getValue();
+                log.debug("Assigning user the following roles [{}]", roles);
+                storeCollectionAsNodeWithProperties(userNode, NODE_ROLES, roles);
+
+                NodeTypes.LastModified.update(userNode);
+                userNode.getSession().save();
+            }
+
         } catch (final RepositoryException e) {
             throw new ActionExecutionException(e);
         }
     }
 
-    private String[] itemPropertyToArray(JcrNodeAdapter item, String propertyName) {
-        String identifiers = item.getItemProperty(propertyName).getValue().toString();
-        identifiers = StringUtils.remove(identifiers, '[');
-        identifiers = StringUtils.remove(identifiers, ']');
-        return StringUtils.split(identifiers, ',');
-    }
+    private void storeCollectionAsNodeWithProperties(Node parentNode, String name, Collection<String> values) throws RepositoryException {
+        try {
+            // create sub node (or get it, if it already exists)
+            Node node = NodeUtil.createPath(parentNode, name, NodeTypes.ContentNode.NAME);
 
-    private void replacePropertyWithSubnode(Node node, String name, String[] ids) throws RepositoryException {
-        try {
-            node.getProperty(name).remove();
-        } catch (RepositoryException ex) {
-            log.warn("Cannot remove [" + name + "] property of the user [" + node.getName() + "]: " + ex.getMessage());
-        }
-        try {
-            // create subnode (or get it, if it already exists)
-            Node subnode = NodeUtil.createPath(node, name, NodeTypes.ContentNode.NAME);
-            // sanity: remove all possible non-jcr properties
-            PropertyIterator pi = subnode.getProperties();
+            // remove all previous properties
+            PropertyIterator pi = node.getProperties();
             while (pi.hasNext()) {
                 javax.jcr.Property p = pi.nextProperty();
                 if (!p.getName().startsWith(NodeTypes.JCR_PREFIX)) {
                     p.remove();
                 }
             }
-            // add new groups
+
             int i = 0;
-            for (String id : ids) {
-                PropertyUtil.setProperty(subnode, "" + i, id.trim());
+            for (String value : values) {
+                PropertyUtil.setProperty(node, String.valueOf(i), value.trim());
                 i++;
             }
         } catch (RepositoryException ex) {
-            log.error("Error saving assigned " + name + " of the [" + node.getName() + "] user.", ex);
-            throw new RepositoryException("Error saving assigned " + name + " of the [" + node.getName() + "] user.", ex);
+            throw new RepositoryException("Error saving assigned " + name + " of the [" + parentNode.getName() + "] user.", ex);
         }
     }
-
-    private String encodePassword(final String clearPassword) throws ActionExecutionException {
-        if (StringUtils.isBlank(clearPassword)) {
-            throw new ActionExecutionException("Password cannot be blank");
-        }
-        return new String(Base64.encodeBase64(clearPassword.getBytes()));
-    }
-
 }

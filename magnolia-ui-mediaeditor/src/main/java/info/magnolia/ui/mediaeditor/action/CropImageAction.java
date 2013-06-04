@@ -38,9 +38,9 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.MediaEditorView;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
-import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent;
-import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
-import info.magnolia.ui.mediaeditor.editmode.field.image.CropField;
+import info.magnolia.ui.mediaeditor.event.MediaEditorInternalEvent;
+import info.magnolia.ui.mediaeditor.field.MediaField;
+import info.magnolia.ui.mediaeditor.field.image.CropField;
 import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
@@ -62,7 +62,6 @@ public class CropImageAction extends MediaEditorUIAction {
         super(definition, view, dataSource, eventBus);
     }
 
-
     @Override
     public void execute() throws ActionExecutionException {
         super.execute();
@@ -75,15 +74,14 @@ public class CropImageAction extends MediaEditorUIAction {
         result.add(new ActionContext("cancel", "Cancel", new DialogActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
-                cropField.revertChanges();
                 eventBus.fireEvent(new MediaEditorInternalEvent(MediaEditorInternalEvent.EventType.CANCEL_LAST));
             }
         }));
         result.add(new ActionContext("crop", "Crop Image", new DialogActionListener() {
             @Override
             public void onActionExecuted(String actionName) {
+                dataSource.startAction(getDefinition().getTrackingLabel());
                 cropField.execute();
-                cropField.applyChanges();
                 eventBus.fireEvent(new MediaEditorInternalEvent(MediaEditorInternalEvent.EventType.APPLY));
             }
         }));

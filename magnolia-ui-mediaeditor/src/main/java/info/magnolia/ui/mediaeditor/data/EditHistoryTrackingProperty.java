@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.mediaeditor.data;
 
+import info.magnolia.ui.api.action.ActionExecutionException;
+
 import com.vaadin.data.Property;
 
 /**
@@ -41,6 +43,17 @@ import com.vaadin.data.Property;
  * always be rolled back to it.
  */
 public interface EditHistoryTrackingProperty extends Property<byte[]> {
+
+    /**
+     * Listener interface that receives important information
+     * about the property workflow.
+     */
+    interface Listener {
+
+        void errorOccurred(String message, Throwable e);
+    }
+
+    public void setListener(Listener listener);
 
     /**
      * Gets the last done action name.
@@ -76,12 +89,12 @@ public interface EditHistoryTrackingProperty extends Property<byte[]> {
     /**
      * Undo last step.
      */
-    void undo();
+    void undo() throws ActionExecutionException;
 
     /**
      * Redo last step.
      */
-    void redo();
+    void redo() throws ActionExecutionException;
 
     /**
      * Propagate changes to the original value.

@@ -37,12 +37,7 @@ import static org.junit.Assert.assertEquals;
 
 import info.magnolia.ui.form.field.PasswordFields;
 import info.magnolia.ui.form.field.definition.PasswordFieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 
 import com.vaadin.data.Validator.InvalidValueException;
@@ -118,41 +113,6 @@ public class PasswordFieldBuilderTest extends AbstractBuilderTest<PasswordFieldD
         field.validate();
 
         // THEN
-    }
-
-    @Test
-    public void encodingTest() throws RepositoryException {
-        // GIVEN
-        definition.setVerification(false);
-        passwordFieldBuilder = new PasswordFieldBuilder(definition, baseItem);
-        passwordFieldBuilder.setI18nContentSupport(i18nContentSupport);
-        Field field = passwordFieldBuilder.getField();
-        field.setValue("awdYxe?m,483*");
-        field.validate();
-
-        // WHEN
-        Node res = ((JcrNodeAdapter) baseItem).applyChanges();
-
-        // THEN
-        assertEquals("awdYxe?m,483*", new String(Base64.decodeBase64(res.getProperty(propertyName).getString())));
-    }
-
-    @Test
-    public void doNotEncodeTest() throws RepositoryException {
-        // GIVEN
-        definition.setVerification(false);
-        definition.setEncode(false);
-        passwordFieldBuilder = new PasswordFieldBuilder(definition, baseItem);
-        passwordFieldBuilder.setI18nContentSupport(i18nContentSupport);
-        Field field = passwordFieldBuilder.getField();
-        field.setValue("awdYxe?m,483*");
-        field.validate();
-
-        // WHEN
-        Node res = ((JcrNodeAdapter) baseItem).applyChanges();
-
-        // THEN
-        assertEquals("awdYxe?m,483*", (res.getProperty(propertyName).getString()));
     }
 
     @Override

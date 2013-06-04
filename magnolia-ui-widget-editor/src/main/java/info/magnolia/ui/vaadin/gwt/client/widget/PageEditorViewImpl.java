@@ -38,7 +38,6 @@ import info.magnolia.ui.vaadin.gwt.client.editor.jsni.AbstractFrameEventHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -50,9 +49,10 @@ import com.vaadin.client.BrowserInfo;
  */
 public class PageEditorViewImpl extends Composite implements PageEditorView {
 
+    public static final String PAGE_EDITOR_CLASS_NAME = "pageEditor";
     private Listener listener;
 
-    private Frame iframe = new Frame();
+    private PageEditorFrame iframe = new PageEditorFrame();
 
     private String url;
 
@@ -68,7 +68,7 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
         handler.setEventBus(eventBus);
         content.setWidget(iframe);
         initWidget(content);
-        setStyleName("pageEditor");
+        setStyleName(PAGE_EDITOR_CLASS_NAME);
 
         final Element iframeElement = iframe.getElement();
         iframeElement.setAttribute("width", "100%");
@@ -81,7 +81,7 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
     }
 
     @Override
-    public Frame getFrame() {
+    public PageEditorFrame getFrame() {
         return iframe;
     }
 
@@ -120,6 +120,7 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
         } else {
             handler.initNativeMouseSelectionListener(iframe.getElement(), listener);
         }
+        handler.initNativeKeyListener(iframe.getElement());
     }
 
 }

@@ -77,8 +77,8 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     }
 
     @Override
-    public ContentView start(WorkbenchDefinition workbench, EventBus eventBus) {
-        super.start(workbench, eventBus);
+    public ContentView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName) {
+        super.start(workbench, eventBus, viewTypeName);
 
         container = new ThumbnailContainer(workbench, imageProvider);
         container.setWorkspaceName(workbench.getWorkspace());

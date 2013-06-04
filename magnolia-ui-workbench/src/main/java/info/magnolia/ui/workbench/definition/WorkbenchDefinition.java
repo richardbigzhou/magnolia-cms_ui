@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.workbench.definition;
 
-import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 import java.io.Serializable;
@@ -61,9 +60,12 @@ public interface WorkbenchDefinition extends Serializable {
     /**
      * @return whether properties should be displayed as well (or just nodes)
      */
-    boolean includeProperties();
+    boolean isIncludeProperties();
 
-    List<ColumnDefinition> getColumns();
+    /**
+     * @return whether nodes used by the system should be included, for instance nodes internal to the operations of the JCR implementation.
+     */
+    boolean isIncludeSystemNodes();
 
     /**
      * Define if this workbench is used for Dialog. This is set during the cloning of the workbench in

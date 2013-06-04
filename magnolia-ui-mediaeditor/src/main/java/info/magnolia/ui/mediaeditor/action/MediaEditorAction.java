@@ -35,7 +35,6 @@ package info.magnolia.ui.mediaeditor.action;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
 import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
@@ -69,13 +68,6 @@ public abstract class MediaEditorAction extends AbstractAction<MediaEditorAction
         super(definition);
         this.dataSource = dataSource;
         this.eventBus = eventBus;
-    }
-
-    @Override
-    public void execute() throws ActionExecutionException {
-        if (getDefinition().getTrackingLabel() != null) {
-            dataSource.startAction(getDefinition().getTrackingLabel());
-        }
     }
 
     protected InputStream createStreamSource(final BufferedImage img, final String formatName) {

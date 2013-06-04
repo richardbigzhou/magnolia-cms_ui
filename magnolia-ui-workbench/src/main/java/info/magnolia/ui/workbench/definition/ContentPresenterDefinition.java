@@ -35,6 +35,9 @@ package info.magnolia.ui.workbench.definition;
 
 import info.magnolia.ui.workbench.ContentPresenter;
 import info.magnolia.ui.workbench.ContentView.ViewType;
+import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
+
+import java.util.List;
 
 /**
  * Definition for a workbench generic content view.
@@ -42,6 +45,8 @@ import info.magnolia.ui.workbench.ContentView.ViewType;
 public interface ContentPresenterDefinition {
 
     ViewType getViewType();
+
+    List<ColumnDefinition> getColumns();
 
     Class<? extends ContentPresenter> getImplementationClass();
 

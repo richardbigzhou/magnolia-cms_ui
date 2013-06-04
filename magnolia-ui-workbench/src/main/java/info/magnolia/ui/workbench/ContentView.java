@@ -103,5 +103,6 @@ public interface ContentView extends View {
 
         void onRightClick(Item item, int clickX, int clickY);
 
+        String getIcon(Item item);
     }
 }

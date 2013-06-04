@@ -33,14 +33,9 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.doReturn;
-
-import static org.mockito.Mockito.when;
-
-import static org.mockito.Mockito.mock;
-
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
@@ -74,6 +69,7 @@ import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -83,12 +79,11 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.jcr.Node;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test for the BrowserSubApp. Mainly for the updateActionbar() method.
+ * Tests.
  */
 public class BrowserSubAppTest extends MgnlTestCase {
 
@@ -102,14 +97,8 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
     private final static String ALWAYS = "always";
     private final static String ROOT_ONLY = "rootOnly";
-    private final static String ROOT_AND_NODES = "rootAndNodes";
-    private final static String NODES_AND_PROPS = "nodesAndProps";
-    private final static String ONLY_PAGES = "onlyPages";
-    private final static String PROPS_ONLY = "propsOnly";
-    private final static String ROLE_LIMITED = "roleLimited";
-    private final static String DELETED_PAGES = "deletedPages";
 
-    private final static String[] ALL_ACTIONS = { ALWAYS, ROOT_ONLY, ROOT_AND_NODES, NODES_AND_PROPS, ONLY_PAGES, PROPS_ONLY, ROLE_LIMITED, DELETED_PAGES };
+    private final static String[] ALL_ACTIONS = { ALWAYS, ROOT_ONLY};
     private final static String[] ONE_ACTION = { ALWAYS };
 
     private final static String SECTION_TO_SHOW = "sectionToShow";
@@ -122,54 +111,23 @@ public class BrowserSubAppTest extends MgnlTestCase {
     private SimpleActionExecutor actionExecutor;
     private EventBus subAppEventBus;
     private ContentSubAppView view;
-    private BrowserPresenter workbench;
-    private TestActionbarPresenter actionbar;
+    private BrowserPresenter browserPresenter;
+    private TestActionbarPresenter testActionbarPresenter;
     private ComponentProvider componentProvider;
 
     // actions
     private ConfiguredActionDefinition actAlways;
     private ConfiguredActionDefinition actRootOnly;
-    private ConfiguredActionDefinition actRootAndNodes;
-    private ConfiguredActionDefinition actNodesAndProperties;
-    private ConfiguredActionDefinition actOnlyPages;
-    private ConfiguredActionDefinition actPropertiesOnly;
-    private ConfiguredActionDefinition actRoleLimited;
-    private ConfiguredActionDefinition actDeletedPages;
-
-    // action availability
-    private ConfiguredAvailabilityDefinition availabilityAlways;
-    private ConfiguredAvailabilityDefinition availabilityRootOnly;
-    private ConfiguredAvailabilityDefinition availabilityRootAndNodes;
-    private ConfiguredAvailabilityDefinition availabilityNodesAndProperties;
-    private ConfiguredAvailabilityDefinition availabilityPropertiesOnly;
-    private ConfiguredAvailabilityDefinition availabilityOnlyPages;
-    private ConfiguredAvailabilityDefinition availabilityRoleLimited;
-    private ConfiguredAvailabilityDefinition availabilityDeletedPages;
 
     // section availability
     private ConfiguredAvailabilityDefinition sAvailabilityAlways;
-    private ConfiguredAvailabilityDefinition sAvailabilityRootOnly;
-    private ConfiguredAvailabilityDefinition sAvailabilityRootAndNodes;
-    private ConfiguredAvailabilityDefinition sAvailabilityNodesAndProperties;
-    private ConfiguredAvailabilityDefinition sAvailabilityPropertiesOnly;
-    private ConfiguredAvailabilityDefinition sAvailabilityOnlyPages;
-    private ConfiguredAvailabilityDefinition sAvailabilityRoleLimited;
-    private ConfiguredAvailabilityDefinition sAvailabilityDeletedPages;
 
-    // users
-    User normalUser;
-    User privilegedUser;
-
-    // actionbar definition
-    ConfiguredActionbarDefinition actionbarDefinition;
-    ConfiguredActionbarGroupDefinition allActionsGroup;
-    ConfiguredActionbarGroupDefinition oneActionGroup;
-    ConfiguredActionbarSectionDefinition sectionToShow;
-    ConfiguredActionbarSectionDefinition sectionToHide;
+    // testActionbarPresenter definition
+    private ConfiguredActionbarSectionDefinition sectionToShow;
+    private ConfiguredActionbarSectionDefinition sectionToHide;
 
     // nodes
-    Node testContentNode;
-    Node testPage;
+    private Node testContentNode;
 
     @Before
     @Override
@@ -180,103 +138,84 @@ public class BrowserSubAppTest extends MgnlTestCase {
         componentProvider = mock(ComponentProvider.class);
         doReturn(mock(IsDeletedRule.class)).when(componentProvider).newInstance(any(Class.class), anyVararg());
 
-        initActionAvailabilityDefs();
-        initSectionAvailabilityDefs();
         initActions();
         session = new MockSession(WORKSPACE);
         testContentNode = NodeUtil.createPath(session.getRootNode(), TEST_CONTENT_NODE, NodeTypes.ContentNode.NAME);
         PropertyUtil.setProperty(testContentNode, TEST_PROPERTY, "test");
-        testPage = NodeUtil.createPath(session.getRootNode(), TEST_PAGE, NodeTypes.Page.NAME);
+        Node testPage = NodeUtil.createPath(session.getRootNode(), TEST_PAGE, NodeTypes.Page.NAME);
         PropertyUtil.setProperty(testPage, TEST_PROPERTY, "test");
 
         MockContext ctx = new MockContext();
-        normalUser = createMockUser("normal");
-        privilegedUser = createMockUser("privileged");
-        when(privilegedUser.hasRole(REQUIRED_ROLE)).thenReturn(true);
-
         ctx.addSession(WORKSPACE, session);
-        ctx.setUser(normalUser);
+        ctx.setUser(createMockUser("normal"));
         MgnlContext.setInstance(ctx);
-        initActionbarGroups();
-        initActionbarSections();
+        initActionbarGroupsAndSections();
         initSubAppComponents();
     }
 
-    @After
-    @Override
-    public void tearDown() throws Exception {
-        MgnlContext.setInstance(null);
-        super.tearDown();
-    }
-
-    // TESTS
-
     @Test
-    public void testAlwaysVisibleSection() throws Exception {
+    public void testAlwaysVisibleSectionOnRoot() throws Exception {
         // GIVEN
         sectionToShow.setAvailability(sAvailabilityAlways);
-        sectionToHide.setAvailability(sAvailabilityDeletedPages);
         initActionbar();
-        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, workbench, subAppEventBus, componentProvider);
-
-        // WHEN
+        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
         // root
         List<String> ids = new ArrayList<String>(1);
         ids.add(JcrItemUtil.getItemId(session.getRootNode()));
-        when(workbench.getSelectedItemIds()).thenReturn(ids);
-        subApp.updateActionbar(workbench.getActionbarPresenter());
-
-        // THEN
-        assertEquals(1, actionbar.visibleSections.size());
-        assertTrue(actionbar.visibleSections.contains(SECTION_TO_SHOW));
-        assertTrue(actionbar.enabledActions.contains(ALWAYS));
-        assertTrue(actionbar.enabledActions.contains(ROOT_ONLY));
-        assertTrue(actionbar.enabledActions.contains(ROOT_AND_NODES));
-        assertFalse(actionbar.enabledActions.contains(NODES_AND_PROPS));
-        assertFalse(actionbar.enabledActions.contains(PROPS_ONLY));
-        assertFalse(actionbar.enabledActions.contains(ONLY_PAGES));
-        assertFalse(actionbar.enabledActions.contains(DELETED_PAGES));
-        assertFalse(actionbar.enabledActions.contains(ROLE_LIMITED));
+        when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
 
         // WHEN
+        subApp.updateActionbar(browserPresenter.getActionbarPresenter());
+
+        // THEN
+        assertEquals(1, testActionbarPresenter.visibleSections.size());
+        assertTrue(testActionbarPresenter.visibleSections.contains(SECTION_TO_SHOW));
+        assertTrue(testActionbarPresenter.enabledActions.contains(ALWAYS));
+        assertTrue(testActionbarPresenter.enabledActions.contains(ROOT_ONLY));
+    }
+
+    @Test
+    public void testAlwaysVisibleSectionOnNonRootNode() throws Exception {
+        // GIVEN
+        sectionToShow.setAvailability(sAvailabilityAlways);
+        initActionbar();
+        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
         // node
-        ids = new ArrayList<String>(1);
+        List<String> ids = new ArrayList<String>(1);
         ids.add(JcrItemUtil.getItemId(testContentNode));
-        when(workbench.getSelectedItemIds()).thenReturn(ids);
-        subApp.updateActionbar(workbench.getActionbarPresenter());
-
-        // THEN
-        assertEquals(1, actionbar.visibleSections.size());
-        assertTrue(actionbar.visibleSections.contains(SECTION_TO_SHOW));
-        assertTrue(actionbar.visibleSections.contains(SECTION_TO_SHOW));
-        assertTrue(actionbar.enabledActions.contains(ALWAYS));
-        assertFalse(actionbar.enabledActions.contains(ROOT_ONLY));
-        assertTrue(actionbar.enabledActions.contains(ROOT_AND_NODES));
-        assertTrue(actionbar.enabledActions.contains(NODES_AND_PROPS));
-        assertFalse(actionbar.enabledActions.contains(PROPS_ONLY));
-        assertFalse(actionbar.enabledActions.contains(ONLY_PAGES));
-        assertFalse(actionbar.enabledActions.contains(DELETED_PAGES));
-        assertFalse(actionbar.enabledActions.contains(ROLE_LIMITED));
+        when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
 
         // WHEN
-        // property
-        ids = new ArrayList<String>(1);
-        ids.add(JcrItemUtil.getItemId(testContentNode.getProperty(TEST_PROPERTY)));
-        when(workbench.getSelectedItemIds()).thenReturn(ids);
-        subApp.updateActionbar(workbench.getActionbarPresenter());
+        subApp.updateActionbar(browserPresenter.getActionbarPresenter());
 
         // THEN
-        assertEquals(1, actionbar.visibleSections.size());
-        assertTrue(actionbar.visibleSections.contains(SECTION_TO_SHOW));
-        assertTrue(actionbar.visibleSections.contains(SECTION_TO_SHOW));
-        assertTrue(actionbar.enabledActions.contains(ALWAYS));
-        assertFalse(actionbar.enabledActions.contains(ROOT_ONLY));
-        assertFalse(actionbar.enabledActions.contains(ROOT_AND_NODES));
-        assertTrue(actionbar.enabledActions.contains(NODES_AND_PROPS));
-        assertTrue(actionbar.enabledActions.contains(PROPS_ONLY));
-        assertFalse(actionbar.enabledActions.contains(ONLY_PAGES));
-        assertFalse(actionbar.enabledActions.contains(DELETED_PAGES));
-        assertFalse(actionbar.enabledActions.contains(ROLE_LIMITED));
+        assertEquals(1, testActionbarPresenter.visibleSections.size());
+        assertTrue(testActionbarPresenter.visibleSections.contains(SECTION_TO_SHOW));
+        assertTrue(testActionbarPresenter.visibleSections.contains(SECTION_TO_SHOW));
+        assertTrue(testActionbarPresenter.enabledActions.contains(ALWAYS));
+        assertFalse(testActionbarPresenter.enabledActions.contains(ROOT_ONLY));
+    }
+
+    @Test
+    public void testAlwaysVisibleSectionOnProperty() throws Exception {
+        // GIVEN
+        sectionToShow.setAvailability(sAvailabilityAlways);
+        initActionbar();
+        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
+        // property
+        List<String> ids = new ArrayList<String>(1);
+        ids.add(JcrItemUtil.getItemId(testContentNode.getProperty(TEST_PROPERTY)));
+        when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
+
+        // WHEN
+        subApp.updateActionbar(browserPresenter.getActionbarPresenter());
+
+        // THEN
+        assertEquals(1, testActionbarPresenter.visibleSections.size());
+        assertTrue(testActionbarPresenter.visibleSections.contains(SECTION_TO_SHOW));
+        assertTrue(testActionbarPresenter.visibleSections.contains(SECTION_TO_SHOW));
+        assertTrue(testActionbarPresenter.enabledActions.contains(ALWAYS));
+        assertFalse(testActionbarPresenter.enabledActions.contains(ROOT_ONLY));
     }
 
     // HELPER METHODS
@@ -286,12 +225,6 @@ public class BrowserSubAppTest extends MgnlTestCase {
         actionExecutor = createSimpleActionExecutor();
         actionExecutor.add(actAlways);
         actionExecutor.add(actRootOnly);
-        actionExecutor.add(actRootAndNodes);
-        actionExecutor.add(actNodesAndProperties);
-        actionExecutor.add(actPropertiesOnly);
-        actionExecutor.add(actOnlyPages);
-        actionExecutor.add(actDeletedPages);
-        actionExecutor.add(actRoleLimited);
 
         subAppEventBus = mock(EventBus.class);
         view = mock(ContentSubAppView.class);
@@ -301,12 +234,12 @@ public class BrowserSubAppTest extends MgnlTestCase {
         ConfiguredActionbarDefinition definition = new ConfiguredActionbarDefinition();
         definition.addSection(sectionToShow);
         definition.addSection(sectionToHide);
-        actionbar = new TestActionbarPresenter();
-        workbench = mock(BrowserPresenter.class);
-        when(workbench.getActionbarPresenter()).thenReturn(actionbar);
+        testActionbarPresenter = new TestActionbarPresenter();
+        browserPresenter = mock(BrowserPresenter.class);
+        when(browserPresenter.getActionbarPresenter()).thenReturn(testActionbarPresenter);
 
-        actionbar.setListener(workbench);
-        actionbar.start(definition);
+        testActionbarPresenter.setListener(browserPresenter);
+        testActionbarPresenter.start(definition);
 
         ConfiguredWorkbenchDefinition wbDef = new ConfiguredWorkbenchDefinition();
         wbDef.setWorkspace(WORKSPACE);
@@ -319,7 +252,15 @@ public class BrowserSubAppTest extends MgnlTestCase {
         when(subAppContext.getSubAppDescriptor()).thenReturn(descriptor);
     }
 
-    private void initActionbarSections() {
+    private void initActionbarGroupsAndSections() {
+        ConfiguredActionbarGroupDefinition allActionsGroup = new ConfiguredActionbarGroupDefinition();
+        allActionsGroup.setName("allActionsGroup");
+        allActionsGroup.setItems(createActionbarItemDefinitionList(ALL_ACTIONS));
+
+        ConfiguredActionbarGroupDefinition oneActionGroup = new ConfiguredActionbarGroupDefinition();
+        oneActionGroup.setName("oneActionGroup");
+        oneActionGroup.setItems(createActionbarItemDefinitionList(ONE_ACTION));
+
         sectionToShow = new ConfiguredActionbarSectionDefinition();
         sectionToShow.setName(SECTION_TO_SHOW);
         sectionToShow.addGroup(allActionsGroup);
@@ -327,16 +268,6 @@ public class BrowserSubAppTest extends MgnlTestCase {
         sectionToHide = new ConfiguredActionbarSectionDefinition();
         sectionToHide.setName(SECTION_TO_HIDE);
         sectionToHide.addGroup(oneActionGroup);
-    }
-
-    private void initActionbarGroups() {
-        allActionsGroup = new ConfiguredActionbarGroupDefinition();
-        allActionsGroup.setName("allActionsGroup");
-        allActionsGroup.setItems(createActionbarItemDefinitionList(ALL_ACTIONS));
-
-        oneActionGroup = new ConfiguredActionbarGroupDefinition();
-        oneActionGroup.setName("oneActionGroup");
-        oneActionGroup.setItems(createActionbarItemDefinitionList(ONE_ACTION));
     }
 
     private List<ActionbarItemDefinition> createActionbarItemDefinitionList(String[] actions) {
@@ -349,71 +280,22 @@ public class BrowserSubAppTest extends MgnlTestCase {
         return items;
     }
 
-    private void initActionAvailabilityDefs() {
-        availabilityAlways = new ConfiguredAvailabilityDefinition();
-        availabilityAlways.setRoot(true);
-        availabilityAlways.setProperties(true);
-
-        availabilityRootOnly = new ConfiguredAvailabilityDefinition();
-        availabilityRootOnly.setRoot(true);
-        availabilityRootOnly.setNodes(false);
-
-        availabilityRootAndNodes = new ConfiguredAvailabilityDefinition();
-        availabilityRootAndNodes.setRoot(true);
-
-        availabilityNodesAndProperties = new ConfiguredAvailabilityDefinition();
-        availabilityNodesAndProperties.setProperties(true);
-
-        availabilityPropertiesOnly = new ConfiguredAvailabilityDefinition();
-        availabilityPropertiesOnly.setNodes(false);
-        availabilityPropertiesOnly.setProperties(true);
-
-        availabilityOnlyPages = new ConfiguredAvailabilityDefinition();
-        availabilityOnlyPages.setNodeTypes(Arrays.asList(new String[] { NodeTypes.Page.NAME }));
-
-        availabilityRoleLimited = new ConfiguredAvailabilityDefinition();
-        ConfiguredAccessDefinition access = new ConfiguredAccessDefinition();
-        access.setRoles(Arrays.asList(new String[] { REQUIRED_ROLE }));
-        availabilityRoleLimited.setAccess(access);
-
-        availabilityDeletedPages = new ConfiguredAvailabilityDefinition();
-        availabilityDeletedPages.setNodeTypes(Arrays.asList(new String[] { NodeTypes.Page.NAME }));
-        availabilityDeletedPages.setRuleClass(IsDeletedRule.class);
-    }
-
-    private void initSectionAvailabilityDefs() {
+    private void initActions() {
         sAvailabilityAlways = new ConfiguredAvailabilityDefinition();
         sAvailabilityAlways.setRoot(true);
         sAvailabilityAlways.setProperties(true);
 
-        sAvailabilityRootOnly = new ConfiguredAvailabilityDefinition();
-        sAvailabilityRootOnly.setRoot(true);
-        sAvailabilityRootOnly.setNodes(false);
+        ConfiguredAvailabilityDefinition availabilityAlways = new ConfiguredAvailabilityDefinition();
+        availabilityAlways.setRoot(true);
+        availabilityAlways.setProperties(true);
 
-        sAvailabilityRootAndNodes = new ConfiguredAvailabilityDefinition();
-        sAvailabilityRootAndNodes.setRoot(true);
+        ConfiguredAvailabilityDefinition availabilityRootOnly = new ConfiguredAvailabilityDefinition();
+        availabilityRootOnly.setRoot(true);
+        availabilityRootOnly.setNodes(false);
 
-        sAvailabilityNodesAndProperties = new ConfiguredAvailabilityDefinition();
-        sAvailabilityNodesAndProperties.setProperties(true);
+        ConfiguredAvailabilityDefinition availabilityRootAndNodes = new ConfiguredAvailabilityDefinition();
+        availabilityRootAndNodes.setRoot(true);
 
-        sAvailabilityPropertiesOnly = new ConfiguredAvailabilityDefinition();
-        sAvailabilityPropertiesOnly.setNodes(false);
-        sAvailabilityPropertiesOnly.setProperties(true);
-
-        sAvailabilityOnlyPages = new ConfiguredAvailabilityDefinition();
-        sAvailabilityOnlyPages.setNodeTypes(Arrays.asList(new String[] { NodeTypes.Page.NAME }));
-
-        sAvailabilityRoleLimited = new ConfiguredAvailabilityDefinition();
-        ConfiguredAccessDefinition access = new ConfiguredAccessDefinition();
-        access.setRoles(Arrays.asList(new String[] { REQUIRED_ROLE }));
-        sAvailabilityRoleLimited.setAccess(access);
-
-        sAvailabilityDeletedPages = new ConfiguredAvailabilityDefinition();
-        sAvailabilityDeletedPages.setNodeTypes(Arrays.asList(new String[] { NodeTypes.Page.NAME }));
-        sAvailabilityDeletedPages.setRuleClass(IsDeletedRule.class);
-    }
-
-    private void initActions() {
         actAlways = new ConfiguredActionDefinition();
         actAlways.setName(ALWAYS);
         actAlways.setAvailability(availabilityAlways);
@@ -422,29 +304,8 @@ public class BrowserSubAppTest extends MgnlTestCase {
         actRootOnly.setName(ROOT_ONLY);
         actRootOnly.setAvailability(availabilityRootOnly);
 
-        actRootAndNodes = new ConfiguredActionDefinition();
-        actRootAndNodes.setName(ROOT_AND_NODES);
-        actRootAndNodes.setAvailability(availabilityRootAndNodes);
-
-        actNodesAndProperties = new ConfiguredActionDefinition();
-        actNodesAndProperties.setName(NODES_AND_PROPS);
-        actNodesAndProperties.setAvailability(availabilityNodesAndProperties);
-
-        actPropertiesOnly = new ConfiguredActionDefinition();
-        actPropertiesOnly.setName(PROPS_ONLY);
-        actPropertiesOnly.setAvailability(availabilityPropertiesOnly);
-
-        actOnlyPages = new ConfiguredActionDefinition();
-        actOnlyPages.setName(ONLY_PAGES);
-        actOnlyPages.setAvailability(availabilityOnlyPages);
-
-        actDeletedPages = new ConfiguredActionDefinition();
-        actDeletedPages.setName(DELETED_PAGES);
-        actDeletedPages.setAvailability(availabilityDeletedPages);
-
-        actRoleLimited = new ConfiguredActionDefinition();
-        actRoleLimited.setName(ROLE_LIMITED);
-        actRoleLimited.setAvailability(availabilityRoleLimited);
+        ConfiguredAccessDefinition access = new ConfiguredAccessDefinition();
+        access.setRoles(Arrays.asList(REQUIRED_ROLE ));
 
     }
 
@@ -485,21 +346,11 @@ public class BrowserSubAppTest extends MgnlTestCase {
     }
 
     private static class TestActionbarPresenter extends ActionbarPresenter {
-
         public Set<String> visibleSections;
         public Set<String> enabledActions;
-        private ActionbarDefinition definition;
-
-        /**
-         *
-         */
-        public TestActionbarPresenter() {
-            super();
-        }
 
         @Override
         public ActionbarView start(ActionbarDefinition def) {
-            definition = def;
             visibleSections = new HashSet<String>();
             enabledActions = new HashSet<String>();
             return super.start(def);
@@ -508,9 +359,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
         @Override
         public void showSection(String... sectionNames) {
             super.showSection(sectionNames);
-            for (String section : sectionNames) {
-                visibleSections.add(section);
-            }
+            visibleSections.addAll(Arrays.asList(sectionNames));
         }
 
         @Override
@@ -524,19 +373,13 @@ public class BrowserSubAppTest extends MgnlTestCase {
         @Override
         public void enable(String... actionNames) {
             super.enable(actionNames);
-            for (String action : actionNames) {
-                enabledActions.add(action);
-            }
+            enabledActions.addAll(Arrays.asList(actionNames));
         }
 
         @Override
         public void disable(String... actionNames) {
             super.disable(actionNames);
-            for (String action : actionNames) {
-                enabledActions.remove(action);
-            }
+            enabledActions.removeAll(Arrays.asList(actionNames));
         }
-
     }
-
 }

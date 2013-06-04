@@ -31,67 +31,64 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.editmode.event;
+package info.magnolia.ui.mediaeditor.event;
 
 import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
 
+import java.io.InputStream;
+
 /**
- * Fired by the UI-fields, instructs the {@link info.magnolia.ui.mediaeditor.MediaEditorPresenter}
- * to manage transaction (rollback, commit, etc). 
+ * Fired when work with media editor is finished. This event delivers the
+ * resulting media stream and the type of confirmation made after finishing
+ * media editor (submitted, canceled).
  */
-public class MediaEditorInternalEvent implements Event<MediaEditorInternalEvent.Handler> {
+public class MediaEditorCompletedEvent implements Event<MediaEditorCompletedEvent.Handler>{
 
     /**
-     * Type of possible action to be performed in a handler of event.
+     * CompletionType.
      */
-    public static enum EventType {
-      APPLY,
-      SUBMIT,
-      CANCEL_LAST,
-      CANCEL_ALL;
+    public enum CompletionType {
+        SUBMIT,
+        CANCEL;
     };
-    
+
+    private CompletionType type;
+
+    private InputStream stream;
+
+    public MediaEditorCompletedEvent(CompletionType type, InputStream stream) {
+        this.stream = stream;
+        this.type = type;
+    }
+
+    public InputStream getStream() {
+        return stream;
+    }
+
+    public CompletionType getType() {
+        return type;
+    }
+
     /**
      * Handler.
      */
     public interface Handler extends EventHandler {
-        
-        void onSubmit(MediaEditorInternalEvent e);
-        
-        void onLastActionCancelled(MediaEditorInternalEvent e);
-        
-        void onLastActionApplied(MediaEditorInternalEvent e);
-        
-        void onCancelAll(MediaEditorInternalEvent e);
+
+        void onSubmit(MediaEditorCompletedEvent event);
+
+        void onCancel(MediaEditorCompletedEvent event);
+
     }
 
-    private EventType type;
-    
-    public MediaEditorInternalEvent(EventType type) {
-        this.type = type;
-    }
-    
-    public EventType getType() {
-        return type;
-    }
-    
     @Override
     public void dispatch(Handler handler) {
         switch (type) {
         case SUBMIT:
             handler.onSubmit(this);
             break;
-        case CANCEL_LAST:
-            handler.onLastActionCancelled(this);
-            break;
-        case APPLY:
-            handler.onLastActionApplied(this);
-            break;
-        case CANCEL_ALL:
-            handler.onCancelAll(this);
-            break;
-        default:
+        case CANCEL:
+            handler.onCancel(this);
             break;
         }
     }

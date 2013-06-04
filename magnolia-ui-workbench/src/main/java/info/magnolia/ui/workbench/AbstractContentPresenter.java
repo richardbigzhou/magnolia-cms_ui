@@ -35,10 +35,16 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
+import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
+import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
+import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
@@ -53,6 +59,8 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
+import java.util.Iterator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,18 +73,25 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
 
     private static final Logger log = LoggerFactory.getLogger(AbstractContentPresenter.class);
 
+    private static final String ICON_PROPERTY = "icon-node-data";
+
+    private static final String ICON_TRASH = "icon-trash";
+
     protected EventBus eventBus;
 
     protected WorkbenchDefinition workbenchDefinition;
 
     private List<String> selectedItemIds = new ArrayList<String>();
 
+    protected String viewTypeName;
+
     // CONTENT PRESENTER
 
     @Override
-    public ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus) {
+    public ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName) {
         this.workbenchDefinition = workbenchDefinition;
         this.eventBus = eventBus;
+        this.viewTypeName = viewTypeName;
         return null;
     }
 
@@ -182,4 +197,56 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
         }
     }
 
+    protected Iterator<ColumnDefinition> getColumnsIterator() {
+        Iterator<ColumnDefinition> it = null;
+        Iterator<ContentPresenterDefinition> viewsIterator = workbenchDefinition.getContentViews().iterator();
+        while (viewsIterator.hasNext()) {
+            ContentPresenterDefinition contentView = viewsIterator.next();
+            if (contentView.getViewType().getText().equals(viewTypeName)) {
+                it = contentView.getColumns().iterator();
+                break;
+            }
+        }
+        return it;
+    }
+
+    @Override
+    public String getIcon(Item item) {
+
+        try {
+
+            if (item instanceof JcrPropertyAdapter) {
+                return ICON_PROPERTY;
+            } else if (item instanceof JcrNodeAdapter) {
+                Node node = ((AbstractJcrNodeAdapter)item).getJcrItem();
+                if (NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME)) {
+                    return ICON_TRASH;
+                }
+
+                NodeTypeDefinition nodeTypeDefinition = getNodeTypeDefinitionForNode(node);
+                if (nodeTypeDefinition != null) {
+                    return nodeTypeDefinition.getIcon();
+                }
+            }
+
+        } catch (RepositoryException e) {
+            log.warn("Unable to resolve icon", e);
+            return null;
+        }
+        return null;
+    }
+
+    private NodeTypeDefinition getNodeTypeDefinitionForNode(Node node) throws RepositoryException {
+        String primaryNodeTypeName = node.getPrimaryNodeType().getName();
+        for (NodeTypeDefinition nodeTypeDefinition : workbenchDefinition.getNodeTypes()) {
+            if (nodeTypeDefinition.isStrict()) {
+                if (primaryNodeTypeName.equals(nodeTypeDefinition.getName())) {
+                    return nodeTypeDefinition;
+                }
+            } else if (NodeUtil.isNodeType(node, nodeTypeDefinition.getName())) {
+                return nodeTypeDefinition;
+            }
+        }
+        return null;
+    }
 }

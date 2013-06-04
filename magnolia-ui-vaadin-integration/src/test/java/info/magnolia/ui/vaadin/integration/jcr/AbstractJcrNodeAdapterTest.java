@@ -227,7 +227,7 @@ public class AbstractJcrNodeAdapterTest {
         assertEquals(propertyValueNotEmpty, underlyingNode.getProperty(propertyNameNotEmpty).getString());
         assertEquals(propertyValueAlreadyStored, underlyingNode.getProperty(propertyNameAlreadyStored).getString());
         assertEquals(" ", underlyingNode.getProperty(propertyNameBlank).getString());
-        assertFalse(underlyingNode.hasProperty(propertyNameEmpty));
+        assertEquals("", underlyingNode.getProperty(propertyNameEmpty).getString());
         assertTrue(underlyingNode.hasProperty(propertyNameAlreadyStoredEmpty));
     }
 

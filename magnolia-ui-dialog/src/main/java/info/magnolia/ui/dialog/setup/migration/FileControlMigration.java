@@ -31,65 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.editmode.event;
+package info.magnolia.ui.dialog.setup.migration;
 
-import info.magnolia.event.Event;
-import info.magnolia.event.EventHandler;
+import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 
-import java.io.InputStream;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
- * Fired when work with media editor is finished. This event delivers the
- * resulting media stream and the type of confirmation made after finishing
- * media editor (submitted, canceled).
+ * Migrate an File control to a BasicUploadField.
  */
-public class MediaEditorCompletedEvent implements Event<MediaEditorCompletedEvent.Handler>{
+public class FileControlMigration implements ControlMigration {
 
-    /**
-     * CompletionType.
-     */
-    public enum CompletionType {
-        SUBMIT,
-        CANCEL;
-    };
-
-    private CompletionType type;
-
-    private InputStream stream;
-
-    public MediaEditorCompletedEvent(CompletionType type, InputStream stream) {
-        this.stream = stream;
-        this.type = type;
-    }
-
-    public InputStream getStream() {
-        return stream;
-    }
-
-    public CompletionType getType() {
-        return type;
-    }
-
-    /**
-     * Handler.
-     */
-    public interface Handler extends EventHandler {
-
-        void onSubmit(MediaEditorCompletedEvent event);
-
-        void onCancel(MediaEditorCompletedEvent event);
-
-    }
 
     @Override
-    public void dispatch(Handler handler) {
-        switch (type) {
-        case SUBMIT:
-            handler.onSubmit(this);
-            break;
-        case CANCEL:
-            handler.onCancel(this);
-            break;
-        }
+    public void migrate(Node controlNode) throws RepositoryException {
+        controlNode.getProperty("controlType").remove();
+        controlNode.setProperty("class", BasicUploadFieldDefinition.class.getName());
     }
+
 }

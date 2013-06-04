@@ -37,7 +37,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
-import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent;
+import info.magnolia.ui.mediaeditor.event.MediaEditorInternalEvent;
 import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 
 import java.io.ByteArrayInputStream;
@@ -62,13 +62,17 @@ public abstract class InstantMediaEditorAction extends MediaEditorAction {
 
     @Override
     public void execute() throws ActionExecutionException {
+        if (getDefinition().getTrackingLabel() != null) {
+            dataSource.startAction(getDefinition().getTrackingLabel());
+        }
+        InputStream result = new ByteArrayInputStream(dataSource.getValue());
         try {
-            super.execute();
-            InputStream result = performModification(new ByteArrayInputStream(dataSource.getValue()));
+            result = performModification(result);
             dataSource.setValue(IOUtils.toByteArray(result));
             eventBus.fireEvent(new MediaEditorInternalEvent(MediaEditorInternalEvent.EventType.APPLY));
         } catch (IOException e) {
             log.error("Failed to perform instant operation on media.", e);
+            IOUtils.closeQuietly(result);
         }
     }
 

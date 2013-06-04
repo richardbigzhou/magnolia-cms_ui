@@ -156,6 +156,11 @@ public class VMagnoliaTreeTable extends VTreeTablePatched {
                     cell.getStyle().setPropertyPx("width", width);
                 }
             }
+
+            @Override
+            protected boolean isRenderHtmlInCells() {
+                return true;
+            }
         }
     }
 }

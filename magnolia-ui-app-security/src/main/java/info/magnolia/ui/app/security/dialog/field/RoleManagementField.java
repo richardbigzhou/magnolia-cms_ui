@@ -105,12 +105,12 @@ public class RoleManagementField extends TwinColSelectFieldBuilder<RoleManagemen
     public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
         List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
         List<Role> allRoles = getAllRoles(); // name,uuid
-        Set<String> assignedGroups = getAssignedRoles();
+        Set<String> assignedRoles = getAssignedRoles();
         for (Role role : allRoles) {
             SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
             option.setValue(role.uuid);
             option.setLabel(role.name);
-            if (assignedGroups.contains(role.uuid)) {
+            if (assignedRoles.contains(role.uuid)) {
                 option.setSelected(true);
             }
             options.add(option);

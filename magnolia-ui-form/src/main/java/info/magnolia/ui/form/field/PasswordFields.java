@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.form.field;
 
-import info.magnolia.ui.form.field.converter.Base64Converter;
-
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Property;
@@ -56,7 +54,6 @@ public class PasswordFields extends CustomField<String> {
     private boolean verification = false;
     private String verificationErrorMessage;
     private VerticalLayout layout;
-    private Base64Converter translator;
     private String verificationMessage;
 
     /**
@@ -67,18 +64,13 @@ public class PasswordFields extends CustomField<String> {
      * - {@link Label} (verificationMessage).
      * - {@link PasswordField}.
      */
-    public PasswordFields(boolean verification, String verificationMessage, String verificationErrorMessage, boolean encode) {
+    public PasswordFields(boolean verification, String verificationMessage, String verificationErrorMessage) {
         layout = new VerticalLayout();
         passwordField = new PasswordField();
         passwordField.setNullRepresentation("");
         this.verification = verification;
         this.verificationErrorMessage = verificationErrorMessage;
         this.verificationMessage = verificationMessage;
-        // Initialize encoder
-        if (encode) {
-            this.translator = new Base64Converter();
-            passwordField.setConverter(translator);
-        }
         if (this.verification) {
             verificationField = new PasswordField();
             verificationField.setNullRepresentation("");

@@ -45,8 +45,6 @@ import org.apache.commons.lang.time.FastDateFormat;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 
 /**
@@ -75,10 +73,7 @@ public class DateColumnFormatter extends AbstractColumnFormatter<MetaDataColumnD
         if (prop != null && prop.getValue() != null && prop.getType().equals(Date.class)) {
             String date = dateFormatter.format(prop.getValue());
             String time = timeFormatter.format(prop.getValue());
-            String datetime = String.format("<span class='datefield'>%s</span><span class='timefield'>%s</span>", date, time);
-            Label label = new Label(datetime, ContentMode.HTML);
-            label.setStyleName("datetimefield");
-            return label;
+            return String.format("<span class=\"datetimefield\"><span class=\"datefield\">%s</span><span class=\"timefield\">%s</span></span>", date, time);
         }
 
         return null;

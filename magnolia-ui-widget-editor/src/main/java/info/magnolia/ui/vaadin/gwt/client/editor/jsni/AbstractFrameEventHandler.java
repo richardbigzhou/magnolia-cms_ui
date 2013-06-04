@@ -120,4 +120,10 @@ abstract public class AbstractFrameEventHandler {
             }
         }
     }-*/;
+
+    /**
+     * Catches key events on the contentDocument of the frame {@link Element} and fires it on the frame to enable event bubbling
+     * from the frame up to the DOM.
+     */
+    public abstract void initNativeKeyListener(Element element);
 }

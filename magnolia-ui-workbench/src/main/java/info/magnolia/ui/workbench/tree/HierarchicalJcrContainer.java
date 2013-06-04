@@ -81,8 +81,8 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         }
     }
 
-    public HierarchicalJcrContainer(WorkbenchDefinition workbenchDefinition) {
-        super(workbenchDefinition);
+    public HierarchicalJcrContainer(WorkbenchDefinition workbenchDefinition, String viewTypeName) {
+        super(workbenchDefinition, viewTypeName);
     }
 
     @Override
@@ -181,24 +181,15 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         ArrayList<Item> items = new ArrayList<Item>();
 
         try {
-            ArrayList<Node> nodesWithMatchingTypes = new ArrayList<Node>();
             NodeIterator iterator = node.getNodes();
-            final List<NodeTypeDefinition> nodeTypes = getWorkbenchDefinition().getNodeTypes();
-            String currentNodeTypeName;
             while (iterator.hasNext()) {
                 Node next = iterator.nextNode();
-                currentNodeTypeName = next.getPrimaryNodeType().getName();
-                for (NodeTypeDefinition current : nodeTypes) {
-                    if (current.getName().equals(currentNodeTypeName)) {
-                        nodesWithMatchingTypes.add(next);
-                        break;
-                    }
+                if (isNodeVisible(next)) {
+                    items.add(next);
                 }
             }
 
-            items.addAll(nodesWithMatchingTypes);
-
-            if (getWorkbenchDefinition().includeProperties()) {
+            if (getWorkbenchDefinition().isIncludeProperties()) {
                 ArrayList<Property> properties = new ArrayList<Property>();
                 PropertyIterator propertyIterator = node.getProperties();
                 while (propertyIterator.hasNext()) {
@@ -217,6 +208,25 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
         }
 
         return Collections.unmodifiableCollection(items);
+    }
+
+    protected boolean isNodeVisible(Node node) throws RepositoryException {
+
+        if (!getWorkbenchDefinition().isIncludeSystemNodes() && node.getName().startsWith("jcr:") || node.getName().startsWith("rep:")) {
+            return false;
+        }
+
+        String primaryNodeTypeName = node.getPrimaryNodeType().getName();
+        for (NodeTypeDefinition nodeTypeDefinition : getWorkbenchDefinition().getNodeTypes()) {
+            if (nodeTypeDefinition.isStrict()) {
+                if (primaryNodeTypeName.equals(nodeTypeDefinition.getName())) {
+                    return true;
+                }
+            } else if (NodeUtil.isNodeType(node, nodeTypeDefinition.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Collection<Item> getRootItemIds() throws RepositoryException {

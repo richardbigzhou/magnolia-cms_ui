@@ -34,7 +34,6 @@
 package info.magnolia.ui.vaadin.gwt.client.widget;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -55,7 +54,7 @@ public interface PageEditorView extends IsWidget {
         void selectElement(Element element);
     }
 
-    Frame getFrame();
+    PageEditorFrame getFrame();
 
     void setListener(Listener listener);
 

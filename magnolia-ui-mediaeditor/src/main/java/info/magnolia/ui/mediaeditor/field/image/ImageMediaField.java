@@ -31,10 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.editmode.field.image;
+package info.magnolia.ui.mediaeditor.field.image;
 
 import info.magnolia.ui.mediaeditor.action.feature.Scalable;
-import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
+import info.magnolia.ui.mediaeditor.field.MediaField;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -48,8 +48,6 @@ import javax.imageio.ImageIO;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.util.TransactionalPropertyWrapper;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.StreamResource.StreamSource;
 import com.vaadin.ui.Alignment;
@@ -70,8 +68,6 @@ public abstract class ImageMediaField extends CustomField<byte[]> implements Med
 
     protected Logger log = Logger.getLogger(getClass());
 
-    private Transactional<byte[]> transactionHandler;
-
     private Component fieldComponent;
 
     @Override
@@ -88,14 +84,6 @@ public abstract class ImageMediaField extends CustomField<byte[]> implements Med
     }
 
     protected abstract Component createImage();
-
-    @Override
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void setPropertyDataSource(Property newDataSource) {
-        this.transactionHandler = new TransactionalPropertyWrapper<byte[]>(newDataSource);
-        this.transactionHandler.startTransaction();
-        super.setPropertyDataSource(transactionHandler);
-    }
 
     @Override
     protected void setInternalValue(byte[] newValue) {
@@ -146,28 +134,26 @@ public abstract class ImageMediaField extends CustomField<byte[]> implements Med
 
     @Override
     public void applyChanges() {
-        if (transactionHandler != null) {
-            transactionHandler.commit();
-        }
     }
 
     @Override
     public void revertChanges() {
-        if (transactionHandler != null) {
-            transactionHandler.rollback();
-        }
     }
 
     public void execute() {
+        InputStream stream = null;
         try {
             BufferedImage result = executeImageModification();
+            stream = createStreamSource(result, DEFAULT_FORMAT);
             if (result != null) {
-                setValue(IOUtils.toByteArray(createStreamSource(result, DEFAULT_FORMAT)));
+                setValue(IOUtils.toByteArray(stream));
                 refreshImageSource();
             }
         } catch (IOException e) {
             log.error("Error occurred while converting operation result into stream: " + e.getMessage(), e);
             revertChanges();
+        } finally {
+            IOUtils.closeQuietly(stream);
         }
     }
 
@@ -192,17 +178,17 @@ public abstract class ImageMediaField extends CustomField<byte[]> implements Med
         }};
     }
 
-    protected InputStream createStreamSource(final BufferedImage img, final String formatName) {
+    protected InputStream createStreamSource(final BufferedImage img, final String formatName) throws IOException {
+        ByteArrayOutputStream os = null;
         try {
             if (img == null) {
                 return null;
             }
-            ByteArrayOutputStream out2 = new ByteArrayOutputStream();
-            ImageIO.write(img, formatName, out2);
-            return new ByteArrayInputStream(out2.toByteArray());
-        } catch (IOException e) {
-            log.error("Error occurred while creating image stream: " + e.getMessage(), e);
+            os = new ByteArrayOutputStream();
+            ImageIO.write(img, formatName, os);
+            return new ByteArrayInputStream(os.toByteArray());
+        } finally {
+            IOUtils.closeQuietly(os);
         }
-        return null;
     }
 }

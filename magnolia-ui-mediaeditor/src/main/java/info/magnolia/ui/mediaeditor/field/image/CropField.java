@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.editmode.field.image;
+package info.magnolia.ui.mediaeditor.field.image;
 
 import info.magnolia.ui.vaadin.editor.JCropField;
 import info.magnolia.ui.vaadin.gwt.shared.jcrop.SelectionArea;

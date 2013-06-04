@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,39 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.pages.editor;
+package info.magnolia.ui.dialog.setup.migration;
 
-import info.magnolia.event.Event;
-import info.magnolia.event.EventHandler;
-import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
+import info.magnolia.ui.form.field.definition.TextFieldDefinition;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
- * This event is fired when an element is selected in page editor.
- * @see info.magnolia.ui.vaadin.gwt.client.shared.PageElement
- * @see info.magnolia.ui.vaadin.gwt.client.shared.AreaElement
- * @see info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement
+ * Migrate an Edit control to a TextField.
  */
-public class NodeSelectedEvent implements Event<NodeSelectedEvent.Handler> {
+public class EditControlMigration implements ControlMigration {
 
-    private final AbstractElement element;
-
-    public NodeSelectedEvent(AbstractElement element) {
-        this.element = element;
-    }
 
     @Override
-    public void dispatch(Handler handler) {
-        handler.onItemSelected(this);
+    public void migrate(Node controlNode) throws RepositoryException {
+        controlNode.getProperty("controlType").remove();
+        controlNode.setProperty("class", TextFieldDefinition.class.getName());
     }
 
-    public AbstractElement getElement() {
-        return element;
-    }
-
-    /**
-     * Handles {@link NodeSelectedEvent} events.
-     */
-    public static interface Handler extends EventHandler {
-        void onItemSelected(NodeSelectedEvent event);
-    }
 }
