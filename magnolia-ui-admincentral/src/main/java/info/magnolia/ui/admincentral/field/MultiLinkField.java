@@ -107,13 +107,14 @@ public class MultiLinkField extends CustomField<List> {
         addStyleName("linkfield");
         root = new VerticalLayout();
         root.setSizeUndefined();
-
+        // Initialize Existing field
+        initFields();
+        // Add addButton
         addButton.setCaption(buttonCaptionAdd);
         addButton.addStyleName("magnoliabutton");
         addButton.addClickListener(addButtonClickListener());
-
         root.addComponent(addButton);
-        initFields();
+
         return root;
     }
 
@@ -150,7 +151,7 @@ public class MultiLinkField extends CustomField<List> {
         while (it.hasNext()) {
             String entry = it.next();
             if (!currentValues.contains(entry)) {
-                root.addComponentAsFirst(createEntryComponent(entry));
+                root.addComponent(createEntryComponent(entry));
             }
         }
     };
