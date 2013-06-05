@@ -103,7 +103,7 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
 
     private void writeServerErrorPage(HttpServletRequest request, HttpServletResponse response, Exception e) throws IOException {
         if (!isUidlRequest(request)) {
-            // Create an HTML reponse with the error
+            // Create an HTML response with the error
 
             // compute restart application URL at previous location
             String url = request.getRequestURL().toString();
