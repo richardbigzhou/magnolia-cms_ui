@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.statusbar;
+package info.magnolia.ui.vaadin.statusbar;
 
 import static org.junit.Assert.*;
 
