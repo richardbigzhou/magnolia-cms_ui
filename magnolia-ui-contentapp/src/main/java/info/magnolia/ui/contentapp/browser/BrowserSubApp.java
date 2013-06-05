@@ -442,13 +442,8 @@ public class BrowserSubApp extends BaseSubApp {
             public void onItemSelected(SelectionChangedEvent event) {
                 BrowserLocation location = getCurrentLocation();
                 try {
-                    if (event.getItemIds().isEmpty()) {
-                        // TODO this should be removed - should never happen; but check first (put a breakpoint here)
-                        location.updateNodePath("/");
-                    } else {
-                        Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.parseNodeIdentifier(event.getFirstItemId()));
-                        location.updateNodePath(selected.getPath());
-                    }
+                    Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.parseNodeIdentifier(event.getFirstItemId()));
+                    location.updateNodePath(selected.getPath());
                 } catch (RepositoryException e) {
                     log.warn("Could not get jcrItem with itemId " + event.getFirstItemId() + " from workspace " + event.getWorkspace(), e);
                 }
