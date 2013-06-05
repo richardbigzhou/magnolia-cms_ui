@@ -195,12 +195,12 @@ public class LocationHistoryHandlerTest {
         @Override
         public Location getLocation(String fragment) {
             String type = DefaultLocation.extractAppType(fragment);
-            String appId = DefaultLocation.extractAppId(fragment);
+            String appName = DefaultLocation.extractAppName(fragment);
             String subAppId = DefaultLocation.extractSubAppId(fragment);
             String parameter = DefaultLocation.extractParameter(fragment);
 
-            if (type.equals("app") && appId.equals("foo")) {
-                return new DefaultLocation(type, appId, subAppId, parameter);
+            if (type.equals("app") && appName.equals("foo")) {
+                return new DefaultLocation(type, appName, subAppId, parameter);
             }
 
             return null;
@@ -208,7 +208,7 @@ public class LocationHistoryHandlerTest {
 
         @Override
         public String getFragment(Location location) {
-            if (location.getAppType().equals("app") && location.getAppId().equals("foo")) {
+            if (location.getAppType().equals("app") && location.getAppName().equals("foo")) {
                 return location.toString();
             }
             return null;

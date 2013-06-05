@@ -73,12 +73,12 @@ public class AppsViewportConnector extends ViewportConnector implements AppsView
         });
     }
 
-    private boolean isAppRunning(String appId) {
-        return getState().runningAppNames.contains(appId);
+    private boolean isAppRunning(String appName) {
+        return getState().runningAppNames.contains(appName);
     }
 
-    private boolean isAppRegistered(String appId) {
-        return getState().registeredAppNames.contains(appId);
+    private boolean isAppRegistered(String appName) {
+        return getState().registeredAppNames.contains(appName);
     }
 
     @Override
@@ -88,10 +88,10 @@ public class AppsViewportConnector extends ViewportConnector implements AppsView
             @Override
             public void onAppRequested(AppRequestedEvent event) {
                 getWidget().setCurtainVisible(false);
-                final String appId = event.getAppName();
-                if (isAppRegistered(appId)) {
-                    if (!isAppRunning(appId)) {
-                        getWidget().showAppPreloader(appId);
+                final String appName = event.getAppName();
+                if (isAppRegistered(appName)) {
+                    if (!isAppRunning(appName)) {
+                        getWidget().showAppPreloader(appName);
                     }
                 }
             }

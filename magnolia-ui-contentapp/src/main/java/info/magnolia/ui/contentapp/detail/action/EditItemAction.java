@@ -52,7 +52,9 @@ import org.slf4j.LoggerFactory;
  * @see EditItemActionDefinition
  */
 public class EditItemAction extends AbstractAction<EditItemActionDefinition> {
+
     private final Logger log = LoggerFactory.getLogger(getClass());
+
     private final AbstractJcrNodeAdapter nodeItemToEdit;
     private final LocationController locationController;
 
@@ -72,7 +74,7 @@ public class EditItemAction extends AbstractAction<EditItemActionDefinition> {
                 return;
             }
             final String path = nodeItemToEdit.applyChanges().getPath();
-            DetailLocation location = new DetailLocation(getDefinition().getAppId(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path, "");
+            DetailLocation location = new DetailLocation(getDefinition().getAppName(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path, "");
             locationController.goTo(location);
 
         } catch (RepositoryException e) {

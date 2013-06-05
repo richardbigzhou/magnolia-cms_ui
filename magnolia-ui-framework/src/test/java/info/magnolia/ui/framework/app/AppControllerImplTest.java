@@ -406,7 +406,7 @@ public class AppControllerImplTest {
 
         // THEN
         assertNotNull(appController.getCurrentApp());
-        assertEquals(APP_NAME_2 + "_name", appController.getCurrentAppLocation().getAppId());
+        assertEquals(APP_NAME_2 + "_name", appController.getCurrentAppLocation().getAppName());
         assertNotNull(appController.getCurrentAppLocation());
         assertNotEquals(newLocation, appController.getCurrentAppLocation());
         assertNotNull(appController.getCurrentAppLocation().getSubAppId());
@@ -427,7 +427,7 @@ public class AppControllerImplTest {
 
         // THEN
         assertNotNull(appController.getCurrentApp());
-        assertEquals(APP_NAME_1 + "_name", appController.getCurrentAppLocation().getAppId());
+        assertEquals(APP_NAME_1 + "_name", appController.getCurrentAppLocation().getAppName());
         assertNotNull(appController.getCurrentAppLocation().getParameter());
         assertEquals(parameter, appController.getCurrentAppLocation().getParameter());
     }
