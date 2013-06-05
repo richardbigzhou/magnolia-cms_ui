@@ -36,39 +36,28 @@ package info.magnolia.ui.form.field.property;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.apache.commons.lang.StringUtils;
-
 /**
- * SingleProperty implementation of {@link MultiValueHandler}.<br>
- * Store the list of values in a single property as a concatenation of string with a ',' separator.<br>
- * Retrieve the single property as a List of String.
+ * Abstract Base Implementation of {@link MultiValueHandler} used to <br>
+ * - store a List of values into a single property <br>
+ * - retrieve a List of Value from a single property.
  */
-public class SingleValueHandler extends AbstractBasePropertyValueHandler {
+public abstract class AbstractBasePropertyValueHandler implements MultiValueHandler {
 
-    private JcrNodeAdapter parent;
-    private String propertyName;
+    /**
+     * If the desired property (propertyName) already exist in the JcrNodeAdapter, return this property<br>
+     * else create a new Property.
+     * 
+     * @param <T>
+     */
+    @SuppressWarnings("unchecked")
+    public <T> DefaultProperty<T> getOrCreateProperty(Class<T> type, T defaultValue, JcrNodeAdapter parent, String propertyName) {
 
-    @Inject
-    public SingleValueHandler(JcrNodeAdapter parent, String propertyName) {
-        this.parent = parent;
-        this.propertyName = propertyName;
+        DefaultProperty<T> property = (DefaultProperty<T>) parent.getItemProperty(propertyName);
+        if (property == null) {
+            property = new DefaultProperty<T>(type, defaultValue);
+            parent.addItemProperty(propertyName, property);
+        }
+        return property;
     }
 
-    @Override
-    public void setValue(List<String> newValue) {
-        DefaultProperty<String> property = getOrCreateProperty(String.class, "", parent, propertyName);
-        property.setValue(StringUtils.join(newValue, ","));
-    }
-
-    @Override
-    public List<String> getValue() {
-        DefaultProperty<String> property = getOrCreateProperty(String.class, "", parent, propertyName);
-        String value = property.getValue();
-        return Arrays.asList(value.split(","));
-    }
 }

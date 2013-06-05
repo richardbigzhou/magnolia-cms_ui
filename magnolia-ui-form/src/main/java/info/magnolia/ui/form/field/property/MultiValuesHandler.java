@@ -47,23 +47,26 @@ import javax.inject.Inject;
  * Store the list of values as Jcr Multi-property value.<br>
  * Retrieve the Jcr Multi-property value as a list.
  */
-@SuppressWarnings("unchecked")
-public class MultiValuesHandler extends SingleValueHandler {
+public class MultiValuesHandler extends AbstractBasePropertyValueHandler {
+
+    private JcrNodeAdapter parent;
+    private String propertyName;
 
     @Inject
     public MultiValuesHandler(JcrNodeAdapter parent, String propertyName) {
-        super(parent, propertyName);
+        this.parent = parent;
+        this.propertyName = propertyName;
     }
 
     @Override
     public void setValue(List<String> newValue) {
-        DefaultProperty<LinkedList> property = getOrCreateProperty(LinkedList.class, new LinkedList());
+        DefaultProperty<LinkedList> property = getOrCreateProperty(LinkedList.class, new LinkedList(), parent, propertyName);
         property.setValue(new LinkedList(newValue));
     }
 
     @Override
     public List<String> getValue() {
-        DefaultProperty<LinkedList> property = getOrCreateProperty(LinkedList.class, new LinkedList());
+        DefaultProperty<LinkedList> property = getOrCreateProperty(LinkedList.class, new LinkedList(), parent, propertyName);
         return new ArrayList<String>(property.getValue());
     }
 

@@ -124,7 +124,7 @@ public class MultiLinkField extends CustomField<List> {
         return new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-                root.addComponent(createSelectCompoment(""), root.getComponentCount() - 1);
+                root.addComponent(createEntryComponent(""), root.getComponentCount() - 1);
             };
         };
     }
@@ -150,7 +150,7 @@ public class MultiLinkField extends CustomField<List> {
         while (it.hasNext()) {
             String entry = it.next();
             if (!currentValues.contains(entry)) {
-                root.addComponentAsFirst(createSelectCompoment(entry));
+                root.addComponentAsFirst(createEntryComponent(entry));
             }
         }
     };
@@ -178,7 +178,7 @@ public class MultiLinkField extends CustomField<List> {
      * - a linkField <br>
      * - a remove Button<br>
      */
-    private Component createSelectCompoment(String entry) {
+    private Component createEntryComponent(String entry) {
         HorizontalLayout layout = new HorizontalLayout();
         // Create a single LinkFild and set DataSource and ValueChangeListener.
         LinkField linkField = new LinkField(converter, buttonCaptionNew, buttonCaptionOther, allowChangesOnSelected);
@@ -228,15 +228,13 @@ public class MultiLinkField extends CustomField<List> {
                 appController.openChooseDialog(appName, "/", subAppContext, new ItemChosenListener() {
                     @Override
                     public void onItemChosen(final Item chosenValue) {
-                        String propertyName = "tmp";
                         String newValue = null;
                         if (chosenValue != null) {
                             javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
                             if (jcrItem.isNode()) {
                                 final Node selected = (Node) jcrItem;
                                 try {
-                                    boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) && !"transientPathProperty".equals(propertyName) && selected.hasProperty(propertyName);
-                                    newValue = isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath();
+                                    newValue = selected.getPath();
                                 } catch (RepositoryException e) {
                                     log.error("Not able to access the configured property. Value will not be set.", e);
                                 }
@@ -244,7 +242,6 @@ public class MultiLinkField extends CustomField<List> {
                         }
                         linkField.setValue(newValue);
                     }
-
                     @Override
                     public void onChooseCanceled() {
                     }
