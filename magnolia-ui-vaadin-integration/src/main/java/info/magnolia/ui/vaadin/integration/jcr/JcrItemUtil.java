@@ -134,24 +134,7 @@ public class JcrItemUtil {
         return getItemId(session.getNode(absPath));
     }
 
-    public static List<Item> getItems(final String workspaceName, List<String> ids, String rootId) {
-        List<Item> items = getItems(workspaceName, ids);
-        if (rootId == null) {
-            return items;
-        }
-        for (int i = 0; i < items.size(); i++) {
-            try {
-                if (rootId.equals(getItemId(items.get(i)))) {
-                    items.set(i, null);
-                }
-            } catch (RepositoryException e) {
-                log.debug("Cannot get item ID for item [{}].", items.get(i));
-            }
-        }
-        return items;
-    }
-
-    public static List<Item> getItems(final String workspaceName, List<String> ids) {
+    public static List<Item> getJcrItems(final String workspaceName, List<String> ids) {
         // sanity check
         if (StringUtils.isBlank(workspaceName) || ids == null) {
             return null;

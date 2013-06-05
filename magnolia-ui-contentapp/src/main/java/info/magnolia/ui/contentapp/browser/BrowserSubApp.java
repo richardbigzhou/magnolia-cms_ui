@@ -224,7 +224,7 @@ public class BrowserSubApp extends BaseSubApp {
         try {
             String workbenchRootItemId = JcrItemUtil.getItemId(workbench.getWorkspace(), workbench.getPath());
             List<String> selectedItemIds = getBrowser().getSelectedItemIds();
-            List<Item> items = JcrItemUtil.getItems(workbench.getWorkspace(), selectedItemIds, workbenchRootItemId);
+            List<Item> items = getJcrItemsExceptOne(workbench.getWorkspace(), selectedItemIds, workbenchRootItemId);
 
             // Figure out which section to show, only one
             ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, items);
@@ -293,7 +293,7 @@ public class BrowserSubApp extends BaseSubApp {
         try {
             String workbenchRootItemId = JcrItemUtil.getItemId(workbench.getWorkspace(), workbench.getPath());
             List<String> selectedItemIds = getBrowser().getSelectedItemIds();
-            List<Item> items = JcrItemUtil.getItems(workbench.getWorkspace(), selectedItemIds, workbenchRootItemId);
+            List<Item> items = getJcrItemsExceptOne(workbench.getWorkspace(), selectedItemIds, workbenchRootItemId);
 
             // Figure out which section to show, only one
             ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, items);
@@ -498,4 +498,20 @@ public class BrowserSubApp extends BaseSubApp {
         });
     }
 
+    public static List<Item> getJcrItemsExceptOne(final String workspaceName, List<String> ids, String itemIdToExclude) {
+        List<Item> items = JcrItemUtil.getJcrItems(workspaceName, ids);
+        if (itemIdToExclude == null) {
+            return items;
+        }
+        for (int i = 0; i < items.size(); i++) {
+            try {
+                if (itemIdToExclude.equals(JcrItemUtil.getItemId(items.get(i)))) {
+                    items.set(i, null);
+                }
+            } catch (RepositoryException e) {
+                log.debug("Cannot get item ID for item [{}].", items.get(i));
+            }
+        }
+        return items;
+    }
 }
