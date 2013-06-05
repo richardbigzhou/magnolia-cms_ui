@@ -42,13 +42,10 @@ import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.api.overlay.AlertCallback;
-import info.magnolia.ui.api.overlay.ConfirmationCallback;
-import info.magnolia.ui.api.overlay.MessageStyleType;
-import info.magnolia.ui.api.overlay.NotificationCallback;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.framework.AbstractUIContext;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
@@ -75,7 +72,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Implements both - the controlling of an app instance as well as the housekeeping of the context for an app.
  */
-public class AppInstanceControllerImpl implements AppContext, AppInstanceController {
+public class AppInstanceControllerImpl extends AbstractUIContext implements AppContext, AppInstanceController {
 
     private static final Logger log = LoggerFactory.getLogger(AppInstanceControllerImpl.class);
 
@@ -105,8 +102,6 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
     private SubAppContext currentSubAppContext;
 
-    private OverlayLayer overlayPresenter;
-
     private AppLauncherLayoutManager appLauncherLayoutManager;
 
     @Inject
@@ -119,15 +114,16 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         this.messagesManager = messagesManager;
         this.appDescriptor = appDescriptor;
         this.appLauncherLayoutManager = appLauncherLayoutManager;
+    }
 
-        overlayPresenter = new OverlayPresenter() {
-
+    @Override
+    protected OverlayPresenter initializeOverlayPresenter() {
+        return new OverlayPresenter() {
             @Override
             public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
                 View overlayParent = getView();
                 return AppInstanceControllerImpl.this.shell.openOverlayOnView(view, overlayParent, OverlayLayer.ModalityDomain.APP, modalityLevel);
             }
-
         };
     }
 
@@ -454,50 +450,4 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
         return subAppDetails;
     }
-
-    @Override
-    public OverlayCloser openOverlay(View view) {
-        return overlayPresenter.openOverlay(view);
-    }
-
-    @Override
-    public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
-        return overlayPresenter.openOverlay(view, modalityLevel);
-    }
-
-    @Override
-    public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb) {
-        overlayPresenter.openAlert(type, viewToShow, confirmButtonText, cb);
-    }
-
-    @Override
-    public void openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
-        overlayPresenter.openAlert(type, title, body, confirmButtonText, cb);
-    }
-
-    @Override
-    public void openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
-        overlayPresenter.openConfirmation(type, viewToShow, confirmButtonText, cancelButtonText, cancelIsDefault, cb);
-    }
-
-    @Override
-    public void openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
-        overlayPresenter.openConfirmation(type, title, body, confirmButtonText, cancelButtonText, cancelIsDefault, cb);
-    }
-
-    @Override
-    public void openNotification(MessageStyleType type, boolean doesTimeout, View viewToShow) {
-        overlayPresenter.openNotification(type, doesTimeout, viewToShow);
-    }
-
-    @Override
-    public void openNotification(MessageStyleType type, boolean doesTimeout, String title) {
-        overlayPresenter.openNotification(type, doesTimeout, title);
-    }
-
-    @Override
-    public void openNotification(MessageStyleType type, boolean doesTimeout, String title, String linkText, NotificationCallback cb) {
-        overlayPresenter.openNotification(type, doesTimeout, title, linkText, cb);
-    }
-
 }

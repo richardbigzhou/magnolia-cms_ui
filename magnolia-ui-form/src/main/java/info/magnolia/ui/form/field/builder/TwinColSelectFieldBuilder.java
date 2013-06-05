@@ -55,6 +55,7 @@ public class TwinColSelectFieldBuilder<T extends TwinColSelectFieldDefinition> e
         super.buildField();
         ((TwinColSelect) select).setRows(select.getContainerDataSource().size());
         select.setMultiSelect(definition.isMultiselect());
+        select.setNullSelectionAllowed(true);
         ((TwinColSelect) select).setLeftColumnCaption(getMessage(definition.getLeftColumnCaption()));
         ((TwinColSelect) select).setRightColumnCaption(getMessage(definition.getRightColumnCaption()));
         return select;

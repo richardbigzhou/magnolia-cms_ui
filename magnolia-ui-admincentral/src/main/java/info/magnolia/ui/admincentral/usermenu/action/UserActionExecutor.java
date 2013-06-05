@@ -31,41 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.refresher;
+package info.magnolia.ui.admincentral.usermenu.action;
 
-import com.vaadin.ui.AbstractComponentContainer;
-import com.vaadin.ui.ProgressIndicator;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.admincentral.module.AdminCentralModule;
+import info.magnolia.ui.admincentral.usermenu.definition.UserMenuDefinition;
+import info.magnolia.ui.api.action.AbstractActionExecutor;
+import info.magnolia.ui.api.action.ActionDefinition;
+
+import java.util.Collection;
+import java.util.Collections;
+
+import javax.inject.Inject;
 
 /**
- * A util class which enables the server to update the client.
+ * Action Executor for actions registered in {@link UserMenuDefinition} and obtained by {@link info.magnolia.ui.admincentral.module.AdminCentralModule#getUserMenu()}.
  */
-public class ClientRefresherUtil {
+public class UserActionExecutor extends AbstractActionExecutor {
 
-    /**
-     * Effectively, the server will push any updates to its state to the client after the delayMsec elapses.
-     * 
-     * @param delayMsec When the server should update the client.
-     * @param refreshee A component to host the refreshing logic.
-     */
-    public static ProgressIndicator addClientRefresher(int delayMsec, AbstractComponentContainer refreshee) {
+    private final UserMenuDefinition userMenuDefinition;
 
-        /*
-         * Progressbar hack to cause client to update to server state.
-         * Progressbar helps simply because it uses polling to initiate a client/server transaction,
-         * this transaction enables the client to refresh itself to the changes we perform in the timer.
-         * 
-         * When Vaadin 7.1 with built-in push is out this code can be refactored to use it.
-         * See ticket MGNLUI-1112
-         */
-        ProgressIndicator clientRefresher = new ProgressIndicator();
-        clientRefresher.setPollingInterval(delayMsec);
-        clientRefresher.setIndeterminate(true);
-        clientRefresher.setStyleName("progressbar-based-client-refresher");
-
-        refreshee.addComponent(clientRefresher);
-
-        return clientRefresher;
+    @Inject
+    public UserActionExecutor(ComponentProvider componentProvider, AdminCentralModule module) {
+        super(componentProvider);
+        this.userMenuDefinition = module.getUserMenu();
     }
 
+    @Override
+    public ActionDefinition getActionDefinition(String actionName) {
 
+        return (userMenuDefinition != null) ? userMenuDefinition.getActions().get(actionName) : null;
+    }
+
+    public Collection<ActionDefinition> getActions() {
+        return (userMenuDefinition != null) ? userMenuDefinition.getActions().values() : Collections.EMPTY_LIST;
+    }
 }

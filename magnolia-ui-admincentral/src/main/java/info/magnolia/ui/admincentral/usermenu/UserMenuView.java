@@ -31,65 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.editmode.event;
+package info.magnolia.ui.admincentral.usermenu;
 
-import info.magnolia.event.Event;
-import info.magnolia.event.EventHandler;
-
-import java.io.InputStream;
+import info.magnolia.ui.api.view.View;
 
 /**
- * Fired when work with media editor is finished. This event delivers the
- * resulting media stream and the type of confirmation made after finishing
- * media editor (submitted, canceled).
+ * View displaying the current logged in user and providing user related actions.
+ * Allows registering actions.
  */
-public class MediaEditorCompletedEvent implements Event<MediaEditorCompletedEvent.Handler>{
+public interface UserMenuView extends View {
+
+    void setListener(Listener listener);
+
+    void addAction(String name, String label);
+
+    void setCaption(String caption);
 
     /**
-     * CompletionType.
+     * Listener callback interface for presenter.
      */
-    public enum CompletionType {
-        SUBMIT,
-        CANCEL;
-    };
-
-    private CompletionType type;
-
-    private InputStream stream;
-
-    public MediaEditorCompletedEvent(CompletionType type, InputStream stream) {
-        this.stream = stream;
-        this.type = type;
-    }
-
-    public InputStream getStream() {
-        return stream;
-    }
-
-    public CompletionType getType() {
-        return type;
-    }
-
-    /**
-     * Handler.
-     */
-    public interface Handler extends EventHandler {
-
-        void onSubmit(MediaEditorCompletedEvent event);
-
-        void onCancel(MediaEditorCompletedEvent event);
-
-    }
-
-    @Override
-    public void dispatch(Handler handler) {
-        switch (type) {
-        case SUBMIT:
-            handler.onSubmit(this);
-            break;
-        case CANCEL:
-            handler.onCancel(this);
-            break;
-        }
+    interface Listener {
+        void onAction(String actionName);
     }
 }

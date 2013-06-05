@@ -80,6 +80,8 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
 
     void onAppStarting();
 
+    void setUserMenu(Widget widget);
+
     /**
      * Presenter for {@link MagnoliaShellView}.
      */

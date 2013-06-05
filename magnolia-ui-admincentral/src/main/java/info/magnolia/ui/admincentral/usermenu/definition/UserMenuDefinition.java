@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,17 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.mediaeditor.editmode.field;
+package info.magnolia.ui.admincentral.usermenu.definition;
 
-import com.vaadin.ui.Field;
+import info.magnolia.ui.api.action.ActionDefinition;
+
+import java.util.Map;
 
 /**
- * Base interface for media editor fields.
+ * Definition registered under the config node of {@link info.magnolia.ui.admincentral.module.AdminCentralModule}.
+ * Holds actions used by the {@link info.magnolia.ui.admincentral.usermenu.action.UserActionExecutor}.
  */
-public interface MediaField extends Field<byte[]> {
-
-    void applyChanges();
-
-    void revertChanges();
-
+public interface UserMenuDefinition {
+    Map<String, ActionDefinition> getActions();
 }

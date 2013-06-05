@@ -60,11 +60,9 @@ public class DataTypeMigrationTaskTest extends AbstractAbstractDataTypeMigration
 
         // THEN
         Node rootNode = targetSession.getRootNode();
-        assertTrue(rootNode.hasNode("test"));
-        assertEquals(NodeTypes.Folder.NAME, rootNode.getNode("test").getPrimaryNodeType().getName());
         assertTrue(!rootNode.hasNode("MetaData"));
-        assertTrue(rootNode.hasNode("test/Family"));
-        Node family = rootNode.getNode("test/Family");
+        assertTrue(rootNode.hasNode("Family"));
+        Node family = rootNode.getNode("Family");
         assertTrue(family.hasProperty("level"));
         assertEquals("mgnl:test", family.getPrimaryNodeType().getName());
         assertTrue(family.hasNode("relatedUUID"));
@@ -74,8 +72,8 @@ public class DataTypeMigrationTaskTest extends AbstractAbstractDataTypeMigration
         assertTrue(relatedUUID.hasNode("child_1"));
         Node child1 = relatedUUID.getNode("child_1");
         assertEquals(NodeTypes.Content.NAME, child1.getPrimaryNodeType().getName());
-        assertTrue(rootNode.hasNode("test/Sport"));
-        Node sport = rootNode.getNode("test/Sport");
+        assertTrue(rootNode.hasNode("Sport"));
+        Node sport = rootNode.getNode("Sport");
         assertEquals("mgnl:test", sport.getPrimaryNodeType().getName());
         assertFalse(sport.hasNode("MetaData"));
     }

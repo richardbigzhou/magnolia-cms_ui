@@ -112,10 +112,16 @@ body{
   -webkit-appearance: none;
 }
 
+.mgnl-form input[type="text"].error, .mgnl-form input[type="password"].error {
+  border: 2px solid #9A3332;
+  margin: -1px;
+  margin-bottom: 15px;
+}
+
 .mgnl-form input[type="text"]:focus , .mgnl-form input[type="password"]:focus {
-	border: 2px solid #93bac6;
-	margin: -1px;
-	margin-bottom: 15px;
+  border: 2px solid #93bac6;
+  margin: -1px;
+  margin-bottom: 15px;
 }
 
 .mgnl-form a{
@@ -175,13 +181,18 @@ body{
   position:relative;
 }
 
-#login-divet{
-  background: url(../img/style-divet-login-up-green.png) no-repeat;
-  position:absolute;
-  top:-9.5px;
-  left:74px;
-  width:19px;
-  height:10px;
+.divet {
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  width: 0;
+  height: 0;
+  left: 74px;
+  position: absolute;
+}
+
+#login-divet {
+  border-bottom: 10px solid #739821;
+  top: -9.5px;
 }
 
 .float-clear{
@@ -199,3 +210,30 @@ body{
 }
 
 #footer a {color: white;}
+
+#error-message {
+  background-color: #9A3332;
+  color: #FFFFFF;
+  font-size: 12px;
+  min-height: 19px;
+  margin-top: 15px;
+  padding: 5px 15px;
+}
+
+#error-divet {
+  border-bottom: 10px solid #9A3332;
+  top: 266px;
+  left: 220px;
+}
+
+.icon-error {
+  margin-left:5px;
+  margin-right:15px;
+  margin-top: -2px;
+  float:left;
+}
+
+.icon-error img{
+  width:20px;
+  height:20px;
+}

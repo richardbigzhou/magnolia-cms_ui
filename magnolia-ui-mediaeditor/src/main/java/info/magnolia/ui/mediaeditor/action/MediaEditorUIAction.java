@@ -38,7 +38,7 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.MediaEditorView;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
-import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
+import info.magnolia.ui.mediaeditor.field.MediaField;
 import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 
 import java.util.List;
