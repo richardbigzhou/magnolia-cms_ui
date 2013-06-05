@@ -241,17 +241,17 @@ public class WorkspaceAccessFieldBuilder<D extends WorkspaceAccessFieldDefinitio
         accessType.setPropertyDataSource(accessTypeProperty);
         ruleLayout.addComponent(accessType);
 
-        final TextField textField = new TextField();
-        textField.setWidth("125px");
-        textField.setPropertyDataSource(ruleItem.getItemProperty(AccessControlList.PATH_PROPERTY_NAME));
-        ruleLayout.addComponent(textField);
+        final TextField path = new TextField();
+        path.setWidth("125px");
+        path.setPropertyDataSource(ruleItem.getItemProperty(AccessControlList.PATH_PROPERTY_NAME));
+        ruleLayout.addComponent(path);
 
         Button chooseButton = new Button("Choose...");
         chooseButton.addClickListener(new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                openChooseDialog(textField);
+                openChooseDialog(path);
             }
         });
         ruleLayout.addComponent(chooseButton);

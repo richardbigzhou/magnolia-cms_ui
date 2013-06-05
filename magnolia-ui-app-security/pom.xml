@@ -10,6 +10,9 @@
   <artifactId>magnolia-ui-app-security</artifactId>
   <packaging>jar</packaging>
   <name>magnolia-ui-app-security</name>
+  <properties>
+    <cloverCoverageThreshold>20</cloverCoverageThreshold>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -29,6 +32,11 @@
       <artifactId>junit</artifactId>
     </dependency>
     <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
     </dependency>
@@ -38,14 +46,16 @@
       <version>${magnoliaVersion}</version>
     </dependency>
     <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-framework</artifactId>
-        <version>${project.version}</version>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-framework</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-api</artifactId>
-        <version>${project.version}</version>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-core</artifactId>
+      <type>test-jar</type>
+      <version>${magnoliaVersion}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

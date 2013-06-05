@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.security.dialog.field;
 
+import info.magnolia.cms.security.Permission;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
@@ -59,15 +60,16 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * Field builder for the web access field.
  *
+ * @param <D> definition type
  * @see WebAccessFieldDefinition
  */
-public class WebAccessFieldBuilder extends AbstractAccessFieldBuilder<WebAccessFieldDefinition> {
+public class WebAccessFieldBuilder<D extends WebAccessFieldDefinition> extends AbstractAccessFieldBuilder<D> {
 
     private static final String ACL_NODE_NAME = "acl_uri";
     private static final String PERMISSIONS_PROPERTY_NAME = "permissions";
     private static final String PATH_PROPERTY_NAME = "path";
 
-    public WebAccessFieldBuilder(WebAccessFieldDefinition definition, Item relatedFieldItem) {
+    public WebAccessFieldBuilder(D definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
@@ -153,34 +155,34 @@ public class WebAccessFieldBuilder extends AbstractAccessFieldBuilder<WebAccessF
         final HorizontalLayout ruleLayout = new HorizontalLayout();
         ruleLayout.setSpacing(true);
 
-        NativeSelect select = new NativeSelect();
-        select.addItem(63L);
-        select.setItemCaption(63L, "Get & Post");
-        select.addItem(8L);
-        select.setItemCaption(8L, "Get");
-        select.addItem(0L);
-        select.setItemCaption(0L, "Deny");
-        select.setNullSelectionAllowed(false);
-        select.setImmediate(true);
-        select.setInvalidAllowed(false);
-        select.setNewItemsAllowed(false);
+        NativeSelect accessRights = new NativeSelect();
+        accessRights.addItem(Permission.ALL);
+        accessRights.setItemCaption(Permission.ALL, "Get & Post");
+        accessRights.addItem(Permission.READ);
+        accessRights.setItemCaption(Permission.READ, "Get");
+        accessRights.addItem(Permission.NONE);
+        accessRights.setItemCaption(Permission.NONE, "Deny");
+        accessRights.setNullSelectionAllowed(false);
+        accessRights.setImmediate(true);
+        accessRights.setInvalidAllowed(false);
+        accessRights.setNewItemsAllowed(false);
         Property permissionsProperty = ruleItem.getItemProperty(PERMISSIONS_PROPERTY_NAME);
         if (permissionsProperty == null) {
-            permissionsProperty = new DefaultProperty<Long>(Long.class, 63L);
+            permissionsProperty = new DefaultProperty<Long>(Long.class, Permission.ALL);
             ruleItem.addItemProperty(PERMISSIONS_PROPERTY_NAME, permissionsProperty);
         }
-        select.setPropertyDataSource(permissionsProperty);
-        ruleLayout.addComponent(select);
+        accessRights.setPropertyDataSource(permissionsProperty);
+        ruleLayout.addComponent(accessRights);
 
-        TextField textField = new TextField();
-        textField.setWidth("375px");
+        TextField path = new TextField();
+        path.setWidth("375px");
         Property pathProperty = ruleItem.getItemProperty(PATH_PROPERTY_NAME);
         if (pathProperty == null) {
             pathProperty = new DefaultProperty<String>(String.class, "/*");
             ruleItem.addItemProperty(PATH_PROPERTY_NAME, pathProperty);
         }
-        textField.setPropertyDataSource(pathProperty);
-        ruleLayout.addComponent(textField);
+        path.setPropertyDataSource(pathProperty);
+        ruleLayout.addComponent(path);
 
         final Button deleteButton = new Button();
         deleteButton.setHtmlContentAllowed(true);
