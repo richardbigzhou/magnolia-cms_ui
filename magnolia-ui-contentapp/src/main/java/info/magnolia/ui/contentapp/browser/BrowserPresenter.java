@@ -160,25 +160,16 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
                 if (event.getWorkspace().equals(getWorkspace())) {
 
                     workbenchPresenter.refresh();
+                    workbenchPresenter.select(getSelectedItemIds());
 
-                    // use just the first item
+                    // use just the first item to show the preview image
                     String itemId = getSelectedItemIds().get(0);
                     try {
-                        List<String> ids = new ArrayList<String>();
-                        if (!JcrItemUtil.itemExists(getWorkspace(), getSelectedItemIds().get(0))) {
-                            // If the selected node no longer exists we revert selection to the root
-                            String workbenchRootItemId = JcrItemUtil.getItemId(subAppDescriptor.getWorkbench().getWorkspace(), subAppDescriptor.getWorkbench().getPath());
-                            ids.add(workbenchRootItemId);
-                            workbenchPresenter.select(ids);
-                        } else {
-                            // Select the Item to make sure the location is updated.
-                            ids.add(itemId);
-                            workbenchPresenter.select(ids);
-                            // If the selected node does exists refresh the preview image in case it was changed
+                        if (JcrItemUtil.itemExists(getWorkspace(), itemId)) {
                             refreshActionbarPreviewImage(itemId, event.getWorkspace());
                         }
                     } catch (RepositoryException e) {
-                        log.warn("Unable to get node or property [{}] for selection", itemId, e);
+                        log.warn("Unable to get node or property [{}] for preview image", itemId, e);
                     }
                 }
             }
