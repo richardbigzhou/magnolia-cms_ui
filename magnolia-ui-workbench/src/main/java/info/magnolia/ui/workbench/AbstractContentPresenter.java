@@ -112,23 +112,22 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
     // CONTENT VIEW LISTENER
 
     @Override
-    public void onItemSelection(Set items) {
+    public void onItemSelection(Set<String> items) {
         try {
             Set<JcrItemAdapter> jcrItems = new LinkedHashSet<JcrItemAdapter>();
             if (items == null || items.isEmpty()) {
                 log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
                 List<String> ids = new ArrayList<String>(1);
-                ids.add(getWorkbenchRoot().getIdentifier());
+                ids.add(JcrItemUtil.getItemId(getWorkbenchRoot()));
                 setSelectedItemIds(ids);
                 jcrItems.add(toJcrItemAdapter(getWorkbenchRoot()));
             } else {
                 selectedItemIds = new ArrayList<String>(items.size());
-                for (Object o : items) {
-                    String item = (String) o;
+                for (String item : items) {
                     // if the selection is done by clicking the checkbox, the root item is added to the set - so it has to be ignored
                     // but only if there is any other item in the set
                     // TODO MGNLUI-1521
-                    if (getWorkbenchRoot().getIdentifier().equals(item) && items.size() > 1) {
+                    if (JcrItemUtil.getItemId(getWorkbenchRoot()).equals(item) && items.size() > 1) {
                         continue;
                     }
                     selectedItemIds.add(item);

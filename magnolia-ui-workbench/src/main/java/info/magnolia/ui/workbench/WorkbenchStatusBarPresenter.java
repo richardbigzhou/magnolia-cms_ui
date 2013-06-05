@@ -65,8 +65,6 @@ public class WorkbenchStatusBarPresenter {
 
     private final Label selectionLabel = new Label();
 
-    private Set<JcrItemAdapter> selectedItems;
-
     private String workbenchRootPath;
 
     @Inject
@@ -98,7 +96,6 @@ public class WorkbenchStatusBarPresenter {
     }
 
     public void setSelectedItems(Set<JcrItemAdapter> items) {
-        this.selectedItems = items;
         setSelectedItem(items.iterator().next());
     }
 

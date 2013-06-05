@@ -37,6 +37,7 @@ import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailDblClickListener;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailRightClickListener;
 import info.magnolia.ui.vaadin.layout.LazyThumbnailLayout.ThumbnailSelectionListener;
+import info.magnolia.ui.workbench.thumbnail.ThumbnailContainer.ThumbnailItem;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -67,8 +68,9 @@ public class ThumbnailViewImpl implements ThumbnailView {
             @Override
             public void onThumbnailSelected(final String thumbnailId) {
                 Item node = thumbnailLayout.getContainerDataSource().getItem(thumbnailId);
-                Set<Item> items = new LinkedHashSet<Item>();
-                items.add(node);
+                String itemId = ((ThumbnailItem) node).getItemId();
+                Set<String> items = new LinkedHashSet<String>();
+                items.add(itemId);
                 listener.onItemSelection(items);
             }
         });
@@ -87,8 +89,9 @@ public class ThumbnailViewImpl implements ThumbnailView {
             @Override
             public void onThumbnailRightClicked(final String thumbnailId, int clickX, int clickY) {
                 Item node = thumbnailLayout.getContainerDataSource().getItem(thumbnailId);
-                Set<Item> items = new LinkedHashSet<Item>();
-                items.add(node);
+                String itemId = ((ThumbnailItem) node).getItemId();
+                Set<String> items = new LinkedHashSet<String>();
+                items.add(itemId);
                 listener.onItemSelection(items);
                 listener.onRightClick(node, clickX, clickY);
             }

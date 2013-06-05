@@ -41,7 +41,7 @@ import javax.jcr.Item;
 public interface AvailabilityRule {
 
     /**
-     * Returns true if the availability subject (e.g. action) is available for the specified <code>items</code> (or for root node, if the <code>items</code> is null or empty).
+     * Returns true if the availability subject (e.g. action) is available for the specified <code>items</code> (root node is represented by a <code>null</code> value <b>in</b> the array).
      */
     public abstract boolean isAvailable(Item... items);
 }

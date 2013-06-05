@@ -222,9 +222,9 @@ public class BrowserSubApp extends BaseSubApp {
         List<ActionbarSectionDefinition> sections = subAppDescriptor.getActionbar().getSections();
 
         try {
-            String rootId = JcrItemUtil.getItemId(workbench.getWorkspace(), workbench.getPath());
+            String workbenchRootItemId = JcrItemUtil.getItemId(workbench.getWorkspace(), workbench.getPath());
             List<String> selectedItemIds = getBrowser().getSelectedItemIds();
-            List<Item> items = JcrItemUtil.getItems(workbench.getWorkspace(), selectedItemIds, rootId);
+            List<Item> items = JcrItemUtil.getItems(workbench.getWorkspace(), selectedItemIds, workbenchRootItemId);
 
             // Figure out which section to show, only one
             ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, items);
@@ -241,7 +241,7 @@ public class BrowserSubApp extends BaseSubApp {
 
                     String actionName = itemDefinition.getName();
                     menuItem = addActionPopupItem(subAppDescriptor, actionPopup, itemDefinition, items);
-                    menuItem.setEnabled(actionExecutor.isAvailable(actionName, items.toArray(new Item[0])));
+                    menuItem.setEnabled(actionExecutor.isAvailable(actionName, items.toArray(new Item[items.size()])));
                 }
 
                 // Add group separator.
@@ -291,9 +291,9 @@ public class BrowserSubApp extends BaseSubApp {
         List<ActionbarSectionDefinition> sections = subAppDescriptor.getActionbar().getSections();
 
         try {
-            String rootId = JcrItemUtil.getItemId(workbench.getWorkspace(), workbench.getPath());
+            String workbenchRootItemId = JcrItemUtil.getItemId(workbench.getWorkspace(), workbench.getPath());
             List<String> selectedItemIds = getBrowser().getSelectedItemIds();
-            List<Item> items = JcrItemUtil.getItems(workbench.getWorkspace(), selectedItemIds, rootId);
+            List<Item> items = JcrItemUtil.getItems(workbench.getWorkspace(), selectedItemIds, workbenchRootItemId);
 
             // Figure out which section to show, only one
             ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, items);
@@ -321,7 +321,7 @@ public class BrowserSubApp extends BaseSubApp {
                 for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
 
                     String actionName = itemDefinition.getName();
-                    if (actionExecutor.isAvailable(actionName, items.toArray(new Item[0]))) {
+                    if (actionExecutor.isAvailable(actionName, items.toArray(new Item[items.size()]))) {
                         actionbar.enable(actionName);
                     } else {
                         actionbar.disable(actionName);

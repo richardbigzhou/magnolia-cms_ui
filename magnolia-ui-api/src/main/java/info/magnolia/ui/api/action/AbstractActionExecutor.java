@@ -130,7 +130,7 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
             }
         }
 
-        if (items != null && items.length > 1) {
+        if (items.length > 1) {
             // WE DO NOT SUPPORT BULK ACTIONS NOW
             return false;
         }

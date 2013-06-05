@@ -43,7 +43,6 @@ import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.thumbnail.ThumbnailContainer.ThumbnailItem;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -111,9 +110,8 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     }
 
     @Override
-    public void onItemSelection(Set items) {
-        Set<Item> jcrItems = getJcrItemsByThumbnailItems(items);
-        super.onItemSelection(jcrItems);
+    public void onItemSelection(Set<String> items) {
+        super.onItemSelection(items);
     }
 
     @Override
@@ -143,20 +141,6 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
             }
         }
         return null;
-    }
-
-    /**
-     * Thumbnail container uses specific Thumbnail items, so we have to convert those into JcrItemAdapters.
-     */
-    private Set<Item> getJcrItemsByThumbnailItems(final Set<Item> items) {
-        Set<Item> jcrItems = new LinkedHashSet<Item>();
-        for (Item item : items) {
-            Item jcrItem = getJcrItemByThumbnailItem(item);
-            if (jcrItem != null) {
-                jcrItems.add(jcrItem);
-            }
-        }
-        return jcrItems;
     }
 
 }

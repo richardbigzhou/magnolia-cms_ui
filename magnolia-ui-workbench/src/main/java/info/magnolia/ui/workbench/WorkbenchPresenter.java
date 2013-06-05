@@ -184,20 +184,8 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     public void select(String itemId) {
         List<String> ids = new ArrayList<String>(1);
-        try {
-            if (JcrItemUtil.itemExists(getWorkspace(), itemId)) {
-                ids.add(itemId);
-            } else {
-                log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.",
-                        new Object[] { itemId, workbenchDefinition.getWorkspace(), workbenchDefinition.getPath() });
-                String workbenchRootItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
-                ids.add(workbenchRootItemId);
-            }
-            select(ids);
-        } catch (RepositoryException e) {
-            log.debug("Cannot select item id [{}] in workspace [{}].", itemId, workbenchDefinition.getWorkspace());
-        }
-
+        ids.add(itemId);
+        select(ids);
     }
 
     public void select(List<String> itemIds) {
@@ -205,6 +193,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
             // restore selection
             Set<JcrItemAdapter> items = new LinkedHashSet<JcrItemAdapter>();
             List<String> selectedIds = new ArrayList<String>();
+            boolean rootHasBeenSelected = false;
             for (String itemId : itemIds) {
                 if (JcrItemUtil.itemExists(getWorkspace(), itemId)) {
                     selectedIds.add(itemId);
@@ -212,8 +201,10 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                     log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.",
                             new Object[] { itemId, workbenchDefinition.getWorkspace(), workbenchDefinition.getPath() });
                     String workbenchRootItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
-                    if (!selectedIds.contains(workbenchRootItemId)) {
+                    if (!rootHasBeenSelected && !selectedIds.contains(workbenchRootItemId)) {
+                        // adding workbenchRootItemID for non-existent items, but just once
                         selectedIds.add(workbenchRootItemId);
+                        rootHasBeenSelected = true;
                     }
                 }
 

@@ -102,8 +102,7 @@ public interface ContentView extends View {
      */
     public interface Listener {
 
-        // void onItemSelection(Item item);
-        void onItemSelection(Set items);
+        void onItemSelection(Set<String> items);
 
         void onDoubleClick(Item item);
 
