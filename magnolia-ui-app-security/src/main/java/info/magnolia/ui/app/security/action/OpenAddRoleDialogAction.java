@@ -34,6 +34,7 @@
 package info.magnolia.ui.app.security.action;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryManager;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
@@ -42,28 +43,31 @@ import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.jcr.Node;
 
 /**
- * Action for opening the role edit dialog.
+ * Action for opening the add role dialog.
  *
  * @param <D> the action definition type
- * @see OpenRoleEditDialogActionDefinition
+ * @see OpenAddRoleDialogActionDefinition
  */
-public class OpenRoleEditDialogAction<D extends OpenRoleEditDialogActionDefinition> extends AbstractRoleDialogAction<D> {
+public class OpenAddRoleDialogAction<D extends OpenAddRoleDialogActionDefinition> extends AbstractRoleDialogAction<D> {
 
-    private final JcrNodeAdapter itemToEdit;
+    private final AbstractJcrNodeAdapter parentItem;
     private final FormDialogPresenter formDialogPresenter;
     private final UiContext uiContext;
     private final EventBus eventBus;
 
     @Inject
-    public OpenRoleEditDialogAction(D definition, JcrNodeAdapter itemToEdit, FormDialogPresenter formDialogPresenter, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, RepositoryManager repositoryManager) {
+    public OpenAddRoleDialogAction(D definition, JcrNodeAdapter parentItem, FormDialogPresenter formDialogPresenter, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, RepositoryManager repositoryManager) {
         super(definition, repositoryManager);
-        this.itemToEdit = itemToEdit;
+        this.parentItem = parentItem;
         this.formDialogPresenter = formDialogPresenter;
         this.uiContext = uiContext;
         this.eventBus = eventBus;
@@ -72,13 +76,17 @@ public class OpenRoleEditDialogAction<D extends OpenRoleEditDialogActionDefiniti
     @Override
     public void execute() throws ActionExecutionException {
 
-        DialogDefinition dialogDefinition = getDialogDefinition("roleEdit");
+        DialogDefinition dialogDefinition = getDialogDefinition("roleAdd");
 
-        formDialogPresenter.start(itemToEdit, dialogDefinition, uiContext, new EditorCallback() {
+        Node parentNode = parentItem.getJcrItem();
+
+        final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, NodeTypes.Role.NAME);
+
+        formDialogPresenter.start(item, dialogDefinition, uiContext, new EditorCallback() {
 
             @Override
             public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(itemToEdit.getWorkspace(), itemToEdit.getItemId()));
+                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
                 formDialogPresenter.closeDialog();
             }
 
