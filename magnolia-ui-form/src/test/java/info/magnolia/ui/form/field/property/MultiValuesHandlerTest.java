@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -92,8 +92,9 @@ public class MultiValuesHandlerTest extends RepositoryTestCase {
         // THEN
         assertTrue(parent.getItemProperty(propertyName) != null);
         assertTrue(parent.getItemProperty(propertyName).getValue() instanceof LinkedList);
-        assertTrue(parent.applyChanges().hasProperty(propertyName));
-        assertTrue(parent.applyChanges().getProperty(propertyName).isMultiple());
+        Node parentNode = parent.applyChanges();
+        assertTrue(parentNode.hasProperty(propertyName));
+        assertTrue(parentNode.getProperty(propertyName).isMultiple());
     }
 
     @Test
@@ -127,8 +128,9 @@ public class MultiValuesHandlerTest extends RepositoryTestCase {
         // THEN
         assertTrue(parent.getItemProperty(propertyName) != null);
         assertTrue(parent.getItemProperty(propertyName).getValue() instanceof LinkedList);
-        assertTrue(parent.applyChanges().hasProperty(propertyName));
-        Property p = parent.applyChanges().getProperty(propertyName);
+        Node parentNode = parent.applyChanges();
+        assertTrue(parentNode.hasProperty(propertyName));
+        Property p = parentNode.getProperty(propertyName);
         assertTrue(p.isMultiple());
         assertEquals(2, p.getValues().length);
         assertEquals("Pig", p.getValues()[0].getString());
