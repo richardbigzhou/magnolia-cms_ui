@@ -34,6 +34,8 @@
 package info.magnolia.ui.admincentral;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.Components;
@@ -41,9 +43,11 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationBuilder;
 import info.magnolia.objectfactory.configuration.ImplementationConfiguration;
 import info.magnolia.objectfactory.configuration.InstanceConfiguration;
+import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
-import info.magnolia.ui.framework.event.EventBusProtector;
+import info.magnolia.ui.framework.event.AdmincentralEventBus;
+import info.magnolia.event.EventBusProtector;
 import info.magnolia.ui.framework.message.LocalMessageDispatcher;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.Shell;
@@ -55,6 +59,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
@@ -87,6 +93,13 @@ public class AdmincentralUI extends UI {
         configuration.addComponent(InstanceConfiguration.valueOf(UI.class, this));
         configuration.addComponent(ImplementationConfiguration.valueOf(UiContext.class, Shell.class));
 
+        configuration.addConfigurer(new AbstractGuiceComponentConfigurer() {
+
+            @Override
+            protected void configure() {
+                bind(EventBus.class).annotatedWith(Names.named(AdmincentralEventBus.NAME)).toProvider(Providers.of(new SimpleEventBus()));
+            }
+        });
         eventBusProtector = new EventBusProtector();
         configuration.addConfigurer(eventBusProtector);
 

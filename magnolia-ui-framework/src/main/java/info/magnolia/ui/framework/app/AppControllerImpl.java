@@ -34,12 +34,14 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationBuilder;
 import info.magnolia.objectfactory.configuration.InstanceConfiguration;
+import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.registry.RegistrationException;
@@ -48,7 +50,8 @@ import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.api.view.Viewport;
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
-import info.magnolia.ui.framework.event.EventBusProtector;
+import info.magnolia.ui.framework.event.ChooseDialogEventBus;
+import info.magnolia.event.EventBusProtector;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
@@ -70,6 +73,9 @@ import javax.inject.Singleton;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 
 /**
  * Implementation of the {@link AppController}.
@@ -427,6 +433,15 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
         // Add the AppContext instance into the component provider.
         configuration.addComponent(InstanceConfiguration.valueOf(AppContext.class, appInstanceController));
         configuration.addComponent(InstanceConfiguration.valueOf(UiContext.class, appInstanceController));
+
+        configuration.addConfigurer(new AbstractGuiceComponentConfigurer() {
+
+            @Override
+            protected void configure() {
+                bind(EventBus.class).annotatedWith(Names.named(AppEventBus.NAME)).toProvider(Providers.of(new SimpleEventBus()));
+                bind(EventBus.class).annotatedWith(Names.named(ChooseDialogEventBus.NAME)).toProvider(Providers.of(new SimpleEventBus()));
+            }
+        });
 
         eventBusProtector = new EventBusProtector();
         configuration.addConfigurer(eventBusProtector);
