@@ -49,7 +49,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.event.ItemsSelectedEvent;
+import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -111,7 +111,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
         items.add((JcrItemAdapter) baseItem);
 
         // WHEN
-        eventBus.fireEvent(new ItemsSelectedEvent(baseNode.getSession().getWorkspace().getName(), items));
+        eventBus.fireEvent(new SelectionChangedEvent(baseNode.getSession().getWorkspace().getName(), items));
 
         // THEN
         // as No columnName defined return the Item path as Value property
@@ -130,7 +130,7 @@ public class LinkFieldSelectionBuilderTest extends AbstractBuilderTest<LinkField
         items.add((JcrItemAdapter) baseItem);
 
         // WHEN
-        eventBus.fireEvent(new ItemsSelectedEvent(baseNode.getSession().getWorkspace().getName(), items));
+        eventBus.fireEvent(new SelectionChangedEvent(baseNode.getSession().getWorkspace().getName(), items));
 
         // THEN
         assertEquals("initial", field.getValue());

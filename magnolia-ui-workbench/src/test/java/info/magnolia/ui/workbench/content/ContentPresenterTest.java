@@ -46,7 +46,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
-import info.magnolia.ui.workbench.event.ItemsSelectedEvent;
+import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -112,11 +112,11 @@ public class ContentPresenterTest {
         presenter.onItemSelection(items);
 
         // THEN
-        ArgumentCaptor<ItemsSelectedEvent> argument = ArgumentCaptor.forClass(ItemsSelectedEvent.class);
+        ArgumentCaptor<SelectionChangedEvent> argument = ArgumentCaptor.forClass(SelectionChangedEvent.class);
         verify(eventBus).fireEvent(argument.capture());
         assertEquals(TEST_WORKSPACE_NAME, argument.getValue().getWorkspace());
         assertEquals(items.size(), argument.getValue().getItemIds().size());
-        assertEquals(testNode.getIdentifier(), argument.getValue().getItemIds().iterator().next());
+        assertEquals(testNode.getIdentifier(), argument.getValue().getFirstItemId());
     }
 
     @Test

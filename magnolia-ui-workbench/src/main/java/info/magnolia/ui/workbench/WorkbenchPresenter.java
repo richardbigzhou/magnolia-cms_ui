@@ -44,7 +44,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.event.ItemsSelectedEvent;
+import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 import info.magnolia.ui.workbench.search.SearchPresenter;
@@ -246,7 +246,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
             }
             activePresenter.setSelectedItemIds(selectedIds);
 
-            eventBus.fireEvent(new ItemsSelectedEvent(workbenchDefinition.getWorkspace(), items));
+            eventBus.fireEvent(new SelectionChangedEvent(workbenchDefinition.getWorkspace(), items));
 
         } catch (RepositoryException e) {
             log.warn("Unable to get node or property [{}] for selection", itemIds, e);

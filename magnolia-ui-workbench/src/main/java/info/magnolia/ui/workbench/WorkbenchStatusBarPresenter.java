@@ -37,7 +37,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.ui.statusbar.StatusBarView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.event.ItemsSelectedEvent;
+import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import java.util.Set;
 
@@ -82,10 +82,10 @@ public class WorkbenchStatusBarPresenter {
     }
 
     private void bindHandlers() {
-        eventBus.addHandler(ItemsSelectedEvent.class, new ItemsSelectedEvent.Handler() {
+        eventBus.addHandler(SelectionChangedEvent.class, new SelectionChangedEvent.Handler() {
 
             @Override
-            public void onItemSelected(ItemsSelectedEvent event) {
+            public void onItemSelected(SelectionChangedEvent event) {
                 setSelectedItems(event.getItems());
                 setSelectionCount(event.getItems().size());
             }

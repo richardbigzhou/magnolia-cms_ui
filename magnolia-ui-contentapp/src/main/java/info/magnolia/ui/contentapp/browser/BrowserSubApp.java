@@ -57,7 +57,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
-import info.magnolia.ui.workbench.event.ItemsSelectedEvent;
+import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 
@@ -92,7 +92,7 @@ import com.vaadin.server.ExternalResource;
  *  </ul>
  * In order to perform those tasks this class registers non-overridable handlers for the following events:
  *  <ul>
- *      <li> {@link ItemsSelectedEvent}
+ *      <li> {@link SelectionChangedEvent}
  *      <li> {@link ViewTypeChangedEvent}
  *      <li> {@link SearchEvent}
  *  </ul>
@@ -436,20 +436,21 @@ public class BrowserSubApp extends BaseSubApp {
      */
     private void registerSubAppEventsHandlers(final EventBus subAppEventBus, final BrowserSubApp subApp) {
         final ActionbarPresenter actionbar = subApp.getBrowser().getActionbarPresenter();
-        subAppEventBus.addHandler(ItemsSelectedEvent.class, new ItemsSelectedEvent.Handler() {
+        subAppEventBus.addHandler(SelectionChangedEvent.class, new SelectionChangedEvent.Handler() {
 
             @Override
-            public void onItemSelected(ItemsSelectedEvent event) {
+            public void onItemSelected(SelectionChangedEvent event) {
                 BrowserLocation location = getCurrentLocation();
                 try {
                     if (event.getItemIds().isEmpty()) {
+                        // TODO this should be removed - should never happen; but check first (put a breakpoint here)
                         location.updateNodePath("/");
                     } else {
-                        Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.parseNodeIdentifier(event.getItemIds().iterator().next()));
+                        Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.parseNodeIdentifier(event.getFirstItemId()));
                         location.updateNodePath(selected.getPath());
                     }
                 } catch (RepositoryException e) {
-                    log.warn("Could not get jcrItem with itemId " + event.getItemIds().iterator().next() + " from workspace " + event.getWorkspace(), e);
+                    log.warn("Could not get jcrItem with itemId " + event.getFirstItemId() + " from workspace " + event.getWorkspace(), e);
                 }
                 getAppContext().updateSubAppLocation(getSubAppContext(), location);
                 updateActionbar(actionbar);

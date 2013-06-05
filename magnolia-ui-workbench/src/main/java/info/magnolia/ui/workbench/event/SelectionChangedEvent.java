@@ -36,29 +36,37 @@ package info.magnolia.ui.workbench.event;
 import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This event is fired when an item is selected (i.e. a row in the data grid within the workbench
  * representing either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
  */
-public class ItemsSelectedEvent implements Event<ItemsSelectedEvent.Handler> {
+public class SelectionChangedEvent implements Event<SelectionChangedEvent.Handler> {
+
+    private static final Logger log = LoggerFactory.getLogger(SelectionChangedEvent.class);
 
     /**
-     * Handles {@link ItemsSelectedEvent} events.
+     * Handles {@link SelectionChangedEvent} events.
      */
     public interface Handler extends EventHandler {
 
-        void onItemSelected(ItemsSelectedEvent event);
+        void onItemSelected(SelectionChangedEvent event);
     }
 
     private final String workspace;
 
     private final Set<JcrItemAdapter> items;
 
-    public ItemsSelectedEvent(String workspace, Set<JcrItemAdapter> items) {
+    public SelectionChangedEvent(String workspace, Set<JcrItemAdapter> items) {
         this.workspace = workspace;
         this.items = items;
     }
@@ -73,6 +81,25 @@ public class ItemsSelectedEvent implements Event<ItemsSelectedEvent.Handler> {
             itemIds.add(item.getItemId());
         }
         return itemIds;
+    }
+
+    public JcrItemAdapter getFirstItem() {
+        if (items != null && !items.isEmpty()) {
+            return items.iterator().next();
+        }
+        return null;
+    }
+
+    public String getFirstItemId() {
+        JcrItemAdapter item = getFirstItem();
+        if (item != null) {
+            try {
+                return JcrItemUtil.getItemId(item.getJcrItem());
+            } catch (RepositoryException e) {
+                log.debug("Cannot get ID for item [{}]. Error: {}", item, e.getMessage());
+            }
+        }
+        return null;
     }
 
     public Set<JcrItemAdapter> getItems() {

@@ -48,7 +48,7 @@ import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
-import info.magnolia.ui.workbench.event.ItemsSelectedEvent;
+import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -136,7 +136,7 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
                 }
                 log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemIds.toArray());
             }
-            eventBus.fireEvent(new ItemsSelectedEvent(workbenchDefinition.getWorkspace(), jcrItems));
+            eventBus.fireEvent(new SelectionChangedEvent(workbenchDefinition.getWorkspace(), jcrItems));
         } catch (Exception e) {
             log.error("An error occurred while selecting a row in the data grid", e);
         }

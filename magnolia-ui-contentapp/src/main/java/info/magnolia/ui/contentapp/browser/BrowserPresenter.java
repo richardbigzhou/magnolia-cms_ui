@@ -60,7 +60,7 @@ import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
-import info.magnolia.ui.workbench.event.ItemsSelectedEvent;
+import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
 
 import java.util.ArrayList;
@@ -184,12 +184,12 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
             }
         });
 
-        subAppEventBus.addHandler(ItemsSelectedEvent.class, new ItemsSelectedEvent.Handler() {
+        subAppEventBus.addHandler(SelectionChangedEvent.class, new SelectionChangedEvent.Handler() {
 
             @Override
-            public void onItemSelected(ItemsSelectedEvent event) {
+            public void onItemSelected(SelectionChangedEvent event) {
                 // if exactly one node is selected, use it for preview
-                refreshActionbarPreviewImage(event.getItemIds().size() == 1 ? event.getItemIds().iterator().next() : null, event.getWorkspace());
+                refreshActionbarPreviewImage(event.getFirstItemId(), event.getWorkspace());
             }
         });
 
