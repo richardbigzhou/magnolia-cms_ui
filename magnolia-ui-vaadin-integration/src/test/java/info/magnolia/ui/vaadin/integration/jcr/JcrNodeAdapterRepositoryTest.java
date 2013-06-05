@@ -48,6 +48,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Session;
 
 import org.apache.commons.io.IOUtils;
@@ -104,6 +105,84 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
         assertTrue(res.hasNode("child"));
         assertTrue(res.hasProperty("propertyString"));
         assertEquals("hello", res.getProperty("propertyString").getString());
+    }
+
+    @Test
+    public void testGetNodeUpdatesChildNodeOrderExistingNode() throws Exception {
+        // GIVEN
+        // Create a rootItem with two child
+        node.getNode("child").remove();
+        node.addNode("child_2", node.getPrimaryNodeType().getName());
+        JcrNodeAdapter adapterChild_2 = new JcrNodeAdapter(node.getNode("child_2"));
+        adapterChild_2.addItemProperty("p1", DefaultPropertyUtil.newDefaultProperty("String", "1"));
+        node.addNode("child_1", node.getPrimaryNodeType().getName());
+        JcrNodeAdapter adapterChild_1 = new JcrNodeAdapter(node.getNode("child_1"));
+        adapterChild_1.addItemProperty("p2", DefaultPropertyUtil.newDefaultProperty("String", "2"));
+        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
+        adapter.addChild(adapterChild_1);
+        adapter.addChild(adapterChild_2);
+
+        // WHEN
+        Node res = adapter.applyChanges();
+
+        // THEN
+        //
+        NodeIterator iterator = res.getNodes();
+        assertEquals(2, iterator.getSize());
+        assertEquals("child_2", iterator.nextNode().getName());
+        assertEquals("child_1", iterator.nextNode().getName());
+    }
+
+    @Test
+    public void testGetNodeUpdatesChildNodeOrderExistingNodeAndNew() throws Exception {
+        // GIVEN
+        // Create a rootItem with one child and add a newJcrNodeAdapter
+        node.getNode("child").remove();
+        node.addNode("child_1", node.getPrimaryNodeType().getName());
+        JcrNodeAdapter adapterChild_1 = new JcrNodeAdapter(node.getNode("child_1"));
+        adapterChild_1.addItemProperty("p1", DefaultPropertyUtil.newDefaultProperty("String", "1"));
+
+        JcrNodeAdapter adapterChild_2 = new JcrNewNodeAdapter(node, node.getPrimaryNodeType().getName(), "child_2");
+        adapterChild_2.addItemProperty("p2", DefaultPropertyUtil.newDefaultProperty("String", "2"));
+        JcrNodeAdapter adapterChild_3 = new JcrNewNodeAdapter(node, node.getPrimaryNodeType().getName(), "child_3");
+        adapterChild_3.addItemProperty("p3", DefaultPropertyUtil.newDefaultProperty("String", "3"));
+
+        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
+        adapter.addChild(adapterChild_1);
+        adapter.addChild(adapterChild_2);
+        adapter.addChild(adapterChild_3);
+
+        // WHEN
+        Node res = adapter.applyChanges();
+
+        // THEN
+        NodeIterator iterator = res.getNodes();
+        assertEquals(3, iterator.getSize());
+        assertEquals("child_1", iterator.nextNode().getName());
+        assertEquals("child_2", iterator.nextNode().getName());
+        assertEquals("child_3", iterator.nextNode().getName());
+    }
+
+    @Test
+    public void testGetNodeUpdatesChildNodeOrderNewNode() throws Exception {
+        // GIVEN
+        node.getNode("child").remove();
+        JcrNodeAdapter adapterChild_1 = new JcrNewNodeAdapter(node, node.getPrimaryNodeType().getName(), "child_1");
+        adapterChild_1.addItemProperty("p1", DefaultPropertyUtil.newDefaultProperty("String", "1"));
+        JcrNodeAdapter adapterChild_2 = new JcrNewNodeAdapter(node, node.getPrimaryNodeType().getName(), "child_2");
+        adapterChild_2.addItemProperty("p2", DefaultPropertyUtil.newDefaultProperty("String", "2"));
+        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
+        adapter.addChild(adapterChild_1);
+        adapter.addChild(adapterChild_2);
+
+        // WHEN
+        Node res = adapter.applyChanges();
+
+        // THEN
+        NodeIterator iterator = res.getNodes();
+        assertEquals(2, iterator.getSize());
+        assertEquals("child_1", iterator.nextNode().getName());
+        assertEquals("child_2", iterator.nextNode().getName());
     }
 
     @Test
