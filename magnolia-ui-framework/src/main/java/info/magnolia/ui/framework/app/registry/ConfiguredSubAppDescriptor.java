@@ -54,8 +54,6 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
 
     private String label;
 
-    private boolean enabled = true;
-
     private boolean closable = true;
 
     private String icon;
@@ -76,11 +74,6 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
     @Override
     public String getLabel() {
         return label;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabled;
     }
 
     @Override
@@ -123,10 +116,6 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
 
     public void setLabel(String label) {
         this.label = label;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 
     public void setIcon(String icon) {
