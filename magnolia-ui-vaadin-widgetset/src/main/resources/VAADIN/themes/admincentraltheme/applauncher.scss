@@ -82,16 +82,42 @@
   overflow: hidden;
 }
 
-.item.section.closed {
-  background-image: url("img/applauncher/style-appslauncher-group-triangle-closed.png");
-  background-position: left center;
-  background-repeat: no-repeat;
+.app-list.sections .item.section {
+  background: none !important;
+  border-color: $c30;
+  overflow: hidden;
+
+  &.hover {
+    border-color: $c41 !important;
+  }
+
+  .label {
+    position: absolute;
+    z-index: 1;
+  }
+
 }
 
-.item.section.open {
-  background-image: url("img/applauncher/style-appslauncher-group-triangle-open.png");
-  background-position: bottom center;
-  background-repeat: no-repeat;
+.item.section .notch {
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-width: 39px;
+  border-style: solid;
+  border-color: inherit;
+}
+
+.item.section.closed .notch {
+  border-left-color: transparent !important;
+  left: -30px;
+}
+
+.item.section.open .notch {
+  border-bottom-color: transparent !important;
+  bottom: -30px;
 }
 
 }

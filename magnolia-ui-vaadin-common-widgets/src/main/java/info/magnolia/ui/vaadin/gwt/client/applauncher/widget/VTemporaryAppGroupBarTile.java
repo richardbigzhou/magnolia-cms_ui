@@ -85,7 +85,11 @@ public class VTemporaryAppGroupBarTile extends FlowPanel {
         label.addClassName("label");
         label.setInnerText(caption);
 
+        Element notch = DOM.createSpan();
+        notch.addClassName("notch");
+
         element.appendChild(label);
+        element.appendChild(notch);
 
     }
 
@@ -127,17 +131,17 @@ public class VTemporaryAppGroupBarTile extends FlowPanel {
 
         if (group.isClientGroup()) {
             element.getStyle().setColor(group.getColor());
-            element.getStyle().setBackgroundColor("white");
+            element.getStyle().setBorderColor("white");
         } else {
             element.getStyle().setColor("white");
-            element.getStyle().setBackgroundColor(group.getColor());
+            element.getStyle().setBorderColor(group.getColor());
         }
     }
 
     public void closeExpander() {
         element.addClassName("closed");
         element.removeClassName("open");
-        element.getStyle().clearBackgroundColor();
+        element.getStyle().clearBorderColor();
         element.getStyle().clearColor();
     }
 
