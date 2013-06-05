@@ -100,7 +100,7 @@ public class AppsViewportConnector extends ViewportConnector implements AppsView
         eventBus.addHandler(ShellAppStartingEvent.TYPE, new ShellAppStartingEvent.Handler() {
             @Override
             public void onShellAppStarting(ShellAppStartingEvent event) {
-                getWidget().setCurtainVisible(getWidget().getWidgetCount() > 1);
+                getWidget().setCurtainVisible(getWidget().getWidgetCount() > 0);
             }
         });
 

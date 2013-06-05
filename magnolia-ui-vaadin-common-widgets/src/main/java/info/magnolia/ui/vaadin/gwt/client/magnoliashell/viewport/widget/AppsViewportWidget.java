@@ -92,26 +92,25 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
 
     private final TouchDelegate delegate = new TouchDelegate(this);
 
-    private final ClickHandler closeHandler = new ClickHandler() {
-        @Override
-        public void onClick(ClickEvent event) {
-            if (!isAppClosing()) {
-                isAppClosing = true;
-                listener.closeCurrentApp();
+    private final FullScreenButton fullScreenButton = new FullScreenButton();
 
-            }
-        }
-    };
+    private Element curtain = DOM.createDiv();
 
-    private final ClickHandler fullscreenHandler = new ClickHandler() {
-        @Override
-        public void onClick(ClickEvent event) {
-            String cssClasses = RootPanel.get().getStyleName();
-            boolean isFullScreen = cssClasses.contains("fullscreen");
-            // toggle.
-            setFullScreen(!isFullScreen);
+    private void closeCurrentApp() {
+        if (!isAppClosing()) {
+            isAppClosing = true;
+            listener.closeCurrentApp();
         }
-    };
+    }
+
+    private void toggleFullScreen() {
+        String cssClasses = RootPanel.get().getStyleName();
+        boolean isFullScreen = cssClasses.contains("fullscreen");
+        // toggle.
+        setFullScreen(!isFullScreen);
+    }
+
+    private CloseButton closeButton = new CloseButton();
 
     /**
      * Set the look of the application and the state of the button.
@@ -134,20 +133,24 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
         }
     }
 
-    private CloseButton closeButton = new CloseButton(closeHandler);
-
-    private FullScreenButton fullScreenButton;
-
-    private Element curtain = DOM.createDiv();
-
     public AppsViewportWidget(final Listener listener) {
         super();
         this.listener = listener;
+        DOM.sinkEvents(getElement(), Event.ONCLICK);
         curtain.setClassName("v-curtain v-curtain-green");
         closeButton.addStyleDependentName("app");
 
-        fullScreenButton = new FullScreenButton();
-        fullScreenButton.addClickHandler(fullscreenHandler);
+        addDomHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Element target = event.getNativeEvent().getEventTarget().cast();
+                if (closeButton.getElement().isOrHasChild(target)) {
+                    closeCurrentApp();
+                } else if (fullScreenButton.getElement().isOrHasChild(target)) {
+                    toggleFullScreen();
+                }
+            }
+        }, ClickEvent.getType());
 
         bindTouchHandlers();
     }
@@ -166,8 +169,8 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     /* APP CLOSING */
     @Override
     public void showChildNoTransition(Widget w) {
-        add(closeButton, w.getElement());
-        add(fullScreenButton, w.getElement());
+        getElement().appendChild(closeButton.getElement());
+        getElement().appendChild(fullScreenButton.getElement());
         Widget formerVisible = getVisibleChild();
         // do not hide app if closing
         if (formerVisible != null && !isAppClosing()) {
@@ -180,8 +183,9 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     @Override
     public void removeChild(Widget w) {
         ((AppsTransitionDelegate) getTransitionDelegate()).removeWidget(w);
-        if (getWidgetCount() == 2) {
-            remove(closeButton);
+        if (getWidgetCount() < 2) {
+            getElement().removeChild(closeButton.getElement());
+            getElement().removeChild(fullScreenButton.getElement());
         }
     }
 

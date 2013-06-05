@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -127,11 +127,32 @@ public class SubNodesValueHandlerTest extends RepositoryTestCase {
         assertTrue(parent.getChild(subNodeName).getChildren() != null);
         assertEquals(2, parent.getChild(subNodeName).getChildren().size());
         assertTrue(parent.applyChanges().hasNode(subNodeName));
-        Node chield = parent.applyChanges().getNode(subNodeName);
-        assertTrue(chield.hasNodes());
-        assertEquals(2, chield.getNodes().getSize());
-        NodeIterator iterator = chield.getNodes();
+        Node child = parent.getJcrItem().getNode(subNodeName);
+        assertTrue(child.hasNodes());
+        assertEquals(2, child.getNodes().getSize());
+        NodeIterator iterator = child.getNodes();
         assertEquals("Pig", iterator.nextNode().getProperty(subNodeName).getString());
         assertEquals("Ph", iterator.nextNode().getProperty(subNodeName).getString());
+    }
+
+    @Test
+    public void testUpdateMultiPropertyCheckName() throws RepositoryException {
+        // GIVEN
+        String[] newValues = { "a", "1234567890123456789012" };
+        JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
+        SubNodesValueHandler delegate = new SubNodesValueHandler(parent, subNodeName);
+
+        // WHEN
+        delegate.setValue(Arrays.asList(newValues));
+
+        // THEN
+        Node child = parent.applyChanges().getNode(subNodeName);
+        assertTrue(child.hasNodes());
+        assertEquals(2, child.getNodes().getSize());
+        NodeIterator iterator = child.getNodes();
+        Node child_1 = iterator.nextNode();
+        assertEquals("a", child_1.getName());
+        Node child_2 = iterator.nextNode();
+        assertEquals("12345678901234567890", child_2.getName());
     }
 }

@@ -85,7 +85,6 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
         container.setWorkspaceName(workbench.getWorkspace());
         container.setThumbnailHeight(73);
         container.setThumbnailWidth(73);
-        container.refresh();
 
         view.setListener(this);
         view.setContainer(container);

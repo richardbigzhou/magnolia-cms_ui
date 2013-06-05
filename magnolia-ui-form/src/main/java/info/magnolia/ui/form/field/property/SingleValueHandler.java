@@ -48,8 +48,7 @@ import org.apache.commons.lang.StringUtils;
  * Store the list of values in a single property as a concatenation of string with a ',' separator.<br>
  * Retrieve the single property as a List of String.
  */
-@SuppressWarnings("unchecked")
-public class SingleValueHandler implements MultiValueHandler {
+public class SingleValueHandler extends AbstractBasePropertyValueHandler {
 
     private JcrNodeAdapter parent;
     private String propertyName;
@@ -62,26 +61,13 @@ public class SingleValueHandler implements MultiValueHandler {
 
     @Override
     public void setValue(List<String> newValue) {
-        DefaultProperty<String> property = getOrCreateProperty(String.class, "");
+        DefaultProperty<String> property = getOrCreateProperty(String.class, "", parent, propertyName);
         property.setValue(StringUtils.join(newValue, ","));
-    }
-
-    /**
-     * @param <T>
-     * @return the related property defined by the name passed in construction.
-     */
-    protected <T> DefaultProperty<T> getOrCreateProperty(Class<T> type, T defaultValue) {
-        DefaultProperty<T> property = (DefaultProperty<T>) parent.getItemProperty(propertyName);
-        if (property == null) {
-            property = new DefaultProperty<T>(type, defaultValue);
-            parent.addItemProperty(propertyName, property);
-        }
-        return property;
     }
 
     @Override
     public List<String> getValue() {
-        DefaultProperty<String> property = getOrCreateProperty(String.class, "");
+        DefaultProperty<String> property = getOrCreateProperty(String.class, "", parent, propertyName);
         String value = property.getValue();
         return Arrays.asList(value.split(","));
     }

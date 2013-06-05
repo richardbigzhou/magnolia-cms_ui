@@ -132,8 +132,7 @@ public interface OverlayLayer {
         /**
      * Notification indicator is a message banner that only shows a message to user.
      * Message is shown until user clicks close button or timeout expires.
-     * 
-     * @param timeout_msec Timeout in milliseconds how long indicator component stays visible. -1 to disable the timeout.
+     *
      * @param viewToShow Content to show as View.
      */
     void openNotification(MessageStyleType type, boolean doesTimeout, View viewToShow);
@@ -141,8 +140,7 @@ public interface OverlayLayer {
     /**
      * Notification indicator is a message banner that only shows a message to user.
      * Message is shown until user clicks close button or timeout expires.
-     * 
-     * @param timeout_msec Timeout in milliseconds how long indicator component stays visible. -1 to disable the timeout.
+     *
      * @param title Content to show as string.
      */
     void openNotification(MessageStyleType type, boolean doesTimeout, String title);
@@ -150,8 +148,7 @@ public interface OverlayLayer {
     /**
      * Notification indicator is a message banner that only shows a message to user.
      * Message is shown until user clicks close button or timeout expires.
-     * 
-     * @param timeout_msec Timeout in milliseconds how long indicator component stays visible. -1 to disable the timeout.
+     *
      * @param title Content to show as string.
      * @param linkText Text to show in a link button.
      * @param cb Callback for when user clicks on link.

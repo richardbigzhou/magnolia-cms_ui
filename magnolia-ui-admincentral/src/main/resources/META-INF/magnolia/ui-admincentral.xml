@@ -93,6 +93,10 @@
       <type>info.magnolia.ui.imageprovider.definition.ImageProviderDefinition</type>
       <implementation>info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
     </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.admincentral.usermenu.definition.UserMenuDefinition</type>
+      <implementation>info.magnolia.ui.admincentral.usermenu.definition.ConfiguredUserMenuDefinition</implementation>
+    </type-mapping>
   </components>
 
   <components>
@@ -167,6 +171,14 @@
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.message.MessageView</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.MessageViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.usermenu.UserMenuView</type>
+      <implementation>info.magnolia.ui.admincentral.usermenu.UserMenuViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.usermenu.UserMenuPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.usermenu.UserMenuPresenter</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.dashboard.PulseDashboardView</type>

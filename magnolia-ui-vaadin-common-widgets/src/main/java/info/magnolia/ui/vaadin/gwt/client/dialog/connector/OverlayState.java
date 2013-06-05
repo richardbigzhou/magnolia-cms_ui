@@ -40,6 +40,11 @@ import com.vaadin.shared.ui.csslayout.CssLayoutState;
  * OverlayState.
  */
 public class OverlayState extends CssLayoutState {
+
     public Connector overlayParent = null;
+
     public Connector overlayContent = null;
+
+    public int closeTimeout = -1;
+
 }

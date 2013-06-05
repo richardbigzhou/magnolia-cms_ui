@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.app.pages.main;
 
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
@@ -40,17 +41,20 @@ import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
+import info.magnolia.rendering.template.TemplateAvailability;
+import info.magnolia.rendering.template.configured.ConfiguredTemplateAvailability;
 import info.magnolia.rendering.template.configured.ConfiguredTemplateDefinition;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
-import info.magnolia.ui.app.pages.editor.event.NodeSelectedEvent;
 import info.magnolia.ui.app.pages.editor.PageEditorPresenter;
 import info.magnolia.ui.app.pages.editor.PagesEditorSubApp;
 import info.magnolia.ui.app.pages.editor.PagesEditorSubAppView;
+import info.magnolia.ui.app.pages.editor.event.NodeSelectedEvent;
 import info.magnolia.ui.contentapp.definition.ConfiguredEditorDefinition;
 import info.magnolia.ui.contentapp.detail.ConfiguredDetailSubAppDescriptor;
 import info.magnolia.ui.framework.app.SubAppContext;
@@ -60,7 +64,6 @@ import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.gwt.client.shared.ComponentElement;
-
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -87,7 +90,7 @@ public class PagesEditorSubAppTest {
     private I18NAuthoringSupport i18NAuthoringSupport;
     private I18nContentSupport i18nContentSupport;
     private AbstractElement element;
-    private final ConfiguredTemplateDefinition definition = new ConfiguredTemplateDefinition();
+    private ConfiguredTemplateDefinition definition = null;
 
     @Before
     public void setUp() throws Exception {
@@ -121,6 +124,9 @@ public class PagesEditorSubAppTest {
         i18nContentSupport = mock(I18nContentSupport.class);
         when(i18nContentSupport.getLocale()).thenReturn(new Locale("en"));
         pageBarView = mock(PageBarView.class);
+
+        ComponentsTestUtil.setImplementation(TemplateAvailability.class, ConfiguredTemplateAvailability.class);
+        definition = new ConfiguredTemplateDefinition();
     }
 
     @Test

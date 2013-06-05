@@ -37,15 +37,10 @@ import info.magnolia.objectfactory.Classes;
 import info.magnolia.ui.api.overlay.MessageStyleType;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
-import info.magnolia.ui.vaadin.integration.refresher.ClientRefresherUtil;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 
@@ -54,44 +49,23 @@ import com.vaadin.ui.CssLayout;
  */
 public class Notification implements View {
 
-    public static final int TIMEOUT_SECONDS_DEFAULT = 3;
-    /**
-     * Listener for handling close button clicks.
-     */
-    public interface ConfirmationListener {
-        void onClose();
-    }
-
     private CssLayout layout;
-    private ConfirmationListener listener;
-    Timer timer;
+
+    private Button closeButton = new Button();
 
     public Notification(final MessageStyleType type) {
-        timer = new Timer();
         layout = new CssLayout();
         layout.addStyleName("light-dialog-panel");
         layout.addStyleName("notification-dialog");
-
-        // Set the type
         layout.addStyleName(type.getCssClass());
 
         CompositeIcon icon = (CompositeIcon) Classes.getClassFactory().newInstance(type.getIconClass());
         icon.setStyleName("dialog-icon");
         layout.addComponent(icon);
 
-        Button closeButton = new Button();
-        closeButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                listener.onClose();
-            }
-        });
-
         layout.addLayoutClickListener(new LayoutClickListener() {
-
             @Override
             public void layoutClick(LayoutClickEvent event) {
-                cancelTimeout();
                 layout.addStyleName("notification-dialog-selected");
             }
         });
@@ -100,37 +74,6 @@ public class Notification implements View {
         closeButton.addStyleName("m-closebutton");
 
         layout.addComponent(closeButton);
-    }
-
-    /**
-     * Cancel any pending timeout.
-     */
-    public void cancelTimeout() {
-        timer.cancel();
-    }
-
-    /**
-     * Indicator will go away after defined timeout or if user clicks close button.
-     * 
-     * @param timeoutSeconds if set to -1 then Timeout is not added.
-     */
-    public void setTimeout(int timeoutSeconds) {
-        if (timeoutSeconds < 0) {
-            return;
-        }
-        int timeoutMsec = timeoutSeconds * 1000;
-
-        timer.schedule(new TimerTask() {
-
-            @Override
-            public void run() {
-                listener.onClose();
-                timer.cancel();
-            }
-        }, timeoutMsec);
-
-        // Add a refresher so that the client gets the change made in the timer above.
-        ClientRefresherUtil.addClientRefresher(timeoutMsec, layout);
     }
 
     /**
@@ -143,14 +86,12 @@ public class Notification implements View {
         content.addStyleName("dialog-content");
     }
 
+    public void addCloseButtonListener(Button.ClickListener listener) {
+        closeButton.addClickListener(listener);
+    }
 
-    /**
-     * Set listener for close button clicks.
-     *
-     * @param listener
-     */
-    public void setConfirmationListener(ConfirmationListener listener) {
-        this.listener = listener;
+    public void addNotificationBodyClickListener(LayoutClickListener listener) {
+        layout.addLayoutClickListener(listener);
     }
 
     @Override

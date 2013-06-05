@@ -33,30 +33,20 @@
  */
 package info.magnolia.ui.vaadin.gwt.client;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.ButtonBase;
+import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * The CloseButton common widget.
  */
-public class CloseButton extends ButtonBase {
+public class CloseButton extends UIObject {
 
     private static final String STYLE_NAME = "m-closebutton";
+
     private static final String ICON_STYLE_NAME = "icon-close";
 
     public CloseButton() {
-        this(DOM.createSpan());
-    }
-
-    public CloseButton(ClickHandler handler) {
-        this();
-        addClickHandler(handler);
-    }
-
-    protected CloseButton(Element elem) {
-        super(elem);
+        setElement(DOM.createSpan());
         setStylePrimaryName(STYLE_NAME);
         addStyleName(ICON_STYLE_NAME);
     }

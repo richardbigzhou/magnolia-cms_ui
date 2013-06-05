@@ -1,5 +1,7 @@
 @charset "UTF-8";
 
+@import "../magnolia/colors.scss";
+
 @mixin page-preview {
 
   .pagebar > .v-label {
@@ -28,7 +30,7 @@
   }
 
   .pagebar.preview {
-    background-color: $c91333;
+    background-color: $c90;
   }
 
   .pagebar > .v-filterselect {

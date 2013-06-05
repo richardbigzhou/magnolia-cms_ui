@@ -118,6 +118,12 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     }
 
     @Override
+    public void refresh() {
+        resetOffset();
+        clearItemIndexes();
+    }
+
+    @Override
     public boolean setParent(Object itemId, Object newParentId) throws UnsupportedOperationException {
         fireItemSetChange();
         return true;
