@@ -39,7 +39,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.jcr.RepositoryException;
@@ -95,8 +95,8 @@ public class WorkbenchStatusBarPresenter {
         return view;
     }
 
-    public void setSelectedItems(Set<JcrItemAdapter> items) {
-        setSelectedItem(items.iterator().next());
+    public void setSelectedItems(List<JcrItemAdapter> items) {
+        setSelectedItem(items.get(0));
     }
 
     public void setSelectedItem(JcrItemAdapter item) {

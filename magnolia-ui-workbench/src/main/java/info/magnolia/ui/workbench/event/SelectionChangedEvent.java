@@ -38,7 +38,8 @@ import info.magnolia.event.EventHandler;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.jcr.RepositoryException;
@@ -64,19 +65,23 @@ public class SelectionChangedEvent implements Event<SelectionChangedEvent.Handle
 
     private final String workspace;
 
-    private final Set<JcrItemAdapter> items;
+    private final List<JcrItemAdapter> items;
 
     public SelectionChangedEvent(String workspace, Set<JcrItemAdapter> items) {
         this.workspace = workspace;
-        this.items = items;
+        List<JcrItemAdapter> itemList = new ArrayList<JcrItemAdapter>(items.size());
+        for (JcrItemAdapter item : items) {
+            itemList.add(item);
+        }
+        this.items = itemList;
     }
 
     public String getWorkspace() {
         return workspace;
     }
 
-    public Set<String> getItemIds() {
-        Set<String> itemIds = new LinkedHashSet<String>();
+    public List<String> getItemIds() {
+        List<String> itemIds = new ArrayList<String>(items.size());
         for (JcrItemAdapter item : items) {
             itemIds.add(item.getItemId());
         }
@@ -85,7 +90,7 @@ public class SelectionChangedEvent implements Event<SelectionChangedEvent.Handle
 
     public JcrItemAdapter getFirstItem() {
         if (items != null && !items.isEmpty()) {
-            return items.iterator().next();
+            return items.get(0);
         }
         return null;
     }
@@ -102,7 +107,7 @@ public class SelectionChangedEvent implements Event<SelectionChangedEvent.Handle
         return null;
     }
 
-    public Set<JcrItemAdapter> getItems() {
+    public List<JcrItemAdapter> getItems() {
         return items;
     }
 
