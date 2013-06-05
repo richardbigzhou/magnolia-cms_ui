@@ -8,7 +8,7 @@
   <version>${project.version}</version>
 
   <components>
-  <id>main</id>
+    <id>main</id>
     <component>
       <type>info.magnolia.ui.form.fieldtype.registry.ConfiguredFieldTypeDefinitionManager</type>
       <implementation>info.magnolia.ui.form.fieldtype.registry.ConfiguredFieldTypeDefinitionManager</implementation>
@@ -25,10 +25,6 @@
     <type-mapping>
       <type>info.magnolia.ui.form.definition.FormDefinition</type>
       <implementation>info.magnolia.ui.form.definition.ConfiguredFormDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.form.definition.FormActionDefinition</type>
-      <implementation>info.magnolia.ui.form.definition.ConfiguredFormActionDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.dialog.definition.DialogDefinition</type>
