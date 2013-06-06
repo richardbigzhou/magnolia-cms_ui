@@ -40,7 +40,6 @@ import java.util.List;
  *
  * @see TabDefinition
  * @see info.magnolia.ui.form.field.definition.FieldDefinition
- * @see FormActionDefinition
  */
 public interface FormDefinition {
 

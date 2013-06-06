@@ -50,8 +50,6 @@ public interface SubAppDescriptor {
 
     String getLabel();
 
-    boolean isEnabled();
-
     boolean isClosable();
 
     String getIcon();

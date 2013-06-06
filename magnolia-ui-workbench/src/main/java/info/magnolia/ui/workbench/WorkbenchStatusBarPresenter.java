@@ -34,7 +34,7 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.statusbar.StatusBarView;
+import info.magnolia.ui.vaadin.statusbar.StatusBarView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;

@@ -54,30 +54,30 @@ public class DefaultLocationHistoryMapper implements LocationHistoryMapper {
     public Location getLocation(String fragment) {
 
         String appType = DefaultLocation.extractAppType(fragment);
-        String appId = DefaultLocation.extractAppId(fragment);
+        String appName = DefaultLocation.extractAppName(fragment);
         String subAppId = DefaultLocation.extractSubAppId(fragment);
         String parameter = DefaultLocation.extractParameter(fragment);
 
-        if (!supported(appType, appId, subAppId, parameter)) {
+        if (!supported(appType, appName, subAppId, parameter)) {
             return null;
         }
 
-        return new DefaultLocation(appType, appId, subAppId, parameter);
+        return new DefaultLocation(appType, appName, subAppId, parameter);
     }
 
     @Override
     public String getFragment(Location location) {
 
-        if (!supported(location.getAppType(), location.getAppId(), location.getSubAppId(), location.getParameter())) {
+        if (!supported(location.getAppType(), location.getAppName(), location.getSubAppId(), location.getParameter())) {
             return null;
         }
 
         return location.toString();
     }
 
-    private boolean supported(String appType, String appId, String subAppId, String parameter) {
+    private boolean supported(String appType, String appName, String subAppId, String parameter) {
 
-        if (appType.equals(Location.LOCATION_TYPE_SHELL_APP) && (appId.equals("applauncher") || appId.equals("pulse") || appId.equals("favorite"))) {
+        if (appType.equals(Location.LOCATION_TYPE_SHELL_APP) && (appName.equals("applauncher") || appName.equals("pulse") || appName.equals("favorite"))) {
             return true;
         }
 
@@ -86,6 +86,6 @@ public class DefaultLocationHistoryMapper implements LocationHistoryMapper {
         }
 
         AppLauncherLayout appLauncherLayout = appLauncherLayoutManager.getLayoutForCurrentUser();
-        return appLauncherLayout.containsApp(appId);
+        return appLauncherLayout.containsApp(appName);
     }
 }

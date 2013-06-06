@@ -34,35 +34,33 @@
 package info.magnolia.ui.form.field.definition;
 
 
+
 /**
  * Field definition for a Multi-Link field.
  */
 public class MultiLinkFieldDefinition extends LinkFieldDefinition {
 
-    // Configuration for the save mode. (single property, multivalue property or sub nodes)
     private SaveModeType saveModeType;
-    // When set to true the imput text is still editable.
     private boolean allowChangesOnSelected = false;
-    // Property used to configure Button Label
     private String buttonSelectAddLabel;
 
-
+    /**
+     * @return i18n property used to configure Button Label.
+     */
     public String getButtonSelectAddLabel() {
         return buttonSelectAddLabel;
     }
 
-    public void setButtonSelectAddLabel(String buttonSelectAddLabel) {
-        this.buttonSelectAddLabel = buttonSelectAddLabel;
-    }
-
+    /**
+     * @return SaveModeType defining the specific {@link info.magnolia.ui.form.field.property.MultiValueHandler} used to retrieve or store the values in various format (single property, multivalue property or sub nodes).
+     */
     public SaveModeType getSaveModeType() {
         return saveModeType;
     }
 
-    public void setSaveModeType(SaveModeType saveModeType) {
-        this.saveModeType = saveModeType;
-    }
-
+    /**
+     * @return allowChangesOnSelected, if set to true the input text is editable.
+     */
     public boolean isAllowChangesOnSelected() {
         return allowChangesOnSelected;
     }
@@ -71,4 +69,11 @@ public class MultiLinkFieldDefinition extends LinkFieldDefinition {
         this.allowChangesOnSelected = allowChangesOnSelected;
     }
 
+    public void setButtonSelectAddLabel(String buttonSelectAddLabel) {
+        this.buttonSelectAddLabel = buttonSelectAddLabel;
+    }
+
+    public void setSaveModeType(SaveModeType saveModeType) {
+        this.saveModeType = saveModeType;
+    }
 }
