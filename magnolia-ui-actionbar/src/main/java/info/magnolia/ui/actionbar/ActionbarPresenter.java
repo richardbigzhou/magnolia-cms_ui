@@ -156,10 +156,10 @@ public class ActionbarPresenter implements ActionbarView.Listener, ActionMenu {
 
     @Override
     public void showSectionActions(String name, List<ActionDefinition> allActions, List<ActionDefinition> enabledActions) {
-        actionbar.setSectionVisible(name, true);
+        showSection(name);
         for (ActionDefinition action : allActions) {
             String actionName = action.getName();
-            if (allActions.contains(action)) {
+            if (enabledActions.contains(action)) {
                 enable(actionName);
             } else {
                 disable(actionName);
