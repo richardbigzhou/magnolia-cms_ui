@@ -42,6 +42,7 @@ public interface Location {
     String LOCATION_TYPE_SHELL_APP = "shell";
 
     Location NOWHERE = new Location() {
+
         @Override
         public String getParameter() {
             return null;
@@ -53,7 +54,7 @@ public interface Location {
         }
 
         @Override
-        public String getAppId() {
+        public String getAppName() {
             return null;
         }
 
@@ -67,7 +68,7 @@ public interface Location {
 
     String getAppType();
 
-    String getAppId();
+    String getAppName();
 
     String getSubAppId();
 }

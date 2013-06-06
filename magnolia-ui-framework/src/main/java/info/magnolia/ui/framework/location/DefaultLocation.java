@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Default location implementation.
  * <p>
- * {@code appType:appId:subAppId;some/parameter}
+ * {@code appType:appName:subAppId;some/parameter}
  */
 public class DefaultLocation implements Location {
 
@@ -54,7 +54,7 @@ public class DefaultLocation implements Location {
 
     private String appType;
 
-    private String appId;
+    private String appName;
 
     private String subAppId;
 
@@ -63,17 +63,17 @@ public class DefaultLocation implements Location {
     public DefaultLocation() {
     }
 
-    public DefaultLocation(String appType, String appId) {
-        this(appType, appId, "");
+    public DefaultLocation(String appType, String appName) {
+        this(appType, appName, "");
     }
 
-    public DefaultLocation(String appType, String appId, String subAppId) {
-        this(appType, appId, subAppId, "");
+    public DefaultLocation(String appType, String appName, String subAppId) {
+        this(appType, appName, subAppId, "");
     }
 
-    public DefaultLocation(String appType, String appId, String subAppId, String parameter) {
+    public DefaultLocation(String appType, String appName, String subAppId, String parameter) {
         this.appType = decodeFragment(appType);
-        this.appId = decodeFragment(appId);
+        this.appName = decodeFragment(appName);
         this.subAppId = decodeFragment(subAppId);
         this.parameter = decodeFragment(parameter);
     }
@@ -99,7 +99,7 @@ public class DefaultLocation implements Location {
     private void setAppParams(String appParams) {
         StringTokenizer tokenizer = new StringTokenizer(appParams, ":");
         this.appType = decodeFragment((tokenizer.hasMoreTokens()) ? tokenizer.nextToken() : "");
-        this.appId = decodeFragment((tokenizer.hasMoreTokens()) ? tokenizer.nextToken() : "");
+        this.appName = decodeFragment((tokenizer.hasMoreTokens()) ? tokenizer.nextToken() : "");
         this.subAppId = decodeFragment((tokenizer.hasMoreTokens()) ? tokenizer.nextToken() : "");
     }
 
@@ -109,8 +109,8 @@ public class DefaultLocation implements Location {
     }
 
     @Override
-    public String getAppId() {
-        return appId;
+    public String getAppName() {
+        return appName;
     }
 
     @Override
@@ -135,8 +135,8 @@ public class DefaultLocation implements Location {
         this.appType = decodeFragment(appType);
     }
 
-    public void setAppId(String appId) {
-        this.appId = decodeFragment(appId);
+    public void setAppName(String appName) {
+        this.appName = decodeFragment(appName);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class DefaultLocation implements Location {
         if (appType != null ? !appType.equals(that.appType) : that.appType != null) {
             return false;
         }
-        if (appId != null ? !appId.equals(that.appId) : that.appId != null) {
+        if (appName != null ? !appName.equals(that.appName) : that.appName != null) {
             return false;
         }
         if (subAppId != null ? !subAppId.equals(that.subAppId) : that.subAppId != null) {
@@ -170,7 +170,7 @@ public class DefaultLocation implements Location {
     @Override
     public int hashCode() {
         int result = appType != null ? appType.hashCode() : 0;
-        result = 31 * result + (appId != null ? appId.hashCode() : 0);
+        result = 31 * result + (appName != null ? appName.hashCode() : 0);
         result = 31 * result + (subAppId != null ? subAppId.hashCode() : 0);
         result = 31 * result + (parameter != null ? parameter.hashCode() : 0);
         return result;
@@ -181,8 +181,8 @@ public class DefaultLocation implements Location {
         StringBuilder sb = new StringBuilder();
         if (appType != null && appType.length() != 0) {
             sb.append(appType);
-            if (appId != null && appId.length() != 0) {
-                sb.append(":").append(appId);
+            if (appName != null && appName.length() != 0) {
+                sb.append(":").append(appName);
             }
             if (subAppId != null && subAppId.length() != 0) {
                 sb.append(":").append(subAppId);
@@ -199,7 +199,7 @@ public class DefaultLocation implements Location {
         return i != -1 ? fragment.substring(0, i) : fragment;
     }
 
-    public static String extractAppId(String fragment) {
+    public static String extractAppName(String fragment) {
         fragment = removeParameter(fragment);
         int i = fragment.indexOf(':');
         if (i == -1) {

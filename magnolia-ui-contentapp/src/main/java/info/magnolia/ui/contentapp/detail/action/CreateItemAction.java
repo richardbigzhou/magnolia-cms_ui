@@ -71,7 +71,7 @@ public class CreateItemAction extends AbstractAction<CreateItemActionDefinition>
 
         try {
             String path = Path.getAbsolutePath(parentItem.applyChanges().getPath(), NEW_NODE_NAME);
-            DetailLocation location = new DetailLocation(getDefinition().getAppId(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path, "");
+            DetailLocation location = new DetailLocation(getDefinition().getAppName(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path, "");
             locationController.goTo(location);
         } catch (RepositoryException e) {
             throw new ActionExecutionException(e);
