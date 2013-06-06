@@ -41,52 +41,31 @@ import org.apache.commons.lang.StringUtils;
  * Base ContentApp ItemActionDefinition.
  */
 public abstract class AbstractItemActionDefinition extends ConfiguredActionDefinition {
+
     private String nodeType = StringUtils.EMPTY;
-    private String appId;
+    private String appName;
     private String subAppId;
 
-
-    /**
-     * @return the nodeType.
-     */
     public String getNodeType() {
         return nodeType;
     }
 
-    /**
-     * @param nodeType
-     *            the nodeType to set.
-     */
     public void setNodeType(String nodeType) {
         this.nodeType = nodeType;
     }
 
-    /**
-     * @return the appId.
-     */
-    public String getAppId() {
-        return appId;
+    public String getAppName() {
+        return appName;
     }
 
-    /**
-     * @param appId
-     *            the appId to set.
-     */
-    public void setAppId(String appId) {
-        this.appId = appId;
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 
-    /**
-     * @return the subAppId.
-     */
     public String getSubAppId() {
         return subAppId;
     }
 
-    /**
-     * @param subAppId
-     *            the subAppId to set.
-     */
     public void setSubAppId(String subAppId) {
         this.subAppId = subAppId;
     }

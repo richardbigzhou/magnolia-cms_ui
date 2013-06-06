@@ -46,19 +46,19 @@ import com.vaadin.data.util.ObjectProperty;
  */
 public class MultiProperty extends ObjectProperty<List<String>> {
 
-    private MultiValueHandler delegate;
+    private MultiValueHandler handler;
 
     public MultiProperty(MultiValueHandler delegate) {
         super(new ArrayList<String>());
-        this.delegate = delegate;
-        setValue(this.delegate.getValue());
+        this.handler = delegate;
+        setValue(this.handler.getValue());
     }
 
     @Override
     public void setValue(List<String> newValue) throws com.vaadin.data.Property.ReadOnlyException {
         super.setValue(newValue);
-        if (delegate != null) {
-            delegate.setValue((List<String>) newValue);
+        if (handler != null) {
+            handler.setValue(newValue);
         }
     }
 

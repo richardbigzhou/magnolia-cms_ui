@@ -337,13 +337,4 @@ public class HierarchicalJcrContainer extends AbstractJcrContainer implements Co
     private Node getRootNode() throws RepositoryException {
         return getSession().getNode(getWorkbenchDefinition().getPath());
     }
-
-    private String getPathInWorkspace(String pathInTree) {
-        // if path is absolute, just return it
-        if (pathInTree.startsWith("/")) {
-            return pathInTree;
-        }
-        String base = getWorkbenchDefinition().getPath();
-        return base + pathInTree;
-    }
 }

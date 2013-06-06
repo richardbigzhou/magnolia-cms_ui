@@ -36,8 +36,9 @@ package info.magnolia.ui.form.field.property;
 import java.util.List;
 
 /**
- * Used by {@link MultiProperty} in order to delegate to various implementation the responsibility <br>
- * to retrieve or set the List to a property.
+ * Implemented class have the responsibility to: <br>
+ * - store a List Value in a specific format (single/multi property).<br>
+ * - retrieve properties stored in any format and transform then as a List.
  */
 public interface MultiValueHandler {
 

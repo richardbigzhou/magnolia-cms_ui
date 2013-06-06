@@ -97,6 +97,6 @@ public interface MagnoliaShellView extends HasWidgets, IsWidget {
 
         void initHistory();
 
-        void loadApp(String appId);
+        void loadApp(String appName);
     }
 }

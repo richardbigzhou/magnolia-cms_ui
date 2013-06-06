@@ -180,7 +180,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 if (newFragment.isShellApp()) {
                     showShellApp(newFragment.resolveShellAppType());
                 } else {
-                    loadApp(newFragment.getAppId());
+                    loadApp(newFragment.getAppName());
                     rpc.activateApp(newFragment);
                 }
                 lastHandledFragment = newFragment;
@@ -204,9 +204,9 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     }
 
     @Override
-    public void loadApp(String appId) {
+    public void loadApp(String appName) {
         view.onAppStarting();
-        eventBus.fireEvent(new AppRequestedEvent(appId));
+        eventBus.fireEvent(new AppRequestedEvent(appName));
     }
 
     @Override

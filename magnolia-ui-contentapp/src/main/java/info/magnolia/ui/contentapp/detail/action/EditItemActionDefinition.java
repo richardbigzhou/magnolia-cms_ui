@@ -36,7 +36,7 @@ package info.magnolia.ui.contentapp.detail.action;
 
 /**
  * ActionDefinition used for editing Items.
- * Provides appId and subAppId to determine the correct app and subApp to edit item.
+ * Provides appName and subAppId to determine the correct app and subApp to edit item.
  * see MGNLUI-229.
  */
 public class EditItemActionDefinition extends AbstractItemActionDefinition {

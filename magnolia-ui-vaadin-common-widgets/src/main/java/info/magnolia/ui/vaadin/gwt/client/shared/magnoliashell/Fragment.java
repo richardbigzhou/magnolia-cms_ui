@@ -42,7 +42,7 @@ public class Fragment implements Serializable {
 
     private ViewportType appViewportType = ViewportType.SHELL_APP;
 
-    private String appId = "";
+    private String appName = "";
 
     private String subAppId = "";
 
@@ -56,12 +56,12 @@ public class Fragment implements Serializable {
         String type = extractAppType(fragment);
         if (type.equals("shell")) {
             dto.appViewportType = ViewportType.SHELL_APP;
-            dto.appId = ShellAppType.getTypeByFragmentId(extractAppId(fragment));
+            dto.appName = ShellAppType.getTypeByFragmentId(extractAppName(fragment));
             dto.subAppId = extractSubAppId(fragment);
             dto.parameter = extractSubAppId(fragment);
         } else if (type.equals("app")) {
             dto.appViewportType = ViewportType.APP;
-            dto.appId = extractAppId(fragment);
+            dto.appName = extractAppName(fragment);
             dto.subAppId = extractSubAppId(fragment);
             dto.parameter = extractParameter(fragment);
         }
@@ -73,7 +73,7 @@ public class Fragment implements Serializable {
             return null;
         }
         try {
-            return ShellAppType.valueOf(appId.toUpperCase());
+            return ShellAppType.valueOf(appName.toUpperCase());
         } catch (IllegalArgumentException e) {
             return ShellAppType.APPLAUNCHER;
         }
@@ -87,8 +87,8 @@ public class Fragment implements Serializable {
         this.subAppId = subAppId;
     }
 
-    public void setAppId(String appId) {
-        this.appId = appId;
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 
     public void setAppViewportType(ViewportType type) {
@@ -99,8 +99,8 @@ public class Fragment implements Serializable {
         return appViewportType;
     }
 
-    public String getAppId() {
-        return appId;
+    public String getAppName() {
+        return appName;
     }
 
     public String getSubAppId() {
@@ -118,12 +118,12 @@ public class Fragment implements Serializable {
     }
 
     public boolean isSameApp(Fragment other) {
-        return other != null && appViewportType == other.appViewportType && appId.equals(other.appId);
+        return other != null && appViewportType == other.appViewportType && appName.equals(other.appName);
     }
 
     @Override
     public String toString() {
-        return appViewportType.getFragmentPrefix() + appId + ":" + subAppId + ";" + parameter;
+        return appViewportType.getFragmentPrefix() + appName + ":" + subAppId + ";" + parameter;
     }
 
     public static String extractAppType(String fragment) {
@@ -132,7 +132,7 @@ public class Fragment implements Serializable {
         return result == null || result.isEmpty() ? "shell" : result;
     }
 
-    public static String extractAppId(String fragment) {
+    public static String extractAppName(String fragment) {
         fragment = removeParameter(fragment);
         int i = fragment.indexOf(':');
         if (i == -1) {

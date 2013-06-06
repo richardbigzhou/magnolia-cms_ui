@@ -36,6 +36,7 @@ package info.magnolia.ui.workbench.tree.drop;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -60,8 +61,10 @@ public class BaseDropConstraint implements DropConstraint {
     @Override
     public boolean allowedAsChild(Item sourceItem, Item targetItem) {
         try {
-            String sourceNodeType = ((JcrNodeAdapter) sourceItem).applyChanges().getPrimaryNodeType().getName();
-            String targetNodeType = ((JcrNodeAdapter) targetItem).applyChanges().getPrimaryNodeType().getName();
+            JcrNodeAdapter source = (JcrNodeAdapter) sourceItem;
+            JcrNodeAdapter target = (JcrNodeAdapter) targetItem;
+            String sourceNodeType = source.applyChanges().getPrimaryNodeType().getName();
+            String targetNodeType = target.applyChanges().getPrimaryNodeType().getName();
             // If both nodes are of specific nodeType, return false.
             if (nodeType.equals(sourceNodeType) && nodeType.equals(targetNodeType)) {
                 log.debug("Could not move a node type '{}' under a node type '{}'", targetNodeType, nodeType);
@@ -70,6 +73,11 @@ public class BaseDropConstraint implements DropConstraint {
             // If source is a folder and target of nodeType, return false
             if (NodeTypes.Folder.NAME.equals(sourceNodeType) && nodeType.equals(targetNodeType)) {
                 log.debug("Could not move a Folder under a node type '{}'", targetNodeType);
+                return false;
+            }
+            // We do not allow same name siblings (MGNLUI-1292)
+            final Node targetNode = target.getJcrItem();
+            if (targetNode.hasNodes() && targetNode.hasNode(source.getNodeName())) {
                 return false;
             }
         } catch (RepositoryException e) {

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.column;
+package info.magnolia.ui.form.field.property;
 
-import info.magnolia.ui.workbench.column.definition.AbstractColumnDefinition;
-
-import javax.jcr.Item;
-import javax.jcr.RepositoryException;
-
-import com.vaadin.ui.Component;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 /**
- * Defines a Column - e.g. for lists or trees.
- *
- * @param <D> type of the definition for this column.
+ * Abstract Base Implementation of {@link MultiValueHandler} used to <br>
+ * - store a List of values into a single property <br>
+ * - retrieve a List of Value from a single property.
  */
-public interface Column<D extends AbstractColumnDefinition> {
-
-    D getDefinition();
+public abstract class AbstractBasePropertyValueHandler implements MultiValueHandler {
 
     /**
-     * @return value to be displayed in the corresponding column (from the provided Node)
+     * If the desired property (propertyName) already exist in the JcrNodeAdapter, return this property<br>
+     * else create a new Property.
+     * 
+     * @param <T>
      */
-    Component getComponent(Item item) throws RepositoryException;
+    @SuppressWarnings("unchecked")
+    public <T> DefaultProperty<T> getOrCreateProperty(Class<T> type, T defaultValue, JcrNodeAdapter parent, String propertyName) {
 
-    void setComponent(Item item, Component newValue) throws RepositoryException;
+        DefaultProperty<T> property = (DefaultProperty<T>) parent.getItemProperty(propertyName);
+        if (property == null) {
+            property = new DefaultProperty<T>(type, defaultValue);
+            parent.addItemProperty(propertyName, property);
+        }
+        return property;
+    }
 
-    int getWidth();
-
-    void setWidth(int newWidth);
-
-    String getLabel();
-
-    void setLabel(String newLabel);
 }
