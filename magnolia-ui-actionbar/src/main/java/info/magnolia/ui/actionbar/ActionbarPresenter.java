@@ -35,8 +35,12 @@ package info.magnolia.ui.actionbar;
 
 import info.magnolia.ui.actionbar.builder.ActionbarFactory;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.availability.menu.ActionMenu;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +51,7 @@ import com.vaadin.server.Resource;
 /**
  * Default presenter for an action bar.
  */
-public class ActionbarPresenter implements ActionbarView.Listener {
+public class ActionbarPresenter implements ActionbarView.Listener, ActionMenu {
 
     /**
      *  Listener interface for the Actionbar.
@@ -150,12 +154,30 @@ public class ActionbarPresenter implements ActionbarView.Listener {
         }
     }
 
+    @Override
+    public void showSectionActions(String name, List<ActionDefinition> allActions, List<ActionDefinition> enabledActions) {
+        actionbar.setSectionVisible(name, true);
+        for (ActionDefinition action : allActions) {
+            String actionName = action.getName();
+            if (allActions.contains(action)) {
+                enable(actionName);
+            } else {
+                disable(actionName);
+            }
+        }
+    }
+
     public void hideSection(String... sectionNames) {
         if (actionbar != null) {
             for (String section : sectionNames) {
                 actionbar.setSectionVisible(section, false);
             }
         }
+    }
+
+    @Override
+    public void hideAllSections() {
+        actionbar.hideAllSections();
     }
 
     // VIEW LISTENER
