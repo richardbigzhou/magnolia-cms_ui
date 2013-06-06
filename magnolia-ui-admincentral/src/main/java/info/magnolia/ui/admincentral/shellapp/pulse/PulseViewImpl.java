@@ -37,6 +37,7 @@ import info.magnolia.ui.api.view.View;
 
 import javax.inject.Inject;
 
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 
@@ -52,7 +53,7 @@ public final class PulseViewImpl implements PulseView {
     @Inject
     public PulseViewImpl() {
         layout.addStyleName("v-pulse");
-        layout.setSizeFull();
+        layout.setHeight(100, Unit.PERCENTAGE);
         layout.setWidth("900px");
     }
 
