@@ -414,7 +414,7 @@
             <sv:value>8896da4a-7d8a-42ac-8bd8-ac8ca3f53e86</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.workbench.column.definition.PropertyValueColumnDefinition</sv:value>
+            <sv:value>info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="editable" sv:type="String">
             <sv:value>true</sv:value>

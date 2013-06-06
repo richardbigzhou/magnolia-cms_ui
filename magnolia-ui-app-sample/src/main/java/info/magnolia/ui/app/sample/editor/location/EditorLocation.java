@@ -43,8 +43,8 @@ public class EditorLocation extends DefaultLocation {
 
     private String viewName;
 
-    public EditorLocation(String appType, String appId, String subAppId, String parameter) {
-        super(appType, appId, subAppId, parameter);
+    public EditorLocation(String appType, String appName, String subAppId, String parameter) {
+        super(appType, appName, subAppId, parameter);
         this.viewName = parameter;
     }
 
@@ -53,7 +53,7 @@ public class EditorLocation extends DefaultLocation {
     }
 
     public static EditorLocation wrap(Location location) {
-        return new EditorLocation(location.getAppType(), location.getAppId(), location.getSubAppId(), location.getParameter());
+        return new EditorLocation(location.getAppType(), location.getAppName(), location.getSubAppId(), location.getParameter());
     }
 
 }

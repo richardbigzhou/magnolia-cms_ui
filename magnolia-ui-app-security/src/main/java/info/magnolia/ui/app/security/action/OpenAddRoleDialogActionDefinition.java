@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,22 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.app.security.action;
 
-import info.magnolia.event.EventBus;
-import info.magnolia.event.SimpleEventBus;
-import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
-
-import com.google.inject.name.Names;
-import com.google.inject.util.Providers;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Configures an {@link EventBus} bound to the name <code>admincentral</code>.
+ * Defines an action for opening the add role dialog.
+ *
+ * @see OpenAddRoleDialogAction
  */
-public class AdminCentralEventBusConfigurer extends AbstractGuiceComponentConfigurer {
+public class OpenAddRoleDialogActionDefinition extends ConfiguredActionDefinition {
 
-    @Override
-    protected void configure() {
-        bind(EventBus.class).annotatedWith(Names.named(AdmincentralEventBus.NAME)).toProvider(Providers.of(new SimpleEventBus()));
+    public OpenAddRoleDialogActionDefinition() {
+        setImplementationClass(OpenAddRoleDialogAction.class);
     }
 }

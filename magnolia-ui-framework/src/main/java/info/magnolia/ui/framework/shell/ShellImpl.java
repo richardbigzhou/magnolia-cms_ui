@@ -202,7 +202,7 @@ public class ShellImpl extends AbstractUIContext implements Shell, MessageEventH
     @Override
     public void setFragment(String fragment) {
         Fragment f = Fragment.fromString(fragment);
-        f.setAppId(DefaultLocation.extractAppId(fragment));
+        f.setAppName(DefaultLocation.extractAppName(fragment));
         f.setSubAppId(DefaultLocation.extractSubAppId(fragment));
         f.setParameter(DefaultLocation.extractParameter(fragment));
         getMagnoliaShell().setUriFragment(f);
@@ -292,7 +292,7 @@ public class ShellImpl extends AbstractUIContext implements Shell, MessageEventH
     private void restoreAppParameter(Fragment f) {
         String actualParam = f.getParameter();
         if (StringUtils.isEmpty(actualParam)) {
-            Location location = appController.getAppLocation(f.getAppId());
+            Location location = appController.getAppLocation(f.getAppName());
             if (location != null) {
                 f.setParameter(location.getParameter());
             }
@@ -302,7 +302,7 @@ public class ShellImpl extends AbstractUIContext implements Shell, MessageEventH
     private void restoreShellAppParameter(Fragment f) {
         String actualParam = f.getParameter();
         if (StringUtils.isEmpty(actualParam)) {
-            Location location = shellAppLocationProvider.getShellAppLocation(f.getAppId());
+            Location location = shellAppLocationProvider.getShellAppLocation(f.getAppName());
             if (location != null) {
                 f.setParameter(location.getParameter());
             }

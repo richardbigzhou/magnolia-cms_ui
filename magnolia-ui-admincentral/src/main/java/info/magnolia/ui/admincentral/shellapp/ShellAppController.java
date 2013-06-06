@@ -107,7 +107,7 @@ public class ShellAppController implements LocationChangedEvent.Handler, Locatio
             return;
         }
 
-        ShellAppContextImpl nextContext = contexts.get(newLocation.getAppId());
+        ShellAppContextImpl nextContext = contexts.get(newLocation.getAppName());
         if (nextContext == null) {
             viewport.setView(null);
             return;

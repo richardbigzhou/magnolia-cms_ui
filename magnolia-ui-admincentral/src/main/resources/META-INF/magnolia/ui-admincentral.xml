@@ -102,9 +102,6 @@
   <components>
     <id>admincentral</id>
 
-    <configurer>
-      <class>info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer</class>
-    </configurer>
     <component>
       <type>info.magnolia.ui.form.validator.registry.FieldValidatorRegistry</type>
       <workspace>config</workspace>
@@ -192,9 +189,6 @@
 
   <components>
     <id>app</id>
-    <configurer>
-      <class>info.magnolia.ui.framework.app.AppEventBusConfigurer</class>
-    </configurer>
 
     <component>
       <type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
@@ -216,9 +210,6 @@
 
   <components>
     <id>subapp</id>
-    <configurer>
-      <class>info.magnolia.ui.framework.app.SubAppEventBusConfigurer</class>
-    </configurer>
     <component>
       <type>info.magnolia.ui.api.action.ActionExecutor</type>
       <implementation>info.magnolia.ui.framework.app.action.SubAppActionExecutor</implementation>
