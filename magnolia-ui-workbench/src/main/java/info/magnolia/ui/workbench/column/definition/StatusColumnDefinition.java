@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,24 +33,10 @@
  */
 package info.magnolia.ui.workbench.column.definition;
 
-import info.magnolia.cms.beans.config.ServerConfiguration;
-import info.magnolia.cms.exchange.ActivationManager;
-
-import javax.inject.Inject;
-
 /**
  * Defines a column that displays the activation status of an item.
  */
 public class StatusColumnDefinition extends AbstractColumnDefinition {
-
-    private final ServerConfiguration serverConfiguration;
-    private final ActivationManager activationManager;
-
-    @Inject
-    public StatusColumnDefinition(final ServerConfiguration serverConfiguration, final ActivationManager activationManager) {
-        this.serverConfiguration = serverConfiguration;
-        this.activationManager = activationManager;
-    }
 
     // Show Activation Status
     private boolean activation = true;
@@ -72,13 +58,5 @@ public class StatusColumnDefinition extends AbstractColumnDefinition {
 
     public void setPermissions(boolean permissions) {
         this.permissions = permissions;
-    }
-
-    /**
-     * @return true  when the property is set to true and we're either on a admin instance or there's active subscribers.
-     */
-    @Override
-    public boolean isEnabled() {
-        return super.isEnabled() && (serverConfiguration.isAdmin() || activationManager.hasAnyActiveSubscriber());
     }
 }
