@@ -212,7 +212,7 @@ public class LocationControllerTest {
             }
 
             @Override
-            public String getAppId() {
+            public String getAppName() {
                 return null;
             }
 

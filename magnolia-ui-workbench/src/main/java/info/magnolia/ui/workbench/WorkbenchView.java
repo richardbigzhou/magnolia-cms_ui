@@ -34,7 +34,7 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.statusbar.StatusBarView;
+import info.magnolia.ui.vaadin.statusbar.StatusBarView;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 
 /**

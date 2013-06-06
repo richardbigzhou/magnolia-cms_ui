@@ -54,8 +54,8 @@
     </component>
 
     <component>
-      <type>info.magnolia.ui.statusbar.StatusBarView</type>
-      <implementation>info.magnolia.ui.statusbar.StatusBarViewImpl</implementation>
+      <type>info.magnolia.ui.vaadin.statusbar.StatusBarView</type>
+      <implementation>info.magnolia.ui.vaadin.statusbar.StatusBarViewImpl</implementation>
     </component>
   </components>
 </module>

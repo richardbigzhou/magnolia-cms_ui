@@ -45,8 +45,4 @@ public class FormConfig {
     public TabBuilder tab(String name) {
         return new TabBuilder(name);
     }
-
-    public FormActionBuilder action(String name) {
-        return new FormActionBuilder(name);
-    }
 }

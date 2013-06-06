@@ -33,40 +33,19 @@
  */
 package info.magnolia.ui.app.security.action;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
-import info.magnolia.jcr.node2bean.Node2BeanException;
-import info.magnolia.jcr.node2bean.Node2BeanProcessor;
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.objectfactory.Components;
-import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.repository.RepositoryManager;
-import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.app.security.dialog.field.WorkspaceAccessFieldDefinition;
 import info.magnolia.ui.dialog.FormDialogPresenter;
-import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.form.definition.TabDefinition;
-import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.framework.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Action for opening the role edit dialog.
@@ -74,77 +53,26 @@ import org.apache.commons.lang.StringUtils;
  * @param <D> the action definition type
  * @see OpenRoleEditDialogActionDefinition
  */
-public class OpenRoleEditDialogAction<D extends OpenRoleEditDialogActionDefinition> extends AbstractAction<D> {
+public class OpenRoleEditDialogAction<D extends OpenRoleEditDialogActionDefinition> extends AbstractRoleDialogAction<D> {
 
     private final JcrNodeAdapter itemToEdit;
     private final FormDialogPresenter formDialogPresenter;
     private final UiContext uiContext;
     private final EventBus eventBus;
-    private RepositoryManager repositoryManager;
 
     @Inject
     public OpenRoleEditDialogAction(D definition, JcrNodeAdapter itemToEdit, FormDialogPresenter formDialogPresenter, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, RepositoryManager repositoryManager) {
-        super(definition);
+        super(definition, repositoryManager);
         this.itemToEdit = itemToEdit;
         this.formDialogPresenter = formDialogPresenter;
         this.uiContext = uiContext;
         this.eventBus = eventBus;
-        this.repositoryManager = repositoryManager;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
 
-        ConfiguredDialogDefinition dialogDefinition;
-
-        try {
-
-            // We read the definition from the JCR directly rather than getting it from the registry and then clone it
-            Node node = MgnlContext.getJCRSession(RepositoryConstants.CONFIG).getNode("/modules/ui-security-app/dialogs/roleEdit");
-            dialogDefinition = (ConfiguredDialogDefinition) Components.getComponent(Node2BeanProcessor.class).toBean(node, DialogDefinition.class);
-
-            if (dialogDefinition == null) {
-                throw new ActionExecutionException("Unable to load dialog [roleEdit]");
-            }
-
-            List<TabDefinition> tabs = dialogDefinition.getForm().getTabs();
-            for (TabDefinition tab : tabs) {
-                if (tab.getName().equals("acls")) {
-
-                    ArrayList<String> workspaceNames = new ArrayList<String>(repositoryManager.getWorkspaceNames());
-                    Collections.sort(workspaceNames);
-                    for (String workspaceName : workspaceNames) {
-
-                        if (workspaceName.equals("mgnlVersion") || workspaceName.equals("mgnlSystem")) {
-                            continue;
-                        }
-
-                        String aclName = "acl_" + workspaceName;
-
-                        boolean hasFieldForAcl = false;
-                        for (FieldDefinition fieldDefinition : tab.getFields()) {
-                            if (fieldDefinition.getName().equals(aclName)) {
-                                hasFieldForAcl = true;
-                            }
-                        }
-
-                        if (!hasFieldForAcl) {
-                            WorkspaceAccessFieldDefinition field = new WorkspaceAccessFieldDefinition();
-                            field.setName(aclName);
-                            field.setLabel(StringUtils.capitalize(workspaceName));
-                            field.setWorkspace(workspaceName);
-                            field.setNodeTypes(getNodeTypesForWorkspace(workspaceName));
-                            tab.getFields().add(field);
-                        }
-                    }
-                }
-            }
-
-        } catch (RepositoryException e) {
-            throw new ActionExecutionException(e);
-        } catch (Node2BeanException e) {
-            throw new ActionExecutionException(e);
-        }
+        DialogDefinition dialogDefinition = getDialogDefinition("roleEdit");
 
         formDialogPresenter.start(itemToEdit, dialogDefinition, uiContext, new EditorCallback() {
 
@@ -159,41 +87,5 @@ public class OpenRoleEditDialogAction<D extends OpenRoleEditDialogActionDefiniti
                 formDialogPresenter.closeDialog();
             }
         });
-    }
-
-    protected List<NodeTypeDefinition> getNodeTypesForWorkspace(String workspaceName) {
-
-        List<NodeTypeDefinition> nodeTypes = new ArrayList<NodeTypeDefinition>();
-
-        if (workspaceName.equals(RepositoryConstants.WEBSITE)) {
-            addNodeType(nodeTypes, NodeTypes.Content.NAME, "icon-file-webpage", false);
-        } else if (workspaceName.equals(RepositoryConstants.CONFIG)) {
-            addNodeType(nodeTypes, NodeTypes.ContentNode.NAME, "icon-node-content");
-            addNodeType(nodeTypes, NodeTypes.Content.NAME, "icon-folder");
-        } else if (workspaceName.equals(RepositoryConstants.USERS)) {
-            addNodeType(nodeTypes, NodeTypes.Folder.NAME, "icon-folder");
-            addNodeType(nodeTypes, NodeTypes.User.NAME, "icon-user-magnolia");
-        } else if (workspaceName.equals(RepositoryConstants.USER_ROLES)) {
-            addNodeType(nodeTypes, NodeTypes.Role.NAME, "icon-user-role");
-        } else if (workspaceName.equals(RepositoryConstants.USER_GROUPS)) {
-            addNodeType(nodeTypes, NodeTypes.Group.NAME, "icon-user-group");
-        } else {
-            // Let the field use a default set of node types instead
-            return null;
-        }
-
-        return nodeTypes;
-    }
-
-    protected void addNodeType(List<NodeTypeDefinition> nodeTypes, String nodeTypeName, String icon) {
-        addNodeType(nodeTypes, nodeTypeName, icon, true);
-    }
-
-    protected void addNodeType(List<NodeTypeDefinition> nodeTypes, String nodeTypeName, String icon, boolean strict) {
-        ConfiguredNodeTypeDefinition nodeType = new ConfiguredNodeTypeDefinition();
-        nodeType.setName(nodeTypeName);
-        nodeType.setIcon(icon);
-        nodeType.setStrict(strict);
-        nodeTypes.add(nodeType);
     }
 }

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,19 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.definition;
+package info.magnolia.ui.vaadin.statusbar;
 
-import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.view.View;
+
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Component;
 
 /**
- * FormActionDefinition.
+ * The status bar view consists of a horizontal container, with basic support for horizontal alignment. It is intended
+ * for displaying status information relative to the content that is currently presented in an adjacent view.
+ * Additionally, it can draw several levels of attention of feedback by changing color.
  */
-public interface FormActionDefinition {
-    String getName();
+public interface StatusBarView extends View {
 
-    String getLabel();
+    void addComponent(Component c, Alignment align);
 
-    String getI18nBasename();
+    void removeComponent(Component c);
 
-    ActionDefinition getActionDefinition();
+    void setColor(String colorStyleName);
+
 }
