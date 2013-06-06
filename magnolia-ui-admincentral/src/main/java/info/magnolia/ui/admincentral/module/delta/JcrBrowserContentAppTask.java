@@ -38,6 +38,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.AbstractTask;
 import info.magnolia.module.delta.TaskExecutionException;
+import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -45,10 +46,11 @@ import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
 
+
 /**
  * A task to create a JCR browser content app. The app configuration will be created under <code>/modules/ui-admincentral/apps</code>. An entry for the app will be also created in the app launcher layout under the specified app group.
  * The app group is assumed to be existing at the time of executing this task. The task relies on the existence of the <code>ui-config-app</code> (part of Magnolia UI project) at its default location under <code>/modules/ui-config-app</code> as it
- * uses Magnolia's extension mechanism in order to inherit most of its configuration.
+ * uses Magnolia's extension mechanism in order to inherit most of its configuration. Being the configuration inherited from ui-config-app the tree will be editable and include properties.
  */
 public class JcrBrowserContentAppTask extends AbstractTask {
     private final String appName;
@@ -57,6 +59,7 @@ public class JcrBrowserContentAppTask extends AbstractTask {
     private final String icon;
     private final String workspace;
     private final String rootPath;
+    private NodeTypeDefinition mainNodeType;
 
     /**
      * @param appName a string representing a unique name for this app. If not unique, the task will fail.
@@ -64,7 +67,7 @@ public class JcrBrowserContentAppTask extends AbstractTask {
      * @param appGroup a string representing one of the default app groups (i.e. <code>edit, manage, dev, tools</code>) or a custom one (which is assumed to be already existing when running this task).
      * @param icon a string representing an icon. If not set defaults to <code>icon-app</code>.
      * @param workspace name of the workspace. If null or empty the task will fail.
-     * @param absRootPath the absolute path to use as the root for the content app to be created. If not set defaults to <code>/</code>. If not absolute, the task will fail.
+     * @param absRootPath the absolute path to use as the root for the content app to be created. If not set, defaults to <code>/</code>. If not absolute, the task will fail.
      */
     public JcrBrowserContentAppTask(String appName, String label, String appGroup, String icon, String workspace, String absRootPath) {
         super("JCR browser app", String.format("Creates a JCR browser content app named '%s' for workspace '%s' starting at path '%s'.", appName, workspace, StringUtils.defaultIfEmpty(absRootPath, "/")));
@@ -75,6 +78,15 @@ public class JcrBrowserContentAppTask extends AbstractTask {
         this.icon = icon;
         this.workspace = workspace;
         this.rootPath = absRootPath;
+    }
+
+    /**
+     * @param mainNodeType the main node type for the specified workspace. If null, the name defaults to {@link NodeTypes.ContentNode.NAME}.
+     * @see JcrBrowserContentAppTask
+     */
+    public JcrBrowserContentAppTask(String appName, String label, String appGroup, String icon, String workspace, String absRootPath, NodeTypeDefinition mainNodeType) {
+        this(appName, label, appGroup, icon, workspace, absRootPath);
+        this.mainNodeType = mainNodeType;
     }
 
     @Override
@@ -114,6 +126,13 @@ public class JcrBrowserContentAppTask extends AbstractTask {
                     throw new TaskExecutionException(String.format("Expected an absolute path for workspace [%s] but got [%s] instead.", workspace, rootPath));
                 }
                 workbenchNode.setProperty("path", rootPath);
+            }
+            if (mainNodeType != null) {
+                Node nodeType = NodeUtil.createPath(workbenchNode, "nodeTypes/mainNodeType", NodeTypes.ContentNode.NAME);
+                String icon = mainNodeType.getIcon();
+                String name = mainNodeType.getName();
+                nodeType.setProperty("icon", StringUtils.defaultIfEmpty(icon, "icon-node-content"));
+                nodeType.setProperty("name", StringUtils.defaultIfEmpty(name, NodeTypes.ContentNode.NAME));
             }
         } catch (RepositoryException e) {
             throw new TaskExecutionException(e.getMessage());
