@@ -71,6 +71,8 @@ public interface ActionbarView extends View {
 
     void setOpen(boolean isOpen);
 
+    void hideAllSections();
+
     /**
      * Base interface for an action bar listener.
      */
