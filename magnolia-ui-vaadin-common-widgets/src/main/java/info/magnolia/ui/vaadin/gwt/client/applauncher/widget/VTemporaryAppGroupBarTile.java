@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.applauncher.widget;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -43,6 +44,8 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchStartHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
@@ -54,6 +57,7 @@ public class VTemporaryAppGroupBarTile extends FlowPanel {
     private VTemporaryAppGroupBar groupBar;
     private VAppTileGroup group;
     private VTemporaryAppGroupBarTile that;
+    private boolean opened;
 
     public VTemporaryAppGroupBarTile(String caption, VAppTileGroup groupParam, VTemporaryAppGroupBar groupBarParam) {
         super();
@@ -107,42 +111,77 @@ public class VTemporaryAppGroupBarTile extends FlowPanel {
             @Override
             public void onMouseOut(MouseOutEvent event) {
                 getElement().removeClassName("hover");
+                updateColors();
             }
         }, MouseOutEvent.getType());
 
         final TouchDelegate touchDelegate = new TouchDelegate(this);
 
+        touchDelegate.addTouchStartHandler(new TouchStartHandler() {
+
+            @Override
+            public void onTouchStart(TouchStartEvent event) {
+                getElement().removeClassName("hover");
+                setColorsClick();
+                event.preventDefault();
+            }
+        });
+
         touchDelegate.addTouchEndHandler(new TouchEndHandler() {
 
             @Override
             public void onTouchEnd(TouchEndEvent event) {
+                getElement().removeClassName("hover");
                 groupBar.handleTileClick((VTemporaryAppTileGroup) group, that);
+                updateColors();
+                event.preventDefault();
             }
         });
 
     }
 
-    public void openExpander() {
-
-        element.removeClassName("hover");
-
-        element.removeClassName("closed");
-        element.addClassName("open");
-
-        if (group.isClientGroup()) {
-            element.getStyle().setColor(group.getColor());
-            element.getStyle().setBorderColor("white");
+    private void setColorsClick() {
+        final Style style = getElement().getStyle();
+        if (!group.isClientGroup()) {
+            style.setColor(group.getColor());
+            style.setBorderColor("white");
         } else {
-            element.getStyle().setColor("white");
-            element.getStyle().setBorderColor(group.getColor());
+            style.setBorderColor(group.getColor());
+            style.setColor("white");
         }
     }
 
+    private void updateColors() {
+        if (opened) {
+            if (group.isClientGroup()) {
+                element.getStyle().setColor(group.getColor());
+                element.getStyle().setBorderColor("white");
+            } else {
+                element.getStyle().setColor("white");
+                element.getStyle().setBorderColor(group.getColor());
+            }
+        } else {
+            element.getStyle().clearBorderColor();
+            element.getStyle().clearColor();
+        }
+    }
+
+    public void openExpander() {
+        element.removeClassName("hover");
+        element.removeClassName("closed");
+        element.addClassName("open");
+
+        opened = true;
+        updateColors();
+    }
+
     public void closeExpander() {
-        element.addClassName("closed");
+        element.removeClassName("hover");
         element.removeClassName("open");
-        element.getStyle().clearBorderColor();
-        element.getStyle().clearColor();
+        element.addClassName("closed");
+
+        opened = false;
+        updateColors();
     }
 
 }
