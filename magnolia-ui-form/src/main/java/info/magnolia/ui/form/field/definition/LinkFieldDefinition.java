@@ -33,74 +33,97 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
+
 /**
  * The link field allows you to create a link to content stored in Magnolia. You can browse any specified workspace and
  * select a content node to link to such as a page (website), file (dms) or data item (data).
  */
 public class LinkFieldDefinition extends ConfiguredFieldDefinition {
 
-    // Sub Dialog Name. Used by the LinkField to create the
-    // sub dialog. like 'ui-admincentral:link'
     private String dialogName;
-    // Target App Name used to create the ContentView.
-    // 'pages'
     private String appName;
-    // Define the target link workspace.
     private String workspace = "website";
-
-    // Button Label displayed when no link is yet selected.
     private String buttonSelectNewLabel = "field.link.select.new";
-    // Button Label displayed when a link is selected.
     private String buttonSelectOtherLabel = "field.link.select.another";
-    // Define if we should store the Identifier of the selected Item
-    private boolean identifier = false;
+    private IdentifierToPathConverter identifierToPathConverter;
 
+    private String targetPropertyToPopulate;
 
+    /**
+     * @return the target App Name used to create the ContentView, like 'pages'
+     */
+    public String getAppName() {
+        return appName;
+    }
+
+    public String getTargetPropertyToPopulate() {
+        return targetPropertyToPopulate;
+    }
+
+    /**
+     * @return the workspace from which the link was retrieve.
+     */
     public String getWorkspace() {
         return workspace;
+    }
+
+    /**
+     * If not define, no translation will be performed.
+     * 
+     * @return the implemented class used to perform the translation between a path and an Identifier.
+     */
+    public IdentifierToPathConverter getIdentifierToPathConverter() {
+        return identifierToPathConverter;
+    }
+
+    /**
+     * @return the sub Dialog Name. Used by the LinkField to create the sub dialog, like 'ui-admincentral:link'
+     */
+    public String getDialogName() {
+        return this.dialogName;
+    }
+
+    /**
+     * @return the Button Label displayed when no link is yet selected.
+     */
+    public String getButtonSelectNewLabel() {
+        return buttonSelectNewLabel;
+    }
+
+    /**
+     * @return the Button Label displayed when a link is selected.
+     */
+    public String getButtonSelectOtherLabel() {
+        return buttonSelectOtherLabel;
+    }
+
+    public void setTargetPropertyToPopulate(String targetPropertyToPopulate) {
+        this.targetPropertyToPopulate = targetPropertyToPopulate;
     }
 
     public void setWorkspace(String workspace) {
         this.workspace = workspace;
     }
 
-    public boolean isIdentifier() {
-        return identifier;
-    }
-
-    public void setIdentifier(boolean identifier) {
-        this.identifier = identifier;
-    }
-
-    public String getDialogName() {
-        return this.dialogName;
-    }
 
     public void setDialogName(String dialogName) {
         this.dialogName = dialogName;
-    }
-
-    public String getAppName() {
-        return appName;
     }
 
     public void setAppName(String appName) {
         this.appName = appName;
     }
 
-    public String getButtonSelectNewLabel() {
-        return buttonSelectNewLabel;
-    }
-
     public void setButtonSelectNewLabel(String buttonSelectNewLabel) {
         this.buttonSelectNewLabel = buttonSelectNewLabel;
     }
 
-    public String getButtonSelectOtherLabel() {
-        return buttonSelectOtherLabel;
-    }
-
     public void setButtonSelectOtherLabel(String buttonSelectOtherLabel) {
         this.buttonSelectOtherLabel = buttonSelectOtherLabel;
+    }
+
+    public void setIdentifierToPathConverter(IdentifierToPathConverter identifierToPathConverter) {
+        this.identifierToPathConverter = identifierToPathConverter;
     }
 }

@@ -83,9 +83,9 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
     @Override
     protected Field<String> buildField() {
         // Create Translator if we need to store the Identifier
-        IdentifierToPathConverter converter = null;
-        if (definition.isIdentifier()) {
-            converter = new IdentifierToPathConverter(definition.getWorkspace());
+        IdentifierToPathConverter converter = definition.getIdentifierToPathConverter();
+        if (converter != null) {
+            converter.setWorkspaceName(definition.getWorkspace());
         }
         linkField = new LinkField(converter, getMessage(definition.getButtonSelectNewLabel()), getMessage(definition.getButtonSelectOtherLabel()), true);
         final Button selectButton = linkField.getSelectButton();
@@ -112,17 +112,17 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
             @Override
             public void buttonClick(ClickEvent event) {
 
-                appController.openChooseDialog(appName, "/", subAppContext, new ItemChosenListener() {
+                appController.openChooseDialog(appName, "/", subAppContext, linkField.getValue(), new ItemChosenListener() {
                     @Override
                     public void onItemChosen(final Item chosenValue) {
-                        String propertyName = getPropertyName();
+                        String propertyName = definition.getTargetPropertyToPopulate();
                         String newValue = null;
                         if (chosenValue != null) {
                             javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
                             if (jcrItem.isNode()) {
                                 final Node selected = (Node) jcrItem;
                                 try {
-                                    boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) && !PATH_PROPERTY_NAME.equals(propertyName) && selected.hasProperty(propertyName);
+                                    boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) && selected.hasProperty(propertyName);
                                     newValue = isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath();
                                 } catch (RepositoryException e) {
                                     log.error("Not able to access the configured property. Value will not be set.", e);

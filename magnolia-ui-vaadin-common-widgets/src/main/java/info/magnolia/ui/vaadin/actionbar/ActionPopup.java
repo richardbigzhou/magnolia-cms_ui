@@ -33,13 +33,49 @@
  */
 package info.magnolia.ui.vaadin.actionbar;
 
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.availability.menu.ActionMenu;
+
+import java.util.List;
+
 import org.vaadin.peter.contextmenu.ContextMenu;
+
+import com.vaadin.server.ExternalResource;
 
 /**
  * The ActionPopup.
  */
-public class ActionPopup extends ContextMenu {
+public class ActionPopup extends ContextMenu implements ActionMenu {
 
     public static String ICON_FONT_CODE = "iconfont#";
 
+    @Override
+    public void hideAllSections() {
+         removeAllItems();
+    }
+
+    @Override
+    public void showSectionActions(String name, List<ActionDefinition> allActions, List<ActionDefinition> enabledActions) {
+
+        ContextMenuItem menuItem = null;
+        for (ActionDefinition action : allActions) {
+
+            String label = action.getLabel();
+            String iconFontCode = ActionPopup.ICON_FONT_CODE + action.getIcon();
+            ExternalResource iconFontResource = new ExternalResource(iconFontCode);
+
+            menuItem = addItem(label, iconFontResource);
+            // Set data variable so that the event handler can determine which action to launch.
+            menuItem.setData(action.getName());
+            menuItem.setEnabled(enabledActions.contains(action));
+
+            // Add group separator.
+            if (menuItem != null) {
+                menuItem.setSeparatorVisible(true);
+            }
+        }
+        if (menuItem != null) {
+            menuItem.setSeparatorVisible(false);
+        }
+    }
 }

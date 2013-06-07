@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,71 +33,15 @@
  */
 package info.magnolia.ui.form.field.converter;
 
-import info.magnolia.context.MgnlContext;
-
-import java.util.Locale;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.vaadin.data.util.converter.Converter;
 
 /**
- * Converter used to convert a UUID to a Path and Path to UUID.
- * In general, if the translation is not possible, return null.
+ * Base definition for {@link Converter} used to switch between node Path and Identifier.
  */
-public class IdentifierToPathConverter implements Converter<String, String> {
+public interface IdentifierToPathConverter extends Converter<String, String> {
 
-    private static final Logger log = LoggerFactory.getLogger(IdentifierToPathConverter.class);
-
-    private final String workspace;
-
-    public IdentifierToPathConverter(String workspace) {
-        this.workspace = workspace;
-    }
-
-    @Override
-    public String convertToModel(String path, Locale locale) throws Converter.ConversionException {
-        String res = StringUtils.EMPTY;
-        if (StringUtils.isBlank(path)) {
-            return res;
-        }
-        try {
-            Session session = MgnlContext.getJCRSession(workspace);
-            res = session.getNode(path).getIdentifier();
-        } catch (RepositoryException e) {
-            log.error("Unable to convert Path to UUID", e);
-        }
-        return res;
-    }
-
-    @Override
-    public String convertToPresentation(String uuid, Locale locale) throws Converter.ConversionException {
-        String res = StringUtils.EMPTY;
-        if (StringUtils.isBlank(uuid)) {
-            return res;
-        }
-        try {
-            Session session = MgnlContext.getJCRSession(workspace);
-            res = session.getNodeByIdentifier(uuid).getPath();
-        } catch (RepositoryException e) {
-            log.error("Unable to convert UUID to Path", e);
-        }
-        return res;
-    }
-
-    @Override
-    public Class<String> getModelType() {
-        return String.class;
-    }
-
-    @Override
-    public Class<String> getPresentationType() {
-        return String.class;
-    }
-
+    /**
+     * @param workspaceName Used to retrieve an identifier form a path.
+     */
+    public void setWorkspaceName(String workspaceName);
 }

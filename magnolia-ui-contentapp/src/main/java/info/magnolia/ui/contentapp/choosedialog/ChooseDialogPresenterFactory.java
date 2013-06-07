@@ -40,5 +40,5 @@ import info.magnolia.ui.framework.app.ItemChosenListener;
  */
 public interface ChooseDialogPresenterFactory {
 
-    ChooseDialogPresenter createChooseDialogPresenter(String path, ItemChosenListener listener);
+    ChooseDialogPresenter createChooseDialogPresenter(String path, ItemChosenListener listener, String selectedId);
 }

@@ -172,6 +172,13 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
     }
 
     @Override
+    public void hideAllSections() {
+        for (ActionbarSection section : getState(false).sections.values()) {
+            setSectionVisible(section.getName(), false);
+        }
+    }
+
+    @Override
     public boolean isSectionVisible(String sectionName) {
         final Iterator<ActionbarSection> it = getState(false).visibleSections.iterator();
         boolean result = false;
