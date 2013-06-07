@@ -44,6 +44,7 @@ import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.event.SearchEvent;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -86,6 +87,13 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
                 currentValue = event.getItem();
+            }
+        });
+
+        eventBus.addHandler(SearchEvent.class, new SearchEvent.Handler() {
+            @Override
+            public void onSearch(SearchEvent event) {
+                workbenchPresenter.doSearch(event.getSearchExpression());
             }
         });
 
