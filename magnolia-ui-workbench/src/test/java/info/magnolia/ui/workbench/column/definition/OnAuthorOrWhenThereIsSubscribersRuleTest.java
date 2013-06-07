@@ -40,15 +40,14 @@ import info.magnolia.cms.beans.config.ServerConfiguration;
 import info.magnolia.cms.exchange.ActivationManager;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Tests.
  */
-public class StatusColumnDefinitionTest {
+public class OnAuthorOrWhenThereIsSubscribersRuleTest {
 
-    private StatusColumnDefinition definition;
+    private ColumnAvailabilityRule rule;
     private ServerConfiguration serverConfiguration;
     private ActivationManager activationManager;
 
@@ -56,59 +55,42 @@ public class StatusColumnDefinitionTest {
     public void setUp() throws Exception {
         serverConfiguration = mock(ServerConfiguration.class);
         activationManager = mock(ActivationManager.class);
-        // definition = new StatusColumnDefinition(serverConfiguration, activationManager);
-        definition.setEnabled(true);
+        rule = new OnAuthorOrWhenThereIsSubscribersRule(serverConfiguration, activationManager);
     }
 
     @Test
-    @Ignore
-    public void testIsEnabledReturnsTrueIfPropertyIsSetToTrueOnAuthor() {
+    public void testIsAvailableReturnsTrueIfOnAuthor() {
         // GIVEN
         when(serverConfiguration.isAdmin()).thenReturn(true);
 
         // WHEN
-        boolean result = definition.isEnabled();
+        boolean result = rule.isAvailable();
 
         // THEN
         assertTrue(result);
     }
 
     @Test
-    @Ignore
-    public void testIsEnabledReturnsTrueIfPropertyIsSetToTrueOnNonAuthorWithActiveSubscribers() {
+    public void testIsAvailableReturnsTrueOnNonAuthorWithActiveSubscribers() {
         // GIVEN
         when(serverConfiguration.isAdmin()).thenReturn(false);
         when(activationManager.hasAnyActiveSubscriber()).thenReturn(true);
 
         // WHEN
-        boolean result = definition.isEnabled();
+        boolean result = rule.isAvailable();
 
         // THEN
         assertTrue(result);
     }
 
     @Test
-    @Ignore
-    public void testIsEnabledReturnsFalseIfPropertyIsSetToFalse() {
-        // GIVEN
-        definition.setEnabled(false);
-
-        // WHEN
-        boolean result = definition.isEnabled();
-
-        // THEN
-        assertFalse(result);
-    }
-
-    @Test
-    @Ignore
-    public void testIsEnabledReturnsFalseIfPropertyIsSetToTrueAndNotOnAuthorAndNoSubscribers() {
+    public void testIsAvailableReturnsFalseOnNonAuthorAndNoSubscribers() {
         // GIVEN
         when(serverConfiguration.isAdmin()).thenReturn(false);
         when(activationManager.hasAnyActiveSubscriber()).thenReturn(false);
 
         // WHEN
-        boolean result = definition.isEnabled();
+        boolean result = rule.isAvailable();
 
         // THEN
         assertFalse(result);
