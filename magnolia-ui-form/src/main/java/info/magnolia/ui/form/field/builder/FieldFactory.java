@@ -74,7 +74,8 @@ public class FieldFactory implements Serializable {
         try {
             fieldTypeDefinition = fieldTypeDefinitionRegistry.getByDefinition(definition.getClass());
         } catch (RegistrationException e) {
-            throw new RuntimeException("No FieldBuilder found for " + definition.getName(), e);
+            log.error("No field type definition found for " + definition.getName(), e);
+            return null;
         }
 
         Class<? extends FieldBuilder> implementationClass = fieldTypeDefinition.getBuilder();

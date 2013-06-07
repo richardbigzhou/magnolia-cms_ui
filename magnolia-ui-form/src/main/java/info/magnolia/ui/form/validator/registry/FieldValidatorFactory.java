@@ -40,6 +40,8 @@ import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
 
 import java.io.Serializable;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +56,7 @@ public class FieldValidatorFactory implements Serializable {
 
     protected ComponentProvider componentProvider;
 
+    @Inject
     public FieldValidatorFactory(ComponentProvider componentProvider) {
         this.componentProvider = componentProvider;
     }
