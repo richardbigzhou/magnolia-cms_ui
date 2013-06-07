@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,34 +33,23 @@
  */
 package info.magnolia.ui.workbench.column.definition;
 
+import info.magnolia.cms.beans.config.ServerConfiguration;
+import info.magnolia.cms.exchange.ActivationManager;
+
 /**
- * Defines a column that displays the activation status of an item.
+ * Rule evaluating to true only in case we're on a author instance or there's active subscribers.
  */
-public class StatusColumnDefinition extends AbstractColumnDefinition {
+public class OnAuthorOrWhenThereIsSubscribersRule implements ColumnAvailabilityRule {
 
-    public StatusColumnDefinition() {
-        setRuleClass(OnAuthorOrWhenThereIsSubscribersRule.class);
+    private final ServerConfiguration serverConfiguration;
+    private final ActivationManager activationManager;
+
+    public OnAuthorOrWhenThereIsSubscribersRule(final ServerConfiguration serverConfiguration, final ActivationManager activationManager) {
+        this.serverConfiguration = serverConfiguration;
+        this.activationManager = activationManager;
     }
-
-    // Show Activation Status
-    private boolean activation = true;
-
-    // Show Permission Status
-    private boolean permissions = false;
-
-    public boolean isActivation() {
-        return activation;
-    }
-
-    public void setActivation(boolean activation) {
-        this.activation = activation;
-    }
-
-    public boolean isPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(boolean permissions) {
-        this.permissions = permissions;
+    @Override
+    public boolean isAvailable() {
+        return serverConfiguration.isAdmin() || activationManager.hasAnyActiveSubscriber();
     }
 }
