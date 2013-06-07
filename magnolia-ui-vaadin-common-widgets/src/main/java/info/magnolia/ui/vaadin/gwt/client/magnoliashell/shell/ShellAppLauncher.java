@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -50,7 +50,6 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
@@ -199,12 +198,6 @@ public class ShellAppLauncher extends FlowPanel {
 
     private void bindHandlers() {
         DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
-        logo.addTouchEndHandler(new TouchEndHandler() {
-            @Override
-            public void onTouchEnd(TouchEndEvent event) {
-                emergencyRestartApplication();
-            }
-        });;
     }
 
     private void doUpdateDivetPosition(final ShellAppType type, boolean animated) {
@@ -224,16 +217,5 @@ public class ShellAppLauncher extends FlowPanel {
             divetWrapper.getStyle().setLeft(divetPos, Unit.PX);
         }
 
-    }
-
-    /**
-     * TODO: Christopher Zimmermann CLZ
-     * Restart the application by appending the &restartApplication querystring to the URL. This is
-     * handy as the application is not totally stable yet.
-     * Developer Preview feature.
-     */
-    private void emergencyRestartApplication() {
-        String newHref = Window.Location.getPath() + "?restartApplication";
-        Window.Location.assign(newHref);
     }
 }

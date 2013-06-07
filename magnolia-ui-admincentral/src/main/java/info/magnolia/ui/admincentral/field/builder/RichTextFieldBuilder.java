@@ -161,7 +161,7 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder<RichTextFieldDefi
 
     private void openLinkDialog(String path, String workspace) {
 
-        appController.openChooseDialog(mapWorkSpaceToApp(workspace), path, subAppContext, new ItemChosenListener() {
+        appController.openChooseDialog(mapWorkSpaceToApp(workspace), path, subAppContext, null, new ItemChosenListener() {
 
             @Override
             public void onItemChosen(Item chosenValue) {
