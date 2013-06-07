@@ -69,7 +69,7 @@ public class WorkbenchChooseDialogPresenterFactory implements ChooseDialogPresen
     }
 
     @Override
-    public WorkbenchChooseDialogPresenter createChooseDialogPresenter(String path, final ItemChosenListener listener) {
+    public WorkbenchChooseDialogPresenter createChooseDialogPresenter(String path, final ItemChosenListener listener, String selectedId) {
 
         SubAppDescriptor subAppContext = appContext.getDefaultSubAppDescriptor();
         if (!(subAppContext instanceof BrowserSubAppDescriptor)) {
@@ -81,11 +81,13 @@ public class WorkbenchChooseDialogPresenterFactory implements ChooseDialogPresen
         WorkbenchDefinition workbench = new Cloner().deepClone(subApp.getWorkbench());
         // mark definition as a dialog workbench so that workbench presenter can disable drag n drop
         ((ConfiguredWorkbenchDefinition) workbench).setDialogWorkbench(true);
+        ((ConfiguredWorkbenchDefinition) workbench).setPath(path);
         ImageProviderDefinition imageProvider = new Cloner().deepClone(subApp.getImageProvider());
 
         final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = componentProvider.newInstance(WorkbenchChooseDialogPresenter.class);
         workbenchChooseDialogPresenter.setWorkbenchDefinition(workbench);
         workbenchChooseDialogPresenter.setImageProviderDefinition(imageProvider);
+        workbenchChooseDialogPresenter.setSelectedItemId(selectedId);
 
         workbenchChooseDialogPresenter.addActionCallback(WorkbenchChooseDialogView.COMMIT_ACTION_NAME, new DialogActionListener() {
             @Override
