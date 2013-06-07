@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -37,6 +37,9 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.data.Container;
 import com.vaadin.data.Validator;
 import com.vaadin.shared.ui.treetable.TreeTableState;
@@ -46,6 +49,8 @@ import com.vaadin.ui.TreeTable;
  * VMagnoliaTreeTable.
  */
 public class MagnoliaTreeTable extends TreeTable {
+
+    private static Logger log = LoggerFactory.getLogger(MagnoliaTreeTable.class);
 
     public MagnoliaTreeTable() {
         addStyleName("v-magnolia-table");
@@ -105,14 +110,8 @@ public class MagnoliaTreeTable extends TreeTable {
             Field f = TreeTable.class.getDeclaredField("containerSupportsPartialUpdates");
             f.setAccessible(true);
             f.setBoolean(this, true);
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.warn("Could not enable partial-updates in tree.", e);
         }
     }
 }
