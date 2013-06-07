@@ -141,7 +141,7 @@ public class DialogMigrationTask extends AbstractTask {
         this.controlMigrationMap.put("checkbox", new CheckBoxRadioControlMigration(true));
         this.controlMigrationMap.put("checkboxSwitch", new CheckBoxSwitchControlMigration());
         this.controlMigrationMap.put("radio", new CheckBoxRadioControlMigration(false));
-        this.controlMigrationMap.put("dam", new DamControlMigration("image.*"));
+        this.controlMigrationMap.put("dam", new DamControlMigration());
         this.controlMigrationMap.put("uuidLink", new LinkControlMigration());
         this.controlMigrationMap.put("link", new LinkControlMigration());
         this.controlMigrationMap.put("categorizationUUIDMultiSelect", new MultiSelectControlMigration(true));

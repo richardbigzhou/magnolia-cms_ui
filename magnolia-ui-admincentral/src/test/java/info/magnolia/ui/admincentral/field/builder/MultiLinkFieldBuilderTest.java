@@ -39,6 +39,7 @@ import static org.mockito.Mockito.*;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.field.MultiLinkField;
 import info.magnolia.ui.form.field.builder.AbstractBuilderTest;
+import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
 import info.magnolia.ui.form.field.property.SingleValueHandler;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -79,7 +80,7 @@ public class MultiLinkFieldBuilderTest extends AbstractBuilderTest<MultiLinkFiel
     @Test
     public void simpleMultiLinkFieldBuilderdIdentifierTest() throws Exception {
         // GIVEN
-        definition.setIdentifier(true);
+        definition.setIdentifierToPathConverter(new BaseIdentifierToPathConverter());
         definition.setName(propertyName);
         definition.setWorkspace(workspaceName);
         baseNode.setProperty(propertyName, baseNode.getIdentifier());
