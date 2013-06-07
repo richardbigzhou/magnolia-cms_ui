@@ -40,6 +40,8 @@ import static org.mockito.Mockito.*;
 import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.framework.app.AppDescriptor;
@@ -50,8 +52,6 @@ import info.magnolia.ui.framework.app.launcherlayout.definition.ConfiguredAppLau
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.app.registry.AppRegistryEvent;
 import info.magnolia.ui.framework.app.registry.AppRegistryEventType;
-import info.magnolia.event.EventBus;
-import info.magnolia.event.SimpleEventBus;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 
 import java.util.ArrayList;
@@ -74,6 +74,7 @@ public class AppLayoutManagerImplTest extends MgnlTestCase {
     private EventBus systemEventBus;
     private AppLauncherLayoutManagerImpl appLayoutManager;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
