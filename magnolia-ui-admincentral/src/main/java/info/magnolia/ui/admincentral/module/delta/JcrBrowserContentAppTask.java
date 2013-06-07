@@ -163,6 +163,10 @@ public class JcrBrowserContentAppTask extends AbstractTask {
         return workspace;
     }
 
+    public NodeTypeDefinition getMainNodeType() {
+        return mainNodeType;
+    }
+
     private Node createApp(Node appsNode) throws RepositoryException {
         Node app = NodeUtil.createPath(appsNode, appName, NodeTypes.ContentNode.NAME);
         app.setProperty("app", "info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor");
