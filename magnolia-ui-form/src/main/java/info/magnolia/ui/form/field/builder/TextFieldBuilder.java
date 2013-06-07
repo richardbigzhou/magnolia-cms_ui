@@ -64,6 +64,7 @@ public class TextFieldBuilder extends AbstractFieldBuilder<TextFieldDefinition, 
             field = new TextField();
         }
         field.setNullRepresentation("");
+        field.setNullSettingAllowed(true);
         if (definition.getMaxLength() != -1) {
             field.setMaxLength(definition.getMaxLength());
         }
