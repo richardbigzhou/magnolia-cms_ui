@@ -213,7 +213,7 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
         Iterator<ColumnDefinition> it = allColumns.iterator();
         while (it.hasNext()) {
             ColumnDefinition column = it.next();
-            if (column.isEnabled()) {
+            if (column.isEnabled() && (column.getRuleClass() == null || componentProvider.newInstance(column.getRuleClass(), column).isAvailable())) {
                 availableColumns.add(column);
             }
         }

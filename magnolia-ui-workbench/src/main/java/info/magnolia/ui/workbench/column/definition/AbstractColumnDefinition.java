@@ -62,6 +62,8 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
 
     private boolean enabled = true;
 
+    private Class<? extends ColumnAvailabilityRule> ruleClass;
+
     @Override
     public String getPropertyName() {
         return propertyName;
@@ -188,4 +190,14 @@ public abstract class AbstractColumnDefinition implements ColumnDefinition {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+
+    @Override
+    public Class<? extends ColumnAvailabilityRule> getRuleClass() {
+        return this.ruleClass;
+    }
+
+    public void setRuleClass(Class<? extends ColumnAvailabilityRule> ruleClass) {
+        this.ruleClass = ruleClass;
+    }
+
 }
