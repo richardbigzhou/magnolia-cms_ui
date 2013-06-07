@@ -112,7 +112,7 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
             @Override
             public void buttonClick(ClickEvent event) {
 
-                appController.openChooseDialog(appName, "/", subAppContext, new ItemChosenListener() {
+                appController.openChooseDialog(appName, "/", subAppContext, linkField.getValue(), new ItemChosenListener() {
                     @Override
                     public void onItemChosen(final Item chosenValue) {
                         String propertyName = definition.getTargetPropertyToPopulate();
