@@ -48,7 +48,6 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,12 +76,8 @@ public class TemplateSelectorField extends SelectFieldBuilder<TemplateSelectorDe
 
         if (item instanceof JcrNodeAdapter) {
             TemplateDefinitionAssignment templateAssignment = Components.getComponent(TemplateDefinitionAssignment.class);
-            Node associatedNode = null;
-            try {
-                associatedNode = ((JcrNodeAdapter) item).applyChanges();
-            } catch (RepositoryException e) {
-                log.error("Could not apply changes to JcrNodeAdapter", e);
-            }
+            Node associatedNode = ((JcrNodeAdapter) item).getJcrItem();
+
             Collection<TemplateDefinition> templates = templateAssignment.getAvailableTemplates(associatedNode);
 
             for (TemplateDefinition templateDefinition : templates) {

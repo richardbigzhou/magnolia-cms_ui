@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,55 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app;
+package info.magnolia.ui.api.availability.menu;
 
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.api.overlay.OverlayLayer;
+import info.magnolia.ui.api.action.ActionDefinition;
 
-import javax.inject.Inject;
+import java.util.List;
 
 /**
- * Basic app implementation with default behavior suitable for most apps.
- *
- * @see App
+ * Common interface for updating available sections and actions in UI components.
+ * Implemented by actionbar and action popup.
  */
-public class BaseApp implements App {
+public interface ActionMenu {
 
-    protected AppContext appContext;
-    private AppView view;
+    void hideAllSections();
 
-    @Inject
-    protected BaseApp(AppContext appContext, AppView view) {
-        this.appContext = appContext;
-        this.view = view;
-        view.setListener(appContext);
-    }
-
-    @Override
-    public void locationChanged(Location location) {
-        appContext.openSubApp(location);
-    }
-
-    @Override
-    public void start(Location location) {
-        appContext.openSubApp(location);
-    }
-
-    @Override
-    public AppContext getAppContext() {
-        return appContext;
-    }
-
-    @Override
-    public void stop() {
-    }
-
-    @Override
-    public AppView getView() {
-        return view;
-    }
-
-    @Override
-    public void openChooseDialog(String path, OverlayLayer overlayLayer, String selectedId, ItemChosenListener listener) {
-    }
+    void showSectionActions(String name, List<ActionDefinition> allActions, List<ActionDefinition> enabledActions);
 }

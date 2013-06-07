@@ -39,14 +39,25 @@ import info.magnolia.ui.framework.event.ChooseDialogEventBus;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.event.SearchEvent;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 
@@ -55,7 +66,11 @@ import com.vaadin.data.Item;
  */
 public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implements ChooseDialogPresenter {
 
+    private static final Logger log = LoggerFactory.getLogger(WorkbenchChooseDialogPresenter.class);
+
     private Item currentValue = null;
+
+    private String selectedItemId;
 
     private Listener listener;
 
@@ -69,6 +84,8 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
 
     private ImageProviderDefinition imageProviderDefinition;
 
+    private WorkbenchView workbenchView;
+
     @Inject
     public WorkbenchChooseDialogPresenter(ChooseDialogView view, WorkbenchPresenter workbenchPresenter, final @Named(ChooseDialogEventBus.NAME) EventBus eventBus) {
         super(view);
@@ -80,12 +97,59 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
         bindHandlers();
     }
 
+    /**
+     * Set the selected itemId. <br>
+     * If selectedItemId is a path, get the id for the path.
+     */
+    public void setSelectedItemId(String selectedItemId) {
+        try {
+            if (StringUtils.isBlank(selectedItemId)) {
+                return;
+            }
+            this.selectedItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), selectedItemId);
+            if (StringUtils.isBlank(this.selectedItemId) && JcrItemUtil.itemExists(workbenchDefinition.getWorkspace(), selectedItemId)) {
+                this.selectedItemId = selectedItemId;
+            }
+
+        } catch (RepositoryException e) {
+            log.warn("Unable to set the selected item", selectedItemId, e);
+        }
+    }
+
+    /**
+     * Set in the View the already selected itemId.
+     */
+    private void select(String itemId) {
+        try {
+            // restore selection
+            if (JcrItemUtil.itemExists(workbenchDefinition.getWorkspace(), itemId)) {
+                workbenchView.getSelectedView().select(itemId);
+                javax.jcr.Item jcrItem = JcrItemUtil.getJcrItem(workbenchDefinition.getWorkspace(), itemId);
+
+                if (jcrItem.isNode()) {
+                    currentValue = new JcrNodeAdapter((Node) jcrItem);
+                } else {
+                    currentValue = new JcrPropertyAdapter((Property) jcrItem);
+                }
+            }
+        } catch (RepositoryException e) {
+            log.warn("Unable to get node or property [{}] for selection", itemId, e);
+        }
+    }
+
     private void bindHandlers() {
 
         eventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
             @Override
             public void onItemSelected(ItemSelectedEvent event) {
                 currentValue = event.getItem();
+            }
+        });
+
+        eventBus.addHandler(SearchEvent.class, new SearchEvent.Handler() {
+            @Override
+            public void onSearch(SearchEvent event) {
+                workbenchPresenter.doSearch(event.getSearchExpression());
             }
         });
 
@@ -127,10 +191,12 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
 
     @Override
     public ChooseDialogView start() {
-        WorkbenchView view = workbenchPresenter.start(workbenchDefinition, imageProviderDefinition, eventBus);
-        view.setViewType(ViewType.TREE);
-
-        chooseDialogView.setContent(view);
+        workbenchView = workbenchPresenter.start(workbenchDefinition, imageProviderDefinition, eventBus);
+        workbenchView.setViewType(ViewType.TREE);
+        chooseDialogView.setContent(workbenchView);
+        if (StringUtils.isNotBlank(selectedItemId)) {
+            select(selectedItemId);
+        }
         return chooseDialogView;
     }
 

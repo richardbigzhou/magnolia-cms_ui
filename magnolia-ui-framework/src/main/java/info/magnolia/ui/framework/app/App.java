@@ -58,5 +58,5 @@ public interface App {
      * @param overlayLayer The layer over which the opened dialog should be presented and be modal. See Shell, {@link SubAppContext}, {@link AppContext}.
      * @param listener A listener to handle when user clicks one of the dialog buttons.
      */
-    void openChooseDialog(String path, OverlayLayer overlayLayer, ItemChosenListener listener);
+    void openChooseDialog(String path, OverlayLayer overlayLayer, String selectedId, ItemChosenListener listener);
 }

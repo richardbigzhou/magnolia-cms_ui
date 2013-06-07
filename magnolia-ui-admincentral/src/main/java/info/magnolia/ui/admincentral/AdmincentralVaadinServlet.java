@@ -61,6 +61,10 @@ import com.vaadin.shared.ApplicationConstants;
 public class AdmincentralVaadinServlet extends VaadinServlet {
 
     private static final Logger log = LoggerFactory.getLogger(AdmincentralVaadinServlet.class);
+    /**
+     * URL param forcing restart of vaadin application.
+     */
+    public static final String RESTART_APPLICATION_PARAM = "?restartApplication";
 
     @Override
     protected void servletInitialized() throws ServletException {
@@ -103,11 +107,10 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
 
     private void writeServerErrorPage(HttpServletRequest request, HttpServletResponse response, Exception e) throws IOException {
         if (!isUidlRequest(request)) {
-            // Create an HTML reponse with the error
+            // Create an HTML response with the error
 
             // compute restart application URL at previous location
-            String url = request.getRequestURL().toString();
-            url += "?restartApplication";
+            String url = request.getRequestURL().toString() + RESTART_APPLICATION_PARAM;
             String fragment = request.getParameter("v-loc");
             if (fragment != null && fragment.indexOf("#") != -1) {
                 url += fragment.substring(fragment.indexOf("#"));

@@ -59,9 +59,9 @@ public class ContentApp extends BaseApp {
     }
 
     @Override
-    public void openChooseDialog(String path, OverlayLayer overlayLayer, final ItemChosenListener listener) {
+    public void openChooseDialog(String path, OverlayLayer overlayLayer, String selectedId, final ItemChosenListener listener) {
 
-        final ChooseDialogPresenter chooseDialogPresenter = chooseDialogPresenterFactory.createChooseDialogPresenter(path, listener);
+        final ChooseDialogPresenter chooseDialogPresenter = chooseDialogPresenterFactory.createChooseDialogPresenter(path, listener, selectedId);
 
         final OverlayCloser overlayCloser = overlayLayer.openOverlay(chooseDialogPresenter.start());
 
