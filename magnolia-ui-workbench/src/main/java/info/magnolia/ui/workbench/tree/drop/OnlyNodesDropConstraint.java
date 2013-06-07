@@ -31,21 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.config.browser.tree;
+package info.magnolia.ui.workbench.tree.drop;
 
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 import com.vaadin.data.Item;
 
 /**
- * Jcr configuration implementation of {@link DropConstraint} used by the
- * Config-App in order to handle the Drag & Drop events. <br>
- * <b>Constraints</b><br>
- * Properties are not allowed to Move (allowedToMove). A Node can not be set as
- * child as a Property (allowedAsChild).
+ * Allows only nodes to be moved and prevents nodes from becoming children of properties.
  */
-public class NodeTypeDropConstraint implements DropConstraint {
+public class OnlyNodesDropConstraint implements DropConstraint {
 
     @Override
     public boolean allowedAsChild(Item sourceItem, Item targetItem) {

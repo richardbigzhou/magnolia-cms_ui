@@ -94,7 +94,7 @@ public class JcrBrowserContentAppTask extends AbstractTask {
 
         try {
             final Session session = ctx.getConfigJCRSession();
-            final Node appsNode = session.getNode("/modules/ui-admincentral/apps");
+            final Node appsNode = NodeUtil.createPath(session.getRootNode(), "modules/ui-admincentral/apps", NodeTypes.Content.NAME);
 
             if (session.itemExists(appsNode.getPath() + appName)) {
                 throw new TaskExecutionException(String.format("An app named [%s] already exists at [%s], please choose a unique name for your app.", appName, appsNode.getPath()));
