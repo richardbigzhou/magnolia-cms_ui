@@ -37,6 +37,12 @@ import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefini
 
 /**
  * A definition for the UniqueUserIdValidator.
+ *
+ * @see UniqueUserIdValidatorBuilder
  */
 public class UniqueUserIdValidatorDefinition extends ConfiguredFieldValidatorDefinition {
+
+    public UniqueUserIdValidatorDefinition() {
+        setBuilder(UniqueUserIdValidatorBuilder.class);
+    }
 }

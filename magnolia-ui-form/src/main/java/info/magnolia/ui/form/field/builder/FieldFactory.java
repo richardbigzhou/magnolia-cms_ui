@@ -39,14 +39,13 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
 import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
 import info.magnolia.ui.form.validator.registry.FieldValidatorFactory;
-import info.magnolia.ui.api.builder.FactoryBase;
-
 
 import java.io.Serializable;
 
 import javax.inject.Inject;
 
-import com.vaadin.data.Item;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Factory for creating DialogField instances using an internal set of mappings connecting a {@link info.magnolia.ui.form.field.definition.FieldDefinition} class with a {@link FieldBuilder} class.
@@ -54,32 +53,43 @@ import com.vaadin.data.Item;
  * @see FieldDefinition
  * @see FieldBuilder
  */
-public class FieldFactory extends FactoryBase<FieldDefinition, FieldBuilder> implements Serializable {
+public class FieldFactory implements Serializable {
 
+    private static final Logger log = LoggerFactory.getLogger(FieldFactory.class);
+
+    private ComponentProvider componentProvider;
     private FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry;
     private FieldValidatorFactory fieldValidatorFactory;
 
     @Inject
     public FieldFactory(ComponentProvider componentProvider, FieldTypeDefinitionRegistry fieldTypeDefinitionRegistry, FieldValidatorFactory fieldValidatorFactory) {
-        super(componentProvider);
+        this.componentProvider = componentProvider;
         this.fieldTypeDefinitionRegistry = fieldTypeDefinitionRegistry;
         this.fieldValidatorFactory = fieldValidatorFactory;
     }
 
-    public FieldBuilder create(FieldDefinition definition, Item item, Object... parameters) {
-        FieldBuilder fieldBuilder = super.create(definition, item, parameters);
-        fieldBuilder.setFieldValidatorFactory(fieldValidatorFactory);
-        return fieldBuilder;
-    }
+    public FieldBuilder createFieldBuilder(FieldDefinition definition, Object... parameters) {
 
-    @Override
-    protected Class<? extends FieldBuilder> resolveImplementationClass(FieldDefinition definition) {
         FieldTypeDefinition fieldTypeDefinition;
         try {
             fieldTypeDefinition = fieldTypeDefinitionRegistry.getByDefinition(definition.getClass());
         } catch (RegistrationException e) {
             throw new RuntimeException("No FieldBuilder found for " + definition.getName(), e);
         }
-        return fieldTypeDefinition.getBuilder();
+
+        Class<? extends FieldBuilder> implementationClass = fieldTypeDefinition.getBuilder();
+        if (implementationClass == null) {
+            log.warn("No matching implementation class was found for definition class [{}]. Please check your configuration.", definition.getClass().getName());
+            return null;
+        }
+
+        Object[] combinedParameters = new Object[parameters.length + 1];
+        combinedParameters[0] = definition;
+        System.arraycopy(parameters, 0, combinedParameters, 1, parameters.length);
+
+        FieldBuilder fieldBuilder = componentProvider.newInstance(implementationClass, combinedParameters);
+        fieldBuilder.setFieldValidatorFactory(fieldValidatorFactory);
+
+        return fieldBuilder;
     }
 }

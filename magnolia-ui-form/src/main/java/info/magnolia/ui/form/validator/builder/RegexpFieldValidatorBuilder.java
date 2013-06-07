@@ -40,6 +40,8 @@ import com.vaadin.data.validator.RegexpValidator;
 
 /**
  * Build a {@link RegexpValidator}.
+ *
+ * @see RegexpValidatorDefinition
  */
 public class RegexpFieldValidatorBuilder extends AbstractFieldValidatorBuilder<RegexpValidatorDefinition> {
 

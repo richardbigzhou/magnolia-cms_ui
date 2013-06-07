@@ -39,6 +39,8 @@ import com.vaadin.data.Validator;
 
 /**
  * Builder for the UniqueRoleIdValidator.
+ *
+ * @see UniqueRoleIdValidatorDefinition
  */
 public class UniqueRoleIdValidatorBuilder extends AbstractFieldValidatorBuilder<UniqueRoleIdValidatorDefinition> {
 

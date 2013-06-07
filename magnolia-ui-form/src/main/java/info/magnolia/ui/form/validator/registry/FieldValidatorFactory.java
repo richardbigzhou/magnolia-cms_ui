@@ -34,33 +34,47 @@
 package info.magnolia.ui.form.validator.registry;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.builder.DefinitionToImplementationMapping;
-import info.magnolia.ui.api.builder.MappingFactoryBase;
+import info.magnolia.objectfactory.MgnlInstantiationException;
 import info.magnolia.ui.form.validator.builder.FieldValidatorBuilder;
 import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
 
 import java.io.Serializable;
 
-import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Factory for creating validator instances using an internal set of mappings connecting a {@link info.magnolia.ui.form.validator.definition.FieldValidatorDefinition} class with a {@link info.magnolia.ui.form.validator.builder.FieldValidatorBuilder} class.
  *
  * @see info.magnolia.ui.form.validator.definition.FieldValidatorDefinition
  */
-public class FieldValidatorFactory extends MappingFactoryBase<FieldValidatorDefinition, FieldValidatorBuilder> implements Serializable {
+public class FieldValidatorFactory implements Serializable {
 
-    @Inject
-    public FieldValidatorFactory(ComponentProvider componentProvider, FieldValidatorRegistry validatorFieldRegistery) {
-        super(componentProvider);
+    private static final Logger log = LoggerFactory.getLogger(FieldValidatorFactory.class);
 
-        for (DefinitionToImplementationMapping<FieldValidatorDefinition, FieldValidatorBuilder> definitionToImplementationMapping : validatorFieldRegistery.getDefinitionToImplementationMappings()) {
-            addMapping(definitionToImplementationMapping.getDefinition(), definitionToImplementationMapping.getImplementation());
-        }
+    protected ComponentProvider componentProvider;
+
+    public FieldValidatorFactory(ComponentProvider componentProvider) {
+        this.componentProvider = componentProvider;
     }
 
-    @Override
-    public FieldValidatorBuilder create(FieldValidatorDefinition definition, Object... parameters) {
-        return super.create(definition, parameters);
+    public FieldValidatorBuilder createFieldValidatorBuilder(FieldValidatorDefinition definition, Object... args) {
+
+        Class<? extends FieldValidatorBuilder> implementationClass = definition.getBuilder();
+        if (implementationClass == null) {
+            log.error("No implementation class set for validator: " + definition.getClass().getName());
+            return null;
+        }
+
+        Object[] combinedParameters = new Object[args.length + 1];
+        combinedParameters[0] = definition;
+        System.arraycopy(args, 0, combinedParameters, 1, args.length);
+
+        try {
+            return componentProvider.newInstance(implementationClass, combinedParameters);
+        } catch (MgnlInstantiationException e) {
+            log.error("Could not instantiate validator builder class for validator: " + definition.getClass().getName(), e);
+            return null;
+        }
     }
 }

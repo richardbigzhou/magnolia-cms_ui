@@ -33,8 +33,12 @@
  */
 package info.magnolia.ui.form.validator.definition;
 
+import info.magnolia.ui.form.validator.builder.FieldValidatorBuilder;
+
 /**
  * Defines a validator.
+ *
+ * @see FieldValidatorBuilder
  */
 public interface FieldValidatorDefinition {
 
@@ -47,4 +51,6 @@ public interface FieldValidatorDefinition {
      * Message bundle for localized field labels.
      */
     String getI18nBasename();
+
+    Class<? extends FieldValidatorBuilder> getBuilder();
 }
