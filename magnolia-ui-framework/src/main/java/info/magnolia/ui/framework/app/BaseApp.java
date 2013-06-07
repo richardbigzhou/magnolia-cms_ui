@@ -80,6 +80,6 @@ public class BaseApp implements App {
     }
 
     @Override
-    public void openChooseDialog(String path, OverlayLayer overlayLayer, ItemChosenListener listener) {
+    public void openChooseDialog(String path, OverlayLayer overlayLayer, String selectedId, ItemChosenListener listener) {
     }
 }

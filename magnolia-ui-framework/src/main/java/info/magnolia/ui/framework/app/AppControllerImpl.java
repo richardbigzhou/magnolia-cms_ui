@@ -383,10 +383,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     @Override
-    public void openChooseDialog(String appName, String path, OverlayLayer overlayLayer, ItemChosenListener listener) {
+    public void openChooseDialog(String appName, String path, OverlayLayer overlayLayer, String selectedId, ItemChosenListener listener) {
         App targetApp = getAppWithoutStarting(appName);
         if (targetApp != null) {
-            targetApp.openChooseDialog(path, overlayLayer, listener);
+            targetApp.openChooseDialog(path, overlayLayer, selectedId, listener);
         }
     }
 
