@@ -72,5 +72,5 @@ public interface AppController {
 
     void setViewport(Viewport viewport);
 
-    void openChooseDialog(String appName, String path, OverlayLayer overlayLayer, ItemChosenListener listener);
+    void openChooseDialog(String appName, String path, OverlayLayer overlayLayer, String selectedId, ItemChosenListener listener);
 }
