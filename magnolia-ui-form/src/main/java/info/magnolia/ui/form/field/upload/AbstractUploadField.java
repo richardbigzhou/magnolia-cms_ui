@@ -155,6 +155,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
         } else {
             buildCompletedLayout();
         }
+        markAsDirty();
     }
 
     /**
@@ -378,7 +379,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
         displayUploadFinisheddNote(event.getFilename());
         this.fileWrapper.populateFromReceiver(receiver);
         buildCompletedLayout();
-        fireValueChange(true);
+        fireValueChange(false);
     }
 
     @Override
@@ -415,5 +416,4 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
     public void setMaxUploadSize(long maxUploadSize) {
         this.maxUploadSize = maxUploadSize;
     }
-
 }
