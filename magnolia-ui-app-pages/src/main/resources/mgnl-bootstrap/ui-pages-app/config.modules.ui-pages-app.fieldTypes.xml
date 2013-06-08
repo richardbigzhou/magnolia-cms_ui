@@ -35,7 +35,7 @@
       <sv:value>33f95825-dc96-4b9a-977a-1b6d1f3b06ec</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.app.pages.field.TemplateSelectorField</sv:value>
+      <sv:value>info.magnolia.ui.app.pages.field.TemplateSelectorFieldBuilder</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.app.pages.field.TemplateSelectorDefinition</sv:value>
@@ -70,7 +70,7 @@
       <sv:value>c34ffc2f-7a4b-42e6-93d2-25fb18ff19c7</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.app.pages.field.ComponentSelectorField</sv:value>
+      <sv:value>info.magnolia.ui.app.pages.field.ComponentSelectorFieldBuilder</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.app.pages.field.ComponentSelectorDefinition</sv:value>

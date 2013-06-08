@@ -33,153 +33,133 @@
  */
 package info.magnolia.ui.app.security.dialog.field;
 
-import info.magnolia.ui.form.config.GenericValidatorBuilder;
-import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
-import info.magnolia.ui.form.config.OptionBuilder;
-import info.magnolia.ui.form.config.TwinColSelectFieldBuilder;
+import info.magnolia.cms.util.QueryUtil;
+import info.magnolia.jcr.iterator.FilteringPropertyIterator;
+import info.magnolia.jcr.predicate.JCRMgnlPropertyHidingPredicate;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.form.field.builder.TwinColSelectFieldBuilder;
+import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.TwinColSelect;
 
 /**
- * Config-by-code builder for the Role Management field.
+ * GUI builder for the Role Management field.
  */
-public class RoleManagementFieldBuilder extends TwinColSelectFieldBuilder {
+public class RoleManagementFieldBuilder extends TwinColSelectFieldBuilder<RoleManagementFieldDefinition> {
 
-    private final RoleManagementFieldDefinition definition = new RoleManagementFieldDefinition();
+    /**
+     * Internal bean to represent basic role data.
+     */
+    private static class Role {
+        public String name;
+        public String uuid;
 
-    public RoleManagementFieldBuilder(String name) {
-        super(name);
-        this.definition.setName(name);
+        public Role(String name, String uuid) {
+            this.name = name;
+            this.uuid = uuid;
+        }
+    }
+
+    private static final Logger log = LoggerFactory.getLogger(RoleManagementFieldBuilder.class);
+
+    public RoleManagementFieldBuilder(RoleManagementFieldDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
+        definition.setOptions(getSelectFieldOptionDefinition());
     }
 
     @Override
-    public RoleManagementFieldDefinition getDefinition() {
-        return this.definition;
-    }
-
-    // Overrides for methods in parent class changing return type to allow method chaining
-
-    @Override
-    public RoleManagementFieldBuilder leftColumnCaption(String caption) {
-        return (RoleManagementFieldBuilder) super.leftColumnCaption(caption);
+    protected AbstractSelect buildField() {
+        super.buildField();
+        select.setMultiSelect(true);
+        select.setNullSelectionAllowed(true);
+        return select;
     }
 
     @Override
-    public RoleManagementFieldBuilder rightColumnCaption(String caption) {
-        return (RoleManagementFieldBuilder) super.rightColumnCaption(caption);
+    protected AbstractSelect createSelectionField() {
+        return new TwinColSelect();
+    }
+
+    /**
+     * Returns the available roles with those already assigned marked selected, according to the current node.
+     */
+    @Override
+    public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
+        List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
+        List<Role> allRoles = getAllRoles(); // name,uuid
+        Set<String> assignedRoles = getAssignedRoles();
+        for (Role role : allRoles) {
+            SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
+            option.setValue(role.uuid);
+            option.setLabel(role.name);
+            if (assignedRoles.contains(role.uuid)) {
+                option.setSelected(true);
+            }
+            options.add(option);
+        }
+        return options;
+    }
+
+    private List<Role> getAllRoles() {
+        List<Role> roles = new ArrayList<Role>();
+        try {
+            NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_ROLES, "SELECT * FROM [" + NodeTypes.Role.NAME + "] ORDER BY name()");
+            while (ni.hasNext()) {
+                Node n = ni.nextNode();
+                String name = n.getName();
+                String uuid = n.getIdentifier();
+                roles.add(new Role(name, uuid));
+            }
+        } catch (RepositoryException e) {
+            log.error("Cannot read roles from the [" + RepositoryConstants.USER_ROLES + "] workspace.", e);
+        }
+        return roles;
+    }
+
+    private Set<String> getAssignedRoles() {
+        Set<String> roles = new HashSet<String>();
+        try {
+            Node mainNode = getRelatedNode(item);
+            if (mainNode.hasNode("roles")) {
+                Node rolesNode = mainNode.getNode("roles");
+                if (rolesNode == null) {
+                    // shouldn't happen, just in case
+                    return roles;
+                }
+                for (PropertyIterator iter = new FilteringPropertyIterator(rolesNode.getProperties(), new JCRMgnlPropertyHidingPredicate());  iter.hasNext();) {
+                    Property p = iter.nextProperty();
+                    roles.add(p.getString());
+                }
+            }
+        } catch (RepositoryException re) {
+            log.error("Cannot read assigned roles.", re);
+        }
+        return roles;
     }
 
     @Override
-    public RoleManagementFieldBuilder multiselect() {
-        return (RoleManagementFieldBuilder) super.multiselect(true);
+    public com.vaadin.data.Property<Set> getOrCreateProperty() {
+        DefaultProperty<Set> prop = new DefaultProperty<Set>(Set.class, getAssignedRoles());
+        item.addItemProperty("roles", prop);
+        return prop;
     }
 
-    @Override
-    public RoleManagementFieldBuilder multiselect(boolean multiselect) {
-        return (RoleManagementFieldBuilder) super.multiselect(multiselect);
-    }
-
-    @Override
-    public RoleManagementFieldBuilder options(OptionBuilder... builders) {
-        return (RoleManagementFieldBuilder) super.options(builders);
-    }
-
-    @Override
-    public RoleManagementFieldBuilder path(String path) {
-        return (RoleManagementFieldBuilder) super.path(path);
-    }
-
-    @Override
-    public RoleManagementFieldBuilder repository(String repository) {
-        return (RoleManagementFieldBuilder) super.repository(repository);
-    }
-
-    @Override
-    public RoleManagementFieldBuilder valueNodeData(String valueNodeData) {
-        return (RoleManagementFieldBuilder) super.valueNodeData(valueNodeData);
-    }
-
-    @Override
-    public RoleManagementFieldBuilder labelNodeData(String labelNodeData) {
-        return (RoleManagementFieldBuilder) super.labelNodeData(labelNodeData);
-    }
-
-    @Override
-    public RoleManagementFieldBuilder filteringMode(int filteringMode) {
-        return (RoleManagementFieldBuilder) super.filteringMode(filteringMode);
-    }
-
-    @Override
-    public RoleManagementFieldBuilder styleName(String styleName) {
-        return (RoleManagementFieldBuilder) super.styleName(styleName);
-    }
-
-    @Override
-    public RoleManagementFieldBuilder i18n(boolean i18n) {
-        return (RoleManagementFieldBuilder) super.i18n(i18n);
-    }
-
-    @Override
-    public RoleManagementFieldBuilder i18n() {
-        return (RoleManagementFieldBuilder) super.i18n();
-    }
-
-    @Override
-    public RoleManagementFieldBuilder requiredErrorMessage(String requiredErrorMessage) {
-        return (RoleManagementFieldBuilder) super.requiredErrorMessage(requiredErrorMessage);
-    }
-
-    @Override
-    public RoleManagementFieldBuilder readOnly(boolean readOnly) {
-        return (RoleManagementFieldBuilder) super.readOnly(readOnly);
-    }
-
-    @Override
-    public RoleManagementFieldBuilder readOnly() {
-        return (RoleManagementFieldBuilder) super.readOnly();
-    }
-
-    @Override
-    public RoleManagementFieldBuilder label(String label) {
-        return (RoleManagementFieldBuilder) super.label(label);
-    }
-
-    @Override
-    public RoleManagementFieldBuilder i18nBasename(String i18nBasename) {
-        return (RoleManagementFieldBuilder) super.i18nBasename(i18nBasename);
-    }
-
-    @Override
-    public RoleManagementFieldBuilder description(String description) {
-        return (RoleManagementFieldBuilder) super.description(description);
-    }
-
-    @Override
-    public RoleManagementFieldBuilder type(String type) {
-        return (RoleManagementFieldBuilder) super.type(type);
-    }
-
-    @Override
-    public RoleManagementFieldBuilder required(boolean required) {
-        return (RoleManagementFieldBuilder) super.required(required);
-    }
-
-    @Override
-    public RoleManagementFieldBuilder required() {
-        return (RoleManagementFieldBuilder) super.required();
-    }
-
-    @Override
-    public RoleManagementFieldBuilder defaultValue(String defaultValue) {
-        return (RoleManagementFieldBuilder) super.defaultValue(defaultValue);
-    }
-
-    @Override
-    public RoleManagementFieldBuilder validator(ConfiguredFieldValidatorDefinition validatorDefinition) {
-        return (RoleManagementFieldBuilder) super.validator(validatorDefinition);
-    }
-
-    @Override
-    public RoleManagementFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
-        getDefinition().addValidator(validatorBuilder.exec());
-        return this;
-    }
 }

@@ -45,17 +45,15 @@ import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.app.pages.field.TemplateSelectorField;
+import info.magnolia.ui.app.pages.field.TemplateSelectorFieldBuilder;
 import info.magnolia.ui.dialog.FormDialogPresenter;
-import info.magnolia.ui.dialog.config.DialogBuilder;
+import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.form.config.FieldsConfig;
-import info.magnolia.ui.form.config.FormBuilder;
-import info.magnolia.ui.form.config.FormConfig;
-import info.magnolia.ui.form.config.OptionBuilder;
-import info.magnolia.ui.form.config.SelectFieldBuilder;
-import info.magnolia.ui.form.config.TabBuilder;
+import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
+import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
+import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
 import info.magnolia.ui.framework.event.ContentChangedEvent;
@@ -171,48 +169,48 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
      */
     private DialogDefinition buildNewComponentDialog(String availableComponents) {
 
-        FormConfig formConfig = new FormConfig();
-        FieldsConfig fieldsConfig = new FieldsConfig();
+        ConfiguredFormDefinition form = new ConfiguredFormDefinition();
+        form.setDescription("Select the Component to add to the page.");
 
-        DialogBuilder dialogBuilder = new DialogBuilder("newComponent");
+        ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
+        tab.setName("Components");
+        tab.setLabel("Components");
 
-        CallbackDialogActionDefinition callbackAction = new CallbackDialogActionDefinition();
-        callbackAction.setName("commit");
-        callbackAction.setLabel("choose");
-
-        dialogBuilder.addAction(callbackAction);
-
-        CancelDialogActionDefinition cancelAction = new CancelDialogActionDefinition();
-        cancelAction.setName("cancel");
-        cancelAction.setLabel("cancel");
-        dialogBuilder.addAction(cancelAction);
-
-        FormBuilder formBuilder = formConfig.form().description("Select the Component to add to the page.");
-        TabBuilder tabBuilder = formConfig.tab("Components").label("Components");
-        SelectFieldBuilder fieldBuilder = fieldsConfig.select("mgnl:template").label("Component");
+        SelectFieldDefinition select = new SelectFieldDefinition();
+        select.setName("mgnl:template");
+        select.setLabel("Component");
+        tab.addField(select);
 
         String[] tokens = availableComponents.split(",");
 
-        for (int i = 0; i < tokens.length; i++) {
+        for (String token : tokens) {
             try {
-                TemplateDefinition paragraphInfo = templateDefinitionRegistry.getTemplateDefinition(tokens[i]);
+                TemplateDefinition templateDefinition = templateDefinitionRegistry.getTemplateDefinition(token);
 
-                fieldBuilder.options(
-                        (new OptionBuilder()).value(paragraphInfo.getId()).label(TemplateSelectorField.getI18nTitle(paragraphInfo))
-                );
+                SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
+                option.setValue(templateDefinition.getId());
+                option.setLabel(TemplateSelectorFieldBuilder.getI18nTitle(templateDefinition));
+                select.addOption(option);
 
             } catch (RegistrationException e) {
                 log.error("Exception caught: {}", e.getMessage(), e);
             }
-
         }
 
-        tabBuilder.fields(fieldBuilder);
-        formBuilder.tabs(tabBuilder);
-        dialogBuilder.form(formBuilder);
-        return dialogBuilder.exec();
+        ConfiguredDialogDefinition dialog = new ConfiguredDialogDefinition();
+        dialog.setId("newComponent");
+        dialog.setForm(form);
 
+        CallbackDialogActionDefinition callbackAction = new CallbackDialogActionDefinition();
+        callbackAction.setName("commit");
+        callbackAction.setLabel("choose");
+        dialog.getActions().put(callbackAction.getName(), callbackAction);
+
+        CancelDialogActionDefinition cancelAction = new CancelDialogActionDefinition();
+        cancelAction.setName("cancel");
+        cancelAction.setLabel("cancel");
+        dialog.getActions().put(cancelAction.getName(), cancelAction);
+
+        return dialog;
     }
-
-
 }

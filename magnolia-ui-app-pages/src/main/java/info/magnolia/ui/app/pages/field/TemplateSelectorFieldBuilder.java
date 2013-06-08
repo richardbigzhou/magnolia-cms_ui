@@ -49,9 +49,6 @@ import java.util.List;
 
 import javax.jcr.Node;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.vaadin.data.Item;
 
 /**
@@ -59,11 +56,9 @@ import com.vaadin.data.Item;
  * The values displayed in the field are initialized based on the
  * related Item (Image of a JCR node) and {@link TemplateDefinitionAssignment}.
  */
-public class TemplateSelectorField extends SelectFieldBuilder<TemplateSelectorDefinition> {
+public class TemplateSelectorFieldBuilder extends SelectFieldBuilder<TemplateSelectorDefinition> {
 
-    private static final Logger log = LoggerFactory.getLogger(TemplateSelectorField.class);
-
-    public TemplateSelectorField(TemplateSelectorDefinition definition, Item relatedFieldItem) {
+    public TemplateSelectorFieldBuilder(TemplateSelectorDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 

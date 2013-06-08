@@ -31,24 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.config;
+package info.magnolia.ui.app.pages.field;
 
-import info.magnolia.ui.workbench.column.definition.AbstractColumnDefinition;
-import info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition;
+import info.magnolia.ui.form.field.builder.SelectFieldBuilder;
+import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
+
+import java.util.List;
+
+import com.vaadin.data.Item;
 
 /**
- * Configuration object for creating builders for column definitions.
- *
- * @see info.magnolia.ui.workbench.column.definition.ColumnDefinition
+ * Define a Component selector field.
+ * The values displayed in the field are initialized based on the
+ * related Item (Image of a JCR node) and {@link info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment}.
  */
-public class ColumnConfig {
+public class ComponentSelectorFieldBuilder extends SelectFieldBuilder<ComponentSelectorDefinition> {
 
-    public <T extends AbstractColumnDefinition> ColumnBuilder<T> column(T definition) {
-        return new ColumnBuilder<T>(definition);
+    public ComponentSelectorFieldBuilder(ComponentSelectorDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
+        definition.setFilteringMode(2);
     }
 
-    public ColumnBuilder property(String propertyName, String label) {
-        ColumnBuilder<PropertyColumnDefinition> columnBuilder = new ColumnBuilder<PropertyColumnDefinition>(new PropertyColumnDefinition());
-        return columnBuilder.name(propertyName).label(label).propertyName(propertyName);
+    /**
+     * Get the available templates based on the current Node.
+     */
+    @Override
+    public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
+        return definition.getOptions();
     }
+
+    @Override
+    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+        return String.class;
+    }
+
 }

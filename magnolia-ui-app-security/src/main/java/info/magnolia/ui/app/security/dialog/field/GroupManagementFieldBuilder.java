@@ -33,153 +33,159 @@
  */
 package info.magnolia.ui.app.security.dialog.field;
 
-import info.magnolia.ui.form.config.GenericValidatorBuilder;
-import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
-import info.magnolia.ui.form.config.OptionBuilder;
-import info.magnolia.ui.form.config.TwinColSelectFieldBuilder;
+import info.magnolia.cms.util.QueryUtil;
+import info.magnolia.jcr.iterator.FilteringPropertyIterator;
+import info.magnolia.jcr.predicate.JCRMgnlPropertyHidingPredicate;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.form.field.builder.TwinColSelectFieldBuilder;
+import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.TwinColSelect;
 
 /**
- * Config-by-code builder for the Group Management field.
+ * GUI builder for the Group Management field.
  */
-public class GroupManagementFieldBuilder extends TwinColSelectFieldBuilder {
+public class GroupManagementFieldBuilder extends TwinColSelectFieldBuilder<GroupManagementFieldDefinition> {
 
-    private final GroupManagementFieldDefinition definition = new GroupManagementFieldDefinition();
+    /**
+     * Internal bean to represent basic group data.
+     */
+    public static class Group {
+        public String name;
+        public String uuid;
 
-    public GroupManagementFieldBuilder(String name) {
-        super(name);
-        this.definition.setName(name);
+        public Group(String name, String uuid) {
+            this.name = name;
+            this.uuid = uuid;
+        }
+    }
+
+    private static final Logger log = LoggerFactory.getLogger(GroupManagementFieldBuilder.class);
+
+    public GroupManagementFieldBuilder(GroupManagementFieldDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
+        this.definition.setOptions(getSelectFieldOptionDefinition());
     }
 
     @Override
-    public GroupManagementFieldDefinition getDefinition() {
-        return this.definition;
-    }
-
-    // Overrides for methods in parent class changing return type to allow method chaining
-
-    @Override
-    public GroupManagementFieldBuilder leftColumnCaption(String caption) {
-        return (GroupManagementFieldBuilder) super.leftColumnCaption(caption);
+    protected AbstractSelect buildField() {
+        super.buildField();
+        select.setMultiSelect(true);
+        select.setNullSelectionAllowed(true);
+        select.setImmediate(true);
+        return select;
     }
 
     @Override
-    public GroupManagementFieldBuilder rightColumnCaption(String caption) {
-        return (GroupManagementFieldBuilder) super.rightColumnCaption(caption);
+    protected AbstractSelect createSelectionField() {
+        return new TwinColSelect() {
+
+            @Override
+            public String getConnectorId() {
+                return super.getConnectorId();
+            }
+            
+            /* (non-Javadoc)
+             * @see com.vaadin.ui.AbstractComponent#isVisible()
+             */
+            @Override
+            public boolean isVisible() {
+                return super.isVisible();
+            }
+        };
+    }
+
+    /**
+     * Returns the available groups with those already assigned marked selected,
+     * according to the current node.
+     */
+    @Override
+    public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
+        List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
+        List<Group> allGroups = getAllGroups(); // name,uuid
+        Set<String> assignedGroups = getAssignedGroups();
+        String currentUUID = null;
+        try {
+            currentUUID = getRelatedNode(item).getIdentifier();
+        } catch (RepositoryException e) {
+            // nothing to do
+        }
+        for (Group group : allGroups) {
+            SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
+            option.setValue(group.uuid);
+            option.setLabel(group.name);
+            if (assignedGroups.contains(group.uuid)) {
+                option.setSelected(true);
+            }
+            if (!group.uuid.equals(currentUUID)) {
+                // we don't want the group to be assigned to itself, do we?
+                options.add(option);
+            }
+        }
+        return options;
+    }
+
+    private List<Group> getAllGroups() {
+        List<Group> groups = new ArrayList<Group>();
+        try {
+            NodeIterator ni = QueryUtil.search(RepositoryConstants.USER_GROUPS, "SELECT * FROM [" + NodeTypes.Group.NAME + "] ORDER BY name()");
+
+            while (ni.hasNext()) {
+                Node n = ni.nextNode();
+                String name = n.getName();
+                String uuid = n.getIdentifier();
+                groups.add(new Group(name, uuid));
+            }
+        } catch (RepositoryException e) {
+            log.error("Cannot read groups from the [" + RepositoryConstants.USER_GROUPS + "] workspace.", e);
+        }
+        return groups;
+    }
+
+    private Set<String> getAssignedGroups() {
+        Set<String> groups = new HashSet<String>();
+        try {
+            Node mainNode = getRelatedNode(item);
+            if (mainNode.hasNode("groups")) {
+                Node groupsNode = mainNode.getNode("groups");
+                if (groupsNode == null) {
+                    // shouldn't happen, just in case
+                    return groups;
+                }
+                for (PropertyIterator iter = new FilteringPropertyIterator(groupsNode.getProperties(), new JCRMgnlPropertyHidingPredicate());  iter.hasNext();) {
+                    Property p = iter.nextProperty();
+                    groups.add(p.getString());
+
+                }
+            }
+        } catch (RepositoryException re) {
+            log.error("Cannot read assigned groups.", re);
+        }
+        return groups;
     }
 
     @Override
-    public GroupManagementFieldBuilder multiselect() {
-        return (GroupManagementFieldBuilder) super.multiselect(true);
-    }
-
-    @Override
-    public GroupManagementFieldBuilder multiselect(boolean multiselect) {
-        return (GroupManagementFieldBuilder) super.multiselect(multiselect);
-    }
-
-    @Override
-    public GroupManagementFieldBuilder options(OptionBuilder... builders) {
-        return (GroupManagementFieldBuilder) super.options(builders);
-    }
-
-    @Override
-    public GroupManagementFieldBuilder path(String path) {
-        return (GroupManagementFieldBuilder) super.path(path);
-    }
-
-    @Override
-    public GroupManagementFieldBuilder repository(String repository) {
-        return (GroupManagementFieldBuilder) super.repository(repository);
-    }
-
-    @Override
-    public GroupManagementFieldBuilder valueNodeData(String valueNodeData) {
-        return (GroupManagementFieldBuilder) super.valueNodeData(valueNodeData);
-    }
-
-    @Override
-    public GroupManagementFieldBuilder labelNodeData(String labelNodeData) {
-        return (GroupManagementFieldBuilder) super.labelNodeData(labelNodeData);
-    }
-
-    @Override
-    public GroupManagementFieldBuilder filteringMode(int filteringMode) {
-        return (GroupManagementFieldBuilder) super.filteringMode(filteringMode);
-    }
-
-    @Override
-    public GroupManagementFieldBuilder styleName(String styleName) {
-        return (GroupManagementFieldBuilder) super.styleName(styleName);
-    }
-
-    @Override
-    public GroupManagementFieldBuilder i18n(boolean i18n) {
-        return (GroupManagementFieldBuilder) super.i18n(i18n);
-    }
-
-    @Override
-    public GroupManagementFieldBuilder i18n() {
-        return (GroupManagementFieldBuilder) super.i18n();
-    }
-
-    @Override
-    public GroupManagementFieldBuilder requiredErrorMessage(String requiredErrorMessage) {
-        return (GroupManagementFieldBuilder) super.requiredErrorMessage(requiredErrorMessage);
-    }
-
-    @Override
-    public GroupManagementFieldBuilder readOnly(boolean readOnly) {
-        return (GroupManagementFieldBuilder) super.readOnly(readOnly);
-    }
-
-    @Override
-    public GroupManagementFieldBuilder readOnly() {
-        return (GroupManagementFieldBuilder) super.readOnly();
-    }
-
-    @Override
-    public GroupManagementFieldBuilder label(String label) {
-        return (GroupManagementFieldBuilder) super.label(label);
-    }
-
-    @Override
-    public GroupManagementFieldBuilder i18nBasename(String i18nBasename) {
-        return (GroupManagementFieldBuilder) super.i18nBasename(i18nBasename);
-    }
-
-    @Override
-    public GroupManagementFieldBuilder description(String description) {
-        return (GroupManagementFieldBuilder) super.description(description);
-    }
-
-    @Override
-    public GroupManagementFieldBuilder type(String type) {
-        return (GroupManagementFieldBuilder) super.type(type);
-    }
-
-    @Override
-    public GroupManagementFieldBuilder required(boolean required) {
-        return (GroupManagementFieldBuilder) super.required(required);
-    }
-
-    @Override
-    public GroupManagementFieldBuilder required() {
-        return (GroupManagementFieldBuilder) super.required();
-    }
-
-    @Override
-    public GroupManagementFieldBuilder defaultValue(String defaultValue) {
-        return (GroupManagementFieldBuilder) super.defaultValue(defaultValue);
-    }
-
-    @Override
-    public GroupManagementFieldBuilder validator(ConfiguredFieldValidatorDefinition validatorDefinition) {
-        return (GroupManagementFieldBuilder) super.validator(validatorDefinition);
-    }
-
-    @Override
-    public GroupManagementFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
-        getDefinition().addValidator(validatorBuilder.exec());
-        return this;
+    public com.vaadin.data.Property<?> getOrCreateProperty() {
+        DefaultProperty<Set> prop = new DefaultProperty<Set>(Set.class, getAssignedGroups());
+        item.addItemProperty("groups", prop);
+        return prop;
     }
 }
