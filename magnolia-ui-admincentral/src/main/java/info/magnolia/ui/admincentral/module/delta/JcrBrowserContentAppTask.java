@@ -49,8 +49,8 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * A task to create a JCR browser content app. The app configuration will be created under <code>/modules/ui-admincentral/apps</code>. An entry for the app will be also created in the app launcher layout under the specified app group.
- * The app group is assumed to be existing at the time of executing this task. The task relies on the existence of the <code>ui-config-app</code> (part of Magnolia UI project) at its default location under <code>/modules/ui-config-app</code> as it
- * uses Magnolia's extension mechanism in order to inherit most of its configuration. Being the configuration inherited from ui-config-app the tree will be editable and include properties.
+ * The app group is assumed to be existing at the time of executing this task. The task relies on the existence of the <code>ui-admincentral</code> (part of Magnolia UI project) at its default location under <code>/modules/ui-admincentral</code> as it
+ * uses Magnolia's extension mechanism in order to inherit most of its configuration. Being the configuration inherited from ui-admincentral the tree will be editable and include properties.
  */
 public class JcrBrowserContentAppTask extends AbstractTask {
     private final String appName;
@@ -113,7 +113,7 @@ public class JcrBrowserContentAppTask extends AbstractTask {
     protected void createMainSubapp(Node appNode) throws TaskExecutionException {
         try {
             Node subappsNode = NodeUtil.createPath(appNode, "subApps", NodeTypes.ContentNode.NAME);
-            subappsNode.setProperty("extends", "/modules/ui-config-app/apps/configuration/subApps");
+            subappsNode.setProperty("extends", "/modules/ui-admincentral/apps/configuration/subApps");
             Node workbenchNode = NodeUtil.createPath(subappsNode, "browser/workbench", NodeTypes.ContentNode.NAME);
 
             if (StringUtils.isBlank(workspace)) {
