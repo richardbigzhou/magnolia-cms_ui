@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2011-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -37,6 +37,10 @@ package info.magnolia.ui.workbench.column.definition;
  * Defines a column that displays the activation status of an item.
  */
 public class StatusColumnDefinition extends AbstractColumnDefinition {
+
+    public StatusColumnDefinition() {
+        setRuleClass(OnAuthorOrWhenThereIsSubscribersRule.class);
+    }
 
     // Show Activation Status
     private boolean activation = true;

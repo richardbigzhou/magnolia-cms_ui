@@ -31,42 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.search;
-
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.list.ListPresenter;
-
-import javax.inject.Inject;
+package info.magnolia.ui.workbench.column.definition;
 
 /**
- * The SearchPresenter is responsible for handling a list of search results according to the workbench definition.
+ * Decides whether a certain column is available in the current context (author or public instance, user permission, etc.).
  */
-public class SearchPresenter extends ListPresenter implements SearchView.Listener {
+public interface ColumnAvailabilityRule {
 
-    @Inject
-    public SearchPresenter(SearchView view, ComponentProvider componentProvider) {
-        super(view, componentProvider);
-    }
-
-    @Override
-    protected SearchJcrContainer createContainer(WorkbenchDefinition workbench) {
-        return new SearchJcrContainer(workbench);
-    }
-
-    @Override
-    public SearchJcrContainer getContainer() {
-        return (SearchJcrContainer) super.getContainer();
-    }
-
-    public void search(String fulltextExpr) {
-        getContainer().setFullTextExpression(fulltextExpr);
-        refresh();
-    }
-
-    public void clear() {
-        getContainer().setFullTextExpression(null);
-        refresh();
-    }
-
+    /**
+     * @return true in case the rule decides the column should be enabled.
+     */
+    public abstract boolean isAvailable();
 }

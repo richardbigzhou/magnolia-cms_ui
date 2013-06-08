@@ -31,42 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.search;
+package info.magnolia.ui.workbench.column.definition;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.list.ListPresenter;
-
-import javax.inject.Inject;
+import info.magnolia.cms.beans.config.ServerConfiguration;
+import info.magnolia.cms.exchange.ActivationManager;
 
 /**
- * The SearchPresenter is responsible for handling a list of search results according to the workbench definition.
+ * Rule evaluating to true only in case we're on a author instance or there's active subscribers.
  */
-public class SearchPresenter extends ListPresenter implements SearchView.Listener {
+public class OnAuthorOrWhenThereIsSubscribersRule implements ColumnAvailabilityRule {
 
-    @Inject
-    public SearchPresenter(SearchView view, ComponentProvider componentProvider) {
-        super(view, componentProvider);
+    private final ServerConfiguration serverConfiguration;
+    private final ActivationManager activationManager;
+
+    public OnAuthorOrWhenThereIsSubscribersRule(final ServerConfiguration serverConfiguration, final ActivationManager activationManager) {
+        this.serverConfiguration = serverConfiguration;
+        this.activationManager = activationManager;
     }
-
     @Override
-    protected SearchJcrContainer createContainer(WorkbenchDefinition workbench) {
-        return new SearchJcrContainer(workbench);
+    public boolean isAvailable() {
+        return serverConfiguration.isAdmin() || activationManager.hasAnyActiveSubscriber();
     }
-
-    @Override
-    public SearchJcrContainer getContainer() {
-        return (SearchJcrContainer) super.getContainer();
-    }
-
-    public void search(String fulltextExpr) {
-        getContainer().setFullTextExpression(fulltextExpr);
-        refresh();
-    }
-
-    public void clear() {
-        getContainer().setFullTextExpression(null);
-        refresh();
-    }
-
 }

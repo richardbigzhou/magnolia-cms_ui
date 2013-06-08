@@ -93,7 +93,7 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
         // Drag and Drop
         Class<? extends DropConstraint> dropConstraintClass = workbench.getDropConstraintClass();
         if (dropConstraintClass != null) {
-            DropConstraint constraint = componentProvider.newInstance(dropConstraintClass);
+            DropConstraint constraint = getComponentProvider().newInstance(dropConstraintClass);
             DropHandler dropHandler = new TreeViewDropHandler((TreeTable) view.asVaadinComponent(), constraint);
             view.setDragAndDropHandler(dropHandler);
             log.debug("Set following drop container {} to the treeTable", dropConstraintClass.getName());
@@ -107,8 +107,8 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
     }
 
     @Override
-    protected HierarchicalJcrContainer createContainer(WorkbenchDefinition workbench, String viewTypeName) {
-        return new HierarchicalJcrContainer(workbench, viewTypeName);
+    protected HierarchicalJcrContainer createContainer(WorkbenchDefinition workbench) {
+        return new HierarchicalJcrContainer(workbench);
     }
 
     // TREE VIEW LISTENER IMPL

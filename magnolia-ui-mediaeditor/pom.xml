@@ -30,10 +30,6 @@
       <artifactId>filters</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.devlib.schmidt</groupId>
-      <artifactId>imageinfo</artifactId>
-    </dependency>
-    <dependency>
       <groupId>uk.com.robust-it</groupId>
       <artifactId>cloning</artifactId>
     </dependency>
