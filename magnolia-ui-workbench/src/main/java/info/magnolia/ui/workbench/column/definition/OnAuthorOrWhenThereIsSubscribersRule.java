@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,24 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.config;
+package info.magnolia.ui.workbench.column.definition;
 
-import info.magnolia.ui.workbench.column.definition.AbstractColumnDefinition;
-import info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition;
+import info.magnolia.cms.beans.config.ServerConfiguration;
+import info.magnolia.cms.exchange.ActivationManager;
 
 /**
- * Configuration object for creating builders for column definitions.
- *
- * @see info.magnolia.ui.workbench.column.definition.ColumnDefinition
+ * Rule evaluating to true only in case we're on a author instance or there's active subscribers.
  */
-public class ColumnConfig {
+public class OnAuthorOrWhenThereIsSubscribersRule implements ColumnAvailabilityRule {
 
-    public <T extends AbstractColumnDefinition> ColumnBuilder<T> column(T definition) {
-        return new ColumnBuilder<T>(definition);
+    private final ServerConfiguration serverConfiguration;
+    private final ActivationManager activationManager;
+
+    public OnAuthorOrWhenThereIsSubscribersRule(final ServerConfiguration serverConfiguration, final ActivationManager activationManager) {
+        this.serverConfiguration = serverConfiguration;
+        this.activationManager = activationManager;
     }
-
-    public ColumnBuilder property(String propertyName, String label) {
-        ColumnBuilder<PropertyColumnDefinition> columnBuilder = new ColumnBuilder<PropertyColumnDefinition>(new PropertyColumnDefinition());
-        return columnBuilder.name(propertyName).label(label).propertyName(propertyName);
+    @Override
+    public boolean isAvailable() {
+        return serverConfiguration.isAdmin() || activationManager.hasAnyActiveSubscriber();
     }
 }

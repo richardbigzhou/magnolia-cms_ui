@@ -37,7 +37,6 @@ import static org.junit.Assert.assertEquals;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
@@ -83,7 +82,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         contentView.addColumn(colDef1);
         contentView.addColumn(colDef2);
 
-        jcrContainer = new SearchJcrContainer(configuredWorkbench, ViewType.SEARCH.getText());
+        jcrContainer = new SearchJcrContainer(configuredWorkbench);
 
         // Init session
         session = MgnlContext.getJCRSession(workspace);

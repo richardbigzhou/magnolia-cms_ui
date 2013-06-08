@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,14 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.action.config;
+package info.magnolia.ui.app.pages.field;
+
+import info.magnolia.ui.form.field.builder.SelectFieldBuilder;
+import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
+
+import java.util.List;
+
+import com.vaadin.data.Item;
 
 /**
- * Config object creating builders for action definitions.
+ * Define a Component selector field.
+ * The values displayed in the field are initialized based on the
+ * related Item (Image of a JCR node) and {@link info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment}.
  */
-public class ActionConfig {
+public class ComponentSelectorFieldBuilder extends SelectFieldBuilder<ComponentSelectorDefinition> {
 
-    public ActionBuilder action(String name) {
-        return new ActionBuilder(name);
+    public ComponentSelectorFieldBuilder(ComponentSelectorDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
+        definition.setFilteringMode(2);
     }
+
+    /**
+     * Get the available templates based on the current Node.
+     */
+    @Override
+    public List<SelectFieldOptionDefinition> getSelectFieldOptionDefinition() {
+        return definition.getOptions();
+    }
+
+    @Override
+    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+        return String.class;
+    }
+
 }

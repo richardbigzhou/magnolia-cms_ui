@@ -39,8 +39,6 @@ import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
-import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
-import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
@@ -48,7 +46,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -122,8 +119,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     private final WorkbenchDefinition workbenchDefinition;
 
-    private final String viewTypeName;
-
     private int size = Integer.MIN_VALUE;
 
     /**
@@ -144,44 +139,16 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     private int currentOffset;
 
 
-    public AbstractJcrContainer(WorkbenchDefinition workbenchDefinition, String viewTypeName) {
+    public AbstractJcrContainer(WorkbenchDefinition workbenchDefinition) {
         this.workbenchDefinition = workbenchDefinition;
-        this.viewTypeName = viewTypeName;
+    }
 
-        Iterator<ColumnDefinition> it = getColumnsIterator();
-
-        while (it.hasNext()) {
-            ColumnDefinition column = it.next();
-            if (column.isSortable()) {
-                log.debug("Configuring column [{}] as sortable", column.getName());
-
-                String propertyName = column.getPropertyName();
-                log.debug("propertyName is {}", propertyName);
-
-                if (StringUtils.isBlank(propertyName)) {
-                    propertyName = column.getName();
-                    log.debug("Column {} is sortable but no propertyName has been defined. Defaulting to column name (sorting may not work as expected).", column.getName());
-                }
-                sortableProperties.add(propertyName);
-            }
-        }
+    public void addSortableProperty(final String sortableProperty) {
+        sortableProperties.add(sortableProperty);
     }
 
     public WorkbenchDefinition getWorkbenchDefinition() {
         return workbenchDefinition;
-    }
-
-    protected Iterator<ColumnDefinition> getColumnsIterator() {
-        Iterator<ColumnDefinition> it = null;
-        Iterator<ContentPresenterDefinition> viewsIterator = workbenchDefinition.getContentViews().iterator();
-        while (viewsIterator.hasNext()) {
-            ContentPresenterDefinition contentView = viewsIterator.next();
-            if (contentView.getViewType().getText().equals(viewTypeName)) {
-                it = contentView.getColumns().iterator();
-                break;
-            }
-        }
-        return it;
     }
 
     @Override

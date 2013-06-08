@@ -31,52 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.action.config;
-
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.api.action.Action;
+package info.magnolia.ui.workbench.column.definition;
 
 /**
- * Builder for building an action definition.
+ * Decides whether a certain column is available in the current context (author or public instance, user permission, etc.).
  */
-public class ActionBuilder {
+public interface ColumnAvailabilityRule {
 
-    private ConfiguredActionDefinition definition = new ConfiguredActionDefinition();
-
-    public ActionBuilder(String name) {
-        this.definition.setName(name);
-    }
-
-    public ActionBuilder implementation(Class<? extends Action> subAppClass) {
-        definition.setImplementationClass(subAppClass);
-        return this;
-    }
-
-    public String getName() {
-        return definition.getName();
-    }
-
-    public ActionBuilder label(String label) {
-        definition.setLabel(label);
-        return this;
-    }
-
-    public ActionBuilder icon(String icon) {
-        definition.setIcon(icon);
-        return this;
-    }
-
-    public ActionBuilder i18n(String i18n) {
-        definition.setI18nBasename(i18n);
-        return this;
-    }
-
-    public ActionBuilder description(String description) {
-        definition.setDescription(description);
-        return this;
-    }
-
-    public ConfiguredActionDefinition exec() {
-        return definition;
-    }
+    /**
+     * @return true in case the rule decides the column should be enabled.
+     */
+    public abstract boolean isAvailable();
 }

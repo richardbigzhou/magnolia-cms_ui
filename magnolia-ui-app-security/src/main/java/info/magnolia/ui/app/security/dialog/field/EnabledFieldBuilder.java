@@ -33,29 +33,34 @@
  */
 package info.magnolia.ui.app.security.dialog.field;
 
-import info.magnolia.ui.form.config.GenericValidatorBuilder;
-import info.magnolia.ui.form.config.CheckboxFieldBuilder;
+import info.magnolia.ui.form.field.builder.CheckBoxFieldBuilder;
+import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 
 /**
- * Config-by-code builder for the Enabled field.
+ * Enabled field GUI builder. Enabled field handles checkbox bound to a String property (while by default the checkbox
+ * is bound to a boolean property type).
  */
-public class EnabledFieldBuilder extends CheckboxFieldBuilder {
+public class EnabledFieldBuilder extends CheckBoxFieldBuilder {
 
-    private final EnabledFieldDefinition definition = new EnabledFieldDefinition();
-
-    public EnabledFieldBuilder(String name) {
-        super(name);
-        this.definition.setName(name);
+    public EnabledFieldBuilder(CheckboxFieldDefinition definition, Item relatedFieldItem) {
+        super(definition, relatedFieldItem);
     }
 
     @Override
-    public EnabledFieldDefinition getDefinition() {
-        return this.definition;
+    public com.vaadin.data.Property getOrCreateProperty() {
+        Property old = item.getItemProperty("enabled");
+        String stringValue = "true";
+        if (old != null) {
+            stringValue = old.toString();
+        }
+        DefaultProperty prop = new DefaultProperty(Boolean.class, Boolean.parseBoolean(stringValue));
+        item.removeItemProperty("enabled");
+        item.addItemProperty("enabled", prop);
+        return prop;
     }
 
-    @Override
-    public EnabledFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
-        getDefinition().addValidator(validatorBuilder.exec());
-        return this;
-    }
 }

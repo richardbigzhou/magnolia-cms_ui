@@ -39,6 +39,8 @@ import com.vaadin.data.Validator;
 
 /**
  * Builder for the UniqueUserIdValidator.
+ *
+ * @see UniqueUserIdValidatorDefinition
  */
 public class UniqueUserIdValidatorBuilder extends AbstractFieldValidatorBuilder<UniqueUserIdValidatorDefinition> {
 

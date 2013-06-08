@@ -36,8 +36,11 @@ package info.magnolia.ui.form.validator.builder;
 import com.vaadin.data.Validator;
 
 /**
- * .
+ * Builder for field validators.
+ *
+ * @see info.magnolia.ui.form.validator.definition.FieldValidatorDefinition
  */
 public interface FieldValidatorBuilder {
+
     Validator buildValidator();
 }

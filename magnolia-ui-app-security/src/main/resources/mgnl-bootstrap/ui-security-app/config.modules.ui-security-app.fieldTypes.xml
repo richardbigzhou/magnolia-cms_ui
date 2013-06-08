@@ -32,7 +32,7 @@
       <sv:value>387f86e7-90c6-48f5-a6c8-8de572d2ef7f</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.app.security.dialog.field.EnabledField</sv:value>
+      <sv:value>info.magnolia.ui.app.security.dialog.field.EnabledFieldBuilder</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.app.security.dialog.field.EnabledFieldDefinition</sv:value>
@@ -64,7 +64,7 @@
       <sv:value>638335ac-dca6-4ccf-b547-325cda10d465</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.app.security.dialog.field.RoleManagementField</sv:value>
+      <sv:value>info.magnolia.ui.app.security.dialog.field.RoleManagementFieldBuilder</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.app.security.dialog.field.RoleManagementFieldDefinition</sv:value>
@@ -96,7 +96,7 @@
       <sv:value>0886e408-3914-4cc6-8e0a-7434b6eda85f</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.app.security.dialog.field.GroupManagementField</sv:value>
+      <sv:value>info.magnolia.ui.app.security.dialog.field.GroupManagementFieldBuilder</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.app.security.dialog.field.GroupManagementFieldDefinition</sv:value>

@@ -39,6 +39,8 @@ import com.vaadin.data.Validator;
 
 /**
  * Unique Group ID validator builder.
+ *
+ * @see UniqueGroupIdValidatorDefinition
  */
 public class UniqueGroupIdValidatorBuilder extends AbstractFieldValidatorBuilder<UniqueGroupIdValidatorDefinition> {
 

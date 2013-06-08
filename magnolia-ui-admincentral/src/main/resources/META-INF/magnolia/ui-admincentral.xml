@@ -103,13 +103,6 @@
     <id>admincentral</id>
 
     <component>
-      <type>info.magnolia.ui.form.validator.registry.FieldValidatorRegistry</type>
-      <workspace>config</workspace>
-      <path>/modules/ui-admincentral/fieldValidatorRegistry</path>
-      <observed>true</observed>
-      <scope>singleton</scope>
-    </component>
-    <component>
       <type>info.magnolia.ui.framework.location.LocationController</type>
       <implementation>info.magnolia.ui.framework.location.LocationController</implementation>
     </component>

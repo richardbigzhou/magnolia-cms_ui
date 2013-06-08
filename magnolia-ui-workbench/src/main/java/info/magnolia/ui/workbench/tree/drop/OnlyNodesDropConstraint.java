@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,20 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.config;
+package info.magnolia.ui.workbench.tree.drop;
 
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import com.vaadin.data.Item;
 
 /**
- * Annotation used on methods on a module class that provides a dialog definition.
+ * Allows only nodes to be moved and prevents nodes from becoming children of properties.
  */
-@Target(ElementType.METHOD)
-@Retention(RUNTIME)
-public @interface Dialog {
+public class OnlyNodesDropConstraint implements DropConstraint {
 
-    String value();
+    @Override
+    public boolean allowedAsChild(Item sourceItem, Item targetItem) {
+        return ((JcrItemAdapter) targetItem).isNode();
+    }
+
+    @Override
+    public boolean allowedBefore(Item sourceItem, Item targetItem) {
+        return true;
+    }
+
+    @Override
+    public boolean allowedAfter(Item sourceItem, Item targetItem) {
+        return true;
+    }
+
+    @Override
+    public boolean allowedToMove(Item sourceItem) {
+        JcrItemAdapter jcrSourceItem = (JcrItemAdapter) sourceItem;
+        return jcrSourceItem != null && jcrSourceItem.isNode();
+    }
+
 }

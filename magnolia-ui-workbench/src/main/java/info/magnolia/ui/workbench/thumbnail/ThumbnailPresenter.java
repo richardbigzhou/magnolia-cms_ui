@@ -35,6 +35,7 @@ package info.magnolia.ui.workbench.thumbnail;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -68,7 +69,8 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     private ThumbnailContainer container;
 
     @Inject
-    public ThumbnailPresenter(ThumbnailView view, ImageProvider imageProvider) {
+    public ThumbnailPresenter(final ThumbnailView view, final ImageProvider imageProvider, ComponentProvider componentProvider) {
+        super(componentProvider);
         this.view = view;
         this.imageProvider = imageProvider;
     }
