@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,25 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench;
+package info.magnolia.ui.admincentral;
 
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.registry.ConfiguredMessageViewDefinitionManager;
+import info.magnolia.ui.admincentral.usermenu.definition.UserMenuDefinition;
+
+import javax.inject.Inject;
 
 /**
- * Module class for Workbench component. Does not do anything specific.
+ * Registers the observed managers: {@link ConfiguredMessageViewDefinitionManager}.
  */
-public class WorkbenchModule implements ModuleLifecycle {
+public class AdmincentralModule implements ModuleLifecycle {
 
+    private ConfiguredMessageViewDefinitionManager configuredMessageViewDefinitionManager;
+    private UserMenuDefinition userControl;
 
-    @Override
-    public void start(ModuleLifecycleContext moduleLifecycleContext) {
-
+    @Inject
+    public AdmincentralModule(ConfiguredMessageViewDefinitionManager configuredMessageViewDefinitionManager) {
+        this.configuredMessageViewDefinitionManager = configuredMessageViewDefinitionManager;
     }
 
     @Override
-    public void stop(ModuleLifecycleContext moduleLifecycleContext) {
-
+    public void start(ModuleLifecycleContext context) {
+        if (context.getPhase() == ModuleLifecycleContext.PHASE_SYSTEM_STARTUP) {
+            configuredMessageViewDefinitionManager.start();
+        }
     }
 
+    @Override
+    public void stop(ModuleLifecycleContext context) {
+    }
+
+    public UserMenuDefinition getUserMenu() {
+        return userControl;
+    }
+
+    public void setUserMenu(UserMenuDefinition userControl) {
+        this.userControl = userControl;
+    }
 }

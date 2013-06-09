@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.module;
+package info.magnolia.ui.framework.setup;
 
-import info.magnolia.module.ModuleLifecycle;
-import info.magnolia.module.ModuleLifecycleContext;
+import info.magnolia.module.DefaultModuleVersionHandler;
+import info.magnolia.module.InstallContext;
+import info.magnolia.module.delta.Task;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Initializes the Vaadin module.
+ * Version handler for the Ui framework module.
  */
-public class VaadinModule implements ModuleLifecycle {
+public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler {
 
     @Override
-    public void start(ModuleLifecycleContext ctx) {
-
+    protected List<Task> getExtraInstallTasks(InstallContext installContext) {
+        ArrayList<Task> tasks = new ArrayList<Task>();
+        return tasks;
     }
-
-    @Override
-    public void stop(ModuleLifecycleContext moduleLifecycleContext) {
-    }
-
 }

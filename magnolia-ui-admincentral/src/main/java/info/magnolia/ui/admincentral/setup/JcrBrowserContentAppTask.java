@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.module.delta;
+package info.magnolia.ui.admincentral.setup;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
@@ -177,7 +177,7 @@ public class JcrBrowserContentAppTask extends AbstractTask {
     }
 
     private void addAppToLauncherLayout(Session configJCRSession) throws RepositoryException {
-        Node configNode = configJCRSession.getNode("/modules/ui-admincentral/config");
+        Node configNode = configJCRSession.getNode("/modules/ui-framework/config");
         NodeUtil.createPath(configNode, "appLauncherLayout/groups/" + appGroup + "/apps/" + appName, NodeTypes.ContentNode.NAME);
     }
 

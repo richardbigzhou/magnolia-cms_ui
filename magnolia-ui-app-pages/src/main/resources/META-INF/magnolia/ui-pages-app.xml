@@ -36,6 +36,14 @@
 
   </components>
 
+  <components>
+    <id>subapp</id>
+    <component>
+      <type>info.magnolia.ui.vaadin.editor.pagebar.PageBarView</type>
+      <implementation>info.magnolia.ui.vaadin.editor.pagebar.PageBarViewImpl</implementation>
+    </component>
+  </components>
+
   <dependencies>
     <dependency>
       <name>ui-admincentral</name>
