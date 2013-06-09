@@ -337,21 +337,6 @@ public class ShellImpl extends AbstractUIContext implements Shell, MessageEventH
         magnoliaShell.setFullScreen(isFullScreen);
     }
 
-    @Override
-    public void showInfo(Message message) {
-        magnoliaShell.showInfo(message.getId(), message.getSubject(), message.getMessage());
-    }
-
-    @Override
-    public void showError(Message message) {
-        magnoliaShell.showError(message.getId(), message.getSubject(), message.getMessage());
-    }
-
-    @Override
-    public void showWarning(Message message) {
-        magnoliaShell.showWarning(message.getId(), message.getSubject(), message.getMessage());
-    }
-
     public MagnoliaShell getMagnoliaShell() {
         return magnoliaShell;
     }
