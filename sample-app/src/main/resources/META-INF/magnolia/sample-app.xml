@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module SYSTEM "module.dtd">
 <module>
-  <name>ui-sample-app</name>
-  <displayName>UI Sample app</displayName>
-  <description>UI Sample app</description>
+  <name>sample-app</name>
+  <displayName>Sample app</displayName>
+  <description>Sample app</description>
   <versionHandler>info.magnolia.sample.app.setup.SampleAppModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 
