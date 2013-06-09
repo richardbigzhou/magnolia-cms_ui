@@ -46,7 +46,7 @@ import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;

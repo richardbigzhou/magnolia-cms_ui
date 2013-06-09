@@ -169,7 +169,7 @@ public class JcrBrowserContentAppTask extends AbstractTask {
 
     private Node createApp(Node appsNode) throws RepositoryException {
         Node app = NodeUtil.createPath(appsNode, appName, NodeTypes.ContentNode.NAME);
-        app.setProperty("app", "info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor");
+        app.setProperty("app", "info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor");
         app.setProperty("appClass", "info.magnolia.ui.contentapp.ContentApp");
         app.setProperty("icon", StringUtils.isNotBlank(icon) ? icon : "icon-app");
         app.setProperty("label", label);

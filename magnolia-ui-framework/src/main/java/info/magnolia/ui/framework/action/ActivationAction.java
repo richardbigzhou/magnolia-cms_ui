@@ -41,7 +41,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;

@@ -48,10 +48,19 @@ import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.test.mock.MockWebContext;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImpl;
-import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
-import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.api.app.App;
+import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.app.AppDescriptor;
+import info.magnolia.ui.api.app.AppInstanceController;
+import info.magnolia.ui.api.app.AppLifecycleEvent;
+import info.magnolia.ui.api.app.AppLifecycleEventHandler;
+import info.magnolia.ui.api.app.AppLifecycleEventType;
+import info.magnolia.ui.api.app.AppView;
+import info.magnolia.ui.api.app.SubAppDescriptor;
+import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManagerImpl;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
@@ -75,7 +84,7 @@ import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
 
 /**
- * Test case for {@link info.magnolia.ui.framework.app.AppController}.
+ * Test case for {@link info.magnolia.ui.api.app.AppController}.
  */
 public class AppControllerImplTest {
 

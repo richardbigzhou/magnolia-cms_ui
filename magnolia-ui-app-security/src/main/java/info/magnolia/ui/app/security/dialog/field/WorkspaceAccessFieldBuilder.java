@@ -43,7 +43,7 @@ import info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogView;
 import info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogPresenter;
 import info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogView;
-import info.magnolia.ui.framework.app.ItemChosenListener;
+import info.magnolia.ui.api.app.ItemChosenListener;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;

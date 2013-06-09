@@ -44,14 +44,24 @@ import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.ui.api.app.App;
+import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.app.AppDescriptor;
+import info.magnolia.ui.api.app.AppInstanceController;
+import info.magnolia.ui.api.app.AppView;
+import info.magnolia.ui.api.app.SubApp;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppDescriptor;
+import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.framework.AbstractUIContext;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
+import info.magnolia.ui.framework.context.AbstractUIContext;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroup;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroupEntry;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.event.EventBusProtector;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
@@ -351,7 +361,7 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
      * Example Usages:
      * <pre>
      *     <ul>
-     *         <li>Inside ContentApp framework to update {@link info.magnolia.ui.framework.app.SubAppContext#getLocation()} and the {@link Shell} fragment</li>
+     *         <li>Inside ContentApp framework to update {@link info.magnolia.ui.api.app.SubAppContext#getLocation()} and the {@link Shell} fragment</li>
      *         <li>In the Pages App when navigating pages inside the PageEditor</li>
      *     </ul>
      * </pre>

@@ -41,8 +41,8 @@ import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
 import info.magnolia.ui.form.field.property.MultiProperty;
 import info.magnolia.ui.form.field.property.MultiValueHandler;
 import info.magnolia.ui.form.field.property.SingleValueHandler;
-import info.magnolia.ui.framework.app.AppController;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.app.SubAppContext;
 
 import java.util.List;
 

@@ -35,9 +35,9 @@ package info.magnolia.ui.contentapp.choosedialog;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.ItemChosenListener;
-import info.magnolia.ui.framework.app.SubAppDescriptor;
+import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.ItemChosenListener;
+import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;

@@ -38,9 +38,9 @@ import info.magnolia.ui.form.field.builder.AbstractFieldBuilder;
 import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
-import info.magnolia.ui.framework.app.AppController;
-import info.magnolia.ui.framework.app.ItemChosenListener;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.app.ItemChosenListener;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import javax.inject.Inject;

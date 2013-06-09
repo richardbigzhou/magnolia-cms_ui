@@ -40,7 +40,7 @@ import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.app.tools;
 
-import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
+import info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor;
 
 /**
  * Allows to specify the url to an html page to be embedded in an iframe.

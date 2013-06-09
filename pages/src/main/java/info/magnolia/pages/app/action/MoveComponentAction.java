@@ -37,7 +37,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.pages.app.editor.event.ComponentMoveEvent;
-import info.magnolia.ui.framework.app.SubAppEventBus;
+import info.magnolia.ui.api.app.SubAppEventBus;
 
 import javax.inject.Inject;
 import javax.inject.Named;

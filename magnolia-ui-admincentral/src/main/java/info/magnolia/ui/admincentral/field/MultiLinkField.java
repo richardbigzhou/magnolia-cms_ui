@@ -34,9 +34,9 @@
 package info.magnolia.ui.admincentral.field;
 
 import info.magnolia.ui.form.field.LinkField;
-import info.magnolia.ui.framework.app.AppController;
-import info.magnolia.ui.framework.app.ItemChosenListener;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.app.ItemChosenListener;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import java.util.ArrayList;

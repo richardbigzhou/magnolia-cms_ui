@@ -33,6 +33,10 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.ui.api.app.App;
+import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.AppView;
+import info.magnolia.ui.api.app.ItemChosenListener;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.overlay.OverlayLayer;
 
@@ -41,7 +45,7 @@ import javax.inject.Inject;
 /**
  * Basic app implementation with default behavior suitable for most apps.
  *
- * @see App
+ * @see info.magnolia.ui.api.app.App
  */
 public class BaseApp implements App {
 

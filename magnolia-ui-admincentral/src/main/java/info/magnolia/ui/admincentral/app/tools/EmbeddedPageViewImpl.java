@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.app.tools;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.framework.app.AppContext;
+import info.magnolia.ui.api.app.AppContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

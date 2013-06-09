@@ -34,7 +34,7 @@
 package info.magnolia.ui.contentapp.definition;
 
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
+import info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 
 /**

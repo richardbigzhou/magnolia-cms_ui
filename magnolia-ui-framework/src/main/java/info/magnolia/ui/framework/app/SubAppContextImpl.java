@@ -33,15 +33,19 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.SubApp;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.framework.AbstractUIContext;
+import info.magnolia.ui.framework.context.AbstractUIContext;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.overlay.OverlayPresenter;
 
 /**
- * Implementation of {@link SubAppContext}.
+ * Implementation of {@link info.magnolia.ui.api.app.SubAppContext}.
  * See MGNLUI-379.
  */
 public class SubAppContextImpl extends AbstractUIContext implements SubAppContext {

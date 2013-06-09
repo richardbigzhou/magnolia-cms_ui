@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.messages;
 
-import info.magnolia.ui.framework.app.SubApp;
+import info.magnolia.ui.api.app.SubApp;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.api.view.View;
 

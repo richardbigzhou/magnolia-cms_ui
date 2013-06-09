@@ -36,8 +36,8 @@ package info.magnolia.pages.app.action;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.action.DeleteItemAction;
 import info.magnolia.ui.framework.action.DeleteItemActionDefinition;
-import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.app.SubAppEventBus;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import javax.inject.Inject;

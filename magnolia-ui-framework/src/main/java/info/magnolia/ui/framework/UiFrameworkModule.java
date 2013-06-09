@@ -35,11 +35,11 @@ package info.magnolia.ui.framework;
 
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
+import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptorManager;
 import info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager;
 import info.magnolia.ui.form.fieldtype.registry.ConfiguredFieldTypeDefinitionManager;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
-import info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition;
-import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutDefinition;
 
 import javax.inject.Inject;
 

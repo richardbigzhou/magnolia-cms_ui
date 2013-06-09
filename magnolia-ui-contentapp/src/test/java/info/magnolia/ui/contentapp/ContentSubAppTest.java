@@ -42,8 +42,8 @@ import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.availability.AvailabilityRule;
 import info.magnolia.ui.contentapp.browser.BrowserPresenter;
 import info.magnolia.ui.contentapp.browser.BrowserSubApp;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.event.EventBus;
 
 import javax.jcr.Item;

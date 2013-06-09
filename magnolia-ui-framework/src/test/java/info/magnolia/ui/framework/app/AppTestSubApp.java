@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.ui.api.app.SubAppContext;
+
 import javax.inject.Inject;
 
 /**

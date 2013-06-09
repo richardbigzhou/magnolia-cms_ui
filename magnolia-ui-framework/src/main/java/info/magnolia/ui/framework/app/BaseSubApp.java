@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.SubApp;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.view.View;
 
@@ -43,7 +46,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Basic implementation of a subApp with default behavior suitable for most sub apps.
  *
- * @see SubApp
+ * @see info.magnolia.ui.api.app.SubApp
  */
 public class BaseSubApp implements SubApp {
 

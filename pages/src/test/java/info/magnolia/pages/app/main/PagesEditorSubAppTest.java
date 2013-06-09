@@ -57,7 +57,7 @@ import info.magnolia.pages.app.editor.PagesEditorSubAppView;
 import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
 import info.magnolia.ui.contentapp.definition.ConfiguredEditorDefinition;
 import info.magnolia.ui.contentapp.detail.ConfiguredDetailSubAppDescriptor;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.vaadin.editor.PageEditorListener;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;

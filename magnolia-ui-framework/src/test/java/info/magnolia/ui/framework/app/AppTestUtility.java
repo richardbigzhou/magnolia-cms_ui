@@ -33,10 +33,14 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
-import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
-import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
+import info.magnolia.ui.api.app.App;
+import info.magnolia.ui.api.app.AppDescriptor;
+import info.magnolia.ui.api.app.SubApp;
+import info.magnolia.ui.api.app.SubAppDescriptor;
+import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroup;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroupEntry;
+import info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor;
 
 import java.util.Map;
 
