@@ -31,14 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field.builder;
+package info.magnolia.ui.form.field.builder;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.field.MultiLinkField;
+import info.magnolia.ui.form.field.MultiLinkField;
 import info.magnolia.ui.form.field.builder.AbstractBuilderTest;
+import info.magnolia.ui.form.field.builder.MultiLinkFieldBuilder;
 import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
 import info.magnolia.ui.form.field.property.SingleValueHandler;
@@ -51,7 +52,7 @@ import org.junit.Test;
 import com.vaadin.ui.Field;
 
 /**
- * Main testcase for {@link MultiLinkFieldBuilder}.
+ * Main testcase for {@link info.magnolia.ui.form.field.builder.MultiLinkFieldBuilder}.
  */
 public class MultiLinkFieldBuilderTest extends AbstractBuilderTest<MultiLinkFieldDefinition> {
 

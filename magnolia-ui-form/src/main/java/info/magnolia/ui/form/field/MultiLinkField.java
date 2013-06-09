@@ -31,9 +31,8 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field;
+package info.magnolia.ui.form.field;
 
-import info.magnolia.ui.form.field.LinkField;
 import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.ItemChosenListener;
 import info.magnolia.ui.api.app.SubAppContext;
