@@ -38,8 +38,8 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.event.SimpleEventBus;
-import info.magnolia.ui.framework.shell.ConfirmationHandler;
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.api.shell.ConfirmationHandler;
+import info.magnolia.ui.api.shell.Shell;
 
 import org.apache.commons.lang.mutable.MutableBoolean;
 import org.junit.Test;

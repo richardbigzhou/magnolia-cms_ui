@@ -37,7 +37,7 @@ import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.AbstractUIContext;
 import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.overlay.OverlayPresenter;
 
 /**

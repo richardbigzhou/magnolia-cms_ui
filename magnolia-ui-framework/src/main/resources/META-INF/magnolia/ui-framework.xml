@@ -167,7 +167,7 @@
       <implementation>info.magnolia.ui.framework.location.LocationController</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.framework.shell.Shell</type>
+      <type>info.magnolia.ui.api.shell.Shell</type>
       <implementation>info.magnolia.ui.framework.shell.ShellImpl</implementation>
     </component>
     <component>

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2011-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,15 +31,50 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.shell;
+package info.magnolia.ui.api.shell;
 
-import info.magnolia.event.EventHandler;
+import info.magnolia.event.HandlerRegistration;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.overlay.OverlayCloser;
+import info.magnolia.ui.api.view.View;
+
+import java.util.List;
 
 /**
- * Called when a URI fragment of {@link Shell} has changed.
+ * Decouples the presenters and the Vaadin application. Provides methods to show messages and configuration dialogs.
  */
-public interface FragmentChangedHandler extends EventHandler {
+public interface Shell extends UiContext {
 
-    void onFragmentChanged(FragmentChangedEvent event);
+    void askForConfirmation(String message, ConfirmationHandler listener);
+
+    void showNotification(String message);
+
+    void showError(String message, Exception e);
+
+    String getFragment();
+
+    void setFragment(String fragment);
+
+    HandlerRegistration addFragmentChangedHandler(FragmentChangedHandler handler);
+
+    void registerApps(List<String> appNames);
+
+    void pushToClient();
+
+    void enterFullScreenMode();
+
+    void exitFullScreenMode();
+    
+    /**
+     * Open an Overlay on top of a specific View.
+     * 
+     * @param view
+     * View to be displayed over the view.
+     * @param parent
+     * The View to open the Overlay on top of.
+     */
+    OverlayCloser openOverlayOnView(View view, View parent, ModalityDomain modalityLocation, ModalityLevel modalityLevel);
+
+    void setUserMenu(View view);
 
 }

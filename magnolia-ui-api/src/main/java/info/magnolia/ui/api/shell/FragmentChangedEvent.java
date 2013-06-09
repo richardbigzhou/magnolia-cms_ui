@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,50 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.shell;
+package info.magnolia.ui.api.shell;
 
-import info.magnolia.event.HandlerRegistration;
-import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.api.overlay.OverlayCloser;
-import info.magnolia.ui.api.view.View;
-
-import java.util.List;
+import info.magnolia.event.Event;
 
 /**
- * Decouples the presenters and the Vaadin application. Provides methods to show messages and configuration dialogs.
+ * Fired when a URI fragment has changed.
  */
-public interface Shell extends UiContext {
+public class FragmentChangedEvent implements Event<FragmentChangedHandler> {
 
-    void askForConfirmation(String message, ConfirmationHandler listener);
+    private String fragment;
 
-    void showNotification(String message);
+    public FragmentChangedEvent(String fragment) {
+        this.fragment = fragment;
+    }
 
-    void showError(String message, Exception e);
+    public String getFragment() {
+        return fragment;
+    }
 
-    String getFragment();
-
-    void setFragment(String fragment);
-
-    HandlerRegistration addFragmentChangedHandler(FragmentChangedHandler handler);
-
-    void registerApps(List<String> appNames);
-
-    void pushToClient();
-
-    void enterFullScreenMode();
-
-    void exitFullScreenMode();
-    
-    /**
-     * Open an Overlay on top of a specific View.
-     * 
-     * @param view
-     * View to be displayed over the view.
-     * @param parent
-     * The View to open the Overlay on top of.
-     */
-    OverlayCloser openOverlayOnView(View view, View parent, ModalityDomain modalityLocation, ModalityLevel modalityLevel);
-
-    void setUserMenu(View view);
-
+    @Override
+    public void dispatch(FragmentChangedHandler handler) {
+        handler.onFragmentChanged(this);
+    }
 }

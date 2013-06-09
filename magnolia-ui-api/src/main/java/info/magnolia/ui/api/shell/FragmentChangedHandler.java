@@ -31,27 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.shell;
+package info.magnolia.ui.api.shell;
 
-import info.magnolia.event.Event;
+import info.magnolia.event.EventHandler;
 
 /**
- * Fired when a URI fragment has changed.
+ * Called when a URI fragment of {@link Shell} has changed.
  */
-public class FragmentChangedEvent implements Event<FragmentChangedHandler> {
+public interface FragmentChangedHandler extends EventHandler {
 
-    private String fragment;
+    void onFragmentChanged(FragmentChangedEvent event);
 
-    public FragmentChangedEvent(String fragment) {
-        this.fragment = fragment;
-    }
-
-    public String getFragment() {
-        return fragment;
-    }
-
-    @Override
-    public void dispatch(FragmentChangedHandler handler) {
-        handler.onFragmentChanged(this);
-    }
 }

@@ -40,9 +40,9 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.test.mock.MockWebContext;
-import info.magnolia.ui.framework.shell.FragmentChangedEvent;
-import info.magnolia.ui.framework.shell.FragmentChangedHandler;
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.api.shell.FragmentChangedEvent;
+import info.magnolia.ui.api.shell.FragmentChangedHandler;
+import info.magnolia.ui.api.shell.Shell;
 
 import org.junit.After;
 import org.junit.Before;

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.shell;
+package info.magnolia.ui.api.shell;
 
 /**
  * Called after the user has answered a confirmation dialog issued by {@link Shell#askForConfirmation(String, ConfirmationHandler)}.

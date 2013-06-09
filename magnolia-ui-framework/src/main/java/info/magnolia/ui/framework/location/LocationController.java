@@ -35,8 +35,8 @@ package info.magnolia.ui.framework.location;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
-import info.magnolia.ui.framework.shell.ConfirmationHandler;
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.api.shell.ConfirmationHandler;
+import info.magnolia.ui.api.shell.Shell;
 
 import javax.inject.Inject;
 import javax.inject.Named;

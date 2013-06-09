@@ -35,9 +35,9 @@ package info.magnolia.ui.framework.location;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.event.HandlerRegistration;
-import info.magnolia.ui.framework.shell.FragmentChangedEvent;
-import info.magnolia.ui.framework.shell.FragmentChangedHandler;
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.api.shell.FragmentChangedEvent;
+import info.magnolia.ui.api.shell.FragmentChangedHandler;
+import info.magnolia.ui.api.shell.Shell;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

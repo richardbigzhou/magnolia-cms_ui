@@ -40,7 +40,7 @@ import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategory
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
 import info.magnolia.ui.framework.message.MessageType;
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 import info.magnolia.ui.vaadin.icon.ErrorIcon;
 import info.magnolia.ui.vaadin.icon.InfoIcon;
