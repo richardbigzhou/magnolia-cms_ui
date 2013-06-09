@@ -249,7 +249,7 @@
     <module>magnolia-ui-actionbar</module>
     <module>sample-app</module>
     <module>magnolia-ui-app-messages</module>
-    <module>magnolia-ui-app-pages</module>
+    <module>pages</module>
     <module>magnolia-ui-app-security</module>
     <module>magnolia-ui-mediaeditor</module>
     <module>magnolia-ui-vaadin-theme</module>
