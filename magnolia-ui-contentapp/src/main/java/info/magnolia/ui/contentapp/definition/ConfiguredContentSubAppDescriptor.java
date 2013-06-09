@@ -31,25 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.detail;
+package info.magnolia.ui.contentapp.definition;
 
-import info.magnolia.ui.contentapp.definition.ConfiguredContentSubAppDescriptor;
-import info.magnolia.ui.contentapp.definition.EditorDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
+import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 
 /**
- * ConfiguredItemSubAppDescriptor.
+ * Simple implementation for {@link ContentSubAppDescriptor}.
+ *
+ * @see ContentSubAppDescriptor
  */
-public class ConfiguredDetailSubAppDescriptor extends ConfiguredContentSubAppDescriptor implements DetailSubAppDescriptor {
+public class ConfiguredContentSubAppDescriptor extends ConfiguredSubAppDescriptor implements ContentSubAppDescriptor {
 
-    private EditorDefinition editor;
+    private ActionbarDefinition actionbar;
+
+    private ImageProviderDefinition imageProvider;
 
     @Override
-    public EditorDefinition getEditor() {
-        return editor;
+    public ActionbarDefinition getActionbar() {
+        return actionbar;
     }
 
-    public void setEditor(EditorDefinition editorDefinition) {
-        this.editor = editorDefinition;
+    public void setActionbar(ActionbarDefinition actionbar) {
+        this.actionbar = actionbar;
     }
 
+    @Override
+    public ImageProviderDefinition getImageProvider() {
+        return imageProvider;
+    }
+
+    public void setImageProvider(ImageProviderDefinition imageProvider) {
+        this.imageProvider = imageProvider;
+    }
 }

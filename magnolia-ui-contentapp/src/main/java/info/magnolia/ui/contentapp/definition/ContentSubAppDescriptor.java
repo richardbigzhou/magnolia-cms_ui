@@ -31,25 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.detail;
+package info.magnolia.ui.contentapp.definition;
 
-import info.magnolia.ui.contentapp.definition.ConfiguredContentSubAppDescriptor;
-import info.magnolia.ui.contentapp.definition.EditorDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.framework.app.SubAppDescriptor;
+import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 
 /**
- * ConfiguredItemSubAppDescriptor.
+ * Describes a content sub app.
+ *
+ * @see SubAppDescriptor
  */
-public class ConfiguredDetailSubAppDescriptor extends ConfiguredContentSubAppDescriptor implements DetailSubAppDescriptor {
+public interface ContentSubAppDescriptor extends SubAppDescriptor {
 
-    private EditorDefinition editor;
+    /**
+     * Gets the definition for the action bar.
+     */
+    ActionbarDefinition getActionbar();
 
-    @Override
-    public EditorDefinition getEditor() {
-        return editor;
-    }
-
-    public void setEditor(EditorDefinition editorDefinition) {
-        this.editor = editorDefinition;
-    }
-
+    ImageProviderDefinition getImageProvider();
 }

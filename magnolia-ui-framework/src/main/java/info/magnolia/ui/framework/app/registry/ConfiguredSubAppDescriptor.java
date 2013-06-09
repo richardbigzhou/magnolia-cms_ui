@@ -33,11 +33,9 @@
  */
 package info.magnolia.ui.framework.app.registry;
 
+import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
-import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,13 +56,9 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
 
     private String icon;
 
-    private Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
-
-    private ActionbarDefinition actionbar;
-
-    private ImageProviderDefinition imageProvider;
-
     private Class<? extends SubApp> subAppClass;
+
+    private Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
 
     @Override
     public String getName() {
@@ -91,21 +85,6 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
     }
 
     @Override
-    public Map<String, ActionDefinition> getActions() {
-        return actions;
-    }
-
-    @Override
-    public ActionbarDefinition getActionbar() {
-        return actionbar;
-    }
-
-    @Override
-    public ImageProviderDefinition getImageProvider() {
-        return imageProvider;
-    }
-
-    @Override
     public Class<? extends SubApp> getSubAppClass() {
         return subAppClass;
     }
@@ -122,19 +101,16 @@ public class ConfiguredSubAppDescriptor implements SubAppDescriptor {
         this.icon = icon;
     }
 
-    public void setActions(Map<String, ActionDefinition> actions) {
-        this.actions = actions;
-    }
-
-    public void setActionbar(ActionbarDefinition actionbar) {
-        this.actionbar = actionbar;
-    }
-
-    public void setImageProvider(ImageProviderDefinition imageProvider) {
-        this.imageProvider = imageProvider;
-    }
-
     public void setSubAppClass(Class<? extends SubApp> subAppClass) {
         this.subAppClass = subAppClass;
+    }
+
+    @Override
+    public Map<String, ActionDefinition> getActions() {
+        return actions;
+    }
+
+    public void setActions(Map<String, ActionDefinition> actions) {
+        this.actions = actions;
     }
 }

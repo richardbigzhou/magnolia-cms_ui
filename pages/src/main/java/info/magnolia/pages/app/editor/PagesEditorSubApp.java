@@ -51,6 +51,7 @@ import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
 import info.magnolia.pages.app.editor.event.ComponentMoveEvent;
+import info.magnolia.ui.contentapp.definition.ContentSubAppDescriptor;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
@@ -149,7 +150,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
         actionbarPresenter.setListener(this);
         pageBarView.setListener(this);
-        ActionbarDefinition actionbarDefinition = getSubAppContext().getSubAppDescriptor().getActionbar();
+        ActionbarDefinition actionbarDefinition = ((ContentSubAppDescriptor)getSubAppContext().getSubAppDescriptor()).getActionbar();
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition);
         view.setActionbarView(actionbar);
         view.setPageBarView(pageBarView);

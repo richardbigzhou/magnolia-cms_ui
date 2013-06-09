@@ -34,8 +34,6 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 
 import java.util.Map;
 
@@ -54,14 +52,7 @@ public interface SubAppDescriptor {
 
     String getIcon();
 
-    Map<String, ActionDefinition> getActions();
-
-    /**
-     * Gets the definition for the action bar.
-     */
-    ActionbarDefinition getActionbar();
-
     Class<? extends SubApp> getSubAppClass();
 
-    ImageProviderDefinition getImageProvider();
+    Map<String, ActionDefinition> getActions();
 }
