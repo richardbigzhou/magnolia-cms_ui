@@ -268,7 +268,7 @@ public class ControlMigrationTest {
         assertTrue(controlNode.hasProperty("appName"));
         assertEquals("pages", controlNode.getProperty("appName").getString());
         assertTrue(controlNode.hasProperty("dialogName"));
-        assertEquals("ui-pages-app:link", controlNode.getProperty("dialogName").getString());
+        assertEquals("pages:link", controlNode.getProperty("dialogName").getString());
         assertTrue(controlNode.hasNode("identifierToPathConverter"));
         assertTrue(controlNode.getNode("identifierToPathConverter").hasProperty("class"));
         assertEquals(BaseIdentifierToPathConverter.class.getName(), controlNode.getNode("identifierToPathConverter").getProperty("class").getString());

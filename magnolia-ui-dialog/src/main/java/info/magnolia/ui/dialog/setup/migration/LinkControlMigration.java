@@ -52,7 +52,7 @@ public class LinkControlMigration implements ControlMigration {
         Property controlType = controlNode.getProperty("controlType");
         String appName = "pages";
         String className = LinkFieldDefinition.class.getName();
-        String dialogName = "ui-pages-app:link";
+        String dialogName = "pages:link";
         String workspace = "website";
 
         // Set IdentifierConvertor
