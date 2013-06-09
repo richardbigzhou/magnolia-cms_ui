@@ -175,7 +175,7 @@
       <sv:value>b31d17f6-ae3f-4c49-841a-cf1e827fda02</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder</sv:value>
+      <sv:value>info.magnolia.ui.form.field.builder.LinkFieldBuilder</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.LinkFieldDefinition</sv:value>

@@ -31,10 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.field.builder;
+package info.magnolia.ui.form.field.builder;
 
 import info.magnolia.ui.form.field.LinkField;
-import info.magnolia.ui.form.field.builder.AbstractFieldBuilder;
 import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
