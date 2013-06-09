@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.location;
+package info.magnolia.ui.api.location;
 
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -40,12 +40,6 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.test.mock.MockWebContext;
-import info.magnolia.ui.api.location.DefaultLocation;
-import info.magnolia.ui.api.location.Location;
-import info.magnolia.ui.api.location.LocationChangedEvent;
-import info.magnolia.ui.api.location.LocationController;
-import info.magnolia.ui.api.location.LocationHistoryHandler;
-import info.magnolia.ui.api.location.LocationHistoryMapper;
 import info.magnolia.ui.api.shell.FragmentChangedEvent;
 import info.magnolia.ui.api.shell.FragmentChangedHandler;
 import info.magnolia.ui.api.shell.Shell;

@@ -31,14 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.location;
+package info.magnolia.ui.api.location;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockWebContext;
-import info.magnolia.ui.api.location.DefaultLocation;
 
 import org.junit.After;
 import org.junit.Before;
