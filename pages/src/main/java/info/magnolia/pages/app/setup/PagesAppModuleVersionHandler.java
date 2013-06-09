@@ -59,7 +59,7 @@ public class PagesAppModuleVersionHandler extends DefaultModuleVersionHandler {
 
     @Override
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
-        Task reorderSubAppTask = new OrderNodeBeforeTask("Make browser sub app default", "Fix bootstrapping order by putting the correct default sub app.", RepositoryConstants.CONFIG, "/modules/ui-pages-app/apps/pages/subApps/browser", "detail");
+        Task reorderSubAppTask = new OrderNodeBeforeTask("Make browser sub app default", "Fix bootstrapping order by putting the correct default sub app.", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser", "detail");
         return Collections.singletonList(reorderSubAppTask);
     }
 
