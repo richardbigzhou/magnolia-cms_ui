@@ -39,7 +39,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
-import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.api.location.DefaultLocation;
 
 import org.junit.After;
 import org.junit.Before;

@@ -38,6 +38,10 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.event.SimpleEventBus;
+import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.location.LocationChangeRequestedEvent;
+import info.magnolia.ui.api.location.LocationChangedEvent;
+import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.api.shell.ConfirmationHandler;
 import info.magnolia.ui.api.shell.Shell;
 
@@ -47,7 +51,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 /**
- * Test case for {@link LocationController}.
+ * Test case for {@link info.magnolia.ui.api.location.LocationController}.
  */
 public class LocationControllerTest {
 

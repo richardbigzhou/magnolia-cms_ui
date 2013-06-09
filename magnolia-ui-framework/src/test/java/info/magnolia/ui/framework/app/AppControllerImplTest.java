@@ -53,10 +53,10 @@ import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImp
 import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.location.LocationChangedEvent;
-import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.ui.api.location.DefaultLocation;
+import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.location.LocationChangedEvent;
+import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.message.MessagesManagerImpl;
 import info.magnolia.ui.api.shell.Shell;

@@ -60,7 +60,7 @@ import info.magnolia.ui.framework.app.AppContext;
 import info.magnolia.ui.framework.app.SubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppDescriptor;
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;

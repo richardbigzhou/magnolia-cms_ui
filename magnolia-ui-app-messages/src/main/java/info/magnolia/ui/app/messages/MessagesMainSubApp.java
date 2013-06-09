@@ -35,7 +35,7 @@ package info.magnolia.ui.app.messages;
 
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 

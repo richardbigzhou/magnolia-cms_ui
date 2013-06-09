@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.view.View;
 
 import org.apache.commons.lang.StringUtils;
@@ -87,7 +87,7 @@ public class BaseSubApp implements SubApp {
     }
 
     /**
-     * This hook-up method is called on {@link #start(info.magnolia.ui.framework.location.Location)} and enables subclasses to perform additional work before the view is displayed.
+     * This hook-up method is called on {@link #start(info.magnolia.ui.api.location.Location)} and enables subclasses to perform additional work before the view is displayed.
      * The default implementation does nothing.
      */
     protected void onSubAppStart() {

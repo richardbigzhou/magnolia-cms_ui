@@ -36,8 +36,8 @@ package info.magnolia.ui.app.security;
 import info.magnolia.ui.contentapp.ContentApp;
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenterFactory;
 import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.api.location.DefaultLocation;
+import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.framework.app.AppView;
 
 import javax.inject.Inject;

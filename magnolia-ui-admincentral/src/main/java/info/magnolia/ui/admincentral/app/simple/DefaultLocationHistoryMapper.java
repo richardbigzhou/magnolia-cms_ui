@@ -35,9 +35,9 @@ package info.magnolia.ui.admincentral.app.simple;
 
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.location.LocationHistoryMapper;
+import info.magnolia.ui.api.location.DefaultLocation;
+import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.location.LocationHistoryMapper;
 
 /**
  * LocationHistoryMapper that creates locations for all apps and shell apps.

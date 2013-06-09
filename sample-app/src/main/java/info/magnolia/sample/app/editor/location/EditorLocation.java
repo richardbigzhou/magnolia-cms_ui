@@ -33,8 +33,8 @@
  */
 package info.magnolia.sample.app.editor.location;
 
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.api.location.DefaultLocation;
+import info.magnolia.ui.api.location.Location;
 
 /**
  * EditorLocation.

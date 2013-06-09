@@ -38,13 +38,14 @@ import static org.junit.Assert.assertEquals;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockWebContext;
+import info.magnolia.ui.api.location.DefaultLocation;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test case for {@link DefaultLocation}.
+ * Test case for {@link info.magnolia.ui.api.location.DefaultLocation}.
  */
 public class DefaultLocationTest {
 

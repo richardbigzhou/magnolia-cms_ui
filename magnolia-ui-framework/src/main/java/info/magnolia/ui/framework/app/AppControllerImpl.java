@@ -52,11 +52,11 @@ import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ChooseDialogEventBus;
 import info.magnolia.event.EventBusProtector;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
-import info.magnolia.ui.framework.location.LocationChangedEvent;
-import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.ui.api.location.DefaultLocation;
+import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.location.LocationChangeRequestedEvent;
+import info.magnolia.ui.api.location.LocationChangedEvent;
+import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
@@ -212,7 +212,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     /**
      * Returns the current location of the focused app. This can differ from the actual location of the admin central, e.g. when a shell app is open.
      *
-     * @see info.magnolia.ui.framework.location.LocationController#getWhere()
+     * @see info.magnolia.ui.api.location.LocationController#getWhere()
      */
     @Override
     public Location getCurrentAppLocation() {

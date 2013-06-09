@@ -34,8 +34,8 @@
 package info.magnolia.sample.app.main;
 
 import info.magnolia.sample.app.editor.location.EditorLocation;
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.location.LocationController;
 
 import javax.inject.Inject;
 

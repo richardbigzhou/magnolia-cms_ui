@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.api.location.Location;
 
 /**
  * Controller for an instance of an App.

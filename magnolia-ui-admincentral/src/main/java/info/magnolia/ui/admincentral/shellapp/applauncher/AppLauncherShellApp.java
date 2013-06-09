@@ -48,7 +48,7 @@ import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutChangedEve
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutChangedEventHandler;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.shell.Shell;
 
 import java.util.LinkedList;

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.location;
+package info.magnolia.ui.api.location;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.event.HandlerRegistration;

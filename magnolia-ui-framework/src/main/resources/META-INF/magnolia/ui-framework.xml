@@ -163,8 +163,8 @@
 
     <!-- Ui framework -->
     <component>
-      <type>info.magnolia.ui.framework.location.LocationController</type>
-      <implementation>info.magnolia.ui.framework.location.LocationController</implementation>
+      <type>info.magnolia.ui.api.location.LocationController</type>
+      <implementation>info.magnolia.ui.api.location.LocationController</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.api.shell.Shell</type>

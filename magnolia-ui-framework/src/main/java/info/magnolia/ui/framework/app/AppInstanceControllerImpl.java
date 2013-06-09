@@ -53,9 +53,9 @@ import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.event.EventBusProtector;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.ui.api.location.DefaultLocation;
+import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.api.shell.Shell;
@@ -347,7 +347,7 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
     }
 
     /**
-     * Used to update the framework about changes to locations inside the app and circumventing the {@link info.magnolia.ui.framework.location.LocationController} mechanism.
+     * Used to update the framework about changes to locations inside the app and circumventing the {@link info.magnolia.ui.api.location.LocationController} mechanism.
      * Example Usages:
      * <pre>
      *     <ul>
@@ -355,7 +355,7 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
      *         <li>In the Pages App when navigating pages inside the PageEditor</li>
      *     </ul>
      * </pre>
-     * When ever possible use the {@link info.magnolia.ui.framework.location.LocationController} to not have to do this.
+     * When ever possible use the {@link info.magnolia.ui.api.location.LocationController} to not have to do this.
      *
      * @param subAppContext The subAppContext to be updated.
      * @param location The new {@link Location}.

@@ -31,44 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.location;
+package info.magnolia.ui.api.location;
 
 /**
- * Represents a location within the application, such as the open view and the selected item.
+ * Maps {@link Location}s to/from fragments, used to configure a {@link LocationHistoryHandler}.
  */
-public interface Location {
+public interface LocationHistoryMapper {
 
-    String LOCATION_TYPE_APP = "app";
-    String LOCATION_TYPE_SHELL_APP = "shell";
+    /**
+     * Returns the location represented by the fragment or null if the fragment is invalid or does not match a supported location.
+     */
+    Location getLocation(String fragment);
 
-    Location NOWHERE = new Location() {
-
-        @Override
-        public String getParameter() {
-            return null;
-        }
-
-        @Override
-        public String getAppType() {
-            return null;
-        }
-
-        @Override
-        public String getAppName() {
-            return null;
-        }
-
-        @Override
-        public String getSubAppId() {
-            return null;
-        }
-    };
-
-    String getParameter();
-
-    String getAppType();
-
-    String getAppName();
-
-    String getSubAppId();
+    /**
+     * Returns the text representation of the location or null if the location isn't handled.
+     */
+    String getFragment(Location location);
 }
