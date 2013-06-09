@@ -245,7 +245,7 @@
       <sv:value>d8a7d0c3-12dc-45b8-bfbc-7822a2ee3523</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.field.builder.RichTextFieldBuilder</sv:value>
+      <sv:value>info.magnolia.ui.form.field.builder.RichTextFieldBuilder</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.RichTextFieldDefinition</sv:value>
