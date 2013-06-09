@@ -57,8 +57,8 @@ import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.location.LocationChangeRequestedEvent;
 import info.magnolia.ui.api.location.LocationChangedEvent;
 import info.magnolia.ui.api.location.LocationController;
-import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.framework.message.MessageType;
+import info.magnolia.ui.api.message.Message;
+import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
 
 import java.util.HashMap;

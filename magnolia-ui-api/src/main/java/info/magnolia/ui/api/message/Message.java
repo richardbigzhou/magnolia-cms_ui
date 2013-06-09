@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.message;
+package info.magnolia.ui.api.message;
 
 import info.magnolia.context.MgnlContext;
 
@@ -132,7 +132,7 @@ public class Message implements Cloneable, Map<String, Object> {
     }
 
     @Override
-    protected Message clone() throws CloneNotSupportedException {
+    public Message clone() throws CloneNotSupportedException {
         return (Message) super.clone();
     }
 
