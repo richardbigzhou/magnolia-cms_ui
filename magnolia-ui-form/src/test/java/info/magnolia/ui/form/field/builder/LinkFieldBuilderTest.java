@@ -36,8 +36,6 @@ package info.magnolia.ui.form.field.builder;
 import static org.junit.Assert.assertEquals;
 
 import info.magnolia.ui.form.field.LinkField;
-import info.magnolia.ui.form.field.builder.AbstractBuilderTest;
-import info.magnolia.ui.form.field.builder.LinkFieldBuilder;
 import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
