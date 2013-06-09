@@ -105,7 +105,7 @@
       <sv:value>16475f15-e885-4707-ba50-af4283d89a3e</sv:value>
     </sv:property>
     <sv:property sv:name="extends" sv:type="String">
-      <sv:value>/modules/ui-pages-app/apps/pages/subApps/detail/actions/editElement</sv:value>
+      <sv:value>/modules/pages/apps/pages/subApps/detail/actions/editElement</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
       <sv:value>2013-05-27T12:28:13.517+02:00</sv:value>
@@ -140,7 +140,7 @@
       <sv:value>8c00dc45-5cac-41a5-a2a3-36e44b0b5773</sv:value>
     </sv:property>
     <sv:property sv:name="extends" sv:type="String">
-      <sv:value>/modules/ui-pages-app/apps/pages/subApps/detail/actions/editElement</sv:value>
+      <sv:value>/modules/pages/apps/pages/subApps/detail/actions/editElement</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
       <sv:value>2013-05-27T12:28:13.517+02:00</sv:value>
@@ -172,7 +172,7 @@
       <sv:value>ffc31da1-350d-4ee2-80ce-c24daa2aff96</sv:value>
     </sv:property>
     <sv:property sv:name="extends" sv:type="String">
-      <sv:value>/modules/ui-pages-app/apps/pages/subApps/detail/actions/editElement</sv:value>
+      <sv:value>/modules/pages/apps/pages/subApps/detail/actions/editElement</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
       <sv:value>2013-05-27T12:28:13.518+02:00</sv:value>
@@ -502,7 +502,7 @@
       <sv:value>b03086ae-b83c-4345-a098-91809101af0f</sv:value>
     </sv:property>
     <sv:property sv:name="extends" sv:type="String">
-      <sv:value>/modules/ui-pages-app/apps/pages/subApps/detail/actions/stopMoveComponent</sv:value>
+      <sv:value>/modules/pages/apps/pages/subApps/detail/actions/stopMoveComponent</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
       <sv:value>2013-05-27T12:28:13.527+02:00</sv:value>
@@ -683,7 +683,7 @@
       <sv:value>c1512466-f949-4c7b-ab51-dfd9f1f53562</sv:value>
     </sv:property>
     <sv:property sv:name="extends" sv:type="String">
-      <sv:value>/modules/ui-pages-app/apps/pages/subApps/browser/actions/activate</sv:value>
+      <sv:value>/modules/pages/apps/pages/subApps/browser/actions/activate</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
       <sv:value>2013-05-27T12:28:13.528+02:00</sv:value>
@@ -715,7 +715,7 @@
       <sv:value>33982dbb-50e0-4679-8d23-3c0a26a79548</sv:value>
     </sv:property>
     <sv:property sv:name="extends" sv:type="String">
-      <sv:value>/modules/ui-pages-app/apps/pages/subApps/browser/actions/deactivate</sv:value>
+      <sv:value>/modules/pages/apps/pages/subApps/browser/actions/deactivate</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
       <sv:value>2013-05-27T12:28:13.528+02:00</sv:value>
@@ -747,7 +747,7 @@
       <sv:value>d6cb7f93-6243-4664-b3d0-231bcbb323b9</sv:value>
     </sv:property>
     <sv:property sv:name="extends" sv:type="String">
-      <sv:value>/modules/ui-pages-app/apps/pages/subApps/browser/actions/showPreviousVersion</sv:value>
+      <sv:value>/modules/pages/apps/pages/subApps/browser/actions/showPreviousVersion</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
       <sv:value>2013-05-27T12:28:13.529+02:00</sv:value>
@@ -773,7 +773,7 @@
       <sv:value>3199342b-08e2-4e5b-a2c2-54e957382e7d</sv:value>
     </sv:property>
     <sv:property sv:name="extends" sv:type="String">
-      <sv:value>/modules/ui-pages-app/apps/pages/subApps/browser/actions/restorePreviousVersion</sv:value>
+      <sv:value>/modules/pages/apps/pages/subApps/browser/actions/restorePreviousVersion</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
       <sv:value>2013-05-27T12:28:13.530+02:00</sv:value>
@@ -802,7 +802,7 @@
       <sv:value>a6df01b3-827a-4ef8-929c-8a72930d2c7f</sv:value>
     </sv:property>
     <sv:property sv:name="extends" sv:type="String">
-      <sv:value>/modules/ui-pages-app/apps/pages/subApps/browser/actions/activate</sv:value>
+      <sv:value>/modules/pages/apps/pages/subApps/browser/actions/activate</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
       <sv:value>2013-05-27T12:28:13.530+02:00</sv:value>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module SYSTEM "module.dtd">
 <module>
-  <name>ui-pages-app</name>
-  <displayName>UI Pages app</displayName>
-  <description>UI Pages app</description>
+  <name>pages</name>
+  <displayName>Pages app</displayName>
+  <description>Pages app</description>
   <versionHandler>info.magnolia.pages.app.setup.PagesAppModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 

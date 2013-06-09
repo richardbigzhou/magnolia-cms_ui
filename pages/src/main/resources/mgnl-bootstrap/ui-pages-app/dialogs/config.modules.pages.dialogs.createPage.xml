@@ -10,7 +10,7 @@
     <sv:value>77c5fe54-c198-4f66-9e55-8b2ebff883b4</sv:value>
   </sv:property>
   <sv:property sv:name="extends" sv:type="String">
-    <sv:value>/modules/ui-pages-app/dialogs/editPage</sv:value>
+    <sv:value>/modules/pages/dialogs/editPage</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:created" sv:type="Date">
     <sv:value>2013-06-06T11:50:39.383+02:00</sv:value>

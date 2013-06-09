@@ -54,7 +54,7 @@ public class PagesAppModuleVersionHandler extends DefaultModuleVersionHandler {
         super();
         register(DeltaBuilder.update("5.0", "Configuration update for Magnolia 5.0")
                 .addTask(new IsModuleInstalledOrRegistered("", "", "adminInterface",
-                        new BootstrapConditionally("Bootstrap activation commands", "Bootstraps the default activation and deletion commands which no longer reside under adminInterface.", "config.modules.ui-pages-app.commands.xml"))));
+                        new BootstrapConditionally("Bootstrap activation commands", "Bootstraps the default activation and deletion commands which no longer reside under adminInterface.", "config.modules.pages.commands.xml"))));
     }
 
     @Override
