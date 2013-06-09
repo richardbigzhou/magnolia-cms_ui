@@ -37,7 +37,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.api.view.Viewport;
-import info.magnolia.ui.framework.event.AdmincentralEventBus;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;

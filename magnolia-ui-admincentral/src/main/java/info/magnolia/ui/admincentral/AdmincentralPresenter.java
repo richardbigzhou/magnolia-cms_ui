@@ -43,7 +43,7 @@ import info.magnolia.ui.admincentral.usermenu.UserMenuPresenter;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
-import info.magnolia.ui.framework.event.AdmincentralEventBus;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.location.LocationController;

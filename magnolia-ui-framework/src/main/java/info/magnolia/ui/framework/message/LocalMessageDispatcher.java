@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.message;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.framework.event.AdmincentralEventBus;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.message.MessagesManager.MessageListener;
 
 import javax.inject.Inject;

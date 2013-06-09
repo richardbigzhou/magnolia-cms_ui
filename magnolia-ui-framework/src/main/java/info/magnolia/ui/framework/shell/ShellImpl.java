@@ -44,7 +44,7 @@ import info.magnolia.ui.framework.AbstractUIContext;
 import info.magnolia.ui.framework.app.AppController;
 import info.magnolia.ui.framework.app.AppLifecycleEvent;
 import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
-import info.magnolia.ui.framework.event.AdmincentralEventBus;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.location.DefaultLocation;
 import info.magnolia.ui.framework.location.Location;
 import info.magnolia.ui.framework.message.Message;

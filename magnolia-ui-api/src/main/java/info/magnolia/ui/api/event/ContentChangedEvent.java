@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2011 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,12 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.api.event;
+
+import info.magnolia.event.Event;
+import info.magnolia.event.EventHandler;
 
 /**
- * Defines the name of the choose dialog event bus.
+ * Event fired when content is changed in a workspace. Holds an itemId of an item that is related to the changes made.
+ * If the change was a deletion the itemId is the parent of the deleted item. If something was added the itemId is for
+ * the new item.
  */
-public interface ChooseDialogEventBus {
+public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
 
-    public static final String NAME = "choosedialog";
+    /**
+     * Handles {@link ContentChangedEvent} events.
+     */
+    public interface Handler extends EventHandler {
+
+        void onContentChanged(ContentChangedEvent event);
+    }
+
+    private String workspace;
+
+    private String itemId;
+
+    public ContentChangedEvent(String workspace, String itemId) {
+        this.workspace = workspace;
+        this.itemId = itemId;
+    }
+
+    public String getWorkspace() {
+        return workspace;
+    }
+
+    public String getItemId() {
+        return itemId;
+    }
+
+    @Override
+    public void dispatch(Handler handler) {
+        handler.onContentChanged(this);
+    }
 }

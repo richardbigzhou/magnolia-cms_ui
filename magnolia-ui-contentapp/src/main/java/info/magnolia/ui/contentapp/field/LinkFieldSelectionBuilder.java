@@ -38,7 +38,7 @@ import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder;
 import info.magnolia.ui.form.field.builder.AbstractFieldBuilder;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.framework.event.ChooseDialogEventBus;
+import info.magnolia.ui.api.event.ChooseDialogEventBus;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.event.ItemSelectedEvent;

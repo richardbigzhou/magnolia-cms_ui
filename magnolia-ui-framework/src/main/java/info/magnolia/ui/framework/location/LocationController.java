@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.location;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.framework.event.AdmincentralEventBus;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.shell.ConfirmationHandler;
 import info.magnolia.ui.framework.shell.Shell;
 

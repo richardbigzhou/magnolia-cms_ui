@@ -40,8 +40,8 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.framework.event.AdmincentralEventBus;
-import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
+import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.inject.Inject;

@@ -54,7 +54,7 @@ import javax.inject.Inject;
  * </ul>
  * 
  * Currently lacking listeners for
- * {@link info.magnolia.ui.framework.event.ContentChangedEvent}. Currently
+ * {@link info.magnolia.ui.api.event.ContentChangedEvent}. Currently
  * lacking handling of locationChanged. Related to MGNLUI-154
  * 
  * @see DetailEditorPresenter

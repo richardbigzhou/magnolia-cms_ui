@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.event;
+package info.magnolia.ui.api.event;
 
 /**
  * Defines the name of the Admincentral event bus.
