@@ -40,7 +40,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.framework.app.SubAppEventBus;
-import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 
 import javax.inject.Inject;

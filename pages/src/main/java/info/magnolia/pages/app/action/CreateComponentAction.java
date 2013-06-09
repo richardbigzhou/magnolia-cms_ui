@@ -56,7 +56,7 @@ import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
-import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;

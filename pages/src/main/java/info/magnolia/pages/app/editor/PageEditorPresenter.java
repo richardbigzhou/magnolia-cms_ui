@@ -41,7 +41,7 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
-import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.framework.message.Message;
 import info.magnolia.ui.framework.message.MessageType;
 import info.magnolia.ui.vaadin.editor.PageEditorListener;

@@ -44,7 +44,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * Action for deleting components. Overrides the default behaviour by sending the {@link info.magnolia.ui.framework.event.ContentChangedEvent} on the {@link SubAppEventBus}.
+ * Action for deleting components. Overrides the default behaviour by sending the {@link info.magnolia.ui.api.event.ContentChangedEvent} on the {@link SubAppEventBus}.
  */
 public class DeleteComponentAction extends DeleteItemAction {
 

@@ -41,7 +41,7 @@ import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.framework.app.SubAppContext;
 import info.magnolia.ui.framework.app.SubAppEventBus;
-import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
