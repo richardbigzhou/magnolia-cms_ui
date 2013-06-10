@@ -79,11 +79,11 @@ public class MultiLinkField extends CustomField<List> {
     private final AppController appController;
     private final SubAppContext subAppContext;
     private String appName;
-    private String dialogName;
+    private String targetTreeRootPath;
     protected VerticalLayout root;
     private boolean allowChangesOnSelected;
 
-    public MultiLinkField(Converter<String, ?> converter, String buttonCaptionAdd, String buttonCaptionNew, String buttonCaptionOther, AppController appController, SubAppContext subAppContext, String appName, String dialogName, boolean allowChangesOnSelected) {
+    public MultiLinkField(Converter<String, ?> converter, String buttonCaptionAdd, String buttonCaptionNew, String buttonCaptionOther, AppController appController, SubAppContext subAppContext, String appName, String targetTreeRootPath, boolean allowChangesOnSelected) {
         this.converter = converter;
         this.buttonCaptionNew = buttonCaptionNew;
         this.buttonCaptionOther = buttonCaptionOther;
@@ -91,7 +91,7 @@ public class MultiLinkField extends CustomField<List> {
         this.appController = appController;
         this.subAppContext = subAppContext;
         this.appName = appName;
-        this.dialogName = dialogName;
+        this.targetTreeRootPath = targetTreeRootPath;
         this.allowChangesOnSelected = allowChangesOnSelected;
     }
 
@@ -183,8 +183,8 @@ public class MultiLinkField extends CustomField<List> {
         // Create a single LinkFild and set DataSource and ValueChangeListener.
         LinkField linkField = new LinkField(converter, buttonCaptionNew, buttonCaptionOther, allowChangesOnSelected);
         final Button selectButton = linkField.getSelectButton();
-        if (StringUtils.isNotBlank(dialogName) || StringUtils.isNotBlank(appName)) {
-            selectButton.addClickListener(createButtonClickListener(dialogName, appName, linkField));
+        if (StringUtils.isNotBlank(appName)) {
+            selectButton.addClickListener(createButtonClickListener(targetTreeRootPath, appName, linkField));
         } else {
             selectButton.setCaption("No Target App Configured");
         }
@@ -220,12 +220,12 @@ public class MultiLinkField extends CustomField<List> {
      * Create the Button click Listener. On click: Create a Dialog and
      * Initialize callback handling.
      */
-    private Button.ClickListener createButtonClickListener(final String dialogName, final String appName, final LinkField linkField) {
+    private Button.ClickListener createButtonClickListener(final String targetTreeRootPath, final String appName, final LinkField linkField) {
         return new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
 
-                appController.openChooseDialog(appName, "/", subAppContext, linkField.getValue(), new ItemChosenListener() {
+                appController.openChooseDialog(appName, targetTreeRootPath, subAppContext, linkField.getValue(), new ItemChosenListener() {
                     @Override
                     public void onItemChosen(final Item chosenValue) {
                         String newValue = null;

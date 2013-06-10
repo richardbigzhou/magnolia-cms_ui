@@ -84,13 +84,13 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
         // Create Translator if we need to store the Identifier
         IdentifierToPathConverter converter = definition.getIdentifierToPathConverter();
         if (converter != null) {
-            converter.setWorkspaceName(definition.getWorkspace());
+            converter.setWorkspaceName(definition.getTargetWorkspace());
         }
         linkField = new LinkField(converter, getMessage(definition.getButtonSelectNewLabel()), getMessage(definition.getButtonSelectOtherLabel()), true);
         final Button selectButton = linkField.getSelectButton();
 
-        if (StringUtils.isNotBlank(definition.getDialogName()) || StringUtils.isNotBlank(definition.getAppName())) {
-            selectButton.addClickListener(createButtonClickListener(definition.getDialogName(), definition.getAppName()));
+        if (StringUtils.isNotBlank(definition.getAppName())) {
+            selectButton.addClickListener(createButtonClickListener(definition.getTargetTreeRootPath(), definition.getAppName()));
         } else {
             selectButton.setCaption(getMessage("field.link.select.error"));
         }
@@ -106,12 +106,12 @@ public class LinkFieldBuilder<D extends FieldDefinition> extends AbstractFieldBu
      * Create the Button click Listener. On click: Create a Dialog and
      * Initialize callback handling.
      */
-    private Button.ClickListener createButtonClickListener(final String dialogName, final String appName) {
+    private Button.ClickListener createButtonClickListener(final String targetTreeRootPath, final String appName) {
         return new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
 
-                appController.openChooseDialog(appName, "/", subAppContext, linkField.getValue(), new ItemChosenListener() {
+                appController.openChooseDialog(appName, targetTreeRootPath, subAppContext, linkField.getValue(), new ItemChosenListener() {
                     @Override
                     public void onItemChosen(final Item chosenValue) {
                         String propertyName = definition.getTargetPropertyToPopulate();

@@ -78,9 +78,9 @@ public class MultiLinkFieldBuilder extends AbstractFieldBuilder<MultiLinkFieldDe
     protected Field<List> buildField() {
         IdentifierToPathConverter converter = definition.getIdentifierToPathConverter();
         if (converter != null) {
-            converter.setWorkspaceName(definition.getWorkspace());
+            converter.setWorkspaceName(definition.getTargetWorkspace());
         }
-        MultiLinkField field = new MultiLinkField(converter, getMessage(definition.getButtonSelectAddLabel()), getMessage(definition.getButtonSelectNewLabel()), getMessage(definition.getButtonSelectOtherLabel()), appController, subAppContext, definition.getAppName(), definition.getDialogName(), definition.isAllowChangesOnSelected());
+        MultiLinkField field = new MultiLinkField(converter, getMessage(definition.getButtonSelectAddLabel()), getMessage(definition.getButtonSelectNewLabel()), getMessage(definition.getButtonSelectOtherLabel()), appController, subAppContext, definition.getAppName(), definition.getTargetTreeRootPath(), definition.isAllowChangesOnSelected());
         return field;
     }
 

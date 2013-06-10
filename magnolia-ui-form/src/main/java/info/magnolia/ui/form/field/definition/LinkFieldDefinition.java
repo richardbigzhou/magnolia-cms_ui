@@ -41,9 +41,9 @@ import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
  */
 public class LinkFieldDefinition extends ConfiguredFieldDefinition {
 
-    private String dialogName;
+    private String targetTreeRootPath = "/";
     private String appName;
-    private String workspace = "website";
+    private String targetWorkspace = "website";
     private String buttonSelectNewLabel = "field.link.select.new";
     private String buttonSelectOtherLabel = "field.link.select.another";
     private IdentifierToPathConverter identifierToPathConverter;
@@ -64,8 +64,8 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
     /**
      * @return the workspace from which the link was retrieve.
      */
-    public String getWorkspace() {
-        return workspace;
+    public String getTargetWorkspace() {
+        return targetWorkspace;
     }
 
     /**
@@ -78,10 +78,10 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
     }
 
     /**
-     * @return the sub Dialog Name. Used by the LinkField to create the sub dialog, like 'ui-admincentral:link'
+     * @return the root of the target tree.
      */
-    public String getDialogName() {
-        return this.dialogName;
+    public String getTargetTreeRootPath() {
+        return this.targetTreeRootPath;
     }
 
     /**
@@ -102,13 +102,13 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
         this.targetPropertyToPopulate = targetPropertyToPopulate;
     }
 
-    public void setWorkspace(String workspace) {
-        this.workspace = workspace;
+    public void setTargetWorkspace(String targetWorkspace) {
+        this.targetWorkspace = targetWorkspace;
     }
 
 
-    public void setDialogName(String dialogName) {
-        this.dialogName = dialogName;
+    public void setTargetTreeRootPath(String targetTreeRootPath) {
+        this.targetTreeRootPath = targetTreeRootPath;
     }
 
     public void setAppName(String appName) {
