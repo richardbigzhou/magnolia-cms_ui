@@ -114,6 +114,7 @@ public class FormBuilder {
                 hasI18NAwareFields |= fieldDefinition.isI18n();
                 final FieldBuilder formField = fieldFactory.createFieldBuilder(fieldDefinition, item);
                 formField.setComponentProvider(componentProvider);
+                formField.setI18nContentSupport(i18nContentSupport);
                 formField.setParent(tab);
                 final Field<?> field = formField.getField();
                 if (field instanceof AbstractComponent) {

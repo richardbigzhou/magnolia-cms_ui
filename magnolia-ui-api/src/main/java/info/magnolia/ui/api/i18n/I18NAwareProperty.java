@@ -43,7 +43,7 @@ import com.vaadin.data.Property;
  */
 public interface I18NAwareProperty<T> extends Property<T> {
 
-    void setDefaultValue(String defaultValue);
+    void setDefaultValue(Object defaultValue);
 
     void setLocale(Locale locale);
 
