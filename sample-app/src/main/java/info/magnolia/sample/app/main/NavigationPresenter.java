@@ -34,8 +34,8 @@
 package info.magnolia.sample.app.main;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.framework.app.AppEventBus;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.api.app.AppEventBus;
+import info.magnolia.ui.api.app.SubAppContext;
 
 import javax.inject.Inject;
 import javax.inject.Named;

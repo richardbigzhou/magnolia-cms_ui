@@ -36,15 +36,15 @@ package info.magnolia.pages.app.action;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.framework.action.DeleteItemAction;
 import info.magnolia.ui.framework.action.DeleteItemActionDefinition;
-import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.app.SubAppEventBus;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * Action for deleting components. Overrides the default behaviour by sending the {@link info.magnolia.ui.framework.event.ContentChangedEvent} on the {@link SubAppEventBus}.
+ * Action for deleting components. Overrides the default behaviour by sending the {@link info.magnolia.ui.api.event.ContentChangedEvent} on the {@link SubAppEventBus}.
  */
 public class DeleteComponentAction extends DeleteItemAction {
 

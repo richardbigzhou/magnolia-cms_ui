@@ -25,16 +25,16 @@
       <implementation>info.magnolia.ui.framework.message.MessagesManagerImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager</type>
-      <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager</implementation>
+      <type>info.magnolia.ui.api.app.registry.ConfiguredAppDescriptorManager</type>
+      <implementation>info.magnolia.ui.api.app.registry.ConfiguredAppDescriptorManager</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.framework.app.registry.AppDescriptorRegistry</type>
-      <implementation>info.magnolia.ui.framework.app.registry.AppDescriptorRegistry</implementation>
+      <type>info.magnolia.ui.api.app.registry.AppDescriptorRegistry</type>
+      <implementation>info.magnolia.ui.api.app.registry.AppDescriptorRegistry</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager</type>
-      <implementation>info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImpl</implementation>
+      <type>info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager</type>
+      <implementation>info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManagerImpl</implementation>
     </component>
 
     <!-- Form -->
@@ -64,7 +64,7 @@
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.api.i18n.I18NAwareProperty</type>
-      <implementation>info.magnolia.ui.admincentral.i18n.I18NAwarePropertyImpl</implementation>
+      <implementation>info.magnolia.ui.framework.i18n.I18NAwarePropertyImpl</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.api.availability.AvailabilityDefinition</type>
@@ -73,24 +73,24 @@
 
     <!-- Ui framework -->
     <type-mapping>
-      <type>info.magnolia.ui.framework.app.AppDescriptor</type>
-      <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor</implementation>
+      <type>info.magnolia.ui.api.app.AppDescriptor</type>
+      <implementation>info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.framework.app.SubAppDescriptor</type>
-      <implementation>info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor</implementation>
+      <type>info.magnolia.ui.api.app.SubAppDescriptor</type>
+      <implementation>info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition</type>
-      <implementation>info.magnolia.ui.framework.app.launcherlayout.definition.ConfiguredAppLauncherLayoutDefinition</implementation>
+      <type>info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutDefinition</type>
+      <implementation>info.magnolia.ui.api.app.launcherlayout.ConfiguredAppLauncherLayoutDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherGroupDefinition</type>
-      <implementation>info.magnolia.ui.framework.app.launcherlayout.definition.ConfiguredAppLauncherGroupDefinition</implementation>
+      <type>info.magnolia.ui.api.app.launcherlayout.AppLauncherGroupDefinition</type>
+      <implementation>info.magnolia.ui.api.app.launcherlayout.ConfiguredAppLauncherGroupDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherGroupEntryDefinition</type>
-      <implementation>info.magnolia.ui.framework.app.launcherlayout.definition.ConfiguredAppLauncherGroupEntryDefinition</implementation>
+      <type>info.magnolia.ui.api.app.launcherlayout.AppLauncherGroupEntryDefinition</type>
+      <implementation>info.magnolia.ui.api.app.launcherlayout.ConfiguredAppLauncherGroupEntryDefinition</implementation>
     </type-mapping>
 
     <!-- Image provider -->
@@ -163,19 +163,19 @@
 
     <!-- Ui framework -->
     <component>
-      <type>info.magnolia.ui.framework.location.LocationController</type>
-      <implementation>info.magnolia.ui.framework.location.LocationController</implementation>
+      <type>info.magnolia.ui.api.location.LocationController</type>
+      <implementation>info.magnolia.ui.api.location.LocationController</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.framework.shell.Shell</type>
+      <type>info.magnolia.ui.api.shell.Shell</type>
       <implementation>info.magnolia.ui.framework.shell.ShellImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.framework.app.AppController</type>
+      <type>info.magnolia.ui.api.app.AppController</type>
       <implementation>info.magnolia.ui.framework.app.AppControllerImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.framework.app.AppView</type>
+      <type>info.magnolia.ui.api.app.AppView</type>
       <implementation>info.magnolia.ui.framework.app.DefaultAppView</implementation>
     </component>
 
@@ -187,7 +187,7 @@
 
     <!-- Ui framework-->
     <type-mapping>
-      <type>info.magnolia.ui.framework.app.AppInstanceController</type>
+      <type>info.magnolia.ui.api.app.AppInstanceController</type>
       <implementation>info.magnolia.ui.framework.app.AppInstanceControllerImpl</implementation>
     </type-mapping>
 
@@ -281,7 +281,7 @@
     <!-- UI Api -->
     <component>
       <type>info.magnolia.ui.api.action.ActionExecutor</type>
-      <implementation>info.magnolia.ui.framework.app.action.SubAppActionExecutor</implementation>
+      <implementation>info.magnolia.ui.framework.app.SubAppActionExecutor</implementation>
     </component>
 
     <!-- Dialog -->

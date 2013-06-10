@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.app.messages;
 
-import info.magnolia.ui.framework.message.MessageType;
+import info.magnolia.ui.api.message.MessageType;
 
 import java.io.Serializable;
 

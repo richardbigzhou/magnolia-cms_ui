@@ -33,13 +33,26 @@
  */
 package info.magnolia.ui.contentapp.detail;
 
-import info.magnolia.ui.contentapp.ContentSubAppView;
-import info.magnolia.ui.framework.app.BaseSubApp;
-import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.contentapp.ContentSubAppView;
+import info.magnolia.ui.framework.action.AbstractRepositoryAction;
+import info.magnolia.ui.framework.app.BaseSubApp;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
+import info.magnolia.ui.api.event.ContentChangedEvent;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import javax.inject.Inject;
+import javax.inject.Named;
+import javax.jcr.Item;
+import javax.jcr.RepositoryException;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base implementation of an item subApp. Provides sensible implementation for
@@ -54,7 +67,7 @@ import javax.inject.Inject;
  * </ul>
  * 
  * Currently lacking listeners for
- * {@link info.magnolia.ui.framework.event.ContentChangedEvent}. Currently
+ * {@link info.magnolia.ui.api.event.ContentChangedEvent}. Currently
  * lacking handling of locationChanged. Related to MGNLUI-154
  * 
  * @see DetailEditorPresenter
@@ -63,14 +76,22 @@ import javax.inject.Inject;
  */
 public class DetailSubApp extends BaseSubApp {
 
-    private final DetailEditorPresenter workbench;
+    private static final Logger log = LoggerFactory.getLogger(DetailSubApp.class);
 
+    private final DetailEditorPresenter workbench;
+    private final EventBus adminCentralEventBus;
+
+    private String itemId;
     private String caption;
 
     @Inject
-    protected DetailSubApp(final SubAppContext subAppContext, final ContentSubAppView view, DetailEditorPresenter workbench) {
+    protected DetailSubApp(final SubAppContext subAppContext, final ContentSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus adminCentralEventBus, DetailEditorPresenter workbench) {
         super(subAppContext, view);
+
+        this.adminCentralEventBus = adminCentralEventBus;
         this.workbench = workbench;
+
+        bindHandlers();
     }
 
     /**
@@ -84,10 +105,17 @@ public class DetailSubApp extends BaseSubApp {
      */
     @Override
     public View start(final Location location) {
-        DetailLocation l = DetailLocation.wrap(location);
-        super.start(l);
-        this.caption = l.getNodePath();
-        getView().setContentView(workbench.start(l.getNodePath(), l.getViewType()));
+        DetailLocation detailLocation = DetailLocation.wrap(location);
+        super.start(detailLocation);
+        this.caption = detailLocation.getNodePath();
+
+        try {
+            this.itemId = JcrItemUtil.getItemId(getWorkspace(), detailLocation.getNodePath());
+        } catch (RepositoryException e) {
+            log.warn("Could not retrieve item at path {} in workspace {}", detailLocation.getNodePath(), getWorkspace());
+        }
+
+        getView().setContentView(workbench.start(detailLocation.getNodePath(), detailLocation.getViewType()));
         return getView();
     }
 
@@ -125,6 +153,65 @@ public class DetailSubApp extends BaseSubApp {
     @Override
     public String getCaption() {
         return caption;
+    }
+
+    private void bindHandlers() {
+
+        adminCentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+
+            @Override
+            public void onContentChanged(ContentChangedEvent event) {
+                // See if workspaces match
+                if (event.getWorkspace().equals(getWorkspace())) {
+                    // New item
+                    if (itemId == null) {
+                        try {
+                            // Check if parent is still existing, close supApp if it doesn't
+                            // TODO: show message?
+                            String currentNodePath = getCurrentLocation().getNodePath();
+                            String currentNodePathParent = StringUtils.removeEnd(currentNodePath, "/" + AbstractRepositoryAction.DEFAULT_NEW_ITEM_NAME);
+
+                            if (!MgnlContext.getJCRSession(getWorkspace()).nodeExists(currentNodePathParent)) {
+                                getSubAppContext().close();
+                            }
+                        } catch (RepositoryException e) {
+                            log.warn("Could not determine if parent node still exists", e);
+                        }
+                    // Editing existing item
+                    } else {
+                        try {
+                            Item item = JcrItemUtil.getJcrItem(getWorkspace(), itemId);
+
+                            // Item (or parent) was deleted: close subApp
+                            if (item == null) {
+                                getSubAppContext().close();
+                            }
+                            // Item still exists: update location if necessary
+                            else {
+                                String currentNodePath = getCurrentLocation().getNodePath();
+
+                                if (!item.getPath().equals(currentNodePath)) {
+                                    DetailLocation location = DetailLocation.wrap(getSubAppContext().getLocation());
+                                    location.updateNodePath(item.getPath());
+                                    // Update location
+                                    getSubAppContext().setLocation(location);
+                                    // Update
+                                    caption = item.getPath();
+                                }
+                            }
+                        } catch (RepositoryException e) {
+                            log.warn("Could not determine if node still exists", e);
+                        }
+                    }
+                }
+            }
+        });
+
+    }
+
+    private String getWorkspace() {
+        DetailSubAppDescriptor subAppDescriptor = (DetailSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
+        return subAppDescriptor.getEditor().getWorkspace();
     }
 
 }

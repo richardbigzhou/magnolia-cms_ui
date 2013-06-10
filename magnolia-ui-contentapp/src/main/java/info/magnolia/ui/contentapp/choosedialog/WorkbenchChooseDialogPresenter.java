@@ -35,7 +35,7 @@ package info.magnolia.ui.contentapp.choosedialog;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.dialog.BaseDialogPresenter;
-import info.magnolia.ui.framework.event.ChooseDialogEventBus;
+import info.magnolia.ui.api.event.ChooseDialogEventBus;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;

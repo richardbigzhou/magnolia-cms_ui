@@ -36,7 +36,7 @@ package info.magnolia.ui.framework.action;
 import info.magnolia.cms.core.Path;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;

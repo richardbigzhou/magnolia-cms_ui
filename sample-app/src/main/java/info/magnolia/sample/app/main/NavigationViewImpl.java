@@ -33,7 +33,7 @@
  */
 package info.magnolia.sample.app.main;
 
-import info.magnolia.ui.framework.app.AppController;
+import info.magnolia.ui.api.app.AppController;
 
 import javax.inject.Inject;
 

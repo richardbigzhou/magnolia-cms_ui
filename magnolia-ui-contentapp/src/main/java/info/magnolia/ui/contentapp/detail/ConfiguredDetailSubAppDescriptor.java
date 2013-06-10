@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.contentapp.detail;
 
+import info.magnolia.ui.contentapp.definition.ConfiguredContentSubAppDescriptor;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
-import info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor;
 
 /**
  * ConfiguredItemSubAppDescriptor.
  */
-public class ConfiguredDetailSubAppDescriptor extends ConfiguredSubAppDescriptor implements DetailSubAppDescriptor {
+public class ConfiguredDetailSubAppDescriptor extends ConfiguredContentSubAppDescriptor implements DetailSubAppDescriptor {
 
     private EditorDefinition editor;
 

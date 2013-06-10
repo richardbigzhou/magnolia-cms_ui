@@ -36,7 +36,7 @@ package info.magnolia.ui.contentapp.detail.action;
 import info.magnolia.cms.core.Path;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
-import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;

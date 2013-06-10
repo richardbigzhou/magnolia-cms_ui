@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTab;
 import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
@@ -48,7 +49,7 @@ import com.vaadin.ui.Component;
 /**
  * View used to give all apps a uniform look-and-feel.
  *
- * @see AppView
+ * @see info.magnolia.ui.api.app.AppView
  */
 public class DefaultAppView implements AppView {
 

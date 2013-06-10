@@ -33,7 +33,9 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.AppView;
+import info.magnolia.ui.api.location.Location;
 
 import java.util.ArrayList;
 import java.util.HashMap;

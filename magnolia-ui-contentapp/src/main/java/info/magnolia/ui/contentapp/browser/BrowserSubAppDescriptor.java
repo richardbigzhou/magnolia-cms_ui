@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
-import info.magnolia.ui.framework.app.SubAppDescriptor;
+import info.magnolia.ui.contentapp.definition.ContentSubAppDescriptor;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 /**
  * ContentSubAppDescriptor.
  */
-public interface BrowserSubAppDescriptor extends SubAppDescriptor {
+public interface BrowserSubAppDescriptor extends ContentSubAppDescriptor {
 
     WorkbenchDefinition getWorkbench();
 }

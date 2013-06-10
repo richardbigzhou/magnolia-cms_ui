@@ -35,10 +35,10 @@ package info.magnolia.sample.app.editor;
 
 import info.magnolia.sample.app.editor.location.EditorLocation;
 import info.magnolia.ui.framework.app.BaseSubApp;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.framework.app.SubAppEventBus;
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.api.app.SubAppEventBus;
+import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.view.View;
 
 import javax.inject.Inject;

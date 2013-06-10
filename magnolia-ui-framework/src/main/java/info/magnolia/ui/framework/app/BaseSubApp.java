@@ -33,7 +33,10 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.SubApp;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.view.View;
 
 import org.apache.commons.lang.StringUtils;
@@ -43,7 +46,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Basic implementation of a subApp with default behavior suitable for most sub apps.
  *
- * @see SubApp
+ * @see info.magnolia.ui.api.app.SubApp
  */
 public class BaseSubApp implements SubApp {
 
@@ -87,7 +90,7 @@ public class BaseSubApp implements SubApp {
     }
 
     /**
-     * This hook-up method is called on {@link #start(info.magnolia.ui.framework.location.Location)} and enables subclasses to perform additional work before the view is displayed.
+     * This hook-up method is called on {@link #start(info.magnolia.ui.api.location.Location)} and enables subclasses to perform additional work before the view is displayed.
      * The default implementation does nothing.
      */
     protected void onSubAppStart() {

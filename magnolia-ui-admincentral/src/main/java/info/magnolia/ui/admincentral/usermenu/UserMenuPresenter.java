@@ -39,8 +39,8 @@ import info.magnolia.ui.admincentral.usermenu.action.UserActionExecutor;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.framework.message.MessageType;
+import info.magnolia.ui.api.message.Message;
+import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
 
 import javax.inject.Inject;

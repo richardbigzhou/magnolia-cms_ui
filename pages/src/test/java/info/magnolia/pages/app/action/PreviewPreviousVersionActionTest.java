@@ -47,9 +47,9 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.location.LocationController;
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.location.LocationController;
+import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
