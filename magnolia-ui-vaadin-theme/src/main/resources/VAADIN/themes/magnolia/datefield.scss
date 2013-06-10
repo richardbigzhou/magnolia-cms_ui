@@ -22,12 +22,12 @@
       background-position: 2px 3px;
       background-color: transparent;
     }
-    
+
     &:hover {
       background-color: transparent;
     }
   }
-  
+
   .v-datefield-calendarpanel button[type = "button"],
   .v-inline-datefield-calendarpanel button[type = "button"] {
     &:active,
@@ -39,7 +39,7 @@
 
   .v-datefield-calendarpanel,
   .v-inline-datefield-calendarpanel {
-    border: 1px solid $c12;
+    border: 1px solid $c14;
     border-collapse: collapse;
     background-color: $c80;
     font-size: 14x;
@@ -84,7 +84,7 @@
     td {
       min-width: 30px;
       height: 28px;
-      border: 1px solid $c14;
+      border: 1px solid $c15;
       color: $c10;
       font-family: DINWebPro, sans-serif;
       font-size: 1em;
