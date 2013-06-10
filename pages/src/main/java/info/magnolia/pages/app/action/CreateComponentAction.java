@@ -181,6 +181,8 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
         select.setLabel("Component");
         tab.addField(select);
 
+        form.addTab(tab);
+
         String[] tokens = availableComponents.split(",");
 
         for (String token : tokens) {
