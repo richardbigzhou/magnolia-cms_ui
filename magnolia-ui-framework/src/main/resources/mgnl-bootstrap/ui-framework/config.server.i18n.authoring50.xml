@@ -10,7 +10,7 @@
     <sv:value>aa633f2e-b89e-4ca0-bda6-03118ca326c3</sv:value>
   </sv:property>
   <sv:property sv:name="class" sv:type="String">
-    <sv:value>info.magnolia.ui.admincentral.i18n.DefaultI18NAuthoringSupport</sv:value>
+    <sv:value>info.magnolia.ui.framework.i18n.DefaultI18NAuthoringSupport</sv:value>
   </sv:property>
   <sv:property sv:name="enabled" sv:type="Boolean">
     <sv:value>true</sv:value>
