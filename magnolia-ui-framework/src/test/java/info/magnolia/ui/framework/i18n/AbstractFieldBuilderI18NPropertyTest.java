@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.i18n;
+package info.magnolia.ui.framework.i18n;
 
 import static org.junit.Assert.assertEquals;
 

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.i18n;
+package info.magnolia.ui.framework.i18n;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.link.LinkUtil;
