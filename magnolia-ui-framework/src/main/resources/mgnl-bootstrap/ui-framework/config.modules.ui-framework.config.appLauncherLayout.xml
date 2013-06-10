@@ -334,7 +334,7 @@
         <sv:value>d5e10049-a281-4e04-bc8b-d6e77913c872</sv:value>
       </sv:property>
       <sv:property sv:name="color" sv:type="String">
-        <sv:value>#DBDF7C</sv:value>
+        <sv:value>#666666</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
