@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module SYSTEM "module.dtd">
 <module>
-  <name>ui-messages-app</name>
-  <displayName>UI Messages app</displayName>
-  <description>UI Messages app</description>
+  <name>messages-app</name>
+  <displayName>Messages app</displayName>
+  <description>Messages app</description>
   <version>${project.version}</version>
 
   <!-- Components App definition. -->
@@ -16,12 +16,12 @@
   <components>
     <id>app-messages-main</id>
     <component>
-      <type>info.magnolia.ui.app.messages.MessagesMainSubApp</type>
-      <implementation>info.magnolia.ui.app.messages.MessagesMainSubApp</implementation>
+      <type>info.magnolia.messages.app.MessagesMainSubApp</type>
+      <implementation>info.magnolia.messages.app.MessagesMainSubApp</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.app.messages.MessagesView</type>
-      <implementation>info.magnolia.ui.app.messages.MessagesViewImpl</implementation>
+      <type>info.magnolia.messages.app.MessagesView</type>
+      <implementation>info.magnolia.messages.app.MessagesViewImpl</implementation>
     </component>
   </components>
 

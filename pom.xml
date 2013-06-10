@@ -248,7 +248,7 @@
     <module>magnolia-ui-admincentral</module>
     <module>magnolia-ui-actionbar</module>
     <module>sample-app</module>
-    <module>magnolia-ui-app-messages</module>
+    <module>messages-app</module>
     <module>pages</module>
     <module>security-app</module>
     <module>magnolia-ui-mediaeditor</module>
