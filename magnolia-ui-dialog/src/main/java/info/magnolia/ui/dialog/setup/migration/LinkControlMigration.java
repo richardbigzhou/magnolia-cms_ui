@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.dialog.setup.migration;
 
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 
 import javax.jcr.Node;
@@ -48,36 +50,41 @@ public class LinkControlMigration implements ControlMigration {
     @Override
     public void migrate(Node controlNode) throws RepositoryException {
         Property controlType = controlNode.getProperty("controlType");
+        String appName = "pages";
+        String className = LinkFieldDefinition.class.getName();
+        String dialogName = "pages:link";
+        String workspace = "website";
 
-        controlNode.setProperty("identifier", controlType.getString().equals("uuidLink") ? "true" : "false");
+        // Set IdentifierConvertor
+        if (controlType.getString().equals("uuidLink")) {
+            controlNode.addNode("identifierToPathConverter", NodeTypes.ContentNode.NAME);
+            controlNode.getNode("identifierToPathConverter").setProperty("class", BaseIdentifierToPathConverter.class.getName());
+        }
+
         if (controlNode.hasProperty("repository")) {
-            if (controlNode.getProperty("repository").getString().equals("website")) {
-                controlNode.setProperty("appName", "pages");
-                controlNode.setProperty("class", LinkFieldDefinition.class.getName());
-                controlNode.setProperty("dialogName", "ui-pages-app:link");
-            } else if (controlNode.getProperty("repository").getString().equals("data")) {
+            if (controlNode.getProperty("repository").getString().equals("data")) {
                 // Handle contacts
                 if (controlNode.hasProperty("tree") && controlNode.getProperty("tree").getString().equals("Contact")) {
-                    controlNode.setProperty("appName", "contacts");
-                    controlNode.setProperty("workspace", "contacts");
-                    controlNode.setProperty("dialogName", "ui-contacts-app:link");
-                    controlNode.setProperty("class", "info.magnolia.ui.app.contacts.field.definition.ContactLinkFieldDefinition");
+                    appName = "contacts";
+                    workspace = "contacts";
+                    dialogName = "contacts-app:link";
+                    className = "info.magnolia.contacts.app.field.definition.ContactLinkFieldDefinition";
                 }
             } else if (controlNode.getProperty("repository").getString().equals("dms")) {
-                DamControlMigration damMigration = new DamControlMigration(null);
+                DamControlMigration damMigration = new DamControlMigration();
                 damMigration.migrate(controlNode);
+                return;
             }
-        } else {
-            // Set repository to website
-            controlNode.setProperty("repository", "website");
-            controlNode.setProperty("appName", "pages");
-            controlNode.setProperty("class", "info.magnolia.ui.form.field.definition.LinkFieldDefinition");
-            controlNode.setProperty("dialogName", "ui-pages-app:link");
+            controlNode.getProperty("repository").remove();
         }
-        // Could already be removed by DamControlMigration
-        if (controlNode.hasProperty("controlType")) {
-            controlType.remove();
-        }
+
+        controlNode.setProperty("workspace", workspace);
+        controlNode.setProperty("appName", appName);
+        controlNode.setProperty("class", className);
+        controlNode.setProperty("dialogName", dialogName);
+
+        controlType.remove();
+
     }
 
 }

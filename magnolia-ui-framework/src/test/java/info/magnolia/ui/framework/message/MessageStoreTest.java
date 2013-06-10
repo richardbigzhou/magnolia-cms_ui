@@ -48,6 +48,8 @@ import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.api.message.Message;
+import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 
 import javax.jcr.Session;

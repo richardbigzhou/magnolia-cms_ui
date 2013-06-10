@@ -41,7 +41,7 @@ import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 
 import java.lang.reflect.InvocationTargetException;

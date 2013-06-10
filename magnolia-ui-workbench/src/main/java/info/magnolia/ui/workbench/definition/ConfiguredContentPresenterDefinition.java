@@ -38,7 +38,6 @@ import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -93,20 +92,8 @@ public class ConfiguredContentPresenterDefinition implements ContentPresenterDef
     }
 
     @Override
-    /**
-     * Only return the enabled columns.
-     */
     public List<ColumnDefinition> getColumns() {
-        ArrayList<ColumnDefinition> enabledColumns = new ArrayList<ColumnDefinition>();
-        Iterator<ColumnDefinition> it = columns.iterator();
-
-        while (it.hasNext()) {
-            ColumnDefinition column = it.next();
-            if (column.isEnabled()) {
-                enabledColumns.add(column);
-            }
-        }
-        return enabledColumns;
+        return columns;
     }
 
     public void addColumn(ColumnDefinition columnDefinition) {

@@ -38,19 +38,23 @@ import info.magnolia.event.EventBus;
 import info.magnolia.event.EventHandlerCollection;
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.api.overlay.OverlayCloser;
+import info.magnolia.ui.api.shell.ConfirmationHandler;
+import info.magnolia.ui.api.shell.FragmentChangedEvent;
+import info.magnolia.ui.api.shell.FragmentChangedHandler;
+import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.api.view.Viewport;
-import info.magnolia.ui.framework.AbstractUIContext;
-import info.magnolia.ui.framework.app.AppController;
-import info.magnolia.ui.framework.app.AppLifecycleEvent;
-import info.magnolia.ui.framework.app.AppLifecycleEventHandler;
-import info.magnolia.ui.framework.event.AdmincentralEventBus;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.context.AbstractUIContext;
+import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.app.AppLifecycleEvent;
+import info.magnolia.ui.api.app.AppLifecycleEventHandler;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
+import info.magnolia.ui.api.location.DefaultLocation;
+import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
-import info.magnolia.ui.framework.message.MessageType;
+import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
@@ -335,21 +339,6 @@ public class ShellImpl extends AbstractUIContext implements Shell, MessageEventH
 
     public void setFullScreen(boolean isFullScreen) {
         magnoliaShell.setFullScreen(isFullScreen);
-    }
-
-    @Override
-    public void showInfo(Message message) {
-        magnoliaShell.showInfo(message.getId(), message.getSubject(), message.getMessage());
-    }
-
-    @Override
-    public void showError(Message message) {
-        magnoliaShell.showError(message.getId(), message.getSubject(), message.getMessage());
-    }
-
-    @Override
-    public void showWarning(Message message) {
-        magnoliaShell.showWarning(message.getId(), message.getSubject(), message.getMessage());
     }
 
     public MagnoliaShell getMagnoliaShell() {

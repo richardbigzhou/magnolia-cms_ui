@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp;
 
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.view.View;
 
 /**

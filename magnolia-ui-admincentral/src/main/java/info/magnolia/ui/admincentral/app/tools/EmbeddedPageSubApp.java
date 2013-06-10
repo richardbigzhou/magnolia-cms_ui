@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.app.tools;
 
 import info.magnolia.ui.framework.app.BaseSubApp;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppContext;
 
 import javax.inject.Inject;
 

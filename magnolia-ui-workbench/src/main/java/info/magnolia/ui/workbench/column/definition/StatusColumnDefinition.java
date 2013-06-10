@@ -33,23 +33,13 @@
  */
 package info.magnolia.ui.workbench.column.definition;
 
-import info.magnolia.cms.beans.config.ServerConfiguration;
-import info.magnolia.cms.exchange.ActivationManager;
-
-import javax.inject.Inject;
-
 /**
  * Defines a column that displays the activation status of an item.
  */
 public class StatusColumnDefinition extends AbstractColumnDefinition {
 
-    private final ServerConfiguration serverConfiguration;
-    private final ActivationManager activationManager;
-
-    @Inject
-    public StatusColumnDefinition(final ServerConfiguration serverConfiguration, final ActivationManager activationManager) {
-        this.serverConfiguration = serverConfiguration;
-        this.activationManager = activationManager;
+    public StatusColumnDefinition() {
+        setRuleClass(OnAuthorOrWhenThereIsSubscribersRule.class);
     }
 
     // Show Activation Status
@@ -72,13 +62,5 @@ public class StatusColumnDefinition extends AbstractColumnDefinition {
 
     public void setPermissions(boolean permissions) {
         this.permissions = permissions;
-    }
-
-    /**
-     * @return true  when the property is set to true and we're either on a admin instance or there's active subscribers.
-     */
-    @Override
-    public boolean isEnabled() {
-        return super.isEnabled() && (serverConfiguration.isAdmin() || activationManager.hasAnyActiveSubscriber());
     }
 }
