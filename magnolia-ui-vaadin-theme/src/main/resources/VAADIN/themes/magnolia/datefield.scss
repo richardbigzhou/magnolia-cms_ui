@@ -20,6 +20,20 @@
 
     &:active {
       background-position: 2px 3px;
+      background-color: transparent;
+    }
+    
+    &:hover {
+      background-color: transparent;
+    }
+  }
+  
+  .v-datefield-calendarpanel button[type = "button"],
+  .v-inline-datefield-calendarpanel button[type = "button"] {
+    &:active,
+    &:hover {
+      background-color: transparent;
+      color: white;
     }
   }
 
