@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.tools;
+package info.magnolia.ui.framework.app.embedded;
 
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.api.app.SubAppContext;
@@ -44,7 +44,6 @@ import javax.inject.Inject;
 public class EmbeddedPageSubApp extends BaseSubApp {
 
     @Inject
-
     public EmbeddedPageSubApp(SubAppContext subAppContext, EmbeddedPageView pageView) {
         super(subAppContext, pageView);
     }
