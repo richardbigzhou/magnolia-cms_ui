@@ -64,7 +64,7 @@ public class DefaultPropertyUtil {
      * If stringValue is defined, create a typed value based ont fieldType.
      */
     public static DefaultProperty newDefaultProperty(String fieldType, String stringValue) throws NumberFormatException {
-        Object value = "";
+        Object value = null;
         try {
             value = createTypedValue(fieldType, stringValue);
         } catch (Exception e) {

@@ -64,7 +64,7 @@
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.api.i18n.I18NAwareProperty</type>
-      <implementation>info.magnolia.ui.admincentral.i18n.I18NAwarePropertyImpl</implementation>
+      <implementation>info.magnolia.ui.framework.i18n.I18NAwarePropertyImpl</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.api.availability.AvailabilityDefinition</type>
