@@ -38,7 +38,7 @@ import info.magnolia.ui.api.action.ActionDefinition;
 import java.util.Map;
 
 /**
- * Definition registered under the config node of {@link info.magnolia.ui.admincentral.module.AdminCentralModule}.
+ * Definition registered under the config node of {@link info.magnolia.ui.admincentral.AdmincentralModule}.
  * Holds actions used by the {@link info.magnolia.ui.admincentral.usermenu.action.UserActionExecutor}.
  */
 public interface UserMenuDefinition {

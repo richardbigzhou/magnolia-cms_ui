@@ -47,7 +47,7 @@ import com.vaadin.server.ExternalResource;
  */
 public class ActionPopup extends ContextMenu implements ActionMenu {
 
-    public static String ICON_FONT_CODE = "iconfont#";
+    public static final String ICON_FONT_CODE = "iconfont#";
 
     @Override
     public void hideAllSections() {
@@ -65,12 +65,12 @@ public class ActionPopup extends ContextMenu implements ActionMenu {
             ExternalResource iconFontResource = new ExternalResource(iconFontCode);
 
             menuItem = addItem(label, iconFontResource);
-            // Set data variable so that the event handler can determine which action to launch.
-            menuItem.setData(action.getName());
-            menuItem.setEnabled(enabledActions.contains(action));
-
-            // Add group separator.
             if (menuItem != null) {
+                // Set data variable so that the event handler can determine which action to launch.
+                menuItem.setData(action.getName());
+                menuItem.setEnabled(enabledActions.contains(action));
+
+                // Add group separator.
                 menuItem.setSeparatorVisible(true);
             }
         }

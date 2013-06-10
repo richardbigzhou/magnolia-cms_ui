@@ -89,4 +89,9 @@ public interface ColumnDefinition {
      * @return
      */
     boolean isEnabled();
+
+    /**
+     * Returns the AvailabilityRule object for this subject.
+     */
+    Class<? extends ColumnAvailabilityRule> getRuleClass();
 }

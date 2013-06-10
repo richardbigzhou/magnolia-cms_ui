@@ -132,6 +132,9 @@ public class ContentPresenterTest {
     }
 
     private static class DummyContentPresenter extends AbstractContentPresenter {
+        private DummyContentPresenter() {
+            super(null);
+        }
 
         @Override
         public void refresh() {

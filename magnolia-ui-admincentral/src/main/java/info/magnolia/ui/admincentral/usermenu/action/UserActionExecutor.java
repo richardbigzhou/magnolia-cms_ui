@@ -34,7 +34,7 @@
 package info.magnolia.ui.admincentral.usermenu.action;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.admincentral.module.AdminCentralModule;
+import info.magnolia.ui.admincentral.AdmincentralModule;
 import info.magnolia.ui.admincentral.usermenu.definition.UserMenuDefinition;
 import info.magnolia.ui.api.action.AbstractActionExecutor;
 import info.magnolia.ui.api.action.ActionDefinition;
@@ -45,14 +45,14 @@ import java.util.Collections;
 import javax.inject.Inject;
 
 /**
- * Action Executor for actions registered in {@link UserMenuDefinition} and obtained by {@link info.magnolia.ui.admincentral.module.AdminCentralModule#getUserMenu()}.
+ * Action Executor for actions registered in {@link UserMenuDefinition} and obtained by {@link info.magnolia.ui.admincentral.AdmincentralModule#getUserMenu()}.
  */
 public class UserActionExecutor extends AbstractActionExecutor {
 
     private final UserMenuDefinition userMenuDefinition;
 
     @Inject
-    public UserActionExecutor(ComponentProvider componentProvider, AdminCentralModule module) {
+    public UserActionExecutor(ComponentProvider componentProvider, AdmincentralModule module) {
         super(componentProvider);
         this.userMenuDefinition = module.getUserMenu();
     }

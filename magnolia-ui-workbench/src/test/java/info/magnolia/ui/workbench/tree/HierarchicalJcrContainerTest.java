@@ -40,7 +40,6 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.container.AbstractJcrContainerTest;
@@ -113,7 +112,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         workbenchDefinition = configuredWorkbench;
 
-        hierarchicalJcrContainer = new HierarchicalJcrContainer(workbenchDefinition, ViewType.TREE.getText());
+        hierarchicalJcrContainer = new HierarchicalJcrContainer(workbenchDefinition);
 
         // Init session
         session = MgnlContext.getJCRSession(WORKSPACE);

@@ -40,10 +40,8 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
  * A flat implementation of {@link info.magnolia.ui.workbench.container.AbstractJcrContainer} where relationships are not taken into account.
  */
 public class FlatJcrContainer extends AbstractJcrContainer {
-    /**
-     * Constructor for {@link FlatJcrContainer}.
-     */
-    public FlatJcrContainer(WorkbenchDefinition workbenchDefinition, String viewTypeName) {
-        super(workbenchDefinition, viewTypeName);
+
+    public FlatJcrContainer(WorkbenchDefinition workbenchDefinition) {
+        super(workbenchDefinition);
     }
 }

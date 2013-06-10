@@ -36,6 +36,8 @@ package info.magnolia.ui.framework.message;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.api.message.Message;
+import info.magnolia.ui.api.message.MessageType;
 
 import java.util.Collection;
 import java.util.List;

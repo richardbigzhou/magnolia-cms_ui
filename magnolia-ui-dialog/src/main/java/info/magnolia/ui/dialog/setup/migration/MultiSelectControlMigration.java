@@ -77,7 +77,7 @@ public class MultiSelectControlMigration implements ControlMigration {
             controlNode.setProperty("workspace", workspace);
             controlNode.getProperty("tree").remove();
             if (workspace.equals("category")) {
-                controlNode.setProperty("dialogName", "ui-pages-app:link");
+                controlNode.setProperty("dialogName", "pages:link");
                 controlNode.setProperty("appName", "categories");
             }
         }

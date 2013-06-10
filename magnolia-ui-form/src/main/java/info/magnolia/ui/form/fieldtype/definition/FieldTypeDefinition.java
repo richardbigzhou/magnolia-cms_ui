@@ -38,6 +38,9 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
 
 /**
  * FieldTypeDefinition.
+ *
+ * @see FieldDefinition
+ * @see FieldBuilder
  */
 public interface FieldTypeDefinition {
 

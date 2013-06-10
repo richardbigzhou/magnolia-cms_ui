@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.message;
 
 import info.magnolia.event.Event;
+import info.magnolia.ui.api.message.Message;
 
 /**
  * Message event.

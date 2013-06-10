@@ -39,6 +39,8 @@ import static org.mockito.Mockito.*;
 import info.magnolia.cms.security.User;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.api.message.Message;
+import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 
 import org.junit.After;
