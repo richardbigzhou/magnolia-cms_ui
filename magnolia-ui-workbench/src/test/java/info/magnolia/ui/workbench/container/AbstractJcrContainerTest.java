@@ -41,7 +41,6 @@ import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
@@ -95,8 +94,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         configuredWorkbench.addNodeType(mainNodeTypeDefinition);
 
         // Add view
-        ConfiguredContentPresenterDefinition contentView = new TreePresenterDefinition();
-        configuredWorkbench.addContentView(contentView);
+        ConfiguredContentPresenterDefinition contentPresenterDef = new TreePresenterDefinition();
+        configuredWorkbench.addContentView(contentPresenterDef);
 
         // Add columns
         PropertyTypeColumnDefinition colDef1 = new PropertyTypeColumnDefinition();
@@ -108,12 +107,13 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         colDef2.setName(colName2);
         colDef2.setLabel("Label_" + colName2);
 
-        contentView.addColumn(colDef1);
-        contentView.addColumn(colDef2);
+        contentPresenterDef.addColumn(colDef1);
+        contentPresenterDef.addColumn(colDef2);
 
         configuredWorkbench.setDefaultOrder(colName2);
 
         jcrContainer = new JcrContainerTestImpl(configuredWorkbench);
+        jcrContainer.addSortableProperty(colDef1.getName());
         workbenchDefinition = configuredWorkbench;
 
         // Init session
@@ -595,7 +595,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     public class JcrContainerTestImpl extends AbstractJcrContainer {
 
         public JcrContainerTestImpl(WorkbenchDefinition workbenchDefinition) {
-            super(workbenchDefinition, ViewType.TREE.getText());
+            super(workbenchDefinition);
         }
 
         @Override

@@ -50,8 +50,8 @@ public class SearchJcrContainer extends FlatJcrContainer {
     protected static final String WHERE_TEMPLATE_FOR_SEARCH = " (localname() LIKE '%%%1$s%%' or contains(" + SELECTOR_NAME + ".*, '%1$s'))";
     private String fullTextExpression;
 
-    public SearchJcrContainer(WorkbenchDefinition workbenchDefinition, String viewTypeName) {
-        super(workbenchDefinition, viewTypeName);
+    public SearchJcrContainer(WorkbenchDefinition workbenchDefinition) {
+        super(workbenchDefinition);
     }
 
     @Override

@@ -35,8 +35,8 @@ package info.magnolia.ui.contentapp.detail;
 
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
-import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.view.View;
 
 import javax.inject.Inject;
@@ -54,7 +54,7 @@ import javax.inject.Inject;
  * </ul>
  * 
  * Currently lacking listeners for
- * {@link info.magnolia.ui.framework.event.ContentChangedEvent}. Currently
+ * {@link info.magnolia.ui.api.event.ContentChangedEvent}. Currently
  * lacking handling of locationChanged. Related to MGNLUI-154
  * 
  * @see DetailEditorPresenter

@@ -41,8 +41,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.workbench.config.WorkbenchBuilder;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
@@ -82,7 +81,11 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
 
 
         // GIVEN
-        WorkbenchDefinition workbenchDefinition = new WorkbenchBuilder().workspace(WORKSPACE).path(ROOT_PATH).contentViews(new TreePresenterDefinition(), new ListPresenterDefinition()).exec();
+        ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
+        workbenchDefinition.setWorkspace(WORKSPACE);
+        workbenchDefinition.setPath(ROOT_PATH);
+        workbenchDefinition.getContentViews().add(new TreePresenterDefinition());
+        workbenchDefinition.getContentViews().add(new ListPresenterDefinition());
         presenter.start(workbenchDefinition, null, null);
 
         // WHEN

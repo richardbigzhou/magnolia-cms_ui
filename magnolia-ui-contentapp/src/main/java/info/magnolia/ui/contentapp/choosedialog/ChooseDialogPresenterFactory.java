@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.contentapp.choosedialog;
 
-import info.magnolia.ui.framework.app.ItemChosenListener;
+import info.magnolia.ui.api.app.ItemChosenListener;
 
 /**
  * Factory interface for creating choose dialogs.
  */
 public interface ChooseDialogPresenterFactory {
 
-    ChooseDialogPresenter createChooseDialogPresenter(String path, ItemChosenListener listener);
+    ChooseDialogPresenter createChooseDialogPresenter(String path, ItemChosenListener listener, String selectedId);
 }

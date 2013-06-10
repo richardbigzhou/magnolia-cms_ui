@@ -33,9 +33,16 @@
  */
 package info.magnolia.ui.form.validator.definition;
 
+import info.magnolia.ui.form.validator.builder.EmailFieldValidatorBuilder;
+
 /**
  * Defines an email validator.
+ *
+ * @see EmailFieldValidatorBuilder
  */
 public class EmailValidatorDefinition extends ConfiguredFieldValidatorDefinition {
-    // No Specific property.
+
+    public EmailValidatorDefinition() {
+        setBuilder(EmailFieldValidatorBuilder.class);
+    }
 }

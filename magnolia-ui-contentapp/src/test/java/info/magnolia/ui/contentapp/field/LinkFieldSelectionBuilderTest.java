@@ -39,7 +39,7 @@ import static org.mockito.Mockito.*;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
-import info.magnolia.ui.admincentral.field.builder.LinkFieldBuilder;
+import info.magnolia.ui.form.field.builder.LinkFieldBuilder;
 import info.magnolia.ui.form.field.builder.AbstractBuilderTest;
 import info.magnolia.ui.form.field.builder.AbstractFieldBuilderTest;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;

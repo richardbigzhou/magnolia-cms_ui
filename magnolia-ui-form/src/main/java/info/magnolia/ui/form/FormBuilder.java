@@ -112,7 +112,7 @@ public class FormBuilder {
                     continue;
                 }
                 hasI18NAwareFields |= fieldDefinition.isI18n();
-                final FieldBuilder formField = fieldFactory.create(fieldDefinition, item);
+                final FieldBuilder formField = fieldFactory.createFieldBuilder(fieldDefinition, item);
                 formField.setComponentProvider(componentProvider);
                 formField.setParent(tab);
                 final Field<?> field = formField.getField();
@@ -151,7 +151,7 @@ public class FormBuilder {
                     continue;
                 }
 
-                final FieldBuilder formField = fieldFactory.create(fieldDefinition, item);
+                final FieldBuilder formField = fieldFactory.createFieldBuilder(fieldDefinition, item);
                 final View fieldView = formField.getView();
 
                 view.addComponent(fieldView.asVaadinComponent());

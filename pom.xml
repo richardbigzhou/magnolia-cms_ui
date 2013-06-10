@@ -18,7 +18,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <magnoliaVersion>5.0-SNAPSHOT</magnoliaVersion>
     <imagingVersion>3.0-SNAPSHOT</imagingVersion>
-    <vaadinVersion>7.0.2</vaadinVersion>
+    <vaadinVersion>7.0.7</vaadinVersion>
     <scmTagPrefix>magnolia-ui</scmTagPrefix>
   </properties>
   <scm>
@@ -152,11 +152,6 @@
         <version>2.2.2</version>
       </dependency>
       <dependency>
-        <groupId>org.devlib.schmidt</groupId>
-        <artifactId>imageinfo</artifactId>
-        <version>1.9</version>
-      </dependency>
-      <dependency>
         <groupId>uk.com.robust-it</groupId>
         <artifactId>cloning</artifactId>
         <version>1.8.2</version>
@@ -252,11 +247,10 @@
     <module>magnolia-ui-vaadin-widgetset</module>
     <module>magnolia-ui-admincentral</module>
     <module>magnolia-ui-actionbar</module>
-    <module>magnolia-ui-app-sample</module>
-    <module>magnolia-ui-app-config</module>
+    <module>sample-app</module>
     <module>magnolia-ui-app-messages</module>
-    <module>magnolia-ui-app-pages</module>
-    <module>magnolia-ui-app-security</module>
+    <module>pages</module>
+    <module>security-app</module>
     <module>magnolia-ui-mediaeditor</module>
     <module>magnolia-ui-vaadin-theme</module>
   </modules>

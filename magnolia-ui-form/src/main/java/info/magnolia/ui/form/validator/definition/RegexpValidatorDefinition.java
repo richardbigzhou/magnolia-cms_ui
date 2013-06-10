@@ -33,19 +33,27 @@
  */
 package info.magnolia.ui.form.validator.definition;
 
+import info.magnolia.ui.form.validator.builder.RegexpFieldValidatorBuilder;
+
 /**
  * Defines a validator that uses a regular expression to validate the contents of a dialog field.
+ *
+ * @see RegexpFieldValidatorBuilder
  */
 public class RegexpValidatorDefinition extends ConfiguredFieldValidatorDefinition {
 
     private String pattern;
+
+    public RegexpValidatorDefinition() {
+        setBuilder(RegexpFieldValidatorBuilder.class);
+    }
 
     public String getPattern() {
         return pattern;
     }
 
     /**
-     * For the Java regular expression syntax, see {@link java.util.regex.Pattern#sum}.
+     * For the Java regular expression syntax, see {@link java.util.regex.Pattern}.
      */
     public void setPattern(String pattern) {
         this.pattern = pattern;

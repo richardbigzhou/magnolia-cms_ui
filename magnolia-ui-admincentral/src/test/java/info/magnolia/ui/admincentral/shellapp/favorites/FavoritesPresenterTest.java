@@ -47,7 +47,7 @@ import info.magnolia.context.SystemContext;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.framework.favorite.FavoriteStore;
 
 import java.net.URI;

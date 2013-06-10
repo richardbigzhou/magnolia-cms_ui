@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
-import info.magnolia.ui.framework.app.AppDescriptor;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
+import info.magnolia.ui.api.app.AppDescriptor;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroup;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroupEntry;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayout;
 import info.magnolia.ui.vaadin.applauncher.AppLauncher;
 
 import com.vaadin.ui.Component;

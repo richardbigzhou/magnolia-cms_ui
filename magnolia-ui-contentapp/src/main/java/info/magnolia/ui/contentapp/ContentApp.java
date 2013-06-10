@@ -36,10 +36,10 @@ package info.magnolia.ui.contentapp;
 
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenterFactory;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.framework.app.BaseApp;
-import info.magnolia.ui.framework.app.ItemChosenListener;
+import info.magnolia.ui.api.app.ItemChosenListener;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.overlay.OverlayLayer;
 
@@ -59,9 +59,9 @@ public class ContentApp extends BaseApp {
     }
 
     @Override
-    public void openChooseDialog(String path, OverlayLayer overlayLayer, final ItemChosenListener listener) {
+    public void openChooseDialog(String path, OverlayLayer overlayLayer, String selectedId, final ItemChosenListener listener) {
 
-        final ChooseDialogPresenter chooseDialogPresenter = chooseDialogPresenterFactory.createChooseDialogPresenter(path, listener);
+        final ChooseDialogPresenter chooseDialogPresenter = chooseDialogPresenterFactory.createChooseDialogPresenter(path, listener, selectedId);
 
         final OverlayCloser overlayCloser = overlayLayer.openOverlay(chooseDialogPresenter.start());
 
