@@ -1,5 +1,5 @@
 --- k1/src/main/java/com/vaadin/client/ui/VScrollTable.java	2013-03-07 11:18:46.000000000 +0100
-+++ k2/src/main/java/com/vaadin/client/ui/VScrollTable.java	2013-05-30 15:43:51.000000000 +0200
++++ k2/src/main/java/com/vaadin/client/ui/VScrollTable.java	2013-06-06 17:58:14.000000000 +0200
 @@ -84,7 +84,7 @@
  import com.vaadin.client.Util;
  import com.vaadin.client.VConsole;
@@ -119,7 +119,29 @@
      }
 
      /** For internal use only. May be removed or replaced in the future. */
-@@ -1612,7 +1653,7 @@
+@@ -1594,25 +1635,25 @@
+         return -1;
+     }
+
+-    private boolean isMultiSelectModeSimple() {
++    protected boolean isMultiSelectModeSimple() {
+         return selectMode == SelectMode.MULTI
+                 && multiselectmode == MULTISELECT_MODE_SIMPLE;
+     }
+
+-    private boolean isSingleSelectMode() {
++    protected boolean isSingleSelectMode() {
+         return selectMode == SelectMode.SINGLE;
+     }
+
+-    private boolean isMultiSelectModeAny() {
++    protected boolean isMultiSelectModeAny() {
+         return selectMode == SelectMode.MULTI;
+     }
+
+-    private boolean isMultiSelectModeDefault() {
++    protected boolean isMultiSelectModeDefault() {
+         return selectMode == SelectMode.MULTI
                  && multiselectmode == MULTISELECT_MODE_DEFAULT;
      }
 
