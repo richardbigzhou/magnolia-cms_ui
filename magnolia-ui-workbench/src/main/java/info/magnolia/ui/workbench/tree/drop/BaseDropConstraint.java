@@ -77,7 +77,7 @@ public class BaseDropConstraint implements DropConstraint {
             }
             // We do not allow same name siblings (MGNLUI-1292)
             final Node targetNode = target.getJcrItem();
-            if (targetNode.hasNodes() && targetNode.hasNode(source.getNodeName())) {
+            if (targetNode.hasNode(source.getNodeName())) {
                 return false;
             }
         } catch (RepositoryException e) {
