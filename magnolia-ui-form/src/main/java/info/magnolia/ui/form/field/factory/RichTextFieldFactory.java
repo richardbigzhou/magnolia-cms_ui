@@ -98,7 +98,7 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
     }
 
     @Override
-    protected Field<String> newInstance() {
+    protected Field<String> createFieldComponent() {
         // RichTextFieldDefinition editDefinition = definition;
         final MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
 

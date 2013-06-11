@@ -49,7 +49,7 @@ public class UniqueGroupIdValidatorFactory extends AbstractFieldValidatorFactory
     }
 
     @Override
-    public Validator newInstance() {
+    public Validator createValidator() {
         return new UniqueGroupIdValidator(getI18nErrorMessage());
     }
 

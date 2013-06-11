@@ -50,7 +50,7 @@ public class HiddenFieldFactory extends AbstractFieldFactory<HiddenFieldDefiniti
     }
 
     @Override
-    protected Field<String> newInstance() {
+    protected Field<String> createFieldComponent() {
         TextField field = new TextField();
         field.setValue(definition.getDefaultValue());
         field.setVisible(false);

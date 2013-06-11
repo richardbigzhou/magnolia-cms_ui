@@ -49,7 +49,7 @@ public class UniqueRoleIdValidatorFactory extends AbstractFieldValidatorFactory<
     }
 
     @Override
-    public Validator newInstance() {
+    public Validator createValidator() {
         return new UniqueRoleIdValidator(getI18nErrorMessage());
     }
 

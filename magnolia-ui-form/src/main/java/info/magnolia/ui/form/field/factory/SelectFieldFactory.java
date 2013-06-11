@@ -80,7 +80,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
     }
 
     @Override
-    protected AbstractSelect newInstance() {
+    protected AbstractSelect createFieldComponent() {
         // Get name of the Label and Value property.
         optionValueName = definition.getValueProperty();
         optionLabelName = definition.getLabelProperty();

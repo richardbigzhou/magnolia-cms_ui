@@ -49,7 +49,7 @@ public class UniqueUserIdValidatorFactory extends AbstractFieldValidatorFactory<
     }
 
     @Override
-    public Validator newInstance() {
+    public Validator createValidator() {
         return new UniqueUserIdValidator(getI18nErrorMessage());
     }
 

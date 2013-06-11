@@ -75,7 +75,7 @@ public class MultiLinkFieldFactory extends AbstractFieldFactory<MultiLinkFieldDe
     }
 
     @Override
-    protected Field<List> newInstance() {
+    protected Field<List> createFieldComponent() {
         IdentifierToPathConverter converter = definition.getIdentifierToPathConverter();
         if (converter != null) {
             converter.setWorkspaceName(definition.getWorkspace());

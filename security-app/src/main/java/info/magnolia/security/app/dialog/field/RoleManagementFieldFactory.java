@@ -86,8 +86,8 @@ public class RoleManagementFieldFactory extends TwinColSelectFieldFactory<RoleMa
     }
 
     @Override
-    protected AbstractSelect newInstance() {
-        super.newInstance();
+    protected AbstractSelect createFieldComponent() {
+        super.createFieldComponent();
         select.setMultiSelect(true);
         select.setNullSelectionAllowed(true);
         return select;

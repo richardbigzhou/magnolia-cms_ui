@@ -93,10 +93,10 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     }
 
     @Override
-    public Field<T> getField() {
+    public Field<T> createField() {
         if (field == null) {
             // Create the Vaadin field
-            this.field = newInstance();
+            this.field = createFieldComponent();
 
             Property<?> property = getOrCreateProperty();
             setPropertyDataSource(property);
@@ -129,8 +129,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     /**
      * Implemented by subclasses to create and initialize the Vaadin Field instance to use.
      */
-    protected abstract Field<T> newInstance();
-
+    protected abstract Field<T> createFieldComponent();
 
     @Override
     public View getView() {
@@ -237,7 +236,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         for (FieldValidatorDefinition validatorDefinition : definition.getValidators()) {
             FieldValidatorFactory validatorFactory = this.fieldValidatorFactoryFactory.createFieldValidatorFactory(validatorDefinition);
             if (validatorFactory != null) {
-                this.field.addValidator(validatorFactory.newInstance());
+                this.field.addValidator(validatorFactory.createValidator());
             } else {
                 log.warn("Not able to create Validation for the following definition {}", definition.toString());
             }

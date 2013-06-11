@@ -67,7 +67,7 @@ public class AbstractFieldFactoryTest extends AbstractBuilderTest<ConfiguredFiel
         abstractDialogField = new TestTextFieldFactory(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
         // WHEN
-        Field<Object> field = abstractDialogField.getField();
+        Field<Object> field = abstractDialogField.createField();
         // THEN
         assertTrue(TextField.class.isAssignableFrom(field.getClass()));
         assertEquals(definition, abstractDialogField.getFieldDefinition());
@@ -82,7 +82,7 @@ public class AbstractFieldFactoryTest extends AbstractBuilderTest<ConfiguredFiel
         // GIVEN
         abstractDialogField = new TestTextFieldFactory(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        Field<Object> field = abstractDialogField.getField();
+        Field<Object> field = abstractDialogField.createField();
 
         // WHEN
         field.setValue("new Value");
@@ -107,7 +107,7 @@ public class AbstractFieldFactoryTest extends AbstractBuilderTest<ConfiguredFiel
         definition.setReadOnly(false);
         abstractDialogField = new TestTextFieldFactory(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        Field<Object> field = abstractDialogField.getField();
+        Field<Object> field = abstractDialogField.createField();
 
         // WHEN
         field.setValue("new Value");
@@ -128,7 +128,7 @@ public class AbstractFieldFactoryTest extends AbstractBuilderTest<ConfiguredFiel
         definition.setType("Double");
         abstractDialogField = new TestTextFieldFactory(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        Field<Object> field = abstractDialogField.getField();
+        Field<Object> field = abstractDialogField.createField();
 
         // WHEN
         field.setValue("21.98");
@@ -153,7 +153,7 @@ public class AbstractFieldFactoryTest extends AbstractBuilderTest<ConfiguredFiel
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
-        Field<Object> field = abstractDialogField.getField();
+        Field<Object> field = abstractDialogField.createField();
         // THEN
 
         assertEquals("label", field.getCaption());
@@ -168,7 +168,7 @@ public class AbstractFieldFactoryTest extends AbstractBuilderTest<ConfiguredFiel
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
-        Field<Object> field = abstractDialogField.getField();
+        Field<Object> field = abstractDialogField.createField();
         field.setRequired(definition.isRequired());
 
         // THEN
@@ -184,7 +184,7 @@ public class AbstractFieldFactoryTest extends AbstractBuilderTest<ConfiguredFiel
         abstractDialogField = new TestTextFieldFactory(def, baseItem);
 
         // WHEN
-        Field<?> field = abstractDialogField.getField();
+        Field<?> field = abstractDialogField.createField();
 
         // THEN
         Property<?> p = field.getPropertyDataSource();
@@ -212,7 +212,7 @@ public class AbstractFieldFactoryTest extends AbstractBuilderTest<ConfiguredFiel
         }
 
         @Override
-        protected Field newInstance() {
+        protected Field createFieldComponent() {
             return new TestTextField();
         }
 

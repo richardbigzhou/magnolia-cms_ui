@@ -59,7 +59,7 @@ public class PasswordFieldFactoryTest extends AbstractBuilderTest<PasswordFieldD
         passwordFieldFactory = new PasswordFieldFactory(definition, baseItem);
         passwordFieldFactory.setI18nContentSupport(i18nContentSupport);
         // WHEN
-        Field field = passwordFieldFactory.getField();
+        Field field = passwordFieldFactory.createField();
 
         // THEN
         assertEquals(true, field instanceof PasswordFields);
@@ -72,7 +72,7 @@ public class PasswordFieldFactoryTest extends AbstractBuilderTest<PasswordFieldD
         passwordFieldFactory = new PasswordFieldFactory(definition, baseItem);
         passwordFieldFactory.setI18nContentSupport(i18nContentSupport);
         // WHEN
-        PasswordFields field = (PasswordFields) passwordFieldFactory.getField();
+        PasswordFields field = (PasswordFields) passwordFieldFactory.createField();
 
         // THEN
         assertEquals(true, field.getVerticalLayout().getComponent(0) instanceof PasswordField);
@@ -87,7 +87,7 @@ public class PasswordFieldFactoryTest extends AbstractBuilderTest<PasswordFieldD
         definition.setVerification(true);
         passwordFieldFactory = new PasswordFieldFactory(definition, baseItem);
         passwordFieldFactory.setI18nContentSupport(i18nContentSupport);
-        PasswordFields field = (PasswordFields) passwordFieldFactory.getField();
+        PasswordFields field = (PasswordFields) passwordFieldFactory.createField();
         ((PasswordField) field.getVerticalLayout().getComponent(0)).setValue("aa");
         ((PasswordField) field.getVerticalLayout().getComponent(2)).setValue("aa");
 
@@ -105,7 +105,7 @@ public class PasswordFieldFactoryTest extends AbstractBuilderTest<PasswordFieldD
         definition.setVerification(true);
         passwordFieldFactory = new PasswordFieldFactory(definition, baseItem);
         passwordFieldFactory.setI18nContentSupport(i18nContentSupport);
-        PasswordFields field = (PasswordFields) passwordFieldFactory.getField();
+        PasswordFields field = (PasswordFields) passwordFieldFactory.createField();
         ((PasswordField) field.getVerticalLayout().getComponent(0)).setValue("aa");
         ((PasswordField) field.getVerticalLayout().getComponent(2)).setValue("axa");
 

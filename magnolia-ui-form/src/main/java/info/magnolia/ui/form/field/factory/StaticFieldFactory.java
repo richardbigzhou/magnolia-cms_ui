@@ -51,7 +51,7 @@ public class StaticFieldFactory extends AbstractFieldFactory<StaticFieldDefiniti
     }
 
     @Override
-    protected Field<Object> newInstance() {
+    protected Field<Object> createFieldComponent() {
         StaticField field = new StaticField();
         field.getLabel().setCaption(getMessage(definition.getValue()));
         return field;
