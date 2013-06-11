@@ -36,7 +36,7 @@ package info.magnolia.pages.app.field;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 
 /**
- * Definition used for configuring {@link TemplateSelectorFieldBuilder}.
+ * Definition used for configuring {@link TemplateSelectorFieldFactory}.
  */
 public class TemplateSelectorDefinition extends SelectFieldDefinition {
 

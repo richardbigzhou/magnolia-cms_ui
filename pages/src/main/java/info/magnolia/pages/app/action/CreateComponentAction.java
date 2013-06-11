@@ -37,6 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.pages.app.field.TemplateSelectorFieldFactory;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
@@ -45,7 +46,6 @@ import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.pages.app.field.TemplateSelectorFieldBuilder;
 import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
@@ -191,7 +191,7 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
 
                 SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
                 option.setValue(templateDefinition.getId());
-                option.setLabel(TemplateSelectorFieldBuilder.getI18nTitle(templateDefinition));
+                option.setLabel(TemplateSelectorFieldFactory.getI18nTitle(templateDefinition));
                 select.addOption(option);
 
             } catch (RegistrationException e) {
