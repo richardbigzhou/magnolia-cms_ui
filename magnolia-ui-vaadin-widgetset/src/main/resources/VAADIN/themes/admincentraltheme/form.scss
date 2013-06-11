@@ -47,10 +47,11 @@
     width: 100%;
 }
 
-.v-form-field-section, .v-form-field-label, select,
-.v-form-field, .validation-message-inline span, .help-message-inline span{
-    font-family: Verdana, Helvetica, sans-serif !important;
-    font-size: 12px !important;
+.v-form-field-label,
+.v-form-field .v-widget,
+.validation-message-inline,
+.help-message-inline {
+  font-size: 12px;
 }
 
 .v-form-layout .v-form-field {
