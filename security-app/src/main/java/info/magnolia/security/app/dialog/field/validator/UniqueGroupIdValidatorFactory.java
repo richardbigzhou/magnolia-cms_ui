@@ -42,9 +42,9 @@ import com.vaadin.data.Validator;
  *
  * @see UniqueGroupIdValidatorDefinition
  */
-public class UniqueGroupIdValidatorBuilder extends AbstractFieldValidatorFactory<UniqueGroupIdValidatorDefinition> {
+public class UniqueGroupIdValidatorFactory extends AbstractFieldValidatorFactory<UniqueGroupIdValidatorDefinition> {
 
-    public UniqueGroupIdValidatorBuilder(UniqueGroupIdValidatorDefinition definition) {
+    public UniqueGroupIdValidatorFactory(UniqueGroupIdValidatorDefinition definition) {
         super(definition);
     }
 

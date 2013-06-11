@@ -42,9 +42,9 @@ import com.vaadin.data.Validator;
  *
  * @see UniqueUserIdValidatorDefinition
  */
-public class UniqueUserIdValidatorBuilder extends AbstractFieldValidatorFactory<UniqueUserIdValidatorDefinition> {
+public class UniqueUserIdValidatorFactory extends AbstractFieldValidatorFactory<UniqueUserIdValidatorDefinition> {
 
-    public UniqueUserIdValidatorBuilder(UniqueUserIdValidatorDefinition definition) {
+    public UniqueUserIdValidatorFactory(UniqueUserIdValidatorDefinition definition) {
         super(definition);
     }
 

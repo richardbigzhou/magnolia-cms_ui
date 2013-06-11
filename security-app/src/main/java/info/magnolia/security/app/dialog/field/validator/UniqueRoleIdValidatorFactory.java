@@ -42,9 +42,9 @@ import com.vaadin.data.Validator;
  *
  * @see UniqueRoleIdValidatorDefinition
  */
-public class UniqueRoleIdValidatorBuilder extends AbstractFieldValidatorFactory<UniqueRoleIdValidatorDefinition> {
+public class UniqueRoleIdValidatorFactory extends AbstractFieldValidatorFactory<UniqueRoleIdValidatorDefinition> {
 
-    public UniqueRoleIdValidatorBuilder(UniqueRoleIdValidatorDefinition definition) {
+    public UniqueRoleIdValidatorFactory(UniqueRoleIdValidatorDefinition definition) {
         super(definition);
     }
 
