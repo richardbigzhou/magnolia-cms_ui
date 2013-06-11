@@ -55,6 +55,7 @@ import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.vaadin.data.Item;
 import com.vaadin.server.VaadinService;
+import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.Field;
 
 /**
@@ -119,6 +120,15 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
                 super.attach();
                 String path = VaadinService.getCurrentRequest().getContextPath();
                 config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path + PLUGIN_PATH_MAGNOLIALINK);
+
+                WebBrowser browser = getSession().getBrowser();
+                if (browser.isTouchDevice()) {
+                    // MGNLUI-1528: Workaround.
+                    richTextEditor.setEnabled(false);
+                    richTextEditor.setReadOnly(true);
+                    richTextEditor.addStyleName("richtextfield-disabled");
+                }
+
             }
         };
 

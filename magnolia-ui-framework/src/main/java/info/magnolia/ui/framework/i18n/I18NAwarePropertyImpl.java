@@ -54,7 +54,7 @@ public class I18NAwarePropertyImpl<T> extends AbstractProperty<T> implements I18
 
     private String i18NPropertyName;
 
-    private Object defaultValue;
+    private String defaultValue;
 
     private Locale locale;
 
@@ -63,16 +63,16 @@ public class I18NAwarePropertyImpl<T> extends AbstractProperty<T> implements I18
     private AbstractJcrNodeAdapter parentNodeAdapter;
 
     public I18NAwarePropertyImpl(String baseName, Class<T> type, AbstractJcrNodeAdapter parentNodeAdapter) {
-        this(baseName, type, parentNodeAdapter, "");
+        this(baseName, type, parentNodeAdapter, null);
     }
 
     public I18NAwarePropertyImpl(String baseName, Class<T> type, AbstractJcrNodeAdapter parentNodeAdapter, Object defaultValue) {
         super();
         this.type = type;
-        this.defaultValue = defaultValue;
         this.parentNodeAdapter = parentNodeAdapter;
         this.i18NPropertyName = baseName;
         this.basePropertyName = baseName;
+        setDefaultValue(defaultValue);
     }
 
     @Override
@@ -88,11 +88,7 @@ public class I18NAwarePropertyImpl<T> extends AbstractProperty<T> implements I18
 
     @Override
     public void setValue(T newValue) throws ReadOnlyException {
-        if (newValue != null) {
-            getOrCreateProperty().setValue(newValue);
-        } else {
-            parentNodeAdapter.removeItemProperty(getLocalizedPropertyName());
-        }
+        getOrCreateProperty().setValue(newValue);
     }
 
     @Override
@@ -110,7 +106,7 @@ public class I18NAwarePropertyImpl<T> extends AbstractProperty<T> implements I18
         String propertyName = getLocalizedPropertyName();
         DefaultProperty<T> property = (DefaultProperty<T>) parentNodeAdapter.getItemProperty(propertyName);
         if (property == null) {
-            property = DefaultPropertyUtil.newDefaultProperty(type.getSimpleName(), String.valueOf(defaultValue));
+            property = DefaultPropertyUtil.newDefaultProperty(type.getSimpleName(), defaultValue);
             parentNodeAdapter.addItemProperty(propertyName, property);
         }
         return property;
@@ -132,8 +128,8 @@ public class I18NAwarePropertyImpl<T> extends AbstractProperty<T> implements I18
     }
 
     @Override
-    public void setDefaultValue(String defaultValue) {
-        this.defaultValue = defaultValue == null ? "" : defaultValue;
+    public void setDefaultValue(Object defaultValue) {
+        this.defaultValue = (defaultValue == null) ? null : defaultValue.toString();
     }
 
 }

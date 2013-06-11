@@ -31,28 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.i18n;
-
-import java.util.Locale;
-
-import com.vaadin.data.Property;
+package info.magnolia.ui.contentapp.detail.action;
 
 /**
- * Interface for locale-dependent property.
- * @param <T> property value type.
+ * ActionDefinition used for restoring the previous version on an item.
  */
-public interface I18NAwareProperty<T> extends Property<T> {
+public class RestorePreviousVersionActionDefinition extends AbstractItemActionDefinition {
 
-    void setDefaultValue(Object defaultValue);
-
-    void setLocale(Locale locale);
-
-    void setI18NPropertyName(String i18NPropertyName);
-
-    Locale getLocale();
-
-    String getBasePropertyName();
-
-    String getLocalizedPropertyName();
-
+    public RestorePreviousVersionActionDefinition() {
+        setImplementationClass(RestorePreviousVersionAction.class);
+    }
 }
