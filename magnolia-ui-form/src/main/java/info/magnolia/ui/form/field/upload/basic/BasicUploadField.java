@@ -482,12 +482,12 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     }
 
     @Override
-    protected void displayUploadFinisheddNote(String fileName) {
+    protected void displayUploadFinishedNote(String fileName) {
         uiContext.openNotification(MessageStyleTypeEnum.INFO, true, getCaption(successNoteCaption, new String[]{fileName}));
     }
 
     @Override
-    protected void displayUploadFaildNote(String fileName) {
+    protected void displayUploadFailedNote(String fileName) {
         uiContext.openAlert(MessageStyleTypeEnum.ERROR, "ERROR", getCaption(errorNoteCaption, new String[] { fileName }), "ok", null);
     }
 

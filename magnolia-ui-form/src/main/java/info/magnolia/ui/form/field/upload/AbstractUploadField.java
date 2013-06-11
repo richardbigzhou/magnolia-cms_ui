@@ -86,9 +86,9 @@ import com.vaadin.ui.Upload.StartedListener;
 public abstract class AbstractUploadField<D extends FileItemWrapper> extends CustomField<Byte[]> implements StartedListener, FinishedListener, ProgressListener, FailedListener, DropHandler, UploadField {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractUploadField.class);
-    private static final long serialVersionUID = -3817260783447590323L;
 
     private long maxUploadSize = Long.MAX_VALUE;
+
     private String allowedMimeTypePattern = ".*";
 
     // Used to handle Cancel / Interrupted upload in the DragAndDrop
@@ -97,9 +97,11 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
 
     // Define global variable used by this implementation
     private final D fileWrapper;
+
     private UploadReceiver receiver;
 
     private Upload upload;
+
     private DragAndDropWrapper dropZone;
 
     private HasComponents root;
@@ -119,7 +121,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
 
     /**
      * Build the in Progress Layout.<br>
-     * Generally display a progress bar {@link UploadProgressIndicator} and some file informations.<br>
+     * Generally display a progress bar {@link UploadProgressIndicator} and some file information.<br>
      * Refresh of the action bar is handled by refreshInProgressLayout(...)<br>
      * Use the fileWrapper to display file information and Status.
      */
@@ -138,9 +140,9 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
 
     protected abstract void displayUploadInterruptNote(InterruptionReason reason);
 
-    protected abstract void displayUploadFinisheddNote(String fileName);
+    protected abstract void displayUploadFinishedNote(String fileName);
 
-    protected abstract void displayUploadFaildNote(String fileName);
+    protected abstract void displayUploadFailedNote(String fileName);
 
     /**
      * Call the correct layout.
@@ -160,7 +162,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
 
     /**
      * Interrupt upload based on a user Action.
-     * An {@link UploadInterruptedException} will be throws by the underlying Vaadin classes.
+     * An {@link UploadInterruptedException} will be thrown by the underlying Vaadin classes.
      */
     protected void interruptUpload(InterruptionReason reason) {
         displayUploadInterruptNote(reason);
@@ -171,8 +173,8 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
         }
     }
 
-    private void setDragAndDropUploadInterrupted(boolean isInterrupetd) {
-        interruptedDragAndDropUpload = isInterrupetd;
+    private void setDragAndDropUploadInterrupted(boolean isInterrupted) {
+        interruptedDragAndDropUpload = isInterrupted;
     }
 
     private boolean isDragAndDropUploadInterrupted() {
@@ -191,7 +193,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
      * The current implementation only check if the MimeType match the desired regExp.
      */
     protected boolean isValidFile(StartedEvent event) {
-        log.debug("Evaluate following regExp: {} agains {}", allowedMimeTypePattern, event.getMIMEType());
+        log.debug("Evaluate following regExp: {} against {}", allowedMimeTypePattern, event.getMIMEType());
         return event.getMIMEType().matches(allowedMimeTypePattern);
     }
 
@@ -233,7 +235,9 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
      * The dropZone is a wrapper around a Component. {@link Refresher} is set to force refresh during drag and drop operation.
      */
     protected DragAndDropWrapper createDropZone(Component c) {
-        dropZone = new DragAndDropWrapper(c);
+        dropZone = new DragAndDropWrapper(c) {
+
+        };
         dropZone.setDropHandler(this);
         // add refresher
         final Refresher refresher = new Refresher();
@@ -267,7 +271,6 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
         for (final Html5File html5File : files) {
             html5File.setStreamVariable(new StreamVariable() {
 
-                private static final long serialVersionUID = 1L;
                 private String name;
                 private String mime;
 
@@ -305,6 +308,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
                 public void streamingFailed(StreamingErrorEvent event) {
                     FailedEvent failedEvent = new FailedEvent(upload, event.getFileName(), event.getMimeType(), event.getContentLength());
                     uploadFailed(failedEvent);
+                    setDragAndDropUploadInterrupted(false);
                 }
 
                 @Override
@@ -376,7 +380,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
             uploadFailed(newEvent);
             return;
         }
-        displayUploadFinisheddNote(event.getFilename());
+        displayUploadFinishedNote(event.getFilename());
         this.fileWrapper.populateFromReceiver(receiver);
         buildCompletedLayout();
         fireValueChange(false);
@@ -385,7 +389,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
     @Override
     public void uploadFailed(FailedEvent event) {
         if (event.getReason() instanceof UploadException) {
-            displayUploadFaildNote(event.getFilename());
+            displayUploadFailedNote(event.getFilename());
         }
         this.fileWrapper.reloadPrevious();
         updateDisplay();
@@ -416,4 +420,16 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
     public void setMaxUploadSize(long maxUploadSize) {
         this.maxUploadSize = maxUploadSize;
     }
+
+    @Override
+    public void detach() {
+        if (upload.isUploading()) {
+            upload.interruptUpload();
+        } else {
+            setDragAndDropUploadInterrupted(true);
+        }
+        super.detach();
+    }
+
+
 }
