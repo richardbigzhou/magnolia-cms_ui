@@ -38,11 +38,11 @@ import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefini
 /**
  * Defines a validator that checks for unique group name.
  *
- * @see UniqueGroupIdValidatorBuilder
+ * @see UniqueGroupIdValidatorFactory
  */
 public class UniqueGroupIdValidatorDefinition extends ConfiguredFieldValidatorDefinition {
 
     public UniqueGroupIdValidatorDefinition() {
-        setBuilder(UniqueGroupIdValidatorBuilder.class);
+        setBuilder(UniqueGroupIdValidatorFactory.class);
     }
 }

@@ -38,11 +38,11 @@ import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefini
 /**
  * A definition for the UniqueRoleIdValidator.
  *
- * @see UniqueRoleIdValidatorBuilder
+ * @see UniqueRoleIdValidatorFactory
  */
 public class UniqueRoleIdValidatorDefinition extends ConfiguredFieldValidatorDefinition {
 
     public UniqueRoleIdValidatorDefinition() {
-        setBuilder(UniqueRoleIdValidatorBuilder.class);
+        setBuilder(UniqueRoleIdValidatorFactory.class);
     }
 }

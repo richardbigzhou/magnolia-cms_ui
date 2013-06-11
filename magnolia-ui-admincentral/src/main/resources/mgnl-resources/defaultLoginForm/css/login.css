@@ -74,8 +74,8 @@ body{
   font-family:DINWebPro;
   font-size:12px;
   margin-right: 20px;
-  padding: 2px;
-  height: 20px;
+  padding: 3px;
+  height: 23px;
   width: 70px;
   text-transform: uppercase;
 }
@@ -84,23 +84,25 @@ body{
   background-color: #739821;
   font-family: DINWebPro;
   height: 154px;
-  padding-bottom: 12px;
+  padding-bottom: 2px;
 }
 
 .mgnl-form label{
   float:left;
   display:inline-block;;
-  width:100px;
+  width:80px;
   color:#3e5900;
   font-family:DINWebPro;
   font-size:12px;
   margin-top:7px;
-  text-align: center;
+  margin-left:20px;
+  text-align: left;
   text-transform: uppercase;
+  cursor: default;
 }
 
 .mgnl-form input[type="text"], .mgnl-form input[type="password"] {
-  width:276px;
+  width:277px;
   padding-left:8px;
   margin-bottom:16px;
   border:solid 1px #999;
@@ -222,7 +224,7 @@ body{
 
 #error-divet {
   border-bottom: 10px solid #9A3332;
-  top: 266px;
+  top: 257px;
   left: 220px;
 }
 

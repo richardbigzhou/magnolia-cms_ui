@@ -35,7 +35,7 @@ package info.magnolia.security.app.dialog.action;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.security.app.dialog.field.WorkspaceAccessFieldBuilder;
+import info.magnolia.security.app.dialog.field.WorkspaceAccessFieldFactory;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 import info.magnolia.security.app.dialog.field.AccessControlList;
@@ -53,7 +53,7 @@ import org.apache.commons.lang.StringUtils;
 import com.vaadin.data.Item;
 
 /**
- * Save role dialog action. Transforms nodes added by {@link info.magnolia.security.app.dialog.field.WorkspaceAccessFieldBuilder} to its final representation.
+ * Save role dialog action. Transforms nodes added by {@link info.magnolia.security.app.dialog.field.WorkspaceAccessFieldFactory} to its final representation.
  */
 public class SaveRoleDialogAction extends SaveDialogAction {
 
@@ -76,15 +76,15 @@ public class SaveRoleDialogAction extends SaveDialogAction {
 
                     // Any node marked as using the intermediary format we read in, remove all its sub nodes and then
                     // add new sub nodes based on the read in ACL
-                    if (aclNode.hasProperty(WorkspaceAccessFieldBuilder.INTERMEDIARY_FORMAT_PROPERTY_NAME)) {
+                    if (aclNode.hasProperty(WorkspaceAccessFieldFactory.INTERMEDIARY_FORMAT_PROPERTY_NAME)) {
 
                         AccessControlList acl = new AccessControlList();
 
                         for (Node entryNode : NodeUtil.getNodes(aclNode)) {
 
-                            if (entryNode.hasProperty(WorkspaceAccessFieldBuilder.INTERMEDIARY_FORMAT_PROPERTY_NAME)) {
+                            if (entryNode.hasProperty(WorkspaceAccessFieldFactory.INTERMEDIARY_FORMAT_PROPERTY_NAME)) {
                                 String path = entryNode.getProperty(AccessControlList.PATH_PROPERTY_NAME).getString();
-                                long accessType = (int) entryNode.getProperty(WorkspaceAccessFieldBuilder.ACCESS_TYPE_PROPERTY_NAME).getLong();
+                                long accessType = (int) entryNode.getProperty(WorkspaceAccessFieldFactory.ACCESS_TYPE_PROPERTY_NAME).getLong();
                                 long permissions = entryNode.getProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME).getLong();
 
                                 if (path.equals("/")) {
@@ -103,7 +103,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
                             entryNode.remove();
                         }
 
-                        aclNode.setProperty(WorkspaceAccessFieldBuilder.INTERMEDIARY_FORMAT_PROPERTY_NAME, (Value)null);
+                        aclNode.setProperty(WorkspaceAccessFieldFactory.INTERMEDIARY_FORMAT_PROPERTY_NAME, (Value)null);
                         acl.saveEntries(aclNode);
                     }
                 }

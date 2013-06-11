@@ -40,7 +40,7 @@ import info.magnolia.ui.dialog.definition.DialogDefinition;
  * Represents a dialog.
  *
  * @see info.magnolia.ui.form.FormTab
- * @see info.magnolia.ui.form.field.builder.FieldBuilder
+ * @see info.magnolia.ui.form.field.factory.FieldFactory
  */
 public class Dialog extends AbstractFormItem {
 
