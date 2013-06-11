@@ -231,10 +231,10 @@ public class BrowserSubApp extends BaseSubApp {
                 return;
             }
 
-            List<ActionDefinition> allActions = new LinkedList<ActionDefinition>();
-            List<ActionDefinition> enabledActions = new LinkedList<ActionDefinition>();
-
             for (ActionbarGroupDefinition groupDefinition : sectionDefinition.getGroups()) {
+                List<ActionDefinition> allActions = new LinkedList<ActionDefinition>();
+                List<ActionDefinition> enabledActions = new LinkedList<ActionDefinition>();
+
                 for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
 
                     String actionName = itemDefinition.getName();
@@ -246,8 +246,8 @@ public class BrowserSubApp extends BaseSubApp {
                     }
 
                 }
+                actionMenu.showSectionActions(sectionDefinition.getName(), allActions, enabledActions);
             }
-            actionMenu.showSectionActions(sectionDefinition.getName(), allActions, enabledActions);
 
         } catch (RepositoryException e) {
             log.error("Failed to update action menu", e);
