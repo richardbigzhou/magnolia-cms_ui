@@ -42,7 +42,7 @@ import com.vaadin.ui.Field;
 /**
  * Represents a tab in a dialog.
  *
- * @see info.magnolia.ui.form.field.builder.FieldBuilder
+ * @see info.magnolia.ui.form.field.factory.FieldFactory
  */
 public class FormTab extends AbstractFormItem {
 
