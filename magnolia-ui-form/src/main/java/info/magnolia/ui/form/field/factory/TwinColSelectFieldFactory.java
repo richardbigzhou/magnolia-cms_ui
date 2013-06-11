@@ -51,8 +51,8 @@ public class TwinColSelectFieldFactory<T extends TwinColSelectFieldDefinition> e
     }
 
     @Override
-    protected AbstractSelect newInstance() {
-        super.newInstance();
+    protected AbstractSelect createFieldComponent() {
+        super.createFieldComponent();
         ((TwinColSelect) select).setRows(select.getContainerDataSource().size());
         select.setMultiSelect(definition.isMultiselect());
         select.setNullSelectionAllowed(true);

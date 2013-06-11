@@ -75,7 +75,7 @@ public class AbstractFieldFactoryI18NPropertyTest extends AbstractBuilderTest<Co
     public void i18nPropertyNotDefined_CurrentIsDefault() throws Exception {
         // GIVEN
         initBuilder();
-        Field<Object> field = fieldFactory.getField();
+        Field<Object> field = fieldFactory.createField();
         field.setValue("new Value");
         // WHEN
         Node res = ((JcrNodeAdapter) baseItem).applyChanges();
@@ -90,7 +90,7 @@ public class AbstractFieldFactoryI18NPropertyTest extends AbstractBuilderTest<Co
         // GIVEN
         MgnlContext.getInstance().setLocale(Locale.FRENCH);
         initBuilder();
-        Field<Object> field = fieldFactory.getField();
+        Field<Object> field = fieldFactory.createField();
         field.setValue("new Value");
         // WHEN
         Node res = ((JcrNodeAdapter) baseItem).applyChanges();
@@ -105,7 +105,7 @@ public class AbstractFieldFactoryI18NPropertyTest extends AbstractBuilderTest<Co
         // GIVEN
         this.definition.setI18n(true);
         initBuilder();
-        Field<Object> field = fieldFactory.getField();
+        Field<Object> field = fieldFactory.createField();
         field.setValue("new Value");
         // WHEN
         Node res = ((JcrNodeAdapter) baseItem).applyChanges();
@@ -120,7 +120,7 @@ public class AbstractFieldFactoryI18NPropertyTest extends AbstractBuilderTest<Co
         this.definition.setI18n(true);
         MgnlContext.getInstance().setLocale(Locale.FRENCH);
         initBuilder();
-        Field<Object> field = fieldFactory.getField();
+        Field<Object> field = fieldFactory.createField();
         field.setValue("new Value");
 
         // THEN
@@ -133,7 +133,7 @@ public class AbstractFieldFactoryI18NPropertyTest extends AbstractBuilderTest<Co
         // GIVEN
         this.definition.setI18n(true);
         initBuilder();
-        Field<Object> field = fieldFactory.getField();
+        Field<Object> field = fieldFactory.createField();
         field.setValue("new Value");
         Node res = ((JcrNodeAdapter) baseItem).applyChanges();
         assertEquals(true, res.hasProperty(propertyName));

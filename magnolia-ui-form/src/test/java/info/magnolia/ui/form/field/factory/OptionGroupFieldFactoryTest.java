@@ -60,7 +60,7 @@ public class OptionGroupFieldFactoryTest extends AbstractBuilderTest<OptionGroup
         dialogSelect.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
-        Field field = dialogSelect.getField();
+        Field field = dialogSelect.createField();
 
         // THEN
         assertEquals(true, field instanceof OptionGroup);
@@ -77,7 +77,7 @@ public class OptionGroupFieldFactoryTest extends AbstractBuilderTest<OptionGroup
         dialogSelect.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
-        Field field = dialogSelect.getField();
+        Field field = dialogSelect.createField();
 
         // THEN
         assertEquals("3", field.getValue().toString());
@@ -91,7 +91,7 @@ public class OptionGroupFieldFactoryTest extends AbstractBuilderTest<OptionGroup
         dialogSelect.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
-        Field field = dialogSelect.getField();
+        Field field = dialogSelect.createField();
 
         // THEN
         assertEquals(true, field instanceof OptionGroup);
@@ -106,7 +106,7 @@ public class OptionGroupFieldFactoryTest extends AbstractBuilderTest<OptionGroup
         definition.setMultiselect(true);
         dialogSelect = new OptionGroupFieldFactory(definition, baseItem);
         dialogSelect.setI18nContentSupport(i18nContentSupport);
-        Field field = dialogSelect.getField();
+        Field field = dialogSelect.createField();
         // WHEN
         ArrayList<String> selected = new ArrayList<String>();
         selected.add("1");

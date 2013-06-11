@@ -115,7 +115,7 @@ public class FormBuilder {
                 final FieldFactory formField = fieldFactoryFactory.createFieldFactory(fieldDefinition, item);
                 formField.setComponentProvider(componentProvider);
                 formField.setParent(tab);
-                final Field<?> field = formField.getField();
+                final Field<?> field = formField.createField();
                 if (field instanceof AbstractComponent) {
                     ((AbstractComponent) field).setImmediate(true);
                 }

@@ -38,19 +38,19 @@ import info.magnolia.ui.form.validator.factory.AbstractFieldValidatorFactory;
 import com.vaadin.data.Validator;
 
 /**
- * Builder for the UniqueRoleIdValidator.
+ * Builder for the UniqueUserIdValidator.
  *
- * @see UniqueRoleIdValidatorDefinition
+ * @see UniqueUserIdValidatorDefinition
  */
-public class UniqueRoleIdValidatorBuilder extends AbstractFieldValidatorFactory<UniqueRoleIdValidatorDefinition> {
+public class UniqueUserIdValidatorFactory extends AbstractFieldValidatorFactory<UniqueUserIdValidatorDefinition> {
 
-    public UniqueRoleIdValidatorBuilder(UniqueRoleIdValidatorDefinition definition) {
+    public UniqueUserIdValidatorFactory(UniqueUserIdValidatorDefinition definition) {
         super(definition);
     }
 
     @Override
-    public Validator newInstance() {
-        return new UniqueRoleIdValidator(getI18nErrorMessage());
+    public Validator createValidator() {
+        return new UniqueUserIdValidator(getI18nErrorMessage());
     }
 
 }

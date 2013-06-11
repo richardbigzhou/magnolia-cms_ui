@@ -58,7 +58,7 @@ public class CheckBoxFieldFactoryTest extends AbstractBuilderTest<CheckboxFieldD
         checkBoxField.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
-        Field field = checkBoxField.getField();
+        Field field = checkBoxField.createField();
 
         // THEN
         assertEquals(true, field instanceof CheckBoxAndLabelField);
@@ -72,7 +72,7 @@ public class CheckBoxFieldFactoryTest extends AbstractBuilderTest<CheckboxFieldD
         checkBoxField.setI18nContentSupport(i18nContentSupport);
         definition.setSelected("false");
         // WHEN
-        Field field = checkBoxField.getField();
+        Field field = checkBoxField.createField();
 
         // THEN
         assertEquals(true, field instanceof CheckBoxAndLabelField);

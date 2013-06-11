@@ -56,7 +56,7 @@ public class StaticFieldFactoryTest extends AbstractBuilderTest<StaticFieldDefin
         staticFieldFactory.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
-        Field field = staticFieldFactory.getField();
+        Field field = staticFieldFactory.createField();
 
         // THEN
         assertEquals(true, field instanceof StaticField);

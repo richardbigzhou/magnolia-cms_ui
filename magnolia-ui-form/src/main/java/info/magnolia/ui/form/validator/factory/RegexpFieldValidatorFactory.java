@@ -50,7 +50,7 @@ public class RegexpFieldValidatorFactory extends AbstractFieldValidatorFactory<R
     }
 
     @Override
-    public Validator newInstance() {
+    public Validator createValidator() {
         return new RegexpValidator(definition.getPattern(), getI18nErrorMessage());
     }
 

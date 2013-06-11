@@ -39,7 +39,6 @@ import info.magnolia.ui.vaadin.gwt.client.form.rpc.FormSectionClientRpc;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.shared.Connector;
@@ -54,8 +53,6 @@ import com.vaadin.ui.Component;
 public class FormSection extends AbstractLayout {
 
     private final List<Component> components = new LinkedList<Component>();
-
-    private Locale contentLocale;
 
     public FormSection() {
         addStyleName("v-form-layout");
@@ -150,13 +147,5 @@ public class FormSection extends AbstractLayout {
 
     public void focusField(Component field) {
         getRpcProxy(FormSectionClientRpc.class).focus(field);
-    }
-
-    public Locale getContentLocale() {
-        return contentLocale;
-    }
-
-    public void setContentLocale(Locale contentLocale) {
-        this.contentLocale = contentLocale;
     }
 }

@@ -50,7 +50,7 @@ public class PasswordFieldFactory extends AbstractFieldFactory<PasswordFieldDefi
     }
 
     @Override
-    protected Field<String> newInstance() {
+    protected Field<String> createFieldComponent() {
         String verificationErrorMessage = "";
         String verificationMessage = "";
         if (definition.isVerification()) {
