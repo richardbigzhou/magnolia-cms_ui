@@ -31,52 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.messages;
+package info.magnolia.messages.app;
 
-import info.magnolia.ui.framework.app.BaseSubApp;
-import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.api.location.Location;
-import info.magnolia.ui.api.message.Message;
+import info.magnolia.ui.api.app.SubApp;
 import info.magnolia.ui.api.message.MessageType;
-
-import javax.inject.Inject;
+import info.magnolia.ui.api.view.View;
 
 /**
- * Sub app for the main tab in the message app.
+ * View for the Messages app.
  */
-public class MessagesMainSubApp extends BaseSubApp implements MessagesView.Listener {
+public interface MessagesView extends View {
 
-    @Inject
-    public MessagesMainSubApp(SubAppContext subAppContext, MessagesView view) {
-        super(subAppContext, view);
-        view.setListener(this);
+    /**
+     * Listener interface for MessagesView.
+     */
+    public interface Listener extends SubApp {
+
+        void handleUserMessage(String user, MessageType type, String subject, String message);
+
+        void handleLocalMessage(MessageType type, String subject, String message);
+
+        void handleGlobalMessage(MessageType type, String subject, String message);
+
+        void showConfirmationMessage(String message);
     }
 
-    @Override
-    public void locationChanged(Location location) {
-
-    }
-
-    @Override
-    public void showConfirmationMessage(String message) {
-        getAppContext().showConfirmationMessage(message);
-    }
-
-    @Override
-    public void handleUserMessage(String user, MessageType type, String subject, String message) {
-        getAppContext().sendUserMessage(user, new Message(type, subject, message));
-    }
-
-    @Override
-    public void handleLocalMessage(MessageType type, String subject, String message) {
-        getAppContext().sendLocalMessage(new Message(type, subject, message));
-    }
-
-    @Override
-    public void handleGlobalMessage(MessageType type, String subject, String message) {
-        getAppContext().broadcastMessage(new Message(type, subject, message));
-    }
-
-
-
+    void setListener(Listener listener);
 }

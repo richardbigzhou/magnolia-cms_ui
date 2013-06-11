@@ -193,23 +193,35 @@ content:"]";
 
 .light-dialog-panel .btn-dialog-default { float:right;}
 
-.light-dialog-panel.msginfo {                       border-color:   #A1ADAF;}
-.light-dialog-panel.msginfo .m-closebutton {        color:          $c20;
-    &:hover,&:active {                              color:          #A1ADAF;}}
-.light-dialog-panel.msginfo .btn-dialog-default {   background:     $c20;}
-.light-dialog-panel.msginfo button {                background:     #A1ADAF;}
+.light-dialog-panel.msginfo {                           border-color:   #A1ADAF; backround: $c23;}
+.light-dialog-panel.msginfo .m-closebutton {            color:          $c20;
+    &:hover,&:active {                                  color:          #A1ADAF;}}
+.light-dialog-panel.msginfo .btn-dialog-default {       background:     $c20;}
+.light-dialog-panel.msginfo button {                    background:     #75868a;}
+.light-dialog-panel.msginfo .btn-dialog-default:hover {   background:     $c22; color: #2b6879;}
+.light-dialog-panel.msginfo button:hover {                background:     #acc4ca;}
+.light-dialog-panel.msginfo .btn-dialog-default:active {  background:     $c80; color: $c20;}
+.light-dialog-panel.msginfo button:active {               background:     $c80;}
 
 .light-dialog-panel.msgwarn {                       background:     $c64;
                                                     border-color:   #BEB099;}
 .light-dialog-panel.msgwarn .m-closebutton {        color:          #F6A51C;}
-.light-dialog-panel.msgwarn .btn-dialog-default {   background:     #F6A51C;}
-.light-dialog-panel.msgwarn button {                background:     #BEB099;}
+.light-dialog-panel.msgwarn .btn-dialog-default {   background:     #ffbf28; color: #666;}
+.light-dialog-panel.msgwarn button {                background:     #a3926c;}
+.light-dialog-panel.msgwarn .btn-dialog-default:hover {   background:     #ffd87e; color: #666;}
+.light-dialog-panel.msgwarn button:hover {                background:     #efd79e; color: #666;}
+.light-dialog-panel.msgwarn .btn-dialog-default:active {  background:     #fff; color: #ffbf28;}
+.light-dialog-panel.msgwarn button:active {               background:     #fff; color: #666;}
 
-.light-dialog-panel.msgerror {                      background:     $c73;
+.light-dialog-panel.msgerror {                      background:     $c74;
                                                     border-color:   #AE9D9D;}
 .light-dialog-panel.msgerror .m-closebutton {       color:          $c70;}
 .light-dialog-panel.msgerror .btn-dialog-default {  background:     $c70;}
-.light-dialog-panel.msgerror button {               background:     #AE9D9D;}
+.light-dialog-panel.msgerror button {               background:     #8f7b7b;}
+.light-dialog-panel.msgerror .btn-dialog-default:hover {  background:     $c73; color: $c70;}
+.light-dialog-panel.msgerror button:hover {               background:     #d2b5b5;}
+.light-dialog-panel.msgerror .btn-dialog-default:active { background:     $c80; color: $c70;}
+.light-dialog-panel.msgerror button:active {              background:     $c80;}
 
 /* Notifications */
 

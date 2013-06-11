@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.app.messages;
+package info.magnolia.messages.app;
 
 import info.magnolia.ui.api.message.MessageType;
 

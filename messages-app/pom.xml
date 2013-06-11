@@ -7,9 +7,10 @@
     <version>5.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>magnolia-ui-app-messages</artifactId>
+  <groupId>info.magnolia.messages</groupId>
+  <artifactId>magnolia-messages-app</artifactId>
   <packaging>jar</packaging>
-  <name>magnolia-ui-app-messages</name>
+  <name>magnolia-app-messages</name>
   <dependencies>
     <dependency>
       <groupId>info.magnolia.ui</groupId>

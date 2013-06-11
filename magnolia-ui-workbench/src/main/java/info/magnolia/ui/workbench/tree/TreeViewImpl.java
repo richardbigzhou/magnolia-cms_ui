@@ -111,13 +111,14 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
 
     @Override
     public void select(String itemId) {
-        if (!treeTable.isRoot(itemId)) {
-            // properties cannot be expanded so use the nodeId only
-            expandTreeToNode(itemId);
+        if (!treeTable.isSelected(itemId)) {
+            if (!treeTable.isRoot(itemId)) {
+                // properties cannot be expanded so use the nodeId only
+                expandTreeToNode(itemId);
+            }
+            treeTable.setValue(null);
+            treeTable.select(itemId);
         }
-        // do not #setCurrentPageFirstItemId on tree (as opposed to list) since lazy-loading is disabled for MagnoliaTreeTable.
-        treeTable.setValue(null);
-        treeTable.select(itemId);
     }
 
     private void expandTreeToNode(String nodeId) {
