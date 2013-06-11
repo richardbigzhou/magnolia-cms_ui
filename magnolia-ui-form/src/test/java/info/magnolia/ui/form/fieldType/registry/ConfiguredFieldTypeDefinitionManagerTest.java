@@ -88,11 +88,11 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
 
         session = SessionTestUtil.createSession(RepositoryConstants.CONFIG,
                 A_FIELD_TYPE_PATH + ".name=text",
-                A_FIELD_TYPE_PATH + ".definition=" + TextFieldDefinition.class.getName(),
-                A_FIELD_TYPE_PATH + ".builder=" + TextFieldFactory.class.getName(),
+                A_FIELD_TYPE_PATH + ".definitionClass=" + TextFieldDefinition.class.getName(),
+                A_FIELD_TYPE_PATH + ".factoryClass=" + TextFieldFactory.class.getName(),
                 B_FIELD_TYPE_PATH + ".name=bFieldType",
-                B_FIELD_TYPE_PATH + ".definition=" + StaticFieldDefinition.class.getName(),
-                B_FIELD_TYPE_PATH + ".builder=" + StaticFieldFactory.class.getName(),
+                B_FIELD_TYPE_PATH + ".definitionClass=" + StaticFieldDefinition.class.getName(),
+                B_FIELD_TYPE_PATH + ".factoryClass=" + StaticFieldFactory.class.getName(),
                 C_FIELD_TYPE_PATH + ".name=cModule:cFieldType"
         );
         MockUtil.initMockContext();
@@ -123,7 +123,7 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
         // THEN
         FieldTypeDefinition aFieldType = fieldTypeRegistry.get("aFieldType");
         assertNotNull(aFieldType);
-        assertEquals(TextFieldDefinition.class.getName(), aFieldType.getDefinition().getName());
+        assertEquals(TextFieldDefinition.class.getName(), aFieldType.getDefinitionClass().getName());
         assertEquals(TextFieldFactory.class.getName(), aFieldType.getFactoryClass().getName());
 
     }
@@ -139,7 +139,7 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
         // THEN
         FieldTypeDefinition aFieldType = fieldTypeRegistry.getByDefinition(TextFieldDefinition.class);
         assertNotNull(aFieldType);
-        assertEquals(TextFieldDefinition.class.getName(), aFieldType.getDefinition().getName());
+        assertEquals(TextFieldDefinition.class.getName(), aFieldType.getDefinitionClass().getName());
         assertEquals(TextFieldFactory.class.getName(), aFieldType.getFactoryClass().getName());
 
     }

@@ -43,6 +43,6 @@ import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefini
 public class UniqueUserIdValidatorDefinition extends ConfiguredFieldValidatorDefinition {
 
     public UniqueUserIdValidatorDefinition() {
-        setBuilder(UniqueUserIdValidatorFactory.class);
+        setFactoryClass(UniqueUserIdValidatorFactory.class);
     }
 }

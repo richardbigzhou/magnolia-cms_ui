@@ -78,9 +78,9 @@ public class FieldFactoryFactory implements Serializable {
             return null;
         }
 
-        Class<? extends FieldFactory> implementationClass = fieldTypeDefinition.getFactoryClass();
-        if (implementationClass == null) {
-            log.warn("No matching implementation class was found for definition class [{}]. Please check your configuration.", definition.getClass().getName());
+        Class<? extends FieldFactory> factoryClass = fieldTypeDefinition.getFactoryClass();
+        if (factoryClass == null) {
+            log.warn("No factory class set for definition class [{}]. Please check your configuration.", definition.getClass().getName());
             return null;
         }
 
@@ -88,7 +88,7 @@ public class FieldFactoryFactory implements Serializable {
         combinedParameters[0] = definition;
         System.arraycopy(parameters, 0, combinedParameters, 1, parameters.length);
 
-        FieldFactory fieldFactory = componentProvider.newInstance(implementationClass, combinedParameters);
+        FieldFactory fieldFactory = componentProvider.newInstance(factoryClass, combinedParameters);
         fieldFactory.setFieldValidatorFactoryFactory(fieldValidatorFactoryFactory);
 
         return fieldFactory;

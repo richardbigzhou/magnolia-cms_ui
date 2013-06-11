@@ -43,6 +43,6 @@ import info.magnolia.ui.form.validator.factory.EmailFieldValidatorFactory;
 public class EmailValidatorDefinition extends ConfiguredFieldValidatorDefinition {
 
     public EmailValidatorDefinition() {
-        setBuilder(EmailFieldValidatorFactory.class);
+        setFactoryClass(EmailFieldValidatorFactory.class);
     }
 }
