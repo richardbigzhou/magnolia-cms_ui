@@ -67,17 +67,23 @@ body{
   -webkit-touch-callout: none;/* Remove Callout Context menu when tapping on something */
 }
 
-.btn-submit{
-  background:#4B6115;
+button.btn-submit {
+  background:#3E5900;
   color:white;
   border:none;
   font-family:DINWebPro;
   font-size:12px;
   margin-right: 20px;
-  padding: 3px;
   height: 23px;
+  /*padding-top and line-height properties are used to vertically center the text both on webkit browsers an FF*/
+  padding-top: 1px;
+  line-height: 24px;
   width: 70px;
   text-transform: uppercase;
+}
+
+button.btn-submit:hover, button.btn-submit:focus, button.btn-submit:active {
+  background-color: #86AB33;
 }
 
 .mgnl-form {
