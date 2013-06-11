@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.form.fieldtype.definition;
 
-import info.magnolia.ui.form.field.builder.FieldBuilder;
+import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 
 /**
@@ -42,10 +42,10 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
 public class ConfiguredFieldTypeDefinition implements FieldTypeDefinition {
 
     private Class<? extends FieldDefinition> definition;
-    private Class<? extends FieldBuilder> builder;
+    private Class<? extends FieldFactory> builder;
 
     @Override
-    public Class<? extends FieldBuilder> getBuilder() {
+    public Class<? extends FieldFactory> getFactoryClass() {
         return builder;
     }
 
@@ -54,7 +54,7 @@ public class ConfiguredFieldTypeDefinition implements FieldTypeDefinition {
         return definition;
     }
 
-    public void setBuilder(Class<? extends FieldBuilder> builder) {
+    public void setBuilder(Class<? extends FieldFactory> builder) {
         this.builder = builder;
     }
 

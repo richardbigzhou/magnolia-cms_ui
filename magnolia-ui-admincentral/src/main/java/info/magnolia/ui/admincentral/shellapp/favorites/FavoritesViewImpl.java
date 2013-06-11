@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
-import info.magnolia.ui.vaadin.splitfeed.SplitFeed.FeedSection;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -49,8 +49,10 @@ import javax.inject.Inject;
 
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -62,9 +64,9 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
     private FavoritesView.Listener listener;
     private FavoritesGroup noGroup;
     private FavoritesForm favoriteForm;
-    private FeedSection leftColumn;
-    private FeedSection rightColumn;
     private Shell shell;
+    private SplitFeed splitPanel = new SplitFeed();
+    private Label emptyPlaceHolder = new Label();
 
     @Override
     public String getId() {
@@ -88,12 +90,13 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
         layout.setHeight("100%");
         layout.setWidth("900px");
 
-        final SplitFeed splitPanel = new SplitFeed();
-        leftColumn = splitPanel.getLeftContainer();
-        rightColumn = splitPanel.getRightContainer();
+        emptyPlaceHolder.addStyleName("emptyplaceholder");
+        emptyPlaceHolder.setContentMode(ContentMode.HTML);
+        emptyPlaceHolder.setValue(String.format("<span class=\"icon-favorites\"></span><div class=\"message\">%s</div>", MessagesUtil.get("favorites.empty")));
+
+        splitPanel.setVisible(false);
 
         noGroup = new FavoritesGroup();
-        leftColumn.addComponent(noGroup);
 
         layout.addLayoutClickListener(new LayoutClickListener() {
 
@@ -103,9 +106,10 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
                 reset(clickedComponent);
             }
         });
-        layout.addComponent(splitPanel);
-        layout.setExpandRatio(splitPanel, 1f);
 
+        layout.addComponent(emptyPlaceHolder);
+        layout.addComponent(splitPanel);
+        layout.setExpandRatio(splitPanel, 0);
     }
 
     @Override
@@ -122,25 +126,38 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
 
     @Override
     public void init(AbstractJcrNodeAdapter favorites, JcrNewNodeAdapter favoriteSuggestion, JcrNewNodeAdapter groupSuggestion, Map<String, String> availableGroups) {
-        noGroup.removeAllComponents();
-        leftColumn.removeAllComponents();
-        rightColumn.removeAllComponents();
 
         final Map<String, AbstractJcrNodeAdapter> nodeAdapters = favorites.getChildren();
-        final SortedSet<String> keys = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-        keys.addAll(nodeAdapters.keySet());
 
-        for (String key : keys) {
-            final AbstractJcrNodeAdapter favoriteAdapter = nodeAdapters.get(key);
-            if (AdmincentralNodeTypes.Favorite.NAME.equals(favoriteAdapter.getPrimaryNodeTypeName())) {
-                final FavoritesEntry favEntry = new FavoritesEntry(favoriteAdapter, listener, shell);
-                noGroup.addComponent(favEntry);
-            } else {
-                FavoritesGroup group = new FavoritesGroup(favoriteAdapter, listener, shell);
-                rightColumn.addComponent(group);
+        if (nodeAdapters.isEmpty()) {
+            emptyPlaceHolder.setVisible(true);
+            splitPanel.setVisible(false);
+            layout.setExpandRatio(splitPanel, 0);
+            layout.setExpandRatio(emptyPlaceHolder, 1);
+        } else {
+            emptyPlaceHolder.setVisible(false);
+            splitPanel.setVisible(true);
+            layout.setExpandRatio(splitPanel, 1);
+            layout.setExpandRatio(emptyPlaceHolder, 0);
+
+            noGroup.removeAllComponents();
+            splitPanel.getLeftContainer().removeAllComponents();
+            splitPanel.getRightContainer().removeAllComponents();
+            final SortedSet<String> keys = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+            keys.addAll(nodeAdapters.keySet());
+
+            for (String key : keys) {
+                final AbstractJcrNodeAdapter favoriteAdapter = nodeAdapters.get(key);
+                if (AdmincentralNodeTypes.Favorite.NAME.equals(favoriteAdapter.getPrimaryNodeTypeName())) {
+                    final FavoritesEntry favEntry = new FavoritesEntry(favoriteAdapter, listener, shell);
+                    noGroup.addComponent(favEntry);
+                } else {
+                    FavoritesGroup group = new FavoritesGroup(favoriteAdapter, listener, shell);
+                    splitPanel.getRightContainer().addComponent(group);
+                }
             }
+            splitPanel.getLeftContainer().addComponent(noGroup);
         }
-        leftColumn.addComponent(noGroup);
 
         if (favoriteForm != null) {
             layout.removeComponent(favoriteForm);
@@ -158,7 +175,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
         }
         favoriteForm.close();
         noGroup.reset();
-        Iterator<Component> components = rightColumn.getComponentIterator();
+        Iterator<Component> components = splitPanel.getRightContainer().getComponentIterator();
 
         while (components.hasNext()) {
             Component component = components.next();

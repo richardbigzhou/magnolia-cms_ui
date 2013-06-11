@@ -251,6 +251,11 @@ public class VMagnoliaTable extends VScrollTablePatched {
                             VScrollTableRow row = Util.findWidget(targetTd, null);
                             if (row != null) {
                                 boolean wasSelected = row.isSelected();
+
+                                if (VMagnoliaTable.this.isSingleSelectMode() && !row.isSelected()) {
+                                    deselectAll();
+                                }
+
                                 row.toggleSelection();
                                 setRowFocus(row);
                                 /*

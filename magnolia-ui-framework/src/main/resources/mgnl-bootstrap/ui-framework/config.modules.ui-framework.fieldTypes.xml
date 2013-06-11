@@ -35,7 +35,7 @@
       <sv:value>08e32ca4-5352-4b1b-8f4e-1bf1db9d6812</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.builder.TextFieldBuilder</sv:value>
+      <sv:value>info.magnolia.ui.form.field.factory.TextFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.TextFieldDefinition</sv:value>
@@ -70,7 +70,7 @@
       <sv:value>764df6fd-864d-4282-98dd-e9b85ca1b1e7</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.builder.DateFieldBuilder</sv:value>
+      <sv:value>info.magnolia.ui.form.field.factory.DateFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.DateFieldDefinition</sv:value>
@@ -105,7 +105,7 @@
       <sv:value>61c2384c-e385-4f57-947e-c8eee4bd4673</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.builder.SelectFieldBuilder</sv:value>
+      <sv:value>info.magnolia.ui.form.field.factory.SelectFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.SelectFieldDefinition</sv:value>
@@ -140,7 +140,7 @@
       <sv:value>b7bbb718-ddcb-43a3-9f58-2187b0221dbf</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.builder.OptionGroupFieldBuilder</sv:value>
+      <sv:value>info.magnolia.ui.form.field.factory.OptionGroupFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition</sv:value>
@@ -175,7 +175,7 @@
       <sv:value>b31d17f6-ae3f-4c49-841a-cf1e827fda02</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.builder.LinkFieldBuilder</sv:value>
+      <sv:value>info.magnolia.ui.form.field.factory.LinkFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.LinkFieldDefinition</sv:value>
@@ -210,7 +210,7 @@
       <sv:value>831b34b8-7a64-4899-a7a3-263eaed46f69</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.contentapp.field.LinkFieldSelectionBuilder</sv:value>
+      <sv:value>info.magnolia.ui.contentapp.field.LinkFieldSelectionFactory</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.contentapp.field.LinkFieldSelectionDefinition</sv:value>
@@ -245,7 +245,7 @@
       <sv:value>d8a7d0c3-12dc-45b8-bfbc-7822a2ee3523</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.builder.RichTextFieldBuilder</sv:value>
+      <sv:value>info.magnolia.ui.form.field.factory.RichTextFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.RichTextFieldDefinition</sv:value>
@@ -280,7 +280,7 @@
       <sv:value>214965fd-8e2a-493e-8eb7-078040884e7a</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.builder.StaticFieldBuilder</sv:value>
+      <sv:value>info.magnolia.ui.form.field.factory.StaticFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.StaticFieldDefinition</sv:value>
@@ -315,7 +315,7 @@
       <sv:value>b0548e09-69d4-42ba-9713-744ff9b88e95</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.builder.CheckBoxFieldBuilder</sv:value>
+      <sv:value>info.magnolia.ui.form.field.factory.CheckBoxFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.CheckboxFieldDefinition</sv:value>
@@ -350,7 +350,7 @@
       <sv:value>7d7c0b31-aa0e-476d-9a02-1e505b3c9304</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.builder.HiddenFieldBuilder</sv:value>
+      <sv:value>info.magnolia.ui.form.field.factory.HiddenFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.HiddenFieldDefinition</sv:value>
@@ -385,7 +385,7 @@
       <sv:value>048f56f2-76bc-4a66-a542-ea7b23847350</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.builder.PasswordFieldBuilder</sv:value>
+      <sv:value>info.magnolia.ui.form.field.factory.PasswordFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.PasswordFieldDefinition</sv:value>
@@ -420,7 +420,7 @@
       <sv:value>a2058d45-556d-4252-8e86-02260388c629</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.builder.TwinColSelectFieldBuilder</sv:value>
+      <sv:value>info.magnolia.ui.form.field.factory.TwinColSelectFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition</sv:value>
@@ -455,7 +455,7 @@
       <sv:value>0f4c5a98-c64f-4c07-9ec5-695cfed55aab</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.builder.BasicUploadFieldBuilder</sv:value>
+      <sv:value>info.magnolia.ui.form.field.factory.BasicUploadFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition</sv:value>
@@ -487,7 +487,7 @@
       <sv:value>af1c0471-5a14-4315-ab39-8abd39476d36</sv:value>
     </sv:property>
     <sv:property sv:name="builder" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.builder.MultiLinkFieldBuilder</sv:value>
+      <sv:value>info.magnolia.ui.form.field.factory.MultiLinkFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="definition" sv:type="String">
       <sv:value>info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition</sv:value>

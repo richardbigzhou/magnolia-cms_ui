@@ -181,8 +181,8 @@
 
     <!-- Form -->
     <component>
-      <type>info.magnolia.ui.form.field.builder.FieldFactory</type>
-      <implementation>info.magnolia.ui.form.field.builder.FieldFactory</implementation>
+      <type>info.magnolia.ui.form.field.factory.FieldFactoryFactory</type>
+      <implementation>info.magnolia.ui.form.field.factory.FieldFactoryFactory</implementation>
     </component>
 
     <!-- Ui framework-->
@@ -217,8 +217,8 @@
       <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.form.validator.registry.FieldValidatorFactory</type>
-      <implementation>info.magnolia.ui.form.validator.registry.FieldValidatorFactory</implementation>
+      <type>info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory</type>
+      <implementation>info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory</implementation>
     </component>
 
     <!-- Workbench -->
@@ -257,8 +257,8 @@
 
     <!-- Form -->
     <component>
-      <type>info.magnolia.ui.form.field.builder.FieldFactory</type>
-      <implementation>info.magnolia.ui.form.field.builder.FieldFactory</implementation>
+      <type>info.magnolia.ui.form.field.factory.FieldFactoryFactory</type>
+      <implementation>info.magnolia.ui.form.field.factory.FieldFactoryFactory</implementation>
     </component>
     <component>
       <type>info.magnolia.ui.form.action.SaveFormActionDefinition</type>
@@ -296,6 +296,12 @@
     <component>
       <type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
       <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
+    </component>
+
+    <!-- Embedded page sub app -->
+    <component>
+      <type>info.magnolia.ui.framework.app.embedded.EmbeddedPageView</type>
+      <implementation>info.magnolia.ui.framework.app.embedded.EmbeddedPageViewImpl</implementation>
     </component>
 
   </components>

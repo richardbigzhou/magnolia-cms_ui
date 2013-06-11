@@ -8,8 +8,17 @@
   </parent>
   <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
   <name>magnolia-ui-vaadin-widgetset</name>
-  <dependencies>
 
+  <!-- enable-clover profile kept from parent, this isn't something special for this project -->
+  <properties>
+    <inplace>false</inplace>
+    <draftCompile>false</draftCompile>
+    <enableClosure>false</enableClosure>
+    <disableCastChecking>false</disableCastChecking>
+    <additionalReleaseProfiles>gwt-compile-production,enable-clover</additionalReleaseProfiles>
+  </properties>
+
+  <dependencies>
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-server</artifactId>
@@ -75,6 +84,8 @@
           <module>info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet</module>
           <runTarget>.magnolia/admincentral</runTarget>
           <draftCompile>${draftCompile}</draftCompile>
+          <enableClosureCompiler>${enableClosure}</enableClosureCompiler>
+          <disableCastChecking>${disableCastChecking}</disableCastChecking>
         </configuration>
         <executions>
           <execution>
@@ -101,11 +112,13 @@
     <profile>
       <id>gwt-compile-production</id>
       <activation>
-        <activeByDefault>true</activeByDefault>
+        <activeByDefault>false</activeByDefault>
       </activation>
       <properties>
         <draftCompile>false</draftCompile>
         <inplace>false</inplace>
+        <enableClosure>true</enableClosure>
+        <disableCastChecking>true</disableCastChecking>
       </properties>
         <build>
           <plugins>

@@ -316,11 +316,20 @@
   margin-left: 50px;
 }
 
-.v-pulse .emptyplaceholder {
-  color: $c10;
+.emptyplaceholder {
+  color: #E1E1E1;
   font-weight: bold;
   text-align: center;
-  margin-top: 20px;
+  margin-top: 150px;
+}
+
+.emptyplaceholder .message {
+  font-size: 13px;
+  margin-top: 15px;
+}
+
+.emptyplaceholder .icon-pulse, .emptyplaceholder .icon-favorites{
+  font-size: 150px;
 }
 
 .v-pulse .new-message {

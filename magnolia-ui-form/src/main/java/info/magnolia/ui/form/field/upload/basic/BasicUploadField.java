@@ -48,7 +48,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.server.ErrorMessage;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -483,12 +482,12 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     }
 
     @Override
-    protected void displayUploadFinisheddNote(String fileName) {
-        uiContext.openNotification(MessageStyleTypeEnum.INFO, true, getCaption(successNoteCaption, new String[] { fileName }));
+    protected void displayUploadFinishedNote(String fileName) {
+        uiContext.openNotification(MessageStyleTypeEnum.INFO, true, getCaption(successNoteCaption, new String[]{fileName}));
     }
 
     @Override
-    protected void displayUploadFaildNote(String fileName) {
+    protected void displayUploadFailedNote(String fileName) {
         uiContext.openAlert(MessageStyleTypeEnum.ERROR, "ERROR", getCaption(errorNoteCaption, new String[] { fileName }), "ok", null);
     }
 
@@ -507,30 +506,8 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         return this.layout;
     }
 
-    /**
-     * Override the getErrorMessage() in order to check required field again <br>
-     * the fileitemWrapper and not the related property (as it is set to null).
-     */
     @Override
-    public ErrorMessage getErrorMessage() {
-        if (getFileWrapper().isEmpty()) {
-            return super.getErrorMessage();
-        } else {
-            return null;
-        }
+    protected boolean isEmpty() {
+        return getFileWrapper().isEmpty();
     }
-
-    /**
-     * Override the isValid() in order to check required field again <br>
-     * the fileitemWrapper and not the related property (as it is set to null).
-     */
-    @Override
-    public boolean isValid() {
-        if (getFileWrapper().isEmpty()) {
-            return super.isValid();
-        } else {
-            return true;
-        }
-    }
-
 }
