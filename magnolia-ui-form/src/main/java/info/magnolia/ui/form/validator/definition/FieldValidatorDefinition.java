@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.form.validator.definition;
 
-import info.magnolia.ui.form.validator.builder.FieldValidatorBuilder;
+import info.magnolia.ui.form.validator.factory.FieldValidatorFactory;
 
 /**
  * Defines a validator.
  *
- * @see FieldValidatorBuilder
+ * @see info.magnolia.ui.form.validator.factory.FieldValidatorFactory
  */
 public interface FieldValidatorDefinition {
 
@@ -52,5 +52,5 @@ public interface FieldValidatorDefinition {
      */
     String getI18nBasename();
 
-    Class<? extends FieldValidatorBuilder> getBuilder();
+    Class<? extends FieldValidatorFactory> getFactoryClass();
 }

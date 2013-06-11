@@ -52,7 +52,7 @@ public class DamControlMigration implements ControlMigration {
         controlNode.setProperty("workspace", "dam");
         controlNode.setProperty("appName", "assets");
         controlNode.setProperty("class", LinkFieldDefinition.class.getName());
-        controlNode.setProperty("dialogName", "dam-app-assets:link");
+        controlNode.setProperty("dialogName", "dam:link");
         if (!controlNode.hasNode("identifierToPathConverter")) {
             controlNode.addNode("identifierToPathConverter", NodeTypes.ContentNode.NAME);
         }

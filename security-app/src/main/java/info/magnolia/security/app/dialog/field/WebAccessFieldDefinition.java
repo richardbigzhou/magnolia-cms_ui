@@ -38,7 +38,7 @@ import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 /**
  * Field definition for the web access field.
  *
- * @see WebAccessFieldBuilder
+ * @see WebAccessFieldFactory
  */
 public class WebAccessFieldDefinition extends ConfiguredFieldDefinition  {
 }

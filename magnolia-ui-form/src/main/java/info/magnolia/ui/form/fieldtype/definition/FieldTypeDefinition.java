@@ -33,18 +33,18 @@
  */
 package info.magnolia.ui.form.fieldtype.definition;
 
-import info.magnolia.ui.form.field.builder.FieldBuilder;
+import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 
 /**
  * FieldTypeDefinition.
  *
  * @see FieldDefinition
- * @see FieldBuilder
+ * @see info.magnolia.ui.form.field.factory.FieldFactory
  */
 public interface FieldTypeDefinition {
 
     Class<? extends FieldDefinition> getDefinition();
 
-    Class<? extends FieldBuilder> getBuilder();
+    Class<? extends FieldFactory> getFactoryClass();
 }
