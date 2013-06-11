@@ -43,7 +43,7 @@ import java.util.List;
  * Field definition for the workspace ACL field. Allows configuring either node types or a complete workbench to use
  * when choosing nodes in the dialog.
  *
- * @see WorkspaceAccessFieldBuilder
+ * @see WorkspaceAccessFieldFactory
  */
 public class WorkspaceAccessFieldDefinition extends ConfiguredFieldDefinition {
 

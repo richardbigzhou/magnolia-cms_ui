@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -40,6 +40,8 @@ import static org.mockito.Mockito.*;
 import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.api.app.AppDescriptor;
@@ -47,8 +49,6 @@ import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.app.registry.AppRegistryEvent;
 import info.magnolia.ui.api.app.registry.AppRegistryEventType;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
-import info.magnolia.event.EventBus;
-import info.magnolia.event.SimpleEventBus;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -70,6 +70,7 @@ public class AppLayoutManagerImplTest extends MgnlTestCase {
     private EventBus systemEventBus;
     private AppLauncherLayoutManagerImpl appLayoutManager;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();

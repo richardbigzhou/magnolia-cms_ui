@@ -48,10 +48,4 @@ public interface VShellImageBundle extends ClientBundle {
 
     @Source(imgPath + "logo-magnolia-120x30.png")
     public ImageResource getLogo();
-
-    @Source(imgPath + "style-divet-header-up-white.png")
-    public ImageResource getDivetWhite();
-
-    @Source(imgPath + "style-divet-header-up-green.png")
-    public ImageResource getDivetGreen();
 }

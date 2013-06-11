@@ -49,8 +49,8 @@ import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockEvent;
 import info.magnolia.test.mock.jcr.MockObservationManager;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
-import info.magnolia.ui.form.field.builder.StaticFieldBuilder;
-import info.magnolia.ui.form.field.builder.TextFieldBuilder;
+import info.magnolia.ui.form.field.factory.StaticFieldFactory;
+import info.magnolia.ui.form.field.factory.TextFieldFactory;
 import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.form.fieldtype.definition.ConfiguredFieldTypeDefinition;
@@ -89,10 +89,10 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
         session = SessionTestUtil.createSession(RepositoryConstants.CONFIG,
                 A_FIELD_TYPE_PATH + ".name=text",
                 A_FIELD_TYPE_PATH + ".definition=" + TextFieldDefinition.class.getName(),
-                A_FIELD_TYPE_PATH + ".builder=" + TextFieldBuilder.class.getName(),
+                A_FIELD_TYPE_PATH + ".builder=" + TextFieldFactory.class.getName(),
                 B_FIELD_TYPE_PATH + ".name=bFieldType",
                 B_FIELD_TYPE_PATH + ".definition=" + StaticFieldDefinition.class.getName(),
-                B_FIELD_TYPE_PATH + ".builder=" + StaticFieldBuilder.class.getName(),
+                B_FIELD_TYPE_PATH + ".builder=" + StaticFieldFactory.class.getName(),
                 C_FIELD_TYPE_PATH + ".name=cModule:cFieldType"
         );
         MockUtil.initMockContext();
@@ -124,7 +124,7 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
         FieldTypeDefinition aFieldType = fieldTypeRegistry.get("aFieldType");
         assertNotNull(aFieldType);
         assertEquals(TextFieldDefinition.class.getName(), aFieldType.getDefinition().getName());
-        assertEquals(TextFieldBuilder.class.getName(), aFieldType.getBuilder().getName());
+        assertEquals(TextFieldFactory.class.getName(), aFieldType.getFactoryClass().getName());
 
     }
 
@@ -140,7 +140,7 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
         FieldTypeDefinition aFieldType = fieldTypeRegistry.getByDefinition(TextFieldDefinition.class);
         assertNotNull(aFieldType);
         assertEquals(TextFieldDefinition.class.getName(), aFieldType.getDefinition().getName());
-        assertEquals(TextFieldBuilder.class.getName(), aFieldType.getBuilder().getName());
+        assertEquals(TextFieldFactory.class.getName(), aFieldType.getFactoryClass().getName());
 
     }
 
