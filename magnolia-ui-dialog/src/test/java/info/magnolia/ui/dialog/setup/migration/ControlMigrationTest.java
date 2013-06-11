@@ -268,7 +268,7 @@ public class ControlMigrationTest {
         assertTrue(controlNode.hasProperty("appName"));
         assertEquals("pages", controlNode.getProperty("appName").getString());
         assertTrue(controlNode.hasProperty("dialogName"));
-        assertEquals("ui-pages-app:link", controlNode.getProperty("dialogName").getString());
+        assertEquals("pages:link", controlNode.getProperty("dialogName").getString());
         assertTrue(controlNode.hasNode("identifierToPathConverter"));
         assertTrue(controlNode.getNode("identifierToPathConverter").hasProperty("class"));
         assertEquals(BaseIdentifierToPathConverter.class.getName(), controlNode.getNode("identifierToPathConverter").getProperty("class").getString());
@@ -289,13 +289,13 @@ public class ControlMigrationTest {
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));
         assertTrue(controlNode.hasProperty("class"));
-        assertEquals("info.magnolia.ui.app.contacts.field.definition.ContactLinkFieldDefinition", controlNode.getProperty("class").getString());
+        assertEquals("info.magnolia.contacts.app.field.definition.ContactLinkFieldDefinition", controlNode.getProperty("class").getString());
         assertTrue(controlNode.hasProperty("appName"));
         assertEquals("contacts", controlNode.getProperty("appName").getString());
         assertTrue(controlNode.hasProperty("workspace"));
         assertEquals("contacts", controlNode.getProperty("workspace").getString());
         assertTrue(controlNode.hasProperty("dialogName"));
-        assertEquals("ui-contacts-app:link", controlNode.getProperty("dialogName").getString());
+        assertEquals("contacts-app:link", controlNode.getProperty("dialogName").getString());
     }
 
     @Test

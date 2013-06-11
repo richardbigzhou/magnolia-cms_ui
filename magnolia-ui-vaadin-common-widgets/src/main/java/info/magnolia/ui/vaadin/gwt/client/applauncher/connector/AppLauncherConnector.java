@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -40,6 +40,11 @@ import info.magnolia.ui.vaadin.gwt.client.applauncher.widget.AppLauncherView;
 import info.magnolia.ui.vaadin.gwt.client.applauncher.widget.AppLauncherView.Presenter;
 import info.magnolia.ui.vaadin.gwt.client.applauncher.widget.AppLauncherViewImpl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
@@ -63,26 +68,45 @@ public class AppLauncherConnector extends AbstractComponentConnector {
         addStateChangeHandler("appGroups", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
+            }
+        });
+
+        addStateChangeHandler("appGroups", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent stateChangeEvent) {
+                // set groups in specified order
+                List<AppGroup> groups = new ArrayList<AppGroup>(getState().appGroups.values());
+                Collections.sort(groups, new Comparator<AppGroup>() {
+                    @Override
+                    public int compare(AppGroup o1, AppGroup o2) {
+                        Integer idx1 = getState().groupsOrder.indexOf(o1.getName());
+                        Integer idx2 = getState().groupsOrder.indexOf(o2.getName());
+                        return idx1.compareTo(idx2);
+                    }
+                });
+
+                // add groups to the view
                 view.clear();
-                for (final AppGroup appGroup : getState().appGroups.values()) {
+                for (final AppGroup appGroup : groups) {
                     view.addAppGroup(appGroup);
                     for (final AppTile tile : appGroup.getAppTiles()) {
                         view.addAppTile(tile, appGroup);
                     }
                 }
-                updateRuningAppTiles();
+
+                updateRunningAppTiles();
             }
         });
 
         addStateChangeHandler("runningApps", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                updateRuningAppTiles();
+                updateRunningAppTiles();
             }
         });
     }
 
-    private void updateRuningAppTiles() {
+    private void updateRunningAppTiles() {
         for (final AppGroup appGroup : getState().appGroups.values()) {
             for (final AppTile tile : appGroup.getAppTiles()) {
                 if (getState().runningApps.contains(tile.getName())) {

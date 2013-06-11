@@ -40,7 +40,6 @@ import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -53,31 +52,24 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
 
     protected final ListView view;
 
-    protected final ComponentProvider componentProvider;
-
     protected AbstractJcrContainer container;
 
     @Inject
-    public ListPresenter(ListView view, ComponentProvider componentProvider) {
+    public ListPresenter(final ListView view, final ComponentProvider componentProvider) {
+        super(componentProvider);
         this.view = view;
-        this.componentProvider = componentProvider;
     }
 
     @Override
     public ListView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName) {
         super.start(workbench, eventBus, viewTypeName);
 
-        this.container = createContainer(workbench, viewTypeName);
+        this.container = createContainer(workbench);
         view.setListener(this);
         view.setContainer(container);
 
         // build columns
-
-        List<Object> editableColumns = new ArrayList<Object>();
-
-        Iterator<ColumnDefinition> it = null;
-        // was it = = workbench.getColumns().iterator();
-        it = getColumnsIterator();
+        Iterator<ColumnDefinition> it = getColumnsIterator();
 
         while (it.hasNext()) {
             ColumnDefinition column = it.next();
@@ -95,17 +87,16 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
             }
 
             if (column.getFormatterClass() != null) {
-                view.setColumnFormatter(propertyId, componentProvider.newInstance(column.getFormatterClass(), column));
+                view.setColumnFormatter(propertyId, getComponentProvider().newInstance(column.getFormatterClass(), column));
             }
 
-            if (column.isEditable()) {
-                editableColumns.add(propertyId);
+            if (column.isSortable()) {
+                container.addSortableProperty(propertyId);
             }
         }
 
         return view;
     }
-
 
     @Override
     public void setSelectedItemIds(List<String> itemIds) {
@@ -120,8 +111,8 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
         container.fireItemSetChange();
     }
 
-    protected AbstractJcrContainer createContainer(WorkbenchDefinition workbench, String viewTypeName) {
-        return new FlatJcrContainer(workbench, viewTypeName);
+    protected AbstractJcrContainer createContainer(WorkbenchDefinition workbench) {
+        return new FlatJcrContainer(workbench);
     }
 
     @Override

@@ -36,10 +36,10 @@ package info.magnolia.ui.contentapp;
 
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenterFactory;
-import info.magnolia.ui.framework.app.AppContext;
-import info.magnolia.ui.framework.app.AppView;
+import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.framework.app.BaseApp;
-import info.magnolia.ui.framework.app.ItemChosenListener;
+import info.magnolia.ui.api.app.ItemChosenListener;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.overlay.OverlayLayer;
 

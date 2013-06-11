@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.framework.message;
 
+import info.magnolia.ui.api.message.Message;
+import info.magnolia.ui.api.message.MessageType;
+
 import java.util.List;
 
 /**

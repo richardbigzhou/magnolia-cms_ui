@@ -16,7 +16,8 @@
     .v-select-all {
       position: absolute;
       left: 10px;
-      margin-top: -25px;
+      top: -1px;
+      line-height: 30px;
     }
 
     .v-table-header td {
@@ -31,7 +32,7 @@
     .v-table-resizer {
       background-color: transparent;
       background-image: url(img/table-resizer-background-dotted.svg);
-      packground-position: center top;
+      background-position: center top;
       background-repeat: repeat;
       background-size: 5px 2px;
       height: 24px;
@@ -139,6 +140,10 @@
       margin-right: 10px;
       display: inline-block;
       width: 15px;
+
+      label {
+        background-position: 0 center !important;
+      }
     }
 
     .v-table-icon-element {

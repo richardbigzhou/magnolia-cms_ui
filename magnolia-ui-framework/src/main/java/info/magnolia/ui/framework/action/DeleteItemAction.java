@@ -35,8 +35,8 @@ package info.magnolia.ui.framework.action;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.framework.event.AdmincentralEventBus;
-import info.magnolia.ui.framework.event.ContentChangedEvent;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
+import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;

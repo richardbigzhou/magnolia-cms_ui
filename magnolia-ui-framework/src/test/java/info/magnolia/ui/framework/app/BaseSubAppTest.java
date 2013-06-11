@@ -36,6 +36,9 @@ package info.magnolia.ui.framework.app;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.view.View;
 
 import org.junit.Before;

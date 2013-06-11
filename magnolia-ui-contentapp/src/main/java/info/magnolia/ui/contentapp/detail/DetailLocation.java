@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.contentapp.detail;
 
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.api.location.DefaultLocation;
+import info.magnolia.ui.api.location.Location;
 
 import org.apache.commons.lang.StringUtils;
 

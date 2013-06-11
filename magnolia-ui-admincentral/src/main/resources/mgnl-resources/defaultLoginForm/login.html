@@ -24,19 +24,18 @@
 [#assign loginError = (ctx.mgnlLoginError.status == 2)]
 <div id="content" style="top: 60px;">
   <div id="login" class="login-panel" style="display: block; opacity: 1; -webkit-transition: all 0s cubic-bezier(0.25, 0.1, 0.25, 1);" >
-      <div class="header" >
+      <div class="header">
         <div class="tag-line">
-              Yes, we're open.
         </div>
       </div>
           
       <form id="loginForm" action="" method="post" class="mgnl-form">
           <div id="login-divet" class="divet"></div>
           <div style="height:28px;"></div>
-          <label>user name</label>
+          <label for="login-username">user name</label>
           <input type="text" value="" id="login-username" name="mgnlUserId" [#if loginError] class ="error"[/#if] tabindex="1" [#if !loginError] autofocus [/#if] autocorrect="off" autocapitalize="off">
           <br class="float-clear"/>
-          <label>password</label>
+          <label for="login-password">password</label>
           <input type="password" id="login-password" value="" name="mgnlUserPSWD" tabindex="2" [#if loginError] class ="error"[/#if]><br class="float-clear"/>
           <div>
             <button class="btn-submit" id="login-button" style="float:right;" tabindex="3">login</button>

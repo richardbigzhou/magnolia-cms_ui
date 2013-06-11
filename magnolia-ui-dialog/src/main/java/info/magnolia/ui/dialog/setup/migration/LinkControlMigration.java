@@ -52,7 +52,7 @@ public class LinkControlMigration implements ControlMigration {
         Property controlType = controlNode.getProperty("controlType");
         String appName = "pages";
         String className = LinkFieldDefinition.class.getName();
-        String dialogName = "ui-pages-app:link";
+        String dialogName = "pages:link";
         String workspace = "website";
 
         // Set IdentifierConvertor
@@ -67,8 +67,8 @@ public class LinkControlMigration implements ControlMigration {
                 if (controlNode.hasProperty("tree") && controlNode.getProperty("tree").getString().equals("Contact")) {
                     appName = "contacts";
                     workspace = "contacts";
-                    dialogName = "ui-contacts-app:link";
-                    className = "info.magnolia.ui.app.contacts.field.definition.ContactLinkFieldDefinition";
+                    dialogName = "contacts-app:link";
+                    className = "info.magnolia.contacts.app.field.definition.ContactLinkFieldDefinition";
                 }
             } else if (controlNode.getProperty("repository").getString().equals("dms")) {
                 DamControlMigration damMigration = new DamControlMigration();

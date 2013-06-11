@@ -37,6 +37,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
@@ -55,11 +56,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import java.util.Iterator;
+import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
-
-import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +86,16 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
 
     protected String viewTypeName;
 
-    // CONTENT PRESENTER
+    private final ComponentProvider componentProvider;
+
+    @Inject
+    public AbstractContentPresenter(ComponentProvider componentProvider) {
+        this.componentProvider = componentProvider;
+    }
+
+    protected ComponentProvider getComponentProvider() {
+        return componentProvider;
+    }
 
     @Override
     public ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName) {
@@ -202,23 +212,19 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
     }
 
     protected Iterator<ColumnDefinition> getColumnsIterator() {
-        Iterator<ColumnDefinition> it = null;
         Iterator<ContentPresenterDefinition> viewsIterator = workbenchDefinition.getContentViews().iterator();
         while (viewsIterator.hasNext()) {
             ContentPresenterDefinition contentView = viewsIterator.next();
             if (contentView.getViewType().getText().equals(viewTypeName)) {
-                it = contentView.getColumns().iterator();
-                break;
+                return getAvailableColumns(contentView.getColumns()).iterator();
             }
         }
-        return it;
+        return null;
     }
 
     @Override
     public String getIcon(Item item) {
-
         try {
-
             if (item instanceof JcrPropertyAdapter) {
                 return ICON_PROPERTY;
             } else if (item instanceof JcrNodeAdapter) {
@@ -235,7 +241,6 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
 
         } catch (RepositoryException e) {
             log.warn("Unable to resolve icon", e);
-            return null;
         }
         return null;
     }
@@ -252,5 +257,17 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
             }
         }
         return null;
+    }
+
+    protected List<ColumnDefinition> getAvailableColumns(final List<ColumnDefinition> allColumns) {
+        final List<ColumnDefinition> availableColumns = new ArrayList<ColumnDefinition>();
+        Iterator<ColumnDefinition> it = allColumns.iterator();
+        while (it.hasNext()) {
+            ColumnDefinition column = it.next();
+            if (column.isEnabled() && (column.getRuleClass() == null || componentProvider.newInstance(column.getRuleClass(), column).isAvailable())) {
+                availableColumns.add(column);
+            }
+        }
+        return availableColumns;
     }
 }

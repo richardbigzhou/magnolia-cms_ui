@@ -45,20 +45,29 @@ import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.api.app.App;
+import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.app.AppDescriptor;
+import info.magnolia.ui.api.app.AppEventBus;
+import info.magnolia.ui.api.app.AppInstanceController;
+import info.magnolia.ui.api.app.AppLifecycleEvent;
+import info.magnolia.ui.api.app.AppLifecycleEventType;
+import info.magnolia.ui.api.app.ItemChosenListener;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.api.view.Viewport;
-import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
-import info.magnolia.ui.framework.event.AdmincentralEventBus;
-import info.magnolia.ui.framework.event.ChooseDialogEventBus;
+import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
+import info.magnolia.ui.api.event.ChooseDialogEventBus;
 import info.magnolia.event.EventBusProtector;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.location.LocationChangeRequestedEvent;
-import info.magnolia.ui.framework.location.LocationChangedEvent;
-import info.magnolia.ui.framework.location.LocationController;
-import info.magnolia.ui.framework.message.Message;
-import info.magnolia.ui.framework.message.MessageType;
+import info.magnolia.ui.api.location.DefaultLocation;
+import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.location.LocationChangeRequestedEvent;
+import info.magnolia.ui.api.location.LocationChangedEvent;
+import info.magnolia.ui.api.location.LocationController;
+import info.magnolia.ui.api.message.Message;
+import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
 
 import java.util.HashMap;
@@ -78,10 +87,10 @@ import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
 
 /**
- * Implementation of the {@link AppController}.
+ * Implementation of the {@link info.magnolia.ui.api.app.AppController}.
  *
  * The App controller that manages the lifecycle of running apps and raises callbacks to the app.
- * It provides methods to start, stop and focus already running {@link App}s.
+ * It provides methods to start, stop and focus already running {@link info.magnolia.ui.api.app.App}s.
  * Registers handlers to the following location change events triggered by the {@link LocationController}:
  * <ul>
  * <li>{@link LocationChangedEvent}</li>
@@ -89,8 +98,8 @@ import com.google.inject.util.Providers;
  * </ul>
  *
  * @see LocationController
- * @see AppContext
- * @see App
+ * @see info.magnolia.ui.api.app.AppContext
+ * @see info.magnolia.ui.api.app.App
  */
 @Singleton
 public class AppControllerImpl implements AppController, LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {
@@ -129,9 +138,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     /**
      * This method is called to create an instance of an app independent from the {@link LocationController} and the {@link AppController} handling.
      * It will not open in the {@link info.magnolia.ui.api.view.Viewport} and will not register itself to the running apps.
-     * This is e.g. used to pass the {@link App} into a dialog and obtain app-specific information from outside the app.
+     * This is e.g. used to pass the {@link info.magnolia.ui.api.app.App} into a dialog and obtain app-specific information from outside the app.
      *
-     * @param appName of the {@link App} to instantiate.
+     * @param appName of the {@link info.magnolia.ui.api.app.App} to instantiate.
      */
     private App getAppWithoutStarting(String appName) {
         AppInstanceController appInstanceController = createNewAppInstance(appName);
@@ -212,7 +221,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     /**
      * Returns the current location of the focused app. This can differ from the actual location of the admin central, e.g. when a shell app is open.
      *
-     * @see info.magnolia.ui.framework.location.LocationController#getWhere()
+     * @see info.magnolia.ui.api.location.LocationController#getWhere()
      */
     @Override
     public Location getCurrentAppLocation() {
@@ -229,7 +238,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     /**
-     * Delegates the starting of an {@link App} to the {@link AppContext}. In
+     * Delegates the starting of an {@link App} to the {@link info.magnolia.ui.api.app.AppContext}. In
      * case the app is already started, it will update its location.
      */
     private AppInstanceController doStartIfNotAlreadyRunning(AppInstanceController appInstanceController, Location location) {
@@ -282,10 +291,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      * Takes care of {@link LocationChangedEvent}s by:
      * <ul>
      * <li>Obtaining the {@link AppDescriptor} associated with the {@link Location}.</li>
-     * <li>Creating a new {@link AppContext} if not running, otherwise obtain it from the running apps.</li>
+     * <li>Creating a new {@link info.magnolia.ui.api.app.AppContext} if not running, otherwise obtain it from the running apps.</li>
      * <li>Updating the {@Link Location} and redirecting in case of missing subAppId.</li>
      * <li>Starting the App.</li>
-     * <li>Adding the {@link AppContext} to the appHistory.</li>
+     * <li>Adding the {@link info.magnolia.ui.api.app.AppContext} to the appHistory.</li>
      * <li>Setting the viewport and updating the current running app.</li>
      * </ul>
      */

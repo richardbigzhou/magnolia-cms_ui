@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp;
 
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.api.location.Location;
 
 /**
  * Defines functionality used by a shell app to interact with the Magnolia shell.

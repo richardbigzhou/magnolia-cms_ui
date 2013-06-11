@@ -286,8 +286,8 @@ public class ActionbarWidgetViewImpl extends ComplexPanel implements ActionbarWi
     @Override
     public void setSectionPreview(String sectionName, String previewUrl) {
         ActionbarSectionWidget sectionWidget = sections.get(sectionName);
-        sectionWidget.addStyleName("preview");
         if (sectionWidget != null) {
+            sectionWidget.addStyleName("preview");
             sectionWidget.setPreview(new Image(previewUrl));
         }
     }

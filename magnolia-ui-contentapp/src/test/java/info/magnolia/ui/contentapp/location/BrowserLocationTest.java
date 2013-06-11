@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.contentapp.browser.BrowserLocation;
-import info.magnolia.ui.framework.location.DefaultLocation;
+import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.workbench.ContentView;
 
 import org.junit.After;
