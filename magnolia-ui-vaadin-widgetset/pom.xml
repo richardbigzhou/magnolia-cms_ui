@@ -111,8 +111,11 @@
   <profiles>
     <profile>
       <id>gwt-compile-production</id>
+      <!--Enables current profile in case 'BUILD NUMBER' property is set (usually set by Hudson when preparing nightly builds)-->
       <activation>
-        <activeByDefault>false</activeByDefault>
+        <property>
+          <name>BUILD_NUMBER</name>
+        </property>
       </activation>
       <properties>
         <draftCompile>false</draftCompile>
