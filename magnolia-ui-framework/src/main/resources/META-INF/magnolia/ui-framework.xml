@@ -247,8 +247,8 @@
       <implementation>info.magnolia.ui.workbench.search.SearchViewImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.ui.vaadin.statusbar.StatusBarView</type>
-      <implementation>info.magnolia.ui.vaadin.statusbar.StatusBarViewImpl</implementation>
+      <type>info.magnolia.ui.workbench.StatusBarView</type>
+      <implementation>info.magnolia.ui.workbench.StatusBarViewImpl</implementation>
     </component>
   </components>
 

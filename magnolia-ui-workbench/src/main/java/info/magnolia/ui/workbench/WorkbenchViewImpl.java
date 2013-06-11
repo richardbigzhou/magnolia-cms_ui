@@ -34,7 +34,6 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.vaadin.statusbar.StatusBarView;
 import info.magnolia.ui.vaadin.icon.Icon;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.statusbar;
+package info.magnolia.ui.workbench;
 
 import info.magnolia.ui.api.view.View;
 
