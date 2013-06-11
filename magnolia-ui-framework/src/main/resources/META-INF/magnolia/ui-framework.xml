@@ -298,5 +298,11 @@
       <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
     </component>
 
+    <!-- Embedded page sub app -->
+    <component>
+      <type>info.magnolia.ui.framework.app.embedded.EmbeddedPageView</type>
+      <implementation>info.magnolia.ui.framework.app.embedded.EmbeddedPageViewImpl</implementation>
+    </component>
+
   </components>
 </module>

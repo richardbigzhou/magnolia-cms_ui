@@ -70,7 +70,7 @@ public class MultiLinkFieldFactoryTest extends AbstractBuilderTest<MultiLinkFiel
         multiLinkFieldFactory = new MultiLinkFieldFactory(definition, baseItem, null, null, componentProvider);
         multiLinkFieldFactory.setI18nContentSupport(i18nContentSupport);
         // WHEN
-        Field field = multiLinkFieldFactory.getField();
+        Field field = multiLinkFieldFactory.createField();
 
         // THEN
         assertEquals(true, field instanceof MultiLinkField);
@@ -88,7 +88,7 @@ public class MultiLinkFieldFactoryTest extends AbstractBuilderTest<MultiLinkFiel
         multiLinkFieldFactory = new MultiLinkFieldFactory(definition, baseItem, null, null, componentProvider);
         multiLinkFieldFactory.setI18nContentSupport(i18nContentSupport);
         // WHEN
-        Field field = multiLinkFieldFactory.getField();
+        Field field = multiLinkFieldFactory.createField();
 
         // THEN
         assertEquals(true, field instanceof MultiLinkField);

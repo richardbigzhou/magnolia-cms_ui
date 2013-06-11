@@ -31,28 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.tools;
+package info.magnolia.ui.framework.app.embedded;
 
-import info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor;
+import info.magnolia.ui.api.view.View;
 
 /**
- * Allows to specify the url to an html page to be embedded in an iframe.
- * <p>
- * If the supplied url doesn't start with <code>http</code> it will be assumed to be an internal one and thus prepended with the current webapp's context path. E.g. given the url <code>/some-static-pages/some-page</code> an url will be built in the following form <code>&lt;magnolia-webapp-context&gt;/some-static-pages/some-page</code>
+ * View interface for the embedded page's App view.
  */
-public class EmbeddedPageSubAppDescriptor extends ConfiguredSubAppDescriptor {
+public interface EmbeddedPageView extends View {
 
-    private String url;
-
-    public String getUrl() {
-        return url;
-    }
-
-    /**
-     * @param url if not starting with <code>http</code> the url will be assumed to be an internal one and thus prepended with the current webapp's context path.
-     * E.g. given the url <code>some-static-pages/some-page</code> an url will be built in the following form <code>&lt;magnolia-webapp-context&gt;/some-static-pages/some-page</code>
-     */
-    public void setUrl(String url) {
-        this.url = url;
-    }
 }

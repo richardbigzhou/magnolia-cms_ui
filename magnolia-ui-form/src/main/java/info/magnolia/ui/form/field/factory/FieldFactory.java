@@ -63,7 +63,7 @@ public interface FieldFactory extends FormItem {
     /**
      * Creates and initializes a Vaadin {@link Field} component.
      */
-    Field<?> getField();
+    Field<?> createField();
 
     View getView();
 

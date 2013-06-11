@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.tools;
+package info.magnolia.ui.framework.app.embedded;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.api.app.AppContext;
@@ -77,5 +77,4 @@ public class EmbeddedPageViewImpl implements EmbeddedPageView {
     public Component asVaadinComponent() {
         return layout;
     }
-
 }

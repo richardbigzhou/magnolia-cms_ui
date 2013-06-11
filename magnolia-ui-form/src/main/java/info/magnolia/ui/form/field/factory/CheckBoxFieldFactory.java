@@ -50,7 +50,7 @@ public class CheckBoxFieldFactory extends AbstractFieldFactory<CheckboxFieldDefi
     }
 
     @Override
-    protected Field<Boolean> newInstance() {
+    protected Field<Boolean> createFieldComponent() {
         CheckBoxAndLabelField field = new CheckBoxAndLabelField();
         field.setValue(Boolean.valueOf(definition.getSelected()));
         field.getCheckBox().setCaption(getMessage(definition.getButtonLabel()));

@@ -80,7 +80,7 @@ public class LinkFieldFactory<D extends FieldDefinition> extends AbstractFieldFa
     }
 
     @Override
-    protected Field<String> newInstance() {
+    protected Field<String> createFieldComponent() {
         // Create Translator if we need to store the Identifier
         IdentifierToPathConverter converter = definition.getIdentifierToPathConverter();
         if (converter != null) {

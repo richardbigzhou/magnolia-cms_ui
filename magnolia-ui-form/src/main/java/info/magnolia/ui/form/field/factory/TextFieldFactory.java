@@ -54,7 +54,7 @@ public class TextFieldFactory extends AbstractFieldFactory<TextFieldDefinition, 
     }
 
     @Override
-    protected Field<String> newInstance() {
+    protected Field<String> createFieldComponent() {
         // Create a TextArea if the rows > 1
         if (definition.getRows() > 1) {
             TextArea textArea = new TextArea();

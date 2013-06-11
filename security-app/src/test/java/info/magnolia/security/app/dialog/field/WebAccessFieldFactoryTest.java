@@ -80,7 +80,7 @@ public class WebAccessFieldFactoryTest extends MgnlTestCase {
         WebAccessFieldFactory builder = new WebAccessFieldFactory(definition, item);
 
         // WHEN
-        Field<Object> field = builder.newInstance();
+        Field<Object> field = builder.createFieldComponent();
 
         // THEN
         VerticalLayout layout = (VerticalLayout) ((HasComponents) field).iterator().next();
@@ -115,7 +115,7 @@ public class WebAccessFieldFactoryTest extends MgnlTestCase {
         WebAccessFieldFactory builder = new WebAccessFieldFactory<WebAccessFieldDefinition>(definition, item);
 
         // WHEN
-        Field<Object> field = builder.newInstance();
+        Field<Object> field = builder.createFieldComponent();
 
         // THEN
         VerticalLayout layout = (VerticalLayout) ((HasComponents) field).iterator().next();

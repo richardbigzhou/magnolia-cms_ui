@@ -86,8 +86,8 @@ public class GroupManagementFieldFactory extends TwinColSelectFieldFactory<Group
     }
 
     @Override
-    protected AbstractSelect newInstance() {
-        super.newInstance();
+    protected AbstractSelect createFieldComponent() {
+        super.createFieldComponent();
         select.setMultiSelect(true);
         select.setNullSelectionAllowed(true);
         select.setImmediate(true);

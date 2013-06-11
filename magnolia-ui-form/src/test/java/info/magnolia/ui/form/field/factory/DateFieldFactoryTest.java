@@ -65,7 +65,7 @@ public class DateFieldFactoryTest extends AbstractBuilderTest<DateFieldDefinitio
         dialogDate = new DateFieldFactory(definition, baseItem);
         dialogDate.setI18nContentSupport(i18nContentSupport);
         // WHEN
-        Field field = dialogDate.getField();
+        Field field = dialogDate.createField();
 
         // THEN
         assertEquals(true, field instanceof PopupDateField);
@@ -90,7 +90,7 @@ public class DateFieldFactoryTest extends AbstractBuilderTest<DateFieldDefinitio
         calNew.set(Calendar.MONTH, 2);
         calNew.set(Calendar.YEAR, 2010);
         // WHEN
-        Field field = dialogDate.getField();
+        Field field = dialogDate.createField();
         field.setValue(calNew.getTime());
 
         // THEN
@@ -116,7 +116,7 @@ public class DateFieldFactoryTest extends AbstractBuilderTest<DateFieldDefinitio
         dialogDate = new DateFieldFactory(definition, baseItem);
         dialogDate.setI18nContentSupport(i18nContentSupport);
         // WHEN
-        Field field = dialogDate.getField();
+        Field field = dialogDate.createField();
 
         // THEN
         assertEquals(true, field instanceof PopupDateField);

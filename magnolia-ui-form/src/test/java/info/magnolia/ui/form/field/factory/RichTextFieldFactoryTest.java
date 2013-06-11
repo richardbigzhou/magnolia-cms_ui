@@ -56,7 +56,7 @@ public class RichTextFieldFactoryTest extends AbstractBuilderTest<RichTextFieldD
         richTextFieldFactory = new RichTextFieldFactory(definition, baseItem, null, null);
         richTextFieldFactory.setI18nContentSupport(i18nContentSupport);
         // WHEN
-        Field field = richTextFieldFactory.getField();
+        Field field = richTextFieldFactory.createField();
 
         // THEN
         assertEquals(true, field instanceof MagnoliaRichTextField);
