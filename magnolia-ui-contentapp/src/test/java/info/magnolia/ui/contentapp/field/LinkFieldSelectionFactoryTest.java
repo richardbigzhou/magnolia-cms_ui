@@ -41,7 +41,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTest;
 import info.magnolia.ui.form.field.factory.LinkFieldFactory;
-import info.magnolia.ui.form.field.factory.AbstractBuilderTest;
+import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTestCase;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -61,7 +61,7 @@ import com.vaadin.ui.Field;
 /**
  * Tests.
  */
-public class LinkFieldSelectionFactoryTest extends AbstractBuilderTest<LinkFieldSelectionDefinition> {
+public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<LinkFieldSelectionDefinition> {
 
     private LinkFieldSelectionFactory builder;
 

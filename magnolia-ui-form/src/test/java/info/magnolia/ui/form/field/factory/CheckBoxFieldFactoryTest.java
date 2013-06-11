@@ -46,7 +46,7 @@ import com.vaadin.ui.Field;
 /**
  * Main testcase for {@link info.magnolia.ui.form.field.factory.CheckBoxFieldFactory}.
  */
-public class CheckBoxFieldFactoryTest extends AbstractBuilderTest<CheckboxFieldDefinition> {
+public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<CheckboxFieldDefinition> {
 
     private CheckBoxFieldFactory checkBoxField;
 

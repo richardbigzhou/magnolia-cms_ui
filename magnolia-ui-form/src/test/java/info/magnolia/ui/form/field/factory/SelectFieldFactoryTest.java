@@ -52,7 +52,7 @@ import com.vaadin.ui.Field;
 /**
  * Main testcase for {@link info.magnolia.ui.form.field.factory.SelectFieldFactory}.
  */
-public class SelectFieldFactoryTest extends AbstractBuilderTest<SelectFieldDefinition> {
+public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectFieldDefinition> {
 
     private SelectFieldFactory<SelectFieldDefinition> dialogSelect;
 

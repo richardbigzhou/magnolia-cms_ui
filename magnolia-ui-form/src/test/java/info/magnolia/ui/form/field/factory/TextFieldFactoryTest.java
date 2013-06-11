@@ -47,7 +47,7 @@ import com.vaadin.ui.TextField;
 /**
  * Main testcase for {@link info.magnolia.ui.form.field.factory.TextFieldFactory}.
  */
-public class TextFieldFactoryTest extends AbstractBuilderTest<TextFieldDefinition> {
+public class TextFieldFactoryTest extends AbstractFieldFactoryTestCase<TextFieldDefinition> {
 
     private TextFieldFactory dialogEdit;
 

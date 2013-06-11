@@ -48,7 +48,7 @@ import com.vaadin.ui.PasswordField;
 /**
  * Main testcase for {@link info.magnolia.ui.form.field.factory.StaticFieldFactory}.
  */
-public class PasswordFieldFactoryTest extends AbstractBuilderTest<PasswordFieldDefinition> {
+public class PasswordFieldFactoryTest extends AbstractFieldFactoryTestCase<PasswordFieldDefinition> {
 
     private PasswordFieldFactory passwordFieldFactory;
 

@@ -64,10 +64,12 @@ import com.vaadin.data.util.converter.DefaultConverterFactory;
 import com.vaadin.server.VaadinSession;
 
 /**
- * Abstract test class used to initialize the DialogField Tests.
+ * Abstract test class used for testing implementations of {@link FieldFactory}.
  */
-public abstract class AbstractBuilderTest<D extends FieldDefinition> {
+public abstract class AbstractFieldFactoryTestCase<D extends FieldDefinition> {
+
     protected static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+
     protected DefaultI18nContentSupport i18nContentSupport;
     protected final String workspaceName = "workspace";
     protected MockSession session;
@@ -76,7 +78,6 @@ public abstract class AbstractBuilderTest<D extends FieldDefinition> {
     protected Node baseNode;
     protected Item baseItem;
     protected D definition;
-
 
     @Before
     public void setUp() throws Exception {

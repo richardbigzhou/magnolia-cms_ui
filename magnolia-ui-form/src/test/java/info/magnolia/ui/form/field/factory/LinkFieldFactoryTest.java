@@ -47,7 +47,7 @@ import com.vaadin.ui.Field;
 /**
  * Main testcase for {@link info.magnolia.ui.form.field.factory.LinkFieldFactory}.
  */
-public class LinkFieldFactoryTest extends AbstractBuilderTest<LinkFieldDefinition> {
+public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkFieldDefinition> {
 
     private LinkFieldFactory linkFieldFactory;
 

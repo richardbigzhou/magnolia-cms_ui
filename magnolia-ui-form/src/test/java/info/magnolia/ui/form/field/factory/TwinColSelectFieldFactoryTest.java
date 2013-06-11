@@ -53,7 +53,7 @@ import com.vaadin.ui.TwinColSelect;
 /**
  * Main testcase for {@link info.magnolia.ui.form.field.factory.TwinColSelectFieldFactory}.
  */
-public class TwinColSelectFieldFactoryTest extends AbstractBuilderTest<TwinColSelectFieldDefinition> {
+public class TwinColSelectFieldFactoryTest extends AbstractFieldFactoryTestCase<TwinColSelectFieldDefinition> {
 
     private TwinColSelectFieldFactory twinSelect;
 
