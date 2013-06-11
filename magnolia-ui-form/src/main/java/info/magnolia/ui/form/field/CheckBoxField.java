@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2011-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -34,43 +34,24 @@
 package info.magnolia.ui.form.field;
 
 import com.vaadin.data.Property;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 
 /**
- * A Base Custom Field composed from a checkBox and Label.
+ * A field wrapper for a single CheckBox, supporting the FormLayout-managed (left) caption.
  */
-public class CheckBoxAndLabelField extends CustomField<Boolean> {
+public class CheckBoxField extends CustomField<Boolean> {
 
     private CheckBox checkBox;
-    private Label label;
 
-    public CheckBoxAndLabelField() {
+    public CheckBoxField() {
         checkBox = new CheckBox();
-        label = new Label("", Label.CONTENT_XHTML);
-
     }
 
     @Override
     protected Component initContent() {
-        HorizontalLayout layout = new HorizontalLayout();
-        layout.setSizeFull();
-        layout.addComponent(checkBox);
-        layout.addComponent(label);
-        layout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
-        return layout;
-    }
-
-    public CheckBox getCheckBox() {
         return checkBox;
-    }
-
-    public Label getLabel() {
-        return label;
     }
 
     @Override
@@ -81,6 +62,13 @@ public class CheckBoxAndLabelField extends CustomField<Boolean> {
     @Override
     public void setValue(Boolean newValue) throws ReadOnlyException {
         checkBox.setValue(newValue);
+    }
+
+    /**
+     * Use this setter for the checkbox caption on the right-hand side; the regular field caption is left for the FormLayout.
+     */
+    public void setCheckBoxCaption(String caption) {
+        checkBox.setCaption(caption);
     }
 
     @Override

@@ -49,7 +49,7 @@ import com.vaadin.ui.PopupDateField;
 /**
  * Main testcase for {@link info.magnolia.ui.form.field.factory.DateFieldFactory}.
  */
-public class DateFieldFactoryTest extends AbstractBuilderTest<DateFieldDefinition> {
+public class DateFieldFactoryTest extends AbstractFieldFactoryTestCase<DateFieldDefinition> {
 
     private DateFieldFactory dialogDate;
 

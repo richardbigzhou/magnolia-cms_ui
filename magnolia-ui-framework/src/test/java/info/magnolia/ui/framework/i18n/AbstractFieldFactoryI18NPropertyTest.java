@@ -38,7 +38,7 @@ import static org.junit.Assert.assertEquals;
 import info.magnolia.cms.i18n.LocaleDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockComponentProvider;
-import info.magnolia.ui.form.field.factory.AbstractBuilderTest;
+import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTestCase;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactory;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTest;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
@@ -58,7 +58,7 @@ import com.vaadin.ui.Field;
 /**
  * Main testcase for {@link info.magnolia.ui.form.field.factory.AbstractFieldFactory} i18n property.
  */
-public class AbstractFieldFactoryI18NPropertyTest extends AbstractBuilderTest<ConfiguredFieldDefinition> {
+public class AbstractFieldFactoryI18NPropertyTest extends AbstractFieldFactoryTestCase<ConfiguredFieldDefinition> {
     private AbstractFieldFactory<FieldDefinition, Object> fieldFactory;
 
     @Override
