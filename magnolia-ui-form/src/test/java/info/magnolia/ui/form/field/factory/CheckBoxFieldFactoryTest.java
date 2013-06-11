@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
-import info.magnolia.ui.form.field.CheckBoxAndLabelField;
+import info.magnolia.ui.form.field.CheckBoxField;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 
 import org.junit.Ignore;
@@ -48,20 +48,24 @@ import com.vaadin.ui.Field;
  */
 public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<CheckboxFieldDefinition> {
 
+    private static final String CHECKBOX_FIELD_LABEL = "CheckBox Field";
+    private static final String CHECKBOX_CAPTION = "Turn me on";
+
     private CheckBoxFieldFactory checkBoxField;
 
     @Test
-    @Ignore("See http://dev.vaadin.com/ticket/10663")
     public void simpleCheckBoxFieldTest() throws Exception {
         // GIVEN
         checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
         checkBoxField.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
-        Field field = checkBoxField.createField();
+        Field<Boolean> field = checkBoxField.createField();
 
         // THEN
-        assertEquals(true, field instanceof CheckBoxAndLabelField);
+        assertTrue(field instanceof CheckBoxField);
+        assertEquals(CHECKBOX_FIELD_LABEL, field.getCaption());
+        assertEquals(CHECKBOX_CAPTION, ((CheckBoxField) field).iterator().next().getCaption());
     }
 
     @Test
@@ -71,11 +75,12 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
         checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
         checkBoxField.setI18nContentSupport(i18nContentSupport);
         definition.setSelected("false");
+
         // WHEN
-        Field field = checkBoxField.createField();
+        Field<Boolean> field = checkBoxField.createField();
 
         // THEN
-        assertEquals(true, field instanceof CheckBoxAndLabelField);
+        assertEquals(true, field instanceof CheckBoxField);
         assertEquals(false, field.getValue());
     }
 
@@ -83,6 +88,8 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
     protected void createConfiguredFieldDefinition() {
         CheckboxFieldDefinition fieldDefinition = new CheckboxFieldDefinition();
         fieldDefinition.setName(propertyName);
+        fieldDefinition.setLabel(CHECKBOX_FIELD_LABEL);
+        fieldDefinition.setButtonLabel(CHECKBOX_CAPTION);
         this.definition = fieldDefinition;
     }
 
