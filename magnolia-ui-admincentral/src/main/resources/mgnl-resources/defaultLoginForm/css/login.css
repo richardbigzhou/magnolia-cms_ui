@@ -82,8 +82,14 @@ button.btn-submit {
   text-transform: uppercase;
 }
 
-button.btn-submit:hover, button.btn-submit:focus, button.btn-submit:active {
+button.btn-submit:hover, button.btn-submit:focus {
   background-color: #86AB33;
+}
+
+button.btn-submit:active {
+  color: #3E5900;
+  background-color: #fff;
+  padding: 1px 0;
 }
 
 .mgnl-form {
