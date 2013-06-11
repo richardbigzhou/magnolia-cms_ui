@@ -76,7 +76,7 @@ public class WorkbenchStatusBarPresenter {
         eventBus.addHandler(SelectionChangedEvent.class, new SelectionChangedEvent.Handler() {
 
             @Override
-            public void onItemSelected(SelectionChangedEvent event) {
+            public void onSelectionChanged(SelectionChangedEvent event) {
                 setSelectedItems(event.getItems());
             }
         });

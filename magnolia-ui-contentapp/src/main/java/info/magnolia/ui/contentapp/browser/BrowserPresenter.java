@@ -178,7 +178,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         subAppEventBus.addHandler(SelectionChangedEvent.class, new SelectionChangedEvent.Handler() {
 
             @Override
-            public void onItemSelected(SelectionChangedEvent event) {
+            public void onSelectionChanged(SelectionChangedEvent event) {
                 // if exactly one node is selected, use it for preview
                 refreshActionbarPreviewImage(event.getFirstItemId(), event.getWorkspace());
             }

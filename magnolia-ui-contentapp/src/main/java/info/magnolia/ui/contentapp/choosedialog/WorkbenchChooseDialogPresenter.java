@@ -146,7 +146,7 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
 
         eventBus.addHandler(SelectionChangedEvent.class, new SelectionChangedEvent.Handler() {
             @Override
-            public void onItemSelected(SelectionChangedEvent event) {
+            public void onSelectionChanged(SelectionChangedEvent event) {
                 currentValue = event.getFirstItem();
             }
         });

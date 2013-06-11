@@ -379,7 +379,7 @@ public class BrowserSubApp extends BaseSubApp {
         subAppEventBus.addHandler(SelectionChangedEvent.class, new SelectionChangedEvent.Handler() {
 
             @Override
-            public void onItemSelected(SelectionChangedEvent event) {
+            public void onSelectionChanged(SelectionChangedEvent event) {
                 BrowserLocation location = getCurrentLocation();
                 try {
                     Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.parseNodeIdentifier(event.getFirstItemId()));

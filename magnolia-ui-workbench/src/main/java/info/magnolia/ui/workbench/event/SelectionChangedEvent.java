@@ -60,7 +60,7 @@ public class SelectionChangedEvent implements Event<SelectionChangedEvent.Handle
      */
     public interface Handler extends EventHandler {
 
-        void onItemSelected(SelectionChangedEvent event);
+        void onSelectionChanged(SelectionChangedEvent event);
     }
 
     private final String workspace;
@@ -113,6 +113,6 @@ public class SelectionChangedEvent implements Event<SelectionChangedEvent.Handle
 
     @Override
     public void dispatch(Handler handler) {
-        handler.onItemSelected(this);
+        handler.onSelectionChanged(this);
     }
 }

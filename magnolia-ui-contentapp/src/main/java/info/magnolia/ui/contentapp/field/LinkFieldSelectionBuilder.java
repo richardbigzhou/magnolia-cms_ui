@@ -102,7 +102,7 @@ public class LinkFieldSelectionBuilder extends AbstractFieldBuilder<LinkFieldSel
         // On a selected Item, propagate the specified Column Value to the TextField.
         chooseDialogEventBus.addHandler(SelectionChangedEvent.class, new SelectionChangedEvent.Handler() {
             @Override
-            public void onItemSelected(SelectionChangedEvent event) {
+            public void onSelectionChanged(SelectionChangedEvent event) {
                 final Node selected = SessionUtil.getNodeByIdentifier(event.getWorkspace(), event.getFirstItemId());
                 if (selected != null) {
                     try {
