@@ -81,7 +81,7 @@ public class MultiLinkFieldFactoryTest extends AbstractFieldFactoryTestCase<Mult
         // GIVEN
         definition.setIdentifierToPathConverter(new BaseIdentifierToPathConverter());
         definition.setName(propertyName);
-        definition.setWorkspace(workspaceName);
+        definition.setTargetWorkspace(workspaceName);
         baseNode.setProperty(propertyName, baseNode.getIdentifier());
         baseItem = new JcrNodeAdapter(baseNode);
         when(componentProvider.newInstance(SingleValueHandler.class, baseItem, definition.getName())).thenReturn(new SingleValueHandler((JcrNodeAdapter) baseItem, propertyName));
@@ -100,7 +100,6 @@ public class MultiLinkFieldFactoryTest extends AbstractFieldFactoryTestCase<Mult
     protected void createConfiguredFieldDefinition() {
         MultiLinkFieldDefinition fieldDefinition = new MultiLinkFieldDefinition();
         fieldDefinition.setName(propertyName);
-        fieldDefinition.setDialogName("dialogName");
         this.definition = fieldDefinition;
     }
 
