@@ -71,4 +71,9 @@ public interface WorkbenchView extends View {
 
     ContentView getSelectedView();
 
+    /**
+     * Whether the user can select more items.
+     */
+    void setMultiselect(boolean multiselect);
+
 }

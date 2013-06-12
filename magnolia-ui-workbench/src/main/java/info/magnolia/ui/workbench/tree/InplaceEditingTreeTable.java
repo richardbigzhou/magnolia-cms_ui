@@ -210,6 +210,10 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         public void createFieldAndRegister(Container container, Object itemId, Object propertyId, Component uiContext) {
 
             Property<?> containerProperty = container.getContainerProperty(itemId, propertyId);
+            // the previous call can return null, i.e. when clicking on an empty cell of a node row (i.e. /config/server and then the "value" cell)
+            if (containerProperty == null) {
+                return;
+            }
             Class<?> type = containerProperty.getType();
             final Field<?> field = createFieldByPropertyType(type);
             if (field != null) {

@@ -44,14 +44,18 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 import info.magnolia.ui.workbench.search.SearchPresenter;
 import info.magnolia.ui.workbench.tree.TreePresenter;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.jcr.Item;
@@ -120,7 +124,9 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                     activePresenter = presenter;
                     try {
                         String workbenchRootItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
-                        activePresenter.setSelectedItemId(workbenchRootItemId);
+                        List<String> ids = new ArrayList<String>(1);
+                        ids.add(workbenchRootItemId);
+                        activePresenter.setSelectedItemIds(ids);
                     } catch (RepositoryException e) {
                         log.error("Could not find workbench root node", e);
                     }
@@ -156,15 +162,15 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     private void setViewType(ViewType viewType) {
         ContentPresenter oldPresenter = activePresenter;
-        String itemId = oldPresenter.getSelectedItemId();
+        List<String> itemIds = oldPresenter.getSelectedItemIds();
 
         activePresenter = contentPresenters.get(viewType.getText());
         activePresenter.refresh();
         view.setViewType(viewType);
 
         // make sure selection is kept when switching views
-        if (itemId != null) {
-            select(itemId);
+        if (itemIds != null) {
+            select(itemIds);
         }
     }
 
@@ -172,37 +178,52 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         return workbenchDefinition.getWorkspace();
     }
 
-    public String getSelectedId() {
-        return activePresenter.getSelectedItemId();
+    public List<String> getSelectedIds() {
+        return activePresenter.getSelectedItemIds();
     }
 
     public void select(String itemId) {
+        List<String> ids = new ArrayList<String>(1);
+        ids.add(itemId);
+        select(ids);
+    }
+
+    public void select(List<String> itemIds) {
         try {
-
             // restore selection
+            Set<JcrItemAdapter> items = new LinkedHashSet<JcrItemAdapter>();
+            List<String> selectedIds = new ArrayList<String>();
+            boolean rootHasBeenSelected = false;
+            for (String itemId : itemIds) {
+                if (JcrItemUtil.itemExists(getWorkspace(), itemId)) {
+                    selectedIds.add(itemId);
+                } else {
+                    log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.",
+                            new Object[] { itemId, workbenchDefinition.getWorkspace(), workbenchDefinition.getPath() });
+                    String workbenchRootItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
+                    if (!rootHasBeenSelected && !selectedIds.contains(workbenchRootItemId)) {
+                        // adding workbenchRootItemID for non-existent items, but just once
+                        selectedIds.add(workbenchRootItemId);
+                        rootHasBeenSelected = true;
+                    }
+                }
 
-            if (JcrItemUtil.itemExists(getWorkspace(), itemId)) {
-                activePresenter.setSelectedItemId(itemId);
-            } else {
-                log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.",
-                        new Object[] { itemId, workbenchDefinition.getWorkspace(), workbenchDefinition.getPath() });
-                String workbenchRootItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
-                activePresenter.setSelectedItemId( workbenchRootItemId);
+                Item jcrItem = JcrItemUtil.getJcrItem(getWorkspace(), itemId);
+
+                JcrItemAdapter itemAdapter;
+                if (jcrItem.isNode()) {
+                    itemAdapter = new JcrNodeAdapter((Node) jcrItem);
+                } else {
+                    itemAdapter = new JcrPropertyAdapter((Property) jcrItem);
+                }
+                items.add(itemAdapter);
             }
+            activePresenter.setSelectedItemIds(selectedIds);
 
-            Item jcrItem = JcrItemUtil.getJcrItem(getWorkspace(), itemId);
-
-            JcrItemAdapter itemAdapter;
-            if (jcrItem.isNode()) {
-                itemAdapter = new JcrNodeAdapter((Node) jcrItem);
-            } else {
-                itemAdapter = new JcrPropertyAdapter((Property) jcrItem);
-            }
-
-            eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), itemAdapter));
+            eventBus.fireEvent(new SelectionChangedEvent(workbenchDefinition.getWorkspace(), items));
 
         } catch (RepositoryException e) {
-            log.warn("Unable to get node or property [{}] for selection", itemId, e);
+            log.warn("Unable to get node or property [{}] for selection", itemIds, e);
         }
     }
 
@@ -219,9 +240,9 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         return this.workbenchDefinition.getContentViews().get(0).getViewType();
     }
 
-    public void resynch(final String itemId, final ContentView.ViewType viewType, final String query) {
+    public void resynch(final List<String> itemIds, final ContentView.ViewType viewType, final String query) {
         setViewType(viewType);
-        select(itemId);
+        select(itemIds);
 
         if (viewType == ViewType.SEARCH) {
             doSearch(query);

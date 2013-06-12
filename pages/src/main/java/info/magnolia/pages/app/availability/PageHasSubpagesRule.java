@@ -35,8 +35,7 @@ package info.magnolia.pages.app.availability;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.api.availability.AvailabilityRule;
-
+import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -47,12 +46,12 @@ import org.slf4j.LoggerFactory;
 /**
  * This rule returns true, if the item is node of the mgnl:page type and has a subnode of the same type.
  */
-public class PageHasSubpagesRule implements AvailabilityRule {
+public class PageHasSubpagesRule extends AbstractAvailabilityRule {
 
     private static final Logger log = LoggerFactory.getLogger(PageHasSubpagesRule.class);
 
     @Override
-    public boolean isAvailable(Item item) {
+    public boolean isAvailableForItem(Item item) {
         // item must be a Node
         if (item != null && item.isNode()) {
             Node node = (Node) item;
