@@ -153,6 +153,21 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
         }, ClickEvent.getType());
 
         bindTouchHandlers();
+
+    }
+
+    public void goToNextApp() {
+        if (getWidgetCount() > 1) {
+            processSwipe(1);
+            switchToApp(DIRECTION.LEFT_TO_RIGHT);
+        }
+    }
+
+    public void goToPreviousApp() {
+        if (getWidgetCount() > 1) {
+            processSwipe(-1);
+            switchToApp(DIRECTION.RIGHT_TO_LEFT);
+        }
     }
 
     public Element getCurtain() {
@@ -247,40 +262,11 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
             @Override
             public void onSwipeEnd(SwipeEndEvent event) {
                 final SwipeEvent.DIRECTION direction = event.getDirection();
-                final Widget newVisibleWidget = direction == DIRECTION.LEFT_TO_RIGHT ? getPreviousWidget() : getNextWidget();
+
                 if (event.isDistanceReached() && getWidgetCount() > 1) {
-                    final JQueryWrapper jq = JQueryWrapper.select(getVisibleChild());
-                    jq.animate(450, new AnimationSettings() {
 
-                        {
-                            setProperty("left", getOffsetWidth() * (direction == DIRECTION.LEFT_TO_RIGHT ? 1 : -1) - jq.position().left());
-                            setCallbacks(Callbacks.create(new JQueryCallback() {
+                    switchToApp(direction);
 
-                                @Override
-                                public void execute(JQueryWrapper query) {
-                                    query.setCss("-webkit-transform", "");
-                                    query.setCss("left", "");
-                                    // query.setCss("opacity", "0");
-                                    // query.setCss("visibility", "hidden");
-                                    // do not trigger transitions
-                                    showChild(newVisibleWidget);
-                                    dropZIndeces();
-                                }
-                            }));
-                        }
-                    });
-
-                    if (direction == DIRECTION.RIGHT_TO_LEFT && getWidgetCount() > 2) {
-                        final JQueryWrapper query = JQueryWrapper.select(newVisibleWidget);
-                        query.setCss("-webkit-transform", "");
-                        newVisibleWidget.addStyleName("app-slider");
-                        new Timer() {
-                            @Override
-                            public void run() {
-                                newVisibleWidget.removeStyleName("app-slider");
-                            }
-                        }.schedule(500);
-                    }
                 } else {
                     final JQueryWrapper jq = JQueryWrapper.select(getVisibleChild());
                     jq.setCssPx("left", jq.position().left());
@@ -301,6 +287,45 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
                 dropZIndeces();
             }
         });
+    }
+
+    private void switchToApp(final SwipeEvent.DIRECTION direction) {
+
+        final Widget newVisibleWidget = direction == DIRECTION.LEFT_TO_RIGHT ? getPreviousWidget() : getNextWidget();
+
+        final JQueryWrapper jq = JQueryWrapper.select(getVisibleChild());
+        jq.animate(450, new AnimationSettings() {
+
+            {
+                setProperty("left", getOffsetWidth() * (direction == DIRECTION.LEFT_TO_RIGHT ? 1 : -1) - jq.position().left());
+                setCallbacks(Callbacks.create(new JQueryCallback() {
+
+                    @Override
+                    public void execute(JQueryWrapper query) {
+                        query.setCss("-webkit-transform", "");
+                        query.setCss("left", "");
+                        // query.setCss("opacity", "0");
+                        // query.setCss("visibility", "hidden");
+                        // do not trigger transitions
+                        showChild(newVisibleWidget);
+                        dropZIndeces();
+                    }
+                }));
+            }
+        });
+
+        if (direction == DIRECTION.RIGHT_TO_LEFT && getWidgetCount() > 2) {
+            final JQueryWrapper query = JQueryWrapper.select(newVisibleWidget);
+            query.setCss("-webkit-transform", "");
+            newVisibleWidget.addStyleName("app-slider");
+            new Timer() {
+                @Override
+                public void run() {
+                    newVisibleWidget.removeStyleName("app-slider");
+                }
+            }.schedule(500);
+        }
+
     }
 
     private void processSwipe(int translationValue) {
