@@ -74,23 +74,21 @@
       <plugin>
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin-maven-plugin</artifactId>
-        <configuration>
-          <!-- put the created resources on the classpath -->
-          <webappDirectory>${project.build.outputDirectory}/VAADIN/widgetsets</webappDirectory>
-          <warSourceDirectory>src/main/resources/VAADIN/widgetsets</warSourceDirectory>
-          <inplace>${inplace}</inplace>
-          <!-- this is not a webapp -->
-          <noServer>true</noServer>
-          <module>info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet</module>
-          <runTarget>.magnolia/admincentral</runTarget>
-          <draftCompile>${draftCompile}</draftCompile>
-          <enableClosureCompiler>${enableClosure}</enableClosureCompiler>
-          <disableCastChecking>${disableCastChecking}</disableCastChecking>
-        </configuration>
         <executions>
           <execution>
             <configuration>
               <extraJvmArgs>-Xmx1536M -Xss1024k</extraJvmArgs>
+              <!-- put the created resources on the classpath -->
+              <webappDirectory>${project.build.outputDirectory}/VAADIN/widgetsets</webappDirectory>
+              <warSourceDirectory>src/main/resources/VAADIN/widgetsets</warSourceDirectory>
+              <inplace>${inplace}</inplace>
+              <!-- this is not a webapp -->
+              <noServer>true</noServer>
+              <module>info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet</module>
+              <runTarget>.magnolia/admincentral</runTarget>
+              <draftCompile>${draftCompile}</draftCompile>
+              <enableClosureCompiler>${enableClosure}</enableClosureCompiler>
+              <disableCastChecking>${disableCastChecking}</disableCastChecking>
             </configuration>
             <goals>
               <goal>resources</goal>
