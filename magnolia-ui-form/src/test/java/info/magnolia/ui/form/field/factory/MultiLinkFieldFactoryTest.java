@@ -52,7 +52,7 @@ import com.vaadin.ui.Field;
 /**
  * Main testcase for {@link info.magnolia.ui.form.field.factory.MultiLinkFieldFactory}.
  */
-public class MultiLinkFieldFactoryTest extends AbstractBuilderTest<MultiLinkFieldDefinition> {
+public class MultiLinkFieldFactoryTest extends AbstractFieldFactoryTestCase<MultiLinkFieldDefinition> {
 
     private MultiLinkFieldFactory multiLinkFieldFactory;
     private ComponentProvider componentProvider;
@@ -70,7 +70,7 @@ public class MultiLinkFieldFactoryTest extends AbstractBuilderTest<MultiLinkFiel
         multiLinkFieldFactory = new MultiLinkFieldFactory(definition, baseItem, null, null, componentProvider);
         multiLinkFieldFactory.setI18nContentSupport(i18nContentSupport);
         // WHEN
-        Field field = multiLinkFieldFactory.getField();
+        Field field = multiLinkFieldFactory.createField();
 
         // THEN
         assertEquals(true, field instanceof MultiLinkField);
@@ -88,7 +88,7 @@ public class MultiLinkFieldFactoryTest extends AbstractBuilderTest<MultiLinkFiel
         multiLinkFieldFactory = new MultiLinkFieldFactory(definition, baseItem, null, null, componentProvider);
         multiLinkFieldFactory.setI18nContentSupport(i18nContentSupport);
         // WHEN
-        Field field = multiLinkFieldFactory.getField();
+        Field field = multiLinkFieldFactory.createField();
 
         // THEN
         assertEquals(true, field instanceof MultiLinkField);

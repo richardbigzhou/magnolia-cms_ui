@@ -41,7 +41,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTest;
 import info.magnolia.ui.form.field.factory.LinkFieldFactory;
-import info.magnolia.ui.form.field.factory.AbstractBuilderTest;
+import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTestCase;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -61,7 +61,7 @@ import com.vaadin.ui.Field;
 /**
  * Tests.
  */
-public class LinkFieldSelectionFactoryTest extends AbstractBuilderTest<LinkFieldSelectionDefinition> {
+public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<LinkFieldSelectionDefinition> {
 
     private LinkFieldSelectionFactory builder;
 
@@ -88,7 +88,7 @@ public class LinkFieldSelectionFactoryTest extends AbstractBuilderTest<LinkField
         builder.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
-        Field field = builder.getField();
+        Field field = builder.createField();
 
         // THEN
         assertEquals(true, field instanceof TextAndContentViewField);
@@ -101,7 +101,7 @@ public class LinkFieldSelectionFactoryTest extends AbstractBuilderTest<LinkField
         baseItem.addItemProperty(LinkFieldFactory.PATH_PROPERTY_NAME, DefaultPropertyUtil.newDefaultProperty(null, null));
         builder = new LinkFieldSelectionFactory(definition, baseItem, workbenchPresenter, eventBus);
         builder.setI18nContentSupport(i18nContentSupport);
-        Field field = builder.getField();
+        Field field = builder.createField();
 
         // WHEN
         eventBus.fireEvent(new ItemSelectedEvent(baseNode.getSession().getWorkspace().getName(), (JcrItemAdapter) baseItem));
@@ -119,7 +119,7 @@ public class LinkFieldSelectionFactoryTest extends AbstractBuilderTest<LinkField
         baseItem.addItemProperty("newProperty", DefaultPropertyUtil.newDefaultProperty(null, "initial"));
         builder = new LinkFieldSelectionFactory(definition, baseItem, workbenchPresenter, eventBus);
         builder.setI18nContentSupport(i18nContentSupport);
-        Field field = builder.getField();
+        Field field = builder.createField();
 
         // WHEN
         eventBus.fireEvent(new ItemSelectedEvent(baseNode.getSession().getWorkspace().getName(), (JcrItemAdapter) baseItem));

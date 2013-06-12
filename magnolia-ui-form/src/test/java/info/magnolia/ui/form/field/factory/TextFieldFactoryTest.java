@@ -47,7 +47,7 @@ import com.vaadin.ui.TextField;
 /**
  * Main testcase for {@link info.magnolia.ui.form.field.factory.TextFieldFactory}.
  */
-public class TextFieldFactoryTest extends AbstractBuilderTest<TextFieldDefinition> {
+public class TextFieldFactoryTest extends AbstractFieldFactoryTestCase<TextFieldDefinition> {
 
     private TextFieldFactory dialogEdit;
 
@@ -57,7 +57,7 @@ public class TextFieldFactoryTest extends AbstractBuilderTest<TextFieldDefinitio
         dialogEdit = new TextFieldFactory(definition, baseItem);
         dialogEdit.setI18nContentSupport(i18nContentSupport);
         // WHEN
-        Field field = dialogEdit.getField();
+        Field field = dialogEdit.createField();
 
         // THEN
         assertEquals(true, field instanceof TextField);
@@ -72,7 +72,7 @@ public class TextFieldFactoryTest extends AbstractBuilderTest<TextFieldDefinitio
         dialogEdit = new TextFieldFactory(definition, baseItem);
         dialogEdit.setI18nContentSupport(i18nContentSupport);
         // WHEN
-        Field field = dialogEdit.getField();
+        Field field = dialogEdit.createField();
 
         // THEN
         assertEquals(true, field instanceof TextArea);

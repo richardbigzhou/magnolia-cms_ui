@@ -81,7 +81,7 @@ public class BasicUploadFieldFactory extends AbstractFieldFactory<BasicUploadFie
     }
 
     @Override
-    protected Field<Byte[]> newInstance() {
+    protected Field<Byte[]> createFieldComponent() {
         // Get or create the File Node adapter.
         AbstractJcrNodeAdapter binaryDataSubNodeItem = getOrCreateSubItemWithBinaryData();
         // Init the tmp upload path

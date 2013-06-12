@@ -52,7 +52,7 @@ import com.vaadin.ui.Field;
 /**
  * Main testcase for {@link info.magnolia.ui.form.field.factory.SelectFieldFactory}.
  */
-public class SelectFieldFactoryTest extends AbstractBuilderTest<SelectFieldDefinition> {
+public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectFieldDefinition> {
 
     private SelectFieldFactory<SelectFieldDefinition> dialogSelect;
 
@@ -63,7 +63,7 @@ public class SelectFieldFactoryTest extends AbstractBuilderTest<SelectFieldDefin
         dialogSelect.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
-        Field field = dialogSelect.getField();
+        Field field = dialogSelect.createField();
 
         // THEN
         assertEquals(true, field instanceof ComboBox);
@@ -81,7 +81,7 @@ public class SelectFieldFactoryTest extends AbstractBuilderTest<SelectFieldDefin
         dialogSelect.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
-        Field field = dialogSelect.getField();
+        Field field = dialogSelect.createField();
 
         // THEN
         assertEquals(option.getValue(), field.getValue().toString());
@@ -96,7 +96,7 @@ public class SelectFieldFactoryTest extends AbstractBuilderTest<SelectFieldDefin
         dialogSelect.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
-        Field field = dialogSelect.getField();
+        Field field = dialogSelect.createField();
 
         // THEN
         assertEquals("3", field.getValue().toString());
@@ -121,7 +121,7 @@ public class SelectFieldFactoryTest extends AbstractBuilderTest<SelectFieldDefin
         dialogSelect.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
-        Field field = dialogSelect.getField();
+        Field field = dialogSelect.createField();
 
         // THEN
         Collection<?> items = ((ComboBox) field).getItemIds();
@@ -153,7 +153,7 @@ public class SelectFieldFactoryTest extends AbstractBuilderTest<SelectFieldDefin
         dialogSelect.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
-        Field field = dialogSelect.getField();
+        Field field = dialogSelect.createField();
 
         // THEN
         Collection<?> items = ((ComboBox) field).getItemIds();

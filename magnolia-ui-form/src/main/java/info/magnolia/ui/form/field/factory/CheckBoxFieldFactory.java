@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2011-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import info.magnolia.ui.form.field.CheckBoxAndLabelField;
+import info.magnolia.ui.form.field.CheckBoxField;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 
@@ -50,10 +50,10 @@ public class CheckBoxFieldFactory extends AbstractFieldFactory<CheckboxFieldDefi
     }
 
     @Override
-    protected Field<Boolean> newInstance() {
-        CheckBoxAndLabelField field = new CheckBoxAndLabelField();
+    protected Field<Boolean> createFieldComponent() {
+        CheckBoxField field = new CheckBoxField();
         field.setValue(Boolean.valueOf(definition.getSelected()));
-        field.getCheckBox().setCaption(getMessage(definition.getButtonLabel()));
+        field.setCheckBoxCaption(getMessage(definition.getButtonLabel()));
         return field;
     }
 

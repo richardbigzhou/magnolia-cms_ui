@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,38 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.factory;
+package info.magnolia.ui.workbench;
 
-import info.magnolia.ui.form.field.PasswordFields;
-import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.form.field.definition.PasswordFieldDefinition;
+import info.magnolia.ui.api.view.View;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Component;
 
 /**
- * Creates and initializes an password field based on a field definition.
+ * The status bar view consists of a horizontal container, with basic support for horizontal alignment. It is intended
+ * for displaying status information relative to the content that is currently presented in an adjacent view.
+ * Additionally, it can draw several levels of attention of feedback by changing color.
  */
-public class PasswordFieldFactory extends AbstractFieldFactory<PasswordFieldDefinition, String> {
+public interface StatusBarView extends View {
 
-    public PasswordFieldFactory(PasswordFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
-    }
+    void addComponent(Component c, Alignment align);
 
-    @Override
-    protected Field<String> createFieldComponent() {
-        String verificationErrorMessage = "";
-        String verificationMessage = "";
-        if (definition.isVerification()) {
-            verificationErrorMessage = getMessage(definition.getVerificationErrorMessage());
-            verificationMessage = getMessage(definition.getVerificationMessage());
-        }
-        // Create Field
-        return new PasswordFields(definition.isVerification(), verificationMessage, verificationErrorMessage);
-    }
+    void removeComponent(Component c);
 
-    @Override
-    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
-        return String.class;
-    }
+    void setColor(String colorStyleName);
+
 }

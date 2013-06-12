@@ -89,7 +89,7 @@ public class LinkFieldSelectionFactory extends AbstractFieldFactory<LinkFieldSel
     }
 
     @Override
-    protected Field<String> newInstance() {
+    protected Field<String> createFieldComponent() {
         textContent = new TextAndContentViewField(definition.isDisplayTextField(), definition.isDisplayTextFieldOnTop());
 
         // TODO 20130513 mgeljic restore choose dialogs as real dialogs with a configured workbench field or drop that field type completely.

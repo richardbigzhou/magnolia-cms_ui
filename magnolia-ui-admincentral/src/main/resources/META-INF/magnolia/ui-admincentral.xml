@@ -97,10 +97,6 @@
 
   <components>
     <id>subapp</id>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.tools.EmbeddedPageView</type>
-      <implementation>info.magnolia.ui.admincentral.app.tools.EmbeddedPageViewImpl</implementation>
-    </component>
   </components>
 
   <dependencies>

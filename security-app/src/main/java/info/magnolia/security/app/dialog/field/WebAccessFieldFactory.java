@@ -74,7 +74,7 @@ public class WebAccessFieldFactory<D extends WebAccessFieldDefinition> extends A
     }
 
     @Override
-    protected Field<Object> newInstance() {
+    protected Field<Object> createFieldComponent() {
 
         final VerticalLayout layout = new VerticalLayout();
         layout.setSpacing(true);

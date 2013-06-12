@@ -80,7 +80,7 @@ public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
         WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null);
 
         // WHEN
-        Field<Object> field = builder.newInstance();
+        Field<Object> field = builder.createFieldComponent();
 
         // THEN
         VerticalLayout layout = (VerticalLayout) ((HasComponents) field).iterator().next();
@@ -116,7 +116,7 @@ public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
         WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null);
 
         // WHEN
-        Field<Object> field = builder.newInstance();
+        Field<Object> field = builder.createFieldComponent();
 
         // THEN
         VerticalLayout layout = (VerticalLayout) ((HasComponents) field).iterator().next();
@@ -154,7 +154,7 @@ public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
         WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null);
 
         // WHEN
-        Field<Object> field = builder.newInstance();
+        Field<Object> field = builder.createFieldComponent();
 
         // THEN
         VerticalLayout layout = (VerticalLayout) ((HasComponents) field).iterator().next();

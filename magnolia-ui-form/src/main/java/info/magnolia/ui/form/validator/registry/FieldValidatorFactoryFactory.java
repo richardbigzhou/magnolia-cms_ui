@@ -63,9 +63,9 @@ public class FieldValidatorFactoryFactory implements Serializable {
 
     public FieldValidatorFactory createFieldValidatorFactory(FieldValidatorDefinition definition, Object... args) {
 
-        Class<? extends info.magnolia.ui.form.validator.factory.FieldValidatorFactory> implementationClass = definition.getFactoryClass();
-        if (implementationClass == null) {
-            log.error("No implementation class set for validator: " + definition.getClass().getName());
+        Class<? extends info.magnolia.ui.form.validator.factory.FieldValidatorFactory> factoryClass = definition.getFactoryClass();
+        if (factoryClass == null) {
+            log.error("No factory class set for validator: " + definition.getClass().getName());
             return null;
         }
 
@@ -74,9 +74,9 @@ public class FieldValidatorFactoryFactory implements Serializable {
         System.arraycopy(args, 0, combinedParameters, 1, args.length);
 
         try {
-            return componentProvider.newInstance(implementationClass, combinedParameters);
+            return componentProvider.newInstance(factoryClass, combinedParameters);
         } catch (MgnlInstantiationException e) {
-            log.error("Could not instantiate validator builder class for validator: " + definition.getClass().getName(), e);
+            log.error("Could not instantiate validator factory class for validator: " + definition.getClass().getName(), e);
             return null;
         }
     }

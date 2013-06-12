@@ -67,40 +67,54 @@ body{
   -webkit-touch-callout: none;/* Remove Callout Context menu when tapping on something */
 }
 
-.btn-submit{
-  background:#4B6115;
+button.btn-submit {
+  background:#3E5900;
   color:white;
   border:none;
   font-family:DINWebPro;
   font-size:12px;
   margin-right: 20px;
-  padding: 2px;
-  height: 20px;
+  height: 23px;
+  /*padding-top and line-height properties are used to vertically center the text both on webkit browsers an FF*/
+  padding-top: 1px;
+  line-height: 24px;
   width: 70px;
   text-transform: uppercase;
+}
+
+button.btn-submit:hover, button.btn-submit:focus {
+  background-color: #86AB33;
+}
+
+button.btn-submit:active {
+  color: #3E5900;
+  background-color: #fff;
+  padding: 1px 0;
 }
 
 .mgnl-form {
   background-color: #739821;
   font-family: DINWebPro;
   height: 154px;
-  padding-bottom: 12px;
+  padding-bottom: 2px;
 }
 
 .mgnl-form label{
   float:left;
   display:inline-block;;
-  width:100px;
+  width:80px;
   color:#3e5900;
   font-family:DINWebPro;
   font-size:12px;
   margin-top:7px;
-  text-align: center;
+  margin-left:20px;
+  text-align: left;
   text-transform: uppercase;
+  cursor: default;
 }
 
 .mgnl-form input[type="text"], .mgnl-form input[type="password"] {
-  width:276px;
+  width:277px;
   padding-left:8px;
   margin-bottom:16px;
   border:solid 1px #999;
@@ -222,7 +236,7 @@ body{
 
 #error-divet {
   border-bottom: 10px solid #9A3332;
-  top: 266px;
+  top: 257px;
   left: 220px;
 }
 

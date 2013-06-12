@@ -44,7 +44,7 @@ public class ConfiguredFieldValidatorDefinition implements FieldValidatorDefinit
 
     private String i18nBasename;
 
-    private Class<? extends FieldValidatorFactory> builder;
+    private Class<? extends FieldValidatorFactory> factoryClass;
 
     @Override
     public String getErrorMessage() {
@@ -66,10 +66,10 @@ public class ConfiguredFieldValidatorDefinition implements FieldValidatorDefinit
 
     @Override
     public Class<? extends FieldValidatorFactory> getFactoryClass() {
-        return builder;
+        return factoryClass;
     }
 
-    public void setBuilder(Class<? extends FieldValidatorFactory> builder) {
-        this.builder = builder;
+    public void setFactoryClass(Class<? extends FieldValidatorFactory> factoryClass) {
+        this.factoryClass = factoryClass;
     }
 }

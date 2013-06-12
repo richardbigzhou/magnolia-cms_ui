@@ -42,5 +42,5 @@ import com.vaadin.data.Validator;
  */
 public interface FieldValidatorFactory {
 
-    Validator newInstance();
+    Validator createValidator();
 }

@@ -52,7 +52,7 @@ public class DateFieldFactory extends AbstractFieldFactory<DateFieldDefinition, 
     }
 
     @Override
-    protected Field<Date> newInstance() {
+    protected Field<Date> createFieldComponent() {
         DateFieldDefinition definition = getFieldDefinition();
         PopupDateField popupDateField = new PopupDateField();
 

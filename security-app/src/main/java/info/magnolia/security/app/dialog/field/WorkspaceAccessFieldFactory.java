@@ -107,7 +107,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
     }
 
     @Override
-    protected Field<Object> newInstance() {
+    protected Field<Object> createFieldComponent() {
 
         final String aclName = "acl_" + getFieldDefinition().getWorkspace();
 

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,24 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.statusbar;
+package info.magnolia.ui.framework.app.embedded;
 
 import info.magnolia.ui.api.view.View;
 
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Component;
-
 /**
- * The status bar view consists of a horizontal container, with basic support for horizontal alignment. It is intended
- * for displaying status information relative to the content that is currently presented in an adjacent view.
- * Additionally, it can draw several levels of attention of feedback by changing color.
+ * View interface for the embedded page's App view.
  */
-public interface StatusBarView extends View {
-
-    void addComponent(Component c, Alignment align);
-
-    void removeComponent(Component c);
-
-    void setColor(String colorStyleName);
+public interface EmbeddedPageView extends View {
 
 }

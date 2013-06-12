@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.event.EventBusProtector;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
@@ -54,13 +55,10 @@ import info.magnolia.ui.api.app.AppInstanceController;
 import info.magnolia.ui.api.app.AppLifecycleEvent;
 import info.magnolia.ui.api.app.AppLifecycleEventType;
 import info.magnolia.ui.api.app.ItemChosenListener;
-import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.api.overlay.OverlayLayer;
-import info.magnolia.ui.api.view.Viewport;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ChooseDialogEventBus;
-import info.magnolia.event.EventBusProtector;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.location.LocationChangeRequestedEvent;
@@ -68,6 +66,8 @@ import info.magnolia.ui.api.location.LocationChangedEvent;
 import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.api.overlay.OverlayLayer;
+import info.magnolia.ui.api.view.Viewport;
 import info.magnolia.ui.framework.message.MessagesManager;
 
 import java.util.HashMap;
@@ -331,9 +331,6 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
         nextAppContext = doStartIfNotAlreadyRunning(nextAppContext, newLocation);
         viewport.setView(nextAppContext.getApp().getView());
-
-        // focus on locationChanged?
-        //focusCurrentApp();
     }
 
     /**

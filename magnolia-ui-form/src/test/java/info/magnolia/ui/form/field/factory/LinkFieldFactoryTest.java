@@ -47,7 +47,7 @@ import com.vaadin.ui.Field;
 /**
  * Main testcase for {@link info.magnolia.ui.form.field.factory.LinkFieldFactory}.
  */
-public class LinkFieldFactoryTest extends AbstractBuilderTest<LinkFieldDefinition> {
+public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkFieldDefinition> {
 
     private LinkFieldFactory linkFieldFactory;
 
@@ -57,7 +57,7 @@ public class LinkFieldFactoryTest extends AbstractBuilderTest<LinkFieldDefinitio
         linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
         // WHEN
-        Field field = linkFieldFactory.getField();
+        Field field = linkFieldFactory.createField();
 
         // THEN
         assertEquals(true, field instanceof LinkField);
@@ -74,7 +74,7 @@ public class LinkFieldFactoryTest extends AbstractBuilderTest<LinkFieldDefinitio
         linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
         // WHEN
-        Field field = linkFieldFactory.getField();
+        Field field = linkFieldFactory.createField();
 
         // THEN
         assertEquals(true, field instanceof LinkField);
@@ -90,7 +90,7 @@ public class LinkFieldFactoryTest extends AbstractBuilderTest<LinkFieldDefinitio
         definition.setButtonSelectNewLabel("New");
         definition.setButtonSelectOtherLabel("Other");
         // WHEN
-        Field field = linkFieldFactory.getField();
+        Field field = linkFieldFactory.createField();
 
         // THEN
         assertEquals(true, field instanceof LinkField);
@@ -108,7 +108,7 @@ public class LinkFieldFactoryTest extends AbstractBuilderTest<LinkFieldDefinitio
         definition.setButtonSelectNewLabel("New");
         definition.setButtonSelectOtherLabel("Other");
         // WHEN
-        Field field = linkFieldFactory.getField();
+        Field field = linkFieldFactory.createField();
 
         // THEN
         assertEquals(true, field instanceof LinkField);
@@ -123,7 +123,7 @@ public class LinkFieldFactoryTest extends AbstractBuilderTest<LinkFieldDefinitio
         baseItem = new JcrNodeAdapter(baseNode);
         linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
-        Field field = linkFieldFactory.getField();
+        Field field = linkFieldFactory.createField();
         assertEquals("notChanged", ((LinkField) field).getTextField().getValue());
         // WHEN
         ((LinkField) field).getTextField().setValue("Changed");

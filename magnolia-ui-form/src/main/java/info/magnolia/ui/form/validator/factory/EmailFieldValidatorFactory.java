@@ -48,7 +48,7 @@ public class EmailFieldValidatorFactory extends AbstractFieldValidatorFactory<Em
     }
 
     @Override
-    public Validator newInstance() {
+    public Validator createValidator() {
         return new EmailValidator(getI18nErrorMessage());
     }
 

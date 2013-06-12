@@ -38,7 +38,7 @@ import static org.junit.Assert.assertEquals;
 import info.magnolia.cms.i18n.LocaleDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockComponentProvider;
-import info.magnolia.ui.form.field.factory.AbstractBuilderTest;
+import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTestCase;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactory;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTest;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
@@ -58,7 +58,7 @@ import com.vaadin.ui.Field;
 /**
  * Main testcase for {@link info.magnolia.ui.form.field.factory.AbstractFieldFactory} i18n property.
  */
-public class AbstractFieldFactoryI18NPropertyTest extends AbstractBuilderTest<ConfiguredFieldDefinition> {
+public class AbstractFieldFactoryI18NPropertyTest extends AbstractFieldFactoryTestCase<ConfiguredFieldDefinition> {
     private AbstractFieldFactory<FieldDefinition, Object> fieldFactory;
 
     @Override
@@ -75,7 +75,7 @@ public class AbstractFieldFactoryI18NPropertyTest extends AbstractBuilderTest<Co
     public void i18nPropertyNotDefined_CurrentIsDefault() throws Exception {
         // GIVEN
         initBuilder();
-        Field<Object> field = fieldFactory.getField();
+        Field<Object> field = fieldFactory.createField();
         field.setValue("new Value");
         // WHEN
         Node res = ((JcrNodeAdapter) baseItem).applyChanges();
@@ -90,7 +90,7 @@ public class AbstractFieldFactoryI18NPropertyTest extends AbstractBuilderTest<Co
         // GIVEN
         MgnlContext.getInstance().setLocale(Locale.FRENCH);
         initBuilder();
-        Field<Object> field = fieldFactory.getField();
+        Field<Object> field = fieldFactory.createField();
         field.setValue("new Value");
         // WHEN
         Node res = ((JcrNodeAdapter) baseItem).applyChanges();
@@ -105,7 +105,7 @@ public class AbstractFieldFactoryI18NPropertyTest extends AbstractBuilderTest<Co
         // GIVEN
         this.definition.setI18n(true);
         initBuilder();
-        Field<Object> field = fieldFactory.getField();
+        Field<Object> field = fieldFactory.createField();
         field.setValue("new Value");
         // WHEN
         Node res = ((JcrNodeAdapter) baseItem).applyChanges();
@@ -120,7 +120,7 @@ public class AbstractFieldFactoryI18NPropertyTest extends AbstractBuilderTest<Co
         this.definition.setI18n(true);
         MgnlContext.getInstance().setLocale(Locale.FRENCH);
         initBuilder();
-        Field<Object> field = fieldFactory.getField();
+        Field<Object> field = fieldFactory.createField();
         field.setValue("new Value");
 
         // THEN
@@ -133,7 +133,7 @@ public class AbstractFieldFactoryI18NPropertyTest extends AbstractBuilderTest<Co
         // GIVEN
         this.definition.setI18n(true);
         initBuilder();
-        Field<Object> field = fieldFactory.getField();
+        Field<Object> field = fieldFactory.createField();
         field.setValue("new Value");
         Node res = ((JcrNodeAdapter) baseItem).applyChanges();
         assertEquals(true, res.hasProperty(propertyName));

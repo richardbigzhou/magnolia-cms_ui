@@ -131,12 +131,12 @@
   .v-datefield-calendarpanel-day-today,
   .v-inline-datefield-calendarpanel-day-today {
     border: none;
-    background-color: $c26;
+    background-color: $c25;
   }
 
   .v-datefield-calendarpanel-day-focused,
   .v-inline-datefield-calendarpanel-day-focused {
-    outline: auto;
+    outline: none;
   }
 
   .v-datefield-calendarpanel-day-selected,

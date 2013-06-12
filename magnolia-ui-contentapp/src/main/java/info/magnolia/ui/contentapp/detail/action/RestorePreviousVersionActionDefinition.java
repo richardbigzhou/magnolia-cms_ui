@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.security.app.dialog.field.validator;
-
-import info.magnolia.ui.form.validator.factory.AbstractFieldValidatorFactory;
-
-import com.vaadin.data.Validator;
+package info.magnolia.ui.contentapp.detail.action;
 
 /**
- * Builder for the UniqueRoleIdValidator.
- *
- * @see UniqueRoleIdValidatorDefinition
+ * ActionDefinition used for restoring the previous version on an item.
  */
-public class UniqueRoleIdValidatorBuilder extends AbstractFieldValidatorFactory<UniqueRoleIdValidatorDefinition> {
+public class RestorePreviousVersionActionDefinition extends AbstractItemActionDefinition {
 
-    public UniqueRoleIdValidatorBuilder(UniqueRoleIdValidatorDefinition definition) {
-        super(definition);
+    public RestorePreviousVersionActionDefinition() {
+        setImplementationClass(RestorePreviousVersionAction.class);
     }
-
-    @Override
-    public Validator newInstance() {
-        return new UniqueRoleIdValidator(getI18nErrorMessage());
-    }
-
 }

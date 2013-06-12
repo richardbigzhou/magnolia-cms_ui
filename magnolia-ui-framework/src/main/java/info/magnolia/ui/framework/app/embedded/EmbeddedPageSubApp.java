@@ -31,38 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.factory;
+package info.magnolia.ui.framework.app.embedded;
 
-import info.magnolia.ui.form.field.PasswordFields;
-import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.form.field.definition.PasswordFieldDefinition;
+import info.magnolia.ui.framework.app.BaseSubApp;
+import info.magnolia.ui.api.app.SubAppContext;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
+import javax.inject.Inject;
 
 /**
- * Creates and initializes an password field based on a field definition.
+ * Sub app for the main tab in an embedded page app.
  */
-public class PasswordFieldFactory extends AbstractFieldFactory<PasswordFieldDefinition, String> {
+public class EmbeddedPageSubApp extends BaseSubApp {
 
-    public PasswordFieldFactory(PasswordFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
-    }
-
-    @Override
-    protected Field<String> createFieldComponent() {
-        String verificationErrorMessage = "";
-        String verificationMessage = "";
-        if (definition.isVerification()) {
-            verificationErrorMessage = getMessage(definition.getVerificationErrorMessage());
-            verificationMessage = getMessage(definition.getVerificationMessage());
-        }
-        // Create Field
-        return new PasswordFields(definition.isVerification(), verificationMessage, verificationErrorMessage);
-    }
-
-    @Override
-    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
-        return String.class;
+    @Inject
+    public EmbeddedPageSubApp(SubAppContext subAppContext, EmbeddedPageView pageView) {
+        super(subAppContext, pageView);
     }
 }

@@ -41,24 +41,24 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
  */
 public class ConfiguredFieldTypeDefinition implements FieldTypeDefinition {
 
-    private Class<? extends FieldDefinition> definition;
-    private Class<? extends FieldFactory> builder;
+    private Class<? extends FieldDefinition> definitionClass;
+    private Class<? extends FieldFactory> factoryClass;
 
     @Override
     public Class<? extends FieldFactory> getFactoryClass() {
-        return builder;
+        return factoryClass;
     }
 
     @Override
-    public Class<? extends FieldDefinition> getDefinition() {
-        return definition;
+    public Class<? extends FieldDefinition> getDefinitionClass() {
+        return definitionClass;
     }
 
-    public void setBuilder(Class<? extends FieldFactory> builder) {
-        this.builder = builder;
+    public void setFactoryClass(Class<? extends FieldFactory> factoryClass) {
+        this.factoryClass = factoryClass;
     }
 
-    public void setDefinition(Class<? extends FieldDefinition> definition) {
-        this.definition = definition;
+    public void setDefinitionClass(Class<? extends FieldDefinition> definitionClass) {
+        this.definitionClass = definitionClass;
     }
 }

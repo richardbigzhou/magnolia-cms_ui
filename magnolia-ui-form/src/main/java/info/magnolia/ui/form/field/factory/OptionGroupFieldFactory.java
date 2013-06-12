@@ -55,8 +55,8 @@ public class OptionGroupFieldFactory extends SelectFieldFactory<OptionGroupField
     }
 
     @Override
-    protected AbstractSelect newInstance() {
-        super.newInstance();
+    protected AbstractSelect createFieldComponent() {
+        super.createFieldComponent();
         select.setMultiSelect(getFieldDefinition().isMultiselect());
         if (select.isMultiSelect()) {
             select.setNullSelectionAllowed(true);

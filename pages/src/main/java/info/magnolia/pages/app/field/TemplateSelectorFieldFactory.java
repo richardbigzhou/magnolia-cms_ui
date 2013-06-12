@@ -35,6 +35,7 @@ package info.magnolia.pages.app.field;
 
 import info.magnolia.cms.i18n.Messages;
 import info.magnolia.cms.i18n.MessagesManager;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
@@ -45,9 +46,14 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 
@@ -57,6 +63,8 @@ import com.vaadin.data.Item;
  * related Item (Image of a JCR node) and {@link TemplateDefinitionAssignment}.
  */
 public class TemplateSelectorFieldFactory extends SelectFieldFactory<TemplateSelectorDefinition> {
+
+    private static final Logger log = LoggerFactory.getLogger(TemplateSelectorFieldFactory.class);
 
     public TemplateSelectorFieldFactory(TemplateSelectorDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
@@ -73,7 +81,18 @@ public class TemplateSelectorFieldFactory extends SelectFieldFactory<TemplateSel
             TemplateDefinitionAssignment templateAssignment = Components.getComponent(TemplateDefinitionAssignment.class);
             Node associatedNode = ((JcrNodeAdapter) item).getJcrItem();
 
-            Collection<TemplateDefinition> templates = templateAssignment.getAvailableTemplates(associatedNode);
+            Collection<TemplateDefinition> templates = Collections.EMPTY_SET;
+
+            // creates a temporary node underneath the parent to overcome a restriction in template availability,
+            // see MGNLSTK-1185
+            try {
+                Node tempNode = associatedNode.addNode("temp", NodeTypes.Page.NAME);
+                templates = templateAssignment.getAvailableTemplates(tempNode);
+                associatedNode.getSession().removeItem(tempNode.getPath());
+            } catch (RepositoryException e) {
+                log.error("Could not create temporary node to get available templates.", e);
+            }
+
 
             for (TemplateDefinition templateDefinition : templates) {
                 SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();

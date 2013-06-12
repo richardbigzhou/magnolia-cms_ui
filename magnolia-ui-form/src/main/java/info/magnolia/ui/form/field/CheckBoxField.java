@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2011-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,28 +31,58 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.tools;
+package info.magnolia.ui.form.field;
 
-import info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor;
+import com.vaadin.data.Property;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomField;
 
 /**
- * Allows to specify the url to an html page to be embedded in an iframe.
- * <p>
- * If the supplied url doesn't start with <code>http</code> it will be assumed to be an internal one and thus prepended with the current webapp's context path. E.g. given the url <code>/some-static-pages/some-page</code> an url will be built in the following form <code>&lt;magnolia-webapp-context&gt;/some-static-pages/some-page</code>
+ * A field wrapper for a single CheckBox, supporting the FormLayout-managed (left) caption.
  */
-public class EmbeddedPageSubAppDescriptor extends ConfiguredSubAppDescriptor {
+public class CheckBoxField extends CustomField<Boolean> {
 
-    private String url;
+    private CheckBox checkBox;
 
-    public String getUrl() {
-        return url;
+    public CheckBoxField() {
+        checkBox = new CheckBox();
+    }
+
+    @Override
+    protected Component initContent() {
+        return checkBox;
+    }
+
+    @Override
+    public Boolean getValue() {
+        return checkBox.getValue();
+    }
+
+    @Override
+    public void setValue(Boolean newValue) throws ReadOnlyException {
+        checkBox.setValue(newValue);
     }
 
     /**
-     * @param url if not starting with <code>http</code> the url will be assumed to be an internal one and thus prepended with the current webapp's context path.
-     * E.g. given the url <code>some-static-pages/some-page</code> an url will be built in the following form <code>&lt;magnolia-webapp-context&gt;/some-static-pages/some-page</code>
+     * Use this setter for the checkbox caption on the right-hand side; the regular field caption is left for the FormLayout.
      */
-    public void setUrl(String url) {
-        this.url = url;
+    public void setCheckBoxCaption(String caption) {
+        checkBox.setCaption(caption);
+    }
+
+    @Override
+    public void setPropertyDataSource(Property newDataSource) {
+        checkBox.setPropertyDataSource(newDataSource);
+    }
+
+    @Override
+    public Property<Boolean> getPropertyDataSource() {
+        return checkBox.getPropertyDataSource();
+    }
+
+    @Override
+    public Class<? extends Boolean> getType() {
+        return Boolean.class;
     }
 }

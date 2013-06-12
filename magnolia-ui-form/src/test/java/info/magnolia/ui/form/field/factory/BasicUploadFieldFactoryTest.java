@@ -68,7 +68,7 @@ import com.vaadin.ui.Upload.FinishedEvent;
 /**
  * Main testcase for {@link info.magnolia.ui.form.field.factory.BasicUploadFieldFactory}.
  */
-public class BasicUploadFieldFactoryTest extends AbstractBuilderTest<BasicUploadFieldDefinition> {
+public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<BasicUploadFieldDefinition> {
 
     protected BasicUploadFieldFactory basicUploadBuilder;
 
@@ -89,7 +89,7 @@ public class BasicUploadFieldFactoryTest extends AbstractBuilderTest<BasicUpload
         // GIVEN
 
         // WHEN
-        Field field = basicUploadBuilder.getField();
+        Field field = basicUploadBuilder.createField();
 
         // THEN
         assertEquals(true, field instanceof BasicUploadField);
@@ -99,7 +99,7 @@ public class BasicUploadFieldFactoryTest extends AbstractBuilderTest<BasicUpload
     @Test
     public void testEmptyLayout() throws Exception {
         // GIVEN
-        BasicUploadField field = (BasicUploadField) basicUploadBuilder.getField();
+        BasicUploadField field = (BasicUploadField) basicUploadBuilder.createField();
         Upload upload = new Upload();
         FailedEvent event = new FailedEvent(upload, "filename", "MIMEType", 0l);
 
@@ -117,7 +117,7 @@ public class BasicUploadFieldFactoryTest extends AbstractBuilderTest<BasicUpload
     @Test
     public void testCompletedLayout() throws Exception {
         // GIVEN
-        BasicUploadField field = (BasicUploadField) basicUploadBuilder.getField();
+        BasicUploadField field = (BasicUploadField) basicUploadBuilder.createField();
         Upload upload = new Upload();
         FinishedEvent event = new FinishedEvent(upload, "filename", "MIMEType", 0l);
 

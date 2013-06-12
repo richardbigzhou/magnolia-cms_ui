@@ -31,13 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.app.tools;
+package info.magnolia.security.app.dialog.field.validator;
 
-import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.form.validator.factory.AbstractFieldValidatorFactory;
+
+import com.vaadin.data.Validator;
 
 /**
- * Marker interface for the embedded page App's view.
+ * Builder for the UniqueUserIdValidator.
+ *
+ * @see UniqueUserIdValidatorDefinition
  */
-public interface EmbeddedPageView extends View {
+public class UniqueUserIdValidatorFactory extends AbstractFieldValidatorFactory<UniqueUserIdValidatorDefinition> {
+
+    public UniqueUserIdValidatorFactory(UniqueUserIdValidatorDefinition definition) {
+        super(definition);
+    }
+
+    @Override
+    public Validator createValidator() {
+        return new UniqueUserIdValidator(getI18nErrorMessage());
+    }
 
 }
