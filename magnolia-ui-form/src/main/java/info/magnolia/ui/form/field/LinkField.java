@@ -258,7 +258,7 @@ public class LinkField extends CustomField<String> {
                                 }
                             }
                         }
-                        textField.setValue(newValue);
+                        setValue(newValue);
                     }
 
                     @Override
