@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.event;
+package info.magnolia.ui.api.availability;
 
-import info.magnolia.event.Event;
-import info.magnolia.event.EventHandler;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import javax.jcr.Item;
 
 /**
- * This event is fired when an item is selected (i.e. a row in the data grid within the workbench
- * representing either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
+ * Abstract rule class.
  */
-public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
-
-    /**
-     * Handles {@link ItemSelectedEvent} events.
-     */
-    public interface Handler extends EventHandler {
-
-        void onItemSelected(ItemSelectedEvent event);
-    }
-
-    private final String workspace;
-
-    private final JcrItemAdapter item;
-
-    public ItemSelectedEvent(String workspace, JcrItemAdapter item) {
-        this.workspace = workspace;
-        this.item = item;
-    }
-
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public String getItemId() {
-        return item != null ? item.getItemId() : null;
-    }
-
-    public JcrItemAdapter getItem() {
-        return item;
-    }
+public abstract class AbstractAvailabilityRule implements AvailabilityRule {
 
     @Override
-    public void dispatch(Handler handler) {
-        handler.onItemSelected(this);
+    public boolean isAvailable(Item... items) {
+        // sanity check
+        if (items == null || items.length == 0) {
+            return false;
+        }
+        // for selected items
+        for (Item item : items) {
+            // if not available for any of the items, not available at all
+            if (!isAvailableForItem(item)) {
+                return false;
+            }
+        }
+        return true;
     }
+
+    /**
+     * This method defines the actual evaluation logic for one item.
+     */
+    protected abstract boolean isAvailableForItem(Item item);
+
 }

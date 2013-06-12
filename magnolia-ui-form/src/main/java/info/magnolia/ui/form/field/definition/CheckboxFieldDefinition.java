@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2011 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -38,16 +38,7 @@ package info.magnolia.ui.form.field.definition;
  */
 public class CheckboxFieldDefinition extends ConfiguredFieldDefinition {
 
-    private String selected = "true";
     private String buttonLabel;
-
-    public String getSelected() {
-        return selected;
-    }
-
-    public void setSelected(String selected) {
-        this.selected = selected;
-    }
 
     public String getButtonLabel() {
         return buttonLabel;
