@@ -64,6 +64,8 @@ public class MultiLinkField extends CustomField<List> {
     private final MultiLinkFieldDefinition definition;
 
     private String buttonCaptionAdd;
+    private String buttonCaptionNew;
+    private String buttonCaptionOther;
 
     private final AppController appController;
     private final SubAppContext subAppContext;
@@ -164,6 +166,8 @@ public class MultiLinkField extends CustomField<List> {
         HorizontalLayout layout = new HorizontalLayout();
         // Create a single LinkFild and set DataSource and ValueChangeListener.
         LinkField linkField = new LinkField(definition, appController, subAppContext, componentProvider);
+        linkField.setButtonCaptionNew(buttonCaptionNew);
+        linkField.setButtonCaptionOther(buttonCaptionOther);
         layout.addComponent(linkField);
         linkField.setPropertyDataSource(new ObjectProperty<String>(entry));
         linkField.addValueChangeListener(selectionListener);
@@ -202,5 +206,13 @@ public class MultiLinkField extends CustomField<List> {
      */
     public void setButtonCaptionAdd(String buttonCaptionAdd) {
         this.buttonCaptionAdd = buttonCaptionAdd;
+    }
+
+    public void setButtonCaptionNew(String buttonCaptionNew) {
+        this.buttonCaptionNew = buttonCaptionNew;
+    }
+
+    public void setButtonCaptionOther(String buttonCaptionOther) {
+        this.buttonCaptionOther = buttonCaptionOther;
     }
 }

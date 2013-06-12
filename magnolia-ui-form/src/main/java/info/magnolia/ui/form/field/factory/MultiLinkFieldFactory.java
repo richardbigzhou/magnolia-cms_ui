@@ -77,6 +77,8 @@ public class MultiLinkFieldFactory extends AbstractFieldFactory<MultiLinkFieldDe
     protected Field<List> createFieldComponent() {
         MultiLinkField field = new MultiLinkField(definition, appController, subAppContext, componentProvider);
         field.setButtonCaptionAdd(getMessage(definition.getButtonSelectAddLabel()));
+        field.setButtonCaptionNew(getMessage(definition.getButtonSelectNewLabel()));
+        field.setButtonCaptionOther(getMessage(definition.getButtonSelectOtherLabel()));
         return field;
     }
 
