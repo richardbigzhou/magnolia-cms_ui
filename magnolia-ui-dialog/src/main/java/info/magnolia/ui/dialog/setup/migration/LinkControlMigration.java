@@ -67,7 +67,7 @@ public class LinkControlMigration implements ControlMigration {
                 if (controlNode.hasProperty("tree") && controlNode.getProperty("tree").getString().equals("Contact")) {
                     appName = "contacts";
                     workspace = "contacts";
-                    dialogName = "contacts-app:link";
+                    dialogName = "contacts:link";
                     className = "info.magnolia.contacts.app.field.definition.ContactLinkFieldDefinition";
                 }
             } else if (controlNode.getProperty("repository").getString().equals("dms")) {
