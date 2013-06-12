@@ -49,14 +49,16 @@ public class DamControlMigration implements ControlMigration {
     public void migrate(Node controlNode) throws RepositoryException {
         controlNode.getProperty("controlType").remove();
 
-        controlNode.setProperty("workspace", "dam");
+        controlNode.setProperty("targetWorkspace", "dam");
         controlNode.setProperty("appName", "assets");
         controlNode.setProperty("class", LinkFieldDefinition.class.getName());
-        controlNode.setProperty("dialogName", "dam:link");
         if (!controlNode.hasNode("identifierToPathConverter")) {
             controlNode.addNode("identifierToPathConverter", NodeTypes.ContentNode.NAME);
         }
         controlNode.getNode("identifierToPathConverter").setProperty("class", "info.magnolia.dam.app.assets.field.translator.AssetCompositeIdKeyTranslator");
+
+        controlNode.addNode("contentPreviewDefinition", NodeTypes.ContentNode.NAME);
+        controlNode.getNode("contentPreviewDefinition").setProperty("contentPreviewClass", "info.magnolia.dam.asset.field.DamFilePreviewComponent");
 
         if (!controlNode.hasProperty("description")) {
             controlNode.setProperty("description", "Select an asset");

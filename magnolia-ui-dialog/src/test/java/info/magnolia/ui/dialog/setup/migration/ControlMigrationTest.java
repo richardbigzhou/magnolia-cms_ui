@@ -223,8 +223,8 @@ public class ControlMigrationTest {
         assertTrue(controlNode.hasNode("identifierToPathConverter"));
         assertTrue(controlNode.getNode("identifierToPathConverter").hasProperty("class"));
         assertEquals("info.magnolia.dam.app.assets.field.translator.AssetCompositeIdKeyTranslator", controlNode.getNode("identifierToPathConverter").getProperty("class").getString());
-        assertTrue(controlNode.hasProperty("workspace"));
-        assertEquals("dam", controlNode.getProperty("workspace").getString());
+        assertTrue(controlNode.hasProperty("targetWorkspace"));
+        assertEquals("dam", controlNode.getProperty("targetWorkspace").getString());
 
     }
 
@@ -267,8 +267,6 @@ public class ControlMigrationTest {
         assertEquals(LinkFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
         assertTrue(controlNode.hasProperty("appName"));
         assertEquals("pages", controlNode.getProperty("appName").getString());
-        assertTrue(controlNode.hasProperty("dialogName"));
-        assertEquals("pages:link", controlNode.getProperty("dialogName").getString());
         assertTrue(controlNode.hasNode("identifierToPathConverter"));
         assertTrue(controlNode.getNode("identifierToPathConverter").hasProperty("class"));
         assertEquals(BaseIdentifierToPathConverter.class.getName(), controlNode.getNode("identifierToPathConverter").getProperty("class").getString());
@@ -289,13 +287,11 @@ public class ControlMigrationTest {
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));
         assertTrue(controlNode.hasProperty("class"));
-        assertEquals("info.magnolia.contacts.app.field.definition.ContactLinkFieldDefinition", controlNode.getProperty("class").getString());
+        assertEquals(LinkFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
         assertTrue(controlNode.hasProperty("appName"));
         assertEquals("contacts", controlNode.getProperty("appName").getString());
-        assertTrue(controlNode.hasProperty("workspace"));
-        assertEquals("contacts", controlNode.getProperty("workspace").getString());
-        assertTrue(controlNode.hasProperty("dialogName"));
-        assertEquals("contacts-app:link", controlNode.getProperty("dialogName").getString());
+        assertTrue(controlNode.hasProperty("targetWorkspace"));
+        assertEquals("contacts", controlNode.getProperty("targetWorkspace").getString());
     }
 
     @Test
