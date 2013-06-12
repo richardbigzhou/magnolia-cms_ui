@@ -92,7 +92,6 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
         setSizeFull();
         registerRpc(new MagnoliaShellRpcDelegate(this));
         initializeViewports();
-        initializeKeyboardShortcuts();
     }
 
     public void setUserMenu(View view) {
@@ -316,35 +315,6 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
     @Override
     public Component asVaadinComponent() {
         return this;
-    }
-
-    protected void initializeKeyboardShortcuts() {
-        // addShortcut(actionName, KeyCode.S, ModifierKey.CTRL);
-
-        // ShortcutListener shortcut = new ShortcutListener("", KeyCode.NUM1, null) {
-        // @Override
-        // public void handleAction(Object sender, Object target) {
-        // goToShellApp(Fragment.fromString("shell:applauncher"));
-        // }
-        // };
-        // this.addShortcutListener(shortcut);
-        //
-        // shortcut = new ShortcutListener("", KeyCode.NUM2, null) {
-        // @Override
-        // public void handleAction(Object sender, Object target) {
-        // goToShellApp(Fragment.fromString("shell:pulse"));
-        // }
-        // };
-        // this.addShortcutListener(shortcut);
-        //
-        // shortcut = new ShortcutListener("", KeyCode.NUM3, null) {
-        // @Override
-        // public void handleAction(Object sender, Object target) {
-        // goToShellApp(Fragment.fromString("shell:favorite"));
-        // }
-        // };
-        // this.addShortcutListener(shortcut);
-
     }
 
 }

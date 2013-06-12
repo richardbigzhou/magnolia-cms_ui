@@ -126,6 +126,12 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
                     return;
                 }
 
+                // Only process if no modifier keys are held down to avoid collision with OS or Browser hotkeys.
+                // Note this method does not appear to work correctly as method runs when ctrl or command key are down on osx firefox.
+                if (event.isAnyModifierKeyDown()) {
+                    return;
+                }
+
                 char c = event.getCharCode();
 
                 switch (c) {
