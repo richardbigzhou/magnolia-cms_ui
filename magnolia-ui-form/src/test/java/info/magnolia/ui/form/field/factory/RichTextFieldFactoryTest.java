@@ -46,7 +46,7 @@ import com.vaadin.ui.Field;
 /**
  * Tests.
  */
-public class RichTextFieldFactoryTest extends AbstractBuilderTest<RichTextFieldDefinition> {
+public class RichTextFieldFactoryTest extends AbstractFieldFactoryTestCase<RichTextFieldDefinition> {
 
     private RichTextFieldFactory richTextFieldFactory;
 

@@ -31,24 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.statusbar;
+package info.magnolia.ui.api.availability;
 
-import info.magnolia.ui.api.view.View;
-
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Component;
+import javax.jcr.Item;
 
 /**
- * The status bar view consists of a horizontal container, with basic support for horizontal alignment. It is intended
- * for displaying status information relative to the content that is currently presented in an adjacent view.
- * Additionally, it can draw several levels of attention of feedback by changing color.
+ * Abstract rule class.
  */
-public interface StatusBarView extends View {
+public abstract class AbstractAvailabilityRule implements AvailabilityRule {
 
-    void addComponent(Component c, Alignment align);
+    @Override
+    public boolean isAvailable(Item... items) {
+        // sanity check
+        if (items == null || items.length == 0) {
+            return false;
+        }
+        // for selected items
+        for (Item item : items) {
+            // if not available for any of the items, not available at all
+            if (!isAvailableForItem(item)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-    void removeComponent(Component c);
-
-    void setColor(String colorStyleName);
+    /**
+     * This method defines the actual evaluation logic for one item.
+     */
+    protected abstract boolean isAvailableForItem(Item item);
 
 }

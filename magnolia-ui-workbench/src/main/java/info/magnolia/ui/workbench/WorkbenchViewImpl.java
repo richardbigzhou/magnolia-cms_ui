@@ -34,7 +34,6 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.vaadin.statusbar.StatusBarView;
 import info.magnolia.ui.vaadin.icon.Icon;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
@@ -295,5 +294,12 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         // No blur handler.
 
         return field;
+    }
+
+    @Override
+    public void setMultiselect(boolean multiselect) {
+        for (ViewType type : contentViews.keySet()) {
+            contentViews.get(type).setMultiselect(multiselect);
+        }
     }
 }

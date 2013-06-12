@@ -3,12 +3,12 @@
 @mixin browser {
 
   & > div > .v-spacing {
-    width: 22px;
+    width: 25px;
   }
 
   .v-verticallayout-workbench {
     padding-top: 20px;
-    padding-left: 22px;
+    padding-left: 40px;
   }
 
   .v-csslayout-actionbar {

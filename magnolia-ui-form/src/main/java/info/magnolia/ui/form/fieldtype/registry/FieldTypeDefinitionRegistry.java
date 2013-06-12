@@ -67,13 +67,13 @@ public class FieldTypeDefinitionRegistry {
         return provider.getFieldTypeDefinition();
     }
 
-    public FieldTypeDefinition getByDefinition(Class<? extends FieldDefinition> definition) throws RegistrationException {
+    public FieldTypeDefinition getByDefinition(Class<? extends FieldDefinition> definitionClass) throws RegistrationException {
         for (FieldTypeDefinitionProvider provider : registry.values()) {
-            if (definition.equals(provider.getFieldTypeDefinition().getDefinition())) {
+            if (definitionClass.equals(provider.getFieldTypeDefinition().getDefinitionClass())) {
                 return provider.getFieldTypeDefinition();
             }
         }
-        throw new RegistrationException("Could not find fieldType for definition " + definition.getName());
+        throw new RegistrationException("Could not find fieldType for definition " + definitionClass.getName());
     }
 
     public void register(FieldTypeDefinitionProvider provider) {

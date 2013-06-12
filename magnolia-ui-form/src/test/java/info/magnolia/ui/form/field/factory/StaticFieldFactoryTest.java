@@ -45,7 +45,7 @@ import com.vaadin.ui.Field;
 /**
  * Main testcase for {@link info.magnolia.ui.form.field.factory.StaticFieldFactory}.
  */
-public class StaticFieldFactoryTest extends AbstractBuilderTest<StaticFieldDefinition> {
+public class StaticFieldFactoryTest extends AbstractFieldFactoryTestCase<StaticFieldDefinition> {
 
     private StaticFieldFactory staticFieldFactory;
 

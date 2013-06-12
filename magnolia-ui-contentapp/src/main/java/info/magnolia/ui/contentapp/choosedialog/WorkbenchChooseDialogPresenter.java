@@ -46,8 +46,11 @@ import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -123,7 +126,9 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
         try {
             // restore selection
             if (JcrItemUtil.itemExists(workbenchDefinition.getWorkspace(), itemId)) {
-                workbenchView.getSelectedView().select(itemId);
+                List<String> ids = new ArrayList<String>(1);
+                ids.add(itemId);
+                workbenchView.getSelectedView().select(ids);
                 javax.jcr.Item jcrItem = JcrItemUtil.getJcrItem(workbenchDefinition.getWorkspace(), itemId);
 
                 if (jcrItem.isNode()) {
@@ -139,10 +144,10 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
 
     private void bindHandlers() {
 
-        eventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
+        eventBus.addHandler(SelectionChangedEvent.class, new SelectionChangedEvent.Handler() {
             @Override
-            public void onItemSelected(ItemSelectedEvent event) {
-                currentValue = event.getItem();
+            public void onSelectionChanged(SelectionChangedEvent event) {
+                currentValue = event.getFirstItem();
             }
         });
 
@@ -192,6 +197,7 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
     @Override
     public ChooseDialogView start() {
         workbenchView = workbenchPresenter.start(workbenchDefinition, imageProviderDefinition, eventBus);
+        workbenchView.setMultiselect(false);
         workbenchView.setViewType(ViewType.TREE);
         chooseDialogView.setContent(workbenchView);
         if (StringUtils.isNotBlank(selectedItemId)) {

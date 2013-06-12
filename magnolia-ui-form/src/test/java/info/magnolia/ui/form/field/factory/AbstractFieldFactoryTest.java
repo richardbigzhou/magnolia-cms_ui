@@ -57,7 +57,7 @@ import com.vaadin.ui.TextField;
 /**
  * Main testcase for {@link info.magnolia.ui.form.field.factory.AbstractFieldFactory}.
  */
-public class AbstractFieldFactoryTest extends AbstractBuilderTest<ConfiguredFieldDefinition> {
+public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<ConfiguredFieldDefinition> {
 
     private AbstractFieldFactory<FieldDefinition, Object> abstractDialogField;
 
@@ -219,7 +219,7 @@ public class AbstractFieldFactoryTest extends AbstractBuilderTest<ConfiguredFiel
         /**
          * {@link com.vaadin.data.util.converter.ConverterFactory} is bound to the {@link VaadinSession}. To get The default converters to work we need to mock the VaadinSession.
          *
-         * @see AbstractBuilderTest where we add the {@link com.vaadin.data.util.converter.DefaultConverterFactory} to the {@link info.magnolia.objectfactory.ComponentProvider}.
+         * @see AbstractFieldFactoryTestCase where we add the {@link com.vaadin.data.util.converter.DefaultConverterFactory} to the {@link info.magnolia.objectfactory.ComponentProvider}.
          */
         private class TestTextField extends TextField {
 

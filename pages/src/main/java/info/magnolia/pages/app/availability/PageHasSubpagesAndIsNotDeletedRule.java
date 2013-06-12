@@ -33,6 +33,7 @@
  */
 package info.magnolia.pages.app.availability;
 
+import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.api.availability.AvailabilityRule;
 import info.magnolia.ui.api.availability.IsNotDeletedRule;
 
@@ -41,10 +42,10 @@ import javax.jcr.Item;
 /**
  * This rule returns true, if the item is node of the mgnl:page type, has a subnode of the same type, and is not deleted (i.e. has not the mgnl:deleted mixin type).
  */
-public class PageHasSubpagesAndIsNotDeletedRule implements AvailabilityRule {
+public class PageHasSubpagesAndIsNotDeletedRule extends AbstractAvailabilityRule {
 
     @Override
-    public boolean isAvailable(Item item) {
+    public boolean isAvailableForItem(Item item) {
         AvailabilityRule hasSubpages = new PageHasSubpagesRule();
         AvailabilityRule isNotDeleted = new IsNotDeletedRule();
         return (hasSubpages.isAvailable(item) && isNotDeleted.isAvailable(item));

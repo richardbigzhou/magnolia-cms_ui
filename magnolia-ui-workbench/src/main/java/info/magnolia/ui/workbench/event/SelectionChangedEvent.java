@@ -36,44 +36,83 @@ package info.magnolia.ui.workbench.event;
 import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This event is fired when an item is selected (i.e. a row in the data grid within the workbench
  * representing either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
  */
-public class ItemSelectedEvent implements Event<ItemSelectedEvent.Handler> {
+public class SelectionChangedEvent implements Event<SelectionChangedEvent.Handler> {
+
+    private static final Logger log = LoggerFactory.getLogger(SelectionChangedEvent.class);
 
     /**
-     * Handles {@link ItemSelectedEvent} events.
+     * Handles {@link SelectionChangedEvent} events.
      */
     public interface Handler extends EventHandler {
 
-        void onItemSelected(ItemSelectedEvent event);
+        void onSelectionChanged(SelectionChangedEvent event);
     }
 
     private final String workspace;
 
-    private final JcrItemAdapter item;
+    private final List<JcrItemAdapter> items;
 
-    public ItemSelectedEvent(String workspace, JcrItemAdapter item) {
+    public SelectionChangedEvent(String workspace, Set<JcrItemAdapter> items) {
         this.workspace = workspace;
-        this.item = item;
+        List<JcrItemAdapter> itemList = new ArrayList<JcrItemAdapter>(items.size());
+        for (JcrItemAdapter item : items) {
+            itemList.add(item);
+        }
+        this.items = itemList;
     }
 
     public String getWorkspace() {
         return workspace;
     }
 
-    public String getItemId() {
-        return item != null ? item.getItemId() : null;
+    public List<String> getItemIds() {
+        List<String> itemIds = new ArrayList<String>(items.size());
+        for (JcrItemAdapter item : items) {
+            itemIds.add(item.getItemId());
+        }
+        return itemIds;
     }
 
-    public JcrItemAdapter getItem() {
-        return item;
+    public JcrItemAdapter getFirstItem() {
+        if (items != null && !items.isEmpty()) {
+            return items.get(0);
+        }
+        return null;
+    }
+
+    public String getFirstItemId() {
+        JcrItemAdapter item = getFirstItem();
+        if (item != null) {
+            try {
+                return JcrItemUtil.getItemId(item.getJcrItem());
+            } catch (RepositoryException e) {
+                log.debug("Cannot get ID for item [{}]. Error: {}", item, e.getMessage());
+            }
+        }
+        return null;
+    }
+
+    public List<JcrItemAdapter> getItems() {
+        return items;
     }
 
     @Override
     public void dispatch(Handler handler) {
-        handler.onItemSelected(this);
+        handler.onSelectionChanged(this);
     }
 }

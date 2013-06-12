@@ -45,7 +45,7 @@ public class RegexpValidatorDefinition extends ConfiguredFieldValidatorDefinitio
     private String pattern;
 
     public RegexpValidatorDefinition() {
-        setBuilder(RegexpFieldValidatorFactory.class);
+        setFactoryClass(RegexpFieldValidatorFactory.class);
     }
 
     public String getPattern() {

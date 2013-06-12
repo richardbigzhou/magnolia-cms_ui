@@ -68,7 +68,7 @@ import com.vaadin.ui.Upload.FinishedEvent;
 /**
  * Main testcase for {@link info.magnolia.ui.form.field.factory.BasicUploadFieldFactory}.
  */
-public class BasicUploadFieldFactoryTest extends AbstractBuilderTest<BasicUploadFieldDefinition> {
+public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<BasicUploadFieldDefinition> {
 
     protected BasicUploadFieldFactory basicUploadBuilder;
 

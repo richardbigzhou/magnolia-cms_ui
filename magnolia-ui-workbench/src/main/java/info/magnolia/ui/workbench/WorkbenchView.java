@@ -34,7 +34,6 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.statusbar.StatusBarView;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 
 /**
@@ -71,5 +70,10 @@ public interface WorkbenchView extends View {
     void setStatusBarView(StatusBarView statusBar);
 
     ContentView getSelectedView();
+
+    /**
+     * Whether the user can select more items.
+     */
+    void setMultiselect(boolean multiselect);
 
 }

@@ -31,35 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.availability;
+package info.magnolia.ui.workbench;
 
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.api.view.View;
 
-import javax.jcr.Item;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Component;
 
 /**
- * This rule returns true if the item is not a node, or if it is a node and has NOT the mgnl:deleted mixin type.
+ * The status bar view consists of a horizontal container, with basic support for horizontal alignment. It is intended
+ * for displaying status information relative to the content that is currently presented in an adjacent view.
+ * Additionally, it can draw several levels of attention of feedback by changing color.
  */
-public class IsNotDeletedRule extends AbstractAvailabilityRule {
+public interface StatusBarView extends View {
 
-    private static final Logger log = LoggerFactory.getLogger(IsNotDeletedRule.class);
+    void addComponent(Component c, Alignment align);
 
-    @Override
-    public boolean isAvailableForItem(Item item) {
-        if (item != null && item.isNode()) {
-            Node node = (Node) item;
-            try {
-                return !NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
-            } catch (RepositoryException e) {
-                log.warn("Error evaluating availability for node [{}], returning false: {}", NodeUtil.getPathIfPossible(node), e.getMessage());
-            }
-        }
-        return true;
-    }
+    void removeComponent(Component c);
+
+    void setColor(String colorStyleName);
+
 }

@@ -49,7 +49,7 @@ import com.vaadin.ui.OptionGroup;
 /**
  * Main testcase for {@link info.magnolia.ui.form.field.factory.OptionGroupFieldFactory}.
  */
-public class OptionGroupFieldFactoryTest extends AbstractBuilderTest<OptionGroupFieldDefinition> {
+public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<OptionGroupFieldDefinition> {
 
     private OptionGroupFieldFactory dialogSelect;
 

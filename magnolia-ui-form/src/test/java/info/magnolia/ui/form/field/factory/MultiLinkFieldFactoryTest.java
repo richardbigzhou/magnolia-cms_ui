@@ -52,7 +52,7 @@ import com.vaadin.ui.Field;
 /**
  * Main testcase for {@link info.magnolia.ui.form.field.factory.MultiLinkFieldFactory}.
  */
-public class MultiLinkFieldFactoryTest extends AbstractBuilderTest<MultiLinkFieldDefinition> {
+public class MultiLinkFieldFactoryTest extends AbstractFieldFactoryTestCase<MultiLinkFieldDefinition> {
 
     private MultiLinkFieldFactory multiLinkFieldFactory;
     private ComponentProvider componentProvider;

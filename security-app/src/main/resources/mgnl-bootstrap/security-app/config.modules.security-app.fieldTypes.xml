@@ -31,10 +31,10 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>387f86e7-90c6-48f5-a6c8-8de572d2ef7f</sv:value>
     </sv:property>
-    <sv:property sv:name="builder" sv:type="String">
+    <sv:property sv:name="factoryClass" sv:type="String">
       <sv:value>info.magnolia.security.app.dialog.field.EnabledFieldFactory</sv:value>
     </sv:property>
-    <sv:property sv:name="definition" sv:type="String">
+    <sv:property sv:name="definitionClass" sv:type="String">
       <sv:value>info.magnolia.security.app.dialog.field.EnabledFieldDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
@@ -63,10 +63,10 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>638335ac-dca6-4ccf-b547-325cda10d465</sv:value>
     </sv:property>
-    <sv:property sv:name="builder" sv:type="String">
+    <sv:property sv:name="factoryClass" sv:type="String">
       <sv:value>info.magnolia.security.app.dialog.field.RoleManagementFieldFactory</sv:value>
     </sv:property>
-    <sv:property sv:name="definition" sv:type="String">
+    <sv:property sv:name="definitionClass" sv:type="String">
       <sv:value>info.magnolia.security.app.dialog.field.RoleManagementFieldDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
@@ -95,10 +95,10 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>0886e408-3914-4cc6-8e0a-7434b6eda85f</sv:value>
     </sv:property>
-    <sv:property sv:name="builder" sv:type="String">
+    <sv:property sv:name="factoryClass" sv:type="String">
       <sv:value>info.magnolia.security.app.dialog.field.GroupManagementFieldFactory</sv:value>
     </sv:property>
-    <sv:property sv:name="definition" sv:type="String">
+    <sv:property sv:name="definitionClass" sv:type="String">
       <sv:value>info.magnolia.security.app.dialog.field.GroupManagementFieldDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
@@ -127,10 +127,10 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>230ec144-e4ef-4cb9-92b1-fa1ee2d33a85</sv:value>
     </sv:property>
-    <sv:property sv:name="builder" sv:type="String">
+    <sv:property sv:name="factoryClass" sv:type="String">
       <sv:value>info.magnolia.security.app.dialog.field.WorkspaceAccessFieldFactory</sv:value>
     </sv:property>
-    <sv:property sv:name="definition" sv:type="String">
+    <sv:property sv:name="definitionClass" sv:type="String">
       <sv:value>info.magnolia.security.app.dialog.field.WorkspaceAccessFieldDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
@@ -159,10 +159,10 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>c3dcc3fd-8a6c-471f-9a96-de58434d79cb</sv:value>
     </sv:property>
-    <sv:property sv:name="builder" sv:type="String">
+    <sv:property sv:name="factoryClass" sv:type="String">
       <sv:value>info.magnolia.security.app.dialog.field.WebAccessFieldFactory</sv:value>
     </sv:property>
-    <sv:property sv:name="definition" sv:type="String">
+    <sv:property sv:name="definitionClass" sv:type="String">
       <sv:value>info.magnolia.security.app.dialog.field.WebAccessFieldDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">

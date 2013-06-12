@@ -159,7 +159,10 @@ public class BrowserSubAppTest extends MgnlTestCase {
         sectionToShow.setAvailability(sAvailabilityAlways);
         initActionbar();
         subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
-        when(browserPresenter.getSelectedItemId()).thenReturn(JcrItemUtil.getItemId(session.getRootNode()));
+        // root
+        List<String> ids = new ArrayList<String>(1);
+        ids.add(JcrItemUtil.getItemId(session.getRootNode()));
+        when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
 
         // WHEN
         subApp.updateActionbar(browserPresenter.getActionbarPresenter());
@@ -177,7 +180,10 @@ public class BrowserSubAppTest extends MgnlTestCase {
         sectionToShow.setAvailability(sAvailabilityAlways);
         initActionbar();
         subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
-        when(browserPresenter.getSelectedItemId()).thenReturn(JcrItemUtil.getItemId(testContentNode));
+        // node
+        List<String> ids = new ArrayList<String>(1);
+        ids.add(JcrItemUtil.getItemId(testContentNode));
+        when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
 
         // WHEN
         subApp.updateActionbar(browserPresenter.getActionbarPresenter());
@@ -196,7 +202,10 @@ public class BrowserSubAppTest extends MgnlTestCase {
         sectionToShow.setAvailability(sAvailabilityAlways);
         initActionbar();
         subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
-        when(browserPresenter.getSelectedItemId()).thenReturn(JcrItemUtil.getItemId(testContentNode.getProperty(TEST_PROPERTY)));
+        // property
+        List<String> ids = new ArrayList<String>(1);
+        ids.add(JcrItemUtil.getItemId(testContentNode.getProperty(TEST_PROPERTY)));
+        when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
 
         // WHEN
         subApp.updateActionbar(browserPresenter.getActionbarPresenter());

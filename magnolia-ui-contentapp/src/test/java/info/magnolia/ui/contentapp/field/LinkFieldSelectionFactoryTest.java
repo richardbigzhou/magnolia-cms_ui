@@ -41,7 +41,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTest;
 import info.magnolia.ui.form.field.factory.LinkFieldFactory;
-import info.magnolia.ui.form.field.factory.AbstractBuilderTest;
+import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTestCase;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -49,7 +49,10 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.event.SelectionChangedEvent;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.jcr.RepositoryException;
 
@@ -61,7 +64,7 @@ import com.vaadin.ui.Field;
 /**
  * Tests.
  */
-public class LinkFieldSelectionFactoryTest extends AbstractBuilderTest<LinkFieldSelectionDefinition> {
+public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<LinkFieldSelectionDefinition> {
 
     private LinkFieldSelectionFactory builder;
 
@@ -69,11 +72,14 @@ public class LinkFieldSelectionFactoryTest extends AbstractBuilderTest<LinkField
 
     private EventBus eventBus;
 
+    private Set<JcrItemAdapter> items;
+
     @Override
     public void setUp() throws Exception {
         super.setUp();
         workbenchPresenter = mock(WorkbenchPresenter.class);
         eventBus = new SimpleEventBus();
+        items = new HashSet<JcrItemAdapter>();
         // make sure that workbench view registers a content view so that restore selection doesn't fail.
         WorkbenchView workbenchView = mock(WorkbenchView.class);
         doReturn(mock(Component.class)).when(workbenchView).asVaadinComponent();
@@ -102,9 +108,10 @@ public class LinkFieldSelectionFactoryTest extends AbstractBuilderTest<LinkField
         builder = new LinkFieldSelectionFactory(definition, baseItem, workbenchPresenter, eventBus);
         builder.setI18nContentSupport(i18nContentSupport);
         Field field = builder.createField();
+        items.add((JcrItemAdapter) baseItem);
 
         // WHEN
-        eventBus.fireEvent(new ItemSelectedEvent(baseNode.getSession().getWorkspace().getName(), (JcrItemAdapter) baseItem));
+        eventBus.fireEvent(new SelectionChangedEvent(baseNode.getSession().getWorkspace().getName(), items));
 
         // THEN
         // as No columnName defined return the Item path as Value property
@@ -120,9 +127,10 @@ public class LinkFieldSelectionFactoryTest extends AbstractBuilderTest<LinkField
         builder = new LinkFieldSelectionFactory(definition, baseItem, workbenchPresenter, eventBus);
         builder.setI18nContentSupport(i18nContentSupport);
         Field field = builder.createField();
+        items.add((JcrItemAdapter) baseItem);
 
         // WHEN
-        eventBus.fireEvent(new ItemSelectedEvent(baseNode.getSession().getWorkspace().getName(), (JcrItemAdapter) baseItem));
+        eventBus.fireEvent(new SelectionChangedEvent(baseNode.getSession().getWorkspace().getName(), items));
 
         // THEN
         assertEquals("initial", field.getValue());
