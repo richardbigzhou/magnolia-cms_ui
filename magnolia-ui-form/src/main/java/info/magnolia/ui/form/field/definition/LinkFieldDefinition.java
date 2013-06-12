@@ -48,7 +48,7 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
     private String buttonSelectOtherLabel = "field.link.select.another";
     private IdentifierToPathConverter identifierToPathConverter;
     private ContentPreviewDefinition contentPreviewDefinition;
-
+    private boolean fieldEditable = false;
     private String targetPropertyToPopulate;
 
     /**
@@ -111,6 +111,13 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
         return buttonSelectOtherLabel;
     }
 
+    /**
+     * @return if true, the select link field is editable, else it is defined as readOnly.
+     */
+    public boolean isFieldEditable() {
+        return fieldEditable;
+    }
+
     public void setTargetPropertyToPopulate(String targetPropertyToPopulate) {
         this.targetPropertyToPopulate = targetPropertyToPopulate;
     }
@@ -142,5 +149,9 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setContentPreviewDefinition(ContentPreviewDefinition contentPreviewDefinition) {
         this.contentPreviewDefinition = contentPreviewDefinition;
+    }
+
+    public void setFieldEditable(boolean fieldEditable) {
+        this.fieldEditable = fieldEditable;
     }
 }
