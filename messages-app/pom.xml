@@ -10,7 +10,7 @@
   <groupId>info.magnolia.messages</groupId>
   <artifactId>magnolia-messages-app</artifactId>
   <packaging>jar</packaging>
-  <name>magnolia-app-messages</name>
+  <name>magnolia-messages-app</name>
   <dependencies>
     <dependency>
       <groupId>info.magnolia.ui</groupId>

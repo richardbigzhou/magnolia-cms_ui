@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.workbench;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
@@ -48,14 +49,17 @@ import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
-import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
+import java.util.Iterator;
 import javax.inject.Inject;
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -78,9 +82,10 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
 
     protected WorkbenchDefinition workbenchDefinition;
 
+    private List<String> selectedItemIds = new ArrayList<String>();
+
     protected String viewTypeName;
 
-    private String selectedItemId;
     private final ComponentProvider componentProvider;
 
     @Inject
@@ -101,41 +106,82 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
     }
 
     @Override
+    public List<String> getSelectedItemIds() {
+        return this.selectedItemIds;
+    }
+
     public String getSelectedItemId() {
-        return selectedItemId;
+        return selectedItemIds.isEmpty() ? null : selectedItemIds.get(0);
     }
 
     @Override
-    public void setSelectedItemId(String selectedItemId) {
-        this.selectedItemId = selectedItemId;
+    public void setSelectedItemIds(List<String> selectedItemIds) {
+        this.selectedItemIds = selectedItemIds;
     }
 
     // CONTENT VIEW LISTENER
 
     @Override
-    public void onItemSelection(Item item) {
+    public void onItemSelection(Set<String> items) {
         try {
-            if (item == null) {
+            Set<JcrItemAdapter> jcrItems = new LinkedHashSet<JcrItemAdapter>();
+            if (items == null || items.isEmpty()) {
                 log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
-                selectedItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
-                eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), null));
+                List<String> ids = new ArrayList<String>(1);
+                ids.add(JcrItemUtil.getItemId(getWorkbenchRoot()));
+                setSelectedItemIds(ids);
+                jcrItems.add(toJcrItemAdapter(getWorkbenchRoot()));
             } else {
-                selectedItemId = ((JcrItemAdapter) item).getItemId();
-                log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemId);
-                eventBus.fireEvent(new ItemSelectedEvent(workbenchDefinition.getWorkspace(), (JcrItemAdapter) item));
+                selectedItemIds = new ArrayList<String>(items.size());
+                for (String item : items) {
+                    // if the selection is done by clicking the checkbox, the root item is added to the set - so it has to be ignored
+                    // but only if there is any other item in the set
+                    // TODO MGNLUI-1521
+                    if (JcrItemUtil.getItemId(getWorkbenchRoot()).equals(item) && items.size() > 1) {
+                        continue;
+                    }
+                    selectedItemIds.add(item);
+                    jcrItems.add(toJcrItemAdapter(JcrItemUtil.getJcrItem(workbenchDefinition.getWorkspace(), item)));
+                }
+                log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemIds.toArray());
             }
+            eventBus.fireEvent(new SelectionChangedEvent(workbenchDefinition.getWorkspace(), jcrItems));
         } catch (Exception e) {
             log.error("An error occurred while selecting a row in the data grid", e);
         }
+    }
+
+    private Node getWorkbenchRoot() {
+        try {
+            return MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getNode(workbenchDefinition.getPath());
+        } catch (RepositoryException e) {
+            log.debug("Cannot find workbench root node for workspace=[" + workbenchDefinition.getWorkspace() + "] and path=[" + workbenchDefinition.getPath() + "]. Error: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private JcrItemAdapter toJcrItemAdapter(javax.jcr.Item item) {
+        if (item == null) {
+            return null;
+        }
+        JcrItemAdapter adapter = null;
+        if (item.isNode()) {
+            adapter = new JcrNodeAdapter((Node) item);
+        } else {
+            adapter = new JcrPropertyAdapter((Property) item);
+        }
+        return adapter;
     }
 
     @Override
     public void onDoubleClick(Item item) {
         if (item != null) {
             try {
-                setSelectedItemId(((JcrItemAdapter) item).getItemId());
-                log.debug("com.vaadin.data.Item at {} was double clicked. Firing ItemDoubleClickedEvent...", selectedItemId);
-                eventBus.fireEvent(new ItemDoubleClickedEvent(workbenchDefinition.getWorkspace(), selectedItemId));
+                List<String> ids = new ArrayList<String>(1);
+                ids.add(((JcrItemAdapter) item).getItemId());
+                setSelectedItemIds(ids);
+                log.debug("com.vaadin.data.Item at {} was double clicked. Firing ItemDoubleClickedEvent...", getSelectedItemId());
+                eventBus.fireEvent(new ItemDoubleClickedEvent(workbenchDefinition.getWorkspace(), getSelectedItemId()));
             } catch (Exception e) {
                 log.error("An error occurred while double clicking on a row in the data grid", e);
             }
@@ -148,7 +194,12 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
     public void onRightClick(Item item, int clickX, int clickY) {
         if (item != null) {
             try {
-                selectedItemId = ((JcrItemAdapter) item).getItemId();
+                // if the right-clicket item is not yet selected
+                if (!selectedItemIds.contains(((JcrItemAdapter) item).getItemId())) {
+                    List<String> ids = new ArrayList<String>(1);
+                    ids.add(((JcrItemAdapter) item).getItemId());
+                    setSelectedItemIds(ids);
+                }
                 String clickedItemId = ((JcrItemAdapter) item).getItemId();
                 log.debug("com.vaadin.data.Item at {} was right clicked. Firing ItemRightClickedEvent...", clickedItemId);
                 eventBus.fireEvent(new ItemRightClickedEvent(workbenchDefinition.getWorkspace(), (JcrItemAdapter) item, clickX, clickY));

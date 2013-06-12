@@ -44,6 +44,9 @@ import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.thumbnail.ThumbnailContainer.ThumbnailItem;
 
+import java.util.List;
+import java.util.Set;
+
 import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -92,9 +95,9 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     }
 
     @Override
-    public void setSelectedItemId(String itemId) {
-        super.setSelectedItemId(itemId);
-        view.select(itemId);
+    public void setSelectedItemIds(List<String> itemIds) {
+        super.setSelectedItemIds(itemIds);
+        view.select(itemIds);
     }
 
     @Override
@@ -109,9 +112,8 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     }
 
     @Override
-    public void onItemSelection(Item item) {
-        JcrItemAdapter jcrItem = getJcrItemByThumbnailItem(item);
-        super.onItemSelection(jcrItem);
+    public void onItemSelection(Set<String> items) {
+        super.onItemSelection(items);
     }
 
     @Override
