@@ -43,7 +43,7 @@ import com.google.gwt.user.client.Element;
  */
 public class VShellErrorMessage extends ShellMessageWidget {
 
-    private Element detailsLinkEl = DOM.createElement("b");
+    private Element detailsLinkEl = DOM.createSpan();
 
     public VShellErrorMessage(final MagnoliaShellView shell, String topic, String message, String id) {
         super(shell, topic, message, id);
@@ -54,7 +54,8 @@ public class VShellErrorMessage extends ShellMessageWidget {
     protected void construct() {
         super.construct();
         final Element header = getHeader();
-        detailsLinkEl.setInnerHTML("[SHOW DETAILS]");
+        detailsLinkEl.addClassName("link");
+        detailsLinkEl.setInnerHTML("[MORE]");
         header.appendChild(detailsLinkEl);
     }
 
