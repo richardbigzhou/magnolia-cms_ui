@@ -34,9 +34,11 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.event.EventBusProtector;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
+import info.magnolia.monitoring.SystemMonitor;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationBuilder;
@@ -54,21 +56,21 @@ import info.magnolia.ui.api.app.SubApp;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.app.SubAppEventBus;
-import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.api.overlay.OverlayCloser;
-import info.magnolia.ui.api.overlay.OverlayLayer;
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.framework.context.AbstractUIContext;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroup;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroupEntry;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
-import info.magnolia.event.EventBusProtector;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.api.message.Message;
-import info.magnolia.ui.framework.message.MessagesManager;
+import info.magnolia.ui.api.overlay.OverlayCloser;
+import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.framework.context.AbstractUIContext;
+import info.magnolia.ui.framework.message.MessagesManager;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 import info.magnolia.ui.vaadin.overlay.OverlayPresenter;
 
 import java.util.Collection;
@@ -120,9 +122,11 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
 
     private AppLauncherLayoutManager appLauncherLayoutManager;
 
+    private final SystemMonitor systemMonitor;
+
     @Inject
     public AppInstanceControllerImpl(ModuleRegistry moduleRegistry, AppController appController, LocationController locationController, Shell shell,
-            MessagesManager messagesManager, AppDescriptor appDescriptor, AppLauncherLayoutManager appLauncherLayoutManager) {
+            MessagesManager messagesManager, AppDescriptor appDescriptor, AppLauncherLayoutManager appLauncherLayoutManager, SystemMonitor systemMonitor) {
         this.moduleRegistry = moduleRegistry;
         this.appController = appController;
         this.locationController = locationController;
@@ -130,6 +134,7 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
         this.messagesManager = messagesManager;
         this.appDescriptor = appDescriptor;
         this.appLauncherLayoutManager = appLauncherLayoutManager;
+        this.systemMonitor = systemMonitor;
     }
 
     @Override
@@ -189,16 +194,15 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
         return app.getView();
     }
 
-
-
-
-
     /**
      * Called when the app is launched from the app launcher OR a location change event triggers
      * it to start.
      */
     @Override
     public void start(Location location) {
+        if (systemMonitor.isMemoryLimitReached()) {
+            shell.openNotification(MessageStyleTypeEnum.WARNING, false, String.format(SystemMonitor.MEMORY_LIMIT_IS_REACHED_STRING_FORMAT, "You might want to close unused apps in order to free memory"));
+        }
 
         app = componentProvider.newInstance(appDescriptor.getAppClass());
         app.start(location);

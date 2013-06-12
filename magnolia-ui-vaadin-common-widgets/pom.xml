@@ -10,6 +10,11 @@
   <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
   <name>magnolia-ui-vaadin-common-widgets</name>
 
+  <properties>
+    <!-- Purposely removed enable-clover profile for this project -->
+    <additionalReleaseProfiles></additionalReleaseProfiles>
+  </properties>
+
 
   <dependencies>
     <dependency>
@@ -123,13 +128,6 @@
               </Vaadin-Widgetsets>
             </manifestEntries>
           </archive>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>com.atlassian.maven.plugins</groupId>
-        <artifactId>maven-clover2-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
         </configuration>
       </plugin>
       <plugin>
