@@ -295,7 +295,7 @@ public class ControlMigrationTest {
         assertTrue(controlNode.hasProperty("workspace"));
         assertEquals("contacts", controlNode.getProperty("workspace").getString());
         assertTrue(controlNode.hasProperty("dialogName"));
-        assertEquals("contacts-app:link", controlNode.getProperty("dialogName").getString());
+        assertEquals("contacts:link", controlNode.getProperty("dialogName").getString());
     }
 
     @Test

@@ -51,7 +51,7 @@ import org.junit.Test;
  * Tests for {@link BaseDropConstraint}.
  *
  * We're using {@link NodeTypes.Content#NAME} to demonstrate the {@link BaseDropConstraint}.
- * Normally, the NodeType would be specific to a ContentApp, e.g. contacts-app: <code>mgnl:contact</code>.
+ * Normally, the NodeType would be specific to a ContentApp, e.g. contacts: <code>mgnl:contact</code>.
  */
 public class BaseDropConstraintTest {
 
