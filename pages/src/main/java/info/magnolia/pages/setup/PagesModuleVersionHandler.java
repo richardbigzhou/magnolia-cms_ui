@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.pages.app.setup;
+package info.magnolia.pages.setup;
 
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
@@ -48,9 +48,9 @@ import java.util.List;
 /**
  * Version handler for the pages app module.
  */
-public class PagesAppModuleVersionHandler extends DefaultModuleVersionHandler {
+public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
 
-    public PagesAppModuleVersionHandler() {
+    public PagesModuleVersionHandler() {
         super();
         register(DeltaBuilder.update("5.0", "Configuration update for Magnolia 5.0")
                 .addTask(new IsModuleInstalledOrRegistered("", "", "adminInterface",
