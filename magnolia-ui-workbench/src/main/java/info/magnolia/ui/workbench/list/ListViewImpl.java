@@ -39,7 +39,9 @@ import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +76,7 @@ public class ListViewImpl implements ListView {
 
         table.setImmediate(true);
         table.setSelectable(true);
-        table.setMultiSelect(false);
+        table.setMultiSelect(true);
         table.setNullSelectionAllowed(true);
 
         table.setDragMode(TableDragMode.NONE);
@@ -101,10 +103,19 @@ public class ListViewImpl implements ListView {
         table.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(ValueChangeEvent event) {
-                log.debug("Handle value change Event: {}", event.getProperty().getValue());
+                Object value = event.getProperty().getValue();
+
+                log.debug("Handle value change Event: {}", value);
 
                 if (listener != null) {
-                    listener.onItemSelection(table.getItem(event.getProperty().getValue()));
+                    Set<String> items;
+                    if (value instanceof Set) {
+                        items = (Set) value;
+                    } else {
+                        items = new LinkedHashSet<String>();
+                        items.add((String) value);
+                    }
+                    listener.onItemSelection(items);
                 }
             }
         });
@@ -179,12 +190,12 @@ public class ListViewImpl implements ListView {
     }
 
     @Override
-    public void select(String itemId) {
-        if (!table.isSelected(itemId)) {
-            table.setValue(null);
-            table.select(itemId);
-            // do not #setCurrentPageFirstItemId because AbstractJcrContainer's index resolution is super slow.
+    public void select(List<String> itemIds) {
+        table.setValue(null);
+        for (String id : itemIds) {
+            table.select(id);
         }
+        // do not #setCurrentPageFirstItemId because AbstractJcrContainer's index resolution is super slow.
     }
 
     @Override
@@ -195,6 +206,11 @@ public class ListViewImpl implements ListView {
     @Override
     public Table asVaadinComponent() {
         return table;
+    }
+
+    @Override
+    public void setMultiselect(boolean multiselect) {
+        table.setMultiSelect(multiselect);
     }
 
 }

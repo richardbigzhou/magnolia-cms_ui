@@ -33,28 +33,43 @@
  */
 package info.magnolia.ui.framework.action;
 
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.exchange.ExchangeException;
+import info.magnolia.cms.i18n.DefaultMessagesManager;
+import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.chain.Command;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.context.SystemContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.jcr.node2bean.Node2BeanProcessor;
+import info.magnolia.jcr.node2bean.Node2BeanTransformer;
+import info.magnolia.jcr.node2bean.TypeMapping;
+import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
+import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
+import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
+import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
+import info.magnolia.ui.api.overlay.MessageStyleType;
+import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.junit.After;
@@ -65,7 +80,7 @@ import org.junit.Test;
 /**
  * Main test class for Activation Action.
  */
-public class ActivationActionTest {
+public class ActivationActionTest extends RepositoryTestCase {
     private String website =
             "/foo.uuid=1\n" +
                     "/foo/bar.uuid=2";
@@ -76,19 +91,22 @@ public class ActivationActionTest {
     private ActivationActionDefinition definition;
     private Map<String, Object> params = new HashMap<String, Object>();
 
+    @Override
     @Before
     public void setUp() throws Exception {
+        ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
+        ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
+        ComponentsTestUtil.setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);
+        ComponentsTestUtil.setImplementation(MessagesManager.class, DefaultMessagesManager.class);
+
         session = SessionTestUtil.createSession("website", website);
         ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
         ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
 
-        Context ctx = mock(Context.class);
-        when(ctx.getJCRSession("website")).thenReturn(session);
+        MockContext ctx = new MockContext();
+        ctx.addSession("website", session);
+        ctx.setLocale(new Locale("en"));
         MgnlContext.setInstance(ctx);
-
-        SystemContext systemContext = mock(SystemContext.class);
-        when(systemContext.getJCRSession("website")).thenReturn(session);
-        ComponentsTestUtil.setInstance(SystemContext.class, systemContext);
 
         commandsManager = mock(CommandsManager.class);
 
@@ -102,6 +120,7 @@ public class ActivationActionTest {
 
     }
 
+    @Override
     @After
     public void tearDown() throws Exception {
         MgnlContext.setInstance(null);
@@ -133,5 +152,49 @@ public class ActivationActionTest {
 
         // THEN
         assertTrue((Boolean) action.getParams().get(Context.ATTRIBUTE_RECURSIVE));
+    }
+
+    @Test
+    public void testBasicSuccessMessage() throws Exception {
+        // GIVEN
+        when(commandsManager.executeCommand("activate", params)).thenReturn(false);
+        TestSubAppContext testCtx = new TestSubAppContext();
+        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), testCtx, mock(ModuleRegistry.class));
+
+        // WHEN
+        action.execute();
+
+        // THEN
+        assertEquals("Publication has been started.", testCtx.message);
+    }
+
+    @Test
+    public void testWorkflowSuccessMessage() throws Exception {
+        // GIVEN
+        ModuleRegistry moduleRegistry = mock(ModuleRegistry.class);
+        when(moduleRegistry.isModuleRegistered("workflow-base")).thenReturn(true);
+        when(commandsManager.executeCommand("activate", params)).thenReturn(false);
+        TestSubAppContext testCtx = new TestSubAppContext();
+        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), testCtx, moduleRegistry);
+
+        // WHEN
+        action.execute();
+
+        // THEN
+        assertEquals("Publication workflow has been launched.", testCtx.message);
+    }
+
+    private static class TestSubAppContext extends SubAppContextImpl {
+
+        public String message;
+
+        public TestSubAppContext() {
+            super(mock(SubAppDescriptor.class), mock(Shell.class));
+        }
+
+        @Override
+        public void openNotification(MessageStyleType type, boolean doesTimeout, String title) {
+            this.message = title;
+        }
     }
 }

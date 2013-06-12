@@ -38,7 +38,6 @@ import static org.junit.Assert.*;
 import info.magnolia.ui.form.field.CheckBoxField;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.vaadin.ui.Field;
@@ -69,12 +68,11 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
     }
 
     @Test
-    @Ignore("See http://dev.vaadin.com/ticket/10663")
     public void checkBoxField_SetSelectedTest() throws Exception {
         // GIVEN
         checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
         checkBoxField.setI18nContentSupport(i18nContentSupport);
-        definition.setSelected("false");
+        definition.setDefaultValue("false");
 
         // WHEN
         Field<Boolean> field = checkBoxField.createField();
