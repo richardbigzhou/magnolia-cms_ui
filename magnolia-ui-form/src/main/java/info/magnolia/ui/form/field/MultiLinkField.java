@@ -33,26 +33,17 @@
  */
 package info.magnolia.ui.form.field;
 
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppController;
-import info.magnolia.ui.api.app.ItemChosenListener;
 import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -68,31 +59,22 @@ import com.vaadin.ui.VerticalLayout;
  * Note that the DataSource Property is of type {@link info.magnolia.ui.form.field.property.MultiProperty}.
  */
 public class MultiLinkField extends CustomField<List> {
-    private static final Logger log = LoggerFactory.getLogger(MultiLinkField.class);
 
     private final Button addButton = new NativeButton();
+    private final MultiLinkFieldDefinition definition;
 
-    private final Converter<String, ?> converter;
-    private final String buttonCaptionNew;
-    private final String buttonCaptionAdd;
-    private final String buttonCaptionOther;
+    private String buttonCaptionAdd;
+
     private final AppController appController;
     private final SubAppContext subAppContext;
-    private String appName;
-    private String targetTreeRootPath;
+    private final ComponentProvider componentProvider;
     protected VerticalLayout root;
-    private boolean allowChangesOnSelected;
 
-    public MultiLinkField(Converter<String, ?> converter, String buttonCaptionAdd, String buttonCaptionNew, String buttonCaptionOther, AppController appController, SubAppContext subAppContext, String appName, String targetTreeRootPath, boolean allowChangesOnSelected) {
-        this.converter = converter;
-        this.buttonCaptionNew = buttonCaptionNew;
-        this.buttonCaptionOther = buttonCaptionOther;
-        this.buttonCaptionAdd = buttonCaptionAdd;
+    public MultiLinkField(MultiLinkFieldDefinition definition, AppController appController, SubAppContext subAppContext, ComponentProvider componentProvider) {
+        this.definition = definition;
         this.appController = appController;
         this.subAppContext = subAppContext;
-        this.appName = appName;
-        this.targetTreeRootPath = targetTreeRootPath;
-        this.allowChangesOnSelected = allowChangesOnSelected;
+        this.componentProvider = componentProvider;
     }
 
     /**
@@ -181,13 +163,7 @@ public class MultiLinkField extends CustomField<List> {
     private Component createEntryComponent(String entry) {
         HorizontalLayout layout = new HorizontalLayout();
         // Create a single LinkFild and set DataSource and ValueChangeListener.
-        LinkField linkField = new LinkField(converter, buttonCaptionNew, buttonCaptionOther, allowChangesOnSelected);
-        final Button selectButton = linkField.getSelectButton();
-        if (StringUtils.isNotBlank(appName)) {
-            selectButton.addClickListener(createButtonClickListener(targetTreeRootPath, appName, linkField));
-        } else {
-            selectButton.setCaption("No Target App Configured");
-        }
+        LinkField linkField = new LinkField(definition, appController, subAppContext, componentProvider);
         layout.addComponent(linkField);
         linkField.setPropertyDataSource(new ObjectProperty<String>(entry));
         linkField.addValueChangeListener(selectionListener);
@@ -216,43 +192,15 @@ public class MultiLinkField extends CustomField<List> {
         };
     }
 
-    /**
-     * Create the Button click Listener. On click: Create a Dialog and
-     * Initialize callback handling.
-     */
-    private Button.ClickListener createButtonClickListener(final String targetTreeRootPath, final String appName, final LinkField linkField) {
-        return new Button.ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-
-                appController.openChooseDialog(appName, targetTreeRootPath, subAppContext, linkField.getValue(), new ItemChosenListener() {
-                    @Override
-                    public void onItemChosen(final Item chosenValue) {
-                        String newValue = null;
-                        if (chosenValue != null) {
-                            javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
-                            if (jcrItem.isNode()) {
-                                final Node selected = (Node) jcrItem;
-                                try {
-                                    newValue = selected.getPath();
-                                } catch (RepositoryException e) {
-                                    log.error("Not able to access the configured property. Value will not be set.", e);
-                                }
-                            }
-                        }
-                        linkField.setValue(newValue);
-                    }
-                    @Override
-                    public void onChooseCanceled() {
-                    }
-                });
-            }
-        };
-    }
-
     @Override
     public Class<? extends List> getType() {
         return List.class;
     }
 
+    /**
+     * Caption section.
+     */
+    public void setButtonCaptionAdd(String buttonCaptionAdd) {
+        this.buttonCaptionAdd = buttonCaptionAdd;
+    }
 }
