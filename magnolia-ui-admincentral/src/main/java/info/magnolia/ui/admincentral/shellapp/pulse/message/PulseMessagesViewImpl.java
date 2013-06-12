@@ -97,7 +97,7 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
     @Inject
     public PulseMessagesViewImpl(Shell shell) {
         headers = new String[] { MessagesUtil.get("pulse.messages.new"), MessagesUtil.get("pulse.messages.type"), MessagesUtil.get("pulse.messages.text"), MessagesUtil.get("pulse.messages.sender"), MessagesUtil.get("pulse.messages.date") };
-        footer = new PulseMessagesFooter(shell, messageTable);
+        footer = new PulseMessagesFooter(messageTable);
         setSizeFull();
         root.setSizeFull();
         setCompositionRoot(root);

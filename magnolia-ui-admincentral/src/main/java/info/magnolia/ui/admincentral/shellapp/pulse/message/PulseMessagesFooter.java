@@ -34,10 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.api.overlay.ConfirmationCallback;
-import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
-import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.Set;
 
@@ -61,14 +58,12 @@ public final class PulseMessagesFooter extends CustomComponent {
 
     private HorizontalLayout footer;
     private NativeButton actionPopupTrigger;
-    private Shell shell;
     private TreeTable messageTable;
     private Label status;
     private PulseMessagesView.Listener listener;
 
-    public PulseMessagesFooter(final Shell shell, final TreeTable messageTable) {
+    public PulseMessagesFooter(final TreeTable messageTable) {
         super();
-        this.shell = shell;
         this.messageTable = messageTable;
         construct();
         setCompositionRoot(footer);
@@ -102,19 +97,7 @@ public final class PulseMessagesFooter extends CustomComponent {
                     // nothing to do here
                     return;
                 }
-                shell.openConfirmation(MessageStyleTypeEnum.WARNING, MessagesUtil.get("pulse.confirmation.messages.delete.title"), MessagesUtil.get("confirmation.cannot.undo"), MessagesUtil.get("confirmation.delete.yes"), MessagesUtil.get("confirmation.no"), true, new ConfirmationCallback() {
-
-                    @Override
-                    public void onSuccess() {
-                        listener.deleteMessages(selectedItems);
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        // no op
-                    }
-                });
-
+                listener.deleteMessages(selectedItems);
             }
         });
 

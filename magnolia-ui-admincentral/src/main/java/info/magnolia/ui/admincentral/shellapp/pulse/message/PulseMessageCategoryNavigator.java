@@ -149,7 +149,7 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
     }
 
     private void fireCategoryChangedEvent(MessageCategory category) {
-        Iterator<Component> iterator = getComponentIterator();
+        Iterator<Component> iterator = iterator();
         while (iterator.hasNext()) {
             Component component = iterator.next();
             if (component instanceof MessageCategoryTab) {
