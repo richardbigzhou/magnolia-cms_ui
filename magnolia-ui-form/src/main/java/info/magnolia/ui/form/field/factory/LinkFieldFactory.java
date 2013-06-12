@@ -33,26 +33,16 @@
  */
 package info.magnolia.ui.form.field.factory;
 
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.form.field.LinkField;
-import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
-import info.magnolia.ui.api.app.AppController;
-import info.magnolia.ui.api.app.ItemChosenListener;
-import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import javax.inject.Inject;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Field;
 
 /**
@@ -62,38 +52,29 @@ import com.vaadin.ui.Field;
  */
 public class LinkFieldFactory<D extends FieldDefinition> extends AbstractFieldFactory<LinkFieldDefinition, String> {
 
-    private static final Logger log = LoggerFactory.getLogger(LinkFieldFactory.class);
-
     public static final String PATH_PROPERTY_NAME = "transientPathProperty";
 
     private LinkField linkField;
 
     private final AppController appController;
-
     private final SubAppContext subAppContext;
+    private final ComponentProvider componentProvider;
 
     @Inject
-    public LinkFieldFactory(LinkFieldDefinition definition, Item relatedFieldItem, AppController appController, SubAppContext subAppContext) {
+    public LinkFieldFactory(LinkFieldDefinition definition, Item relatedFieldItem, AppController appController, SubAppContext subAppContext, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem);
         this.appController = appController;
         this.subAppContext = subAppContext;
+        this.componentProvider = componentProvider;
     }
 
     @Override
     protected Field<String> createFieldComponent() {
-        // Create Translator if we need to store the Identifier
-        IdentifierToPathConverter converter = definition.getIdentifierToPathConverter();
-        if (converter != null) {
-            converter.setWorkspaceName(definition.getTargetWorkspace());
-        }
-        linkField = new LinkField(converter, getMessage(definition.getButtonSelectNewLabel()), getMessage(definition.getButtonSelectOtherLabel()), true);
-        final Button selectButton = linkField.getSelectButton();
+        linkField = new LinkField(definition, appController, subAppContext, componentProvider);
+        // Set Caption
+        linkField.setButtonCaptionNew(getMessage(definition.getButtonSelectNewLabel()));
+        linkField.setButtonCaptionOther(getMessage(definition.getButtonSelectOtherLabel()));
 
-        if (StringUtils.isNotBlank(definition.getAppName())) {
-            selectButton.addClickListener(createButtonClickListener(definition.getTargetTreeRootPath(), definition.getAppName()));
-        } else {
-            selectButton.setCaption(getMessage("field.link.select.error"));
-        }
         return linkField;
     }
 
@@ -102,42 +83,4 @@ public class LinkFieldFactory<D extends FieldDefinition> extends AbstractFieldFa
         return String.class;
     }
 
-    /**
-     * Create the Button click Listener. On click: Create a Dialog and
-     * Initialize callback handling.
-     */
-    private Button.ClickListener createButtonClickListener(final String targetTreeRootPath, final String appName) {
-        return new Button.ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-
-                appController.openChooseDialog(appName, targetTreeRootPath, subAppContext, linkField.getValue(), new ItemChosenListener() {
-                    @Override
-                    public void onItemChosen(final Item chosenValue) {
-                        String propertyName = definition.getTargetPropertyToPopulate();
-                        String newValue = null;
-                        if (chosenValue != null) {
-                            javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
-                            if (jcrItem.isNode()) {
-                                final Node selected = (Node) jcrItem;
-                                try {
-                                    boolean isPropertyExisting = StringUtils.isNotBlank(propertyName) && selected.hasProperty(propertyName);
-                                    newValue = isPropertyExisting ? selected.getProperty(propertyName).getString() : selected.getPath();
-                                } catch (RepositoryException e) {
-                                    log.error("Not able to access the configured property. Value will not be set.", e);
-                                }
-                            }
-                        }
-                        linkField.setValue(newValue);
-                    }
-
-                    @Override
-                    public void onChooseCanceled() {
-
-                    }
-
-                });
-            }
-        };
-    }
 }
