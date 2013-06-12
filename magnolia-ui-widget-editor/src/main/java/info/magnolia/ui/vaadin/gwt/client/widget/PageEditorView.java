@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public interface PageEditorView extends IsWidget {
 
-    void initSelectionListener();
+    void initDomEventListeners();
 
     Widget getContent();
 
@@ -61,5 +61,9 @@ public interface PageEditorView extends IsWidget {
     void setUrl(String url);
 
     void reload();
+
+    void setLastScrollPosition(int scrollPosition);
+
+    void resetScrollTop();
 
 }

@@ -115,7 +115,7 @@ abstract public class AbstractFrameEventHandler {
     public native void initNativeMouseSelectionListener(Element element, PageEditorView.Listener listener) /*-{
         if (element != 'undefined') {
             var that = listener;
-            element.contentDocument.onmouseup = function(event) {
+            element.onmouseup = function(event) {
                 that.@info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView.Listener::selectElement(Lcom/google/gwt/dom/client/Element;)(event.target);
             }
         }
@@ -126,4 +126,17 @@ abstract public class AbstractFrameEventHandler {
      * from the frame up to the DOM.
      */
     public abstract void initNativeKeyListener(Element element);
+
+    public native void initScrollListener(Element element) /*-{
+        if (element != 'undefined') {
+            var that = this;
+            var view = that.@info.magnolia.ui.vaadin.gwt.client.editor.jsni.AbstractFrameEventHandler::view;
+            element.onscroll = function(event) {
+                var scrollTop = event.target.scrollTop;
+                if (scrollTop > 0) {
+                    view.@info.magnolia.ui.vaadin.gwt.client.widget.PageEditorView::setLastScrollPosition(I)(scrollTop);
+                }
+            }
+        }
+    }-*/;
 }

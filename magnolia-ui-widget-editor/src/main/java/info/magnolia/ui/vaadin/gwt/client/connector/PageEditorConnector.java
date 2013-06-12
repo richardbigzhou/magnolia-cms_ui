@@ -162,7 +162,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
                 Document document = event.getFrame().getContentDocument();
                 process(document);
                 if (!getState().parameters.isPreview()) {
-                    view.initSelectionListener();
+                    view.initDomEventListeners();
                     focusModel.init();
                 }
                 else {
@@ -191,6 +191,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
                 else if (element instanceof ComponentElement) {
                     rpc.selectComponent((ComponentElement) selectElementEvent.getElement());
                 }
+                view.resetScrollTop();
             }
         });
 
