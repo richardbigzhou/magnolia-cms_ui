@@ -167,7 +167,6 @@ public class DetailSubApp extends BaseSubApp {
                     if (itemId == null) {
                         try {
                             // Check if parent is still existing, close supApp if it doesn't
-                            // TODO: show message?
                             String currentNodePath = getCurrentLocation().getNodePath();
                             String currentNodePathParent = StringUtils.removeEnd(currentNodePath, "/" + AbstractRepositoryAction.DEFAULT_NEW_ITEM_NAME);
 
