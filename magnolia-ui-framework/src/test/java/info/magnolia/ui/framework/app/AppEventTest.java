@@ -43,6 +43,7 @@ import info.magnolia.event.SimpleEventBus;
 import info.magnolia.event.SystemEventBus;
 import info.magnolia.event.TestEvent;
 import info.magnolia.module.ModuleRegistry;
+import info.magnolia.monitoring.SystemMonitor;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
@@ -209,6 +210,9 @@ public class AppEventTest {
         components.registerImplementation(AppView.class, DefaultAppView.class);
         components.registerImplementation(LocationController.class);
         components.registerImplementation(AppLauncherLayoutManager.class, AppLauncherLayoutManagerImpl.class);
+        final SystemMonitor systemMonitor = mock(SystemMonitor.class);
+        when(systemMonitor.isMemoryLimitReached()).thenReturn(false);
+        components.registerInstance(SystemMonitor.class, systemMonitor);
 
         components.registerInstance(ModuleRegistry.class, mock(ModuleRegistry.class));
         components.registerInstance(AppDescriptorRegistry.class, appRegistry);
