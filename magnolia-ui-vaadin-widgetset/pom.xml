@@ -9,13 +9,13 @@
   <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
   <name>magnolia-ui-vaadin-widgetset</name>
 
-  <!-- enable-clover profile kept from parent, this isn't something special for this project -->
   <properties>
     <inplace>false</inplace>
     <draftCompile>false</draftCompile>
     <enableClosure>false</enableClosure>
     <disableCastChecking>false</disableCastChecking>
-    <additionalReleaseProfiles>gwt-compile-production,enable-clover</additionalReleaseProfiles>
+    <!-- Purposely removed enable-clover profile for this project -->
+    <additionalReleaseProfiles>gwt-compile-production</additionalReleaseProfiles>
   </properties>
 
   <dependencies>
@@ -98,13 +98,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.atlassian.maven.plugins</groupId>
-        <artifactId>maven-clover2-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
       </plugin>
     </plugins>
   </build>
