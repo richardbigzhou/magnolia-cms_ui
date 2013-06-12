@@ -47,6 +47,7 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
     private String buttonSelectNewLabel = "field.link.select.new";
     private String buttonSelectOtherLabel = "field.link.select.another";
     private IdentifierToPathConverter identifierToPathConverter;
+    private ContentPreviewDefinition contentPreviewDefinition;
 
     private String targetPropertyToPopulate;
 
@@ -57,6 +58,9 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
         return appName;
     }
 
+    /**
+     * @return the target property name to populate into the link field.
+     */
     public String getTargetPropertyToPopulate() {
         return targetPropertyToPopulate;
     }
@@ -75,6 +79,15 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
      */
     public IdentifierToPathConverter getIdentifierToPathConverter() {
         return identifierToPathConverter;
+    }
+
+    /**
+     * If not define, no Content preview component will added to the selection field.
+     * 
+     * @return the implemented class used to display the File preview.
+     */
+    public ContentPreviewDefinition getContentPreviewDefinition() {
+        return contentPreviewDefinition;
     }
 
     /**
@@ -125,5 +138,9 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setIdentifierToPathConverter(IdentifierToPathConverter identifierToPathConverter) {
         this.identifierToPathConverter = identifierToPathConverter;
+    }
+
+    public void setContentPreviewDefinition(ContentPreviewDefinition contentPreviewDefinition) {
+        this.contentPreviewDefinition = contentPreviewDefinition;
     }
 }
