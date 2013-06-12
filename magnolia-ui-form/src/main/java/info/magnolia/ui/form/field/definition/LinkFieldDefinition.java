@@ -48,7 +48,7 @@ public class LinkFieldDefinition extends ConfiguredFieldDefinition {
     private String buttonSelectOtherLabel = "field.link.select.another";
     private IdentifierToPathConverter identifierToPathConverter;
     private ContentPreviewDefinition contentPreviewDefinition;
-    private boolean fieldEditable = false;
+    private boolean fieldEditable = true;
     private String targetPropertyToPopulate;
 
     /**
