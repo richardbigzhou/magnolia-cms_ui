@@ -52,8 +52,7 @@ public class LinkControlMigration implements ControlMigration {
         Property controlType = controlNode.getProperty("controlType");
         String appName = "pages";
         String className = LinkFieldDefinition.class.getName();
-        String dialogName = "pages:link";
-        String workspace = "website";
+        String targetWorkspace = "website";
 
         // Set IdentifierConvertor
         if (controlType.getString().equals("uuidLink")) {
@@ -66,9 +65,9 @@ public class LinkControlMigration implements ControlMigration {
                 // Handle contacts
                 if (controlNode.hasProperty("tree") && controlNode.getProperty("tree").getString().equals("Contact")) {
                     appName = "contacts";
-                    workspace = "contacts";
-                    dialogName = "contacts-app:link";
-                    className = "info.magnolia.contacts.app.field.definition.ContactLinkFieldDefinition";
+                    targetWorkspace = "contacts";
+                    controlNode.addNode("contentPreviewDefinition", NodeTypes.ContentNode.NAME);
+                    controlNode.getNode("contentPreviewDefinition").setProperty("contentPreviewClass", "info.magnolia.contacts.app.field.component.ContactPreviewComponent");
                 }
             } else if (controlNode.getProperty("repository").getString().equals("dms")) {
                 DamControlMigration damMigration = new DamControlMigration();
@@ -78,10 +77,9 @@ public class LinkControlMigration implements ControlMigration {
             controlNode.getProperty("repository").remove();
         }
 
-        controlNode.setProperty("workspace", workspace);
+        controlNode.setProperty("targetWorkspace", targetWorkspace);
         controlNode.setProperty("appName", appName);
         controlNode.setProperty("class", className);
-        controlNode.setProperty("dialogName", dialogName);
 
         controlType.remove();
 

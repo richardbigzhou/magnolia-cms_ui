@@ -52,18 +52,14 @@
   top: 20px;
   left: 190px;
   position: absolute;
-}
 
-.file-details .key {
-  color: $c10;
-  margin-right: 12px;
-  text-align: right;
-  width: 50px;
-  display: inline-block;
-}
+  .v-caption {
+    display: inline-block;
+  }
 
-.file-details .value {
- display: inline-block;
+  .v-label {
+    font-size: 12px;
+  }
 }
 
 .preview-image {

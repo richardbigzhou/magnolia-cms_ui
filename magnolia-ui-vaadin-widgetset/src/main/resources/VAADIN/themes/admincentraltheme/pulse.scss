@@ -332,6 +332,10 @@
   font-size: 150px;
 }
 
+.v-pulse .emptyplaceholder {
+   margin-top: 118px; /*tweak to align pulse with favs empty placehoder*/
+}
+
 .v-pulse .new-message {
   color: #A3A3A3;
   font-size: 16px;

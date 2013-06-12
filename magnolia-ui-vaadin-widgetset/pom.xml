@@ -9,13 +9,13 @@
   <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
   <name>magnolia-ui-vaadin-widgetset</name>
 
-  <!-- enable-clover profile kept from parent, this isn't something special for this project -->
   <properties>
     <inplace>false</inplace>
     <draftCompile>false</draftCompile>
     <enableClosure>false</enableClosure>
     <disableCastChecking>false</disableCastChecking>
-    <additionalReleaseProfiles>gwt-compile-production,enable-clover</additionalReleaseProfiles>
+    <!-- Purposely removed enable-clover profile for this project -->
+    <additionalReleaseProfiles>gwt-compile-production</additionalReleaseProfiles>
   </properties>
 
   <dependencies>
@@ -74,23 +74,21 @@
       <plugin>
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin-maven-plugin</artifactId>
-        <configuration>
-          <!-- put the created resources on the classpath -->
-          <webappDirectory>${project.build.outputDirectory}/VAADIN/widgetsets</webappDirectory>
-          <warSourceDirectory>src/main/resources/VAADIN/widgetsets</warSourceDirectory>
-          <inplace>${inplace}</inplace>
-          <!-- this is not a webapp -->
-          <noServer>true</noServer>
-          <module>info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet</module>
-          <runTarget>.magnolia/admincentral</runTarget>
-          <draftCompile>${draftCompile}</draftCompile>
-          <enableClosureCompiler>${enableClosure}</enableClosureCompiler>
-          <disableCastChecking>${disableCastChecking}</disableCastChecking>
-        </configuration>
         <executions>
           <execution>
             <configuration>
-              <extraJvmArgs>-Xmx1024M -Xss1024k</extraJvmArgs>
+              <extraJvmArgs>-Xmx1536M -Xss1024k</extraJvmArgs>
+              <!-- put the created resources on the classpath -->
+              <webappDirectory>${project.build.outputDirectory}/VAADIN/widgetsets</webappDirectory>
+              <warSourceDirectory>src/main/resources/VAADIN/widgetsets</warSourceDirectory>
+              <inplace>${inplace}</inplace>
+              <!-- this is not a webapp -->
+              <noServer>true</noServer>
+              <module>info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet</module>
+              <runTarget>.magnolia/admincentral</runTarget>
+              <draftCompile>${draftCompile}</draftCompile>
+              <enableClosureCompiler>${enableClosure}</enableClosureCompiler>
+              <disableCastChecking>${disableCastChecking}</disableCastChecking>
             </configuration>
             <goals>
               <goal>resources</goal>
@@ -99,20 +97,14 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>com.atlassian.maven.plugins</groupId>
-        <artifactId>maven-clover2-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
   <profiles>
     <profile>
       <id>gwt-compile-production</id>
-      <!--Enables current profile in case 'BUILD NUMBER' property is set (usually set by Hudson when preparing nightly builds)-->
       <activation>
+        <activeByDefault>false</activeByDefault>
+        <!--Enables this profile when 'BUILD_NUMBER' env.var is set (set by Hudson)-->
         <property>
           <name>BUILD_NUMBER</name>
         </property>

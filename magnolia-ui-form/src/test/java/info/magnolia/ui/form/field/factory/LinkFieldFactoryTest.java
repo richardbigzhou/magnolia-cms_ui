@@ -54,7 +54,7 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
     @Test
     public void simpleLinkFieldTest() throws Exception {
         // GIVEN
-        linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null);
+        linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
         // WHEN
         Field field = linkFieldFactory.createField();
@@ -68,10 +68,10 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         // GIVEN
         definition.setIdentifierToPathConverter(new BaseIdentifierToPathConverter());
         definition.setName(propertyName);
-        definition.setWorkspace(workspaceName);
+        definition.setTargetWorkspace(workspaceName);
         baseNode.setProperty(propertyName, baseNode.getIdentifier());
         baseItem = new JcrNodeAdapter(baseNode);
-        linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null);
+        linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
         // WHEN
         Field field = linkFieldFactory.createField();
@@ -85,7 +85,7 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
     @Test
     public void linkField_SetButtonCaptionNewTest() throws Exception {
         // GIVEN
-        linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null);
+        linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
         definition.setButtonSelectNewLabel("New");
         definition.setButtonSelectOtherLabel("Other");
@@ -103,7 +103,7 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         definition.setName(propertyName);
         baseNode.setProperty(propertyName, "notChanged");
         baseItem = new JcrNodeAdapter(baseNode);
-        linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null);
+        linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
         definition.setButtonSelectNewLabel("New");
         definition.setButtonSelectOtherLabel("Other");
@@ -121,7 +121,7 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         definition.setName(propertyName);
         baseNode.setProperty(propertyName, "notChanged");
         baseItem = new JcrNodeAdapter(baseNode);
-        linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null);
+        linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
         Field field = linkFieldFactory.createField();
         assertEquals("notChanged", ((LinkField) field).getTextField().getValue());
@@ -136,7 +136,7 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
     protected void createConfiguredFieldDefinition() {
         LinkFieldDefinition fieldDefinition = new LinkFieldDefinition();
         fieldDefinition.setName(propertyName);
-        fieldDefinition.setDialogName("dialogName");
+        fieldDefinition.setFieldEditable(true);
         this.definition = fieldDefinition;
     }
 

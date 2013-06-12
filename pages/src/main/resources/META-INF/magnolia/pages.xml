@@ -4,7 +4,7 @@
   <name>pages</name>
   <displayName>Pages app</displayName>
   <description>Pages app</description>
-  <versionHandler>info.magnolia.pages.app.setup.PagesAppModuleVersionHandler</versionHandler>
+  <versionHandler>info.magnolia.pages.setup.PagesModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 
   <!-- App components definition. -->

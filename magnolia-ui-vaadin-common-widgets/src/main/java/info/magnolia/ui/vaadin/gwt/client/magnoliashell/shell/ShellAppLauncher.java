@@ -176,21 +176,32 @@ public class ShellAppLauncher extends FlowPanel {
             w.addTouchEndHandler(new TouchEndHandler() {
                 @Override
                 public void onTouchEnd(TouchEndEvent event) {
-                    // Has user clicked on the active shell app?
-                    if (appType == getActiveShellType()) {
-                        // if open then close it.
-                        listener.onHideShellAppsRequested();
-                    } else {
-                        listener.showShellApp(appType);
-                        // If closed, then open it.
-                    }
+                    toggleShellApp(appType);
                 }
             });
+
             controlsMap.put(appType, w);
             add(w);
         }
         divetWrapper.getStyle().setDisplay(Display.NONE);
     }
+
+    /**
+     * Toggle the 'openness' of the specified shellApp.
+     * 
+     * @param appType
+     */
+    public void toggleShellApp(ShellAppType appType) {
+        // Has user clicked on the active shell app?
+        if (appType == getActiveShellType()) {
+            // if open then close it.
+            listener.onHideShellAppsRequested();
+        } else {
+            // If closed, then open it.
+            listener.showShellApp(appType);
+        }
+    }
+
 
     private void bindHandlers() {
         DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);

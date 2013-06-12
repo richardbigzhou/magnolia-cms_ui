@@ -42,6 +42,7 @@ import info.magnolia.event.SimpleEventBus;
 import info.magnolia.event.SystemEventBus;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.ModuleRegistryImpl;
+import info.magnolia.monitoring.SystemMonitor;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
@@ -500,7 +501,9 @@ public class AppControllerImplTest {
         components.registerInstance(AppDescriptorRegistry.class, appRegistry);
         components.registerInstance(Shell.class, mock(Shell.class));
         components.registerInstance(MessagesManager.class, mock(MessagesManagerImpl.class));
-
+        final SystemMonitor systemMonitor = mock(SystemMonitor.class);
+        when(systemMonitor.isMemoryLimitReached()).thenReturn(false);
+        components.registerInstance(SystemMonitor.class, systemMonitor);
 
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         TestEventBusConfigurer eventBusConfigurer = new TestEventBusConfigurer(eventBus);

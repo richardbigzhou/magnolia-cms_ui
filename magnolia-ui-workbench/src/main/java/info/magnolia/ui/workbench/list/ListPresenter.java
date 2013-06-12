@@ -41,6 +41,7 @@ import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.util.Iterator;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -98,9 +99,9 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     }
 
     @Override
-    public void setSelectedItemId(String itemId) {
-        super.setSelectedItemId(itemId);
-        view.select(itemId);
+    public void setSelectedItemIds(List<String> itemIds) {
+        super.setSelectedItemIds(itemIds);
+        view.select(itemIds);
     }
 
     @Override

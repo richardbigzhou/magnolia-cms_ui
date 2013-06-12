@@ -34,14 +34,13 @@
 package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.form.field.MultiLinkField;
-import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
 import info.magnolia.ui.form.field.property.MultiProperty;
 import info.magnolia.ui.form.field.property.MultiValueHandler;
 import info.magnolia.ui.form.field.property.SingleValueHandler;
-import info.magnolia.ui.api.app.AppController;
-import info.magnolia.ui.api.app.SubAppContext;
 
 import java.util.List;
 
@@ -64,7 +63,7 @@ public class MultiLinkFieldFactory extends AbstractFieldFactory<MultiLinkFieldDe
 
     private final AppController appController;
     private final SubAppContext subAppContext;
-    private ComponentProvider componentProvider;
+    private final ComponentProvider componentProvider;
 
     @Inject
     public MultiLinkFieldFactory(MultiLinkFieldDefinition definition, Item relatedFieldItem, AppController appController, SubAppContext subAppContext, ComponentProvider componentProvider) {
@@ -76,11 +75,10 @@ public class MultiLinkFieldFactory extends AbstractFieldFactory<MultiLinkFieldDe
 
     @Override
     protected Field<List> createFieldComponent() {
-        IdentifierToPathConverter converter = definition.getIdentifierToPathConverter();
-        if (converter != null) {
-            converter.setWorkspaceName(definition.getWorkspace());
-        }
-        MultiLinkField field = new MultiLinkField(converter, getMessage(definition.getButtonSelectAddLabel()), getMessage(definition.getButtonSelectNewLabel()), getMessage(definition.getButtonSelectOtherLabel()), appController, subAppContext, definition.getAppName(), definition.getDialogName(), definition.isAllowChangesOnSelected());
+        MultiLinkField field = new MultiLinkField(definition, appController, subAppContext, componentProvider);
+        field.setButtonCaptionAdd(getMessage(definition.getButtonSelectAddLabel()));
+        field.setButtonCaptionNew(getMessage(definition.getButtonSelectNewLabel()));
+        field.setButtonCaptionOther(getMessage(definition.getButtonSelectOtherLabel()));
         return field;
     }
 

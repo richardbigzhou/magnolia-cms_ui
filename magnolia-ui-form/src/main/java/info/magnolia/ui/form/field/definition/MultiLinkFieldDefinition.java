@@ -41,7 +41,6 @@ package info.magnolia.ui.form.field.definition;
 public class MultiLinkFieldDefinition extends LinkFieldDefinition {
 
     private SaveModeType saveModeType;
-    private boolean allowChangesOnSelected = false;
     private String buttonSelectAddLabel;
 
     /**
@@ -56,17 +55,6 @@ public class MultiLinkFieldDefinition extends LinkFieldDefinition {
      */
     public SaveModeType getSaveModeType() {
         return saveModeType;
-    }
-
-    /**
-     * @return allowChangesOnSelected, if set to true the input text is editable.
-     */
-    public boolean isAllowChangesOnSelected() {
-        return allowChangesOnSelected;
-    }
-
-    public void setAllowChangesOnSelected(boolean allowChangesOnSelected) {
-        this.allowChangesOnSelected = allowChangesOnSelected;
     }
 
     public void setButtonSelectAddLabel(String buttonSelectAddLabel) {
