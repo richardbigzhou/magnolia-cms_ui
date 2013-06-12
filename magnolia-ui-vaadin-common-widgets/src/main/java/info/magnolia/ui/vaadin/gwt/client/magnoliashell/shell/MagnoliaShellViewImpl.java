@@ -117,6 +117,8 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
         add(blurHelper, getElement());
 
         KeyPressHandler keyboardShortcutHandler = new KeyPressHandler() {
+
+            @Override
             public void onKeyPress(KeyPressEvent event) {
 
                 // Only process keyboard shortcuts if user is not in an input field.
