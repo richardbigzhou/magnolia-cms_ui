@@ -10,7 +10,7 @@
   <groupId>info.magnolia.security</groupId>
   <artifactId>magnolia-security-app</artifactId>
   <packaging>jar</packaging>
-  <name>security-app</name>
+  <name>magnolia-security-app</name>
   <properties>
     <cloverCoverageThreshold>20</cloverCoverageThreshold>
   </properties>
