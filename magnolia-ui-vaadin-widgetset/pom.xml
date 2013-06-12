@@ -90,7 +90,7 @@
         <executions>
           <execution>
             <configuration>
-              <extraJvmArgs>-Xmx1024M -Xss1024k</extraJvmArgs>
+              <extraJvmArgs>-Xmx1536M -Xss1024k</extraJvmArgs>
             </configuration>
             <goals>
               <goal>resources</goal>
@@ -106,6 +106,10 @@
       <id>gwt-compile-production</id>
       <activation>
         <activeByDefault>false</activeByDefault>
+        <!--Enables this profile when 'BUILD_NUMBER' env.var is set (set by Hudson)-->
+        <property>
+          <name>BUILD_NUMBER</name>
+        </property>
       </activation>
       <properties>
         <draftCompile>false</draftCompile>
