@@ -104,7 +104,7 @@
             <sv:value>info.magnolia.ui.framework.action.OpenEditDialogActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="dialogName" sv:type="String">
-            <sv:value>security-app:userEdit</sv:value>
+            <sv:value>security-app:user</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>icon-edit</sv:value>
@@ -191,7 +191,7 @@
             <sv:value>info.magnolia.ui.framework.action.OpenCreateDialogActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="dialogName" sv:type="String">
-            <sv:value>security-app:userAdd</sv:value>
+            <sv:value>security-app:user</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>icon-add-item</sv:value>
