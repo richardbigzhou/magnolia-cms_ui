@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.security.app.utils;
+package info.magnolia.security.app.util;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;

@@ -34,7 +34,7 @@
 package info.magnolia.security.app.dialog.action;
 
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.security.app.utils.UsersWorkspaceUtil;
+import info.magnolia.security.app.util.UsersWorkspaceUtil;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.form.EditorCallback;
