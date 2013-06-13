@@ -4,7 +4,7 @@
   <parent>
     <groupId>info.magnolia.ui</groupId>
     <artifactId>magnolia-ui-project</artifactId>
-    <version>5.0-SNAPSHOT</version>
+    <version>5.0-rc1</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
@@ -12,7 +12,7 @@
 
   <properties>
     <!-- Purposely removed enable-clover profile for this project -->
-    <additionalReleaseProfiles></additionalReleaseProfiles>
+    <additionalReleaseProfiles />
   </properties>
 
 
