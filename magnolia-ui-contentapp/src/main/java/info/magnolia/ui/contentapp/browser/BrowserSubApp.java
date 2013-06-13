@@ -44,26 +44,24 @@ import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.AvailabilityRule;
-import info.magnolia.ui.api.availability.menu.ActionMenu;
+import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
-import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.api.app.SubAppEventBus;
-import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
-import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
+import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -75,6 +73,9 @@ import javax.jcr.RepositoryException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.peter.contextmenu.ContextMenu;
+
+import com.vaadin.server.ExternalResource;
 
 /**
  * Base implementation of a content subApp. A content subApp displays a collection of data represented inside a {@link info.magnolia.ui.workbench.ContentView}
@@ -207,13 +208,13 @@ public class BrowserSubApp extends BaseSubApp {
     }
 
     /**
-     * Updates the actions available in the browser's action menus. Decides which section to show and which actions in the
-     * section to enable based on the selection in the workbench.
-     *
-     * @param actionMenu {@link ActionbarPresenter} or {@link ActionPopup}
+     * Update the items in the actionPopup based on the selected item and the ActionPopup availability configuration.
+     * This method can be overriden to implement custom conditions diverging from {@link #updateActionbar(info.magnolia.ui.actionbar.ActionbarPresenter)}.
      */
-    public void updateActionMenu(ActionMenu actionMenu) {
-        actionMenu.hideAllSections();
+    private void updateActionPopup(ActionPopup actionPopup) {
+
+        actionPopup.removeAllItems();
+
         BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
         WorkbenchDefinition workbench = subAppDescriptor.getWorkbench();
         List<ActionbarSectionDefinition> sections = subAppDescriptor.getActionbar().getSections();
@@ -226,46 +227,52 @@ public class BrowserSubApp extends BaseSubApp {
             // Figure out which section to show, only one
             ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, items);
 
-            // If there no section matched the selection we return
+            // If there no section matched the selection we just hide everything
             if (sectionDefinition == null) {
                 return;
             }
 
+            // Evaluate availability of each action within the section
+            ContextMenu.ContextMenuItem menuItem = null;
             for (ActionbarGroupDefinition groupDefinition : sectionDefinition.getGroups()) {
-                List<ActionDefinition> allActions = new LinkedList<ActionDefinition>();
-                List<ActionDefinition> enabledActions = new LinkedList<ActionDefinition>();
-
                 for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
 
                     String actionName = itemDefinition.getName();
-                    allActions.add(actionExecutor.getActionDefinition(actionName));
-
-                    if (actionExecutor.isAvailable(actionName, items.toArray(new Item[items.size()]))) {
-                        enabledActions.add(actionExecutor.getActionDefinition(actionName));
-                    }
-
+                    menuItem = addActionPopupItem(subAppDescriptor, actionPopup, itemDefinition, items);
+                    menuItem.setEnabled(actionExecutor.isAvailable(actionName, items.toArray(new Item[items.size()])));
                 }
-                actionMenu.showSectionActions(sectionDefinition.getName(), allActions, enabledActions);
+
+                // Add group separator.
+                if (menuItem != null) {
+                    menuItem.setSeparatorVisible(true);
+                }
             }
-
+            if (menuItem != null) {
+                menuItem.setSeparatorVisible(false);
+            }
         } catch (RepositoryException e) {
-            log.error("Failed to update action menu", e);
+            log.error("Failed to updated actionbar", e);
         }
-
-        }
-
-    /**
-     * Update the items in the actionPopup based on the selected item and the ActionPopup availability configuration.
-     * Delegates to {@link #updateActionMenu(info.magnolia.ui.api.availability.menu.ActionMenu)}.
-     * This method can be overriden to implement custom conditions diverging from {@link #updateActionbar(info.magnolia.ui.actionbar.ActionbarPresenter)}.
-     */
-    public void updateActionPopup(ActionPopup actionPopup) {
-        updateActionMenu(actionPopup);
     }
+    /**
+     * Add an additional menu item on the actionPopup.
+     * TODO: Move to BrowserPresenter. Christopher Zimmermann
+     */
+    private ContextMenu.ContextMenuItem addActionPopupItem(BrowserSubAppDescriptor subAppDescriptor, ActionPopup actionPopup, ActionbarItemDefinition itemDefinition, List<javax.jcr.Item> items) {
+        String actionName = itemDefinition.getName();
 
+        ActionDefinition action = subAppDescriptor.getActions().get(actionName);
+        String label = action.getLabel();
+        String iconFontCode = ActionPopup.ICON_FONT_CODE + action.getIcon();
+        ExternalResource iconFontResource = new ExternalResource(iconFontCode);
+        ContextMenu.ContextMenuItem menuItem = actionPopup.addItem(label, iconFontResource);
+        // Set data variable so that the event handler can determine which action to launch.
+        menuItem.setData(actionName);
+
+        return menuItem;
+    }
     /**
      * Update the items in the actionbar based on the selected item and the action availability configuration.
-     * Delegates to {@link #updateActionMenu(info.magnolia.ui.api.availability.menu.ActionMenu)}.
      * This method can be overriden to implement custom conditions diverging from {@link #updateActionPopup(info.magnolia.ui.vaadin.actionbar.ActionPopup)}.
      *
      * @see #restoreBrowser(BrowserLocation)
@@ -273,7 +280,55 @@ public class BrowserSubApp extends BaseSubApp {
      * @see ActionbarPresenter
      */
     public void updateActionbar(ActionbarPresenter actionbar) {
-        updateActionMenu(actionbar);
+
+        BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
+        WorkbenchDefinition workbench = subAppDescriptor.getWorkbench();
+        List<ActionbarSectionDefinition> sections = subAppDescriptor.getActionbar().getSections();
+
+        try {
+            String workbenchRootItemId = JcrItemUtil.getItemId(workbench.getWorkspace(), workbench.getPath());
+            List<String> selectedItemIds = getBrowser().getSelectedItemIds();
+            List<Item> items = getJcrItemsExceptOne(workbench.getWorkspace(), selectedItemIds, workbenchRootItemId);
+
+            // Figure out which section to show, only one
+            ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, items);
+
+            // If there no section matched the selection we just hide everything
+            if (sectionDefinition == null) {
+                for (ActionbarSectionDefinition section : sections) {
+                    actionbar.hideSection(section.getName());
+                }
+                return;
+            }
+
+            // Hide all other sections
+            for (ActionbarSectionDefinition section : sections) {
+                if (section != sectionDefinition) {
+                    actionbar.hideSection(section.getName());
+                }
+            }
+
+            // Show our section
+            actionbar.showSection(sectionDefinition.getName());
+
+            // Evaluate availability of each action within the section
+            for (ActionbarGroupDefinition groupDefinition : sectionDefinition.getGroups()) {
+                for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
+
+                    String actionName = itemDefinition.getName();
+                    if (actionExecutor.isAvailable(actionName, items.toArray(new Item[items.size()]))) {
+                        actionbar.enable(actionName);
+                    } else {
+                        actionbar.disable(actionName);
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            log.error("Failed to updated actionbar", e);
+            for (ActionbarSectionDefinition section : sections) {
+                actionbar.hideSection(section.getName());
+            }
+        }
     }
 
     private ActionbarSectionDefinition getVisibleSection(List<ActionbarSectionDefinition> sections, List<Item> items) throws RepositoryException {
