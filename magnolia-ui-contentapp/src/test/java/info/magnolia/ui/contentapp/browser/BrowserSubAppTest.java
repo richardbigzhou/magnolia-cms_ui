@@ -65,7 +65,7 @@ import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.availability.IsDeletedRule;
 import info.magnolia.ui.contentapp.ContentSubAppView;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
@@ -159,7 +159,10 @@ public class BrowserSubAppTest extends MgnlTestCase {
         sectionToShow.setAvailability(sAvailabilityAlways);
         initActionbar();
         subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
-        when(browserPresenter.getSelectedItemId()).thenReturn(JcrItemUtil.getItemId(session.getRootNode()));
+        // root
+        List<String> ids = new ArrayList<String>(1);
+        ids.add(JcrItemUtil.getItemId(session.getRootNode()));
+        when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
 
         // WHEN
         subApp.updateActionbar(browserPresenter.getActionbarPresenter());
@@ -177,7 +180,10 @@ public class BrowserSubAppTest extends MgnlTestCase {
         sectionToShow.setAvailability(sAvailabilityAlways);
         initActionbar();
         subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
-        when(browserPresenter.getSelectedItemId()).thenReturn(JcrItemUtil.getItemId(testContentNode));
+        // node
+        List<String> ids = new ArrayList<String>(1);
+        ids.add(JcrItemUtil.getItemId(testContentNode));
+        when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
 
         // WHEN
         subApp.updateActionbar(browserPresenter.getActionbarPresenter());
@@ -196,7 +202,10 @@ public class BrowserSubAppTest extends MgnlTestCase {
         sectionToShow.setAvailability(sAvailabilityAlways);
         initActionbar();
         subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
-        when(browserPresenter.getSelectedItemId()).thenReturn(JcrItemUtil.getItemId(testContentNode.getProperty(TEST_PROPERTY)));
+        // property
+        List<String> ids = new ArrayList<String>(1);
+        ids.add(JcrItemUtil.getItemId(testContentNode.getProperty(TEST_PROPERTY)));
+        when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
 
         // WHEN
         subApp.updateActionbar(browserPresenter.getActionbarPresenter());

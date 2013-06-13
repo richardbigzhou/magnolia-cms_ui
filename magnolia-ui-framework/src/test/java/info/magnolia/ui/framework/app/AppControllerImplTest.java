@@ -42,24 +42,34 @@ import info.magnolia.event.SimpleEventBus;
 import info.magnolia.event.SystemEventBus;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.ModuleRegistryImpl;
+import info.magnolia.monitoring.SystemMonitor;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
+import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.test.mock.MockWebContext;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImpl;
-import info.magnolia.ui.framework.app.registry.AppDescriptorRegistry;
-import info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor;
-import info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer;
-import info.magnolia.ui.framework.event.AdmincentralEventBus;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.location.LocationChangedEvent;
-import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.ui.api.app.App;
+import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.app.AppDescriptor;
+import info.magnolia.ui.api.app.AppInstanceController;
+import info.magnolia.ui.api.app.AppLifecycleEvent;
+import info.magnolia.ui.api.app.AppLifecycleEventHandler;
+import info.magnolia.ui.api.app.AppLifecycleEventType;
+import info.magnolia.ui.api.app.AppView;
+import info.magnolia.ui.api.app.SubAppDescriptor;
+import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManagerImpl;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
+import info.magnolia.ui.api.location.DefaultLocation;
+import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.location.LocationChangedEvent;
+import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.message.MessagesManagerImpl;
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.api.view.Viewport;
 
 import java.util.ArrayList;
@@ -75,7 +85,7 @@ import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
 
 /**
- * Test case for {@link info.magnolia.ui.framework.app.AppController}.
+ * Test case for {@link info.magnolia.ui.api.app.AppController}.
  */
 public class AppControllerImplTest {
 
@@ -406,7 +416,7 @@ public class AppControllerImplTest {
 
         // THEN
         assertNotNull(appController.getCurrentApp());
-        assertEquals(APP_NAME_2 + "_name", appController.getCurrentAppLocation().getAppId());
+        assertEquals(APP_NAME_2 + "_name", appController.getCurrentAppLocation().getAppName());
         assertNotNull(appController.getCurrentAppLocation());
         assertNotEquals(newLocation, appController.getCurrentAppLocation());
         assertNotNull(appController.getCurrentAppLocation().getSubAppId());
@@ -427,7 +437,7 @@ public class AppControllerImplTest {
 
         // THEN
         assertNotNull(appController.getCurrentApp());
-        assertEquals(APP_NAME_1 + "_name", appController.getCurrentAppLocation().getAppId());
+        assertEquals(APP_NAME_1 + "_name", appController.getCurrentAppLocation().getAppName());
         assertNotNull(appController.getCurrentAppLocation().getParameter());
         assertEquals(parameter, appController.getCurrentAppLocation().getParameter());
     }
@@ -491,7 +501,9 @@ public class AppControllerImplTest {
         components.registerInstance(AppDescriptorRegistry.class, appRegistry);
         components.registerInstance(Shell.class, mock(Shell.class));
         components.registerInstance(MessagesManager.class, mock(MessagesManagerImpl.class));
-
+        final SystemMonitor systemMonitor = mock(SystemMonitor.class);
+        when(systemMonitor.isMemoryLimitReached()).thenReturn(false);
+        components.registerInstance(SystemMonitor.class, systemMonitor);
 
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         TestEventBusConfigurer eventBusConfigurer = new TestEventBusConfigurer(eventBus);
@@ -501,7 +513,7 @@ public class AppControllerImplTest {
         return builder.build(eventBusConfigurer);
     }
 
-    private class TestEventBusConfigurer extends AdminCentralEventBusConfigurer {
+    private class TestEventBusConfigurer extends AbstractGuiceComponentConfigurer {
 
         private final EventBus eventBus;
 

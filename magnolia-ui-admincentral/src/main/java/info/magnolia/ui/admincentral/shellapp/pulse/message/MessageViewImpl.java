@@ -116,10 +116,9 @@ public final class MessageViewImpl extends HorizontalLayout implements MessageVi
     private class SimpleButton extends CssLayout{
 
         private final static String BACK_BUTTON_LABEL ="Back to all messages";
-        private final static String BACK_BUTTON_STYLE ="back-button";
 
         private SimpleButton() {
-            setStyleName(BACK_BUTTON_STYLE);
+            setStyleName("back-button");
 
             Icon icon = new Icon("arrow2_w", 16);
             Label label = new Label(BACK_BUTTON_LABEL);

@@ -35,7 +35,7 @@ package info.magnolia.ui.contentapp.detail.action;
 
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
-import info.magnolia.ui.framework.location.LocationController;
+import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
@@ -52,7 +52,9 @@ import org.slf4j.LoggerFactory;
  * @see EditItemActionDefinition
  */
 public class EditItemAction extends AbstractAction<EditItemActionDefinition> {
+
     private final Logger log = LoggerFactory.getLogger(getClass());
+
     private final AbstractJcrNodeAdapter nodeItemToEdit;
     private final LocationController locationController;
 
@@ -72,7 +74,7 @@ public class EditItemAction extends AbstractAction<EditItemActionDefinition> {
                 return;
             }
             final String path = nodeItemToEdit.applyChanges().getPath();
-            DetailLocation location = new DetailLocation(getDefinition().getAppId(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path, "");
+            DetailLocation location = new DetailLocation(getDefinition().getAppName(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path, "");
             locationController.goTo(location);
 
         } catch (RepositoryException e) {

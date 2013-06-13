@@ -34,10 +34,11 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.statusbar.StatusBarView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.event.SelectionChangedEvent;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.jcr.RepositoryException;
@@ -61,31 +62,21 @@ public class WorkbenchStatusBarPresenter {
 
     private EventBus eventBus;
 
-    private int selectionCount;
-    private int itemCount;
-
-    private String countPattern = "%d item(s), %d selected";
-
     private final Label selectionLabel = new Label();
-    private final Label countLabel = new Label();
-
-    private JcrItemAdapter selectedItem;
 
     private String workbenchRootPath;
 
     @Inject
     public WorkbenchStatusBarPresenter(StatusBarView view) {
         this.view = view;
-        countLabel.setSizeUndefined();
     }
 
     private void bindHandlers() {
-        eventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
+        eventBus.addHandler(SelectionChangedEvent.class, new SelectionChangedEvent.Handler() {
 
             @Override
-            public void onItemSelected(ItemSelectedEvent event) {
-                setSelectedItem(event.getItem());
-                setSelectionCount(event.getItem() != null ? 1 : 0);
+            public void onSelectionChanged(SelectionChangedEvent event) {
+                setSelectedItems(event.getItems());
             }
         });
     }
@@ -95,47 +86,36 @@ public class WorkbenchStatusBarPresenter {
 
         this.eventBus = eventBus;
 
-        view.addComponent(selectionLabel, Alignment.MIDDLE_LEFT);
+        view.addComponent(selectionLabel, Alignment.TOP_LEFT);
         ((HorizontalLayout) view).setExpandRatio(selectionLabel, 1);
-        view.addComponent(countLabel, Alignment.MIDDLE_RIGHT);
-        ((HorizontalLayout) view).setExpandRatio(countLabel, 0);
 
         bindHandlers();
 
         return view;
     }
 
+    public void setSelectedItems(List<JcrItemAdapter> items) {
+        setSelectedItem(items.get(0));
+    }
+
     public void setSelectedItem(JcrItemAdapter item) {
-        if (item != selectedItem) {
-            String newValue = "";
-            String newDescription = null;
-            if (item != null) {
-                javax.jcr.Item jcrItem = item.getJcrItem();
-                try {
-                    newValue = jcrItem.getPath();
+        String newValue = "";
+        String newDescription = null;
+        if (item != null) {
+            javax.jcr.Item jcrItem = item.getJcrItem();
+            try {
+                newValue = jcrItem.getPath();
 
-                    if (!workbenchRootPath.equals("/")) {
-                        newValue = StringUtils.removeStart(newValue, workbenchRootPath);
-                    }
-
-                    newDescription = newValue;
-                } catch (RepositoryException e) {
-                    log.warn("Could not retrieve path from item with id " + item.getItemId(), e);
+                if (!workbenchRootPath.equals("/")) {
+                    newValue = StringUtils.removeStart(newValue, workbenchRootPath);
                 }
+
+                newDescription = newValue;
+            } catch (RepositoryException e) {
+                log.warn("Could not retrieve path from item with id " + item.getItemId(), e);
             }
-            selectionLabel.setValue(newValue);
-            selectionLabel.setDescription(newDescription);
-            this.selectedItem = item;
         }
-    }
-
-    public void setSelectionCount(int selectionCount) {
-        countLabel.setValue(String.format(countPattern, itemCount, selectionCount));
-        this.selectionCount = selectionCount;
-    }
-
-    public void setItemCount(int itemCount) {
-        countLabel.setValue(String.format(countPattern, itemCount, selectionCount));
-        this.itemCount = itemCount;
+        selectionLabel.setValue(newValue);
+        selectionLabel.setDescription(newDescription);
     }
 }

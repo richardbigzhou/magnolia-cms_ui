@@ -45,7 +45,6 @@ import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 
@@ -150,7 +149,7 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
     }
 
     private void fireCategoryChangedEvent(MessageCategory category) {
-        Iterator<Component> iterator = getComponentIterator();
+        Iterator<Component> iterator = iterator();
         while (iterator.hasNext()) {
             Component component = iterator.next();
             if (component instanceof MessageCategoryTab) {
@@ -164,9 +163,8 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
     /**
      * Message category button.
      */
-    public class MessageCategoryTab extends CustomComponent {
+    public class MessageCategoryTab extends HorizontalLayout {
 
-        private final HorizontalLayout root = new HorizontalLayout();
         private final MessageCategory category;
         private final Label categoryLabel;
         private final Label badge;
@@ -174,8 +172,8 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
         public MessageCategoryTab(MessageCategory category) {
             super();
             this.category = category;
-            addStyleName("navigator-tab");
-            root.setSizeUndefined();
+            this.addStyleName("navigator-tab");
+            this.setSizeUndefined();
 
             categoryLabel = new Label(category.getCaption());
             categoryLabel.addStyleName("category");
@@ -184,9 +182,9 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
             badge.addStyleName("badge");
             badge.setVisible(false);
 
-            root.addComponent(categoryLabel);
-            root.addComponent(badge);
-            root.addLayoutClickListener(new LayoutClickListener() {
+            this.addComponent(categoryLabel);
+            this.addComponent(badge);
+            this.addLayoutClickListener(new LayoutClickListener() {
 
                 @Override
                 public void layoutClick(LayoutClickEvent event) {
@@ -194,7 +192,6 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
                 }
             });
 
-            setCompositionRoot(root);
         }
 
         public void setActive(boolean active) {

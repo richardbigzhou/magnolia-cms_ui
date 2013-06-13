@@ -34,21 +34,22 @@
 package info.magnolia.ui.admincentral;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.admincentral.app.simple.DefaultLocationHistoryMapper;
+import info.magnolia.ui.framework.app.DefaultLocationHistoryMapper;
 import info.magnolia.ui.admincentral.shellapp.ShellAppController;
 import info.magnolia.ui.admincentral.shellapp.applauncher.AppLauncherShellApp;
 import info.magnolia.ui.admincentral.shellapp.favorites.FavoritesShellApp;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseShellApp;
-import info.magnolia.ui.framework.app.AppController;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
-import info.magnolia.ui.framework.event.AdmincentralEventBus;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.location.LocationController;
-import info.magnolia.ui.framework.location.LocationHistoryHandler;
+import info.magnolia.ui.admincentral.usermenu.UserMenuPresenter;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
+import info.magnolia.ui.api.location.DefaultLocation;
+import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.location.LocationController;
+import info.magnolia.ui.api.location.LocationHistoryHandler;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.ShellImpl;
-import info.magnolia.ui.api.view.View;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -64,8 +65,10 @@ public class AdmincentralPresenter {
     private final ShellImpl shell;
 
     @Inject
-    public AdmincentralPresenter(final ShellImpl shell, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, MessagesManager messagesManager) {
+    public AdmincentralPresenter(final ShellImpl shell, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, final AppLauncherLayoutManager appLauncherLayoutManager, final LocationController locationController, final AppController appController, final ShellAppController shellAppController, MessagesManager messagesManager, UserMenuPresenter userMenu) {
         this.shell = shell;
+
+        shell.setUserMenu(userMenu.start());
 
         shellAppController.setViewport(this.shell.getShellAppViewport());
         shellAppController.addShellApp("applauncher", AppLauncherShellApp.class);

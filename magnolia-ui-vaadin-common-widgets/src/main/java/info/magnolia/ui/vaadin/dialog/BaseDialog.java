@@ -228,10 +228,10 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         }
         getState().actions.put(actionName, actionLabel);
         if (COMMIT_ACTION_NAME.equals(actionName)) {
-            addShortcut(actionName, KeyCode.S, ModifierKey.CTRL);
+            addShortcut(actionName, KeyCode.S, ModifierKey.CTRL, ModifierKey.ALT);
         } else if (CANCEL_ACTION_NAME.equals(actionName)) {
-            addShortcut(actionName, KeyCode.ESCAPE);
-            addShortcut(actionName, KeyCode.C, ModifierKey.CTRL);
+            // addShortcut(actionName, KeyCode.ESCAPE);
+            addShortcut(actionName, KeyCode.C, ModifierKey.CTRL, ModifierKey.ALT);
         }
     }
 

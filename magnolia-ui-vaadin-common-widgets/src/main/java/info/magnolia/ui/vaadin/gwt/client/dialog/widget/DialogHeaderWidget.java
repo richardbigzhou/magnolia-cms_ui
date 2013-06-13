@@ -40,7 +40,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ButtonBase;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -55,7 +54,7 @@ public class DialogHeaderWidget extends FlowPanel {
     private static final String CLASSNAME_HELPBUTTON = "btn-form-help";
     private static final String CLASSNAME_HEADER_TOOLBAR = "dialog-header-toolbar";
 
-    protected ButtonBase closeButton;
+    protected CloseButton closeButton = new CloseButton();
 
     protected DialogHeaderCallback callback = null;
 
@@ -92,15 +91,19 @@ public class DialogHeaderWidget extends FlowPanel {
 
     public void construct() {
 
-        closeButton = new CloseButton(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                callback.onCloseFired();
-            }
-        });
         closeButton.addStyleDependentName("dialog");
         closeButton.setVisible(false);
-        add(closeButton, headerPanel);
+        headerPanel.appendChild(closeButton.getElement());
+        addDomHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Element target = event.getNativeEvent().getEventTarget().cast();
+                if (closeButton.getElement().isOrHasChild(target)) {
+                    callback.onCloseFired();
+                }
+            }
+        }, ClickEvent.getType());
+
 
         headerPanel.addClassName(CLASSNAME_HEADER);
         descriptionPanel.addStyleName(ClASSNAME_DESCRIPTION);

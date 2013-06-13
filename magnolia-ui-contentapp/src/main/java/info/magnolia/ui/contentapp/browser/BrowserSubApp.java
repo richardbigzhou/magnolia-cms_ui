@@ -46,21 +46,24 @@ import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.AvailabilityRule;
+import info.magnolia.ui.api.availability.menu.ActionMenu;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
-import info.magnolia.ui.framework.app.SubAppContext;
-import info.magnolia.ui.framework.app.SubAppEventBus;
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppEventBus;
+import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
-import info.magnolia.ui.workbench.event.ItemSelectedEvent;
+import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -73,9 +76,6 @@ import javax.jcr.Workspace;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
-
-import com.vaadin.server.ExternalResource;
 
 /**
  * Base implementation of a content subApp. A content subApp displays a collection of data represented inside a {@link info.magnolia.ui.workbench.ContentView}
@@ -92,7 +92,7 @@ import com.vaadin.server.ExternalResource;
  *  </ul>
  * In order to perform those tasks this class registers non-overridable handlers for the following events:
  *  <ul>
- *      <li> {@link ItemSelectedEvent}
+ *      <li> {@link SelectionChangedEvent}
  *      <li> {@link ViewTypeChangedEvent}
  *      <li> {@link SearchEvent}
  *  </ul>
@@ -201,163 +201,116 @@ public class BrowserSubApp extends BaseSubApp {
         } catch (RepositoryException e) {
             log.warn("Could not retrieve item at path {} in workspace {}", path, workspaceName);
         }
-
-        getBrowser().resync(itemId, viewType, query);
+        List<String> ids = new ArrayList<String>();
+        ids.add(itemId);
+        getBrowser().resync(ids, viewType, query);
         updateActionbar(getBrowser().getActionbarPresenter());
     }
 
 
     /**
      * Show the actionPopup for the specified item at the specified coordinates.
-     * TODO: Move to BrowserPresenter. Christopher Zimmermann
      */
     public void showActionPopup(String absItemPath, int x, int y) {
         ActionPopup actionPopup = browser.getView().getActionPopup();
 
-        updateActionPopup(actionPopup, absItemPath);
+        updateActionPopup(actionPopup);
         actionPopup.open(x, y);
     }
 
     /**
-     * TODO: Eliminate redundancy with BrowserSubApp.updateActionBar (MGNLUI-1367) Christopher Zimmermann.
-     * TODO: Move to BrowserPresenter. Christopher Zimmermann
-     * Update the items in the actionPopup based on the specified item and the ActionPopup availability configuration.
+     * Updates the actions available in the browser's action menus. Decides which section to show and which actions in the
+     * section to enable based on the selection in the workbench.
+     *
+     * @param actionMenu {@link ActionbarPresenter} or {@link ActionPopup}
      */
-    private void updateActionPopup(ActionPopup actionPopup, String absItemPath) {
-
-        actionPopup.removeAllItems();
-
+    public void updateActionMenu(ActionMenu actionMenu) {
+        actionMenu.hideAllSections();
         BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
         WorkbenchDefinition workbench = subAppDescriptor.getWorkbench();
         List<ActionbarSectionDefinition> sections = subAppDescriptor.getActionbar().getSections();
 
         try {
-            Item item = null;
-            String selectedItemId = getBrowser().getSelectedItemId();
-            String workbenchRootItemId = JcrItemUtil.getItemId(SessionUtil.getNode(workbench.getWorkspace(), workbench.getPath()));
-            if (selectedItemId != null && !selectedItemId.equals(workbenchRootItemId)) {
-                item = JcrItemUtil.getJcrItem(workbench.getWorkspace(), selectedItemId);
-            }
+            String workbenchRootItemId = JcrItemUtil.getItemId(workbench.getWorkspace(), workbench.getPath());
+            List<String> selectedItemIds = getBrowser().getSelectedItemIds();
+            List<Item> items = getJcrItemsExceptOne(workbench.getWorkspace(), selectedItemIds, workbenchRootItemId);
 
             // Figure out which section to show, only one
-            ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, item);
+            ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, items);
 
-            // If there no section matched the selection we just hide everything
+            // If there no section matched the selection we return
             if (sectionDefinition == null) {
                 return;
             }
 
-            // Evaluate availability of each action within the section
-            ContextMenuItem menuItem = null;
             for (ActionbarGroupDefinition groupDefinition : sectionDefinition.getGroups()) {
+                List<ActionDefinition> allActions = new LinkedList<ActionDefinition>();
+                List<ActionDefinition> enabledActions = new LinkedList<ActionDefinition>();
+
                 for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
 
                     String actionName = itemDefinition.getName();
-                    menuItem = addActionPopupItem(subAppDescriptor, actionPopup, itemDefinition, item);
-                    menuItem.setEnabled(actionExecutor.isAvailable(actionName, item));
-                }
+                    allActions.add(actionExecutor.getActionDefinition(actionName));
 
-                // Add group separator.
-                if (menuItem != null) {
-                    menuItem.setSeparatorVisible(true);
+                    if (actionExecutor.isAvailable(actionName, items.toArray(new Item[items.size()]))) {
+                        enabledActions.add(actionExecutor.getActionDefinition(actionName));
+                    }
+
                 }
+                actionMenu.showSectionActions(sectionDefinition.getName(), allActions, enabledActions);
             }
-            if (menuItem != null) {
-                menuItem.setSeparatorVisible(false);
-            }
+
         } catch (RepositoryException e) {
-            log.error("Failed to updated actionbar", e);
+            log.error("Failed to update action menu", e);
         }
+
     }
 
     /**
-     * Add an additional menu item on the actionPopup.
-     * TODO: Move to BrowserPresenter. Christopher Zimmermann
+     * Update the items in the actionPopup based on the selected item and the ActionPopup availability configuration.
+     * Delegates to {@link #updateActionMenu(info.magnolia.ui.api.availability.menu.ActionMenu)}.
+     * This method can be overriden to implement custom conditions diverging from {@link #updateActionbar(info.magnolia.ui.actionbar.ActionbarPresenter)}.
      */
-    private ContextMenuItem addActionPopupItem(BrowserSubAppDescriptor subAppDescriptor, ActionPopup actionPopup, ActionbarItemDefinition itemDefinition, javax.jcr.Item item) {
-        String actionName = itemDefinition.getName();
-
-        ActionDefinition action = subAppDescriptor.getActions().get(actionName);
-        String label = action.getLabel();
-        String iconFontCode = ActionPopup.ICON_FONT_CODE + action.getIcon();
-        ExternalResource iconFontResource = new ExternalResource(iconFontCode);
-        ContextMenuItem menuItem = actionPopup.addItem(label, iconFontResource);
-        // Set data variable so that the event handler can determine which action to launch.
-        menuItem.setData(actionName);
-
-        return menuItem;
+    public void updateActionPopup(ActionPopup actionPopup) {
+        updateActionMenu(actionPopup);
     }
 
     /**
-     * Updates the actions available in the browser's actionbar. Decides which section to show and which actions in the
-     * section to enable based on the selection in the workbench. This method can be overridden to implement custom
-     * conditions.
-     * 
+     * Update the items in the actionbar based on the selected item and the action availability configuration.
+     * Delegates to {@link #updateActionMenu(info.magnolia.ui.api.availability.menu.ActionMenu)}.
+     * This method can be overriden to implement custom conditions diverging from {@link #updateActionPopup(info.magnolia.ui.vaadin.actionbar.ActionPopup)}.
+     *
      * @see #restoreBrowser(BrowserLocation)
      * @see #locationChanged(Location)
      * @see ActionbarPresenter
      */
     public void updateActionbar(ActionbarPresenter actionbar) {
-
-        BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
-        WorkbenchDefinition workbench = subAppDescriptor.getWorkbench();
-        List<ActionbarSectionDefinition> sections = subAppDescriptor.getActionbar().getSections();
-
-        try {
-            Item item = null;
-            String selectedItemId = getBrowser().getSelectedItemId();
-            String workbenchRootItemId = JcrItemUtil.getItemId(SessionUtil.getNode(workbench.getWorkspace(), workbench.getPath()));
-            if (selectedItemId != null && !selectedItemId.equals(workbenchRootItemId)) {
-                item = JcrItemUtil.getJcrItem(workbench.getWorkspace(), selectedItemId);
-            }
-
-            // Figure out which section to show, only one
-            ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, item);
-
-            // If there no section matched the selection we just hide everything
-            if (sectionDefinition == null) {
-                for (ActionbarSectionDefinition section : sections) {
-                    actionbar.hideSection(section.getName());
-                }
-                return;
-            }
-
-            // Hide all other sections
-            for (ActionbarSectionDefinition section : sections) {
-                if (section != sectionDefinition) {
-                    actionbar.hideSection(section.getName());
-                }
-            }
-
-            // Show our section
-            actionbar.showSection(sectionDefinition.getName());
-
-            // Evaluate availability of each action within the section
-            for (ActionbarGroupDefinition groupDefinition : sectionDefinition.getGroups()) {
-                for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
-
-                    String actionName = itemDefinition.getName();
-                    if (actionExecutor.isAvailable(actionName, item)) {
-                        actionbar.enable(actionName);
-                    } else {
-                        actionbar.disable(actionName);
-                    }
-                }
-            }
-        } catch (RepositoryException e) {
-            log.error("Failed to updated actionbar", e);
-            for (ActionbarSectionDefinition section : sections) {
-                actionbar.hideSection(section.getName());
-            }
-        }
+        updateActionMenu(actionbar);
     }
 
-    private ActionbarSectionDefinition getVisibleSection(List<ActionbarSectionDefinition> sections, Item item) throws RepositoryException {
+    private ActionbarSectionDefinition getVisibleSection(List<ActionbarSectionDefinition> sections, List<Item> items) throws RepositoryException {
         for (ActionbarSectionDefinition section : sections) {
-            if (isSectionVisible(section, item))
+            if (isSectionVisible(section, items))
                 return section;
         }
         return null;
+    }
+
+    private boolean isSectionVisible(ActionbarSectionDefinition section, List<Item> items) throws RepositoryException {
+        AvailabilityDefinition availability = section.getAvailability();
+
+        // Validate that the user has all required roles - only once
+        if (!availability.getAccess().hasAccess(MgnlContext.getUser())) {
+            return false;
+        }
+
+        // section must be visible for all items
+        for (Item item : items) {
+            if (!isSectionVisible(section, item)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean isSectionVisible(ActionbarSectionDefinition section, Item item) throws RepositoryException {
@@ -370,11 +323,6 @@ public class BrowserSubApp extends BaseSubApp {
             if (rule == null || !rule.isAvailable(item)) {
                 return false;
             }
-        }
-
-        // Validate that the user has all required roles
-        if (!availability.getAccess().hasAccess(MgnlContext.getUser())) {
-            return false;
         }
 
         // If this is the root item we display the section only if the root property is set
@@ -440,20 +388,16 @@ public class BrowserSubApp extends BaseSubApp {
      */
     private void registerSubAppEventsHandlers(final EventBus subAppEventBus, final BrowserSubApp subApp) {
         final ActionbarPresenter actionbar = subApp.getBrowser().getActionbarPresenter();
-        subAppEventBus.addHandler(ItemSelectedEvent.class, new ItemSelectedEvent.Handler() {
+        subAppEventBus.addHandler(SelectionChangedEvent.class, new SelectionChangedEvent.Handler() {
 
             @Override
-            public void onItemSelected(ItemSelectedEvent event) {
+            public void onSelectionChanged(SelectionChangedEvent event) {
                 BrowserLocation location = getCurrentLocation();
                 try {
-                    if (event.getItemId() == null) {
-                        location.updateNodePath("/");
-                    } else {
-                        Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.parseNodeIdentifier(event.getItemId()));
-                        location.updateNodePath(selected.getPath());
-                    }
+                    Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.parseNodeIdentifier(event.getFirstItemId()));
+                    location.updateNodePath(selected.getPath());
                 } catch (RepositoryException e) {
-                    log.warn("Could not get jcrItem with itemId " + event.getItemId() + " from workspace " + event.getWorkspace(), e);
+                    log.warn("Could not get jcrItem with itemId " + event.getFirstItemId() + " from workspace " + event.getWorkspace(), e);
                 }
                 getAppContext().updateSubAppLocation(getSubAppContext(), location);
                 updateActionbar(actionbar);
@@ -506,4 +450,20 @@ public class BrowserSubApp extends BaseSubApp {
         });
     }
 
+    public static List<Item> getJcrItemsExceptOne(final String workspaceName, List<String> ids, String itemIdToExclude) {
+        List<Item> items = JcrItemUtil.getJcrItems(workspaceName, ids);
+        if (itemIdToExclude == null) {
+            return items;
+        }
+        for (int i = 0; i < items.size(); i++) {
+            try {
+                if (itemIdToExclude.equals(JcrItemUtil.getItemId(items.get(i)))) {
+                    items.set(i, null);
+                }
+            } catch (RepositoryException e) {
+                log.debug("Cannot get item ID for item [{}].", items.get(i));
+            }
+        }
+        return items;
+    }
 }

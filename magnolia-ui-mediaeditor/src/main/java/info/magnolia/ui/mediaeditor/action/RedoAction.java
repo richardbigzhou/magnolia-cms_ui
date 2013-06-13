@@ -38,7 +38,7 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.action.definition.RedoActionDefinition;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
-import info.magnolia.ui.mediaeditor.editmode.event.MediaEditorInternalEvent;
+import info.magnolia.ui.mediaeditor.event.MediaEditorInternalEvent;
 
 import com.google.inject.name.Named;
 

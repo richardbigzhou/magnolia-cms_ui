@@ -38,13 +38,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
  * Basic implementation for {@link BaseDialogView}.
@@ -180,9 +181,10 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
             if (actionId.equalsIgnoreCase(defaultActionName)) {
                 button.addStyleDependentName("default");
             }
-            button.addClickHandler(new ClickHandler() {
+            TouchDelegate td = new TouchDelegate(button);
+            td.addTouchEndHandler(new TouchEndHandler() {
                 @Override
-                public void onClick(final ClickEvent event) {
+                public void onTouchEnd(TouchEndEvent touchEndEvent) {
                     getPresenter().fireAction(actionId);
                 }
             });

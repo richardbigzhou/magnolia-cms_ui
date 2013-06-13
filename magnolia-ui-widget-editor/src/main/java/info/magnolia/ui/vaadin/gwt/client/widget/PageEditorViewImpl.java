@@ -37,12 +37,13 @@ import info.magnolia.ui.vaadin.gwt.client.editor.jsni.AbstractFrameEventHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.vaadin.client.BrowserInfo;
+import com.vaadin.client.ComputedStyle;
 
 /**
  * GWT implementation of MagnoliaShell client side (the view part basically).
@@ -50,6 +51,7 @@ import com.vaadin.client.BrowserInfo;
 public class PageEditorViewImpl extends Composite implements PageEditorView {
 
     public static final String PAGE_EDITOR_CLASS_NAME = "pageEditor";
+
     private Listener listener;
 
     private PageEditorFrame iframe = new PageEditorFrame();
@@ -59,11 +61,12 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
     private SimplePanel content;
 
     private AbstractFrameEventHandler handler;
+    private int lastScrollPosition;
 
     public PageEditorViewImpl(EventBus eventBus) {
         super();
         this.handler = GWT.create(AbstractFrameEventHandler.class);
-        this.content = BrowserInfo.get().isTouchDevice() ? new ScrollPanel() : new SimplePanel();
+        this.content = new SimplePanel();
         handler.setView(this);
         handler.setEventBus(eventBus);
         content.setWidget(iframe);
@@ -114,13 +117,26 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
     }
 
     @Override
-    public void initSelectionListener() {
+    public void setLastScrollPosition(int lastScrollPosition) {
+        this.lastScrollPosition = lastScrollPosition;
+    }
+
+    @Override
+    public void resetScrollTop() {
+        getFrame().getElement().getStyle().setHeight(getFrame().getBody().getOffsetHeight(), Style.Unit.PX);
+        new ComputedStyle(getFrame().getElement());
+        content.getElement().setScrollTop(lastScrollPosition);
+    }
+
+    @Override
+    public void initDomEventListeners() {
         if (BrowserInfo.get().isTouchDevice()) {
-            handler.initNativeTouchSelectionListener(iframe.getElement(), listener);
+            handler.initNativeTouchSelectionListener(iframe.getBody(), listener);
         } else {
-            handler.initNativeMouseSelectionListener(iframe.getElement(), listener);
+            handler.initNativeMouseSelectionListener(iframe.getBody(), listener);
         }
         handler.initNativeKeyListener(iframe.getElement());
+        handler.initScrollListener(content.getElement());
     }
 
 }

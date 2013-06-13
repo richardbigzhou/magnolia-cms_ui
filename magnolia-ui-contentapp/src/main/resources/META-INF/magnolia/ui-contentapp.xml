@@ -2,7 +2,7 @@
 <!DOCTYPE module SYSTEM "module.dtd">
 <module>
   <name>ui-contentapp</name>
-  <displayName>Magnolia Content App</displayName>
+  <displayName>Magnolia Content App Framework</displayName>
   <description>Framework API and utilities for content management</description>
   <class>info.magnolia.ui.contentapp.ContentAppModule</class>
   <versionHandler>info.magnolia.ui.contentapp.setup.ContentAppModuleVersionHandler</versionHandler>
@@ -30,10 +30,6 @@
 
   <components>
     <id>app</id>
-
-    <configurer>
-      <class>info.magnolia.ui.framework.event.ChooseDialogEventBusConfigurer</class>
-    </configurer>
 
     <component>
       <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenterFactory</type>

@@ -33,32 +33,44 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.event.EventBus;
+import info.magnolia.event.EventBusProtector;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
+import info.magnolia.monitoring.SystemMonitor;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationBuilder;
 import info.magnolia.objectfactory.configuration.InstanceConfiguration;
+import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.ui.api.app.App;
+import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.app.AppDescriptor;
+import info.magnolia.ui.api.app.AppInstanceController;
+import info.magnolia.ui.api.app.AppView;
+import info.magnolia.ui.api.app.SubApp;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppDescriptor;
+import info.magnolia.ui.api.app.SubAppEventBus;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroup;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroupEntry;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.api.overlay.AlertCallback;
-import info.magnolia.ui.api.overlay.ConfirmationCallback;
-import info.magnolia.ui.api.overlay.MessageStyleType;
-import info.magnolia.ui.api.overlay.NotificationCallback;
+import info.magnolia.ui.api.location.DefaultLocation;
+import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.location.LocationController;
+import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.overlay.OverlayLayer;
+import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroup;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherGroupEntry;
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager;
-import info.magnolia.ui.framework.event.EventBusProtector;
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
-import info.magnolia.ui.framework.location.LocationController;
-import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.framework.context.AbstractUIContext;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 import info.magnolia.ui.vaadin.overlay.OverlayPresenter;
 
 import java.util.Collection;
@@ -72,10 +84,13 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
+
 /**
  * Implements both - the controlling of an app instance as well as the housekeeping of the context for an app.
  */
-public class AppInstanceControllerImpl implements AppContext, AppInstanceController {
+public class AppInstanceControllerImpl extends AbstractUIContext implements AppContext, AppInstanceController {
 
     private static final Logger log = LoggerFactory.getLogger(AppInstanceControllerImpl.class);
 
@@ -105,13 +120,13 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
     private SubAppContext currentSubAppContext;
 
-    private OverlayLayer overlayPresenter;
-
     private AppLauncherLayoutManager appLauncherLayoutManager;
+
+    private final SystemMonitor systemMonitor;
 
     @Inject
     public AppInstanceControllerImpl(ModuleRegistry moduleRegistry, AppController appController, LocationController locationController, Shell shell,
-            MessagesManager messagesManager, AppDescriptor appDescriptor, AppLauncherLayoutManager appLauncherLayoutManager) {
+            MessagesManager messagesManager, AppDescriptor appDescriptor, AppLauncherLayoutManager appLauncherLayoutManager, SystemMonitor systemMonitor) {
         this.moduleRegistry = moduleRegistry;
         this.appController = appController;
         this.locationController = locationController;
@@ -119,15 +134,17 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         this.messagesManager = messagesManager;
         this.appDescriptor = appDescriptor;
         this.appLauncherLayoutManager = appLauncherLayoutManager;
+        this.systemMonitor = systemMonitor;
+    }
 
-        overlayPresenter = new OverlayPresenter() {
-
+    @Override
+    protected OverlayPresenter initializeOverlayPresenter() {
+        return new OverlayPresenter() {
             @Override
             public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
                 View overlayParent = getView();
                 return AppInstanceControllerImpl.this.shell.openOverlayOnView(view, overlayParent, OverlayLayer.ModalityDomain.APP, modalityLevel);
             }
-
         };
     }
 
@@ -177,16 +194,15 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         return app.getView();
     }
 
-
-
-
-
     /**
      * Called when the app is launched from the app launcher OR a location change event triggers
      * it to start.
      */
     @Override
     public void start(Location location) {
+        if (systemMonitor.isMemoryLimitReached()) {
+            shell.openNotification(MessageStyleTypeEnum.WARNING, false, String.format(SystemMonitor.MEMORY_LIMIT_IS_REACHED_STRING_FORMAT, "You might want to close unused apps in order to free memory"));
+        }
 
         app = componentProvider.newInstance(appDescriptor.getAppClass());
         app.start(location);
@@ -345,15 +361,15 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
     }
 
     /**
-     * Used to update the framework about changes to locations inside the app and circumventing the {@link info.magnolia.ui.framework.location.LocationController} mechanism.
+     * Used to update the framework about changes to locations inside the app and circumventing the {@link info.magnolia.ui.api.location.LocationController} mechanism.
      * Example Usages:
      * <pre>
      *     <ul>
-     *         <li>Inside ContentApp framework to update {@link info.magnolia.ui.framework.app.SubAppContext#getLocation()} and the {@link Shell} fragment</li>
+     *         <li>Inside ContentApp framework to update {@link info.magnolia.ui.api.app.SubAppContext#getLocation()} and the {@link Shell} fragment</li>
      *         <li>In the Pages App when navigating pages inside the PageEditor</li>
      *     </ul>
      * </pre>
-     * When ever possible use the {@link info.magnolia.ui.framework.location.LocationController} to not have to do this.
+     * When ever possible use the {@link info.magnolia.ui.api.location.LocationController} to not have to do this.
      *
      * @param subAppContext The subAppContext to be updated.
      * @param location The new {@link Location}.
@@ -441,6 +457,14 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
         configuration.addComponent(InstanceConfiguration.valueOf(SubAppContext.class, subAppContext));
         configuration.addComponent(InstanceConfiguration.valueOf(UiContext.class, subAppContext));
 
+        configuration.addConfigurer(new AbstractGuiceComponentConfigurer() {
+
+            @Override
+            protected void configure() {
+                bind(EventBus.class).annotatedWith(Names.named(SubAppEventBus.NAME)).toProvider(Providers.of(new SimpleEventBus()));
+            }
+        });
+
         EventBusProtector eventBusProtector = new EventBusProtector();
         configuration.addConfigurer(eventBusProtector);
         subAppDetails.eventBusProtector = eventBusProtector;
@@ -454,50 +478,4 @@ public class AppInstanceControllerImpl implements AppContext, AppInstanceControl
 
         return subAppDetails;
     }
-
-    @Override
-    public OverlayCloser openOverlay(View view) {
-        return overlayPresenter.openOverlay(view);
-    }
-
-    @Override
-    public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
-        return overlayPresenter.openOverlay(view, modalityLevel);
-    }
-
-    @Override
-    public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb) {
-        overlayPresenter.openAlert(type, viewToShow, confirmButtonText, cb);
-    }
-
-    @Override
-    public void openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
-        overlayPresenter.openAlert(type, title, body, confirmButtonText, cb);
-    }
-
-    @Override
-    public void openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
-        overlayPresenter.openConfirmation(type, viewToShow, confirmButtonText, cancelButtonText, cancelIsDefault, cb);
-    }
-
-    @Override
-    public void openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
-        overlayPresenter.openConfirmation(type, title, body, confirmButtonText, cancelButtonText, cancelIsDefault, cb);
-    }
-
-    @Override
-    public void openNotification(MessageStyleType type, boolean doesTimeout, View viewToShow) {
-        overlayPresenter.openNotification(type, doesTimeout, viewToShow);
-    }
-
-    @Override
-    public void openNotification(MessageStyleType type, boolean doesTimeout, String title) {
-        overlayPresenter.openNotification(type, doesTimeout, title);
-    }
-
-    @Override
-    public void openNotification(MessageStyleType type, boolean doesTimeout, String title, String linkText, NotificationCallback cb) {
-        overlayPresenter.openNotification(type, doesTimeout, title, linkText, cb);
-    }
-
 }

@@ -13,6 +13,7 @@ import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.extensions.AbstractExtensionConnector;
 
 /**
  * Client side implementation for ContextMenu component
@@ -79,7 +80,7 @@ public class ContextMenuWidget extends Widget {
 	 * @param connector
 	 */
 	public void addRootMenuItem(ContextMenuItemState rootItem,
-			ContextMenuConnector connector) {
+                                AbstractExtensionConnector connector) {
 		ContextMenuItemWidget itemWidget = createEmptyItemWidget(rootItem.id,
 				rootItem.caption, connector);
 		itemWidget.setEnabled(rootItem.enabled);
@@ -101,7 +102,7 @@ public class ContextMenuWidget extends Widget {
 	 * @return
 	 */
 	private ContextMenuItemWidget createEmptyItemWidget(String id,
-			String caption, ContextMenuConnector contextMenuConnector) {
+			String caption, AbstractExtensionConnector contextMenuConnector) {
 		ContextMenuItemWidget widget = GWT.create(ContextMenuItemWidget.class);
 		widget.setId(id);
 		widget.setCaption(caption);
@@ -120,7 +121,7 @@ public class ContextMenuWidget extends Widget {
 	}
 
 	private void createSubMenu(ContextMenuItemWidget parentWidget,
-			ContextMenuItemState childState, ContextMenuConnector connector) {
+			ContextMenuItemState childState, AbstractExtensionConnector connector) {
 		ContextMenuItemWidget childWidget = createEmptyItemWidget(
 				childState.id, childState.caption, connector);
 		childWidget.setEnabled(childState.enabled);

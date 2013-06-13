@@ -73,6 +73,7 @@ import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
 import com.vaadin.client.ui.AbstractLayoutConnector;
 import com.vaadin.client.ui.layout.ElementResizeEvent;
 import com.vaadin.client.ui.layout.ElementResizeListener;
+import com.vaadin.client.ui.nativebutton.NativeButtonConnector;
 import com.vaadin.shared.ui.Connect;
 
 /**
@@ -179,7 +180,7 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                 if (newFragment.isShellApp()) {
                     showShellApp(newFragment.resolveShellAppType());
                 } else {
-                    loadApp(newFragment.getAppId());
+                    loadApp(newFragment.getAppName());
                     rpc.activateApp(newFragment);
                 }
                 lastHandledFragment = newFragment;
@@ -203,9 +204,9 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
     }
 
     @Override
-    public void loadApp(String appId) {
+    public void loadApp(String appName) {
         view.onAppStarting();
-        eventBus.fireEvent(new AppRequestedEvent(appId));
+        eventBus.fireEvent(new AppRequestedEvent(appName));
     }
 
     @Override
@@ -247,6 +248,8 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
                     Widget parentWidget = overlayParent.getWidget();
                     view.openOverlayOnWidget(oc.getWidget(), parentWidget);
                 }
+            } else if (connector instanceof NativeButtonConnector) {
+                view.setUserMenu(connector.getWidget());
             }
         }
 

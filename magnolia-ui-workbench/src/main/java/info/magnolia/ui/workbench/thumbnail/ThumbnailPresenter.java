@@ -35,6 +35,7 @@ package info.magnolia.ui.workbench.thumbnail;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -42,6 +43,9 @@ import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.thumbnail.ThumbnailContainer.ThumbnailItem;
+
+import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
@@ -68,7 +72,8 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     private ThumbnailContainer container;
 
     @Inject
-    public ThumbnailPresenter(ThumbnailView view, ImageProvider imageProvider) {
+    public ThumbnailPresenter(final ThumbnailView view, final ImageProvider imageProvider, ComponentProvider componentProvider) {
+        super(componentProvider);
         this.view = view;
         this.imageProvider = imageProvider;
     }
@@ -81,7 +86,6 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
         container.setWorkspaceName(workbench.getWorkspace());
         container.setThumbnailHeight(73);
         container.setThumbnailWidth(73);
-        container.refresh();
 
         view.setListener(this);
         view.setContainer(container);
@@ -91,9 +95,9 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     }
 
     @Override
-    public void setSelectedItemId(String itemId) {
-        super.setSelectedItemId(itemId);
-        view.select(itemId);
+    public void setSelectedItemIds(List<String> itemIds) {
+        super.setSelectedItemIds(itemIds);
+        view.select(itemIds);
     }
 
     @Override
@@ -108,9 +112,8 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     }
 
     @Override
-    public void onItemSelection(Item item) {
-        JcrItemAdapter jcrItem = getJcrItemByThumbnailItem(item);
-        super.onItemSelection(jcrItem);
+    public void onItemSelection(Set<String> items) {
+        super.onItemSelection(items);
     }
 
     @Override

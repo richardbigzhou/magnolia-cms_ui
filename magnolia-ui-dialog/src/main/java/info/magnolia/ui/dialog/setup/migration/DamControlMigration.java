@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.dialog.setup.migration;
 
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -41,32 +44,33 @@ import javax.jcr.RepositoryException;
  */
 public class DamControlMigration implements ControlMigration {
 
-    private String allowedMimeType;
-
-    public DamControlMigration(String allowedMimeType) {
-        this.allowedMimeType = allowedMimeType;
-    }
-
 
     @Override
     public void migrate(Node controlNode) throws RepositoryException {
         controlNode.getProperty("controlType").remove();
-        controlNode.setProperty("class", "info.magnolia.dam.app.assets.field.definition.AssetLinkFieldDefinition");
+
+        controlNode.setProperty("targetWorkspace", "dam");
+        controlNode.setProperty("appName", "assets");
+        controlNode.setProperty("class", LinkFieldDefinition.class.getName());
+        if (!controlNode.hasNode("identifierToPathConverter")) {
+            controlNode.addNode("identifierToPathConverter", NodeTypes.ContentNode.NAME);
+        }
+        controlNode.getNode("identifierToPathConverter").setProperty("class", "info.magnolia.dam.app.assets.field.translator.AssetCompositeIdKeyTranslator");
+
+        controlNode.addNode("contentPreviewDefinition", NodeTypes.ContentNode.NAME);
+        controlNode.getNode("contentPreviewDefinition").setProperty("contentPreviewClass", "info.magnolia.dam.asset.field.DamFilePreviewComponent");
+
         if (!controlNode.hasProperty("description")) {
             controlNode.setProperty("description", "Select an asset");
         }
-        controlNode.setProperty("identifier", "true");
+
         if (!controlNode.hasProperty("label")) {
             controlNode.setProperty("label", "Image");
         }
-        controlNode.setProperty("repository", "data");
-        controlNode.setProperty("type", "String");
-        controlNode.setProperty("workspace", "dam");
-        if (allowedMimeType != null) {
-            controlNode.setProperty("allowedMimeType", allowedMimeType);
+
+        if (controlNode.hasProperty("repository")) {
+            controlNode.getProperty("repository").remove();
         }
-        controlNode.setProperty("appName", "assets");
+
     }
-
-
 }

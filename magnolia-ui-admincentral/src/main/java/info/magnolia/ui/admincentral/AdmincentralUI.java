@@ -34,6 +34,8 @@
 package info.magnolia.ui.admincentral;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.Components;
@@ -41,12 +43,14 @@ import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationBuilder;
 import info.magnolia.objectfactory.configuration.ImplementationConfiguration;
 import info.magnolia.objectfactory.configuration.InstanceConfiguration;
+import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
-import info.magnolia.ui.framework.event.EventBusProtector;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
+import info.magnolia.event.EventBusProtector;
 import info.magnolia.ui.framework.message.LocalMessageDispatcher;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.view.View;
 
@@ -55,6 +59,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
@@ -87,6 +93,13 @@ public class AdmincentralUI extends UI {
         configuration.addComponent(InstanceConfiguration.valueOf(UI.class, this));
         configuration.addComponent(ImplementationConfiguration.valueOf(UiContext.class, Shell.class));
 
+        configuration.addConfigurer(new AbstractGuiceComponentConfigurer() {
+
+            @Override
+            protected void configure() {
+                bind(EventBus.class).annotatedWith(Names.named(AdmincentralEventBus.NAME)).toProvider(Providers.of(new SimpleEventBus()));
+            }
+        });
         eventBusProtector = new EventBusProtector();
         configuration.addConfigurer(eventBusProtector);
 
@@ -116,7 +129,8 @@ public class AdmincentralUI extends UI {
             // make sure the error handler covers the detach phase (it does not happen in service phase).
             super.detach();
         } catch (Exception e) {
-            getErrorHandler().error(new com.vaadin.server.ErrorEvent(e));
+            // todo dlipp: we should revert to using errorHandler + logging the stacktrace once MGNLUI-1532 is fixed
+            log.warn("Could not properly detach UI with caption '" + getCaption() + "': " + e.toString());
         }
         eventBusProtector.resetEventBuses();
         componentProvider.destroy();

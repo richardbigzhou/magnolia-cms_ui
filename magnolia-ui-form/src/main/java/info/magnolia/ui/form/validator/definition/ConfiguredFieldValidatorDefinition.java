@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.form.validator.definition;
 
+import info.magnolia.ui.form.validator.factory.FieldValidatorFactory;
+
 /**
  * Default implementation of {@link FieldValidatorDefinition}.
  */
@@ -42,9 +44,15 @@ public class ConfiguredFieldValidatorDefinition implements FieldValidatorDefinit
 
     private String i18nBasename;
 
+    private Class<? extends FieldValidatorFactory> factoryClass;
+
     @Override
     public String getErrorMessage() {
         return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     @Override
@@ -52,12 +60,16 @@ public class ConfiguredFieldValidatorDefinition implements FieldValidatorDefinit
         return i18nBasename;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
     public void setI18nBasename(String i18nBasename) {
         this.i18nBasename = i18nBasename;
     }
 
+    @Override
+    public Class<? extends FieldValidatorFactory> getFactoryClass() {
+        return factoryClass;
+    }
+
+    public void setFactoryClass(Class<? extends FieldValidatorFactory> factoryClass) {
+        this.factoryClass = factoryClass;
+    }
 }

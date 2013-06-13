@@ -19,6 +19,18 @@
     &.btn-dialog-commit {
       background-color: $c40;
     }
+
+    &.commit:hover,
+    &.btn-dialog-commit:hover {
+      background-color: $c44;
+      color: $c40;
+    }
+
+    &.commit:active,
+    &.btn-dialog-commit:active {
+      background-color: $c80;
+      color: $c40;
+    }
   }
 
   .v-button-inline,
@@ -42,6 +54,17 @@
   text-transform: uppercase;
   cursor: pointer;
   outline: none !important;
+  @include box-sizing(content-box);
+
+  &:hover {
+    background-color: $c14;
+    color: $c10;
+  }
+
+  &:active {
+    background-color: $c80;
+    color: $c10;
+  }
 
   &:-moz-focusring {
     outline: none;
@@ -51,24 +74,19 @@
 @mixin nativebutton {
   @include basebutton;
 
-  padding: 6px 10px 3px;
-  line-height: 1;
+  padding: 3px 10px 0;
+  line-height: 16px;
+  height: 20px;
 
-  &:active {
-    padding-top: 7px;
-    padding-bottom: 2px;
+  &::-moz-focus-inner {
+    border: 0;
   }
 }
 
 @mixin vaadinbutton {
   @include basebutton;
-
   padding: 3px 10px 0;
-
-  &:active:not(.v-button-link) .v-button-wrap {
-    position: relative;
-    top: 1px;
-  }
+  line-height: 20px;
 }
 
 @mixin linkbutton {
@@ -82,9 +100,11 @@
   &:hover,
   &:focus {
     color: $c20;
+    background-color: transparent;
   }
 
   &:active {
     color: inherit;
+    background-color: transparent;
   }
 }

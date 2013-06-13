@@ -7,6 +7,7 @@
 @import "messages.scss";
 @import "button.scss";
 @import "inputfield.scss";
+@import "checkbox.scss";
 @import "datefield.scss";
 @import "util/utils.scss";
 
@@ -40,6 +41,7 @@
   @include messages;
   @include button;
   @include inputfield;
+  @include checkbox;
   @include datefield;
 
 }

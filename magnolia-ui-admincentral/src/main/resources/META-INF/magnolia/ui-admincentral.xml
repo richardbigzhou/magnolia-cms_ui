@@ -2,48 +2,15 @@
 <!DOCTYPE module SYSTEM "module.dtd">
 <module>
   <name>ui-admincentral</name>
-  <displayName>Magnolia AdminCentral</displayName>
+  <displayName>Magnolia Admincentral</displayName>
   <description>New Magnolia Administration GUI</description>
-  <class>info.magnolia.ui.admincentral.module.AdminCentralModule</class>
+  <class>info.magnolia.ui.admincentral.AdmincentralModule</class>
   <versionHandler>info.magnolia.ui.admincentral.setup.AdmincentralModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 
   <components>
     <id>main</id>
 
-    <component>
-      <type>info.magnolia.ui.api.i18n.I18NAuthoringSupport</type>
-      <workspace>config</workspace>
-      <path>/server/i18n/authoring50</path>
-      <observed>true</observed>
-      <scope>singleton</scope>
-    </component>
-
-    <component>
-      <type>info.magnolia.ui.framework.message.MessagesManager</type>
-      <implementation>info.magnolia.ui.framework.message.MessagesManagerImpl</implementation>
-    </component>
-
-    <component>
-      <type>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager</type>
-      <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptorManager</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.framework.app.registry.AppDescriptorRegistry</type>
-      <implementation>info.magnolia.ui.framework.app.registry.AppDescriptorRegistry</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManager</type>
-      <implementation>info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayoutManagerImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager</type>
-      <implementation>info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.dialog.registry.DialogDefinitionRegistry</type>
-      <implementation>info.magnolia.ui.dialog.registry.DialogDefinitionRegistry</implementation>
-    </component>
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.message.registry.ConfiguredMessageViewDefinitionManager</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.registry.ConfiguredMessageViewDefinitionManager</implementation>
@@ -58,68 +25,14 @@
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.definition.ConfiguredMessageViewDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.framework.app.AppDescriptor</type>
-      <implementation>info.magnolia.ui.framework.app.registry.ConfiguredAppDescriptor</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.framework.app.SubAppDescriptor</type>
-      <implementation>info.magnolia.ui.framework.app.registry.ConfiguredSubAppDescriptor</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherLayoutDefinition</type>
-      <implementation>info.magnolia.ui.framework.app.launcherlayout.definition.ConfiguredAppLauncherLayoutDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherGroupDefinition</type>
-      <implementation>info.magnolia.ui.framework.app.launcherlayout.definition.ConfiguredAppLauncherGroupDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.framework.app.launcherlayout.definition.AppLauncherGroupEntryDefinition</type>
-      <implementation>info.magnolia.ui.framework.app.launcherlayout.definition.ConfiguredAppLauncherGroupEntryDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.api.i18n.I18NAwareProperty</type>
-      <implementation>info.magnolia.ui.admincentral.i18n.I18NAwarePropertyImpl</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.api.availability.AvailabilityDefinition</type>
-      <implementation>info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.imageprovider.definition.ImageProviderDefinition</type>
-      <implementation>info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
+      <type>info.magnolia.ui.admincentral.usermenu.definition.UserMenuDefinition</type>
+      <implementation>info.magnolia.ui.admincentral.usermenu.definition.ConfiguredUserMenuDefinition</implementation>
     </type-mapping>
   </components>
 
   <components>
     <id>admincentral</id>
 
-    <configurer>
-      <class>info.magnolia.ui.framework.event.AdminCentralEventBusConfigurer</class>
-    </configurer>
-    <component>
-      <type>info.magnolia.ui.form.validator.registry.FieldValidatorRegistry</type>
-      <workspace>config</workspace>
-      <path>/modules/ui-admincentral/fieldValidatorRegistry</path>
-      <observed>true</observed>
-      <scope>singleton</scope>
-    </component>
-    <component>
-      <type>info.magnolia.ui.framework.location.LocationController</type>
-      <implementation>info.magnolia.ui.framework.location.LocationController</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.framework.shell.Shell</type>
-      <implementation>info.magnolia.ui.framework.shell.ShellImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.framework.app.AppController</type>
-      <implementation>info.magnolia.ui.framework.app.AppControllerImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.framework.app.AppView</type>
-      <implementation>info.magnolia.ui.framework.app.DefaultAppView</implementation>
-    </component>
     <component>
       <type>info.magnolia.ui.admincentral.shellapp.ShellAppController</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.ShellAppController</implementation>
@@ -165,67 +78,25 @@
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.MessageViewImpl</implementation>
     </component>
     <component>
+      <type>info.magnolia.ui.admincentral.usermenu.UserMenuView</type>
+      <implementation>info.magnolia.ui.admincentral.usermenu.UserMenuViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.admincentral.usermenu.UserMenuPresenter</type>
+      <implementation>info.magnolia.ui.admincentral.usermenu.UserMenuPresenter</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.dashboard.PulseDashboardView</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.dashboard.PulseDashboardViewImpl</implementation>
     </component>
-    <type-mapping>
-      <type>info.magnolia.ui.framework.app.AppInstanceController</type>
-      <implementation>info.magnolia.ui.framework.app.AppInstanceControllerImpl</implementation>
-    </type-mapping>
   </components>
 
   <components>
     <id>app</id>
-    <configurer>
-      <class>info.magnolia.ui.framework.app.AppEventBusConfigurer</class>
-    </configurer>
-
-    <component>
-      <type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
-      <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.form.validator.registry.FieldValidatorFactory</type>
-      <implementation>info.magnolia.ui.form.validator.registry.FieldValidatorFactory</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.imageprovider.definition.ImageProviderDefinition</type>
-      <implementation>info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.imageprovider.ImageProvider</type>
-      <implementation>info.magnolia.ui.imageprovider.DefaultImageProvider</implementation>
-    </component>
   </components>
 
   <components>
     <id>subapp</id>
-    <configurer>
-      <class>info.magnolia.ui.framework.app.SubAppEventBusConfigurer</class>
-    </configurer>
-    <component>
-      <type>info.magnolia.ui.api.action.ActionExecutor</type>
-      <implementation>info.magnolia.ui.framework.app.action.SubAppActionExecutor</implementation>
-    </component>
-
-
-    <!-- Moved into subApp due to use of subApps EventBus -->
-    <component>
-      <type>info.magnolia.ui.dialog.FormDialogPresenter</type>
-      <implementation>info.magnolia.ui.dialog.FormDialogPresenterImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.vaadin.dialog.DialogView</type>
-      <implementation>info.magnolia.ui.vaadin.dialog.BaseDialog</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
-      <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.admincentral.app.tools.EmbeddedPageView</type>
-      <implementation>info.magnolia.ui.admincentral.app.tools.EmbeddedPageViewImpl</implementation>
-    </component>
   </components>
 
   <dependencies>
@@ -236,6 +107,10 @@
     <dependency>
       <name>imaging</name>
       <version>3.0/*</version>
+    </dependency>
+    <dependency>
+      <name>ui-framework</name>
+      <version>5.0/*</version>
     </dependency>
   </dependencies>
 

@@ -10,6 +10,11 @@
   <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
   <name>magnolia-ui-vaadin-common-widgets</name>
 
+  <properties>
+    <!-- Purposely removed enable-clover profile for this project -->
+    <additionalReleaseProfiles />
+  </properties>
+
 
   <dependencies>
     <dependency>
@@ -72,6 +77,14 @@
       <artifactId>filters</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -115,13 +128,6 @@
               </Vaadin-Widgetsets>
             </manifestEntries>
           </archive>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>com.atlassian.maven.plugins</groupId>
-        <artifactId>maven-clover2-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
         </configuration>
       </plugin>
       <plugin>
@@ -181,8 +187,17 @@
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
                 </artifactItem>
+                <artifactItem>
+                  <groupId>com.vaadin</groupId>
+                  <artifactId>vaadin-server</artifactId>
+                  <version>${vaadinVersion}</version>
+                  <type>jar</type>
+                  <classifier>sources</classifier>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
+                </artifactItem>
               </artifactItems>
-              <includes>**\/*VScrollTable.java, **\/*VTreeTable.java, **\/*TreeTableConnector.java, **\/*TableConnector.java</includes>
+              <includes>**\/*VScrollTable.java, **\/*VTreeTable.java, **\/*TreeTableConnector.java, **\/*TableConnector.java, **\/DragAndDropWrapper.java</includes>
             </configuration>
           </execution>
         </executions>
@@ -192,6 +207,7 @@
         <artifactId>maven-patch-plugin</artifactId>
           <configuration>
           <patches>
+            <patch>draganddropwrapper.txt</patch>
             <patch>vscrolltable.txt</patch>
             <patch>vtreetable.txt</patch>
             <patch>treetableconnector.txt</patch>
@@ -244,7 +260,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
-          <excludes>**/*Patched.java, **/org/vaadin/openesignforms/**/*.java, **/org/vaadin/peter/contextmenu/**</excludes>
+          <excludes>**/*Patched.java, **/org/vaadin/openesignforms/**/*.java, **/org/vaadin/peter/contextmenu/**, **/DragAndDropWrapper.java</excludes>
         </configuration>
       </plugin>
       <plugin>

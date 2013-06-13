@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -45,14 +45,12 @@ import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
@@ -68,11 +66,13 @@ public class ShellAppLauncher extends FlowPanel {
      * Listener.
      */
     public interface Listener {
+
         void onHideShellAppsRequested();
         void showShellApp(ShellAppType type);
     }
-
     private final static int DIVET_ANIMATION_SPEED = 400;
+
+    public static final String USER_MENU_CLASS_NAME = "v-shell-user-menu-wrapper";
 
     private final static String ID = "main-launcher";
 
@@ -80,9 +80,9 @@ public class ShellAppLauncher extends FlowPanel {
 
     private final TouchPanel logo = new TouchPanel();
 
-    private final Element logoImg = DOM.createImg();
+    private final Element userMenu = DOM.createDiv();
 
-    private final Image divet = new Image(VShellImageBundle.BUNDLE.getDivetGreen());
+    private final Element logoImg = DOM.createImg();
 
     private final Map<ShellAppType, NavigatorButton> controlsMap = new EnumMap<ShellAppType, NavigatorButton>(ShellAppType.class);
 
@@ -123,6 +123,10 @@ public class ShellAppLauncher extends FlowPanel {
         }
     }
 
+    public void setUserMenu(Widget widget) {
+        add(widget, userMenu);
+    }
+
     public ShellAppType getActiveShellType() {
         final Iterator<Entry<ShellAppType, NavigatorButton>> it = controlsMap.entrySet().iterator();
         while (it.hasNext()) {
@@ -135,7 +139,7 @@ public class ShellAppLauncher extends FlowPanel {
     }
 
     public void deactivateControls() {
-        divet.setVisible(false);
+        divetWrapper.getStyle().setDisplay(Display.NONE);
         for (final NavigatorButton button : controlsMap.values()) {
             button.removeStyleName("active");
         }
@@ -164,48 +168,51 @@ public class ShellAppLauncher extends FlowPanel {
         logo.getElement().appendChild(logoImg);
         add(logo);
 
+        userMenu.setClassName(USER_MENU_CLASS_NAME);
+        getElement().appendChild(userMenu);
         getElement().appendChild(divetWrapper);
-        add(divet, divetWrapper);
         for (final ShellAppType appType : ShellAppType.values()) {
             final NavigatorButton w = new NavigatorButton(appType);
             w.addTouchEndHandler(new TouchEndHandler() {
                 @Override
                 public void onTouchEnd(TouchEndEvent event) {
-                    // Has user clicked on the active shell app?
-                    if (appType == getActiveShellType()) {
-                        // if open then close it.
-                        listener.onHideShellAppsRequested();
-                    } else {
-                        listener.showShellApp(appType);
-                        // If closed, then open it.
-                    }
+                    toggleShellApp(appType);
                 }
             });
+
             controlsMap.put(appType, w);
             add(w);
         }
-        divet.setVisible(false);
+        divetWrapper.getStyle().setDisplay(Display.NONE);
     }
+
+    /**
+     * Toggle the 'openness' of the specified shellApp.
+     * 
+     * @param appType
+     */
+    public void toggleShellApp(ShellAppType appType) {
+        // Has user clicked on the active shell app?
+        if (appType == getActiveShellType()) {
+            // if open then close it.
+            listener.onHideShellAppsRequested();
+        } else {
+            // If closed, then open it.
+            listener.showShellApp(appType);
+        }
+    }
+
 
     private void bindHandlers() {
         DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
-        logo.addTouchEndHandler(new TouchEndHandler() {
-            @Override
-            public void onTouchEnd(TouchEndEvent event) {
-                emergencyRestartApplication();
-            }
-        });;
     }
 
     private void doUpdateDivetPosition(final ShellAppType type, boolean animated) {
         Widget w = controlsMap.get(type);
+        divetWrapper.getStyle().setDisplay(Display.BLOCK);
+        divetWrapper.setClassName(type == ShellAppType.APPLAUNCHER ? "divet-green" : "divet-white");
         int divetPos = w.getAbsoluteLeft() + (w.getOffsetWidth() / 2) - divetWrapper.getOffsetWidth() / 2;
-        divet.setVisible(true);
-        ImageResource res = type == ShellAppType.APPLAUNCHER ?
-                VShellImageBundle.BUNDLE.getDivetGreen() :
-                VShellImageBundle.BUNDLE.getDivetWhite();
-        divet.setResource(res);
-        if (animated && divet.getAbsoluteLeft() != divetPos) {
+        if (animated && divetWrapper.getAbsoluteLeft() != divetPos) {
             VConsole.error("DIVET POS: " + divetPos);
             divetAnimation.setProperty("left", divetPos);
             divetAnimation.run(DIVET_ANIMATION_SPEED, divetWrapper);
@@ -214,16 +221,5 @@ public class ShellAppLauncher extends FlowPanel {
             divetWrapper.getStyle().setLeft(divetPos, Unit.PX);
         }
 
-    }
-
-    /**
-     * TODO: Christopher Zimmermann CLZ
-     * Restart the application by appending the &restartApplication querystring to the URL. This is
-     * handy as the application is not totally stable yet.
-     * Developer Preview feature.
-     */
-    private void emergencyRestartApplication() {
-        String newHref = Window.Location.getPath() + "?restartApplication";
-        Window.Location.assign(newHref);
     }
 }

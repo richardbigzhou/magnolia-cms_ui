@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.contentapp.detail;
 
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.api.location.DefaultLocation;
+import info.magnolia.ui.api.location.Location;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -47,7 +47,7 @@ import org.apache.commons.lang.StringUtils;
  * <li>the node version (version)</li>
  * </ul>
  * <p>
- * {@code appType:appId:subAppId;some/node/path:viewType:version}
+ * {@code appType:appName:subAppId;some/node/path:viewType:version}
  */
 public class DetailLocation extends DefaultLocation {
 
@@ -59,16 +59,16 @@ public class DetailLocation extends DefaultLocation {
     private final static int VIEW_TYPE_PARAM_POSITION = 1;
     private final static int VERSION_PARAM_POSITION = 2;
 
-    public DetailLocation(String appId, String subAppId, String parameter) {
-        super(LOCATION_TYPE_APP, appId, subAppId, parameter);
+    public DetailLocation(String appName, String subAppId, String parameter) {
+        super(LOCATION_TYPE_APP, appName, subAppId, parameter);
 
         setNodePath(extractNodePath(parameter));
         setViewType(extractViewType(parameter));
         setVersion(extractVersion(parameter));
     }
 
-    public DetailLocation(String appId, String subAppId, DetailView.ViewType viewType, String nodePath, String version) {
-        super(LOCATION_TYPE_APP, appId, subAppId);
+    public DetailLocation(String appName, String subAppId, DetailView.ViewType viewType, String nodePath, String version) {
+        super(LOCATION_TYPE_APP, appName, subAppId);
 
         setNodePath(nodePath);
         setViewType(viewType);
@@ -159,7 +159,7 @@ public class DetailLocation extends DefaultLocation {
     }
 
     public static DetailLocation wrap(Location location) {
-        return new DetailLocation(location.getAppId(), location.getSubAppId(), location.getParameter());
+        return new DetailLocation(location.getAppName(), location.getSubAppId(), location.getParameter());
     }
 
     public void updateNodePath(String newNodePath) {

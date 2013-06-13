@@ -33,14 +33,14 @@
  */
 package info.magnolia.ui.contentapp.detail;
 
+import info.magnolia.ui.contentapp.definition.ContentSubAppDescriptor;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
-import info.magnolia.ui.framework.app.SubAppDescriptor;
 
 /**
  * Descriptor for Item subApps.
  * Holds the form definition to build a form and needed fields to create a new node.
  */
-public interface DetailSubAppDescriptor extends SubAppDescriptor {
+public interface DetailSubAppDescriptor extends ContentSubAppDescriptor {
 
     EditorDefinition getEditor();
 

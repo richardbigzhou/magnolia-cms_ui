@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd">
+<module>
+  <name>sample-app</name>
+  <displayName>Sample app</displayName>
+  <description>Sample app</description>
+  <versionHandler>info.magnolia.sample.app.setup.SampleAppModuleVersionHandler</versionHandler>
+  <version>${project.version}</version>
+
+	<!-- App components definition. -->
+	<!-- id of the components should be app-'appname'. 'appname' is the name of the app configured
+	     in the apps configuration repository of the admin central. (config/module/apps/appname/name:appname) -->
+  <components>
+    <id>app-sample</id>
+  </components>
+
+  <components>
+    <id>app-sample-main</id>
+    <component>
+      <type>info.magnolia.sample.app.main.SampleMainSubApp</type>
+      <implementation>info.magnolia.sample.app.main.SampleMainSubApp</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.sample.app.main.SampleMainView</type>
+      <implementation>info.magnolia.sample.app.main.SampleMainViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.sample.app.main.NavigationView</type>
+      <implementation>info.magnolia.sample.app.main.NavigationViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.sample.app.main.ContentDisplayView</type>
+      <implementation>info.magnolia.sample.app.main.ContentDisplayViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.sample.app.main.NavigationPresenter</type>
+      <implementation>info.magnolia.sample.app.main.NavigationPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.sample.app.main.ContentDisplayPresenter</type>
+      <implementation>info.magnolia.sample.app.main.ContentDisplayPresenter</implementation>
+    </component>
+  </components>
+
+  <components>
+    <id>app-sample-editor</id>
+    <component>
+      <type>info.magnolia.sample.app.editor.SampleEditorSubApp</type>
+      <implementation>info.magnolia.sample.app.editor.SampleEditorSubApp</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.sample.app.editor.SampleEditorView</type>
+      <implementation>info.magnolia.sample.app.editor.SampleEditorViewImpl</implementation>
+    </component>
+  </components>
+
+  <dependencies>
+    <dependency>
+      <name>ui-admincentral</name>
+      <version>5.0/*</version>
+    </dependency>
+  </dependencies>
+</module>

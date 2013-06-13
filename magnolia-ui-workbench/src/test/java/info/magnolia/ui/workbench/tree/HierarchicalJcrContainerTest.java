@@ -40,7 +40,6 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.container.AbstractJcrContainerTest;
@@ -113,7 +112,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
 
         workbenchDefinition = configuredWorkbench;
 
-        hierarchicalJcrContainer = new HierarchicalJcrContainer(workbenchDefinition, ViewType.TREE.getText());
+        hierarchicalJcrContainer = new HierarchicalJcrContainer(workbenchDefinition);
 
         // Init session
         session = MgnlContext.getJCRSession(WORKSPACE);
@@ -259,7 +258,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testGetRootItemIds() throws RepositoryException {
         // GIVEN
-        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", "mgnl:page", PROPERTY_1, "name1");
+        Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.ContentNode.NAME, PROPERTY_1, "name1");
         Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", NodeTypes.Content.NAME, PROPERTY_1, "name2");
         Node node21 = AbstractJcrContainerTest.createNode(node2, "node2_1", NodeTypes.Content.NAME, PROPERTY_1, "name2_1");
         node1.getSession().save();
@@ -331,7 +330,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
     public void testGetChildrenExcludesOtherNodeTypes() throws RepositoryException {
         // GIVEN
         Node node1 = AbstractJcrContainerTest.createNode(rootNode, "node1", NodeTypes.Content.NAME, PROPERTY_1, "name1");
-        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", "mgnl:page", PROPERTY_1, "name2");
+        Node node2 = AbstractJcrContainerTest.createNode(rootNode, "node2", NodeTypes.ContentNode.NAME, PROPERTY_1, "name2");
         AbstractJcrContainerTest.createNode(node2, "node2_1", "mgnl:contentNode", PROPERTY_1, "name2_1");
         node1.getSession().save();
 

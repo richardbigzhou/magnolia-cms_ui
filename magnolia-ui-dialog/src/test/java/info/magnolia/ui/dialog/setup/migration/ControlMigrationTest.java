@@ -38,9 +38,11 @@ import static org.junit.Assert.*;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 import info.magnolia.ui.form.field.definition.DateFieldDefinition;
+import info.magnolia.ui.form.field.definition.HiddenFieldDefinition;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
@@ -93,6 +95,21 @@ public class ControlMigrationTest {
         assertFalse(controlNode.hasProperty("controlType"));
         assertTrue(controlNode.hasProperty("class"));
         assertEquals(TextFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
+    }
+
+    @Test
+    public void HiddenControlMigrationTest() throws RepositoryException {
+        // GIVEN
+        controlNode.setProperty("controlType", "hidden");
+        ControlMigration controlMigration = new HiddenControlMigration();
+
+        // WHEN
+        controlMigration.migrate(controlNode);
+
+        // THEN
+        assertFalse(controlNode.hasProperty("controlType"));
+        assertTrue(controlNode.hasProperty("class"));
+        assertEquals(HiddenFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
     }
 
     @Test
@@ -191,7 +208,7 @@ public class ControlMigrationTest {
     public void DamControlMigrationTest() throws RepositoryException {
         // GIVEN
         controlNode.setProperty("controlType", "dam");
-        ControlMigration controlMigration = new DamControlMigration("image.*");
+        ControlMigration controlMigration = new DamControlMigration();
 
         // WHEN
         controlMigration.migrate(controlNode);
@@ -199,13 +216,16 @@ public class ControlMigrationTest {
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));
         assertTrue(controlNode.hasProperty("class"));
-        assertEquals("info.magnolia.dam.app.assets.field.definition.AssetLinkFieldDefinition", controlNode.getProperty("class").getString());
-        assertTrue(controlNode.hasProperty("identifier"));
-        assertEquals("true", controlNode.getProperty("identifier").getString());
-        assertTrue(controlNode.hasProperty("allowedMimeType"));
-        assertEquals("image.*", controlNode.getProperty("allowedMimeType").getString());
+        assertEquals(LinkFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
+        assertFalse(controlNode.hasProperty("allowedMimeType"));
         assertTrue(controlNode.hasProperty("appName"));
         assertEquals("assets", controlNode.getProperty("appName").getString());
+        assertTrue(controlNode.hasNode("identifierToPathConverter"));
+        assertTrue(controlNode.getNode("identifierToPathConverter").hasProperty("class"));
+        assertEquals("info.magnolia.dam.app.assets.field.translator.AssetCompositeIdKeyTranslator", controlNode.getNode("identifierToPathConverter").getProperty("class").getString());
+        assertTrue(controlNode.hasProperty("targetWorkspace"));
+        assertEquals("dam", controlNode.getProperty("targetWorkspace").getString());
+
     }
 
     @Test
@@ -219,17 +239,16 @@ public class ControlMigrationTest {
         controlMigration.migrate(controlNode);
 
         // THEN
-        assertTrue(controlNode.hasProperty("identifier"));
         // Set by DamControlMigration
-        assertEquals("true", controlNode.getProperty("identifier").getString());
         assertFalse(controlNode.hasProperty("controlType"));
         assertTrue(controlNode.hasProperty("class"));
-        assertEquals("info.magnolia.dam.app.assets.field.definition.AssetLinkFieldDefinition", controlNode.getProperty("class").getString());
-        assertTrue(controlNode.hasProperty("identifier"));
-        assertEquals("true", controlNode.getProperty("identifier").getString());
+        assertEquals(LinkFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
         assertFalse(controlNode.hasProperty("allowedMimeType"));
         assertTrue(controlNode.hasProperty("appName"));
         assertEquals("assets", controlNode.getProperty("appName").getString());
+        assertTrue(controlNode.hasNode("identifierToPathConverter"));
+        assertTrue(controlNode.getNode("identifierToPathConverter").hasProperty("class"));
+        assertEquals("info.magnolia.dam.app.assets.field.translator.AssetCompositeIdKeyTranslator", controlNode.getNode("identifierToPathConverter").getProperty("class").getString());
     }
 
     @Test
@@ -246,12 +265,12 @@ public class ControlMigrationTest {
         assertFalse(controlNode.hasProperty("controlType"));
         assertTrue(controlNode.hasProperty("class"));
         assertEquals(LinkFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
-        assertTrue(controlNode.hasProperty("identifier"));
-        assertEquals("true", controlNode.getProperty("identifier").getString());
         assertTrue(controlNode.hasProperty("appName"));
         assertEquals("pages", controlNode.getProperty("appName").getString());
-        assertTrue(controlNode.hasProperty("dialogName"));
-        assertEquals("ui-pages-app:link", controlNode.getProperty("dialogName").getString());
+        assertTrue(controlNode.hasNode("identifierToPathConverter"));
+        assertTrue(controlNode.getNode("identifierToPathConverter").hasProperty("class"));
+        assertEquals(BaseIdentifierToPathConverter.class.getName(), controlNode.getNode("identifierToPathConverter").getProperty("class").getString());
+
     }
 
     @Test
@@ -268,13 +287,11 @@ public class ControlMigrationTest {
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));
         assertTrue(controlNode.hasProperty("class"));
-        assertEquals("info.magnolia.ui.app.contacts.field.definition.ContactLinkFieldDefinition", controlNode.getProperty("class").getString());
+        assertEquals(LinkFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
         assertTrue(controlNode.hasProperty("appName"));
         assertEquals("contacts", controlNode.getProperty("appName").getString());
-        assertTrue(controlNode.hasProperty("workspace"));
-        assertEquals("contacts", controlNode.getProperty("workspace").getString());
-        assertTrue(controlNode.hasProperty("dialogName"));
-        assertEquals("ui-contacts-app:link", controlNode.getProperty("dialogName").getString());
+        assertTrue(controlNode.hasProperty("targetWorkspace"));
+        assertEquals("contacts", controlNode.getProperty("targetWorkspace").getString());
     }
 
     @Test

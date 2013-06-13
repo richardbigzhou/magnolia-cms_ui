@@ -251,6 +251,11 @@ public class VMagnoliaTable extends VScrollTablePatched {
                             VScrollTableRow row = Util.findWidget(targetTd, null);
                             if (row != null) {
                                 boolean wasSelected = row.isSelected();
+
+                                if (VMagnoliaTable.this.isSingleSelectMode() && !row.isSelected()) {
+                                    deselectAll();
+                                }
+
                                 row.toggleSelection();
                                 setRowFocus(row);
                                 /*
@@ -306,6 +311,12 @@ public class VMagnoliaTable extends VScrollTablePatched {
                 MagnoliaTableHead head = (MagnoliaTableHead) tHead;
                 head.getSelectAllCB().setValue(selectedRowKeys.size() == scrollBody.renderedRows.size(), false);
             }
+
+            @Override
+            protected boolean isRenderHtmlInCells() {
+                return true;
+            }
         }
+
     }
 }

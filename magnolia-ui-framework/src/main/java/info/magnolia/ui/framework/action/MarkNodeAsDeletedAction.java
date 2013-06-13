@@ -39,7 +39,7 @@ import info.magnolia.context.Context;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.framework.event.AdmincentralEventBus;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 

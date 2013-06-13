@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011 Magnolia International
+ * This file Copyright (c) 2011-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -54,6 +54,7 @@ public class AppLauncher extends AbstractComponent {
 
     public void addAppGroup(String name, String caption, String color, boolean isPermanent, boolean clientGroup) {
         getState().appGroups.put(name, new AppGroup(name, caption, color, isPermanent, clientGroup));
+        getState().groupsOrder.add(name);
     }
 
     @Override

@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
-import info.magnolia.ui.framework.app.launcherlayout.AppLauncherLayout;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayout;
 import info.magnolia.ui.api.view.View;
 
 /**

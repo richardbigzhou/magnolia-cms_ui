@@ -138,6 +138,7 @@
   font-family:DINWebPro, sans-serif;
   line-height:1;
   width: 150px !important;
+  cursor: pointer;
 }
 
 .v-pulse .navigator-tab * {
@@ -315,11 +316,24 @@
   margin-left: 50px;
 }
 
-.v-pulse .emptyplaceholder {
-  color: $c10;
+.emptyplaceholder {
+  color: #E1E1E1;
   font-weight: bold;
   text-align: center;
-  margin-top: 20px;
+  margin-top: 150px;
+}
+
+.emptyplaceholder .message {
+  font-size: 13px;
+  margin-top: 15px;
+}
+
+.emptyplaceholder .icon-pulse, .emptyplaceholder .icon-favorites{
+  font-size: 150px;
+}
+
+.v-pulse .emptyplaceholder {
+   margin-top: 118px; /*tweak to align pulse with favs empty placehoder*/
 }
 
 .v-pulse .new-message {

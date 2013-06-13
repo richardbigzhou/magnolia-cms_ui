@@ -92,26 +92,25 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
 
     private final TouchDelegate delegate = new TouchDelegate(this);
 
-    private final ClickHandler closeHandler = new ClickHandler() {
-        @Override
-        public void onClick(ClickEvent event) {
-            if (!isAppClosing()) {
-                isAppClosing = true;
-                listener.closeCurrentApp();
+    private final FullScreenButton fullScreenButton = new FullScreenButton();
 
-            }
-        }
-    };
+    private Element curtain = DOM.createDiv();
 
-    private final ClickHandler fullscreenHandler = new ClickHandler() {
-        @Override
-        public void onClick(ClickEvent event) {
-            String cssClasses = RootPanel.get().getStyleName();
-            boolean isFullScreen = cssClasses.contains("fullscreen");
-            // toggle.
-            setFullScreen(!isFullScreen);
+    private void closeCurrentApp() {
+        if (!isAppClosing()) {
+            isAppClosing = true;
+            listener.closeCurrentApp();
         }
-    };
+    }
+
+    private void toggleFullScreen() {
+        String cssClasses = RootPanel.get().getStyleName();
+        boolean isFullScreen = cssClasses.contains("fullscreen");
+        // toggle.
+        setFullScreen(!isFullScreen);
+    }
+
+    private CloseButton closeButton = new CloseButton();
 
     /**
      * Set the look of the application and the state of the button.
@@ -134,22 +133,41 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
         }
     }
 
-    private CloseButton closeButton = new CloseButton(closeHandler);
-
-    private FullScreenButton fullScreenButton;
-
-    private Element curtain = DOM.createDiv();
-
     public AppsViewportWidget(final Listener listener) {
         super();
         this.listener = listener;
+        DOM.sinkEvents(getElement(), Event.ONCLICK);
         curtain.setClassName("v-curtain v-curtain-green");
         closeButton.addStyleDependentName("app");
 
-        fullScreenButton = new FullScreenButton();
-        fullScreenButton.addClickHandler(fullscreenHandler);
+        addDomHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Element target = event.getNativeEvent().getEventTarget().cast();
+                if (closeButton.getElement().isOrHasChild(target)) {
+                    closeCurrentApp();
+                } else if (fullScreenButton.getElement().isOrHasChild(target)) {
+                    toggleFullScreen();
+                }
+            }
+        }, ClickEvent.getType());
 
         bindTouchHandlers();
+
+    }
+
+    public void goToNextApp() {
+        if (getWidgetCount() > 1) {
+            processSwipe(1);
+            switchToApp(DIRECTION.LEFT_TO_RIGHT);
+        }
+    }
+
+    public void goToPreviousApp() {
+        if (getWidgetCount() > 1) {
+            processSwipe(-1);
+            switchToApp(DIRECTION.RIGHT_TO_LEFT);
+        }
     }
 
     public Element getCurtain() {
@@ -166,8 +184,8 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     /* APP CLOSING */
     @Override
     public void showChildNoTransition(Widget w) {
-        add(closeButton, w.getElement());
-        add(fullScreenButton, w.getElement());
+        getElement().appendChild(closeButton.getElement());
+        getElement().appendChild(fullScreenButton.getElement());
         Widget formerVisible = getVisibleChild();
         // do not hide app if closing
         if (formerVisible != null && !isAppClosing()) {
@@ -180,8 +198,9 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     @Override
     public void removeChild(Widget w) {
         ((AppsTransitionDelegate) getTransitionDelegate()).removeWidget(w);
-        if (getWidgetCount() == 2) {
-            remove(closeButton);
+        if (getWidgetCount() < 2) {
+            getElement().removeChild(closeButton.getElement());
+            getElement().removeChild(fullScreenButton.getElement());
         }
     }
 
@@ -243,40 +262,11 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
             @Override
             public void onSwipeEnd(SwipeEndEvent event) {
                 final SwipeEvent.DIRECTION direction = event.getDirection();
-                final Widget newVisibleWidget = direction == DIRECTION.LEFT_TO_RIGHT ? getPreviousWidget() : getNextWidget();
+
                 if (event.isDistanceReached() && getWidgetCount() > 1) {
-                    final JQueryWrapper jq = JQueryWrapper.select(getVisibleChild());
-                    jq.animate(450, new AnimationSettings() {
 
-                        {
-                            setProperty("left", getOffsetWidth() * (direction == DIRECTION.LEFT_TO_RIGHT ? 1 : -1) - jq.position().left());
-                            setCallbacks(Callbacks.create(new JQueryCallback() {
+                    switchToApp(direction);
 
-                                @Override
-                                public void execute(JQueryWrapper query) {
-                                    query.setCss("-webkit-transform", "");
-                                    query.setCss("left", "");
-                                    // query.setCss("opacity", "0");
-                                    // query.setCss("visibility", "hidden");
-                                    // do not trigger transitions
-                                    showChild(newVisibleWidget);
-                                    dropZIndeces();
-                                }
-                            }));
-                        }
-                    });
-
-                    if (direction == DIRECTION.RIGHT_TO_LEFT && getWidgetCount() > 2) {
-                        final JQueryWrapper query = JQueryWrapper.select(newVisibleWidget);
-                        query.setCss("-webkit-transform", "");
-                        newVisibleWidget.addStyleName("app-slider");
-                        new Timer() {
-                            @Override
-                            public void run() {
-                                newVisibleWidget.removeStyleName("app-slider");
-                            }
-                        }.schedule(500);
-                    }
                 } else {
                     final JQueryWrapper jq = JQueryWrapper.select(getVisibleChild());
                     jq.setCssPx("left", jq.position().left());
@@ -297,6 +287,45 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
                 dropZIndeces();
             }
         });
+    }
+
+    private void switchToApp(final SwipeEvent.DIRECTION direction) {
+
+        final Widget newVisibleWidget = direction == DIRECTION.LEFT_TO_RIGHT ? getPreviousWidget() : getNextWidget();
+
+        final JQueryWrapper jq = JQueryWrapper.select(getVisibleChild());
+        jq.animate(450, new AnimationSettings() {
+
+            {
+                setProperty("left", getOffsetWidth() * (direction == DIRECTION.LEFT_TO_RIGHT ? 1 : -1) - jq.position().left());
+                setCallbacks(Callbacks.create(new JQueryCallback() {
+
+                    @Override
+                    public void execute(JQueryWrapper query) {
+                        query.setCss("-webkit-transform", "");
+                        query.setCss("left", "");
+                        // query.setCss("opacity", "0");
+                        // query.setCss("visibility", "hidden");
+                        // do not trigger transitions
+                        showChild(newVisibleWidget);
+                        dropZIndeces();
+                    }
+                }));
+            }
+        });
+
+        if (direction == DIRECTION.RIGHT_TO_LEFT && getWidgetCount() > 2) {
+            final JQueryWrapper query = JQueryWrapper.select(newVisibleWidget);
+            query.setCss("-webkit-transform", "");
+            newVisibleWidget.addStyleName("app-slider");
+            new Timer() {
+                @Override
+                public void run() {
+                    newVisibleWidget.removeStyleName("app-slider");
+                }
+            }.schedule(500);
+        }
+
     }
 
     private void processSwipe(int translationValue) {

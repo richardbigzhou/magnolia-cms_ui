@@ -45,16 +45,15 @@ import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionExecutor;
-import info.magnolia.ui.contentapp.config.BrowserSubAppBuilder;
-import info.magnolia.ui.contentapp.config.ContentAppBuilder;
-import info.magnolia.ui.framework.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
-import info.magnolia.ui.workbench.config.WorkbenchBuilder;
+import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
@@ -107,10 +106,22 @@ public class BrowserPresenterTest {
 
     private void initBrowserPresenter() {
         // initialize test instance
-        BrowserSubAppBuilder subAppBuilder = new ContentAppBuilder(APP_NAME).browserSubApp(SUB_APP_NAME);
-        subAppBuilder.workbench(new WorkbenchBuilder().workspace(WORKSPACE).path(ROOT_PATH).contentViews(new TreePresenterDefinition(), new ListPresenterDefinition()));
+        ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
+        workbenchDefinition.setWorkspace(WORKSPACE);
+        workbenchDefinition.setPath(ROOT_PATH);
+        workbenchDefinition.getContentViews().add(new TreePresenterDefinition());
+        workbenchDefinition.getContentViews().add(new ListPresenterDefinition());
+
+        ConfiguredBrowserSubAppDescriptor browserSubAppDescriptor = new ConfiguredBrowserSubAppDescriptor();
+        browserSubAppDescriptor.setName(SUB_APP_NAME);
+        browserSubAppDescriptor.setWorkbench(workbenchDefinition);
+
+        ConfiguredAppDescriptor appDescriptor = new ConfiguredAppDescriptor();
+        appDescriptor.setName(APP_NAME);
+        appDescriptor.getSubApps().put(browserSubAppDescriptor.getName(), browserSubAppDescriptor);
+
         Shell mockShell = mock(Shell.class);
-        SubAppContext subAppContext = new SubAppContextImpl(subAppBuilder.exec(), mockShell);
+        SubAppContext subAppContext = new SubAppContextImpl(browserSubAppDescriptor, mockShell);
 
         BrowserView mockView = mock(BrowserView.class);
         subAppEventBus = new SimpleEventBus();

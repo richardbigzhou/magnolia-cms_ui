@@ -9,6 +9,10 @@
  * ---------------------------
  */
 
+*:not(html) {
+  -webkit-transform: translate3d(0, 0, 0);
+}
+
 /*
  * This class should be added to all injected div elements, instead of tweaking each element individually.
  * Makes it easier to maintain and all subsequent classes should only declare styles they actually use.

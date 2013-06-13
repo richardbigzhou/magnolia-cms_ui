@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -36,7 +36,7 @@ package info.magnolia.ui.vaadin.gwt.client.applauncher.connector;
 import info.magnolia.ui.vaadin.gwt.client.applauncher.shared.AppGroup;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +49,8 @@ public class AppLauncherState extends AbstractComponentState {
 
     public List<String> runningApps = new ArrayList<String>();
 
-    public Map<String, AppGroup> appGroups = new LinkedHashMap<String, AppGroup>();
+    public Map<String, AppGroup> appGroups = new HashMap<String, AppGroup>();
+
+    public List<String> groupsOrder = new ArrayList<String>();
 
 }

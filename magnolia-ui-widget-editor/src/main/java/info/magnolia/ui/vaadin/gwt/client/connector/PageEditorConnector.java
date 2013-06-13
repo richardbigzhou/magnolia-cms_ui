@@ -86,6 +86,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
@@ -142,10 +143,11 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
                 if (component != null) {
                     component.doStartMove(false);
                     model.setMoving(true);
-
-                    Element element = DOM.clone(model.getSelectedComponent().getControlBar().getElement(), true);
-                    moveWidget = new MoveWidget(element);
-                    moveWidget.attach(view.getFrame(), component.getWidth(), component.getHeight());
+                    if (!BrowserInfo.get().isTouchDevice()) {
+                        Element element = DOM.clone(model.getSelectedComponent().getControlBar().getElement(), true);
+                        moveWidget = new MoveWidget(element);
+                        moveWidget.attach(view.getFrame(), component.getWidth(), component.getHeight());
+                    }
                 }
             }
 
@@ -162,7 +164,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
                 Document document = event.getFrame().getContentDocument();
                 process(document);
                 if (!getState().parameters.isPreview()) {
-                    view.initSelectionListener();
+                    view.initDomEventListeners();
                     focusModel.init();
                 }
                 else {
@@ -191,6 +193,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
                 else if (element instanceof ComponentElement) {
                     rpc.selectComponent((ComponentElement) selectElementEvent.getElement());
                 }
+                view.resetScrollTop();
             }
         });
 

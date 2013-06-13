@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
-import info.magnolia.ui.framework.location.DefaultLocation;
-import info.magnolia.ui.framework.location.Location;
+import info.magnolia.ui.api.location.DefaultLocation;
+import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.workbench.ContentView;
 
 /**
@@ -46,8 +46,8 @@ public class BrowserLocation extends DefaultLocation {
     private ContentView.ViewType viewType;
     private String query;
 
-    public BrowserLocation(String appId, String subAppId, String parameter) {
-        super(LOCATION_TYPE_APP, appId, subAppId, parameter);
+    public BrowserLocation(String appName, String subAppId, String parameter) {
+        super(LOCATION_TYPE_APP, appName, subAppId, parameter);
 
         setNodePath(extractNodePath(parameter));
         setViewType(extractView(parameter));
@@ -124,7 +124,7 @@ public class BrowserLocation extends DefaultLocation {
     }
 
     public static BrowserLocation wrap(Location location) {
-        return new BrowserLocation(location.getAppId(), location.getSubAppId(), location.getParameter());
+        return new BrowserLocation(location.getAppName(), location.getSubAppId(), location.getParameter());
     }
 
     public void updateNodePath(String newNodePath) {

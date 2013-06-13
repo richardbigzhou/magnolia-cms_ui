@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.mediaeditor;
 
-import info.magnolia.ui.mediaeditor.editmode.field.MediaField;
+import info.magnolia.ui.mediaeditor.field.MediaField;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,9 +33,14 @@
  */
 package info.magnolia.ui.vaadin.grid;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Container;
 import com.vaadin.data.Validator;
 import com.vaadin.shared.ui.treetable.TreeTableState;
 import com.vaadin.ui.TreeTable;
@@ -45,12 +50,11 @@ import com.vaadin.ui.TreeTable;
  */
 public class MagnoliaTreeTable extends TreeTable {
 
+    private static Logger log = LoggerFactory.getLogger(MagnoliaTreeTable.class);
+
     public MagnoliaTreeTable() {
         addStyleName("v-magnolia-table");
-
-        // MGNLUI-961 Tree table was patched on client-side to disable lazy-loading according to number of visible rows.
-        // Therefore it should keep page length set to 0.
-        setPageLength(0);
+        setCacheRate(4);
     }
 
     @Override
@@ -95,5 +99,19 @@ public class MagnoliaTreeTable extends TreeTable {
     @Override
     public Collection<Validator> getValidators() {
         return null;
+    }
+
+    @Override
+    public void setContainerDataSource(Container newDataSource) {
+        super.setContainerDataSource(newDataSource);
+
+        // enforce partial updates - those were disabled in Vaadin 7 but they are safe as long as we don't generate vaadin components in table cells.
+        try {
+            Field f = TreeTable.class.getDeclaredField("containerSupportsPartialUpdates");
+            f.setAccessible(true);
+            f.setBoolean(this, true);
+        } catch (Exception e) {
+            log.warn("Could not enable partial-updates in tree.", e);
+        }
     }
 }

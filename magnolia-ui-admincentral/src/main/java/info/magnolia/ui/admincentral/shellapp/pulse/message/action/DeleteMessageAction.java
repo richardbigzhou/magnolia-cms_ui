@@ -38,15 +38,11 @@ import info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.api.overlay.ConfirmationCallback;
-import info.magnolia.ui.framework.message.Message;
+import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Deletes a node or property from the repository.
@@ -54,8 +50,6 @@ import org.slf4j.LoggerFactory;
  * @see DeleteMessageActionDefinition
  */
 public class DeleteMessageAction extends AbstractAction<DeleteMessageActionDefinition> {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final UiContext uiContext;
     private final Message message;
@@ -73,23 +67,6 @@ public class DeleteMessageAction extends AbstractAction<DeleteMessageActionDefin
 
     @Override
     public void execute() throws ActionExecutionException {
-
-        uiContext.openConfirmation(
-                MessageStyleTypeEnum.WARNING, "Do you really want to delete this item?", "This action can't be undone.", "Yes, Delete", "No", true,
-                new ConfirmationCallback() {
-
-                    @Override
-                    public void onSuccess() {
-                        DeleteMessageAction.this.executeAfterConfirmation();
-                    }
-
-                    @Override
-                    public void onCancel() {
-                    }
-                });
-    }
-
-    protected void executeAfterConfirmation() {
         messagesManager.removeMessage(MgnlContext.getUser().getName(), message.getId());
         messagePresenter.onNavigateToList();
         uiContext.openNotification(MessageStyleTypeEnum.INFO, true, "Item deleted.");

@@ -39,8 +39,8 @@ import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.CategoryChangedEvent;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
-import info.magnolia.ui.framework.message.MessageType;
-import info.magnolia.ui.framework.shell.Shell;
+import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 import info.magnolia.ui.vaadin.icon.ErrorIcon;
 import info.magnolia.ui.vaadin.icon.InfoIcon;
@@ -86,7 +86,7 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
 
     private PulseMessagesView.Listener listener;
 
-    private Label emptyPlaceHolder = new Label(MessagesUtil.get("pulse.messages.nomessage"));
+    private Label emptyPlaceHolder;
 
     private PulseMessagesFooter footer;
 
@@ -97,7 +97,7 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
     @Inject
     public PulseMessagesViewImpl(Shell shell) {
         headers = new String[] { MessagesUtil.get("pulse.messages.new"), MessagesUtil.get("pulse.messages.type"), MessagesUtil.get("pulse.messages.text"), MessagesUtil.get("pulse.messages.sender"), MessagesUtil.get("pulse.messages.date") };
-        footer = new PulseMessagesFooter(shell, messageTable);
+        footer = new PulseMessagesFooter(messageTable);
         setSizeFull();
         root.setSizeFull();
         setCompositionRoot(root);
@@ -145,7 +145,11 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
         constructTable();
         root.addComponent(footer);
 
+        emptyPlaceHolder = new Label();
+        emptyPlaceHolder.setContentMode(ContentMode.HTML);
+        emptyPlaceHolder.setValue(String.format("<span class=\"icon-pulse\"></span><div class=\"message\">%s</div>", MessagesUtil.get("pulse.messages.empty")));
         emptyPlaceHolder.addStyleName("emptyplaceholder");
+
         root.addComponent(emptyPlaceHolder);
         setComponentVisibility(messageTable.getContainerDataSource());
 

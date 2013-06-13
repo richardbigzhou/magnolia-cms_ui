@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-framework</artifactId>
   <name>magnolia-ui-framework</name>
   <properties>
-    <cloverCoverageThreshold>67</cloverCoverageThreshold>
+    <cloverCoverageThreshold>58</cloverCoverageThreshold>
   </properties>
   <build>
     <plugins>
@@ -55,7 +55,22 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-imageprovider</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-vaadin-integration</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -89,6 +104,20 @@
       <artifactId>magnolia-core</artifactId>
       <type>test-jar</type>
       <version>${magnoliaVersion}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-form</artifactId>
+      <type>test-jar</type>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-vaadin-integration</artifactId>
+      <type>test-jar</type>
+      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

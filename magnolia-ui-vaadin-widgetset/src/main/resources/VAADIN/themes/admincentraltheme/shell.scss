@@ -31,7 +31,6 @@
   position:absolute;
   top:7px;
   left:17px;
-  cursor:pointer;
 }
 
 #main-launcher {
@@ -73,9 +72,20 @@
 
 #divet {
   position:absolute;
-  top:47px;
-  width:20px;
-  height:10px;
+  bottom:0px;
+  width:0px;
+  height:0px;
+ 
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+}
+
+.divet-green {
+  border-bottom: 8px solid #77a42e;
+}
+
+.divet-white {
+  border-bottom: 8px solid #fff;
 }
 
 .v-shell-viewport-slot {
@@ -106,6 +116,7 @@
   position:absolute;
   top:0;
   bottom:0;
+  z-index: 1;
 }
 
 .v-shell-app {

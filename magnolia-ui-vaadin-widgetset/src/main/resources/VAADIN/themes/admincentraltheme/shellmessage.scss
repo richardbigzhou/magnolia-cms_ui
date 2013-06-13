@@ -51,12 +51,24 @@
 }
 
 .v-shell-notification .close-error {
-  background: url("img/icon-close-white-16.png")no-repeat scroll 4px 4px transparent;
+  background: url("img/icon-close-white-16.png")no-repeat scroll 2px 4px transparent;
 }
 
 .v-shell-notification .details-expander {
   margin-left: 20px;
 }
+.v-shell-notification b, .v-shell-notification span {
+  padding-top: 2px;
+  vertical-align: middle;
+}
+.v-shell-notification span {
+  margin-right: 5px;
+}
+
+.v-shell-notification span.link {
+  cursor: pointer;
+}
+
 
 .badge-icon {
   background-color:$c40;

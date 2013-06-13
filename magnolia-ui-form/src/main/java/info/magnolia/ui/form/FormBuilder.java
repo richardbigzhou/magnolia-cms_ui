@@ -40,8 +40,8 @@ import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
-import info.magnolia.ui.form.field.builder.FieldBuilder;
-import info.magnolia.ui.form.field.builder.FieldFactory;
+import info.magnolia.ui.form.field.factory.FieldFactory;
+import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.form.FormView;
@@ -62,15 +62,15 @@ import com.vaadin.ui.Field;
  */
 public class FormBuilder {
 
-    private FieldFactory fieldFactory;
+    private FieldFactoryFactory fieldFactoryFactory;
     private I18nContentSupport i18nContentSupport;
     private I18NAuthoringSupport i18NAuthoringSupport;
     private ComponentProvider componentProvider;
 
     @Inject
-    public FormBuilder(FieldFactory fieldFactory, I18nContentSupport i18nContentSupport,
+    public FormBuilder(FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport,
             I18NAuthoringSupport i18NAuthoringSupport, ComponentProvider componentProvider) {
-        this.fieldFactory = fieldFactory;
+        this.fieldFactoryFactory = fieldFactoryFactory;
         this.componentProvider = componentProvider;
         this.i18nContentSupport = i18nContentSupport;
         this.i18NAuthoringSupport = i18NAuthoringSupport;
@@ -112,10 +112,11 @@ public class FormBuilder {
                     continue;
                 }
                 hasI18NAwareFields |= fieldDefinition.isI18n();
-                final FieldBuilder formField = fieldFactory.create(fieldDefinition, item);
+                final FieldFactory formField = fieldFactoryFactory.createFieldFactory(fieldDefinition, item);
                 formField.setComponentProvider(componentProvider);
+                formField.setI18nContentSupport(i18nContentSupport);
                 formField.setParent(tab);
-                final Field<?> field = formField.getField();
+                final Field<?> field = formField.createField();
                 if (field instanceof AbstractComponent) {
                     ((AbstractComponent) field).setImmediate(true);
                 }
@@ -151,7 +152,7 @@ public class FormBuilder {
                     continue;
                 }
 
-                final FieldBuilder formField = fieldFactory.create(fieldDefinition, item);
+                final FieldFactory formField = fieldFactoryFactory.createFieldFactory(fieldDefinition, item);
                 final View fieldView = formField.getView();
 
                 view.addComponent(fieldView.asVaadinComponent());

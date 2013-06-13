@@ -52,8 +52,13 @@ import java.util.Map;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
 
@@ -80,13 +85,17 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
 
     private final Element viewportSlot = DOM.createDiv();
 
+    // To remove focus (blur) all input elements, one just needs to focus this element.
+    private final FocusPanel blurHelper = new FocusPanel();
+
     public MagnoliaShellViewImpl() {
         super();
         this.mainAppLauncher = new ShellAppLauncher();
         getElement().setClassName(CLASS_NAME);
         viewportSlot.setClassName(VIEWPORT_SLOT_CLASS_NAME);
-
         add(mainAppLauncher, getElement());
+
+
         getElement().appendChild(viewportSlot);
         viewportShifter.addCallback(new JQueryCallback() {
             @Override
@@ -94,7 +103,100 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
                 presenter.updateViewportLayout(appViewport());
             }
         });
+
+        initKeyboardShortcutSupport();
     }
+
+
+    /**
+     * Bind keyboard handlers.
+     * These commands are only processed if an input area does not have focus.
+     */
+    protected void initKeyboardShortcutSupport() {
+
+        add(blurHelper, getElement());
+
+        KeyPressHandler keyboardShortcutHandler = new KeyPressHandler() {
+
+            @Override
+            public void onKeyPress(KeyPressEvent event) {
+
+                // Only process keyboard shortcuts if user is not in an input field.
+                if (isFocusedElementAnInputField()) {
+                    return;
+                }
+
+                // Only process if no modifier keys are held down to avoid collision with OS or Browser hotkeys.
+                // Note this method does not appear to work correctly as method runs when ctrl or command key are down on osx firefox.
+                if (event.isAnyModifierKeyDown()) {
+                    return;
+                }
+
+                char c = event.getCharCode();
+
+                switch (c) {
+
+                // Shell Apps
+                case '1':
+                    mainAppLauncher.toggleShellApp(ShellAppType.APPLAUNCHER);
+                    break;
+                case '2':
+                    mainAppLauncher.toggleShellApp(ShellAppType.PULSE);
+                    break;
+                case '3':
+                    mainAppLauncher.toggleShellApp(ShellAppType.FAVORITE);
+                    break;
+
+                // App Stack Navigation.
+                case '9':
+                    appViewport().goToPreviousApp();
+                    break;
+                case '0':
+                    appViewport().goToNextApp();
+                    break;
+
+                default:
+                    // Nothing
+                }
+            }
+        };
+        RootPanel.get().addDomHandler(keyboardShortcutHandler, KeyPressEvent.getType());
+
+
+        /**
+         * Pressing the escape key causes all elements to loose focus.
+         * This is a handy way to be able to start using the single-key keyboard shortcuts.
+         */
+        KeyPressHandler escapeKeyPressHandler = new KeyPressHandler() {
+            @Override
+            public void onKeyPress(KeyPressEvent event) {
+                int code = event.getNativeEvent().getKeyCode();
+                if (code == KeyCodes.KEY_ESCAPE) {
+                    blurHelper.getElement().focus();
+                }
+            }
+        };
+        RootPanel.get().addDomHandler(escapeKeyPressHandler, KeyPressEvent.getType());
+    }
+
+    /**
+     * Returns whether the currently focused element is one that accepts keyboard input.
+     * 
+     * @return
+     */
+    protected boolean isFocusedElementAnInputField() {
+        Element focused = elementInFocus(RootPanel.get().getElement());
+        String tagName = focused.getTagName();
+        if ("input".equalsIgnoreCase(tagName) || "select".equalsIgnoreCase(tagName) || "textarea".equalsIgnoreCase(tagName)) {
+            return true;
+        }
+        return false;
+    }
+
+    protected native Element elementInFocus(Element element) /*-{
+                                                             return element.ownerDocument.activeElement;
+                                                             }-*/;
+
 
     protected AppsViewportWidget appViewport() {
         return (AppsViewportWidget) viewports.get(ViewportType.APP);
@@ -223,6 +325,11 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     }
 
     @Override
+    public void setUserMenu(Widget widget) {
+        mainAppLauncher.setUserMenu(widget);
+    }
+
+    @Override
     public void onLoad() {
         super.onLoad();
         presenter.initHistory();
@@ -232,5 +339,6 @@ public class MagnoliaShellViewImpl extends TouchPanel implements MagnoliaShellVi
     public boolean hasOverlay(Widget widget) {
         return getWidgetIndex(widget) != -1;
     }
+
 
 }

@@ -40,6 +40,7 @@ import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.api.ModelConstants;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -63,7 +64,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
 
     private String primaryNodeType;
 
-    private final Map<String, AbstractJcrNodeAdapter> children = new HashMap<String, AbstractJcrNodeAdapter>();
+    private final Map<String, AbstractJcrNodeAdapter> children = new LinkedHashMap<String, AbstractJcrNodeAdapter>();
 
     private final Map<String, AbstractJcrNodeAdapter> removedChildren = new HashMap<String, AbstractJcrNodeAdapter>();
 
@@ -260,7 +261,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
                 log.error("Could not rename JCR Node.", e);
             }
         } else if (propertyId != null && !propertyId.isEmpty()) {
-            if (property.getValue() != null && StringUtils.isNotEmpty(property.getValue().toString())) {
+            if (property.getValue() != null) {
                 try {
                     PropertyUtil.setProperty(node, propertyId, property.getValue());
                 } catch (RepositoryException e) {
@@ -330,10 +331,6 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
     }
 
     public void setNodeName(String nodeName) {
-        if (StringUtils.isNotBlank(nodeName)) {
-            this.nodeName = Path.getValidatedLabel(nodeName);
-        } else {
-            this.nodeName = nodeName;
-        }
+        this.nodeName = nodeName;
     }
 }
