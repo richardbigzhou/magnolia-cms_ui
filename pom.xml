@@ -20,6 +20,10 @@
     <imagingVersion>3.0-SNAPSHOT</imagingVersion>
     <vaadinVersion>7.0.7</vaadinVersion>
     <scmTagPrefix>magnolia-ui</scmTagPrefix>
+
+    <!-- The gwt-compile-production profile is defined in magnolia-ui-vaadin-widgetset but this needs to be configured here:
+         the release-plugin is configured "once" with the reactor, and profiles enabled then. -->
+    <additionalReleaseProfiles>enable-clover,gwt-compile-production</additionalReleaseProfiles>
   </properties>
   <scm>
     <connection>scm:git:http://git.magnolia-cms.com/magnolia_ui</connection>
