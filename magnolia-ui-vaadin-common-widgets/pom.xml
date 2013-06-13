@@ -12,7 +12,7 @@
 
   <properties>
     <!-- Purposely removed enable-clover profile for this project -->
-    <additionalReleaseProfiles />
+    <additionalReleaseProfiles></additionalReleaseProfiles>
   </properties>
 
 
