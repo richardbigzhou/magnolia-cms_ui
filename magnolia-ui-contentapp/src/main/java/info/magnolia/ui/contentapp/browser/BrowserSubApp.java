@@ -188,15 +188,12 @@ public class BrowserSubApp extends BaseSubApp {
         try {
             itemId = JcrItemUtil.getItemId(SessionUtil.getNode(workspaceName, path));
 
-            // MGNLUI-1475: item might have not be found if path doesn't exist
-            // TODO: fire UriFragmentChangedEvent
+            // MGNLUI-1475: item might have not been found if path doesn't exist
             if (itemId == null) {
                 String newPath = Workspace.PATH_WORKSPACE_ROOT;
                 itemId = JcrItemUtil.getItemId(SessionUtil.getNode(workspaceName, newPath));
-                String newParameter = location.getParameter().replaceAll(path, newPath);
 
                 BrowserLocation newLocation = getCurrentLocation();
-                newLocation.setParameter(newParameter);
                 newLocation.updateNodePath(newPath);
 
                 getAppContext().updateSubAppLocation(getSubAppContext(), newLocation);
