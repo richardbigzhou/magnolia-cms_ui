@@ -63,6 +63,7 @@ public class UserContainer extends HierarchicalJcrContainer {
             if (super.moveItem(source, target)) {
                 if (source.isNode()) {
                     UsersWorkspaceUtil.updateAcls((Node) source, pathBefore);
+                    source.getSession().save();
                 }
                 return true;
             }
@@ -79,6 +80,7 @@ public class UserContainer extends HierarchicalJcrContainer {
             if (super.moveItem(source, target)) {
                 if (source.isNode()) {
                     UsersWorkspaceUtil.updateAcls((Node) source, pathBefore);
+                    source.getSession().save();
                 }
                 return true;
             }
@@ -95,6 +97,7 @@ public class UserContainer extends HierarchicalJcrContainer {
             if (super.moveItem(source, target)) {
                 if (source.isNode()) {
                     UsersWorkspaceUtil.updateAcls((Node) source, pathBefore);
+                    source.getSession().save();
                 }
                 return true;
             }
