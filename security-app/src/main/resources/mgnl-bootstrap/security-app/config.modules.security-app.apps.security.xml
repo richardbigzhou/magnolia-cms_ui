@@ -1126,9 +1126,6 @@
         <sv:property sv:name="jcr:uuid" sv:type="String">
           <sv:value>b5889046-382e-4317-bc0f-e290342feec8</sv:value>
         </sv:property>
-        <sv:property sv:name="defaultAction" sv:type="String">
-          <sv:value>editUser</sv:value>
-        </sv:property>
         <sv:property sv:name="jcr:created" sv:type="Date">
           <sv:value>2013-06-13T15:04:45.565+02:00</sv:value>
         </sv:property>
