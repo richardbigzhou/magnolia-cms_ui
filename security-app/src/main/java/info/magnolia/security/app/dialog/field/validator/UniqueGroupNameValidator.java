@@ -33,24 +33,34 @@
  */
 package info.magnolia.security.app.dialog.field.validator;
 
-import info.magnolia.ui.form.validator.factory.AbstractFieldValidatorFactory;
+import info.magnolia.cms.security.Group;
+import info.magnolia.cms.security.Security;
 
-import com.vaadin.data.Validator;
+import java.util.Collection;
+
+import com.vaadin.data.validator.AbstractStringValidator;
 
 /**
- * Unique Group ID validator builder.
- *
- * @see UniqueGroupIdValidatorDefinition
+ * Validator to ensure that new group name is does not exist in the system yet.
  */
-public class UniqueGroupIdValidatorFactory extends AbstractFieldValidatorFactory<UniqueGroupIdValidatorDefinition> {
+public class UniqueGroupNameValidator extends AbstractStringValidator {
 
-    public UniqueGroupIdValidatorFactory(UniqueGroupIdValidatorDefinition definition) {
-        super(definition);
+    public UniqueGroupNameValidator(String errorMessage) {
+        super(errorMessage);
     }
 
     @Override
-    public Validator createValidator() {
-        return new UniqueGroupIdValidator(getI18nErrorMessage());
+    protected boolean isValidValue(String value) {
+        // get all existing groups
+        Collection<Group> groups = Security.getGroupManager().getAllGroups();
+        for (Group g : groups) {
+            // if there is any group with the same name, the value is invalid
+            if (g.getName().equals(value)) {
+                return false;
+            }
+        }
+        // no group with the same name found, value is valid
+        return true;
     }
 
 }

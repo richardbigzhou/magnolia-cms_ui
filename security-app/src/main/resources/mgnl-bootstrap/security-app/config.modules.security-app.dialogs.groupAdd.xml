@@ -179,7 +179,7 @@
                   <sv:value>3153be46-619d-45a4-8ed9-fd0e42e05174</sv:value>
                 </sv:property>
                 <sv:property sv:name="class" sv:type="String">
-                  <sv:value>info.magnolia.security.app.dialog.field.validator.UniqueGroupIdValidatorDefinition</sv:value>
+                  <sv:value>info.magnolia.security.app.dialog.field.validator.UniqueGroupNameValidatorDefinition</sv:value>
                 </sv:property>
                 <sv:property sv:name="errorMessage" sv:type="String">
                   <sv:value>Group name already exists.</sv:value>

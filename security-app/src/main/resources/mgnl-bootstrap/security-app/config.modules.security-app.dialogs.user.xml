@@ -179,7 +179,7 @@
                   <sv:value>b90aae1c-ed2c-49c8-a0e3-8ad32598a99a</sv:value>
                 </sv:property>
                 <sv:property sv:name="class" sv:type="String">
-                  <sv:value>info.magnolia.security.app.dialog.field.validator.UniqueUserIdValidatorDefinition</sv:value>
+                  <sv:value>info.magnolia.security.app.dialog.field.validator.UniqueUserNameValidatorDefinition</sv:value>
                 </sv:property>
                 <sv:property sv:name="errorMessage" sv:type="String">
                   <sv:value>User name already exists.</sv:value>

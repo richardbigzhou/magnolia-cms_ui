@@ -209,7 +209,7 @@
                   <sv:value>3d0faf61-60b2-40c8-9d1b-b629971f6454</sv:value>
                 </sv:property>
                 <sv:property sv:name="class" sv:type="String">
-                  <sv:value>info.magnolia.security.app.dialog.field.validator.UniqueRoleIdValidatorDefinition</sv:value>
+                  <sv:value>info.magnolia.security.app.dialog.field.validator.UniqueRoleNameValidatorDefinition</sv:value>
                 </sv:property>
                 <sv:property sv:name="errorMessage" sv:type="String">
                   <sv:value>Role name already exists.</sv:value>

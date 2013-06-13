@@ -36,13 +36,13 @@ package info.magnolia.security.app.dialog.field.validator;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 /**
- * A definition for the UniqueRoleIdValidator.
+ * A definition for {@link UniqueRoleNameValidator}.
  *
- * @see UniqueRoleIdValidatorFactory
+ * @see UniqueRoleNameValidatorFactory
  */
-public class UniqueRoleIdValidatorDefinition extends ConfiguredFieldValidatorDefinition {
+public class UniqueRoleNameValidatorDefinition extends ConfiguredFieldValidatorDefinition {
 
-    public UniqueRoleIdValidatorDefinition() {
-        setFactoryClass(UniqueRoleIdValidatorFactory.class);
+    public UniqueRoleNameValidatorDefinition() {
+        setFactoryClass(UniqueRoleNameValidatorFactory.class);
     }
 }

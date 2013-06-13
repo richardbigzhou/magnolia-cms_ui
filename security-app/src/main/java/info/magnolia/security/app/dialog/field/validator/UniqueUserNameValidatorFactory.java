@@ -35,22 +35,26 @@ package info.magnolia.security.app.dialog.field.validator;
 
 import info.magnolia.ui.form.validator.factory.AbstractFieldValidatorFactory;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Validator;
 
 /**
- * Builder for the UniqueRoleIdValidator.
+ * Builder for {@link UniqueUserNameValidator}.
  *
- * @see UniqueRoleIdValidatorDefinition
+ * @see UniqueUserNameValidatorDefinition
  */
-public class UniqueRoleIdValidatorFactory extends AbstractFieldValidatorFactory<UniqueRoleIdValidatorDefinition> {
+public class UniqueUserNameValidatorFactory extends AbstractFieldValidatorFactory<UniqueUserNameValidatorDefinition> {
 
-    public UniqueRoleIdValidatorFactory(UniqueRoleIdValidatorDefinition definition) {
+    private Item item;
+
+    public UniqueUserNameValidatorFactory(UniqueUserNameValidatorDefinition definition, Item item) {
         super(definition);
+        this.item = item;
     }
 
     @Override
     public Validator createValidator() {
-        return new UniqueRoleIdValidator(getI18nErrorMessage());
+        return new UniqueUserNameValidator(item, getI18nErrorMessage());
     }
 
 }

@@ -33,26 +33,24 @@
  */
 package info.magnolia.security.app.dialog.field.validator;
 
-import info.magnolia.cms.security.Security;
+import info.magnolia.ui.form.validator.factory.AbstractFieldValidatorFactory;
 
-import com.vaadin.data.validator.AbstractStringValidator;
+import com.vaadin.data.Validator;
 
 /**
- * A validator to ensure uniqueness of role names.
+ * Builder for {@link UniqueRoleNameValidator}.
+ *
+ * @see UniqueRoleNameValidatorDefinition
  */
-public class UniqueRoleIdValidator extends AbstractStringValidator {
+public class UniqueRoleNameValidatorFactory extends AbstractFieldValidatorFactory<UniqueRoleNameValidatorDefinition> {
 
-    public UniqueRoleIdValidator(String errorMessage) {
-        super(errorMessage);
+    public UniqueRoleNameValidatorFactory(UniqueRoleNameValidatorDefinition definition) {
+        super(definition);
     }
 
     @Override
-    protected boolean isValidValue(String value) {
-        if (Security.getRoleManager().getRole(value) != null) {
-            // role with such name already exists
-            return false;
-        }
-        return true;
+    public Validator createValidator() {
+        return new UniqueRoleNameValidator(getI18nErrorMessage());
     }
 
 }
