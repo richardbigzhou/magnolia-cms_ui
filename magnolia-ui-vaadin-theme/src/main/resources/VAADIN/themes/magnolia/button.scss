@@ -19,15 +19,15 @@
     &.btn-dialog-commit {
       background-color: $c40;
     }
-
-    &.commit:hover,
-    &.btn-dialog-commit:hover {
+    
+    .v-generated-body:not(.v-touch) &.commit:hover,
+    .v-generated-body:not(.v-touch) &.btn-dialog-commit:hover {
       background-color: $c44;
       color: $c40;
     }
 
-    &.commit:active,
-    &.btn-dialog-commit:active {
+    .v-generated-body .v-app &.commit:active,
+    .v-generated-body .v-app &.btn-dialog-commit:active {
       background-color: $c80;
       color: $c40;
     }
@@ -55,13 +55,13 @@
   cursor: pointer;
   outline: none !important;
   @include box-sizing(content-box);
-
-  &:hover {
+  
+  .v-generated-body:not(.v-touch) &:hover {
     background-color: $c14;
     color: $c10;
   }
 
-  &:active {
+  .v-generated-body .v-app &:active {
     background-color: $c80;
     color: $c10;
   }
