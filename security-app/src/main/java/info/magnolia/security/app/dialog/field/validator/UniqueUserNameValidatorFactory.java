@@ -33,24 +33,30 @@
  */
 package info.magnolia.security.app.dialog.field.validator;
 
+import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.ui.form.validator.factory.AbstractFieldValidatorFactory;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Validator;
 
 /**
- * Builder for the UniqueUserIdValidator.
+ * Builder for {@link UniqueUserNameValidator}.
  *
- * @see UniqueUserIdValidatorDefinition
+ * @see UniqueUserNameValidatorDefinition
  */
-public class UniqueUserIdValidatorFactory extends AbstractFieldValidatorFactory<UniqueUserIdValidatorDefinition> {
+public class UniqueUserNameValidatorFactory extends AbstractFieldValidatorFactory<UniqueUserNameValidatorDefinition> {
 
-    public UniqueUserIdValidatorFactory(UniqueUserIdValidatorDefinition definition) {
+    private final SecuritySupport securitySupport;
+    private Item item;
+
+    public UniqueUserNameValidatorFactory(UniqueUserNameValidatorDefinition definition, Item item, SecuritySupport securitySupport) {
         super(definition);
+        this.item = item;
+        this.securitySupport = securitySupport;
     }
 
     @Override
     public Validator createValidator() {
-        return new UniqueUserIdValidator(getI18nErrorMessage());
+        return new UniqueUserNameValidator(item, getI18nErrorMessage(), securitySupport);
     }
-
 }

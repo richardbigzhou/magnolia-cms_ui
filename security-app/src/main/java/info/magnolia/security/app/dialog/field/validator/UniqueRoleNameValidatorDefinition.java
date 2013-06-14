@@ -33,26 +33,16 @@
  */
 package info.magnolia.security.app.dialog.field.validator;
 
-import info.magnolia.cms.security.Security;
-
-import com.vaadin.data.validator.AbstractStringValidator;
+import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 /**
- * Ensures uniqueness of the user name.
+ * A definition for {@link UniqueRoleNameValidator}.
+ *
+ * @see UniqueRoleNameValidatorFactory
  */
-public class UniqueUserIdValidator extends AbstractStringValidator {
+public class UniqueRoleNameValidatorDefinition extends ConfiguredFieldValidatorDefinition {
 
-    public UniqueUserIdValidator(String errorMessage) {
-        super(errorMessage);
+    public UniqueRoleNameValidatorDefinition() {
+        setFactoryClass(UniqueRoleNameValidatorFactory.class);
     }
-
-    @Override
-    protected boolean isValidValue(String value) {
-        if (Security.getUserManager().getUser(value) != null) {
-            // user with such name already exists
-            return false;
-        }
-        return true;
-    }
-
 }

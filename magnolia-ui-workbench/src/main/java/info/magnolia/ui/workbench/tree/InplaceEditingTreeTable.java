@@ -127,10 +127,17 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         }
 
         if (itemId != null && propertyId != null) {
-            if ((bypassedColumnGenerator = getColumnGenerator(propertyId)) != null) {
-                removeGeneratedColumn(propertyId);
+            Item item = getItem(itemId);
+            Property p = item.getItemProperty(propertyId);
+            // Do not allow editing for multi-value property.
+            if (p.getValue() instanceof List) {
+                return;
+            } else {
+                if ((bypassedColumnGenerator = getColumnGenerator(propertyId)) != null) {
+                    removeGeneratedColumn(propertyId);
+                }
+                fieldFactory.createFieldAndRegister(getContainerDataSource(), itemId, propertyId, this);
             }
-            fieldFactory.createFieldAndRegister(getContainerDataSource(), itemId, propertyId, this);
         } else {
             if (bypassedColumnGenerator != null) {
                 addGeneratedColumn(editingPropertyId, bypassedColumnGenerator);
@@ -141,6 +148,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
         this.editingItemId = itemId;
         this.editingPropertyId = propertyId;
+
         refreshRowCache();
     }
 

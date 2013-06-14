@@ -36,13 +36,13 @@ package info.magnolia.security.app.dialog.action;
 import static info.magnolia.cms.security.MgnlUserManager.*;
 import static info.magnolia.cms.security.SecurityConstants.*;
 
-import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.security.app.util.UsersWorkspaceUtil;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 import info.magnolia.ui.api.ModelConstants;
@@ -57,7 +57,6 @@ import java.util.Collection;
 import javax.jcr.Node;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -99,29 +98,38 @@ public class SaveUserDialogAction extends SaveDialogAction {
 
             UserManager userManager = securitySupport.getUserManager();
 
-            String userName = (String) userItem.getItemProperty(ModelConstants.JCR_NAME).getValue();
-            String password = (String) userItem.getItemProperty(PROPERTY_PASSWORD).getValue();
+            String newUserName = (String) userItem.getItemProperty(ModelConstants.JCR_NAME).getValue();
+            String newPassword = (String) userItem.getItemProperty(PROPERTY_PASSWORD).getValue();
 
             User user;
-            Node parentNode;
+            Node userNode;
             if (userItem instanceof JcrNewNodeAdapter) {
 
                 // JcrNewNodeAdapter returns the parent JCR item here
-                parentNode = userItem.getJcrItem();
+                Node parentNode = userItem.getJcrItem();
                 String parentPath = parentNode.getPath();
 
                 if ("/".equals(parentPath)) {
                     throw new ActionExecutionException("Users cannot be created directly under root");
                 }
 
-                user = userManager.createUser(parentPath, userName, password);
+                user = userManager.createUser(parentPath, newUserName, newPassword);
+                userNode = parentNode.getNode(user.getName());
             } else {
-                user = userManager.getUser(userName);
-                parentNode = userItem.getJcrItem().getParent();
+                userNode = userItem.getJcrItem();
+                String existingUserName = userNode.getName();
+                user = userManager.getUser(existingUserName);
+
+                if (!StringUtils.equals(existingUserName, newUserName)) {
+                    String pathBefore = userNode.getPath();
+                    NodeUtil.renameNode(userNode, newUserName);
+                    userNode.setProperty("name", newUserName);
+                    UsersWorkspaceUtil.updateAcls(userNode, pathBefore);
+                }
 
                 String existingPasswordHash = user.getProperty(PROPERTY_PASSWORD);
-                if (!StringUtils.equals(password, existingPasswordHash)) {
-                    userManager.setProperty(user, PROPERTY_PASSWORD, password);
+                if (!StringUtils.equals(newPassword, existingPasswordHash)) {
+                    userManager.setProperty(user, PROPERTY_PASSWORD, newPassword);
                 }
             }
 
@@ -137,22 +145,16 @@ public class SaveUserDialogAction extends SaveDialogAction {
             String language = userItem.getItemProperty(PROPERTY_LANGUAGE).toString();
             userManager.setProperty(user, PROPERTY_LANGUAGE, language);
 
-            if (user instanceof MgnlUser) {
-                String path = ((MgnlUser) user).getPath();
-                Session session = parentNode.getSession();
-                Node userNode = session.getNode(path);
+            final Collection<String> groups = (Collection<String>) userItem.getItemProperty(NODE_GROUPS).getValue();
+            log.debug("Assigning user the following groups [{}]", groups);
+            storeCollectionAsNodeWithProperties(userNode, NODE_GROUPS, groups);
 
-                final Collection<String> groups = (Collection<String>) userItem.getItemProperty(NODE_GROUPS).getValue();
-                log.debug("Assigning user the following groups [{}]", groups);
-                storeCollectionAsNodeWithProperties(userNode, NODE_GROUPS, groups);
+            final Collection<String> roles = (Collection<String>) userItem.getItemProperty(NODE_ROLES).getValue();
+            log.debug("Assigning user the following roles [{}]", roles);
+            storeCollectionAsNodeWithProperties(userNode, NODE_ROLES, roles);
 
-                final Collection<String> roles = (Collection<String>) userItem.getItemProperty(NODE_ROLES).getValue();
-                log.debug("Assigning user the following roles [{}]", roles);
-                storeCollectionAsNodeWithProperties(userNode, NODE_ROLES, roles);
-
-                NodeTypes.LastModified.update(userNode);
-                userNode.getSession().save();
-            }
+            NodeTypes.LastModified.update(userNode);
+            userNode.getSession().save();
 
         } catch (final RepositoryException e) {
             throw new ActionExecutionException(e);
