@@ -238,12 +238,14 @@ public class BrowserSubApp extends BaseSubApp {
                 for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
 
                     String actionName = itemDefinition.getName();
-                    allActions.add(actionExecutor.getActionDefinition(actionName));
+                    ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
 
-                    if (actionExecutor.isAvailable(actionName, items.toArray(new Item[items.size()]))) {
-                        enabledActions.add(actionExecutor.getActionDefinition(actionName));
+                    if (actionDefinition != null) {
+                        allActions.add(actionDefinition);
+                        if (actionExecutor.isAvailable(actionName, items.toArray(new Item[items.size()]))) {
+                            enabledActions.add(actionDefinition);
+                        }
                     }
-
                 }
                 actionMenu.showSectionActions(sectionDefinition.getName(), allActions, enabledActions);
             }
@@ -251,8 +253,7 @@ public class BrowserSubApp extends BaseSubApp {
         } catch (RepositoryException e) {
             log.error("Failed to update action menu", e);
         }
-
-        }
+    }
 
     /**
      * Update the items in the actionPopup based on the selected item and the ActionPopup availability configuration.
