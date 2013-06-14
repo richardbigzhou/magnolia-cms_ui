@@ -52,6 +52,8 @@ public interface PageBarView extends View {
 
     void togglePreviewMode(boolean isPreview);
 
+    void setPlatFormType(PlatformType targetPreviewPlatform);
+
     /**
      * Listener interface for {@link PageBarView}.
      */

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.security.app.dialog.field.validator;
+package info.magnolia.security.app.container;
 
-import info.magnolia.ui.form.validator.factory.AbstractFieldValidatorFactory;
-
-import com.vaadin.data.Validator;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.workbench.tree.drop.BaseDropConstraint;
 
 /**
- * Builder for the UniqueRoleIdValidator.
- *
- * @see UniqueRoleIdValidatorDefinition
+ * Drop constraint for users workbench.
  */
-public class UniqueRoleIdValidatorFactory extends AbstractFieldValidatorFactory<UniqueRoleIdValidatorDefinition> {
+public class UserDropConstraint extends BaseDropConstraint {
 
-    public UniqueRoleIdValidatorFactory(UniqueRoleIdValidatorDefinition definition) {
-        super(definition);
+    public UserDropConstraint() {
+        super(NodeTypes.User.NAME);
     }
-
-    @Override
-    public Validator createValidator() {
-        return new UniqueRoleIdValidator(getI18nErrorMessage());
-    }
-
 }

@@ -179,6 +179,7 @@ div.mgnlEditorBarButtons {
  * Icon classes.
  */
 div.editorIcon {
+  -webkit-backface-visibility: hidden;
   line-height: 25px !important;
   padding: 0 0 0 11px !important;
   cursor: pointer !important;

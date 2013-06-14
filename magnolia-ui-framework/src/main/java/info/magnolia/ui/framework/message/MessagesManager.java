@@ -53,6 +53,10 @@ public interface MessagesManager {
         void messageCleared(Message message);
     }
 
+    /**
+     * Beware: this method is for registering message listeners and should only be used by the entry point of our application AdmincentralUI where we register a dispatcher.
+     *         If you'll use it to register your own MessageListeners this likely to introduce a memory leak. You should listen to the MessageEvent instead.
+     */
     void registerMessagesListener(String userName, MessageListener listener);
 
     void unregisterMessagesListener(String userName, MessageListener listener);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sv:node sv:name="userEdit" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<sv:node sv:name="user" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <sv:property sv:name="jcr:primaryType" sv:type="Name">
     <sv:value>mgnl:contentNode</sv:value>
   </sv:property>
@@ -7,7 +7,7 @@
     <sv:value>mix:lockable</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:uuid" sv:type="String">
-    <sv:value>b86e16da-d94f-462e-8f39-2ca0be539e1b</sv:value>
+    <sv:value>be6a40e9-1ba7-42b2-b293-cb54e492e8af</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
@@ -20,7 +20,7 @@
       <sv:value>mix:lockable</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
-      <sv:value>3fa76e5f-0f05-4604-8f30-6e015863973d</sv:value>
+      <sv:value>56e17e1e-b07d-4699-9810-060e82bde4dc</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -33,7 +33,7 @@
         <sv:value>mix:lockable</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:uuid" sv:type="String">
-        <sv:value>980876ff-b4de-42af-b277-cef2d378d274</sv:value>
+        <sv:value>98527355-5f7a-4ea0-9c2f-43b00497c987</sv:value>
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition</sv:value>
@@ -56,7 +56,7 @@
         <sv:value>mix:lockable</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:uuid" sv:type="String">
-        <sv:value>48a9b50f-0632-4498-88a1-7f6fbbd517ba</sv:value>
+        <sv:value>cff5a505-1b58-4117-8523-bfd3c43364c2</sv:value>
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition</sv:value>
@@ -77,7 +77,7 @@
       <sv:value>mix:lockable</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
-      <sv:value>329201f8-8da5-4741-b7a1-59808e75488b</sv:value>
+      <sv:value>f5744cbf-8e4c-4fcb-a58f-cde18c779976</sv:value>
     </sv:property>
     <sv:property sv:name="description" sv:type="String">
       <sv:value>Define the user information</sv:value>
@@ -96,7 +96,7 @@
         <sv:value>mix:lockable</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:uuid" sv:type="String">
-        <sv:value>c72c233d-4e8b-4b2c-af8e-9ecb23b95e74</sv:value>
+        <sv:value>11650e10-5b1f-42f3-99ea-b745551cedeb</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -109,7 +109,7 @@
           <sv:value>mix:lockable</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:uuid" sv:type="String">
-          <sv:value>28089ac0-c8e1-487e-86f7-ff8732344b6d</sv:value>
+          <sv:value>3f794a4e-801b-4f5b-a9c6-6e00dcdf6d16</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
@@ -125,7 +125,7 @@
             <sv:value>mix:lockable</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:uuid" sv:type="String">
-            <sv:value>ef98bdf5-601e-445f-927a-8a94ea5f71f2</sv:value>
+            <sv:value>4ef22880-0e6c-429e-a959-903598f484cd</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -138,7 +138,7 @@
               <sv:value>mix:lockable</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:uuid" sv:type="String">
-              <sv:value>a9e5151d-78db-4e28-80e0-889ddc54718e</sv:value>
+              <sv:value>af25e070-9137-4145-9f0c-1d272412b270</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.form.field.definition.TextFieldDefinition</sv:value>
@@ -152,9 +152,43 @@
             <sv:property sv:name="label" sv:type="String">
               <sv:value>User name</sv:value>
             </sv:property>
-            <sv:property sv:name="readOnly" sv:type="String">
+            <sv:property sv:name="required" sv:type="String">
               <sv:value>true</sv:value>
             </sv:property>
+            <sv:node sv:name="validators">
+              <sv:property sv:name="jcr:primaryType" sv:type="Name">
+                <sv:value>mgnl:contentNode</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+                <sv:value>mix:lockable</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:uuid" sv:type="String">
+                <sv:value>d53dc998-c1c9-492e-acc3-56d338ecbac4</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:createdBy" sv:type="String">
+                <sv:value>admin</sv:value>
+              </sv:property>
+              <sv:node sv:name="unique">
+                <sv:property sv:name="jcr:primaryType" sv:type="Name">
+                  <sv:value>mgnl:contentNode</sv:value>
+                </sv:property>
+                <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+                  <sv:value>mix:lockable</sv:value>
+                </sv:property>
+                <sv:property sv:name="jcr:uuid" sv:type="String">
+                  <sv:value>b90aae1c-ed2c-49c8-a0e3-8ad32598a99a</sv:value>
+                </sv:property>
+                <sv:property sv:name="class" sv:type="String">
+                  <sv:value>info.magnolia.security.app.dialog.field.validator.UniqueUserNameValidatorDefinition</sv:value>
+                </sv:property>
+                <sv:property sv:name="errorMessage" sv:type="String">
+                  <sv:value>User name already exists.</sv:value>
+                </sv:property>
+                <sv:property sv:name="jcr:createdBy" sv:type="String">
+                  <sv:value>admin</sv:value>
+                </sv:property>
+              </sv:node>
+            </sv:node>
           </sv:node>
           <sv:node sv:name="pswd">
             <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -164,7 +198,7 @@
               <sv:value>mix:lockable</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:uuid" sv:type="String">
-              <sv:value>a7eea086-5088-45fa-a6be-39c7b99cbaa7</sv:value>
+              <sv:value>fc4bfea1-11ae-4ed4-b484-00ceb419ae00</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.form.field.definition.PasswordFieldDefinition</sv:value>
@@ -184,7 +218,7 @@
               <sv:value>mix:lockable</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:uuid" sv:type="String">
-              <sv:value>c72d3401-1f75-4cce-9ad4-57c71f792a99</sv:value>
+              <sv:value>99c290cc-a693-4af8-8d48-675054085651</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.security.app.dialog.field.EnabledFieldDefinition</sv:value>
@@ -204,7 +238,7 @@
               <sv:value>mix:lockable</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:uuid" sv:type="String">
-              <sv:value>c07f17da-0349-4103-9571-b32316dac3dd</sv:value>
+              <sv:value>1fcd4b85-be1e-4bbb-9957-34cd856373a1</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.form.field.definition.TextFieldDefinition</sv:value>
@@ -224,7 +258,7 @@
               <sv:value>mix:lockable</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:uuid" sv:type="String">
-              <sv:value>95f6fbdc-3459-44b4-a714-ad2674854e71</sv:value>
+              <sv:value>1a013773-8ad1-406e-b9c9-4761d71c4679</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.form.field.definition.TextFieldDefinition</sv:value>
@@ -247,7 +281,7 @@
               <sv:value>mix:lockable</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:uuid" sv:type="String">
-              <sv:value>636b4ce6-0a19-4062-b2ab-f3ec98f2f57a</sv:value>
+              <sv:value>2e702a1b-1321-450e-86a3-9cd7a11a5b03</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.form.field.definition.SelectFieldDefinition</sv:value>
@@ -266,7 +300,7 @@
                 <sv:value>mix:lockable</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:uuid" sv:type="String">
-                <sv:value>4b180e8c-a4b1-47ab-96bb-14bccc79ee78</sv:value>
+                <sv:value>f1cb4620-4636-4b81-959d-416fcf486c80</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
@@ -279,7 +313,7 @@
                   <sv:value>mix:lockable</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:uuid" sv:type="String">
-                  <sv:value>cfaecde2-1827-43ef-8cfc-0fc621c5f9c5</sv:value>
+                  <sv:value>afd9cf35-86ba-4edf-bcd6-d7bebfd1da55</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
@@ -302,7 +336,7 @@
                   <sv:value>mix:lockable</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:uuid" sv:type="String">
-                  <sv:value>7e455304-c225-4c8e-ba3e-a12e59a8f61e</sv:value>
+                  <sv:value>2a5d8b32-370f-4f1c-9d9f-f931707f9a4c</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
@@ -322,7 +356,7 @@
                   <sv:value>mix:lockable</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:uuid" sv:type="String">
-                  <sv:value>89bc7f63-5e1b-4cb8-8ef3-fadf9f8dc536</sv:value>
+                  <sv:value>f7913f4e-d2ea-481f-9e59-88ba5c550870</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
@@ -342,7 +376,7 @@
                   <sv:value>mix:lockable</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:uuid" sv:type="String">
-                  <sv:value>b4844cbb-cf21-4b74-8e52-91f169f77255</sv:value>
+                  <sv:value>ba6cce22-5760-40b4-a704-133e12a14092</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
@@ -366,7 +400,7 @@
           <sv:value>mix:lockable</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:uuid" sv:type="String">
-          <sv:value>c5f9b4ab-bf6a-4065-b886-dc606fee1d3f</sv:value>
+          <sv:value>ce50ea32-e99a-43b4-836c-696fe011e32e</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
@@ -382,7 +416,7 @@
             <sv:value>mix:lockable</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:uuid" sv:type="String">
-            <sv:value>e8c7a23e-843f-467b-8dcf-55d217c9945c</sv:value>
+            <sv:value>09d8e287-f8f2-42b9-9334-186d3579648e</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -395,7 +429,7 @@
               <sv:value>mix:lockable</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:uuid" sv:type="String">
-              <sv:value>09bf6560-72e5-4681-b92a-3249baf47aa4</sv:value>
+              <sv:value>28de2aa1-b033-47fd-a7a5-e88cf59f2a75</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.security.app.dialog.field.GroupManagementFieldDefinition</sv:value>
@@ -423,7 +457,7 @@
           <sv:value>mix:lockable</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:uuid" sv:type="String">
-          <sv:value>abb66708-1f2a-4cf4-a0b6-4a56774cbe3e</sv:value>
+          <sv:value>846593a7-9478-4e74-b04b-af5913e55030</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
@@ -439,7 +473,7 @@
             <sv:value>mix:lockable</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:uuid" sv:type="String">
-            <sv:value>451a91e1-f229-43a6-91b3-1d37f86e827b</sv:value>
+            <sv:value>9335ae47-3766-406e-a1bc-5c4b37dd4bf4</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -452,7 +486,7 @@
               <sv:value>mix:lockable</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:uuid" sv:type="String">
-              <sv:value>4a1c1ab4-e1d5-4d7d-89a1-1ced119d9c98</sv:value>
+              <sv:value>d10031e4-05cf-4e43-81cf-7f0df33c6b4d</sv:value>
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.security.app.dialog.field.RoleManagementFieldDefinition</sv:value>

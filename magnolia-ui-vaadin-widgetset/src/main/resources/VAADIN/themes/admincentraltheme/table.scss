@@ -210,4 +210,10 @@
     }
   }
 
+  /*A workaround for MGNLUI-1651*/
+  .v-magnolia-table.no-header-checkbox .v-select-all {
+    visibility:hidden;
+  }
+
+
 }

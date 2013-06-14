@@ -34,12 +34,16 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategory;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.framework.message.MessageEventHandler;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.framework.shell.ShellImpl;
+import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 
 import java.util.Collection;
@@ -47,6 +51,7 @@ import java.util.Date;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -57,7 +62,7 @@ import com.vaadin.data.util.HierarchicalContainer;
 /**
  * Presenter of {@link PulseMessagesView}.
  */
-public final class PulseMessagesPresenter implements PulseMessagesView.Listener {
+public final class PulseMessagesPresenter implements PulseMessagesView.Listener, MessageEventHandler {
 
     public static final String GROUP_PLACEHOLDER_ITEMID = "##SUBSECTION##";
     public static final String NEW_PROPERTY_ID = "new";
@@ -80,33 +85,11 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener 
     private Listener listener;
 
     @Inject
-    public PulseMessagesPresenter(final PulseMessagesView view, final ShellImpl shellImpl, final MessagesManager messagesManager) {
+    public PulseMessagesPresenter(@Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus, final PulseMessagesView view, final ShellImpl shellImpl, final MessagesManager messagesManager) {
         this.view = view;
         this.shell = shellImpl;
         this.messagesManager = messagesManager;
-
-        messagesManager.registerMessagesListener(MgnlContext.getUser().getName(), new MessagesManager.MessageListener() {
-
-            @Override
-            public void messageSent(Message message) {
-                addMessageAsItem(message);
-
-                if (grouping) {
-                    buildTree();
-                }
-                final MessageType type = message.getType();
-                doUnreadMessagesUpdate(type, 1);
-
-            }
-
-            @Override
-            public void messageCleared(Message message) {
-                assignPropertiesFromMessage(message, container.getItem(message.getId()));
-
-                final MessageType type = message.getType();
-                doUnreadMessagesUpdate(type, -1);
-            }
-        });
+        admincentralEventBus.addHandler(MessageEvent.class, this);
 
         shell.setIndication(
                 ShellAppType.PULSE,
@@ -128,9 +111,29 @@ public final class PulseMessagesPresenter implements PulseMessagesView.Listener 
         }
     }
 
-
     public void setListener(Listener listener) {
         this.listener = listener;
+    }
+
+    @Override
+    public void messageSent(MessageEvent event) {
+        final Message message = event.getMessage();
+        addMessageAsItem(message);
+
+        if (grouping) {
+            buildTree();
+        }
+        final MessageType type = message.getType();
+        doUnreadMessagesUpdate(type, 1);
+    }
+
+    @Override
+    public void messageCleared(MessageEvent event) {
+        final Message message = event.getMessage();
+        assignPropertiesFromMessage(message, container.getItem(message.getId()));
+
+        final MessageType type = message.getType();
+        doUnreadMessagesUpdate(type, -1);
     }
 
     private HierarchicalContainer createMessageDataSource() {
