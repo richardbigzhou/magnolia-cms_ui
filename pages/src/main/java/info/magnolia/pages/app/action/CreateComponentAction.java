@@ -171,6 +171,8 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
 
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
         form.setDescription("Select the Component to add to the page.");
+        form.setI18nBasename("info.magnolia.ui.admincentral.messages");
+        form.setLabel("dialog.paragraph.createNew");
 
         ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
         tab.setName("Components");
