@@ -35,9 +35,18 @@ package info.magnolia.security.app.dialog.field.validator;
 
 import info.magnolia.cms.security.Group;
 import info.magnolia.cms.security.Security;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Collection;
 
+import javax.jcr.RepositoryException;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
 import com.vaadin.data.validator.AbstractStringValidator;
 
 /**
@@ -45,22 +54,41 @@ import com.vaadin.data.validator.AbstractStringValidator;
  */
 public class UniqueGroupNameValidator extends AbstractStringValidator {
 
-    public UniqueGroupNameValidator(String errorMessage) {
+    private static final Logger log = LoggerFactory.getLogger(UniqueGroupNameValidator.class);
+
+    private final Item item;
+
+    public UniqueGroupNameValidator(Item item, String errorMessage) {
         super(errorMessage);
+        this.item = item;
     }
 
     @Override
     protected boolean isValidValue(String value) {
-        // get all existing groups
-        Collection<Group> groups = Security.getGroupManager().getAllGroups();
-        for (Group g : groups) {
-            // if there is any group with the same name, the value is invalid
-            if (g.getName().equals(value)) {
-                return false;
+        if (item instanceof JcrNodeAdapter) {
+            // If we're editing an existing node then its allowed to use the current username of course
+            if (!(item instanceof JcrNewNodeAdapter)) {
+                try {
+                    String currentName = ((JcrNodeAdapter)item).getJcrItem().getName();
+                    if (StringUtils.equals(value, currentName)) {
+                        return true;
+                    }
+                } catch (RepositoryException e) {
+                    log.error("Exception occurred getting node name of node [{}]", ((JcrNodeAdapter) item).getItemId(), e);
+                    return false;
+                }
             }
+            // get all existing groups
+            Collection<Group> groups = Security.getGroupManager().getAllGroups();
+            for (Group g : groups) {
+                // if there is any group with the same name, the value is invalid
+                if (g.getName().equals(value)) {
+                    return false;
+                }
+            }
+            // no group with the same name found, value is valid
+            return true;
         }
-        // no group with the same name found, value is valid
-        return true;
+        return false;
     }
-
 }

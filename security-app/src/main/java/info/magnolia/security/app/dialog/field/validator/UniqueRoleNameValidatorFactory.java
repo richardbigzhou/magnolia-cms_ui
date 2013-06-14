@@ -35,6 +35,7 @@ package info.magnolia.security.app.dialog.field.validator;
 
 import info.magnolia.ui.form.validator.factory.AbstractFieldValidatorFactory;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Validator;
 
 /**
@@ -44,13 +45,16 @@ import com.vaadin.data.Validator;
  */
 public class UniqueRoleNameValidatorFactory extends AbstractFieldValidatorFactory<UniqueRoleNameValidatorDefinition> {
 
-    public UniqueRoleNameValidatorFactory(UniqueRoleNameValidatorDefinition definition) {
+    private final Item item;
+
+    public UniqueRoleNameValidatorFactory(Item item, UniqueRoleNameValidatorDefinition definition) {
         super(definition);
+        this.item = item;
     }
 
     @Override
     public Validator createValidator() {
-        return new UniqueRoleNameValidator(getI18nErrorMessage());
+        return new UniqueRoleNameValidator(item, getI18nErrorMessage());
     }
 
 }

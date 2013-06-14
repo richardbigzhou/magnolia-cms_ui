@@ -35,6 +35,7 @@ package info.magnolia.security.app.dialog.field.validator;
 
 import info.magnolia.ui.form.validator.factory.AbstractFieldValidatorFactory;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Validator;
 
 /**
@@ -44,13 +45,16 @@ import com.vaadin.data.Validator;
  */
 public class UniqueGroupNameValidatorFactory extends AbstractFieldValidatorFactory<UniqueGroupNameValidatorDefinition> {
 
-    public UniqueGroupNameValidatorFactory(UniqueGroupNameValidatorDefinition definition) {
+    private final Item item;
+
+    public UniqueGroupNameValidatorFactory(Item item, UniqueGroupNameValidatorDefinition definition) {
         super(definition);
+        this.item = item;
     }
 
     @Override
     public Validator createValidator() {
-        return new UniqueGroupNameValidator(getI18nErrorMessage());
+        return new UniqueGroupNameValidator(item, getI18nErrorMessage());
     }
 
 }

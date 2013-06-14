@@ -2195,7 +2195,7 @@
             <sv:value>info.magnolia.ui.framework.action.OpenCreateDialogActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="dialogName" sv:type="String">
-            <sv:value>security-app:groupAdd</sv:value>
+            <sv:value>security-app:group</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>icon-add-item</sv:value>
@@ -2288,7 +2288,7 @@
             <sv:value>info.magnolia.ui.framework.action.OpenEditDialogActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="dialogName" sv:type="String">
-            <sv:value>security-app:groupEdit</sv:value>
+            <sv:value>security-app:group</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>icon-edit</sv:value>

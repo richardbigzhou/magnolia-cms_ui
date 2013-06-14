@@ -76,11 +76,11 @@ public class UniqueUserNameValidator extends AbstractStringValidator {
                     return false;
                 }
             }
-            if (Security.getUserManager().getUser(value) != null) {
-                // user with such name already exists
-                return false;
+            // Check if user with such name already exists
+            if (Security.getUserManager().getUser(value) == null) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 }
