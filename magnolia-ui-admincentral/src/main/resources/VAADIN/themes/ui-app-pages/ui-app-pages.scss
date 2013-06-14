@@ -23,12 +23,12 @@
       padding-bottom: 40px;
       overflow: visible;
     }
+  }
 
-    .pageEditor {
-      width: 100%;
-      height: 100%;
-      -webkit-overflow-scrolling: touch;
-      overflow: auto;
-    }
+  .tablet .pageEditor {
+    width: 100%;
+    height: 100%;
+    -webkit-overflow-scrolling: touch;
+    overflow: auto;
   }
 }
