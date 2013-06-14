@@ -20,14 +20,14 @@
       background-color: $c40;
     }
     
-    .v-generated-body:not(.v-touch) &.commit:hover,
-    .v-generated-body:not(.v-touch) &.btn-dialog-commit:hover {
+    .v-ui:not(.tablet) &.commit:hover,
+    .v-ui:not(.tablet) &.btn-dialog-commit:hover {
       background-color: $c44;
       color: $c40;
     }
 
-    .v-generated-body .v-app &.commit:active,
-    .v-generated-body .v-app &.btn-dialog-commit:active {
+    .v-app .v-ui &.commit:active,
+    .v-app .v-ui &.btn-dialog-commit:active {
       background-color: $c80;
       color: $c40;
     }
@@ -56,12 +56,12 @@
   outline: none !important;
   @include box-sizing(content-box);
   
-  .v-generated-body:not(.v-touch) &:hover {
+  .v-ui:not(.tablet) &:hover {
     background-color: $c14;
     color: $c10;
   }
 
-  .v-generated-body .v-app &:active {
+  .v-app .v-ui &:active {
     background-color: $c80;
     color: $c10;
   }
