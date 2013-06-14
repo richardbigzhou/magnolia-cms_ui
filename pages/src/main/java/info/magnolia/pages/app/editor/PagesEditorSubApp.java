@@ -259,10 +259,16 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             Node node = MgnlContext.getJCRSession(workspace).getNode(path);
             String uri = i18NAuthoringSupport.createI18NURI(node, currentLocale);
             StringBuffer sb = new StringBuffer(uri);
-            if (parameters.isPreview()) {
-                LinkUtil.addParameter(sb, "mgnlIntercept", "PREVIEW");
-                LinkUtil.addParameter(sb, "mgnlChannel", targetPreviewPlatform.getId());
+
+            // reset channel
+            if (!isPreview) {
+                this.targetPreviewPlatform = PlatformType.DESKTOP;
+                this.parameters.setPlatformType(targetPreviewPlatform);
+                pageBarView.setPlatFormType(targetPreviewPlatform);
+
             }
+            LinkUtil.addParameter(sb, "mgnlChannel", targetPreviewPlatform.getId());
+
             if (location.hasVersion()) {
                 LinkUtil.addParameter(sb, "mgnlVersion", location.getVersion());
             }

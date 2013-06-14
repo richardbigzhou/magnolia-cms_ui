@@ -36,9 +36,10 @@ package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.AreaListener;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
  * Control bar for areas. Injected at the beginning of an area.
@@ -67,25 +68,32 @@ public class AreaBar extends AbstractBar {
             final Label add = new Label();
             add.setStyleName(ICON_CLASS_NAME);
             add.addStyleName(ADD_CLASS_NAME);
-            add.addClickHandler(new ClickHandler() {
+
+            TouchDelegate td = new TouchDelegate(add);
+            td.addTouchEndHandler(new TouchEndHandler() {
                 @Override
-                public void onClick(ClickEvent event) {
+                public void onTouchEnd(TouchEndEvent touchEndEvent) {
                     listener.createOptionalArea();
                 }
             });
+
             addButton(add);
         }
+
         if (listener.hasEditButton()) {
             final Label edit = new Label();
             edit.setStyleName(ICON_CLASS_NAME);
             edit.addStyleName(EDIT_CLASS_NAME);
-            edit.addClickHandler(new ClickHandler() {
 
+            TouchDelegate td = new TouchDelegate(edit);
+            td.addTouchEndHandler(new TouchEndHandler() {
                 @Override
-                public void onClick(ClickEvent event) {
+                public void onTouchEnd(TouchEndEvent touchEndEvent) {
                     listener.editArea();
+
                 }
             });
+
             addButton(edit);
         }
 

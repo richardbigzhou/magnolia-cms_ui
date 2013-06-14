@@ -54,7 +54,7 @@ abstract public class AbstractFrameEventHandler {
      * Force iframe to be reloaded. for example when content has been updated.
      */
     public native void reloadIFrame(Element iframeElement) /*-{
-        iframeElement.contentWindow.location.reload(true);
+        iframeElement.contentWindow.location.reload();
     }-*/;
 
 

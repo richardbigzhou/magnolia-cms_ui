@@ -35,12 +35,13 @@ package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
  * A Widget for adding components to area. Marks where a newly created component will be injected.
@@ -116,12 +117,15 @@ public class ComponentPlaceHolder extends FlowPanel {
                 final Label add = new Label();
                 add.setStyleName(ICON_CLASS_NAME);
                 add.addStyleName(ADD_CLASS_NAME);
-                add.addClickHandler(new ClickHandler() {
+
+                TouchDelegate td = new TouchDelegate(add);
+                td.addTouchEndHandler(new TouchEndHandler() {
                     @Override
-                    public void onClick(ClickEvent event) {
+                    public void onTouchEnd(TouchEndEvent touchEndEvent) {
                         listener.createNewComponent();
                     }
                 });
+
                 addButton(add);
             }
         }
