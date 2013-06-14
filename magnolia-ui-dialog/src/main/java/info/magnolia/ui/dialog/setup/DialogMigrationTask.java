@@ -201,6 +201,7 @@ public class DialogMigrationTask extends AbstractTask {
      */
     private void handleTabs(Node dialog, Iterator<Node> tabNodes) throws RepositoryException {
         Node form = dialog.addNode("form", NodeTypes.ContentNode.NAME);
+        handleFormLabels(dialog, form);
         Node dialogTabs = form.addNode("tabs", NodeTypes.ContentNode.NAME);
         while (tabNodes.hasNext()) {
             Node tab = tabNodes.next();
@@ -208,6 +209,26 @@ public class DialogMigrationTask extends AbstractTask {
             handleTab(tab);
             // Move tab
             NodeUtil.moveNode(tab, dialogTabs);
+        }
+    }
+
+    /**
+     * Move the label property from dialog to form node.
+     */
+    private void handleFormLabels(Node dialog, Node form) throws RepositoryException {
+        moveAndRenameLabelProperty(dialog, form, "label");
+        moveAndRenameLabelProperty(dialog, form, "i18nBasename");
+        moveAndRenameLabelProperty(dialog, form, "description");
+    }
+
+    /**
+     * Move the desired property if present from the source to the target node.
+     */
+    private void moveAndRenameLabelProperty(Node source, Node target, String propertyName) throws RepositoryException {
+        if (source.hasProperty(propertyName)) {
+            Property dialogProperty = source.getProperty(propertyName);
+            target.setProperty(propertyName, dialogProperty.getString());
+            dialogProperty.remove();
         }
     }
 

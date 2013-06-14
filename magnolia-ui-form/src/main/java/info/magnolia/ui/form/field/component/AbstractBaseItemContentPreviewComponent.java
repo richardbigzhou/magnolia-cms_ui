@@ -42,6 +42,7 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,10 +97,12 @@ public abstract class AbstractBaseItemContentPreviewComponent extends AbstractCo
     @Override
     public Component refreshContentPreview(Item item) {
         Image thumbnail = new Image();
-        thumbnail.addStyleName("file-preview-area");
         try {
             String path = imageProvider.getPortraitPath(workspace, ((JcrNodeAdapter) item).getJcrItem().getPath());
-            thumbnail = path != null ? new Image("", new ExternalResource(path)) : new Image(null);
+            if (StringUtils.isNotBlank(path)) {
+                thumbnail = new Image("", new ExternalResource(path));
+                thumbnail.addStyleName("file-preview-area");
+            }
         } catch (RepositoryException e) {
             log.warn("Could not get the related File node", e);
         }
