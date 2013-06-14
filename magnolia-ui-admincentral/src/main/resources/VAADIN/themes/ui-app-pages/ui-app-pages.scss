@@ -23,12 +23,19 @@
       padding-bottom: 40px;
       overflow: visible;
     }
+
+    .pageEditor > iframe {
+      overflow: hidden;
+    }
+
+    .pageEditor {
+      overflow: auto;
+      width: 100%;
+      height: 100%;
+    }
   }
 
   .tablet .pageEditor {
-    width: 100%;
-    height: 100%;
     -webkit-overflow-scrolling: touch;
-    overflow: auto;
   }
 }
