@@ -76,7 +76,7 @@ public class OpenAddRoleDialogAction<D extends OpenAddRoleDialogActionDefinition
     @Override
     public void execute() throws ActionExecutionException {
 
-        DialogDefinition dialogDefinition = getDialogDefinition("roleAdd");
+        DialogDefinition dialogDefinition = getDialogDefinition("role");
 
         Node parentNode = parentItem.getJcrItem();
 
