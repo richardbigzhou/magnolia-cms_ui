@@ -39,6 +39,7 @@ import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarSection;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -170,17 +171,14 @@ public class Actionbar extends AbstractComponent implements ActionbarView {
         }
     }
 
-
-    @Override
-    public void hideAllSections() {
-        for (ActionbarSection section : getState(false).sections.values()) {
-            setSectionVisible(section.getName(), false);
-        }
-    }
-
     @Override
     public boolean isSectionVisible(String sectionName) {
-        return getState(false).visibleSections.contains(sectionName);
+        final Iterator<ActionbarSection> it = getState(false).visibleSections.iterator();
+        boolean result = false;
+        while (!result && it.hasNext()) {
+            result = it.next().getName().equals(sectionName);
+        }
+        return result;
     }
 
     @Override

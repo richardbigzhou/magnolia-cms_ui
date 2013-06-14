@@ -33,13 +33,15 @@
  */
 package info.magnolia.ui.form.field.component;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Layout;
 
 /**
  * Base implementation of {@link ContentPreviewComponent}.<br>
- * 
+ *
  * @param <T>.
  */
 public abstract class AbstractContentPreviewComponent<T> extends CustomComponent implements ContentPreviewComponent<T> {
@@ -61,8 +63,11 @@ public abstract class AbstractContentPreviewComponent<T> extends CustomComponent
      */
     @Override
     public void onValueChange(String itemReference) {
+        T item = null;
         clearRootLayout();
-        T item = refreshItem(itemReference);
+        if (StringUtils.isNotBlank(itemReference)) {
+            item = refreshItem(itemReference);
+        }
         if (item != null) {
             contentDetail = refreshContentDetail(item);
             contentPreview = refreshContentPreview(item);
@@ -91,6 +96,7 @@ public abstract class AbstractContentPreviewComponent<T> extends CustomComponent
      * Clear the root layout.
      */
     protected void clearRootLayout() {
+        this.rootLayout.setVisible(false);
         this.rootLayout.removeAllComponents();
         removeStyleName("done");
     }
@@ -99,6 +105,7 @@ public abstract class AbstractContentPreviewComponent<T> extends CustomComponent
      * Refresh the root layout.
      */
     protected void refreshRootLayout() {
+        this.rootLayout.setVisible(true);
         addStyleName("done");
         rootLayout.addComponent(contentPreview);
         rootLayout.addComponent(contentDetail);
