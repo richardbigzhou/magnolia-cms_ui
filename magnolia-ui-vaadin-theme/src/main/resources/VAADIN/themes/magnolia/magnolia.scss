@@ -5,6 +5,7 @@
 @import "magnolia-icons.scss";
 @import "colors.scss";
 @import "messages.scss";
+@import "loading-indicator.scss";
 @import "button.scss";
 @import "inputfield.scss";
 @import "checkbox.scss";
@@ -39,6 +40,7 @@
   }
 
   @include messages;
+  @include loading-indicator;
   @include button;
   @include inputfield;
   @include checkbox;

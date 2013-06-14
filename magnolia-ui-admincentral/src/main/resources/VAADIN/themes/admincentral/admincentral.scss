@@ -30,10 +30,6 @@
   bottom: 0;
 }
 
-.v-loading-indicator, .v-loading-indicator-delay, .v-loading-indicator-wait {
-  opacity: 0;
-}
-
 @include overlay-admincentral;
 @include dam-app-assets;
 @include ui-contentapp;
