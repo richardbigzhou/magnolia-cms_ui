@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.security.app.dialog.field.validator;
+package info.magnolia.security.app.dialog.action;
 
-import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 
 /**
- * Defines a validator that checks for unique group name.
+ * Action definition for {@link RenameUsersFolderAction}.
  *
- * @see UniqueGroupIdValidatorFactory
+ * @see RenameUsersFolderAction
  */
-public class UniqueGroupIdValidatorDefinition extends ConfiguredFieldValidatorDefinition {
+public class RenameUsersFolderActionDefinition extends SaveDialogActionDefinition {
 
-    public UniqueGroupIdValidatorDefinition() {
-        setFactoryClass(UniqueGroupIdValidatorFactory.class);
+    public RenameUsersFolderActionDefinition() {
+        setImplementationClass(RenameUsersFolderAction.class);
     }
 }

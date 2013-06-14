@@ -234,7 +234,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     private void setConstraints() {
         // Set Validation
         for (FieldValidatorDefinition validatorDefinition : definition.getValidators()) {
-            FieldValidatorFactory validatorFactory = this.fieldValidatorFactoryFactory.createFieldValidatorFactory(validatorDefinition);
+            FieldValidatorFactory validatorFactory = this.fieldValidatorFactoryFactory.createFieldValidatorFactory(validatorDefinition, item);
             if (validatorFactory != null) {
                 this.field.addValidator(validatorFactory.createValidator());
             } else {

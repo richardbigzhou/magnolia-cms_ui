@@ -33,24 +33,16 @@
  */
 package info.magnolia.security.app.dialog.field.validator;
 
-import info.magnolia.ui.form.validator.factory.AbstractFieldValidatorFactory;
-
-import com.vaadin.data.Validator;
+import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 /**
- * Unique Group ID validator builder.
+ * A definition for {@link UniqueUserNameValidator}.
  *
- * @see UniqueGroupIdValidatorDefinition
+ * @see UniqueUserNameValidatorFactory
  */
-public class UniqueGroupIdValidatorFactory extends AbstractFieldValidatorFactory<UniqueGroupIdValidatorDefinition> {
+public class UniqueUserNameValidatorDefinition extends ConfiguredFieldValidatorDefinition {
 
-    public UniqueGroupIdValidatorFactory(UniqueGroupIdValidatorDefinition definition) {
-        super(definition);
+    public UniqueUserNameValidatorDefinition() {
+        setFactoryClass(UniqueUserNameValidatorFactory.class);
     }
-
-    @Override
-    public Validator createValidator() {
-        return new UniqueGroupIdValidator(getI18nErrorMessage());
-    }
-
 }

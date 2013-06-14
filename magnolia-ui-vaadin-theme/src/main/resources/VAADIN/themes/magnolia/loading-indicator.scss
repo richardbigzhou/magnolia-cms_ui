@@ -1,0 +1,25 @@
+@charset "UTF-8";
+
+@mixin loading-indicator {
+
+  .v-loading-indicator,
+  .v-loading-indicator-delay,
+  .v-loading-indicator-wait {
+    width: 27px;
+    height: 10px;
+    margin: 0 0 0 -13px;
+    left: 50%;
+    top: 67px;
+    background: url('img/loading-indicator.gif') no-repeat 0 0;
+    background-size: 27px 10px;
+  }
+
+  .fullscreen {
+    .v-loading-indicator,
+    .v-loading-indicator-delay,
+    .v-loading-indicator-wait {
+      top: 7px;
+    }
+  }
+
+}
