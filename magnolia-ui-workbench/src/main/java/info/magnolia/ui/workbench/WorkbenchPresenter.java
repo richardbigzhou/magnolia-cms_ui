@@ -196,7 +196,6 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
             boolean rootHasBeenSelected = false;
             for (String itemId : itemIds) {
                 if (JcrItemUtil.itemExists(getWorkspace(), itemId)) {
-                    // Item exist
                     selectedIds.add(itemId);
 
                     Item jcrItem = JcrItemUtil.getJcrItem(getWorkspace(), itemId);
@@ -209,7 +208,6 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                     items.add(itemAdapter);
 
                 } else {
-                    // Item do not exist
                     log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.",
                             new Object[] { itemId, workbenchDefinition.getWorkspace(), workbenchDefinition.getPath() });
                     String workbenchRootItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
