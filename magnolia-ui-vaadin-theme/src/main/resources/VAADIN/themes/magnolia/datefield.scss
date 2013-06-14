@@ -24,7 +24,7 @@
     }
 
     &:hover {
-      background-color: transparent;
+      background-color: transparent !important;
     }
   }
 
@@ -32,8 +32,8 @@
   .v-inline-datefield-calendarpanel button[type = "button"] {
     &:active,
     &:hover {
-      background-color: transparent;
-      color: white;
+      background-color: transparent !important;
+      color: white !important;
     }
   }
 
