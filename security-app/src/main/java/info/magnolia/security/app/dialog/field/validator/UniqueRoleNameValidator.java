@@ -33,7 +33,7 @@
  */
 package info.magnolia.security.app.dialog.field.validator;
 
-import info.magnolia.cms.security.Security;
+import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -53,11 +53,13 @@ public class UniqueRoleNameValidator extends AbstractStringValidator {
 
     private static final Logger log = LoggerFactory.getLogger(UniqueRoleNameValidator.class);
 
+    private final SecuritySupport securitySupport;
     private final Item item;
 
-    public UniqueRoleNameValidator(Item item, String errorMessage) {
+    public UniqueRoleNameValidator(Item item, String errorMessage, SecuritySupport securitySupport) {
         super(errorMessage);
         this.item = item;
+        this.securitySupport = securitySupport;
     }
 
     @Override
@@ -66,7 +68,7 @@ public class UniqueRoleNameValidator extends AbstractStringValidator {
             // If we're editing an existing node then its allowed to use the current username of course
             if (!(item instanceof JcrNewNodeAdapter)) {
                 try {
-                    String currentName = ((JcrNodeAdapter)item).getJcrItem().getName();
+                    String currentName = ((JcrNodeAdapter) item).getJcrItem().getName();
                     if (StringUtils.equals(value, currentName)) {
                         return true;
                     }
@@ -75,7 +77,7 @@ public class UniqueRoleNameValidator extends AbstractStringValidator {
                     return false;
                 }
             }
-            if (Security.getRoleManager().getRole(value) != null) {
+            if (securitySupport.getRoleManager().getRole(value) != null) {
                 // role with such name already exists
                 return false;
             }

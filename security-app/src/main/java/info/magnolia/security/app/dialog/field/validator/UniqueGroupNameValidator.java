@@ -34,7 +34,7 @@
 package info.magnolia.security.app.dialog.field.validator;
 
 import info.magnolia.cms.security.Group;
-import info.magnolia.cms.security.Security;
+import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -56,11 +56,13 @@ public class UniqueGroupNameValidator extends AbstractStringValidator {
 
     private static final Logger log = LoggerFactory.getLogger(UniqueGroupNameValidator.class);
 
+    private final SecuritySupport securitySupport;
     private final Item item;
 
-    public UniqueGroupNameValidator(Item item, String errorMessage) {
+    public UniqueGroupNameValidator(Item item, String errorMessage, SecuritySupport securitySupport) {
         super(errorMessage);
         this.item = item;
+        this.securitySupport = securitySupport;
     }
 
     @Override
@@ -79,7 +81,7 @@ public class UniqueGroupNameValidator extends AbstractStringValidator {
                 }
             }
             // get all existing groups
-            Collection<Group> groups = Security.getGroupManager().getAllGroups();
+            Collection<Group> groups = securitySupport.getGroupManager().getAllGroups();
             for (Group g : groups) {
                 // if there is any group with the same name, the value is invalid
                 if (g.getName().equals(value)) {

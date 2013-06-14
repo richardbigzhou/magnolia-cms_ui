@@ -33,7 +33,9 @@
  */
 package info.magnolia.security.app.dialog.field.validator;
 
-import info.magnolia.cms.security.Security;
+import info.magnolia.cms.security.MgnlUserManager;
+import info.magnolia.cms.security.SecuritySupport;
+import info.magnolia.cms.security.UserManager;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -54,10 +56,12 @@ public class UniqueUserNameValidator extends AbstractStringValidator {
     private static final Logger log = LoggerFactory.getLogger(UniqueUserNameValidator.class);
 
     private final Item item;
+    private SecuritySupport securitySupport;
 
-    public UniqueUserNameValidator(Item item, String errorMessage) {
+    public UniqueUserNameValidator(Item item, String errorMessage, SecuritySupport securitySupport) {
         super(errorMessage);
         this.item = item;
+        this.securitySupport = securitySupport;
     }
 
     @Override
@@ -76,11 +80,36 @@ public class UniqueUserNameValidator extends AbstractStringValidator {
                     return false;
                 }
             }
+
+            // In the case of JcrNewNodeAdapter this is path of the parent node, but that's enough
+            String path;
+            try {
+                path = ((JcrNodeAdapter) item).getJcrItem().getPath();
+            } catch (RepositoryException e) {
+                log.error("Exception getting path of node [{}]", ((JcrNodeAdapter) item).getItemId(), e);
+                return false;
+            }
+
+            UserManager userManager = securitySupport.getUserManager(getRealmName(path));
+            if (!(userManager instanceof MgnlUserManager) || !((MgnlUserManager) userManager).isAllowCrossRealmDuplicateNames()) {
+                // if allow duplicate names across realms is not supported by usermanager or when it's disallowed
+                userManager = securitySupport.getUserManager();
+            }
+
             // Check if user with such name already exists
-            if (Security.getUserManager().getUser(value) == null) {
+            if (userManager.getUser(value) == null) {
                 return true;
             }
         }
         return false;
+    }
+
+    private String getRealmName(String path) {
+        path = path.substring(1); // remove slash from the beginning of the string
+        int idx = path.indexOf("/");
+        if (idx == -1) {
+            return path;
+        }
+        return StringUtils.substringBefore(path, "/");
     }
 }
