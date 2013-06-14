@@ -41,8 +41,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DragDropEventBase;
 import com.google.gwt.event.dom.client.DragEndEvent;
 import com.google.gwt.event.dom.client.DragEndHandler;
@@ -63,6 +61,9 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Label;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
  * Control bar for components. Injected at the beginning of a component.
@@ -115,10 +116,11 @@ public class ComponentBar extends AbstractBar {
             final Label edit = new Label();
             edit.setStyleName(ICON_CLASS_NAME);
             edit.addStyleName(EDIT_CLASS_NAME);
-            edit.addClickHandler(new ClickHandler() {
 
+            TouchDelegate td = new TouchDelegate(edit);
+            td.addTouchEndHandler(new TouchEndHandler() {
                 @Override
-                public void onClick(ClickEvent event) {
+                public void onTouchEnd(TouchEndEvent touchEndEvent) {
                     listener.editComponent();
                 }
             });
@@ -130,12 +132,14 @@ public class ComponentBar extends AbstractBar {
             move.setStyleName(ICON_CLASS_NAME);
             move.addStyleName(MOVE_ICON_CLASS_NAME);
 
-            move.addClickHandler(new ClickHandler() {
+            TouchDelegate td = new TouchDelegate(move);
+            td.addTouchEndHandler(new TouchEndHandler() {
                 @Override
-                public void onClick(ClickEvent event) {
+                public void onTouchEnd(TouchEndEvent touchEndEvent) {
                     listener.onMoveStart(false);
                 }
             });
+
             addButton(move);
         }
 
