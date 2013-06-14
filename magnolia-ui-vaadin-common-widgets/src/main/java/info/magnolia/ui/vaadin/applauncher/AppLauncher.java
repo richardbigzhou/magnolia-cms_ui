@@ -70,6 +70,7 @@ public class AppLauncher extends AbstractComponent {
     }
 
     public void clear() {
+        getState().groupsOrder.clear();
         getState().appGroups.clear();
         getState().runningApps.clear();
     }
