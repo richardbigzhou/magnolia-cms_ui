@@ -220,9 +220,6 @@ public class LinkField extends CustomField<String> {
             @Override
             public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
                 String itemReference = event.getProperty().getValue().toString();
-                if (StringUtils.isEmpty(itemReference)) {
-                    return;
-                }
                 contentPreviewComponent.onValueChange(itemReference);
             }
         });

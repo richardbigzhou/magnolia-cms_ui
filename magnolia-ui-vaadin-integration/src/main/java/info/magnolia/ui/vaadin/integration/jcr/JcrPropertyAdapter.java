@@ -105,7 +105,7 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
             if (ModelConstants.JCR_NAME.equals(id)) {
                 value = jcrProperty.getName();
             } else if (VALUE_PROPERTY.equals(id)) {
-                value = PropertyUtil.getValueObject(jcrProperty.getValue());
+                value = PropertyUtil.getPropertyValueObject(jcrProperty.getParent(), String.valueOf(jcrProperty.getName()));
                 type = jcrProperty.getType();
             } else if (TYPE_PROPERTY.equals(id)) {
                 value = PropertyType.nameFromValue(jcrProperty.getType());
@@ -117,7 +117,7 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
             throw new RuntimeRepositoryException(re);
         }
 
-        DefaultProperty property = DefaultPropertyUtil.newDefaultProperty(type, value);
+        DefaultProperty property = new DefaultProperty(value.getClass(), value);
         getChangedProperties().put((String) id, property);
         return property;
     }
