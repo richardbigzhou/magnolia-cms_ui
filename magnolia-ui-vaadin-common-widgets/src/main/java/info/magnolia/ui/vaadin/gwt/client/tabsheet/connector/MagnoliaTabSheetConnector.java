@@ -100,13 +100,21 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
             }
         });
 
-        addStateChangeHandler(new StateChangeHandler() {
+        addStateChangeHandler("activeTab", new StateChangeHandler() {
             @Override
             public void onStateChanged(StateChangeEvent event) {
-                view.getTabContainer().addShowAllTab(getState().showAllEnabled, getState().showAllLabel);
-                if (getState().logo != null && getState().logoBgColor != null) {
-                    view.setLogo(getState().logo, getState().logoBgColor);
+                final MagnoliaTabConnector tabConnector = (MagnoliaTabConnector) getState().activeTab;
+                if (tabConnector != null) {
+                    view.setActiveTab(tabConnector.getWidget());
+                    eventBus.fireEvent(new ActiveTabChangedEvent(tabConnector.getWidget(), false));
                 }
+            }
+        });
+
+        addStateChangeHandler("name", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent event) {
+                view.setName(getState().name);
             }
         });
 

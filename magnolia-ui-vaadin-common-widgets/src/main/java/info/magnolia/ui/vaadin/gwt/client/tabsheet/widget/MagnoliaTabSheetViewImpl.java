@@ -102,6 +102,7 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         });
     }
 
+
     @Override
     public TabBarWidget getTabContainer() {
         return tabBar;
@@ -181,6 +182,11 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         this.logo.addClassName("v-shell-tabsheet-logo");
         this.logo.addClassName(logo);
         this.logo.getStyle().setBackgroundColor(logoBgColor);
+    }
+
+    @Override
+    public void setName(String name) {
+        this.getElement().setAttribute("data-name", name);
     }
 
     @Override

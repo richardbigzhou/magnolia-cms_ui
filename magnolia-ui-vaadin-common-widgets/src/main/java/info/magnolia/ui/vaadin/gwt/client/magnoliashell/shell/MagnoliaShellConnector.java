@@ -34,6 +34,7 @@
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell;
 
 import info.magnolia.ui.vaadin.gwt.client.dialog.connector.OverlayConnector;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.ActivateAppEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.AppRequestedEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.CurrentAppCloseEvent;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.event.FullScreenEvent;
@@ -170,6 +171,13 @@ public class MagnoliaShellConnector extends AbstractLayoutConnector implements M
             @Override
             public void onShellAppsHidden(ShellAppsHiddenEvent event) {
                 rpc.stopCurrentShellApp();
+            }
+        });
+
+        eventBus.addHandler(ActivateAppEvent.TYPE, new ActivateAppEvent.Handler() {
+            @Override
+            public void onActivateApp(ActivateAppEvent event) {
+                rpc.activateApp(Fragment.fromString("app:" + event.getName()));
             }
         });
 

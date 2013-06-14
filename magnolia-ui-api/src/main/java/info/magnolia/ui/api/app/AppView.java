@@ -58,6 +58,8 @@ public interface AppView extends View {
 
     void setAppLogo(String logo, String bgcolor);
 
+    void setAppName(String name);
+
     void setListener(Listener listener);
 
     String addSubAppView(View view, String caption, boolean closable);

@@ -78,6 +78,8 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
      */
     public interface Listener {
         void closeCurrentApp();
+
+        void setCurrentApp(String name);
     };
 
     private static final int SWIPE_OUT_THRESHOLD = 300;
@@ -309,6 +311,8 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
                         // do not trigger transitions
                         showChild(newVisibleWidget);
                         dropZIndeces();
+
+                        listener.setCurrentApp(newVisibleWidget.getElement().getAttribute("data-name"));
                     }
                 }));
             }

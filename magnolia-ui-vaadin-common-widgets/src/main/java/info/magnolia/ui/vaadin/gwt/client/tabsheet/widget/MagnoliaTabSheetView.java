@@ -61,6 +61,8 @@ public interface MagnoliaTabSheetView extends HasWidgets, IsWidget, HasTabSetCha
 
     void setLogo(String logo, String logoBgColor);
 
+    void setName(String name);
+
     void setMaxHeight(int height);
 
     void showPreloader();
