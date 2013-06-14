@@ -196,8 +196,20 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
             boolean rootHasBeenSelected = false;
             for (String itemId : itemIds) {
                 if (JcrItemUtil.itemExists(getWorkspace(), itemId)) {
+                    // Item exist
                     selectedIds.add(itemId);
+
+                    Item jcrItem = JcrItemUtil.getJcrItem(getWorkspace(), itemId);
+                    JcrItemAdapter itemAdapter;
+                    if (jcrItem.isNode()) {
+                        itemAdapter = new JcrNodeAdapter((Node) jcrItem);
+                    } else {
+                        itemAdapter = new JcrPropertyAdapter((Property) jcrItem);
+                    }
+                    items.add(itemAdapter);
+
                 } else {
+                    // Item do not exist
                     log.info("Trying to re-sync workbench with no longer existing path {} at workspace {}. Will reset path to its configured root {}.",
                             new Object[] { itemId, workbenchDefinition.getWorkspace(), workbenchDefinition.getPath() });
                     String workbenchRootItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
@@ -207,20 +219,12 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                         rootHasBeenSelected = true;
                     }
                 }
-
-                Item jcrItem = JcrItemUtil.getJcrItem(getWorkspace(), itemId);
-
-                JcrItemAdapter itemAdapter;
-                if (jcrItem.isNode()) {
-                    itemAdapter = new JcrNodeAdapter((Node) jcrItem);
-                } else {
-                    itemAdapter = new JcrPropertyAdapter((Property) jcrItem);
-                }
-                items.add(itemAdapter);
             }
             activePresenter.setSelectedItemIds(selectedIds);
-
-            eventBus.fireEvent(new SelectionChangedEvent(workbenchDefinition.getWorkspace(), items));
+            // Only send event if items are not empty (do exist)
+            if (!items.isEmpty()) {
+                eventBus.fireEvent(new SelectionChangedEvent(workbenchDefinition.getWorkspace(), items));
+            }
 
         } catch (RepositoryException e) {
             log.warn("Unable to get node or property [{}] for selection", itemIds, e);
