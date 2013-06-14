@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-vaadin-integration</artifactId>
   <name>magnolia-ui-vaadin-integration</name>
   <properties>
-    <cloverCoverageThreshold>79.5</cloverCoverageThreshold>
+    <cloverCoverageThreshold>80</cloverCoverageThreshold>
   </properties>
 
   <build>
