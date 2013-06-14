@@ -12,7 +12,7 @@
   <packaging>jar</packaging>
   <name>magnolia-security-app</name>
   <properties>
-    <cloverCoverageThreshold>20</cloverCoverageThreshold>
+    <cloverCoverageThreshold>26</cloverCoverageThreshold>
   </properties>
 
   <dependencies>
