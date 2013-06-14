@@ -264,6 +264,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             if (!isPreview) {
                 this.targetPreviewPlatform = PlatformType.DESKTOP;
                 this.parameters.setPlatformType(targetPreviewPlatform);
+                pageBarView.setPlatFormType(targetPreviewPlatform);
 
             }
             LinkUtil.addParameter(sb, "mgnlChannel", targetPreviewPlatform.getId());
