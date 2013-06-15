@@ -185,11 +185,6 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
     }
 
     @Override
-    public void setName(String name) {
-        this.getElement().setAttribute("data-name", name);
-    }
-
-    @Override
     public void setMaxHeight(int height) {
         height -= tabBar.getOffsetHeight();
         scroller.getElement().setAttribute("style", "overflow:auto; position:absolute; zoom:1; max-height:" + height + "px;");

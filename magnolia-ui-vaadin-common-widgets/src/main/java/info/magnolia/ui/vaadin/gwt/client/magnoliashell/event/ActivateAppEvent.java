@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,39 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.tabsheet.widget;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
 
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent.HasActiveTabChangeHandlers;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabSetChangedEvent.HasTabSetChangedHandlers;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
-
-import java.util.List;
-
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * VShellTabView.
+ * Fired when there is a request to activate an app, to set the current app on the server.
  */
-public interface MagnoliaTabSheetView extends HasWidgets, IsWidget, HasTabSetChangedHandlers, HasActiveTabChangeHandlers {
+public class ActivateAppEvent extends GwtEvent<ActivateAppEvent.Handler> {
 
-    List<MagnoliaTabWidget> getTabs();
+    private final String name;
 
-    TabBarWidget getTabContainer();
+    /**
+     * Handler of the {@link ActivateAppEvent}.
+     */
+    public interface Handler extends EventHandler {
+        void onActivateApp(final ActivateAppEvent event);
+    }
 
-    void updateTab(MagnoliaTabWidget tab);
+    public static final Type<Handler> TYPE = new Type<Handler>();
 
-    void setActiveTab(MagnoliaTabWidget tab);
+    public ActivateAppEvent(String name) {
+        this.name = name;
+    }
 
-    void removeTab(MagnoliaTabWidget tabToOrphan);
+    @Override
+    protected void dispatch(Handler handler) {
+        handler.onActivateApp(this);
+    }
 
-    void showAllTabContents(boolean visible);
+    @Override
+    public GwtEvent.Type<Handler> getAssociatedType() {
+        return TYPE;
+    }
 
-    void setLogo(String logo, String logoBgColor);
-
-    void setMaxHeight(int height);
-
-    void showPreloader();
-
-    void removePreloader();
+    public String getName() {
+        return name;
+    }
 }
