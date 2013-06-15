@@ -42,6 +42,7 @@ import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
 import info.magnolia.ui.form.field.factory.SelectFieldFactory;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
@@ -83,16 +84,21 @@ public class TemplateSelectorFieldFactory extends SelectFieldFactory<TemplateSel
 
             Collection<TemplateDefinition> templates = Collections.EMPTY_SET;
 
-            // creates a temporary node underneath the parent to overcome a restriction in template availability,
-            // see MGNLSTK-1185
-            try {
-                Node tempNode = associatedNode.addNode("temp", NodeTypes.Page.NAME);
-                templates = templateAssignment.getAvailableTemplates(tempNode);
-                associatedNode.getSession().removeItem(tempNode.getPath());
-            } catch (RepositoryException e) {
-                log.error("Could not create temporary node to get available templates.", e);
+            if (item instanceof JcrNewNodeAdapter) {
+                // creates a temporary node underneath the parent to overcome a restriction in template availability,
+                // see MGNLSTK-1185
+                try {
+                    Node tempNode = associatedNode.addNode("temp", NodeTypes.Page.NAME);
+                    templates = templateAssignment.getAvailableTemplates(tempNode);
+                    associatedNode.getSession().removeItem(tempNode.getPath());
+                } catch (RepositoryException e) {
+                    log.error("Could not create temporary node to get available templates.", e);
+                }
             }
 
+            else {
+                templates = templateAssignment.getAvailableTemplates(associatedNode);
+            }
 
             for (TemplateDefinition templateDefinition : templates) {
                 SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();

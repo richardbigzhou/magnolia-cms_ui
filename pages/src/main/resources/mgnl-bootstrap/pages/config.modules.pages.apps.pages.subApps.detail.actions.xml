@@ -10,7 +10,7 @@
     <sv:value>61fecebb-0e50-49e8-8434-3cca2233b829</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:created" sv:type="Date">
-    <sv:value>2013-05-27T12:28:13.514+02:00</sv:value>
+    <sv:value>2013-06-14T14:23:47.782+02:00</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
@@ -41,7 +41,7 @@
       <sv:value>icon-switch-edit</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.515+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.784+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -73,7 +73,7 @@
       <sv:value>icon-edit</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.516+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.785+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -108,7 +108,7 @@
       <sv:value>/modules/pages/apps/pages/subApps/detail/actions/editElement</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.517+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.786+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -143,7 +143,7 @@
       <sv:value>/modules/pages/apps/pages/subApps/detail/actions/editElement</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.517+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.788+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -175,7 +175,7 @@
       <sv:value>/modules/pages/apps/pages/subApps/detail/actions/editElement</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.518+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.788+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -210,7 +210,7 @@
       <sv:value>icon-redo</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.519+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.789+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -248,7 +248,7 @@
       <sv:value>icon-undo</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.519+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.790+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -286,7 +286,7 @@
       <sv:value>icon-add-item</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.520+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.792+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -327,7 +327,7 @@
       <sv:value>info.magnolia.pages.app.action.DeleteComponentAction</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.521+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.793+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -365,7 +365,7 @@
       <sv:value>icon-paste</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.522+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.794+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -397,7 +397,7 @@
       <sv:value>info.magnolia.pages.app.action.SortComponentActionDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.523+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.795+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -432,7 +432,7 @@
       <sv:value>icon-move</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.527+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.796+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -470,7 +470,7 @@
       <sv:value>icon-delete</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.527+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.798+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -505,7 +505,7 @@
       <sv:value>/modules/pages/apps/pages/subApps/detail/actions/stopMoveComponent</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.527+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.799+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -540,7 +540,7 @@
       <sv:value>icon-add-item</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.523+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.800+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -578,7 +578,7 @@
       <sv:value>icon-delete</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.524+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.802+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -616,7 +616,7 @@
       <sv:value>icon-switch-preview</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.525+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.804+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -651,7 +651,7 @@
       <sv:value>icon-copy</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.526+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.805+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -686,7 +686,7 @@
       <sv:value>/modules/pages/apps/pages/subApps/browser/actions/activate</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.528+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.806+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -718,7 +718,7 @@
       <sv:value>/modules/pages/apps/pages/subApps/browser/actions/deactivate</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.528+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.807+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -750,7 +750,7 @@
       <sv:value>/modules/pages/apps/pages/subApps/browser/actions/showPreviousVersion</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.529+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.809+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -776,7 +776,7 @@
       <sv:value>/modules/pages/apps/pages/subApps/browser/actions/restorePreviousVersion</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.530+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.810+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -794,7 +794,7 @@
       <sv:value>superuser</sv:value>
     </sv:property>
   </sv:node>
-  <sv:node sv:name="activateDelete">
+  <sv:node sv:name="activateDeletion">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
       <sv:value>mgnl:contentNode</sv:value>
     </sv:property>
@@ -802,10 +802,10 @@
       <sv:value>a6df01b3-827a-4ef8-929c-8a72930d2c7f</sv:value>
     </sv:property>
     <sv:property sv:name="extends" sv:type="String">
-      <sv:value>/modules/pages/apps/pages/subApps/browser/actions/activate</sv:value>
+      <sv:value>/modules/pages/apps/pages/subApps/browser/actions/activateDeletion</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
-      <sv:value>2013-05-27T12:28:13.530+02:00</sv:value>
+      <sv:value>2013-06-14T14:23:47.810+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -817,7 +817,7 @@
       <sv:value>superuser</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-      <sv:value>2013-05-10T11:05:30.740+02:00</sv:value>
+      <sv:value>2013-06-14T16:02:22.156+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
       <sv:value>superuser</sv:value>
