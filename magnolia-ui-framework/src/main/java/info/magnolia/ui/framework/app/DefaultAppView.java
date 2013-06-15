@@ -158,4 +158,9 @@ public class DefaultAppView implements AppView {
         tabsheet.setLogo(logo, bgcolor);
     }
 
+    @Override
+    public void setAppName(String name) {
+        tabsheet.setName(name);
+    }
+
 }

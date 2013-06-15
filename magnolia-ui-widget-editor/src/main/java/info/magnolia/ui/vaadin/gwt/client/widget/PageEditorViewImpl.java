@@ -100,13 +100,8 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
 
     @Override
     public void setUrl(String url) {
-        // if the page is already loaded, force a reload
-        if (url.equals(this.url)) {
-            reload();
-        } else {
-            getFrame().setUrl(url);
-            this.url = url;
-        }
+        getFrame().setUrl(url);
+        this.url = url;
         handler.notifyUrlChange();
     }
 

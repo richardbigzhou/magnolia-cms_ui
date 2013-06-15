@@ -31,48 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.app;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
 
-import info.magnolia.ui.api.view.View;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * AppView interface used for displaying apps and adding and removing the subApp views.
- * Creates an instance id when adding a new subApp view. This is used to identify the view associated with a {@link SubAppContext}.
+ * Fired when there is a request to activate an app, to set the current app on the server.
  */
-public interface AppView extends View {
+public class ActivateAppEvent extends GwtEvent<ActivateAppEvent.Handler> {
 
-    void updateCaption(String instanceId, String caption);
+    private final String name;
 
     /**
-     * Listens to events coming from the TabSheet.
+     * Handler of the {@link ActivateAppEvent}.
      */
-    interface Listener {
-
-        void onFocus(String instanceId);
-
-        void onClose(String instanceId);
-
+    public interface Handler extends EventHandler {
+        void onActivateApp(final ActivateAppEvent event);
     }
 
-    void setTheme(String value);
+    public static final Type<Handler> TYPE = new Type<Handler>();
 
-    void setAppLogo(String logo, String bgcolor);
+    public ActivateAppEvent(String name) {
+        this.name = name;
+    }
 
-    void setAppName(String name);
+    @Override
+    protected void dispatch(Handler handler) {
+        handler.onActivateApp(this);
+    }
 
-    void setListener(Listener listener);
+    @Override
+    public GwtEvent.Type<Handler> getAssociatedType() {
+        return TYPE;
+    }
 
-    String addSubAppView(View view, String caption, boolean closable);
-
-    void closeSubAppView(String instanceId);
-
-    void setActiveSubAppView(String instanceId);
-
-    String getActiveSubAppView();
-
-    /**
-     * Get the view of the container of a SubApp.
-     * Enables working with the Tab component for example, which is necessary for attaching dialogs.
-     */
-    View getSubAppViewContainer(String instanceId);
+    public String getName() {
+        return name;
+    }
 }
