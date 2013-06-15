@@ -70,19 +70,19 @@ public class PreviewPreviousVersionAction extends AbstractAction<PreviewPrevious
     @Override
     public void execute() throws ActionExecutionException {
         try {
-            if (StringUtils.isNotBlank(getDefinition().getNodeType()) && !getDefinition().getNodeType().equals(nodeItemToEdit.applyChanges().getPrimaryNodeType().getName())) {
-                log.warn("EditItemAction requested for a node type definition {}. Current node type is {}. No action will be performed.",
-                        getDefinition().getNodeType(), nodeItemToEdit.applyChanges().
+            if (StringUtils.isNotBlank(getDefinition().getNodeType()) && !getDefinition().getNodeType().equals(nodeItemToEdit.getJcrItem().getPrimaryNodeType().getName())) {
+                log.warn("PreviewPreviousVersionAction requested for a node type definition {}. Current node type is {}. No action will be performed.",
+                        getDefinition().getNodeType(), nodeItemToEdit.getJcrItem().
                         getPrimaryNodeType().getName());
                 return;
             }
-            final String path = nodeItemToEdit.applyChanges().getPath();
+            final String path = nodeItemToEdit.getJcrItem().getPath();
             final String previousVersion = getPreviousVersion();
             DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.VIEW, path, previousVersion);
             locationController.goTo(location);
 
         } catch (RepositoryException e) {
-            throw new ActionExecutionException("Could not execute EditItemAction: ", e);
+            throw new ActionExecutionException("Could not execute PreviewPreviousVersionAction: ", e);
         }
     }
 
@@ -91,7 +91,7 @@ public class PreviewPreviousVersionAction extends AbstractAction<PreviewPrevious
      */
     private String getPreviousVersion() throws RepositoryException {
         String previousVersion = StringUtils.EMPTY;
-        VersionIterator versionIterator = versionManager.getAllVersions(nodeItemToEdit.applyChanges());
+        VersionIterator versionIterator = versionManager.getAllVersions(nodeItemToEdit.getJcrItem());
         // Check.
         if (versionIterator == null) {
             return previousVersion;

@@ -67,13 +67,13 @@ public class EditItemAction extends AbstractAction<EditItemActionDefinition> {
     @Override
     public void execute() throws ActionExecutionException {
         try {
-            if (StringUtils.isNotBlank(getDefinition().getNodeType()) && !getDefinition().getNodeType().equals(nodeItemToEdit.applyChanges().getPrimaryNodeType().getName())) {
+            if (StringUtils.isNotBlank(getDefinition().getNodeType()) && !getDefinition().getNodeType().equals(nodeItemToEdit.getJcrItem().getPrimaryNodeType().getName())) {
                 log.warn("EditItemAction requested for a node type definition {}. Current node type is {}. No action will be performed.",
-                        getDefinition().getNodeType(), nodeItemToEdit.applyChanges().
+                        getDefinition().getNodeType(), nodeItemToEdit.getJcrItem().
                         getPrimaryNodeType().getName());
                 return;
             }
-            final String path = nodeItemToEdit.applyChanges().getPath();
+            final String path = nodeItemToEdit.getJcrItem().getPath();
             DetailLocation location = new DetailLocation(getDefinition().getAppName(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path, "");
             locationController.goTo(location);
 
