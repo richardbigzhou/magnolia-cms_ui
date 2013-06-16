@@ -41,7 +41,7 @@ import java.util.Map;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
- * A basic action definition to support command execution via an action.
+ * A basic action definition useful for actions that delegates to commands.
  */
 public class CommandActionDefinition extends ConfiguredActionDefinition {
 

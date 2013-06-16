@@ -45,11 +45,15 @@ public interface AppLauncherLayoutManager {
 
     /**
      * Returns the {@link AppLauncherLayout} for the current user. Empty groups or groups where the current user doesn't
-     * have access to any of the apps are not returned. Disabled apps are not included in the response nor are apps that
-     * are not present in the {@link info.magnolia.ui.api.app.registry.AppDescriptorRegistry}. The returned object
-     * is also populated with {@link info.magnolia.ui.api.app.AppDescriptor} for quick access.
+     * have access to any of the apps are not returned. Disabled apps, apps that the user does not have access to and
+     * apps that are not present in the {@link info.magnolia.ui.api.app.registry.AppDescriptorRegistry} are not
+     * included. The returned object is also populated with {@link info.magnolia.ui.api.app.AppDescriptor} references
+     * for quick access.
      */
     AppLauncherLayout getLayoutForCurrentUser();
 
+    /**
+     * Called to update the launcher layout when it has been changed in the repository.
+     */
     void setLayout(AppLauncherLayoutDefinition layout);
 }

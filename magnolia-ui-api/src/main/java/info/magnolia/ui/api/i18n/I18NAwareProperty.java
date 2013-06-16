@@ -39,6 +39,7 @@ import com.vaadin.data.Property;
 
 /**
  * Interface for locale-dependent property.
+ *
  * @param <T> property value type.
  */
 public interface I18NAwareProperty<T> extends Property<T> {

@@ -34,7 +34,7 @@
 package info.magnolia.ui.contentapp.definition;
 
 /**
- * FormActionItemDefinition.
+ * Describes a form action item.
  */
 public interface FormActionItemDefinition {
 

@@ -41,7 +41,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Models a message. Except for timestamp all fields are optional. The sender is {@link #DEFAULT_SENDER} unless diversely set after object construction.
+ * Models a message. Except for timestamp all fields are optional. The sender is {@link #DEFAULT_SENDER} unless
+ * diversely set after object construction.
  */
 public class Message implements Cloneable, Map<String, Object> {
 

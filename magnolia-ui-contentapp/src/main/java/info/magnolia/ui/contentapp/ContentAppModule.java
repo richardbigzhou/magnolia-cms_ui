@@ -41,15 +41,11 @@ import info.magnolia.module.ModuleLifecycleContext;
  */
 public class ContentAppModule implements ModuleLifecycle {
 
-
     @Override
     public void start(ModuleLifecycleContext moduleLifecycleContext) {
-        
     }
 
     @Override
     public void stop(ModuleLifecycleContext moduleLifecycleContext) {
-        
     }
-
 }

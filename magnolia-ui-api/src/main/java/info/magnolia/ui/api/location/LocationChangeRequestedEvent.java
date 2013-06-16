@@ -37,7 +37,8 @@ import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
 
 /**
- * Event fired when a location change is about to happen usually in response to user interaction. Handlers can call {@link #setWarning(String)} to request that the user be prompted to confirm the change.
+ * Event fired when a location change is about to happen usually in response to user interaction. Handlers can call
+ * {@link #setWarning(String)} to request that the user be prompted to confirm the change.
  */
 public class LocationChangeRequestedEvent implements Event<LocationChangeRequestedEvent.Handler> {
 

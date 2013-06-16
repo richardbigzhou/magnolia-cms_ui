@@ -81,7 +81,7 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
     /**
      * Creates an action using the implementation configured for the given action definition. The
      * parameters are made available for injection when the instance is created. The definition
-     * object given is also available for injection.
+     * object is also available for injection.
      */
     protected Action createAction(String actionName, Object... args) throws ActionExecutionException {
 
@@ -121,7 +121,7 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
 
         AvailabilityDefinition availability = actionDefinition.getAvailability();
 
-        // if a rule class is set, verify it first
+        // If a rule class is set, evaluate it first
         if ((availability.getRuleClass() != null)) {
             // if the rule class cannot be instantiated, or the rule returns false
             AvailabilityRule rule = componentProvider.newInstance(availability.getRuleClass());
@@ -130,12 +130,12 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
             }
         }
 
+        // We don't support bulk actions, at least not yet
         if (items.length > 1) {
-            // WE DO NOT SUPPORT BULK ACTIONS NOW
             return false;
         }
 
-        // Validate that the user has all required roles
+        // Validate that the user has all the required roles
         if (!availability.getAccess().hasAccess(MgnlContext.getUser())) {
             return false;
         }
@@ -160,8 +160,9 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
         }
 
         // Must have _any_ of the node types if any are specified, otherwise its available by default
-        if (availability.getNodeTypes().isEmpty())
+        if (availability.getNodeTypes().isEmpty()) {
             return availability.isNodes();
+        }
 
         for (String nodeType : availability.getNodeTypes()) {
             try {
@@ -174,6 +175,5 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
         }
 
         return false;
-
     }
 }

@@ -38,6 +38,8 @@ package info.magnolia.ui.api.action;
  * Virtually all actions have an associated {@link ActionDefinition} that is used to configure it. Actions are used only
  * once, a new instance is created for every execution.
  *
+ * An action that modifies content is expected to fire a {@link info.magnolia.ui.api.event.ContentChangedEvent}.
+ *
  * @see ActionDefinition
  */
 public interface Action {

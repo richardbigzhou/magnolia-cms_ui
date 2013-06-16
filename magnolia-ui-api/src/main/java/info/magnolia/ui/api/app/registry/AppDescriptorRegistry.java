@@ -53,7 +53,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The central registry of all {@link AppDescriptor}s.
+ * The central registry for {@link AppDescriptor}s. Fires {@link AppRegistryEvent} when the registry changes.
+ *
+ * @see AppDescriptor
+ * @see AppDescriptorProvider
+ * @see AppRegistryEvent
  */
 @Singleton
 public class AppDescriptorRegistry {

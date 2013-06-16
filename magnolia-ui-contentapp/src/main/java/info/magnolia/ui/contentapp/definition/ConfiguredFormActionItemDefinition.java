@@ -34,19 +34,13 @@
 package info.magnolia.ui.contentapp.definition;
 
 /**
- * ConfiguredFormActionItemDefinition.
+ * Simple implementation of {@link FormActionItemDefinition}.
+ *
+ * @see FormActionItemDefinition
  */
 public class ConfiguredFormActionItemDefinition implements FormActionItemDefinition {
 
     private String name;
-
-    // used for configuration to work
-    public ConfiguredFormActionItemDefinition() {
-    }
-
-    public ConfiguredFormActionItemDefinition(String name) {
-        this.name = name;
-    }
 
     @Override
     public String getName() {

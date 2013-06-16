@@ -44,9 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Default location implementation.
- * <p>
- * {@code appType:appName:subAppId;some/parameter}
+ * Default location implementation. Follows the pattern: {@code appType:appName:subAppId;some/parameter}.
  */
 public class DefaultLocation implements Location {
 
