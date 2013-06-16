@@ -51,9 +51,9 @@ import javax.inject.Named;
  * Action for opening the role edit dialog.
  *
  * @param <D> the action definition type
- * @see OpenRoleEditDialogActionDefinition
+ * @see OpenEditRoleDialogActionDefinition
  */
-public class OpenRoleEditDialogAction<D extends OpenRoleEditDialogActionDefinition> extends AbstractRoleDialogAction<D> {
+public class OpenEditRoleDialogAction<D extends OpenEditRoleDialogActionDefinition> extends AbstractRoleDialogAction<D> {
 
     private final JcrNodeAdapter itemToEdit;
     private final FormDialogPresenter formDialogPresenter;
@@ -61,7 +61,7 @@ public class OpenRoleEditDialogAction<D extends OpenRoleEditDialogActionDefiniti
     private final EventBus eventBus;
 
     @Inject
-    public OpenRoleEditDialogAction(D definition, JcrNodeAdapter itemToEdit, FormDialogPresenter formDialogPresenter, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, RepositoryManager repositoryManager) {
+    public OpenEditRoleDialogAction(D definition, JcrNodeAdapter itemToEdit, FormDialogPresenter formDialogPresenter, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus, RepositoryManager repositoryManager) {
         super(definition, repositoryManager);
         this.itemToEdit = itemToEdit;
         this.formDialogPresenter = formDialogPresenter;

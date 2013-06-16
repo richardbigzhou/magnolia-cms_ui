@@ -65,7 +65,7 @@ import org.apache.commons.lang.StringUtils;
  *
  * @param <D> the action definition type
  * @see OpenAddRoleDialogAction
- * @see OpenRoleEditDialogAction
+ * @see OpenEditRoleDialogAction
  */
 public abstract class AbstractRoleDialogAction<D extends ActionDefinition> extends AbstractAction<D> {
 

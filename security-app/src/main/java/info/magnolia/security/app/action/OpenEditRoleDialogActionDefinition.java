@@ -38,11 +38,11 @@ import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 /**
  * Defines an action for opening the role edit dialog.
  *
- * @see OpenRoleEditDialogAction
+ * @see OpenEditRoleDialogAction
  */
-public class OpenRoleEditDialogActionDefinition extends ConfiguredActionDefinition {
+public class OpenEditRoleDialogActionDefinition extends ConfiguredActionDefinition {
 
-    public OpenRoleEditDialogActionDefinition() {
-        setImplementationClass(OpenRoleEditDialogAction.class);
+    public OpenEditRoleDialogActionDefinition() {
+        setImplementationClass(OpenEditRoleDialogAction.class);
     }
 }
