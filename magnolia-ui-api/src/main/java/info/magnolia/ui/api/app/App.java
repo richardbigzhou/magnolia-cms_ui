@@ -54,7 +54,7 @@ public interface App {
     /**
      * Called when the location changes and the app is already running.
      *
-     * @param location
+     * @param location the new location
      */
     void locationChanged(Location location);
 
@@ -64,8 +64,6 @@ public interface App {
     void stop();
 
     AppView getView();
-
-    AppContext getAppContext();
 
     /**
      * Open a dialog which enables a user to choose an item from the app.
