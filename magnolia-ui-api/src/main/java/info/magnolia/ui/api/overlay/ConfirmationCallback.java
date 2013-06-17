@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.api.overlay;
 
-
 /**
- * ConfirmationCallback.
+ * Callback interface for confirmations.
  */
 public interface ConfirmationCallback {
+
     void onCancel();
 
     void onSuccess();

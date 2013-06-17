@@ -128,9 +128,11 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
         if (itemId != null && propertyId != null) {
             Item item = getItem(itemId);
-            Property p = item.getItemProperty(propertyId);
+            Property<?> property = item.getItemProperty(propertyId);
+
+            // The previous call can return null, i.e. when clicking on an empty cell of a node row (i.e. /config/server and then the "value" cell)
             // Do not allow editing for multi-value property.
-            if (p.getValue() instanceof List) {
+            if (property == null || property.getValue() instanceof List) {
                 return;
             } else {
                 if ((bypassedColumnGenerator = getColumnGenerator(propertyId)) != null) {

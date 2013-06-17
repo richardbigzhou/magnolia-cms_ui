@@ -37,5 +37,6 @@ package info.magnolia.ui.api.overlay;
  * Callback interface for alert.
  */
 public interface AlertCallback {
+
     void onOk();
 }

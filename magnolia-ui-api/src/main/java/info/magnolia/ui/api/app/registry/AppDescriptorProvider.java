@@ -37,7 +37,7 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.api.app.AppDescriptor;
 
 /**
- * Provides a {@link AppDescriptor}.
+ * Provides an {@link AppDescriptor}.
  */
 public interface AppDescriptorProvider {
 

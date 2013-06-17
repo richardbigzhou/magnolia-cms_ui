@@ -34,9 +34,10 @@
 package info.magnolia.ui.api.overlay;
 
 /**
- * Callback interface for when a user clicks on the link in a Notfication.
+ * Callback interface for when a user clicks on the link in a notification.
  */
 public interface NotificationCallback {
+
     void onLinkClicked();
 
 }

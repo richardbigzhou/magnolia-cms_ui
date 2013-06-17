@@ -42,7 +42,7 @@ public abstract class AbstractAction<D extends ActionDefinition> implements Acti
 
     private D definition;
 
-    public AbstractAction(D definition) {
+    protected AbstractAction(D definition) {
         this.definition = definition;
     }
 

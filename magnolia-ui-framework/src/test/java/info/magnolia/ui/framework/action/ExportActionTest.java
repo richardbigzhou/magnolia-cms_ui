@@ -137,7 +137,7 @@ public class ExportActionTest extends RepositoryTestCase {
         assertTrue(param != null);
         assertEquals(".xml", param.get("ext"));
         assertEquals(Boolean.TRUE, param.get("format"));
-        assertEquals(Boolean.TRUE, param.get("keepHistory"));
+        assertEquals(Boolean.FALSE, param.get("keepHistory"));
         assertEquals(toCopyNode.getPath(), param.get("path"));
         String out = new String(((ByteArrayOutputStream) param.get("outputStream")).toByteArray(), "UTF-8");
         assertNotNull(out);

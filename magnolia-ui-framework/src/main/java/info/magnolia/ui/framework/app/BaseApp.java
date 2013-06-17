@@ -66,11 +66,11 @@ public class BaseApp implements App {
 
     @Override
     public void start(Location location) {
+        view.setAppName(location.getAppName());
         appContext.openSubApp(location);
     }
 
-    @Override
-    public AppContext getAppContext() {
+    protected AppContext getAppContext() {
         return appContext;
     }
 

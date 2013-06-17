@@ -103,6 +103,7 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         });
     }
 
+
     @Override
     public TabBarWidget getTabContainer() {
         return tabBar;

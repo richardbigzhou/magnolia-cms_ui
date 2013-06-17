@@ -39,7 +39,7 @@ import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import java.util.List;
 
 /**
- * EditorDefinition.
+ * Defines an editor.
  */
 public interface EditorDefinition {
 
