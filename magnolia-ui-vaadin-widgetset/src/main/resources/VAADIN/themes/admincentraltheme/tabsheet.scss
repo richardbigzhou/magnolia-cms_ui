@@ -105,6 +105,7 @@
 	text-overflow: ellipsis;
     font-family:DINWebPro;
     font-size: 14px;
+    line-height: 22px;
     text-transform:uppercase;
     padding-right: 40px;
     white-space:nowrap;
@@ -170,6 +171,11 @@
     vertical-align: text-bottom;
     z-index: 4001;
     text-align: center;
+}
+
+/* force hiding of iframes inside the tabsheet, when it's inactive. Bug in webkit. */
+.v-shell-tabsheet-app.app-inactive iframe {
+  display: none;
 }
 
 }

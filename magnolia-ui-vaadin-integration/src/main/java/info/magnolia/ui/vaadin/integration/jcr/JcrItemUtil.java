@@ -114,6 +114,9 @@ public class JcrItemUtil {
     }
 
     public static String getItemId(final Item jcrItem) throws RepositoryException {
+        if (jcrItem == null) {
+            return null;
+        }
         return jcrItem.isNode() ? ((Node) jcrItem).getIdentifier() : jcrItem.getParent().getIdentifier() + PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR + jcrItem.getName();
     }
 

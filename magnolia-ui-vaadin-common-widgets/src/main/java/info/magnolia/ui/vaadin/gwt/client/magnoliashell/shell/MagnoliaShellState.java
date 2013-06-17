@@ -62,4 +62,6 @@ public class MagnoliaShellState extends AbstractLayoutState {
     public Fragment uriFragment;
 
     public Connector userMenu;
+
+    public boolean isFullScreen = false;
 }

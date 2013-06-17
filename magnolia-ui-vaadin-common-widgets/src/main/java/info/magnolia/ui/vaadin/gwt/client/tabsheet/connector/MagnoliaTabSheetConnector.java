@@ -48,6 +48,7 @@ import info.magnolia.ui.vaadin.tabsheet.MagnoliaTabSheet;
 
 import java.util.List;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
@@ -121,7 +122,12 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
         eventBus.addHandler(TabCloseEvent.TYPE, new TabCloseEventHandler() {
             @Override
             public void onTabClosed(TabCloseEvent event) {
-                rpc.closeTab(Util.findConnectorFor(event.getTab()));
+                MagnoliaTabWidget tab = event.getTab();
+                if (tab == ((MagnoliaTabConnector)getState().activeTab).getWidget()) {
+                    view.showPreloader();
+                    tab.getWidget().getElement().getStyle().setDisplay(Style.Display.NONE);
+                }
+                rpc.closeTab(Util.findConnectorFor(tab));
             }
         });
 
@@ -130,6 +136,7 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
             public void onActiveTabChanged(ActiveTabChangedEvent event) {
                 if (event.isNotifyServer()) {
                     view.showPreloader();
+                    view.clearTabs();
                     Connector c = Util.findConnectorFor(event.getTab());
                     rpc.setActiveTab(c);
                 }
@@ -137,7 +144,6 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
         });
 
         eventBus.addHandler(ShowAllTabsEvent.TYPE, new ShowAllTabsHandler() {
-
             @Override
             public void onShowAllTabs(ShowAllTabsEvent event) {
                 rpc.setShowAll();

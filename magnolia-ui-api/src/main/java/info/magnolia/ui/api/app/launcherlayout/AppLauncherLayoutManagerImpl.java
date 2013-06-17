@@ -113,6 +113,10 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
         AppLauncherLayout layout = new AppLauncherLayout();
         for (AppLauncherGroupDefinition groupDefinition : layoutDefinition.getGroups()) {
 
+            if (!isGroupVisibleForCurrentUser(groupDefinition)) {
+                continue;
+            }
+
             List<AppLauncherGroupEntry> entries = new ArrayList<AppLauncherGroupEntry>();
             for (AppLauncherGroupEntryDefinition entryDefinition : groupDefinition.getApps()) {
 
@@ -154,7 +158,12 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
 
     private boolean isAppVisibleForCurrentUser(AppLauncherGroupEntryDefinition entry, AppDescriptor appDescriptor) {
         AccessDefinition permissions = appDescriptor.getPermissions();
-        return entry.isEnabled() && appDescriptor.isEnabled() && (permissions == null || permissions.hasAccess(MgnlContext.getUser())) ;
+        return entry.isEnabled() && appDescriptor.isEnabled() && (permissions == null || permissions.hasAccess(MgnlContext.getUser()));
+    }
+
+    private boolean isGroupVisibleForCurrentUser(AppLauncherGroupDefinition group) {
+        AccessDefinition permissions = group.getPermissions();
+        return (permissions == null || permissions.hasAccess(MgnlContext.getUser()));
     }
 
     /**

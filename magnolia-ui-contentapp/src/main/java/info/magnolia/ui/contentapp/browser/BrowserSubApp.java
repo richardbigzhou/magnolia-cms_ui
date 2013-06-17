@@ -187,6 +187,17 @@ public class BrowserSubApp extends BaseSubApp {
         String itemId = null;
         try {
             itemId = JcrItemUtil.getItemId(SessionUtil.getNode(workspaceName, path));
+
+            // MGNLUI-1475: item might have not been found if path doesn't exist
+            if (itemId == null) {
+                String newPath = subAppDescriptor.getWorkbench().getPath();
+                itemId = JcrItemUtil.getItemId(SessionUtil.getNode(workspaceName, newPath));
+
+                BrowserLocation newLocation = getCurrentLocation();
+                newLocation.updateNodePath(newPath);
+
+                getAppContext().updateSubAppLocation(getSubAppContext(), newLocation);
+            }
         } catch (RepositoryException e) {
             log.warn("Could not retrieve item at path {} in workspace {}", path, workspaceName);
         }

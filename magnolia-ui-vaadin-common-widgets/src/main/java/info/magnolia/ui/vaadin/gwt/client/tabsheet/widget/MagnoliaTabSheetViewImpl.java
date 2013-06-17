@@ -43,6 +43,7 @@ import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabSetChangedEvent.Hand
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.util.CollectionUtil;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -55,8 +56,8 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.vaadin.client.BrowserInfo;
 
 /**
  * Contains the tabs at the top and the tabs themselves. The tabs are all
@@ -76,7 +77,9 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
 
     private MagnoliaTabWidget activeTab = null;
 
-    private AppPreloader preloader;
+    private AppPreloader preloader = new AppPreloader();
+
+    private FadeAnimation preloaderFadeOut = new FadeAnimation(0d, true);
 
     private Element logo;
 
@@ -95,9 +98,7 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         this.preloaderFadeOut.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
-                if (preloader != null) {
-                    tabPanel.remove(preloader);
-                }
+                tabPanel.remove(preloader);
             }
         });
     }
@@ -136,7 +137,7 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
 
     @Override
     public void showAllTabContents(boolean visible) {
-        Display display = (visible) ? Display.BLOCK : Display.NONE;
+        Display display = visible ? Display.BLOCK : Display.NONE;
         for (MagnoliaTabWidget tab : getTabs()) {
             tab.getElement().getStyle().setDisplay(display);
             // MGNLUI-542. Style height breaks show all tab.
@@ -154,6 +155,7 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
     @Override
     public void updateTab(MagnoliaTabWidget tab) {
         if (!tabs.contains(tab)) {
+            showPreloader();
             getTabs().add(tab);
             tabPanel.add(tab);
             tabBar.addTabLabel(tab.getLabel());
@@ -190,31 +192,35 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         scroller.getElement().setAttribute("style", "overflow:auto; position:absolute; zoom:1; max-height:" + height + "px;");
     }
 
-    private FadeAnimation preloaderFadeOut = new FadeAnimation(0d, true);
-
     @Override
     public void showPreloader() {
-        if (BrowserInfo.get().isTouchDevice()) {
-            if (preloader != null) {
-                preloaderFadeOut.cancel();
-            }
-            preloader = new AppPreloader();
-            tabPanel.add(preloader);
+        preloaderFadeOut.cancel();
+        if (tabPanel != preloader.getParent()) {
             preloader.getElement().getStyle().setTop(0, Unit.PX);
             preloader.getElement().getStyle().setZIndex(10000);
+            tabPanel.add(preloader);
         }
     }
 
     @Override
     public void removePreloader() {
-        if (BrowserInfo.get().isTouchDevice()) {
-            if (preloader != null) {
                 Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
                     @Override
                     public void execute() {
-                        preloaderFadeOut.run(500, preloader.getElement());
+                        if (tabPanel == preloader.getParent() ) {
+                            preloaderFadeOut.run(500, preloader.getElement());
+                        }
                     }
                 });
+    }
+
+    @Override
+    public void clearTabs() {
+        final Iterator<Widget> it = tabPanel.iterator();
+        while (it.hasNext()) {
+            final Widget w = it.next();
+            if (w != preloader) {
+                w.getElement().getStyle().setDisplay(Display.NONE);
             }
         }
     }
