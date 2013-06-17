@@ -80,9 +80,7 @@ public class ConfiguredAppDescriptorManagerTest {
         ComponentsTestUtil.setImplementation(AppDescriptor.class, ConfiguredAppDescriptor.class);
         session = SessionTestUtil.createSession(RepositoryConstants.CONFIG,
                 "/modules/aModule/apps/app1.name=appNameA",
-                "/modules/aModule/apps/app1.categoryName=categoryA",
-                "/modules/bModule/apps/app1.name=appNameB",
-                "/modules/bModule/apps/app1.categoryName=\n"
+                "/modules/bModule/apps/app1.name=appNameB"
         );
         MockUtil.initMockContext();
         MockUtil.setSystemContextSessionAndHierarchyManager(session);
@@ -153,7 +151,6 @@ public class ConfiguredAppDescriptorManagerTest {
 
         // WHEN
         // Add a property and fire event
-        session.getNode("/modules/bModule/apps/app1").setProperty("categoryName", "categoryB");
         observationManager.fireEvent(MockEvent.propertyAdded("/modules/bModule/apps/app1"));
         Thread.sleep(6000);
         // THEN
