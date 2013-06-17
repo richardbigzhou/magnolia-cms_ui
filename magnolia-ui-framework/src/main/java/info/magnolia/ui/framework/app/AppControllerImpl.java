@@ -104,7 +104,13 @@ import com.google.inject.util.Providers;
 @Singleton
 public class AppControllerImpl implements AppController, LocationChangedEvent.Handler, LocationChangeRequestedEvent.Handler {
 
+    /**
+     * Prefix for componentIds for apps.
+     */
+    private static final String APP_PREFIX = "app";
+
     private static final Logger log = LoggerFactory.getLogger(AppControllerImpl.class);
+
     private final ModuleRegistry moduleRegistry;
     private final ComponentProvider componentProvider;
     private final AppDescriptorRegistry appDescriptorRegistry;
@@ -158,7 +164,6 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      * @param appName of the {@link App} to start.
      * @param location holds information about the subApp to use and the parameters.
      */
-    @Override
     public App startIfNotAlreadyRunningThenFocus(String appName, Location location) {
         AppInstanceController appInstanceController = getAppInstance(appName);
         appInstanceController = doStartIfNotAlreadyRunning(appInstanceController, location);
@@ -175,10 +180,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      *
      * @param appName of the {@link App} to start.
      * @param location holds information about the subApp to use and the parameters.
-     * @deprecated since introduction of {@link #getAppWithoutStarting(String appName) getAppWithoutStarting}
      */
     @Deprecated
-    @Override
     public App startIfNotAlreadyRunning(String appName, Location location) {
         AppInstanceController appInstanceController = getAppInstance(appName);
 

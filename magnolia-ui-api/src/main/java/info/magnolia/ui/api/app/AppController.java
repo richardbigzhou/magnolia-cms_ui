@@ -42,20 +42,6 @@ import info.magnolia.ui.api.view.Viewport;
  */
 public interface AppController {
 
-    /**
-     * Prefix for componentIds for apps.
-     */
-    public static final String APP_PREFIX = "app";
-
-    /**
-     * Prefix for componentIds for subapps.
-     */
-    public static final String SUBAPP_PREFIX = "subapp";
-
-    App startIfNotAlreadyRunning(String name, Location location);
-
-    App startIfNotAlreadyRunningThenFocus(String name, Location location);
-
     boolean isAppStarted(String name);
 
     void stopApp(String name);
