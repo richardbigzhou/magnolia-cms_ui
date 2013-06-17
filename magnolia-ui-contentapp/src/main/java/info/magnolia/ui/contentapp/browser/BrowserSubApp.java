@@ -69,7 +69,6 @@ import javax.inject.Named;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.jcr.Workspace;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -191,7 +190,7 @@ public class BrowserSubApp extends BaseSubApp {
 
             // MGNLUI-1475: item might have not been found if path doesn't exist
             if (itemId == null) {
-                String newPath = Workspace.PATH_WORKSPACE_ROOT;
+                String newPath = subAppDescriptor.getWorkbench().getPath();
                 itemId = JcrItemUtil.getItemId(SessionUtil.getNode(workspaceName, newPath));
 
                 BrowserLocation newLocation = getCurrentLocation();
