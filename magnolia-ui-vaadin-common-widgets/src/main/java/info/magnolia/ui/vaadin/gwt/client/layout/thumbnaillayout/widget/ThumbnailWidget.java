@@ -66,10 +66,7 @@ public class ThumbnailWidget extends Composite {
         this.data = data;
         if (data.isRealResource()) {
             Image image = new Image(LazyThumbnailLayoutImageBundle.INSTANCE.getStubImage().getSafeUri());
-            // Add cachebuster so that browser definitely displays updated
-            // thumbnails after edits.
-            String cacheBuster = "?cb=" + System.currentTimeMillis();
-            image.setUrl(connector.getState().resources.get(data.getThumbnailId()).getURL() + cacheBuster);
+            image.setUrl(connector.getState().resources.get(data.getThumbnailId()).getURL());
             image.setStyleName("thumbnail-image");
             panel.setWidget(image);
         } else {

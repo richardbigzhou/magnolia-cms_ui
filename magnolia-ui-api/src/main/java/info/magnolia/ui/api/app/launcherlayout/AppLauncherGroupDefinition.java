@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.api.app.launcherlayout;
 
+import info.magnolia.cms.security.operations.AccessDefinition;
+
 import java.util.List;
 
 /**
@@ -54,4 +56,6 @@ public interface AppLauncherGroupDefinition {
     String getColor();
 
     List<AppLauncherGroupEntryDefinition> getApps();
+
+    AccessDefinition getPermissions();
 }
