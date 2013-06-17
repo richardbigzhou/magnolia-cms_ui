@@ -173,4 +173,9 @@
     text-align: center;
 }
 
+/* force hiding of iframes inside the tabsheet, when it's inactive. Bug in webkit. */
+.v-shell-tabsheet-app.app-inactive iframe {
+  display: none;
+}
+
 }

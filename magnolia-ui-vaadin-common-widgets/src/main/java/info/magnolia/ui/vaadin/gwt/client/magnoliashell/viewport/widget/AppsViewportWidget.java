@@ -75,6 +75,8 @@ import com.vaadin.client.Util;
  */
 public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandlers {
 
+    public static final String APP_INACTIVE_CLASS_NAME = "app-inactive";
+
     /**
      * Listener interface for {@link AppsViewportWidget}.
      */
@@ -193,8 +195,10 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
         // do not hide app if closing
         if (formerVisible != null && !isAppClosing()) {
             formerVisible.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+            formerVisible.addStyleName(APP_INACTIVE_CLASS_NAME);
         }
         w.setVisible(true);
+        w.removeStyleName(APP_INACTIVE_CLASS_NAME);
         w.getElement().getStyle().clearVisibility();
     }
 
