@@ -47,8 +47,6 @@ import info.magnolia.ui.vaadin.gwt.client.tabsheet.connector.MagnoliaTabSheetCon
 import java.util.Iterator;
 
 import com.google.gwt.dom.client.Style.Visibility;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -58,6 +56,8 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.googlecode.mgwt.dom.client.event.touch.TouchCancelEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchCancelHandler;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.HasSwipeHandlers;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeEndEvent;
 import com.googlecode.mgwt.dom.client.recognizer.swipe.SwipeEndHandler;
@@ -143,10 +143,9 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
         DOM.sinkEvents(getElement(), Event.ONCLICK);
         curtain.setClassName("v-curtain v-curtain-green");
         closeButton.addStyleDependentName("app");
-
-        addDomHandler(new ClickHandler() {
+        delegate.addTouchEndHandler(new TouchEndHandler() {
             @Override
-            public void onClick(ClickEvent event) {
+            public void onTouchEnd(TouchEndEvent event) {
                 Element target = event.getNativeEvent().getEventTarget().cast();
                 if (closeButton.getElement().isOrHasChild(target)) {
                     closeCurrentApp();
@@ -154,7 +153,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
                     toggleFullScreen();
                 }
             }
-        }, ClickEvent.getType());
+        });
 
         bindTouchHandlers();
 

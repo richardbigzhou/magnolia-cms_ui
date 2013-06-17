@@ -118,8 +118,10 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
 
     @Override
     public void resetScrollTop() {
-        getFrame().getElement().getStyle().setHeight(getFrame().getBody().getOffsetHeight(), Style.Unit.PX);
-        new ComputedStyle(getFrame().getElement());
+        if (BrowserInfo.get().isTouchDevice()) {
+            getFrame().getElement().getStyle().setHeight(getFrame().getBody().getOffsetHeight(), Style.Unit.PX);
+            new ComputedStyle(getFrame().getElement());
+        }
         content.getElement().setScrollTop(lastScrollPosition);
     }
 
