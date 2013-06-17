@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.api.app.launcherlayout;
 
+import info.magnolia.cms.security.operations.AccessDefinition;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +54,8 @@ public class ConfiguredAppLauncherGroupDefinition implements AppLauncherGroupDef
     private String color;
 
     private List<AppLauncherGroupEntryDefinition> apps = new ArrayList<AppLauncherGroupEntryDefinition>();
+
+    private AccessDefinition permissions;
 
     @Override
     public String getName() {
@@ -109,5 +113,14 @@ public class ConfiguredAppLauncherGroupDefinition implements AppLauncherGroupDef
 
     public void addApp(AppLauncherGroupEntryDefinition appGroupEntry) {
         apps.add(appGroupEntry);
+    }
+
+    @Override
+    public AccessDefinition getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(AccessDefinition permissions) {
+        this.permissions = permissions;
     }
 }
