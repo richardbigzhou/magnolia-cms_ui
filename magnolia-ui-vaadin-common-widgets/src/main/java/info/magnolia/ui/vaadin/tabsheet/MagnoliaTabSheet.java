@@ -194,4 +194,8 @@ public class MagnoliaTabSheet extends AbstractComponentContainer {
         getState().logo = logo;
         getState().logoBgColor = bgcolor;
     }
+
+    public void setName(String name) {
+        getState().name = name;
+    }
 }

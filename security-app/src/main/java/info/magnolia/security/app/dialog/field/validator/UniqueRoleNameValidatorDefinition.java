@@ -36,13 +36,13 @@ package info.magnolia.security.app.dialog.field.validator;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 /**
- * Defines a validator that checks for unique group name.
+ * A definition for {@link UniqueRoleNameValidator}.
  *
- * @see UniqueGroupIdValidatorFactory
+ * @see UniqueRoleNameValidatorFactory
  */
-public class UniqueGroupIdValidatorDefinition extends ConfiguredFieldValidatorDefinition {
+public class UniqueRoleNameValidatorDefinition extends ConfiguredFieldValidatorDefinition {
 
-    public UniqueGroupIdValidatorDefinition() {
-        setFactoryClass(UniqueGroupIdValidatorFactory.class);
+    public UniqueRoleNameValidatorDefinition() {
+        setFactoryClass(UniqueRoleNameValidatorFactory.class);
     }
 }

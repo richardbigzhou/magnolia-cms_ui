@@ -72,7 +72,7 @@ public class OpenRoleEditDialogAction<D extends OpenRoleEditDialogActionDefiniti
     @Override
     public void execute() throws ActionExecutionException {
 
-        DialogDefinition dialogDefinition = getDialogDefinition("roleEdit");
+        DialogDefinition dialogDefinition = getDialogDefinition("role");
 
         formDialogPresenter.start(itemToEdit, dialogDefinition, uiContext, new EditorCallback() {
 

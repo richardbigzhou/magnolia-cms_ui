@@ -36,9 +36,9 @@ package info.magnolia.ui.api.action;
 import javax.jcr.Item;
 
 /**
- * Responsible for executing actions and doing lookups of action definitions based on action names. Creates a new
- * instance of the action for each execution and allows the action to receive its action definition object via injection
- * as it is created.
+ * Responsible for executing actions, doing lookups of action definitions based on action names and evaluating if an
+ * action is available. Creates a new instance of the action for each execution and allows the action to receive its
+ * action definition object and all parameters given through injection as it is created.
  *
  * @see Action
  * @see ActionDefinition

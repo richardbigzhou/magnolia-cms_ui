@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.security.app.dialog.field.validator;
+package info.magnolia.security.app.dialog.action;
 
-import info.magnolia.ui.form.validator.factory.AbstractFieldValidatorFactory;
-
-import com.vaadin.data.Validator;
+import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 
 /**
- * Builder for the UniqueRoleIdValidator.
+ * Action definition for {@link RenameUsersFolderAction}.
  *
- * @see UniqueRoleIdValidatorDefinition
+ * @see RenameUsersFolderAction
  */
-public class UniqueRoleIdValidatorFactory extends AbstractFieldValidatorFactory<UniqueRoleIdValidatorDefinition> {
+public class RenameUsersFolderActionDefinition extends SaveDialogActionDefinition {
 
-    public UniqueRoleIdValidatorFactory(UniqueRoleIdValidatorDefinition definition) {
-        super(definition);
+    public RenameUsersFolderActionDefinition() {
+        setImplementationClass(RenameUsersFolderAction.class);
     }
-
-    @Override
-    public Validator createValidator() {
-        return new UniqueRoleIdValidator(getI18nErrorMessage());
-    }
-
 }

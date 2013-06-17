@@ -48,7 +48,7 @@
 	  <div id="error-divet" class="divet"></div>
       <div id="error-message">
         <div class="icon-error"><img src="${contextPath}/.resources/defaultLoginForm/img/icon-error-white.png"/></div>
-        <span>Username and/or password are incorrect.</span>
+        <span>${errorString!}</span>
       </div>
       [/#if]
 
@@ -62,7 +62,7 @@
         Magnolia is a registered trademark of Magnolia International Ltd.
         <br/>
          &copy; Copyright 2003-2013
-        <a href="http://www.magnolia-cms.com" id="externallink">Magnolia International Ltd.</a>
+        <a href="http://www.magnolia-cms.com" id="externallink" target="_blank">Magnolia International Ltd.</a>
       </div>
   <script type="text/javascript">
   document.ontouchmove = function(e){ e.preventDefault(); }

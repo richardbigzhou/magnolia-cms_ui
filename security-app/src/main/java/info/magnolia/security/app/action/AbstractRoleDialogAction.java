@@ -46,8 +46,6 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.security.app.dialog.field.WorkspaceAccessFieldDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
-import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
-import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
@@ -79,9 +77,7 @@ public abstract class AbstractRoleDialogAction<D extends ActionDefinition> exten
     }
 
     /**
-     * Loads the dialog definition and adds access control fields for workspaces that have not been explicitly added. It
-     * is not necessary to configure fields in both roleEdit and roleAdd dialogs. Configuration is taken from the
-     * roleAdd dialog.
+     * Loads the dialog definition and adds access control fields for workspaces that have not been explicitly added.
      */
     protected DialogDefinition getDialogDefinition(String dialogName) throws ActionExecutionException {
 
@@ -93,18 +89,6 @@ public abstract class AbstractRoleDialogAction<D extends ActionDefinition> exten
 
             if (dialogDefinition == null) {
                 throw new ActionExecutionException("Unable to load dialog [" + dialogName + "]");
-            }
-
-            // if tab acls is missing load it from roleAdd
-            if (!hasTab(dialogDefinition.getForm(), "acls")) {
-                Node tabNode = MgnlContext.getJCRSession(RepositoryConstants.CONFIG).getNode("/modules/security-app/dialogs/roleAdd/form/tabs/acls");
-                dialogDefinition.getForm().getTabs().add((TabDefinition) Components.getComponent(Node2BeanProcessor.class).toBean(tabNode, ConfiguredTabDefinition.class));
-            }
-
-            // if tab web is missing load it from roleAdd
-            if (!hasTab(dialogDefinition.getForm(), "web")) {
-                Node tabNode = MgnlContext.getJCRSession(RepositoryConstants.CONFIG).getNode("/modules/security-app/dialogs/roleAdd/form/tabs/web");
-                dialogDefinition.getForm().getTabs().add((TabDefinition) Components.getComponent(Node2BeanProcessor.class).toBean(tabNode, ConfiguredTabDefinition.class));
             }
 
             List<TabDefinition> tabs = dialogDefinition.getForm().getTabs();
@@ -178,15 +162,6 @@ public abstract class AbstractRoleDialogAction<D extends ActionDefinition> exten
         nodeType.setIcon(icon);
         nodeType.setStrict(strict);
         nodeTypes.add(nodeType);
-    }
-
-    private boolean hasTab(FormDefinition form, String name) {
-        for (TabDefinition tab : form.getTabs()) {
-            if (tab.getName().equals(name)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private boolean hasField(TabDefinition tab, String name) {

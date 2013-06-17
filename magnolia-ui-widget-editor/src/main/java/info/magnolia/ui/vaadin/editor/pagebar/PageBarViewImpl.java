@@ -145,6 +145,11 @@ public class PageBarViewImpl extends CustomComponent implements PageBarView {
     }
 
     @Override
+    public void setPlatFormType(PlatformType targetPreviewPlatform) {
+        platformSelector.setValue(targetPreviewPlatform);
+    }
+
+    @Override
     public Component asVaadinComponent() {
         return this;
     }

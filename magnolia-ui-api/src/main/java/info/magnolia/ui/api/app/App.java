@@ -37,19 +37,33 @@ import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.overlay.OverlayLayer;
 
 /**
- * Defines an app. Is called by the Magnolia shell as the user interacts with the app.
+ * Main interface for apps. Apps are started and managed by the {@link AppController}.
+ *
+ * @see AppDescriptor
+ * @see AppController
  */
 public interface App {
 
+    /**
+     * Called when the app is started. The location passed in is the location that triggered the app to be started.
+     *
+     * @param location the location that triggered the app to be started
+     */
     void start(Location location);
 
+    /**
+     * Called when the location changes and the app is already running.
+     *
+     * @param location the new location
+     */
     void locationChanged(Location location);
 
+    /**
+     * Called when the user stops the app.
+     */
     void stop();
 
     AppView getView();
-
-    AppContext getAppContext();
 
     /**
      * Open a dialog which enables a user to choose an item from the app.

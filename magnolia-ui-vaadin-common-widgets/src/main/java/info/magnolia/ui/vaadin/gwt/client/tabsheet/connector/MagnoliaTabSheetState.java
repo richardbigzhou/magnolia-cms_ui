@@ -49,5 +49,7 @@ public class MagnoliaTabSheetState extends AbstractComponentState {
 
     public String logo;
 
+    public String name;
+
     public String logoBgColor;
 }

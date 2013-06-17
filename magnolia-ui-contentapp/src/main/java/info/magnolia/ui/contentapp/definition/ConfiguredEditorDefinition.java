@@ -40,7 +40,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ConfiguredEditorDefinition.
+ * Simple implementation of {@link EditorDefinition}.
+ *
+ * @see EditorDefinition
  */
 public class ConfiguredEditorDefinition implements EditorDefinition {
 

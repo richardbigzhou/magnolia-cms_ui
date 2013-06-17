@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,25 @@
  * intact.
  *
  */
-package info.magnolia.security.app.dialog.field.validator;
+package info.magnolia.security.app.container;
 
-import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
+import info.magnolia.ui.workbench.tree.TreePresenter;
+import info.magnolia.ui.workbench.tree.TreeView;
 
 /**
- * A definition for the UniqueRoleIdValidator.
- *
- * @see UniqueRoleIdValidatorFactory
+ * Custom {@link TreePresenter} for the users workspace that uses the custom container {@link UserContainer}.
  */
-public class UniqueRoleIdValidatorDefinition extends ConfiguredFieldValidatorDefinition {
+public class UserTreePresenter extends TreePresenter {
 
-    public UniqueRoleIdValidatorDefinition() {
-        setFactoryClass(UniqueRoleIdValidatorFactory.class);
+    public UserTreePresenter(TreeView view, ComponentProvider componentProvider) {
+        super(view, componentProvider);
+    }
+
+    @Override
+    protected HierarchicalJcrContainer createContainer(WorkbenchDefinition workbench) {
+        return new UserContainer(workbench);
     }
 }

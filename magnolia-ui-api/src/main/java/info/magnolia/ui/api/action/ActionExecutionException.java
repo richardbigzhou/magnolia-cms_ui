@@ -35,6 +35,9 @@ package info.magnolia.ui.api.action;
 
 /**
  * Exception thrown when an {@link Action} encounters an error during execution.
+ *
+ * @see Action
+ * @see ActionExecutor
  */
 public class ActionExecutionException extends Exception {
 

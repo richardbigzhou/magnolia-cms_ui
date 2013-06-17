@@ -42,7 +42,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Describes an app.
+ * Simple implementation of {@link AppDescriptor}.
  */
 public class ConfiguredAppDescriptor implements AppDescriptor {
 

@@ -37,8 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Default implementation of {@link AppLauncherGroupDefinition} used for configuration in the
- * repository.
+ * Default implementation of {@link AppLauncherGroupDefinition}. used for configuration in the repository.
  */
 public class ConfiguredAppLauncherGroupDefinition implements AppLauncherGroupDefinition {
 

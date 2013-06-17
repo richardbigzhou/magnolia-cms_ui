@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,26 +31,42 @@
  * intact.
  *
  */
-package info.magnolia.security.app.dialog.field.validator;
+package info.magnolia.ui.vaadin.gwt.client.magnoliashell.event;
 
-import info.magnolia.ui.form.validator.factory.AbstractFieldValidatorFactory;
-
-import com.vaadin.data.Validator;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Unique Group ID validator builder.
- *
- * @see UniqueGroupIdValidatorDefinition
+ * Fired when there is a request to activate an app, to set the current app on the server.
  */
-public class UniqueGroupIdValidatorFactory extends AbstractFieldValidatorFactory<UniqueGroupIdValidatorDefinition> {
+public class ActivateAppEvent extends GwtEvent<ActivateAppEvent.Handler> {
 
-    public UniqueGroupIdValidatorFactory(UniqueGroupIdValidatorDefinition definition) {
-        super(definition);
+    private final String name;
+
+    /**
+     * Handler of the {@link ActivateAppEvent}.
+     */
+    public interface Handler extends EventHandler {
+        void onActivateApp(final ActivateAppEvent event);
+    }
+
+    public static final Type<Handler> TYPE = new Type<Handler>();
+
+    public ActivateAppEvent(String name) {
+        this.name = name;
     }
 
     @Override
-    public Validator createValidator() {
-        return new UniqueGroupIdValidator(getI18nErrorMessage());
+    protected void dispatch(Handler handler) {
+        handler.onActivateApp(this);
     }
 
+    @Override
+    public GwtEvent.Type<Handler> getAssociatedType() {
+        return TYPE;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

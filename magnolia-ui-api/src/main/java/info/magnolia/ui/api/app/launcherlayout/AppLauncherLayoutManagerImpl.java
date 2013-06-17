@@ -158,7 +158,7 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
     }
 
     /**
-     * Send an event on the system event bus.
+     * Sends an event on the system event bus.
      */
     private void sendChangedEvent() {
         logger.debug("Sending AppLauncherLayoutChangedEvent on the system bus");

@@ -74,13 +74,13 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
     @Override
     public void execute() throws ActionExecutionException {
         try {
-            if (StringUtils.isNotBlank(getDefinition().getNodeType()) && !getDefinition().getNodeType().equals(nodeItemToEdit.applyChanges().getPrimaryNodeType().getName())) {
-                log.warn("EditItemAction requested for a node type definition {}. Current node type is {}. No action will be performed.",
-                        getDefinition().getNodeType(), nodeItemToEdit.applyChanges().
+            if (StringUtils.isNotBlank(getDefinition().getNodeType()) && !getDefinition().getNodeType().equals(nodeItemToEdit.getJcrItem().getPrimaryNodeType().getName())) {
+                log.warn("RestorePreviousVersionAction requested for a node type definition {}. Current node type is {}. No action will be performed.",
+                        getDefinition().getNodeType(), nodeItemToEdit.getJcrItem().
                         getPrimaryNodeType().getName());
                 return;
             }
-            final String path = nodeItemToEdit.applyChanges().getPath();
+            final String path = nodeItemToEdit.getJcrItem().getPath();
 
             // Get last version.
             Version version = getPreviousVersion();
@@ -90,13 +90,13 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
                 return;
             }
             // Restore previous version
-            versionManager.restore(nodeItemToEdit.applyChanges(), version, true);
+            versionManager.restore(nodeItemToEdit.getJcrItem(), version, true);
             DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, path, "");
             locationController.goTo(location);
 
         } catch (RepositoryException e) {
-            subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, "This Item do not have a Valid Previos version. Action cancelled.");
-            throw new ActionExecutionException("Could not execute EditItemAction: ", e);
+            subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, "This Item do not have a Valid Previous version. Action cancelled.");
+            throw new ActionExecutionException("Could not execute RestorePreviousVersionAction: ", e);
         }
     }
 
@@ -105,7 +105,7 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
      */
     private Version getPreviousVersion() throws RepositoryException {
         Version previousVersion = null;
-        VersionIterator versionIterator = versionManager.getAllVersions(nodeItemToEdit.applyChanges());
+        VersionIterator versionIterator = versionManager.getAllVersions(nodeItemToEdit.getJcrItem());
         if (versionIterator == null) {
             return previousVersion;
         }

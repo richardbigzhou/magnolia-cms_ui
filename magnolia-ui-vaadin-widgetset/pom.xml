@@ -77,6 +77,12 @@
       <plugin>
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin-maven-plugin</artifactId>
+        <configuration>
+          <!-- These 2 parameters are not used during the lifecycle-bound execution of the plugin. They're needed for debug mode though. -->
+          <runTarget>.magnolia/admincentral</runTarget>
+          <!-- this is not a webapp -->
+          <noServer>true</noServer>
+        </configuration>
         <executions>
           <execution>
             <configuration>
@@ -85,10 +91,7 @@
               <webappDirectory>${project.build.outputDirectory}/VAADIN/widgetsets</webappDirectory>
               <warSourceDirectory>src/main/resources/VAADIN/widgetsets</warSourceDirectory>
               <inplace>${inplace}</inplace>
-              <!-- this is not a webapp -->
-              <noServer>true</noServer>
               <module>info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet</module>
-              <runTarget>.magnolia/admincentral</runTarget>
               <draftCompile>${draftCompile}</draftCompile>
               <enableClosureCompiler>${enableClosure}</enableClosureCompiler>
               <disableCastChecking>${disableCastChecking}</disableCastChecking>

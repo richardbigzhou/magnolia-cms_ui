@@ -79,7 +79,7 @@ public class ExportAction extends AbstractCommandAction<ExportActionDefinition> 
         Map<String, Object> params = super.buildParams(jcrItem);
         params.put(ExportCommand.EXPORT_EXTENSION, ".xml");
         params.put(ExportCommand.EXPORT_FORMAT, Boolean.TRUE);
-        params.put(ExportCommand.EXPORT_KEEP_HISTORY, Boolean.TRUE);
+        params.put(ExportCommand.EXPORT_KEEP_HISTORY, Boolean.FALSE);
         params.put(ExportCommand.EXPORT_OUTPUT_STREAM, new ByteArrayOutputStream());
         return params;
     }
