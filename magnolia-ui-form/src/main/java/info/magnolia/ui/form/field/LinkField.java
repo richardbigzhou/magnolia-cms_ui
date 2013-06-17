@@ -53,15 +53,17 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.converter.Converter.ConversionException;
+import com.vaadin.server.ErrorMessage;
+import com.vaadin.server.UserError;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Button.ClickEvent;
 
 /**
  * A base custom field comprising a text field and a button placed to its immediate right.
@@ -275,6 +277,25 @@ public class LinkField extends CustomField<String> {
 
     public void setButtonCaptionOther(String buttonCaptionOther) {
         this.buttonCaptionOther = buttonCaptionOther;
+    }
+
+    @Override
+    public boolean isValid() {
+        if (this.isRequired() && StringUtils.isBlank(getValue())) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
+    @Override
+    public ErrorMessage getErrorMessage() {
+        if (this.isRequired() && StringUtils.isBlank(getValue())) {
+            return new UserError(getRequiredError());
+        } else {
+            return null;
+        }
     }
 
 }
