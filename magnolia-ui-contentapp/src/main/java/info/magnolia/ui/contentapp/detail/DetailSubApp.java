@@ -57,17 +57,14 @@ import org.slf4j.LoggerFactory;
 /**
  * Base implementation of an item subApp. Provides sensible implementation for
  * services shared by all item subApps. Implementers of this class represent a
- * tab for viewing and editing items typically opened from an
- * {@link info.magnolia.ui.contentapp.browser.BrowserSubApp}. Subclasses can
+ * tab for viewing and editing items typically opened from an {@link info.magnolia.ui.contentapp.browser.BrowserSubApp}. Subclasses can
  * augment the default behavior and perform additional tasks by overriding the
  * following methods:
  * <ul>
  * <li>{@link #onSubAppStart()}
  * <li>{@link #locationChanged(Location)}
  * </ul>
- * 
- * Currently lacking listeners for
- * {@link info.magnolia.ui.api.event.ContentChangedEvent}. Currently
+ * Currently lacking listeners for {@link info.magnolia.ui.api.event.ContentChangedEvent}. Currently
  * lacking handling of locationChanged. Related to MGNLUI-154
  * 
  * @see DetailEditorPresenter
@@ -170,7 +167,7 @@ public class DetailSubApp extends BaseSubApp {
                             String currentNodePath = getCurrentLocation().getNodePath();
                             String currentNodePathParent = StringUtils.removeEnd(currentNodePath, "/" + AbstractRepositoryAction.DEFAULT_NEW_ITEM_NAME);
 
-                            if (!MgnlContext.getJCRSession(getWorkspace()).nodeExists(currentNodePathParent)) {
+                            if (StringUtils.isNotBlank(currentNodePathParent) && !MgnlContext.getJCRSession(getWorkspace()).nodeExists(currentNodePathParent)) {
                                 getSubAppContext().close();
                             }
                         } catch (RepositoryException e) {
