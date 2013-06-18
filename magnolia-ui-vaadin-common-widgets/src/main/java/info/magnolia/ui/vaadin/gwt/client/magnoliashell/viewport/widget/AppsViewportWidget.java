@@ -35,13 +35,12 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget;
 
 import info.magnolia.ui.vaadin.gwt.client.CloseButton;
 import info.magnolia.ui.vaadin.gwt.client.FullScreenButton;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.Callbacks;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.AppsTransitionDelegate;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.MagnoliaSwipeRecognizer;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.FadeAnimation;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.SlideAnimation;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.connector.MagnoliaTabSheetConnector;
 
 import java.util.Iterator;
@@ -247,9 +246,7 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     private void bindTouchHandlers() {
         DOM.sinkEvents(getElement(), Event.TOUCHEVENTS);
         delegate.addTouchHandler(new MagnoliaSwipeRecognizer(delegate, SWIPE_OUT_THRESHOLD));
-
         addSwipeStartHandler(new SwipeStartHandler() {
-
             @Override
             public void onSwipeStart(SwipeStartEvent event) {
                 processSwipe(event.getDistance() * (event.getDirection() == DIRECTION.LEFT_TO_RIGHT ? 1 : -1));
@@ -257,7 +254,6 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
         });
 
         addSwipeMoveHandler(new SwipeMoveHandler() {
-
             @Override
             public void onSwipeMove(SwipeMoveEvent event) {
                 processSwipe(event.getDistance() * (event.getDirection() == SwipeEvent.DIRECTION.LEFT_TO_RIGHT ? 1 : -1));
@@ -265,24 +261,34 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
         });
 
         addSwipeEndHandler(new SwipeEndHandler() {
-
             @Override
             public void onSwipeEnd(SwipeEndEvent event) {
-                final SwipeEvent.DIRECTION direction = event.getDirection();
+                if (getWidgetCount() > 1) {
+                    final SwipeEvent.DIRECTION direction = event.getDirection();
+                    if (event.isDistanceReached()) {
+                        switchToApp(direction);
+                    } else {
+                        final Widget visibleChild = getVisibleChild();
+                        final SlideAnimation slideAnimation = new SlideAnimation(false, true);
+                        slideAnimation.setTargetValue(0);
+                        slideAnimation.run(500, visibleChild.getElement());
+                        slideAnimation.addCallback(new JQueryCallback() {
+                            @Override
+                            public void execute(JQueryWrapper query) {
+                                // do not trigger transitions
+                                dropZIndeces();
+                                Widget next = getNextWidget();
+                                Widget previous = getPreviousWidget();
+                                if (next != null) {
+                                    next.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+                                }
 
-                if (event.isDistanceReached() && getWidgetCount() > 1) {
-
-                    switchToApp(direction);
-
-                } else {
-                    final JQueryWrapper jq = JQueryWrapper.select(getVisibleChild());
-                    jq.setCssPx("left", jq.position().left());
-                    jq.setCss("-webkit-transform", "");
-                    jq.animate(500, new AnimationSettings() {
-                        {
-                            setProperty("left", 0);
-                        }
-                    });
+                                if (previous != null) {
+                                    previous.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+                                }
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -290,8 +296,18 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
         delegate.addTouchCancelHandler(new TouchCancelHandler() {
             @Override
             public void onTouchCanceled(TouchCancelEvent event) {
-                JQueryWrapper.select(getVisibleChild()).setCss("-webkit-transform", "");
                 dropZIndeces();
+                Widget next = getNextWidget();
+                Widget previous = getPreviousWidget();
+                if (next != null) {
+                    next.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+                }
+
+                if (previous != null) {
+                    previous.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+                }
+
+                getVisibleChild().getElement().getStyle().clearLeft();
             }
         });
     }
@@ -299,47 +315,34 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
     private void switchToApp(final SwipeEvent.DIRECTION direction) {
 
         final Widget newVisibleWidget = direction == DIRECTION.LEFT_TO_RIGHT ? getPreviousWidget() : getNextWidget();
-
-        final JQueryWrapper jq = JQueryWrapper.select(getVisibleChild());
-        jq.animate(450, new AnimationSettings() {
-
-            {
-                setProperty("left", getOffsetWidth() * (direction == DIRECTION.LEFT_TO_RIGHT ? 1 : -1) - jq.position().left());
-                setCallbacks(Callbacks.create(new JQueryCallback() {
-
-                    @Override
-                    public void execute(JQueryWrapper query) {
-                        query.setCss("-webkit-transform", "");
-                        query.setCss("left", "");
-                        // do not trigger transitions
-                        showChild(newVisibleWidget);
-                        dropZIndeces();
-
-                        // TODO: Ideally AppsViewport shouldn't need to know about MagnoliaTabSheetConnector - improvement would be to have a mapping from connectors to app names. See MGNLUI-1679.
-                        MagnoliaTabSheetConnector appConnector = (MagnoliaTabSheetConnector) Util.findConnectorFor(newVisibleWidget);
-                        listener.setCurrentApp(appConnector.getState().name);
-                    }
-                }));
+        SlideAnimation slideAnimation = new SlideAnimation(false, true);
+        slideAnimation.addCallback(new JQueryCallback() {
+            @Override
+            public void execute(JQueryWrapper query) {
+                // do not trigger transitions
+                showChild(newVisibleWidget);
+                dropZIndeces();
+                // TODO: Ideally AppsViewport shouldn't need to know about MagnoliaTabSheetConnector - improvement would be to have a mapping from connectors to app names. See MGNLUI-1679.
+                MagnoliaTabSheetConnector appConnector = (MagnoliaTabSheetConnector) Util.findConnectorFor(newVisibleWidget);
+                listener.setCurrentApp(appConnector.getState().name);
             }
         });
 
+        Element targetElement = getVisibleChild().getElement();
+        slideAnimation.setTargetValue(getOffsetWidth() * (direction == DIRECTION.LEFT_TO_RIGHT ? 1 : -1));
+        slideAnimation.run(450, targetElement);
+
         if (direction == DIRECTION.RIGHT_TO_LEFT && getWidgetCount() > 2) {
-            final JQueryWrapper query = JQueryWrapper.select(newVisibleWidget);
-            query.setCss("-webkit-transform", "");
-            newVisibleWidget.addStyleName("app-slider");
-            new Timer() {
-                @Override
-                public void run() {
-                    newVisibleWidget.removeStyleName("app-slider");
-                }
-            }.schedule(500);
+            final SlideAnimation slideNewVisibleToEdgeAnimation = new SlideAnimation(false, true);
+            slideNewVisibleToEdgeAnimation.setTargetValue(0);
+            slideNewVisibleToEdgeAnimation.run(500, newVisibleWidget.getElement());
         }
 
     }
 
     private void processSwipe(int translationValue) {
-        JQueryWrapper.select(getVisibleChild()).setCss("-webkit-transform", "translate3d(" + translationValue + "px,0,0)");
         if (getWidgetCount() > 1) {
+            JQueryWrapper.select(getVisibleChild()).setCss("-webkit-transform", "translate3d(" + translationValue + "px,0,0)");
             showCandidateApp(translationValue);
         }
     }

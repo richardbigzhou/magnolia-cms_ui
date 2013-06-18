@@ -137,11 +137,11 @@ public class ShellAppsTransitionDelegate implements TransitionDelegate {
         if (active) {
             viewport.setVisible(true);
             slideUpAnimation.cancel();
-            slideDownAnimation.setTargetTop(0);
+            slideDownAnimation.setTargetValue(0);
             slideDownAnimation.run(SLIDE_DURATION, viewport.getElement());
         } else {
             slideDownAnimation.cancel();
-            slideUpAnimation.setTargetTop(-viewport.getOffsetHeight());
+            slideUpAnimation.setTargetValue(-viewport.getOffsetHeight());
             slideUpAnimation.run(SLIDE_DURATION, viewport.getElement());
         }
     }

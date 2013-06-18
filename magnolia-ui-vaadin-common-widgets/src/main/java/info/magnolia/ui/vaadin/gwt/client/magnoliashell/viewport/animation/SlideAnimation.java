@@ -39,28 +39,43 @@ import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import com.vaadin.client.ApplicationConnection;
 
 /**
- * Slide anumation of an element.
+ * Slide animation of an element.
  */
 public class SlideAnimation extends JQueryAnimation {
 
-    public SlideAnimation(boolean clearTopOnComplete, ApplicationConnection connection) {
+    private boolean isVertical = true;
+
+    public SlideAnimation(boolean isVertical, boolean clearOnComplete, ApplicationConnection connection) {
         super(connection);
-        if (clearTopOnComplete) {
+        this.isVertical = isVertical;
+        if (clearOnComplete) {
             addCallback(new JQueryCallback() {
                 @Override
                 public void execute(JQueryWrapper query) {
-                    query.get(0).getStyle().clearTop();
+                    if (SlideAnimation.this.isVertical) {
+                        query.get(0).getStyle().clearTop();
+                    } else {
+                        query.get(0).getStyle().clearLeft();
+                    }
                 }
             });
         }
     }
 
-    public SlideAnimation(boolean clearTopOnComplete) {
-        this(clearTopOnComplete, null);
+    public SlideAnimation(boolean clearOnComplete, ApplicationConnection connection) {
+        this(true, clearOnComplete, connection);
 
     }
 
-    public void setTargetTop(int top) {
-        setProperty("top", top);
+    public SlideAnimation(boolean clearOnComplete) {
+        this(clearOnComplete, null);
+    }
+
+    public SlideAnimation(boolean isVertical, boolean clearOnComplete) {
+        this(isVertical, clearOnComplete, null);
+    }
+
+    public void setTargetValue(int value) {
+        setProperty(isVertical ? "top" : "left", value);
     }
 }
