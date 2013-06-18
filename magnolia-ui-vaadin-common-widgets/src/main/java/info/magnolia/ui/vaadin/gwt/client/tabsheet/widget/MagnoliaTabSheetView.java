@@ -47,6 +47,8 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public interface MagnoliaTabSheetView extends HasWidgets, IsWidget, HasTabSetChangedHandlers, HasActiveTabChangeHandlers {
 
+    MagnoliaTabWidget getActiveTab();
+
     List<MagnoliaTabWidget> getTabs();
 
     TabBarWidget getTabContainer();
@@ -68,4 +70,5 @@ public interface MagnoliaTabSheetView extends HasWidgets, IsWidget, HasTabSetCha
     void removePreloader();
 
     void clearTabs();
+
 }
