@@ -94,6 +94,11 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
 
     private static final Logger log = LoggerFactory.getLogger(AppInstanceControllerImpl.class);
 
+    /**
+     * Prefix for componentIds for subapps.
+     */
+    private static final String SUBAPP_PREFIX = "subapp";
+
     private static class SubAppDetails {
         private SubAppContext context;
         private EventBusProtector eventBusProtector;
@@ -444,10 +449,10 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
         List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
 
         // Get components common to all sub apps
-        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(AppController.SUBAPP_PREFIX, moduleDefinitions);
+        ComponentProviderConfiguration configuration = configurationBuilder.getComponentsFromModules(SUBAPP_PREFIX, moduleDefinitions);
 
         // Get components for this specific sub app
-        String componentsId = AppController.APP_PREFIX + "-" + appName + "-" + subAppName;
+        String componentsId = "app-" + appName + "-" + subAppName;
         log.debug("Reading component configurations from module descriptors for " + componentsId);
         ComponentProviderConfiguration subAppComponents = configurationBuilder.getComponentsFromModules(componentsId, moduleDefinitions);
 

@@ -2966,7 +2966,7 @@
             <sv:value>f6e28014-aac5-449c-9d5f-ab9ae9774d14</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.security.app.action.OpenRoleEditDialogActionDefinition</sv:value>
+            <sv:value>info.magnolia.security.app.action.OpenEditRoleDialogActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>icon-edit</sv:value>

@@ -57,4 +57,5 @@ public interface ContentPresenter {
 
     void setSelectedItemIds(List<String> itemId);
 
+    void select(List<String> itemIds);
 }

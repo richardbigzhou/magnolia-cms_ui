@@ -219,6 +219,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                 }
             }
             activePresenter.setSelectedItemIds(selectedIds);
+            activePresenter.select(selectedIds);
             // Only send event if items are not empty (do exist)
             if (!items.isEmpty()) {
                 eventBus.fireEvent(new SelectionChangedEvent(workbenchDefinition.getWorkspace(), items));

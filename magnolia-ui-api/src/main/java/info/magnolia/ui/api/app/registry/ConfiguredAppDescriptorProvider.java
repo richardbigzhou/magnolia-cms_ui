@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * ConfiguredAppDescriptorProvider that instantiates an AppDescriptor from a configuration node.
  * Overrides equals in order to define the uniqueness of a ConfiguredAppDescriptorProvider.
  * In our case, ConfiguredAppDescriptorProvider is equal if:
- * AppDescriptor.getName(), getCategoryName(), isEnabled(), getIcon() and getAppClass() are equal.
+ * AppDescriptor.getName(), isEnabled(), getIcon() and getAppClass() are equal.
  */
 public class ConfiguredAppDescriptorProvider implements AppDescriptorProvider {
 
