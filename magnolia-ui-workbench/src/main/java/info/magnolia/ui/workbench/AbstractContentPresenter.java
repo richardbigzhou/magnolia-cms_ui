@@ -199,6 +199,7 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
                     List<String> ids = new ArrayList<String>(1);
                     ids.add(((JcrItemAdapter) item).getItemId());
                     setSelectedItemIds(ids);
+                    select(ids);
                 }
                 String clickedItemId = ((JcrItemAdapter) item).getItemId();
                 log.debug("com.vaadin.data.Item at {} was right clicked. Firing ItemRightClickedEvent...", clickedItemId);
@@ -269,5 +270,9 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
             }
         }
         return availableColumns;
+    }
+
+    @Override
+    public void select(List<String> itemIds) {
     }
 }
