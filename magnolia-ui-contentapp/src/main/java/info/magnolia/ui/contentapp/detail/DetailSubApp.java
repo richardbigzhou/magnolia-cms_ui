@@ -36,13 +36,12 @@ package info.magnolia.ui.contentapp.detail;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
+import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.ContentSubAppView;
-import info.magnolia.ui.framework.action.AbstractRepositoryAction;
 import info.magnolia.ui.framework.app.BaseSubApp;
-import info.magnolia.ui.api.event.AdmincentralEventBus;
-import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import javax.inject.Inject;
@@ -50,24 +49,20 @@ import javax.inject.Named;
 import javax.jcr.Item;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Base implementation of an item subApp. Provides sensible implementation for
  * services shared by all item subApps. Implementers of this class represent a
- * tab for viewing and editing items typically opened from an
- * {@link info.magnolia.ui.contentapp.browser.BrowserSubApp}. Subclasses can
+ * tab for viewing and editing items typically opened from an {@link info.magnolia.ui.contentapp.browser.BrowserSubApp}. Subclasses can
  * augment the default behavior and perform additional tasks by overriding the
  * following methods:
  * <ul>
  * <li>{@link #onSubAppStart()}
  * <li>{@link #locationChanged(Location)}
  * </ul>
- * 
- * Currently lacking listeners for
- * {@link info.magnolia.ui.api.event.ContentChangedEvent}. Currently
+ * Currently lacking listeners for {@link info.magnolia.ui.api.event.ContentChangedEvent}. Currently
  * lacking handling of locationChanged. Related to MGNLUI-154
  * 
  * @see DetailEditorPresenter
@@ -168,9 +163,15 @@ public class DetailSubApp extends BaseSubApp {
                         try {
                             // Check if parent is still existing, close supApp if it doesn't
                             String currentNodePath = getCurrentLocation().getNodePath();
-                            String currentNodePathParent = StringUtils.removeEnd(currentNodePath, "/" + AbstractRepositoryAction.DEFAULT_NEW_ITEM_NAME);
 
-                            if (!MgnlContext.getJCRSession(getWorkspace()).nodeExists(currentNodePathParent)) {
+                            // resolve parent, removing trailing slash except for root
+                            int splitIndex = currentNodePath.lastIndexOf("/");
+                            if (splitIndex == 0) {
+                                splitIndex = 1;
+                            }
+                            String parentNodePath = currentNodePath.substring(0, splitIndex);
+
+                            if (!MgnlContext.getJCRSession(getWorkspace()).nodeExists(parentNodePath)) {
                                 getSubAppContext().close();
                             }
                         } catch (RepositoryException e) {
