@@ -342,8 +342,6 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         String defaultAction = subAppDescriptor.getActionbar().getDefaultAction();
         if (StringUtils.isNotEmpty(defaultAction)) {
             executeAction(defaultAction);
-        } else {
-            log.warn("Default action is null. Please check actionbar definition.");
         }
     }
 
