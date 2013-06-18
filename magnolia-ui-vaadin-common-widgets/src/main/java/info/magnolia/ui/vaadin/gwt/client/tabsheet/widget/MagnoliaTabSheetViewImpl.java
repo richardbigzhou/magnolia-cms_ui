@@ -131,6 +131,11 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
 
 
     @Override
+    public MagnoliaTabWidget getActiveTab() {
+        return activeTab;
+    }
+
+    @Override
     public List<MagnoliaTabWidget> getTabs() {
         return tabs;
     }
