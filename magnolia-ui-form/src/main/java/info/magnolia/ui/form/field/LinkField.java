@@ -120,6 +120,7 @@ public class LinkField extends CustomField<String> {
         textField.setImmediate(true);
         textField.setWidth(100, Unit.PERCENTAGE);
         textField.setNullRepresentation("");
+        textField.setNullSettingAllowed(true);
         // Handle Link Layout (Text Field & Select Button)
         linkLayout.setSizeFull();
         linkLayout.setSpacing(true);
