@@ -36,7 +36,6 @@ package info.magnolia.pages.app.editor;
 import info.magnolia.event.EventBus;
 import info.magnolia.pages.app.editor.event.ComponentMoveEvent;
 import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
-import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.SubAppContext;
@@ -90,9 +89,7 @@ public class PageEditorPresenter implements PageEditorListener {
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                if (event.getWorkspace().equals(RepositoryConstants.WEBSITE)) {
                     view.refresh();
-                }
             }
         });
         subAppEventBus.addHandler(ComponentMoveEvent.class, new ComponentMoveEvent.Handler() {
