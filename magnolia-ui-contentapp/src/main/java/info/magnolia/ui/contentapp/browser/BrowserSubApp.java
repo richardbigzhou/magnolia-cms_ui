@@ -175,6 +175,8 @@ public class BrowserSubApp extends BaseSubApp {
         String path = location.getNodePath();
         ViewType viewType = location.getViewType();
         if (viewType == null) {
+            log.warn("ViewType did not match, returning default viewType.");
+
             viewType = getBrowser().getDefaultViewType();
             location.updateViewType(viewType);
             getAppContext().updateSubAppLocation(getSubAppContext(), location);

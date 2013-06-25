@@ -76,14 +76,13 @@ public interface DetailView extends View {
                         return type;
                     }
                 }
-            } else {
-                return defaultViewType();
             }
-            throw new IllegalArgumentException("No view type could be found for " + text);
+            return defaultViewType();
+
         }
 
         private static ViewType defaultViewType() {
-            return VIEW;
+            return EDIT;
         }
 
     }

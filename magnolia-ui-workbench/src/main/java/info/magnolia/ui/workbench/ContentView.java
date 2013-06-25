@@ -74,10 +74,9 @@ public interface ContentView extends View {
                         return type;
                     }
                 }
-            } else {
-                return null;
             }
-            throw new IllegalArgumentException("No view type could be found for [" + text + "]");
+            return null;
+
         }
     }
 

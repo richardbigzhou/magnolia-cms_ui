@@ -122,12 +122,22 @@ public class DetailLocationTest {
     }
 
     @Test
-    public void testGetDefaultAction() {
+    public void testGetDefaultViewType() {
         // GIVEN
         DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00");
 
         // TEST
-        assertEquals(DetailView.ViewType.VIEW, itemLocation.getViewType());
+        assertEquals(DetailView.ViewType.EDIT, itemLocation.getViewType());
+
+    }
+
+    @Test
+    public void testGetDefaultViewTypeWhenUnknown() {
+        // GIVEN
+        DetailLocation itemLocation = new DetailLocation("someApp", "someContentApp", "/some/other/node/00:someUnknownViewType");
+
+        // TEST
+        assertEquals(DetailView.ViewType.EDIT, itemLocation.getViewType());
 
     }
 
@@ -203,4 +213,5 @@ public class DetailLocationTest {
         // TEST
         assertEquals("app:someApp:someContentApp;/some/other/node/00:view:2.0", itemLocation.toString());
     }
+
 }

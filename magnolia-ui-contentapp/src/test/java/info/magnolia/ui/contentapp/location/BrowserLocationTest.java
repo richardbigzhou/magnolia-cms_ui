@@ -202,4 +202,22 @@ public class BrowserLocationTest {
         // TEST
         assertEquals("app:someApp:someContentApp;/some/other/node/00:searchview:*blablu", contentLocation.toString());
     }
+
+    @Test
+         public void testGetNullViewType() {
+        // GIVEN
+        BrowserLocation browserLocation = new BrowserLocation("someApp", "someContentApp", "/some/other/node/00:");
+
+        // TEST
+        assertNull(browserLocation.getViewType());
+    }
+
+    @Test
+    public void testGetNullViewTypeWhenUnknown() {
+        // GIVEN
+        BrowserLocation browserLocation = new BrowserLocation("someApp", "someContentApp", "/some/other/node/00:someUnknownViewType");
+
+        // TEST
+        assertNull(browserLocation.getViewType());
+    }
 }
