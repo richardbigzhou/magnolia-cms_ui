@@ -58,6 +58,7 @@ public class BaseIdentifierToPathConverter implements IdentifierToPathConverter 
 
     @Override
     public String convertToModel(String path, Locale locale) throws Converter.ConversionException {
+        // Null is required for the property to be removed if path is empty
         String res = null;
         if (StringUtils.isBlank(path)) {
             return res;
@@ -73,7 +74,7 @@ public class BaseIdentifierToPathConverter implements IdentifierToPathConverter 
 
     @Override
     public String convertToPresentation(String uuid, Locale locale) throws Converter.ConversionException {
-        String res = null;
+        String res = StringUtils.EMPTY;
         if (StringUtils.isBlank(uuid)) {
             return res;
         }
