@@ -60,8 +60,8 @@ import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
-import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
+import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +104,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
     private final BrowserView view;
 
-    private final EventBus adminCentralEventBus;
+    private final EventBus admincentralEventBus;
 
     private final EventBus subAppEventBus;
 
@@ -114,17 +114,14 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
     private final AppContext appContext;
 
-    private final SubAppContext subAppContext;
-
     @Inject
-    public BrowserPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final BrowserView view, @Named(AdmincentralEventBus.NAME) final EventBus adminCentralEventBus,
+    public BrowserPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final BrowserView view, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
             final @Named(SubAppEventBus.NAME) EventBus subAppEventBus,
             final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider, WorkbenchPresenter workbenchPresenter) {
         this.workbenchPresenter = workbenchPresenter;
         this.actionExecutor = actionExecutor;
-        this.subAppContext = subAppContext;
         this.view = view;
-        this.adminCentralEventBus = adminCentralEventBus;
+        this.admincentralEventBus = admincentralEventBus;
         this.subAppEventBus = subAppEventBus;
         this.actionbarPresenter = actionbarPresenter;
         this.appContext = subAppContext.getAppContext();
@@ -153,7 +150,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
     }
 
     private void bindHandlers() {
-        adminCentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
+        admincentralEventBus.addHandler(ContentChangedEvent.class, new ContentChangedEvent.Handler() {
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
