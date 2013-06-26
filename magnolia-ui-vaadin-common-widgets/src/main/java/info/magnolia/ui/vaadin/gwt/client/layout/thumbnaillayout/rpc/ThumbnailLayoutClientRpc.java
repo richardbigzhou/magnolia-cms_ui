@@ -45,4 +45,6 @@ import com.vaadin.shared.communication.ClientRpc;
 public interface ThumbnailLayoutClientRpc extends ClientRpc {
 
     void addThumbnails(final List<ThumbnailData> ids);
+
+    void setSelected(String thumbnailId);
 }

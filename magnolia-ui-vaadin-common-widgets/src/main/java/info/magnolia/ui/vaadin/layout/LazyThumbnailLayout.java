@@ -40,10 +40,12 @@ import info.magnolia.ui.vaadin.gwt.client.layout.thumbnaillayout.shared.Thumbnai
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.Ordered;
-import com.vaadin.server.KeyMapper;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.AbstractComponent;
 
@@ -60,14 +62,19 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
 
     private Ordered container;
 
-    private final KeyMapper<Object> mapper = new KeyMapper<Object>();
+    // Maps thumbnailId to itemId
+    private final BiMap<String, String> mapper = HashBiMap.create();
+    private final AtomicInteger counter = new AtomicInteger();
+
+    private String selectedItemId;
 
     private final ThumbnailLayoutServerRpc rpcHandler = new ThumbnailLayoutServerRpc() {
+
         @Override
         public void onThumbnailSelected(String id) {
             final Object itemId = mapper.get(id);
             if (itemId != null) {
-                select(itemId);
+                LazyThumbnailLayout.this.onThumbnailSelected(itemId);
             }
         }
 
@@ -90,6 +97,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         @Override
         public void loadThumbnails(int amount) {
             getRpcProxy(ThumbnailLayoutClientRpc.class).addThumbnails(fetchThumbnails(amount));
+            getRpcProxy(ThumbnailLayoutClientRpc.class).setSelected(mapper.inverse().get(selectedItemId));
         }
 
         @Override
@@ -116,7 +124,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         }
     }
 
-    private void select(Object itemId) {
+    private void onThumbnailSelected(Object itemId) {
         for (final ThumbnailSelectionListener listener : selectionListeners) {
             listener.onThumbnailSelected(String.valueOf(itemId));
         }
@@ -132,7 +140,8 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         while (id != null && i < amount) {
             Object resource = container.getContainerProperty(id, "thumbnail").getValue();
             boolean isRealResource = resource instanceof Resource;
-            String thumbnailId = mapper.key(id);
+            String thumbnailId = String.valueOf(counter.getAndIncrement());
+            mapper.put(thumbnailId, (String) id);
             String iconFontId = isRealResource ? null : String.valueOf(resource);
             if (isRealResource) {
                 setResource(thumbnailId, (Resource) resource);
@@ -141,7 +150,9 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
             id = container.nextItemId(id);
             ++i;
         }
-        getState().lastQueried = mapper.key(id);
+        String thumbnailId = String.valueOf(counter.getAndIncrement());
+        mapper.put(thumbnailId, (String) id);
+        getState().lastQueried = thumbnailId;
         return thumbnails;
     }
 
@@ -165,7 +176,8 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
     public void clear() {
         getState().resources.clear();
         getState().lastQueried = null;
-        mapper.removeAll();
+        counter.set(0);
+        mapper.clear();
     }
 
     public void refresh() {
@@ -214,25 +226,29 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         return (ThumbnailLayoutState) super.getState(markAsDirty);
     }
 
+    public void setSelectedItemId(String selectedItemId) {
+        this.selectedItemId = selectedItemId;
+    }
+
     /**
      * Listener interface for thumbnail selection.
      */
     public interface ThumbnailSelectionListener {
-        void onThumbnailSelected(String thumbnailId);
+        void onThumbnailSelected(String itemId);
     }
 
     /**
      * Listener for thumbnail double clicks.
      */
     public interface ThumbnailDblClickListener {
-        void onThumbnailDblClicked(String thumbnailId);
+        void onThumbnailDblClicked(String itemId);
     }
 
     /**
      * Listener for thumbnail right clicks.
      */
     public interface ThumbnailRightClickListener {
-        void onThumbnailRightClicked(String thumbnailId, int clickX, int clickY);
+        void onThumbnailRightClicked(String itemId, int clickX, int clickY);
     }
 
     /**

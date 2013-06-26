@@ -128,6 +128,11 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
         super.onRightClick(jcrItem, clickX, clickY);
     }
 
+    @Override
+    public void select(List<String> itemIds) {
+        view.select(itemIds);
+    }
+
     /**
      * Thumbnail container uses specific Thumbnail items, so we have to convert those into JcrItemAdapters.
      */
