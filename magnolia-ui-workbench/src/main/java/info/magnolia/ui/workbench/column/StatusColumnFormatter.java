@@ -41,6 +41,7 @@ import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.security.AccessControlException;
 
 import com.vaadin.ui.Table;
 
@@ -93,15 +94,14 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
             if (definition.isPermissions()) {
                 try {
                     permissionStatus += "icon-edit ";
-                    // TODO dlipp: MGNLUI-864 verify, this shows the same behavior as old Content-API based
-                    // implementation:
-                    // if (permissions && !node.isGranted(info.magnolia.cms.security.Permission.WRITE))
-                    node.getSession().checkPermission(node.getPath(), Session.ACTION_SET_PROPERTY);
+                    node.getSession().checkPermission(node.getPath(), Session.ACTION_ADD_NODE + "," + Session.ACTION_REMOVE + "," + Session.ACTION_SET_PROPERTY);
                     permissionStatus += "color-blue";
-                } catch (RepositoryException e) {
+                } catch (AccessControlException e) {
                     // does not have permission to set properties - in that case will return two Icons
                     // in a layout for being displayed...
                     permissionStatus += "color-red";
+                } catch (RepositoryException e) {
+                    throw new RuntimeException("Could not access the JCR permissions for the following node identifier " + itemId, e);
                 }
                 permissionStatus = "<span class=\"" + permissionStatus + "\"></span>";
             }
