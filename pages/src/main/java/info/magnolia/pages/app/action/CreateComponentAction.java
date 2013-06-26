@@ -123,7 +123,7 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
 
                 @Override
                 public void onSuccess(String actionName) {
-                    String templateId = String.valueOf(item.getItemProperty("mgnl:template").getValue());
+                    String templateId = String.valueOf(item.getItemProperty(NodeTypes.Renderable.TEMPLATE).getValue());
                     try {
                         TemplateDefinition templateDef = templateDefinitionRegistry.getTemplateDefinition(templateId);
                         String dialogName = templateDef.getDialog();
@@ -132,8 +132,7 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
                             final FormDialogPresenter dialogPresenter = componentProvider.getComponent(FormDialogPresenter.class);
 
                             openDialog(item, dialogName, dialogPresenter);
-                        }
-                        else {
+                        } else {
                             // if there is no dialog defined for the component, persist the node as is and reload.
                             try {
                                 final Node node = item.applyChanges();
@@ -238,7 +237,7 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
      * Recursively update LastModified for the node until the parent node is of type
      * mgnl:content or depth=1. If it's not the 'website' workspace, do not perform recursion.
      */
-    protected void updateLastModified(Node currentNode) throws RepositoryException {
+    private void updateLastModified(Node currentNode) throws RepositoryException {
         if (!currentNode.isNodeType(NodeTypes.Folder.NAME)) {
             // Update
             NodeTypes.LastModified.update(currentNode);
