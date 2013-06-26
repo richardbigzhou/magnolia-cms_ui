@@ -42,6 +42,7 @@ import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 public interface PageEditorListener {
 
     static final String ACTION_EDIT_ELEMENT = "editElement";
+    static final String ACTION_EDIT_COMPONENT = "editComponent";
     static final String ACTION_ADD_COMPONENT = "addComponent";
     static final String ACTION_ADD_AREA = "addArea";
     static final String ACTION_SORT_COMPONENT = "sortComponent";

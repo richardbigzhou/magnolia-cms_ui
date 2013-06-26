@@ -68,19 +68,15 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
     @Override
     public ComponentElement getTypedElement() {
         ComponentElement component = new ComponentElement(getAttribute("workspace"), getAttribute("path"), getAttribute("dialog"));
+        boolean inherited = Boolean.parseBoolean(getAttribute("inherited"));
 
         boolean deletable = true;
         if (getAttributes().containsKey(OperationPermissionDefinition.DELETABLE)) {
             deletable = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.DELETABLE));
         }
 
-        boolean writable = true;
-        if (getAttributes().containsKey(OperationPermissionDefinition.WRITABLE)) {
-            writable = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.WRITABLE));
-        }
-
-        component.setDeletable(deletable);
-        component.setWritable(writable);
+        component.setDeletable(deletable && !inherited);
+        component.setWritable(hasEditButton());
         component.setMoveable(isMovable());
         return component;
     }
@@ -118,20 +114,22 @@ public class MgnlComponent extends MgnlElement implements ComponentListener {
     @Override
     public boolean hasEditButton() {
         boolean inherited = Boolean.parseBoolean(getAttribute("inherited"));
+        boolean hasDialog = getAttribute("dialog") != null && getAttribute("dialog") != "";
         boolean writable = true;
         if (getAttributes().containsKey(OperationPermissionDefinition.WRITABLE)) {
             writable = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.WRITABLE));
         }
-        return !inherited && writable;
+        return writable && hasDialog && !inherited;
     }
 
     @Override
     public boolean isMovable() {
+        boolean inherited = Boolean.parseBoolean(getAttribute("inherited"));
         boolean movable = true;
         if (getAttributes().containsKey(OperationPermissionDefinition.MOVEABLE)) {
             movable = Boolean.parseBoolean(getAttribute(OperationPermissionDefinition.MOVEABLE));
         }
-        return movable;
+        return movable && !inherited;
     }
 
     /**

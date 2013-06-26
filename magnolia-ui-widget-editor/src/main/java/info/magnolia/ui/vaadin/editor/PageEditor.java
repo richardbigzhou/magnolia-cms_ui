@@ -90,7 +90,7 @@ public class PageEditor extends AbstractComponent {
 
             @Override
             public void editComponent(ComponentElement element) {
-                listener.onAction(PageEditorListener.ACTION_EDIT_ELEMENT, element);
+                listener.onAction(PageEditorListener.ACTION_EDIT_COMPONENT, element);
             }
 
             @Override
