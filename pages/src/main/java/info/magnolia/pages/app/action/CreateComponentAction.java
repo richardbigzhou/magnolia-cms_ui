@@ -41,6 +41,7 @@ import info.magnolia.pages.app.field.TemplateSelectorFieldFactory;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
+import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.api.ModelConstants;
@@ -68,6 +69,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -126,10 +128,24 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
                         TemplateDefinition templateDef = templateDefinitionRegistry.getTemplateDefinition(templateId);
                         String dialogName = templateDef.getDialog();
 
+                        if (StringUtils.isNotEmpty(dialogName)) {
+                            final FormDialogPresenter dialogPresenter = componentProvider.getComponent(FormDialogPresenter.class);
 
-                        final FormDialogPresenter dialogPresenter = componentProvider.getComponent(FormDialogPresenter.class);
+                            openDialog(item, dialogName, dialogPresenter);
+                        }
+                        else {
+                            // if there is no dialog defined for the component, persist the node as is and reload.
+                            try {
+                                final Node node = item.applyChanges();
+                                updateLastModified(node);
+                                node.getSession().save();
 
-                        openDialog(item, dialogName, dialogPresenter);
+                            } catch (RepositoryException e) {
+                                log.error("Exception caught: {}", e.getMessage(), e);
+                            }
+
+                            eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
+                        }
                     } catch (RegistrationException e) {
                         log.error("Exception caught: {}", e.getMessage(), e);
                     } finally {
@@ -216,5 +232,22 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
         dialog.getActions().put(cancelAction.getName(), cancelAction);
 
         return dialog;
+    }
+
+    /**
+     * Recursively update LastModified for the node until the parent node is of type
+     * mgnl:content or depth=1. If it's not the 'website' workspace, do not perform recursion.
+     */
+    protected void updateLastModified(Node currentNode) throws RepositoryException {
+        if (!currentNode.isNodeType(NodeTypes.Folder.NAME)) {
+            // Update
+            NodeTypes.LastModified.update(currentNode);
+            // Break or perform a recursive call
+            if (RepositoryConstants.WEBSITE.equals(currentNode.getSession().getWorkspace().getName())
+                    && !currentNode.isNodeType(NodeTypes.Content.NAME)
+                    && currentNode.getDepth() > 1) {
+                updateLastModified(currentNode.getParent());
+            }
+        }
     }
 }
