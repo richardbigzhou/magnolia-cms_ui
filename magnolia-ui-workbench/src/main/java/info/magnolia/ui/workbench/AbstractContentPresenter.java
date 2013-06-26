@@ -132,7 +132,7 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
                 setSelectedItemIds(ids);
                 jcrItems.add(toJcrItemAdapter(getWorkbenchRoot()));
             } else {
-                selectedItemIds = new ArrayList<String>(items.size());
+                List<String> itemIds = new ArrayList<String>(items.size());
                 for (String item : items) {
                     // if the selection is done by clicking the checkbox, the root item is added to the set - so it has to be ignored
                     // but only if there is any other item in the set
@@ -140,10 +140,11 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
                     if (JcrItemUtil.getItemId(getWorkbenchRoot()).equals(item) && items.size() > 1) {
                         continue;
                     }
-                    selectedItemIds.add(item);
+                    itemIds.add(item);
                     jcrItems.add(toJcrItemAdapter(JcrItemUtil.getJcrItem(workbenchDefinition.getWorkspace(), item)));
                 }
-                log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", selectedItemIds.toArray());
+                setSelectedItemIds(itemIds);
+                log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", itemIds.toArray());
             }
             eventBus.fireEvent(new SelectionChangedEvent(workbenchDefinition.getWorkspace(), jcrItems));
         } catch (Exception e) {
