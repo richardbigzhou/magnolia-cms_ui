@@ -120,6 +120,11 @@ public class LazyThumbnailLayoutConnector extends AbstractComponentConnector {
             public void addThumbnails(List<ThumbnailData> thumbnails) {
                 getWidget().addImages(thumbnails, LazyThumbnailLayoutConnector.this);
             }
+
+            @Override
+            public void setSelected(String thumbnailId) {
+                getWidget().setSelectedThumbnail(thumbnailId);
+            }
         });
 
         getLayoutManager().addElementResizeListener(getWidget().getElement(), new ElementResizeListener() {

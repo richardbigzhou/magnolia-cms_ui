@@ -264,11 +264,26 @@ public class LazyThumbnailLayoutWidget extends FlowPanel {
         return ComputedStyle.parseInt(thumbnailStyle.getProperty("marginLeft")) * 2;
     }
 
+    public void setSelectedThumbnail(String thumbnailId) {
+        if (thumbnailId != null) {
+            for (ThumbnailWidget thumbnail : thumbnails) {
+                if (thumbnail.getId().equals(thumbnailId)) {
+                    setSelectedThumbnail(thumbnail);
+                    return;
+                }
+            }
+        }
+        // Either we we're passed null or there was no thumbnail with this id, so we make nothing selected
+        setSelectedThumbnail((ThumbnailWidget)null);
+    }
+
     public void setSelectedThumbnail(ThumbnailWidget thumbnail) {
         if (selectedThumbnail != null) {
             selectedThumbnail.setSelected(false);
         }
-        thumbnail.setSelected(true);
+        if (thumbnail != null) {
+            thumbnail.setSelected(true);
+        }
         selectedThumbnail = thumbnail;
     }
 
