@@ -199,6 +199,7 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
         workbenchView = workbenchPresenter.start(workbenchDefinition, imageProviderDefinition, eventBus);
         workbenchView.setMultiselect(false);
         workbenchView.setViewType(ViewType.TREE);
+        chooseDialogView.setCaption(workbenchDefinition.getName());
         chooseDialogView.setContent(workbenchView);
         if (StringUtils.isNotBlank(selectedItemId)) {
             select(selectedItemId);

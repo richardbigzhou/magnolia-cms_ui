@@ -60,7 +60,7 @@ public class StaticFieldFactoryTest extends AbstractFieldFactoryTestCase<StaticF
 
         // THEN
         assertEquals(true, field instanceof StaticField);
-        assertEquals("value to display", ((StaticField) field).getLabel().getCaption());
+        assertEquals("value to display", ((StaticField) field).getValue());
     }
 
     @Override
