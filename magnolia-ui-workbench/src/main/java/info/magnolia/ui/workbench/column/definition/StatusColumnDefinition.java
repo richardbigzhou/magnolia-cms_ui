@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.workbench.column.definition;
 
+import info.magnolia.ui.workbench.column.StatusColumnFormatter;
+
 /**
  * Defines a column that displays the activation status of an item.
  */
@@ -40,6 +42,7 @@ public class StatusColumnDefinition extends AbstractColumnDefinition {
 
     public StatusColumnDefinition() {
         setRuleClass(OnAuthorOrWhenThereIsSubscribersRule.class);
+        setFormatterClass(StatusColumnFormatter.class);
     }
 
     // Show Activation Status
