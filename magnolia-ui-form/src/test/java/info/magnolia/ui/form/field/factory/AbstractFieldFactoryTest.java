@@ -93,7 +93,6 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         assertEquals("new Value", res.getProperty(propertyName).getString());
         assertEquals(PropertyType.STRING, res.getProperty(propertyName).getType());
         Property p = baseItem.getItemProperty(propertyName);
-        assertEquals(field.getPropertyDataSource(), p);
         assertEquals("new Value", p.getValue().toString());
         assertEquals(String.class, p.getValue().getClass());
     }
