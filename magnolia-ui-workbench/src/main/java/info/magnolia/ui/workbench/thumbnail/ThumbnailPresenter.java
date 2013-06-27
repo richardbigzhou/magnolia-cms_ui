@@ -97,7 +97,6 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     @Override
     public void setSelectedItemIds(List<String> itemIds) {
         super.setSelectedItemIds(itemIds);
-        view.select(itemIds);
     }
 
     @Override
