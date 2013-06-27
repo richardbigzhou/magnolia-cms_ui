@@ -124,30 +124,32 @@ public class ListViewImpl implements ListView {
 
         table.addItemClickListener(new ItemClickListener() {
 
-            private Object previousSelection;
-
             @Override
             public void itemClick(ItemClickEvent event) {
-                Object currentSelection = event.getItemId();
 
                 if (event.getButton() == MouseButton.RIGHT) {
                     if (listener != null) {
                         listener.onRightClick(event.getItem(), event.getClientX(), event.getClientY());
-                        // Select clicked item so that user knows which item they are acting on.
-                        table.select(event.getItemId());
                     }
                 } else if (event.isDoubleClick()) {
                     if (listener != null) {
                         listener.onDoubleClick(event.getItem());
                     }
                 } else {
-                    // toggle will deselect
-                    if (previousSelection == currentSelection) {
-                        table.setValue(null);
+                    Object value = table.getValue();
+                    if (value != null) {
+                        Set<String> items;
+                        if (value instanceof Set) {
+                            items = (Set<String>) value;
+                        } else {
+                            items = new LinkedHashSet<String>();
+                            items.add((String) value);
+                        }
+                        if (items.size() == 1 && items.iterator().next().equals(event.getItemId())) {
+                            table.setValue(null);
+                        }
                     }
                 }
-
-                previousSelection = currentSelection;
             }
         });
     }

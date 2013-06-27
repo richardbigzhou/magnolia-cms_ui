@@ -97,7 +97,6 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     @Override
     public void setSelectedItemIds(List<String> itemIds) {
         super.setSelectedItemIds(itemIds);
-        view.select(itemIds);
     }
 
     @Override
@@ -126,6 +125,11 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     public void onRightClick(Item item, int clickX, int clickY) {
         JcrItemAdapter jcrItem = getJcrItemByThumbnailItem(item);
         super.onRightClick(jcrItem, clickX, clickY);
+    }
+
+    @Override
+    public void select(List<String> itemIds) {
+        view.select(itemIds);
     }
 
     /**
