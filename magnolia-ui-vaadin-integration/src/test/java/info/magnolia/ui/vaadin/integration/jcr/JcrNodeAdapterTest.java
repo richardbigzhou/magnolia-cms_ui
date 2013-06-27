@@ -477,7 +477,7 @@ public class JcrNodeAdapterTest {
 
         // THEN
         assertFalse(node.hasProperty(propertyName));
-        assertEquals(1, adapter.getChangedProperties().size());
+        assertEquals(0, adapter.getChangedProperties().size());
         assertEquals(0, adapter.getRemovedProperties().size());
     }
 

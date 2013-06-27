@@ -79,10 +79,13 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
      */
     @Override
     public Property getItemProperty(Object propertyId) {
+        // After changes were applied, get the actual javax.jcr.Property,
+        // as getChangedProperties() will be empty
         if (getChangedProperties().containsKey(propertyId)) {
             return getChangedProperties().get(propertyId);
+        } else {
+            return super.getItemProperty(propertyId);
         }
-        return null;
     }
 
     /**
@@ -90,9 +93,9 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
      */
     @Override
     public Node applyChanges() throws RepositoryException {
-
-        if (getNodeName() != null && getJcrItem().hasNode(getNodeName())) {
-            return getJcrItem().getNode(getNodeName());
+        // Check if changes were already applied
+        if (getChangedProperties().isEmpty() && getParent() != null && !getParent().getItemId().equals(getItemId())) {
+            return getJcrItem();
         }
 
         Node parent = getJcrItem();
@@ -118,6 +121,13 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
                 }
                 child.applyChanges();
             }
+        }
+
+        // Update itemId to new node
+        setItemId(node.getIdentifier());
+        // Update parent
+        if (getParent() == null) {
+            setParent(new JcrNodeAdapter(parent));
         }
 
         return node;
