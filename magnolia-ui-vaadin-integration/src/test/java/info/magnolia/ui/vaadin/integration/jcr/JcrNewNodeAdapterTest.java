@@ -35,9 +35,13 @@ package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.*;
 
+import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+
+import java.util.Collections;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -48,6 +52,9 @@ import org.junit.Test;
 
 import com.vaadin.data.Property;
 
+/**
+ * Test class for JcrNewNodeAdapter.
+ */
 public class JcrNewNodeAdapterTest {
 
     private final String worksapceName = "workspace";
@@ -57,6 +64,7 @@ public class JcrNewNodeAdapterTest {
     public void setUp() {
         session = new MockSession(worksapceName);
         MockContext ctx = new MockContext();
+        ctx.setUser(new MgnlUser("test", "admin", Collections.EMPTY_LIST, Collections.EMPTY_LIST, Collections.EMPTY_MAP, null, null));
         ctx.addSession(worksapceName, session);
         MgnlContext.setInstance(ctx);
     }
@@ -64,6 +72,26 @@ public class JcrNewNodeAdapterTest {
     @After
     public void tearDown() {
         MgnlContext.setInstance(null);
+    }
+
+    @Test
+    public void testMgnlCreatedPropertiesAreSetOnApplyChanges() throws Exception {
+        // GIVEN
+        String parentNodeName = "myParentNode";
+        String newNodeName = "myNewNode";
+        String nodeType = "mgnl:content";
+        Node parentNode = session.getRootNode().addNode(parentNodeName);
+        JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode, nodeType);
+        adapter.setNodeName(newNodeName);
+
+        // WHEN
+        Node newNode = adapter.applyChanges();
+
+        // THEN
+        assertEquals(newNodeName, newNode.getName());
+        assertTrue(newNode.hasProperty(NodeTypes.Created.CREATED));
+        assertTrue(newNode.hasProperty(NodeTypes.Created.CREATED_BY));
+        assertEquals("test", newNode.getProperty(NodeTypes.Created.CREATED_BY).getString());
     }
 
     @Test
