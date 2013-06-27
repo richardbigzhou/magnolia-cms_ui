@@ -250,7 +250,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
                     public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
                         final Object text = event.getProperty().getValue();
                         if (text instanceof String) {
-                            tf.setCursorPosition(((String) text).length());
+                            tf.selectAll();
                         }
                         tf.removeValueChangeListener(this);
                     }

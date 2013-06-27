@@ -137,15 +137,17 @@ public class ListViewImpl implements ListView {
                     }
                 } else {
                     Object value = table.getValue();
-                    Set<String> items;
-                    if (value instanceof Set) {
-                        items = (Set<String>) value;
-                    } else {
-                        items = new LinkedHashSet<String>();
-                        items.add((String) value);
-                    }
-                    if (items.size() == 1 && items.iterator().next().equals(event.getItemId())) {
-                        table.setValue(null);
+                    if (value != null) {
+                        Set<String> items;
+                        if (value instanceof Set) {
+                            items = (Set<String>) value;
+                        } else {
+                            items = new LinkedHashSet<String>();
+                            items.add((String) value);
+                        }
+                        if (items.size() == 1 && items.iterator().next().equals(event.getItemId())) {
+                            table.setValue(null);
+                        }
                     }
                 }
             }

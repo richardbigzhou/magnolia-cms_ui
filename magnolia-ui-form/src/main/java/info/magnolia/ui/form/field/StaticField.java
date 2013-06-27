@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.form.field;
 
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 
 /**
@@ -45,20 +45,19 @@ public class StaticField extends CustomField<Object> {
 
     private Label label;
 
-    public StaticField() {
-        label = new Label();
+    public StaticField(String stringLabel) {
+        label = new Label(stringLabel);
+        label.setContentMode(ContentMode.HTML);
     }
 
     @Override
     protected Component initContent() {
-        HorizontalLayout layout = new HorizontalLayout();
-        layout.setSpacing(true);
-        layout.addComponent(label);
-        return layout;
+        return label;
     }
 
-    public Label getLabel() {
-        return this.label;
+    @Override
+    public Object getValue() {
+        return label.getValue();
     }
 
     @Override
