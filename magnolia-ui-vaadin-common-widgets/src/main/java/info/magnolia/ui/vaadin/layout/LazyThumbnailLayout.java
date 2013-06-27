@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.vaadin.data.Container;
@@ -140,7 +142,7 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
         while (id != null && i < amount) {
             Object resource = container.getContainerProperty(id, "thumbnail").getValue();
             boolean isRealResource = resource instanceof Resource;
-            String thumbnailId = mapThumbnailIdToItemId((String) id);
+            String thumbnailId = mapItemIdToThumbnailId((String) id);
             String iconFontId = isRealResource ? null : String.valueOf(resource);
             if (isRealResource) {
                 setResource(thumbnailId, (Resource) resource);
@@ -149,14 +151,14 @@ public class LazyThumbnailLayout extends AbstractComponent implements Container.
             id = container.nextItemId(id);
             ++i;
         }
-        getState().lastQueried = id != null ? mapper.inverse().get(id) : null;
+        getState().lastQueried = StringUtils.defaultString(mapItemIdToThumbnailId((String) id), "null");
         return thumbnails;
     }
 
     /**
      * Adds the itemId to the internal mapping or if it's already mapped returns the existing key.
      */
-    private String mapThumbnailIdToItemId(String itemId) {
+    private String mapItemIdToThumbnailId(String itemId) {
         if (itemId == null) {
             return null;
         }
