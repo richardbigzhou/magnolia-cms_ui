@@ -137,26 +137,38 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
 
     public void showInfo(String id, String subject, String message) {
         VaadinSession.getCurrent().lock();
-        getRpcProxy(ShellClientRpc.class).showMessage(MessageType.INFO.name(), subject, message, id);
-        VaadinSession.getCurrent().unlock();
+        try {
+            getRpcProxy(ShellClientRpc.class).showMessage(MessageType.INFO.name(), subject, message, id);
+        } finally {
+            VaadinSession.getCurrent().unlock();
+        }
     }
 
     public void showError(String id, String subject, String message) {
         VaadinSession.getCurrent().lock();
-        getRpcProxy(ShellClientRpc.class).showMessage(MessageType.ERROR.name(), subject, message, id);
-        VaadinSession.getCurrent().unlock();
+        try {
+            getRpcProxy(ShellClientRpc.class).showMessage(MessageType.ERROR.name(), subject, message, id);
+        } finally {
+            VaadinSession.getCurrent().unlock();
+        }
     }
 
     public void showWarning(String id, String subject, String message) {
         VaadinSession.getCurrent().lock();
-        getRpcProxy(ShellClientRpc.class).showMessage(MessageType.WARNING.name(), subject, message, id);
-        VaadinSession.getCurrent().unlock();
+        try {
+            getRpcProxy(ShellClientRpc.class).showMessage(MessageType.WARNING.name(), subject, message, id);
+        } finally {
+            VaadinSession.getCurrent().unlock();
+        }
     }
 
     public void hideAllMessages() {
         VaadinSession.getCurrent().lock();
-        getRpcProxy(ShellClientRpc.class).hideAllMessages();
-        VaadinSession.getCurrent().unlock();
+        try {
+            getRpcProxy(ShellClientRpc.class).hideAllMessages();
+        } finally {
+            VaadinSession.getCurrent().unlock();
+        }
     }
 
     public void setFullScreen(boolean isFullScreen) {
