@@ -50,11 +50,16 @@ import com.vaadin.data.Property;
 /**
  * Used to create a new Node based on an Vaadin Item. This node adapter uses the parent node to
  * initialize the global properties (workspace, path....). No references is made to an existing JCR
- * node (except for the parent of the node to create).
+ * node (except for the parent of the node to create). However, after applying changes to the
+ * item, the reference will be held to the newly created node.
  */
 public class JcrNewNodeAdapter extends JcrNodeAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(JcrNewNodeAdapter.class);
+    /**
+     * Whether changes were already applied to the node.
+     */
+    private boolean appliedChanges = false;
 
     /**
      * @param parentNode Parent of the node to create.
@@ -84,9 +89,10 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
         // as getChangedProperties() will be empty
         if (getChangedProperties().containsKey(propertyId)) {
             return getChangedProperties().get(propertyId);
-        } else {
+        } else if (appliedChanges) {
             return super.getItemProperty(propertyId);
         }
+        return null;
     }
 
     /**
@@ -95,7 +101,7 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
     @Override
     public Node applyChanges() throws RepositoryException {
         // Check if changes were already applied
-        if (getChangedProperties().isEmpty() && getParent() != null && !getParent().getItemId().equals(getItemId())) {
+        if (getChangedProperties().isEmpty() && appliedChanges) {
             return getJcrItem();
         }
 
@@ -128,9 +134,11 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
         // Update itemId to new node
         setItemId(node.getIdentifier());
         // Update parent
-        if (getParent() == null) {
+        if (!appliedChanges) {
             setParent(new JcrNodeAdapter(parent));
         }
+
+        appliedChanges = true;
 
         return node;
     }
