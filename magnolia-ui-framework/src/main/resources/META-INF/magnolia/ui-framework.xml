@@ -14,7 +14,7 @@
     <component>
       <type>info.magnolia.ui.api.i18n.I18NAuthoringSupport</type>
       <workspace>config</workspace>
-      <path>/server/i18n/authoring50</path>
+      <path>/server/i18n/authoring</path>
       <observed>true</observed>
       <scope>singleton</scope>
     </component>
