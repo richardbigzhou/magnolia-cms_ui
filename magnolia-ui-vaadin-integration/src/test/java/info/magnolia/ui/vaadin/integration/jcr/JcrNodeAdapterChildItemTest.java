@@ -35,10 +35,12 @@ package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.*;
 
+import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 
+import java.util.Collections;
 import java.util.Map;
 
 import javax.jcr.Node;
@@ -64,6 +66,7 @@ public class JcrNodeAdapterChildItemTest {
         session = new MockSession(workspaceName);
         MockContext ctx = new MockContext();
         ctx.addSession(workspaceName, session);
+        ctx.setUser(new MgnlUser("test", "admin", Collections.EMPTY_LIST, Collections.EMPTY_LIST, Collections.EMPTY_MAP, null, null));
         MgnlContext.setInstance(ctx);
         baseNode = session.getRootNode().addNode("baseNode");
     }

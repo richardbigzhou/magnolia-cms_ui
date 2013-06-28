@@ -39,6 +39,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
@@ -214,6 +215,14 @@ public class BrowserSubApp extends BaseSubApp {
      * Show the actionPopup for the specified item at the specified coordinates.
      */
     public void showActionPopup(String absItemPath, int x, int y) {
+
+        // If there's no actionbar configured we don't want to show an empty action popup
+        BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
+        ActionbarDefinition actionbarDefinition = subAppDescriptor.getActionbar();
+        if (actionbarDefinition == null) {
+            return;
+        }
+
         ActionPopup actionPopup = browser.getView().getActionPopup();
 
         updateActionPopup(actionPopup);
@@ -230,7 +239,11 @@ public class BrowserSubApp extends BaseSubApp {
 
         BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
         WorkbenchDefinition workbench = subAppDescriptor.getWorkbench();
-        List<ActionbarSectionDefinition> sections = subAppDescriptor.getActionbar().getSections();
+        ActionbarDefinition actionbarDefinition = subAppDescriptor.getActionbar();
+        if (actionbarDefinition == null) {
+            return;
+        }
+        List<ActionbarSectionDefinition> sections = actionbarDefinition.getSections();
 
         try {
             String workbenchRootItemId = JcrItemUtil.getItemId(workbench.getWorkspace(), workbench.getPath());
@@ -267,6 +280,7 @@ public class BrowserSubApp extends BaseSubApp {
             log.error("Failed to updated actionbar", e);
         }
     }
+
     /**
      * Add an additional menu item on the actionPopup.
      * TODO: Move to BrowserPresenter. Christopher Zimmermann
@@ -284,6 +298,7 @@ public class BrowserSubApp extends BaseSubApp {
 
         return menuItem;
     }
+
     /**
      * Update the items in the actionbar based on the selected item and the action availability configuration.
      * This method can be overriden to implement custom conditions diverging from {@link #updateActionPopup(info.magnolia.ui.vaadin.actionbar.ActionPopup)}.
@@ -296,7 +311,11 @@ public class BrowserSubApp extends BaseSubApp {
 
         BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
         WorkbenchDefinition workbench = subAppDescriptor.getWorkbench();
-        List<ActionbarSectionDefinition> sections = subAppDescriptor.getActionbar().getSections();
+        ActionbarDefinition actionbarDefinition = subAppDescriptor.getActionbar();
+        if (actionbarDefinition == null) {
+            return;
+        }
+        List<ActionbarSectionDefinition> sections = actionbarDefinition.getSections();
 
         try {
             String workbenchRootItemId = JcrItemUtil.getItemId(workbench.getWorkspace(), workbench.getPath());

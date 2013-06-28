@@ -51,6 +51,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,6 +125,10 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
                 try {
                     appDescriptor = appDescriptorRegistry.getAppDescriptor(entryDefinition.getName());
                 } catch (RegistrationException e) {
+                    continue;
+                }
+
+                if (StringUtils.isBlank(appDescriptor.getLabel()) || StringUtils.isBlank(appDescriptor.getIcon())) {
                     continue;
                 }
 
