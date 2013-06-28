@@ -162,6 +162,8 @@ public class AppLauncherLayoutTest {
     public static ConfiguredAppDescriptor createAppDescriptor(String name) {
         ConfiguredAppDescriptor descriptor = new ConfiguredAppDescriptor();
         descriptor.setName(name);
+        descriptor.setIcon("an-icon");
+        descriptor.setLabel(name);
         return descriptor;
     }
 }

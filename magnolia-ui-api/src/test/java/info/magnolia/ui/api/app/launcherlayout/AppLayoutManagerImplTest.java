@@ -239,6 +239,34 @@ public class AppLayoutManagerImplTest extends MgnlTestCase {
         assertEquals(2, layout.getGroups().get(0).getApps().size());
     }
 
+    @Test
+    public void testExcludesAppWithoutLabel() {
+
+        // GIVEN
+        appDescriptor1.setLabel(null);
+
+        // WHEN
+        AppLauncherLayout layout = appLayoutManager.getLayoutForCurrentUser();
+
+        // THEN
+        assertEquals(1, layout.getGroups().get(0).getApps().size());
+        assertFalse(layout.getGroups().get(0).getApps().get(0).getName().equals("app1"));
+    }
+
+    @Test
+    public void testExcludesAppWithoutIcon() {
+
+        // GIVEN
+        appDescriptor1.setIcon(null);
+
+        // WHEN
+        AppLauncherLayout layout = appLayoutManager.getLayoutForCurrentUser();
+
+        // THEN
+        assertEquals(1, layout.getGroups().get(0).getApps().size());
+        assertFalse(layout.getGroups().get(0).getApps().get(0).getName().equals("app1"));
+    }
+
     public static AppLauncherGroupDefinition createAppGroup(String name, String... appNames) {
         ConfiguredAppLauncherGroupDefinition group = new ConfiguredAppLauncherGroupDefinition();
         group.setName(name);

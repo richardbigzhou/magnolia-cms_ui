@@ -54,15 +54,4 @@ public enum MessageType {
     public String toString() {
         return caption;
     }
-
-    public boolean isSignificant() {
-        switch (this) {
-        case INFO:
-        case UNKNOWN:
-        case WORKITEM:
-            return false;
-        default:
-            return true;
-        }
-    }
 }

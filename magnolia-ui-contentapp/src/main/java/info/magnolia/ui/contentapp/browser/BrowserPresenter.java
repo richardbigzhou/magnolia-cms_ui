@@ -37,6 +37,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
@@ -336,7 +337,11 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
      * Executes the default action, as configured in the {@link info.magnolia.ui.actionbar.definition.ActionbarDefinition}.
      */
     private void executeDefaultAction() {
-        String defaultAction = subAppDescriptor.getActionbar().getDefaultAction();
+        ActionbarDefinition actionbarDefinition = subAppDescriptor.getActionbar();
+        if (actionbarDefinition == null) {
+            return;
+        }
+        String defaultAction = actionbarDefinition.getDefaultAction();
         if (StringUtils.isNotEmpty(defaultAction)) {
             executeAction(defaultAction);
         }
