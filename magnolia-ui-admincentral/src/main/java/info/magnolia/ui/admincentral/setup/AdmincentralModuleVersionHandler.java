@@ -33,10 +33,13 @@
  */
 package info.magnolia.ui.admincentral.setup;
 
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
+import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
+import info.magnolia.module.delta.RenameNodesTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
 
@@ -48,6 +51,18 @@ import java.util.List;
  */
 public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandler {
 
+    private static final class RenameLegacyI18nNodeIfExistingTask extends IsModuleInstalledOrRegistered {
+        public RenameLegacyI18nNodeIfExistingTask() {
+            super("Rename legacy i18n node", "Renames /server/i18n/authoring as authoringLegacy. Only run if adminInterface legacy module is installed.", "adminInterface", new RenameNodesTask("", "", RepositoryConstants.CONFIG, "/server/i18n", "authoring", "authoringLegacy", NodeTypes.ContentNode.NAME));
+        }
+    }
+
+    public AdmincentralModuleVersionHandler() {
+        super();
+        register(DeltaBuilder.update("5.0.1", "")
+                .addTask(new RenameLegacyI18nNodeIfExistingTask())
+                .addTask(new RenameNodesTask("Rename 5.0 i18n node", "Renames /server/i18n/authoring50 as authoring.", RepositoryConstants.CONFIG, "/server/i18n", "authoring50", "authoring", NodeTypes.ContentNode.NAME)));
+    }
     @Override
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
         List<Task> list = new ArrayList<Task>();

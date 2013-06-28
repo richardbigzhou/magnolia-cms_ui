@@ -179,11 +179,17 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
 
     /**
      * Backward compatibility.
-     * If value is null, get the Label as value.
+     * If value is null, <br>
+     * - get the Name as value.<br>
+     * - If Name is empty, set Label as value.
      */
     private String getValue(SelectFieldOptionDefinition option) {
         if (StringUtils.isBlank(option.getValue())) {
-            return getMessage(getLabel(option));
+            if (StringUtils.isNotBlank(option.getName())) {
+                return option.getName();
+            } else {
+                return getMessage(getLabel(option));
+            }
         } else {
             return option.getValue();
         }

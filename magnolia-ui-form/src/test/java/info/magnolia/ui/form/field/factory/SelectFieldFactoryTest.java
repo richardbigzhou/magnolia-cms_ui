@@ -41,6 +41,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.jcr.Node;
 
@@ -85,6 +86,27 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
 
         // THEN
         assertEquals(option.getValue(), field.getValue().toString());
+    }
+
+    @Test
+    public void selectFieldTest_OptionValueNotSet() throws Exception {
+        // GIVEN
+        List<SelectFieldOptionDefinition> options = definition.getOptions();
+        for (SelectFieldOptionDefinition option : options) {
+            option.setValue(null);
+            option.setName(option.getLabel().toLowerCase());
+        }
+        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
+        dialogSelect.setI18nContentSupport(i18nContentSupport);
+
+        // WHEN
+        dialogSelect.createField();
+
+        // THEN
+        options = definition.getOptions();
+        for (SelectFieldOptionDefinition option : options) {
+            assertEquals(option.getName(), option.getValue());
+        }
     }
 
     @Test

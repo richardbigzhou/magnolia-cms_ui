@@ -82,7 +82,7 @@ public class MultiSelectControlMigration implements ControlMigration {
             }
         }
         controlNode.setProperty("identifier", this.useIdentifier);
-        controlNode.setProperty("buttonSelectAddLabel", "field.link.select.new");
+        controlNode.setProperty("buttonSelectAddLabel", "field.link.select.add");
         controlNode.setProperty("buttonSelectNewLabel", "field.link.select.new");
         controlNode.setProperty("buttonSelectOtherLabel", "field.link.select.another");
 
