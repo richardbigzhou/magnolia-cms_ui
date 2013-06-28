@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.i18n;
 
 
+import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.api.i18n.I18NAwareProperty;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
@@ -54,7 +55,7 @@ public class I18NAwarePropertyImpl<T> extends AbstractProperty<T> implements I18
 
     private String i18NPropertyName;
 
-    private String defaultValue;
+    private T defaultValue;
 
     private Locale locale;
 
@@ -66,7 +67,7 @@ public class I18NAwarePropertyImpl<T> extends AbstractProperty<T> implements I18
         this(baseName, type, parentNodeAdapter, null);
     }
 
-    public I18NAwarePropertyImpl(String baseName, Class<T> type, AbstractJcrNodeAdapter parentNodeAdapter, Object defaultValue) {
+    public I18NAwarePropertyImpl(String baseName, Class<T> type, AbstractJcrNodeAdapter parentNodeAdapter, T defaultValue) {
         super();
         this.type = type;
         this.parentNodeAdapter = parentNodeAdapter;
@@ -96,7 +97,6 @@ public class I18NAwarePropertyImpl<T> extends AbstractProperty<T> implements I18
         return type;
     }
 
-
     @Override
     public String getLocalizedPropertyName() {
         return i18NPropertyName;
@@ -106,7 +106,7 @@ public class I18NAwarePropertyImpl<T> extends AbstractProperty<T> implements I18
         String propertyName = getLocalizedPropertyName();
         DefaultProperty<T> property = (DefaultProperty<T>) parentNodeAdapter.getItemProperty(propertyName);
         if (property == null) {
-            property = DefaultPropertyUtil.newDefaultProperty(type.getSimpleName(), defaultValue);
+            property = DefaultPropertyUtil.newDefaultProperty(PropertyUtil.getJCRPropertyType(defaultValue), defaultValue);
             parentNodeAdapter.addItemProperty(propertyName, property);
         }
         return property;
@@ -128,8 +128,7 @@ public class I18NAwarePropertyImpl<T> extends AbstractProperty<T> implements I18
     }
 
     @Override
-    public void setDefaultValue(Object defaultValue) {
-        this.defaultValue = (defaultValue == null) ? null : defaultValue.toString();
+    public void setDefaultValue(T defaultValue) {
+        this.defaultValue = defaultValue;
     }
-
 }
