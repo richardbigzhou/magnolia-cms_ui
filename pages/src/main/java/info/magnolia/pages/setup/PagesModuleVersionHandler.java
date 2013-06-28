@@ -60,7 +60,6 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
     @Override
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
         List<Task> tasks = new ArrayList<Task>();
-        tasks.add(new OrderNodeBeforeTask("Make browser sub app default", "Fixes bootstrapping order by putting the correct default sub app.", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser", "detail"));
         tasks.add(new OrderNodeBeforeTask("Order Pages app first", "Orders Pages app first in the EDIT group.", RepositoryConstants.CONFIG, "/modules/ui-framework/config/appLauncherLayout/groups/edit/apps/pages", "assets"));
         return tasks;
     }
