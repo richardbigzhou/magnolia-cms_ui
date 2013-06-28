@@ -179,6 +179,28 @@ public class JcrNewNodeAdapterTest {
     }
 
     @Test
+    public void testBeforeAndAfterApplyChanges() throws Exception {
+        // GIVEN
+        // Create a NewNodeAdapter
+        String nodeName = "rootNode";
+        String nodeType = "mgnl:content";
+        Node parentNode = session.getRootNode().addNode(nodeName);
+        JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode, nodeType);
+
+        Property propertyModified = DefaultPropertyUtil.newDefaultProperty(null, "");
+        adapter.addItemProperty("id", propertyModified);
+
+        Node nodeBefore = adapter.getJcrItem();
+
+        // WHEN
+        Node nodeAfter = adapter.applyChanges();
+
+        // THEN
+        assertEquals("We expect the getJcrItem() method returning the parent node before applying changes", parentNode, nodeBefore);
+        assertEquals("We expect the getJcrItem() method returning the actual node after applying changes", nodeAfter, adapter.getJcrItem());
+    }
+
+    @Test
     public void testReturnedPropertiesAreInSync() throws RepositoryException {
 
         // GIVEN

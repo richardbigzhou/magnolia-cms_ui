@@ -135,7 +135,6 @@ public abstract class AbstractJcrAdapter implements JcrItemAdapter {
                 item = getJcrItem();
             }
         }
-        getChangedProperties().clear();
     }
 
     /**

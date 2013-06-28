@@ -81,16 +81,12 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
     }
 
     /**
-     * Creates a pure Vaadin Property fully decoupled from JCR.
+     * Returns item property of a new node.
      */
     @Override
     public Property getItemProperty(Object propertyId) {
-        // After changes were applied, get the actual javax.jcr.Property,
-        // as getChangedProperties() will be empty
         if (getChangedProperties().containsKey(propertyId)) {
             return getChangedProperties().get(propertyId);
-        } else if (appliedChanges) {
-            return super.getItemProperty(propertyId);
         }
         return null;
     }
@@ -101,7 +97,7 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
     @Override
     public Node applyChanges() throws RepositoryException {
         // Check if changes were already applied
-        if (getChangedProperties().isEmpty() && appliedChanges) {
+        if (appliedChanges) {
             return getJcrItem();
         }
 
@@ -112,6 +108,7 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
             setNodeName(getUniqueNewItemName(parent));
         }
 
+        // Create the new node
         Node node = parent.addNode(getNodeName(), getPrimaryNodeTypeName());
         log.debug("create a new node for parent " + parent.getPath() + " with name " + getNodeName());
 
@@ -151,6 +148,7 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
         if (item == null) {
             throw new IllegalArgumentException("Item cannot be null");
         }
+
         String nodeName = "";
         if (getChangedProperties().containsKey(ModelConstants.JCR_NAME)) {
             nodeName = getChangedProperties().get(ModelConstants.JCR_NAME).toString();
