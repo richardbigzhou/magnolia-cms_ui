@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.action;
 
 import info.magnolia.cms.core.Path;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
@@ -78,6 +79,7 @@ public class DuplicateNodeAction extends AbstractRepositoryAction<DuplicateNodeA
             // Update metadata
             Node duplicateNode = node.getSession().getNode(newPath);
             NodeTypes.LastModified.update(duplicateNode);
+            NodeTypes.Activatable.update(duplicateNode, MgnlContext.getUser().getName(), false);
 
             // Set item of the new node for the ContentChangedEvent
             setItemIdOfChangedItem(JcrItemUtil.getItemId(duplicateNode));
