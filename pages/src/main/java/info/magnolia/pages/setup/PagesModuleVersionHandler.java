@@ -60,7 +60,7 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
     @Override
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
         List<Task> tasks = new ArrayList<Task>();
-        tasks.add(new OrderNodeBeforeTask("Order Pages app first", "Orders Pages app first in the EDIT group.", RepositoryConstants.CONFIG, "/modules/ui-framework/config/appLauncherLayout/groups/edit/apps/pages", "assets"));
+        tasks.add(new IsModuleInstalledOrRegistered("Order Pages app first", "Orders Pages app first in the EDIT group.", "dam", new OrderNodeBeforeTask("", "", RepositoryConstants.CONFIG, "/modules/ui-framework/config/appLauncherLayout/groups/edit/apps/pages", "assets")));
         return tasks;
     }
 

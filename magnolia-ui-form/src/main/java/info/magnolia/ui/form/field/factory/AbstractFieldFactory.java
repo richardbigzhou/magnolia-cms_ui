@@ -177,7 +177,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         Class<?> fieldType = getFieldType(definition);
         String defaultValue = definition.getDefaultValue();
         if (definition.isI18n()) {
-            I18NAwareProperty<?> property = componentProvider.newInstance(I18NAwareProperty.class, propertyName, fieldType, item);
+            I18NAwareProperty<String> property = componentProvider.newInstance(I18NAwareProperty.class, propertyName, fieldType, item);
             property.setDefaultValue(defaultValue);
             return property;
 

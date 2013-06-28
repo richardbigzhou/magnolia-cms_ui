@@ -168,7 +168,7 @@ public class PagesEditorSubAppTest {
 
         verify(actionbarPresenter).disable(PageEditorListener.ACTION_DELETE_COMPONENT);
         verify(actionbarPresenter).enable(PageEditorListener.ACTION_START_MOVE_COMPONENT);
-        verify(actionbarPresenter).enable(PageEditorListener.ACTION_EDIT_ELEMENT);
+        verify(actionbarPresenter).enable(PageEditorListener.ACTION_EDIT_COMPONENT);
 
         verifyNoMoreInteractions(actionbarPresenter);
     }

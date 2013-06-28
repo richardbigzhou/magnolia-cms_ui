@@ -110,6 +110,8 @@ public class DuplicateNodeActionTest extends RepositoryTestCase {
         assertTrue(parent.getNode("nodeToCopy0").hasProperty(NodeTypes.LastModified.LAST_MODIFIED_BY));
         assertTrue(parent.getNode("nodeToCopy0").hasProperty(NodeTypes.Created.CREATED));
         assertTrue(parent.getNode("nodeToCopy0").hasProperty(NodeTypes.Created.CREATED_BY));
+        assertFalse(NodeTypes.Activatable.isActivated(parent.getNode("nodeToCopy0")));
+
         Calendar init = parent.getNode("nodeToCopy").getProperty(NodeTypes.LastModified.LAST_MODIFIED).getDate();
         Calendar duplicate = parent.getNode("nodeToCopy0").getProperty(NodeTypes.LastModified.LAST_MODIFIED).getDate();
         assertTrue(init.before(duplicate));
