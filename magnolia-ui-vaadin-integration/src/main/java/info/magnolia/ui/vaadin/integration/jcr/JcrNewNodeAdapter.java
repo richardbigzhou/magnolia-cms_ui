@@ -107,7 +107,7 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
         log.debug("create a new node for parent " + parent.getPath() + " with name " + getNodeName());
 
         // set mgnl:created & mgnl:createdBy
-        setCreated(node);
+        NodeTypes.Created.set(node);
         // Update properties
         updateProperties(node);
 
@@ -141,19 +141,5 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
         }
 
         return Path.getUniqueLabel(item.getSession(), item.getPath(), nodeName);
-    }
-
-    private void setCreated(Node node) {
-        try {
-            NodeTypes.Created.set(node);
-        } catch (RepositoryException e) {
-            String path = "unknown";
-            try {
-                path = node.getPath();
-            } catch (RepositoryException re) {
-                // nothing
-            }
-            log.warn("Cannot set [{}] mixin properties for new node [{}]: " + e.getMessage(), NodeTypes.Created.NAME, path);
-        }
     }
 }
