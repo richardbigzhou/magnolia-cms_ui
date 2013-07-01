@@ -173,7 +173,8 @@ public class BrowserSubApp extends BaseSubApp {
      * @see Location
      */
     protected final void restoreBrowser(final BrowserLocation location) {
-        String path = location.getNodePath();
+        String workbenchRoot = browser.getWorkbench().getPath();
+        String path = ("/".equals(workbenchRoot) ? "" : workbenchRoot) + location.getNodePath();
         ViewType viewType = location.getViewType();
         if (viewType == null) {
             log.warn("ViewType did not match, returning default viewType.");
@@ -197,7 +198,7 @@ public class BrowserSubApp extends BaseSubApp {
                 itemId = JcrItemUtil.getItemId(SessionUtil.getNode(workspaceName, newPath));
 
                 BrowserLocation newLocation = getCurrentLocation();
-                newLocation.updateNodePath(newPath);
+                newLocation.updateNodePath("/");
 
                 getAppContext().updateSubAppLocation(getSubAppContext(), newLocation);
             }
@@ -470,7 +471,8 @@ public class BrowserSubApp extends BaseSubApp {
                 BrowserLocation location = getCurrentLocation();
                 try {
                     Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.parseNodeIdentifier(event.getFirstItemId()));
-                    location.updateNodePath(selected.getPath());
+                    String workbenchRoot = browser.getWorkbench().getPath();
+                    location.updateNodePath(StringUtils.removeStart(selected.getPath(), "/".equals(workbenchRoot) ? "" : workbenchRoot));
                 } catch (RepositoryException e) {
                     log.warn("Could not get jcrItem with itemId " + event.getFirstItemId() + " from workspace " + event.getWorkspace(), e);
                 }
