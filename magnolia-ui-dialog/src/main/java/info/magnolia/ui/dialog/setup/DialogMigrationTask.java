@@ -99,7 +99,7 @@ public class DialogMigrationTask extends AbstractTask {
     @Override
     public void execute(InstallContext installContext) throws TaskExecutionException {
         try {
-            initializeControlMigrationMap();
+            this.controlMigrationMap = getCustomMigrationTask();
             String dialogNodeName = "dialogs";
             String dialogPath = "/modules/" + moduleName + "/" + dialogNodeName;
 
@@ -133,22 +133,25 @@ public class DialogMigrationTask extends AbstractTask {
      * Each control is link to a specific {@link ControlMigration}.
      * <b>Override this class in order to add your own controls migration task.</b>
      */
-    protected void initializeControlMigrationMap() {
-        this.controlMigrationMap.put("edit", new EditControlMigration());
-        this.controlMigrationMap.put("fckEdit", new FckEditControlMigration());
-        this.controlMigrationMap.put("date", new DateControlMigration());
-        this.controlMigrationMap.put("select", new SelectControlMigration());
-        this.controlMigrationMap.put("checkbox", new CheckBoxRadioControlMigration(true));
-        this.controlMigrationMap.put("checkboxSwitch", new CheckBoxSwitchControlMigration());
-        this.controlMigrationMap.put("radio", new CheckBoxRadioControlMigration(false));
-        this.controlMigrationMap.put("dam", new DamControlMigration());
-        this.controlMigrationMap.put("uuidLink", new LinkControlMigration());
-        this.controlMigrationMap.put("link", new LinkControlMigration());
-        this.controlMigrationMap.put("categorizationUUIDMultiSelect", new MultiSelectControlMigration(true));
-        this.controlMigrationMap.put("multiselect", new MultiSelectControlMigration(false));
-        this.controlMigrationMap.put("file", new FileControlMigration());
-        this.controlMigrationMap.put("static", new StaticControlMigration());
-        this.controlMigrationMap.put("hidden", new HiddenControlMigration());
+    protected HashMap<String, ControlMigration> getCustomMigrationTask() {
+        HashMap<String, ControlMigration> customMigrationTask = new HashMap<String, ControlMigration>();
+        customMigrationTask.put("edit", new EditControlMigration());
+        customMigrationTask.put("fckEdit", new FckEditControlMigration());
+        customMigrationTask.put("date", new DateControlMigration());
+        customMigrationTask.put("select", new SelectControlMigration());
+        customMigrationTask.put("checkbox", new CheckBoxRadioControlMigration(true));
+        customMigrationTask.put("checkboxSwitch", new CheckBoxSwitchControlMigration());
+        customMigrationTask.put("radio", new CheckBoxRadioControlMigration(false));
+        customMigrationTask.put("dam", new DamControlMigration());
+        customMigrationTask.put("uuidLink", new LinkControlMigration());
+        customMigrationTask.put("link", new LinkControlMigration());
+        customMigrationTask.put("categorizationUUIDMultiSelect", new MultiSelectControlMigration(true));
+        customMigrationTask.put("multiselect", new MultiSelectControlMigration(false));
+        customMigrationTask.put("file", new FileControlMigration());
+        customMigrationTask.put("static", new StaticControlMigration());
+        customMigrationTask.put("hidden", new HiddenControlMigration());
+
+        return customMigrationTask;
     }
 
     /**
