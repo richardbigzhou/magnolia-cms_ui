@@ -56,6 +56,14 @@ import com.google.gwt.dom.client.Node;
  */
 public class AreaProcessor extends AbstractMgnlElementProcessor {
 
+    public static final String ATTRIBUTE_OPTIONAL = "optional";
+    public static final String ATTRIBUTE_CREATED = "created";
+    public static final String ATTRIBUTE_TYPE = "type";
+    public static final String ATTRIBUTE_EDITABLE = "editable";
+    public static final String ATTRIBUTE_AVAILABLE_COMPONENTS = "availableComponents";
+    public static final String ATTRIBUTE_DIALOG = "dialog";
+    public static final String ATTRIBUTE_SHOW_NEW_COMPONENT_AREA = "showNewComponentArea";
+
     public AreaProcessor(Model model, MgnlArea mgnlElement) {
         super(model, mgnlElement);
     }
@@ -103,69 +111,38 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
         getMgnlElement().setAreaEndBar(endBar);
     }
 
-    private boolean hasComponentPlaceHolder(Map<String, String> attributes) {
+    protected boolean hasComponentPlaceHolder(Map<String, String> attributes) {
 
-        String type = attributes.get("type");
-        boolean optional = Boolean.parseBoolean(attributes.get("optional"));
-        boolean created = Boolean.parseBoolean(attributes.get("created"));
+        final boolean optional = Boolean.parseBoolean(attributes.get(ATTRIBUTE_OPTIONAL));
+        final boolean created = Boolean.parseBoolean(attributes.get(ATTRIBUTE_CREATED));
 
         if (optional && !created) {
             return false;
         }
-        String availableComponents = "";
-        if (AreaDefinition.TYPE_NO_COMPONENT.equals(type)) {
-            availableComponents = "";
-        } else {
-            availableComponents = attributes.get("availableComponents");
-        }
 
-        if (availableComponents.equals("")) {
+        final String type = attributes.get(ATTRIBUTE_TYPE);
+        if (AreaDefinition.TYPE_NO_COMPONENT.equals(type) || "".equals(attributes.get(ATTRIBUTE_AVAILABLE_COMPONENTS))) {
             return false;
         }
 
-        if (type.equals(AreaDefinition.TYPE_SINGLE) && !getMgnlElement().getComponents().isEmpty()) {
-            return false;
-        }
-        return true;
-
+        return !AreaDefinition.TYPE_SINGLE.equals(type) || getMgnlElement().getComponents().isEmpty();
     }
 
-    private boolean hasControlBar(Map<String, String> attributes) {
-
-        String type = attributes.get("type");
-        String dialog = attributes.get("dialog");
-
-        boolean editable = true;
-        if (attributes.containsKey("editable")) {
-            editable = Boolean.parseBoolean(attributes.get("editable"));
-        }
-
-        boolean showNewComponentArea = Boolean.parseBoolean(attributes.get("showNewComponentArea"));
-        boolean optional = Boolean.parseBoolean(attributes.get("optional"));
+    protected boolean hasControlBar(Map<String, String> attributes) {
 
         // break no matter what follows
-        if (!editable) {
+        if (attributes.containsKey(ATTRIBUTE_EDITABLE) && !Boolean.parseBoolean(attributes.get(ATTRIBUTE_EDITABLE))) {
             return false;
         }
 
-        // area can be deleted or created
-        if (optional) {
-            return true;
-        } else if (type.equals(AreaDefinition.TYPE_SINGLE)) {
-            return true;
-        }
-
-        // can show add new components area
-        else if (showNewComponentArea) {
+        final String type = attributes.get(ATTRIBUTE_TYPE);
+        if (Boolean.parseBoolean(attributes.get(ATTRIBUTE_OPTIONAL)) || AreaDefinition.TYPE_SINGLE.equals(type) || Boolean.parseBoolean(attributes.get(ATTRIBUTE_SHOW_NEW_COMPONENT_AREA))) {
             return true;
         }
 
         // area can be edited
-        else if (dialog != null && !dialog.isEmpty()) {
-            return true;
-        }
-
-        return false;
+        final String dialog = attributes.get(ATTRIBUTE_DIALOG);
+        return !(dialog == null || "".equals(dialog));
     }
 
     private void attachAreaEndBar(AreaEndBar controlBar) {
@@ -178,8 +155,6 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
             Element element = getMgnlElement().getEndComment();
             Node parentNode = element.getParentNode();
             parentNode.insertBefore(controlBar.getElement(), element);
-
-            // attach(getMgnlElement().getEndComment());
         }
         controlBar.onAttach();
     }

@@ -9,6 +9,9 @@
   <artifactId>magnolia-ui-widget-editor</artifactId>
   <packaging>jar</packaging>
   <name>magnolia-ui-widget-editor</name>
+  <properties>
+    <cloverCoverageThreshold>2</cloverCoverageThreshold>
+  </properties>
   <build>
     <plugins>
       <plugin>
@@ -81,5 +84,15 @@
        <groupId>com.vaadin</groupId>
        <artifactId>vaadin-server</artifactId>
      </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+    </dependency>
+
 </dependencies>
 </project>
