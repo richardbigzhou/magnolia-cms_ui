@@ -179,7 +179,7 @@
             <sv:value>admin</sv:value>
           </sv:property>
           <sv:property sv:name="label" sv:type="String">
-            <sv:value>New user</sv:value>
+            <sv:value>Add user</sv:value>
           </sv:property>
           <sv:property sv:name="nodeType" sv:type="String">
             <sv:value>mgnl:user</sv:value>
@@ -411,7 +411,7 @@
             <sv:value>admin</sv:value>
           </sv:property>
           <sv:property sv:name="label" sv:type="String">
-            <sv:value>New folder</sv:value>
+            <sv:value>Add folder</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
             <sv:value>false</sv:value>
@@ -2073,7 +2073,7 @@
             <sv:value>admin</sv:value>
           </sv:property>
           <sv:property sv:name="label" sv:type="String">
-            <sv:value>New group</sv:value>
+            <sv:value>Add group</sv:value>
           </sv:property>
           <sv:property sv:name="nodeType" sv:type="String">
             <sv:value>mgnl:group</sv:value>
@@ -2998,7 +2998,7 @@
             <sv:value>admin</sv:value>
           </sv:property>
           <sv:property sv:name="label" sv:type="String">
-            <sv:value>New role</sv:value>
+            <sv:value>Add role</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastModified" sv:type="Date">
             <sv:value>2013-06-05T10:59:52.405+02:00</sv:value>
