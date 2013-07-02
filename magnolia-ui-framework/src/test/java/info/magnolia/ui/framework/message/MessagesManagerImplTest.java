@@ -35,6 +35,7 @@ package info.magnolia.ui.framework.message;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
@@ -65,6 +66,8 @@ public class MessagesManagerImplTest extends MgnlTestCase {
 
     private Session session;
     private MessagesManagerImpl messagesManager;
+    private User alice;
+    private User bob;
 
     @Override
     @Before
@@ -80,9 +83,11 @@ public class MessagesManagerImplTest extends MgnlTestCase {
 
         MessageStore messageStore = new MessageStore();
 
+        alice = createMockUser("alice");
+        bob = createMockUser("bob");
         ArrayList<User> users = new ArrayList<User>();
-        users.add(createMockUser("alice"));
-        users.add(createMockUser("bob"));
+        users.add(alice);
+        users.add(bob);
 
         UserManager userManager = mock(UserManager.class);
         when(userManager.getAllUsers()).thenReturn(users);
@@ -91,7 +96,6 @@ public class MessagesManagerImplTest extends MgnlTestCase {
         when(securitySupport.getUserManager()).thenReturn(userManager);
 
         messagesManager = new MessagesManagerImpl(Providers.of(securitySupport), messageStore);
-
     }
 
     private User createMockUser(String name) {
@@ -110,11 +114,12 @@ public class MessagesManagerImplTest extends MgnlTestCase {
         MessagesManager.MessageListener listenerC = mock(MessagesManager.MessageListener.class);
         messagesManager.registerMessagesListener("charlie", listenerC);
 
-        // WHEN
         Message message = new Message();
         message.setType(MessageType.ERROR);
         message.setSubject("subject");
         message.setMessage("message");
+
+        // WHEN
         messagesManager.broadcastMessage(message);
 
         // THEN
@@ -146,11 +151,12 @@ public class MessagesManagerImplTest extends MgnlTestCase {
         MessagesManager.MessageListener listenerC = mock(MessagesManager.MessageListener.class);
         messagesManager.registerMessagesListener("charlie", listenerC);
 
-        // WHEN
         Message message = new Message();
         message.setType(MessageType.ERROR);
         message.setSubject("subject");
         message.setMessage("message");
+
+        // WHEN
         messagesManager.sendMessage("bob", message);
 
         // THEN
@@ -164,8 +170,37 @@ public class MessagesManagerImplTest extends MgnlTestCase {
         assertTrue(session.nodeExists("/bob/0"));
         assertFalse(session.nodeExists("/charlie"));
 
-        assertTrue(session.getNode("/bob").getPrimaryNodeType().getName().equals(NodeTypes.Content.NAME));
-        assertTrue(session.getNode("/bob/0").getPrimaryNodeType().getName().equals(MessageStore.MESSAGE_NODE_TYPE));
+        assertThat(session.getNode("/bob").getPrimaryNodeType().getName(), equalTo(NodeTypes.Content.NAME));
+        assertThat(session.getNode("/bob/0").getPrimaryNodeType().getName(), equalTo(MessageStore.MESSAGE_NODE_TYPE));
+    }
+
+    @Test
+    public void testSendGroupMessage() throws RepositoryException {
+        // GIVEN
+        MessagesManager.MessageListener listenerA = mock(MessagesManager.MessageListener.class);
+        messagesManager.registerMessagesListener("alice", listenerA);
+        MessagesManager.MessageListener listenerB = mock(MessagesManager.MessageListener.class);
+        messagesManager.registerMessagesListener("bob", listenerB);
+        final String testGroup = "bobOnlyGroup";
+        when(bob.inGroup(testGroup)).thenReturn(true);
+        when(alice.inGroup(testGroup)).thenReturn(false);
+
+        Message message = new Message();
+        message.setType(MessageType.ERROR);
+        message.setSubject("subject");
+        message.setMessage("message");
+
+        // WHEN
+        messagesManager.sendGroupMessage("bobOnlyGroup", message);
+
+        // THEN
+        assertNull(message.getId());
+
+        verify(listenerA, never()).messageSent(any(Message.class));
+        verify(listenerB).messageSent(any(Message.class));
+
+        assertFalse("Alice is not in that group, so she should not have received any message", session.nodeExists("/alice"));
+        assertTrue("Bob is in that group, so he should have received a message", session.nodeExists("/bob/0"));
     }
 
     @Test
@@ -176,11 +211,12 @@ public class MessagesManagerImplTest extends MgnlTestCase {
         MessagesManager.MessageListener listenerA = mock(MessagesManager.MessageListener.class);
         messagesManager.registerMessagesListener(me.getName(), listenerA);
 
-        // WHEN
         Message message = new Message();
         message.setType(MessageType.INFO);
         message.setSubject("subject");
         message.setMessage("message");
+
+        // WHEN
         messagesManager.sendLocalMessage(message);
 
         // THEN
@@ -191,11 +227,10 @@ public class MessagesManagerImplTest extends MgnlTestCase {
 
     @Test
     public void testClearMessage() throws RepositoryException {
-
+        // GIVEN
         MessagesManager.MessageListener listener = mock(MessagesManager.MessageListener.class);
         messagesManager.registerMessagesListener("bob", listener);
 
-        // WHEN
         Message message = new Message();
         message.setType(MessageType.ERROR);
         message.setSubject("subject");
@@ -204,6 +239,7 @@ public class MessagesManagerImplTest extends MgnlTestCase {
 
         assertEquals(1, messagesManager.getNumberOfUnclearedMessagesForUser("bob"));
 
+        // WHEN
         messagesManager.clearMessage("bob", message.getId());
 
         // THEN
@@ -236,17 +272,18 @@ public class MessagesManagerImplTest extends MgnlTestCase {
 
     @Test
     public void testDoesNotInvokeListenerAfterUnregistration() throws RepositoryException {
-
+        // GIVEN
         MessagesManager.MessageListener listener1 = mock(MessagesManager.MessageListener.class);
         messagesManager.registerMessagesListener("bob", listener1);
         MessagesManager.MessageListener listener2 = mock(MessagesManager.MessageListener.class);
         messagesManager.registerMessagesListener("bob", listener2);
 
-        // WHEN
         Message message = new Message();
         message.setType(MessageType.ERROR);
         message.setSubject("subject");
         message.setMessage("message");
+
+        // WHEN
         messagesManager.sendMessage("bob", message);
 
         verify(listener1, times(1)).messageSent(any(Message.class));

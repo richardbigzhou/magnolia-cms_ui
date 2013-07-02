@@ -44,6 +44,8 @@ public interface AppContext extends AppView.Listener, UiContext {
 
     void sendUserMessage(String user, Message message);
 
+    void sendGroupMessage(String group, Message message);
+
     void sendLocalMessage(Message message);
 
     void broadcastMessage(Message message);

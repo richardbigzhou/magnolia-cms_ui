@@ -84,14 +84,7 @@ public class MessagesManagerImpl implements MessagesManager {
 
         synchronized (listeners) {
             for (User user : users) {
-
-                // We need to set the id to null for each loop to make sure each user gets a unique id. Otherwise an id
-                // suitable for the first user gets generated and is then used for everyone, possible overwriting
-                // already existing messages for some users.
-                message.setId(null);
-
-                messageStore.saveMessage(user.getName(), message);
-                sendMessageSentEvent(user.getName(), message);
+                sendMessage(user.getName(), message);
             }
         }
 
@@ -101,9 +94,33 @@ public class MessagesManagerImpl implements MessagesManager {
 
     @Override
     public void sendMessage(String userName, Message message) {
+
+        // We need to set the id to null to make sure each user gets a unique id. Otherwise an id
+        // suitable for a first user gets generated and is then used for everyone, possible overwriting
+        // already existing messages for some users.
         message.setId(null);
         messageStore.saveMessage(userName, message);
         sendMessageSentEvent(userName, message);
+    }
+
+    @Override
+    public void sendGroupMessage(final String groupName, final Message message) {
+        Collection<User> users;
+        try {
+            users = securitySupportProvider.get().getUserManager().getAllUsers();
+        } catch (UnsupportedOperationException e) {
+            logger.error("Unable to send message to group because UserManager does not support enumerating its users", e);
+            return;
+        }
+
+        for (User user : users) {
+            if (user.inGroup(groupName)) {
+                sendMessage(user.getName(), message);
+            }
+        }
+
+        // Reset it to null simply to avoid assumptions about the id in calling code
+        message.setId(null);
     }
 
     @Override

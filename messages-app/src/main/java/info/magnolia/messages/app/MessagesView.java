@@ -49,9 +49,12 @@ public interface MessagesView extends View {
 
         void handleUserMessage(String user, MessageType type, String subject, String message);
 
+        void handleGroupMessage(String groupName, MessageType type, String subject, String message);
+
         void handleLocalMessage(MessageType type, String subject, String message);
 
         void handleGlobalMessage(MessageType type, String subject, String message);
+
 
         void showConfirmationMessage(String message);
     }

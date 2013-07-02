@@ -99,6 +99,14 @@ public interface MessagesManager {
     void sendMessage(String userName, Message message);
 
     /**
+     * Send message to a specific group.
+     *
+     * @param groupName name of the group to receive the message
+     * @param message message to send
+     */
+    void sendGroupMessage(String groupName, Message message);
+
+    /**
      * Send message to the current user.
      *
      * @param message message to send

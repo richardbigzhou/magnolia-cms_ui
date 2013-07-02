@@ -76,20 +76,19 @@ public class MessagesViewImpl implements MessagesView {
         Field<?> messageBodyField = createMessageBodyTextField();
         Field<?> typeField = createTypeSelectionField();
         Field<?> scopeField = createScopeSelectionField();
-        Field<?> userIdField = createUserIdTextField();
+        Field<?> userOrGroupIdField = createUserOrGrpupIdTextField();
 
         form.bind(subjectFiled, "title");
         form.bind(messageBodyField, "content");
         form.bind(typeField, "type");
         form.bind(scopeField, "scope");
-        form.bind(userIdField, "user");
+        form.bind(userOrGroupIdField, "user");
 
         FormLayout layout = new FormLayout();
         layout.addComponent(subjectFiled);
         layout.addComponent(messageBodyField);
         layout.addComponent(typeField);
         layout.addComponent(scopeField);
-        layout.addComponent(userIdField);
 
         layout.setSpacing(true);
         layout.setMargin(false);
@@ -111,7 +110,12 @@ public class MessagesViewImpl implements MessagesView {
                         listener.handleLocalMessage(type, subject, content);
                     } else if ("Global".equals(scope)) {
                         listener.handleGlobalMessage(type, subject, content);
+                    } else if ("Group".equals(scope)) {
+                        // message is bound to FieldGroup - hence the group name is to be retrieved from the user field of the message
+                        final String groupName = message.getUser();
+                        listener.handleGroupMessage(groupName, type, subject, content);
                     } else {
+                        // User...
                         final String userName = message.getUser();
                         listener.handleUserMessage(userName, type, subject, content);
                     }
@@ -162,7 +166,7 @@ public class MessagesViewImpl implements MessagesView {
         component = root;
     }
 
-    private Field<String> createUserIdTextField() {
+    private Field<String> createUserOrGrpupIdTextField() {
         final TextField userField = new TextField();
         userField.addStyleName("relative");
         userField.setWidth("360px");
@@ -208,6 +212,9 @@ public class MessagesViewImpl implements MessagesView {
         scopes.setItemCaption("Local", "Send to yourself only");
         scopes.addItem("User");
         scopes.setItemCaption("User", "Send to user:");
+        scopes.addItem("Group");
+        scopes.setItemCaption("Group", "Send to group:");
+        // initial selection
         scopes.setValue("Local");
         scopes.addStyleName("vertical");
         return scopes;

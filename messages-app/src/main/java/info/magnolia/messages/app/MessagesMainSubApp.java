@@ -54,7 +54,7 @@ public class MessagesMainSubApp extends BaseSubApp implements MessagesView.Liste
 
     @Override
     public void locationChanged(Location location) {
-
+        // no action required
     }
 
     @Override
@@ -68,6 +68,11 @@ public class MessagesMainSubApp extends BaseSubApp implements MessagesView.Liste
     }
 
     @Override
+    public void handleGroupMessage(final String group, final MessageType type, final String subject, final String message) {
+        getAppContext().sendGroupMessage(group, new Message(type, subject, message));
+    }
+
+    @Override
     public void handleLocalMessage(MessageType type, String subject, String message) {
         getAppContext().sendLocalMessage(new Message(type, subject, message));
     }
@@ -76,7 +81,4 @@ public class MessagesMainSubApp extends BaseSubApp implements MessagesView.Liste
     public void handleGlobalMessage(MessageType type, String subject, String message) {
         getAppContext().broadcastMessage(new Message(type, subject, message));
     }
-
-
-
 }
