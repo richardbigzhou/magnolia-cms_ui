@@ -36,7 +36,6 @@ package info.magnolia.ui.workbench.tree;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.list.ListViewImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -113,37 +112,34 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     public void select(List<String> itemIds) {
         String firstItemId = itemIds.get(0);
         if (!treeTable.isRoot(firstItemId)) {
-            // properties cannot be expanded so use the nodeId only
             expandTreeToNode(firstItemId);
         }
-        // do not #setCurrentPageFirstItemId on tree (as opposed to list) since lazy-loading is disabled for MagnoliaTreeTable.
+
         treeTable.setValue(null);
         for (String id : itemIds) {
             treeTable.select(id);
         }
+        // do not #setCurrentPageFirstItemId because AbstractJcrContainer's index resolution is super slow.
     }
 
     private void expandTreeToNode(String nodeId) {
-        final List<String> uuidsToExpand = new ArrayList<String>();
-        uuidsToExpand.add(0, nodeId);
+        HierarchicalJcrContainer container = (HierarchicalJcrContainer) treeTable.getContainerDataSource();
+        String workbenchPath = container.getWorkbenchDefinition().getPath();
 
-        final HierarchicalJcrContainer container = (HierarchicalJcrContainer) treeTable.getContainerDataSource();
         try {
             Node parent = container.getJcrItem(nodeId).getParent();
-            while (parent != null) {
-                uuidsToExpand.add(0, parent.getIdentifier());
-                parent = parent.getParent();
-                if (StringUtils.equals(parent.getPath(), container.getWorkbenchDefinition().getPath()) || !parent.getPath().contains(container.getWorkbenchDefinition().getPath())) {
-                    // parent is outside the scope of the workbench so ignore it
-                    parent = null;
-                }
-
+            if (parent == null || !parent.getPath().contains(workbenchPath)) {
+                return;
             }
+
+            // as long as parent is within the scope of the workbench
+            while (parent != null && !StringUtils.equals(parent.getPath(), workbenchPath)) {
+                treeTable.setCollapsed(parent.getIdentifier(), false);
+                parent = parent.getParent();
+            }
+
         } catch (RepositoryException e) {
             log.warn("Could not collect the parent hierarchy of node {}", nodeId, e);
-        }
-        for (String uuid : uuidsToExpand) {
-            treeTable.setCollapsed(uuid, false);
         }
     }
 

@@ -87,6 +87,7 @@ public class TreeViewImplTest extends RepositoryTestCase {
         Node node = parent.addNode(NODE);
         Node child = node.addNode(NODE_CHILD);
         node.setProperty(NODE_PROPERTY, "112");
+
         // initial state
         assertTrue(view.asVaadinComponent().isCollapsed(visibleRoot.getIdentifier()));
         assertTrue(view.asVaadinComponent().isCollapsed(parent.getIdentifier()));
