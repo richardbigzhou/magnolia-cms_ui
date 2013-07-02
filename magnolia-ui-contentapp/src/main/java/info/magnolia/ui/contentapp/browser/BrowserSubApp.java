@@ -118,6 +118,7 @@ public class BrowserSubApp extends BaseSubApp {
     private final EventBus subAppEventBus;
     private ActionExecutor actionExecutor;
     private ComponentProvider componentProvider;
+    private String workbenchRoot;
 
     @Inject
     public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, ComponentProvider componentProvider) {
@@ -129,6 +130,7 @@ public class BrowserSubApp extends BaseSubApp {
         this.subAppEventBus = subAppEventBus;
         this.actionExecutor = actionExecutor;
         this.componentProvider = componentProvider;
+        this.workbenchRoot = ((BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor()).getWorkbench().getPath();
     }
 
     /**
@@ -173,7 +175,6 @@ public class BrowserSubApp extends BaseSubApp {
      * @see Location
      */
     protected final void restoreBrowser(final BrowserLocation location) {
-        String workbenchRoot = ((BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getPath();
         String path = ("/".equals(workbenchRoot) ? "" : workbenchRoot) + location.getNodePath();
         ViewType viewType = location.getViewType();
         if (viewType == null) {
@@ -194,6 +195,7 @@ public class BrowserSubApp extends BaseSubApp {
 
             // MGNLUI-1475: item might have not been found if path doesn't exist
             if (itemId == null) {
+                itemId = JcrItemUtil.getItemId(SessionUtil.getNode(workspaceName, workbenchRoot));
                 BrowserLocation newLocation = getCurrentLocation();
                 newLocation.updateNodePath("/");
 
@@ -468,7 +470,6 @@ public class BrowserSubApp extends BaseSubApp {
                 BrowserLocation location = getCurrentLocation();
                 try {
                     Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.parseNodeIdentifier(event.getFirstItemId()));
-                    String workbenchRoot = ((BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getPath();
                     location.updateNodePath(StringUtils.removeStart(selected.getPath(), "/".equals(workbenchRoot) ? "" : workbenchRoot));
                 } catch (RepositoryException e) {
                     log.warn("Could not get jcrItem with itemId " + event.getFirstItemId() + " from workspace " + event.getWorkspace(), e);
