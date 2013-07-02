@@ -173,7 +173,7 @@ public class BrowserSubApp extends BaseSubApp {
      * @see Location
      */
     protected final void restoreBrowser(final BrowserLocation location) {
-        String workbenchRoot = browser.getWorkbench().getPath();
+        String workbenchRoot = ((BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getPath();
         String path = ("/".equals(workbenchRoot) ? "" : workbenchRoot) + location.getNodePath();
         ViewType viewType = location.getViewType();
         if (viewType == null) {
@@ -194,9 +194,6 @@ public class BrowserSubApp extends BaseSubApp {
 
             // MGNLUI-1475: item might have not been found if path doesn't exist
             if (itemId == null) {
-                String newPath = subAppDescriptor.getWorkbench().getPath();
-                itemId = JcrItemUtil.getItemId(SessionUtil.getNode(workspaceName, newPath));
-
                 BrowserLocation newLocation = getCurrentLocation();
                 newLocation.updateNodePath("/");
 
@@ -471,7 +468,7 @@ public class BrowserSubApp extends BaseSubApp {
                 BrowserLocation location = getCurrentLocation();
                 try {
                     Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.parseNodeIdentifier(event.getFirstItemId()));
-                    String workbenchRoot = browser.getWorkbench().getPath();
+                    String workbenchRoot = ((BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench().getPath();
                     location.updateNodePath(StringUtils.removeStart(selected.getPath(), "/".equals(workbenchRoot) ? "" : workbenchRoot));
                 } catch (RepositoryException e) {
                     log.warn("Could not get jcrItem with itemId " + event.getFirstItemId() + " from workspace " + event.getWorkspace(), e);

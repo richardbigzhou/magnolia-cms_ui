@@ -59,7 +59,6 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
@@ -368,9 +367,6 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         }
     }
 
-    protected WorkbenchDefinition getWorkbench() {
-        return subAppDescriptor.getWorkbench();
-    }
 
 
     // /**
