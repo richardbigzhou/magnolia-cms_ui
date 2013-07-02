@@ -394,8 +394,13 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
     }
 
     @Override
-    public void sendUserMessage(String user, Message message) {
+    public void sendUserMessage(final String user, final Message message) {
         messagesManager.sendMessage(user, message);
+    }
+
+    @Override
+    public void sendGroupMessage(final String group, final Message message) {
+        messagesManager.sendGroupMessage(group, message);
     }
 
     @Override
