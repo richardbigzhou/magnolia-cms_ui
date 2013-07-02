@@ -209,7 +209,7 @@ public class DetailSubApp extends BaseSubApp {
 
     }
 
-    private String getWorkspace() {
+    protected String getWorkspace() {
         DetailSubAppDescriptor subAppDescriptor = (DetailSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
         return subAppDescriptor.getEditor().getWorkspace();
     }
