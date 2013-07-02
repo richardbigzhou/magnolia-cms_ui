@@ -52,6 +52,7 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,6 +73,8 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
     private final WorkbenchDefinition workbenchDefinition;
 
     private final ImageProvider imageProvider;
+
+    protected static final String WHERE_TEMPLATE_FOR_PATH = " where ISDESCENDANTNODE('%s') ";
 
     private String workspaceName = "";
 
@@ -119,6 +122,9 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
     }
 
     protected String prepareFilterQueryStatement() {
+        if (StringUtils.isNotBlank(workbenchDefinition.getPath()) && !"/".equals(workbenchDefinition.getPath())) {
+            return String.format(WHERE_TEMPLATE_FOR_PATH, workbenchDefinition.getPath());
+        }
         return "";
     }
 
