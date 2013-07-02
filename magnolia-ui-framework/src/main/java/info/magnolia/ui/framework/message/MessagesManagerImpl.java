@@ -84,14 +84,7 @@ public class MessagesManagerImpl implements MessagesManager {
 
         synchronized (listeners) {
             for (User user : users) {
-
-                // We need to set the id to null for each loop to make sure each user gets a unique id. Otherwise an id
-                // suitable for the first user gets generated and is then used for everyone, possible overwriting
-                // already existing messages for some users.
-                message.setId(null);
-
-                messageStore.saveMessage(user.getName(), message);
-                sendMessageSentEvent(user.getName(), message);
+                sendMessage(user.getName(), message);
             }
         }
 
@@ -101,6 +94,10 @@ public class MessagesManagerImpl implements MessagesManager {
 
     @Override
     public void sendMessage(String userName, Message message) {
+
+        // We need to set the id to null to make sure each user gets a unique id. Otherwise an id
+        // suitable for a first user gets generated and is then used for everyone, possible overwriting
+        // already existing messages for some users.
         message.setId(null);
         messageStore.saveMessage(userName, message);
         sendMessageSentEvent(userName, message);
