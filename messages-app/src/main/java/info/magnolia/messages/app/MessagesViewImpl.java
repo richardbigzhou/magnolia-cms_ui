@@ -37,6 +37,8 @@ import info.magnolia.ui.api.message.MessageType;
 
 import java.io.Serializable;
 
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
@@ -59,9 +61,15 @@ import com.vaadin.ui.TextField;
  */
 public class MessagesViewImpl implements MessagesView {
 
+    private static final String MESSAGE_SCOPE_GLOBAL = "Global";
+    private static final String MESSAGE_SCOPE_LOCAL = "Local";
+    private static final String MESSAGE_SCOPE_USER = "User";
+    private static final String MESSAGE_SCOPE_GROUP = "Group";
+
     private Listener listener;
 
     private final Component component;
+    private Field<String> userOrGroupIdField;
 
     public MessagesViewImpl() {
 
@@ -72,17 +80,28 @@ public class MessagesViewImpl implements MessagesView {
         final FieldGroup form = new FieldGroup();
         form.setItemDataSource(messageItem);
 
-        Field<?> subjectField = createSubjectTextField();
-        Field<?> messageBodyField = createMessageBodyTextField();
+        Field<String> subjectField = createSubjectTextField();
+        Field<String> messageBodyField = createMessageBodyTextField();
         Field<?> typeField = createTypeSelectionField();
         Field<?> scopeField = createScopeSelectionField();
-        Field<?> userOrGroupIdField = createUserOrGrpupIdTextField();
+        userOrGroupIdField = createUserOrGroupIdTextField();
+
+        // disable user/group field if not necessary
+        scopeField.addValueChangeListener(new ValueChangeListener() {
+
+            @Override
+            public void valueChange(ValueChangeEvent event) {
+                updateUserOrGroupField((String) event.getProperty().getValue());
+            }
+        });
 
         form.bind(subjectField, "title");
         form.bind(messageBodyField, "content");
         form.bind(typeField, "type");
         form.bind(scopeField, "scope");
         form.bind(userOrGroupIdField, "user");
+        // FieldGroup overrides fields' own enabled property with its own.
+        updateUserOrGroupField(message.getScope());
 
         FormLayout layout = new FormLayout();
         layout.addComponent(subjectField);
@@ -107,11 +126,11 @@ public class MessagesViewImpl implements MessagesView {
                     MessageType type = message.getType();
                     String scope = message.getScope();
 
-                    if ("Local".equals(scope)) {
+                    if (MESSAGE_SCOPE_LOCAL.equals(scope)) {
                         listener.handleLocalMessage(type, subject, content);
-                    } else if ("Global".equals(scope)) {
+                    } else if (MESSAGE_SCOPE_GLOBAL.equals(scope)) {
                         listener.handleGlobalMessage(type, subject, content);
-                    } else if ("Group".equals(scope)) {
+                    } else if (MESSAGE_SCOPE_GROUP.equals(scope)) {
                         // message is bound to FieldGroup - hence the group name is to be retrieved from the user field of the message
                         final String groupName = message.getUser();
                         listener.handleGroupMessage(groupName, type, subject, content);
@@ -167,11 +186,19 @@ public class MessagesViewImpl implements MessagesView {
         component = root;
     }
 
-    private Field<String> createUserOrGrpupIdTextField() {
-        final TextField userField = new TextField();
-        userField.addStyleName("relative");
-        userField.setWidth("360px");
-        return userField;
+    private Field<String> createUserOrGroupIdTextField() {
+        final TextField userOrGroupField = new TextField("User or group");
+        userOrGroupField.setWidth("360px");
+        return userOrGroupField;
+    }
+
+    private void updateUserOrGroupField(String scope) {
+        if (MESSAGE_SCOPE_GLOBAL.equals(scope)
+                || MESSAGE_SCOPE_LOCAL.equals(scope)) {
+            userOrGroupIdField.setEnabled(false);
+        } else {
+            userOrGroupIdField.setEnabled(true);
+        }
     }
 
     @Override
@@ -206,17 +233,17 @@ public class MessagesViewImpl implements MessagesView {
 
     private OptionGroup createScopeSelectionField() {
         final OptionGroup scopes = new OptionGroup("Scope");
+        scopes.setImmediate(true);
         scopes.setNullSelectionAllowed(false);
-        scopes.addItem("Global");
-        scopes.setItemCaption("Global", "Send to all users");
-        scopes.addItem("Local");
-        scopes.setItemCaption("Local", "Send to yourself only");
-        scopes.addItem("User");
-        scopes.setItemCaption("User", "Send to user:");
-        scopes.addItem("Group");
-        scopes.setItemCaption("Group", "Send to group:");
+        scopes.addItem(MESSAGE_SCOPE_GLOBAL);
+        scopes.setItemCaption(MESSAGE_SCOPE_GLOBAL, "Send to all users");
+        scopes.addItem(MESSAGE_SCOPE_LOCAL);
+        scopes.setItemCaption(MESSAGE_SCOPE_LOCAL, "Send to yourself only");
+        scopes.addItem(MESSAGE_SCOPE_USER);
+        scopes.setItemCaption(MESSAGE_SCOPE_USER, "Send to user");
+        scopes.addItem(MESSAGE_SCOPE_GROUP);
+        scopes.setItemCaption(MESSAGE_SCOPE_GROUP, "Send to group");
         // initial selection
-        scopes.setValue("Local");
         scopes.addStyleName("vertical");
         return scopes;
     }
@@ -254,7 +281,7 @@ public class MessagesViewImpl implements MessagesView {
             title = "";
             content = "";
             type = MessageType.INFO;
-            scope = "Local";
+            scope = MESSAGE_SCOPE_LOCAL;
             user = "";
         }
 
