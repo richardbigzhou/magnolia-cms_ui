@@ -72,23 +72,24 @@ public class MessagesViewImpl implements MessagesView {
         final FieldGroup form = new FieldGroup();
         form.setItemDataSource(messageItem);
 
-        Field<?> subjectFiled = createSubjectTextField();
+        Field<?> subjectField = createSubjectTextField();
         Field<?> messageBodyField = createMessageBodyTextField();
         Field<?> typeField = createTypeSelectionField();
         Field<?> scopeField = createScopeSelectionField();
         Field<?> userOrGroupIdField = createUserOrGrpupIdTextField();
 
-        form.bind(subjectFiled, "title");
+        form.bind(subjectField, "title");
         form.bind(messageBodyField, "content");
         form.bind(typeField, "type");
         form.bind(scopeField, "scope");
         form.bind(userOrGroupIdField, "user");
 
         FormLayout layout = new FormLayout();
-        layout.addComponent(subjectFiled);
+        layout.addComponent(subjectField);
         layout.addComponent(messageBodyField);
         layout.addComponent(typeField);
         layout.addComponent(scopeField);
+        layout.addComponent(userOrGroupIdField);
 
         layout.setSpacing(true);
         layout.setMargin(false);
