@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,57 +31,60 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.action;
+package info.magnolia.ui.admincentral.dialog.action;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.api.event.AdmincentralEventBus;
-import info.magnolia.ui.api.event.ContentChangedEvent;
-import info.magnolia.ui.dialog.FormDialogPresenter;
+import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.form.EditorValidator;
+import info.magnolia.ui.workbench.event.ItemEditedEvent;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-/**
- * Opens a dialog for editing a node.
- *
- * @see OpenEditDialogActionDefinition
- */
-public class OpenEditDialogAction extends AbstractAction<OpenEditDialogActionDefinition> {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    private final JcrItemAdapter itemToEdit;
-    private final FormDialogPresenter formDialogPresenter;
-    private final UiContext uiContext;
-    private final EventBus eventBus;
+import com.vaadin.data.Item;
+
+/**
+ * Sends an ItemEditedEvent so that the BrowserPresenter will handle updating the item in the same manner as if it had
+ * been changed via inplace editing.
+ * 
+ * @see SaveConfigDialogActionDefinition
+ */
+public class SaveConfigDialogAction extends AbstractAction<SaveConfigDialogActionDefinition> {
+
+    private static final Logger log = LoggerFactory.getLogger(SaveConfigDialogAction.class);
+
+    protected final Item item;
+
+    protected final EditorValidator validator;
+    protected final EditorCallback callback;
+
+    private final EventBus subAppEventBus;
 
     @Inject
-    public OpenEditDialogAction(OpenEditDialogActionDefinition definition, JcrItemAdapter itemToEdit, FormDialogPresenter formDialogPresenter, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
+    public SaveConfigDialogAction(SaveConfigDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
         super(definition);
-        this.itemToEdit = itemToEdit;
-        this.formDialogPresenter = formDialogPresenter;
-        this.uiContext = uiContext;
-        this.eventBus = eventBus;
+        this.item = item;
+        this.validator = validator;
+        this.callback = callback;
+        this.subAppEventBus = subAppEventBus;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-
-        formDialogPresenter.start(itemToEdit, getDefinition().getDialogName(), uiContext, new EditorCallback() {
-
-            @Override
-            public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(itemToEdit.getWorkspace(), itemToEdit.getItemId()));
-                formDialogPresenter.closeDialog();
-            }
-
-            @Override
-            public void onCancel() {
-                formDialogPresenter.closeDialog();
-            }
-        });
+        // First Validate
+        validator.showValidation(true);
+        if (validator.isValid()) {
+            subAppEventBus.fireEvent(new ItemEditedEvent(item));
+            callback.onSuccess(getDefinition().getName());
+        } else {
+            log.info("Validation error(s) occurred. No save performed.");
+        }
     }
+
 }

@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
+import info.magnolia.ui.api.ModelConstants;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -128,6 +130,10 @@ public abstract class AbstractJcrAdapter implements JcrItemAdapter {
                 continue;
             }
             updateProperty(item, entry.getKey(), entry.getValue());
+            if (ModelConstants.JCR_NAME.equals(entry.getKey())) {
+                // As the item name has changed - the item must be refreshed to prevent an attempt to change property on an invalid old name.
+                item = getJcrItem();
+            }
         }
     }
 
