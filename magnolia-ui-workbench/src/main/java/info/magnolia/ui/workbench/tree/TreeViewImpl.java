@@ -125,6 +125,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     private void expandTreeToNode(String nodeId) {
         HierarchicalJcrContainer container = (HierarchicalJcrContainer) treeTable.getContainerDataSource();
         String workbenchPath = container.getWorkbenchDefinition().getPath();
+        treeTable.setCollapsed(nodeId, false);
 
         try {
             Node parent = container.getJcrItem(nodeId).getParent();
