@@ -38,7 +38,9 @@ import info.magnolia.ui.workbench.list.ListViewImpl;
 
 import java.util.List;
 
+import javax.jcr.Item;
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
@@ -111,9 +113,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     @Override
     public void select(List<String> itemIds) {
         String firstItemId = itemIds.get(0);
-        if (!treeTable.isRoot(firstItemId)) {
-            expandTreeToNode(firstItemId);
-        }
+        expandTreeToNode(firstItemId);
 
         treeTable.setValue(null);
         for (String id : itemIds) {
@@ -125,18 +125,19 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     private void expandTreeToNode(String nodeId) {
         HierarchicalJcrContainer container = (HierarchicalJcrContainer) treeTable.getContainerDataSource();
         String workbenchPath = container.getWorkbenchDefinition().getPath();
-        treeTable.setCollapsed(nodeId, false);
 
         try {
-            Node parent = container.getJcrItem(nodeId).getParent();
-            if (parent == null || !parent.getPath().contains(workbenchPath)) {
+            Item item = container.getJcrItem(nodeId);
+            if (item == null || !item.getPath().contains(workbenchPath)) {
                 return;
             }
 
+            Node node = (item instanceof Property) ? item.getParent() : (Node) item;
+
             // as long as parent is within the scope of the workbench
-            while (parent != null && !StringUtils.equals(parent.getPath(), workbenchPath)) {
-                treeTable.setCollapsed(parent.getIdentifier(), false);
-                parent = parent.getParent();
+            while (node != null && !StringUtils.equals(node.getPath(), workbenchPath)) {
+                treeTable.setCollapsed(node.getIdentifier(), false);
+                node = node.getParent();
             }
 
         } catch (RepositoryException e) {

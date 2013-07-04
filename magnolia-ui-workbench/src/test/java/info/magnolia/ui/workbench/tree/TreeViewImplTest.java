@@ -120,6 +120,20 @@ public class TreeViewImplTest extends RepositoryTestCase {
     }
 
     @Test
+    public void testSelectExpandsNodeAtRootLevel() throws Exception {
+        // GIVEN
+        Node root = session.getRootNode();
+        Node visibleRoot = root.addNode(NODE_ROOT_ITEM_ID);
+        visibleRoot.addNode(NODE_PARENT);
+
+        // WHEN
+        view.select(Arrays.asList(visibleRoot.getIdentifier()));
+
+        // THEN
+        assertFalse(view.asVaadinComponent().isCollapsed(visibleRoot.getIdentifier()));
+    }
+
+    @Test
     public void testSelectExpandsTreeToProperty() throws Exception {
         // GIVEN
         Node root = session.getRootNode();
