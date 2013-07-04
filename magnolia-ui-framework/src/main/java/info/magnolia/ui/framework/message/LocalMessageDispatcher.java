@@ -41,25 +41,41 @@ import info.magnolia.ui.framework.message.MessagesManager.MessageListener;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.vaadin.server.VaadinSession;
+
 /**
  * Dispatches events on an {@link EventBus} for a certain user.
  */
 public class LocalMessageDispatcher implements MessageListener {
 
     private EventBus eventBus;
+    private VaadinSession vaadinSession;
 
     @Inject
-    public LocalMessageDispatcher(@Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
+    public LocalMessageDispatcher(@Named(AdmincentralEventBus.NAME) final EventBus eventBus, VaadinSession vaadinSession) {
         this.eventBus = eventBus;
+        this.vaadinSession = vaadinSession;
     }
 
     @Override
     public void messageSent(Message message) {
-        eventBus.fireEvent(new MessageEvent(message, false));
+        VaadinSession previous = VaadinSession.getCurrent();
+        try {
+            VaadinSession.setCurrent(vaadinSession);
+            eventBus.fireEvent(new MessageEvent(message, false));
+        } finally {
+            VaadinSession.setCurrent(previous);
+        }
     }
 
     @Override
     public void messageCleared(Message message) {
-        eventBus.fireEvent(new MessageEvent(message, true));
+        VaadinSession previous = VaadinSession.getCurrent();
+        try {
+            VaadinSession.setCurrent(vaadinSession);
+            eventBus.fireEvent(new MessageEvent(message, true));
+        } finally {
+            VaadinSession.setCurrent(previous);
+        }
     }
 }

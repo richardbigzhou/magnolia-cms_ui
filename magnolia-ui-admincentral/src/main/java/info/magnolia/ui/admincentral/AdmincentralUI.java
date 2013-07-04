@@ -116,7 +116,7 @@ public class AdmincentralUI extends UI {
         View view = presenter.start();
         setContent(view.asVaadinComponent());
 
-        messageDispatcher = componentProvider.newInstance(LocalMessageDispatcher.class);
+        messageDispatcher = componentProvider.newInstance(LocalMessageDispatcher.class, getSession());
         messagesManager = Components.getComponent(MessagesManager.class);
         userName = MgnlContext.getUser().getName();
         messagesManager.registerMessagesListener(userName, messageDispatcher);

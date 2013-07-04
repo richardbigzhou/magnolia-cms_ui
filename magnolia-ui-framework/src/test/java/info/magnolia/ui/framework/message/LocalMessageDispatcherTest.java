@@ -75,7 +75,7 @@ public class LocalMessageDispatcherTest {
 
         // GIVEN
         EventBus eventBus = new SimpleEventBus();
-        LocalMessageDispatcher dispatcher = new LocalMessageDispatcher(eventBus);
+        LocalMessageDispatcher dispatcher = new LocalMessageDispatcher(eventBus, null);
         ArrayList<MessageEvent> events = new ArrayList<MessageEvent>();
         eventBus.addHandler(MessageEvent.class, new CollectingMessageEventHandler(events));
 
@@ -107,7 +107,7 @@ public class LocalMessageDispatcherTest {
 
         // GIVEN
         EventBus eventBus = new SimpleEventBus();
-        LocalMessageDispatcher dispatcher = new LocalMessageDispatcher(eventBus);
+        LocalMessageDispatcher dispatcher = new LocalMessageDispatcher(eventBus, null);
         ArrayList<MessageEvent> events = new ArrayList<MessageEvent>();
         eventBus.addHandler(MessageEvent.class, new ThrowingMessageEventHandler(events));
         eventBus.addHandler(MessageEvent.class, new ThrowingMessageEventHandler(events));
