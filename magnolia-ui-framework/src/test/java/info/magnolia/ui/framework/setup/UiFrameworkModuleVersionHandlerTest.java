@@ -58,6 +58,8 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
 
     private Node i18n;
 
+    private Node config;
+
     @Override
     protected String getModuleDescriptorPath() {
         return "/META-INF/magnolia/ui-framework.xml";
@@ -77,6 +79,9 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         i18n.addNode("authoring", NodeTypes.ContentNode.NAME);
         i18n.addNode("authoring50", NodeTypes.ContentNode.NAME);
         i18n.getSession().save();
+
+        // config = NodeUtil.createPath(session.getRootNode(), "/modules/ui-framework/config", NodeTypes.ContentNode.NAME);
+        // config.getSession().save();
     }
 
     @Test
@@ -103,5 +108,19 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         assertTrue(i18n.hasNode("authoringLegacy"));
         assertTrue(i18n.hasNode("authoring"));
         assertFalse(i18n.hasNode("authoring50"));
+    }
+
+    @Test
+    public void testUpdateTo5_0_1ThatDialogsAreInstalled() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        NodeUtil.createPath(session.getRootNode(), "/modules/ui-framework", NodeTypes.ContentNode.NAME);
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
+
+        // THEN
+        assertTrue(config.hasNode("dialogs"));
+        assertTrue(config.hasNode("dialogs/folder"));
+        assertTrue(config.hasNode("dialogs/rename"));
     }
 }
