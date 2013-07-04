@@ -85,6 +85,10 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
      */
     @Override
     public Property getItemProperty(Object propertyId) {
+        // If changes were already applied, behave like a JcrNodeAdapter
+        if (appliedChanges) {
+            return super.getItemProperty(propertyId);
+        }
         if (getChangedProperties().containsKey(propertyId)) {
             return getChangedProperties().get(propertyId);
         }

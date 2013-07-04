@@ -34,12 +34,14 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.api.ModelConstants;
 
 import java.util.Collections;
 
@@ -252,6 +254,33 @@ public class JcrNewNodeAdapterTest {
         assertEquals("We expect the getJcrItem() method returning the actual node after applying changes", nodeAfter, adapter.getJcrItem());
         assertFalse("We expect the node not to have a property 'id' after removing it", nodeAfter.hasProperty("id"));
     }
+
+    @Test
+    public void testGettingPropertyAfterApplyingChanges() throws Exception {
+        // GIVEN
+        // Create a NewNodeAdapter
+        String nodeName = "rootNode";
+        String nodeType = "mgnl:content";
+        Node parentNode = session.getRootNode().addNode(nodeName);
+        JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode, nodeType);
+
+        assertNull(adapter.getItemProperty("id"));
+
+        Property propertyModified = DefaultPropertyUtil.newDefaultProperty(null, "");
+        adapter.addItemProperty("id", propertyModified);
+
+        // WHEN
+        adapter.applyChanges();
+
+        // THEN
+        // After applying changes the adapter should behave like a JcrNodeAdapter,
+        // thus returning null for an non-existing property.
+        assertNull("We expect to get null for non-existing properties", adapter.getItemProperty("di"));
+        // This should simulate a call to super().super().getItemProperty()
+        assertTrue(adapter.getItemProperty(ModelConstants.JCR_NAME) instanceof DefaultProperty);
+        assertEquals("We expect to get jcrName of the node", "0", adapter.getItemProperty(ModelConstants.JCR_NAME).getValue());
+    }
+
 
     @Test
     public void testReturnedPropertiesAreInSync() throws RepositoryException {
