@@ -96,6 +96,14 @@ public class MarkNodeAsDeletedAction extends DeleteAction<MarkNodeAsDeletedActio
     }
 
     /**
+     * Create the Body of the confirmation Message.
+     */
+    @Override
+    protected String createSuccessMessage() {
+        return "Node and its sub nodes marked for deletion.";
+    }
+
+    /**
      * Override the buildParams(..).<br>
      * The relented command is waiting the following values: <br>
      * Context.ATTRIBUTE_UUID : Parent Node Identifier instead of the Node identifier set by super.buildParams()<br>
