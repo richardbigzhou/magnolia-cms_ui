@@ -50,6 +50,7 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 
 /**
+ * Responsible for saving changes made to node properties in the Configuration app.
  * Sends an ItemEditedEvent so that the BrowserPresenter will handle updating the item in the same manner as if it had
  * been changed via inplace editing.
  * 
@@ -83,7 +84,7 @@ public class SaveConfigDialogAction extends AbstractAction<SaveConfigDialogActio
             subAppEventBus.fireEvent(new ItemEditedEvent(item));
             callback.onSuccess(getDefinition().getName());
         } else {
-            log.info("Validation error(s) occurred. No save performed.");
+            log.debug("Validation error(s) occurred. No save performed.");
         }
     }
 
