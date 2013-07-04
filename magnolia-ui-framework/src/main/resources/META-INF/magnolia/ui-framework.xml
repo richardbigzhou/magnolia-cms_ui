@@ -5,6 +5,7 @@
   <displayName>Magnolia UI Framework</displayName>
   <description>Magnolia UI Framework</description>
   <class>info.magnolia.ui.framework.UiFrameworkModule</class>
+  <versionHandler>info.magnolia.ui.framework.setup.UiFrameworkModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 
   <components>
