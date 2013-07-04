@@ -38,9 +38,9 @@ import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
@@ -131,6 +131,9 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
             super.execute();
             // Propagate event
             eventBus.fireEvent(new ContentChangedEvent(jcrItem.getSession().getWorkspace().getName(), itemIdOfChangedItem));
+
+            // Show notification
+            uiContext.openNotification(MessageStyleTypeEnum.INFO, true, createSuccessMessage());
         } catch (Exception e) {
             log.error("Could not execute command operation.", e);
             onError(e);
@@ -148,9 +151,9 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
         StringBuffer label = new StringBuffer();
         label.append("Delete ");
         if (jcrItem.isNode()) {
-            label.append("Node ");
+            label.append("Node");
         } else {
-            label.append("Property ");
+            label.append("Property");
         }
         label.append("?");
         return label.toString();
@@ -161,10 +164,30 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
      */
     protected String createConfirmationMessage() throws RepositoryException {
         StringBuffer label = new StringBuffer();
-        label.append("The node<br>");
+        label.append("The ");
+        if (jcrItem.isNode()) {
+            label.append("node");
+        } else {
+            label.append("property");
+        }
+        label.append("<br>");
         label.append(jcrItem.getPath());
         label.append("<br>will be deleted immediately.<br>");
         label.append("Are you sure ?");
+        return label.toString();
+    }
+
+    /**
+     * Create the Body of the confirmation Message.
+     */
+    protected String createSuccessMessage() {
+        StringBuffer label = new StringBuffer();
+        if (jcrItem.isNode()) {
+            label.append("Node");
+        } else {
+            label.append("Property");
+        }
+        label.append(" deleted.");
         return label.toString();
     }
 
