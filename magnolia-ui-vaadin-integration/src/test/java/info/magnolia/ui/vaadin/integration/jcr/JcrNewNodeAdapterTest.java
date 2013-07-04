@@ -34,7 +34,6 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertNotNull;
 
 import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.context.MgnlContext;

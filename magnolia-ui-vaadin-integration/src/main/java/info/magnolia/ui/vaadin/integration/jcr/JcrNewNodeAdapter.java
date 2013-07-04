@@ -89,10 +89,7 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
         if (appliedChanges) {
             return super.getItemProperty(propertyId);
         }
-        if (getChangedProperties().containsKey(propertyId)) {
-            return getChangedProperties().get(propertyId);
-        }
-        return null;
+        return getChangedProperties().get(propertyId);
     }
 
     /**
