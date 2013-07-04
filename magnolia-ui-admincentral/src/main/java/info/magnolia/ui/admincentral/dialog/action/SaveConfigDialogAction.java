@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 
 /**
- * Responsible for saving changes made to node properties in the Configuration app.
+ * Responsible for triggering (by sending an Event) the saving of the changes made to node properties in the Configuration app.
  * Sends an ItemEditedEvent so that the BrowserPresenter will handle updating the item in the same manner as if it had
  * been changed via inplace editing.
  * 
