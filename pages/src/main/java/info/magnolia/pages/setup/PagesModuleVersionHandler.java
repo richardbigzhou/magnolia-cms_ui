@@ -38,7 +38,9 @@ import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.BootstrapConditionally;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
+import info.magnolia.module.delta.NodeExistsDelegateTask;
 import info.magnolia.module.delta.OrderNodeBeforeTask;
+import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
 
@@ -55,6 +57,9 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
         register(DeltaBuilder.update("5.0", "Configuration update for Magnolia 5.0")
                 .addTask(new IsModuleInstalledOrRegistered("", "", "adminInterface",
                         new BootstrapConditionally("Bootstrap activation commands", "Bootstraps the default activation and deletion commands which no longer reside under adminInterface.", "config.modules.pages.commands.xml"))));
+        register(DeltaBuilder.update("5.0.1", "")
+                .addTask(new NodeExistsDelegateTask("Remove dialog links Node", "Remove dialog definition in pages/dialogs/links", RepositoryConstants.CONFIG, "/modules/pages/dialogs/link",
+                        new RemoveNodeTask("Remove dialog links Node", "Remove dialog definition in pages/dialogs/links", RepositoryConstants.CONFIG, "/modules/pages/dialogs/link"))));
     }
 
     @Override
