@@ -16,7 +16,7 @@
   <dependencies>
     <dependency>
       <name>ui-admincentral</name>
-      <version>5.0/*</version>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
 

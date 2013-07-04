@@ -77,4 +77,12 @@
       <implementation>info.magnolia.ui.contentapp.detail.DetailViewImpl</implementation>
     </component>
   </components>
+
+  <dependencies>
+    <dependency>
+      <name>ui-framework</name>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
 </module>

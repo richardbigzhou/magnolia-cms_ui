@@ -110,7 +110,7 @@
     </dependency>
     <dependency>
       <name>ui-framework</name>
-      <version>5.0/*</version>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
 
