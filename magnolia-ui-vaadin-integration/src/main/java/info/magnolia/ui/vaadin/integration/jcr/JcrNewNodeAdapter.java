@@ -93,12 +93,14 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
 
     /**
      * Create a new subNode of the parent Node or return the existing one if already created.
+     *
+     * If called a second time, apply changes of {@link JcrNodeAdapter} will be called.
      */
     @Override
     public Node applyChanges() throws RepositoryException {
-        // Check if changes were already applied
+        // If changes were already applied, behave like a JcrNodeAdapter
         if (appliedChanges) {
-            return getJcrItem();
+            return super.applyChanges();
         }
 
         Node parent = getJcrItem();
@@ -122,7 +124,7 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
             for (AbstractJcrNodeAdapter child : getChildren().values()) {
                 if (child instanceof JcrNewNodeAdapter) {
                     // Set parent node (parent could be newly created)
-                    ((JcrNewNodeAdapter) child).initCommonAttributes(node);
+                    child.initCommonAttributes(node);
                 }
                 child.applyChanges();
             }

@@ -201,6 +201,59 @@ public class JcrNewNodeAdapterTest {
     }
 
     @Test
+    public void testAddingPropertiesAfterApplyingChanges() throws Exception {
+        // GIVEN
+        // Create a NewNodeAdapter
+        String nodeName = "rootNode";
+        String nodeType = "mgnl:content";
+        Node parentNode = session.getRootNode().addNode(nodeName);
+        JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode, nodeType);
+
+        Property propertyModified = DefaultPropertyUtil.newDefaultProperty(null, "");
+        adapter.addItemProperty("id", propertyModified);
+
+        Node nodeBefore = adapter.applyChanges();
+
+        // WHEN
+        Property propertyModifiedAfter = DefaultPropertyUtil.newDefaultProperty(null, "");
+        adapter.addItemProperty("di", propertyModifiedAfter);
+
+        Node nodeAfter = adapter.applyChanges();
+
+        // THEN
+        assertEquals("We expect the getJcrItem() method returning the actual node after applying changes", nodeAfter, adapter.getJcrItem());
+        assertTrue("We expect the node have a property 'id'", nodeBefore.hasProperty("id"));
+        assertTrue("We expect the node have a property 'id' after adding another one", nodeAfter.hasProperty("id"));
+        assertTrue("We expect the node have a property 'di' after adding it", nodeAfter.hasProperty("di"));
+    }
+
+    @Test
+    public void testRemovingPropertiesAfterApplyingChanges() throws Exception {
+        // GIVEN
+        // Create a NewNodeAdapter
+        String nodeName = "rootNode";
+        String nodeType = "mgnl:content";
+        Node parentNode = session.getRootNode().addNode(nodeName);
+        JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode, nodeType);
+
+        Property propertyModified = DefaultPropertyUtil.newDefaultProperty(null, "");
+        adapter.addItemProperty("id", propertyModified);
+
+        Node nodeBefore = adapter.applyChanges();
+
+        assertTrue("We expect the node to have a property 'id'", nodeBefore.hasProperty("id"));
+
+        // WHEN
+        adapter.removeItemProperty("id");
+
+        Node nodeAfter = adapter.applyChanges();
+
+        // THEN
+        assertEquals("We expect the getJcrItem() method returning the actual node after applying changes", nodeAfter, adapter.getJcrItem());
+        assertFalse("We expect the node not to have a property 'id' after removing it", nodeAfter.hasProperty("id"));
+    }
+
+    @Test
     public void testReturnedPropertiesAreInSync() throws RepositoryException {
 
         // GIVEN
