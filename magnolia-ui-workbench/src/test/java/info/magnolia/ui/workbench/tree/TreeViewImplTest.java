@@ -103,7 +103,7 @@ public class TreeViewImplTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testSelectDoesNotExpandNodeItself() throws Exception {
+    public void testSelectExpandsNodeItself() throws Exception {
         // GIVEN
         Node root = session.getRootNode();
         Node visibleRoot = root.addNode(NODE_ROOT_ITEM_ID);
@@ -116,7 +116,7 @@ public class TreeViewImplTest extends RepositoryTestCase {
         view.select(Arrays.asList(node.getIdentifier()));
 
         // THEN
-        assertTrue(view.asVaadinComponent().isCollapsed(node.getIdentifier()));
+        assertFalse(view.asVaadinComponent().isCollapsed(node.getIdentifier()));
     }
 
     @Test

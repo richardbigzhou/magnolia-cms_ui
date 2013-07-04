@@ -271,18 +271,11 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
             // Saving JCR Node, getting updated node first
             AbstractJcrNodeAdapter nodeAdapter = (AbstractJcrNodeAdapter) item;
             try {
-
                 // get modifications
                 Node node = nodeAdapter.applyChanges();
 
                 LastModified.update(node);
                 node.getSession().save();
-
-                // update workbench selection in case the node changed name
-                List<String> ids = new ArrayList<String>();
-                ids.add(JcrItemUtil.getItemId(node));
-                workbenchPresenter.select(ids);
-
             } catch (RepositoryException e) {
                 log.error("Could not save changes to node", e);
             }
