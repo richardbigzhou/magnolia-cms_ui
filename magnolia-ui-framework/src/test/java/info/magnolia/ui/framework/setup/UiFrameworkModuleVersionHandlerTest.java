@@ -35,6 +35,7 @@ package info.magnolia.ui.framework.setup;
 
 import static org.junit.Assert.*;
 
+import info.magnolia.cms.util.UnicodeNormalizer;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
@@ -43,12 +44,14 @@ import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.ComponentsTestUtil;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -80,8 +83,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         i18n.addNode("authoring50", NodeTypes.ContentNode.NAME);
         i18n.getSession().save();
 
-        // config = NodeUtil.createPath(session.getRootNode(), "/modules/ui-framework/config", NodeTypes.ContentNode.NAME);
-        // config.getSession().save();
+        ComponentsTestUtil.setImplementation(UnicodeNormalizer.Normalizer.class, "info.magnolia.cms.util.UnicodeNormalizer$NonNormalizer");
     }
 
     @Test
@@ -111,6 +113,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
     }
 
     @Test
+    @Ignore
     public void testUpdateTo5_0_1ThatDialogsAreInstalled() throws ModuleManagementException, RepositoryException {
         // GIVEN
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
