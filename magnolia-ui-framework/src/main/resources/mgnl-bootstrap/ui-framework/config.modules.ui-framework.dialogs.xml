@@ -142,7 +142,7 @@
       <sv:value>mix:lockable</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
-      <sv:value>f0691934-b8d7-4f3d-b767-3434b8ffe633</sv:value>
+      <sv:value>3a0fd2e7-dd20-49f0-8dde-4cdfe4027e3c</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
