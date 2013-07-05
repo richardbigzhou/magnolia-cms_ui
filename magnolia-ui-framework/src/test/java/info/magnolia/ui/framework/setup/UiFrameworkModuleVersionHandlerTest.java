@@ -123,6 +123,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
 
         // THEN
         assertTrue(framework.hasNode("dialogs"));
+        // Probably un-necessary - but verify that the important subnodes are there as well.
         assertTrue(framework.hasNode("dialogs/folder"));
         assertTrue(framework.hasNode("dialogs/rename"));
         assertTrue(framework.hasNode("dialogs/generic/standardActions"));
