@@ -35,23 +35,17 @@ package info.magnolia.ui.admincentral.setup;
 
 import static org.junit.Assert.*;
 
-import info.magnolia.cms.util.UnicodeNormalizer;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.module.ModuleManagementException;
-import info.magnolia.module.ModuleRegistry;
-import info.magnolia.module.ModuleRegistryImpl;
 import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
-import info.magnolia.module.model.reader.DependencyChecker;
-import info.magnolia.repository.DefaultRepositoryManager;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.repository.RepositoryManager;
-import info.magnolia.test.ComponentsTestUtil;
 
-import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -78,13 +72,11 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Override
-    protected void initDefaultImplementations() throws IOException {
-        ComponentsTestUtil.setInstance(ModuleRegistry.class, new ModuleRegistryImpl());
-        ComponentsTestUtil.setImplementation(UnicodeNormalizer.Normalizer.class, "info.magnolia.cms.util.UnicodeNormalizer$NonNormalizer");
-        ComponentsTestUtil.setInstance(RepositoryManager.class, new DefaultRepositoryManager());
-        // provide our own ModuleManager implementation that is able to read the required module
-        // definitions e.g. from surefire classpath
-        ComponentsTestUtil.setImplementation(DependencyChecker.class, NullDependencyChecker.class);
+    protected List<String> getModuleDescriptorPathsForTests() {
+        return Arrays.asList(
+                "/META-INF/magnolia/core.xml",
+                "/META-INF/magnolia/ui-framework.xml"
+                );
     }
 
     @Override
@@ -94,8 +86,6 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         dialog = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/dialogs", NodeTypes.ContentNode.NAME);
         dialog.getSession().save();
-
-        // ComponentsTestUtil.setImplementation(DependencyChecker.class, NullDependencyChecker.)
     }
 
     @Test
