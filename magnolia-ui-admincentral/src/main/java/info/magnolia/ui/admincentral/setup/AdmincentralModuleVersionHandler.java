@@ -39,6 +39,7 @@ import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
+import info.magnolia.module.delta.PartialBootstrapTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
@@ -54,7 +55,25 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
     public AdmincentralModuleVersionHandler() {
         register(DeltaBuilder.update("5.0.1", "")
                 .addTask(new NodeExistsDelegateTask("Remove dialog links Node", "Remove dialog definition in ui-admincentral/dialogs/links", RepositoryConstants.CONFIG, "/modules/ui-admincentral/dialogs/link",
-                        new RemoveNodeTask("Remove dialog links Node", "Remove dialog definition in ui-admincentral/dialogs/links", RepositoryConstants.CONFIG, "/modules/ui-admincentral/dialogs/link"))));
+                        new RemoveNodeTask("Remove dialog links Node", "Remove dialog definition in ui-admincentral/dialogs/links", RepositoryConstants.CONFIG, "/modules/ui-admincentral/dialogs/link")))
+
+                .addTask(new PartialBootstrapTask("Add editProperty dialog", "", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.dialogs.xml", "/dialogs/editProperty"))
+                .addTask(new PartialBootstrapTask("Add editProperty action to Configuration app", "", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actions/editProperty"))
+
+                .addTask(new PartialBootstrapTask("Add renameItem dialog", "", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.dialogs.xml", "/dialogs/renameItem"))
+                .addTask(new PartialBootstrapTask("Add rename action to Configuration app", "", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actions/rename"))
+
+                // Update actionbars
+                .addTask(new NodeExistsDelegateTask("Remove duplicateActions section from Configuration app.", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups/duplicateActions",
+                        new RemoveNodeTask("Remove duplicateActions section from Configuration app", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups/duplicateActions")))
+                .addTask(new PartialBootstrapTask("Add editActions section to Configuration app", "Adds editProperty, rename, and duplicate actions.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actionbar/sections/folders/groups/editActions"))
+
+                // JCR App should extend Configuration App.
+                .addTask(new NodeExistsDelegateTask("Remove websiteJcrBrowser App subApps.", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/websiteJcrBrowser/subApps",
+                        new RemoveNodeTask("Remove websiteJcrBrowser App subApps.", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/websiteJcrBrowser/subApps")))
+                .addTask(new PartialBootstrapTask("Add updated websiteJcrBrowser App subApps.", "It now extends Configuration app.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.websiteJcrBrowser.xml", "/websiteJcrBrowser/subApps"))
+
+        );
     }
 
     @Override

@@ -31,11 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.setup;
+package info.magnolia.pages.app.setup;
 
 import static org.junit.Assert.*;
 
-import info.magnolia.cms.util.UnicodeNormalizer;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
@@ -43,8 +42,11 @@ import info.magnolia.module.ModuleManagementException;
 import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
+import info.magnolia.pages.setup.PagesModuleVersionHandler;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.test.ComponentsTestUtil;
+
+import java.util.Arrays;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -56,76 +58,58 @@ import org.junit.Test;
 /**
  * Test class.
  */
-public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTestCase {
+public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase {
 
-    private Node i18n;
-
-    private Node framework;
+    private Node dialog;
 
     @Override
     protected String getModuleDescriptorPath() {
-        return "/META-INF/magnolia/ui-framework.xml";
+        return "/META-INF/magnolia/ui-admincentral.xml";
+    }
+
+    @Override
+    protected List<String> getModuleDescriptorPathsForTests() {
+        return Arrays.asList(
+                "/META-INF/magnolia/core.xml"
+                );
     }
 
     @Override
     protected ModuleVersionHandler newModuleVersionHandlerForTests() {
-        return new UiFrameworkModuleVersionHandler();
+        return new PagesModuleVersionHandler();
     }
+
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        i18n = NodeUtil.createPath(session.getRootNode(), "/server/i18n", NodeTypes.ContentNode.NAME);
-        i18n.addNode("authoring", NodeTypes.ContentNode.NAME);
-        i18n.addNode("authoring50", NodeTypes.ContentNode.NAME);
-        i18n.getSession().save();
-
-        framework = NodeUtil.createPath(session.getRootNode(), "/modules/ui-framework", NodeTypes.ContentNode.NAME);
-
-        ComponentsTestUtil.setImplementation(UnicodeNormalizer.Normalizer.class, "info.magnolia.cms.util.UnicodeNormalizer$NonNormalizer");
+        dialog = NodeUtil.createPath(session.getRootNode(), "/modules/pages/dialogs", NodeTypes.ContentNode.NAME);
+        dialog.getSession().save();
     }
 
     @Test
-    public void testUpdateTo5_0_1WithoutLegacyModule() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo5_0_1WithExistingLinkDefinition() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        dialog.addNode("link", NodeTypes.ContentNode.NAME);
+        assertTrue(dialog.hasNode("link"));
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
+
+        // THEN
+        assertFalse(dialog.hasNode("link"));
+
+    }
+
+    @Test
+    public void testUpdateTo5_0_1WithNonExistingLinkDefinition() throws ModuleManagementException, RepositoryException {
         // GIVEN
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
 
         // THEN
-        assertFalse(i18n.hasNode("authoring50"));
-
-    }
-
-    @Test
-    public void testUpdateTo5_0_1WithLegacyModule() throws ModuleManagementException, RepositoryException {
-        // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        NodeUtil.createPath(session.getRootNode(), "/modules/adminInterface", NodeTypes.ContentNode.NAME);
-        // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
-
-        // THEN
-        assertTrue(i18n.hasNode("authoringLegacy"));
-        assertTrue(i18n.hasNode("authoring"));
-        assertFalse(i18n.hasNode("authoring50"));
-    }
-
-    @Test
-    public void testUpdateTo5_0_1ThatDialogsAreInstalled() throws ModuleManagementException, RepositoryException {
-        // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        NodeUtil.createPath(session.getRootNode(), "/modules/ui-framework", NodeTypes.ContentNode.NAME);
-        // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
-
-        // THEN
-        assertTrue(framework.hasNode("dialogs"));
-        // Probably un-necessary - but verify that the important subnodes are there as well.
-        assertTrue(framework.hasNode("dialogs/folder"));
-        assertTrue(framework.hasNode("dialogs/rename"));
-        assertTrue(framework.hasNode("dialogs/generic/standardActions"));
+        assertFalse(dialog.hasNode("link"));
     }
 }

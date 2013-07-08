@@ -4,6 +4,7 @@
   <name>security-app</name>
   <displayName>Security App</displayName>
   <description>Security App</description>
+  <versionHandler>info.magnolia.security.setup.SecurityModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 
     <!-- Used to create an App component provider for injection of AppContext for example -->

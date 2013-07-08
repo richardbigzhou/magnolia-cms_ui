@@ -31,11 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.setup;
+package info.magnolia.security.setup;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-import info.magnolia.cms.util.UnicodeNormalizer;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
@@ -44,88 +43,100 @@ import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.test.ComponentsTestUtil;
+
+import java.util.Arrays;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test class.
+ * Test class for Security App.
  */
-public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTestCase {
-
-    private Node i18n;
-
-    private Node framework;
+public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCase {
 
     @Override
     protected String getModuleDescriptorPath() {
-        return "/META-INF/magnolia/ui-framework.xml";
+        return "/META-INF/magnolia/security-app.xml";
+    }
+
+    @Override
+    protected List<String> getModuleDescriptorPathsForTests() {
+        return Arrays.asList(
+                "/META-INF/magnolia/core.xml"
+                );
     }
 
     @Override
     protected ModuleVersionHandler newModuleVersionHandlerForTests() {
-        return new UiFrameworkModuleVersionHandler();
-    }
-
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        i18n = NodeUtil.createPath(session.getRootNode(), "/server/i18n", NodeTypes.ContentNode.NAME);
-        i18n.addNode("authoring", NodeTypes.ContentNode.NAME);
-        i18n.addNode("authoring50", NodeTypes.ContentNode.NAME);
-        i18n.getSession().save();
-
-        framework = NodeUtil.createPath(session.getRootNode(), "/modules/ui-framework", NodeTypes.ContentNode.NAME);
-
-        ComponentsTestUtil.setImplementation(UnicodeNormalizer.Normalizer.class, "info.magnolia.cms.util.UnicodeNormalizer$NonNormalizer");
+        return new SecurityModuleVersionHandler();
     }
 
     @Test
-    public void testUpdateTo5_0_1WithoutLegacyModule() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo501LabelIsAddFolder() throws ModuleManagementException, RepositoryException {
         // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node action = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/users/actions/addFolder", NodeTypes.ContentNode.NAME);
+        action.setProperty("label", "New folder");
+        action.getSession().save();
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
 
         // THEN
-        assertFalse(i18n.hasNode("authoring50"));
-
+        String label = action.getProperty("label").getString();
+        assertTrue("Add folder".equals(label));
     }
 
     @Test
-    public void testUpdateTo5_0_1WithLegacyModule() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo501LabelIsAddUser() throws ModuleManagementException, RepositoryException {
         // GIVEN
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        NodeUtil.createPath(session.getRootNode(), "/modules/adminInterface", NodeTypes.ContentNode.NAME);
+        Node action = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/users/actions/addUser", NodeTypes.ContentNode.NAME);
+        action.setProperty("label", "New user");
+        action.getSession().save();
+
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
 
         // THEN
-        assertTrue(i18n.hasNode("authoringLegacy"));
-        assertTrue(i18n.hasNode("authoring"));
-        assertFalse(i18n.hasNode("authoring50"));
+        String label = action.getProperty("label").getString();
+        assertTrue("Add user".equals(label));
     }
 
     @Test
-    public void testUpdateTo5_0_1ThatDialogsAreInstalled() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo501LabelIsAddGroup() throws ModuleManagementException, RepositoryException {
         // GIVEN
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        NodeUtil.createPath(session.getRootNode(), "/modules/ui-framework", NodeTypes.ContentNode.NAME);
+        Node action = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/groups/actions/addGroup", NodeTypes.ContentNode.NAME);
+        action.setProperty("label", "New group");
+        action.getSession().save();
+
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
 
         // THEN
-        assertTrue(framework.hasNode("dialogs"));
-        // Probably un-necessary - but verify that the important subnodes are there as well.
-        assertTrue(framework.hasNode("dialogs/folder"));
-        assertTrue(framework.hasNode("dialogs/rename"));
-        assertTrue(framework.hasNode("dialogs/generic/standardActions"));
+        String label = action.getProperty("label").getString();
+        assertTrue("Add group".equals(label));
     }
+
+    @Test
+    public void testUpdateTo501LabelIsAddRole() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node action = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/roles/actions/addRole", NodeTypes.ContentNode.NAME);
+        action.setProperty("label", "New role");
+        action.getSession().save();
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
+
+        // THEN
+        String label = action.getProperty("label").getString();
+        assertTrue("Add role".equals(label));
+    }
+
 }

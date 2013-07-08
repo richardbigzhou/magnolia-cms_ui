@@ -35,23 +35,17 @@ package info.magnolia.ui.admincentral.setup;
 
 import static org.junit.Assert.*;
 
-import info.magnolia.cms.util.UnicodeNormalizer;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.module.ModuleManagementException;
-import info.magnolia.module.ModuleRegistry;
-import info.magnolia.module.ModuleRegistryImpl;
 import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
-import info.magnolia.module.model.reader.DependencyChecker;
-import info.magnolia.repository.DefaultRepositoryManager;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.repository.RepositoryManager;
-import info.magnolia.test.ComponentsTestUtil;
 
-import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -65,7 +59,10 @@ import org.junit.Test;
  */
 public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTestCase {
 
-    private Node dialog;
+    private Session session;
+    private Node dialogs;
+    private Node actions;
+    private Node configActionbarFolderGroups;
 
     @Override
     protected String getModuleDescriptorPath() {
@@ -78,47 +75,128 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Override
-    protected void initDefaultImplementations() throws IOException {
-        ComponentsTestUtil.setInstance(ModuleRegistry.class, new ModuleRegistryImpl());
-        ComponentsTestUtil.setImplementation(UnicodeNormalizer.Normalizer.class, "info.magnolia.cms.util.UnicodeNormalizer$NonNormalizer");
-        ComponentsTestUtil.setInstance(RepositoryManager.class, new DefaultRepositoryManager());
-        // provide our own ModuleManager implementation that is able to read the required module
-        // definitions e.g. from surefire classpath
-        ComponentsTestUtil.setImplementation(DependencyChecker.class, NullDependencyChecker.class);
+    protected List<String> getModuleDescriptorPathsForTests() {
+        return Arrays.asList(
+                "/META-INF/magnolia/core.xml",
+                "/META-INF/magnolia/ui-framework.xml"
+                );
     }
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        dialog = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/dialogs", NodeTypes.ContentNode.NAME);
-        dialog.getSession().save();
+        session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        dialogs = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/dialogs", NodeTypes.ContentNode.NAME);
+        dialogs.getSession().save();
 
-        // ComponentsTestUtil.setImplementation(DependencyChecker.class, NullDependencyChecker.)
+        actions = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actions", NodeTypes.ContentNode.NAME);
+        configActionbarFolderGroups = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups", NodeTypes.ContentNode.NAME);
     }
 
     @Test
     public void testUpdateTo5_0_1WithoutExistingLinkDefinition() throws ModuleManagementException, RepositoryException {
         // GIVEN
-        dialog.addNode("link", NodeTypes.ContentNode.NAME);
-        assertTrue(dialog.hasNode("link"));
+        dialogs.addNode("link", NodeTypes.ContentNode.NAME);
+        assertTrue(dialogs.hasNode("link"));
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
 
         // THEN
-        assertFalse(dialog.hasNode("link"));
+        assertFalse(dialogs.hasNode("link"));
 
     }
 
     @Test
     public void testUpdateTo5_0_1WithoutNonExistingLinkDefinition() throws ModuleManagementException, RepositoryException {
         // GIVEN
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
+
+        // THEN
+        assertFalse(dialogs.hasNode("link"));
+    }
+
+    @Test
+    public void testUpdateTo501EditPropertyDialogExists() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
+
+        // THEN
+        assertTrue(dialogs.hasNode("editProperty"));
+    }
+
+    @Test
+    public void testUpdateTo501renameItemDialogExists() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
+
+        // THEN
+        assertTrue(dialogs.hasNode("renameItem"));
+    }
+
+    @Test
+    public void testUpdateTo501EditPropertyActionInstalled() throws ModuleManagementException, RepositoryException {
+        // GIVEN
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
 
         // THEN
-        assertFalse(dialog.hasNode("link"));
+        assertTrue(actions.hasNode("editProperty"));
+        Node actionbarFolderEditItems = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups/editActions/items", NodeTypes.ContentNode.NAME);
+        assertTrue(actionbarFolderEditItems.hasNode("editProperty"));
+    }
+
+    @Test
+    public void testUpdateTo501RenameActionInstalled() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
+
+        // THEN
+        assertTrue(actions.hasNode("rename"));
+        Node actionbarFolderEditItems = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups/editActions/items", NodeTypes.ContentNode.NAME);
+        assertTrue(actionbarFolderEditItems.hasNode("rename"));
+    }
+
+    @Test
+    public void testUpdateTo501ConfigurationAppDuplicateActionsGroupIsRemoved() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        configActionbarFolderGroups.addNode("duplicateActions", NodeTypes.ContentNode.NAME);
+        assertTrue(configActionbarFolderGroups.hasNode("duplicateActions"));
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
+
+        // THEN
+        assertFalse(configActionbarFolderGroups.hasNode("duplicateActions"));
+    }
+
+    @Test
+    public void testUpdateTo501ConfigurationAppEditActionsGroupIsAdded() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
+
+        // THEN
+        configActionbarFolderGroups = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups", NodeTypes.ContentNode.NAME);
+        assertTrue(configActionbarFolderGroups.hasNode("editActions"));
+    }
+
+    @Test
+    public void testUpdateTo501JCRBrowserAppExtendsConfigurationApp() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
+
+        // THEN
+        Node jcrSubApps = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/websiteJcrBrowser/subApps", NodeTypes.ContentNode.NAME);
+        assertTrue(jcrSubApps.hasProperty("extends"));
+        String subAppExtends = jcrSubApps.getProperty("extends").getString();
+        assertTrue("/modules/ui-admincentral/apps/configuration/subApps".equals(subAppExtends));
     }
 }
