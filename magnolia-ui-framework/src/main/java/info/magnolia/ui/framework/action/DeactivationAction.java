@@ -101,6 +101,6 @@ public class DeactivationAction extends AbstractCommandAction<DeactivationAction
     }
 
     private boolean isWorkflowInstalled() {
-        return moduleRegistry.isModuleRegistered("workflow-base");
+        return moduleRegistry.isModuleRegistered("workflow");
     }
 }

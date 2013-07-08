@@ -172,7 +172,7 @@ public class ActivationActionTest extends RepositoryTestCase {
     public void testWorkflowSuccessMessage() throws Exception {
         // GIVEN
         ModuleRegistry moduleRegistry = mock(ModuleRegistry.class);
-        when(moduleRegistry.isModuleRegistered("workflow-base")).thenReturn(true);
+        when(moduleRegistry.isModuleRegistered("workflow")).thenReturn(true);
         when(commandsManager.executeCommand("activate", params)).thenReturn(false);
         TestSubAppContext testCtx = new TestSubAppContext();
         ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), testCtx, moduleRegistry);
