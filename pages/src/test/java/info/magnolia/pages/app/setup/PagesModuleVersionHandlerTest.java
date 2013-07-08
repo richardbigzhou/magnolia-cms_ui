@@ -90,7 +90,7 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     }
 
     @Test
-    public void testUpdateTo5_0_1WithoutExistingLinkDefinition() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo5_0_1WithExistingLinkDefinition() throws ModuleManagementException, RepositoryException {
         // GIVEN
         dialog.addNode("link", NodeTypes.ContentNode.NAME);
         assertTrue(dialog.hasNode("link"));
@@ -103,7 +103,7 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     }
 
     @Test
-    public void testUpdateTo5_0_1WithoutNonExistingLinkDefinition() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo5_0_1WithNonExistingLinkDefinition() throws ModuleManagementException, RepositoryException {
         // GIVEN
 
         // WHEN
