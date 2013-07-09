@@ -38,6 +38,7 @@ import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.BootstrapConditionally;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
+import info.magnolia.module.delta.NewPropertyTask;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
 import info.magnolia.module.delta.OrderNodeBeforeTask;
 import info.magnolia.module.delta.RemoveNodeTask;
@@ -59,7 +60,11 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                         new BootstrapConditionally("Bootstrap activation commands", "Bootstraps the default activation and deletion commands which no longer reside under adminInterface.", "config.modules.pages.commands.xml"))));
         register(DeltaBuilder.update("5.0.1", "")
                 .addTask(new NodeExistsDelegateTask("Remove dialog links Node", "Remove dialog definition in pages/dialogs/links", RepositoryConstants.CONFIG, "/modules/pages/dialogs/link",
-                        new RemoveNodeTask("Remove dialog links Node", "Remove dialog definition in pages/dialogs/links", RepositoryConstants.CONFIG, "/modules/pages/dialogs/link"))));
+                        new RemoveNodeTask("Remove dialog links Node", "Remove dialog definition in pages/dialogs/links", RepositoryConstants.CONFIG, "/modules/pages/dialogs/link")))
+                .addTask(new NodeExistsDelegateTask("Add title to CreatePage dialog", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/createPage/form",
+                        new NewPropertyTask("Add title to CreatePage dialog", "", RepositoryConstants.CONFIG, "/modules/pages/dialogs/createPage/form", "label", "pages.dialog.add_page")))
+
+        );
     }
 
     @Override

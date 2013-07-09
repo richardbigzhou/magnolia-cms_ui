@@ -90,7 +90,7 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     }
 
     @Test
-    public void testUpdateTo5_0_1WithExistingLinkDefinition() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo501WithExistingLinkDefinition() throws ModuleManagementException, RepositoryException {
         // GIVEN
         dialog.addNode("link", NodeTypes.ContentNode.NAME);
         assertTrue(dialog.hasNode("link"));
@@ -103,7 +103,7 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     }
 
     @Test
-    public void testUpdateTo5_0_1WithNonExistingLinkDefinition() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo501WithNonExistingLinkDefinition() throws ModuleManagementException, RepositoryException {
         // GIVEN
 
         // WHEN
@@ -111,5 +111,18 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
 
         // THEN
         assertFalse(dialog.hasNode("link"));
+    }
+
+    @Test
+    public void testUpdateTo501CreatePageDialogHasLabel() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node createPage = NodeUtil.createPath(session.getRootNode(), "/modules/pages/dialogs/createPage/form", NodeTypes.ContentNode.NAME);
+        createPage.getSession().save();
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("2.0"));
+
+        // THEN
+        assertTrue(createPage.hasProperty("label"));
     }
 }
