@@ -43,17 +43,26 @@ import com.vaadin.ui.Field;
 
 /**
  * Creates and initializes an static field definition.
+ * 
+ * @param <D> type of definition
  */
-public class StaticFieldFactory extends AbstractFieldFactory<StaticFieldDefinition, Object> {
+public class StaticFieldFactory<D extends StaticFieldDefinition> extends AbstractFieldFactory<D, Object> {
 
-    public StaticFieldFactory(StaticFieldDefinition definition, Item relatedFieldItem) {
+    public StaticFieldFactory(D definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
 
     @Override
     protected Field<Object> createFieldComponent() {
-        StaticField field = new StaticField(getMessage(definition.getValue()));
+        StaticField field = new StaticField(createFieldValue());
         return field;
+    }
+
+    /**
+     * Create the value displayed into the static field.
+     */
+    public String createFieldValue() {
+        return getMessage(definition.getValue());
     }
 
     /**
