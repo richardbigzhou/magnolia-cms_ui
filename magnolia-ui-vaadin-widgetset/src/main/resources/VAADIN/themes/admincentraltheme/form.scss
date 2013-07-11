@@ -58,6 +58,9 @@
     width:510px;
     vertical-align: middle;
 }
+.v-form-layout .v-form-field.textcodefield {
+	height : 200px;
+}
 
 .form-error {
     background-color:$c70;
