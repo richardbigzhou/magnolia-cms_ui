@@ -8,6 +8,9 @@
 
   <inherits name='com.github.wolfie.refresher.RefresherWidgetset' />
 
+  <inherits name='org.vaadin.aceeditor.AceEditorWidgetSet' />
+
+
   <inherits name="com.google.gwt.json.JSON" />
   <inherits name="com.google.gwt.resources.Resources" />
   <inherits name="org.vaadin.openesignforms.ckeditor.widgetset.VaadinCKEditorWidgetset" />
