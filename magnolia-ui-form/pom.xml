@@ -49,6 +49,10 @@
       <groupId>org.vaadin.addon</groupId>
       <artifactId>easyuploads</artifactId>
     </dependency>
+      <dependency>
+        <groupId>org.vaadin.addons</groupId>
+        <artifactId>aceeditor</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.vaadin.addons</groupId>
       <artifactId>refresher</artifactId>
