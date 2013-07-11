@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.framework.setup;
 
+import static info.magnolia.nodebuilder.Ops.*;
+
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
@@ -41,7 +43,11 @@ import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
 import info.magnolia.module.delta.RenameNodesTask;
 import info.magnolia.module.delta.Task;
+import info.magnolia.nodebuilder.task.ErrorHandling;
+import info.magnolia.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
+import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +68,17 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
                 .addTask(new RenameLegacyI18nNodeIfExistingTask())
                 .addTask(new RenameNodesTask("Rename 5.0 i18n node", "Renames /server/i18n/authoring50 as authoring.", RepositoryConstants.CONFIG, "/server/i18n", "authoring50", "authoring", NodeTypes.ContentNode.NAME))
                 .addTask(new BootstrapSingleModuleResource("Add dialogs to ui-framework", "", "config.modules.ui-framework.dialogs.xml")));
+
+        register(DeltaBuilder.update("5.1", "")
+                .addTask((new NodeBuilderTask("Add definition of the BasicCodeText Field", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/ui-framework",
+                        getNode("fieldTypes").then(
+                                addNode("basicTextCodeField", NodeTypes.ContentNode.NAME),
+                                getNode("basicTextCodeField").then(
+                                        addProperty("definitionClass", BasicTextCodeFieldDefinition.class.getName()),
+                                        addProperty("factoryClass", BasicTextCodeFieldFactory.class.getName())
+                                        )
+                                )))
+                ));
     }
 
     @Override

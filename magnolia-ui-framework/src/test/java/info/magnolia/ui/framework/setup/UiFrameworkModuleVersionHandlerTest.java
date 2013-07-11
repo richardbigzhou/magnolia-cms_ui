@@ -45,6 +45,8 @@ import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
+import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -116,8 +118,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
     @Test
     public void testUpdateTo5_0_1ThatDialogsAreInstalled() throws ModuleManagementException, RepositoryException {
         // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        NodeUtil.createPath(session.getRootNode(), "/modules/ui-framework", NodeTypes.ContentNode.NAME);
+
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
 
@@ -127,5 +128,21 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         assertTrue(framework.hasNode("dialogs/folder"));
         assertTrue(framework.hasNode("dialogs/rename"));
         assertTrue(framework.hasNode("dialogs/generic/standardActions"));
+    }
+
+    @Test
+    public void testUpdateTo5_1AddFieldType() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        framework.addNode("fieldTypes", NodeTypes.ContentNode.NAME);
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
+
+        // THEN
+        assertTrue(framework.hasNode("fieldTypes/basicTextCodeField"));
+        Node basicTextCodeField = framework.getNode("fieldTypes/basicTextCodeField");
+        assertTrue(basicTextCodeField.hasProperty("definitionClass"));
+        assertEquals(BasicTextCodeFieldDefinition.class.getName(), basicTextCodeField.getProperty("definitionClass").getString());
+        assertTrue(basicTextCodeField.hasProperty("factoryClass"));
+        assertEquals(BasicTextCodeFieldFactory.class.getName(), basicTextCodeField.getProperty("factoryClass").getString());
     }
 }
