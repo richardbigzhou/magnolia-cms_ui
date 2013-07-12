@@ -33,7 +33,7 @@
  */
 package info.magnolia.security.setup;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
@@ -137,6 +137,21 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         // THEN
         String label = action.getProperty("label").getString();
         assertTrue("Add role".equals(label));
+    }
+
+    @Test
+    public void testUpdateTo510DeleteUserActionAvailability() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node action = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/users/actions/deleteUser/availability", NodeTypes.ContentNode.NAME);
+        action.getSession().save();
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
+
+        // THEN
+        assertTrue(action.hasProperty("ruleClass"));
+        assertEquals("info.magnolia.security.app.action.availability.IsNotCurrentUserRule", action.getProperty("ruleClass").getString());
     }
 
 }

@@ -37,6 +37,7 @@ import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.delta.CheckAndModifyPartOfPropertyValueTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
+import info.magnolia.module.delta.SetPropertyTask;
 import info.magnolia.repository.RepositoryConstants;
 
 /**
@@ -62,6 +63,10 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                         new CheckAndModifyPartOfPropertyValueTask("Change label of role creation action to 'Add roll'", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/addRole", "label", "New role", "Add role")))
 
                 );
+
+        register(DeltaBuilder.update("5.1.0", "")
+                .addTask(new NodeExistsDelegateTask("Set ruleClass for deleteUser action to IsNotCurrentUserRule", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteUser/availability",
+                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteUser/availability", "ruleClass", "info.magnolia.security.app.action.availability.IsNotCurrentUserRule"))));
     }
 
 
