@@ -29,10 +29,6 @@
       <groupId>com.jhlabs</groupId>
       <artifactId>filters</artifactId>
     </dependency>
-    <dependency>
-      <groupId>uk.com.robust-it</groupId>
-      <artifactId>cloning</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>junit</groupId>
