@@ -86,21 +86,22 @@ public class SubNodesValueHandler implements MultiValueHandler {
     /**
      * Create a new set of valueItems.<br>
      * - from the 'root' get or create childItem (childItem will contains the list of valueItem) <br>
-     * - if the childItem has already a set of valueItem, remove them. <br>
-     * - for every newValue element, create a valueItem linked to childItem.
+     * - for every newValue element, create a valueItem linked to childItem.<br>
+     * - remove no more existing children from the already stored item. <br>
      */
     @Override
     public void setValue(List<String> newValue) {
         // Get the child Item that contains the list of children Item Value
         JcrNodeAdapter childItem = getOrCreateChildNode();
-        // Remove all current children Item Value
-        detachChildren(childItem);
         // Get the child Node
         Node childNode = childItem.getJcrItem();
         for (String value : newValue) {
             // For each value, create a Child Item Value
             createAndAddValueItem(childItem, childNode, value);
         }
+        // Remove all no more existing children
+        detachNoMoreExistingChildren(childItem);
+
         // Attach the child item to the root item
         if (childItem.getChildren() != null && !childItem.getChildren().isEmpty()) {
             root.addChild(childItem);
@@ -138,19 +139,35 @@ public class SubNodesValueHandler implements MultiValueHandler {
      */
     @SuppressWarnings("unchecked")
     private void createAndAddValueItem(JcrNodeAdapter childItem, Node childNode, String value) {
-        JcrNodeAdapter valueItem = new JcrNewNodeAdapter(childNode, NodeTypes.Content.NAME, StringUtils.left(value, valueItemNameSize));
-        childItem.addChild(valueItem);
-        valueItem.addItemProperty(subNodeName, new DefaultProperty(String.class, value));
+        String childValueItemName = StringUtils.left(value, valueItemNameSize);
+        JcrNodeAdapter valueItem = null;
+        try {
+            if (!(childItem instanceof JcrNewNodeAdapter) && childNode.hasNode(childValueItemName)) {
+                valueItem = new JcrNodeAdapter(childNode.getNode(childValueItemName));
+            } else {
+                valueItem = new JcrNewNodeAdapter(childNode, NodeTypes.Content.NAME, childValueItemName);
+            }
+            childItem.addChild(valueItem);
+            valueItem.addItemProperty(subNodeName, new DefaultProperty(String.class, value));
+        } catch (RepositoryException e) {
+            log.error("Could not add achild value node ", e);
+        }
     }
 
-    private void detachChildren(JcrNodeAdapter childItem) {
+    /**
+     * If values are already stored, remove the no more existing one.
+     */
+    private void detachNoMoreExistingChildren(JcrNodeAdapter childItem) {
         try {
             Node childNode = childItem.getJcrItem();
             if (!(childItem instanceof JcrNewNodeAdapter) && childNode.hasNodes()) {
                 NodeIterator iterator = childNode.getNodes();
                 while (iterator.hasNext()) {
-                    JcrNodeAdapter toRemove = new JcrNodeAdapter(iterator.nextNode());
-                    childItem.removeChild(toRemove);
+                    Node valueNode = iterator.nextNode();
+                    if (childItem.getChild(valueNode.getName()) == null) {
+                        JcrNodeAdapter toRemove = new JcrNodeAdapter(valueNode);
+                        childItem.removeChild(toRemove);
+                    }
                 }
             }
         } catch (RepositoryException e) {

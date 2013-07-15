@@ -70,10 +70,10 @@ public class SubNodesValueHandlerTest extends RepositoryTestCase {
                 "/parent.@type=mgnl:content\n" +
                         "/parent.propertyString=hello\n" +
                         "/parent/subNodeName.@type=mgnl:content\n" +
-                        "/parent/subNodeName/aaa.@type=mgnl:content\n" +
-                        "/parent/subNodeName/aaa.subNodeName=value1\n" +
-                        "/parent/subNodeName/bbb.@type=mgnl:content\n" +
-                        "/parent/subNodeName/bbb.subNodeName=value2\n";
+                        "/parent/subNodeName/value1.@type=mgnl:content\n" +
+                        "/parent/subNodeName/value1.subNodeName=value1\n" +
+                        "/parent/subNodeName/value2.@type=mgnl:content\n" +
+                        "/parent/subNodeName/value2.subNodeName=value2\n";
 
         Session session = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
         new PropertiesImportExport().createNodes(session.getRootNode(), IOUtils.toInputStream(nodeProperties));
@@ -109,6 +109,29 @@ public class SubNodesValueHandlerTest extends RepositoryTestCase {
         assertEquals(2, res.size());
         assertTrue(res.contains("value1"));
         assertTrue(res.contains("value2"));
+    }
+
+    @Test
+    public void testUpdateMultiPropertyWithoutChanges() throws RepositoryException {
+        // GIVEN
+        JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
+        SubNodesValueHandler delegate = new SubNodesValueHandler(parent, subNodeName);
+        // Set the same values
+        String[] newValues = { "value1", "value2" };
+        List<String> res = Arrays.asList(newValues);
+        delegate.setValue(res);
+
+        // WHEN
+        parent.applyChanges();
+
+        // THEN
+        Node child = parent.getJcrItem().getNode(subNodeName);
+        assertTrue(child.hasNodes());
+        assertEquals(2, child.getNodes().getSize());
+        NodeIterator iterator = child.getNodes();
+        assertEquals("value1", iterator.nextNode().getProperty(subNodeName).getString());
+        assertEquals("value2", iterator.nextNode().getProperty(subNodeName).getString());
+
     }
 
     @Test
