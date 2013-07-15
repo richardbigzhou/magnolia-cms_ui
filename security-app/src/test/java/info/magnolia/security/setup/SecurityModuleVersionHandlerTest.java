@@ -154,4 +154,36 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         assertEquals("info.magnolia.security.app.action.availability.IsNotCurrentUserRule", action.getProperty("ruleClass").getString());
     }
 
+    @Test
+    public void testUpdateTo510DeleteGroupActionClass() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node action = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/groups/actions/deleteGroup", NodeTypes.ContentNode.NAME);
+        action.setProperty("class", "oldValue");
+        action.getSession().save();
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
+
+        // THEN
+        assertTrue(action.hasProperty("class"));
+        assertEquals("info.magnolia.security.app.action.DeleteGroupActionDefinition", action.getProperty("class").getString());
+    }
+
+    @Test
+    public void testUpdateTo510DeleteRoleActionClass() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node action = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/roles/actions/deleteRole", NodeTypes.ContentNode.NAME);
+        action.setProperty("class", "oldValue");
+        action.getSession().save();
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
+
+        // THEN
+        assertTrue(action.hasProperty("class"));
+        assertEquals("info.magnolia.security.app.action.DeleteRoleActionDefinition", action.getProperty("class").getString());
+    }
+
 }

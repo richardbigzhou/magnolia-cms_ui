@@ -2125,7 +2125,7 @@
             <sv:value>3b4fd922-2b79-4d08-ae54-a51db7eb6ada</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.framework.action.DeleteItemActionDefinition</sv:value>
+            <sv:value>info.magnolia.security.app.action.DeleteGroupActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>icon-delete</sv:value>
@@ -2946,7 +2946,7 @@
             <sv:value>1b1cdee3-a18f-44fe-bb55-d5eeccc7879c</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.framework.action.DeleteItemActionDefinition</sv:value>
+            <sv:value>info.magnolia.security.app.action.DeleteRoleActionDefinition</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>icon-delete</sv:value>

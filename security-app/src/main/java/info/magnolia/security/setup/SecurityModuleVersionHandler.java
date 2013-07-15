@@ -66,7 +66,12 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
 
         register(DeltaBuilder.update("5.1.0", "")
                 .addTask(new NodeExistsDelegateTask("Set ruleClass for deleteUser action to IsNotCurrentUserRule", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteUser/availability",
-                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteUser/availability", "ruleClass", "info.magnolia.security.app.action.availability.IsNotCurrentUserRule"))));
+                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteUser/availability", "ruleClass", "info.magnolia.security.app.action.availability.IsNotCurrentUserRule")))
+                .addTask(new NodeExistsDelegateTask("Update class for deleteGroup action", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actions/deleteGroup",
+                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actions/deleteGroup", "class", "info.magnolia.security.app.action.DeleteGroupActionDefinition")))
+                .addTask(new NodeExistsDelegateTask("Update class for deleteRole action", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/deleteRole",
+                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/deleteRole", "class", "info.magnolia.security.app.action.DeleteRoleActionDefinition")))
+        );
     }
 
 
