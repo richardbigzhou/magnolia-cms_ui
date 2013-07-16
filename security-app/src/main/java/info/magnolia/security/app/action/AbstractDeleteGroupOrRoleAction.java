@@ -33,6 +33,9 @@
  */
 package info.magnolia.security.app.action;
 
+import info.magnolia.cms.security.Group;
+import info.magnolia.cms.security.Security;
+import info.magnolia.cms.security.User;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
@@ -41,6 +44,8 @@ import info.magnolia.ui.framework.action.DeleteItemActionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -78,16 +83,6 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteItemAction
     }
 
     /**
-     * @return the list of user- and group-names this item (group or role) is directly assigned to.
-     */
-    protected abstract List<String> getUsersAndGroupsThisItemIsAssignedTo() throws RepositoryException;
-
-    /**
-     * @return the message to write to the log if the {@link #getUsersAndGroupsThisItemIsAssignedTo()} fails.
-     */
-    protected abstract String getLogMessage();
-
-    /**
      * @return the base for the error message shown to the user in case the item is already assigned; the list of users/groups the item is assigned to is added;
      */
     protected abstract String getBaseErrorMessage();
@@ -102,13 +97,22 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteItemAction
      */
     protected abstract Logger getLog();
 
+    /**
+     * Gets a collection of group or role names (according to where it is implemented) assigned to the object.
+     * 
+     * @param userOrGroup either {@link User} or {@link Group}
+     * @return a collection of group or role names assigned to the parameter
+     * @throws IllegalArgumentException if the parameter is neither {@link User} nor {@link Group}
+     */
+    protected abstract Collection<String> getGroupsOrRoles(Object userOrGroup) throws IllegalArgumentException;
+
     @Override
     protected void executeAfterConfirmation() {
         List<String> assignedTo;
         try {
             assignedTo = getUsersAndGroupsThisItemIsAssignedTo();
         } catch (RepositoryException e) {
-            getLog().error(getLogMessage(), e);
+            getLog().error("Cannot get the users/groups the group or role is assigned to.", e);
             uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, getVerificationErrorMessage() + e.getMessage());
             return;
         }
@@ -119,8 +123,31 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteItemAction
         }
     }
 
+    /**
+     * @return the list of user- and group-names this item (group or role) is directly assigned to.
+     */
+    private List<String> getUsersAndGroupsThisItemIsAssignedTo() throws RepositoryException {
+        List<String> assignedTo = new ArrayList<String>();
+
+        String groupName = getItem().getJcrItem().getName();
+        // users
+        for (User user : Security.getUserManager().getAllUsers()) {
+            if (getGroupsOrRoles(user).contains(groupName)) {
+                assignedTo.add(PREFIX_USER + user.getName());
+            }
+        }
+        // groups
+        for (Group group : Security.getGroupManager().getAllGroups()) {
+            if (getGroupsOrRoles(group).contains(groupName)) {
+                assignedTo.add(PREFIX_GROUP + group.getName());
+            }
+        }
+
+        return assignedTo;
+    }
+
     private static String getUserAndGroupListForErrorMessage(List<String> usersAndGroups) {
-        StringBuffer message = new StringBuffer("<ul>");
+        StringBuilder message = new StringBuilder("<ul>");
         for (String name : usersAndGroups) {
             message.append("<li>").append(name).append("</li>");
         }

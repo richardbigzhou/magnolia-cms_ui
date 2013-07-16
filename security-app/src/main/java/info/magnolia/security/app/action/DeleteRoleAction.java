@@ -34,19 +34,14 @@
 package info.magnolia.security.app.action;
 
 import info.magnolia.cms.security.Group;
-import info.magnolia.cms.security.Security;
 import info.magnolia.cms.security.User;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.Collection;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.jcr.RepositoryException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,29 +62,14 @@ public class DeleteRoleAction extends AbstractDeleteGroupOrRoleAction<DeleteRole
     }
 
     @Override
-    protected List<String> getUsersAndGroupsThisItemIsAssignedTo() throws RepositoryException {
-        List<String> assignedTo = new ArrayList<String>();
-
-        String groupName = getItem().getJcrItem().getName();
-        // users
-        for (User user : Security.getUserManager().getAllUsers()) {
-            if (user.getRoles().contains(groupName)) {
-                assignedTo.add(PREFIX_USER + user.getName());
-            }
+    protected Collection<String> getGroupsOrRoles(Object userOrGroup) throws IllegalArgumentException {
+        if (userOrGroup instanceof User) {
+            return ((User) userOrGroup).getRoles();
         }
-        // groups
-        for (Group group : Security.getGroupManager().getAllGroups()) {
-            if (group.getRoles().contains(groupName)) {
-                assignedTo.add(PREFIX_GROUP + group.getName());
-            }
+        if (userOrGroup instanceof Group) {
+            return ((Group) userOrGroup).getRoles();
         }
-
-        return assignedTo;
-    }
-
-    @Override
-    protected String getLogMessage() {
-        return "Cannot verify the users/groups the role is assigned to.";
+        throw new IllegalArgumentException("The userOrGroup parameter must be of either info.magnolia.cms.security.User or info.magnolia.cms.security.Group type.");
     }
 
     @Override
