@@ -88,6 +88,7 @@
 
     .v-table-row,
     .v-table-row-odd {
+      background-color: $c80;
     }
 
     .v-table-row:hover,
@@ -168,6 +169,40 @@
       vertical-align: top;
     }
 
+    /* DRAG AND DROP */
+    .v-table-row-drag-top .v-table-cell-content:first-child:before,
+    .v-table-row-drag-bottom .v-table-cell-content:first-child:after {
+      background: none;
+      content: none;
+      margin: 0;
+    }
+
+    .v-table-row-drag-top .v-table-cell-wrapper {
+      margin-top: -3px;
+    }
+
+    .v-table-row-drag-bottom .v-table-cell-wrapper {
+      margin-bottom: -2px;
+    }
+
+    .v-table-row-drag-top:hover,
+    .v-table-row-drag-middle:hover,
+    .v-table-row-drag-bottom:hover {
+      background-color: $c80;
+    }
+
+    .v-table-row-drag-top .v-table-cell-content {
+      border-top: 3px solid $c21 !important;
+    }
+
+    .v-table-row-drag-middle .v-table-cell-content {
+      background-color: $c22;
+    }
+
+    .v-table-row-drag-bottom .v-table-cell-content {
+      border-bottom: 3px solid $c21 !important;
+    }
+
   }
 
   /* TREES */
@@ -202,7 +237,7 @@
 
     .v-table-row:hover,
     .v-table-row-odd:hover {
-      background-color: transparent;
+      background-color: $c80;
     }
 
     .v-treetable-treespacer {
