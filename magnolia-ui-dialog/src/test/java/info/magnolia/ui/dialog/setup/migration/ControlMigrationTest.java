@@ -39,6 +39,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
+import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 import info.magnolia.ui.form.field.definition.DateFieldDefinition;
@@ -95,6 +96,23 @@ public class ControlMigrationTest {
         assertFalse(controlNode.hasProperty("controlType"));
         assertTrue(controlNode.hasProperty("class"));
         assertEquals(TextFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
+    }
+
+    @Test
+    public void EditCodeControlMigrationTest() throws RepositoryException {
+        // GIVEN
+        controlNode.setProperty("controlType", "editCode");
+        controlNode.setProperty("language", "generic");
+        ControlMigration controlMigration = new EditCodeControlMigration();
+
+        // WHEN
+        controlMigration.migrate(controlNode);
+
+        // THEN
+        assertFalse(controlNode.hasProperty("controlType"));
+        assertTrue(controlNode.hasProperty("class"));
+        assertEquals(BasicTextCodeFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
+        assertEquals("html", controlNode.getProperty("language").getString());
     }
 
     @Test
