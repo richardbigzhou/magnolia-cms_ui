@@ -58,6 +58,10 @@
       <artifactId>refresher</artifactId>
     </dependency>
     <dependency>
+      <groupId>uk.com.robust-it</groupId>
+      <artifactId>cloning</artifactId>
+    </dependency>
+    <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
       <version>${project.version}</version>
