@@ -46,7 +46,9 @@ import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
+import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
+import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -138,11 +140,19 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
 
         // THEN
+        // Basic Code field
         assertTrue(framework.hasNode("fieldTypes/basicTextCodeField"));
         Node basicTextCodeField = framework.getNode("fieldTypes/basicTextCodeField");
         assertTrue(basicTextCodeField.hasProperty("definitionClass"));
         assertEquals(BasicTextCodeFieldDefinition.class.getName(), basicTextCodeField.getProperty("definitionClass").getString());
         assertTrue(basicTextCodeField.hasProperty("factoryClass"));
         assertEquals(BasicTextCodeFieldFactory.class.getName(), basicTextCodeField.getProperty("factoryClass").getString());
+        // Switchable Field
+        assertTrue(framework.hasNode("fieldTypes/switchableField"));
+        Node switchableField = framework.getNode("fieldTypes/switchableField");
+        assertTrue(switchableField.hasProperty("definitionClass"));
+        assertEquals(SwitchableFieldDefinition.class.getName(), switchableField.getProperty("definitionClass").getString());
+        assertTrue(switchableField.hasProperty("factoryClass"));
+        assertEquals(SwitchableFieldFactory.class.getName(), switchableField.getProperty("factoryClass").getString());
     }
 }
