@@ -44,7 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The rule to verify whether the item does not represent the current user.
+ * The rule to verify that the item does not represent the current user.
  */
 public class IsNotCurrentUserRule extends AbstractAvailabilityRule {
 
@@ -59,7 +59,7 @@ public class IsNotCurrentUserRule extends AbstractAvailabilityRule {
             String nodeName = ((Node) item).getName();
             return !nodeName.equals(MgnlContext.getUser().getName());
         } catch (RepositoryException ex) {
-            log.warn("Error veryfying availability for item [{}]: " + ex.getMessage(), item);
+            log.warn("Error verifying availability for item [{}]: " + ex.getMessage(), item);
         }
         return false;
     }

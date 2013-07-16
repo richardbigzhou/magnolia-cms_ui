@@ -171,7 +171,7 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     }
 
     @Test
-    public void testUpdateTo510DeleteRoleActionClass() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo5_1DeleteRoleActionClass() throws ModuleManagementException, RepositoryException {
         // GIVEN
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         Node action = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/roles/actions/deleteRole", NodeTypes.ContentNode.NAME);
