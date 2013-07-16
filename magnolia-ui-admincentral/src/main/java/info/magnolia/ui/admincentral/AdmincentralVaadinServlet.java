@@ -61,6 +61,15 @@ import com.vaadin.shared.ApplicationConstants;
 public class AdmincentralVaadinServlet extends VaadinServlet {
 
     private static final Logger log = LoggerFactory.getLogger(AdmincentralVaadinServlet.class);
+
+    private static final String ERROR_PAGE_STYLE = "<style>a {color: inherit; text-decoration:none;}" +
+            "html, body {height:100%; margin:0;}" +
+            ".error-message {color:#fff; font-family: Verdana, sans-serif; padding:24px; line-height:1.3; overflow-x:hidden; overflow-y:auto;}" +
+            "h2 {font-size:5em; font-family:DINWebPro, sans-serif; font-weight: normal; margin:0;}" +
+            ".v-button-link {font-size: 2em;} .v-button-link .v-button-caption {text-decoration:none;}" +
+            "#stacktrace {font-family: monospace; display:none; color:#3e5900;}" +
+            ".viewerror {color:#aabf2f;} .v-button-link:hover, .v-button-link:focus {color:#93bac6;}</style>";
+
     /**
      * URL param forcing restart of vaadin application.
      */
@@ -90,7 +99,11 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            super.service(request, response);
+            if (request.getRequestURI() != null && request.getRequestURI().endsWith("undefined.cache.js")) {
+                writeUnsupportedBrowserPage(request, response);
+            } else {
+                super.service(request, response);
+            }
         } catch (Exception e) {
             log.error("An internal error has occurred in the VaadinServlet.", e);
             writeServerErrorPage(request, response, e);
@@ -118,34 +131,48 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
 
             StringBuilder output = new StringBuilder();
 
-            output.append("<style>a {color: inherit; text-decoration:none;}" +
-                    "html, body {height:100%; margin:0;}" +
-                    ".error-message {color:#fff; padding:24px; line-height:1.3; overflow-x:hidden; overflow-y:auto;}" +
-                    "h2 {font-size:5em; font-family:DINWebPro, sans-serif; font-weight: normal; margin:0;}" +
-                    ".v-button-link {font-size: 2em;} .v-button-link .v-button-caption {text-decoration:none;}" +
-                    "#stacktrace {font-family: monospace; display:none; color:#3e5900;}" +
-                    ".viewerror {color:#aabf2f;} .v-button-link:hover, .v-button-link:focus {color:#93bac6;}</style>");
+            output.append(ERROR_PAGE_STYLE);
             output.append("<div class=\"v-magnolia-shell\" style=\"height:100%;\">" +
                     "<div id=\"main-launcher\"><a href=\"" + url + "\"><img id=\"logo\" src=\"./../VAADIN/themes/admincentraltheme/img/logo-magnolia.svg\"></a></div>" +
                     "<div class=\"error-message v-shell-viewport-slot\">" +
                     "<h2>Whoops!</h2>" +
                     "<p>The server has encountered an internal error, we just need to restart the application.<br/>" +
                     "If you keep experiencing difficulties, please contact your server administrator.<br/></p>" +
-                    "<p>We apologize for the inconvenience.</p>" +
-                    "<div class=\"v-button v-widget link v-button-link\" tabindex=\"0\" role=\"button\"><a href=\"" + url + "\">[<span class=\"v-button-caption\">Click here to restart the application</span>]</a></div><br/>" +
+                    "<p>We apologize for the inconvenience.</p>");
+            output.append("<div class=\"v-button v-widget link v-button-link\" tabindex=\"0\" role=\"button\"><a href=\"" + url + "\">[<span class=\"v-button-caption\">Click here to restart the application</span>]</a></div><br/>" +
                     "<div class=\"v-button v-widget link v-button-link viewerror\" tabindex=\"0\" role=\"button\" onclick=\"var st=document.getElementById('stacktrace');st.style.display=(st.style.display=='block')?'none':'block';\">[<span class=\"v-button-caption\">Or view the error's stack trace</span>]</div>");
             output.append(getStackTrace(e));
             output.append("</div></div>");
 
-            if (request.getMethod().equalsIgnoreCase("GET")) {
-                // prepend document head if this is the first vaadin request
-                output.insert(0, "<html><head><meta charset=\"UTF-8\"/><meta content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\" name=\"viewport\"/><title>Magnolia 5.0</title><link rel=\"stylesheet\" type=\"text/css\" href=\"./../VAADIN/themes/admincentral/styles.css\"/></head><body>");
-            }
+            // prepend document head if this is the first vaadin request
+            output.insert(0, "<html><head><meta charset=\"UTF-8\"/><meta content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\" name=\"viewport\"/><title>Magnolia 5.0</title><link rel=\"stylesheet\" type=\"text/css\" href=\"./../VAADIN/themes/admincentral/styles.css\"/></head><body>");
+            output.append("</body></html>");
 
             // make sure vaadin writes this output in the document rather than treat it as a UIDL response
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             writeResponse(response, "text/html; charset=UTF-8", output.toString());
         }
+    }
+
+    private void writeUnsupportedBrowserPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // build message
+        StringBuilder output = new StringBuilder();
+        output.append(ERROR_PAGE_STYLE);
+        output.append("<div class=\"v-magnolia-shell\" style=\"height:100%;\">" +
+                "<div id=\"main-launcher\"><a href=\"#\"><img id=\"logo\" src=\"./../VAADIN/themes/admincentraltheme/img/logo-magnolia.svg\"></a></div>" +
+                "<div class=\"error-message v-shell-viewport-slot\">" +
+                "<h2>Whoops!</h2>" +
+                "<p>You're trying to use Magnolia 5 on a browser which is not supported so far.<br/>" +
+                "Please try logging in using Firefox, Chrome, Safari or IE9+.<br/></p>" +
+                "<p>We apologize for the inconvenience.</p>");
+        output.append("</div></div>");
+
+        // wrap as JS response
+        output.replace(0, output.length(), output.toString().replaceAll("\\\"", "\\\\\\\""));
+        output.insert(0, "document.body.innerHTML = \"");
+        output.append("\";");
+
+        writeResponse(response, "text/javascript; charset=UTF-8", output.toString());
     }
 
     private String getStackTrace(Throwable e) {
