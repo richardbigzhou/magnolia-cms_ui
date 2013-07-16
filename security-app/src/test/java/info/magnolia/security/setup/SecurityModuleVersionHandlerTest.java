@@ -155,7 +155,7 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     }
 
     @Test
-    public void testUpdateTo510DeleteGroupActionClass() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo5_1DeleteGroupActionClass() throws ModuleManagementException, RepositoryException {
         // GIVEN
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         Node action = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/groups/actions/deleteGroup", NodeTypes.ContentNode.NAME);
