@@ -53,6 +53,7 @@ import javax.inject.Named;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract common supertype for {@link DeleteGroupAction} and {@link DeleteRoleAction}.
@@ -60,6 +61,8 @@ import org.slf4j.Logger;
  * @param <D> the action definition type, must extend the {@link DeleteItemActionDefinition} class.
  */
 public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteItemActionDefinition> extends DeleteItemAction {
+
+    private static final Logger log = LoggerFactory.getLogger(AbstractDeleteGroupOrRoleAction.class);
 
     public static final String PREFIX_USER = "user:";
     public static final String PREFIX_GROUP = "group:";
@@ -93,18 +96,14 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteItemAction
     protected abstract String getVerificationErrorMessage();
 
     /**
-     * @return the logger of the actual implementation.
+     * Gets a collection of group or role names (according to where it is implemented) assigned to the user.
      */
-    protected abstract Logger getLog();
+    protected abstract Collection<String> getGroupsOrRoles(User user);
 
     /**
-     * Gets a collection of group or role names (according to where it is implemented) assigned to the object.
-     * 
-     * @param userOrGroup either {@link User} or {@link Group}
-     * @return a collection of group or role names assigned to the parameter
-     * @throws IllegalArgumentException if the parameter is neither {@link User} nor {@link Group}
+     * Gets a collection of group or role names (according to where it is implemented) assigned to the group.
      */
-    protected abstract Collection<String> getGroupsOrRoles(Object userOrGroup) throws IllegalArgumentException;
+    protected abstract Collection<String> getGroupsOrRoles(Group group);
 
     @Override
     protected void executeAfterConfirmation() {
@@ -112,7 +111,7 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteItemAction
         try {
             assignedTo = getUsersAndGroupsThisItemIsAssignedTo();
         } catch (RepositoryException e) {
-            getLog().error("Cannot get the users/groups the group or role is assigned to.", e);
+            log.error("Cannot get the users/groups the group or role is assigned to.", e);
             uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, getVerificationErrorMessage() + e.getMessage());
             return;
         }

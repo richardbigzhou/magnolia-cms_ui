@@ -59,8 +59,6 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.junit.Before;
@@ -90,7 +88,6 @@ public class DeleteGroupActionTest extends RepositoryTestCase {
 
         ComponentsTestUtil.setImplementation(SecuritySupport.class, SecuritySupportImpl.class);
 
-
         action = new DeleteGroupAction(definition, item, eventBus, uiContext);
     }
 
@@ -106,13 +103,7 @@ public class DeleteGroupActionTest extends RepositoryTestCase {
         action.executeAfterConfirmation();
 
         // THEN
-        Node group1 = null;
-        try {
-            group1 = session.getRootNode().getNode(GROUPNAME);
-        } catch (PathNotFoundException pe) {
-            // this is expected, the node shouldn't exist anymore
-        }
-        assertNull(getGroupNode());
+        assertFalse(session.getRootNode().hasNode(GROUPNAME));
     }
 
     @Test
@@ -133,7 +124,7 @@ public class DeleteGroupActionTest extends RepositoryTestCase {
         action.executeAfterConfirmation();
 
         // THEN
-        assertNotNull(getGroupNode());
+        assertTrue(session.getRootNode().hasNode(GROUPNAME));
     }
 
     @Test
@@ -152,16 +143,6 @@ public class DeleteGroupActionTest extends RepositoryTestCase {
         action.executeAfterConfirmation();
 
         // THEN
-        assertNotNull(getGroupNode());
-    }
-
-    private Node getGroupNode() throws RepositoryException {
-        Node group = null;
-        try {
-            group = session.getRootNode().getNode(GROUPNAME);
-        } catch (PathNotFoundException pe) {
-            // this is expected, the node may not exist anymore
-        }
-        return group;
+        assertTrue(session.getRootNode().hasNode(GROUPNAME));
     }
 }

@@ -42,8 +42,6 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import java.util.Collection;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Deletes a group after performing a check that the group is not assignet to any user or another group.
@@ -54,22 +52,19 @@ public class DeleteGroupAction extends AbstractDeleteGroupOrRoleAction<DeleteGro
     private static final String ERROR_MESSAGE_GROUP_IS_ASSIGNED = "Cannot delete the group. It is already assigned to the following users/groups:<br />";
     private static final String ERROR_MESSAGE_CANNOT_VERIFY = "Cannot verify that the group you want to delete is not assigned: ";
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
     @Inject
     public DeleteGroupAction(DeleteGroupActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
         super(definition, item, eventBus, uiContext);
     }
 
     @Override
-    protected Collection<String> getGroupsOrRoles(Object userOrGroup) throws IllegalArgumentException {
-        if (userOrGroup instanceof User) {
-            return ((User) userOrGroup).getGroups();
-        }
-        if (userOrGroup instanceof Group) {
-            return ((Group) userOrGroup).getGroups();
-        }
-        throw new IllegalArgumentException("The userOrGroup parameter must be of either info.magnolia.cms.security.User or info.magnolia.cms.security.Group type.");
+    protected Collection<String> getGroupsOrRoles(User user) {
+        return user.getGroups();
+    }
+
+    @Override
+    protected Collection<String> getGroupsOrRoles(Group group) {
+        return group.getGroups();
     }
 
     @Override
@@ -82,8 +77,4 @@ public class DeleteGroupAction extends AbstractDeleteGroupOrRoleAction<DeleteGro
         return ERROR_MESSAGE_CANNOT_VERIFY;
     }
 
-    @Override
-    protected Logger getLog() {
-        return this.log;
-    }
 }

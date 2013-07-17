@@ -42,8 +42,6 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import java.util.Collection;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Deletes a role after performing a check that the role is not assignet to any user or group.
@@ -54,22 +52,19 @@ public class DeleteRoleAction extends AbstractDeleteGroupOrRoleAction<DeleteRole
     private static final String ERROR_MESSAGE_ROLE_IS_ASSIGNED = "Cannot delete the role. It is already assigned to the following users/groups:<br />";
     private static final String ERROR_MESSAGE_CANNOT_VERIFY = "Cannot verify that the role you want to delete is not assigned: ";
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
     @Inject
     public DeleteRoleAction(DeleteRoleActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
         super(definition, item, eventBus, uiContext);
     }
 
     @Override
-    protected Collection<String> getGroupsOrRoles(Object userOrGroup) throws IllegalArgumentException {
-        if (userOrGroup instanceof User) {
-            return ((User) userOrGroup).getRoles();
-        }
-        if (userOrGroup instanceof Group) {
-            return ((Group) userOrGroup).getRoles();
-        }
-        throw new IllegalArgumentException("The userOrGroup parameter must be of either info.magnolia.cms.security.User or info.magnolia.cms.security.Group type.");
+    protected Collection<String> getGroupsOrRoles(User user) {
+        return user.getRoles();
+    }
+
+    @Override
+    protected Collection<String> getGroupsOrRoles(Group group) {
+        return group.getRoles();
     }
 
     @Override
@@ -80,11 +75,6 @@ public class DeleteRoleAction extends AbstractDeleteGroupOrRoleAction<DeleteRole
     @Override
     protected String getVerificationErrorMessage() {
         return ERROR_MESSAGE_CANNOT_VERIFY;
-    }
-
-    @Override
-    protected Logger getLog() {
-        return this.log;
     }
 
 }

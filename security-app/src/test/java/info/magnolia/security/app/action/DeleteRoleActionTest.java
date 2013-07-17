@@ -33,6 +33,8 @@
  */
 package info.magnolia.security.app.action;
 
+import static org.junit.Assert.assertTrue;
+
 import static org.junit.Assert.*;
 
 import static org.mockito.Mockito.*;
@@ -59,8 +61,6 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.junit.Before;
@@ -106,13 +106,7 @@ public class DeleteRoleActionTest extends RepositoryTestCase {
         action.executeAfterConfirmation();
 
         // THEN
-        Node group1 = null;
-        try {
-            group1 = session.getRootNode().getNode(ROLENAME);
-        } catch (PathNotFoundException pe) {
-            // this is expected, the node shouldn't exist anymore
-        }
-        assertNull(getRoleNode());
+        assertFalse(session.getRootNode().hasNode(ROLENAME));
     }
 
     @Test
@@ -133,7 +127,7 @@ public class DeleteRoleActionTest extends RepositoryTestCase {
         action.executeAfterConfirmation();
 
         // THEN
-        assertNotNull(getRoleNode());
+        assertTrue(session.getRootNode().hasNode(ROLENAME));
     }
 
     @Test
@@ -152,16 +146,6 @@ public class DeleteRoleActionTest extends RepositoryTestCase {
         action.executeAfterConfirmation();
 
         // THEN
-        assertNotNull(getRoleNode());
-    }
-
-    private Node getRoleNode() throws RepositoryException {
-        Node role = null;
-        try {
-            role = session.getRootNode().getNode(ROLENAME);
-        } catch (PathNotFoundException pe) {
-            // this is expected, the node may not exist anymore
-        }
-        return role;
+        assertTrue(session.getRootNode().hasNode(ROLENAME));
     }
 }
