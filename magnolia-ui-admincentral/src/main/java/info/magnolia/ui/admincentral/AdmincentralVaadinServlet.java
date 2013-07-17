@@ -161,10 +161,10 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
         output.append("<div class=\"v-magnolia-shell\" style=\"height:100%;\">" +
                 "<div id=\"main-launcher\"><a href=\"#\"><img id=\"logo\" src=\"./../VAADIN/themes/admincentraltheme/img/logo-magnolia.svg\"></a></div>" +
                 "<div class=\"error-message v-shell-viewport-slot\">" +
-                "<h2>Whoops!</h2>" +
-                "<p>You're trying to use Magnolia 5 on a browser which is not supported so far.<br/>" +
-                "Please try logging in using Firefox, Chrome, Safari or IE9+.<br/></p>" +
-                "<p>We apologize for the inconvenience.</p>");
+                "<h2>Sorry.</h2>" +
+                "<p>You're trying to use Magnolia 5 on a browser we currently do not support.</p>" +
+                "<p>Please log in using either Firefox, Chrome, Safari or IE9+.<br />" +
+                "We apologize for any inconvenience caused.</p>");
         output.append("</div></div>");
 
         // wrap as JS response
