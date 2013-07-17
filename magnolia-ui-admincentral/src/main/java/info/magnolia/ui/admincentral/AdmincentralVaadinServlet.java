@@ -53,6 +53,7 @@ import com.vaadin.server.SessionInitEvent;
 import com.vaadin.server.SessionInitListener;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinServletRequest;
+import com.vaadin.server.VaadinServletResponse;
 import com.vaadin.shared.ApplicationConstants;
 
 /**
@@ -111,7 +112,7 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
     }
 
     @Override
-    protected void criticalNotification(VaadinServletRequest request, HttpServletResponse response, String caption, String message, String details, String url) throws IOException {
+    protected void criticalNotification(VaadinServletRequest request, VaadinServletResponse response, String caption, String message, String details, String url) throws IOException {
         // invoking critical notifications only for UIDL requests, otherwise we let it fall back to writing the error page.
         if (isUidlRequest(request)) {
             super.criticalNotification(request, response, caption, message, details, url);
