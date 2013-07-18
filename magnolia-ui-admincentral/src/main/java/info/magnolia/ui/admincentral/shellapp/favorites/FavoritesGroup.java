@@ -58,6 +58,8 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.DragAndDropWrapper;
+import com.vaadin.ui.DragAndDropWrapper.DragStartMode;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;
 
@@ -98,8 +100,16 @@ public final class FavoritesGroup extends CssLayout {
         for (String key : keys) {
             final AbstractJcrNodeAdapter fav = nodeAdapters.get(key);
             final FavoritesEntry favEntry = new FavoritesEntry(fav, listener, shell);
-            addComponent(favEntry);
+            favEntry.setGroup(this.relPath);
+            DragAndDropWrapper wrap = new FavoritesDragAndDropWrapper(favEntry);
+            wrap.setDragStartMode(DragStartMode.COMPONENT);
+            wrap.setSizeUndefined();
+            addComponent(wrap);
         }
+    }
+
+    public String getRelPath() {
+        return this.relPath;
     }
 
     /**
@@ -114,6 +124,9 @@ public final class FavoritesGroup extends CssLayout {
         Iterator<Component> components = getComponentIterator();
         while (components.hasNext()) {
             Component component = components.next();
+            if (component instanceof FavoritesDragAndDropWrapper) {
+                component = ((FavoritesDragAndDropWrapper) component).getWrappedComponent();
+            }
             if(component instanceof FavoritesEntry) {
                 FavoritesEntry fav = (FavoritesEntry) component;
                 fav.reset();

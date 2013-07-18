@@ -33,42 +33,23 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
-
-import java.util.Map;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.DragAndDropWrapper;
 
 /**
- * View for favorites.
+ * TODO Type description here.
  */
-public interface FavoritesView extends View {
+public class FavoritesDragAndDropWrapper extends DragAndDropWrapper {
 
-    void setListener(Listener listener);
+    private final Component wrappedComponent;
 
-    void init(AbstractJcrNodeAdapter favoritesRoot, JcrNewNodeAdapter favoriteSuggestion, JcrNewNodeAdapter groupSuggestion, Map<String, String> availableGroups);
+    public FavoritesDragAndDropWrapper(Component root) {
+        super(root);
+        this.wrappedComponent = root;
+    }
 
-    void setFavoriteLocation(JcrNewNodeAdapter location, JcrNewNodeAdapter groupSuggestion, Map<String, String> availableGroups);
-
-    /**
-     * Listener.
-     */
-    interface Listener {
-        void addFavorite(JcrNewNodeAdapter newFavorite);
-
-        void editFavorite(String relPath, String newTitle);
-
-        void removeFavorite(String relPath);
-
-        void goToLocation(String location);
-
-        void addGroup(JcrNewNodeAdapter newGroup);
-
-        void editGroup(String relPath, String newTitle);
-
-        void removeGroup(String relPath);
-
-        void moveFavorite(String relPath, String group);
+    public Component getWrappedComponent() {
+        return this.wrappedComponent;
     }
 
 }
