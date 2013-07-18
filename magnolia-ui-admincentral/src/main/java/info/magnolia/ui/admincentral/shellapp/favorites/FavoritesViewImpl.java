@@ -42,9 +42,6 @@ import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import javax.inject.Inject;
 
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
@@ -150,10 +147,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
             noGroup = new FavoritesGroup();
             splitPanel.getLeftContainer().removeAllComponents();
             splitPanel.getRightContainer().removeAllComponents();
-            final SortedSet<String> keys = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-            keys.addAll(nodeAdapters.keySet());
-
-            for (String key : keys) {
+            for (String key : nodeAdapters.keySet()) {
                 final AbstractJcrNodeAdapter favoriteAdapter = nodeAdapters.get(key);
                 if (AdmincentralNodeTypes.Favorite.NAME.equals(favoriteAdapter.getPrimaryNodeTypeName())) {
                     final FavoritesEntry favEntry = new FavoritesEntry(favoriteAdapter, listener, shell);
