@@ -66,6 +66,8 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
 
     private static final Logger log = LoggerFactory.getLogger(AbstractCommandAction.class);
 
+    private JcrItemAdapter item;
+
     private CommandsManager commandsManager;
 
     private Command command;
@@ -79,8 +81,8 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
     @Inject
     public AbstractCommandAction(final D definition, final JcrItemAdapter item, final CommandsManager commandsManager, UiContext uiContext) {
         super(definition);
+        this.item = item;
         this.commandsManager = commandsManager;
-        this.params = buildParams(item.getJcrItem());
         this.uiContext = uiContext;
         // Init Command.
         String commandName = getDefinition().getCommand();
@@ -128,6 +130,10 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
         return params;
     }
 
+    public JcrItemAdapter getItem() {
+        return item;
+    }
+
     /**
      * @return the <em>immutable</em> map of parameters to be used for command execution.
      * @see AbstractCommandAction#buildParams(javax.jcr.Item)
@@ -149,6 +155,13 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
     @Override
     public void execute() throws ActionExecutionException {
 
+        try {
+            onPreExecute();
+        } catch (Exception e) {
+            onError(e);
+            log.debug("Command execution failed during pre execution tasks.");
+            throw new ActionExecutionException(e);
+        }
         if (command == null) {
             throw new ActionExecutionException(String.format("Could not find command [%s] in any catalog", getDefinition().getCommand()));
         }
@@ -166,6 +179,15 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
             log.debug("Command execution failed after {} ms ", System.currentTimeMillis() - start);
             throw new ActionExecutionException(e);
         }
+    }
+
+    /**
+     * Pre Command Execution. Class that implement CommansActionBase should use
+     * this in order to perform pre Command Tasks.
+     * When overriding make sure to call super to build the parameter map.
+     */
+    protected void onPreExecute() throws Exception {
+        this.params = buildParams(item.getJcrItem());
     }
 
     /**

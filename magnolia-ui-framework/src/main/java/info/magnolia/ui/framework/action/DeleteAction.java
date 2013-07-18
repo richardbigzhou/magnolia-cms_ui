@@ -33,14 +33,15 @@
  */
 package info.magnolia.ui.framework.action;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.commands.CommandsManager;
+import info.magnolia.context.Context;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
-import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
@@ -50,7 +51,6 @@ import javax.inject.Named;
 import javax.jcr.Item;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,71 +82,51 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
         }
     }
 
+
+    @Override
+    protected void onPreExecute() throws Exception {
+        super.onPreExecute();
+
+        if (jcrItem.isNode() && jcrItem.getDepth() == 0) {
+            uiContext.openNotification(MessageStyleTypeEnum.INFO, true, "Root node can't be deleted.");
+            throw new ActionExecutionException("Root node can't be deleted.");
+        }
+    }
+
     @Override
     public final void execute() throws ActionExecutionException {
-        // Warn if we try to remove the root node
-        try {
-            if (jcrItem.isNode() && jcrItem.getDepth() == 0) {
-                uiContext.openNotification(MessageStyleTypeEnum.INFO, true, "Root node can't be deleted.");
-                return;
-            }
+        super.execute();
+    }
 
-            // Get the related Command Label
-            if (StringUtils.isBlank(getDefinition().getCommand())) {
-                throw new ActionExecutionException(" No Command defined for this action ");
-            }
+    @Override
+    protected void onPostExecute() throws Exception {
+        // Propagate event
+        eventBus.fireEvent(new ContentChangedEvent((String) getParams().get(Context.ATTRIBUTE_REPOSITORY), itemIdOfChangedItem));
 
-            // Get the related Confirmation Message
-            String confirmationHeader = createConfirmationHeader();
-            String confirmationMessage = createConfirmationMessage();
-
-            // Open the Confirmation Dialog
-            uiContext.openConfirmation(
-                    MessageStyleTypeEnum.WARNING, confirmationHeader, confirmationMessage, "Yes, Delete", "No", true,
-                    new ConfirmationCallback() {
-                        @Override
-                        public void onSuccess() {
-                            DeleteAction.this.executeAfterConfirmation();
-                        }
-
-                        @Override
-                        public void onCancel() {
-                            // nothing
-                        }
-                    });
-
-        } catch (RepositoryException re) {
-            log.error("Could not execute repository operation.", re);
-            onError(re);
-        }
+        // Show notification
+        uiContext.openNotification(MessageStyleTypeEnum.INFO, true, getSuccessMessage());
     }
 
     /**
      * Execute after confirmation.<br>
      * Call the appropriate command.
+     * @deprecated after 5.0.1 use {@link ConfirmationAction}.
      */
+    @Deprecated
     protected void executeAfterConfirmation() {
-        try {
-            // Execute command
-            super.execute();
-            // Propagate event
-            eventBus.fireEvent(new ContentChangedEvent(jcrItem.getSession().getWorkspace().getName(), itemIdOfChangedItem));
 
-            // Show notification
-            uiContext.openNotification(MessageStyleTypeEnum.INFO, true, createSuccessMessage());
-        } catch (Exception e) {
-            log.error("Could not execute command operation.", e);
-            onError(e);
-        }
     }
 
+    @Deprecated
     protected void setItemIdOfChangedItem(String itemIdOfChangedItem) {
         this.itemIdOfChangedItem = itemIdOfChangedItem;
     }
 
     /**
      * Create the Header of the confirmation message.
+     * @deprecated after 5.0.1 use {@link ConfirmationAction}.
      */
+    @Deprecated
     protected String createConfirmationHeader() throws RepositoryException {
         StringBuffer label = new StringBuffer();
         label.append("Delete ");
@@ -161,7 +141,9 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
 
     /**
      * Create the Body of the confirmation Message.
+     * @deprecated after 5.0.1 use {@link ConfirmationAction}.
      */
+    @Deprecated
     protected String createConfirmationMessage() throws RepositoryException {
         StringBuffer label = new StringBuffer();
         label.append("The ");
@@ -180,6 +162,7 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
     /**
      * Create the Body of the confirmation Message.
      */
+    @Deprecated
     protected String createSuccessMessage() {
         StringBuffer label = new StringBuffer();
         if (jcrItem.isNode()) {
@@ -191,4 +174,7 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
         return label.toString();
     }
 
+    protected String getSuccessMessage() {
+        return MessagesUtil.get(getDefinition().getSuccessMessage(), getDefinition().getI18nBasename(),new String[] {(jcrItem.isNode()) ? "Node" : "Property"});
+    }
 }

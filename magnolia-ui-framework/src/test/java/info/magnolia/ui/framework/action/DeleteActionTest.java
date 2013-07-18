@@ -36,6 +36,8 @@ package info.magnolia.ui.framework.action;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.i18n.Messages;
+import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.cms.util.ContentUtil;
@@ -50,17 +52,7 @@ import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
-import info.magnolia.ui.api.overlay.AlertCallback;
-import info.magnolia.ui.api.overlay.ConfirmationCallback;
-import info.magnolia.ui.api.overlay.MessageStyleType;
-import info.magnolia.ui.api.overlay.NotificationCallback;
-import info.magnolia.ui.api.overlay.OverlayCloser;
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.api.app.AppContext;
-import info.magnolia.ui.api.app.SubApp;
-import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.api.app.SubAppDescriptor;
-import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
@@ -92,6 +84,13 @@ public class DeleteActionTest extends RepositoryTestCase {
         ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
         ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
 
+        MessagesManager messagesManager = mock(MessagesManager.class);
+        Messages messages = mock(Messages.class);
+        ComponentsTestUtil.setInstance(MessagesManager.class, messagesManager);
+        when(messagesManager.getMessages()).thenReturn(messages);
+        when(messages.get(anyString())).thenReturn("Some translated string");
+
+
         // Init Command
         Session webSiteSession = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
         referenceNode = webSiteSession.getRootNode().addNode("referenceNode");
@@ -110,6 +109,7 @@ public class DeleteActionTest extends RepositoryTestCase {
         definition = new DeleteActionDefinition();
 
         ComponentsTestUtil.setImplementation(CommandsManager.class, CommandsManager.class);
+
         // see for why this is needed.
         ComponentsTestUtil.setInstance(Map.class, params);
 
@@ -128,10 +128,10 @@ public class DeleteActionTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testDeteteNode() throws Exception {
+    public void testDeleteNode() throws Exception {
         // GIVEN
         JcrItemAdapter item = new JcrNodeAdapter(referenceNode.getNode("article1"));
-        DeleteAction<DeleteActionDefinition> deleteAction = new DeleteAction<DeleteActionDefinition>(definition, item, commandsManager, eventBus, new TestSubAppContext(true));
+        DeleteAction<DeleteActionDefinition> deleteAction = new DeleteAction<DeleteActionDefinition>(definition, item, commandsManager, eventBus, mock(UiContext.class));
 
         // WHEN
         deleteAction.execute();
@@ -142,24 +142,10 @@ public class DeleteActionTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testDeteteNodeCancelChanges() throws Exception {
-        // GIVEN
-        JcrItemAdapter item = new JcrNodeAdapter(referenceNode.getNode("article1"));
-        DeleteAction<DeleteActionDefinition> deleteAction = new DeleteAction<DeleteActionDefinition>(definition, item, commandsManager, eventBus, new TestSubAppContext(false));
-
-        // WHEN
-        deleteAction.execute();
-
-        // THEN
-        assertTrue(referenceNode.hasNode("article2"));
-        assertTrue(referenceNode.hasNode("article1"));
-    }
-
-    @Test
-    public void testDeteteProperty() throws Exception {
+    public void testDeleteProperty() throws Exception {
         // GIVEN
         JcrItemAdapter item = new JcrPropertyAdapter(referenceNode.getNode("article1").getProperty("property_long"));
-        DeleteAction<DeleteActionDefinition> deleteAction = new DeleteAction<DeleteActionDefinition>(definition, item, commandsManager, eventBus, new TestSubAppContext(true));
+        DeleteAction<DeleteActionDefinition> deleteAction = new DeleteAction<DeleteActionDefinition>(definition, item, commandsManager, eventBus, mock(UiContext.class));
 
         // WHEN
         deleteAction.execute();
@@ -171,113 +157,5 @@ public class DeleteActionTest extends RepositoryTestCase {
         assertTrue(referenceNode.getNode("article1").hasProperty("property_string"));
         assertFalse(referenceNode.getNode("article1").hasProperty("property_long"));
     }
-
-
-    /**
-     * Basic Empty implementation of {@link SubAppContext} for test purpose.
-     */
-    public static class TestSubAppContext implements SubAppContext {
-        private boolean validateChanges;
-
-        public TestSubAppContext(boolean validateChanges) {
-            this.validateChanges = validateChanges;
-        }
-
-        @Override
-        public OverlayCloser openOverlay(View view) {
-            return null;
-        }
-
-        @Override
-        public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
-            return null;
-        }
-
-        @Override
-        public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb) {
-        }
-
-        @Override
-        public void openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
-        }
-
-        @Override
-        public void openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
-        }
-
-        @Override
-        public void openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
-            if (validateChanges) {
-                cb.onSuccess();
-            } else {
-                cb.onCancel();
-            }
-        }
-
-        @Override
-        public void openNotification(MessageStyleType type, boolean doesTimeout, View viewToShow) {
-        }
-
-        @Override
-        public void openNotification(MessageStyleType type, boolean doesTimeout, String title) {
-        }
-
-        @Override
-        public void openNotification(MessageStyleType type, boolean doesTimeout, String title, String linkText, NotificationCallback cb) {
-        }
-
-        @Override
-        public String getSubAppId() {
-            return null;
-        }
-
-        @Override
-        public SubApp getSubApp() {
-            return null;
-        }
-
-        @Override
-        public Location getLocation() {
-            return null;
-        }
-
-        @Override
-        public AppContext getAppContext() {
-            return null;
-        }
-
-        @Override
-        public SubAppDescriptor getSubAppDescriptor() {
-            return null;
-        }
-
-        @Override
-        public void setAppContext(AppContext appContext) {
-
-        }
-
-        @Override
-        public void setLocation(Location location) {
-
-        }
-
-        @Override
-        public void setSubApp(SubApp subApp) {
-        }
-
-        @Override
-        public void setInstanceId(String instanceId) {
-
-        }
-
-        @Override
-        public String getInstanceId() {
-            return null;
-        }
-
-        @Override
-        public void close() {
-        }
-
-    }
+    
 }
