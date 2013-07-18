@@ -274,4 +274,21 @@ public final class FavoritesManagerImpl implements FavoritesManager {
         }
 
     }
+
+    @Override
+    public void moveFavorite(String relPath, String group) {
+        try {
+            Node favorite = favoriteStore.getBookmarkRoot().getNode(relPath);
+            Node newGroup = null;
+            if (StringUtils.isNotEmpty(group)) {
+                newGroup = favoriteStore.getBookmarkRoot().getNode(group);
+            } else {
+                newGroup = favoriteStore.getBookmarkRoot();
+            }
+            NodeUtil.moveNode(favorite, newGroup);
+            newGroup.getSession().save();
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+    }
 }

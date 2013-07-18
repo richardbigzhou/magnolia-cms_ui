@@ -65,4 +65,6 @@ public interface FavoritesManager {
     void removeGroup(String relPath);
 
     JcrNewNodeAdapter createFavoriteGroupSuggestion(String title);
+
+    void moveFavorite(String relPath, String group);
 }
