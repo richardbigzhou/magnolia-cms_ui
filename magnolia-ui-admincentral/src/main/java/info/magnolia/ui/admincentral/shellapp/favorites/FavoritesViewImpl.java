@@ -49,11 +49,17 @@ import javax.inject.Inject;
 
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
+import com.vaadin.event.dd.DragAndDropEvent;
+import com.vaadin.event.dd.DropHandler;
+import com.vaadin.event.dd.acceptcriteria.AcceptAll;
+import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.DragAndDropWrapper;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.DragAndDropWrapper.DragStartMode;
 
 /**
  * Default view implementation for favorites.
@@ -74,7 +80,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
     }
 
     @Inject
-    public FavoritesViewImpl(Shell shell) {
+    public FavoritesViewImpl(Shell shell, FavoritesManager favoritesManager) {
         super();
         this.shell = shell;
         construct();
@@ -95,8 +101,6 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
         emptyPlaceHolder.setValue(String.format("<span class=\"icon-favorites\"></span><div class=\"message\">%s</div>", MessagesUtil.get("favorites.empty")));
 
         splitPanel.setVisible(false);
-
-        noGroup = new FavoritesGroup();
 
         layout.addLayoutClickListener(new LayoutClickListener() {
 
@@ -140,7 +144,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
             layout.setExpandRatio(splitPanel, 1);
             layout.setExpandRatio(emptyPlaceHolder, 0);
 
-            noGroup.removeAllComponents();
+            noGroup = new FavoritesGroup();
             splitPanel.getLeftContainer().removeAllComponents();
             splitPanel.getRightContainer().removeAllComponents();
             final SortedSet<String> keys = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
@@ -150,13 +154,52 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
                 final AbstractJcrNodeAdapter favoriteAdapter = nodeAdapters.get(key);
                 if (AdmincentralNodeTypes.Favorite.NAME.equals(favoriteAdapter.getPrimaryNodeTypeName())) {
                     final FavoritesEntry favEntry = new FavoritesEntry(favoriteAdapter, listener, shell);
-                    noGroup.addComponent(favEntry);
+                    DragAndDropWrapper wrap = new FavoritesDragAndDropWrapper(favEntry);
+                    wrap.setDragStartMode(DragStartMode.COMPONENT);
+                    wrap.setSizeUndefined();
+                    noGroup.addComponent(wrap);
                 } else {
                     FavoritesGroup group = new FavoritesGroup(favoriteAdapter, listener, shell);
-                    splitPanel.getRightContainer().addComponent(group);
+                    FavoritesDragAndDropWrapper wrap = new FavoritesDragAndDropWrapper(group);
+
+                    wrap.setDropHandler(new DropHandler() {
+
+                        @Override
+                        public void drop(DragAndDropEvent event) {
+                            String favoritePath = ((FavoritesEntry) ((FavoritesDragAndDropWrapper) event.getTransferable().getSourceComponent()).getWrappedComponent()).getRelPath();
+                            String groupPath = ((FavoritesGroup) ((FavoritesDragAndDropWrapper) event.getTargetDetails().getTarget()).getWrappedComponent()).getRelPath();
+                            listener.moveFavorite(favoritePath, groupPath);
+                        }
+
+                        @Override
+                        public AcceptCriterion getAcceptCriterion() {
+                            return AcceptAll.get();
+                        }
+
+                    });
+
+                    splitPanel.getRightContainer().addComponent(wrap);
                 }
             }
-            splitPanel.getLeftContainer().addComponent(noGroup);
+            FavoritesDragAndDropWrapper wrap = new FavoritesDragAndDropWrapper(noGroup);
+            noGroup.setSizeFull();
+            wrap.setSizeFull();
+
+            wrap.setDropHandler(new DropHandler() {
+
+                @Override
+                public void drop(DragAndDropEvent event) {
+                    String favoritePath = ((FavoritesEntry) ((FavoritesDragAndDropWrapper) event.getTransferable().getSourceComponent()).getWrappedComponent()).getRelPath();
+                    listener.moveFavorite(favoritePath, null);
+                }
+
+                @Override
+                public AcceptCriterion getAcceptCriterion() {
+                    return AcceptAll.get();
+                }
+
+            });
+            splitPanel.getLeftContainer().addComponent(wrap);
         }
 
         if (favoriteForm != null) {
@@ -179,6 +222,9 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
 
         while (components.hasNext()) {
             Component component = components.next();
+            if (component instanceof FavoritesDragAndDropWrapper) {
+                component = ((FavoritesDragAndDropWrapper) component).getWrappedComponent();
+            }
             if (component instanceof FavoritesGroup) {
                 ((FavoritesGroup) component).reset();
             }
