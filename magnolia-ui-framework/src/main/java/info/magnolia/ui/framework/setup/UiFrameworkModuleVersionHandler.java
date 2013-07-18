@@ -47,7 +47,9 @@ import info.magnolia.nodebuilder.task.ErrorHandling;
 import info.magnolia.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
+import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
+import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +80,18 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
                                         addProperty("factoryClass", BasicTextCodeFieldFactory.class.getName())
                                         )
                                 )))
-                ));
+                )
+                .addTask((new NodeBuilderTask("Add definition of the WsitchField Field", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/ui-framework",
+                        getNode("fieldTypes").then(
+                                addNode("switchableField", NodeTypes.ContentNode.NAME),
+                                getNode("switchableField").then(
+                                        addProperty("definitionClass", SwitchableFieldDefinition.class.getName()),
+                                        addProperty("factoryClass", SwitchableFieldFactory.class.getName())
+                                        )
+                                )))
+                )
+
+        );
     }
 
     @Override

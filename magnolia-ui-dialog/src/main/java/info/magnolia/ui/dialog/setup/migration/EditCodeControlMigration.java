@@ -31,36 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.security.app.action.availability;
+package info.magnolia.ui.dialog.setup.migration;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
 
-import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- * The rule to verify that the item does not represent the current user.
+ * * Migrate an EditCode control to a CodeTextField.
  */
-public class IsNotCurrentUserRule extends AbstractAvailabilityRule {
-
-    private static final Logger log = LoggerFactory.getLogger(IsNotCurrentUserRule.class);
+public class EditCodeControlMigration implements ControlMigration {
 
     @Override
-    protected boolean isAvailableForItem(Item item) {
-        if (item == null || !item.isNode()) {
-            return true;
+    public void migrate(Node controlNode) throws RepositoryException {
+        controlNode.getProperty("controlType").remove();
+        controlNode.setProperty("class", BasicTextCodeFieldDefinition.class.getName());
+        if (controlNode.hasProperty("language")) {
+            String language = controlNode.getProperty("language").getString();
+            if (language.equals("generic")) {
+                controlNode.getProperty("language").setValue("html");
+            } else if (language.equals("js")) {
+                controlNode.getProperty("language").setValue("javascript");
+            } else if (language.equals("freemarker") || language.equals("ftl")) {
+                controlNode.getProperty("language").setValue("text");
+            }
         }
-        try {
-            String nodeName = ((Node) item).getName();
-            return !nodeName.equals(MgnlContext.getUser().getName());
-        } catch (RepositoryException ex) {
-            log.warn("Error verifying availability for item [{}]: " + ex.getMessage(), item);
-        }
-        return false;
     }
+
 }

@@ -31,36 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.security.app.action.availability;
+package info.magnolia.ui.form.field.definition;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
-
-import javax.jcr.Item;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * The rule to verify that the item does not represent the current user.
+ * Field definition for a switchable field.
  */
-public class IsNotCurrentUserRule extends AbstractAvailabilityRule {
+public class SwitchableFieldDefinition extends ConfiguredFieldDefinition {
+    private String selectionType = "radio";
 
-    private static final Logger log = LoggerFactory.getLogger(IsNotCurrentUserRule.class);
+    private List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
 
-    @Override
-    protected boolean isAvailableForItem(Item item) {
-        if (item == null || !item.isNode()) {
-            return true;
-        }
-        try {
-            String nodeName = ((Node) item).getName();
-            return !nodeName.equals(MgnlContext.getUser().getName());
-        } catch (RepositoryException ex) {
-            log.warn("Error verifying availability for item [{}]: " + ex.getMessage(), item);
-        }
-        return false;
+    private List<ConfiguredFieldDefinition> fields = new ArrayList<ConfiguredFieldDefinition>();
+
+    /**
+     * Default selectionType is 'radio'.
+     * 
+     * @return the desired selection field (radio:OptionGroupFieldDefinition, select:).
+     */
+    public String getSelectionType() {
+        return selectionType;
     }
+
+    public List<SelectFieldOptionDefinition> getOptions() {
+        return options;
+    }
+
+    public List<ConfiguredFieldDefinition> getFields() {
+        return fields;
+    }
+
+    public void setSelectionType(String selectionType) {
+        this.selectionType = selectionType;
+    }
+
+    public void setOptions(List<SelectFieldOptionDefinition> options) {
+        this.options = options;
+    }
+
+    public void setFields(List<ConfiguredFieldDefinition> fields) {
+        this.fields = fields;
+    }
+
 }

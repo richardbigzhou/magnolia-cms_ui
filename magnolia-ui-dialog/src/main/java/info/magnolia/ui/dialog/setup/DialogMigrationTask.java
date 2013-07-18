@@ -48,6 +48,7 @@ import info.magnolia.ui.dialog.setup.migration.CheckBoxSwitchControlMigration;
 import info.magnolia.ui.dialog.setup.migration.ControlMigration;
 import info.magnolia.ui.dialog.setup.migration.DamControlMigration;
 import info.magnolia.ui.dialog.setup.migration.DateControlMigration;
+import info.magnolia.ui.dialog.setup.migration.EditCodeControlMigration;
 import info.magnolia.ui.dialog.setup.migration.EditControlMigration;
 import info.magnolia.ui.dialog.setup.migration.FckEditControlMigration;
 import info.magnolia.ui.dialog.setup.migration.FileControlMigration;
@@ -56,6 +57,7 @@ import info.magnolia.ui.dialog.setup.migration.LinkControlMigration;
 import info.magnolia.ui.dialog.setup.migration.MultiSelectControlMigration;
 import info.magnolia.ui.dialog.setup.migration.SelectControlMigration;
 import info.magnolia.ui.dialog.setup.migration.StaticControlMigration;
+import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -150,6 +152,7 @@ public class DialogMigrationTask extends AbstractTask {
         customMigrationTask.put("file", new FileControlMigration());
         customMigrationTask.put("static", new StaticControlMigration());
         customMigrationTask.put("hidden", new HiddenControlMigration());
+        customMigrationTask.put("editCode", new EditCodeControlMigration());
 
         return customMigrationTask;
     }
@@ -277,7 +280,7 @@ public class DialogMigrationTask extends AbstractTask {
                 ControlMigration controlMigration = controlMigrationMap.get(controlTypeName);
                 controlMigration.migrate(fieldNode);
             } else {
-                fieldNode.setProperty("class", "info.magnolia.ui.form.field.definition.StaticFieldDefinition");
+                fieldNode.setProperty("class", StaticFieldDefinition.class.getName());
                 if (!fieldNode.hasProperty("value")) {
                     fieldNode.setProperty("value", "Field not yet supported");
                 }
