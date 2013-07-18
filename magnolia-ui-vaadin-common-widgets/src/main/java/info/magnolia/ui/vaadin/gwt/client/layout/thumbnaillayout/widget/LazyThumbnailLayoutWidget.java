@@ -42,6 +42,8 @@ import info.magnolia.ui.vaadin.gwt.client.pinch.MagnoliaPinchRecognizer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -59,7 +61,6 @@ import com.googlecode.mgwt.dom.client.recognizer.tap.MultiTapRecognizer;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.client.ComputedStyle;
 import com.vaadin.client.ServerConnector;
-import com.vaadin.client.VConsole;
 
 /**
  * Client side impl of lazy asset thumbnails layout.
@@ -172,7 +173,7 @@ public class LazyThumbnailLayoutWidget extends FlowPanel {
     }
 
     public void setThumbnailSize(int width, int height) {
-        VConsole.log("Thumbnails: setThumbnailSize: " + width + " h:" + height);
+        Logger.getLogger(getClass().getName()).log(Level.INFO, "Thumbnails: setThumbnailSize: " + width + " h:" + height);
         if (this.thumbnailHeight != height || this.thumbnailWidth != width) {
             this.thumbnailHeight = height;
             this.thumbnailWidth = width;
