@@ -42,8 +42,11 @@ import info.magnolia.ui.api.action.CommandActionDefinition;
  */
 public class DeleteActionDefinition extends CommandActionDefinition {
 
+    public static final String SUCCESS_MESSAGE = "confirmation.delete.success";
+
     public DeleteActionDefinition() {
         setImplementationClass(DeleteAction.class);
         setCommand("delete");
+        setSuccessMessage(SUCCESS_MESSAGE);
     }
 }
