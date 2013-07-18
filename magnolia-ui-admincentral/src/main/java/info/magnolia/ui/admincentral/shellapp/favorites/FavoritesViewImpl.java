@@ -51,8 +51,11 @@ import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
-import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+import com.vaadin.event.dd.acceptcriteria.And;
+import com.vaadin.event.dd.acceptcriteria.TargetDetailIs;
+import com.vaadin.shared.ui.dd.HorizontalDropLocation;
+import com.vaadin.shared.ui.dd.VerticalDropLocation;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
@@ -173,7 +176,10 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
 
                         @Override
                         public AcceptCriterion getAcceptCriterion() {
-                            return AcceptAll.get();
+                            return new And(
+                                    new TargetDetailIs("verticalLocation", VerticalDropLocation.MIDDLE.name()),
+                                    new TargetDetailIs("horizontalLocation", HorizontalDropLocation.CENTER.name())
+                            );
                         }
 
                     });
@@ -195,7 +201,10 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
 
                 @Override
                 public AcceptCriterion getAcceptCriterion() {
-                    return AcceptAll.get();
+                    return new And(
+                            new TargetDetailIs("verticalLocation", VerticalDropLocation.MIDDLE.name()),
+                            new TargetDetailIs("horizontalLocation", HorizontalDropLocation.CENTER.name())
+                    );
                 }
 
             });
