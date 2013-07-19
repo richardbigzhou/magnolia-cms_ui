@@ -2,207 +2,250 @@
 
 @mixin table {
 
-  .v-magnolia-table {
+  .v-table {
     position: relative;
     background-color: $c80;
-
-    /* HEADER */
-    .v-table-header-wrap {
-      border: none;
-      background: $c16;
-      font-size: 12px;
-    }
-
-    .v-select-all {
-      position: absolute;
-      left: 10px;
-      top: -1px;
-      line-height: 30px;
-    }
-
-    .v-table-header td {
-      height: 30px;
-      line-height: 30px;
-    }
-
-    .v-table-header td:first-child span {
-      padding-left: 30px;
-    }
-
-    .v-table-resizer {
-      background-color: transparent;
-      background-image: url(img/table-resizer-background-dotted.svg);
-      background-position: center top;
-      background-repeat: repeat;
-      background-size: 5px 2px;
-      height: 24px;
-      margin-top: 6px;
-      margin-right: -2px;
-      padding: 0 2px;
-      width: 1px;
-    }
-
-    .sortable:hover .v-table-sort-indicator:before {
-      @extend .icon-arrow1_n:before;
-      color: $c50;
-      position: relative;
-      right: 16px;
-    }
-
-    .v-table-header-cell-desc.sortable .v-table-sort-indicator:before {
-      @extend .icon-arrow1_s:before;
-      color: $c30;
-      right: 0;
-    }
-
-    .v-table-header-cell-asc.sortable .v-table-sort-indicator:before {
-      @extend .icon-arrow1_n:before;
-      color: $c30;
-      right: 0;
-    }
-
-    .v-table-sort-indicator {
-      margin-top:1px;
-      background: none !important;
-      font-family: 'MagnoliaIcons';
-      font-size: 19px;
-      padding-right: 2px;
-    }
-
-    .v-table-caption-container {
-      color: $c10;
-      padding: 0;
-      margin-left: 5px;
-      text-overflow: ellipsis;
-    }
-
-    /* BODY */
-    .v-table-body-wrapper {
-      border: none;
-    }
-
-    .v-table-table {
-      border-collapse: separate;
-      font-size: 12px;
-    }
-
-    .v-table-row,
-    .v-table-row-odd {
-    }
-
-    .v-table-row:hover,
-    .v-table-row-odd:hover {
-      background-color: $c16;
-    }
-
-    tr.v-selected:hover {
-      background-color: $c10;
-    }
-
-    .v-table-cell-content {
-      padding: 0 5px;
-      border-top: none !important;
-      border-right: none !important;
-      border-bottom: 1px dashed $c14 !important;
-      color: $c90;
-    }
-
-    .v-table-cell-wrapper {
-      height: 30px;
-      line-height: 30px;
-      overflow: hidden;
-      /* text-overflow: ellipsis; commented out until it can be disabled while editing cells */
-    }
-
-    .v-table-cell-wrapper * {
-      height: 30px;
-      line-height: 30px;
-      vertical-align: top;
-    }
-
-    tr.v-selected .v-table-cell-content {
-      background: $c10;
-      color: $c80;
-    }
-
-    .v-table-focus .v-table-cell-wrapper {
-      margin: 0;
-    }
-
-    .v-table-cell-wrapper:empty:after {
-      color: $c13;
-      font-size: 11px;
-      content: '\2014';
-    }
-
-    .v-selection-cb {
-      margin-left: 5px;
-      margin-right: 10px;
-      display: inline-block;
-      width: 15px;
-
-      label {
-        background-position: 0 center !important;
-      }
-    }
-
-    .v-table-icon-element {
-      display: inline-block;
-      margin-left: 0;
-      margin-right: 4px;
-      color: $c11;
-      font-size: 19px;
-      height: 22px;
-      width: 1em;
-      vertical-align: text-bottom;
-    }
-
-    tr.v-selected .v-table-icon-element {
-      color: $c13;
-    }
-
-    .v-table-cell-wrapper .v-textfield {
-      border: medium none;
-      margin: 0 -1px !important;
-      padding: 0 !important;
-      vertical-align: top;
-    }
-
   }
 
+  /* HEADER */
+  .v-table-header-wrap {
+    border: none;
+    background: $c16;
+    font-size: 12px;
+  }
+
+  .v-select-all {
+    position: absolute;
+    left: 10px;
+    top: -1px;
+    line-height: 30px;
+  }
+
+  .v-table-header td {
+    height: 30px;
+    line-height: 30px;
+  }
+
+  .v-table-header td:first-child span {
+    padding-left: 30px;
+  }
+
+  .v-table-resizer {
+    background-color: transparent;
+    background-image: url(img/table-resizer-background-dotted.svg);
+    background-position: center top;
+    background-repeat: repeat;
+    background-size: 5px 2px;
+    height: 24px;
+    margin-top: 6px;
+    margin-right: -2px;
+    padding: 0 2px;
+    width: 1px;
+  }
+
+  .sortable:hover .v-table-sort-indicator:before {
+    @extend .icon-arrow1_n:before;
+    color: $c50;
+    position: relative;
+    right: 16px;
+  }
+
+  .v-table-header-cell-desc.sortable .v-table-sort-indicator:before {
+    @extend .icon-arrow1_s:before;
+    color: $c30;
+    right: 0;
+  }
+
+  .v-table-header-cell-asc.sortable .v-table-sort-indicator:before {
+    @extend .icon-arrow1_n:before;
+    color: $c30;
+    right: 0;
+  }
+
+  .v-table-sort-indicator {
+    margin-top:1px;
+    background: none !important;
+    font-family: 'MagnoliaIcons';
+    font-size: 19px;
+    padding-right: 2px;
+  }
+
+  .v-table-caption-container {
+    color: $c10;
+    padding: 0;
+    margin-left: 5px;
+    text-overflow: ellipsis;
+  }
+
+  /* BODY */
+  .v-table-body-wrapper {
+    border: none;
+  }
+
+  .v-table-table {
+    border-collapse: separate;
+    font-size: 12px;
+  }
+
+  .v-table-row,
+  .v-table-row-odd {
+    background-color: $c80;
+  }
+
+  .v-table .v-table-row:hover,
+  .v-table .v-table-row-odd:hover {
+    background-color: $c16;
+  }
+
+  .v-table-cell-content {
+    padding: 0 5px;
+    border-top: none !important;
+    border-right: none !important;
+    border-bottom: 1px dashed $c14 !important;
+    color: $c90;
+  }
+
+  .v-table-cell-wrapper {
+    height: 30px;
+    line-height: 30px;
+    overflow: hidden;
+    /* text-overflow: ellipsis; commented out until it can be disabled while editing cells */
+  }
+
+  .v-table-cell-wrapper * {
+    height: 30px;
+    line-height: 30px;
+    vertical-align: top;
+  }
+
+  .v-table tr.v-selected .v-table-cell-content {
+    background-color: $c10;
+    color: $c80;
+  }
+
+  .v-table tr.v-selected:hover {
+    background-color: $c10;
+  }
+
+  .v-table-focus .v-table-cell-wrapper {
+    margin: 0;
+  }
+
+  .v-table-cell-wrapper:empty:after {
+    color: $c13;
+    font-size: 11px;
+    content: '\2014';
+  }
+
+  .v-selection-cb {
+    margin-left: 5px;
+    margin-right: 10px;
+    display: inline-block;
+    width: 15px;
+
+    label {
+      background-position: 0 center !important;
+    }
+  }
+
+  .v-table-icon-element {
+    display: inline-block;
+    margin-left: 0;
+    margin-right: 4px;
+    color: $c11;
+    font-size: 19px;
+    height: 22px;
+    width: 1em;
+    vertical-align: text-bottom;
+  }
+
+  tr.v-selected .v-table-icon-element {
+    color: $c13;
+  }
+
+  .v-table-cell-wrapper .v-textfield {
+    border: medium none;
+    margin: 0 -1px !important;
+    padding: 0 !important;
+    vertical-align: top;
+  }
+
+  /* DRAG AND DROP */
+  .v-table-row-drag-top .v-table-cell-content:first-child:before,
+  .v-table-row-drag-bottom .v-table-cell-content:first-child:after {
+    background: none;
+    content: none;
+    margin: 0;
+  }
+
+  .v-table-row-drag-top:hover,
+  .v-table-row-drag-middle:hover,
+  .v-table-row-drag-bottom:hover {
+    background-color: $c80 !important;
+  }
+
+  .v-table-row-drag-middle .v-table-cell-content {
+    background-color: $c23;
+  }
+
+  .v-table-row-drag-top .v-table-cell-content {
+    border-top: 3px solid $c21 !important;
+  }
+
+  .v-table-row-drag-top .v-table-cell-wrapper {
+    margin-top: -3px;
+  }
+
+  .v-table-row-drag-bottom .v-table-cell-content {
+    border-bottom: 3px solid $c21 !important;
+  }
+
+.v-table-row-drag-bottom .v-table-cell-wrapper {
+    margin-bottom: -2px;
+  }
+
+  .v-table-row.v-drag-element,
+  .v-table-row-odd.v-drag-element {
+
+    background-color: rgba(255, 255, 255, .7);
+    font-size: 12px;
+
+    .v-table-cell-content {
+      border-bottom: none !important;
+    }
+  }
+
+
   /* TREES */
-  .v-magnolia-table.v-treetable {
+  .v-treetable .v-table-header td:first-child span {
+    padding-left: 50px;
+  }
 
-    .v-table-header td:first-child span {
-      padding-left: 50px;
-    }
+  .v-treetable-treespacer {
+    position: static;
+    display: inline-block;
+    background: none;
+    color: $c13;
+    font-size: 20px;
+    text-align: right;
+    width: 20px;
+  }
 
-    .v-treetable-treespacer {
-      position: static;
-      display: inline-block;
-      background: none;
-      color: $c13;
-      font-size: 20px;
-      text-align: right;
-      width: 20px;
-    }
-
-    tr.v-selected .v-treetable-treespacer {
-      color: $c12;
-    }
+  tr.v-selected .v-treetable-treespacer {
+    color: $c12;
   }
 
 
   /* TABLET */
-  .tablet .v-magnolia-table {
+  .tablet {
 
-    .v-select-all {
+    .v-table .v-select-all {
       margin-top: -23px;
     }
 
     .v-table-row:hover,
     .v-table-row-odd:hover {
-      background-color: transparent;
+      background-color: $c80;
     }
 
     .v-treetable-treespacer {
@@ -210,9 +253,9 @@
     }
   }
 
-  /*A workaround for MGNLUI-1651*/
+  /* workaround for MGNLUI-1651 */
   .v-magnolia-table.no-header-checkbox .v-select-all {
-    visibility:hidden;
+    visibility: hidden;
   }
 
 
