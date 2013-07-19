@@ -109,6 +109,12 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
     }
 
     @Override
+    public void orderGroupBefore(String relPath, String sibling) {
+        favoritesManager.orderGroupBefore(relPath, sibling);
+        initializeView();
+    }
+
+    @Override
     public void goToLocation(final String location) {
         final String completeLocation = getCompleteURIFromFragment(location);
         Page.getCurrent().setLocation(completeLocation);

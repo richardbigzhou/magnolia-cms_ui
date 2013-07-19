@@ -39,35 +39,30 @@ import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.event.dd.acceptcriteria.ServerSideCriterion;
 import com.vaadin.shared.ui.dd.HorizontalDropLocation;
 import com.vaadin.shared.ui.dd.VerticalDropLocation;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.DragAndDropWrapper;
 
 /**
- * TODO Type description here.
+ * Drag&Drop wrapper for the {@link FavoritesEntry}.
  */
-public class FavoritesDragAndDropWrapper extends DragAndDropWrapper {
+public class EntryDragAndDropWrapper extends AbstractFavoritesDragAndDropWrapper {
 
-    private final FavoritesEntry favorite;
-    private final FavoritesView.Listener listener;
-
-    public FavoritesDragAndDropWrapper(FavoritesEntry root, FavoritesView.Listener listener) {
-        super(root);
-        this.favorite = root;
-        this.listener = listener;
-        init();
+    public EntryDragAndDropWrapper(FavoritesEntry root, FavoritesView.Listener listener) {
+        super(root, listener);
     }
 
-    private void init() {
+    @Override
+    protected void init() {
+        setDragStartMode(DragStartMode.COMPONENT);
+        setSizeUndefined();
         setDropHandler(new DropHandler() {
 
             @Override
             public void drop(DragAndDropEvent event) {
-                String sourcePath = ((FavoritesEntry) ((FavoritesDragAndDropWrapper) event.getTransferable().getSourceComponent()).getWrappedComponent()).getRelPath();
+                String sourcePath = ((FavoritesEntry) ((EntryDragAndDropWrapper) event.getTransferable().getSourceComponent()).getWrappedComponent()).getRelPath();
                 String verticalDropLocation = (String) event.getTargetDetails().getData("verticalLocation");
                 if (verticalDropLocation.equals(VerticalDropLocation.BOTTOM.name())) {
-                    listener.orderFavoriteAfter(sourcePath, favorite.getNodename());
+                    getListener().orderFavoriteAfter(sourcePath, ((FavoritesEntry) getWrappedComponent()).getNodename());
                 } else {
-                    listener.orderFavoriteBefore(sourcePath, favorite.getNodename());
+                    getListener().orderFavoriteBefore(sourcePath, ((FavoritesEntry) getWrappedComponent()).getNodename());
                 }
             }
 
@@ -77,8 +72,13 @@ public class FavoritesDragAndDropWrapper extends DragAndDropWrapper {
 
                     @Override
                     public boolean accept(DragAndDropEvent dragEvent) {
+                        // accept only entries, not groups
+                        AbstractFavoritesDragAndDropWrapper wrapper = (AbstractFavoritesDragAndDropWrapper) dragEvent.getTransferable().getSourceComponent();
+                        if (!(wrapper.getWrappedComponent() instanceof FavoritesEntry)) {
+                            return false;
+                        }
+
                         // drop location
-                        String verticalDropLocation = (String) dragEvent.getTargetDetails().getData("verticalLocation");
                         String horizontalDropLocation = (String) dragEvent.getTargetDetails().getData("horizontalLocation");
 
                         // horizontally, it must be in center
@@ -87,20 +87,15 @@ public class FavoritesDragAndDropWrapper extends DragAndDropWrapper {
                         }
 
                         // and only in the same group
-                        String sourceGroup = ((FavoritesEntry) ((FavoritesDragAndDropWrapper) dragEvent.getTransferable().getSourceComponent()).getWrappedComponent()).getGroup();
+                        String sourceGroup = ((FavoritesEntry) ((EntryDragAndDropWrapper) dragEvent.getTransferable().getSourceComponent()).getWrappedComponent()).getGroup();
                         if (sourceGroup == null) {
-                            return favorite.getGroup() == null;
+                            return ((FavoritesEntry) getWrappedComponent()).getGroup() == null;
                         }
-                        return sourceGroup.equals(favorite.getGroup());
+                        return sourceGroup.equals(((FavoritesEntry) getWrappedComponent()).getGroup());
                     }
                 };
             }
         });
 
     }
-
-    public Component getWrappedComponent() {
-        return this.favorite;
-    }
-
 }
