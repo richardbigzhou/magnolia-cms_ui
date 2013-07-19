@@ -39,14 +39,18 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 /**
  * Abstract Base Implementation of {@link MultiValueHandler} used to <br>
  * - store a List of values into a single property <br>
- * - retrieve a List of Value from a single property.
+ * - retrieve a List of Value from a single property ,<br>
+ * .
+ * Expose a generic method that create or retrieve a generic Property (simple or multi value property).
+ * 
+ * @param <T> type of the element list.
  */
-public abstract class AbstractBasePropertyValueHandler implements MultiValueHandler {
+public abstract class AbstractMultiValueHandler<T> implements MultiValueHandler<T> {
 
     /**
      * If the desired property (propertyName) already exist in the JcrNodeAdapter, return this property<br>
      * else create a new Property.
-     * 
+     *
      * @param <T>
      */
     @SuppressWarnings("unchecked")
