@@ -97,6 +97,18 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
     }
 
     @Override
+    public void orderFavoriteBefore(String relPath, String sibling) {
+        favoritesManager.orderFavoriteBefore(relPath, sibling);
+        initializeView();
+    }
+
+    @Override
+    public void orderFavoriteAfter(String relPath, String sibling) {
+        favoritesManager.orderFavoriteAfter(relPath, sibling);
+        initializeView();
+    }
+
+    @Override
     public void goToLocation(final String location) {
         final String completeLocation = getCompleteURIFromFragment(location);
         Page.getCurrent().setLocation(completeLocation);

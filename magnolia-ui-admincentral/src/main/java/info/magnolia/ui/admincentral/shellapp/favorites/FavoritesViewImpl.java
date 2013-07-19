@@ -151,37 +151,17 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
                 final AbstractJcrNodeAdapter favoriteAdapter = nodeAdapters.get(key);
                 if (AdmincentralNodeTypes.Favorite.NAME.equals(favoriteAdapter.getPrimaryNodeTypeName())) {
                     final FavoritesEntry favEntry = new FavoritesEntry(favoriteAdapter, listener, shell);
-                    DragAndDropWrapper wrap = new FavoritesDragAndDropWrapper(favEntry);
+                    DragAndDropWrapper wrap = new FavoritesDragAndDropWrapper(favEntry, listener);
                     wrap.setDragStartMode(DragStartMode.COMPONENT);
                     wrap.setSizeUndefined();
+
                     noGroup.addComponent(wrap);
                 } else {
                     FavoritesGroup group = new FavoritesGroup(favoriteAdapter, listener, shell);
-                    FavoritesDragAndDropWrapper wrap = new FavoritesDragAndDropWrapper(group);
-
-                    wrap.setDropHandler(new DropHandler() {
-
-                        @Override
-                        public void drop(DragAndDropEvent event) {
-                            String favoritePath = ((FavoritesEntry) ((FavoritesDragAndDropWrapper) event.getTransferable().getSourceComponent()).getWrappedComponent()).getRelPath();
-                            String groupPath = ((FavoritesGroup) ((FavoritesDragAndDropWrapper) event.getTargetDetails().getTarget()).getWrappedComponent()).getRelPath();
-                            listener.moveFavorite(favoritePath, groupPath);
-                        }
-
-                        @Override
-                        public AcceptCriterion getAcceptCriterion() {
-                            return new And(
-                                    new TargetDetailIs("verticalLocation", VerticalDropLocation.MIDDLE.name()),
-                                    new TargetDetailIs("horizontalLocation", HorizontalDropLocation.CENTER.name())
-                            );
-                        }
-
-                    });
-
-                    splitPanel.getRightContainer().addComponent(wrap);
+                    splitPanel.getRightContainer().addComponent(group);
                 }
             }
-            FavoritesDragAndDropWrapper wrap = new FavoritesDragAndDropWrapper(noGroup);
+            DragAndDropWrapper wrap = new DragAndDropWrapper(noGroup);
             noGroup.setSizeFull();
             wrap.setSizeFull();
 

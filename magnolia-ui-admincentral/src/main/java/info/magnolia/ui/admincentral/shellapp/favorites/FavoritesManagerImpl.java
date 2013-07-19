@@ -291,4 +291,24 @@ public final class FavoritesManagerImpl implements FavoritesManager {
             throw new RuntimeRepositoryException(e);
         }
     }
+
+    @Override
+    public void orderFavoriteBefore(String relPath, String sibling) {
+        try {
+            Node favoriteToMove = favoriteStore.getBookmarkRoot().getNode(relPath);
+            NodeUtil.orderBefore(favoriteToMove, sibling);
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+    }
+
+    @Override
+    public void orderFavoriteAfter(String relPath, String sibling) {
+        try {
+            Node favoriteToMove = favoriteStore.getBookmarkRoot().getNode(relPath);
+            NodeUtil.orderAfter(favoriteToMove, sibling);
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+    }
 }

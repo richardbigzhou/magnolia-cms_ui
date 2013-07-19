@@ -33,6 +33,12 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import com.vaadin.event.dd.DragAndDropEvent;
+import com.vaadin.event.dd.DropHandler;
+import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+import com.vaadin.event.dd.acceptcriteria.ServerSideCriterion;
+import com.vaadin.shared.ui.dd.HorizontalDropLocation;
+import com.vaadin.shared.ui.dd.VerticalDropLocation;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DragAndDropWrapper;
 
@@ -41,15 +47,60 @@ import com.vaadin.ui.DragAndDropWrapper;
  */
 public class FavoritesDragAndDropWrapper extends DragAndDropWrapper {
 
-    private final Component wrappedComponent;
+    private final FavoritesEntry favorite;
+    private final FavoritesView.Listener listener;
 
-    public FavoritesDragAndDropWrapper(Component root) {
+    public FavoritesDragAndDropWrapper(FavoritesEntry root, FavoritesView.Listener listener) {
         super(root);
-        this.wrappedComponent = root;
+        this.favorite = root;
+        this.listener = listener;
+        init();
+    }
+
+    private void init() {
+        setDropHandler(new DropHandler() {
+
+            @Override
+            public void drop(DragAndDropEvent event) {
+                String sourcePath = ((FavoritesEntry) ((FavoritesDragAndDropWrapper) event.getTransferable().getSourceComponent()).getWrappedComponent()).getRelPath();
+                String verticalDropLocation = (String) event.getTargetDetails().getData("verticalLocation");
+                if (verticalDropLocation.equals(VerticalDropLocation.BOTTOM.name())) {
+                    listener.orderFavoriteAfter(sourcePath, favorite.getNodename());
+                } else {
+                    listener.orderFavoriteBefore(sourcePath, favorite.getNodename());
+                }
+            }
+
+            @Override
+            public AcceptCriterion getAcceptCriterion() {
+                return new ServerSideCriterion() {
+
+                    @Override
+                    public boolean accept(DragAndDropEvent dragEvent) {
+                        // drop location
+                        String verticalDropLocation = (String) dragEvent.getTargetDetails().getData("verticalLocation");
+                        String horizontalDropLocation = (String) dragEvent.getTargetDetails().getData("horizontalLocation");
+
+                        // horizontally, it must be in center
+                        if (!horizontalDropLocation.equals(HorizontalDropLocation.CENTER.name())) {
+                            return false;
+                        }
+
+                        // and only in the same group
+                        String sourceGroup = ((FavoritesEntry) ((FavoritesDragAndDropWrapper) dragEvent.getTransferable().getSourceComponent()).getWrappedComponent()).getGroup();
+                        if (sourceGroup == null) {
+                            return favorite.getGroup() == null;
+                        }
+                        return sourceGroup.equals(favorite.getGroup());
+                    }
+                };
+            }
+        });
+
     }
 
     public Component getWrappedComponent() {
-        return this.wrappedComponent;
+        return this.favorite;
     }
 
 }

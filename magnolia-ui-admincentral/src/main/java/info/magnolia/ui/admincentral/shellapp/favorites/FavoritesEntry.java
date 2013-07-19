@@ -89,8 +89,16 @@ public final class FavoritesEntry extends CustomComponent {
         return StringUtils.isBlank(group) ? this.nodename : this.group + "/" + this.nodename;
     }
 
+    public String getNodename() {
+        return this.nodename;
+    }
+
     public void setGroup(String group) {
         this.group = group;
+    }
+
+    public String getGroup() {
+        return this.group;
     }
 
     /**

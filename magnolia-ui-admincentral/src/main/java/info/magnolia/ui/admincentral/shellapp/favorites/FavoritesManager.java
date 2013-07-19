@@ -67,4 +67,8 @@ public interface FavoritesManager {
     JcrNewNodeAdapter createFavoriteGroupSuggestion(String title);
 
     void moveFavorite(String relPath, String group);
+
+    void orderFavoriteBefore(String relPath, String sibling);
+
+    void orderFavoriteAfter(String relPath, String sibling);
 }

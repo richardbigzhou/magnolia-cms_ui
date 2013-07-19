@@ -51,7 +51,14 @@ import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
+import com.vaadin.event.dd.DragAndDropEvent;
+import com.vaadin.event.dd.DropHandler;
+import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+import com.vaadin.event.dd.acceptcriteria.And;
+import com.vaadin.event.dd.acceptcriteria.TargetDetailIs;
 import com.vaadin.event.ShortcutListener;
+import com.vaadin.shared.ui.dd.HorizontalDropLocation;
+import com.vaadin.shared.ui.dd.VerticalDropLocation;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
@@ -97,7 +104,7 @@ public final class FavoritesGroup extends CssLayout {
             final AbstractJcrNodeAdapter fav = nodeAdapters.get(key);
             final FavoritesEntry favEntry = new FavoritesEntry(fav, listener, shell);
             favEntry.setGroup(this.relPath);
-            DragAndDropWrapper wrap = new FavoritesDragAndDropWrapper(favEntry);
+            DragAndDropWrapper wrap = new FavoritesDragAndDropWrapper(favEntry, listener);
             wrap.setDragStartMode(DragStartMode.COMPONENT);
             wrap.setSizeUndefined();
             addComponent(wrap);
@@ -249,7 +256,27 @@ public final class FavoritesGroup extends CssLayout {
             }
         });
 
-        addComponent(wrapper);
+        DragAndDropWrapper dndWrapper = new DragAndDropWrapper(wrapper);
+        dndWrapper.setSizeUndefined();
+        dndWrapper.setDropHandler(new DropHandler() {
+
+            @Override
+            public void drop(DragAndDropEvent event) {
+                String favoritePath = ((FavoritesEntry) ((FavoritesDragAndDropWrapper) event.getTransferable().getSourceComponent()).getWrappedComponent()).getRelPath();
+                listener.moveFavorite(favoritePath, relPath);
+            }
+
+            @Override
+            public AcceptCriterion getAcceptCriterion() {
+                return new And(
+                        new TargetDetailIs("verticalLocation", VerticalDropLocation.MIDDLE.name()),
+                        new TargetDetailIs("horizontalLocation", HorizontalDropLocation.CENTER.name())
+                );
+            }
+
+        });
+
+        addComponent(dndWrapper);
     }
 
     private void doEditTitle(final FavoritesView.Listener listener) {
