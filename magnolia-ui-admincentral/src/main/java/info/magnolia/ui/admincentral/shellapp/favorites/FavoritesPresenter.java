@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-
 import info.magnolia.context.MgnlContext;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.api.app.AppDescriptor;
@@ -88,6 +87,30 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
     @Override
     public void addFavorite(JcrNewNodeAdapter favorite) {
         favoritesManager.addFavorite(favorite);
+        initializeView();
+    }
+
+    @Override
+    public void moveFavorite(String relPath, String group) {
+        favoritesManager.moveFavorite(relPath, group);
+        initializeView();
+    }
+
+    @Override
+    public void orderFavoriteBefore(String relPath, String sibling) {
+        favoritesManager.orderFavoriteBefore(relPath, sibling);
+        initializeView();
+    }
+
+    @Override
+    public void orderFavoriteAfter(String relPath, String sibling) {
+        favoritesManager.orderFavoriteAfter(relPath, sibling);
+        initializeView();
+    }
+
+    @Override
+    public void orderGroupBefore(String relPath, String sibling) {
+        favoritesManager.orderGroupBefore(relPath, sibling);
         initializeView();
     }
 

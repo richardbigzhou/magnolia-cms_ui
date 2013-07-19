@@ -274,4 +274,51 @@ public final class FavoritesManagerImpl implements FavoritesManager {
         }
 
     }
+
+    @Override
+    public void moveFavorite(String relPath, String group) {
+        try {
+            Node favorite = favoriteStore.getBookmarkRoot().getNode(relPath);
+            Node newGroup = null;
+            if (StringUtils.isNotEmpty(group)) {
+                newGroup = favoriteStore.getBookmarkRoot().getNode(group);
+            } else {
+                newGroup = favoriteStore.getBookmarkRoot();
+            }
+            NodeUtil.moveNode(favorite, newGroup);
+            newGroup.getSession().save();
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+    }
+
+    @Override
+    public void orderFavoriteBefore(String relPath, String sibling) {
+        try {
+            Node favoriteToMove = favoriteStore.getBookmarkRoot().getNode(relPath);
+            NodeUtil.orderBefore(favoriteToMove, sibling);
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+    }
+
+    @Override
+    public void orderFavoriteAfter(String relPath, String sibling) {
+        try {
+            Node favoriteToMove = favoriteStore.getBookmarkRoot().getNode(relPath);
+            NodeUtil.orderAfter(favoriteToMove, sibling);
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+    }
+
+    @Override
+    public void orderGroupBefore(String relPath, String sibling) {
+        try {
+            Node groupToMove = favoriteStore.getBookmarkRoot().getNode(relPath);
+            NodeUtil.orderBefore(groupToMove, sibling);
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+    }
 }

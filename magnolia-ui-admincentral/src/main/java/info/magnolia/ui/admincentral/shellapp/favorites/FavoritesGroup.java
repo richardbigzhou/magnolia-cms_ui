@@ -42,8 +42,6 @@ import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -92,14 +90,17 @@ public final class FavoritesGroup extends CssLayout {
         construct(favoritesGroup, listener);
 
         final Map<String, AbstractJcrNodeAdapter> nodeAdapters = favoritesGroup.getChildren();
-        final SortedSet<String> keys = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-        keys.addAll(nodeAdapters.keySet());
 
-        for (String key : keys) {
+        for (String key : nodeAdapters.keySet()) {
             final AbstractJcrNodeAdapter fav = nodeAdapters.get(key);
             final FavoritesEntry favEntry = new FavoritesEntry(fav, listener, shell);
-            addComponent(favEntry);
+            favEntry.setGroup(this.relPath);
+            addComponent(new EntryDragAndDropWrapper(favEntry, listener));
         }
+    }
+
+    public String getRelPath() {
+        return this.relPath;
     }
 
     /**
@@ -114,6 +115,9 @@ public final class FavoritesGroup extends CssLayout {
         Iterator<Component> components = getComponentIterator();
         while (components.hasNext()) {
             Component component = components.next();
+            if (component instanceof EntryDragAndDropWrapper) {
+                component = ((EntryDragAndDropWrapper) component).getWrappedComponent();
+            }
             if(component instanceof FavoritesEntry) {
                 FavoritesEntry fav = (FavoritesEntry) component;
                 fav.reset();
@@ -240,7 +244,7 @@ public final class FavoritesGroup extends CssLayout {
             }
         });
 
-        addComponent(wrapper);
+        addComponent(new GroupDragAndDropWrapper(wrapper, listener, this));
     }
 
     private void doEditTitle(final FavoritesView.Listener listener) {

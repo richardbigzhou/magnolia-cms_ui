@@ -49,6 +49,7 @@ public interface FavoritesView extends View {
     void init(AbstractJcrNodeAdapter favoritesRoot, JcrNewNodeAdapter favoriteSuggestion, JcrNewNodeAdapter groupSuggestion, Map<String, String> availableGroups);
 
     void setFavoriteLocation(JcrNewNodeAdapter location, JcrNewNodeAdapter groupSuggestion, Map<String, String> availableGroups);
+
     /**
      * Listener.
      */
@@ -66,6 +67,14 @@ public interface FavoritesView extends View {
         void editGroup(String relPath, String newTitle);
 
         void removeGroup(String relPath);
+
+        void moveFavorite(String relPath, String group);
+
+        void orderFavoriteBefore(String relPath, String sibling);
+
+        void orderFavoriteAfter(String relPath, String sibling);
+
+        void orderGroupBefore(String relPath, String sibling);
     }
 
 }
