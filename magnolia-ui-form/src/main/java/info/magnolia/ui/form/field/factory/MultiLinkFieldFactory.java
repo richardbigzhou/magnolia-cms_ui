@@ -40,7 +40,7 @@ import info.magnolia.ui.form.field.MultiLinkField;
 import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
 import info.magnolia.ui.form.field.property.MultiProperty;
 import info.magnolia.ui.form.field.property.MultiValueHandler;
-import info.magnolia.ui.form.field.property.SingleValueHandler;
+import info.magnolia.ui.form.field.property.MultiValuesHandler;
 
 import java.util.List;
 
@@ -90,8 +90,8 @@ public class MultiLinkFieldFactory extends AbstractFieldFactory<MultiLinkFieldDe
         if (definition.getSaveModeType() != null && definition.getSaveModeType().getMultiValueHandlerClass() != null) {
             multiDelegate = definition.getSaveModeType().getMultiValueHandlerClass();
         } else {
-            multiDelegate = SingleValueHandler.class;
-            log.warn("No SaveModeType defined for this Multiselect Field definition. Default one will be taken: '{}'", SingleValueHandler.class.getSimpleName());
+            multiDelegate = MultiValuesHandler.class;
+            log.warn("No SaveModeType defined for this Multiselect Field definition. Default one will be taken: '{}'", MultiValuesHandler.class.getSimpleName());
         }
         MultiValueHandler multiPropertyDelegate = this.componentProvider.newInstance(multiDelegate, item, itemName);
         MultiProperty property = new MultiProperty(multiPropertyDelegate);
