@@ -61,8 +61,13 @@ import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * .
- *
+ * Generic Multi Field.<br>
+ * This generic MultiField allows to handle a Field Set. It handle :<br>
+ * - The creation of new Field<br>
+ * - The removal of Field<br>
+ * The Field is build based on a generic {@link ConfiguredFieldDefinition}.
+ * The Field values are handle by a configured {@link MultiValueHandler}.
+ * 
  * @param <T>
  */
 public class MultiField<T> extends CustomField<List<T>> {
