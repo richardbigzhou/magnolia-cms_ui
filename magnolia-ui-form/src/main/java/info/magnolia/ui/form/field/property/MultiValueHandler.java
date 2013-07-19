@@ -37,19 +37,21 @@ import java.util.List;
 
 /**
  * Implemented class have the responsibility to: <br>
- * - store a List Value in a specific format (single/multi property).<br>
+ * - store a List of values in a specific format (simple/multi value property/ sub nodes/...).<br>
  * - retrieve properties stored in any format and transform then as a List.
+ * 
+ * @param <T> type of the element list.
  */
-public interface MultiValueHandler {
+public interface MultiValueHandler<T> {
 
     /**
      * @param newValue Set the newValue to the appropriate property.
      */
-    void setValue(List<String> newValue);
+    void setValue(List<T> newValue);
 
     /**
      * @return a List representation of the related property.
      */
-    List<String> getValue();
+    List<T> getValue();
 
 }

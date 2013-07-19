@@ -36,7 +36,6 @@ package info.magnolia.ui.form.field.property;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,9 +44,11 @@ import javax.inject.Inject;
 /**
  * Multi values properties implementation of {@link MultiValueHandler}.<br>
  * Store the list of values as Jcr Multi-property value.<br>
- * Retrieve the Jcr Multi-property value as a list.
+ * Retrieve the Jcr Multi value property as a list.
+ * 
+ * @param <T> type of the element list.
  */
-public class MultiValuesHandler extends AbstractBasePropertyValueHandler {
+public class MultiValuesHandler<T> extends AbstractMultiValueHandler<T> {
 
     private JcrNodeAdapter parent;
     private String propertyName;
@@ -59,15 +60,15 @@ public class MultiValuesHandler extends AbstractBasePropertyValueHandler {
     }
 
     @Override
-    public void setValue(List<String> newValue) {
-        DefaultProperty<LinkedList> property = getOrCreateProperty(LinkedList.class, new LinkedList(), parent, propertyName);
-        property.setValue(new LinkedList(newValue));
+    public void setValue(List<T> newValue) {
+        DefaultProperty<List> property = getOrCreateProperty(List.class, new LinkedList<T>(), parent, propertyName);
+        property.setValue(new LinkedList<T>(newValue));
     }
 
     @Override
-    public List<String> getValue() {
-        DefaultProperty<LinkedList> property = getOrCreateProperty(LinkedList.class, new LinkedList(), parent, propertyName);
-        return new ArrayList<String>(property.getValue());
+    public List<T> getValue() {
+        DefaultProperty<List> property = getOrCreateProperty(List.class, new LinkedList<T>(), parent, propertyName);
+        return property.getValue();
     }
 
 }

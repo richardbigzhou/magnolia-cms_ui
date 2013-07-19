@@ -33,7 +33,9 @@
  */
 package info.magnolia.ui.form.field.property;
 
+import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -69,8 +71,10 @@ import org.slf4j.LoggerFactory;
  * </li>
  * </ul>
  * </ul>
+ * 
+ * @param <T> type of the element list.
  */
-public class SubNodesValueHandler implements MultiValueHandler {
+public class SubNodesValueHandler<T> implements MultiValueHandler<T> {
 
     private static final Logger log = LoggerFactory.getLogger(SubNodesValueHandler.class);
     private JcrNodeAdapter root;
@@ -90,12 +94,12 @@ public class SubNodesValueHandler implements MultiValueHandler {
      * - remove no more existing children from the already stored item. <br>
      */
     @Override
-    public void setValue(List<String> newValue) {
+    public void setValue(List<T> newValue) {
         // Get the child Item that contains the list of children Item Value
         JcrNodeAdapter childItem = getOrCreateChildNode();
         // Get the child Node
         Node childNode = childItem.getJcrItem();
-        for (String value : newValue) {
+        for (T value : newValue) {
             // For each value, create a Child Item Value
             createAndAddValueItem(childItem, childNode, value);
         }
@@ -111,8 +115,8 @@ public class SubNodesValueHandler implements MultiValueHandler {
     }
 
     @Override
-    public List<String> getValue() {
-        LinkedList<String> res = new LinkedList<String>();
+    public List<T> getValue() {
+        LinkedList<T> res = new LinkedList<T>();
         try {
             // Get the child Item that contains the list of children Item Value
             JcrNodeAdapter childItem = getOrCreateChildNode();
@@ -123,7 +127,7 @@ public class SubNodesValueHandler implements MultiValueHandler {
                 while (iterator.hasNext()) {
                     Node valueNode = iterator.nextNode();
                     if (valueNode.hasProperty(subNodeName)) {
-                        res.add(valueNode.getProperty(subNodeName).getString());
+                        res.add((T) PropertyUtil.getPropertyValueObject(valueNode, subNodeName));
                     }
                 }
             }
@@ -138,8 +142,8 @@ public class SubNodesValueHandler implements MultiValueHandler {
      * Note that the <b>valueItem name is equal to the 20 first chars of the related value</b>.
      */
     @SuppressWarnings("unchecked")
-    private void createAndAddValueItem(JcrNodeAdapter childItem, Node childNode, String value) {
-        String childValueItemName = StringUtils.left(value, valueItemNameSize);
+    private void createAndAddValueItem(JcrNodeAdapter childItem, Node childNode, T value) {
+        String childValueItemName = Path.getValidatedLabel(StringUtils.left(value.toString(), valueItemNameSize));
         JcrNodeAdapter valueItem = null;
         try {
             if (!(childItem instanceof JcrNewNodeAdapter) && childNode.hasNode(childValueItemName)) {
@@ -148,7 +152,7 @@ public class SubNodesValueHandler implements MultiValueHandler {
                 valueItem = new JcrNewNodeAdapter(childNode, NodeTypes.Content.NAME, childValueItemName);
             }
             childItem.addChild(valueItem);
-            valueItem.addItemProperty(subNodeName, new DefaultProperty(String.class, value));
+            valueItem.addItemProperty(subNodeName, new DefaultProperty(value.getClass(), value));
         } catch (RepositoryException e) {
             log.error("Could not add achild value node ", e);
         }
@@ -196,3 +200,4 @@ public class SubNodesValueHandler implements MultiValueHandler {
     }
 
 }
+

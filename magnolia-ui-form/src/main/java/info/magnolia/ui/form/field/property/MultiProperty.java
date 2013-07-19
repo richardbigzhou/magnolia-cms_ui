@@ -41,21 +41,26 @@ import com.vaadin.data.util.ObjectProperty;
 
 /**
  * {@link ObjectProperty} implementation used in order to handle MultiProperty type.<br>
- * This property is set as {@link com.vaadin.ui.Field#setPropertyDataSource(com.vaadin.data.Property)} and handle List of Object.<br>
- * {@link MultiValueHandler} is responsible to retrieve and set this List to the related Property.
+ * This property is set as {@link com.vaadin.ui.Field#setPropertyDataSource(com.vaadin.data.Property)} and handle a list of generic objects.<br>
+ * {@link MultiValueHandler} perform the bridge (retrieve/store) between <br>
+ * - the stored values (multi value properties, multi nodes,...) <br>
+ * and<br>
+ * - the list element.
+ * 
+ * @param <T>
  */
-public class MultiProperty extends ObjectProperty<List<String>> {
+public class MultiProperty<T> extends ObjectProperty<List<T>> {
 
-    private MultiValueHandler handler;
+    private MultiValueHandler<T> handler;
 
-    public MultiProperty(MultiValueHandler delegate) {
-        super(new ArrayList<String>());
+    public MultiProperty(MultiValueHandler<T> delegate) {
+        super(new ArrayList<T>());
         this.handler = delegate;
         setValue(this.handler.getValue());
     }
 
     @Override
-    public void setValue(List<String> newValue) throws com.vaadin.data.Property.ReadOnlyException {
+    public void setValue(List<T> newValue) throws com.vaadin.data.Property.ReadOnlyException {
         super.setValue(newValue);
         if (handler != null) {
             handler.setValue(newValue);
@@ -63,7 +68,7 @@ public class MultiProperty extends ObjectProperty<List<String>> {
     }
 
     @Override
-    public List<String> getValue() {
+    public List<T> getValue() {
         return super.getValue();
     }
 }

@@ -37,6 +37,7 @@ import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
+import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -98,7 +99,7 @@ public class MultiValuesHandlerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testReadMultiProperty() throws RepositoryException {
+    public void testReadMultiStringProperty() throws RepositoryException {
         // GIVEN
         String[] values = { "Art", "Dan", "Jen" };
         rootNode.setProperty(propertyName, values);
@@ -114,7 +115,7 @@ public class MultiValuesHandlerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testUpdateMultiProperty() throws RepositoryException {
+    public void testUpdateMultiStringProperty() throws RepositoryException {
         // GIVEN
         String[] initialValues = { "Art", "Dan", "Jen" };
         String[] newValues = { "Pig", "Ph" };
@@ -136,4 +137,25 @@ public class MultiValuesHandlerTest extends RepositoryTestCase {
         assertEquals("Pig", p.getValues()[0].getString());
         assertEquals("Ph", p.getValues()[1].getString());
     }
+
+    @Test
+    public void testReadMultiLongProperty() throws RepositoryException {
+        // GIVEN
+        ArrayList<Long> propertyValue = new ArrayList<Long>();
+        propertyValue.add(1l);
+        propertyValue.add(3l);
+        propertyValue.add(2l);
+        PropertyUtil.setProperty(rootNode, propertyName, propertyValue);
+
+        JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
+        MultiValuesHandler delegate = new MultiValuesHandler(parent, propertyName);
+
+        // WHEN
+        List<Long> res = delegate.getValue();
+
+        // THEN
+        assertEquals(3, res.size());
+        assertTrue(res.contains(3l));
+    }
+
 }
