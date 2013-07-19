@@ -47,6 +47,7 @@ import info.magnolia.cms.security.SecuritySupportImpl;
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.repository.RepositoryManager;
@@ -58,6 +59,7 @@ import info.magnolia.ui.framework.favorite.FavoriteStore;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import java.io.ByteArrayInputStream;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.jcr.Node;
@@ -326,5 +328,67 @@ public class FavoritesManagerImplTest extends RepositoryTestCase {
         assertFalse(favoriteStore.getBookmarkRoot().getNode(fromGroupName).hasNode(favoriteName));
         assertTrue(favoriteStore.getBookmarkRoot().hasNode(favoriteName));
 
+    }
+
+    @Test
+    public void testOrderFavoriteBefore() throws Exception {
+        // GIVEN
+        final String groupName = "testGroup";
+        final String firstNodeName = "first";
+        final String secondNodeName = "second";
+        final String thirdNodeName = "third";
+
+        JcrNewNodeAdapter newNodeAdapter = favoritesManager.createFavoriteGroupSuggestion(groupName);
+        favoritesManager.addGroup(newNodeAdapter);
+
+        newNodeAdapter = favoritesManager.createFavoriteSuggestion("/foo/first", firstNodeName, "");
+        newNodeAdapter.getItemProperty(AdmincentralNodeTypes.Favorite.GROUP).setValue(groupName);
+        favoritesManager.addFavorite(newNodeAdapter);
+        newNodeAdapter = favoritesManager.createFavoriteSuggestion("/foo/second", secondNodeName, "");
+        newNodeAdapter.getItemProperty(AdmincentralNodeTypes.Favorite.GROUP).setValue(groupName);
+        favoritesManager.addFavorite(newNodeAdapter);
+        newNodeAdapter = favoritesManager.createFavoriteSuggestion("/foo/third", thirdNodeName, "");
+        newNodeAdapter.getItemProperty(AdmincentralNodeTypes.Favorite.GROUP).setValue(groupName);
+        favoritesManager.addFavorite(newNodeAdapter);
+
+        // WHEN
+        favoritesManager.orderFavoriteBefore(groupName + "/" + thirdNodeName, firstNodeName);
+
+        // THEN
+        Iterator<Node> favorites = NodeUtil.getNodes(favoriteStore.getBookmarkRoot().getNode(groupName)).iterator();
+        assertEquals(thirdNodeName, favorites.next().getName());
+        assertEquals(firstNodeName, favorites.next().getName());
+        assertEquals(secondNodeName, favorites.next().getName());
+    }
+
+    @Test
+    public void testOrderFavoriteAfter() throws Exception {
+        // GIVEN
+        final String groupName = "testGroup";
+        final String firstNodeName = "first";
+        final String secondNodeName = "second";
+        final String thirdNodeName = "third";
+
+        JcrNewNodeAdapter newNodeAdapter = favoritesManager.createFavoriteGroupSuggestion(groupName);
+        favoritesManager.addGroup(newNodeAdapter);
+
+        newNodeAdapter = favoritesManager.createFavoriteSuggestion("/foo/first", firstNodeName, "");
+        newNodeAdapter.getItemProperty(AdmincentralNodeTypes.Favorite.GROUP).setValue(groupName);
+        favoritesManager.addFavorite(newNodeAdapter);
+        newNodeAdapter = favoritesManager.createFavoriteSuggestion("/foo/second", secondNodeName, "");
+        newNodeAdapter.getItemProperty(AdmincentralNodeTypes.Favorite.GROUP).setValue(groupName);
+        favoritesManager.addFavorite(newNodeAdapter);
+        newNodeAdapter = favoritesManager.createFavoriteSuggestion("/foo/third", thirdNodeName, "");
+        newNodeAdapter.getItemProperty(AdmincentralNodeTypes.Favorite.GROUP).setValue(groupName);
+        favoritesManager.addFavorite(newNodeAdapter);
+
+        // WHEN
+        favoritesManager.orderFavoriteAfter(groupName + "/" + firstNodeName, thirdNodeName);
+
+        // THEN
+        Iterator<Node> favorites = NodeUtil.getNodes(favoriteStore.getBookmarkRoot().getNode(groupName)).iterator();
+        assertEquals(secondNodeName, favorites.next().getName());
+        assertEquals(thirdNodeName, favorites.next().getName());
+        assertEquals(firstNodeName, favorites.next().getName());
     }
 }
