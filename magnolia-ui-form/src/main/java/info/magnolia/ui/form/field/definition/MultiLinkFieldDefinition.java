@@ -41,7 +41,8 @@ package info.magnolia.ui.form.field.definition;
 public class MultiLinkFieldDefinition extends LinkFieldDefinition {
 
     private SaveModeType saveModeType;
-    private String buttonSelectAddLabel;
+    private String buttonSelectAddLabel = "buttons.add";
+    private String buttonSelectRemoveLabel = "buttons.delete";
 
     /**
      * @return i18n property used to configure Button Label.
@@ -51,10 +52,21 @@ public class MultiLinkFieldDefinition extends LinkFieldDefinition {
     }
 
     /**
+     * @return i18n property used to configure the Remove Button Label.
+     */
+    public String getButtonSelectRemoveLabel() {
+        return buttonSelectRemoveLabel;
+    }
+
+    /**
      * @return SaveModeType defining the specific {@link info.magnolia.ui.form.field.property.MultiValueHandler} used to retrieve or store the values in various format (single property, multivalue property or sub nodes).
      */
     public SaveModeType getSaveModeType() {
         return saveModeType;
+    }
+
+    public void setButtonSelectRemoveLabel(String buttonSelectRemoveLabel) {
+        this.buttonSelectRemoveLabel = buttonSelectRemoveLabel;
     }
 
     public void setButtonSelectAddLabel(String buttonSelectAddLabel) {
