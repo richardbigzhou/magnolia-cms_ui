@@ -33,44 +33,31 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
-
-import java.util.Map;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.DragAndDropWrapper;
 
 /**
- * Manages the favorites for the current user.
+ * Abstract drag&drop wrapper for the favorites components.
  */
-public interface FavoritesManager {
+public abstract class AbstractFavoritesDragAndDropWrapper extends DragAndDropWrapper {
 
-    AbstractJcrNodeAdapter getFavorites();
+    private final Component wrappedComponent;
+    private final FavoritesView.Listener listener;
 
-    /**
-     * @return A map whose key is the group jcr name and whose value is its title (human-readable) property. The map elements are sorted alphabetically (descending) by their value.
-     */
-    Map<String, String> getGroupsNames();
+    public AbstractFavoritesDragAndDropWrapper(Component root, FavoritesView.Listener listener) {
+        super(root);
+        this.wrappedComponent = root;
+        this.listener = listener;
+        init();
+    }
 
-    void addFavorite(JcrNewNodeAdapter newFavorite);
+    protected abstract void init();
 
-    JcrNewNodeAdapter createFavoriteSuggestion(String location, String title, String icon);
+    public Component getWrappedComponent() {
+        return this.wrappedComponent;
+    }
 
-    void removeFavorite(String relPath);
-
-    void editFavorite(String relPath, String newTitle);
-
-    void addGroup(JcrNewNodeAdapter newGroup);
-
-    void editGroup(String relPath, String newTitle);
-
-    void removeGroup(String relPath);
-
-    JcrNewNodeAdapter createFavoriteGroupSuggestion(String title);
-
-    void moveFavorite(String relPath, String group);
-
-    void orderFavoriteBefore(String relPath, String sibling);
-
-    void orderFavoriteAfter(String relPath, String sibling);
-
-    void orderGroupBefore(String relPath, String sibling);
+    protected FavoritesView.Listener getListener() {
+        return this.listener;
+    }
 }

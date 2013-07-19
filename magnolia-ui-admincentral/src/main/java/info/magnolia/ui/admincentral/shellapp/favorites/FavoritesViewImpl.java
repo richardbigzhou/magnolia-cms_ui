@@ -49,8 +49,7 @@ import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
-import com.vaadin.event.dd.acceptcriteria.And;
-import com.vaadin.event.dd.acceptcriteria.TargetDetailIs;
+import com.vaadin.event.dd.acceptcriteria.ServerSideCriterion;
 import com.vaadin.shared.ui.dd.HorizontalDropLocation;
 import com.vaadin.shared.ui.dd.VerticalDropLocation;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -59,7 +58,6 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.DragAndDropWrapper;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.DragAndDropWrapper.DragStartMode;
 
 /**
  * Default view implementation for favorites.
@@ -151,11 +149,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
                 final AbstractJcrNodeAdapter favoriteAdapter = nodeAdapters.get(key);
                 if (AdmincentralNodeTypes.Favorite.NAME.equals(favoriteAdapter.getPrimaryNodeTypeName())) {
                     final FavoritesEntry favEntry = new FavoritesEntry(favoriteAdapter, listener, shell);
-                    DragAndDropWrapper wrap = new FavoritesDragAndDropWrapper(favEntry, listener);
-                    wrap.setDragStartMode(DragStartMode.COMPONENT);
-                    wrap.setSizeUndefined();
-
-                    noGroup.addComponent(wrap);
+                    noGroup.addComponent(new EntryDragAndDropWrapper(favEntry, listener));
                 } else {
                     FavoritesGroup group = new FavoritesGroup(favoriteAdapter, listener, shell);
                     splitPanel.getRightContainer().addComponent(group);
@@ -169,16 +163,34 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
 
                 @Override
                 public void drop(DragAndDropEvent event) {
-                    String favoritePath = ((FavoritesEntry) ((FavoritesDragAndDropWrapper) event.getTransferable().getSourceComponent()).getWrappedComponent()).getRelPath();
+                    String favoritePath = ((FavoritesEntry) ((EntryDragAndDropWrapper) event.getTransferable().getSourceComponent()).getWrappedComponent()).getRelPath();
                     listener.moveFavorite(favoritePath, null);
                 }
 
                 @Override
                 public AcceptCriterion getAcceptCriterion() {
-                    return new And(
-                            new TargetDetailIs("verticalLocation", VerticalDropLocation.MIDDLE.name()),
-                            new TargetDetailIs("horizontalLocation", HorizontalDropLocation.CENTER.name())
-                    );
+                    return new ServerSideCriterion() {
+
+                        @Override
+                        public boolean accept(DragAndDropEvent dragEvent) {
+                            // accept only entries, not groups
+                            AbstractFavoritesDragAndDropWrapper wrapper = (AbstractFavoritesDragAndDropWrapper) dragEvent.getTransferable().getSourceComponent();
+                            if (!(wrapper.getWrappedComponent() instanceof FavoritesEntry)) {
+                                return false;
+                            }
+
+                            // drop location
+                            String horizontal = (String) dragEvent.getTargetDetails().getData("horizontalLocation");
+                            String vertical = (String) dragEvent.getTargetDetails().getData("verticalLocation");
+
+                            // allow only drops to center of the component
+                            if (!horizontal.equals(HorizontalDropLocation.CENTER.name()) || !vertical.equals(VerticalDropLocation.MIDDLE.name())) {
+                                return false;
+                            }
+
+                            return true;
+                        }
+                    };
                 }
 
             });
@@ -205,8 +217,8 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
 
         while (components.hasNext()) {
             Component component = components.next();
-            if (component instanceof FavoritesDragAndDropWrapper) {
-                component = ((FavoritesDragAndDropWrapper) component).getWrappedComponent();
+            if (component instanceof EntryDragAndDropWrapper) {
+                component = ((EntryDragAndDropWrapper) component).getWrappedComponent();
             }
             if (component instanceof FavoritesGroup) {
                 ((FavoritesGroup) component).reset();
