@@ -36,7 +36,7 @@ package info.magnolia.ui.dialog.setup.migration;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
 import info.magnolia.ui.form.field.property.MultiValuesHandler;
-import info.magnolia.ui.form.field.property.SingleValueHandler;
+import info.magnolia.ui.form.field.property.CommaSeparatedValueHandler;
 import info.magnolia.ui.form.field.property.SubNodesValueHandler;
 
 import javax.jcr.Node;
@@ -61,7 +61,7 @@ public class MultiSelectControlMigration implements ControlMigration {
             String saveHandler = controlNode.getProperty("saveHandler").getString();
             Node saveModeType = controlNode.addNode("saveModeType", NodeTypes.ContentNode.NAME);
             if (saveHandler.equals("list")) {
-                saveModeType.setProperty("multiValueHandlerClass", SingleValueHandler.class.getName());
+                saveModeType.setProperty("multiValueHandlerClass", CommaSeparatedValueHandler.class.getName());
             } else if (saveHandler.equals("multiple")) {
                 saveModeType.setProperty("multiValueHandlerClass", SubNodesValueHandler.class.getName());
             } else {
