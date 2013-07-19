@@ -126,7 +126,7 @@ public class CommaSeparatedValueHandlerTest extends RepositoryTestCase {
         CommaSeparatedValueHandler delegate = new CommaSeparatedValueHandler(parent, propertyName);
 
         // WHEN
-        delegate.setValue(Arrays.asList(newValues));
+        delegate.setValue(Arrays.asList(newValues.split(",")));
 
         // THEN
         assertTrue(parent.getItemProperty(propertyName) != null);
