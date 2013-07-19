@@ -79,6 +79,7 @@ public class MultiLinkFieldFactory extends AbstractFieldFactory<MultiLinkFieldDe
         field.setButtonCaptionAdd(getMessage(definition.getButtonSelectAddLabel()));
         field.setButtonCaptionNew(getMessage(definition.getButtonSelectNewLabel()));
         field.setButtonCaptionOther(getMessage(definition.getButtonSelectOtherLabel()));
+        field.setButtonCaptionRemove(getMessage(definition.getButtonSelectRemoveLabel()));
         return field;
     }
 
