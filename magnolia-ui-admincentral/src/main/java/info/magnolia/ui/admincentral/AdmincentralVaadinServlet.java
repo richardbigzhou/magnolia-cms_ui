@@ -133,15 +133,24 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
 
             output.append(ERROR_PAGE_STYLE);
             output.append("<div class=\"v-magnolia-shell\" style=\"height:100%;\">" +
-                    "<div id=\"main-launcher\"><a href=\"" + url + "\"><img id=\"logo\" src=\"./../VAADIN/themes/admincentraltheme/img/logo-magnolia.svg\"></a></div>" +
-                    "<div class=\"error-message v-shell-viewport-slot\">" +
-                    "<h2>Whoops!</h2>" +
-                    "<p>The server has encountered an internal error, we just need to restart the application.<br/>" +
-                    "If you keep experiencing difficulties, please contact your server administrator.<br/></p>" +
-                    "<p>We apologize for the inconvenience.</p>");
-            output.append("<div class=\"v-button v-widget link v-button-link\" tabindex=\"0\" role=\"button\"><a href=\"" + url + "\">[<span class=\"v-button-caption\">Click here to restart the application</span>]</a></div><br/>" +
-                    "<div class=\"v-button v-widget link v-button-link viewerror\" tabindex=\"0\" role=\"button\" onclick=\"var st=document.getElementById('stacktrace');st.style.display=(st.style.display=='block')?'none':'block';\">[<span class=\"v-button-caption\">Or view the error's stack trace</span>]</div>");
+                    "<div id=\"main-launcher\"><a href=\"" + url + "\"><img id=\"logo\" src=\"./../VAADIN/themes/admincentraltheme/img/logo-magnolia.svg\" /></a></div>" +
+                    "<div class=\"error-message v-shell-viewport-slot\">");
+
+            output.append("<h2>Whoops!</h2>");
+            output.append("<p>The server has encountered an internal error.</p>");
+
+            output.append("<div class=\"v-button v-widget link v-button-link\" tabindex=\"0\" role=\"button\">" +
+                    "<a href=\"" + url + "\">[<span class=\"v-button-caption\">Click here to attempt to recover from this</span>]</a></div>");
+
+            output.append("<p>We apologize for any inconvenience caused.</p>");
+
+            output.append("<p>If you keep experiencing difficulties, please contact your system administrator.<br/>" +
+                    "Make sure you send along the stack trace below.</p>");
+
+            output.append("<div class=\"v-button v-widget link v-button-link viewerror\" tabindex=\"0\" role=\"button\" onclick=\"var st=document.getElementById('stacktrace');st.style.display=(st.style.display=='block')?'none':'block';\">" +
+                    "[<span class=\"v-button-caption\">Click here to show the error's stack trace</span>]</div>");
             output.append(getStackTrace(e));
+
             output.append("</div></div>");
 
             // prepend document head if this is the first vaadin request
