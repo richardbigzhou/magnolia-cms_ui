@@ -53,6 +53,8 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.ItemSetChangeEvent;
 import com.vaadin.data.Item;
@@ -397,7 +399,7 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
                 textLabel.setSizeUndefined();
                 textLabel.addStyleName("message-subject-text");
                 textLabel.setContentMode(ContentMode.HTML);
-                textLabel.setValue("<strong>" + subject.getValue() + "</strong><div>" + text.getValue() + "</div>");
+                textLabel.setValue("<strong>" + StringEscapeUtils.escapeXml(subject.getValue()) + "</strong><div>" + StringEscapeUtils.escapeXml(text.getValue()) + "</div>");
 
                 return textLabel;
 
