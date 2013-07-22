@@ -68,7 +68,6 @@ public final class FavoritesEntry extends CustomComponent {
     private String title;
     private String group = null;
     private String nodename;
-    private String relPath;
     private TextField titleField;
     private NativeButton editButton;
     private NativeButton removeButton;
@@ -218,7 +217,7 @@ public final class FavoritesEntry extends CustomComponent {
 
                     @Override
                     public void onSuccess() {
-                        listener.removeFavorite(relPath);
+                        listener.removeFavorite(getRelPath());
                     }
 
                     @Override
@@ -264,7 +263,7 @@ public final class FavoritesEntry extends CustomComponent {
 
         boolean titleHasChanged = !title.equals(titleField.getValue());
         if (editable && titleHasChanged) {
-            listener.editFavorite(relPath, titleField.getValue());
+            listener.editFavorite(getRelPath(), titleField.getValue());
         }
         setEditable(false);
     }
