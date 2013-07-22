@@ -386,7 +386,10 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
         }
     };
 
-    private Table.ColumnGenerator textColumnGenerator = new Table.ColumnGenerator() {
+    /**
+     * default visibility is for testing purposes.
+     */
+    Table.ColumnGenerator textColumnGenerator = new Table.ColumnGenerator() {
 
         @Override
         public Object generateCell(Table source, Object itemId, Object columnId) {
