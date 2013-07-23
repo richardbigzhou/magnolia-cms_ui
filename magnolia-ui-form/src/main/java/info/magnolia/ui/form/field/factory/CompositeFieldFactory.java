@@ -72,7 +72,7 @@ public class CompositeFieldFactory<D extends FieldDefinition> extends AbstractFi
 
     @Override
     protected Field<PropertysetItem> createFieldComponent() {
-        // Dirty Hack
+        // FIXME change i18n setting : MGNLUI-1548
         definition.setI18nBasename(getMessages().getBasename());
 
         CompositeField field = new CompositeField(definition, fieldFactoryFactory, i18nContentSupport, componentProvider);

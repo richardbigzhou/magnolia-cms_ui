@@ -41,8 +41,13 @@ import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.vaadin.integration.NullItem;
 
+import java.util.Iterator;
+
 import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.server.ErrorMessage;
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.Field;
@@ -71,8 +76,10 @@ public class CompositeField extends CustomField<PropertysetItem> {
         // Init root layout
         addStyleName("linkfield");
         root = new HorizontalLayout();
-        root.setSizeUndefined();
-        root.addStyleName("compositefield");
+        root.setWidth("520px");
+        // root.setSizeUndefined();
+        // root.addStyleName("compositefield");
+
         // Initialize Existing field
         initFields();
 
@@ -110,7 +117,7 @@ public class CompositeField extends CustomField<PropertysetItem> {
         FieldFactory fieldfactory = fieldFactoryFactory.createFieldFactory(fieldDefinition, item);
         fieldfactory.setComponentProvider(componentProvider);
         fieldfactory.setI18nContentSupport(i18nContentSupport);
-        // Dirty Hack
+        // FIXME change i18n setting : MGNLUI-1548
         fieldDefinition.setI18nBasename(definition.getI18nBasename());
         Field<?> field = fieldfactory.createField();
         return (Field<?>) field;
@@ -122,5 +129,42 @@ public class CompositeField extends CustomField<PropertysetItem> {
         return PropertysetItem.class;
     }
 
+    /**
+     * Validate all fields from the root container.
+     */
+    @Override
+    public boolean isValid() {
+        boolean isValid = true;
+        Iterator<Component> it = root.iterator();
+        while (it.hasNext()) {
+            Component c = it.next();
+            if (c instanceof AbstractField) {
+                isValid = ((Field<?>) c).isValid();
+                if (!isValid) {
+                    return isValid;
+                }
+            }
+        }
+        return isValid;
+    }
+
+    /**
+     * Get the error message.
+     */
+    @Override
+    public ErrorMessage getErrorMessage() {
+        ErrorMessage errorMessage = null;
+        Iterator<Component> it = root.iterator();
+        while (it.hasNext()) {
+            Component c = it.next();
+            if (c instanceof AbstractField) {
+                errorMessage = ((AbstractComponent) c).getErrorMessage();
+                if (errorMessage != null) {
+                    return errorMessage;
+                }
+            }
+        }
+        return errorMessage;
+    }
 
 }
