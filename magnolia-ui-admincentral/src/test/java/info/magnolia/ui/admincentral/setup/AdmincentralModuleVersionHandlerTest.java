@@ -199,4 +199,53 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         String subAppExtends = jcrSubApps.getProperty("extends").getString();
         assertTrue("/modules/ui-admincentral/apps/configuration/subApps".equals(subAppExtends));
     }
+
+    @Test
+    public void testUpdateTo502HasNewActions() throws ModuleManagementException, RepositoryException {
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
+
+        // THEN
+        assertTrue(actions.hasNode("confirmDeletion"));
+    }
+
+
+    @Test
+    public void testUpdateTo502CleanupDeleteAction() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node action = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete", NodeTypes.Content.NAME);
+        action.setProperty("label", "Delete item");
+        action.setProperty("icon", "icon-delete");
+        action.getSession().save();
+
+        // WHEN
+        NodeUtil.createPath(action, "availability",  NodeTypes.Content.NAME);
+
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
+
+        // THEN
+        Node delete = actions.getNode("delete");
+        assertFalse(delete.hasNode("availability"));
+        assertFalse(delete.hasProperty("icon"));
+        assertFalse(delete.hasProperty("label"));
+    }
+
+    @Test
+    public void testUpdateTo502ActionbarNodesUpdated() throws ModuleManagementException, RepositoryException {
+
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node actionbarItems = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folder/groups/addingActions/items", NodeTypes.Content.NAME);
+
+        NodeUtil.createPath(actionbarItems, "delete",  NodeTypes.Content.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
+
+        // THEN
+        assertFalse(actionbarItems.hasNode("delete"));
+        assertTrue(actionbarItems.hasNode("confirmDeletion"));
+    }
 }
