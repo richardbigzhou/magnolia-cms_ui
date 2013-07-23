@@ -33,19 +33,18 @@
  */
 package info.magnolia.ui.form.field.property;
 
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 /**
- * Abstract Base Implementation of {@link MultiValueHandler} used to <br>
- * - store a List of values into a single property <br>
- * - retrieve a List of Value from a single property ,<br>
- * .
- * Expose a generic method that create or retrieve a generic Property (simple or multi value property).
- * 
- * @param <T> type of the element list.
+ * Base Handler exposing useful methods. <br>
  */
-public abstract class AbstractMultiValueHandler<T> implements MultiValueHandler<T> {
+public class BaseHandler {
 
     /**
      * If the desired property (propertyName) already exist in the JcrNodeAdapter, return this property<br>
@@ -62,6 +61,22 @@ public abstract class AbstractMultiValueHandler<T> implements MultiValueHandler<
             parent.addItemProperty(propertyName, property);
         }
         return property;
+    }
+
+    /**
+     * Retrieve or create a child node as {@link JcrNodeAdapter}.
+     */
+    public JcrNodeAdapter getOrCreateChildNode(JcrNodeAdapter parent, String chieldNodeName, String chieldNodeType) throws RepositoryException {
+        JcrNodeAdapter child = null;
+        Node node = parent.getJcrItem();
+        if (node.hasNode(chieldNodeName) && !(parent instanceof JcrNewNodeAdapter)) {
+            child = new JcrNodeAdapter(node.getNode(chieldNodeName));
+            child.setParent(parent);
+        } else {
+            child = new JcrNewNodeAdapter(node, NodeTypes.Content.NAME, chieldNodeName);
+            child.setParent(parent);
+        }
+        return child;
     }
 
 }
