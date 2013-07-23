@@ -58,7 +58,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 
 /**
- * Test class.
+ * Basic test class for {@link SwitchableFieldFactory} .
  */
 public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<SwitchableFieldDefinition> {
 
@@ -136,24 +136,24 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
     }
 
     private FieldTypeDefinitionRegistry createFieldTypeRegistery() {
-        FieldTypeDefinitionRegistry registery = new FieldTypeDefinitionRegistry();
+        FieldTypeDefinitionRegistry registry = new FieldTypeDefinitionRegistry();
 
         ConfiguredFieldTypeDefinition textFieldDefinition = new ConfiguredFieldTypeDefinition();
         textFieldDefinition.setDefinitionClass(TextFieldDefinition.class);
         textFieldDefinition.setFactoryClass(TextFieldFactory.class);
-        registery.register(new TestFieldTypeDefinitionProvider("text", textFieldDefinition));
+        registry.register(new TestFieldTypeDefinitionProvider("text", textFieldDefinition));
 
         ConfiguredFieldTypeDefinition codeFieldDefinition = new ConfiguredFieldTypeDefinition();
         codeFieldDefinition.setDefinitionClass(BasicTextCodeFieldDefinition.class);
         codeFieldDefinition.setFactoryClass(BasicTextCodeFieldFactory.class);
-        registery.register(new TestFieldTypeDefinitionProvider("code", codeFieldDefinition));
+        registry.register(new TestFieldTypeDefinitionProvider("code", codeFieldDefinition));
 
         ConfiguredFieldTypeDefinition selectFieldDefinition = new ConfiguredFieldTypeDefinition();
         selectFieldDefinition.setDefinitionClass(OptionGroupFieldDefinition.class);
         selectFieldDefinition.setFactoryClass(OptionGroupFieldFactory.class);
-        registery.register(new TestFieldTypeDefinitionProvider("option", selectFieldDefinition));
+        registry.register(new TestFieldTypeDefinitionProvider("option", selectFieldDefinition));
 
-        return registery;
+        return registry;
     }
 
     @Override
