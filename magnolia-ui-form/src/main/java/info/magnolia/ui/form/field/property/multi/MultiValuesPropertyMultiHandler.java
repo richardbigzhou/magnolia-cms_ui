@@ -31,33 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.definition;
+package info.magnolia.ui.form.field.property.multi;
 
-import info.magnolia.ui.form.field.property.list.ListHandler;
-import info.magnolia.ui.form.field.property.multi.MultiHandler;
+import info.magnolia.ui.form.field.property.BaseHandler;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import com.vaadin.data.util.PropertysetItem;
 
 /**
- * Save mode definition of the Multi-Link field.
+ * .
  */
-public class SaveModeType {
+public class MultiValuesPropertyMultiHandler extends BaseHandler implements MultiHandler {
 
-    private Class<? extends ListHandler> listHandlerClass;
-    private Class<? extends MultiHandler> multiHandlerClass;
+    private JcrNodeAdapter parent;
+    private String propertyName;
+    private List<String> fieldsName;
 
-    public Class<? extends ListHandler> getListHandlerClass() {
-        return listHandlerClass;
+    @Inject
+    public MultiValuesPropertyMultiHandler(JcrNodeAdapter parent, String propertyName, List<String> fieldsName) {
+        this.parent = parent;
+        this.propertyName = propertyName;
+        this.fieldsName = fieldsName;
     }
 
-    public Class<? extends MultiHandler> getMultiHandlerClass() {
-        return multiHandlerClass;
+    @Override
+    public void setValue(PropertysetItem newValue) {
+        // TODO Auto-generated method stub
+
     }
 
-    public void setListHandlerClass(Class<? extends ListHandler> listHandlerClass) {
-        this.listHandlerClass = listHandlerClass;
-    }
 
-    public void setMultiHandlerClass(Class<? extends MultiHandler> multiHandlerClass) {
-        this.multiHandlerClass = multiHandlerClass;
+    @Override
+    public PropertysetItem getValue() {
+        return null;
     }
 
 }

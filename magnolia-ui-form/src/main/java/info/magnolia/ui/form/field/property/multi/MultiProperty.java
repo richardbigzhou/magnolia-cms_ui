@@ -31,33 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.definition;
+package info.magnolia.ui.form.field.property.multi;
 
-import info.magnolia.ui.form.field.property.list.ListHandler;
-import info.magnolia.ui.form.field.property.multi.MultiHandler;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
 
 /**
- * Save mode definition of the Multi-Link field.
+ * .
  */
-public class SaveModeType {
+public class MultiProperty extends ObjectProperty<PropertysetItem> {
 
-    private Class<? extends ListHandler> listHandlerClass;
-    private Class<? extends MultiHandler> multiHandlerClass;
+    private MultiHandler handler;
 
-    public Class<? extends ListHandler> getListHandlerClass() {
-        return listHandlerClass;
+    public MultiProperty(MultiHandler handler) {
+        super(new PropertysetItem());
+        this.handler = handler;
+        setValue(this.handler.getValue());
     }
 
-    public Class<? extends MultiHandler> getMultiHandlerClass() {
-        return multiHandlerClass;
+    @Override
+    public void setValue(PropertysetItem newValue) throws com.vaadin.data.Property.ReadOnlyException {
+        super.setValue(newValue);
+        if (handler != null) {
+            handler.setValue(newValue);
+        }
     }
 
-    public void setListHandlerClass(Class<? extends ListHandler> listHandlerClass) {
-        this.listHandlerClass = listHandlerClass;
+    @Override
+    public PropertysetItem getValue() {
+        return super.getValue();
     }
-
-    public void setMultiHandlerClass(Class<? extends MultiHandler> multiHandlerClass) {
-        this.multiHandlerClass = multiHandlerClass;
-    }
-
 }
