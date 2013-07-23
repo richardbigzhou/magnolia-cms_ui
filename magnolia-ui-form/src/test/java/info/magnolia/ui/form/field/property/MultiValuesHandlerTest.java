@@ -40,6 +40,7 @@ import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.form.field.property.list.MultiValuesPropertyListHandler;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
@@ -85,7 +86,7 @@ public class MultiValuesHandlerTest extends RepositoryTestCase {
     public void testCreateMultiProperty() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValuesHandler delegate = new MultiValuesHandler(parent, propertyName);
+        MultiValuesPropertyListHandler delegate = new MultiValuesPropertyListHandler(parent, propertyName);
 
         // WHEN
         delegate.setValue(new ArrayList<String>());
@@ -104,7 +105,7 @@ public class MultiValuesHandlerTest extends RepositoryTestCase {
         String[] values = { "Art", "Dan", "Jen" };
         rootNode.setProperty(propertyName, values);
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValuesHandler delegate = new MultiValuesHandler(parent, propertyName);
+        MultiValuesPropertyListHandler delegate = new MultiValuesPropertyListHandler(parent, propertyName);
 
         // WHEN
         List<String> res = delegate.getValue();
@@ -121,7 +122,7 @@ public class MultiValuesHandlerTest extends RepositoryTestCase {
         String[] newValues = { "Pig", "Ph" };
         rootNode.setProperty(propertyName, initialValues);
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValuesHandler delegate = new MultiValuesHandler(parent, propertyName);
+        MultiValuesPropertyListHandler delegate = new MultiValuesPropertyListHandler(parent, propertyName);
 
         // WHEN
         delegate.setValue(Arrays.asList(newValues));
@@ -148,7 +149,7 @@ public class MultiValuesHandlerTest extends RepositoryTestCase {
         PropertyUtil.setProperty(rootNode, propertyName, propertyValue);
 
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValuesHandler delegate = new MultiValuesHandler(parent, propertyName);
+        MultiValuesPropertyListHandler delegate = new MultiValuesPropertyListHandler(parent, propertyName);
 
         // WHEN
         List<Long> res = delegate.getValue();

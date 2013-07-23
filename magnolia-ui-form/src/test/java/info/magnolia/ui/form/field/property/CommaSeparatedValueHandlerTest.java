@@ -39,6 +39,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.form.field.property.list.CommaSeparatedListHandler;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class CommaSeparatedValueHandlerTest extends RepositoryTestCase {
     public void testCreateMultiProperty() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        CommaSeparatedValueHandler delegate = new CommaSeparatedValueHandler(parent, propertyName);
+        CommaSeparatedListHandler delegate = new CommaSeparatedListHandler(parent, propertyName);
 
         // WHEN
         delegate.setValue(new ArrayList<String>(Arrays.asList("Jav", "ta")));
@@ -103,7 +104,7 @@ public class CommaSeparatedValueHandlerTest extends RepositoryTestCase {
         String values = "Art,Dan,Jen";
         rootNode.setProperty(propertyName, values);
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        CommaSeparatedValueHandler delegate = new CommaSeparatedValueHandler(parent, propertyName);
+        CommaSeparatedListHandler delegate = new CommaSeparatedListHandler(parent, propertyName);
 
         // WHEN
         List<String> res = delegate.getValue();
@@ -123,7 +124,7 @@ public class CommaSeparatedValueHandlerTest extends RepositoryTestCase {
         String newValues = "Pig,Ph";
         rootNode.setProperty(propertyName, initialValues);
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        CommaSeparatedValueHandler delegate = new CommaSeparatedValueHandler(parent, propertyName);
+        CommaSeparatedListHandler delegate = new CommaSeparatedListHandler(parent, propertyName);
 
         // WHEN
         delegate.setValue(Arrays.asList(newValues.split(",")));

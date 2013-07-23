@@ -100,15 +100,17 @@ public class DialogMigrationTask extends AbstractTask {
      */
     @Override
     public void execute(InstallContext installContext) throws TaskExecutionException {
+        Session session = null;
+        String newDialogPath = null;
         try {
             this.controlMigrationMap = getCustomMigrationTask();
             String dialogNodeName = "dialogs";
             String dialogPath = "/modules/" + moduleName + "/" + dialogNodeName;
 
-            Session session = installContext.getJCRSession(RepositoryConstants.CONFIG);
+            session = installContext.getJCRSession(RepositoryConstants.CONFIG);
             Node dialog = session.getNode(dialogPath);
             // Copy to Dialog50
-            String newDialogPath = dialog.getPath() + "50";
+            newDialogPath = dialog.getPath() + "50";
             copyInSession(dialog, newDialogPath);
             NodeUtil.visit(dialog, new NodeVisitor() {
                 @Override
@@ -127,6 +129,16 @@ public class DialogMigrationTask extends AbstractTask {
         } catch (Exception e) {
             log.error("", e);
             installContext.warn("Could not Migrate Dialog for the following module " + moduleName);
+            throw new TaskExecutionException("Could not Migrate Dialog ", e);
+        } finally {
+            try {
+                if (session != null && session.nodeExists(newDialogPath)) {
+                    session.getNode(newDialogPath).remove();
+                    session.save();
+                }
+            } catch (RepositoryException re) {
+                log.warn("", re);
+            }
         }
     }
 

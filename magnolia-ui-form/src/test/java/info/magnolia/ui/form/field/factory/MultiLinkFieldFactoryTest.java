@@ -41,8 +41,8 @@ import info.magnolia.ui.form.field.MultiLinkField;
 import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
 import info.magnolia.ui.form.field.definition.SaveModeType;
-import info.magnolia.ui.form.field.property.CommaSeparatedValueHandler;
-import info.magnolia.ui.form.field.property.MultiValuesHandler;
+import info.magnolia.ui.form.field.property.list.CommaSeparatedListHandler;
+import info.magnolia.ui.form.field.property.list.MultiValuesPropertyListHandler;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.List;
@@ -68,7 +68,7 @@ public class MultiLinkFieldFactoryTest extends AbstractFieldFactoryTestCase<Mult
     @Test
     public void testGetField() throws Exception {
         // GIVEN
-        when(componentProvider.newInstance(MultiValuesHandler.class, baseItem, definition.getName())).thenReturn(new MultiValuesHandler((JcrNodeAdapter) baseItem, propertyName));
+        when(componentProvider.newInstance(MultiValuesPropertyListHandler.class, baseItem, definition.getName())).thenReturn(new MultiValuesPropertyListHandler((JcrNodeAdapter) baseItem, propertyName));
         multiLinkFieldFactory = new MultiLinkFieldFactory(definition, baseItem, null, null, componentProvider);
         multiLinkFieldFactory.setI18nContentSupport(i18nContentSupport);
         // WHEN
@@ -83,13 +83,13 @@ public class MultiLinkFieldFactoryTest extends AbstractFieldFactoryTestCase<Mult
         // GIVEN
         definition.setIdentifierToPathConverter(new BaseIdentifierToPathConverter());
         SaveModeType saveModeType = new SaveModeType();
-        saveModeType.setMultiValueHandlerClass(CommaSeparatedValueHandler.class);
+        saveModeType.setListHandlerClass(CommaSeparatedListHandler.class);
         definition.setSaveModeType(saveModeType);
         definition.setName(propertyName);
         definition.setTargetWorkspace(workspaceName);
         baseNode.setProperty(propertyName, baseNode.getIdentifier());
         baseItem = new JcrNodeAdapter(baseNode);
-        when(componentProvider.newInstance(CommaSeparatedValueHandler.class, baseItem, definition.getName())).thenReturn(new CommaSeparatedValueHandler((JcrNodeAdapter) baseItem, propertyName));
+        when(componentProvider.newInstance(CommaSeparatedListHandler.class, baseItem, definition.getName())).thenReturn(new CommaSeparatedListHandler((JcrNodeAdapter) baseItem, propertyName));
         multiLinkFieldFactory = new MultiLinkFieldFactory(definition, baseItem, null, null, componentProvider);
         multiLinkFieldFactory.setI18nContentSupport(i18nContentSupport);
         // WHEN

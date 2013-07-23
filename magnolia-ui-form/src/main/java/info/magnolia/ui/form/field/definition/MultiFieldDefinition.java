@@ -58,7 +58,7 @@ public class MultiFieldDefinition extends ConfiguredFieldDefinition {
     }
 
     /**
-     * @return SaveModeType defining the specific {@link info.magnolia.ui.form.field.property.MultiValueHandler} <br>
+     * @return SaveModeType defining the specific {@link info.magnolia.ui.form.field.property.list.ListHandler} <br>
      * used to retrieve or store the values in various format (single property, multivalue property or sub nodes).
      */
     public SaveModeType getSaveModeType() {

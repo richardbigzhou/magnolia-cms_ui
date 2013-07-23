@@ -39,6 +39,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.form.field.property.list.SubNodesListHandler;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
@@ -86,7 +87,7 @@ public class SubNodesValueHandlerTest extends RepositoryTestCase {
     public void testCreateMultiProperty() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        SubNodesValueHandler delegate = new SubNodesValueHandler(parent, subNodeName);
+        SubNodesListHandler delegate = new SubNodesListHandler(parent, subNodeName);
 
         // WHEN
         delegate.setValue(new ArrayList<String>());
@@ -100,7 +101,7 @@ public class SubNodesValueHandlerTest extends RepositoryTestCase {
     public void testReadMultiProperty() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        SubNodesValueHandler delegate = new SubNodesValueHandler(parent, subNodeName);
+        SubNodesListHandler delegate = new SubNodesListHandler(parent, subNodeName);
 
         // WHEN
         List<String> res = delegate.getValue();
@@ -115,7 +116,7 @@ public class SubNodesValueHandlerTest extends RepositoryTestCase {
     public void testUpdateMultiPropertyWithoutChanges() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        SubNodesValueHandler delegate = new SubNodesValueHandler(parent, subNodeName);
+        SubNodesListHandler delegate = new SubNodesListHandler(parent, subNodeName);
         // Set the same values
         String[] newValues = { "value1", "value2" };
         List<String> res = Arrays.asList(newValues);
@@ -139,7 +140,7 @@ public class SubNodesValueHandlerTest extends RepositoryTestCase {
         // GIVEN
         String[] newValues = { "Pig", "Ph" };
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        SubNodesValueHandler delegate = new SubNodesValueHandler(parent, subNodeName);
+        SubNodesListHandler delegate = new SubNodesListHandler(parent, subNodeName);
 
         // WHEN
         delegate.setValue(Arrays.asList(newValues));
@@ -163,7 +164,7 @@ public class SubNodesValueHandlerTest extends RepositoryTestCase {
         // GIVEN
         String[] newValues = { "a", "1234567890123456789012" };
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        SubNodesValueHandler delegate = new SubNodesValueHandler(parent, subNodeName);
+        SubNodesListHandler delegate = new SubNodesListHandler(parent, subNodeName);
 
         // WHEN
         delegate.setValue(Arrays.asList(newValues));

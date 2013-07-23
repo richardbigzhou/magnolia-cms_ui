@@ -38,9 +38,9 @@ import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.form.field.MultiLinkField;
 import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
-import info.magnolia.ui.form.field.property.MultiProperty;
-import info.magnolia.ui.form.field.property.MultiValueHandler;
-import info.magnolia.ui.form.field.property.MultiValuesHandler;
+import info.magnolia.ui.form.field.property.list.ListHandler;
+import info.magnolia.ui.form.field.property.list.ListProperty;
+import info.magnolia.ui.form.field.property.list.MultiValuesPropertyListHandler;
 
 import java.util.List;
 
@@ -55,7 +55,7 @@ import com.vaadin.ui.Field;
 
 /**
  * Creates and initializes an multi-select field based on a field definition.<br>
- * This field builder create a {@link MultiProperty} based on the definition and set this property as <br>
+ * This field builder create a {@link ListProperty} based on the definition and set this property as <br>
  * Field property datasource.
  */
 public class MultiLinkFieldFactory extends AbstractFieldFactory<MultiLinkFieldDefinition, List> {
@@ -85,17 +85,17 @@ public class MultiLinkFieldFactory extends AbstractFieldFactory<MultiLinkFieldDe
 
     @Override
     protected Property<?> getOrCreateProperty() {
-        Class<? extends MultiValueHandler> multiDelegate = null;
+        Class<? extends ListHandler> multiDelegate = null;
         String itemName = definition.getName();
         // Get configured MultiValueHandler class
-        if (definition.getSaveModeType() != null && definition.getSaveModeType().getMultiValueHandlerClass() != null) {
-            multiDelegate = definition.getSaveModeType().getMultiValueHandlerClass();
+        if (definition.getSaveModeType() != null && definition.getSaveModeType().getListHandlerClass() != null) {
+            multiDelegate = definition.getSaveModeType().getListHandlerClass();
         } else {
-            multiDelegate = MultiValuesHandler.class;
-            log.warn("No SaveModeType defined for this Multiselect Field definition. Default one will be taken: '{}'", MultiValuesHandler.class.getSimpleName());
+            multiDelegate = MultiValuesPropertyListHandler.class;
+            log.warn("No SaveModeType defined for this Multiselect Field definition. Default one will be taken: '{}'", MultiValuesPropertyListHandler.class.getSimpleName());
         }
-        MultiValueHandler multiPropertyDelegate = this.componentProvider.newInstance(multiDelegate, item, itemName);
-        MultiProperty property = new MultiProperty(multiPropertyDelegate);
+        ListHandler multiPropertyDelegate = this.componentProvider.newInstance(multiDelegate, item, itemName);
+        ListProperty property = new ListProperty(multiPropertyDelegate);
         return property;
     }
 

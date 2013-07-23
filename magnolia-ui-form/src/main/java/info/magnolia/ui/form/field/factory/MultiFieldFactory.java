@@ -37,9 +37,9 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.MultiField;
 import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
-import info.magnolia.ui.form.field.property.MultiProperty;
-import info.magnolia.ui.form.field.property.MultiValueHandler;
-import info.magnolia.ui.form.field.property.MultiValuesHandler;
+import info.magnolia.ui.form.field.property.list.ListHandler;
+import info.magnolia.ui.form.field.property.list.ListProperty;
+import info.magnolia.ui.form.field.property.list.MultiValuesPropertyListHandler;
 
 import java.util.List;
 
@@ -55,7 +55,7 @@ import com.vaadin.ui.Field;
  * Creates and initializes an multi-field based on a field definition.<br>
  * Multi-field basicaly handle: <br>
  * - Add remove Fields <br>
- * This field builder create a {@link MultiProperty} based on the definition and set this property as <br>
+ * This field builder create a {@link ListProperty} based on the definition and set this property as <br>
  * Field property datasource.
  *
  * @param <T>
@@ -87,24 +87,24 @@ public class MultiFieldFactory<T> extends AbstractFieldFactory<MultiFieldDefinit
     /**
      * Do not link this field directly to an Item property but to the configured MultivalueHandler.<br>
      * The MultivalueHandler has the responsibility to correctly retrieve and store the values used in the MultiField. <br>
-     * In case of no MultivalueHandler is defined into the definition, {@link MultiValuesHandler} is used by default.
+     * In case of no MultivalueHandler is defined into the definition, {@link MultiValuesPropertyListHandler} is used by default.
      */
     @Override
     protected Property<T> getOrCreateProperty() {
 
-        Class<? extends MultiValueHandler> multiDelegate = null;
+        Class<? extends ListHandler> listDelegate = null;
         String itemName = definition.getName();
         // Get configured MultiValueHandler class
-        if (definition.getSaveModeType() != null && definition.getSaveModeType().getMultiValueHandlerClass() != null) {
-            multiDelegate = definition.getSaveModeType().getMultiValueHandlerClass();
+        if (definition.getSaveModeType() != null && definition.getSaveModeType().getListHandlerClass() != null) {
+            listDelegate = definition.getSaveModeType().getListHandlerClass();
         } else {
-            multiDelegate = MultiValuesHandler.class;
-            log.warn("No SaveModeType defined for this Multiselect Field definition. Default one will be taken: '{}'", MultiValuesHandler.class.getSimpleName());
+            listDelegate = MultiValuesPropertyListHandler.class;
+            log.warn("No ListHandler defined for this Multiselect Field definition. Default one will be taken: '{}'", MultiValuesPropertyListHandler.class.getSimpleName());
         }
 
-        MultiValueHandler<T> multiPropertyDelegate = this.componentProvider.newInstance(multiDelegate, item, itemName);
-        MultiProperty<T> property = new MultiProperty<T>(multiPropertyDelegate);
-        return (Property<T>) property;
+        ListHandler<T> listHandler = this.componentProvider.newInstance(listDelegate, item, itemName);
+        ListProperty<T> listProperty = new ListProperty<T>(listHandler);
+        return (Property<T>) listProperty;
     }
 
 }

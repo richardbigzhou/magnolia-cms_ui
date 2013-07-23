@@ -59,7 +59,7 @@ public class MultiLinkFieldDefinition extends LinkFieldDefinition {
     }
 
     /**
-     * @return SaveModeType defining the specific {@link info.magnolia.ui.form.field.property.MultiValueHandler} used to retrieve or store the values in various format (single property, multivalue property or sub nodes).
+     * @return SaveModeType defining the specific {@link info.magnolia.ui.form.field.property.list.ListHandler} used to retrieve or store the values in various format (single property, multivalue property or sub nodes).
      */
     public SaveModeType getSaveModeType() {
         return saveModeType;
