@@ -49,9 +49,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Property;
+import com.vaadin.server.ErrorMessage;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.Field;
@@ -221,6 +223,8 @@ public class MultiField<T> extends CustomField<List<T>> {
         FieldFactory fieldfactory = fieldFactoryFactory.createFieldFactory(fieldDefinition, item);
         fieldfactory.setComponentProvider(componentProvider);
         fieldfactory.setI18nContentSupport(i18nContentSupport);
+        // FIXME change i18n setting : MGNLUI-1548
+        fieldDefinition.setI18nBasename(definition.getI18nBasename());
         Field<?> field = fieldfactory.createField();
         field.setCaption(null);
         return (Field<T>) field;
@@ -231,6 +235,43 @@ public class MultiField<T> extends CustomField<List<T>> {
         return List.class;
     }
 
+    /**
+     * Validate all fields from the root container.
+     */
+    @Override
+    public boolean isValid() {
+        boolean isValid = true;
+        Iterator<Component> it = root.iterator();
+        while (it.hasNext()) {
+            Component c = it.next();
+            if (c instanceof AbstractField) {
+                isValid = ((Field<?>) c).isValid();
+                if (!isValid) {
+                    return isValid;
+                }
+            }
+        }
+        return isValid;
+    }
+
+    /**
+     * Get the error message.
+     */
+    @Override
+    public ErrorMessage getErrorMessage() {
+        ErrorMessage errorMessage = null;
+        Iterator<Component> it = root.iterator();
+        while (it.hasNext()) {
+            Component c = it.next();
+            if (c instanceof AbstractField) {
+                errorMessage = ((AbstractComponent) c).getErrorMessage();
+                if (errorMessage != null) {
+                    return errorMessage;
+                }
+            }
+        }
+        return errorMessage;
+    }
 
     /**
      * Caption section.

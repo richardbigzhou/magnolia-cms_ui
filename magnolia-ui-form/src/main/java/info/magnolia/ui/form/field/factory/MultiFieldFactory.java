@@ -76,6 +76,9 @@ public class MultiFieldFactory<T> extends AbstractFieldFactory<MultiFieldDefinit
 
     @Override
     protected Field<List<T>> createFieldComponent() {
+        // FIXME change i18n setting : MGNLUI-1548
+        definition.setI18nBasename(getMessages().getBasename());
+
         MultiField<T> field = new MultiField<T>(definition, fieldFactoryFactory, i18nContentSupport, componentProvider);
         // Set Caption
         field.setButtonCaptionAdd(getMessage(definition.getButtonSelectAddLabel()));
