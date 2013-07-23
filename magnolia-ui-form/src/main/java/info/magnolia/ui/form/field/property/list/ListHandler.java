@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property;
+package info.magnolia.ui.form.field.property.list;
 
 import java.util.List;
 
@@ -42,7 +42,7 @@ import java.util.List;
  * 
  * @param <T> type of the element list.
  */
-public interface MultiValueHandler<T> {
+public interface ListHandler<T> {
 
     /**
      * @param newValue Set the newValue to the appropriate property.

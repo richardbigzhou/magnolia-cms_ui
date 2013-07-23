@@ -31,8 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property;
+package info.magnolia.ui.form.field.property.list;
 
+import info.magnolia.ui.form.field.property.BaseHandler;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -45,19 +46,19 @@ import javax.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * SingleProperty implementation of {@link MultiValueHandler}.<br>
+ * SingleProperty implementation of {@link ListHandler}.<br>
  * Store the list of values in a single property as a concatenation of string with a ',' separator.<br>
  * Retrieve the single property as a List of String.
  * <b>This handler is implemented for backward capability with Magnolia 4.x. <br>
  * As for Magnolia 4.x, the current implementation only support a list of String</b>
  */
-public class CommaSeparatedValueHandler extends AbstractMultiValueHandler<String> {
+public class CommaSeparatedListHandler extends BaseHandler implements ListHandler<String> {
 
     private JcrNodeAdapter parent;
     private String propertyName;
 
     @Inject
-    public CommaSeparatedValueHandler(JcrNodeAdapter parent, String propertyName) {
+    public CommaSeparatedListHandler(JcrNodeAdapter parent, String propertyName) {
         this.parent = parent;
         this.propertyName = propertyName;
     }

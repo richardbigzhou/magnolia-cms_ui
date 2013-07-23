@@ -31,44 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property;
+package info.magnolia.ui.form.field.property.list;
 
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
+import com.vaadin.data.util.ObjectProperty;
 
 /**
- * Multi values properties implementation of {@link MultiValueHandler}.<br>
- * Store the list of values as Jcr Multi-property value.<br>
- * Retrieve the Jcr Multi value property as a list.
+ * {@link ObjectProperty} implementation used in order to handle MultiProperty type.<br>
+ * This property is set as {@link com.vaadin.ui.Field#setPropertyDataSource(com.vaadin.data.Property)} and handle a list of generic objects.<br>
+ * {@link ListHandler} perform the bridge (retrieve/store) between <br>
+ * - the stored values (multi value properties, multi nodes,...) <br>
+ * and<br>
+ * - the list element.
  * 
- * @param <T> type of the element list.
+ * @param <T>
  */
-public class MultiValuesHandler<T> extends AbstractMultiValueHandler<T> {
+public class ListProperty<T> extends ObjectProperty<List<T>> {
 
-    private JcrNodeAdapter parent;
-    private String propertyName;
+    private ListHandler<T> handler;
 
-    @Inject
-    public MultiValuesHandler(JcrNodeAdapter parent, String propertyName) {
-        this.parent = parent;
-        this.propertyName = propertyName;
+    public ListProperty(ListHandler<T> delegate) {
+        super(new ArrayList<T>());
+        this.handler = delegate;
+        setValue(this.handler.getValue());
     }
 
     @Override
-    public void setValue(List<T> newValue) {
-        DefaultProperty<List> property = getOrCreateProperty(List.class, new LinkedList<T>(), parent, propertyName);
-        property.setValue(new LinkedList<T>(newValue));
+    public void setValue(List<T> newValue) throws com.vaadin.data.Property.ReadOnlyException {
+        super.setValue(newValue);
+        if (handler != null) {
+            handler.setValue(newValue);
+        }
     }
 
     @Override
     public List<T> getValue() {
-        DefaultProperty<List> property = getOrCreateProperty(List.class, new LinkedList<T>(), parent, propertyName);
-        return property.getValue();
+        return super.getValue();
     }
-
 }

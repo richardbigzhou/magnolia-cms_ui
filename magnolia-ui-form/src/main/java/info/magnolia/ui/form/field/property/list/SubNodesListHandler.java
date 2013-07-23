@@ -31,11 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property;
+package info.magnolia.ui.form.field.property.list;
 
 import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.ui.form.field.property.BaseHandler;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -53,7 +54,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Sub Nodes implementation of {@link MultiValueHandler}.<br>
+ * Sub Nodes implementation of {@link ListHandler}.<br>
  * Store the list of values as subNodes.<br>
  * Node structure:
  * <ul>
@@ -74,15 +75,15 @@ import org.slf4j.LoggerFactory;
  * 
  * @param <T> type of the element list.
  */
-public class SubNodesValueHandler<T> implements MultiValueHandler<T> {
+public class SubNodesListHandler<T> extends BaseHandler implements ListHandler<T> {
 
-    private static final Logger log = LoggerFactory.getLogger(SubNodesValueHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(SubNodesListHandler.class);
     private JcrNodeAdapter root;
     private String subNodeName;
     private int valueItemNameSize = 20;
 
     @Inject
-    public SubNodesValueHandler(JcrNodeAdapter root, String subNodeName) {
+    public SubNodesListHandler(JcrNodeAdapter root, String subNodeName) {
         this.root = root;
         this.subNodeName = subNodeName;
     }
@@ -95,22 +96,26 @@ public class SubNodesValueHandler<T> implements MultiValueHandler<T> {
      */
     @Override
     public void setValue(List<T> newValue) {
-        // Get the child Item that contains the list of children Item Value
-        JcrNodeAdapter childItem = getOrCreateChildNode();
-        // Get the child Node
-        Node childNode = childItem.getJcrItem();
-        for (T value : newValue) {
-            // For each value, create a Child Item Value
-            createAndAddValueItem(childItem, childNode, value);
-        }
-        // Remove all no more existing children
-        detachNoMoreExistingChildren(childItem);
+        try {
+            // Get the child Item that contains the list of children Item Value
+            JcrNodeAdapter childItem = getOrCreateChildNode(root, subNodeName, NodeTypes.Content.NAME);
+            // Get the child Node
+            Node childNode = childItem.getJcrItem();
+            for (T value : newValue) {
+                // For each value, create a Child Item Value
+                createAndAddValueItem(childItem, childNode, value);
+            }
+            // Remove all no more existing children
+            detachNoMoreExistingChildren(childItem);
 
-        // Attach the child item to the root item
-        if (childItem.getChildren() != null && !childItem.getChildren().isEmpty()) {
-            root.addChild(childItem);
-        } else {
-            root.removeChild(childItem);
+            // Attach the child item to the root item
+            if (childItem.getChildren() != null && !childItem.getChildren().isEmpty()) {
+                root.addChild(childItem);
+            } else {
+                root.removeChild(childItem);
+            }
+        } catch (RepositoryException re) {
+            log.error("Could not store the values.", re);
         }
     }
 
@@ -119,7 +124,7 @@ public class SubNodesValueHandler<T> implements MultiValueHandler<T> {
         LinkedList<T> res = new LinkedList<T>();
         try {
             // Get the child Item that contains the list of children Item Value
-            JcrNodeAdapter childItem = getOrCreateChildNode();
+            JcrNodeAdapter childItem = getOrCreateChildNode(root, subNodeName, NodeTypes.Content.NAME);
             // Get the child Node
             Node childNode = childItem.getJcrItem();
             if (!(childItem instanceof JcrNewNodeAdapter) && childNode.hasNodes()) {
@@ -177,26 +182,6 @@ public class SubNodesValueHandler<T> implements MultiValueHandler<T> {
         } catch (RepositoryException e) {
             log.error("Could remove children", e);
         }
-    }
-
-    /**
-     * Retrieve or create the Child Node containing the values.
-     */
-    private JcrNodeAdapter getOrCreateChildNode() {
-        JcrNodeAdapter child = null;
-        try {
-            Node node = root.getJcrItem();
-            if (node.hasNode(subNodeName) && !(root instanceof JcrNewNodeAdapter)) {
-                child = new JcrNodeAdapter(node.getNode(subNodeName));
-                child.setParent(root);
-            } else {
-                child = new JcrNewNodeAdapter(node, NodeTypes.Content.NAME, subNodeName);
-                child.setParent(root);
-            }
-        } catch (RepositoryException e) {
-            log.error("Could get or create item", e);
-        }
-        return child;
     }
 
 }
