@@ -40,6 +40,7 @@ import java.text.NumberFormat;
 
 import org.apache.commons.io.FileUtils;
 
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressIndicator;
@@ -105,7 +106,7 @@ public class BasicUploadProcessIndicator extends CustomComponent implements Uplo
     }
 
     @Override
-    public void refreshOnProgressUploadLayout(long readBytes, long contentLength, String fileName) {
+    public void refreshLayout(long readBytes, long contentLength, String fileName) {
         progressIndicator.setValue(Float.valueOf(readBytes / (float) contentLength));
 
         uploadFileLocation.setValue(MessagesUtil.get(this.inProgressCaption, new String[] { fileName }));
@@ -118,13 +119,8 @@ public class BasicUploadProcessIndicator extends CustomComponent implements Uplo
     }
 
     @Override
-    public ProgressIndicator getProgressIndicator() {
-        return this.progressIndicator;
-    }
-
-    @Override
-    public void setProgressIndicatorValue(float newValue) {
-        progressIndicator.setValue(newValue);
+    public void setProgress(float progress) {
+        progressIndicator.setValue(progress);
     }
 
     /**
@@ -145,4 +141,8 @@ public class BasicUploadProcessIndicator extends CustomComponent implements Uplo
         progressIndicator.setVisible(visible);
     }
 
+    @Override
+    public Component asVaadinComponent() {
+        return this;
+    }
 }

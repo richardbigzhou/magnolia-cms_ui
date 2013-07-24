@@ -155,8 +155,8 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         // Create the process Indigator
         progress = new BasicUploadProcessIndicator(inProgressCaption, inProgressRatioCaption);
         progress.setVisible(true);
-        progress.setProgressIndicatorValue(0);
-        layout.addComponent(progress);
+        progress.setProgress(0);
+        layout.addComponent(progress.asVaadinComponent());
 
         // Add the Cancel Button
         layout.addComponent(createCancelButton());
@@ -174,7 +174,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     @Override
     protected void refreshInProgressLayout(long readBytes, long contentLength, String fileName) {
         if (progress != null) {
-            progress.refreshOnProgressUploadLayout(readBytes, contentLength, fileName);
+            progress.refreshLayout(readBytes, contentLength, fileName);
         }
     }
 
