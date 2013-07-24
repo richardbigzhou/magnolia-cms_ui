@@ -2255,7 +2255,7 @@
                   <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
                     <sv:value>superuser</sv:value>
                   </sv:property>
-                  <sv:node sv:name="publish">
+                  <sv:node sv:name="activate">
                     <sv:property sv:name="jcr:primaryType" sv:type="Name">
                       <sv:value>mgnl:contentNode</sv:value>
                     </sv:property>
@@ -2275,7 +2275,7 @@
                       <sv:value>2010-09-08T15:02:53.617+02:00</sv:value>
                     </sv:property>
                     <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-                      <sv:value>2013-07-16T16:47:31.907+02:00</sv:value>
+                      <sv:value>2013-01-15T16:12:01.950+01:00</sv:value>
                     </sv:property>
                     <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
                       <sv:value>superuser</sv:value>
