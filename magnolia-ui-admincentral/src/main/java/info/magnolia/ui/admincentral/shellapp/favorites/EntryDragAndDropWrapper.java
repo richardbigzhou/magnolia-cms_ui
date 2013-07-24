@@ -37,7 +37,6 @@ import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.event.dd.acceptcriteria.ServerSideCriterion;
-import com.vaadin.shared.ui.dd.HorizontalDropLocation;
 import com.vaadin.shared.ui.dd.VerticalDropLocation;
 
 /**
@@ -51,17 +50,22 @@ public class EntryDragAndDropWrapper extends AbstractFavoritesDragAndDropWrapper
 
     @Override
     protected void init() {
-        setDragStartMode(DragStartMode.COMPONENT);
+        setDragStartMode(DragStartMode.WRAPPER);
         setSizeUndefined();
+
         setDropHandler(new DropHandler() {
 
             @Override
             public void drop(DragAndDropEvent event) {
                 String sourcePath = ((FavoritesEntry) ((EntryDragAndDropWrapper) event.getTransferable().getSourceComponent()).getWrappedComponent()).getRelPath();
-                String verticalDropLocation = (String) event.getTargetDetails().getData("verticalLocation");
-                if (verticalDropLocation.equals(VerticalDropLocation.BOTTOM.name())) {
+                WrapperTransferable transferable = (WrapperTransferable) event.getTransferable();
+                WrapperTargetDetails details = (WrapperTargetDetails) event.getTargetDetails();
+                String verticalDropLocation = (String) details.getData("verticalLocation");
+                boolean isDragDown = (details.getMouseEvent().getClientY() - transferable.getMouseDownEvent().getClientY()) > 0;
+
+                if (isDragDown && (verticalDropLocation.equals(VerticalDropLocation.BOTTOM.name()) || verticalDropLocation.equals(VerticalDropLocation.MIDDLE.name()))) {
                     getListener().orderFavoriteAfter(sourcePath, ((FavoritesEntry) getWrappedComponent()).getNodename());
-                } else {
+                } else if (!isDragDown && (verticalDropLocation.equals(VerticalDropLocation.TOP.name()) || verticalDropLocation.equals(VerticalDropLocation.MIDDLE.name()))) {
                     getListener().orderFavoriteBefore(sourcePath, ((FavoritesEntry) getWrappedComponent()).getNodename());
                 }
             }
@@ -78,14 +82,6 @@ public class EntryDragAndDropWrapper extends AbstractFavoritesDragAndDropWrapper
                             return false;
                         }
 
-                        // drop location
-                        String horizontalDropLocation = (String) dragEvent.getTargetDetails().getData("horizontalLocation");
-
-                        // horizontally, it must be in center
-                        if (!horizontalDropLocation.equals(HorizontalDropLocation.CENTER.name())) {
-                            return false;
-                        }
-
                         // and only in the same group
                         String sourceGroup = ((FavoritesEntry) ((EntryDragAndDropWrapper) dragEvent.getTransferable().getSourceComponent()).getWrappedComponent()).getGroup();
                         if (sourceGroup == null) {
@@ -98,4 +94,5 @@ public class EntryDragAndDropWrapper extends AbstractFavoritesDragAndDropWrapper
         });
 
     }
+
 }
