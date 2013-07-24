@@ -162,7 +162,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
 
     /**
      * Interrupt upload based on a user Action.
-     * An {@link UploadInterruptedException} will be thrown by the underlying Vaadin classes.
+     * An {@link com.vaadin.server.communication.FileUploadHandler.UploadInterruptedException} will be thrown by the underlying Vaadin classes.
      */
     protected void interruptUpload(InterruptionReason reason) {
         displayUploadInterruptNote(reason);
