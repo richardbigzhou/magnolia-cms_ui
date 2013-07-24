@@ -36,6 +36,7 @@ package info.magnolia.ui.form.field.property;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,14 +48,16 @@ import org.apache.commons.lang.StringUtils;
  * SingleProperty implementation of {@link MultiValueHandler}.<br>
  * Store the list of values in a single property as a concatenation of string with a ',' separator.<br>
  * Retrieve the single property as a List of String.
+ * <b>This handler is implemented for backward capability with Magnolia 4.x. <br>
+ * As for Magnolia 4.x, the current implementation only support a list of String</b>
  */
-public class SingleValueHandler extends AbstractBasePropertyValueHandler {
+public class CommaSeparatedValueHandler extends AbstractMultiValueHandler<String> {
 
     private JcrNodeAdapter parent;
     private String propertyName;
 
     @Inject
-    public SingleValueHandler(JcrNodeAdapter parent, String propertyName) {
+    public CommaSeparatedValueHandler(JcrNodeAdapter parent, String propertyName) {
         this.parent = parent;
         this.propertyName = propertyName;
     }
@@ -62,7 +65,7 @@ public class SingleValueHandler extends AbstractBasePropertyValueHandler {
     @Override
     public void setValue(List<String> newValue) {
         DefaultProperty<String> property = getOrCreateProperty(String.class, "", parent, propertyName);
-        property.setValue(StringUtils.join(newValue, ","));
+        property.setValue(StringUtils.join(removeComma(newValue), ","));
     }
 
     @Override
@@ -70,5 +73,17 @@ public class SingleValueHandler extends AbstractBasePropertyValueHandler {
         DefaultProperty<String> property = getOrCreateProperty(String.class, "", parent, propertyName);
         String value = property.getValue();
         return Arrays.asList(value.split(","));
+    }
+
+    /**
+     * Simple utility method that remove the , for every elements of a String List.
+     */
+    private List<String> removeComma(List<String> newValue) {
+        List<String> res = new ArrayList<String>();
+        for (String element : newValue) {
+            element = StringUtils.replace(element, ",", " ");
+            res.add(element);
+        }
+        return res;
     }
 }

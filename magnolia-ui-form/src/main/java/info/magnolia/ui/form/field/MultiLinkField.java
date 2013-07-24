@@ -66,6 +66,7 @@ public class MultiLinkField extends CustomField<List> {
     private String buttonCaptionAdd;
     private String buttonCaptionNew;
     private String buttonCaptionOther;
+    private String buttonCaptionRemove;
 
     private final AppController appController;
     private final SubAppContext subAppContext;
@@ -176,7 +177,7 @@ public class MultiLinkField extends CustomField<List> {
         deleteButton.setHtmlContentAllowed(true);
         deleteButton.setCaption("<span class=\"" + "icon-trash" + "\"></span>");
         deleteButton.addStyleName("remove");
-        deleteButton.setDescription("Remove");
+        deleteButton.setDescription(buttonCaptionRemove);
         deleteButton.addClickListener(removeButtonClickListener(layout));
         layout.addComponent(deleteButton);
 
@@ -214,5 +215,9 @@ public class MultiLinkField extends CustomField<List> {
 
     public void setButtonCaptionOther(String buttonCaptionOther) {
         this.buttonCaptionOther = buttonCaptionOther;
+    }
+
+    public void setButtonCaptionRemove(String buttonCaptionRemove) {
+        this.buttonCaptionRemove = buttonCaptionRemove;
     }
 }

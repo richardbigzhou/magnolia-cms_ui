@@ -33,19 +33,18 @@
  */
 package info.magnolia.ui.form.field.definition;
 
-
-
 /**
- * Field definition for a Multi-Link field.
+ * Definition used to configure a generic multi field.
  */
-public class MultiLinkFieldDefinition extends LinkFieldDefinition {
+public class MultiFieldDefinition extends ConfiguredFieldDefinition {
 
     private SaveModeType saveModeType;
     private String buttonSelectAddLabel = "buttons.add";
     private String buttonSelectRemoveLabel = "buttons.delete";
+    private ConfiguredFieldDefinition field;
 
     /**
-     * @return i18n property used to configure Button Label.
+     * @return i18n property used to configure the Add Button Label.
      */
     public String getButtonSelectAddLabel() {
         return buttonSelectAddLabel;
@@ -59,21 +58,34 @@ public class MultiLinkFieldDefinition extends LinkFieldDefinition {
     }
 
     /**
-     * @return SaveModeType defining the specific {@link info.magnolia.ui.form.field.property.MultiValueHandler} used to retrieve or store the values in various format (single property, multivalue property or sub nodes).
+     * @return SaveModeType defining the specific {@link info.magnolia.ui.form.field.property.MultiValueHandler} <br>
+     * used to retrieve or store the values in various format (single property, multivalue property or sub nodes).
      */
     public SaveModeType getSaveModeType() {
         return saveModeType;
     }
 
-    public void setButtonSelectRemoveLabel(String buttonSelectRemoveLabel) {
-        this.buttonSelectRemoveLabel = buttonSelectRemoveLabel;
+    /**
+     * @return Generic field that may be used and display as multi field.
+     */
+    public ConfiguredFieldDefinition getField() {
+        return field;
     }
 
     public void setButtonSelectAddLabel(String buttonSelectAddLabel) {
         this.buttonSelectAddLabel = buttonSelectAddLabel;
     }
 
+    public void setButtonSelectRemoveLabel(String buttonSelectRemoveLabel) {
+        this.buttonSelectRemoveLabel = buttonSelectRemoveLabel;
+    }
+
     public void setSaveModeType(SaveModeType saveModeType) {
         this.saveModeType = saveModeType;
     }
+
+    public void setField(ConfiguredFieldDefinition field) {
+        this.field = field;
+    }
+
 }

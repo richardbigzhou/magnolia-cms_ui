@@ -31,27 +31,63 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property;
+package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import java.util.List;
+import java.io.Serializable;
+import java.lang.reflect.Method;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Component.Event;
 
 /**
- * Implemented class have the responsibility to: <br>
- * - store a List of values in a specific format (simple/multi value property/ sub nodes/...).<br>
- * - retrieve properties stored in any format and transform then as a List.
- * 
- * @param <T> type of the element list.
+ * EditingEvent.
  */
-public interface MultiValueHandler<T> {
+@SuppressWarnings("serial")
+public final class EditingEvent extends Event implements Serializable {
+
+    private boolean editing;
+
+    public EditingEvent(Component source, boolean editing) {
+        super(source);
+        this.editing = editing;
+    }
+
+    public boolean isEditing() {
+        return editing;
+    }
+
+    public static final Method EDITING_METHOD;
+
+    static {
+        try {
+            EDITING_METHOD = EditingListener.class.getDeclaredMethod(
+                    "onEdit", new Class[] { EditingEvent.class });
+        } catch (final java.lang.NoSuchMethodException e) {
+            // This should never happen
+            throw new java.lang.RuntimeException();
+        }
+    }
 
     /**
-     * @param newValue Set the newValue to the appropriate property.
+     * EditableListener.
      */
-    void setValue(List<T> newValue);
+    public interface EditingListener extends Serializable {
+        void onEdit(EditingEvent event);
+    }
 
     /**
-     * @return a List representation of the related property.
+     * EditingListener.
      */
-    List<T> getValue();
+    public interface EditingNotifier extends Serializable {
+        /**
+         * Register a listener to handle {@link EditingEvent}s.
+         */
+        void addEditingListener(EditingListener listener);
+
+        /**
+         * Removes an EditingListener.
+         */
+        void removeEditingListener(EditingListener listener);
+    }
 
 }

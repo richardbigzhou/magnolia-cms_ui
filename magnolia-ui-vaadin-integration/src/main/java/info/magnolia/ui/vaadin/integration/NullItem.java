@@ -31,27 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property;
+package info.magnolia.ui.vaadin.integration;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Collections;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 
 /**
- * Implemented class have the responsibility to: <br>
- * - store a List of values in a specific format (simple/multi value property/ sub nodes/...).<br>
- * - retrieve properties stored in any format and transform then as a List.
- * 
- * @param <T> type of the element list.
+ * Implementation of {@link Item} that does nothing.
  */
-public interface MultiValueHandler<T> {
+public class NullItem implements Item {
 
-    /**
-     * @param newValue Set the newValue to the appropriate property.
-     */
-    void setValue(List<T> newValue);
+    @Override
+    public Property getItemProperty(Object id) {
+        return null;
+    }
 
-    /**
-     * @return a List representation of the related property.
-     */
-    List<T> getValue();
+    @Override
+    public Collection<?> getItemPropertyIds() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean addItemProperty(Object id, Property property) throws UnsupportedOperationException {
+        return false;
+    }
+
+    @Override
+    public boolean removeItemProperty(Object id) throws UnsupportedOperationException {
+        return false;
+    }
 
 }

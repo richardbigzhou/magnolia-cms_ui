@@ -207,11 +207,13 @@
   .v-table-row.v-drag-element,
   .v-table-row-odd.v-drag-element {
 
+    display: table-row;
     background-color: rgba(255, 255, 255, .7);
     font-size: 12px;
 
     .v-table-cell-content {
       border-bottom: none !important;
+      vertical-align: middle;
     }
   }
 

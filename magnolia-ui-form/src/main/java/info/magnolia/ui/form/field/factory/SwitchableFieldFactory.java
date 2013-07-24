@@ -113,7 +113,6 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
         }
         // Copy options to the newly created select definition. definition
         BeanUtils.copyProperties(selectDefinition, definition);
-        selectDefinition.setLabel("");
         // Create the field
         AbstractSelect field = (AbstractSelect) createLocalField(selectDefinition);
         field.addStyleName("horizontal");
@@ -150,7 +149,9 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
         FieldFactory formField = fieldFactoryFactory.createFieldFactory(fieldDefinition, item);
         formField.setComponentProvider(componentProvider);
         formField.setI18nContentSupport(i18nContentSupport);
-        return formField.createField();
+        Field<?> field = formField.createField();
+        field.setCaption(null);
+        return field;
     }
 
 }

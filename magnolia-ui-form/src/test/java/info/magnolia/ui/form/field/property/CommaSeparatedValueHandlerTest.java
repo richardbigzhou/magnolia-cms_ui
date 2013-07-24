@@ -57,7 +57,7 @@ import org.junit.Test;
 /**
  * .
  */
-public class SingleValueHandlerTest extends RepositoryTestCase {
+public class CommaSeparatedValueHandlerTest extends RepositoryTestCase {
     private Node rootNode;
     private final String propertyName = "propertyName";
 
@@ -83,7 +83,7 @@ public class SingleValueHandlerTest extends RepositoryTestCase {
     public void testCreateMultiProperty() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        SingleValueHandler delegate = new SingleValueHandler(parent, propertyName);
+        CommaSeparatedValueHandler delegate = new CommaSeparatedValueHandler(parent, propertyName);
 
         // WHEN
         delegate.setValue(new ArrayList<String>(Arrays.asList("Jav", "ta")));
@@ -103,7 +103,7 @@ public class SingleValueHandlerTest extends RepositoryTestCase {
         String values = "Art,Dan,Jen";
         rootNode.setProperty(propertyName, values);
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        SingleValueHandler delegate = new SingleValueHandler(parent, propertyName);
+        CommaSeparatedValueHandler delegate = new CommaSeparatedValueHandler(parent, propertyName);
 
         // WHEN
         List<String> res = delegate.getValue();
@@ -123,10 +123,10 @@ public class SingleValueHandlerTest extends RepositoryTestCase {
         String newValues = "Pig,Ph";
         rootNode.setProperty(propertyName, initialValues);
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        SingleValueHandler delegate = new SingleValueHandler(parent, propertyName);
+        CommaSeparatedValueHandler delegate = new CommaSeparatedValueHandler(parent, propertyName);
 
         // WHEN
-        delegate.setValue(Arrays.asList(newValues));
+        delegate.setValue(Arrays.asList(newValues.split(",")));
 
         // THEN
         assertTrue(parent.getItemProperty(propertyName) != null);

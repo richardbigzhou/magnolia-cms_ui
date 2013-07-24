@@ -47,8 +47,10 @@ import info.magnolia.nodebuilder.task.ErrorHandling;
 import info.magnolia.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
+import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
+import info.magnolia.ui.form.field.factory.MultiFieldFactory;
 import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
 
 import java.util.ArrayList;
@@ -81,12 +83,21 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
                                         )
                                 )))
                 )
-                .addTask((new NodeBuilderTask("Add definition of the WsitchField Field", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/ui-framework",
+                .addTask((new NodeBuilderTask("Add definition of the SwitchField Field", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/ui-framework",
                         getNode("fieldTypes").then(
                                 addNode("switchableField", NodeTypes.ContentNode.NAME),
                                 getNode("switchableField").then(
                                         addProperty("definitionClass", SwitchableFieldDefinition.class.getName()),
                                         addProperty("factoryClass", SwitchableFieldFactory.class.getName())
+                                        )
+                                )))
+                )
+                .addTask((new NodeBuilderTask("Add definition of the MultiField Field", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/ui-framework",
+                        getNode("fieldTypes").then(
+                                addNode("multiField", NodeTypes.ContentNode.NAME),
+                                getNode("multiField").then(
+                                        addProperty("definitionClass", MultiFieldDefinition.class.getName()),
+                                        addProperty("factoryClass", MultiFieldFactory.class.getName())
                                         )
                                 )))
                 )

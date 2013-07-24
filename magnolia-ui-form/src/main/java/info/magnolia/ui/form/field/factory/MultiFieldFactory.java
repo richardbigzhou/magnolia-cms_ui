@@ -33,18 +33,15 @@
  */
 package info.magnolia.ui.form.field.factory;
 
+import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.app.AppController;
-import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.form.field.MultiLinkField;
-import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
+import info.magnolia.ui.form.field.MultiField;
+import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
 import info.magnolia.ui.form.field.property.MultiProperty;
 import info.magnolia.ui.form.field.property.MultiValueHandler;
 import info.magnolia.ui.form.field.property.MultiValuesHandler;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,38 +50,48 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Field;
 
+
 /**
- * Creates and initializes an multi-select field based on a field definition.<br>
+ * Creates and initializes an multi-field based on a field definition.<br>
+ * Multi-field basicaly handle: <br>
+ * - Add remove Fields <br>
  * This field builder create a {@link MultiProperty} based on the definition and set this property as <br>
  * Field property datasource.
+ *
+ * @param <T>
  */
-public class MultiLinkFieldFactory extends AbstractFieldFactory<MultiLinkFieldDefinition, List> {
-    private static final Logger log = LoggerFactory.getLogger(MultiLinkFieldFactory.class);
+public class MultiFieldFactory<T> extends AbstractFieldFactory<MultiFieldDefinition, List<T>> {
 
-    private final AppController appController;
-    private final SubAppContext subAppContext;
-    private final ComponentProvider componentProvider;
+    private static final Logger log = LoggerFactory.getLogger(MultiFieldFactory.class);
+    private FieldFactoryFactory fieldFactoryFactory;
+    private I18nContentSupport i18nContentSupport;
+    private ComponentProvider componentProvider;
 
-    @Inject
-    public MultiLinkFieldFactory(MultiLinkFieldDefinition definition, Item relatedFieldItem, AppController appController, SubAppContext subAppContext, ComponentProvider componentProvider) {
+    public MultiFieldFactory(MultiFieldDefinition definition, Item relatedFieldItem, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem);
-        this.appController = appController;
-        this.subAppContext = subAppContext;
+        this.fieldFactoryFactory = fieldFactoryFactory;
         this.componentProvider = componentProvider;
+        this.i18nContentSupport = i18nContentSupport;
     }
 
     @Override
-    protected Field<List> createFieldComponent() {
-        MultiLinkField field = new MultiLinkField(definition, appController, subAppContext, componentProvider);
+    protected Field<List<T>> createFieldComponent() {
+        MultiField<T> field = new MultiField<T>(definition, fieldFactoryFactory, i18nContentSupport, componentProvider);
+        // Set Caption
         field.setButtonCaptionAdd(getMessage(definition.getButtonSelectAddLabel()));
-        field.setButtonCaptionNew(getMessage(definition.getButtonSelectNewLabel()));
-        field.setButtonCaptionOther(getMessage(definition.getButtonSelectOtherLabel()));
         field.setButtonCaptionRemove(getMessage(definition.getButtonSelectRemoveLabel()));
+
         return field;
     }
 
+    /**
+     * Do not link this field directly to an Item property but to the configured MultivalueHandler.<br>
+     * The MultivalueHandler has the responsibility to correctly retrieve and store the values used in the MultiField. <br>
+     * In case of no MultivalueHandler is defined into the definition, {@link MultiValuesHandler} is used by default.
+     */
     @Override
-    protected Property<?> getOrCreateProperty() {
+    protected Property<T> getOrCreateProperty() {
+
         Class<? extends MultiValueHandler> multiDelegate = null;
         String itemName = definition.getName();
         // Get configured MultiValueHandler class
@@ -94,9 +101,10 @@ public class MultiLinkFieldFactory extends AbstractFieldFactory<MultiLinkFieldDe
             multiDelegate = MultiValuesHandler.class;
             log.warn("No SaveModeType defined for this Multiselect Field definition. Default one will be taken: '{}'", MultiValuesHandler.class.getSimpleName());
         }
-        MultiValueHandler multiPropertyDelegate = this.componentProvider.newInstance(multiDelegate, item, itemName);
-        MultiProperty property = new MultiProperty(multiPropertyDelegate);
-        return property;
+
+        MultiValueHandler<T> multiPropertyDelegate = this.componentProvider.newInstance(multiDelegate, item, itemName);
+        MultiProperty<T> property = new MultiProperty<T>(multiPropertyDelegate);
+        return (Property<T>) property;
     }
 
 }

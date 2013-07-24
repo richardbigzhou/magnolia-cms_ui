@@ -37,26 +37,21 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.form.field.MultiLinkField;
-import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
-import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
-import info.magnolia.ui.form.field.definition.SaveModeType;
-import info.magnolia.ui.form.field.property.CommaSeparatedValueHandler;
+import info.magnolia.ui.form.field.MultiField;
+import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
 import info.magnolia.ui.form.field.property.MultiValuesHandler;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-
-import java.util.List;
 
 import org.junit.Test;
 
 import com.vaadin.ui.Field;
 
 /**
- * Main testcase for {@link info.magnolia.ui.form.field.factory.MultiLinkFieldFactory}.
+ * Main testcase for {@link info.magnolia.ui.form.field.factory.MultiFieldFactory}.
  */
-public class MultiLinkFieldFactoryTest extends AbstractFieldFactoryTestCase<MultiLinkFieldDefinition> {
+public class MultiFieldFactoryTest extends AbstractFieldFactoryTestCase<MultiFieldDefinition> {
 
-    private MultiLinkFieldFactory multiLinkFieldFactory;
+    private MultiFieldFactory multiFieldFactory;
     private ComponentProvider componentProvider;
 
     @Override
@@ -69,41 +64,18 @@ public class MultiLinkFieldFactoryTest extends AbstractFieldFactoryTestCase<Mult
     public void testGetField() throws Exception {
         // GIVEN
         when(componentProvider.newInstance(MultiValuesHandler.class, baseItem, definition.getName())).thenReturn(new MultiValuesHandler((JcrNodeAdapter) baseItem, propertyName));
-        multiLinkFieldFactory = new MultiLinkFieldFactory(definition, baseItem, null, null, componentProvider);
-        multiLinkFieldFactory.setI18nContentSupport(i18nContentSupport);
+        multiFieldFactory = new MultiFieldFactory(definition, baseItem, null, null, componentProvider);
+        multiFieldFactory.setI18nContentSupport(i18nContentSupport);
         // WHEN
-        Field field = multiLinkFieldFactory.createField();
+        Field field = multiFieldFactory.createField();
 
         // THEN
-        assertEquals(true, field instanceof MultiLinkField);
-    }
-
-    @Test
-    public void testGetFieldWithIdentifier() throws Exception {
-        // GIVEN
-        definition.setIdentifierToPathConverter(new BaseIdentifierToPathConverter());
-        SaveModeType saveModeType = new SaveModeType();
-        saveModeType.setMultiValueHandlerClass(CommaSeparatedValueHandler.class);
-        definition.setSaveModeType(saveModeType);
-        definition.setName(propertyName);
-        definition.setTargetWorkspace(workspaceName);
-        baseNode.setProperty(propertyName, baseNode.getIdentifier());
-        baseItem = new JcrNodeAdapter(baseNode);
-        when(componentProvider.newInstance(CommaSeparatedValueHandler.class, baseItem, definition.getName())).thenReturn(new CommaSeparatedValueHandler((JcrNodeAdapter) baseItem, propertyName));
-        multiLinkFieldFactory = new MultiLinkFieldFactory(definition, baseItem, null, null, componentProvider);
-        multiLinkFieldFactory.setI18nContentSupport(i18nContentSupport);
-        // WHEN
-        Field field = multiLinkFieldFactory.createField();
-
-        // THEN
-        assertEquals(true, field instanceof MultiLinkField);
-        // Propert way set to the identifier baseNode.getIdentifier() and we display the path
-        assertEquals(baseNode.getIdentifier(), ((List) field.getValue()).get(0));
+        assertEquals(true, field instanceof MultiField);
     }
 
     @Override
     protected void createConfiguredFieldDefinition() {
-        MultiLinkFieldDefinition fieldDefinition = new MultiLinkFieldDefinition();
+        MultiFieldDefinition fieldDefinition = new MultiFieldDefinition();
         fieldDefinition.setName(propertyName);
         this.definition = fieldDefinition;
     }
