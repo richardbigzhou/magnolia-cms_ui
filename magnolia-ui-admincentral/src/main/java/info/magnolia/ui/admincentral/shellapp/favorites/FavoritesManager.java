@@ -73,4 +73,6 @@ public interface FavoritesManager {
     void orderFavoriteAfter(String relPath, String sibling);
 
     void orderGroupBefore(String relPath, String sibling);
+
+    void orderGroupAfter(String relPath, String sibling);
 }

@@ -66,7 +66,7 @@ public class GroupDragAndDropWrapper extends AbstractFavoritesDragAndDropWrapper
 
     @Override
     protected void init() {
-        setDragStartMode(DragStartMode.COMPONENT);
+        setDragStartMode(DragStartMode.WRAPPER);
         setSizeUndefined();
 
         setDropHandler(new DropHandler() {
@@ -78,8 +78,20 @@ public class GroupDragAndDropWrapper extends AbstractFavoritesDragAndDropWrapper
                     String favoritePath = ((FavoritesEntry) ((EntryDragAndDropWrapper) event.getTransferable().getSourceComponent()).getWrappedComponent()).getRelPath();
                     getListener().moveFavorite(favoritePath, group.getRelPath());
                 } else if (droppedComponent.getWrappedComponent() instanceof FavoritesGroup) {
+
                     String groupToMove = ((FavoritesGroup) droppedComponent.getWrappedComponent()).getRelPath();
-                    getListener().orderGroupBefore(groupToMove, group.getRelPath());
+                    WrapperTransferable transferable = (WrapperTransferable) event.getTransferable();
+                    WrapperTargetDetails details = (WrapperTargetDetails) event.getTargetDetails();
+                    String verticalDropLocation = (String) details.getData("verticalLocation");
+
+                    boolean isDragDown = (details.getMouseEvent().getClientY() - transferable.getMouseDownEvent().getClientY()) > 0;
+
+                    if (isDragDown && (verticalDropLocation.equals(VerticalDropLocation.BOTTOM.name()) || verticalDropLocation.equals(VerticalDropLocation.MIDDLE.name()))) {
+                        getListener().orderGroupAfter(groupToMove, group.getRelPath());
+                    } else if (!isDragDown && (verticalDropLocation.equals(VerticalDropLocation.TOP.name()) || verticalDropLocation.equals(VerticalDropLocation.MIDDLE.name()))) {
+                        getListener().orderGroupBefore(groupToMove, group.getRelPath());
+                    }
+
                 } else {
                     log.warn("Trying to drop neither entry nor group on a group.");
                 }

@@ -75,6 +75,8 @@ public interface FavoritesView extends View {
         void orderFavoriteAfter(String relPath, String sibling);
 
         void orderGroupBefore(String relPath, String sibling);
+
+        void orderGroupAfter(String groupToMove, String relPath);
     }
 
 }

@@ -115,6 +115,13 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
     }
 
     @Override
+    public void orderGroupAfter(String relPath, String sibling) {
+        favoritesManager.orderGroupAfter(relPath, sibling);
+        initializeView();
+
+    }
+
+    @Override
     public void goToLocation(final String location) {
         final String completeLocation = getCompleteURIFromFragment(location);
         Page.getCurrent().setLocation(completeLocation);
@@ -219,4 +226,5 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
     private void initializeView() {
         view.init(favoritesManager.getFavorites(), createNewFavoriteSuggestion("", "", ""), createNewGroupSuggestion(), getAvailableGroupsNames());
     }
+
 }
