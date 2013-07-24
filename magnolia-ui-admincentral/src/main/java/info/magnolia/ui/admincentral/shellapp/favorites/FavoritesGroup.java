@@ -34,9 +34,10 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingListener;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
-import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
@@ -56,6 +57,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.DragAndDropWrapper.DragStartMode;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;
 
@@ -95,7 +97,20 @@ public final class FavoritesGroup extends CssLayout {
             final AbstractJcrNodeAdapter fav = nodeAdapters.get(key);
             final FavoritesEntry favEntry = new FavoritesEntry(fav, listener, shell);
             favEntry.setGroup(this.relPath);
-            addComponent(new EntryDragAndDropWrapper(favEntry, listener));
+            final EntryDragAndDropWrapper wrapper = new EntryDragAndDropWrapper(favEntry, listener);
+            favEntry.addEditingListener(new EditingListener() {
+
+                @Override
+                public void onEdit(EditingEvent event) {
+                    if (event.isEditing()) {
+                        wrapper.setDragStartMode(DragStartMode.NONE);
+                    } else {
+                        wrapper.setDragStartMode(DragStartMode.WRAPPER);
+                    }
+
+                }
+            });
+            addComponent(wrapper);
         }
     }
 
@@ -112,7 +127,7 @@ public final class FavoritesGroup extends CssLayout {
             setEditable(false);
             setSelected(false);
         }
-        Iterator<Component> components = getComponentIterator();
+        Iterator<Component> components = iterator();
         while (components.hasNext()) {
             Component component = components.next();
             if (component instanceof EntryDragAndDropWrapper) {
