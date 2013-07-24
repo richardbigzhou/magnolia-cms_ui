@@ -102,10 +102,6 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
         return this.group;
     }
 
-    public boolean isEditable() {
-        return editable;
-    }
-
     /**
      * Sets this fav as unselected and non editable, that is at its initial state.
      */
