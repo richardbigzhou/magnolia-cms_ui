@@ -153,7 +153,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         // Update the caption Extension
         setCaptionExtension(uploadedFileMimeType);
         // Create the process Indigator
-        progress = new BasicUploadProcessIndicator(inProgressCaption, inProgressRatioCaption);
+        progress = new BasicUploadProgressIndicator(inProgressCaption, inProgressRatioCaption);
         progress.setVisible(true);
         progress.setProgress(0);
         layout.addComponent(progress.asVaadinComponent());

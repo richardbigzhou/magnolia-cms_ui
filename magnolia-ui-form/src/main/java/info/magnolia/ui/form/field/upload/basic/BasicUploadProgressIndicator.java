@@ -59,7 +59,7 @@ import com.vaadin.ui.VerticalLayout;
  * <li>Label.UploadexOfy
  * </ul>
  */
-public class BasicUploadProcessIndicator extends CustomComponent implements UploadProgressIndicator {
+public class BasicUploadProgressIndicator extends CustomComponent implements UploadProgressIndicator {
 
     private static final long serialVersionUID = 1L;
 
@@ -71,7 +71,7 @@ public class BasicUploadProcessIndicator extends CustomComponent implements Uplo
     private String inProgressRatioCaption;
     private VerticalLayout mainLayout;
 
-    public BasicUploadProcessIndicator(String inProgressCaption, String inProgressRatioCaption) {
+    public BasicUploadProgressIndicator(String inProgressCaption, String inProgressRatioCaption) {
         this.inProgressCaption = inProgressCaption;
         this.inProgressRatioCaption = inProgressRatioCaption;
 
