@@ -43,13 +43,14 @@ import org.apache.commons.io.FileUtils;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.ProgressIndicator;
+import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * Custom Component used to create a custom display for {@link ProgressIndicator}.
+ * Custom Component used to create a custom display for the progress indicator.
  * <p>
- * This view normally contains a progress bar and label indicating the uploaded percentage, filename.... Refresh of the view is done by calling refreshOnProgressUploadLayout(..)
+ * This view normally contains a progress bar and a label indicating the uploaded percentage, filename...<br>
+ * Refreshing the view is done by calling {@link #refreshLayout(long, long, String)}
  * <p>
  * Layout composition:
  * <ul>
@@ -63,7 +64,7 @@ public class BasicUploadProgressIndicator extends CustomComponent implements Upl
 
     private static final long serialVersionUID = 1L;
 
-    private ProgressIndicator progressIndicator;
+    private ProgressBar progressIndicator;
     private Label uploadFileLocation;
     private Label uploadFileRatio;
     private Label uploadFileProgress;
@@ -87,9 +88,8 @@ public class BasicUploadProgressIndicator extends CustomComponent implements Upl
         uploadFileProgress.setSizeUndefined();
         uploadFileProgress.addStyleName("uploading-file-progress");
 
-        progressIndicator = new ProgressIndicator();
+        progressIndicator = new ProgressBar();
         progressIndicator.setVisible(false);
-        progressIndicator.setPollingInterval(50);
         progressIndicator.setWidth("100%");
 
         mainLayout = new VerticalLayout();
