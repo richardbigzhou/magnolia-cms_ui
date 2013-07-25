@@ -41,30 +41,33 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.link.LinkUtil;
+import info.magnolia.pages.app.editor.event.ComponentMoveEvent;
+import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
+import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppEventBus;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
+import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.message.Message;
+import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
-import info.magnolia.pages.app.editor.event.ComponentMoveEvent;
 import info.magnolia.ui.contentapp.definition.ContentSubAppDescriptor;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailView;
-import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.framework.app.BaseSubApp;
-import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.api.app.SubAppEventBus;
-import info.magnolia.ui.api.event.AdmincentralEventBus;
-import info.magnolia.ui.api.event.ContentChangedEvent;
-import info.magnolia.ui.api.location.Location;
-import info.magnolia.ui.api.message.Message;
-import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.editor.PageEditorListener;
 import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
@@ -371,20 +374,26 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                         if (!path.equals(parameters.getNodePath())) {
                             updateNodePath(path);
                         }
+
                         if (parameters.isPreview()) {
-                            actionbarPresenter.showSection("pagePreviewActions");
+                            ActionbarSectionDefinition def = getActionbarSectionDefinitionByName("pagePreviewActions");
+                            if (def != null) {
+                                enableOrDisableActions(def, path);
+                            }
+
                         } else {
-                            actionbarPresenter.showSection("pageActions");
+                            ActionbarSectionDefinition def = getActionbarSectionDefinitionByName("pageActions");
+                            if (def != null) {
+                                enableOrDisableActions(def, path);
+                            }
                         }
-                    }
-                    else if (element instanceof AreaElement) {
+                    } else if (element instanceof AreaElement) {
                         if (dialog == null) {
                             actionbarPresenter.showSection("areaActions");
                         } else {
                             actionbarPresenter.showSection("editableAreaActions");
                         }
-                    }
-                    else if (element instanceof ComponentElement) {
+                    } else if (element instanceof ComponentElement) {
                         actionbarPresenter.showSection("componentActions");
                     }
                     updateActions();
@@ -449,6 +458,39 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             log.warn("Not able to check if node has MixIn");
             return false;
         }
+    }
+
+    private void enableOrDisableActions(final ActionbarSectionDefinition def, final String path) {
+        actionbarPresenter.showSection(def.getName());
+        // Evaluate availability of each action within the section
+        Node node = SessionUtil.getNode(workspace, path);
+        for (ActionbarGroupDefinition groupDefinition : def.getGroups()) {
+            for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
+
+                String actionName = itemDefinition.getName();
+                if (actionExecutor.isAvailable(actionName, node)) {
+                    actionbarPresenter.enable(actionName);
+                } else {
+                    actionbarPresenter.disable(actionName);
+                }
+            }
+        }
+    }
+
+    private ActionbarSectionDefinition getActionbarSectionDefinitionByName(final String sectionName) {
+        ActionbarDefinition actionbarDefinition = ((DetailSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getActionbar();
+        if (actionbarDefinition == null) {
+            log.warn("No actionbar definition found, returning null");
+            return null;
+        }
+
+        for (ActionbarSectionDefinition section : actionbarDefinition.getSections()) {
+            if (section.getName().equals(sectionName)) {
+                return section;
+            }
+        }
+        log.warn("No section named {[}] found, returning null", sectionName);
+        return null;
     }
 
     @Override
