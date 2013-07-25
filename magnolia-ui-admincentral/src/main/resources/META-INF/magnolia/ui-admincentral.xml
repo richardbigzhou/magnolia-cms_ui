@@ -34,6 +34,10 @@
     <id>admincentral</id>
 
     <component>
+      <type>info.magnolia.ui.api.context.UiContext</type>
+      <implementation>info.magnolia.ui.framework.shell.ShellImpl</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.admincentral.shellapp.ShellAppController</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.ShellAppController</implementation>
     </component>

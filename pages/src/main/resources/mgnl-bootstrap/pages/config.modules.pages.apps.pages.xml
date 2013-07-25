@@ -186,7 +186,7 @@
             <sv:value>mix:lockable</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:uuid" sv:type="String">
-            <sv:value>18a1eca6-4060-496c-8635-b4ee060cf2ba</sv:value>
+            <sv:value>adef5716-1175-4938-b6b7-c367567e80e0</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
             <sv:value>info.magnolia.ui.framework.action.ConfirmationActionDefinition</sv:value>
