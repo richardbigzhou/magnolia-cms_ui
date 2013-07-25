@@ -35,7 +35,7 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppController;
-import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.LinkField;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
@@ -57,20 +57,20 @@ public class LinkFieldFactory<D extends FieldDefinition> extends AbstractFieldFa
     private LinkField linkField;
 
     private final AppController appController;
-    private final SubAppContext subAppContext;
+    private final UiContext uiContext;
     private final ComponentProvider componentProvider;
 
     @Inject
-    public LinkFieldFactory(LinkFieldDefinition definition, Item relatedFieldItem, AppController appController, SubAppContext subAppContext, ComponentProvider componentProvider) {
+    public LinkFieldFactory(LinkFieldDefinition definition, Item relatedFieldItem, AppController appController, UiContext uiContext, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem);
         this.appController = appController;
-        this.subAppContext = subAppContext;
+        this.uiContext = uiContext;
         this.componentProvider = componentProvider;
     }
 
     @Override
     protected Field<String> createFieldComponent() {
-        linkField = new LinkField(definition, appController, subAppContext, componentProvider);
+        linkField = new LinkField(definition, appController, uiContext, componentProvider);
         // Set Caption
         linkField.setButtonCaptionNew(getMessage(definition.getButtonSelectNewLabel()));
         linkField.setButtonCaptionOther(getMessage(definition.getButtonSelectOtherLabel()));

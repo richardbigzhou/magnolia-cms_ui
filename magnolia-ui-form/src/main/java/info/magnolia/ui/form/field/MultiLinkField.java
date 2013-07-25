@@ -35,7 +35,7 @@ package info.magnolia.ui.form.field;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppController;
-import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
 
 import java.util.ArrayList;
@@ -68,14 +68,14 @@ public class MultiLinkField extends CustomField<List> {
     private String buttonCaptionOther;
 
     private final AppController appController;
-    private final SubAppContext subAppContext;
+    private final UiContext uiContext;
     private final ComponentProvider componentProvider;
     protected VerticalLayout root;
 
-    public MultiLinkField(MultiLinkFieldDefinition definition, AppController appController, SubAppContext subAppContext, ComponentProvider componentProvider) {
+    public MultiLinkField(MultiLinkFieldDefinition definition, AppController appController, UiContext uiContext, ComponentProvider componentProvider) {
         this.definition = definition;
         this.appController = appController;
-        this.subAppContext = subAppContext;
+        this.uiContext = uiContext;
         this.componentProvider = componentProvider;
     }
 
@@ -165,7 +165,7 @@ public class MultiLinkField extends CustomField<List> {
     private Component createEntryComponent(String entry) {
         HorizontalLayout layout = new HorizontalLayout();
         // Create a single LinkFild and set DataSource and ValueChangeListener.
-        LinkField linkField = new LinkField(definition, appController, subAppContext, componentProvider);
+        LinkField linkField = new LinkField(definition, appController, uiContext, componentProvider);
         linkField.setButtonCaptionNew(buttonCaptionNew);
         linkField.setButtonCaptionOther(buttonCaptionOther);
         layout.addComponent(linkField);
