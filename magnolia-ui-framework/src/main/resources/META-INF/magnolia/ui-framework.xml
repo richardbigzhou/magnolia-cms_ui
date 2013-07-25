@@ -180,10 +180,41 @@
       <implementation>info.magnolia.ui.framework.app.DefaultAppView</implementation>
     </component>
 
+    <!-- Image provider -->
+    <component>
+      <type>info.magnolia.ui.imageprovider.definition.ImageProviderDefinition</type>
+      <implementation>info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.imageprovider.ImageProvider</type>
+      <implementation>info.magnolia.ui.imageprovider.DefaultImageProvider</implementation>
+    </component>
+
+    <!-- Dialog -->
+    <!--
+      The FormDialogPresenter is mapped in admincentral, app and subApp scope to ensure it gets the correct UiContext injected.
+    !-->
+    <component>
+      <type>info.magnolia.ui.dialog.FormDialogPresenter</type>
+      <implementation>info.magnolia.ui.dialog.FormDialogPresenterImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.vaadin.dialog.DialogView</type>
+      <implementation>info.magnolia.ui.vaadin.dialog.BaseDialog</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
+      <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
+    </component>
+
     <!-- Form -->
     <component>
       <type>info.magnolia.ui.form.field.factory.FieldFactoryFactory</type>
       <implementation>info.magnolia.ui.form.field.factory.FieldFactoryFactory</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory</type>
+      <implementation>info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory</implementation>
     </component>
 
     <!-- Ui framework-->
@@ -202,21 +233,16 @@
   <components>
     <id>app</id>
 
-    <!-- Image provider -->
+    <!-- Dialog -->
+    <!--
+      The FormDialogPresenter is mapped in admincentral, app and subApp scope to ensure it gets the correct UiContext injected.
+    !-->
     <component>
-      <type>info.magnolia.ui.imageprovider.definition.ImageProviderDefinition</type>
-      <implementation>info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.imageprovider.ImageProvider</type>
-      <implementation>info.magnolia.ui.imageprovider.DefaultImageProvider</implementation>
+      <type>info.magnolia.ui.dialog.FormDialogPresenter</type>
+      <implementation>info.magnolia.ui.dialog.FormDialogPresenterImpl</implementation>
     </component>
 
     <!-- Form -->
-    <component>
-      <type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
-      <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
-    </component>
     <component>
       <type>info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory</type>
       <implementation>info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory</implementation>
@@ -266,9 +292,9 @@
       <implementation>info.magnolia.ui.form.action.SaveFormActionDefinition</implementation>
     </component>
     <!--
-    The FormView is mapped twice because of it two use-cases:
-    in admin-central scope without app-contexts visible and in app-scope, where the app-context is actually needed,
-    so the interface has to be provided by the correct ComponentProvider.
+      The FormView is mapped twice because of it two use-cases:
+      in admin-central scope without app-contexts visible and in app-scope, where the app-context is actually needed,
+      so the interface has to be provided by the correct ComponentProvider.
     !-->
     <component>
       <type>info.magnolia.ui.vaadin.form.FormView</type>
@@ -286,17 +312,12 @@
     </component>
 
     <!-- Dialog -->
+    <!--
+      The FormDialogPresenter is mapped in admincentral, app and subApp scope to ensure it gets the correct UiContext injected.
+    !-->
     <component>
       <type>info.magnolia.ui.dialog.FormDialogPresenter</type>
       <implementation>info.magnolia.ui.dialog.FormDialogPresenterImpl</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.vaadin.dialog.DialogView</type>
-      <implementation>info.magnolia.ui.vaadin.dialog.BaseDialog</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.vaadin.dialog.FormDialogView</type>
-      <implementation>info.magnolia.ui.vaadin.dialog.FormDialog</implementation>
     </component>
 
     <!-- Embedded page sub app -->
