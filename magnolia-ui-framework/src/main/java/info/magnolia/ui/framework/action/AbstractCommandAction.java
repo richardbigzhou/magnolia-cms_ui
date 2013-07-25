@@ -92,7 +92,7 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
 
     /**
      * Builds a map of parameters which will be passed to the current command
-     * for execution. Called by the constructor. Default implementation returns
+     * for execution. Called by {@link #onPreExecute()}. Default implementation returns
      * a map containing the parameters defined at
      * {@link CommandActionDefinition#getParams()}. It also adds the following
      * parameters with values retrieved from the passed node.
