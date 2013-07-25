@@ -79,11 +79,6 @@
         <version>0.8.2</version>
       </dependency>
       <dependency>
-        <groupId>org.vaadin.addons</groupId>
-        <artifactId>refresher</artifactId>
-        <version>1.2.1.7</version>
-      </dependency>
-      <dependency>
         <groupId>org.vaadin.addon</groupId>
         <artifactId>easyuploads</artifactId>
         <version>7.0.0</version>
