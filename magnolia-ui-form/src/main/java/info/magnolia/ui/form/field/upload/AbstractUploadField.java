@@ -426,23 +426,29 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
     }
 
     private void startPolling() {
-        UI.getCurrent().access(new Runnable() {
+        UI ui = UI.getCurrent();
+        if (ui != null) {
+            ui.access(new Runnable() {
 
-            @Override
-            public void run() {
-                UI.getCurrent().setPollInterval(200);
-            }
-        });
+                @Override
+                public void run() {
+                    UI.getCurrent().setPollInterval(200);
+                }
+            });
+        }
     }
 
     private void stopPolling() {
-        UI.getCurrent().access(new Runnable() {
+        UI ui = UI.getCurrent();
+        if (ui != null) {
+            ui.access(new Runnable() {
 
-            @Override
-            public void run() {
-                UI.getCurrent().setPollInterval(-1);
-            }
-        });
+                @Override
+                public void run() {
+                    UI.getCurrent().setPollInterval(-1);
+                }
+            });
+        }
     }
 
 }
