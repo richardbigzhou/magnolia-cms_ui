@@ -489,7 +489,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                 return section;
             }
         }
-        log.warn("No section named {[}] found, returning null", sectionName);
+        log.warn("No section named [{}] found, returning null", sectionName);
         return null;
     }
 
