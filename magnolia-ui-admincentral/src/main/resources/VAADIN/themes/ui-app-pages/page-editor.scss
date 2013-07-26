@@ -2,7 +2,7 @@
 
 @import "../magnolia/fonts.scss";
 @import "../magnolia/magnolia-icons.scss";
-@import "../magnolia/colors.scss";
+@import "page-editor-colors.scss";
 
 /* ---------------------------
  * Edit bars definitions
@@ -41,8 +41,8 @@ div.mgnlEditorBar {
   height: 25px !important;
   /* vertical paddings minus borders -1. "-1" to make sure that FF properly align labels in all cases; for other */
   /* browsers, this has no effect. This only works with single-line labels. */
-  background-color: #efefef !important;
-  color: #6a9090 !important;
+  background-color: $cp53 !important;
+  color: $cp50 !important;
   text-transform: uppercase !important;
   margin: 0 0 2px 0 !important;
   font-family: DINWebPro, Verdana, sans-serif !important;
@@ -51,8 +51,8 @@ div.mgnlEditorBar {
 }
 
 div.mgnlEditorBar.area.init {
-  background-color: #a5bc66 !important;
-  color: #ffffff !important;
+  background-color: $cp51 !important;
+  color: $cp54 !important;
 }
 
 /* Selected Item (focus) */
@@ -61,14 +61,14 @@ div.mgnlEditorBar.area.childFocus ~ div.mgnlEditorBar.component.focus,
 div.mgnlEditorBar.area.focus,
 div.mgnlEditorBar.component.focus
 {
-  background-color: #6a9000 !important;
-  color: #ffffff !important;
+  background-color: $cp50 !important;
+  color: $cp54 !important;
 }
 
 /* The parent of the focussed component */
 div.mgnlEditorBar.area.childFocus {
-  background-color: #e1e8cc !important;
-  color: #6a9000 !important;
+  background-color: $cp52 !important;
+  color: $cp50 !important;
 }
 
 /* Siblings of the selected area */
@@ -76,8 +76,8 @@ div.mgnlEditorBar.area.childFocus ~ div.mgnlEditorBar.component,
 div.mgnlEditorBar.area.childFocus ~ * div.mgnlEditorBar.component,
 div.mgnlEditorBar.area.init ~ * div.mgnlPlaceholder div.mgnlEditorBar.component,
 div.mgnlEditorBar.area.init ~ div.mgnlPlaceholder div.mgnlEditorBar.component {
-  background-color: #e1e8cc !important;
-  color: #6a9000 !important;
+  background-color: $cp52 !important;
+  color: $cp50 !important;
 }
 
 div.mgnlEditorBar.area.childFocus ~ div.mgnlEditorBar.component.moveTarget,
@@ -94,7 +94,7 @@ div.mgnlEditorBar.area.childFocus ~ div.mgnlPlaceholder div.mgnlPlaceholderBox,
 div.mgnlEditorBar.area.childFocus ~ * div.mgnlPlaceholder div.mgnlPlaceholderBox,
 div.mgnlEditorBar.area.init ~ * div.mgnlPlaceholder div.mgnlPlaceholderBox,
 div.mgnlEditorBar.area.init ~ div.mgnlPlaceholder div.mgnlPlaceholderBox {
-  border: 2px dotted #e1e8cc !important;
+  border: 2px dotted $cp52 !important;
   border-top: none !important;
 }
 
@@ -104,12 +104,12 @@ div.mgnlEditorBar.area.init ~ div.mgnlPlaceholder div.mgnlPlaceholderBox {
  */
 div.mgnlEditorBar.area.focus ~ div.mgnlEditorBar.component,
 div.mgnlEditorBar.area.focus ~ * div.mgnlEditorBar.component {
-  background-color: #a5bc66 !important;
-  color: #ffffff !important;
+  background-color: $cp51 !important;
+  color: $cp54 !important;
 }
 div.mgnlEditorBar.area.focus ~ * div.mgnlPlaceholder div.mgnlPlaceholderBox,
 div.mgnlEditorBar.area.focus ~ div.mgnlPlaceholder div.mgnlPlaceholderBox {
-  border: 2px dotted #a5bc66 !important;
+  border: 2px dotted $cp51 !important;
   border-top: none !important;
 }
 
@@ -117,13 +117,13 @@ div.mgnlEditorBar.area.focus ~ div.mgnlPlaceholder div.mgnlPlaceholderBox {
 div.mgnlEditorBar.component.focus ~ * div.mgnlEditorBar.area,
 div.mgnlEditorBar.component.focus ~ div.mgnlEditorBar.area
 {
-  background-color: #a5bc66 !important;
-  color: #ffffff !important;
+  background-color: $cp51 !important;
+  color: $cp54 !important;
 }
 
 div.mgnlEditorBar.area {
-  background-color: #efefef !important;
-  color: #689600 !important;
+  background-color: $cp53 !important;
+  color: $c40 !important;
   clear: both !important;
   border-radius: 5px 5px 0 0 !important;
 }
@@ -138,10 +138,10 @@ div.mgnlEditorBar.area.end {
  * Component edit bar.
  */
 div.mgnlEditorBar.component {
-  background-color: #efefef !important;
+  background-color: $cp53 !important;
 
   /* See .mgnlEditorBar for an explanation of this */
-  color: #6a9000 !important;
+  color: $cp50 !important;
 }
 
 div.mgnlPlaceholder {
@@ -154,7 +154,7 @@ div.mgnlPlaceholder div.mgnlEditorBar{
 }
 
 div.mgnlPlaceholder div.mgnlPlaceholderBox {
-  border: 2px dotted #efefef !important;
+  border: 2px dotted $cp53 !important;
   border-top: none !important;
   height: 20px !important;
   background-color: white !important;
