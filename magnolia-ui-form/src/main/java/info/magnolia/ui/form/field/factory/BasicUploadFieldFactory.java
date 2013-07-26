@@ -34,7 +34,6 @@
 package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.cms.core.Path;
-import info.magnolia.init.MagnoliaConfigurationProperties;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
