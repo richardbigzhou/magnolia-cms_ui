@@ -216,7 +216,7 @@ public class PagesEditorSubAppTest {
     }
 
     @Test
-    public void testEnableOrDisablePagePreviewActionsBasedOnUserPermissionsForPage() {
+    public void testEnableOrDisablePagePreviewActionsBasedOnUserPermissions() {
         // GIVEN
         String sectionName = "pagePreviewActions";
         String unavailableAction = "bar";
