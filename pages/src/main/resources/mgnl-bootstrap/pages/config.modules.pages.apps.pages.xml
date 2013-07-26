@@ -220,7 +220,7 @@
               <sv:value>mgnl:contentNode</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:uuid" sv:type="String">
-              <sv:value>5debd4b5-d968-414f-98fb-54f8d7d91f8a</sv:value>
+              <sv:value>4bcb450c-55ca-486a-8032-d044912c7210</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
@@ -634,7 +634,7 @@
             <sv:value>2013-02-25T12:38:03.268+01:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-            <sv:value>2013-07-16T18:11:43.205+02:00</sv:value>
+            <sv:value>2013-02-25T12:39:18.099+01:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
             <sv:value>superuser</sv:value>
