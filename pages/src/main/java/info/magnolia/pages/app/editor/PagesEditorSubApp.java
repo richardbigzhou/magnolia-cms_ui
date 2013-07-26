@@ -348,56 +348,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             @Override
             public void onItemSelected(NodeSelectedEvent event) {
                 AbstractElement element = event.getElement();
-                String path = element.getPath();
-                String dialog = element.getDialog();
-                if (StringUtils.isEmpty(path)) {
-                    path = "/";
-                }
-
-                hideAllSections();
-
-                if (isDeletedNode(workspace, path)) {
-                    actionbarPresenter.showSection("pageDeleteActions");
-                    if (!getCurrentLocation().hasVersion()) {
-                        actionbarPresenter.enable("showPreviousVersion");
-                    } else {
-                        actionbarPresenter.disable("showPreviousVersion");
-                    }
-                    actionbarPresenter.enable("restorePreviousVersion");
-                    actionbarPresenter.enable("activateDelete");
-
-                } else {
-
-                    if (element instanceof PageElement) {
-                        updateCaption(path);
-
-                        if (!path.equals(parameters.getNodePath())) {
-                            updateNodePath(path);
-                        }
-
-                        if (parameters.isPreview()) {
-                            ActionbarSectionDefinition def = getActionbarSectionDefinitionByName("pagePreviewActions");
-                            if (def != null) {
-                                enableOrDisableActions(def, path);
-                            }
-
-                        } else {
-                            ActionbarSectionDefinition def = getActionbarSectionDefinitionByName("pageActions");
-                            if (def != null) {
-                                enableOrDisableActions(def, path);
-                            }
-                        }
-                    } else if (element instanceof AreaElement) {
-                        if (dialog == null) {
-                            actionbarPresenter.showSection("areaActions");
-                        } else {
-                            actionbarPresenter.showSection("editableAreaActions");
-                        }
-                    } else if (element instanceof ComponentElement) {
-                        actionbarPresenter.showSection("componentActions");
-                    }
-                    updateActions();
-                }
+                updateActionbar(element);
             }
         });
     }
@@ -460,8 +411,62 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         }
     }
 
+    private void updateActionbar(final AbstractElement element) {
+        String path = element.getPath();
+        String dialog = element.getDialog();
+        if (StringUtils.isEmpty(path)) {
+            path = "/";
+        }
+        hideAllSections();
+
+        if (isDeletedNode(workspace, path)) {
+            actionbarPresenter.showSection("pageDeleteActions");
+
+            if (!getCurrentLocation().hasVersion()) {
+                actionbarPresenter.enable("showPreviousVersion");
+            } else {
+                actionbarPresenter.disable("showPreviousVersion");
+            }
+            actionbarPresenter.enable("restorePreviousVersion");
+            actionbarPresenter.enable("activateDelete");
+
+        } else {
+
+            if (element instanceof PageElement) {
+                updateCaption(path);
+
+                if (!path.equals(parameters.getNodePath())) {
+                    updateNodePath(path);
+                }
+
+                if (parameters.isPreview()) {
+                    actionbarPresenter.showSection("pagePreviewActions");
+                    ActionbarSectionDefinition def = getActionbarSectionDefinitionByName("pagePreviewActions");
+                    if (def != null) {
+                        enableOrDisableActions(def, path);
+                    }
+
+                } else {
+                    actionbarPresenter.showSection("pageActions");
+                    ActionbarSectionDefinition def = getActionbarSectionDefinitionByName("pageActions");
+                    if (def != null) {
+                        enableOrDisableActions(def, path);
+                    }
+                }
+            } else if (element instanceof AreaElement) {
+                if (dialog == null) {
+                    actionbarPresenter.showSection("areaActions");
+                } else {
+                    actionbarPresenter.showSection("editableAreaActions");
+                }
+            } else if (element instanceof ComponentElement) {
+                actionbarPresenter.showSection("componentActions");
+            }
+            updateActions();
+        }
+    }
+
     private void enableOrDisableActions(final ActionbarSectionDefinition def, final String path) {
-        actionbarPresenter.showSection(def.getName());
         // Evaluate availability of each action within the section
         Node node = SessionUtil.getNode(workspace, path);
         for (ActionbarGroupDefinition groupDefinition : def.getGroups()) {
