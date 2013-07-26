@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import info.magnolia.cms.core.SystemProperty;
+import info.magnolia.cms.core.Path;
 import info.magnolia.init.MagnoliaConfigurationProperties;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.api.context.UiContext;
@@ -85,7 +85,7 @@ public class BasicUploadFieldFactory extends AbstractFieldFactory<BasicUploadFie
         // Get or create the File Node adapter.
         AbstractJcrNodeAdapter binaryDataSubNodeItem = getOrCreateSubItemWithBinaryData();
         // Init the tmp upload path
-        File tmpDirectory = new File(properties.getProperty(SystemProperty.MAGNOLIA_UPLOAD_TMPDIR));
+        File tmpDirectory = Path.getTempDirectory();
 
         // Create the File Wrapper.
         BasicFileItemWrapper fileItem = new BasicFileItemWrapper(binaryDataSubNodeItem, tmpDirectory);
