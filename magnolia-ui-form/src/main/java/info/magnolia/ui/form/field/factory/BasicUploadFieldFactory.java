@@ -33,8 +33,7 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import info.magnolia.cms.core.SystemProperty;
-import info.magnolia.init.MagnoliaConfigurationProperties;
+import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
@@ -67,15 +66,12 @@ public class BasicUploadFieldFactory extends AbstractFieldFactory<BasicUploadFie
 
     private static final Logger log = LoggerFactory.getLogger(BasicUploadFieldFactory.class);
 
-
-    private MagnoliaConfigurationProperties properties;
     private final ImageProvider imageProvider;
     private UiContext uiContext;
 
     @Inject
-    public BasicUploadFieldFactory(BasicUploadFieldDefinition definition, Item relatedFieldItem, MagnoliaConfigurationProperties properties, ImageProvider imageProvider, UiContext uiContext) {
+    public BasicUploadFieldFactory(BasicUploadFieldDefinition definition, Item relatedFieldItem, ImageProvider imageProvider, UiContext uiContext) {
         super(definition, relatedFieldItem);
-        this.properties = properties;
         this.imageProvider = imageProvider;
         this.uiContext = uiContext;
     }
@@ -85,7 +81,7 @@ public class BasicUploadFieldFactory extends AbstractFieldFactory<BasicUploadFie
         // Get or create the File Node adapter.
         AbstractJcrNodeAdapter binaryDataSubNodeItem = getOrCreateSubItemWithBinaryData();
         // Init the tmp upload path
-        File tmpDirectory = new File(properties.getProperty(SystemProperty.MAGNOLIA_UPLOAD_TMPDIR));
+        File tmpDirectory = Path.getTempDirectory();
 
         // Create the File Wrapper.
         BasicFileItemWrapper fileItem = new BasicFileItemWrapper(binaryDataSubNodeItem, tmpDirectory);
