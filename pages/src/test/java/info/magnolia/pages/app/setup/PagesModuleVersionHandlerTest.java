@@ -145,13 +145,13 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     public void testUpdateTo502CleanupDeleteAction() throws ModuleManagementException, RepositoryException {
         // GIVEN
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        Node action = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/delete", NodeTypes.Content.NAME);
+        Node action = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/delete", NodeTypes.ContentNode.NAME);
         action.setProperty("label", "Delete item");
         action.setProperty("icon", "icon-delete");
         action.getSession().save();
 
         // WHEN
-        NodeUtil.createPath(action, "availability", NodeTypes.Content.NAME);
+        NodeUtil.createPath(action, "availability", NodeTypes.ContentNode.NAME);
 
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
 
@@ -167,9 +167,9 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
 
         // GIVEN
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        Node actionbarItems = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups/addingActions/items", NodeTypes.Content.NAME);
+        Node actionbarItems = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups/addingActions/items", NodeTypes.ContentNode.NAME);
 
-        NodeUtil.createPath(actionbarItems, "delete", NodeTypes.Content.NAME);
+        NodeUtil.createPath(actionbarItems, "delete", NodeTypes.ContentNode.NAME);
 
 
         // WHEN
