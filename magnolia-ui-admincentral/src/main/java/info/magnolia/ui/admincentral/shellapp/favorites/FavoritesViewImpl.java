@@ -225,7 +225,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
         }
         favoriteForm.close();
         noGroup.reset();
-        Iterator<Component> components = splitPanel.getRightContainer().getComponentIterator();
+        Iterator<Component> components = splitPanel.getRightContainer().iterator();
 
         while (components.hasNext()) {
             Component component = components.next();
