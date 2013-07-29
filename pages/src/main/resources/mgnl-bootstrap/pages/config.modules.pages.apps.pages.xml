@@ -178,7 +178,7 @@
             </sv:property>
           </sv:node>
         </sv:node>
-        <sv:node sv:name="delete">
+        <sv:node sv:name="confirmDeletion">
           <sv:property sv:name="jcr:primaryType" sv:type="Name">
             <sv:value>mgnl:contentNode</sv:value>
           </sv:property>
@@ -186,13 +186,13 @@
             <sv:value>mix:lockable</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:uuid" sv:type="String">
-            <sv:value>18a1eca6-4060-496c-8635-b4ee060cf2ba</sv:value>
+            <sv:value>adef5716-1175-4938-b6b7-c367567e80e0</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
-            <sv:value>info.magnolia.ui.framework.action.MarkNodeAsDeletedActionDefinition</sv:value>
+            <sv:value>info.magnolia.ui.framework.action.ConfirmationActionDefinition</sv:value>
           </sv:property>
-          <sv:property sv:name="command" sv:type="String">
-            <sv:value>markAsDeleted</sv:value>
+          <sv:property sv:name="confirmationMessage" sv:type="String">
+            <sv:value>confirmation.mark.delete.message</sv:value>
           </sv:property>
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>icon-delete</sv:value>
@@ -207,17 +207,20 @@
             <sv:value>2013-02-25T12:29:29.745+01:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-            <sv:value>2013-05-07T10:08:29.923+02:00</sv:value>
+            <sv:value>2013-07-18T14:35:51.193+02:00</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
             <sv:value>superuser</sv:value>
+          </sv:property>
+          <sv:property sv:name="successActionName" sv:type="String">
+            <sv:value>delete</sv:value>
           </sv:property>
           <sv:node sv:name="availability">
             <sv:property sv:name="jcr:primaryType" sv:type="Name">
               <sv:value>mgnl:contentNode</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:uuid" sv:type="String">
-              <sv:value>5debd4b5-d968-414f-98fb-54f8d7d91f8a</sv:value>
+              <sv:value>4bcb450c-55ca-486a-8032-d044912c7210</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
@@ -229,7 +232,7 @@
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-              <sv:value>2013-05-22T16:39:07.771+02:00</sv:value>
+              <sv:value>2013-07-18T14:15:53.426+02:00</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
@@ -1258,6 +1261,44 @@
             </sv:property>
           </sv:node>
         </sv:node>
+        <sv:node sv:name="delete">
+          <sv:property sv:name="jcr:primaryType" sv:type="Name">
+            <sv:value>mgnl:contentNode</sv:value>
+          </sv:property>
+          <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+            <sv:value>mix:lockable</sv:value>
+          </sv:property>
+          <sv:property sv:name="jcr:uuid" sv:type="String">
+            <sv:value>5538576b-1065-4d28-8823-c048dc3e479c</sv:value>
+          </sv:property>
+          <sv:property sv:name="class" sv:type="String">
+            <sv:value>info.magnolia.ui.framework.action.MarkNodeAsDeletedActionDefinition</sv:value>
+          </sv:property>
+          <sv:property sv:name="command" sv:type="String">
+            <sv:value>markAsDeleted</sv:value>
+          </sv:property>
+          <sv:property sv:name="jcr:createdBy" sv:type="String">
+            <sv:value>admin</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
+            <sv:value>false</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:created" sv:type="Date">
+            <sv:value>2013-02-25T12:29:29.745+01:00</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:lastActivated" sv:type="Date">
+            <sv:value>2013-07-17T14:42:08.694+02:00</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:lastActivatedBy" sv:type="String">
+            <sv:value>superuser</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+            <sv:value>2013-07-18T14:32:07.647+02:00</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+            <sv:value>superuser</sv:value>
+          </sv:property>
+        </sv:node>
       </sv:node>
       <sv:node sv:name="actionbar">
         <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -1435,7 +1476,7 @@
                       <sv:value>superuser</sv:value>
                     </sv:property>
                   </sv:node>
-                  <sv:node sv:name="delete">
+                  <sv:node sv:name="confirmDeletion">
                     <sv:property sv:name="jcr:primaryType" sv:type="Name">
                       <sv:value>mgnl:contentNode</sv:value>
                     </sv:property>
@@ -1452,7 +1493,7 @@
                       <sv:value>2013-02-27T17:12:48.852+01:00</sv:value>
                     </sv:property>
                     <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-                      <sv:value>2013-02-27T17:13:07.913+01:00</sv:value>
+                      <sv:value>2013-07-18T14:32:27.453+02:00</sv:value>
                     </sv:property>
                     <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
                       <sv:value>superuser</sv:value>
@@ -1975,7 +2016,7 @@
                       <sv:value>superuser</sv:value>
                     </sv:property>
                   </sv:node>
-                  <sv:node sv:name="delete">
+                  <sv:node sv:name="confirmDeletion">
                     <sv:property sv:name="jcr:primaryType" sv:type="Name">
                       <sv:value>mgnl:contentNode</sv:value>
                     </sv:property>
@@ -1992,7 +2033,7 @@
                       <sv:value>2013-02-27T17:12:48.852+01:00</sv:value>
                     </sv:property>
                     <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-                      <sv:value>2013-02-27T17:13:07.913+01:00</sv:value>
+                      <sv:value>2013-07-18T14:34:16.816+02:00</sv:value>
                     </sv:property>
                     <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
                       <sv:value>superuser</sv:value>

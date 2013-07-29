@@ -10,14 +10,14 @@
  import com.vaadin.client.ui.dd.VAbstractDropHandler;
  import com.vaadin.client.ui.dd.VAcceptCallback;
 @@ -121,12 +121,31 @@
-  * 
+  *
   * TODO implement unregistering for child components in Cells
   */
 -public class VScrollTable extends FlowPanel implements HasWidgets,
 +public class VScrollTablePatched extends FlowPanel implements HasWidgets,
          ScrollHandler, VHasDropHandler, FocusHandler, BlurHandler, Focusable,
          ActionOwner {
- 
+
 +
 +    protected TableHead createTableHead() {
 +        return new TableHead();
@@ -28,7 +28,7 @@
 +    }
 +
      public static final String STYLENAME = "v-table";
- 
+
 +    public boolean isVisibleInHierarchy() {
 +        boolean isVisible = isVisible();
 +        Widget current = getParent();
@@ -42,41 +42,32 @@
      public enum SelectMode {
          NONE(0), SINGLE(1), MULTI(2);
          private int id;
-@@ -194,7 +213,7 @@
- 
-     private SelectMode selectMode = SelectMode.NONE;
- 
--    private final HashSet<String> selectedRowKeys = new HashSet<String>();
-+    public final HashSet<String> selectedRowKeys = new HashSet<String>();
- 
-     /*
-      * When scrolling and selecting at the same time, the selections are not in
 @@ -359,7 +378,7 @@
      public boolean headerChangedDuringUpdate = false;
- 
+
      /** For internal use only. May be removed or replaced in the future. */
 -    public final TableHead tHead = new TableHead();
 +    public final TableHead tHead = createTableHead();
- 
+
      /** For internal use only. May be removed or replaced in the future. */
      public final TableFooter tFoot = new TableFooter();
 @@ -514,7 +533,7 @@
      private boolean hasFocus = false;
      private int dragmode;
- 
+
 -    private int multiselectmode;
 +    protected int multiselectmode;
- 
+
      /** For internal use only. May be removed or replaced in the future. */
      public int tabIndex;
 @@ -583,7 +602,7 @@
- 
+
      private boolean hadScrollBars = false;
- 
+
 -    public VScrollTable() {
 +    public VScrollTablePatched() {
          setMultiSelectMode(MULTISELECT_MODE_DEFAULT);
- 
+
          scrollBodyPanel.addFocusHandler(this);
 @@ -881,10 +900,20 @@
          // Send the selected rows
@@ -84,12 +75,12 @@
                  selectedRowKeys.toArray(new String[selectedRowKeys.size()]),
 -                immediately);
 +                false);
- 
+
 +        if (immediately) {
 +            selectionSynchronizer.schedule(500);
 +        }
      }
- 
+
 +    private Timer selectionSynchronizer = new Timer() {
 +        @Override
 +        public void run() {
@@ -117,34 +108,34 @@
 +            lazyRevertFocusToRow(row);
 +        }
      }
- 
+
      /** For internal use only. May be removed or replaced in the future. */
 @@ -1604,25 +1645,25 @@
          return -1;
      }
- 
+
 -    private boolean isMultiSelectModeSimple() {
 +    protected boolean isMultiSelectModeSimple() {
          return selectMode == SelectMode.MULTI
                  && multiselectmode == MULTISELECT_MODE_SIMPLE;
      }
- 
+
 -    private boolean isSingleSelectMode() {
 +    protected boolean isSingleSelectMode() {
          return selectMode == SelectMode.SINGLE;
      }
- 
+
 -    private boolean isMultiSelectModeAny() {
 +    protected boolean isMultiSelectModeAny() {
          return selectMode == SelectMode.MULTI;
      }
- 
+
 -    private boolean isMultiSelectModeDefault() {
 +    protected boolean isMultiSelectModeDefault() {
          return selectMode == SelectMode.MULTI
                  && multiselectmode == MULTISELECT_MODE_DEFAULT;
      }
- 
+
 -    private void setMultiSelectMode(int multiselectmode) {
 +    protected void setMultiSelectMode(int multiselectmode) {
          if (BrowserInfo.get().isTouchDevice()) {
@@ -157,28 +148,28 @@
 -        scrollBodyPanel.setScrollPosition(detachedScrollPosition);
 +        // scrollBodyPanel.setScrollPosition(detachedScrollPosition);
      }
- 
+
      /**
 @@ -2445,7 +2486,7 @@
- 
+
          Element td = DOM.createTD();
- 
+
 -        Element captionContainer = DOM.createDiv();
 +        protected Element captionContainer = DOM.createDiv();
- 
+
          Element sortIndicator = DOM.createDiv();
- 
+
 @@ -2697,9 +2738,9 @@
              return cid;
          }
- 
+
 -        private void setSorted(boolean sorted) {
 +        protected void setSorted(boolean sorted) {
              this.sorted = sorted;
 -            updateStyleNames(VScrollTable.this.getStylePrimaryName());
 +            updateStyleNames(VScrollTablePatched.this.getStylePrimaryName());
          }
- 
+
          /**
 @@ -2733,7 +2774,7 @@
                      handleCaptionEvent(event);
@@ -208,27 +199,27 @@
                  MouseEventDetails details = MouseEventDetailsBuilder
                          .buildMouseEventDetails(event);
 @@ -3034,7 +3075,7 @@
- 
+
          public void setAlign(char c) {
              align = c;
 -            updateStyleNames(VScrollTable.this.getStylePrimaryName());
 +            updateStyleNames(VScrollTablePatched.this.getStylePrimaryName());
          }
- 
+
          public char getAlign() {
 @@ -3116,7 +3157,7 @@
- 
+
          RowHeadersHeaderCell() {
              super(ROW_HEADER_COLUMN_KEY, "");
 -            updateStyleNames(VScrollTable.this.getStylePrimaryName());
 +            updateStyleNames(VScrollTablePatched.this.getStylePrimaryName());
          }
- 
+
          @Override
 @@ -3140,7 +3181,7 @@
- 
+
          HashMap<String, HeaderCell> availableCells = new HashMap<String, HeaderCell>();
- 
+
 -        Element div = DOM.createDiv();
 +        protected Element div = DOM.createDiv();
          Element hTableWrapper = DOM.createDiv();
@@ -280,7 +271,7 @@
              focusedSlot = -1;
 @@ -3549,7 +3590,7 @@
              private VScrollTableRow currentlyFocusedRow;
- 
+
              public VisibleColumnAction(String colKey) {
 -                super(VScrollTable.TableHead.this);
 +                super(VScrollTablePatched.TableHead.this);
@@ -288,13 +279,13 @@
                  caption = tHead.getHeaderCell(colKey).getCaption();
                  currentlyFocusedRow = focusedRow;
 @@ -3727,7 +3768,7 @@
- 
+
              setElement(td);
- 
+
 -            updateStyleNames(VScrollTable.this.getStylePrimaryName());
 +            updateStyleNames(VScrollTablePatched.this.getStylePrimaryName());
          }
- 
+
          protected void updateStyleNames(String primaryStyleName) {
 @@ -3928,7 +3969,7 @@
                  }
@@ -317,11 +308,11 @@
 @@ -4081,7 +4122,7 @@
              availableCells.put(ROW_HEADER_COLUMN_KEY,
                      new RowHeadersFooterCell());
- 
+
 -            updateStyleNames(VScrollTable.this.getStylePrimaryName());
 +            updateStyleNames(VScrollTablePatched.this.getStylePrimaryName());
          }
- 
+
          protected void updateStyleNames(String primaryStyleName) {
 @@ -4200,8 +4241,8 @@
                          // Already updated by setColWidth called from
@@ -335,7 +326,7 @@
                  } else if (recalcWidths) {
                      c.setUndefinedWidth();
 @@ -4343,12 +4384,19 @@
-      * 
+      *
       */
      public class VScrollTableBody extends Panel {
 +        protected VScrollTableRow createScrollTableRow(UIDL uidl, char[] aligns) {
@@ -345,14 +336,14 @@
 +        protected VScrollTableRow createScrollTableRow() {
 +            return new VScrollTableRow();
 +        }
- 
+
          public static final int DEFAULT_ROW_HEIGHT = 24;
- 
+
          private double rowHeight = -1;
- 
+
 -        private final LinkedList<Widget> renderedRows = new LinkedList<Widget>();
 +        public final LinkedList<Widget> renderedRows = new LinkedList<Widget>();
- 
+
          /**
           * Due some optimizations row height measuring is deferred and initial
 @@ -4427,7 +4475,7 @@
@@ -362,7 +353,7 @@
 -            updateStyleNames(VScrollTable.this.getStylePrimaryName());
 +            updateStyleNames(VScrollTablePatched.this.getStylePrimaryName());
          }
- 
+
          protected void updateStyleNames(String primaryStyleName) {
 @@ -4659,7 +4707,7 @@
                  // This is a generated row.
@@ -371,7 +362,7 @@
 -            return new VScrollTableRow(uidl, aligns2);
 +            return createScrollTableRow(uidl, aligns2);
          }
- 
+
          private void addRowBeforeFirstRendered(VScrollTableRow row) {
 @@ -4865,7 +4913,7 @@
                          rowHeight = lastKnownRowHeight;
@@ -394,9 +385,9 @@
                  tBodyElement.appendChild(scrollTableRow.getElement());
                  detectExtrawidth();
 @@ -5026,7 +5074,7 @@
- 
+
          public class VScrollTableRow extends Panel implements ActionOwner {
- 
+
 -            private static final int TOUCHSCROLL_TIMEOUT = 100;
 +            private static final int TOUCHSCROLL_TIMEOUT = 500;
              private static final int DRAGMODE_MULTIROW = 2;
@@ -404,11 +395,11 @@
              private boolean selected = false;
 @@ -5066,7 +5114,7 @@
                  getElement().getStyle().setProperty("visibility", "hidden");
- 
+
                  rowStyle = uidl.getStringAttribute("rowstyle");
 -                updateStyleNames(VScrollTable.this.getStylePrimaryName());
 +                updateStyleNames(VScrollTablePatched.this.getStylePrimaryName());
- 
+
                  String rowDescription = uidl.getStringAttribute("rowdescr");
                  if (rowDescription != null && !rowDescription.equals("")) {
 @@ -5132,7 +5180,7 @@
@@ -440,23 +431,23 @@
 -                container.setClassName(VScrollTable.this.getStylePrimaryName()
 +                container.setClassName(VScrollTablePatched.this.getStylePrimaryName()
                          + "-cell-wrapper");
- 
+
 -                td.setClassName(VScrollTable.this.getStylePrimaryName()
 +                td.setClassName(VScrollTablePatched.this.getStylePrimaryName()
                          + "-cell-content");
- 
+
                  if (style != null && !style.equals("")) {
 -                    td.addClassName(VScrollTable.this.getStylePrimaryName()
 +                    td.addClassName(VScrollTablePatched.this.getStylePrimaryName()
                              + "-cell-content-" + style);
                  }
- 
+
                  if (sorted) {
 -                    td.addClassName(VScrollTable.this.getStylePrimaryName()
 +                    td.addClassName(VScrollTablePatched.this.getStylePrimaryName()
                              + "-cell-content-sorted");
                  }
- 
+
 @@ -5369,18 +5417,18 @@
              protected void initCellWithWidget(Widget w, char align,
                      String style, boolean sorted, final TableCellElement td) {
@@ -508,9 +499,9 @@
                  NodeList<TableCellElement> cells = rowElement.getCells();
                  for (int i = 0; i < cells.getLength(); i++) {
 @@ -6398,9 +6446,11 @@
- 
+
      }
- 
+
 -    /** For internal use only. May be removed or replaced in the future. */
 +    /**
 +     * For internal use only. May be removed or replaced in the future.
@@ -523,7 +514,7 @@
               * will be set to zero and they won't be recalculated when the table
 @@ -6437,6 +6487,10 @@
      private static final int LAZY_COLUMN_ADJUST_TIMEOUT = 300;
- 
+
      private final Timer lazyAdjustColumnWidths = new Timer() {
 +
 +        private int formerWidth;
@@ -533,7 +524,7 @@
           * Check for column widths, and available width, to see if we can fix
           * column widths "optimally". Doing this lazily to avoid expensive
 @@ -6445,13 +6499,23 @@
- 
+
          @Override
          public void run() {
 -            if (scrollBody == null) {
@@ -543,7 +534,7 @@
                  triggerLazyColumnAdjustment(false);
                  return;
              }
- 
+
 +            // MGNLUI-962 We don't want to recalculate column widths if table body's width itself hasn't changed.
 +            int width = scrollBody.getAvailableWidth();
 +            boolean scrolling = willHaveScrollbars();
@@ -567,7 +558,7 @@
              }
              Scheduler.get().scheduleDeferred(new Command() {
 @@ -7063,7 +7127,7 @@
- 
+
          private void deEmphasis() {
              UIObject.setStyleName(getElement(),
 -                    VScrollTable.this.getStylePrimaryName() + "-drag", false);
@@ -585,13 +576,13 @@
              for (Widget w : scrollBody.renderedRows) {
                  VScrollTableRow row = (VScrollTableRow) w;
 @@ -7111,7 +7175,7 @@
- 
+
          @Override
          public ComponentConnector getConnector() {
 -            return ConnectorMap.get(client).getConnector(VScrollTable.this);
 +            return ConnectorMap.get(client).getConnector(VScrollTablePatched.this);
          }
- 
+
          @Override
 @@ -7504,7 +7568,7 @@
       * @param key

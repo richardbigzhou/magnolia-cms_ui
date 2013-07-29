@@ -42,6 +42,8 @@ import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -55,7 +57,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchPanel;
-import com.vaadin.client.VConsole;
 
 /**
  * Navigation bar.
@@ -213,7 +214,7 @@ public class ShellAppLauncher extends FlowPanel {
         divetWrapper.setClassName(type == ShellAppType.APPLAUNCHER ? "divet-green" : "divet-white");
         int divetPos = w.getAbsoluteLeft() + (w.getOffsetWidth() / 2) - divetWrapper.getOffsetWidth() / 2;
         if (animated && divetWrapper.getAbsoluteLeft() != divetPos) {
-            VConsole.error("DIVET POS: " + divetPos);
+            Logger.getLogger(getClass().getName()).log(Level.INFO, "DIVET POS: " + divetPos);
             divetAnimation.setProperty("left", divetPos);
             divetAnimation.run(DIVET_ANIMATION_SPEED, divetWrapper);
 

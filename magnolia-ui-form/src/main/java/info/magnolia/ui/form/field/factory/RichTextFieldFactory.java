@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.ItemChosenListener;
-import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
@@ -89,13 +89,13 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
     private MagnoliaRichTextField richTextEditor;
     private static final Logger log = LoggerFactory.getLogger(LinkFieldFactory.class);
 
-    private final SubAppContext subAppContext;
+    private final UiContext uiContext;
 
     @Inject
-    public RichTextFieldFactory(RichTextFieldDefinition definition, Item relatedFieldItem, AppController appController, SubAppContext subAppContext) {
+    public RichTextFieldFactory(RichTextFieldDefinition definition, Item relatedFieldItem, AppController appController, UiContext uiContext) {
         super(definition, relatedFieldItem);
         this.appController = appController;
-        this.subAppContext = subAppContext;
+        this.uiContext = uiContext;
     }
 
     @Override
@@ -170,7 +170,7 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
 
     private void openLinkDialog(String path, String workspace) {
 
-        appController.openChooseDialog(mapWorkSpaceToApp(workspace), path, subAppContext, null, new ItemChosenListener() {
+        appController.openChooseDialog(mapWorkSpaceToApp(workspace), path, uiContext, null, new ItemChosenListener() {
 
             @Override
             public void onItemChosen(Item chosenValue) {

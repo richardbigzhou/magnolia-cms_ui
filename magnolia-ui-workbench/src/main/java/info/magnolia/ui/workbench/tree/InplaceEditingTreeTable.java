@@ -258,9 +258,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
             }
 
             // register component on the table
-            if (field.getParent() != uiContext) {
-                field.setParent(uiContext);
-            }
+            InplaceEditingTreeTable.this.registerComponent(field);
 
             inplaceEditingField = field;
         }

@@ -95,6 +95,7 @@ public abstract class AbstractFieldFactoryTestCase<D extends FieldDefinition> {
         VaadinSession vaadinSession = mock(VaadinSession.class);
         when(vaadinSession.getConverterFactory()).thenReturn(new DefaultConverterFactory());
         when(vaadinSession.getLocale()).thenReturn(DEFAULT_LOCALE);
+        when(vaadinSession.hasLock()).thenReturn(true);
         ComponentsTestUtil.setInstance(VaadinSession.class, vaadinSession);
 
         // Init Session

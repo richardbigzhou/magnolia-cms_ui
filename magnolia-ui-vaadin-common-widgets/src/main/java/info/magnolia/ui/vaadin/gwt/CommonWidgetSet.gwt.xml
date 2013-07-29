@@ -6,10 +6,7 @@
   <inherits name='com.googlecode.mgwt.dom.DOM' />
   <inherits name='com.googlecode.mgwt.ui.UI' />
 
-  <inherits name='com.github.wolfie.refresher.RefresherWidgetset' />
-
   <inherits name='org.vaadin.aceeditor.AceEditorWidgetSet' />
-
 
   <inherits name="com.google.gwt.json.JSON" />
   <inherits name="com.google.gwt.resources.Resources" />

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,20 +33,36 @@
  */
 package info.magnolia.ui.framework.action;
 
-import info.magnolia.ui.api.action.CommandActionDefinition;
+import info.magnolia.commands.CommandsManager;
+import info.magnolia.event.EventBus;
+import info.magnolia.module.ModuleRegistry;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.jcr.Item;
 
 /**
- * Used to configure a {@link DeleteAction}.
- *
- * @see DeleteAction
+ * Extends the {@link ActivationAction} by the possibility to pass parameters in the constructor.
  */
-public class DeleteActionDefinition extends CommandActionDefinition {
+public class ExtendableActivationAction extends ActivationAction {
 
-    public static final String SUCCESS_MESSAGE = "confirmation.delete.success";
+    private Map<String, Object> parameters;
 
-    public DeleteActionDefinition() {
-        setImplementationClass(DeleteAction.class);
-        setCommand("delete");
-        setSuccessMessage(SUCCESS_MESSAGE);
+    @Inject
+    public ExtendableActivationAction(ActivationActionDefinition definition, JcrItemAdapter item, Map<String, Object> parameters,  CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, SubAppContext uiContext, ModuleRegistry moduleRegistry) {
+        super(definition, item, commandsManager, admincentralEventBus, uiContext, moduleRegistry);
+        this.parameters = parameters;
+    }
+
+    @Override
+    protected Map<String, Object> buildParams(Item jcrItem) {
+        Map<String, Object> params = super.buildParams(jcrItem);
+        params.putAll(parameters);
+        return params;
     }
 }

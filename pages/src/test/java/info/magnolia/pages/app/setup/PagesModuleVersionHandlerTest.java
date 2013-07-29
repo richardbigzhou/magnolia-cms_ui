@@ -61,6 +61,7 @@ import org.junit.Test;
 public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase {
 
     private Node dialog;
+    private Node actions;
 
     @Override
     protected String getModuleDescriptorPath() {
@@ -87,6 +88,9 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         dialog = NodeUtil.createPath(session.getRootNode(), "/modules/pages/dialogs", NodeTypes.ContentNode.NAME);
         dialog.getSession().save();
+
+        actions = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions", NodeTypes.ContentNode.NAME);
+
     }
 
     @Test
@@ -124,5 +128,55 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
 
         // THEN
         assertTrue(createPage.hasProperty("label"));
+    }
+
+    @Test
+    public void testUpdateTo502HasNewActions() throws ModuleManagementException, RepositoryException {
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
+
+        // THEN
+        assertTrue(actions.hasNode("confirmDeletion"));
+    }
+
+
+    @Test
+    public void testUpdateTo502CleanupDeleteAction() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node action = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/delete", NodeTypes.ContentNode.NAME);
+        action.setProperty("label", "Delete item");
+        action.setProperty("icon", "icon-delete");
+        action.getSession().save();
+
+        // WHEN
+        NodeUtil.createPath(action, "availability", NodeTypes.ContentNode.NAME);
+
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
+
+        // THEN
+        Node delete = actions.getNode("delete");
+        assertFalse(delete.hasNode("availability"));
+        assertFalse(delete.hasProperty("icon"));
+        assertFalse(delete.hasProperty("label"));
+    }
+
+    @Test
+    public void testUpdateTo502ActionbarNodesUpdated() throws ModuleManagementException, RepositoryException {
+
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node actionbarItems = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups/addingActions/items", NodeTypes.ContentNode.NAME);
+
+        NodeUtil.createPath(actionbarItems, "delete", NodeTypes.ContentNode.NAME);
+
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
+
+        // THEN
+        assertFalse(actionbarItems.hasNode("delete"));
+        assertTrue(actionbarItems.hasNode("confirmDeletion"));
     }
 }

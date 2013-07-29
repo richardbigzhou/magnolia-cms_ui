@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.framework.action;
 
-import static org.mockito.Mockito.when;
-
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -149,6 +147,7 @@ public class ActivationActionTest extends RepositoryTestCase {
 
         // WHEN
         ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class));
+        action.onPreExecute();
 
         // THEN
         assertTrue((Boolean) action.getParams().get(Context.ATTRIBUTE_RECURSIVE));

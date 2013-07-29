@@ -1,6 +1,7 @@
 @charset "UTF-8";
 
 @import "../magnolia/colors.scss";
+@import "page-editor-colors.scss";
 
 @mixin page-preview {
 
@@ -25,7 +26,7 @@
 
   .pagebar {
     color: $c16;
-    background-color: #6a9000;
+    background-color: $cp50;
     height: 25px;
   }
 

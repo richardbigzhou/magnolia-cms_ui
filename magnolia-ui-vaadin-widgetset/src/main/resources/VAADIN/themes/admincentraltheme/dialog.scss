@@ -206,12 +206,12 @@ content:"]";
 .light-dialog-panel.msgwarn {                       background:     $c64;
                                                     border-color:   #BEB099;}
 .light-dialog-panel.msgwarn .m-closebutton {        color:          #F6A51C;}
-.light-dialog-panel.msgwarn .btn-dialog-default {   background:     #ffbf28; color: #666;}
+.light-dialog-panel.msgwarn .btn-dialog-default {   background:     $c60; color: $c10;}
 .light-dialog-panel.msgwarn button {                background:     #a3926c;}
-.v-ui:not(.tablet) .light-dialog-panel.msgwarn .btn-dialog-default:hover {   background:     #ffd87e; color: #666;}
-.v-ui:not(.tablet) .light-dialog-panel.msgwarn button:hover {                background:     #efd79e; color: #666;}
-.v-app .v-ui .light-dialog-panel.msgwarn .btn-dialog-default:active {  background:     #fff; color: #ffbf28;}
-.v-app .v-ui .light-dialog-panel.msgwarn button:active {               background:     #fff; color: #666;}
+.v-ui:not(.tablet) .light-dialog-panel.msgwarn .btn-dialog-default:hover {   background:     $c62; color: $c10;}
+.v-ui:not(.tablet) .light-dialog-panel.msgwarn button:hover {                background:     #efd79e; color: $c10;}
+.v-app .v-ui .light-dialog-panel.msgwarn .btn-dialog-default:active {  background:     $c80; color: $c60;}
+.v-app .v-ui .light-dialog-panel.msgwarn button:active {               background:     $c80; color: $c10;}
 
 .light-dialog-panel.msgerror {                      background:     $c74;
                                                     border-color:   #AE9D9D;}
@@ -252,11 +252,6 @@ content:"]";
     border-width: 2px;
     margin-left: -1px;
 }
-
-.progressbar-based-client-refresher{
-	display:none;
-}
-
 
 /* Lightbox */
 

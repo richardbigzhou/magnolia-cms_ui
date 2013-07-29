@@ -37,7 +37,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.ItemChosenListener;
-import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.component.ContentPreviewComponent;
 import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
@@ -95,17 +95,17 @@ public class LinkField extends CustomField<String> {
     private String buttonCaptionOther;
 
     private final AppController appController;
-    private final SubAppContext subAppContext;
+    private final UiContext uiContext;
     private final ComponentProvider componentProvider;
 
-    public LinkField(LinkFieldDefinition linkFieldDefinition, AppController appController, SubAppContext subAppContext, ComponentProvider componentProvider) {
+    public LinkField(LinkFieldDefinition linkFieldDefinition, AppController appController, UiContext uiContext, ComponentProvider componentProvider) {
         this.definition = linkFieldDefinition;
         this.converter = definition.getIdentifierToPathConverter();
         if (this.converter != null) {
             this.converter.setWorkspaceName(definition.getTargetWorkspace());
         }
         this.appController = appController;
-        this.subAppContext = subAppContext;
+        this.uiContext = uiContext;
         this.componentProvider = componentProvider;
         setImmediate(true);
     }
@@ -241,7 +241,7 @@ public class LinkField extends CustomField<String> {
             @Override
             public void buttonClick(ClickEvent event) {
 
-                appController.openChooseDialog(definition.getAppName(), definition.getTargetTreeRootPath(), subAppContext, textField.getValue(), new ItemChosenListener() {
+                appController.openChooseDialog(definition.getAppName(), definition.getTargetTreeRootPath(), uiContext, textField.getValue(), new ItemChosenListener() {
                     @Override
                     public void onItemChosen(final Item chosenValue) {
                         String propertyName = definition.getTargetPropertyToPopulate();
