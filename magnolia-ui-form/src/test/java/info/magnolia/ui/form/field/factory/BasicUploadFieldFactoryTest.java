@@ -34,10 +34,7 @@
 package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
-import info.magnolia.cms.core.SystemProperty;
-import info.magnolia.init.MagnoliaConfigurationProperties;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.overlay.AlertCallback;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
@@ -50,12 +47,9 @@ import info.magnolia.ui.form.field.upload.basic.BasicUploadField;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 
-import java.io.File;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.common.io.Files;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.FormLayout;
@@ -76,11 +70,8 @@ public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<Ba
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        File directory = Files.createTempDir();
-        directory.deleteOnExit();
-        MagnoliaConfigurationProperties config = mock(MagnoliaConfigurationProperties.class);
-        when(config.getProperty(SystemProperty.MAGNOLIA_UPLOAD_TMPDIR)).thenReturn(directory.getAbsolutePath());
-        basicUploadBuilder = new BasicUploadFieldFactory(definition, baseItem, config, new TestImageProvider(), new TestUiContext());
+        // no need to initialize a specic temp dir for tests, it'll be target/tmp by default
+        basicUploadBuilder = new BasicUploadFieldFactory(definition, baseItem, new TestImageProvider(), new TestUiContext());
         basicUploadBuilder.setI18nContentSupport(i18nContentSupport);
     }
 

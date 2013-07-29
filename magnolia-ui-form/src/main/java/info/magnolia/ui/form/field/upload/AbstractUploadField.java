@@ -39,8 +39,6 @@ import java.io.OutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.wolfie.refresher.Refresher;
-import com.github.wolfie.refresher.Refresher.RefreshListener;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptAll;
@@ -53,6 +51,7 @@ import com.vaadin.ui.DragAndDropWrapper;
 import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Html5File;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.FailedEvent;
 import com.vaadin.ui.Upload.FailedListener;
@@ -162,7 +161,7 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
 
     /**
      * Interrupt upload based on a user Action.
-     * An {@link UploadInterruptedException} will be thrown by the underlying Vaadin classes.
+     * An {@link com.vaadin.server.communication.FileUploadHandler.UploadInterruptedException} will be thrown by the underlying Vaadin classes.
      */
     protected void interruptUpload(InterruptionReason reason) {
         displayUploadInterruptNote(reason);
@@ -232,30 +231,14 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
     }
 
     /**
-     * The dropZone is a wrapper around a Component. {@link Refresher} is set to force refresh during drag and drop operation.
+     * The dropZone is a wrapper around a Component.
      */
     protected DragAndDropWrapper createDropZone(Component c) {
         dropZone = new DragAndDropWrapper(c) {
 
         };
         dropZone.setDropHandler(this);
-        // add refresher
-        final Refresher refresher = new Refresher();
-        refresher.setRefreshInterval(500);
-        refresher.addListener(new InProgressRefreshListener());
-        addExtension(refresher);
         return this.dropZone;
-    }
-
-    /**
-     * Basic implementation of {@link RefreshListener} in order to refresh the UI during drag and drop operation.
-     */
-    protected class InProgressRefreshListener implements RefreshListener {
-        private static final long serialVersionUID = 1L;
-        @Override
-        public void refresh(final Refresher source) {
-            // Do nothing
-        }
     }
 
     /**
@@ -263,6 +246,10 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
      */
     @Override
     public void drop(DragAndDropEvent event) {
+
+        // start polling immediately on drop
+        startPolling();
+
         DragAndDropWrapper.WrapperTransferable transferable = (WrapperTransferable) event.getTransferable();
         final Html5File[] files = transferable.getFiles();
         if (files == null) {
@@ -336,6 +323,9 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
     public void uploadStarted(StartedEvent event) {
         if (isValidFile(event)) {
             buildInProgressLayout(event.getMIMEType());
+
+            // start polling here in case of upload through file input
+            startPolling();
         } else {
             interruptUpload(InterruptionReason.FILE_NOT_ALLOWED);
         }
@@ -359,7 +349,6 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
         }
     }
 
-
     /**
      * Handle the {@link FinishedEvent}. In case of success: <br>
      * - Populate the Uploaded Information to the fileWrapper. <br>
@@ -370,6 +359,9 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
      */
     @Override
     public void uploadFinished(FinishedEvent event) {
+
+        stopPolling();
+
         if (event instanceof FailedEvent) {
             uploadFailed((FailedEvent) event);
             return;
@@ -388,6 +380,9 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
 
     @Override
     public void uploadFailed(FailedEvent event) {
+
+        stopPolling();
+
         if (event.getReason() instanceof UploadException) {
             displayUploadFailedNote(event.getFilename());
         }
@@ -400,7 +395,6 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
     public Class<? extends Byte[]> getType() {
         return Byte[].class;
     }
-
 
     protected HasComponents getRootLayout() {
         return this.root;
@@ -431,5 +425,30 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
         super.detach();
     }
 
+    private void startPolling() {
+        UI ui = UI.getCurrent();
+        if (ui != null) {
+            ui.access(new Runnable() {
+
+                @Override
+                public void run() {
+                    UI.getCurrent().setPollInterval(200);
+                }
+            });
+        }
+    }
+
+    private void stopPolling() {
+        UI ui = UI.getCurrent();
+        if (ui != null) {
+            ui.access(new Runnable() {
+
+                @Override
+                public void run() {
+                    UI.getCurrent().setPollInterval(-1);
+                }
+            });
+        }
+    }
 
 }

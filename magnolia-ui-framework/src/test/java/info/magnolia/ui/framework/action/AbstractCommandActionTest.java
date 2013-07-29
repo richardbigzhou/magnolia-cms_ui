@@ -111,6 +111,7 @@ public class AbstractCommandActionTest {
                         null);
 
         // WHEN
+        action.onPreExecute();
         Map<String, Object> params = action.getParams();
 
         // THEN
@@ -135,6 +136,7 @@ public class AbstractCommandActionTest {
                         null);
 
         // WHEN
+        action.onPreExecute();
         Map<String, Object> params = action.getParams();
 
         // THEN
@@ -165,6 +167,7 @@ public class AbstractCommandActionTest {
                         null);
 
         // WHEN
+        action.onPreExecute();
         Map<String, Object> params = action.getParams();
 
         // THEN
@@ -204,11 +207,12 @@ public class AbstractCommandActionTest {
     @Test(expected = UnsupportedOperationException.class)
     public void testGetParamsReturnsImmutableMap() throws Exception {
         // GIVEN
+        JcrNodeAdapter item = new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub"));
         AbstractCommandAction<CommandActionDefinition> action = new AbstractCommandAction<CommandActionDefinition>(
-                new CommandActionDefinition(),
-                new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub")),
-                commandsManager,
-                null);
+                new CommandActionDefinition(), item, commandsManager, null);
+        action.buildParams(item.getJcrItem());
+
+        action.onPreExecute();
         Map<String, Object> params = action.getParams();
 
         // WHEN

@@ -44,8 +44,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.util.converter.Converter;
-
 /**
  * Converter used to convert a UUID to a Path and Path to UUID.
  * In general, if the translation is not possible, return null.
@@ -57,7 +55,7 @@ public class BaseIdentifierToPathConverter implements IdentifierToPathConverter 
     private String workspace;
 
     @Override
-    public String convertToModel(String path, Locale locale) throws Converter.ConversionException {
+    public String convertToModel(String path, Class<? extends String> targetType, Locale locale) throws ConversionException {
         // Null is required for the property to be removed if path is empty
         String res = null;
         if (StringUtils.isBlank(path)) {
@@ -73,7 +71,7 @@ public class BaseIdentifierToPathConverter implements IdentifierToPathConverter 
     }
 
     @Override
-    public String convertToPresentation(String uuid, Locale locale) throws Converter.ConversionException {
+    public String convertToPresentation(String uuid, Class<? extends String> targetType, Locale locale) throws ConversionException {
         String res = StringUtils.EMPTY;
         if (StringUtils.isBlank(uuid)) {
             return res;
@@ -101,5 +99,6 @@ public class BaseIdentifierToPathConverter implements IdentifierToPathConverter 
     public void setWorkspaceName(String workspaceName) {
         this.workspace = workspaceName;
     }
+
 
 }

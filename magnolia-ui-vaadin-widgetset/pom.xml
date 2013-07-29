@@ -40,11 +40,6 @@
       <artifactId>vaadin-themes</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
-      <artifactId>refresher</artifactId>
-    </dependency>
-
     <!-- this replaces gwt-dev.jar -->
     <dependency>
       <groupId>com.vaadin</groupId>

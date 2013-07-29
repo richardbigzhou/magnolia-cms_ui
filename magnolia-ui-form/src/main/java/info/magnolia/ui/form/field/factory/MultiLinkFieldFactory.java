@@ -35,7 +35,7 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppController;
-import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.MultiLinkField;
 import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
 import info.magnolia.ui.form.field.property.list.ListHandler;
@@ -62,20 +62,20 @@ public class MultiLinkFieldFactory extends AbstractFieldFactory<MultiLinkFieldDe
     private static final Logger log = LoggerFactory.getLogger(MultiLinkFieldFactory.class);
 
     private final AppController appController;
-    private final SubAppContext subAppContext;
+    private final UiContext uiContext;
     private final ComponentProvider componentProvider;
 
     @Inject
-    public MultiLinkFieldFactory(MultiLinkFieldDefinition definition, Item relatedFieldItem, AppController appController, SubAppContext subAppContext, ComponentProvider componentProvider) {
+    public MultiLinkFieldFactory(MultiLinkFieldDefinition definition, Item relatedFieldItem, AppController appController, UiContext uiContext, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem);
         this.appController = appController;
-        this.subAppContext = subAppContext;
+        this.uiContext = uiContext;
         this.componentProvider = componentProvider;
     }
 
     @Override
     protected Field<List> createFieldComponent() {
-        MultiLinkField field = new MultiLinkField(definition, appController, subAppContext, componentProvider);
+        MultiLinkField field = new MultiLinkField(definition, appController, uiContext, componentProvider);
         field.setButtonCaptionAdd(getMessage(definition.getButtonSelectAddLabel()));
         field.setButtonCaptionNew(getMessage(definition.getButtonSelectNewLabel()));
         field.setButtonCaptionOther(getMessage(definition.getButtonSelectOtherLabel()));

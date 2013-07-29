@@ -40,15 +40,17 @@ import java.text.NumberFormat;
 
 import org.apache.commons.io.FileUtils;
 
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.ProgressIndicator;
+import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * Custom Component used to create a custom display for {@link ProgressIndicator}.
+ * Custom Component used to create a custom display for the progress indicator.
  * <p>
- * This view normally contains a progress bar and label indicating the uploaded percentage, filename.... Refresh of the view is done by calling refreshOnProgressUploadLayout(..)
+ * This view normally contains a progress bar and a label indicating the uploaded percentage, filename...<br>
+ * Refreshing the view is done by calling {@link #refreshLayout(long, long, String)}
  * <p>
  * Layout composition:
  * <ul>
@@ -58,11 +60,11 @@ import com.vaadin.ui.VerticalLayout;
  * <li>Label.UploadexOfy
  * </ul>
  */
-public class BasicUploadProcessIndicator extends CustomComponent implements UploadProgressIndicator {
+public class BasicUploadProgressIndicator extends CustomComponent implements UploadProgressIndicator {
 
     private static final long serialVersionUID = 1L;
 
-    private ProgressIndicator progressIndicator;
+    private ProgressBar progressIndicator;
     private Label uploadFileLocation;
     private Label uploadFileRatio;
     private Label uploadFileProgress;
@@ -70,7 +72,7 @@ public class BasicUploadProcessIndicator extends CustomComponent implements Uplo
     private String inProgressRatioCaption;
     private VerticalLayout mainLayout;
 
-    public BasicUploadProcessIndicator(String inProgressCaption, String inProgressRatioCaption) {
+    public BasicUploadProgressIndicator(String inProgressCaption, String inProgressRatioCaption) {
         this.inProgressCaption = inProgressCaption;
         this.inProgressRatioCaption = inProgressRatioCaption;
 
@@ -86,9 +88,8 @@ public class BasicUploadProcessIndicator extends CustomComponent implements Uplo
         uploadFileProgress.setSizeUndefined();
         uploadFileProgress.addStyleName("uploading-file-progress");
 
-        progressIndicator = new ProgressIndicator();
+        progressIndicator = new ProgressBar();
         progressIndicator.setVisible(false);
-        progressIndicator.setPollingInterval(50);
         progressIndicator.setWidth("100%");
 
         mainLayout = new VerticalLayout();
@@ -105,7 +106,7 @@ public class BasicUploadProcessIndicator extends CustomComponent implements Uplo
     }
 
     @Override
-    public void refreshOnProgressUploadLayout(long readBytes, long contentLength, String fileName) {
+    public void refreshLayout(long readBytes, long contentLength, String fileName) {
         progressIndicator.setValue(Float.valueOf(readBytes / (float) contentLength));
 
         uploadFileLocation.setValue(MessagesUtil.get(this.inProgressCaption, new String[] { fileName }));
@@ -118,13 +119,8 @@ public class BasicUploadProcessIndicator extends CustomComponent implements Uplo
     }
 
     @Override
-    public ProgressIndicator getProgressIndicator() {
-        return this.progressIndicator;
-    }
-
-    @Override
-    public void setProgressIndicatorValue(float newValue) {
-        progressIndicator.setValue(newValue);
+    public void setProgress(float progress) {
+        progressIndicator.setValue(progress);
     }
 
     /**
@@ -145,4 +141,8 @@ public class BasicUploadProcessIndicator extends CustomComponent implements Uplo
         progressIndicator.setVisible(visible);
     }
 
+    @Override
+    public Component asVaadinComponent() {
+        return this;
+    }
 }

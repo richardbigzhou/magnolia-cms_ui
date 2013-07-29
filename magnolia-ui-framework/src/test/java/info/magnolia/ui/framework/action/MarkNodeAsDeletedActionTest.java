@@ -135,7 +135,7 @@ public class MarkNodeAsDeletedActionTest extends RepositoryTestCase {
     public void testMarkNodeAsDeleteLeaf() throws Exception {
         // GIVEN
         JcrItemAdapter item = new JcrNodeAdapter(referenceNode.getNode("article1").getNode("article2"));
-        MarkNodeAsDeletedAction deleteAction = new MarkNodeAsDeletedAction(definition, item, commandsManager, eventBus, new DeleteActionTest.TestSubAppContext(true));
+        MarkNodeAsDeletedAction deleteAction = new MarkNodeAsDeletedAction(definition, item, commandsManager, eventBus, new ConfirmationActionTest.TestUiContext(true));
 
         // WHEN
         deleteAction.execute();
@@ -147,25 +147,10 @@ public class MarkNodeAsDeletedActionTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testMarkNodeAsDeleteLeafCancelChanges() throws Exception {
-        // GIVEN
-        JcrItemAdapter item = new JcrNodeAdapter(referenceNode.getNode("article1").getNode("article2"));
-        MarkNodeAsDeletedAction deleteAction = new MarkNodeAsDeletedAction(definition, item, commandsManager, eventBus, new DeleteActionTest.TestSubAppContext(false));
-
-        // WHEN
-        deleteAction.execute();
-
-        // THEN
-        assertTrue(referenceNode.hasNode("article1"));
-        assertTrue(referenceNode.hasNode("article1/article2"));
-        assertFalse(referenceNode.getNode("article1/article2").hasProperty(NodeTypes.Deleted.DELETED));
-    }
-
-    @Test
-    public void testMarkNodeAsDeleteWithChieldren() throws Exception {
+    public void testMarkNodeAsDeleteWithChildren() throws Exception {
         // GIVEN
         JcrItemAdapter item = new JcrNodeAdapter(referenceNode.getNode("article1"));
-        MarkNodeAsDeletedAction deleteAction = new MarkNodeAsDeletedAction(definition, item, commandsManager, eventBus, new DeleteActionTest.TestSubAppContext(true));
+        MarkNodeAsDeletedAction deleteAction = new MarkNodeAsDeletedAction(definition, item, commandsManager, eventBus, new ConfirmationActionTest.TestUiContext(true));
 
         // WHEN
         deleteAction.execute();

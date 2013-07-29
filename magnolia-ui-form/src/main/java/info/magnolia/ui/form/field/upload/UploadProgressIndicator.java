@@ -34,34 +34,30 @@
 package info.magnolia.ui.form.field.upload;
 
 import com.vaadin.ui.Component;
-import com.vaadin.ui.ProgressIndicator;
 
 /**
- * Definition used to create a custom display for {@link com.vaadin.ui.ProgressIndicator}.
+ * Definition used to create a custom display for a progress indicator.
  */
-public interface UploadProgressIndicator extends Component {
+public interface UploadProgressIndicator {
 
     /**
-     * Refresh Upload Layout.
-     * Used to update the ProgressIndicator Components.
+     * Refreshes the progress indicator layout.
      */
-    public void refreshOnProgressUploadLayout(long readBytes, long contentLength, String fileName);
+    public void refreshLayout(long readBytes, long contentLength, String fileName);
 
     /**
-     * Return the {@link ProgressIndicator} used internally.
-     * Could be needed for Upload File Field.
+     * Sets the current progress.
      */
-    public ProgressIndicator getProgressIndicator();
-
-    /**
-     * Convenience setter allowing to directly set the value of the {@link ProgressIndicator} component.
-     */
-    public void setProgressIndicatorValue(float newValue);
+    public void setProgress(float progress);
 
     /**
      * Set the Component Visible or not.
      */
-    @Override
     public void setVisible(boolean visible);
+
+    /**
+     * Returns the Vaadin component used to display progress.
+     */
+    public Component asVaadinComponent();
 
 }
