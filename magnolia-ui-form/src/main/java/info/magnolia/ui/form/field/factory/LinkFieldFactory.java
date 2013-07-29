@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.LinkField;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
@@ -66,6 +67,16 @@ public class LinkFieldFactory<D extends FieldDefinition> extends AbstractFieldFa
         this.appController = appController;
         this.uiContext = uiContext;
         this.componentProvider = componentProvider;
+    }
+
+    /**
+     * Use {@link #LinkFieldFactory(info.magnolia.ui.form.field.definition.LinkFieldDefinition, com.vaadin.data.Item, info.magnolia.ui.api.app.AppController, info.magnolia.ui.api.context.UiContext, info.magnolia.objectfactory.ComponentProvider)}.
+     *
+     * @deprecated since 5.0.2
+     */
+    @Deprecated
+    public LinkFieldFactory(LinkFieldDefinition definition, Item relatedFieldItem, AppController appController, SubAppContext subAppContext, ComponentProvider componentProvider) {
+        this(definition, relatedFieldItem, appController, (UiContext) subAppContext, componentProvider);
     }
 
     @Override

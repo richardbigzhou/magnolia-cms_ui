@@ -35,12 +35,15 @@ package info.magnolia.ui.form.field;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.util.ObjectProperty;
@@ -72,11 +75,22 @@ public class MultiLinkField extends CustomField<List> {
     private final ComponentProvider componentProvider;
     protected VerticalLayout root;
 
+    @Inject
     public MultiLinkField(MultiLinkFieldDefinition definition, AppController appController, UiContext uiContext, ComponentProvider componentProvider) {
         this.definition = definition;
         this.appController = appController;
         this.uiContext = uiContext;
         this.componentProvider = componentProvider;
+    }
+
+    /**
+     * Use {@link #MultiLinkField(info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition, info.magnolia.ui.api.app.AppController, info.magnolia.ui.api.context.UiContext, info.magnolia.objectfactory.ComponentProvider)}.
+     *
+     * @deprecated since 5.0.2
+     */
+    @Deprecated
+    public MultiLinkField(MultiLinkFieldDefinition definition, AppController appController, SubAppContext subAppContext, ComponentProvider componentProvider) {
+        this(definition, appController, (UiContext) subAppContext, componentProvider);
     }
 
     /**

@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.ItemChosenListener;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
@@ -96,6 +97,16 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
         super(definition, relatedFieldItem);
         this.appController = appController;
         this.uiContext = uiContext;
+    }
+
+    /**
+     * Use {@link #RichTextFieldFactory(info.magnolia.ui.form.field.definition.RichTextFieldDefinition, com.vaadin.data.Item, info.magnolia.ui.api.app.AppController, info.magnolia.ui.api.context.UiContext)}.
+     *
+     * @deprecated since 5.0.2
+     */
+    @Deprecated
+    public RichTextFieldFactory(RichTextFieldDefinition definition, Item relatedFieldItem, AppController appController, SubAppContext subAppContext) {
+        this(definition, relatedFieldItem, appController, (UiContext)subAppContext);
     }
 
     @Override

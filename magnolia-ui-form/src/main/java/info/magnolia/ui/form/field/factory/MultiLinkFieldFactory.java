@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.MultiLinkField;
 import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
@@ -71,6 +72,16 @@ public class MultiLinkFieldFactory extends AbstractFieldFactory<MultiLinkFieldDe
         this.appController = appController;
         this.uiContext = uiContext;
         this.componentProvider = componentProvider;
+    }
+
+    /**
+     * Use {@link #MultiLinkFieldFactory(info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition, com.vaadin.data.Item, info.magnolia.ui.api.app.AppController, info.magnolia.ui.api.context.UiContext, info.magnolia.objectfactory.ComponentProvider)}.
+     *
+     * @deprecated since 5.0.2
+     */
+    @Deprecated
+    public MultiLinkFieldFactory(MultiLinkFieldDefinition definition, Item relatedFieldItem, AppController appController, SubAppContext subAppContext, ComponentProvider componentProvider) {
+        this(definition, relatedFieldItem, appController, (UiContext) subAppContext, componentProvider);
     }
 
     @Override

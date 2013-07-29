@@ -37,12 +37,14 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.ItemChosenListener;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.component.ContentPreviewComponent;
 import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
+import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -98,6 +100,7 @@ public class LinkField extends CustomField<String> {
     private final UiContext uiContext;
     private final ComponentProvider componentProvider;
 
+    @Inject
     public LinkField(LinkFieldDefinition linkFieldDefinition, AppController appController, UiContext uiContext, ComponentProvider componentProvider) {
         this.definition = linkFieldDefinition;
         this.converter = definition.getIdentifierToPathConverter();
@@ -108,6 +111,16 @@ public class LinkField extends CustomField<String> {
         this.uiContext = uiContext;
         this.componentProvider = componentProvider;
         setImmediate(true);
+    }
+
+    /**
+     * Use {@link #LinkField(info.magnolia.ui.form.field.definition.LinkFieldDefinition, info.magnolia.ui.api.app.AppController, info.magnolia.ui.api.context.UiContext, info.magnolia.objectfactory.ComponentProvider)} ()}.
+     *
+     * @deprecated since 5.0.2
+     */
+    @Deprecated
+    public LinkField(LinkFieldDefinition definition, AppController appController, SubAppContext subAppContext, ComponentProvider componentProvider) {
+        this(definition, appController, (UiContext) subAppContext, componentProvider);
     }
 
     @Override
