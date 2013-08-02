@@ -544,12 +544,15 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         String whereClause = "";
         String clauseWorkspacePath = getQueryWhereClauseWorkspacePath();
         String clauseNodeTypes = getQueryWhereClauseNodeTypes();
-        whereClause = " where ((" + clauseNodeTypes + ")";
-
-        if (!"".equals(clauseWorkspacePath)) {
-            whereClause = " and " + clauseWorkspacePath;
+        if (StringUtils.isNotBlank(clauseNodeTypes)) {
+            whereClause = " where ((" + clauseNodeTypes + ") ";
+            if (StringUtils.isNotBlank(clauseWorkspacePath)) {
+                whereClause += "and " + clauseWorkspacePath;
+            }
+            whereClause += ") ";
+        } else {
+            whereClause = " where ";
         }
-        whereClause += ")";
 
         log.debug("JCR query WHERE clause is {}", whereClause);
         return whereClause;
@@ -591,7 +594,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     /**
      * @return the main NodeType to be used with this container. This is the type that will be used for querying e.g. when populating the list view.
      * @deprecated since 5.1. All node types declared in the workbench are equal, meaning that their position doesn't matter when it comes to which ones are used in a query.
-     * The discriminating factor is the hideInList boolean property. If that property is <code>true</code>, then the node will be excluded from the query.
+     * The discriminating factor is the <code>hideInList</code> boolean property. If that property is <code>true</code>, then the node will be excluded from the query.
      */
     @Deprecated
     protected String getMainNodeType() {
