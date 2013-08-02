@@ -96,7 +96,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected static final String SELECTOR_NAME = "t";
 
-    protected static final String SELECT_TEMPLATE = "select * from [%s] as " + SELECTOR_NAME;
+    protected static final String SELECT_TEMPLATE = "select * from [nt:base] as " + SELECTOR_NAME;
 
     protected static final String WHERE_TEMPLATE_FOR_PATH = " ISDESCENDANTNODE('%s')";
 
@@ -543,11 +543,28 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     protected String getQueryWhereClause() {
         String whereClause = "";
         String clauseWorkspacePath = getQueryWhereClauseWorkspacePath();
+        String clauseNodeTypes = getQueryWhereClauseNodeTypes();
+        whereClause = " where ((" + clauseNodeTypes + ")";
+
         if (!"".equals(clauseWorkspacePath)) {
-            whereClause = " where " + clauseWorkspacePath;
+            whereClause = " and " + clauseWorkspacePath;
         }
+        whereClause += ")";
+
         log.debug("JCR query WHERE clause is {}", whereClause);
         return whereClause;
+    }
+
+    protected String getQueryWhereClauseNodeTypes() {
+        List<String> defs = new ArrayList<String>();
+        for (NodeTypeDefinition type : workbenchDefinition.getNodeTypes()) {
+            if (type.isHideInList()) {
+                log.debug("Skipping {} node type. Nodes of such type won't be searched for", type.getName());
+                continue;
+            }
+            defs.add("[jcr:primaryType] = '" + type.getName() + "'");
+        }
+        return StringUtils.join(defs, " or ");
     }
 
     /**
@@ -565,15 +582,18 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     /**
-     * @return a <code>SELECT</code> statement with the main item type as configured in the {@link WorkbenchDefinition}. Can be customized by subclasses to utilize other item types, i.e. {@code select * from [my:fancytype]}. Used internally by {@link #constructJCRQuery(boolean)}.
+     * @return a <code>SELECT</code> statement whose node type is <code>nt:base</code>. Can be customized by subclasses to utilize other item types, i.e. {@code select * from [my:fancytype]}. Used internally by {@link #constructJCRQuery(boolean)}.
      */
     protected String getQuerySelectStatement() {
-        return String.format(SELECT_TEMPLATE, getMainNodeType());
+        return SELECT_TEMPLATE;
     }
 
     /**
      * @return the main NodeType to be used with this container. This is the type that will be used for querying e.g. when populating the list view.
+     * @deprecated since 5.1. All node types declared in the workbench are equal, meaning that their position doesn't matter when it comes to which ones are used in a query.
+     * The discriminating factor is the hideInList boolean property. If that property is <code>true</code>, then the node will be excluded from the query.
      */
+    @Deprecated
     protected String getMainNodeType() {
         final List<NodeTypeDefinition> nodeTypes = workbenchDefinition.getNodeTypes();
         return nodeTypes.isEmpty() ? DEFAULT_NODE_TYPE : nodeTypes.get(0).getName();

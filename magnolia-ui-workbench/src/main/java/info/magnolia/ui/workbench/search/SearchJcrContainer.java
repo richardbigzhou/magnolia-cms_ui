@@ -33,12 +33,21 @@
  */
 package info.magnolia.ui.workbench.search;
 
+import info.magnolia.ui.api.ModelConstants;
+import info.magnolia.ui.workbench.ContentView.ViewType;
+import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
+import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.list.FlatJcrContainer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.util.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * The jcr container backing the search view. It provides the subset of items returned by the current search. By default it will perform a full-text search OR a search on the jcr name
@@ -47,7 +56,10 @@ public class SearchJcrContainer extends FlatJcrContainer {
 
     private static final Logger log = LoggerFactory.getLogger(SearchJcrContainer.class);
 
-    protected static final String WHERE_TEMPLATE_FOR_SEARCH = " (localname() LIKE '%%%1$s%%' or contains(" + SELECTOR_NAME + ".*, '%1$s'))";
+    protected static final String WHERE_TEMPLATE_FOR_SEARCH = " localname() LIKE '%1$s%%' or " + SELECTOR_NAME + ".[%2$s] IS NOT NULL %3$s";
+
+    protected static final String CONTAINS_TEMPLATE_FOR_SEARCH = " contains(" + SELECTOR_NAME + ".[%1$s], '*%2$s*') ";
+
     private String fullTextExpression;
 
     public SearchJcrContainer(WorkbenchDefinition workbenchDefinition) {
@@ -57,7 +69,12 @@ public class SearchJcrContainer extends FlatJcrContainer {
     @Override
     protected String getQueryWhereClause() {
         final String clauseWorkspacePath = getQueryWhereClauseWorkspacePath();
-        String whereClause = getQueryWhereClauseSearch();
+        final String whereClauseSearch = getQueryWhereClauseSearch();
+        String whereClause = "(" + getQueryWhereClauseNodeTypes() + ")";
+
+        if (!"".equals(whereClauseSearch)) {
+            whereClause += " and (" + whereClauseSearch + ") ";
+        }
 
         if (!"".equals(clauseWorkspacePath)) {
             if (!"".equals(whereClause)) {
@@ -80,11 +97,28 @@ public class SearchJcrContainer extends FlatJcrContainer {
             return "";
         }
         // See http://wiki.apache.org/jackrabbit/EncodingAndEscaping
-        final String escapedFullTextExpression = getFullTextExpression().replaceAll("'", "''").trim();
-        final String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, escapedFullTextExpression);
+        final String escapedFullTextExpression = Text.escapeIllegalXpathSearchChars(getFullTextExpression()).replaceAll("'", "''").trim();
+
+        final List<String> contains = new ArrayList<String>();
+
+        // build full-text search
+        for(ColumnDefinition columnDefinition : getColumnDefinitions()) {
+
+            final String propertyName = StringUtils.isNotBlank(columnDefinition.getPropertyName()) ? columnDefinition.getPropertyName() : columnDefinition.getName();
+
+            if (!columnDefinition.isSearchable() || ModelConstants.JCR_NAME.equals(propertyName)) {
+                log.debug("Skipping property {} from full-text search...", propertyName);
+                continue;
+            }
+            contains.add(String.format(CONTAINS_TEMPLATE_FOR_SEARCH, propertyName, escapedFullTextExpression));
+        }
+        final String containsExpression = StringUtils.join(contains, " or ");
+        final String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, escapedFullTextExpression, escapedFullTextExpression, StringUtils.isNotBlank(containsExpression) ? " or " + containsExpression : "");
+
         log.debug("Search where-clause is {}", stmt);
         return stmt;
     }
+
 
     public void setFullTextExpression(String fullTextExpression) {
         this.fullTextExpression = fullTextExpression;
@@ -92,6 +126,20 @@ public class SearchJcrContainer extends FlatJcrContainer {
 
     public String getFullTextExpression() {
         return fullTextExpression;
+    }
+
+    private List<ColumnDefinition> getColumnDefinitions() {
+        ContentPresenterDefinition listViewPresenter = null;
+        for (ContentPresenterDefinition presenter : getWorkbenchDefinition().getContentViews()) {
+            if (presenter.getViewType() == ViewType.LIST) {
+                listViewPresenter = presenter;
+            }
+        }
+        if (listViewPresenter == null) {
+            log.warn("no ContentPresenterDefinition found, returning empty list");
+            return java.util.Collections.emptyList();
+        }
+        return listViewPresenter.getColumns();
     }
 
 }
