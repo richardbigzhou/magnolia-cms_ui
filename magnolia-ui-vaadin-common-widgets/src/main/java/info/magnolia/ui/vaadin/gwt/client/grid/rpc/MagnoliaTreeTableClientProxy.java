@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,33 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.grid.connector;
+package info.magnolia.ui.vaadin.gwt.client.grid.rpc;
 
-import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
-import info.magnolia.ui.vaadin.gwt.client.grid.VMagnoliaTreeTable;
-import info.magnolia.ui.vaadin.gwt.client.grid.rpc.MagnoliaTreeTableClientProxy;
-
-import com.vaadin.client.ui.treetable.TreeTableConnectorPatched;
-import com.vaadin.shared.ui.Connect;
+import com.vaadin.shared.communication.ClientRpc;
 
 /**
- * Connector class for Magnolia tree table.
+ * The client RPC interface for MagnoliaTreeTable.
  */
-@Connect(MagnoliaTreeTable.class)
-public class MagnoliaTreeTableConnector extends TreeTableConnectorPatched {
+public interface MagnoliaTreeTableClientProxy extends ClientRpc {
 
-    public MagnoliaTreeTableConnector() {
-        registerRpc(MagnoliaTreeTableClientProxy.class, new MagnoliaTreeTableClientProxy() {
-
-            @Override
-            public void startSelectedRowDrag() {
-                getWidget().startSelectedRowDrag();
-            }
-        });
-    }
-
-    @Override
-    public VMagnoliaTreeTable getWidget() {
-        return (VMagnoliaTreeTable) super.getWidget();
-    }
+    /**
+     * Start programmatic drag of selected row from the server-side.
+     */
+    void startSelectedRowDrag();
 }
