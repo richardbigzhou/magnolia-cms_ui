@@ -33,9 +33,12 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.grid;
 
+import java.util.Iterator;
+
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
@@ -161,6 +164,44 @@ public class VMagnoliaTreeTable extends VTreeTablePatched {
             protected boolean isRenderHtmlInCells() {
                 return true;
             }
+
+            // Start programmatic drag from ScrollBody
+            public void startRowDrag() {
+                int px = DOM.getAbsoluteLeft(getElement());
+                int py = DOM.getAbsoluteTop(getElement());
+                int ox = 32; // don't hold row by its very edge so that it's easier to drop
+                int oy = getOffsetHeight() / 2;
+                NativeEvent event = Document.get().createMouseDownEvent(1, 0, 0, px + ox, py + oy, false, false, false, false, NativeEvent.BUTTON_LEFT);
+                com.google.gwt.user.client.Element element = getElement();
+                if (event instanceof Event) {
+                    startRowDrag((Event) event, Event.ONMOUSEDOWN, element);
+                }
+                isProgrammaticDrag = true;
+            }
+
+            boolean isProgrammaticDrag;
+
+            @Override
+            protected void startRowDrag(Event event, int type, com.google.gwt.user.client.Element targetTdOrTr) {
+                if (!isProgrammaticDrag) {
+                    super.startRowDrag(event, type, targetTdOrTr);
+                }
+            }
+
         }
+
+        // Start programmatic drag from TreeTable
+        public void startSelectedRowDrag() {
+            Iterator<String> it = selectedRowKeys.iterator();
+            if (it.hasNext()) {
+                VScrollTableRow row = VMagnoliaTreeTable.this.getRenderedRowByKey(it.next());
+                ((VMagnoliaTreeTableRow) row).startRowDrag();
+            }
+        }
+    }
+
+    // Start programmatic drag from RPC
+    public void startSelectedRowDrag() {
+        ((VMagnoliaTreeTableScrollBody) scrollBody).startSelectedRowDrag();
     }
 }

@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.vaadin.grid;
 
+import info.magnolia.ui.vaadin.gwt.client.grid.rpc.MagnoliaTreeTableClientProxy;
+
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
@@ -55,6 +57,10 @@ public class MagnoliaTreeTable extends TreeTable {
     public MagnoliaTreeTable() {
         addStyleName("v-magnolia-table");
         setCacheRate(4);
+    }
+
+    public void startSelectedRowDrag() {
+        getRpcProxy(MagnoliaTreeTableClientProxy.class).startSelectedRowDrag();
     }
 
     @Override
