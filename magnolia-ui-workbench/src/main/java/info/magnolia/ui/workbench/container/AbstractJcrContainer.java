@@ -560,7 +560,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**
      * @return a String containing the node types to be searched for in a query. All node types declared in a workbench definition are returned
-     * unless their <code>hideInList</code> property is false. E.g. assuming a node types declaration like the following
+     * unless their <code>hideInList</code> property is true. E.g. assuming a node types declaration like the following
      * 
      * <pre>
      * ...
