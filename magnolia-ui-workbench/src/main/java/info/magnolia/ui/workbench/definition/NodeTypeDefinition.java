@@ -61,7 +61,7 @@ public interface NodeTypeDefinition {
     /**
      * Determines whether the current node will be displayed in lists and searches. I.e. a node type <code>mgnl:folder</code> will likely be excluded from being displayed in a "flat" list view, therefore its value will be <code>true</code>.
      * 
-     * @return <code>true</code> by default, unless diversely set.
+     * @return <code>false</code> by default, unless diversely set.
      */
     boolean isHideInList();
 }

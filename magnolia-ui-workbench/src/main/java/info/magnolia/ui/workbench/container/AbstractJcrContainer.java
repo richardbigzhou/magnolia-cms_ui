@@ -558,6 +558,27 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         return whereClause;
     }
 
+    /**
+     * @return a String containing the node types to be searched for in a query. All node types declared in a workbench definition are returned
+     * unless their <code>hideInList</code> property is false. E.g. assuming a node types declaration like the following
+     * 
+     * <pre>
+     * ...
+     * + workbench
+     *  + nodeTypes
+     *   + foo
+     *    * name = nt:foo
+     *   + bar
+     *    * name = nt:bar
+     *    * hideInList = true
+     *   + baz
+     *    * name = nt:baz
+     * ...
+     * </pre>
+     * 
+     * this method will return the following string <code>[jcr:primaryType] = 'nt:foo' or [jcr:primaryType] = 'baz'</code>. This will eventually be used to restrict the node types to be searched for
+     * in list and search views, i.e. <code>select * from [nt:base] where ([jcr:primaryType] = 'nt:foo' or [jcr:primaryType] = 'baz')</code>.
+     */
     protected String getQueryWhereClauseNodeTypes() {
         List<String> defs = new ArrayList<String>();
         for (NodeTypeDefinition type : workbenchDefinition.getNodeTypes()) {
@@ -592,8 +613,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     /**
-     * @return the main NodeType to be used with this container. This is the type that will be used for querying e.g. when populating the list view.
-     * @deprecated since 5.1. All node types declared in the workbench are equal, meaning that their position doesn't matter when it comes to which ones are used in a query.
+     * @deprecated since 5.1. All node types declared in the workbench definition are equal, meaning that their position doesn't matter when it comes to which ones are used in a query.
      * The discriminating factor is the <code>hideInList</code> boolean property. If that property is <code>true</code>, then the node will be excluded from the query.
      */
     @Deprecated
