@@ -186,8 +186,8 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         }
         if (handlerClass == null || propertyTypeClass == null) {
             // Set Default
-            handlerClass = (Class<? extends PropertyHandler<?>>) BasicPropertyHandler.class;
-            propertyTypeClass = (Class<? extends Property<?>>) BasicProperty.class;
+            handlerClass = (Class<? extends PropertyHandler<?>>) (Object) BasicPropertyHandler.class;
+            propertyTypeClass = (Class<? extends Property<?>>) (Object) BasicProperty.class;
         }
         Class<?> type = getFieldType();
         PropertyHandler<?> handler = initializePropertyHandler(handlerClass, type);
@@ -287,4 +287,5 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
             return Long.class;
         }
     }
+
 }

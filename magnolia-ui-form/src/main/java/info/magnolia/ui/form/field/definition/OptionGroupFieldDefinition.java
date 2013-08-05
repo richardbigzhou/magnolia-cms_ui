@@ -52,8 +52,8 @@ public class OptionGroupFieldDefinition extends SelectFieldDefinition {
     @SuppressWarnings("unchecked")
     public OptionGroupFieldDefinition() {
         PropertyBuilder propertyBuilder = new PropertyBuilder();
-        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) OptionGroupPropertyHandler.class);
-        propertyBuilder.setPropertyType((Class<? extends Property<?>>) BasicProperty.class);
+        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) OptionGroupPropertyHandler.class);
+        propertyBuilder.setPropertyType((Class<? extends Property<?>>) (Object) BasicProperty.class);
         setPropertyBuilder(propertyBuilder);
     }
 
