@@ -133,7 +133,7 @@ public class SearchJcrContainer extends FlatJcrContainer {
                 return presenter.getColumns();
             }
         }
-        log.warn("no ContentPresenterDefinition found containing columns definition was found, returning empty list");
+        log.warn("no ContentPresenterDefinition containing columns definition was found, returning empty list");
         return java.util.Collections.emptyList();
     }
 
