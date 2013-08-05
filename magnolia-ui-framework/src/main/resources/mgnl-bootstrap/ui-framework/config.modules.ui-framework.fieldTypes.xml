@@ -625,4 +625,42 @@
       <sv:value>superuser</sv:value>
     </sv:property>
   </sv:node>
+  <sv:node sv:name="compositField" >
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+    <sv:value>mgnl:contentNode</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+      <sv:value>mix:lockable</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:uuid" sv:type="String">
+      <sv:value>a8c96260-ba2e-487b-ae14-626de73f36d5</sv:value>
+    </sv:property>
+    <sv:property sv:name="definitionClass" sv:type="String">
+      <sv:value>info.magnolia.ui.form.field.definition.CompositeFieldDefinition</sv:value>
+    </sv:property>
+    <sv:property sv:name="factoryClass" sv:type="String">
+      <sv:value>info.magnolia.ui.form.field.factory.CompositeFieldFactory</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:createdBy" sv:type="String">
+      <sv:value>admin</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
+      <sv:value>false</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:created" sv:type="Date">
+      <sv:value>2012-06-27T13:56:44.073+02:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastActivated" sv:type="Date">
+      <sv:value>2013-07-22T13:11:46.829+02:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastActivatedBy" sv:type="String">
+      <sv:value>superuser</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+      <sv:value>2013-07-23T08:18:26.386+02:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+      <sv:value>superuser</sv:value>
+    </sv:property>
+  </sv:node>
 </sv:node>
