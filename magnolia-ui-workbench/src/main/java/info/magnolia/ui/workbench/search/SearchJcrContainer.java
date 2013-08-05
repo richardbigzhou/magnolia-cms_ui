@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.util.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,7 +95,7 @@ public class SearchJcrContainer extends FlatJcrContainer {
             return "";
         }
         // See http://wiki.apache.org/jackrabbit/EncodingAndEscaping
-        final String escapedFullTextExpression = Text.escapeIllegalXpathSearchChars(getFullTextExpression()).replaceAll("'", "''").trim();
+        final String escapedFullTextExpression = getFullTextExpression().replaceAll("'", "''").trim();
 
         final List<String> contains = new ArrayList<String>();
 
