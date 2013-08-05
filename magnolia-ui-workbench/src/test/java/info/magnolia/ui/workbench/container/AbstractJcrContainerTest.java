@@ -382,7 +382,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         final String result = jcrContainer.constructJCRQuery(false);
 
         // THEN
-        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME), result);
+        assertEquals(getExpectedSelectStatementWithNodeTypesRestrictions(), result);
     }
 
     @Test
@@ -394,9 +394,9 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         final String result = jcrContainer.constructJCRQuery(false);
 
         // THEN
-        String expectedResult = String.format(AbstractJcrContainer.SELECT_TEMPLATE + " where ", NodeTypes.Content.NAME);
+        String expectedResult = AbstractJcrContainer.SELECT_TEMPLATE + " where (([jcr:primaryType] = 'mgnl:content') and ";
         expectedResult += String.format(AbstractJcrContainer.WHERE_TEMPLATE_FOR_PATH, TEST_PATH);
-        assertEquals(expectedResult, result);
+        assertEquals(expectedResult + ") ", result);
     }
 
     @Test
@@ -407,8 +407,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         final String result = jcrContainer.constructJCRQuery(true);
 
         // THEN
-        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME) + AbstractJcrContainer.ORDER_BY
-                + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
+        assertEquals(getExpectedQueryWithOrderByAscending(), result);
     }
 
     @Test
@@ -420,8 +419,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         final String result = jcrContainer.constructJCRQuery(true);
 
         // THEN
-        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME) + AbstractJcrContainer.ORDER_BY
-                + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
+        assertEquals(getExpectedQueryWithOrderByAscending(), result);
     }
 
     @Test
@@ -433,8 +431,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         final String result = jcrContainer.constructJCRQuery(true);
 
         // THEN
-        assertEquals(String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME) + AbstractJcrContainer.ORDER_BY
-                + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD, result);
+        assertEquals(getExpectedQueryWithOrderByAscending(), result);
     }
 
     @Test
@@ -529,28 +526,27 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         final String result = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertEquals(" where " + whereClauseWorkspacePath, result);
+        assertEquals(" where (([jcr:primaryType] = 'mgnl:content') and " + whereClauseWorkspacePath + ") ", result);
     }
 
     @Test
-    public void testGetQueryWhereClauseDoesNotPrependWhereKeywordWhenWorkspacePathIsRoot() {
+    public void testGetQueryWhereClauseReturnsEmptyStringWhenWorkspacePathIsRoot() {
         // GIVEN
         final String testPath = "/";
         workbenchDefinition.setPath(testPath);
-        final String whereClauseWorkspacePath = jcrContainer.getQueryWhereClauseWorkspacePath();
 
         // WHEN
-        final String result = jcrContainer.getQueryWhereClause();
+        final String result = jcrContainer.getQueryWhereClauseWorkspacePath();
 
         // THEN
-        assertEquals(whereClauseWorkspacePath, result);
+        assertEquals("", result);
     }
 
     @Test
     public void testConstructJCRQueryReturnDefaultSelectStatement() {
         // GIVEN
         // default nodeType used by constructJCRQuery() is mgnl:content
-        final String expected = String.format(AbstractJcrContainer.SELECT_TEMPLATE, NodeTypes.Content.NAME);
+        final String expected = getExpectedSelectStatementWithNodeTypesRestrictions();
 
         // WHEN
         final String result = jcrContainer.constructJCRQuery(false);
@@ -581,6 +577,15 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     private void setSorter(String sortingPorperty, boolean ascending) {
         boolean[] ascendingOrder = {ascending};
         jcrContainer.sort(Arrays.asList(sortingPorperty).toArray(), ascendingOrder);
+    }
+
+    private String getExpectedSelectStatementWithNodeTypesRestrictions() {
+        return AbstractJcrContainer.SELECT_TEMPLATE + " where (([jcr:primaryType] = 'mgnl:content') ) ";
+    }
+
+    private String getExpectedQueryWithOrderByAscending() {
+        return getExpectedSelectStatementWithNodeTypesRestrictions() + AbstractJcrContainer.ORDER_BY
+                + AbstractJcrContainer.SELECTOR_NAME + ".[" + colName2 + "]" + AbstractJcrContainer.ASCENDING_KEYWORD;
     }
 
     public static Node createNode(Node rootNode, String nodename, String nodeType, String nodePropertyName, String nodePropertyValue) throws RepositoryException {
