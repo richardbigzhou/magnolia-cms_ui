@@ -41,22 +41,19 @@ import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.vaadin.integration.NullItem;
 
-import java.util.Iterator;
-
 import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertysetItem;
-import com.vaadin.server.ErrorMessage;
-import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomField;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
 
 /**
- * .
+ * Generic Composite Field.<br>
+ * This generic Composite Field allows to handle multiple {@link ConfiguredFieldDefinition} as a single Field:<br>
+ * The Field is build based on a generic {@link ConfiguredFieldDefinition}.<br>
+ * The Field values are handle by a configured {@link info.magnolia.ui.form.field.property.PropertyHandler} dedicated to create/retrieve properties as {@link PropertysetItem}.<br>
  */
-public class CompositeField extends CustomField<PropertysetItem> {
+public class CompositeField extends AbstractCustomMultiField<PropertysetItem> {
 
     private HorizontalLayout root;
     private final FieldFactoryFactory fieldFactoryFactory;
@@ -77,8 +74,6 @@ public class CompositeField extends CustomField<PropertysetItem> {
         addStyleName("linkfield");
         root = new HorizontalLayout();
         root.setWidth("520px");
-        // root.setSizeUndefined();
-        // root.addStyleName("compositefield");
 
         // Initialize Existing field
         initFields();
@@ -105,6 +100,7 @@ public class CompositeField extends CustomField<PropertysetItem> {
      * Listener used to update the Data source property.
      */
     private Property.ValueChangeListener selectionListener = new ValueChangeListener() {
+        @SuppressWarnings("unchecked")
         @Override
         public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
             PropertysetItem fieldValues = (PropertysetItem) getPropertyDataSource().getValue();
@@ -127,44 +123,6 @@ public class CompositeField extends CustomField<PropertysetItem> {
     @Override
     public Class<? extends PropertysetItem> getType() {
         return PropertysetItem.class;
-    }
-
-    /**
-     * Validate all fields from the root container.
-     */
-    @Override
-    public boolean isValid() {
-        boolean isValid = true;
-        Iterator<Component> it = root.iterator();
-        while (it.hasNext()) {
-            Component c = it.next();
-            if (c instanceof AbstractField) {
-                isValid = ((Field<?>) c).isValid();
-                if (!isValid) {
-                    return isValid;
-                }
-            }
-        }
-        return isValid;
-    }
-
-    /**
-     * Get the error message.
-     */
-    @Override
-    public ErrorMessage getErrorMessage() {
-        ErrorMessage errorMessage = null;
-        Iterator<Component> it = root.iterator();
-        while (it.hasNext()) {
-            Component c = it.next();
-            if (c instanceof AbstractField) {
-                errorMessage = ((AbstractComponent) c).getErrorMessage();
-                if (errorMessage != null) {
-                    return errorMessage;
-                }
-            }
-        }
-        return errorMessage;
     }
 
 }

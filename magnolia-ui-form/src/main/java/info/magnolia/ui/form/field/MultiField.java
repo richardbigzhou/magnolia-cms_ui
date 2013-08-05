@@ -45,17 +45,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.vaadin.data.Property;
-import com.vaadin.server.ErrorMessage;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomField;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.HorizontalLayout;
@@ -67,13 +61,12 @@ import com.vaadin.ui.VerticalLayout;
  * This generic MultiField allows to handle a Field Set. It handle :<br>
  * - The creation of new Field<br>
  * - The removal of Field<br>
- * The Field is build based on a generic {@link ConfiguredFieldDefinition}.
- * The Field values are handle by a configured {@link MultiValueHandler}.
+ * The Field is build based on a generic {@link ConfiguredFieldDefinition}.<br>
+ * The Field values are handle by a configured {@link info.magnolia.ui.form.field.property.PropertyHandler} dedicated to create/retrieve properties as List.<br>
  * 
  * @param <T>
  */
-public class MultiField<T> extends CustomField<List<T>> {
-    private static final Logger log = LoggerFactory.getLogger(MultiField.class);
+public class MultiField<T> extends AbstractCustomMultiField<List<T>> {
 
     private VerticalLayout root;
     private final Button addButton = new NativeButton();
@@ -171,13 +164,13 @@ public class MultiField<T> extends CustomField<List<T>> {
      * Listener used to update the Data source property.
      */
     private Property.ValueChangeListener selectionListener = new ValueChangeListener() {
+        @SuppressWarnings("unchecked")
         @Override
         public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
             List<T> currentValues = getCurrentValues(root);
-            setValue(currentValues);
+            getPropertyDataSource().setValue(currentValues);
         }
     };
-
     /**
      * Initialize the MultiField. <br>
      * Create as many configured Field as we have related values already stored.
@@ -198,15 +191,10 @@ public class MultiField<T> extends CustomField<List<T>> {
      * Retrieve the Values stored as Field value.
      */
     private List<T> getCurrentValues(HasComponents root) {
-        Iterator<Component> it = root.iterator();
+        List<AbstractField<List<T>>> fields = getFields(root, true);
         List<T> newValue = new ArrayList<T>();
-        while (it.hasNext()) {
-            Component c = it.next();
-            if (c instanceof AbstractField) {
-                newValue.add((T) ((AbstractField<?>) c).getConvertedValue());
-            } else if (c instanceof HasComponents) {
-                newValue.addAll(getCurrentValues((HasComponents) c));
-            }
+        for (AbstractField<List<T>> field : fields) {
+            newValue.add((T) (field.getConvertedValue()));
         }
         return newValue;
     }
@@ -235,43 +223,6 @@ public class MultiField<T> extends CustomField<List<T>> {
         return List.class;
     }
 
-    /**
-     * Validate all fields from the root container.
-     */
-    @Override
-    public boolean isValid() {
-        boolean isValid = true;
-        Iterator<Component> it = root.iterator();
-        while (it.hasNext()) {
-            Component c = it.next();
-            if (c instanceof AbstractField) {
-                isValid = ((Field<?>) c).isValid();
-                if (!isValid) {
-                    return isValid;
-                }
-            }
-        }
-        return isValid;
-    }
-
-    /**
-     * Get the error message.
-     */
-    @Override
-    public ErrorMessage getErrorMessage() {
-        ErrorMessage errorMessage = null;
-        Iterator<Component> it = root.iterator();
-        while (it.hasNext()) {
-            Component c = it.next();
-            if (c instanceof AbstractField) {
-                errorMessage = ((AbstractComponent) c).getErrorMessage();
-                if (errorMessage != null) {
-                    return errorMessage;
-                }
-            }
-        }
-        return errorMessage;
-    }
 
     /**
      * Caption section.
