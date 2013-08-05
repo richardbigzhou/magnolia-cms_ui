@@ -34,7 +34,6 @@
 package info.magnolia.ui.workbench.search;
 
 import info.magnolia.ui.api.ModelConstants;
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
@@ -129,17 +128,13 @@ public class SearchJcrContainer extends FlatJcrContainer {
     }
 
     private List<ColumnDefinition> getColumnDefinitions() {
-        ContentPresenterDefinition listViewPresenter = null;
         for (ContentPresenterDefinition presenter : getWorkbenchDefinition().getContentViews()) {
-            if (presenter.getViewType() == ViewType.LIST) {
-                listViewPresenter = presenter;
+            if (presenter.getColumns() != null) {
+                return presenter.getColumns();
             }
         }
-        if (listViewPresenter == null) {
-            log.warn("no ContentPresenterDefinition found, returning empty list");
-            return java.util.Collections.emptyList();
-        }
-        return listViewPresenter.getColumns();
+        log.warn("no ContentPresenterDefinition found containing columns definition was found, returning empty list");
+        return java.util.Collections.emptyList();
     }
 
 }

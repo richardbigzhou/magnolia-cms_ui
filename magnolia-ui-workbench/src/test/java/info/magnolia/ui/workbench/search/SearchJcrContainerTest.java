@@ -41,7 +41,6 @@ import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
-import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 
 import javax.jcr.Session;
 
@@ -73,7 +72,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         configuredWorkbench.addNodeType(nt);
 
         // Add view
-        ConfiguredContentPresenterDefinition contentView = new ListPresenterDefinition();
+        ConfiguredContentPresenterDefinition contentView = new SearchPresenterDefinition();
 
         configuredWorkbench.addContentView(contentView);
 
