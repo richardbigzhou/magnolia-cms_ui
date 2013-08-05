@@ -119,13 +119,13 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
         IndexedContainer optionContainer = new IndexedContainer();
         List<SelectFieldOptionDefinition> options = getSelectFieldOptionDefinition();
         if (!options.isEmpty()) {
-            optionContainer.addContainerProperty(optionValueName, getFieldType(definition), null);
+            optionContainer.addContainerProperty(optionValueName, getFieldType(), null);
             optionContainer.addContainerProperty(optionLabelName, String.class, null);
             if (hasOptionIcon) {
                 optionContainer.addContainerProperty(optionIconName, Resource.class, null);
             }
             for (SelectFieldOptionDefinition option : options) {
-                Object value = DefaultPropertyUtil.createTypedValue(getFieldType(definition).getSimpleName(), option.getValue());
+                Object value = DefaultPropertyUtil.createTypedValue(getFieldType().getSimpleName(), option.getValue());
                 Item item = optionContainer.addItem(value);
                 item.getItemProperty(optionValueName).setValue(value);
                 item.getItemProperty(optionLabelName).setValue(option.getLabel());

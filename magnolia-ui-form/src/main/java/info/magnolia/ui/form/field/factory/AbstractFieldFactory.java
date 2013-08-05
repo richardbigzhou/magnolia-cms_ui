@@ -35,11 +35,14 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.i18n.I18NAwareProperty;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.form.AbstractFormItem;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.definition.PropertyBuilder;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
+import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.ui.form.field.property.basic.BasicProperty;
+import info.magnolia.ui.form.field.property.basic.BasicPropertyHandler;
 import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
 import info.magnolia.ui.form.validator.factory.FieldValidatorFactory;
 import info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory;
@@ -86,6 +89,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         this.item = relatedFieldItem;
     }
 
+
     @Override
     public void setFieldValidatorFactoryFactory(FieldValidatorFactoryFactory fieldValidatorFactoryFactory) {
         this.fieldValidatorFactoryFactory = fieldValidatorFactoryFactory;
@@ -102,7 +106,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
             // Create the Vaadin field
             this.field = createFieldComponent();
 
-            Property<?> property = getOrCreateProperty();
+            Property<?> property = initializeProperty();
 
             // MGNLUI-1855 we need to assign converter for properties with type Long because otherwise Vaadin assigns incompatible StringToNumberConverter.
             if (Long.class.equals(property.getType()) && field instanceof AbstractTextField) {
@@ -142,7 +146,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
 
     @Override
     public View getView() {
-        Property<?> property = getOrCreateProperty();
+        Property<?> property = initializeProperty();
 
         final CssLayout fieldView = new CssLayout();
         fieldView.setStyleName("field-view");
@@ -169,35 +173,30 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         };
     }
 
-    /**
-     * Get a property from the current Item.
-     * <p>
-     *     if the field is i18n-aware - create a special property that would delegate
-     *     the values to the proper localized properties. Otherwise - follow the default pattern.
-     * </p>
-     *
-     * <p>
-     * If the property already exists, return this property.
-     * If the property does not exist, create a new property based on the defined type, default value, and saveInfo.
-     * </p>
-     */
-    protected Property<?> getOrCreateProperty() {
-        String propertyName = definition.getName();
-        Class<?> fieldType = getFieldType(definition);
-        String defaultValue = definition.getDefaultValue();
-        if (definition.isI18n()) {
-            I18NAwareProperty<String> property = componentProvider.newInstance(I18NAwareProperty.class, propertyName, fieldType, item);
-            property.setDefaultValue(defaultValue);
-            return property;
+    @SuppressWarnings("unchecked")
+    private Property<?> initializeProperty() {
 
-        } else {
-            Property<?> property = item.getItemProperty(propertyName);
-            if (property == null) {
-                property = DefaultPropertyUtil.newDefaultProperty(fieldType.getSimpleName(), defaultValue);
-                item.addItemProperty(propertyName, property);
-            }
-            return property;
+        Class<? extends PropertyHandler<?>> handlerClass = null;
+        Class<? extends Property<?>> propertyTypeClass = null;
+
+        PropertyBuilder propertyBuilder = definition.getPropertyBuilder();
+        if (propertyBuilder != null) {
+            handlerClass = propertyBuilder.getPropertyHandler();
+            propertyTypeClass = propertyBuilder.getPropertyType();
         }
+        if (handlerClass == null || propertyTypeClass == null) {
+            // Set Default
+            handlerClass = (Class<? extends PropertyHandler<?>>) BasicPropertyHandler.class;
+            propertyTypeClass = (Class<? extends Property<?>>) BasicProperty.class;
+        }
+        Class<?> type = getFieldType();
+        PropertyHandler<?> handler = initializePropertyHandler(handlerClass, type);
+
+        return this.componentProvider.newInstance(propertyTypeClass, handler, type);
+    }
+
+    protected PropertyHandler<?> initializePropertyHandler(Class<? extends PropertyHandler<?>> handlerClass, Class<?> type) {
+        return this.componentProvider.newInstance(handlerClass, item, definition, componentProvider, type.getName());
     }
 
     /**
@@ -205,14 +204,14 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      * If the Type is not defined in the configuration or not of a supported type, throws
      * a {@link IllegalArgumentException}:
      */
-    protected Class<?> getFieldType(FieldDefinition fieldDefinition) {
-        if (StringUtils.isNotBlank(fieldDefinition.getType())) {
-            return DefaultPropertyUtil.getFieldTypeClass(fieldDefinition.getType());
+    protected Class<?> getFieldType() {
+        if (StringUtils.isNotBlank(definition.getType())) {
+            return DefaultPropertyUtil.getFieldTypeClass(definition.getType());
         }
-        return getDefaultFieldType(fieldDefinition);
+        return getDefaultFieldType();
     }
 
-    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+    protected Class<?> getDefaultFieldType() {
         return String.class;
     }
 

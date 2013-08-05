@@ -38,9 +38,7 @@ import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.MultiLinkField;
 import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
-import info.magnolia.ui.form.field.property.list.ListHandler;
-import info.magnolia.ui.form.field.property.list.ListProperty;
-import info.magnolia.ui.form.field.property.list.MultiValuesPropertyListHandler;
+import info.magnolia.ui.form.field.property.PropertyHandler;
 
 import java.util.List;
 
@@ -50,7 +48,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.ui.Field;
 
 /**
@@ -83,20 +80,9 @@ public class MultiLinkFieldFactory extends AbstractFieldFactory<MultiLinkFieldDe
         return field;
     }
 
-    @Override
-    protected Property<?> getOrCreateProperty() {
-        Class<? extends ListHandler> multiDelegate = null;
-        String itemName = definition.getName();
-        // Get configured MultiValueHandler class
-        if (definition.getSaveModeType() != null && definition.getSaveModeType().getListHandlerClass() != null) {
-            multiDelegate = definition.getSaveModeType().getListHandlerClass();
-        } else {
-            multiDelegate = MultiValuesPropertyListHandler.class;
-            log.warn("No SaveModeType defined for this Multiselect Field definition. Default one will be taken: '{}'", MultiValuesPropertyListHandler.class.getSimpleName());
-        }
-        ListHandler multiPropertyDelegate = this.componentProvider.newInstance(multiDelegate, item, itemName);
-        ListProperty property = new ListProperty(multiPropertyDelegate);
-        return property;
-    }
 
+    @Override
+    protected PropertyHandler<?> initializePropertyHandler(Class<? extends PropertyHandler<?>> handlerClass, Class<?> type) {
+        return this.componentProvider.newInstance(handlerClass, item, definition, componentProvider);
+    }
 }

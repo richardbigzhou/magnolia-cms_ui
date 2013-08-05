@@ -37,17 +37,13 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.MultiField;
 import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
-import info.magnolia.ui.form.field.property.list.ListHandler;
-import info.magnolia.ui.form.field.property.list.ListProperty;
-import info.magnolia.ui.form.field.property.list.MultiValuesPropertyListHandler;
-
+import info.magnolia.ui.form.field.property.PropertyHandler;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.ui.Field;
 
 
@@ -93,21 +89,7 @@ public class MultiFieldFactory<T> extends AbstractFieldFactory<MultiFieldDefinit
      * In case of no MultivalueHandler is defined into the definition, {@link MultiValuesPropertyListHandler} is used by default.
      */
     @Override
-    protected Property<T> getOrCreateProperty() {
-
-        Class<? extends ListHandler> listDelegate = null;
-        String itemName = definition.getName();
-        // Get configured MultiValueHandler class
-        if (definition.getSaveModeType() != null && definition.getSaveModeType().getListHandlerClass() != null) {
-            listDelegate = definition.getSaveModeType().getListHandlerClass();
-        } else {
-            listDelegate = MultiValuesPropertyListHandler.class;
-            log.warn("No ListHandler defined for this Multiselect Field definition. Default one will be taken: '{}'", MultiValuesPropertyListHandler.class.getSimpleName());
-        }
-
-        ListHandler<T> listHandler = this.componentProvider.newInstance(listDelegate, item, itemName);
-        ListProperty<T> listProperty = new ListProperty<T>(listHandler);
-        return (Property<T>) listProperty;
+    protected PropertyHandler<?> initializePropertyHandler(Class<? extends PropertyHandler<?>> handlerClass, Class<?> type) {
+        return this.componentProvider.newInstance(handlerClass, item, definition, componentProvider);
     }
-
 }

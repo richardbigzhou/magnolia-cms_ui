@@ -37,7 +37,6 @@ import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
-import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.upload.basic.BasicFileItemWrapper;
 import info.magnolia.ui.form.field.upload.basic.BasicUploadField;
 import info.magnolia.ui.imageprovider.ImageProvider;
@@ -48,7 +47,6 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import java.io.File;
 
 import javax.inject.Inject;
-import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -126,10 +124,6 @@ public class BasicUploadFieldFactory extends AbstractFieldFactory<BasicUploadFie
     public void setPropertyDataSource(Property property) {
     }
 
-    @Override
-    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
-        return Binary.class;
-    }
 
     /**
      * Configure Field based on the definition.

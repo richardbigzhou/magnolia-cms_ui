@@ -38,9 +38,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.CompositeField;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.form.field.property.multi.MultiHandler;
-import info.magnolia.ui.form.field.property.multi.MultiProperty;
-import info.magnolia.ui.form.field.property.multi.SubNodesMultiHandler;
+import info.magnolia.ui.form.field.property.PropertyHandler;
 
 import java.util.List;
 
@@ -48,7 +46,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Field;
 
@@ -80,20 +77,9 @@ public class CompositeFieldFactory<D extends FieldDefinition> extends AbstractFi
     }
 
     @Override
-    protected Property<?> getOrCreateProperty() {
-        Class<? extends MultiHandler> multiDelegate = null;
-        String itemName = definition.getName();
+    protected PropertyHandler<?> initializePropertyHandler(Class<? extends PropertyHandler<?>> handlerClass, Class<?> type) {
         List<String> propertyNames = definition.getFieldsName();
-        // Get configured MultiValueHandler class
-        if (definition.getSaveModeType() != null && definition.getSaveModeType().getMultiHandlerClass() != null) {
-            multiDelegate = definition.getSaveModeType().getMultiHandlerClass();
-        } else {
-            multiDelegate = SubNodesMultiHandler.class;
-            log.warn("No MultiHandler defined for this CompositField Field definition. Default one will be taken: '{}'", SubNodesMultiHandler.class.getSimpleName());
-        }
-        MultiHandler multiHandler = this.componentProvider.newInstance(multiDelegate, item, itemName, propertyNames);
-        MultiProperty multiProperty = new MultiProperty(multiHandler);
-        return multiProperty;
+        return this.componentProvider.newInstance(handlerClass, item, definition, componentProvider, propertyNames);
     }
 
 }
