@@ -104,7 +104,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetQueryWhereClauseReturnsNodeTypesWhenClauseWhenFullTextExpressionIsBlank() throws Exception {
+    public void testGetQueryWhereClauseReturnsNodeTypesWhereClauseWhenFullTextExpressionIsBlank() throws Exception {
         // GIVEN
         jcrContainer.setFullTextExpression("");
 
@@ -116,7 +116,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetQueryWhereClauseReturnsNodeTypesWhenClauseWhenFullTextExpressionIsNull() throws Exception {
+    public void testGetQueryWhereClauseReturnsNodeTypesWhereClauseWhenFullTextExpressionIsNull() throws Exception {
         // GIVEN
         jcrContainer.setFullTextExpression(null);
 
