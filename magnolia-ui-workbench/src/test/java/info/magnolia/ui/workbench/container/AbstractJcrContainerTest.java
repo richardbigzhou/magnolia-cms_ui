@@ -395,8 +395,8 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
 
         // THEN
         String expectedResult = AbstractJcrContainer.SELECT_TEMPLATE + " where (([jcr:primaryType] = 'mgnl:content') and ";
-        expectedResult += String.format(AbstractJcrContainer.WHERE_TEMPLATE_FOR_PATH, TEST_PATH);
-        assertEquals(expectedResult + ") ", result);
+        expectedResult += String.format(AbstractJcrContainer.WHERE_TEMPLATE_FOR_PATH, TEST_PATH) + ") ";
+        assertEquals(expectedResult, result);
     }
 
     @Test
@@ -449,21 +449,22 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetMainNodeType() {
+    public void testOrderOfNodeTypesInConfigurationDoesNotMatter() {
         // GIVEN
         final String testNodeType = "mgnl:test";
         ConfiguredNodeTypeDefinition def = new ConfiguredNodeTypeDefinition();
         def.setName(testNodeType);
-        // we cannot use default jcrContainer from setUp here - it already has a different NodeType as main NodeType (first in nodeTypes).
-        workbenchDefinition = new ConfiguredWorkbenchDefinition();
+
         workbenchDefinition.addNodeType(def);
-        jcrContainer = new JcrContainerTestImpl(workbenchDefinition);
 
         // WHEN
-        final String result = jcrContainer.getMainNodeType();
+        // Before 5.1 the main node type was the first one declared in the configuration.
+        final String mainNodeType = jcrContainer.getMainNodeType();
+        final String select = getExpectedSelectStatementWithNodeTypesRestrictions();
 
         // THEN
-        assertEquals(testNodeType, result);
+        assertTrue(select.contains(mainNodeType));
+        assertTrue(select.contains(testNodeType));
     }
 
     @Test
@@ -545,7 +546,6 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testConstructJCRQueryReturnDefaultSelectStatement() {
         // GIVEN
-        // default nodeType used by constructJCRQuery() is mgnl:content
         final String expected = getExpectedSelectStatementWithNodeTypesRestrictions();
 
         // WHEN
@@ -571,6 +571,26 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         assertEquals(fooItemId, jcrContainer.firstItemId());
     }
 
+    @Test
+    public void testGetQueryWhereClauseNodeTypesDoesNotSearchForHiddenInListNodes() throws Exception {
+        // GIVEN
+        ConfiguredNodeTypeDefinition fooDef = new ConfiguredNodeTypeDefinition();
+        fooDef.setName("mgnl:foo");
+        fooDef.setHideInList(true);
+
+        ConfiguredNodeTypeDefinition barDef = new ConfiguredNodeTypeDefinition();
+        barDef.setName("mgnl:bar");
+
+        workbenchDefinition.addNodeType(fooDef);
+        workbenchDefinition.addNodeType(barDef);
+
+        // WHEN
+        String query = jcrContainer.constructJCRQuery(false);
+
+        // THEN
+        assertEquals(getExpectedSelectStatementWithNodeTypesRestrictions(), query);
+    }
+
     /**
      * Define the sorting criteria.
      */
@@ -580,7 +600,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     private String getExpectedSelectStatementWithNodeTypesRestrictions() {
-        return AbstractJcrContainer.SELECT_TEMPLATE + " where (([jcr:primaryType] = 'mgnl:content') ) ";
+        return AbstractJcrContainer.SELECT_TEMPLATE + " where ((" + jcrContainer.getQueryWhereClauseNodeTypes() + ") ) ";
     }
 
     private String getExpectedQueryWithOrderByAscending() {

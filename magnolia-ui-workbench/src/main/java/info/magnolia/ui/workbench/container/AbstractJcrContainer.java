@@ -496,11 +496,11 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     /**
      * @param considerSorting an optional <code>ORDER BY</code> is added if this parameter is <code>true</code>. Sorting options can be configured in the {@link WorkbenchDefinition}.
      * @return a string representing a JCR statement to retrieve this container's items.
-     *         It creates a JCR query in the form {@code select * from [nodeType] as selector [WHERE] [ORDER BY]"}.
-     *         <p>
-     *         Subclasses can customize the optional <code>WHERE</code> clause by overriding {@link #getQueryWhereClause()}.
-     *         <p>
-     *         The main item type (as configured in the {@link WorkbenchDefinition}) in the <code>SELECT</code> statement can be changed to something different by calling {@link #getQuerySelectStatement()}
+     * It creates a JCR query in the form {@code select * from [nt:base] as selectorName [WHERE] [ORDER BY]"}.
+     * <p>
+     * Subclasses can customize the optional <code>WHERE</code> clause by overriding {@link #getQueryWhereClause()} or, at a more fine-grained level, {@link #getQueryWhereClauseNodeTypes()} and {@link #getQueryWhereClauseWorkspacePath()}.
+     * <p>
+     * A restriction on the node types to be searched for can be applied via {@link #getQueryWhereClauseNodeTypes()}.
      */
     protected final String constructJCRQuery(final boolean considerSorting) {
         final String select = getQuerySelectStatement();
@@ -536,9 +536,10 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     /**
-     * @return the JCR query clause to select only nodes with the path configured in the workspace as String - in case
-     *         it's not configured return a blank string so that all nodes are considered. Internally calls {@link #getQueryWhereClauseWorkspacePath()} to determine
-     *         the path under which to perform the search.
+     * @return the JCR query where clause to select only node types which are not hidden in list and nodes under the path configured in the workspace as String - if the latter
+     * is not configured return a blank string so that all nodes are considered.
+     * @see AbstractJcrContainer#getQueryWhereClauseNodeTypes()
+     * @see #getQueryWhereClauseWorkspacePath()
      */
     protected String getQueryWhereClause() {
         String whereClause = "";
@@ -561,7 +562,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     /**
      * @return a String containing the node types to be searched for in a query. All node types declared in a workbench definition are returned
      * unless their <code>hideInList</code> property is true. E.g. assuming a node types declaration like the following
-     * 
+     *
      * <pre>
      * ...
      * + workbench
@@ -575,7 +576,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      *    * name = nt:baz
      * ...
      * </pre>
-     * 
+     *
      * this method will return the following string <code>[jcr:primaryType] = 'nt:foo' or [jcr:primaryType] = 'baz'</code>. This will eventually be used to restrict the node types to be searched for
      * in list and search views, i.e. <code>select * from [nt:base] where ([jcr:primaryType] = 'nt:foo' or [jcr:primaryType] = 'baz')</code>.
      */
@@ -583,7 +584,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         List<String> defs = new ArrayList<String>();
         for (NodeTypeDefinition type : workbenchDefinition.getNodeTypes()) {
             if (type.isHideInList()) {
-                log.debug("Skipping {} node type. Nodes of such type won't be searched for", type.getName());
+                log.debug("Skipping {} node type. Nodes of such type won't be searched for.", type.getName());
                 continue;
             }
             defs.add("[jcr:primaryType] = '" + type.getName() + "'");
@@ -593,7 +594,6 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**
      * @return if {@link WorkbenchDefinition#getPath()} is not null or root ("/"), an ISDESCENDATNODE constraint narrowing the scope of search under the configured path, else an empty string.
-     *         Used by {@link #getQueryWhereClause()} to build a where clause.
      */
     protected final String getQueryWhereClauseWorkspacePath() {
         // By default, search the root and therefore do not need a query clause.
