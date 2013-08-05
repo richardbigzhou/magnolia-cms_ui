@@ -38,7 +38,6 @@ package info.magnolia.ui.form.field.definition;
  */
 public class MultiFieldDefinition extends ConfiguredFieldDefinition {
 
-    private SaveModeType saveModeType;
     private String buttonSelectAddLabel = "buttons.add";
     private String buttonSelectRemoveLabel = "buttons.delete";
     private ConfiguredFieldDefinition field;
@@ -58,14 +57,6 @@ public class MultiFieldDefinition extends ConfiguredFieldDefinition {
     }
 
     /**
-     * @return SaveModeType defining the specific {@link info.magnolia.ui.form.field.property.list.ListHandler} <br>
-     * used to retrieve or store the values in various format (single property, multivalue property or sub nodes).
-     */
-    public SaveModeType getSaveModeType() {
-        return saveModeType;
-    }
-
-    /**
      * @return Generic field that may be used and display as multi field.
      */
     public ConfiguredFieldDefinition getField() {
@@ -78,10 +69,6 @@ public class MultiFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setButtonSelectRemoveLabel(String buttonSelectRemoveLabel) {
         this.buttonSelectRemoveLabel = buttonSelectRemoveLabel;
-    }
-
-    public void setSaveModeType(SaveModeType saveModeType) {
-        this.saveModeType = saveModeType;
     }
 
     public void setField(ConfiguredFieldDefinition field) {

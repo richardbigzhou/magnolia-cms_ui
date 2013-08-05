@@ -33,36 +33,31 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import info.magnolia.ui.form.field.property.PropertyHandler;
 
+import com.vaadin.data.Property;
 
 /**
- * Field definition for a Multi-Link field.
+ * .
  */
-public class MultiLinkFieldDefinition extends LinkFieldDefinition {
+public class PropertyBuilder {
 
-    private String buttonSelectAddLabel = "buttons.add";
-    private String buttonSelectRemoveLabel = "buttons.delete";
+    private Class<? extends PropertyHandler<?>> propertyHandler;
+    private Class<? extends Property<?>> propertyType;
 
-    /**
-     * @return i18n property used to configure Button Label.
-     */
-    public String getButtonSelectAddLabel() {
-        return buttonSelectAddLabel;
+    public Class<? extends PropertyHandler<?>> getPropertyHandler() {
+        return propertyHandler;
     }
 
-    /**
-     * @return i18n property used to configure the Remove Button Label.
-     */
-    public String getButtonSelectRemoveLabel() {
-        return buttonSelectRemoveLabel;
+    public Class<? extends Property<?>> getPropertyType() {
+        return propertyType;
     }
 
-    public void setButtonSelectRemoveLabel(String buttonSelectRemoveLabel) {
-        this.buttonSelectRemoveLabel = buttonSelectRemoveLabel;
+    public void setPropertyType(Class<? extends Property<?>> propertyType) {
+        this.propertyType = propertyType;
     }
 
-    public void setButtonSelectAddLabel(String buttonSelectAddLabel) {
-        this.buttonSelectAddLabel = buttonSelectAddLabel;
+    public void setPropertyHandler(Class<? extends PropertyHandler<?>> propertyHandler) {
+        this.propertyHandler = propertyHandler;
     }
-
 }

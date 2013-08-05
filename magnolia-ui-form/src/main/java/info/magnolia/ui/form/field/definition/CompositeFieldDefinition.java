@@ -44,13 +44,9 @@ import java.util.List;
 
 public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
 
-    private SaveModeType saveModeType;
     private List<ConfiguredFieldDefinition> fields = new ArrayList<ConfiguredFieldDefinition>();
     private List<String> fieldsName;
 
-    public SaveModeType getSaveModeType() {
-        return saveModeType;
-    }
 
     public List<ConfiguredFieldDefinition> getFields() {
         return fields;
@@ -68,9 +64,6 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
         initFieldsName();
     }
 
-    public void setSaveModeType(SaveModeType saveModeType) {
-        this.saveModeType = saveModeType;
-    }
 
     private void initFieldsName() {
         fieldsName = new LinkedList<String>();
