@@ -40,6 +40,7 @@ import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.form.field.property.list.MultiValuesPropertyListHandler;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -63,6 +64,7 @@ import org.junit.Test;
 public class MultiValuesHandlerTest extends RepositoryTestCase {
     private Node rootNode;
     private final String propertyName = "propertyName";
+    private TextFieldDefinition definition = new TextFieldDefinition();
 
     @Override
     @Before
@@ -78,7 +80,7 @@ public class MultiValuesHandlerTest extends RepositoryTestCase {
         Session session = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
         new PropertiesImportExport().createNodes(session.getRootNode(), IOUtils.toInputStream(nodeProperties));
         session.save();
-
+        definition.setName(propertyName);
         rootNode = session.getRootNode().getNode("parent");
     }
 
@@ -86,7 +88,7 @@ public class MultiValuesHandlerTest extends RepositoryTestCase {
     public void testCreateMultiProperty() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValuesPropertyListHandler delegate = new MultiValuesPropertyListHandler(parent, propertyName);
+        MultiValuesPropertyListHandler delegate = new MultiValuesPropertyListHandler(parent, definition, null);
 
         // WHEN
         delegate.setValue(new ArrayList<String>());
@@ -105,7 +107,7 @@ public class MultiValuesHandlerTest extends RepositoryTestCase {
         String[] values = { "Art", "Dan", "Jen" };
         rootNode.setProperty(propertyName, values);
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValuesPropertyListHandler delegate = new MultiValuesPropertyListHandler(parent, propertyName);
+        MultiValuesPropertyListHandler delegate = new MultiValuesPropertyListHandler(parent, definition, null);
 
         // WHEN
         List<String> res = delegate.getValue();
@@ -122,7 +124,7 @@ public class MultiValuesHandlerTest extends RepositoryTestCase {
         String[] newValues = { "Pig", "Ph" };
         rootNode.setProperty(propertyName, initialValues);
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValuesPropertyListHandler delegate = new MultiValuesPropertyListHandler(parent, propertyName);
+        MultiValuesPropertyListHandler delegate = new MultiValuesPropertyListHandler(parent, definition, null);
 
         // WHEN
         delegate.setValue(Arrays.asList(newValues));
@@ -149,7 +151,7 @@ public class MultiValuesHandlerTest extends RepositoryTestCase {
         PropertyUtil.setProperty(rootNode, propertyName, propertyValue);
 
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValuesPropertyListHandler delegate = new MultiValuesPropertyListHandler(parent, propertyName);
+        MultiValuesPropertyListHandler delegate = new MultiValuesPropertyListHandler(parent, definition, null);
 
         // WHEN
         List<Long> res = delegate.getValue();

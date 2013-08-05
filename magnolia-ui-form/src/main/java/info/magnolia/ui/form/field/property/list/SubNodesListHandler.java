@@ -172,7 +172,7 @@ public class SubNodesListHandler<T> extends BaseHandler implements PropertyHandl
                 setChildItemValue(childItem, value);
             }
         } catch (Exception e) {
-            // TODO log
+            log.warn("Not able to create a Child Item for {} ", rootItem.getItemId(), e);
         }
     }
 
@@ -234,7 +234,7 @@ public class SubNodesListHandler<T> extends BaseHandler implements PropertyHandl
     /**
      * Basic Implementation that create child Nodes with increasing number as Name.
      */
-    protected String createChildItemName(Set<String> childNames, T value, JcrNodeAdapter rootItem) {
+    protected String createChildItemName(Set<String> childNames, Object value, JcrNodeAdapter rootItem) {
         int nb = 0;
         String name = "00";
         DecimalFormat df = new DecimalFormat("00");

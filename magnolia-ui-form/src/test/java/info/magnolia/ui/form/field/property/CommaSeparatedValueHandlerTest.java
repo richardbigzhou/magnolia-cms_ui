@@ -39,6 +39,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.form.field.property.list.CommaSeparatedListHandler;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -61,6 +62,7 @@ import org.junit.Test;
 public class CommaSeparatedValueHandlerTest extends RepositoryTestCase {
     private Node rootNode;
     private final String propertyName = "propertyName";
+    private TextFieldDefinition definition = new TextFieldDefinition();
 
     @Override
     @Before
@@ -76,7 +78,7 @@ public class CommaSeparatedValueHandlerTest extends RepositoryTestCase {
         Session session = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
         new PropertiesImportExport().createNodes(session.getRootNode(), IOUtils.toInputStream(nodeProperties));
         session.save();
-
+        definition.setName(propertyName);
         rootNode = session.getRootNode().getNode("parent");
     }
 
@@ -84,7 +86,7 @@ public class CommaSeparatedValueHandlerTest extends RepositoryTestCase {
     public void testCreateMultiProperty() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        CommaSeparatedListHandler delegate = new CommaSeparatedListHandler(parent, propertyName);
+        CommaSeparatedListHandler delegate = new CommaSeparatedListHandler(parent, definition, null);
 
         // WHEN
         delegate.setValue(new ArrayList<String>(Arrays.asList("Jav", "ta")));
@@ -104,7 +106,7 @@ public class CommaSeparatedValueHandlerTest extends RepositoryTestCase {
         String values = "Art,Dan,Jen";
         rootNode.setProperty(propertyName, values);
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        CommaSeparatedListHandler delegate = new CommaSeparatedListHandler(parent, propertyName);
+        CommaSeparatedListHandler delegate = new CommaSeparatedListHandler(parent, definition, null);
 
         // WHEN
         List<String> res = delegate.getValue();
@@ -124,7 +126,7 @@ public class CommaSeparatedValueHandlerTest extends RepositoryTestCase {
         String newValues = "Pig,Ph";
         rootNode.setProperty(propertyName, initialValues);
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        CommaSeparatedListHandler delegate = new CommaSeparatedListHandler(parent, propertyName);
+        CommaSeparatedListHandler delegate = new CommaSeparatedListHandler(parent, definition, null);
 
         // WHEN
         delegate.setValue(Arrays.asList(newValues.split(",")));

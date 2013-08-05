@@ -97,7 +97,7 @@ public class SubNodesListCategoryHandler<T> extends SubNodesListHandler<Property
     }
 
     @Override
-    protected String createChildItemName(Set<String> childNames, Property<T> value, JcrNodeAdapter rootItem) {
+    protected String createChildItemName(Set<String> childNames, Object value, JcrNodeAdapter rootItem) {
         return Path.getValidatedLabel(StringUtils.left(value.toString(), valueItemNameSize));
     }
 
