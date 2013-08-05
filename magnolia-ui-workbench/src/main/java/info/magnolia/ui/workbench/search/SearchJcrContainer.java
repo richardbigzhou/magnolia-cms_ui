@@ -56,9 +56,9 @@ public class SearchJcrContainer extends FlatJcrContainer {
 
     private static final Logger log = LoggerFactory.getLogger(SearchJcrContainer.class);
 
-    protected static final String WHERE_TEMPLATE_FOR_SEARCH = " localname() LIKE '%1$s%%' or " + SELECTOR_NAME + ".[%2$s] IS NOT NULL %3$s";
+    protected static final String WHERE_TEMPLATE_FOR_SEARCH = "localname() LIKE '%1$s%%' or " + SELECTOR_NAME + ".[%2$s] IS NOT NULL %3$s";
 
-    protected static final String CONTAINS_TEMPLATE_FOR_SEARCH = " contains(" + SELECTOR_NAME + ".[%1$s], '*%2$s*') ";
+    protected static final String CONTAINS_TEMPLATE_FOR_SEARCH = "contains(" + SELECTOR_NAME + ".[%1$s], '*%2$s*')";
 
     private String fullTextExpression;
 
@@ -113,7 +113,7 @@ public class SearchJcrContainer extends FlatJcrContainer {
             contains.add(String.format(CONTAINS_TEMPLATE_FOR_SEARCH, propertyName, escapedFullTextExpression));
         }
         final String containsExpression = StringUtils.join(contains, " or ");
-        final String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, escapedFullTextExpression, escapedFullTextExpression, StringUtils.isNotBlank(containsExpression) ? " or " + containsExpression : "");
+        final String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, escapedFullTextExpression, escapedFullTextExpression, StringUtils.isNotBlank(containsExpression) ? "or " + containsExpression : "");
 
         log.debug("Search where-clause is {}", stmt);
         return stmt;
