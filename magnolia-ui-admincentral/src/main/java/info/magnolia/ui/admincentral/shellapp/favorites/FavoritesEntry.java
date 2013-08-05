@@ -34,9 +34,11 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingListener;
+import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingNotifier;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
-import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
@@ -61,7 +63,7 @@ import com.vaadin.ui.TextField;
 /**
  * FavoritesEntry.
  */
-public final class FavoritesEntry extends CustomComponent {
+public final class FavoritesEntry extends CustomComponent implements EditingNotifier {
 
     private HorizontalLayout root = new HorizontalLayout();
     private String location;
@@ -123,6 +125,7 @@ public final class FavoritesEntry extends CustomComponent {
         }
         titleField.setReadOnly(!editable);
         editButton.setCaption("<span class=\"" + icon + "\"></span>");
+        fireEvent(new EditingEvent(this, editable));
     }
 
     private void setSelected(boolean selected) {
@@ -234,6 +237,7 @@ public final class FavoritesEntry extends CustomComponent {
 
             @Override
             public void layoutClick(LayoutClickEvent event) {
+
                 if (event.getClickedComponent() == titleField && !editable) {
                     if (event.isDoubleClick()) {
                         // TODO fgrilli commented out as, besides making the text editable, it also goes to the saved location
@@ -253,6 +257,17 @@ public final class FavoritesEntry extends CustomComponent {
         });
 
         setCompositionRoot(root);
+    }
+
+    @Override
+    public void addEditingListener(EditingListener listener) {
+        addListener("onEdit", EditingEvent.class, listener, EditingEvent.EDITING_METHOD);
+
+    }
+
+    @Override
+    public void removeEditingListener(EditingListener listener) {
+        removeListener(EditingEvent.class, listener, EditingEvent.EDITING_METHOD);
     }
 
     private void doEditTitle(final FavoritesView.Listener listener) {

@@ -1,0 +1,17 @@
+@charset "UTF-8";
+
+@mixin dependencies {
+
+  /* Reference field component label */
+  .v-label-dependencies-section {
+    font-weight: bold;
+    line-height: 25px; /* Same as label so they're on the same line */
+    font-size: 12px;
+  }
+
+  /* Grid layout */
+  .v-gridlayout-dependencies-layout .v-label-dependencies-row {
+    font-size: 12px;
+  }
+
+}

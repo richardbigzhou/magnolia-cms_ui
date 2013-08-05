@@ -33,46 +33,61 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
+import java.io.Serializable;
+import java.lang.reflect.Method;
 
-import java.util.Map;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Component.Event;
 
 /**
- * Manages the favorites for the current user.
+ * EditingEvent.
  */
-public interface FavoritesManager {
+@SuppressWarnings("serial")
+public final class EditingEvent extends Event implements Serializable {
 
-    AbstractJcrNodeAdapter getFavorites();
+    private boolean editing;
+
+    public EditingEvent(Component source, boolean editing) {
+        super(source);
+        this.editing = editing;
+    }
+
+    public boolean isEditing() {
+        return editing;
+    }
+
+    public static final Method EDITING_METHOD;
+
+    static {
+        try {
+            EDITING_METHOD = EditingListener.class.getDeclaredMethod(
+                    "onEdit", new Class[] { EditingEvent.class });
+        } catch (final java.lang.NoSuchMethodException e) {
+            // This should never happen
+            throw new java.lang.RuntimeException();
+        }
+    }
 
     /**
-     * @return A map whose key is the group jcr name and whose value is its title (human-readable) property. The map elements are sorted alphabetically (descending) by their value.
+     * EditableListener.
      */
-    Map<String, String> getGroupsNames();
+    public interface EditingListener extends Serializable {
+        void onEdit(EditingEvent event);
+    }
 
-    void addFavorite(JcrNewNodeAdapter newFavorite);
+    /**
+     * EditingListener.
+     */
+    public interface EditingNotifier extends Serializable {
+        /**
+         * Register a listener to handle {@link EditingEvent}s.
+         */
+        void addEditingListener(EditingListener listener);
 
-    JcrNewNodeAdapter createFavoriteSuggestion(String location, String title, String icon);
+        /**
+         * Removes an EditingListener.
+         */
+        void removeEditingListener(EditingListener listener);
+    }
 
-    void removeFavorite(String relPath);
-
-    void editFavorite(String relPath, String newTitle);
-
-    void addGroup(JcrNewNodeAdapter newGroup);
-
-    void editGroup(String relPath, String newTitle);
-
-    void removeGroup(String relPath);
-
-    JcrNewNodeAdapter createFavoriteGroupSuggestion(String title);
-
-    void moveFavorite(String relPath, String group);
-
-    void orderFavoriteBefore(String relPath, String sibling);
-
-    void orderFavoriteAfter(String relPath, String sibling);
-
-    void orderGroupBefore(String relPath, String sibling);
-
-    void orderGroupAfter(String relPath, String sibling);
 }

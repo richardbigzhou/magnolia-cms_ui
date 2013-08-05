@@ -33,11 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import static org.junit.Assert.assertTrue;
-
-import static org.junit.Assert.assertFalse;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.MgnlUserManager;
@@ -414,5 +410,29 @@ public class FavoritesManagerImplTest extends RepositoryTestCase {
         assertEquals(thirdNodeName, favorites.next().getName());
         assertEquals(firstNodeName, favorites.next().getName());
         assertEquals(secondNodeName, favorites.next().getName());
+    }
+
+    @Test
+    public void testOrderGroupAfter() throws Exception {
+        // GIVEN
+        final String firstNodeName = "first";
+        final String secondNodeName = "second";
+        final String thirdNodeName = "third";
+
+        JcrNewNodeAdapter newNodeAdapter = favoritesManager.createFavoriteGroupSuggestion(firstNodeName);
+        favoritesManager.addGroup(newNodeAdapter);
+        newNodeAdapter = favoritesManager.createFavoriteGroupSuggestion(secondNodeName);
+        favoritesManager.addGroup(newNodeAdapter);
+        newNodeAdapter = favoritesManager.createFavoriteGroupSuggestion(thirdNodeName);
+        favoritesManager.addGroup(newNodeAdapter);
+
+        // WHEN
+        favoritesManager.orderGroupAfter(firstNodeName, thirdNodeName);
+
+        // THEN
+        Iterator<Node> favorites = NodeUtil.getNodes(favoriteStore.getBookmarkRoot()).iterator();
+        assertEquals(secondNodeName, favorites.next().getName());
+        assertEquals(thirdNodeName, favorites.next().getName());
+        assertEquals(firstNodeName, favorites.next().getName());
     }
 }

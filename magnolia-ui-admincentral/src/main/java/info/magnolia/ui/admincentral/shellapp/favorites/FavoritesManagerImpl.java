@@ -321,4 +321,15 @@ public final class FavoritesManagerImpl implements FavoritesManager {
             throw new RuntimeRepositoryException(e);
         }
     }
+
+    @Override
+    public void orderGroupAfter(String relPath, String sibling) {
+        try {
+            Node groupToMove = favoriteStore.getBookmarkRoot().getNode(relPath);
+            NodeUtil.orderAfter(groupToMove, sibling);
+        } catch (RepositoryException e) {
+            throw new RuntimeRepositoryException(e);
+        }
+
+    }
 }
