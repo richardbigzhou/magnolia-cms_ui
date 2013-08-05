@@ -31,47 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.list;
+package info.magnolia.ui.form.field.property.basic;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.property.BaseHandler;
-import info.magnolia.ui.form.field.property.PropertyHandler;
 
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 
 /**
- * Multi values properties implementation of {@link ListHandler}.<br>
- * Store the list of values as Jcr Multi-property value.<br>
- * Retrieve the Jcr Multi value property as a list.
+ * Specific OptionGroupField property Handler.<br
+ * Vaadin native {@link com.vaadin.ui.OptionGroup} used as root component for configured Option Group Field do not support Links, but only Sets.
  * 
- * @param <T> type of the element list.
+ * @param <T>
  */
-public class MultiValuesPropertyListHandler<T> extends BaseHandler implements PropertyHandler<List<T>> {
+public class OptionGroupPropertyHandler<T> extends BasicPropertyHandler<T> {
 
-
-    @Inject
-    public MultiValuesPropertyListHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
-        super(parent, definition, componentProvider);
+    public OptionGroupPropertyHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider, String fieldTypeName) {
+        super(parent, definition, componentProvider, fieldTypeName);
     }
 
-
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public void setValue(List<T> newValue) {
-        Property<List> property = getOrCreateProperty(List.class, null, new LinkedList<T>());
-        property.setValue(new LinkedList<T>(newValue));
+    public T getValue() {
+        T value = super.getValue();
+        if (value == null) {
+            return (T) new HashSet();
+        } else if (value instanceof List) {
+            return (T) new HashSet((List) value);
+        } else {
+            return null;
+        }
     }
-
-    @Override
-    public List<T> getValue() {
-        Property<List> property = getOrCreateProperty(List.class,null,  new LinkedList<T>());
-        return property.getValue();
-    }
-
 }

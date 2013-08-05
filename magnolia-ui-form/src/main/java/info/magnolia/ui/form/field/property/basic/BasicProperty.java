@@ -31,47 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.list;
+package info.magnolia.ui.form.field.property.basic;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.property.BaseHandler;
 import info.magnolia.ui.form.field.property.PropertyHandler;
-
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.inject.Inject;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
+import com.vaadin.data.util.ObjectProperty;
 
 /**
- * Multi values properties implementation of {@link ListHandler}.<br>
- * Store the list of values as Jcr Multi-property value.<br>
- * Retrieve the Jcr Multi value property as a list.
+ * Basic simple property Handler.<br>
+ * This handler is used by default for simple property handling (simple value property).
  * 
- * @param <T> type of the element list.
+ * @param <T>
  */
-public class MultiValuesPropertyListHandler<T> extends BaseHandler implements PropertyHandler<List<T>> {
+public class BasicProperty<T> extends ObjectProperty<T> {
 
+    private PropertyHandler<T> handler;
 
     @Inject
-    public MultiValuesPropertyListHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
-        super(parent, definition, componentProvider);
-    }
-
-
-    @Override
-    public void setValue(List<T> newValue) {
-        Property<List> property = getOrCreateProperty(List.class, null, new LinkedList<T>());
-        property.setValue(new LinkedList<T>(newValue));
+    public BasicProperty(PropertyHandler<T> handler, Class<T> type) {
+        super(handler.getValue(), type);
+        this.handler = handler;
     }
 
     @Override
-    public List<T> getValue() {
-        Property<List> property = getOrCreateProperty(List.class,null,  new LinkedList<T>());
-        return property.getValue();
+    public void setValue(T newValue) throws com.vaadin.data.Property.ReadOnlyException {
+        super.setValue(newValue);
+        if (handler != null) {
+            handler.setValue(newValue);
+        }
     }
 
+    @Override
+    public T getValue() {
+        return super.getValue();
+    }
 }

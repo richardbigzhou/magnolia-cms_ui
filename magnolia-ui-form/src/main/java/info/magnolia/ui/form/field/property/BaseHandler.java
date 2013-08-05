@@ -34,47 +34,84 @@
 package info.magnolia.ui.form.field.property;
 
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.i18n.I18NAwareProperty;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+
 /**
- * Base Handler exposing useful methods. <br>
+ * Base Handler exposing useful methods for JCR Item properties. <br>
  */
 public class BaseHandler {
+    private static final Logger log = LoggerFactory.getLogger(BaseHandler.class);
+    protected Item parent;
+    protected final ConfiguredFieldDefinition definition;
+    protected final ComponentProvider componentProvider;
+
+    @Inject
+    public BaseHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
+        this.definition = definition;
+        this.parent = parent;
+        this.componentProvider = componentProvider;
+    }
 
     /**
      * If the desired property (propertyName) already exist in the JcrNodeAdapter, return this property<br>
-     * else create a new Property.
-     *
+     * else create a new {@link Property}.
+     * 
      * @param <T>
      */
     @SuppressWarnings("unchecked")
-    public <T> DefaultProperty<T> getOrCreateProperty(Class<T> type, T defaultValue, JcrNodeAdapter parent, String propertyName) {
+    protected <T> Property<T> getOrCreateProperty(Class<T> type, String defaultValueString, T defaultValue) {
 
-        DefaultProperty<T> property = (DefaultProperty<T>) parent.getItemProperty(propertyName);
-        if (property == null) {
-            property = new DefaultProperty<T>(type, defaultValue);
-            parent.addItemProperty(propertyName, property);
+        if (this.definition.isI18n()) {
+            I18NAwareProperty<T> property = componentProvider.newInstance(I18NAwareProperty.class, this.definition.getName(), type, parent);
+            property.setDefaultValue((T) defaultValue);
+            return property;
+
+        } else {
+            Property<T> property = parent.getItemProperty(this.definition.getName());
+            if (property == null) {
+                if (defaultValue != null) {
+                    property = new DefaultProperty<T>(defaultValue);
+                } else {
+                    property = DefaultPropertyUtil.newDefaultProperty(type, defaultValueString);
+                }
+                parent.addItemProperty(this.definition.getName(), property);
+            }
+            return property;
         }
-        return property;
     }
 
     /**
      * Retrieve or create a child node as {@link JcrNodeAdapter}.
      */
-    public JcrNodeAdapter getOrCreateChildNode(JcrNodeAdapter parent, String chieldNodeName, String chieldNodeType) throws RepositoryException {
+    protected JcrNodeAdapter getOrCreateChildNode(String chieldNodeName, String chieldNodeType) throws RepositoryException {
         JcrNodeAdapter child = null;
-        Node node = parent.getJcrItem();
+        if (!(parent instanceof JcrNodeAdapter)) {
+            log.warn("Try to retrieve a Jcr Item from a Non Jcr Item Adapter. Will retrun null");
+            return null;
+        }
+        Node node = ((JcrNodeAdapter) parent).getJcrItem();
         if (node.hasNode(chieldNodeName) && !(parent instanceof JcrNewNodeAdapter)) {
             child = new JcrNodeAdapter(node.getNode(chieldNodeName));
-            child.setParent(parent);
+            child.setParent(((JcrNodeAdapter) parent));
         } else {
             child = new JcrNewNodeAdapter(node, NodeTypes.Content.NAME, chieldNodeName);
-            child.setParent(parent);
+            child.setParent(((JcrNodeAdapter) parent));
         }
         return child;
     }

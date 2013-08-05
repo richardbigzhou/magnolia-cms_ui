@@ -31,47 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.list;
+package info.magnolia.ui.form.field.property;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.property.BaseHandler;
-import info.magnolia.ui.form.field.property.PropertyHandler;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 
 /**
- * Multi values properties implementation of {@link ListHandler}.<br>
- * Store the list of values as Jcr Multi-property value.<br>
- * Retrieve the Jcr Multi value property as a list.
+ * Base definition for a {@link com.vaadin.data.Property} handler.<br>
+ * Implemented Handler have the responsibility to : <br>
+ * - Convert the T newValue to a specific JCR format (CommaSeparated multi values, multiPorperty values) <br>
+ * - Transform a specific property, nodes to a specified type T.
  * 
- * @param <T> type of the element list.
+ * @param <T> type of the element handled.
  */
-public class MultiValuesPropertyListHandler<T> extends BaseHandler implements PropertyHandler<List<T>> {
+public interface PropertyHandler<T> {
 
+    /**
+     * Convert the T newValue to a specific JCR format (CommaSeparated multi values, multiPorperty values).<br>
+     * 
+     * @param newValue
+     */
+    void setValue(T newValue);
 
-    @Inject
-    public MultiValuesPropertyListHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
-        super(parent, definition, componentProvider);
-    }
-
-
-    @Override
-    public void setValue(List<T> newValue) {
-        Property<List> property = getOrCreateProperty(List.class, null, new LinkedList<T>());
-        property.setValue(new LinkedList<T>(newValue));
-    }
-
-    @Override
-    public List<T> getValue() {
-        Property<List> property = getOrCreateProperty(List.class,null,  new LinkedList<T>());
-        return property.getValue();
-    }
+    /**
+     * Transform a specific property, nodes to a specified type T.<br>
+     */
+    T getValue();
 
 }

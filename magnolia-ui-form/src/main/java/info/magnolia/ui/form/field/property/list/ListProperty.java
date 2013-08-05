@@ -34,13 +34,17 @@
 package info.magnolia.ui.form.field.property.list;
 
 
+import info.magnolia.ui.form.field.property.PropertyHandler;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import com.vaadin.data.util.ObjectProperty;
 
 /**
- * {@link ObjectProperty} implementation used in order to handle MultiProperty type.<br>
+ * {@link ObjectProperty} implementation used in order to handle ListProperty type.<br>
  * This property is set as {@link com.vaadin.ui.Field#setPropertyDataSource(com.vaadin.data.Property)} and handle a list of generic objects.<br>
  * {@link ListHandler} perform the bridge (retrieve/store) between <br>
  * - the stored values (multi value properties, multi nodes,...) <br>
@@ -51,9 +55,10 @@ import com.vaadin.data.util.ObjectProperty;
  */
 public class ListProperty<T> extends ObjectProperty<List<T>> {
 
-    private ListHandler<T> handler;
+    private PropertyHandler<List<T>> handler;
 
-    public ListProperty(ListHandler<T> delegate) {
+    @Inject
+    public ListProperty(PropertyHandler<List<T>> delegate) {
         super(new ArrayList<T>());
         this.handler = delegate;
         setValue(this.handler.getValue());

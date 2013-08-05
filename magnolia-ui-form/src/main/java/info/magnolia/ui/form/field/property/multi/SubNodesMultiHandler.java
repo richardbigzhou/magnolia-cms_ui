@@ -35,7 +35,10 @@ package info.magnolia.ui.form.field.property.multi;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.property.BaseHandler;
+import info.magnolia.ui.form.field.property.PropertyHandler;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -50,23 +53,27 @@ import javax.jcr.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
- * .
+ * Simple implementation that store/retrieve the properties contained in a {@link PropertysetItem} as a Jcr sub node containing a property set.<br>
+ * Storage strategy: <br>
+ * - parent (Item)<br>
+ * -- child (definition.getName())<br>
+ * --- property 1<br>
+ * --- property 2 ....<br>
+ * property 1, 2, ... are used to populate the {@link PropertysetItem}.
  */
-public class SubNodesMultiHandler extends BaseHandler implements MultiHandler {
+public class SubNodesMultiHandler extends BaseHandler implements PropertyHandler<PropertysetItem> {
 
     private static final Logger log = LoggerFactory.getLogger(SubNodesMultiHandler.class);
-    private JcrNodeAdapter parent;
-    private String propertyName;
     private List<String> fieldsName;
 
     @Inject
-    public SubNodesMultiHandler(JcrNodeAdapter parent, String propertyName, List<String> fieldsName) {
-        this.parent = parent;
-        this.propertyName = propertyName;
+    public SubNodesMultiHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider, List<String> fieldsName) {
+        super(parent, definition, componentProvider);
         this.fieldsName = fieldsName;
     }
 
@@ -75,7 +82,10 @@ public class SubNodesMultiHandler extends BaseHandler implements MultiHandler {
     public void setValue(PropertysetItem newValues) {
         try {
             // Get the child Item that contains the properties
-            JcrNodeAdapter childItem = getOrCreateChildNode(parent, propertyName, NodeTypes.Content.NAME);
+            JcrNodeAdapter childItem = getOrCreateChildNode(definition.getName(), NodeTypes.Content.NAME);
+            if (childItem == null) {
+                return;
+            }
             Iterator<?> propertyNames = newValues.getItemPropertyIds().iterator();
             while (propertyNames.hasNext()) {
                 String propertyName = (String) propertyNames.next();
@@ -90,9 +100,9 @@ public class SubNodesMultiHandler extends BaseHandler implements MultiHandler {
             }
             // Attach the child item to the root item
             if (childItem.getItemPropertyIds() != null && !childItem.getItemPropertyIds().isEmpty()) {
-                parent.addChild(childItem);
+                ((JcrNodeAdapter) parent).addChild(childItem);
             } else {
-                parent.removeChild(childItem);
+                ((JcrNodeAdapter) parent).removeChild(childItem);
             }
         } catch (RepositoryException re) {
             log.error("Could not store the values.", re);
@@ -105,8 +115,10 @@ public class SubNodesMultiHandler extends BaseHandler implements MultiHandler {
         PropertysetItem newValues = new PropertysetItem();
         try {
             // Get the child Item that contains the list of children Item Value
-            JcrNodeAdapter childItem = getOrCreateChildNode(parent, propertyName, NodeTypes.Content.NAME);
-            if (!(childItem instanceof JcrNewNodeAdapter)) {
+            JcrNodeAdapter childItem = getOrCreateChildNode(definition.getName(), NodeTypes.Content.NAME);
+            if (childItem == null) {
+                return newValues;
+            } else if (!(childItem instanceof JcrNewNodeAdapter)) {
                 // Get the child Node
                 Node childNode = childItem.getJcrItem();
                 for (String propertyName : fieldsName) {

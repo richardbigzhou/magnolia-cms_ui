@@ -31,15 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.list;
+package info.magnolia.ui.form.field.property.basic;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.property.BaseHandler;
 import info.magnolia.ui.form.field.property.PropertyHandler;
-
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -47,31 +44,52 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 
 /**
- * Multi values properties implementation of {@link ListHandler}.<br>
- * Store the list of values as Jcr Multi-property value.<br>
- * Retrieve the Jcr Multi value property as a list.
+ * .
  * 
- * @param <T> type of the element list.
+ * @param <T>
  */
-public class MultiValuesPropertyListHandler<T> extends BaseHandler implements PropertyHandler<List<T>> {
+public class BasicPropertyHandler<T> extends BaseHandler implements PropertyHandler<T> {
 
+    private Class<?> fieldType;
 
     @Inject
-    public MultiValuesPropertyListHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
+    public BasicPropertyHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider, String fieldTypeName) {
         super(parent, definition, componentProvider);
+        this.fieldType = getClassForName(fieldTypeName);
     }
 
 
+    /**
+     * Get a property from the current Item.<br>
+     * - if the field is i18n-aware - create a special property that would delegate the values to the proper localized properties. Otherwise - follow the default pattern.<br>
+     * - else if the property already exists, return this property. If the property does not exist, create a new property based on the defined type, default value, and saveInfo.
+     */
+    @SuppressWarnings("unchecked")
     @Override
-    public void setValue(List<T> newValue) {
-        Property<List> property = getOrCreateProperty(List.class, null, new LinkedList<T>());
-        property.setValue(new LinkedList<T>(newValue));
+    public T getValue() {
+        String defaultValue = definition.getDefaultValue();
+        Property<T> p = (Property<T>) getOrCreateProperty(fieldType, defaultValue, null);
+        return p.getValue();
     }
 
+    /**
+     * Update the related {@link Property} with the new value.<br>
+     * The related {@link Property} is created by a previous call to getValue().
+     */
+    @SuppressWarnings("unchecked")
     @Override
-    public List<T> getValue() {
-        Property<List> property = getOrCreateProperty(List.class,null,  new LinkedList<T>());
-        return property.getValue();
+    public void setValue(T newValue) {
+        Property<T> p = (Property<T>) getOrCreateProperty(fieldType, "", null);
+        p.setValue(newValue);
+    }
+
+
+    private Class<?> getClassForName(String fieldTypeName) {
+        try {
+            return Class.forName(fieldTypeName);
+        } catch (ClassNotFoundException e) {
+            return String.class;
+        }
     }
 
 }

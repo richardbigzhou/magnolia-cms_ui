@@ -33,9 +33,10 @@
  */
 package info.magnolia.ui.form.field.property.list;
 
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.property.BaseHandler;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.form.field.property.PropertyHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +46,9 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+
 /**
  * SingleProperty implementation of {@link ListHandler}.<br>
  * Store the list of values in a single property as a concatenation of string with a ',' separator.<br>
@@ -52,26 +56,23 @@ import org.apache.commons.lang.StringUtils;
  * <b>This handler is implemented for backward capability with Magnolia 4.x. <br>
  * As for Magnolia 4.x, the current implementation only support a list of String</b>
  */
-public class CommaSeparatedListHandler extends BaseHandler implements ListHandler<String> {
+public class CommaSeparatedListHandler extends BaseHandler implements PropertyHandler<List<String>> {
 
-    private JcrNodeAdapter parent;
-    private String propertyName;
 
     @Inject
-    public CommaSeparatedListHandler(JcrNodeAdapter parent, String propertyName) {
-        this.parent = parent;
-        this.propertyName = propertyName;
+    public CommaSeparatedListHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
+        super(parent, definition, componentProvider);
     }
 
     @Override
     public void setValue(List<String> newValue) {
-        DefaultProperty<String> property = getOrCreateProperty(String.class, "", parent, propertyName);
+        Property<String> property = getOrCreateProperty(String.class, null, "");
         property.setValue(StringUtils.join(removeComma(newValue), ","));
     }
 
     @Override
     public List<String> getValue() {
-        DefaultProperty<String> property = getOrCreateProperty(String.class, "", parent, propertyName);
+        Property<String> property = getOrCreateProperty(String.class, null, "");
         String value = property.getValue();
         return Arrays.asList(value.split(","));
     }

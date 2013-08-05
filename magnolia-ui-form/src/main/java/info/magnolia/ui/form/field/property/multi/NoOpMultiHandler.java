@@ -31,47 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.list;
+package info.magnolia.ui.form.field.property.multi;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.property.BaseHandler;
 import info.magnolia.ui.form.field.property.PropertyHandler;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
+import com.vaadin.data.util.PropertysetItem;
 
 /**
- * Multi values properties implementation of {@link ListHandler}.<br>
- * Store the list of values as Jcr Multi-property value.<br>
- * Retrieve the Jcr Multi value property as a list.
- * 
- * @param <T> type of the element list.
+ * Empty Implementation of {@link PropertyHandler} for {@link PropertysetItem}.
+ * This is mainly used if the {@link PropertysetItem} is handle by the parent field {@link PropertyHandler}.
  */
-public class MultiValuesPropertyListHandler<T> extends BaseHandler implements PropertyHandler<List<T>> {
+public class NoOpMultiHandler implements PropertyHandler<PropertysetItem> {
 
-
-    @Inject
-    public MultiValuesPropertyListHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
-        super(parent, definition, componentProvider);
-    }
-
+    private PropertysetItem propertysetItem;
 
     @Override
-    public void setValue(List<T> newValue) {
-        Property<List> property = getOrCreateProperty(List.class, null, new LinkedList<T>());
-        property.setValue(new LinkedList<T>(newValue));
+    public void setValue(PropertysetItem newValue) {
+        this.propertysetItem = newValue;
     }
 
     @Override
-    public List<T> getValue() {
-        Property<List> property = getOrCreateProperty(List.class,null,  new LinkedList<T>());
-        return property.getValue();
+    public PropertysetItem getValue() {
+        if (this.propertysetItem == null) {
+            return new PropertysetItem();
+        }
+        return this.propertysetItem;
     }
 
 }
