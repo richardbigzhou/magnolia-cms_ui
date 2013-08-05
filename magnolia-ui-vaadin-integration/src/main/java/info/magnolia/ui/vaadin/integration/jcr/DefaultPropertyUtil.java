@@ -38,7 +38,9 @@ import info.magnolia.cms.util.DateUtil;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import javax.jcr.Binary;
 import javax.jcr.PropertyType;
@@ -58,11 +60,26 @@ public class DefaultPropertyUtil {
     private static final Logger log = LoggerFactory.getLogger(DefaultPropertyUtil.class);
 
     /**
+     * Create a DefaultProperty and set the defaultValue after conversion.
+     */
+    public static <T> DefaultProperty<T> newDefaultProperty(Class<T> type, String defaultValue) {
+        Object value = null;
+        try {
+            value = createTypedValue(type, defaultValue);
+        } catch (Exception e) {
+            log.error("Exception during Value creation", e);
+        }
+        return new DefaultProperty<T>(type, (T) value);
+    }
+
+    /**
      * Create a new DefaultProperty by passing the value as a String.
      * If fieldType is defined, create a Typed Value.
      * If fieldType is not defined, create a String Value.
      * If stringValue is defined, create a typed value based ont fieldType.
      */
+    @Deprecated
+    // TODO since & why
     public static DefaultProperty newDefaultProperty(String fieldType, String stringValue) throws NumberFormatException {
         Object value = null;
         try {
@@ -76,6 +93,8 @@ public class DefaultPropertyUtil {
     /**
      * Create a DefaultProperty based on types defined in {@link PropertyType}.
      */
+    @Deprecated
+    // TODO since & why
     public static DefaultProperty newDefaultProperty(int fieldType, Object value) throws NumberFormatException {
         return new DefaultProperty(getFieldTypeClass(fieldType), value);
     }
@@ -117,6 +136,37 @@ public class DefaultPropertyUtil {
                     log.error(msg);
                     throw new IllegalArgumentException(msg);
                 }
+            }
+        }
+        return null;
+    }
+
+    public static Object createTypedValue(Class<?> type, String defaultValue) throws NumberFormatException {
+        if (StringUtils.isBlank(defaultValue)) {
+            return defaultValue;
+        } else if (defaultValue != null) {
+            if (type.getName().equals(String.class.getName())) {
+                return defaultValue;
+            } else if (type.getName().equals(Long.class.getName())) {
+                return Long.decode(defaultValue);
+            } else if (type.isAssignableFrom(Binary.class)) {
+                return null;
+            } else if (type.getName().equals(Double.class.getName())) {
+                return Double.valueOf(defaultValue);
+            } else if (type.getName().equals(Date.class.getName())) {
+                try {
+                    return new SimpleDateFormat(DateUtil.YYYY_MM_DD).parse(defaultValue);
+                } catch (ParseException e) {
+                    throw new IllegalArgumentException(e);
+                }
+            } else if (type.getName().equals(Boolean.class.getName())) {
+                return BooleanUtils.toBoolean(defaultValue);
+            } else if (type.isAssignableFrom(List.class)) {
+                return Arrays.asList(defaultValue.split(","));
+            } else {
+                String msg = "Unsupported property type " + type.getName();
+                log.error(msg);
+                throw new IllegalArgumentException(msg);
             }
         }
         return null;
