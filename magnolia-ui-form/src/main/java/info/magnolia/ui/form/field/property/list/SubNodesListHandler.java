@@ -33,149 +33,185 @@
  */
 package info.magnolia.ui.form.field.property.list;
 
-import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.property.BaseHandler;
+import info.magnolia.ui.form.field.property.PropertyHandler;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
-import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Item;
+
 /**
- * Sub Nodes implementation of {@link ListHandler}.<br>
- * Store the list of values as subNodes.<br>
- * Node structure:
- * <ul>
- * <li>root
- * <ul>
- * <li>childNode (nodeName = subNodeName)
- * <ul>
- * <li>valueNode1 (nodeName = 20 first char of the related list value) <br>
- * valueNode1.listValue (propertyName = subNodeName)</li>
- * </ul>
- * <ul>
- * <li>valueNode2 (nodeName = 20 first char of the related list value) <br>
- * valueNode2.listValue (propertyName = subNodeName)</li>
- * </ul>
- * </li>
- * </ul>
- * </ul>
- * 
+ * Generic List Sub Nodes {@link info.magnolia.ui.form.field.property.PropertyHandler}.<br>
+ * Structure: <br>
+ * - root node <br>
+ * -- child1 <br>
+ * --- property1<br>
+ * -- child2 <br>
+ * --- property2 ...<br>
+ *
  * @param <T> type of the element list.
  */
-public class SubNodesListHandler<T> extends BaseHandler implements ListHandler<T> {
+public class SubNodesListHandler<T> extends BaseHandler implements PropertyHandler<List<T>> {
 
     private static final Logger log = LoggerFactory.getLogger(SubNodesListHandler.class);
-    private JcrNodeAdapter root;
-    private String subNodeName;
-    private int valueItemNameSize = 20;
 
-    @Inject
-    public SubNodesListHandler(JcrNodeAdapter root, String subNodeName) {
-        this.root = root;
-        this.subNodeName = subNodeName;
+    private String childNodeType = NodeTypes.Content.NAME;
+    private String childValuePropertyName;
+
+    public SubNodesListHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
+        super(parent, definition, componentProvider);
+        this.childValuePropertyName = definition.getName();
     }
 
     /**
-     * Create a new set of valueItems.<br>
-     * - from the 'root' get or create childItem (childItem will contains the list of valueItem) <br>
-     * - for every newValue element, create a valueItem linked to childItem.<br>
-     * - remove no more existing children from the already stored item. <br>
+     * Retrieve a list of values based on the sub nodes.<br>
+     * - get a list of childNodes to handle <br>
+     * - for each childNode retrieve the value to set to the list <br>
+     * If no childNodes are present, return an empty List.
      */
-    @Override
-    public void setValue(List<T> newValue) {
-        try {
-            // Get the child Item that contains the list of children Item Value
-            JcrNodeAdapter childItem = getOrCreateChildNode(root, subNodeName, NodeTypes.Content.NAME);
-            // Get the child Node
-            Node childNode = childItem.getJcrItem();
-            for (T value : newValue) {
-                // For each value, create a Child Item Value
-                createAndAddValueItem(childItem, childNode, value);
-            }
-            // Remove all no more existing children
-            detachNoMoreExistingChildren(childItem);
-
-            // Attach the child item to the root item
-            if (childItem.getChildren() != null && !childItem.getChildren().isEmpty()) {
-                root.addChild(childItem);
-            } else {
-                root.removeChild(childItem);
-            }
-        } catch (RepositoryException re) {
-            log.error("Could not store the values.", re);
-        }
-    }
-
     @Override
     public List<T> getValue() {
         LinkedList<T> res = new LinkedList<T>();
-        try {
-            // Get the child Item that contains the list of children Item Value
-            JcrNodeAdapter childItem = getOrCreateChildNode(root, subNodeName, NodeTypes.Content.NAME);
-            // Get the child Node
-            Node childNode = childItem.getJcrItem();
-            if (!(childItem instanceof JcrNewNodeAdapter) && childNode.hasNodes()) {
-                NodeIterator iterator = childNode.getNodes();
-                while (iterator.hasNext()) {
-                    Node valueNode = iterator.nextNode();
-                    if (valueNode.hasProperty(subNodeName)) {
-                        res.add((T) PropertyUtil.getPropertyValueObject(valueNode, subNodeName));
-                    }
-                }
+        JcrNodeAdapter rootItem = getRootItem();
+        // Get a list of childNodes
+        List<Node> childNodes = getStoredChildNodes((JcrNodeAdapter) rootItem);
+        for (Node child : childNodes) {
+            T value = getValueFromChildNode(child);
+            if (value != null) {
+                res.add(value);
             }
-        } catch (RepositoryException e) {
-            log.error("Could get or create related items", e);
         }
         return res;
     }
 
     /**
-     * Create a valueItem. <br>
-     * Note that the <b>valueItem name is equal to the 20 first chars of the related value</b>.
+     * Define the root Item use in order to set the List element as SubNodes.
      */
-    @SuppressWarnings("unchecked")
-    private void createAndAddValueItem(JcrNodeAdapter childItem, Node childNode, T value) {
-        String childValueItemName = Path.getValidatedLabel(StringUtils.left(value.toString(), valueItemNameSize));
-        JcrNodeAdapter valueItem = null;
+    protected JcrNodeAdapter getRootItem() {
+        return (JcrNodeAdapter) parent;
+    }
+
+    /**
+     * Get all childNodes of parent with type {@link NodeTypes.ContentNode.NAME}.
+     */
+    protected List<Node> getStoredChildNodes(JcrNodeAdapter parent) {
         try {
-            if (!(childItem instanceof JcrNewNodeAdapter) && childNode.hasNode(childValueItemName)) {
-                valueItem = new JcrNodeAdapter(childNode.getNode(childValueItemName));
-            } else {
-                valueItem = new JcrNewNodeAdapter(childNode, NodeTypes.Content.NAME, childValueItemName);
+            if (!(parent instanceof JcrNewNodeAdapter) && parent.getJcrItem().hasNodes()) {
+                return NodeUtil.asList(NodeUtil.getNodes(parent.getJcrItem(), childNodeType));
             }
-            childItem.addChild(valueItem);
-            valueItem.addItemProperty(subNodeName, new DefaultProperty(value.getClass(), value));
-        } catch (RepositoryException e) {
-            log.error("Could not add achild value node ", e);
+        } catch (RepositoryException re) {
+            log.warn("Not able to access the Child Nodes of the following Node Identifier {}", parent.getItemId(), re);
         }
+        return new ArrayList<Node>();
+    }
+
+    /**
+     * Return a specific value from the child node.
+     */
+    protected T getValueFromChildNode(Node child) {
+        try {
+            if (child.hasProperty(childValuePropertyName)) {
+                return (T) PropertyUtil.getPropertyValueObject(child, childValuePropertyName);
+            }
+        } catch (RepositoryException re) {
+            log.warn("Not able to access the Child Nodes property of the following Child Node Name {}", NodeUtil.getName(child), re);
+        }
+        return null;
+    }
+
+    /**
+     * Create new Child Items based on the newValues. <br>
+     * - on the rootItem, create or update childItems based on the newValues (one ChildItem per new Value).
+     * - remove the no more existing child from the source Item.
+     */
+    @Override
+    public void setValue(List<T> newValue) {
+        // Get root Item
+        JcrNodeAdapter rootItem = getRootItem();
+        rootItem.getChildren().clear();
+        // Add childItems to the rootItem
+        setNewChildItem(rootItem, newValue);
+        // Remove all no more existing children
+        detachNoMoreExistingChildren(rootItem);
+        // Attach or Detach rootItem from parent
+        handleRootitemAndParent(rootItem);
+    }
+
+    protected void setNewChildItem(JcrNodeAdapter rootItem, List<T> newValue) {
+        // Used to build the ChildItemName;
+        Set<String> childNames = new HashSet<String>();
+        Node rootNode = rootItem.getJcrItem();
+        try {
+            for (T value : newValue) {
+                // Create the child Item Name
+                String childName = createChildItemName(childNames, value, rootItem);
+                // Get or create the childItem
+                JcrNodeAdapter childItem = initializeChildItem(rootItem, rootNode, childName);
+                // Set the Value to the ChildItem
+                setChildItemValue(childItem, value);
+            }
+        } catch (Exception e) {
+            // TODO log
+        }
+    }
+
+    /**
+     * Set the value as property to the childItem.
+     */
+    protected void setChildItemValue(JcrNodeAdapter childItem, T value) {
+        childItem.addItemProperty(childValuePropertyName, new DefaultProperty<T>(value));
+    }
+
+    /**
+     * Create a Child Item.<br>
+     * - if the related node already has a Child Node called 'childName', initialize the ChildItem based on this child Node.<br>
+     * - else create a new JcrNodeAdapter.
+     */
+    protected JcrNodeAdapter initializeChildItem(JcrNodeAdapter rootItem, Node rootNode, String childName) throws PathNotFoundException, RepositoryException {
+        JcrNodeAdapter childItem = null;
+        if (!(rootItem instanceof JcrNewNodeAdapter) && rootNode.hasNode(childName)) {
+            childItem = new JcrNodeAdapter(rootNode.getNode(childName));
+        } else {
+            childItem = new JcrNewNodeAdapter(rootNode, childNodeType, childName);
+        }
+        rootItem.addChild(childItem);
+        return childItem;
     }
 
     /**
      * If values are already stored, remove the no more existing one.
      */
-    private void detachNoMoreExistingChildren(JcrNodeAdapter childItem) {
+    private void detachNoMoreExistingChildren(JcrNodeAdapter rootItem) {
         try {
-            Node childNode = childItem.getJcrItem();
-            if (!(childItem instanceof JcrNewNodeAdapter) && childNode.hasNodes()) {
-                NodeIterator iterator = childNode.getNodes();
+            Node rootNode = rootItem.getJcrItem();
+            if (!(rootItem instanceof JcrNewNodeAdapter) && rootNode.hasNodes()) {
+                NodeIterator iterator = rootNode.getNodes();
                 while (iterator.hasNext()) {
                     Node valueNode = iterator.nextNode();
-                    if (childItem.getChild(valueNode.getName()) == null) {
+                    if (rootItem.getChild(valueNode.getName()) == null) {
                         JcrNodeAdapter toRemove = new JcrNodeAdapter(valueNode);
-                        childItem.removeChild(toRemove);
+                        rootItem.removeChild(toRemove);
                     }
                 }
             }
@@ -184,5 +220,35 @@ public class SubNodesListHandler<T> extends BaseHandler implements ListHandler<T
         }
     }
 
-}
+    /**
+     * Handle the relation between parent and rootItem.<br>
+     * Typically, if rootItem would be a child of parentItem: <br>
+     * <p>
+     * if (childItem.getChildren() != null && !childItem.getChildren().isEmpty()) { ((JcrNodeAdapter) parent).addChild(childItem); } else { ((JcrNodeAdapter) parent).removeChild(childItem); }
+     * </p>
+     */
+    protected void handleRootitemAndParent(JcrNodeAdapter rootItem) {
+        // In our case, do nothing as childItem is already the parent.
+    }
 
+    /**
+     * Basic Implementation that create child Nodes with increasing number as Name.
+     */
+    protected String createChildItemName(Set<String> childNames, T value, JcrNodeAdapter rootItem) {
+        int nb = 0;
+        String name = "00";
+        DecimalFormat df = new DecimalFormat("00");
+        while (childNames.contains(name)) {
+            nb += 1;
+            name = df.format(nb);
+        }
+        childNames.add(name);
+        return name;
+    }
+
+
+    public void setChildValuePropertyName(String newName) {
+        this.childValuePropertyName = newName;
+    }
+
+}

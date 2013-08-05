@@ -33,27 +33,36 @@
  */
 package info.magnolia.ui.form.field.property.multi;
 
+import info.magnolia.ui.form.field.property.PropertyHandler;
+
+import javax.inject.Inject;
+
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
- * .
+ * {@link ObjectProperty} implementation used in order to handle MultiProperty type.<br>
+ * MultiProperty are basically handled as {@PropertysetItem}.
  */
 public class MultiProperty extends ObjectProperty<PropertysetItem> {
 
-    private MultiHandler handler;
+    private PropertyHandler<PropertysetItem> handler;
 
-    public MultiProperty(MultiHandler handler) {
+    @Inject
+    public MultiProperty(PropertyHandler<PropertysetItem> handler) {
         super(new PropertysetItem());
         this.handler = handler;
-        setValue(this.handler.getValue());
+        if (this.handler != null) {
+            setValue(this.handler.getValue());
+        }
+
     }
 
     @Override
     public void setValue(PropertysetItem newValue) throws com.vaadin.data.Property.ReadOnlyException {
         super.setValue(newValue);
-        if (handler != null) {
-            handler.setValue(newValue);
+        if (this.handler != null) {
+            this.handler.setValue(newValue);
         }
     }
 
