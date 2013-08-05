@@ -46,10 +46,17 @@ import info.magnolia.jcr.node2bean.TypeMapping;
 import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
 import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.objectfactory.NoSuchComponentException;
+import info.magnolia.objectfactory.ParameterResolver;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.ui.form.field.property.basic.BasicProperty;
+import info.magnolia.ui.form.field.property.basic.BasicPropertyHandler;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Locale;
@@ -60,6 +67,7 @@ import org.junit.After;
 import org.junit.Before;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.data.util.converter.DefaultConverterFactory;
 import com.vaadin.server.VaadinSession;
 
@@ -78,6 +86,7 @@ public abstract class AbstractFieldFactoryTestCase<D extends FieldDefinition> {
     protected Node baseNode;
     protected Item baseItem;
     protected D definition;
+    protected SimpleComponentProvider provider;
 
     @Before
     public void setUp() throws Exception {
@@ -118,6 +127,11 @@ public abstract class AbstractFieldFactoryTestCase<D extends FieldDefinition> {
 
     }
 
+    protected void setComponentProviderAndHandler(ConfiguredFieldDefinition definition, Class typeClass, Item baseItem) {
+        BasicPropertyHandler basicHandler = new BasicPropertyHandler(baseItem, definition, null, typeClass.getName());
+        provider = new SimpleComponentProvider(basicHandler, new BasicProperty(basicHandler, typeClass));
+    }
+
     @After
     public void tearDown() {
         MgnlContext.setInstance(null);
@@ -128,5 +142,63 @@ public abstract class AbstractFieldFactoryTestCase<D extends FieldDefinition> {
      * Create the specific ConfiguredFieldDefinition or sub class.
      */
     protected abstract void createConfiguredFieldDefinition();
+
+    public static class SimpleComponentProvider implements ComponentProvider {
+        private PropertyHandler handler = null;
+        private Property propertyType = null;
+
+        public SimpleComponentProvider(PropertyHandler handler, Property propertyType) {
+            this.handler = handler;
+            this.propertyType = propertyType;
+        }
+
+        public void setHandler(PropertyHandler handler) {
+            this.handler = handler;
+        }
+
+        public void setPropertyType(Property propertyType) {
+            this.propertyType = propertyType;
+        }
+
+        @Override
+        public <T> Class<? extends T> getImplementation(Class<T> type) throws ClassNotFoundException {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public <T> T getSingleton(Class<T> type) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public <T> T getComponent(Class<T> type) throws NoSuchComponentException {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public <T> T newInstance(Class<T> type, Object... parameters) {
+            if (type.isAssignableFrom(handler.getClass())) {
+                return (T) handler;
+            } else {
+                return (T) propertyType;
+            }
+        }
+
+        @Override
+        public <T> T newInstanceWithParameterResolvers(Class<T> type, ParameterResolver... parameters) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public ComponentProvider getParent() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+    }
 
 }

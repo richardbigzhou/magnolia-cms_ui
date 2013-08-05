@@ -36,8 +36,8 @@ package info.magnolia.ui.form.action;
 import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
@@ -156,7 +156,7 @@ public class SaveFormActionTest extends RepositoryTestCase {
         node = session.getRootNode().addNode("underlying");
 
         item = new JcrNodeAdapter(node);
-        item.addItemProperty("property", DefaultPropertyUtil.newDefaultProperty(null, "changed"));
+        item.addItemProperty("property", DefaultPropertyUtil.newDefaultProperty(String.class, "changed"));
         initDefinition("name", "label");
         formAction = new SaveFormAction(formActionDefinition, item, callback, validator);
 

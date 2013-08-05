@@ -35,11 +35,13 @@ package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.assertEquals;
 
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.DateFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import org.junit.Test;
 
@@ -64,6 +66,8 @@ public class DateFieldFactoryTest extends AbstractFieldFactoryTestCase<DateField
         baseItem = new JcrNodeAdapter(baseNode);
         dialogDate = new DateFieldFactory(definition, baseItem);
         dialogDate.setI18nContentSupport(i18nContentSupport);
+        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, Date.class, (JcrNodeAdapter) baseItem);
+        dialogDate.setComponentProvider(provider);
         // WHEN
         Field field = dialogDate.createField();
 
@@ -85,6 +89,8 @@ public class DateFieldFactoryTest extends AbstractFieldFactoryTestCase<DateField
         baseItem = new JcrNodeAdapter(baseNode);
         dialogDate = new DateFieldFactory(definition, baseItem);
         dialogDate.setI18nContentSupport(i18nContentSupport);
+        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, Date.class, (JcrNodeAdapter) baseItem);
+        dialogDate.setComponentProvider(provider);
         Calendar calNew = Calendar.getInstance();
         calNew.set(Calendar.DAY_OF_MONTH, 20);
         calNew.set(Calendar.MONTH, 2);
@@ -115,6 +121,8 @@ public class DateFieldFactoryTest extends AbstractFieldFactoryTestCase<DateField
         baseItem = new JcrNodeAdapter(baseNode);
         dialogDate = new DateFieldFactory(definition, baseItem);
         dialogDate.setI18nContentSupport(i18nContentSupport);
+        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, Date.class, (JcrNodeAdapter) baseItem);
+        dialogDate.setComponentProvider(provider);
         // WHEN
         Field field = dialogDate.createField();
 

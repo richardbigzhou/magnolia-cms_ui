@@ -43,9 +43,11 @@ import info.magnolia.ui.api.overlay.NotificationCallback;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.upload.basic.BasicUploadField;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -73,6 +75,8 @@ public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<Ba
         // no need to initialize a specic temp dir for tests, it'll be target/tmp by default
         basicUploadBuilder = new BasicUploadFieldFactory(definition, baseItem, new TestImageProvider(), new TestUiContext());
         basicUploadBuilder.setI18nContentSupport(i18nContentSupport);
+        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
+        basicUploadBuilder.setComponentProvider(provider);
     }
 
     @Test
