@@ -64,6 +64,9 @@ public class SearchJcrContainer extends FlatJcrContainer {
         super(workbenchDefinition);
     }
 
+    /**
+     * Overrides its default implementation to take further constraints from {@link #getQueryWhereClauseSearch()} into account.
+     */
     @Override
     protected String getQueryWhereClause() {
         final String clauseWorkspacePath = getQueryWhereClauseWorkspacePath();
@@ -90,6 +93,10 @@ public class SearchJcrContainer extends FlatJcrContainer {
         return whereClause;
     }
 
+    /**
+     * Builds a string representing the constraints to be applied for this search. Used by the overridden {@link #getQueryWhereClause()} to augment the WHERE clause for this query.
+     * It basically adds constraints on node names, property names and full-text search on all <code>searchable</code> properties/columns declared in the workbench configuration.
+     */
     protected String getQueryWhereClauseSearch() {
         if (StringUtils.isBlank(getFullTextExpression())) {
             return "";
