@@ -354,6 +354,36 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
         assertFalse(actionExecutor.isAvailable("requiresTestRole2", ROOT_ITEM));
     }
 
+    @Test
+    public void actionIsNotAvailableForMultipleItemsByDefault() {
+        // GIVEN
+        SimpleActionExecutor actionExecutor = createSimpleActionExecutor();
+
+        // WHEN
+        ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
+        actionDefinition.setName("foobar");
+        actionExecutor.add(actionDefinition);
+
+        // THEN
+        assertFalse(actionExecutor.isAvailable("foobar", new MockNode("a", NodeTypes.Content.NAME), new MockNode("b", NodeTypes.Content.NAME)));
+    }
+
+    @Test
+    public void actionIsAvailableForMultipleItemsWhenExplicitlySet() {
+        // GIVEN
+        SimpleActionExecutor actionExecutor = createSimpleActionExecutor();
+
+        // WHEN
+        ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
+        actionDefinition.setName("foobar");
+        ConfiguredAvailabilityDefinition availability = (ConfiguredAvailabilityDefinition) actionDefinition.getAvailability();
+        availability.setMultiple(true);
+        actionExecutor.add(actionDefinition);
+
+        // THEN
+        assertTrue(actionExecutor.isAvailable("foobar", new MockNode("a", NodeTypes.Content.NAME), new MockNode("b", NodeTypes.Content.NAME)));
+    }
+
     private SimpleActionExecutor createSimpleActionExecutor() {
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         builder.withConfiguration(new ComponentProviderConfiguration());
