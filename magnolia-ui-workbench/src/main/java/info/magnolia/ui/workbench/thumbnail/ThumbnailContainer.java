@@ -237,6 +237,27 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
         this.workspaceName = workspaceName;
     }
 
+    /**
+     * @return a String containing the node types to be searched for in a query. All node types declared in a workbench definition are returned
+     * unless their <code>hideInList</code> property is true. E.g. assuming a node types declaration like the following
+     * 
+     * <pre>
+     * ...
+     * + workbench
+     *  + nodeTypes
+     *   + foo
+     *    * name = nt:foo
+     *   + bar
+     *    * name = nt:bar
+     *    * hideInList = true
+     *   + baz
+     *    * name = nt:baz
+     * ...
+     * </pre>
+     * 
+     * this method will return the following string <code>[jcr:primaryType] = 'nt:foo' or [jcr:primaryType] = 'baz'</code>. This will eventually be used to restrict the node types to be searched for
+     * in list and search views, i.e. <code>select * from [nt:base] where ([jcr:primaryType] = 'nt:foo' or [jcr:primaryType] = 'baz')</code>.
+     */
     protected String getQueryWhereClauseNodeTypes() {
         List<String> defs = new ArrayList<String>();
         for (NodeTypeDefinition type : workbenchDefinition.getNodeTypes()) {
