@@ -585,8 +585,9 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * ...
      * </pre>
      * 
-     * this method will return the following string <code>[jcr:primaryType] = 'nt:foo' or [jcr:primaryType] = 'baz'</code>. This will eventually be used to restrict the node types to be searched for
+     * this method will return the following string <code>[jcr:primaryType] = 'nt:foo' or [jcr:mixinTypes] = 'baz'</code>. This will eventually be used to restrict the node types to be searched for
      * in list and search views, i.e. <code>select * from [nt:base] where ([jcr:primaryType] = 'nt:foo' or [jcr:mixinTypes] = 'baz')</code>.
+     * @see #findSearchableNodeTypes()
      */
     protected String getQueryWhereClauseNodeTypes() {
 
