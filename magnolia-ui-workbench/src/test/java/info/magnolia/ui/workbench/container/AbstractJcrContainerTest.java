@@ -91,6 +91,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
 
         ConfiguredNodeTypeDefinition mainNodeTypeDefinition = new ConfiguredNodeTypeDefinition();
         mainNodeTypeDefinition.setName(NodeTypes.Content.NAME);
+        mainNodeTypeDefinition.setStrict(true);
         configuredWorkbench.addNodeType(mainNodeTypeDefinition);
 
         // Add view
@@ -115,6 +116,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         jcrContainer = new JcrContainerTestImpl(configuredWorkbench);
         jcrContainer.addSortableProperty(colDef1.getName());
         workbenchDefinition = configuredWorkbench;
+        workbenchDefinition.setWorkspace(workspace);
 
         // Init session
         session = MgnlContext.getSystemContext().getJCRSession(workspace);
@@ -439,6 +441,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         // GIVEN
         // we cannot use default jcrContainer from setUp here - it already has a different NodeType as main NodeType (first in nodeTypes).
         workbenchDefinition = new ConfiguredWorkbenchDefinition();
+        workbenchDefinition.setWorkspace(workspace);
         jcrContainer = new JcrContainerTestImpl(workbenchDefinition);
 
         // WHEN
@@ -451,11 +454,16 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testOrderOfNodeTypesInConfigurationDoesNotMatter() {
         // GIVEN
-        final String testNodeType = "mgnl:test";
+        // we cannot use default jcrContainer from setUp here as its ctor has been already called thus the searchable node types have already been determined . See AbstractJcrContainer.findSearchableNodeTypes()
+        final String testNodeType = "mgnl:contentNode";
         ConfiguredNodeTypeDefinition def = new ConfiguredNodeTypeDefinition();
         def.setName(testNodeType);
 
+        workbenchDefinition = new ConfiguredWorkbenchDefinition();
         workbenchDefinition.addNodeType(def);
+        workbenchDefinition.setWorkspace(workspace);
+
+        jcrContainer = new JcrContainerTestImpl(workbenchDefinition);
 
         // WHEN
         // Before 5.1 the main node type was the first one declared in the configuration.
