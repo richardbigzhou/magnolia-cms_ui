@@ -42,8 +42,6 @@ import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.api.ModelConstants;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -225,9 +223,9 @@ public class JcrNodeAdapterRepositoryTest extends RepositoryTestCase {
     @Test
     public void testSetMultiValueProperty() throws Exception {
         // GIVEN
-        String[] values = { "Art", "Dan", "Jen" };
+        String values = "Art,Dan,Jen";
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
-        DefaultProperty<String> property = DefaultPropertyUtil.newDefaultProperty(1, new HashSet<String>(Arrays.asList(values)));
+        DefaultProperty<List> property = DefaultPropertyUtil.newDefaultProperty(List.class, values);
         adapter.addItemProperty("multiple", property);
 
         // WHEN

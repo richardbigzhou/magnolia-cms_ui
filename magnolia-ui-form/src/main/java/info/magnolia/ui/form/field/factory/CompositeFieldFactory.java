@@ -42,20 +42,17 @@ import info.magnolia.ui.form.field.property.PropertyHandler;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.vaadin.data.Item;
 import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Field;
 
 /**
- * .
- * @param <D>
+ * Factory used to initialize a {@link CompositeField}.
+ * 
+ * @param <D>.
  */
 public class CompositeFieldFactory<D extends FieldDefinition> extends AbstractFieldFactory<CompositeFieldDefinition, PropertysetItem> {
 
-    private static final Logger log = LoggerFactory.getLogger(CompositeFieldFactory.class);
     private FieldFactoryFactory fieldFactoryFactory;
     private I18nContentSupport i18nContentSupport;
     private ComponentProvider componentProvider;
@@ -72,10 +69,13 @@ public class CompositeFieldFactory<D extends FieldDefinition> extends AbstractFi
         // FIXME change i18n setting : MGNLUI-1548
         definition.setI18nBasename(getMessages().getBasename());
 
-        CompositeField field = new CompositeField(definition, fieldFactoryFactory, i18nContentSupport, componentProvider);
+        CompositeField field = new CompositeField(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, item);
         return field;
     }
 
+    /**
+     * Create a new Instance of {@link PropertyHandler} dedicated to {@link info.magnolia.ui.form.field.property.multi.MultiProperty}.
+     */
     @Override
     protected PropertyHandler<?> initializePropertyHandler(Class<? extends PropertyHandler<?>> handlerClass, Class<?> type) {
         List<String> propertyNames = definition.getFieldsName();

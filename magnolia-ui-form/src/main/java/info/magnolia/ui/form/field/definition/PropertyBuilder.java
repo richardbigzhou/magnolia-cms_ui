@@ -38,7 +38,9 @@ import info.magnolia.ui.form.field.property.PropertyHandler;
 import com.vaadin.data.Property;
 
 /**
- * .
+ * Definition used to configure a the way a property is initialize and assign to a field. <br>
+ * propertyType : Define the Type of the property used by the field ({@link info.magnolia.ui.form.field.property.basic.BasicProperty}, {@link info.magnolia.ui.form.field.property.list.ListProperty},... }).<br>
+ * propertyHandler : Handler used to retrieve and put the content of the property to the related Field item.
  */
 public class PropertyBuilder {
 

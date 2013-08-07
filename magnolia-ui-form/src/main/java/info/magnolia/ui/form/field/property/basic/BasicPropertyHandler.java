@@ -50,7 +50,7 @@ import com.vaadin.data.Property;
  */
 public class BasicPropertyHandler<T> extends BaseHandler implements PropertyHandler<T> {
 
-    private Class<?> fieldType;
+    private Class<T> fieldType;
 
     @Inject
     public BasicPropertyHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider, String fieldTypeName) {
@@ -64,7 +64,6 @@ public class BasicPropertyHandler<T> extends BaseHandler implements PropertyHand
      * - if the field is i18n-aware - create a special property that would delegate the values to the proper localized properties. Otherwise - follow the default pattern.<br>
      * - else if the property already exists, return this property. If the property does not exist, create a new property based on the defined type, default value, and saveInfo.
      */
-    @SuppressWarnings("unchecked")
     @Override
     public T getValue() {
         String defaultValue = definition.getDefaultValue();
@@ -76,19 +75,18 @@ public class BasicPropertyHandler<T> extends BaseHandler implements PropertyHand
      * Update the related {@link Property} with the new value.<br>
      * The related {@link Property} is created by a previous call to getValue().
      */
-    @SuppressWarnings("unchecked")
     @Override
     public void setValue(T newValue) {
-        Property<T> p = (Property<T>) getOrCreateProperty(fieldType, "", null);
+        Property<T> p = (Property<T>) getOrCreateProperty(fieldType, "", newValue);
         p.setValue(newValue);
     }
 
-
-    private Class<?> getClassForName(String fieldTypeName) {
+    @SuppressWarnings("unchecked")
+    private Class<T> getClassForName(String fieldTypeName) {
         try {
-            return Class.forName(fieldTypeName);
+            return (Class<T>) Class.forName(fieldTypeName);
         } catch (ClassNotFoundException e) {
-            return String.class;
+            return (Class<T>) String.class;
         }
     }
 

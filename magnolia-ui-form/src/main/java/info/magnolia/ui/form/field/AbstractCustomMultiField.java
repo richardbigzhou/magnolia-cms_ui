@@ -33,26 +33,81 @@
  */
 package info.magnolia.ui.form.field;
 
+import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.factory.FieldFactory;
+import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
+import info.magnolia.ui.vaadin.integration.NullItem;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
+import com.vaadin.ui.Field;
 import com.vaadin.ui.HasComponents;
 
 /**
  * Abstract implementation of {@link CustomField} used for multi fields components.<br>
- * It expose generic methods allowing to <br>
- * - Retrieve the a list of Fields contained into the main component <br>
+ * It expose generic methods allowing to: <br>
+ * - Build a {@link Field} based on a {@link ConfiguredFieldDefinition}. <br>
+ * - Retrieve the list of Fields contained into the main component <br>
  * - Override Validate and get Error Message in order to include these call to the embedded Fields.<br>
  * 
- * @param <T>.
+ * @param <T> Property Type linked to this Field.
+ * @param <D> FieldDefinition Implementation used by the implemented Field.
  */
-public abstract class AbstractCustomMultiField<T> extends CustomField<T>{
+public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> extends CustomField<T> {
 
+    protected final FieldFactoryFactory fieldFactoryFactory;
+    protected final I18nContentSupport i18nContentSupport;
+    protected final ComponentProvider componentProvider;
+    protected final D definition;
+    protected final Item relatedFieldItem;
+
+    protected AbstractCustomMultiField(D definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider, Item relatedFieldItem) {
+        this.definition = definition;
+        this.fieldFactoryFactory = fieldFactoryFactory;
+        this.componentProvider = componentProvider;
+        this.i18nContentSupport = i18nContentSupport;
+        this.relatedFieldItem = relatedFieldItem;
+    }
+
+    /**
+     * Create a new {@link Field} based on a {@link ConfiguredFieldDefinition}.
+     */
+    protected Field<?> createLocalField(ConfiguredFieldDefinition fieldDefinition, Item item, boolean setCaptionToNull) {
+
+        FieldFactory fieldfactory = fieldFactoryFactory.createFieldFactory(fieldDefinition, new NullItem());
+        fieldfactory.setComponentProvider(componentProvider);
+        fieldfactory.setI18nContentSupport(i18nContentSupport);
+        // FIXME change i18n setting : MGNLUI-1548
+        fieldDefinition.setI18nBasename(definition.getI18nBasename());
+        Field<?> field = fieldfactory.createField();
+        if (setCaptionToNull) {
+            field.setCaption(null);
+        }
+        return field;
+    }
+
+    /**
+     * Listener used to update the Data source property.
+     */
+    protected Property.ValueChangeListener selectionListener = new ValueChangeListener() {
+        @SuppressWarnings("unchecked")
+        @Override
+        public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
+            Object values = getPropertyDataSource().getValue();
+            getPropertyDataSource().setValue(values);
+        }
+    };
 
     /**
      * Utility method that return a list of Fields embedded into a root custom field.

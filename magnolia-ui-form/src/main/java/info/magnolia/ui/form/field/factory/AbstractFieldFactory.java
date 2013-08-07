@@ -173,6 +173,12 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         };
     }
 
+    /**
+     * Initialize the property used as field's Datasource.<br>
+     * If No propertyBuilder is configure to the field definition, the default handler and property are used: <br>
+     * - {@link BasicPropertyHandler} <br>
+     * - {@link BasicProperty}.
+     */
     @SuppressWarnings("unchecked")
     private Property<?> initializeProperty() {
 
@@ -195,6 +201,9 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         return this.componentProvider.newInstance(propertyTypeClass, handler, type);
     }
 
+    /**
+     * Exposed method used by Field Factories to initialize the Property Handler with additional parameter if needed.
+     */
     protected PropertyHandler<?> initializePropertyHandler(Class<? extends PropertyHandler<?>> handlerClass, Class<?> type) {
         return this.componentProvider.newInstance(handlerClass, item, definition, componentProvider, type.getName());
     }

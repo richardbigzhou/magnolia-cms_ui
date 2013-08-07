@@ -62,14 +62,14 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 
 /**
- * Generic List Sub Nodes {@link info.magnolia.ui.form.field.property.PropertyHandler}.<br>
+ * Generic List Sub Nodes {@link info.magnolia.ui.form.field.property.PropertyHandler} implementation.<br>
  * Structure: <br>
  * - root node <br>
  * -- child1 <br>
  * --- property1<br>
  * -- child2 <br>
  * --- property2 ...<br>
- *
+ * 
  * @param <T> type of the element list.
  */
 public class SubNodesListHandler<T> extends BaseHandler implements PropertyHandler<List<T>> {

@@ -33,18 +33,25 @@
  */
 package info.magnolia.ui.form.field;
 
+import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
+import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
+import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
+import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
+
 import java.util.HashMap;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.util.converter.Converter.ConversionException;
-import com.vaadin.server.ErrorMessage;
-import com.vaadin.ui.AbstractComponent;
+import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomField;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -52,22 +59,24 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * Switchable field.<br>
- * <b> Validation </b>
- * Only the selected field is validated. <br>
+ * Display a field composed of two main sections <br>
+ * - a Select Section (list or checkBox) <br>
+ * - a Field Section displaying the field currently selected. <br>
  */
-public class SwitchableField extends CustomField<String> {
+public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDefinition, PropertysetItem> {
     private static final Logger log = LoggerFactory.getLogger(SwitchableField.class);
 
-    private final HashMap<String, Field<?>> fieldMap;
+    // - key : Field name. Should be the same as the related select value.<br>
+    // - value : Related Field. Created based on the definition coming from the Fields Definition list.
+    private HashMap<String, Field<?>> fieldMap;
     private AbstractSelect selectField;
 
     // Define layout and component
     private final VerticalLayout rootLayout = new VerticalLayout();
     private final HorizontalLayout fieldLayout = new HorizontalLayout();
 
-    public SwitchableField(HashMap<String, Field<?>> fieldMap, AbstractSelect selectField) {
-        this.fieldMap = fieldMap;
-        this.selectField = selectField;
+    public SwitchableField(SwitchableFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider, Item relatedFieldItem) {
+        super(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, relatedFieldItem);
     }
 
     @Override
@@ -75,14 +84,76 @@ public class SwitchableField extends CustomField<String> {
         // Initialize root
         rootLayout.setSizeFull();
         rootLayout.setSpacing(true);
+
+        // Initialize Existing field
+        initFields();
+
         // Add Select section
         rootLayout.addComponent(selectField);
         selectField.addValueChangeListener(createSelectValueChangeListener());
+
         // Add Field section
         rootLayout.addComponent(fieldLayout);
 
         return rootLayout;
     }
+
+    private void initFields() {
+        PropertysetItem fieldValues = (PropertysetItem) getPropertyDataSource().getValue();
+        fieldMap = new HashMap<String, Field<?>>();
+        // Create Switchable Fields
+        for (ConfiguredFieldDefinition fieldDefinition : definition.getFields()) {
+            String name = fieldDefinition.getName();
+            Field<?> field = createLocalField(fieldDefinition, relatedFieldItem, false);
+            if (fieldValues.getItemProperty(fieldDefinition.getName()) != null) {
+                field.setPropertyDataSource(fieldValues.getItemProperty(fieldDefinition.getName()));
+            } else {
+                fieldValues.addItemProperty(fieldDefinition.getName(), field.getPropertyDataSource());
+            }
+            field.addValueChangeListener(selectionListener);
+            fieldMap.put(name, field);
+        }
+        // Create Select Field
+        selectField = createSelectionField();
+        if (fieldValues.getItemProperty(definition.getName()) != null) {
+            selectField.setPropertyDataSource(fieldValues.getItemProperty(definition.getName()));
+        } else {
+            fieldValues.addItemProperty(definition.getName(), selectField.getPropertyDataSource());
+        }
+
+        // Set Selected
+        Property<?> switchFieldProperty = fieldValues.getItemProperty(definition.getName());
+        if (switchFieldProperty != null && switchFieldProperty.getValue() != null) {
+            switchField((String) switchFieldProperty.getValue());
+        }
+    }
+
+    /**
+     * Create a RadioSelect or a NormalSelect Field based on the definition.<br>
+     */
+    private AbstractSelect createSelectionField() {
+        AbstractSelect field = null;
+        try {
+            // Create the correct definition class
+            SelectFieldDefinition selectDefinition = null;
+            if (definition.getSelectionType().equals("radio")) {
+                selectDefinition = new OptionGroupFieldDefinition();
+            } else {
+                selectDefinition = new SelectFieldDefinition();
+            }
+            // Copy options to the newly created select definition. definition
+            BeanUtils.copyProperties(selectDefinition, definition);
+            selectDefinition.setPropertyBuilder(null);
+            // Create the field
+            field = (AbstractSelect) createLocalField(selectDefinition, relatedFieldItem, false);
+            field.addStyleName("horizontal");
+            field.setImmediate(true);
+        } catch (Exception e) {
+            log.warn("Coudn't create the select field. Return null", e.getMessage());
+        }
+        return field;
+    }
+
 
     /**
      * Change Listener bound to the select field. Once a selection is done, <br>
@@ -116,68 +187,9 @@ public class SwitchableField extends CustomField<String> {
         }
     }
 
-    /**
-     * Called after initComponent().<br>
-     * In addition of the datasource setting,
-     * set the default field based on the stored or configured information.
-     */
     @Override
-    public void setPropertyDataSource(Property newDataSource) {
-        selectField.setPropertyDataSource(newDataSource);
-        switchField((String) newDataSource.getValue());
+    public Class<? extends PropertysetItem> getType() {
+        return PropertysetItem.class;
     }
 
-    /**
-     * Only validate the current selected field.
-     */
-    @Override
-    public boolean isValid() {
-        Component currentComponent = getSelectedComponent();
-        if (currentComponent instanceof Field) {
-            return ((Field) currentComponent).isValid();
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Only get the error message from the current selected field.
-     */
-    @Override
-    public ErrorMessage getErrorMessage() {
-        Component currentComponent = getSelectedComponent();
-        if (currentComponent instanceof AbstractComponent) {
-            return ((AbstractComponent) currentComponent).getErrorMessage();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Mainly used for test purpose.
-     */
-    public Component getSelectedComponent() {
-        return fieldLayout.getComponentCount() > 0 ? fieldLayout.getComponent(0) : null;
-    }
-
-    @Override
-    public Class<String> getType() {
-        return String.class;
-    }
-
-    @Override
-    public String getValue() {
-        return (String) selectField.getValue();
-    }
-
-    @Override
-    public void setValue(String newValue) throws ReadOnlyException, ConversionException {
-        selectField.setValue(newValue);
-        switchField(newValue);
-    }
-
-    @Override
-    public Property getPropertyDataSource() {
-        return selectField.getPropertyDataSource();
-    }
 }

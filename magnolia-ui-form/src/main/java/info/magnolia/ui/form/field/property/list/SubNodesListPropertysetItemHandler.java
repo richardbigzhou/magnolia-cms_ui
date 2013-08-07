@@ -51,7 +51,9 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
- * Dedicated {@link PropertysetItem} implementation of {@link SubNodesListHandler}.
+ * Dedicated {@link PropertysetItem} implementation of {@link SubNodesListHandler}.<br>
+ * This implementation store/retrieve the {@link PropertysetItem} property under the child node.<br>
+ * A sub node is created for every {@link PropertysetItem} element of the List.
  * 
  * @param <T>.
  */

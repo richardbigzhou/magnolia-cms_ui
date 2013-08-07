@@ -38,10 +38,8 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.MultiField;
 import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
 import info.magnolia.ui.form.field.property.PropertyHandler;
-import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
@@ -58,7 +56,6 @@ import com.vaadin.ui.Field;
  */
 public class MultiFieldFactory<T> extends AbstractFieldFactory<MultiFieldDefinition, List<T>> {
 
-    private static final Logger log = LoggerFactory.getLogger(MultiFieldFactory.class);
     private FieldFactoryFactory fieldFactoryFactory;
     private I18nContentSupport i18nContentSupport;
     private ComponentProvider componentProvider;
@@ -75,7 +72,7 @@ public class MultiFieldFactory<T> extends AbstractFieldFactory<MultiFieldDefinit
         // FIXME change i18n setting : MGNLUI-1548
         definition.setI18nBasename(getMessages().getBasename());
 
-        MultiField<T> field = new MultiField<T>(definition, fieldFactoryFactory, i18nContentSupport, componentProvider);
+        MultiField<T> field = new MultiField<T>(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, item);
         // Set Caption
         field.setButtonCaptionAdd(getMessage(definition.getButtonSelectAddLabel()));
         field.setButtonCaptionRemove(getMessage(definition.getButtonSelectRemoveLabel()));
@@ -85,8 +82,7 @@ public class MultiFieldFactory<T> extends AbstractFieldFactory<MultiFieldDefinit
 
     /**
      * Do not link this field directly to an Item property but to the configured MultivalueHandler.<br>
-     * The MultivalueHandler has the responsibility to correctly retrieve and store the values used in the MultiField. <br>
-     * In case of no MultivalueHandler is defined into the definition, {@link MultiValuesPropertyListHandler} is used by default.
+     * The PropertyHandler has the responsibility to correctly retrieve and store the values used in the MultiField.
      */
     @Override
     protected PropertyHandler<?> initializePropertyHandler(Class<? extends PropertyHandler<?>> handlerClass, Class<?> type) {

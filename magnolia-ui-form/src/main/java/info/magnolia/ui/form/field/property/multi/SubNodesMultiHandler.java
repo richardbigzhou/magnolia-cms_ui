@@ -58,7 +58,8 @@ import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
- * Simple implementation that store/retrieve the properties contained in a {@link PropertysetItem} as a Jcr sub node containing a property set.<br>
+ * Simple implementation that store/retrieve the properties contained in a {@link PropertysetItem} as a sub Item (equivalent to a Child Node).<br>
+ * This sub Item will contain the property set.<br>
  * Storage strategy: <br>
  * - parent (Item)<br>
  * -- child (definition.getName())<br>

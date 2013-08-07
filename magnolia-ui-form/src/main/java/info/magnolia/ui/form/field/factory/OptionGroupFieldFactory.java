@@ -56,6 +56,9 @@ public class OptionGroupFieldFactory extends SelectFieldFactory<OptionGroupField
         select.setMultiSelect(getFieldDefinition().isMultiselect());
         if (select.isMultiSelect()) {
             select.setNullSelectionAllowed(true);
+            // In case of MultiSelect, type will be set by the getDefaultFieldType().
+            // In any case it should be set to a simple type (String, Long...)
+            definition.setType(null);
         }
         return select;
     }

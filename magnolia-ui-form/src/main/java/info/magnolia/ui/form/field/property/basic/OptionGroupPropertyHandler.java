@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.property.basic;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 
 import java.util.HashSet;
 import java.util.List;
@@ -49,14 +50,22 @@ import com.vaadin.data.Item;
  */
 public class OptionGroupPropertyHandler<T> extends BasicPropertyHandler<T> {
 
+    private boolean multiselect = false;
+
+
     public OptionGroupPropertyHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider, String fieldTypeName) {
         super(parent, definition, componentProvider, fieldTypeName);
+        multiselect = ((OptionGroupFieldDefinition) definition).isMultiselect();
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public T getValue() {
         T value = super.getValue();
+        if (!multiselect) {
+            return value;
+        }
+
         if (value == null) {
             return (T) new HashSet();
         } else if (value instanceof List) {

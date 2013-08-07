@@ -41,8 +41,8 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
- * {@link ObjectProperty} implementation used in order to handle MultiProperty type.<br>
- * MultiProperty are basically handled as {@PropertysetItem}.
+ * {@link ObjectProperty} implementation used to handle property used in {@link info.magnolia.ui.form.field.MultiField} or {@link info.magnolia.ui.form.field.SwitchableField}.<br>
+ * These MultiProperty are handled as {@PropertysetItem}.
  */
 public class MultiProperty extends ObjectProperty<PropertysetItem> {
 

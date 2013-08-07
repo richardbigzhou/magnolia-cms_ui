@@ -37,11 +37,9 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
-import info.magnolia.ui.vaadin.integration.NullItem;
 
-import com.vaadin.data.Property;
+import com.vaadin.data.Item;
 import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
@@ -53,19 +51,12 @@ import com.vaadin.ui.HorizontalLayout;
  * The Field is build based on a generic {@link ConfiguredFieldDefinition}.<br>
  * The Field values are handle by a configured {@link info.magnolia.ui.form.field.property.PropertyHandler} dedicated to create/retrieve properties as {@link PropertysetItem}.<br>
  */
-public class CompositeField extends AbstractCustomMultiField<PropertysetItem> {
+public class CompositeField extends AbstractCustomMultiField<CompositeFieldDefinition, PropertysetItem> {
 
     private HorizontalLayout root;
-    private final FieldFactoryFactory fieldFactoryFactory;
-    private final I18nContentSupport i18nContentSupport;
-    private final ComponentProvider componentProvider;
-    private final CompositeFieldDefinition definition;
 
-    public CompositeField(CompositeFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider) {
-        this.definition = definition;
-        this.fieldFactoryFactory = fieldFactoryFactory;
-        this.componentProvider = componentProvider;
-        this.i18nContentSupport = i18nContentSupport;
+    public CompositeField(CompositeFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider, Item relatedFieldItem) {
+        super(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, relatedFieldItem);
     }
 
     @Override
@@ -85,7 +76,7 @@ public class CompositeField extends AbstractCustomMultiField<PropertysetItem> {
         PropertysetItem fieldValues = (PropertysetItem) getPropertyDataSource().getValue();
 
         for (ConfiguredFieldDefinition fieldDefinition : definition.getFields()) {
-            Field<?> field = createLocalField(fieldDefinition);
+            Field<?> field = createLocalField(fieldDefinition, relatedFieldItem, false);
             if (fieldValues.getItemProperty(fieldDefinition.getName()) != null) {
                 field.setPropertyDataSource(fieldValues.getItemProperty(fieldDefinition.getName()));
             } else {
@@ -94,29 +85,6 @@ public class CompositeField extends AbstractCustomMultiField<PropertysetItem> {
             field.addValueChangeListener(selectionListener);
             root.addComponent(field);
         }
-    }
-
-    /**
-     * Listener used to update the Data source property.
-     */
-    private Property.ValueChangeListener selectionListener = new ValueChangeListener() {
-        @SuppressWarnings("unchecked")
-        @Override
-        public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
-            PropertysetItem fieldValues = (PropertysetItem) getPropertyDataSource().getValue();
-            getPropertyDataSource().setValue(fieldValues);
-        }
-    };
-
-    private Field<?> createLocalField(ConfiguredFieldDefinition fieldDefinition) {
-        NullItem item = new NullItem();
-        FieldFactory fieldfactory = fieldFactoryFactory.createFieldFactory(fieldDefinition, item);
-        fieldfactory.setComponentProvider(componentProvider);
-        fieldfactory.setI18nContentSupport(i18nContentSupport);
-        // FIXME change i18n setting : MGNLUI-1548
-        fieldDefinition.setI18nBasename(definition.getI18nBasename());
-        Field<?> field = fieldfactory.createField();
-        return (Field<?>) field;
     }
 
 

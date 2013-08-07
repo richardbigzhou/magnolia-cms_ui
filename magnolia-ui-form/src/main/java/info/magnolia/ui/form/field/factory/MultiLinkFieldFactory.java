@@ -83,6 +83,8 @@ public class MultiLinkFieldFactory extends AbstractFieldFactory<MultiLinkFieldDe
 
     @Override
     protected PropertyHandler<?> initializePropertyHandler(Class<? extends PropertyHandler<?>> handlerClass, Class<?> type) {
+        // TODO Check instance
+        // Better Message Handling
         return this.componentProvider.newInstance(handlerClass, item, definition, componentProvider);
     }
 }

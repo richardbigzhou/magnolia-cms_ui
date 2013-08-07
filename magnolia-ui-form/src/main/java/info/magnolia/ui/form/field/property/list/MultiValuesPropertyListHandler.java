@@ -47,9 +47,9 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 
 /**
- * Multi values properties implementation of {@link ListHandler}.<br>
+ * Multi values properties implementation of {@link PropertyHandler}.<br>
  * Store the list of values as Jcr Multi-property value.<br>
- * Retrieve the Jcr Multi value property as a list.
+ * Retrieve the Jcr Multi-property value as a list.
  * 
  * @param <T> type of the element list.
  */
@@ -60,7 +60,6 @@ public class MultiValuesPropertyListHandler<T> extends BaseHandler implements Pr
     public MultiValuesPropertyListHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
         super(parent, definition, componentProvider);
     }
-
 
     @Override
     public void setValue(List<T> newValue) {

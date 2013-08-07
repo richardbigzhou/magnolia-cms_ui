@@ -35,71 +35,57 @@ package info.magnolia.ui.form.field.property.multi;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.property.BaseHandler;
-import info.magnolia.ui.form.field.property.PropertyHandler;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
-import java.util.Iterator;
 import java.util.List;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
- * Simple implementation storing and retrieving properties defined under an Item as {@link PropertysetItem} element.<br>
- * Storage strategy: <br>
- * - getValue(): <br>
- * -- iterate the fieldsName property and retrieve all stored property.<br>
- * -- Fulfill the {@link PropertysetItem}.<br>
- * - setValue(): <br>
- * -- iterate the incoming {@link PropertysetItem}.<br>
- * -- if the related parent item do not contain this property, add it.<br>
+ * Implementation storing and retrieving SwitchableField informations as {@link PropertysetItem}.<br>
+ * Storing strategy: <br>
+ * - property (definition.getName()) : contain the last selected field name <br>
+ * - property (propertyPrefix + first field name): contain the value of the first field <br>
+ * - property (propertyPrefix + second field name): contain the value of the second field <br>
+ * ...<br>
  */
-public class SimplePropertyMultiHandler extends BaseHandler implements PropertyHandler<PropertysetItem> {
+public class SwitchableSimplePropertyMultiHandler extends SimplePropertyMultiHandler {
 
-    protected List<String> fieldsName;
-    private String propertyPrefix;
-
-    public SimplePropertyMultiHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider, List<String> fieldsName) {
-        super(parent, definition, componentProvider);
-        this.fieldsName = fieldsName;
-        this.propertyPrefix = createPropertyPrefix(definition);
+    public SwitchableSimplePropertyMultiHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider, List<String> fieldsName) {
+        super(parent, definition, componentProvider, fieldsName);
     }
 
     /**
-     * @return propertyPrefix used to prefix the property name.
+     * propertyPrefix is Name if the field 'select' + FieldName 'date' --> 'selectdate'.
      */
+    @Override
     protected String createPropertyPrefix(ConfiguredFieldDefinition definition) {
-        return definition.getName() + "_";
+        return definition.getName();
     }
 
     @Override
     public void setValue(PropertysetItem newValues) {
-        // Get iterator.
-        Iterator<?> propertyNames = newValues.getItemPropertyIds().iterator();
-
-        while (propertyNames.hasNext()) {
-            String propertyName = (String) propertyNames.next();
-            String compositePropertyName = propertyPrefix + propertyName;
-            Property<?> property = parent.getItemProperty(compositePropertyName);
-            if (property == null) {
-                parent.addItemProperty(compositePropertyName, newValues.getItemProperty(propertyName));
-            }
+        super.setValue(newValues);
+        // Add the select property value (select property name == field name)
+        if (newValues.getItemProperty(definition.getName()) != null) {
+            parent.addItemProperty(definition.getName(), newValues.getItemProperty(definition.getName()));
+        }
+        // As parent implementation will create a property called propertyPrefix+definition.getName()
+        // representing the select property name with a propertyPrefix, we have to remove this property.
+        if (parent.getItemProperty(definition.getName() + definition.getName()) != null) {
+            parent.removeItemProperty(definition.getName() + definition.getName());
         }
     }
 
     @Override
     public PropertysetItem getValue() {
-        PropertysetItem newValues = new PropertysetItem();
+        PropertysetItem newValues = super.getValue();
         if (!(parent instanceof JcrNewNodeAdapter)) {
-            for (String propertyName : fieldsName) {
-                if (parent.getItemProperty(propertyPrefix + propertyName) != null) {
-                    newValues.addItemProperty(propertyName, parent.getItemProperty(propertyPrefix + propertyName));
-                }
+            if (parent.getItemProperty(definition.getName()) != null) {
+                newValues.addItemProperty(definition.getName(), parent.getItemProperty(definition.getName()));
             }
         }
         return newValues;
     }
-
 }

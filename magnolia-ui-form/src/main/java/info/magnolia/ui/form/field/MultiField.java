@@ -37,14 +37,13 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
-import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
-import info.magnolia.ui.vaadin.integration.NullItem;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Button;
@@ -66,26 +65,18 @@ import com.vaadin.ui.VerticalLayout;
  * 
  * @param <T>
  */
-public class MultiField<T> extends AbstractCustomMultiField<List<T>> {
+public class MultiField<T> extends AbstractCustomMultiField<MultiFieldDefinition, List<T>> {
 
     private VerticalLayout root;
     private final Button addButton = new NativeButton();
-
-    private final FieldFactoryFactory fieldFactoryFactory;
-    private final I18nContentSupport i18nContentSupport;
-    private final ComponentProvider componentProvider;
-    private final MultiFieldDefinition definition;
 
     private final ConfiguredFieldDefinition fieldDefinition;
     private String buttonCaptionAdd;
     private String buttonCaptionRemove;
 
-    public MultiField(MultiFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider) {
-        this.definition = definition;
+    public MultiField(MultiFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider, Item relatedFieldItem) {
+        super(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, relatedFieldItem);
         this.fieldDefinition = definition.getField();
-        this.fieldFactoryFactory = fieldFactoryFactory;
-        this.componentProvider = componentProvider;
-        this.i18nContentSupport = i18nContentSupport;
     }
 
     @Override
@@ -116,7 +107,7 @@ public class MultiField<T> extends AbstractCustomMultiField<List<T>> {
     @SuppressWarnings("unchecked")
     private Component createEntryComponent(T entry) {
         HorizontalLayout layout = new HorizontalLayout();
-        Field<T> field = createLocalField();
+        Field<T> field = (Field<T>) createLocalField(fieldDefinition, relatedFieldItem, true);
         layout.addComponent(field);
         if (entry != null) {
             field.getPropertyDataSource().setValue(entry);
@@ -163,7 +154,7 @@ public class MultiField<T> extends AbstractCustomMultiField<List<T>> {
     /**
      * Listener used to update the Data source property.
      */
-    private Property.ValueChangeListener selectionListener = new ValueChangeListener() {
+    protected Property.ValueChangeListener selectionListener = new ValueChangeListener() {
         @SuppressWarnings("unchecked")
         @Override
         public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
@@ -197,25 +188,6 @@ public class MultiField<T> extends AbstractCustomMultiField<List<T>> {
             newValue.add((T) (field.getConvertedValue()));
         }
         return newValue;
-    }
-
-    /**
-     * Create a Configured Field that has to be added to the multiField.<br>
-     * As we do not want that the Configured field is bound to an existing Item but <br>
-     * rather to the custom property initialize by the factory, this Configured field is bound to <br>
-     * a <b>{@link NullItem}</b><br>
-     * .
-     */
-    private Field<T> createLocalField() {
-        NullItem item = new NullItem();
-        FieldFactory fieldfactory = fieldFactoryFactory.createFieldFactory(fieldDefinition, item);
-        fieldfactory.setComponentProvider(componentProvider);
-        fieldfactory.setI18nContentSupport(i18nContentSupport);
-        // FIXME change i18n setting : MGNLUI-1548
-        fieldDefinition.setI18nBasename(definition.getI18nBasename());
-        Field<?> field = fieldfactory.createField();
-        field.setCaption(null);
-        return (Field<T>) field;
     }
 
     @Override
