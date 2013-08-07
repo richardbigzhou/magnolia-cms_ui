@@ -732,6 +732,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     protected Set<NodeType> findSearchableNodeTypes() {
         final List<String> hiddenInList = new ArrayList<String>();
         final List<NodeTypeDefinition> nodeTypeDefinition = workbenchDefinition.getNodeTypes();
+        log.debug("Defined node types are {}", nodeTypeDefinition);
 
         for (NodeTypeDefinition def : nodeTypeDefinition) {
             if (def.isHideInList()) {

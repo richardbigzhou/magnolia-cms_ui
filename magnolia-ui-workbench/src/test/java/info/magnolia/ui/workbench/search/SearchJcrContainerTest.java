@@ -69,6 +69,8 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         configuredWorkbench.setPath("/");
         ConfiguredNodeTypeDefinition nt = new ConfiguredNodeTypeDefinition();
         nt.setName("mgnl:content");
+        nt.setStrict(true);
+
         configuredWorkbench.addNodeType(nt);
 
         // Add view
