@@ -60,6 +60,7 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final List<JcrItemAdapter> items;
+    private Map<JcrItemAdapter, Exception> failedItems;
     private final UiContext uiContext;
 
     protected AbstractMultiItemAction(D definition, List<JcrItemAdapter> items, UiContext uiContext) {
@@ -76,14 +77,12 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
 
     @Override
     public void execute() throws ActionExecutionException {
-        boolean success = true;
-        Map<JcrItemAdapter, Exception> failedItems = new LinkedHashMap<JcrItemAdapter, Exception>();
+        failedItems = new LinkedHashMap<JcrItemAdapter, Exception>();
 
         for (JcrItemAdapter item : getItems()) {
             try {
                 executeOnItem(item);
             } catch (Exception ex) {
-                success = false;
                 failedItems.put(item, ex);
             }
         }
@@ -91,11 +90,11 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
         if (failedItems.isEmpty()) {
             uiContext.openNotification(MessageStyleTypeEnum.INFO, true, getSuccessMessage());
         } else {
-            uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, getErrorNotification(failedItems));
+            uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, getErrorNotification());
         }
     }
 
-    protected String getErrorNotification(Map<JcrItemAdapter, Exception> failedItems) {
+    protected String getErrorNotification() {
         StringBuilder notification = new StringBuilder(getFailureMessage());
         notification.append("<ul>");
         for (JcrItemAdapter item : failedItems.keySet()) {
@@ -114,6 +113,10 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
 
     protected UiContext getUiContext() {
         return this.uiContext;
+    }
+
+    protected Map<JcrItemAdapter, Exception> getFailedItems() {
+        return this.failedItems;
     }
 
     private String getPath(JcrItemAdapter item) {
