@@ -770,7 +770,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         assertEquals(3, iterator.getSize());
         while (iterator.hasNext()) {
             final Node node = iterator.nextRow().getNode(AbstractJcrContainer.SELECTOR_NAME);
-            if (mixin1.equals(node) || mixin2.equals(node)) {
+            if ("mixin1".equals(node.getName()) || "mixin2".equals(node.getName())) {
                 assertTrue(node.isNodeType(mixinNodeTypeName));
             }
         }
