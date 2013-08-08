@@ -243,6 +243,10 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         return this.workbenchDefinition.getContentViews().get(0).getViewType();
     }
 
+    public boolean hasViewType(String viewType) {
+        return contentPresenters.containsKey(viewType);
+    }
+
     public void resynch(final List<String> itemIds, final String viewType, final String query) {
         setViewType(viewType);
         select(itemIds);

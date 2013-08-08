@@ -212,13 +212,4 @@ public class BrowserLocationTest {
         // TEST
         assertNull(browserLocation.getViewType());
     }
-
-    @Test
-    public void testGetNullViewTypeWhenUnknown() {
-        // GIVEN
-        BrowserLocation browserLocation = new BrowserLocation("someApp", "someContentApp", "/some/other/node/00:someUnknownViewType");
-
-        // TEST
-        assertNull(browserLocation.getViewType());
-    }
 }

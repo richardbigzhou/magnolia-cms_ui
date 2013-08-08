@@ -218,6 +218,10 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         return workbenchPresenter.getDefaultViewType();
     }
 
+    public boolean hasViewType(String viewType) {
+        return workbenchPresenter.hasViewType(viewType);
+    }
+
     public BrowserView getView() {
         return view;
     }
