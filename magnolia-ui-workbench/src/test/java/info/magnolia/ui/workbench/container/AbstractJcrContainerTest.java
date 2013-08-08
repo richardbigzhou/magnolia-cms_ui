@@ -608,7 +608,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetSearchableNodeTypesIncludesMixins() throws Exception {
+    public void testGetSearchableNodeTypesIncludeMixins() throws Exception {
         // GIVEN
         ConfiguredNodeTypeDefinition mixinDef = new ConfiguredNodeTypeDefinition();
         mixinDef.setName("mgnl:mixin");
@@ -644,7 +644,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetSearchableNodeTypesExcludesHiddenInListNodes() throws Exception {
+    public void testGetSearchableNodeTypesExcludeHiddenInListNodes() throws Exception {
         // GIVEN
         ConfiguredNodeTypeDefinition mixinDef = new ConfiguredNodeTypeDefinition();
         mixinDef.setName("mgnl:mixin");
@@ -681,7 +681,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetSearchableNodeTypesExcludesSubTypesWhenSupertypeIsDefinedAsStrict() throws Exception {
+    public void testGetSearchableNodeTypesExcludeSubTypesWhenSupertypeIsDefinedAsStrict() throws Exception {
         // GIVEN
         final NodeTypeManager nodeTypeManager = session.getWorkspace().getNodeTypeManager();
         // mgnl:content is defined strict by default
@@ -700,7 +700,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetSearchableNodeTypesIncludesSubTypesWhenSupertypeIsNotDefinedAsStrict() throws Exception {
+    public void testGetSearchableNodeTypesIncludeSubTypesWhenSupertypeIsNotDefinedAsStrict() throws Exception {
         // GIVEN
         ConfiguredNodeTypeDefinition def = new ConfiguredNodeTypeDefinition();
         def.setName(NodeTypes.Content.NAME);
