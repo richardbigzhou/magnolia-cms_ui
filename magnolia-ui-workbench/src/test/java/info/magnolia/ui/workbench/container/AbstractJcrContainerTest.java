@@ -686,15 +686,15 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         final NodeTypeManager nodeTypeManager = session.getWorkspace().getNodeTypeManager();
         // mgnl:content is defined strict by default
         final NodeType nodeType = nodeTypeManager.getNodeType(NodeTypes.Content.NAME);
-        final NodeTypeIterator iterator = nodeType.getSubtypes();
+        final NodeTypeIterator subtypes = nodeType.getSubtypes();
 
         // WHEN
         final Set<NodeType> searchableNodeTypes = jcrContainer.getSearchableNodeTypes();
 
         // THEN
         assertTrue(searchableNodeTypes.contains(nodeType));
-        while (iterator.hasNext()) {
-            NodeType nt = iterator.nextNodeType();
+        while (subtypes.hasNext()) {
+            NodeType nt = subtypes.nextNodeType();
             assertFalse(searchableNodeTypes.contains(nt));
         }
     }
@@ -713,15 +713,15 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
 
         final NodeTypeManager nodeTypeManager = session.getWorkspace().getNodeTypeManager();
         final NodeType nodeType = nodeTypeManager.getNodeType(NodeTypes.Content.NAME);
-        final NodeTypeIterator iterator = nodeType.getSubtypes();
+        final NodeTypeIterator subtypes = nodeType.getSubtypes();
 
         // WHEN
         final Set<NodeType> searchableNodeTypes = jcrContainer.getSearchableNodeTypes();
 
         // THEN
         assertTrue(searchableNodeTypes.contains(nodeType));
-        while (iterator.hasNext()) {
-            assertTrue(searchableNodeTypes.contains(iterator.nextNodeType()));
+        while (subtypes.hasNext()) {
+            assertTrue(searchableNodeTypes.contains(subtypes.nextNodeType()));
         }
     }
 
