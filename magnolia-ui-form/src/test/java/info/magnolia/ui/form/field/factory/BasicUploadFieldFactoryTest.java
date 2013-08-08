@@ -34,14 +34,9 @@
 package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.api.overlay.AlertCallback;
-import info.magnolia.ui.api.overlay.ConfirmationCallback;
-import info.magnolia.ui.api.overlay.MessageStyleType;
-import info.magnolia.ui.api.overlay.NotificationCallback;
-import info.magnolia.ui.api.overlay.OverlayCloser;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.upload.basic.BasicUploadField;
 import info.magnolia.ui.imageprovider.ImageProvider;
@@ -71,7 +66,10 @@ public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<Ba
     public void setUp() throws Exception {
         super.setUp();
         // no need to initialize a specic temp dir for tests, it'll be target/tmp by default
-        basicUploadBuilder = new BasicUploadFieldFactory(definition, baseItem, new TestImageProvider(), new TestUiContext());
+        UiContext mockUiContext = mock(UiContext.class);
+        ImageProvider mockImageProvider = mock(ImageProvider.class);
+
+        basicUploadBuilder = new BasicUploadFieldFactory(definition, baseItem, mockImageProvider, mockUiContext);
         basicUploadBuilder.setI18nContentSupport(i18nContentSupport);
     }
 
@@ -135,82 +133,4 @@ public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<Ba
         this.definition = fieldDefinition;
     }
 
-    private class TestImageProvider implements ImageProvider {
-
-        @Override
-        public String getPortraitPath(String workspace, String path) {
-            return null;
-        }
-
-        @Override
-        public String getThumbnailPath(String workspace, String path) {
-            return null;
-        }
-
-        @Override
-        public String getPortraitPathByIdentifier(String workspace, String uuid) {
-            return null;
-        }
-
-        @Override
-        public String getThumbnailPathByIdentifier(String workspace, String uuid) {
-            return null;
-        }
-
-        @Override
-        public String resolveIconClassName(String mimeType) {
-            return "none";
-        }
-
-        @Override
-        public Object getThumbnailResourceByPath(String workspace, String path, String generator) {
-            return null;
-        }
-
-        @Override
-        public Object getThumbnailResourceById(String workspace, String identifier, String generator) {
-            return null;
-        }
-    }
-
-    private class TestUiContext implements UiContext {
-
-        @Override
-        public OverlayCloser openOverlay(View view) {
-            return null;
-        }
-
-        @Override
-        public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
-            return null;
-        }
-
-        @Override
-        public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb) {
-        }
-
-        @Override
-        public void openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
-        }
-
-        @Override
-        public void openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
-        }
-
-        @Override
-        public void openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
-        }
-
-        @Override
-        public void openNotification(MessageStyleType type, boolean doesTimeout, View viewToShow) {
-        }
-
-        @Override
-        public void openNotification(MessageStyleType type, boolean doesTimeout, String title) {
-        }
-
-        @Override
-        public void openNotification(MessageStyleType type, boolean doesTimeout, String title, String linkText, NotificationCallback cb) {
-        }
-    }
 }
