@@ -49,10 +49,18 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 import java.util.Arrays;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.NodeTypeIterator;
+import javax.jcr.nodetype.NodeTypeManager;
+import javax.jcr.nodetype.NodeTypeTemplate;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
+import javax.jcr.query.RowIterator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -347,7 +355,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testContainsIdWithNull() {
+    public void testContainsIdWithNull() throws Exception {
         // WHEN
         final boolean result = jcrContainer.containsId(null);
 
@@ -356,7 +364,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testContainsIdWhenNotAround() {
+    public void testContainsIdWhenNotAround() throws Exception {
         // WHEN
         final boolean result = jcrContainer.containsId("/notAround");
 
@@ -379,7 +387,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testConstructJCRQueryWithoutSort() {
+    public void testConstructJCRQueryWithoutSort() throws Exception {
         // WHEN
         final String result = jcrContainer.constructJCRQuery(false);
 
@@ -388,7 +396,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testConstructJCRQueryWithoutSortWithPathClause() {
+    public void testConstructJCRQueryWithoutSortWithPathClause() throws Exception {
         // GIVEN
         workbenchDefinition.setPath(TEST_PATH);
 
@@ -402,7 +410,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testConstructJCRQueryWithDefaultSort() {
+    public void testConstructJCRQueryWithDefaultSort() throws Exception {
         // GIVEN
 
         // WHEN
@@ -413,7 +421,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testConstructJCRQuerySortBySortableColumn() {
+    public void testConstructJCRQuerySortBySortableColumn() throws Exception {
         // GIVEN
         jcrContainer.sort(new String[]{ModelConstants.JCR_NAME}, new boolean[]{true});
 
@@ -437,7 +445,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetMainNodeTypeWhenNoNodeTypeIsDefined() {
+    public void testGetMainNodeTypeWhenNoNodeTypeIsDefined() throws Exception {
         // GIVEN
         // we cannot use default jcrContainer from setUp here - it already has a different NodeType as main NodeType (first in nodeTypes).
         workbenchDefinition = new ConfiguredWorkbenchDefinition();
@@ -452,7 +460,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testOrderOfNodeTypesInConfigurationDoesNotMatter() {
+    public void testOrderOfNodeTypesInConfigurationDoesNotMatter() throws Exception {
         // GIVEN
         // we cannot use default jcrContainer from setUp here as its ctor has been already called thus the searchable node types have already been determined . See AbstractJcrContainer.findSearchableNodeTypes()
         final String testNodeType = "mgnl:contentNode";
@@ -476,7 +484,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetQueryWhereClauseWorkspacePathWithPath() {
+    public void testGetQueryWhereClauseWorkspacePathWithPath() throws Exception {
         // GIVEN
         workbenchDefinition.setPath(TEST_PATH);
 
@@ -488,7 +496,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetQueryWhereClauseWorkspacePathWithRoot() {
+    public void testGetQueryWhereClauseWorkspacePathWithRoot() throws Exception {
         // GIVEN
         final String testPath = "/";
         workbenchDefinition.setPath(testPath);
@@ -501,7 +509,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetQueryWhereClauseWorkspacePathWithNull() {
+    public void testGetQueryWhereClauseWorkspacePathWithNull() throws Exception {
         // GIVEN
         workbenchDefinition.setPath(null);
 
@@ -513,7 +521,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetQueryWhereClauseWorkspacePathWithEmptyString() {
+    public void testGetQueryWhereClauseWorkspacePathWithEmptyString() throws Exception {
         // GIVEN
         final String testPath = "";
         workbenchDefinition.setPath(testPath);
@@ -539,7 +547,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetQueryWhereClauseReturnsEmptyStringWhenWorkspacePathIsRoot() {
+    public void testGetQueryWhereClauseReturnsEmptyStringWhenWorkspacePathIsRoot() throws Exception {
         // GIVEN
         final String testPath = "/";
         workbenchDefinition.setPath(testPath);
@@ -552,7 +560,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testConstructJCRQueryReturnDefaultSelectStatement() {
+    public void testConstructJCRQueryReturnDefaultSelectStatement() throws Exception {
         // GIVEN
         final String expected = getExpectedSelectStatementWithNodeTypesRestrictions();
 
@@ -599,6 +607,175 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         assertEquals(getExpectedSelectStatementWithNodeTypesRestrictions(), query);
     }
 
+    @Test
+    public void testGetSearchableNodeTypesIncludesMixins() throws Exception {
+        // GIVEN
+        ConfiguredNodeTypeDefinition mixinDef = new ConfiguredNodeTypeDefinition();
+        mixinDef.setName("mgnl:mixin");
+
+        ConfiguredNodeTypeDefinition primaryNtDef = new ConfiguredNodeTypeDefinition();
+        primaryNtDef.setName("mgnl:primaryNt");
+
+        workbenchDefinition = new ConfiguredWorkbenchDefinition();
+        workbenchDefinition.addNodeType(mixinDef);
+        workbenchDefinition.addNodeType(primaryNtDef);
+
+        workbenchDefinition.setWorkspace(workspace);
+
+        final NodeTypeManager nodeTypeManager = session.getWorkspace().getNodeTypeManager();
+        NodeTypeTemplate mixinTemplate = nodeTypeManager.createNodeTypeTemplate();
+        mixinTemplate.setName(mixinDef.getName());
+        mixinTemplate.setMixin(true);
+        NodeType mixinNodeType = nodeTypeManager.registerNodeType(mixinTemplate, true);
+
+        NodeTypeTemplate primaryTemplate = nodeTypeManager.createNodeTypeTemplate();
+        primaryTemplate.setName(primaryNtDef.getName());
+        NodeType primaryNodeType = nodeTypeManager.registerNodeType(primaryTemplate, true);
+
+        jcrContainer = new JcrContainerTestImpl(workbenchDefinition);
+
+        // WHEN
+        final Set<NodeType> searchableNodeTypes = jcrContainer.getSearchableNodeTypes();
+
+        // THEN
+        assertTrue(searchableNodeTypes.contains(mixinNodeType));
+        assertTrue(searchableNodeTypes.contains(primaryNodeType));
+
+    }
+
+    @Test
+    public void testGetSearchableNodeTypesExcludesHiddenInListNodes() throws Exception {
+        // GIVEN
+        ConfiguredNodeTypeDefinition mixinDef = new ConfiguredNodeTypeDefinition();
+        mixinDef.setName("mgnl:mixin");
+
+        ConfiguredNodeTypeDefinition primaryNtDef = new ConfiguredNodeTypeDefinition();
+        primaryNtDef.setName("mgnl:primaryNt");
+        primaryNtDef.setHideInList(true);
+
+        workbenchDefinition = new ConfiguredWorkbenchDefinition();
+        workbenchDefinition.addNodeType(mixinDef);
+        workbenchDefinition.addNodeType(primaryNtDef);
+
+        workbenchDefinition.setWorkspace(workspace);
+
+        final NodeTypeManager nodeTypeManager = session.getWorkspace().getNodeTypeManager();
+        NodeTypeTemplate mixinTemplate = nodeTypeManager.createNodeTypeTemplate();
+        mixinTemplate.setName(mixinDef.getName());
+        mixinTemplate.setMixin(true);
+        NodeType mixinNodeType = nodeTypeManager.registerNodeType(mixinTemplate, true);
+
+        NodeTypeTemplate primaryTemplate = nodeTypeManager.createNodeTypeTemplate();
+        primaryTemplate.setName(primaryNtDef.getName());
+        NodeType primaryNodeType = nodeTypeManager.registerNodeType(primaryTemplate, true);
+
+        jcrContainer = new JcrContainerTestImpl(workbenchDefinition);
+
+        // WHEN
+        final Set<NodeType> searchableNodeTypes = jcrContainer.getSearchableNodeTypes();
+
+        // THEN
+        assertTrue(searchableNodeTypes.contains(mixinNodeType));
+        assertFalse(searchableNodeTypes.contains(primaryNodeType));
+
+    }
+
+    @Test
+    public void testGetSearchableNodeTypesExcludesSubTypesWhenSupertypeIsDefinedAsStrict() throws Exception {
+        // GIVEN
+        final NodeTypeManager nodeTypeManager = session.getWorkspace().getNodeTypeManager();
+        // mgnl:content is defined strict by default
+        final NodeType nodeType = nodeTypeManager.getNodeType(NodeTypes.Content.NAME);
+        final NodeTypeIterator iterator = nodeType.getSubtypes();
+
+        // WHEN
+        final Set<NodeType> searchableNodeTypes = jcrContainer.getSearchableNodeTypes();
+
+        // THEN
+        assertTrue(searchableNodeTypes.contains(nodeType));
+        while (iterator.hasNext()) {
+            NodeType nt = iterator.nextNodeType();
+            assertFalse(searchableNodeTypes.contains(nt));
+        }
+    }
+
+    @Test
+    public void testGetSearchableNodeTypesIncludesSubTypesWhenSupertypeIsNotDefinedAsStrict() throws Exception {
+        // GIVEN
+        ConfiguredNodeTypeDefinition def = new ConfiguredNodeTypeDefinition();
+        def.setName(NodeTypes.Content.NAME);
+
+        workbenchDefinition = new ConfiguredWorkbenchDefinition();
+        workbenchDefinition.addNodeType(def);
+        workbenchDefinition.setWorkspace(workspace);
+
+        jcrContainer = new JcrContainerTestImpl(workbenchDefinition);
+
+        final NodeTypeManager nodeTypeManager = session.getWorkspace().getNodeTypeManager();
+        final NodeType nodeType = nodeTypeManager.getNodeType(NodeTypes.Content.NAME);
+        final NodeTypeIterator iterator = nodeType.getSubtypes();
+
+        // WHEN
+        final Set<NodeType> searchableNodeTypes = jcrContainer.getSearchableNodeTypes();
+
+        // THEN
+        assertTrue(searchableNodeTypes.contains(nodeType));
+        while (iterator.hasNext()) {
+            assertTrue(searchableNodeTypes.contains(iterator.nextNodeType()));
+        }
+    }
+
+    @Test
+    public void testExecuteQueryWithMixins() throws Exception {
+        // GIVEN
+        final String mixinNodeTypeName = "mgnl:mixin";
+        ConfiguredNodeTypeDefinition mixinDef = new ConfiguredNodeTypeDefinition();
+        mixinDef.setName(mixinNodeTypeName);
+
+        ConfiguredNodeTypeDefinition primaryNtDef = new ConfiguredNodeTypeDefinition();
+        primaryNtDef.setName("mgnl:primaryNt");
+
+        workbenchDefinition = new ConfiguredWorkbenchDefinition();
+        workbenchDefinition.addNodeType(mixinDef);
+        workbenchDefinition.addNodeType(primaryNtDef);
+
+        workbenchDefinition.setWorkspace(workspace);
+
+        final NodeTypeManager nodeTypeManager = session.getWorkspace().getNodeTypeManager();
+        NodeTypeTemplate mixinTemplate = nodeTypeManager.createNodeTypeTemplate();
+        mixinTemplate.setName(mixinDef.getName());
+        mixinTemplate.setMixin(true);
+        nodeTypeManager.registerNodeType(mixinTemplate, true);
+
+        NodeTypeTemplate primaryTemplate = nodeTypeManager.createNodeTypeTemplate();
+        primaryTemplate.setName(primaryNtDef.getName());
+        nodeTypeManager.registerNodeType(primaryTemplate, true);
+
+        jcrContainer = new JcrContainerTestImpl(workbenchDefinition);
+
+        Node mixin1 = createNode(rootNode, "mixin1", NodeTypes.Content.NAME, null, null);
+        mixin1.addMixin(mixinNodeTypeName);
+        Node mixin2 = createNode(rootNode, "mixin2", NodeTypes.Content.NAME, null, null);
+        mixin2.addMixin(mixinNodeTypeName);
+        createNode(rootNode, "primary1", "mgnl:primaryNt", null, null);
+        mixin1.getSession().save();
+
+        // WHEN
+        final String query = jcrContainer.constructJCRQuery(false);
+
+        final QueryResult qr = jcrContainer.executeQuery(query, Query.JCR_SQL2, 0, 0);
+        final RowIterator iterator = qr.getRows();
+
+        // THEN
+        assertEquals(3, iterator.getSize());
+        while (iterator.hasNext()) {
+            final Node node = iterator.nextRow().getNode(AbstractJcrContainer.SELECTOR_NAME);
+            if (mixin1.equals(node) || mixin2.equals(node)) {
+                assertTrue(node.isNodeType(mixinNodeTypeName));
+            }
+        }
+    }
+
     /**
      * Define the sorting criteria.
      */
@@ -618,7 +795,9 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
 
     public static Node createNode(Node rootNode, String nodename, String nodeType, String nodePropertyName, String nodePropertyValue) throws RepositoryException {
         Node node = rootNode.addNode(nodename, nodeType);
-        node.setProperty(nodePropertyName, nodePropertyValue);
+        if (nodePropertyName != null) {
+            node.setProperty(nodePropertyName, nodePropertyValue);
+        }
         return node;
     }
 
@@ -639,4 +818,5 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         public void removeItemSetChangeListener(ItemSetChangeListener listener) {
         }
     }
+
 }
