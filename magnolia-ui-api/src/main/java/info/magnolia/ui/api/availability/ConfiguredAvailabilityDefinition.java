@@ -47,6 +47,7 @@ public class ConfiguredAvailabilityDefinition implements AvailabilityDefinition 
     private boolean root = false;
     private boolean properties = false;
     private boolean nodes = true;
+    private boolean multiple = false;
     private Collection<String> nodeTypes = new ArrayList<String>();
     private AccessDefinition access = new ConfiguredAccessDefinition();
     private Class<? extends AvailabilityRule> ruleClass;
@@ -76,6 +77,15 @@ public class ConfiguredAvailabilityDefinition implements AvailabilityDefinition 
 
     public void setNodes(boolean nodes) {
         this.nodes = nodes;
+    }
+
+    @Override
+    public boolean isMultiple() {
+        return this.multiple;
+    }
+
+    public void setMultiple(boolean multiple) {
+        this.multiple = multiple;
     }
 
     @Override

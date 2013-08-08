@@ -342,10 +342,22 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
     private void executeAction(String actionName) {
         try {
-            // TODO MGNLUI-1515 support actions on more items
-            // now, use just the first item
-            javax.jcr.Item item = JcrItemUtil.getJcrItem(getWorkspace(), getSelectedItemIds().get(0));
-            actionExecutor.execute(actionName, item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((Property) item));
+            if (getSelectedItemIds().size() == 1) {
+                // This is done this way, because most actions do not support multiple items, and expect just one Item
+                // in the constructor. So if we passed List<Item> containing this one Item to the ActionExecutor, it'd
+                // fail, because the ComponentProvider wouldn't find suitable constructor for the Action.
+                // Changing this would require to rewrite all the actions to accept the List<Item> in the constructor...
+                javax.jcr.Item item = JcrItemUtil.getJcrItem(getWorkspace(), getSelectedItemIds().get(0));
+                actionExecutor.execute(actionName, item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((Property) item));
+            } else {
+                List<Item> items = new ArrayList<Item>(getSelectedItemIds().size());
+                for (String itemId : getSelectedItemIds()) {
+                    javax.jcr.Item item = JcrItemUtil.getJcrItem(getWorkspace(), itemId);
+                    JcrItemAdapter adapter = item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((Property) item);
+                    items.add(adapter);
+                }
+                actionExecutor.execute(actionName, items);
+            }
         } catch (PathNotFoundException p) {
             Message error = new Message(MessageType.ERROR, "Could not get item ", "Following Item not found :" + getSelectedItemIds().get(0));
             appContext.sendLocalMessage(error);
@@ -359,8 +371,6 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
             appContext.sendLocalMessage(error);
         }
     }
-
-
 
     // /**
     // * TODO: Eliminate redundancy with BrowserSubApp.updateActionBar (MGNLUI-1367) Christopher Zimmermann.
