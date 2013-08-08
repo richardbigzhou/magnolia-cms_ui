@@ -45,8 +45,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.jcr.RepositoryException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,7 +98,7 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
         for (JcrItemAdapter item : failedItems.keySet()) {
             Exception ex = failedItems.get(item);
             notification.append("<li>").append("<b>");
-            notification.append(getPath(item)).append("</b>: ").append(ex.getMessage());
+            notification.append(JcrItemUtil.getItemPath(item.getJcrItem())).append("</b>: ").append(ex.getMessage());
             notification.append("</li>");
         }
         notification.append("</ul>");
@@ -119,20 +117,4 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
         return this.failedItems;
     }
 
-    private String getPath(JcrItemAdapter item) {
-        String path = "unknown";
-        try {
-            if (item.isNode()) {
-                path = item.getJcrItem().getPath();
-            } else {
-                String parentPath = item.getJcrItem().getParent().getPath();
-                String name = item.getJcrItem().getName();
-                path = parentPath + JcrItemUtil.PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR + name;
-            }
-        } catch (RepositoryException re) {
-            log.error("Cannot get path for item: " + item.getItemId());
-            path = item.getItemId();
-        }
-        return path;
-    }
 }
