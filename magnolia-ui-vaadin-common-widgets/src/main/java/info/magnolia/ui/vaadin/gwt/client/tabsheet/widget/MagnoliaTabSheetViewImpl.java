@@ -36,6 +36,7 @@ package info.magnolia.ui.vaadin.gwt.client.tabsheet.widget;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.FadeAnimation;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.JQueryAnimation;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.widget.AppPreloader;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabSetChangedEvent;
@@ -48,6 +49,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -127,6 +129,29 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         // Hide all tabs
         showAllTabContents(false);
         tab.getElement().getStyle().setDisplay(Display.BLOCK);
+        animateHeightChange(tab);
+    }
+
+    private static final int HEIGHT_CHANGE_ANIMATION_DURATION = 200;
+
+    private void animateHeightChange(MagnoliaTabWidget newActiveTab) {
+        final Style tabPanelStyle = tabPanel.getElement().getStyle();
+        int offsetTabHeight = tabPanel.getOffsetHeight();
+        tabPanelStyle.clearHeight();
+        int newHeight = newActiveTab.getOffsetHeight();
+        final String heightPropertyCC = offsetTabHeight < newHeight ? "maxHeight" : "minHeight";
+        final String heightProperty = offsetTabHeight < newHeight ? "max-height" : "min-height";
+
+        final JQueryAnimation animation = new JQueryAnimation();
+        tabPanelStyle.setProperty(heightPropertyCC, offsetTabHeight + "px");
+        animation.setProperty(heightProperty, newHeight);
+        animation.addCallback(new JQueryCallback() {
+            @Override
+            public void execute(JQueryWrapper query) {
+              tabPanelStyle.clearProperty(heightPropertyCC);
+            }
+        });
+        animation.run(HEIGHT_CHANGE_ANIMATION_DURATION, tabPanel.getElement());
     }
 
 
@@ -224,6 +249,9 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         final Iterator<Widget> it = tabPanel.iterator();
         while (it.hasNext()) {
             final Widget w = it.next();
+            if (w == getActiveTab()) {
+                tabPanel.setHeight(w.getOffsetHeight() + "px");
+            }
             if (w != preloader) {
                 w.getElement().getStyle().setDisplay(Display.NONE);
             }
