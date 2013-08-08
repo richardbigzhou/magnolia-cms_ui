@@ -99,17 +99,13 @@ public class DialogContainingFormConnector extends BaseDialogConnector {
     private void updateSize() {
         Widget content = getContent().getWidget();
         if (content instanceof FormViewImpl) {
-            FormViewImpl formview = (FormViewImpl) content;
+            FormViewImpl formView = (FormViewImpl) content;
             Element element = view.asWidget().getElement();
             NodeList<Node> childNodes = element.getChildNodes();
-            int footerHeight = 0;
-            int headerHeight = 0;
-            int marginHeight = 0;
+            int footerHeight = 0, headerHeight = 0, marginHeight = 0;
             List<String> marginElements = Arrays.asList("dialog-description", "dialog-error", "dialog-content", "dialog-footer");
-
             for (int i = 0; i < childNodes.getLength(); i++) {
                 Node item = childNodes.getItem(i);
-
                 if (item.getNodeType() == Node.ELEMENT_NODE) {
                     Element child = (Element) item;
                     if (child.getClassName().equalsIgnoreCase("dialog-footer")) {
@@ -122,8 +118,7 @@ public class DialogContainingFormConnector extends BaseDialogConnector {
                     }
                 }
             }
-
-            formview.setMaxHeight(view.asWidget().getElement().getOffsetHeight() - footerHeight - headerHeight - marginHeight);
+            formView.setMaxHeight(view.asWidget().getElement().getOffsetHeight() - footerHeight - headerHeight - marginHeight);
         }
     }
 }
