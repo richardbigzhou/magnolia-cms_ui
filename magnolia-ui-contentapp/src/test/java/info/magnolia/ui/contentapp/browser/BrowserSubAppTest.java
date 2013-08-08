@@ -165,14 +165,15 @@ public class BrowserSubAppTest extends MgnlTestCase {
         MgnlContext.setInstance(ctx);
         initActionbarGroupsAndSections();
         initSubAppComponents();
+
+        sectionToShow.setAvailability(sAvailabilityAlways);
+        initBrowser();
+        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
     }
 
     @Test
     public void testLocationChangedWithUnknownViewType() {
         // GIVEN
-        sectionToShow.setAvailability(sAvailabilityAlways);
-        initActionbar();
-        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
 
         // 1. fake basic viewType configuration for the mock browserPresenter (only knows about defaultView)
         final String defaultViewType = "defaultView";
@@ -215,10 +216,6 @@ public class BrowserSubAppTest extends MgnlTestCase {
     @Test
     public void testAlwaysVisibleSectionOnRoot() throws Exception {
         // GIVEN
-        sectionToShow.setAvailability(sAvailabilityAlways);
-        initActionbar();
-        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
-        // root
         List<String> ids = new ArrayList<String>(1);
         ids.add(JcrItemUtil.getItemId(session.getRootNode()));
         when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
@@ -236,10 +233,6 @@ public class BrowserSubAppTest extends MgnlTestCase {
     @Test
     public void testAlwaysVisibleSectionOnNonRootNode() throws Exception {
         // GIVEN
-        sectionToShow.setAvailability(sAvailabilityAlways);
-        initActionbar();
-        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
-        // node
         List<String> ids = new ArrayList<String>(1);
         ids.add(JcrItemUtil.getItemId(testContentNode));
         when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
@@ -258,10 +251,6 @@ public class BrowserSubAppTest extends MgnlTestCase {
     @Test
     public void testAlwaysVisibleSectionOnProperty() throws Exception {
         // GIVEN
-        sectionToShow.setAvailability(sAvailabilityAlways);
-        initActionbar();
-        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
-        // property
         List<String> ids = new ArrayList<String>(1);
         ids.add(JcrItemUtil.getItemId(testContentNode.getProperty(TEST_PROPERTY)));
         when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
@@ -289,7 +278,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
         view = mock(ContentSubAppView.class);
     }
 
-    private void initActionbar() {
+    private void initBrowser() {
         ConfiguredActionbarDefinition definition = new ConfiguredActionbarDefinition();
         definition.addSection(sectionToShow);
         definition.addSection(sectionToHide);
