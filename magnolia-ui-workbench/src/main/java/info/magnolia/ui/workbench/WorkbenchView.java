@@ -47,7 +47,7 @@ public interface WorkbenchView extends View {
 
         void onSearch(String searchExpression);
 
-        void onViewTypeChanged(ContentView.ViewType viewType);
+        void onViewTypeChanged(String viewType);
     }
 
     void setListener(Listener listener);
@@ -60,9 +60,9 @@ public interface WorkbenchView extends View {
     /**
      * Use this method to add sub views hosted by this view.
      */
-    void addContentView(ContentView.ViewType type, ContentView view, ContentPresenterDefinition contentViewDefintion);
+    void addContentView(String type, ContentView view, ContentPresenterDefinition contentViewDefintion);
 
-    void setViewType(ContentView.ViewType type);
+    void setViewType(String type);
 
     /**
      * Use this method to add a status bar to this sub app view.

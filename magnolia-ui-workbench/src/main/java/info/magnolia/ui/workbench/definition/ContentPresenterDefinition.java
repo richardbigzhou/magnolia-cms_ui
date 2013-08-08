@@ -34,7 +34,6 @@
 package info.magnolia.ui.workbench.definition;
 
 import info.magnolia.ui.workbench.ContentPresenter;
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 
 import java.util.List;
@@ -44,7 +43,7 @@ import java.util.List;
  */
 public interface ContentPresenterDefinition {
 
-    ViewType getViewType();
+    String getViewType();
 
     List<ColumnDefinition> getColumns();
 

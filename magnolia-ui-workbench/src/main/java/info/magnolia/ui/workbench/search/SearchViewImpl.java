@@ -40,8 +40,4 @@ import info.magnolia.ui.workbench.list.ListViewImpl;
  */
 public class SearchViewImpl extends ListViewImpl implements SearchView {
 
-    @Override
-    public ViewType getViewType() {
-        return ViewType.SEARCH;
-    }
 }

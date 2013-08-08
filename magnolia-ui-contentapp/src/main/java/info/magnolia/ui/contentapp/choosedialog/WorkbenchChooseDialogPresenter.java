@@ -34,20 +34,20 @@
 package info.magnolia.ui.contentapp.choosedialog;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.dialog.BaseDialogPresenter;
 import info.magnolia.ui.api.event.ChooseDialogEventBus;
+import info.magnolia.ui.dialog.BaseDialogPresenter;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
+import info.magnolia.ui.workbench.event.SelectionChangedEvent;
+import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -198,7 +198,7 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
     public ChooseDialogView start() {
         workbenchView = workbenchPresenter.start(workbenchDefinition, imageProviderDefinition, eventBus);
         workbenchView.setMultiselect(false);
-        workbenchView.setViewType(ViewType.TREE);
+        workbenchView.setViewType(TreePresenterDefinition.VIEW_TYPE);
         chooseDialogView.setCaption(workbenchDefinition.getName());
         chooseDialogView.setContent(workbenchView);
         if (StringUtils.isNotBlank(selectedItemId)) {

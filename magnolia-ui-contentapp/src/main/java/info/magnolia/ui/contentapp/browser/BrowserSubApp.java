@@ -55,12 +55,12 @@ import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
+import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -176,8 +176,8 @@ public class BrowserSubApp extends BaseSubApp {
      */
     protected final void restoreBrowser(final BrowserLocation location) {
         String path = ("/".equals(workbenchRoot) ? "" : workbenchRoot) + location.getNodePath();
-        ViewType viewType = location.getViewType();
-        if (viewType == null) {
+        String viewType = location.getViewType();
+        if (StringUtils.isBlank(viewType)) {
             log.warn("ViewType did not match, returning default viewType.");
 
             viewType = getBrowser().getDefaultViewType();
@@ -501,7 +501,8 @@ public class BrowserSubApp extends BaseSubApp {
             public void onViewChanged(ViewTypeChangedEvent event) {
                 BrowserLocation location = getCurrentLocation();
                 // remove search term from fragment when switching back
-                if (location.getViewType() == ViewType.SEARCH && event.getViewType() != ViewType.SEARCH) {
+                if (location.getViewType() == SearchPresenterDefinition.VIEW_TYPE
+                        && event.getViewType() != SearchPresenterDefinition.VIEW_TYPE) {
                     location.updateQuery("");
                 }
                 location.updateViewType(event.getViewType());
@@ -516,7 +517,7 @@ public class BrowserSubApp extends BaseSubApp {
             public void onSearch(SearchEvent event) {
                 BrowserLocation location = getCurrentLocation();
                 if (StringUtils.isNotBlank(event.getSearchExpression())) {
-                    location.updateViewType(ViewType.SEARCH);
+                    location.updateViewType(SearchPresenterDefinition.VIEW_TYPE);
                 }
                 location.updateQuery(event.getSearchExpression());
                 getAppContext().updateSubAppLocation(getSubAppContext(), location);

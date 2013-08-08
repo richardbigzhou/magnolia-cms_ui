@@ -89,9 +89,9 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
         presenter.start(workbenchDefinition, null, null);
 
         // WHEN
-        ContentView.ViewType viewType = presenter.getDefaultViewType();
+        String viewType = presenter.getDefaultViewType();
 
         // THEN
-        assertEquals(ContentView.ViewType.TREE, viewType);
+        assertEquals(TreePresenterDefinition.VIEW_TYPE, viewType);
     }
 }

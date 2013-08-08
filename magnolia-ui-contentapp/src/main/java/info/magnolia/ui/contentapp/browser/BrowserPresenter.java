@@ -56,7 +56,6 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
@@ -215,7 +214,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
      * @return The configured default view Type.<br>
      * If non define, return the first Content Definition as default.
      */
-    public ViewType getDefaultViewType() {
+    public String getDefaultViewType() {
         return workbenchPresenter.getDefaultViewType();
     }
 
@@ -235,7 +234,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
      * Synchronizes the underlying view to reflect the status extracted from the Location token, i.e. selected itemId,
      * view type and optional query (in case of a search view).
      */
-    public void resync(final List<String> itemIds, final ViewType viewType, final String query) {
+    public void resync(final List<String> itemIds, final String viewType, final String query) {
         workbenchPresenter.resynch(itemIds, viewType, query);
     }
 

@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.workbench.tree;
 
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 
 /**
@@ -41,9 +40,11 @@ import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinitio
  */
 public class TreePresenterDefinition extends ConfiguredContentPresenterDefinition {
 
+    public static final String VIEW_TYPE = "treeview";
+
     public TreePresenterDefinition() {
         setImplementationClass(TreePresenter.class);
-        setViewType(ViewType.TREE);
+        setViewType(VIEW_TYPE);
         setActive(true);
         setIcon("icon-view-tree");
     }
