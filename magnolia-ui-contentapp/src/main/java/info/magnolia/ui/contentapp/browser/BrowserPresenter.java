@@ -374,38 +374,5 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
             appContext.sendLocalMessage(error);
         }
     }
-
-    // /**
-    // * TODO: Eliminate redundancy with BrowserSubApp.updateActionBar (MGNLUI-1367) Christopher Zimmermann.
-    // */
-    // private ActionbarSectionDefinition getVisibleSection(List<ActionbarSectionDefinition> sections, javax.jcr.Item item) throws RepositoryException {
-    // for (ActionbarSectionDefinition section : sections) {
-    // if (isSectionVisible(section, item))
-    // return section;
-    // }
-    // return null;
-    // }
-    //
-    // /**
-    // * TODO: Eliminate redundancy with BrowserSubApp.updateActionBar (MGNLUI-1367) Christopher Zimmermann.
-    // */
-    // private boolean isSectionVisible(ActionbarSectionDefinition section, javax.jcr.Item item) throws RepositoryException {
-    // SectionRestrictionsDefinition restrictions = section.getRestrictions();
-    //
-    // // If this is the root item we display the section only if the root property is set
-    // if (item == null)
-    // return restrictions.isRoot();
-    //
-    // // If its a property we display it only if the properties property is set
-    // if (!item.isNode())
-    // return restrictions.isProperties();
-    //
-    // // The node must match at least one of the configured node types
-    // for (String nodeType : restrictions.getNodeTypes()) {
-    // if (NodeUtil.isNodeType((Node) item, nodeType))
-    // return true;
-    // }
-    // return false;
-    // }
-
+    
 }
