@@ -47,12 +47,10 @@ public interface DetailView extends View {
     void setItemView(Component formView, ViewType viewType);
 
     /**
-     * Enumeration for the default view types.
+     * Enumeration for edit or preview types.
      * <ul>
-     * <li>tree
-     * <li>list
-     * <li>thumbnail
-     * <li>search
+     * <li>edit
+     * <li>view (preview)
      * </ul>
      */
     enum ViewType {
