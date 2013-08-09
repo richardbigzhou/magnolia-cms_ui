@@ -36,8 +36,10 @@ package info.magnolia.ui.form.field.factory;
 import static org.junit.Assert.*;
 
 import info.magnolia.objectfactory.Components;
+import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.property.basic.BasicProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
@@ -65,8 +67,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // GIVEN
         abstractDialogField = new TestTextFieldFactory(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
-        abstractDialogField.setComponentProvider(provider);
+        abstractDialogField.setComponentProvider(new MockComponentProvider());
         // WHEN
         Field<Object> field = abstractDialogField.createField();
         // THEN
@@ -75,7 +76,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         assertEquals(false, field.isRequired());
         assertEquals("label", field.getCaption());
         assertEquals(false, field.getPropertyDataSource().isReadOnly());
-        assertEquals(true, field.getPropertyDataSource() instanceof Property);
+        assertEquals(true, field.getPropertyDataSource() instanceof BasicProperty);
     }
 
     @Test
@@ -83,8 +84,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // GIVEN
         abstractDialogField = new TestTextFieldFactory(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
-        abstractDialogField.setComponentProvider(provider);
+        abstractDialogField.setComponentProvider(new MockComponentProvider());
         Field<Object> field = abstractDialogField.createField();
 
         // WHEN
@@ -96,6 +96,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         assertEquals("new Value", res.getProperty(propertyName).getString());
         assertEquals(PropertyType.STRING, res.getProperty(propertyName).getType());
         Property p = baseItem.getItemProperty(propertyName);
+        assertEquals(field.getPropertyDataSource().getValue(), p.getValue());
         assertEquals("new Value", p.getValue().toString());
         assertEquals(String.class, p.getValue().getClass());
     }
@@ -107,10 +108,9 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         baseItem = new JcrNodeAdapter(baseNode);
         // Set do not change
         definition.setReadOnly(false);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
         abstractDialogField = new TestTextFieldFactory(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        abstractDialogField.setComponentProvider(provider);
+        abstractDialogField.setComponentProvider(new MockComponentProvider());
         Field<Object> field = abstractDialogField.createField();
 
         // WHEN
@@ -132,8 +132,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         definition.setType("Double");
         abstractDialogField = new TestTextFieldFactory(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, Double.class, (JcrNodeAdapter) baseItem);
-        abstractDialogField.setComponentProvider(provider);
+        abstractDialogField.setComponentProvider(new MockComponentProvider());
         Field<Object> field = abstractDialogField.createField();
 
         // WHEN
@@ -157,8 +156,8 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         definition.setLabel("message.label");
         abstractDialogField = new TestTextFieldFactory(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
-        abstractDialogField.setComponentProvider(provider);
+        abstractDialogField.setComponentProvider(new MockComponentProvider());
+
         // WHEN
         Field<Object> field = abstractDialogField.createField();
         // THEN
@@ -173,8 +172,8 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         definition.setRequired(true);
         abstractDialogField = new TestTextFieldFactory(definition, baseItem);
         abstractDialogField.setI18nContentSupport(i18nContentSupport);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
-        abstractDialogField.setComponentProvider(provider);
+        abstractDialogField.setComponentProvider(new MockComponentProvider());
+
         // WHEN
         Field<Object> field = abstractDialogField.createField();
         field.setRequired(definition.isRequired());
@@ -189,9 +188,8 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // GIVEN
         baseItem = new BeanItem<TestBean>(new TestBean("bar"));
         ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "foo");
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) def, BeanItem.class, baseItem);
         abstractDialogField = new TestTextFieldFactory(def, baseItem);
-        abstractDialogField.setComponentProvider(provider);
+        abstractDialogField.setComponentProvider(new MockComponentProvider());
         // WHEN
         Field<?> field = abstractDialogField.createField();
 

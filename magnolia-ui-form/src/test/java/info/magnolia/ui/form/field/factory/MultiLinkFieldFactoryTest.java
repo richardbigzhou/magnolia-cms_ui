@@ -34,18 +34,20 @@
 package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.MultiLinkField;
+import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
-import info.magnolia.ui.form.field.definition.PropertyBuilder;
-import info.magnolia.ui.form.field.property.PropertyHandler;
-import info.magnolia.ui.form.field.property.list.ListProperty;
-import info.magnolia.ui.form.field.property.list.MultiValuesPropertyListHandler;
+import info.magnolia.ui.form.field.property.multi.CommaSeparatedMultiHandler;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import java.util.List;
 
 import org.junit.Test;
 
-import com.vaadin.data.Property;
 import com.vaadin.ui.Field;
 
 /**
@@ -54,30 +56,49 @@ import com.vaadin.ui.Field;
 public class MultiLinkFieldFactoryTest extends AbstractFieldFactoryTestCase<MultiLinkFieldDefinition> {
 
     private MultiLinkFieldFactory multiLinkFieldFactory;
+    private ComponentProvider componentProvider;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
+        componentProvider = new MockComponentProvider();
     }
 
     @Test
     public void testGetField() throws Exception {
         // GIVEN
-        PropertyBuilder propertyBuilder = new PropertyBuilder();
-        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) MultiValuesPropertyListHandler.class);
-        propertyBuilder.setPropertyType((Class<? extends Property<?>>) (Object) ListProperty.class);
-        definition.setPropertyBuilder(propertyBuilder);
-        MultiValuesPropertyListHandler handler = new MultiValuesPropertyListHandler((JcrNodeAdapter) baseItem, definition, null);
-        provider = new SimpleComponentProvider(handler, new ListProperty(handler));
+        multiLinkFieldFactory = new MultiLinkFieldFactory(definition, baseItem, null, null, componentProvider);
 
-        multiLinkFieldFactory = new MultiLinkFieldFactory(definition, baseItem, null, null, provider);
+        multiLinkFieldFactory.setComponentProvider(componentProvider);
         multiLinkFieldFactory.setI18nContentSupport(i18nContentSupport);
-        multiLinkFieldFactory.setComponentProvider(provider);
         // WHEN
         Field field = multiLinkFieldFactory.createField();
 
         // THEN
         assertEquals(true, field instanceof MultiLinkField);
+    }
+
+    @Test
+    public void testGetFieldWithIdentifier() throws Exception {
+        // GIVEN
+        definition.setIdentifierToPathConverter(new BaseIdentifierToPathConverter());
+        definition.getPropertyBuilder().setPropertyHandler(CommaSeparatedMultiHandler.class);
+        definition.setName(propertyName);
+        definition.setTargetWorkspace(workspaceName);
+        baseNode.setProperty(propertyName, baseNode.getIdentifier());
+        baseItem = new JcrNodeAdapter(baseNode);
+
+        multiLinkFieldFactory = new MultiLinkFieldFactory(definition, baseItem, null, null, componentProvider);
+        multiLinkFieldFactory.setI18nContentSupport(i18nContentSupport);
+        multiLinkFieldFactory.setComponentProvider(componentProvider);
+
+        // WHEN
+        Field field = multiLinkFieldFactory.createField();
+
+        // THEN
+        assertEquals(true, field instanceof MultiLinkField);
+        // Propert way set to the identifier baseNode.getIdentifier() and we display the path
+        assertEquals(baseNode.getIdentifier(), ((List) field.getValue()).get(0));
     }
 
     @Override

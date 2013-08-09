@@ -35,10 +35,9 @@ package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.assertEquals;
 
+import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.PasswordFields;
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.PasswordFieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import org.junit.Test;
 
@@ -60,8 +59,7 @@ public class PasswordFieldFactoryTest extends AbstractFieldFactoryTestCase<Passw
         definition.setVerification(false);
         passwordFieldFactory = new PasswordFieldFactory(definition, baseItem);
         passwordFieldFactory.setI18nContentSupport(i18nContentSupport);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
-        passwordFieldFactory.setComponentProvider(provider);
+        passwordFieldFactory.setComponentProvider(new MockComponentProvider());
         // WHEN
         Field field = passwordFieldFactory.createField();
 
@@ -75,8 +73,7 @@ public class PasswordFieldFactoryTest extends AbstractFieldFactoryTestCase<Passw
         definition.setVerification(true);
         passwordFieldFactory = new PasswordFieldFactory(definition, baseItem);
         passwordFieldFactory.setI18nContentSupport(i18nContentSupport);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
-        passwordFieldFactory.setComponentProvider(provider);
+        passwordFieldFactory.setComponentProvider(new MockComponentProvider());
         // WHEN
         PasswordFields field = (PasswordFields) passwordFieldFactory.createField();
 
@@ -93,8 +90,7 @@ public class PasswordFieldFactoryTest extends AbstractFieldFactoryTestCase<Passw
         definition.setVerification(true);
         passwordFieldFactory = new PasswordFieldFactory(definition, baseItem);
         passwordFieldFactory.setI18nContentSupport(i18nContentSupport);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
-        passwordFieldFactory.setComponentProvider(provider);
+        passwordFieldFactory.setComponentProvider(new MockComponentProvider());
         PasswordFields field = (PasswordFields) passwordFieldFactory.createField();
         ((PasswordField) field.getVerticalLayout().getComponent(0)).setValue("aa");
         ((PasswordField) field.getVerticalLayout().getComponent(2)).setValue("aa");
@@ -113,8 +109,7 @@ public class PasswordFieldFactoryTest extends AbstractFieldFactoryTestCase<Passw
         definition.setVerification(true);
         passwordFieldFactory = new PasswordFieldFactory(definition, baseItem);
         passwordFieldFactory.setI18nContentSupport(i18nContentSupport);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
-        passwordFieldFactory.setComponentProvider(provider);
+        passwordFieldFactory.setComponentProvider(new MockComponentProvider());
         PasswordFields field = (PasswordFields) passwordFieldFactory.createField();
         ((PasswordField) field.getVerticalLayout().getComponent(0)).setValue("aa");
         ((PasswordField) field.getVerticalLayout().getComponent(2)).setValue("axa");

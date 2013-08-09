@@ -35,10 +35,9 @@ package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.*;
 
+import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import org.junit.Test;
 import org.vaadin.aceeditor.AceEditor;
@@ -56,8 +55,7 @@ public class BasicTextCodeFieldFactoryTest extends AbstractFieldFactoryTestCase<
     public void createBasicCodeField() {
         // GIVEN
         fieldFactory = new BasicTextCodeFieldFactory<BasicTextCodeFieldDefinition>(definition, baseItem);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
-        fieldFactory.setComponentProvider(provider);
+        fieldFactory.setComponentProvider(new MockComponentProvider());
         // WHEN
         Field<String> field = fieldFactory.createField();
 
@@ -69,9 +67,8 @@ public class BasicTextCodeFieldFactoryTest extends AbstractFieldFactoryTestCase<
     public void createBasicCodeFieldChangeValue() {
         // GIVEN
         baseItem.addItemProperty(propertyName, new DefaultProperty<String>(String.class, "private String s"));
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
         fieldFactory = new BasicTextCodeFieldFactory<BasicTextCodeFieldDefinition>(definition, baseItem);
-        fieldFactory.setComponentProvider(provider);
+        fieldFactory.setComponentProvider(new MockComponentProvider());
         Field<String> field = fieldFactory.createField();
         assertEquals("private String s", field.getValue());
 

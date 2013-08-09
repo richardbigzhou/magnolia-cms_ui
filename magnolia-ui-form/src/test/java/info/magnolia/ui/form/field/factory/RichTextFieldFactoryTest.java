@@ -35,10 +35,9 @@ package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.assertEquals;
 
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
 
 import org.junit.Test;
@@ -54,11 +53,11 @@ public class RichTextFieldFactoryTest extends AbstractFieldFactoryTestCase<RichT
 
     @Test
     public void testGetField() throws Exception {
+
         // GIVEN
         richTextFieldFactory = new RichTextFieldFactory(definition, baseItem, null, null);
         richTextFieldFactory.setI18nContentSupport(i18nContentSupport);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
-        richTextFieldFactory.setComponentProvider(provider);
+        richTextFieldFactory.setComponentProvider(new MockComponentProvider());
         // WHEN
         Field field = richTextFieldFactory.createField();
 

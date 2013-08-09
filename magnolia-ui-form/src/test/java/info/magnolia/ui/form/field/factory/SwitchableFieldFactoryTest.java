@@ -43,8 +43,6 @@ import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
-import info.magnolia.ui.form.field.property.list.ListProperty;
-import info.magnolia.ui.form.field.property.list.MultiValuesPropertyListHandler;
 import info.magnolia.ui.form.fieldType.registry.FieldTypeDefinitionRegistryTest.TestFieldTypeDefinitionProvider;
 import info.magnolia.ui.form.fieldtype.definition.ConfiguredFieldTypeDefinition;
 import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
@@ -52,16 +50,12 @@ import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
 import java.util.ArrayList;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.vaadin.aceeditor.AceEditor;
 
 import com.vaadin.ui.Field;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
 
 /**
- * Basic test class for {@link SwitchableFieldFactory} .
+ * Test class.
  */
 public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<SwitchableFieldDefinition> {
 
@@ -76,16 +70,14 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
 
         FieldTypeDefinitionRegistry fieldDefinitionRegistery = createFieldTypeRegistery();
 
-        MultiValuesPropertyListHandler handler = new MultiValuesPropertyListHandler(baseItem, definition, componentProvider);
-        provider = new SimpleComponentProvider(handler, new ListProperty(handler));
+        FieldFactoryFactory fieldFactory = new FieldFactoryFactory(componentProvider, fieldDefinitionRegistery, null);
 
-        FieldFactoryFactory fieldFactory = new FieldFactoryFactory(provider, fieldDefinitionRegistery, null);
-        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, fieldFactory, i18nContentSupport, provider);
-        factory.setComponentProvider(provider);
+
+        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, fieldFactory, i18nContentSupport, componentProvider);
+        factory.setComponentProvider(componentProvider);
     }
 
     @Test
-    @Ignore
     public void createFieldComponentTest() {
         // GIVEN
 
@@ -96,74 +88,27 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         assertTrue(field instanceof SwitchableField);
     }
 
-    @Test
-    @Ignore
-    public void createFieldComponentDefaultOptionFieldCreatedTest() {
-        // GIVEN
 
-        // WHEN
-        Field field = factory.createField();
-
-        // THEN
-        assertNotNull(field);
-        assertTrue(field instanceof SwitchableField);
-        // DefaultOption is text
-        assertNotNull(((SwitchableField) field).getSelectedComponent());
-        assertTrue(((SwitchableField) field).getSelectedComponent() instanceof TextField);
-    }
-
-    @Test
-    @Ignore
-    public void createFieldComponentDefaultOptionFieldCreatedNotExistingTest() {
-        // GIVEN
-        definition.getFields().clear();
-        // WHEN
-        Field field = factory.createField();
-
-        // THEN
-        assertNotNull(field);
-        assertTrue(field instanceof SwitchableField);
-        // DefaultOption not existing a Label should be displayed
-        assertNotNull(((SwitchableField) field).getSelectedComponent());
-        assertTrue(((SwitchableField) field).getSelectedComponent() instanceof Label);
-    }
-
-    @Test
-    @Ignore
-    public void switchFieldTest() {
-        // GIVEN
-        Field field = factory.createField();
-        assertNotNull(((SwitchableField) field).getSelectedComponent());
-        assertTrue(((SwitchableField) field).getSelectedComponent() instanceof TextField);
-
-        // WHEN
-        field.setValue("code");
-
-        // THEN
-        // Related field should be a BasicCideTextField is text
-        assertNotNull(((SwitchableField) field).getSelectedComponent());
-        assertTrue(((SwitchableField) field).getSelectedComponent() instanceof AceEditor);
-    }
 
     private FieldTypeDefinitionRegistry createFieldTypeRegistery() {
-        FieldTypeDefinitionRegistry registry = new FieldTypeDefinitionRegistry();
+        FieldTypeDefinitionRegistry registery = new FieldTypeDefinitionRegistry();
 
         ConfiguredFieldTypeDefinition textFieldDefinition = new ConfiguredFieldTypeDefinition();
         textFieldDefinition.setDefinitionClass(TextFieldDefinition.class);
         textFieldDefinition.setFactoryClass(TextFieldFactory.class);
-        registry.register(new TestFieldTypeDefinitionProvider("text", textFieldDefinition));
+        registery.register(new TestFieldTypeDefinitionProvider("text", textFieldDefinition));
 
         ConfiguredFieldTypeDefinition codeFieldDefinition = new ConfiguredFieldTypeDefinition();
         codeFieldDefinition.setDefinitionClass(BasicTextCodeFieldDefinition.class);
         codeFieldDefinition.setFactoryClass(BasicTextCodeFieldFactory.class);
-        registry.register(new TestFieldTypeDefinitionProvider("code", codeFieldDefinition));
+        registery.register(new TestFieldTypeDefinitionProvider("code", codeFieldDefinition));
 
         ConfiguredFieldTypeDefinition selectFieldDefinition = new ConfiguredFieldTypeDefinition();
         selectFieldDefinition.setDefinitionClass(OptionGroupFieldDefinition.class);
         selectFieldDefinition.setFactoryClass(OptionGroupFieldFactory.class);
-        registry.register(new TestFieldTypeDefinitionProvider("option", selectFieldDefinition));
+        registery.register(new TestFieldTypeDefinitionProvider("option", selectFieldDefinition));
 
-        return registry;
+        return registery;
     }
 
     @Override

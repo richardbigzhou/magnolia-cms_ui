@@ -51,7 +51,7 @@ import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
-import info.magnolia.ui.form.field.property.list.SubNodesListCategoryHandler;
+import info.magnolia.ui.form.field.property.multi.SubNodesMultiCategoryHandler;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -329,7 +329,7 @@ public class ControlMigrationTest {
         assertTrue(controlNode.hasProperty("identifier"));
         assertEquals("true", controlNode.getProperty("identifier").getString());
         assertTrue(controlNode.hasNode("saveModeType"));
-        assertEquals(SubNodesListCategoryHandler.class.getName(), controlNode.getNode("saveModeType").getProperty("multiValueHandlerClass").getString());
+        assertEquals(SubNodesMultiCategoryHandler.class.getName(), controlNode.getNode("saveModeType").getProperty("multiValueHandlerClass").getString());
         assertFalse(controlNode.hasProperty("saveHandler"));
     }
 

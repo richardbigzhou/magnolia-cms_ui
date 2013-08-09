@@ -35,9 +35,9 @@ package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.assertEquals;
 
+import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.LinkField;
 import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -57,8 +57,7 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         // GIVEN
         linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
-        linkFieldFactory.setComponentProvider(provider);
+        linkFieldFactory.setComponentProvider(new MockComponentProvider());
         // WHEN
         Field field = linkFieldFactory.createField();
 
@@ -74,10 +73,10 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         definition.setTargetWorkspace(workspaceName);
         baseNode.setProperty(propertyName, baseNode.getIdentifier());
         baseItem = new JcrNodeAdapter(baseNode);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
         linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
-        linkFieldFactory.setComponentProvider(provider);
+        linkFieldFactory.setComponentProvider(new MockComponentProvider());
+
         // WHEN
         Field field = linkFieldFactory.createField();
 
@@ -92,8 +91,7 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         // GIVEN
         linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
-        linkFieldFactory.setComponentProvider(provider);
+        linkFieldFactory.setComponentProvider(new MockComponentProvider());
         definition.setButtonSelectNewLabel("New");
         definition.setButtonSelectOtherLabel("Other");
         // WHEN
@@ -110,10 +108,9 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         definition.setName(propertyName);
         baseNode.setProperty(propertyName, "notChanged");
         baseItem = new JcrNodeAdapter(baseNode);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
         linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
-        linkFieldFactory.setComponentProvider(provider);
+        linkFieldFactory.setComponentProvider(new MockComponentProvider());
         definition.setButtonSelectNewLabel("New");
         definition.setButtonSelectOtherLabel("Other");
         // WHEN
@@ -130,10 +127,9 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         definition.setName(propertyName);
         baseNode.setProperty(propertyName, "notChanged");
         baseItem = new JcrNodeAdapter(baseNode);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
         linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
-        linkFieldFactory.setComponentProvider(provider);
+        linkFieldFactory.setComponentProvider(new MockComponentProvider());
         Field field = linkFieldFactory.createField();
         assertEquals("notChanged", ((LinkField) field).getTextField().getValue());
         // WHEN

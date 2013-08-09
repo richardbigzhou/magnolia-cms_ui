@@ -35,10 +35,9 @@ package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.assertEquals;
 
+import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.StaticField;
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import org.junit.Test;
 
@@ -56,8 +55,8 @@ public class StaticFieldFactoryTest extends AbstractFieldFactoryTestCase<StaticF
         // GIVEN
         staticFieldFactory = new StaticFieldFactory(definition, baseItem);
         staticFieldFactory.setI18nContentSupport(i18nContentSupport);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
-        staticFieldFactory.setComponentProvider(provider);
+        staticFieldFactory.setComponentProvider(new MockComponentProvider());
+
         // WHEN
         Field field = staticFieldFactory.createField();
 

@@ -50,24 +50,24 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Basic test class for {@link FieldTypeDefinitionRegistry}.
+ * Test class.
  */
 public class FieldTypeDefinitionRegistryTest {
 
-    private FieldTypeDefinitionRegistry registry;
+    private FieldTypeDefinitionRegistry registery;
 
     @Before
     public void setUp() throws Exception {
-        registry = new FieldTypeDefinitionRegistry();
+        registery = new FieldTypeDefinitionRegistry();
         ConfiguredFieldTypeDefinition textFieldDefinition = new ConfiguredFieldTypeDefinition();
         textFieldDefinition.setDefinitionClass(TextFieldDefinition.class);
         textFieldDefinition.setFactoryClass(TextFieldFactory.class);
-        registry.register(new TestFieldTypeDefinitionProvider("text", textFieldDefinition));
+        registery.register(new TestFieldTypeDefinitionProvider("text", textFieldDefinition));
 
         ConfiguredFieldTypeDefinition codeFieldDefinition = new ConfiguredFieldTypeDefinition();
         codeFieldDefinition.setDefinitionClass(BasicTextCodeFieldDefinition.class);
         codeFieldDefinition.setFactoryClass(BasicTextCodeFieldFactory.class);
-        registry.register(new TestFieldTypeDefinitionProvider("code", codeFieldDefinition));
+        registery.register(new TestFieldTypeDefinitionProvider("code", codeFieldDefinition));
 
     }
 
@@ -76,7 +76,7 @@ public class FieldTypeDefinitionRegistryTest {
         // GIVEN
 
         // WHEN
-        FieldTypeDefinition res = registry.get("text");
+        FieldTypeDefinition res = registery.get("text");
 
         // THEN
         assertNotNull(res);
@@ -89,7 +89,7 @@ public class FieldTypeDefinitionRegistryTest {
         // GIVEN
 
         // WHEN
-        FieldTypeDefinition res = registry.get("tutu");
+        FieldTypeDefinition res = registery.get("tutu");
 
         // THEN
     }
@@ -99,7 +99,7 @@ public class FieldTypeDefinitionRegistryTest {
         // GIVEN
 
         // WHEN
-        FieldTypeDefinition res = registry.getByDefinition(TextFieldDefinition.class);
+        FieldTypeDefinition res = registery.getByDefinition(TextFieldDefinition.class);
 
         // THEN
         assertNotNull(res);
@@ -112,7 +112,7 @@ public class FieldTypeDefinitionRegistryTest {
         // GIVEN
 
         // WHEN
-        FieldTypeDefinition res = registry.getByDefinition(BasicUploadFieldDefinition.class);
+        FieldTypeDefinition res = registery.getByDefinition(BasicUploadFieldDefinition.class);
 
         // THEN
     }

@@ -34,13 +34,10 @@
 package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 
-import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.MultiField;
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import org.junit.Test;
 
@@ -52,22 +49,18 @@ import com.vaadin.ui.Field;
 public class MultiFieldFactoryTest extends AbstractFieldFactoryTestCase<MultiFieldDefinition> {
 
     private MultiFieldFactory multiFieldFactory;
-    private ComponentProvider componentProvider;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        componentProvider = mock(ComponentProvider.class);
     }
 
     @Test
     public void testGetField() throws Exception {
         // GIVEN
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
-
-        multiFieldFactory = new MultiFieldFactory(definition, baseItem, null, null, provider);
+        multiFieldFactory = new MultiFieldFactory(definition, baseItem, null, null, new MockComponentProvider());
         multiFieldFactory.setI18nContentSupport(i18nContentSupport);
-        multiFieldFactory.setComponentProvider(provider);
+        multiFieldFactory.setComponentProvider(new MockComponentProvider());
         // WHEN
         Field field = multiFieldFactory.createField();
 

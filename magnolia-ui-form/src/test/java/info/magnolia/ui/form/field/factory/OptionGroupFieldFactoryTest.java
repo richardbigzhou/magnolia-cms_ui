@@ -35,16 +35,12 @@ package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.assertEquals;
 
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
-import info.magnolia.ui.form.field.property.basic.BasicProperty;
-import info.magnolia.ui.form.field.property.basic.OptionGroupPropertyHandler;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
 
 import org.junit.Test;
 
@@ -63,10 +59,7 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         // GIVEN
         dialogSelect = new OptionGroupFieldFactory(definition, baseItem);
         dialogSelect.setI18nContentSupport(i18nContentSupport);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
-        OptionGroupPropertyHandler basicHandler = new OptionGroupPropertyHandler((JcrNodeAdapter) baseItem, (ConfiguredFieldDefinition) definition, null, String.class.getName());
-        provider = new SimpleComponentProvider(basicHandler, new BasicProperty(basicHandler, String.class));
-        dialogSelect.setComponentProvider(provider);
+        dialogSelect.setComponentProvider(new MockComponentProvider());
 
         // WHEN
         Field field = dialogSelect.createField();
@@ -75,7 +68,7 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         assertEquals(true, field instanceof OptionGroup);
         Collection<?> items = ((OptionGroup) field).getItemIds();
         assertEquals(3, items.size());
-        assertEquals("[1]", field.getValue().toString());
+        assertEquals("1", field.getValue().toString());
     }
 
     @Test
@@ -84,17 +77,13 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         definition.getOptions().get(2).setSelected(true);
         dialogSelect = new OptionGroupFieldFactory(definition, baseItem);
         dialogSelect.setI18nContentSupport(i18nContentSupport);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, List.class, (JcrNodeAdapter) baseItem);
-        OptionGroupPropertyHandler basicHandler = new OptionGroupPropertyHandler((JcrNodeAdapter) baseItem, (ConfiguredFieldDefinition) definition, null, List.class.getName());
-        provider = new SimpleComponentProvider(basicHandler, new BasicProperty(basicHandler, List.class));
-        dialogSelect.setComponentProvider(provider);
-
+        dialogSelect.setComponentProvider(new MockComponentProvider());
 
         // WHEN
         Field field = dialogSelect.createField();
 
         // THEN
-        assertEquals("[3]", field.getValue().toString());
+        assertEquals("3", field.getValue().toString());
     }
 
     @Test
@@ -103,10 +92,7 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         definition.setMultiselect(true);
         dialogSelect = new OptionGroupFieldFactory(definition, baseItem);
         dialogSelect.setI18nContentSupport(i18nContentSupport);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
-        OptionGroupPropertyHandler basicHandler = new OptionGroupPropertyHandler((JcrNodeAdapter) baseItem, (ConfiguredFieldDefinition) definition, null, String.class.getName());
-        provider = new SimpleComponentProvider(basicHandler, new BasicProperty(basicHandler, String.class));
-        dialogSelect.setComponentProvider(provider);
+        dialogSelect.setComponentProvider(new MockComponentProvider());
 
         // WHEN
         Field field = dialogSelect.createField();
@@ -124,21 +110,19 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         definition.setMultiselect(true);
         dialogSelect = new OptionGroupFieldFactory(definition, baseItem);
         dialogSelect.setI18nContentSupport(i18nContentSupport);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, HashSet.class, (JcrNodeAdapter) baseItem);
-        OptionGroupPropertyHandler basicHandler = new OptionGroupPropertyHandler((JcrNodeAdapter) baseItem, (ConfiguredFieldDefinition) definition, null, HashSet.class.getName());
-        provider = new SimpleComponentProvider(basicHandler, new BasicProperty(basicHandler, HashSet.class));
-        dialogSelect.setComponentProvider(provider);
+        dialogSelect.setComponentProvider(new MockComponentProvider());
+
         Field field = dialogSelect.createField();
         // WHEN
-        HashSet<String> selected = new HashSet<String>();
+        ArrayList<String> selected = new ArrayList<String>();
         selected.add("1");
         selected.add("3");
         ((OptionGroup) field).setValue(selected);
 
         // THEN
         assertEquals(2, ((Collection) field.getValue()).toArray().length);
-        assertEquals("3", ((Collection) field.getValue()).toArray()[0]);
-        assertEquals("1", ((Collection) field.getValue()).toArray()[1]);
+        assertEquals("1", ((Collection) field.getValue()).toArray()[0]);
+        assertEquals("3", ((Collection) field.getValue()).toArray()[1]);
     }
 
     @Override

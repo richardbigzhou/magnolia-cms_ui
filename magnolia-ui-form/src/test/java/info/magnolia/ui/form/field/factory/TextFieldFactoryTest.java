@@ -35,9 +35,8 @@ package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.assertEquals;
 
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import org.junit.Test;
 
@@ -58,8 +57,8 @@ public class TextFieldFactoryTest extends AbstractFieldFactoryTestCase<TextField
         // GIVEN
         dialogEdit = new TextFieldFactory(definition, baseItem);
         dialogEdit.setI18nContentSupport(i18nContentSupport);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
-        dialogEdit.setComponentProvider(provider);
+        dialogEdit.setComponentProvider(new MockComponentProvider());
+
         // WHEN
         Field field = dialogEdit.createField();
 
@@ -75,8 +74,8 @@ public class TextFieldFactoryTest extends AbstractFieldFactoryTestCase<TextField
         definition.setMaxLength(250);
         dialogEdit = new TextFieldFactory(definition, baseItem);
         dialogEdit.setI18nContentSupport(i18nContentSupport);
-        setComponentProviderAndHandler((ConfiguredFieldDefinition) definition, String.class, (JcrNodeAdapter) baseItem);
-        dialogEdit.setComponentProvider(provider);
+        dialogEdit.setComponentProvider(new MockComponentProvider());
+
         // WHEN
         Field field = dialogEdit.createField();
 
