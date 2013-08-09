@@ -723,9 +723,9 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     /**
      * @return a Set of searchable {@link NodeType}s. A searchable node type is defined as follow
      * <ul>
-     * <li>It is a <a href="http://jackrabbit.apache.org/node-types.html">primary or mixin</a> node type configured under workbench/nodeTypes
-     * <li>It is not hidden in list and search views (property hideInList=true). By default nodes are not hidden.
-     * <li>If not strict (property strict=false), then its subtypes (if any) are searchable too. By default nodes are not defined as strict.
+     * <li>It is a <a href="http://jackrabbit.apache.org/node-types.html">primary or mixin</a> node type configured under <code>/modules/myapp/apps/myapp/subApps/browser/workbench/nodeTypes</code>
+     * <li>It is not hidden in list and search views (property <code>hideInList=true</code>). By default nodes are not hidden.
+     * <li>If not strict (property <code>strict=false</code>), then its subtypes (if any) are searchable too. By default nodes are not defined as strict.
      * <li>Subtypes beginning with <code>jcr:, nt:, mix:, rep:</code> are not taken into account.
      * </ul>
      */
