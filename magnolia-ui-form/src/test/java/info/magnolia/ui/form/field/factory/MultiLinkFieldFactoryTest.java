@@ -34,7 +34,6 @@
 package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.test.mock.MockComponentProvider;

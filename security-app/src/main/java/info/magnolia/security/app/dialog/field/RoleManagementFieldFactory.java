@@ -155,7 +155,7 @@ public class RoleManagementFieldFactory extends TwinColSelectFieldFactory<RoleMa
         return roles;
     }
 
-    @Override
+
     public com.vaadin.data.Property<Set> getOrCreateProperty() {
         DefaultProperty<Set> prop = new DefaultProperty<Set>(Set.class, getAssignedRoles());
         item.addItemProperty("roles", prop);

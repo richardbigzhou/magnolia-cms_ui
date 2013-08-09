@@ -35,9 +35,9 @@ package info.magnolia.ui.dialog.setup.migration;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
-import info.magnolia.ui.form.field.property.list.CommaSeparatedListHandler;
-import info.magnolia.ui.form.field.property.list.MultiValuesPropertyListHandler;
-import info.magnolia.ui.form.field.property.list.SubNodesListCategoryHandler;
+import info.magnolia.ui.form.field.property.multi.CommaSeparatedMultiHandler;
+import info.magnolia.ui.form.field.property.multi.MultiValuesPropertyMultiHandler;
+import info.magnolia.ui.form.field.property.multi.SubNodesMultiCategoryHandler;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -61,16 +61,16 @@ public class MultiSelectControlMigration implements ControlMigration {
             String saveHandler = controlNode.getProperty("saveHandler").getString();
             Node saveModeType = controlNode.addNode("saveModeType", NodeTypes.ContentNode.NAME);
             if (saveHandler.equals("list")) {
-                saveModeType.setProperty("multiValueHandlerClass", CommaSeparatedListHandler.class.getName());
+                saveModeType.setProperty("multiValueHandlerClass", CommaSeparatedMultiHandler.class.getName());
             } else if (saveHandler.equals("multiple")) {
-                saveModeType.setProperty("multiValueHandlerClass", SubNodesListCategoryHandler.class.getName());
+                saveModeType.setProperty("multiValueHandlerClass", SubNodesMultiCategoryHandler.class.getName());
             } else {
-                saveModeType.setProperty("multiValueHandlerClass", MultiValuesPropertyListHandler.class.getName());
+                saveModeType.setProperty("multiValueHandlerClass", MultiValuesPropertyMultiHandler.class.getName());
             }
             controlNode.getProperty("saveHandler").remove();
         } else {
             Node saveModeType = controlNode.addNode("saveModeType", NodeTypes.ContentNode.NAME);
-            saveModeType.setProperty("multiValueHandlerClass", MultiValuesPropertyListHandler.class.getName());
+            saveModeType.setProperty("multiValueHandlerClass", MultiValuesPropertyMultiHandler.class.getName());
         }
         if (controlNode.hasProperty("tree")) {
             String workspace = controlNode.getProperty("tree").getString();

@@ -50,7 +50,7 @@ public class EnabledFieldFactory extends CheckBoxFieldFactory {
         super(definition, relatedFieldItem);
     }
 
-    @Override
+
     public com.vaadin.data.Property getOrCreateProperty() {
         Property old = item.getItemProperty("enabled");
         String stringValue = "true";

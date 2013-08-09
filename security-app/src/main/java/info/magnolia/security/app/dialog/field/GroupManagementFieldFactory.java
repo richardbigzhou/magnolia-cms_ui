@@ -102,7 +102,7 @@ public class GroupManagementFieldFactory extends TwinColSelectFieldFactory<Group
             public String getConnectorId() {
                 return super.getConnectorId();
             }
-            
+
             /* (non-Javadoc)
              * @see com.vaadin.ui.AbstractComponent#isVisible()
              */
@@ -182,7 +182,7 @@ public class GroupManagementFieldFactory extends TwinColSelectFieldFactory<Group
         return groups;
     }
 
-    @Override
+
     public com.vaadin.data.Property<?> getOrCreateProperty() {
         DefaultProperty<Set> prop = new DefaultProperty<Set>(Set.class, getAssignedGroups());
         item.addItemProperty("groups", prop);

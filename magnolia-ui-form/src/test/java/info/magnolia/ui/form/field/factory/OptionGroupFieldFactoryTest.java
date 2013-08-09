@@ -39,7 +39,6 @@ import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.junit.Test;
@@ -104,26 +103,7 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
         assertEquals("[]", field.getValue().toString());
     }
 
-    @Test
-    public void multiSelectCheckBoxFieldTest() throws Exception {
-        // GIVEN
-        definition.setMultiselect(true);
-        dialogSelect = new OptionGroupFieldFactory(definition, baseItem);
-        dialogSelect.setI18nContentSupport(i18nContentSupport);
-        dialogSelect.setComponentProvider(new MockComponentProvider());
 
-        Field field = dialogSelect.createField();
-        // WHEN
-        ArrayList<String> selected = new ArrayList<String>();
-        selected.add("1");
-        selected.add("3");
-        ((OptionGroup) field).setValue(selected);
-
-        // THEN
-        assertEquals(2, ((Collection) field.getValue()).toArray().length);
-        assertEquals("1", ((Collection) field.getValue()).toArray()[0]);
-        assertEquals("3", ((Collection) field.getValue()).toArray()[1]);
-    }
 
     @Override
     protected void createConfiguredFieldDefinition() {
