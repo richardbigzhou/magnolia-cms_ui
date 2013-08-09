@@ -568,7 +568,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     /**
-     * @return a String containing the node types to be searched for in a query. All node types declared in a workbench definition are returned
+     * @return a String containing the node types to be displayed in a list view and searched for in a query. All node types declared in a workbench definition are returned
      * unless their <code>hideInList</code> property is true. E.g. assuming a node types declaration like the following
      * 
      * <pre>
@@ -585,8 +585,8 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * ...
      * </pre>
      * 
-     * this method will return the following string <code>[jcr:primaryType] = 'nt:foo' or [jcr:mixinTypes] = 'baz'</code>. This will eventually be used to restrict the node types to be searched for
-     * in list and search views, i.e. <code>select * from [nt:base] where ([jcr:primaryType] = 'nt:foo' or [jcr:mixinTypes] = 'baz')</code>.
+     * this method will return the following string <code>[jcr:primaryType] = 'nt:foo' or [jcr:mixinTypes] = 'baz'</code>. This will eventually be used to restrict the node types to be displayed in list views and searched for
+     * in search views, i.e. <code>select * from [nt:base] where ([jcr:primaryType] = 'nt:foo' or [jcr:mixinTypes] = 'baz')</code>.
      * @see #findSearchableNodeTypes()
      */
     protected String getQueryWhereClauseNodeTypes() {
