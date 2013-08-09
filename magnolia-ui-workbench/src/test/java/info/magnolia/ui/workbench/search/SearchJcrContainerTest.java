@@ -137,7 +137,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertEquals(" where (([jcr:primaryType] = 'mgnl:content') and (localname() LIKE 'foo%' or t.[foo] IS NOT NULL or contains(t.[name], '*foo*') or contains(t.[shortname], '*foo*')) )", stmt);
+        assertEquals(" where (([jcr:primaryType] = 'mgnl:content') and (localname() LIKE 'foo%' or t.[foo] IS NOT NULL or contains(t.[name], 'foo') or contains(t.[shortname], 'foo')) )", stmt);
     }
 
     @Test
@@ -149,7 +149,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertContains("contains(t.[name], '*foo OR ''baz bar''*')", stmt);
+        assertContains("contains(t.[name], 'foo OR ''baz bar''')", stmt);
     }
 
     @Test
@@ -163,6 +163,18 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
 
         // THEN
         assertContains(" where ( ISDESCENDANTNODE('/qux') and ([jcr:primaryType] = 'mgnl:content') and (localname() LIKE 'foo%'", stmt);
+    }
+
+    @Test
+    public void testNodeAndPropertiesNamesAreEscaped() throws Exception {
+        // GIVEN
+        jcrContainer.setFullTextExpression("*foo");
+
+        // WHEN
+        String stmt = jcrContainer.getQueryWhereClause();
+
+        // THEN
+        assertContains("localname() LIKE '_x002a_foo%' or t.[_x002a_foo] IS NOT NULL", stmt);
     }
 
     protected void assertContains(final String searchString, final String string) {
