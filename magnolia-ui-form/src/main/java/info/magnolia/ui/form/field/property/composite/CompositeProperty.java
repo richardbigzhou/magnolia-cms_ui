@@ -33,47 +33,22 @@
  */
 package info.magnolia.ui.form.field.property.composite;
 
+import info.magnolia.ui.form.field.property.BaseProperty;
 import info.magnolia.ui.form.field.property.PropertyHandler;
-import info.magnolia.ui.form.field.property.HandlerAwareProperty;
 
 import javax.inject.Inject;
 
-import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
  * {@link ObjectProperty} implementation used to handle property used in {@link info.magnolia.ui.form.field.MultiField} or {@link info.magnolia.ui.form.field.SwitchableField}.<br>
  * These MultiProperty are handled as {@PropertysetItem}.
  */
-public class CompositeProperty extends ObjectProperty<PropertysetItem> implements HandlerAwareProperty<PropertysetItem> {
-
-    private PropertyHandler<PropertysetItem> handler;
+public class CompositeProperty extends BaseProperty<PropertysetItem> {
 
     @Inject
     public CompositeProperty(PropertyHandler<PropertysetItem> handler) {
-        super(new PropertysetItem());
-        this.handler = handler;
-        if (this.handler != null) {
-            setValue(this.handler.readFromDataSourceItem());
-        }
-
+        super(handler);
     }
 
-    @Override
-    public void setValue(PropertysetItem newValue) throws com.vaadin.data.Property.ReadOnlyException {
-        super.setValue(newValue);
-        if (this.handler != null) {
-            this.handler.writeToDataSourceItem(newValue);
-        }
-    }
-
-    @Override
-    public PropertysetItem getValue() {
-        return super.getValue();
-    }
-
-    @Override
-    public PropertyHandler<PropertysetItem> getHandler() {
-        return handler;
-    }
 }

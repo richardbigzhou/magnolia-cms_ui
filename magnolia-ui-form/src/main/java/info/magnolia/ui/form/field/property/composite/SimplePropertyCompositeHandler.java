@@ -35,7 +35,7 @@ package info.magnolia.ui.form.field.property.composite;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.property.BaseHandler;
+import info.magnolia.ui.form.field.property.AbstractBaseHandler;
 import info.magnolia.ui.form.field.property.PropertyHandler;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
@@ -56,7 +56,7 @@ import com.vaadin.data.util.PropertysetItem;
  * -- iterate the incoming {@link PropertysetItem}.<br>
  * -- if the related parent item do not contain this property, add it.<br>
  */
-public class SimplePropertyCompositeHandler extends BaseHandler implements PropertyHandler<PropertysetItem> {
+public class SimplePropertyCompositeHandler extends AbstractBaseHandler<PropertysetItem> implements PropertyHandler<PropertysetItem> {
 
     protected List<String> fieldsName;
     private String propertyPrefix;

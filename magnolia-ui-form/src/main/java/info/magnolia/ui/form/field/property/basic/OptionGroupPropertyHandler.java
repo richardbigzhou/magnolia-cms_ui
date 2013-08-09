@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.form.field.property.basic;
 
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 
@@ -53,8 +52,8 @@ public class OptionGroupPropertyHandler<T> extends BasicPropertyHandler<T> {
     private boolean multiselect = false;
 
 
-    public OptionGroupPropertyHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider, String fieldTypeName) {
-        super(parent, definition, componentProvider, fieldTypeName);
+    public OptionGroupPropertyHandler(Item parent, ConfiguredFieldDefinition definition, String fieldTypeName) {
+        super(parent, definition, fieldTypeName);
         multiselect = ((OptionGroupFieldDefinition) definition).isMultiselect();
     }
 

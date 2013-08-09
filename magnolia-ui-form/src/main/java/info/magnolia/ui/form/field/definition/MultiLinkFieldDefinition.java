@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.form.field.definition;
 
-import info.magnolia.ui.form.field.property.HandlerAwareProperty;
+import info.magnolia.ui.form.field.property.HasPropertyHandler;
 import info.magnolia.ui.form.field.property.PropertyHandler;
 import info.magnolia.ui.form.field.property.multi.MultiProperty;
 import info.magnolia.ui.form.field.property.multi.MultiValuesPropertyMultiHandler;
@@ -55,7 +55,7 @@ public class MultiLinkFieldDefinition extends LinkFieldDefinition {
     public MultiLinkFieldDefinition() {
         PropertyBuilder propertyBuilder = new PropertyBuilder();
         propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) MultiValuesPropertyMultiHandler.class);
-        propertyBuilder.setPropertyType((Class<? extends HandlerAwareProperty<?>>) (Object) MultiProperty.class);
+        propertyBuilder.setPropertyType((Class<? extends HasPropertyHandler<?>>) (Object) MultiProperty.class);
         setPropertyBuilder(propertyBuilder);
     }
 

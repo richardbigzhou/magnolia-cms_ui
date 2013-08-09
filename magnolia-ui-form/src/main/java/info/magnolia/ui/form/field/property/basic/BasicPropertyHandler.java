@@ -33,9 +33,8 @@
  */
 package info.magnolia.ui.form.field.property.basic;
 
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.property.BaseHandler;
+import info.magnolia.ui.form.field.property.AbstractBaseHandler;
 import info.magnolia.ui.form.field.property.PropertyHandler;
 
 import javax.inject.Inject;
@@ -48,14 +47,14 @@ import com.vaadin.data.Property;
  * 
  * @param <T>
  */
-public class BasicPropertyHandler<T> extends BaseHandler implements PropertyHandler<T> {
+public class BasicPropertyHandler<T> extends AbstractBaseHandler<T> implements PropertyHandler<T> {
 
     private Class<T> fieldType;
 
 
     @Inject
-    public BasicPropertyHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider, String fieldTypeName) {
-        super(parent, definition, componentProvider);
+    public BasicPropertyHandler(Item parent, ConfiguredFieldDefinition definition, String fieldTypeName) {
+        super(parent, definition, null);
         this.fieldType = getClassForName(fieldTypeName);
     }
 

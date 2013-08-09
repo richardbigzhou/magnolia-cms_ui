@@ -40,7 +40,7 @@ import info.magnolia.ui.form.AbstractFormItem;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.PropertyBuilder;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
-import info.magnolia.ui.form.field.property.HandlerAwareProperty;
+import info.magnolia.ui.form.field.property.HasPropertyHandler;
 import info.magnolia.ui.form.field.property.PropertyHandler;
 import info.magnolia.ui.form.field.property.basic.BasicProperty;
 import info.magnolia.ui.form.field.property.basic.BasicPropertyHandler;
@@ -184,7 +184,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     private Property<?> initializeProperty() {
 
         Class<? extends PropertyHandler<?>> handlerClass = null;
-        Class<? extends HandlerAwareProperty<?>> propertyTypeClass = null;
+        Class<? extends HasPropertyHandler<?>> propertyTypeClass = null;
 
         PropertyBuilder propertyBuilder = definition.getPropertyBuilder();
         if (propertyBuilder != null) {
@@ -194,7 +194,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         if (handlerClass == null || propertyTypeClass == null) {
             // Set Default
             handlerClass = (Class<? extends PropertyHandler<?>>) (Object) BasicPropertyHandler.class;
-            propertyTypeClass = (Class<? extends HandlerAwareProperty<?>>) (Object) BasicProperty.class;
+            propertyTypeClass = (Class<? extends HasPropertyHandler<?>>) (Object) BasicProperty.class;
         }
         Class<?> type = getFieldType();
         PropertyHandler<?> handler = initializePropertyHandler(handlerClass, type);

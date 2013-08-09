@@ -37,7 +37,7 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.property.BaseHandler;
+import info.magnolia.ui.form.field.property.AbstractBaseHandler;
 import info.magnolia.ui.form.field.property.PropertyHandler;
 import info.magnolia.ui.form.field.property.multi.SubNodesMultiHandler;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
@@ -68,7 +68,7 @@ import com.vaadin.data.util.PropertysetItem;
  * --- property 2 ....<br>
  * property 1, 2, ... are used to populate the {@link PropertysetItem}.
  */
-public class SubNodesCompositeHandler extends BaseHandler implements PropertyHandler<PropertysetItem> {
+public class SubNodesCompositeHandler extends AbstractBaseHandler<PropertysetItem> implements PropertyHandler<PropertysetItem> {
 
     private static final Logger log = LoggerFactory.getLogger(SubNodesMultiHandler.class);
     private List<String> fieldsName;

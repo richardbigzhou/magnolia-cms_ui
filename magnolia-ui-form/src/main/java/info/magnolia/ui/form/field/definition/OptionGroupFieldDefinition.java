@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.form.field.definition;
 
-import info.magnolia.ui.form.field.property.HandlerAwareProperty;
+import info.magnolia.ui.form.field.property.HasPropertyHandler;
 import info.magnolia.ui.form.field.property.PropertyHandler;
 import info.magnolia.ui.form.field.property.basic.BasicProperty;
 import info.magnolia.ui.form.field.property.basic.OptionGroupPropertyHandler;
@@ -52,7 +52,7 @@ public class OptionGroupFieldDefinition extends SelectFieldDefinition {
     public OptionGroupFieldDefinition() {
         PropertyBuilder propertyBuilder = new PropertyBuilder();
         propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) OptionGroupPropertyHandler.class);
-        propertyBuilder.setPropertyType((Class<? extends HandlerAwareProperty<?>>) (Object) BasicProperty.class);
+        propertyBuilder.setPropertyType((Class<? extends HasPropertyHandler<?>>) (Object) BasicProperty.class);
         setPropertyBuilder(propertyBuilder);
     }
 

@@ -35,16 +35,10 @@ package info.magnolia.ui.api.i18n;
 
 import java.util.Locale;
 
-import com.vaadin.data.Property;
-
 /**
- * Interface for locale-dependent property.
- *
- * @param <T> property value type.
+ * .
  */
-public interface I18NAwareProperty<T> extends Property<T> {
-
-    void setDefaultValue(T defaultValue);
+public interface I18NAwareHandler {
 
     void setLocale(Locale locale);
 
@@ -53,7 +47,4 @@ public interface I18NAwareProperty<T> extends Property<T> {
     Locale getLocale();
 
     String getBasePropertyName();
-
-    String getLocalizedPropertyName();
-
 }

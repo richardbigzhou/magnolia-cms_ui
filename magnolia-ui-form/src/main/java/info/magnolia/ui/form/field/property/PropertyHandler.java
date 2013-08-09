@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.form.field.property;
 
+import info.magnolia.ui.api.i18n.I18NAwareHandler;
+
 
 /**
  * Base definition for a {@link com.vaadin.data.Property} handler.<br>
@@ -42,7 +44,7 @@ package info.magnolia.ui.form.field.property;
  * 
  * @param <T> type of the element handled.
  */
-public interface PropertyHandler<T> {
+public interface PropertyHandler<T> extends I18NAwareHandler {
 
     /**
      * Convert the T newValue to a specific Item format.<br>
@@ -54,4 +56,9 @@ public interface PropertyHandler<T> {
      */
     T readFromDataSourceItem();
 
+    /**
+     * Return true if this Property has to support i18n.
+     */
+
+    boolean hasI18NSupport();
 }

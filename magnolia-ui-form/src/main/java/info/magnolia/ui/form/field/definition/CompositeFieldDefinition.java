@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.form.field.definition;
 
-import info.magnolia.ui.form.field.property.HandlerAwareProperty;
+import info.magnolia.ui.form.field.property.HasPropertyHandler;
 import info.magnolia.ui.form.field.property.PropertyHandler;
 import info.magnolia.ui.form.field.property.composite.CompositeProperty;
 import info.magnolia.ui.form.field.property.composite.SimplePropertyCompositeHandler;
@@ -60,7 +60,7 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
     public CompositeFieldDefinition() {
         PropertyBuilder propertyBuilder = new PropertyBuilder();
         propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) SimplePropertyCompositeHandler.class);
-        propertyBuilder.setPropertyType((Class<? extends HandlerAwareProperty<?>>) (Object) CompositeProperty.class);
+        propertyBuilder.setPropertyType((Class<? extends HasPropertyHandler<?>>) (Object) CompositeProperty.class);
         setPropertyBuilder(propertyBuilder);
     }
 

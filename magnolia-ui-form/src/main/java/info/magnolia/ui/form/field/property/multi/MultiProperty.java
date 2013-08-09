@@ -34,15 +34,13 @@
 package info.magnolia.ui.form.field.property.multi;
 
 
+import info.magnolia.ui.form.field.property.BaseProperty;
 import info.magnolia.ui.form.field.property.PropertyHandler;
-import info.magnolia.ui.form.field.property.HandlerAwareProperty;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import com.vaadin.data.util.ObjectProperty;
 
 /**
  * <b>Implementation used for {@link info.magnolia.ui.form.field.MultiField}</b><br>
@@ -55,32 +53,10 @@ import com.vaadin.data.util.ObjectProperty;
  * 
  * @param <T>
  */
-public class MultiProperty<T> extends ObjectProperty<List<T>> implements HandlerAwareProperty<List<T>> {
-
-    private PropertyHandler<List<T>> handler;
+public class MultiProperty<T> extends BaseProperty<List<T>> {
 
     @Inject
-    public MultiProperty(PropertyHandler<List<T>> delegate) {
-        super(new ArrayList<T>());
-        this.handler = delegate;
-        setValue(this.handler.readFromDataSourceItem());
-    }
-
-    @Override
-    public void setValue(List<T> newValue) throws com.vaadin.data.Property.ReadOnlyException {
-        super.setValue(newValue);
-        if (handler != null) {
-            handler.writeToDataSourceItem(newValue);
-        }
-    }
-
-    @Override
-    public List<T> getValue() {
-        return super.getValue();
-    }
-
-    @Override
-    public PropertyHandler<List<T>> getHandler() {
-        return handler;
+    public MultiProperty(PropertyHandler<List<T>> handler) {
+        super(handler);
     }
 }

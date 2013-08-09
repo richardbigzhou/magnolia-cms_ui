@@ -35,7 +35,7 @@ package info.magnolia.ui.form.field.property.multi;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.property.BaseHandler;
+import info.magnolia.ui.form.field.property.AbstractBaseHandler;
 import info.magnolia.ui.form.field.property.PropertyHandler;
 
 import java.util.LinkedList;
@@ -53,7 +53,7 @@ import com.vaadin.data.Property;
  * 
  * @param <T> type of the element list.
  */
-public class MultiValuesPropertyMultiHandler<T> extends BaseHandler implements PropertyHandler<List<T>> {
+public class MultiValuesPropertyMultiHandler<T> extends AbstractBaseHandler<List<T>> implements PropertyHandler<List<T>> {
 
 
     @Inject

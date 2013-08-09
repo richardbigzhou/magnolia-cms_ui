@@ -31,34 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.definition;
-
-import info.magnolia.ui.form.field.property.HasPropertyHandler;
-import info.magnolia.ui.form.field.property.PropertyHandler;
+package info.magnolia.ui.form.field.property;
 
 /**
- * Definition used to configure a the way a property is initialize and assign to a field. <br>
- * propertyType : Define the Type of the property used by the field ({@link info.magnolia.ui.form.field.property.basic.BasicProperty}, {@link info.magnolia.ui.form.field.property.multi.MultiProperty},... }).<br>
- * propertyHandler : Handler used to retrieve and put the content of the property to the related Field item.
+ * Generic Interface for used to custom property that are award of handlers.
+ * 
+ * @param <T>
  */
-public class PropertyBuilder {
+public interface HasPropertyHandler<T> {
 
-    private Class<? extends PropertyHandler<?>> propertyHandler;
-    private Class<? extends HasPropertyHandler<?>> propertyType;
+    PropertyHandler<T> getHandler();
 
-    public Class<? extends PropertyHandler<?>> getPropertyHandler() {
-        return propertyHandler;
-    }
 
-    public Class<? extends HasPropertyHandler<?>> getPropertyType() {
-        return propertyType;
-    }
-
-    public void setPropertyType(Class<? extends HasPropertyHandler<?>> propertyType) {
-        this.propertyType = propertyType;
-    }
-
-    public void setPropertyHandler(Class<? extends PropertyHandler<?>> propertyHandler) {
-        this.propertyHandler = propertyHandler;
-    }
 }

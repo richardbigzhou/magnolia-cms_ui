@@ -33,12 +33,10 @@
  */
 package info.magnolia.ui.form.field.property.basic;
 
+import info.magnolia.ui.form.field.property.BaseProperty;
 import info.magnolia.ui.form.field.property.PropertyHandler;
-import info.magnolia.ui.form.field.property.HandlerAwareProperty;
 
 import javax.inject.Inject;
-
-import com.vaadin.data.util.ObjectProperty;
 
 /**
  * Basic simple property Handler.<br>
@@ -46,31 +44,12 @@ import com.vaadin.data.util.ObjectProperty;
  * 
  * @param <T>
  */
-public class BasicProperty<T> extends ObjectProperty<T> implements HandlerAwareProperty<T> {
-
-    private PropertyHandler<T> handler;
+public class BasicProperty<T> extends BaseProperty<T> {
 
     @Inject
     public BasicProperty(PropertyHandler<T> handler, Class<T> type) {
-        super(handler.readFromDataSourceItem(), type);
+        super(handler, type);
         this.handler = handler;
     }
 
-    @Override
-    public void setValue(T newValue) throws com.vaadin.data.Property.ReadOnlyException {
-        super.setValue(newValue);
-        if (handler != null) {
-            handler.writeToDataSourceItem(newValue);
-        }
-    }
-
-    @Override
-    public T getValue() {
-        return super.getValue();
-    }
-
-    @Override
-    public PropertyHandler<T> getHandler() {
-        return handler;
-    }
 }

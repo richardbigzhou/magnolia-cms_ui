@@ -33,15 +33,22 @@
  */
 package info.magnolia.ui.form.field.property.composite;
 
-import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.property.AbstractBaseHandler;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
  * Empty Implementation of {@link PropertyHandler} for {@link PropertysetItem}.
  * This is mainly used if the {@link PropertysetItem} is handle by the parent field {@link PropertyHandler}.
  */
-public class NoOpCompositeHandler implements PropertyHandler<PropertysetItem> {
+public class NoOpCompositeHandler extends AbstractBaseHandler<PropertysetItem> {
+
+    public NoOpCompositeHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
+        super(parent, definition, componentProvider);
+    }
 
     private PropertysetItem propertysetItem;
 

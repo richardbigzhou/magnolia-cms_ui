@@ -31,34 +31,61 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.definition;
+package info.magnolia.ui.form.field.property;
 
-import info.magnolia.ui.form.field.property.HasPropertyHandler;
-import info.magnolia.ui.form.field.property.PropertyHandler;
+
+import com.vaadin.data.util.ObjectProperty;
 
 /**
- * Definition used to configure a the way a property is initialize and assign to a field. <br>
- * propertyType : Define the Type of the property used by the field ({@link info.magnolia.ui.form.field.property.basic.BasicProperty}, {@link info.magnolia.ui.form.field.property.multi.MultiProperty},... }).<br>
- * propertyHandler : Handler used to retrieve and put the content of the property to the related Field item.
+ * .
+ * 
+ * @param <T>
  */
-public class PropertyBuilder {
 
-    private Class<? extends PropertyHandler<?>> propertyHandler;
-    private Class<? extends HasPropertyHandler<?>> propertyType;
+public class BaseProperty<T> extends ObjectProperty<T> implements HasPropertyHandler<T> {
 
-    public Class<? extends PropertyHandler<?>> getPropertyHandler() {
-        return propertyHandler;
+    protected PropertyHandler<T> handler;
+    private boolean i18nValueChange = false;
+
+    public BaseProperty(PropertyHandler<T> handler, Class<T> type) {
+        super(handler.readFromDataSourceItem(), type);
+        this.handler = handler;
     }
 
-    public Class<? extends HasPropertyHandler<?>> getPropertyType() {
-        return propertyType;
+    public BaseProperty(PropertyHandler<T> handler) {
+        super(handler.readFromDataSourceItem());
+        this.handler = handler;
     }
 
-    public void setPropertyType(Class<? extends HasPropertyHandler<?>> propertyType) {
-        this.propertyType = propertyType;
+    @Override
+    public void setValue(T newValue) throws com.vaadin.data.Property.ReadOnlyException {
+        super.setValue(newValue);
+        if (handler != null) {
+            handler.writeToDataSourceItem(newValue);
+        }
     }
 
-    public void setPropertyHandler(Class<? extends PropertyHandler<?>> propertyHandler) {
-        this.propertyHandler = propertyHandler;
+    @Override
+    public T getValue() {
+        if (i18nValueChange && handler != null) {
+            i18nValueChange = false;
+            return handler.readFromDataSourceItem();
+        }
+        return super.getValue();
+    }
+
+    @Override
+    public PropertyHandler<T> getHandler() {
+        return handler;
+    }
+
+    public boolean hasI18NSupport() {
+        return handler.hasI18NSupport();
+    }
+
+
+    public void fireI18NValueChange() {
+        i18nValueChange = true;
+        super.fireValueChange();
     }
 }

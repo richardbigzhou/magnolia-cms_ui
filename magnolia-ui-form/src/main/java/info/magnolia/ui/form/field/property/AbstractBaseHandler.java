@@ -35,12 +35,13 @@ package info.magnolia.ui.form.field.property;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.i18n.I18NAwareProperty;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
@@ -54,18 +55,34 @@ import com.vaadin.data.Property;
 
 /**
  * Base Handler exposing useful methods for JCR Item properties. <br>
+ * 
+ * @param <T>
  */
-public class BaseHandler {
-    private static final Logger log = LoggerFactory.getLogger(BaseHandler.class);
+public abstract class AbstractBaseHandler<T> implements PropertyHandler<T> {
+
+    private static final Logger log = LoggerFactory.getLogger(AbstractBaseHandler.class);
     protected Item parent;
     protected final ConfiguredFieldDefinition definition;
     protected final ComponentProvider componentProvider;
 
+    protected String basePropertyName;
+    protected String i18NPropertyName;
+    protected Locale locale;
+
     @Inject
-    public BaseHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
+    public AbstractBaseHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
         this.definition = definition;
         this.parent = parent;
         this.componentProvider = componentProvider;
+        this.basePropertyName = definition.getName();
+        if (hasI18NSupport()) {
+            this.i18NPropertyName = this.basePropertyName;
+        }
+    }
+
+    @Override
+    public boolean hasI18NSupport() {
+        return definition.isI18n();
     }
 
     /**
@@ -76,24 +93,23 @@ public class BaseHandler {
      */
     @SuppressWarnings("unchecked")
     protected <T> Property<T> getOrCreateProperty(Class<T> type, String defaultValueString, T defaultValue) {
+        String propertyName = this.basePropertyName;
 
-        if (this.definition.isI18n()) {
-            I18NAwareProperty<T> property = componentProvider.newInstance(I18NAwareProperty.class, this.definition.getName(), type, parent);
-            property.setDefaultValue((T) defaultValue);
-            return property;
-
-        } else {
-            Property<T> property = parent.getItemProperty(this.definition.getName());
-            if (property == null) {
-                if (defaultValue != null) {
-                    property = new DefaultProperty<T>(defaultValue);
-                } else {
-                    property = DefaultPropertyUtil.newDefaultProperty(type, defaultValueString);
-                }
-                parent.addItemProperty(this.definition.getName(), property);
-            }
-            return property;
+        if (hasI18NSupport()) {
+            propertyName = this.i18NPropertyName;
         }
+
+        Property<T> property = parent.getItemProperty(propertyName);
+        if (property == null) {
+            if (defaultValue != null) {
+                property = new DefaultProperty<T>(defaultValue);
+            } else {
+                property = DefaultPropertyUtil.newDefaultProperty(type, defaultValueString);
+            }
+            parent.addItemProperty(propertyName, property);
+        }
+        return property;
+
     }
 
     /**
@@ -114,6 +130,26 @@ public class BaseHandler {
             child.setParent(((JcrNodeAdapter) parent));
         }
         return child;
+    }
+
+    @Override
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
+
+    @Override
+    public void setI18NPropertyName(String i18NPropertyName) {
+        this.i18NPropertyName = i18NPropertyName;
+    }
+
+    @Override
+    public Locale getLocale() {
+        return this.locale;
+    }
+
+    @Override
+    public String getBasePropertyName() {
+        return basePropertyName;
     }
 
 }

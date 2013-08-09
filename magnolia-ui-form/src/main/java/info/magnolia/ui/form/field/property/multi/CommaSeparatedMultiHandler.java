@@ -35,7 +35,7 @@ package info.magnolia.ui.form.field.property.multi;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.property.BaseHandler;
+import info.magnolia.ui.form.field.property.AbstractBaseHandler;
 import info.magnolia.ui.form.field.property.PropertyHandler;
 
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ import com.vaadin.data.Property;
  * <b>This handler is implemented for backward capability with Magnolia 4.x. <br>
  * As for Magnolia 4.x, the current implementation only support a list of String</b>
  */
-public class CommaSeparatedMultiHandler extends BaseHandler implements PropertyHandler<List<String>> {
+public class CommaSeparatedMultiHandler extends AbstractBaseHandler<List<String>> implements PropertyHandler<List<String>> {
 
 
     @Inject
@@ -66,7 +66,7 @@ public class CommaSeparatedMultiHandler extends BaseHandler implements PropertyH
 
     @Override
     public void writeToDataSourceItem(List<String> newValue) {
-        Property<String> property = getOrCreateProperty(String.class, null, "");
+        Property<String> property = (Property<String>) getOrCreateProperty(String.class, null, "");
         property.setValue(StringUtils.join(removeComma(newValue), ","));
     }
 

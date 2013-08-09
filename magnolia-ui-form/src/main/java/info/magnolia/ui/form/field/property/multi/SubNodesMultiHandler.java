@@ -38,7 +38,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.property.BaseHandler;
+import info.magnolia.ui.form.field.property.AbstractBaseHandler;
 import info.magnolia.ui.form.field.property.PropertyHandler;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
@@ -72,7 +72,7 @@ import com.vaadin.data.Item;
  * 
  * @param <T> type of the element list.
  */
-public class SubNodesMultiHandler<T> extends BaseHandler implements PropertyHandler<List<T>> {
+public class SubNodesMultiHandler<T> extends AbstractBaseHandler<List<T>> implements PropertyHandler<List<T>> {
 
     private static final Logger log = LoggerFactory.getLogger(SubNodesMultiHandler.class);
 
