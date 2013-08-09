@@ -269,6 +269,8 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
                 this.parameters.setPlatformType(targetPreviewPlatform);
                 pageBarView.setPlatFormType(targetPreviewPlatform);
 
+            } else {
+                LinkUtil.addParameter(sb, "mgnlPreview", "true");
             }
             LinkUtil.addParameter(sb, "mgnlChannel", targetPreviewPlatform.getId());
 
@@ -395,6 +397,13 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     public void platformSelected(PlatformType platformType) {
         this.targetPreviewPlatform = platformType;
         doGoToLocation(getCurrentLocation());
+    }
+
+    /**
+     * This method has package visibility for testing purposes only.
+     */
+    final PageEditorParameters getParameters() {
+        return parameters;
     }
 
     private boolean isDeletedNode(String workspace, String path) {
