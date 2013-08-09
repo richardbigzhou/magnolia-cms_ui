@@ -35,6 +35,8 @@ package info.magnolia.ui.dialog.definition;
 
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.i18n.I18nAble;
+import info.magnolia.i18n.I18nText;
 
 import java.util.Map;
 
@@ -44,6 +46,7 @@ import java.util.Map;
  * @see info.magnolia.ui.form.field.definition.FieldDefinition
  * @see ActionDefinition
  */
+@I18nAble
 public interface DialogDefinition {
 
     /**
@@ -51,10 +54,12 @@ public interface DialogDefinition {
      */
     String getId();
 
+    @I18nText
     String getLabel();
 
     String getI18nBasename();
 
+    @I18nText
     String getDescription();
 
     FormDefinition getForm();

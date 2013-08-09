@@ -34,6 +34,8 @@
 package info.magnolia.ui.form.definition;
 
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.i18n.I18nAble;
+import info.magnolia.i18n.I18nText;
 
 import java.util.List;
 
@@ -43,10 +45,12 @@ import java.util.List;
  * @see FormDefinition
  * @see FieldDefinition
  */
+@I18nAble(keyGenerator = TabDefinitionKeyGenerator.class)
 public interface TabDefinition {
 
     String getName();
 
+    @I18nText
     String getLabel();
 
     String getI18nBasename();

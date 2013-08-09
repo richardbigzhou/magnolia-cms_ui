@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,27 +33,27 @@
  */
 package info.magnolia.ui.form.definition;
 
-import info.magnolia.i18n.I18nAble;
-import info.magnolia.i18n.I18nText;
+import info.magnolia.i18n.AbstractI18nKeyGenerator;
+import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 
 /**
- * Defines a form.
- *
- * @see TabDefinition
- * @see info.magnolia.ui.form.field.definition.FieldDefinition
+ * @author gjoseph
  */
-@I18nAble()
-public interface FormDefinition {
+public class TabDefinitionKeyGenerator extends AbstractI18nKeyGenerator<TabDefinition>{
 
-    @I18nText
-    String getLabel();
+    @Override
+    protected void keysFor(List<String> list, TabDefinition tab, AnnotatedElement el) {
+        final FormDefinition formDef = getParentViaCast(tab);
+        final String formName = formDef.getLabel(); // TODO this is not correct !
+        // TODO final DialogDefinition dialogDef = getParentViaCast(i18nContextParent);
+        addKey(list, formName, tab.getName(), fieldOrGetterName(el));
+        addKey(list, tab.getName(), fieldOrGetterName(el));
+    }
 
-    String getI18nBasename();
-
-    @I18nText
-    String getDescription();
-
-    List<TabDefinition> getTabs();
-
+    @Override
+    public String messageBundleNameFor(TabDefinition tab) {
+        System.out.println("tab.getI18nBasename(): " + tab.getI18nBasename());
+        return tab.getI18nBasename();
+    }
 }
