@@ -82,12 +82,23 @@ div.mgnlEditorBar.area.init ~ div.mgnlPlaceholder div.mgnlEditorBar.component {
 
 div.mgnlEditorBar.area.childFocus ~ div.mgnlEditorBar.component.moveTarget,
 div.mgnlEditorBar.area.childFocus ~ * div.mgnlEditorBar.component.moveTarget {
-  border: 1px solid #568706 !important;
+  border: 1px solid $cp50 !important;
+
+  div.mgnlEditorBarLabel {
+    padding-top: 4px !important;
+    padding-left: 15px !important;
+  }
+
+  div.mgnlEditorBarButtons {
+    height: 23px !important;
+    line-height: 23px !important;
+    padding-right: 7px !important;
+  }
 }
 
 div.mgnlEditorBar.area.childFocus ~ div.mgnlEditorBar.component.moveOver,
 div.mgnlEditorBar.area.childFocus ~ * div.mgnlEditorBar.component.moveOver {
-  background-color: #88ab50 !important;
+  background-color: $cp51 !important;
 }
 
 div.mgnlEditorBar.area.childFocus ~ div.mgnlPlaceholder div.mgnlPlaceholderBox,
@@ -166,6 +177,7 @@ div.mgnlPlaceholder div.mgnlPlaceholderBox {
 div.mgnlEditorBarButtons {
   float: right !important;
   height: 25px !important;
+  line-height: 25px !important;
   overflow: hidden !important;
   padding: 0 8px 0 0 !important;
 }
@@ -176,7 +188,7 @@ div.mgnlEditorBarButtons {
  */
 div.editorIcon {
   -webkit-backface-visibility: hidden;
-  line-height: 25px !important;
+  line-height: inherit;
   padding: 0 0 0 11px !important;
   cursor: pointer !important;
   font-size: 18px !important;
@@ -243,7 +255,7 @@ div.mgnlLevel-max {
 
 /* selected drop target */
 .mgnlEditorBar.component.moveOver {
-  background-color: #88ab50 !important;
+  background-color: $cp51 !important;
 }
 
 div#mgnlEditorMoveDiv {

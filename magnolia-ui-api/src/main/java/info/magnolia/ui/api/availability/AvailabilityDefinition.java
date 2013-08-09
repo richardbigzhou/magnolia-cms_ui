@@ -58,6 +58,11 @@ public interface AvailabilityDefinition {
     boolean isNodes();
 
     /**
+     * If true, the subject is available for multiple item selection.
+     */
+    boolean isMultiple();
+
+    /**
      * Unless this is empty the subject is available only for these node types.
      */
     Collection<String> getNodeTypes();
