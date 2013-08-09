@@ -33,6 +33,11 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import info.magnolia.ui.form.field.property.HandlerAwareProperty;
+import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.ui.form.field.property.multi.MultiProperty;
+import info.magnolia.ui.form.field.property.multi.MultiValuesPropertyMultiHandler;
+
 /**
  * Definition used to configure a generic multi field.
  */
@@ -41,6 +46,17 @@ public class MultiFieldDefinition extends ConfiguredFieldDefinition {
     private String buttonSelectAddLabel = "buttons.add";
     private String buttonSelectRemoveLabel = "buttons.delete";
     private ConfiguredFieldDefinition field;
+
+    /**
+     * Set default {@link PropertyBuilder}.
+     */
+    @SuppressWarnings("unchecked")
+    public MultiFieldDefinition() {
+        PropertyBuilder propertyBuilder = new PropertyBuilder();
+        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) MultiValuesPropertyMultiHandler.class);
+        propertyBuilder.setPropertyType((Class<? extends HandlerAwareProperty<?>>) (Object) MultiProperty.class);
+        setPropertyBuilder(propertyBuilder);
+    }
 
     /**
      * @return i18n property used to configure the Add Button Label.

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.list;
+package info.magnolia.ui.form.field.property.multi;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
@@ -53,22 +53,22 @@ import com.vaadin.data.Property;
  * 
  * @param <T> type of the element list.
  */
-public class MultiValuesPropertyListHandler<T> extends BaseHandler implements PropertyHandler<List<T>> {
+public class MultiValuesPropertyMultiHandler<T> extends BaseHandler implements PropertyHandler<List<T>> {
 
 
     @Inject
-    public MultiValuesPropertyListHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
+    public MultiValuesPropertyMultiHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
         super(parent, definition, componentProvider);
     }
 
     @Override
-    public void setValue(List<T> newValue) {
+    public void writeToDataSourceItem(List<T> newValue) {
         Property<List> property = getOrCreateProperty(List.class, null, new LinkedList<T>());
         property.setValue(new LinkedList<T>(newValue));
     }
 
     @Override
-    public List<T> getValue() {
+    public List<T> readFromDataSourceItem() {
         Property<List> property = getOrCreateProperty(List.class,null,  new LinkedList<T>());
         return property.getValue();
     }

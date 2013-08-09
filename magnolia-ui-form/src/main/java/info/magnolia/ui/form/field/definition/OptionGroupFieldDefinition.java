@@ -33,11 +33,10 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import info.magnolia.ui.form.field.property.HandlerAwareProperty;
 import info.magnolia.ui.form.field.property.PropertyHandler;
 import info.magnolia.ui.form.field.property.basic.BasicProperty;
 import info.magnolia.ui.form.field.property.basic.OptionGroupPropertyHandler;
-
-import com.vaadin.data.Property;
 
 /**
  * Field definition for radio and check box select field.
@@ -53,7 +52,7 @@ public class OptionGroupFieldDefinition extends SelectFieldDefinition {
     public OptionGroupFieldDefinition() {
         PropertyBuilder propertyBuilder = new PropertyBuilder();
         propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) OptionGroupPropertyHandler.class);
-        propertyBuilder.setPropertyType((Class<? extends Property<?>>) (Object) BasicProperty.class);
+        propertyBuilder.setPropertyType((Class<? extends HandlerAwareProperty<?>>) (Object) BasicProperty.class);
         setPropertyBuilder(propertyBuilder);
     }
 

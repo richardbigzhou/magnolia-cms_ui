@@ -85,7 +85,7 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
 
 
     /**
-     * Create a new Instance of {@link PropertyHandler} dedicated to {@link info.magnolia.ui.form.field.property.multi.MultiProperty}.
+     * Create a new Instance of {@link PropertyHandler} dedicated to {@link info.magnolia.ui.form.field.property.composite.CompositeProperty}.
      */
     @Override
     protected PropertyHandler<?> initializePropertyHandler(Class<? extends PropertyHandler<?>> handlerClass, Class<?> type) {

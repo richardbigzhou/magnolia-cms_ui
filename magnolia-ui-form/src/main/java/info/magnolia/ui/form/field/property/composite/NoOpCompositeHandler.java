@@ -31,49 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.list;
-
+package info.magnolia.ui.form.field.property.composite;
 
 import info.magnolia.ui.form.field.property.PropertyHandler;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
 
 /**
- * {@link ObjectProperty} implementation used in order to handle ListProperty type.<br>
- * This property is set as {@link com.vaadin.ui.Field#setPropertyDataSource(com.vaadin.data.Property)} and handle a list of generic objects.<br>
- * {@link ListHandler} perform the bridge (retrieve/store) between <br>
- * - the stored values (multi value properties, multi nodes,...) <br>
- * and<br>
- * - the list element.
- * 
- * @param <T>
+ * Empty Implementation of {@link PropertyHandler} for {@link PropertysetItem}.
+ * This is mainly used if the {@link PropertysetItem} is handle by the parent field {@link PropertyHandler}.
  */
-public class ListProperty<T> extends ObjectProperty<List<T>> {
+public class NoOpCompositeHandler implements PropertyHandler<PropertysetItem> {
 
-    private PropertyHandler<List<T>> handler;
+    private PropertysetItem propertysetItem;
 
-    @Inject
-    public ListProperty(PropertyHandler<List<T>> delegate) {
-        super(new ArrayList<T>());
-        this.handler = delegate;
-        setValue(this.handler.getValue());
+    @Override
+    public void writeToDataSourceItem(PropertysetItem newValue) {
+        this.propertysetItem = newValue;
     }
 
     @Override
-    public void setValue(List<T> newValue) throws com.vaadin.data.Property.ReadOnlyException {
-        super.setValue(newValue);
-        if (handler != null) {
-            handler.setValue(newValue);
+    public PropertysetItem readFromDataSourceItem() {
+        if (this.propertysetItem == null) {
+            return new PropertysetItem();
         }
+        return this.propertysetItem;
     }
 
-    @Override
-    public List<T> getValue() {
-        return super.getValue();
-    }
 }

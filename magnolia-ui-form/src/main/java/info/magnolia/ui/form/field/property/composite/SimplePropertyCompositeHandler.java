@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.multi;
+package info.magnolia.ui.form.field.property.composite;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
@@ -56,12 +56,12 @@ import com.vaadin.data.util.PropertysetItem;
  * -- iterate the incoming {@link PropertysetItem}.<br>
  * -- if the related parent item do not contain this property, add it.<br>
  */
-public class SimplePropertyMultiHandler extends BaseHandler implements PropertyHandler<PropertysetItem> {
+public class SimplePropertyCompositeHandler extends BaseHandler implements PropertyHandler<PropertysetItem> {
 
     protected List<String> fieldsName;
     private String propertyPrefix;
 
-    public SimplePropertyMultiHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider, List<String> fieldsName) {
+    public SimplePropertyCompositeHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider, List<String> fieldsName) {
         super(parent, definition, componentProvider);
         this.fieldsName = fieldsName;
         this.propertyPrefix = createPropertyPrefix(definition);
@@ -75,7 +75,7 @@ public class SimplePropertyMultiHandler extends BaseHandler implements PropertyH
     }
 
     @Override
-    public void setValue(PropertysetItem newValues) {
+    public void writeToDataSourceItem(PropertysetItem newValues) {
         // Get iterator.
         Iterator<?> propertyNames = newValues.getItemPropertyIds().iterator();
 
@@ -90,7 +90,7 @@ public class SimplePropertyMultiHandler extends BaseHandler implements PropertyH
     }
 
     @Override
-    public PropertysetItem getValue() {
+    public PropertysetItem readFromDataSourceItem() {
         PropertysetItem newValues = new PropertysetItem();
         if (!(parent instanceof JcrNewNodeAdapter)) {
             for (String propertyName : fieldsName) {

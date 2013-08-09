@@ -33,41 +33,54 @@
  */
 package info.magnolia.ui.form.field.property.multi;
 
+
 import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.ui.form.field.property.HandlerAwareProperty;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.data.util.PropertysetItem;
 
 /**
- * {@link ObjectProperty} implementation used to handle property used in {@link info.magnolia.ui.form.field.MultiField} or {@link info.magnolia.ui.form.field.SwitchableField}.<br>
- * These MultiProperty are handled as {@PropertysetItem}.
+ * <b>Implementation used for {@link info.magnolia.ui.form.field.MultiField}</b><br>
+ * {@link ObjectProperty} implementation used in order to handle ListProperty type.<br>
+ * This property is set as {@link com.vaadin.ui.Field#setPropertyDataSource(com.vaadin.data.Property)} and handle a list of generic objects.<br>
+ * {@link ListHandler} perform the bridge (retrieve/store) between <br>
+ * - the stored values (multi value properties, multi nodes,...) <br>
+ * and<br>
+ * - the list element.
+ * 
+ * @param <T>
  */
-public class MultiProperty extends ObjectProperty<PropertysetItem> {
+public class MultiProperty<T> extends ObjectProperty<List<T>> implements HandlerAwareProperty<List<T>> {
 
-    private PropertyHandler<PropertysetItem> handler;
+    private PropertyHandler<List<T>> handler;
 
     @Inject
-    public MultiProperty(PropertyHandler<PropertysetItem> handler) {
-        super(new PropertysetItem());
-        this.handler = handler;
-        if (this.handler != null) {
-            setValue(this.handler.getValue());
-        }
-
+    public MultiProperty(PropertyHandler<List<T>> delegate) {
+        super(new ArrayList<T>());
+        this.handler = delegate;
+        setValue(this.handler.readFromDataSourceItem());
     }
 
     @Override
-    public void setValue(PropertysetItem newValue) throws com.vaadin.data.Property.ReadOnlyException {
+    public void setValue(List<T> newValue) throws com.vaadin.data.Property.ReadOnlyException {
         super.setValue(newValue);
-        if (this.handler != null) {
-            this.handler.setValue(newValue);
+        if (handler != null) {
+            handler.writeToDataSourceItem(newValue);
         }
     }
 
     @Override
-    public PropertysetItem getValue() {
+    public List<T> getValue() {
         return super.getValue();
+    }
+
+    @Override
+    public PropertyHandler<List<T>> getHandler() {
+        return handler;
     }
 }

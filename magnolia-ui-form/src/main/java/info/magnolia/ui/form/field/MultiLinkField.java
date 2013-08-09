@@ -56,7 +56,7 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * A base custom field creating a List of {@list LinkField}, configuring an Add/Remove Buttons. <br>
- * Note that the DataSource Property is of type {@link info.magnolia.ui.form.field.property.list.ListProperty}.
+ * Note that the DataSource Property is of type {@link info.magnolia.ui.form.field.property.multi.MultiProperty}.
  */
 public class MultiLinkField extends CustomField<List> {
 

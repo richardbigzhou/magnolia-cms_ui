@@ -33,14 +33,13 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import info.magnolia.ui.form.field.property.HandlerAwareProperty;
 import info.magnolia.ui.form.field.property.PropertyHandler;
-import info.magnolia.ui.form.field.property.multi.MultiProperty;
-import info.magnolia.ui.form.field.property.multi.SwitchableSimplePropertyMultiHandler;
+import info.magnolia.ui.form.field.property.composite.CompositeProperty;
+import info.magnolia.ui.form.field.property.composite.SwitchableSimplePropertyCompositeHandler;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.vaadin.data.Property;
 
 /**
  * Field definition for a switchable field.
@@ -56,8 +55,8 @@ public class SwitchableFieldDefinition extends CompositeFieldDefinition {
     @SuppressWarnings("unchecked")
     public SwitchableFieldDefinition() {
         PropertyBuilder propertyBuilder = new PropertyBuilder();
-        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) SwitchableSimplePropertyMultiHandler.class);
-        propertyBuilder.setPropertyType((Class<? extends Property<?>>) (Object) MultiProperty.class);
+        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) SwitchableSimplePropertyCompositeHandler.class);
+        propertyBuilder.setPropertyType((Class<? extends HandlerAwareProperty<?>>) (Object) CompositeProperty.class);
         setPropertyBuilder(propertyBuilder);
     }
 

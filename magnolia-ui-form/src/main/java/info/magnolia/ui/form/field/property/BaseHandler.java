@@ -99,18 +99,18 @@ public class BaseHandler {
     /**
      * Retrieve or create a child node as {@link JcrNodeAdapter}.
      */
-    protected JcrNodeAdapter getOrCreateChildNode(String chieldNodeName, String chieldNodeType) throws RepositoryException {
+    protected JcrNodeAdapter getOrCreateChildNode(String childNodeName, String childNodeType) throws RepositoryException {
         JcrNodeAdapter child = null;
         if (!(parent instanceof JcrNodeAdapter)) {
             log.warn("Try to retrieve a Jcr Item from a Non Jcr Item Adapter. Will retrun null");
             return null;
         }
         Node node = ((JcrNodeAdapter) parent).getJcrItem();
-        if (node.hasNode(chieldNodeName) && !(parent instanceof JcrNewNodeAdapter)) {
-            child = new JcrNodeAdapter(node.getNode(chieldNodeName));
+        if (node.hasNode(childNodeName) && !(parent instanceof JcrNewNodeAdapter)) {
+            child = new JcrNodeAdapter(node.getNode(childNodeName));
             child.setParent(((JcrNodeAdapter) parent));
         } else {
-            child = new JcrNewNodeAdapter(node, NodeTypes.Content.NAME, chieldNodeName);
+            child = new JcrNewNodeAdapter(node, NodeTypes.Content.NAME, childNodeName);
             child.setParent(((JcrNodeAdapter) parent));
         }
         return child;

@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.list;
+package info.magnolia.ui.form.field.property.multi;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
@@ -56,22 +56,22 @@ import com.vaadin.data.Property;
  * <b>This handler is implemented for backward capability with Magnolia 4.x. <br>
  * As for Magnolia 4.x, the current implementation only support a list of String</b>
  */
-public class CommaSeparatedListHandler extends BaseHandler implements PropertyHandler<List<String>> {
+public class CommaSeparatedMultiHandler extends BaseHandler implements PropertyHandler<List<String>> {
 
 
     @Inject
-    public CommaSeparatedListHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
+    public CommaSeparatedMultiHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
         super(parent, definition, componentProvider);
     }
 
     @Override
-    public void setValue(List<String> newValue) {
+    public void writeToDataSourceItem(List<String> newValue) {
         Property<String> property = getOrCreateProperty(String.class, null, "");
         property.setValue(StringUtils.join(removeComma(newValue), ","));
     }
 
     @Override
-    public List<String> getValue() {
+    public List<String> readFromDataSourceItem() {
         Property<String> property = getOrCreateProperty(String.class, null, "");
         String value = property.getValue();
         return Arrays.asList(value.split(","));
@@ -88,4 +88,5 @@ public class CommaSeparatedListHandler extends BaseHandler implements PropertyHa
         }
         return res;
     }
+
 }

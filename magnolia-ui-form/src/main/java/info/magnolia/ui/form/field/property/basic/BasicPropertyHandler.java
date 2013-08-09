@@ -52,12 +52,22 @@ public class BasicPropertyHandler<T> extends BaseHandler implements PropertyHand
 
     private Class<T> fieldType;
 
+
     @Inject
     public BasicPropertyHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider, String fieldTypeName) {
         super(parent, definition, componentProvider);
         this.fieldType = getClassForName(fieldTypeName);
     }
 
+    /**
+     * Update the related {@link Property} with the new value.<br>
+     * The related {@link Property} is created by a previous call to readFromDataSourceItem().
+     */
+    @Override
+    public void writeToDataSourceItem(T newValue) {
+        Property<T> p = (Property<T>) getOrCreateProperty(fieldType, "", newValue);
+        p.setValue(newValue);
+    }
 
     /**
      * Get a property from the current Item.<br>
@@ -65,21 +75,12 @@ public class BasicPropertyHandler<T> extends BaseHandler implements PropertyHand
      * - else if the property already exists, return this property. If the property does not exist, create a new property based on the defined type, default value, and saveInfo.
      */
     @Override
-    public T getValue() {
+    public T readFromDataSourceItem() {
         String defaultValue = definition.getDefaultValue();
         Property<T> p = (Property<T>) getOrCreateProperty(fieldType, defaultValue, null);
         return p.getValue();
     }
 
-    /**
-     * Update the related {@link Property} with the new value.<br>
-     * The related {@link Property} is created by a previous call to getValue().
-     */
-    @Override
-    public void setValue(T newValue) {
-        Property<T> p = (Property<T>) getOrCreateProperty(fieldType, "", newValue);
-        p.setValue(newValue);
-    }
 
     @SuppressWarnings("unchecked")
     private Class<T> getClassForName(String fieldTypeName) {
@@ -89,5 +90,4 @@ public class BasicPropertyHandler<T> extends BaseHandler implements PropertyHand
             return (Class<T>) String.class;
         }
     }
-
 }

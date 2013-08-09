@@ -31,8 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.list;
+package info.magnolia.ui.form.field.property.multi;
 
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.jcr.wrapper.JCRMgnlPropertiesFilteringNodeWrapper;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -47,19 +48,26 @@ import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
- * Dedicated {@link PropertysetItem} implementation of {@link SubNodesListHandler}.<br>
+ * Dedicated {@link PropertysetItem} implementation of {@link SubNodesMultiHandler}.<br>
  * This implementation store/retrieve the {@link PropertysetItem} property under the child node.<br>
- * A sub node is created for every {@link PropertysetItem} element of the List.
+ * A sub node is created for every {@link PropertysetItem} element of the List.<br>
+ * Used in the case of a {@link info.magnolia.ui.form.field.MultiField} contains {@link info.magnolia.ui.form.field.CompositeField} or {@link info.magnolia.ui.form.field.SwitchableField}.<br>
+ * In this case, {@link info.magnolia.ui.form.field.CompositeField} or {@link info.magnolia.ui.form.field.SwitchableField} will have to declare a {@link info.magnolia.ui.form.field.property.composite.NoOpCompositeHandler}.
  * 
  * @param <T>.
  */
-public class SubNodesListPropertysetItemHandler<T> extends SubNodesListHandler<PropertysetItem> {
+public class SubNodesMultiPropertysetItemHandler<T> extends SubNodesMultiHandler<PropertysetItem> {
 
-    public SubNodesListPropertysetItemHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
+    private static final Logger log = LoggerFactory.getLogger(SubNodesMultiPropertysetItemHandler.class);
+
+    public SubNodesMultiPropertysetItemHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
         super(parent, definition, componentProvider);
     }
 
@@ -77,7 +85,7 @@ public class SubNodesListPropertysetItemHandler<T> extends SubNodesListHandler<P
                 newValues.addItemProperty(jcrPorperty.getName(), newProperty);
             }
         } catch (RepositoryException re) {
-            // TODO log.
+            log.warn("Not able to read property from the following child node {}", NodeUtil.getName(child), re.getLocalizedMessage());
         }
         return newValues;
     }

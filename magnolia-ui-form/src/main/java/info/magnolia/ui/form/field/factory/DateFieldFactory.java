@@ -71,4 +71,9 @@ public class DateFieldFactory extends AbstractFieldFactory<DateFieldDefinition, 
 
         return popupDateField;
     }
+
+    @Override
+    protected Class<?> getDefaultFieldType() {
+        return Date.class;
+    }
 }

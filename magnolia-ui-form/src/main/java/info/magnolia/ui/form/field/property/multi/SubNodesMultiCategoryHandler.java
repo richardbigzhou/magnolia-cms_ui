@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.list;
+package info.magnolia.ui.form.field.property.multi;
 
 import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeTypes;
@@ -73,14 +73,14 @@ import com.vaadin.data.Property;
  * 
  * @param <T> type of the element list.
  */
-public class SubNodesListCategoryHandler<T> extends SubNodesListHandler<Property<T>> {
+public class SubNodesMultiCategoryHandler<T> extends SubNodesMultiHandler<Property<T>> {
 
-    private static final Logger log = LoggerFactory.getLogger(SubNodesListCategoryHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(SubNodesMultiCategoryHandler.class);
     private String subNodeName;
     private int valueItemNameSize = 20;
 
     @Inject
-    public SubNodesListCategoryHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
+    public SubNodesMultiCategoryHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
         super(parent, definition, componentProvider);
         this.subNodeName = definition.getName();
     }

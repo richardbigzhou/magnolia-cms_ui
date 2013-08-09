@@ -34,27 +34,24 @@
 package info.magnolia.ui.form.field.property;
 
 
-
 /**
  * Base definition for a {@link com.vaadin.data.Property} handler.<br>
  * Implemented Handler have the responsibility to : <br>
- * - Convert the T newValue to a specific JCR format (CommaSeparated multi values, multiPorperty values) <br>
- * - Transform a specific property, nodes to a specified type T.
+ * - write : Convert the T newValue to a specific Item format (Single Item property, Multi Item property, Multi sub Items...) <br>
+ * - read : Transform a specific Item values (single property, Multi. property, sub Items) to a specified type T. <br>
  * 
  * @param <T> type of the element handled.
  */
 public interface PropertyHandler<T> {
 
     /**
-     * Convert the T newValue to a specific JCR format (CommaSeparated multi values, multiPorperty values).<br>
-     * 
-     * @param newValue
+     * Convert the T newValue to a specific Item format.<br>
      */
-    void setValue(T newValue);
+    void writeToDataSourceItem(T newValue);
 
     /**
-     * Transform a specific property, nodes to a specified type T.<br>
+     * Transform a specific Item values to a specified type T.<br>
      */
-    T getValue();
+    T readFromDataSourceItem();
 
 }

@@ -33,6 +33,11 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import info.magnolia.ui.form.field.property.HandlerAwareProperty;
+import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.ui.form.field.property.multi.MultiProperty;
+import info.magnolia.ui.form.field.property.multi.MultiValuesPropertyMultiHandler;
+
 
 
 /**
@@ -42,6 +47,17 @@ public class MultiLinkFieldDefinition extends LinkFieldDefinition {
 
     private String buttonSelectAddLabel = "buttons.add";
     private String buttonSelectRemoveLabel = "buttons.delete";
+
+    /**
+     * Set default {@link PropertyBuilder}.
+     */
+    @SuppressWarnings("unchecked")
+    public MultiLinkFieldDefinition() {
+        PropertyBuilder propertyBuilder = new PropertyBuilder();
+        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) MultiValuesPropertyMultiHandler.class);
+        propertyBuilder.setPropertyType((Class<? extends HandlerAwareProperty<?>>) (Object) MultiProperty.class);
+        setPropertyBuilder(propertyBuilder);
+    }
 
     /**
      * @return i18n property used to configure Button Label.

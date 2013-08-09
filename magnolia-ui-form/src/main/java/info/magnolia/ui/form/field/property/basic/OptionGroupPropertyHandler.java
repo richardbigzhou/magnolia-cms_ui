@@ -60,8 +60,8 @@ public class OptionGroupPropertyHandler<T> extends BasicPropertyHandler<T> {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public T getValue() {
-        T value = super.getValue();
+    public T readFromDataSourceItem() {
+        T value = super.readFromDataSourceItem();
         if (!multiselect) {
             return value;
         }

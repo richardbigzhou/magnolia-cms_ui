@@ -33,6 +33,11 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import info.magnolia.ui.form.field.property.HandlerAwareProperty;
+import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.ui.form.field.property.composite.CompositeProperty;
+import info.magnolia.ui.form.field.property.composite.SimplePropertyCompositeHandler;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,6 +52,17 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
     private List<ConfiguredFieldDefinition> fields = new ArrayList<ConfiguredFieldDefinition>();
     private List<String> fieldsName;
 
+
+    /**
+     * Set default {@link PropertyBuilder}.
+     */
+    @SuppressWarnings("unchecked")
+    public CompositeFieldDefinition() {
+        PropertyBuilder propertyBuilder = new PropertyBuilder();
+        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) SimplePropertyCompositeHandler.class);
+        propertyBuilder.setPropertyType((Class<? extends HandlerAwareProperty<?>>) (Object) CompositeProperty.class);
+        setPropertyBuilder(propertyBuilder);
+    }
 
     public List<ConfiguredFieldDefinition> getFields() {
         return fields;

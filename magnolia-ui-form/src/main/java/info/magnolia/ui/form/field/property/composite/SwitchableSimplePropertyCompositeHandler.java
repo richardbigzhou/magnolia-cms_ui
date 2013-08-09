@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.multi;
+package info.magnolia.ui.form.field.property.composite;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
@@ -50,9 +50,9 @@ import com.vaadin.data.util.PropertysetItem;
  * - property (propertyPrefix + second field name): contain the value of the second field <br>
  * ...<br>
  */
-public class SwitchableSimplePropertyMultiHandler extends SimplePropertyMultiHandler {
+public class SwitchableSimplePropertyCompositeHandler extends SimplePropertyCompositeHandler {
 
-    public SwitchableSimplePropertyMultiHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider, List<String> fieldsName) {
+    public SwitchableSimplePropertyCompositeHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider, List<String> fieldsName) {
         super(parent, definition, componentProvider, fieldsName);
     }
 
@@ -65,8 +65,8 @@ public class SwitchableSimplePropertyMultiHandler extends SimplePropertyMultiHan
     }
 
     @Override
-    public void setValue(PropertysetItem newValues) {
-        super.setValue(newValues);
+    public void writeToDataSourceItem(PropertysetItem newValues) {
+        super.writeToDataSourceItem(newValues);
         // Add the select property value (select property name == field name)
         if (newValues.getItemProperty(definition.getName()) != null) {
             parent.addItemProperty(definition.getName(), newValues.getItemProperty(definition.getName()));
@@ -79,8 +79,8 @@ public class SwitchableSimplePropertyMultiHandler extends SimplePropertyMultiHan
     }
 
     @Override
-    public PropertysetItem getValue() {
-        PropertysetItem newValues = super.getValue();
+    public PropertysetItem readFromDataSourceItem() {
+        PropertysetItem newValues = super.readFromDataSourceItem();
         if (!(parent instanceof JcrNewNodeAdapter)) {
             if (parent.getItemProperty(definition.getName()) != null) {
                 newValues.addItemProperty(definition.getName(), parent.getItemProperty(definition.getName()));
