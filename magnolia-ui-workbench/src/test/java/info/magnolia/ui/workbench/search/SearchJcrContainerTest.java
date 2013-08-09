@@ -166,7 +166,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testNodeAndPropertiesNamesAreEscaped() throws Exception {
+    public void testInvalidJcrCharsInNodeAndPropertiesNamesAreEncoded() throws Exception {
         // GIVEN
         jcrContainer.setFullTextExpression("*foo");
 
