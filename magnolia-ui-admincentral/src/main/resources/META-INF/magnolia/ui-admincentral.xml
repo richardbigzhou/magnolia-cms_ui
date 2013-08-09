@@ -133,8 +133,8 @@
           <value>info.magnolia.ui.admincentral.AdmincentralUI</value>
         </param>
         <param>
-          <name>widgetset</name>
-          <value>info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet</value>
+          <name>UIProvider</name>
+          <value>info.magnolia.ui.admincentral.AdmincentralUIProvider</value>
         </param>
         <param>
           <name>caption</name>
