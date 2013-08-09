@@ -101,6 +101,9 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
                     Property p = f.getPropertyDataSource();
                     if (p instanceof BaseProperty) {
                         final BaseProperty i18nBaseProperty = (BaseProperty) p;
+                        if (!i18nBaseProperty.hasI18NSupport()) {
+                            continue;
+                        }
                         final Locale formerLocale = i18nBaseProperty.getHandler().getLocale();
                         final String basePropertyName = i18nBaseProperty.getHandler().getBasePropertyName();
                         final String localizedPropertyName = isFallbackLanguage ?

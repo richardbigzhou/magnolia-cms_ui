@@ -39,8 +39,8 @@ import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.vaadin.data.Item;
@@ -183,7 +183,7 @@ public class MultiField<T> extends AbstractCustomMultiField<MultiFieldDefinition
      */
     private List<T> getCurrentValues(HasComponents root) {
         List<AbstractField<List<T>>> fields = getFields(root, true);
-        List<T> newValue = new ArrayList<T>();
+        List<T> newValue = new LinkedList<T>();
         for (AbstractField<List<T>> field : fields) {
             newValue.add((T) (field.getConvertedValue()));
         }

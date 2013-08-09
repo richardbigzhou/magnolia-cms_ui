@@ -59,6 +59,7 @@ public class BaseProperty<T> extends ObjectProperty<T> implements HasPropertyHan
 
     @Override
     public void setValue(T newValue) throws com.vaadin.data.Property.ReadOnlyException {
+        i18nValueChange = false;
         super.setValue(newValue);
         if (handler != null) {
             handler.writeToDataSourceItem(newValue);
@@ -68,7 +69,6 @@ public class BaseProperty<T> extends ObjectProperty<T> implements HasPropertyHan
     @Override
     public T getValue() {
         if (i18nValueChange && handler != null) {
-            i18nValueChange = false;
             return handler.readFromDataSourceItem();
         }
         return super.getValue();
