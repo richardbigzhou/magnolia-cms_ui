@@ -33,6 +33,11 @@
  */
 package info.magnolia.ui.admincentral;
 
+import info.magnolia.ui.api.vaadin.ThemeDefinition;
+import info.magnolia.ui.api.vaadin.WidgetsetDefinition;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.vaadin.server.DefaultUIProvider;
 import com.vaadin.server.UICreateEvent;
 
@@ -42,15 +47,40 @@ import com.vaadin.server.UICreateEvent;
 public class AdmincentralUIProvider extends DefaultUIProvider {
 
     private static final String DEFAULT_WIDGETSET_NAME = "info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet";
+    private static final String DEFAULT_THEME_NAME = "admincentral";
+
+    private WidgetsetDefinition widgetsetDefinition;
+    private ThemeDefinition themeDefinition;
 
     @Override
     public String getWidgetset(UICreateEvent event) {
+        if (widgetsetDefinition != null) {
+            String widgetsetName = widgetsetDefinition.getName();
+            if (StringUtils.isNotBlank(widgetsetName)) {
+                return widgetsetName;
+            }
+        }
         return DEFAULT_WIDGETSET_NAME;
     }
 
     @Override
     public String getTheme(UICreateEvent event) {
-        return super.getTheme(event);
+        if (themeDefinition != null) {
+            String themeName = themeDefinition.getName();
+            if (StringUtils.isNotBlank(themeName)) {
+                return themeName;
+            }
+        }
+        return DEFAULT_THEME_NAME;
     }
+
+    public void setWidgetsetDefinition(WidgetsetDefinition widgetsetDefinition) {
+        this.widgetsetDefinition = widgetsetDefinition;
+    }
+
+    public void setThemeDefinition(ThemeDefinition themeDefinition) {
+        this.themeDefinition = themeDefinition;
+    }
+
 
 }

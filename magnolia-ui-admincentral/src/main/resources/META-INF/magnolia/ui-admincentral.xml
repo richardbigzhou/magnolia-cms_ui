@@ -3,7 +3,7 @@
 <module>
   <name>ui-admincentral</name>
   <displayName>Magnolia Admincentral</displayName>
-  <description>New Magnolia Administration GUI</description>
+  <description>Magnolia Administration GUI</description>
   <class>info.magnolia.ui.admincentral.AdmincentralModule</class>
   <versionHandler>info.magnolia.ui.admincentral.setup.AdmincentralModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
@@ -27,6 +27,15 @@
     <type-mapping>
       <type>info.magnolia.ui.admincentral.usermenu.definition.UserMenuDefinition</type>
       <implementation>info.magnolia.ui.admincentral.usermenu.definition.ConfiguredUserMenuDefinition</implementation>
+    </type-mapping>
+
+    <type-mapping>
+      <type>info.magnolia.ui.api.vaadin.WidgetsetDefinition</type>
+      <implementation>info.magnolia.ui.api.vaadin.ConfiguredWidgetsetDefinition</implementation>
+    </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.api.vaadin.ThemeDefinition</type>
+      <implementation>info.magnolia.ui.api.vaadin.ConfiguredThemeDefinition</implementation>
     </type-mapping>
   </components>
 
