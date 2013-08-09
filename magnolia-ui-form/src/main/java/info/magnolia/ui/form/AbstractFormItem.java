@@ -74,6 +74,7 @@ public abstract class AbstractFormItem implements FormItem {
     }
 
     @Override
+    @Deprecated //"should not be public - and should not be used - use info.magnolia.i18n.xprmt.I18nText#i instead")
     public Messages getMessages() {
         Messages messages = null;
         if (getParent() != null) {
@@ -89,6 +90,7 @@ public abstract class AbstractFormItem implements FormItem {
 
     protected abstract String getI18nBasename();
 
+    @Deprecated //"should not be public - and should not be used - use info.magnolia.i18n.xprmt.I18nText#i instead")
     public String getMessage(String key) {
         return getMessages().getWithDefault(key, key);
     }

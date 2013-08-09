@@ -48,5 +48,6 @@ public interface FormItem {
 
     FormItem getParent();
 
+    @Deprecated //"should not be public - and should not be used - use info.magnolia.i18n.xprmt.I18nText#i instead")
     Messages getMessages();
 }
