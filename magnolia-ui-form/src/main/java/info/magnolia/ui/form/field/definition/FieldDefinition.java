@@ -35,6 +35,8 @@ package info.magnolia.ui.form.field.definition;
 
 import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
+import info.magnolia.i18n.I18nAble;
+import info.magnolia.i18n.I18nText;
 
 import java.util.List;
 
@@ -44,6 +46,7 @@ import java.util.List;
  * @see FieldDefinition
  * @see FieldValidatorDefinition
  */
+@I18nAble(keyGenerator = FieldDefinitionKeyGenerator.class)
 public interface FieldDefinition {
 
     /**
@@ -59,6 +62,7 @@ public interface FieldDefinition {
     /**
      * Error message text displayed in case of required = true.
      */
+    @I18nText
     String getRequiredErrorMessage();
 
     /**
@@ -71,6 +75,7 @@ public interface FieldDefinition {
     /**
      * Text displayed as field label.
      */
+    @I18nText
     String getLabel();
 
     /**
@@ -81,6 +86,7 @@ public interface FieldDefinition {
     /**
      * Description displayed to the user when clicking on the Info Button.
      */
+    @I18nText
     String getDescription();
 
     /**

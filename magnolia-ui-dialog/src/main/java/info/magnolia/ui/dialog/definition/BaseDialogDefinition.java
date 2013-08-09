@@ -36,6 +36,7 @@ package info.magnolia.ui.dialog.definition;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.dialog.DialogPresenter;
 import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
+import info.magnolia.i18n.I18nText;
 
 import java.util.Map;
 
@@ -43,11 +44,13 @@ import java.util.Map;
  * Base definition of a dialog.
  */
 public interface BaseDialogDefinition {
+
     /**
      * Unique identifier for this dialog.
      */
     String getId();
 
+    @I18nText
     String getLabel();
 
     String getI18nBasename();

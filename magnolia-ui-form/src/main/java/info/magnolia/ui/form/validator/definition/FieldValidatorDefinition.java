@@ -34,17 +34,21 @@
 package info.magnolia.ui.form.validator.definition;
 
 import info.magnolia.ui.form.validator.factory.FieldValidatorFactory;
+import info.magnolia.i18n.I18nAble;
+import info.magnolia.i18n.I18nText;
 
 /**
  * Defines a validator.
  *
  * @see info.magnolia.ui.form.validator.factory.FieldValidatorFactory
  */
+@I18nAble
 public interface FieldValidatorDefinition {
 
     /**
      * Return the ErrorMessage to be displayed.
      */
+    @I18nText
     String getErrorMessage();
 
     /**
