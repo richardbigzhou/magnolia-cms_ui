@@ -3,7 +3,7 @@
 @mixin tabsheet {
 
 /* color definitions */
-.v-shell-tabsheet {background-color:$c15;position: relative;}
+.v-shell-tabsheet {background-color:$c15;}
 .v-shell-tabsheet .nav {background-color:$c13; border-color:$c12;}
 .v-shell-tabsheet .nav li {border-color:$c12; color:$c11;}
 .v-shell-tabsheet .nav li:hover {background-color:$c12; color:$c10;}
@@ -52,6 +52,10 @@
 
 .v-shell-tabsheet-scroller > div {
 	height: 100%;
+    /*Override relative position set by GWT's core widget in order to allow 'full-form'
+      TextAreas.
+    */
+    position: static !important;
 }
 
 .v-shell-tabsheet-tab-wrapper {

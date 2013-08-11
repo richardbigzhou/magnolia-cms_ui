@@ -24,6 +24,9 @@
 }
 .tablet .dialog-content .v-shell-tabsheet-scroller {max-height:385px;} /* Ensure form footer is visible on the iPad */
 
+/*The class name is used for element search - be careful when renaming.
+ * @see info.magnolia.ui.vaadin.gwt.client.richtext.TextAreaStretcherConnector.
+ */
 .dialog-header {
     background-color:$c10;
     color: $c50;
