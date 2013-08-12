@@ -37,11 +37,13 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.node2bean.Node2BeanException;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -240,7 +242,11 @@ public class MessageStore {
     }
 
     void marshallMessage(Message message, Node node) throws RepositoryException {
-        Node2MapUtil.map2node(node, message);
+        final Iterator<String> propertyNames = message.getPropertNames().iterator();
+        while (propertyNames.hasNext()) {
+            final String propertyName = propertyNames.next();
+            PropertyUtil.setProperty(node, propertyName, message.getProperty(propertyName));
+        }
     }
 
     Message unmarshallMessage(Node node) throws RepositoryException, Node2BeanException {
@@ -248,8 +254,13 @@ public class MessageStore {
         long timestamp = ((Long) map.get(AdmincentralNodeTypes.SystemMessage.TIMESTAMP)).longValue();
 
         final Message message = new Message(timestamp);
-        message.putAll(map);
         message.setId(node.getName());
+
+        final Iterator<String> propertyNames = map.keySet().iterator();
+        while (propertyNames.hasNext()) {
+            final String propertyName = propertyNames.next();
+            message.addProperty(propertyName, map.get(propertyName));
+        }
 
         return message;
     }
