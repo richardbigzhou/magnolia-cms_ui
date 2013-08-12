@@ -41,20 +41,45 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Models a message. Except for timestamp all fields are optional. The sender is {@link #DEFAULT_SENDER} unless
- * diversely set after object construction.
+ * Models a message. Except for timestamp all fields are optional.
  */
-public class Message implements Cloneable, Map<String, Object> {
+public class Message implements Cloneable {
 
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1 without replacement. Message will get explicit attribute for it.
+     */
     public static String ID = "id";
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1 without replacement. Message will get explicit attribute for it.
+     */
     public static String TIMESTAMP = "timestamp";
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1 without replacement. Message will get explicit attribute for it.
+     */
     public static String MESSAGETYPE = "messagetype";
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1 without replacement. Message will get explicit attribute for it.
+     */
     public static String MESSAGE_VIEW = "messageView";
-
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1 without replacement. Message will get explicit attribute for it.
+     */
     public static String SUBJECT = "subject";
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1 without replacement. Message will get explicit attribute for it.
+     */
     public static String MESSAGE = "message";
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1 without replacement. Message will get explicit attribute for it.
+     */
     public static String CLEARED = "cleared";
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1 without replacement. Message will get explicit attribute for it.
+     */
     public static String SENDER = "sender";
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1 without replacement.
+     */
     public static String DEFAULT_SENDER = "system";
 
     private Map<String, Object> data = new HashMap<String, Object>();
@@ -132,6 +157,14 @@ public class Message implements Cloneable, Map<String, Object> {
         data.put(SENDER, sender);
     }
 
+    public String getView() {
+        return data.get(MESSAGE_VIEW) != null ? data.get(MESSAGE_VIEW).toString() : null;
+    }
+
+    public void setView(String view) {
+        data.put(MESSAGE_VIEW, view);
+    }
+
     @Override
     public Message clone() throws CloneNotSupportedException {
         return (Message) super.clone();
@@ -139,32 +172,44 @@ public class Message implements Cloneable, Map<String, Object> {
 
     // Map methods
 
-    @Override
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1 without replacement.
+     */
     public int size() {
         return data.size();
     }
 
-    @Override
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1 without replacement.
+     */
     public boolean isEmpty() {
         return data.isEmpty();
     }
 
-    @Override
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1. Use {@link #hasProperty(String)} instead.
+     */
     public boolean containsKey(Object key) {
-        return data.containsKey(key);
+        return hasProperty((String) key);
     }
 
-    @Override
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1 without replacement.
+     */
     public boolean containsValue(Object value) {
         return data.containsValue(value);
     }
 
-    @Override
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1. Use {@link #getProperty(String)} instead.
+     */
     public Object get(Object key) {
         return data.get(key);
     }
 
-    @Override
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1. Use {@link #addProperty(String, Object)} instead.
+     */
     public Object put(String key, Object value) {
         if (TIMESTAMP.equals(key)) {
             throw new IllegalArgumentException("Cannot replace timestamp of the message.");
@@ -172,7 +217,9 @@ public class Message implements Cloneable, Map<String, Object> {
         return data.put(key, value);
     }
 
-    @Override
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1 without replacement.
+     */
     public Object remove(Object key) {
         if (TIMESTAMP.equals(key)) {
             throw new IllegalArgumentException("Cannot remove timestamp from the message.");
@@ -180,7 +227,9 @@ public class Message implements Cloneable, Map<String, Object> {
         return data.remove(key);
     }
 
-    @Override
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1 without replacement.
+     */
     public void putAll(Map<? extends String, ? extends Object> m) {
         if (m.containsKey(TIMESTAMP)) {
             // timestamp cannot be replaced, even by "batch" operation
@@ -189,7 +238,9 @@ public class Message implements Cloneable, Map<String, Object> {
         data.putAll(m);
     }
 
-    @Override
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1 without replacement.
+     */
     public void clear() {
         // preserve timestamp
         long timestamp = getTimestamp();
@@ -197,18 +248,40 @@ public class Message implements Cloneable, Map<String, Object> {
         data.put(TIMESTAMP, timestamp);
     }
 
-    @Override
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1 without replacement.
+     */
     public Set<String> keySet() {
         return data.keySet();
     }
 
-    @Override
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1 without replacement.
+     */
     public Collection<Object> values() {
         return data.values();
     }
 
-    @Override
+    /**
+     * @deprecated since 5.0.2 - will be removed in 5.1 without replacement.
+     */
     public Set<java.util.Map.Entry<String, Object>> entrySet() {
         return data.entrySet();
+    }
+
+    public void addProperty(final String name, final Object value) {
+        data.put(name, value);
+    }
+
+    public Object getProperty(final String name) {
+        return data.get(name);
+    }
+
+    public boolean hasProperty(final String name) {
+        return data.containsKey(name);
+    }
+
+    public Set<String> getPropertNames() {
+        return data.keySet();
     }
 }
