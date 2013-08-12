@@ -33,10 +33,14 @@
  */
 package info.magnolia.ui.admincentral;
 
+import info.magnolia.objectfactory.Components;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -51,9 +55,11 @@ import com.vaadin.server.BootstrapListener;
 import com.vaadin.server.BootstrapPageResponse;
 import com.vaadin.server.SessionInitEvent;
 import com.vaadin.server.SessionInitListener;
+import com.vaadin.server.UIProvider;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinServletRequest;
 import com.vaadin.server.VaadinServletResponse;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ApplicationConstants;
 
 /**
@@ -93,8 +99,49 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
                     public void modifyBootstrapFragment(BootstrapFragmentResponse response) {
                     }
                 });
+
+                // configure the AdmincentralUIProvider
+                configureUiProvider(event.getSession());
             }
         });
+    }
+
+    /**
+     * Apply configured properties to the Vaadin UIProvider.
+     * @see {@link AdmincentralUIProvider}
+     */
+    private void configureUiProvider(VaadinSession session) {
+
+        // 1. get module config
+        AdmincentralModule admincentralModule = Components.getComponent(AdmincentralModule.class);
+        if (admincentralModule == null) {
+            log.error("Could not fetch AdmincentralModule through the ComponentProvider.");
+            return;
+        }
+
+        // 2. get the AdmincentralUIProvider
+        List<UIProvider> uiProviders = session.getUIProviders();
+        AdmincentralUIProvider uiProvider = null;
+        if (session == null || uiProviders == null || uiProviders.isEmpty()) {
+            log.error("Could not find session or UIProvider.");
+            return;
+        } else {
+            Iterator<UIProvider> it = uiProviders.iterator();
+            while (it.hasNext() && uiProvider == null) {
+                UIProvider p = it.next();
+                if (p instanceof AdmincentralUIProvider) {
+                    uiProvider = (AdmincentralUIProvider) p;
+                }
+            }
+            if (uiProvider == null) {
+                log.error("Could not find the AdmincentralUIProvider.");
+                return;
+            }
+        }
+
+        // 3. configure it
+        uiProvider.setWidgetsetDefinition(admincentralModule.getWidgetset());
+        uiProvider.setThemeDefinition(admincentralModule.getTheme());
     }
 
     @Override
