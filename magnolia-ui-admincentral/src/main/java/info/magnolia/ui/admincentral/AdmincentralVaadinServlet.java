@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.admincentral;
 
-import info.magnolia.objectfactory.Components;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -42,6 +40,7 @@ import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -82,6 +81,9 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
      */
     public static final String RESTART_APPLICATION_PARAM = "?restartApplication";
 
+    @Inject
+    AdmincentralModule admincentralModule;
+
     @Override
     protected void servletInitialized() throws ServletException {
         super.servletInitialized();
@@ -113,9 +115,8 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
     private void configureUiProvider(VaadinSession session) {
 
         // 1. get module config
-        AdmincentralModule admincentralModule = Components.getComponent(AdmincentralModule.class);
         if (admincentralModule == null) {
-            log.error("Could not fetch AdmincentralModule through the ComponentProvider.");
+            log.error("Could not inject AdmincentralModule.");
             return;
         }
 
