@@ -35,23 +35,17 @@ package info.magnolia.pages.setup;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
-import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.BootstrapConditionally;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
 import info.magnolia.module.delta.NewPropertyTask;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
-import info.magnolia.module.delta.OrderNodeBeforeTask;
 import info.magnolia.module.delta.PartialBootstrapTask;
 import info.magnolia.module.delta.PropertyExistsDelegateTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RemovePropertyTask;
 import info.magnolia.module.delta.RenameNodesTask;
-import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Version handler for the pages app module.
@@ -79,7 +73,7 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                         new RemovePropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/delete", "label")))
                 .addTask(new PropertyExistsDelegateTask("Remove icon for delete action", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/delete", "icon",
                         new RemovePropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/delete", "icon")))
-                        
+
                         // update actionbar for confirmation
                 .addTask(new NodeExistsDelegateTask("Update actionbar configuration", "Rename action mapping to new confirmation action", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar",
                         new RenameNodesTask("Rename action bar items", "Rename delete to confirmDeletion", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar", "delete", "confirmDeletion", NodeTypes.ContentNode.NAME)))
@@ -87,13 +81,6 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
         );
 
 
-    }
-
-    @Override
-    protected List<Task> getExtraInstallTasks(InstallContext installContext) {
-        List<Task> tasks = new ArrayList<Task>();
-        tasks.add(new IsModuleInstalledOrRegistered("Order Pages app first", "Orders Pages app first in the EDIT group.", "dam", new OrderNodeBeforeTask("", "", RepositoryConstants.CONFIG, "/modules/ui-framework/config/appLauncherLayout/groups/edit/apps/pages", "assets")));
-        return tasks;
     }
 
 }
