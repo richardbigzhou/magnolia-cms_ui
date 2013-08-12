@@ -37,10 +37,11 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.property.AbstractBaseHandler;
 import info.magnolia.ui.form.field.property.PropertyHandler;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -81,7 +82,7 @@ public class SimplePropertyCompositeHandler extends AbstractBaseHandler<Property
 
         while (propertyNames.hasNext()) {
             String propertyName = (String) propertyNames.next();
-            String compositePropertyName = propertyPrefix + propertyName;
+            String compositePropertyName = getCompositePropertyName(propertyName);
             Property<?> property = parent.getItemProperty(compositePropertyName);
             if (property == null) {
                 parent.addItemProperty(compositePropertyName, newValues.getItemProperty(propertyName));
@@ -92,14 +93,20 @@ public class SimplePropertyCompositeHandler extends AbstractBaseHandler<Property
     @Override
     public PropertysetItem readFromDataSourceItem() {
         PropertysetItem newValues = new PropertysetItem();
-        if (!(parent instanceof JcrNewNodeAdapter)) {
-            for (String propertyName : fieldsName) {
-                if (parent.getItemProperty(propertyPrefix + propertyName) != null) {
-                    newValues.addItemProperty(propertyName, parent.getItemProperty(propertyPrefix + propertyName));
-                }
+        for (String propertyName : fieldsName) {
+            String compositePropertyName = getCompositePropertyName(propertyName);
+            if (parent.getItemProperty(compositePropertyName) != null) {
+                newValues.addItemProperty(propertyName, parent.getItemProperty(compositePropertyName));
             }
         }
         return newValues;
     }
 
+    protected String getCompositePropertyName(String propertyName) {
+        propertyName = propertyPrefix + propertyName;
+        if (hasI18NSupport()) {
+            propertyName = propertyName + StringUtils.difference(basePropertyName, i18NPropertyName);
+        }
+        return propertyName;
+    }
 }

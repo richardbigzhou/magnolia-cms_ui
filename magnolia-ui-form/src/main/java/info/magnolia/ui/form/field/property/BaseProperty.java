@@ -45,7 +45,7 @@ import com.vaadin.data.util.ObjectProperty;
 public class BaseProperty<T> extends ObjectProperty<T> implements HasPropertyHandler<T> {
 
     protected PropertyHandler<T> handler;
-    private boolean i18nValueChange = false;
+
 
     public BaseProperty(PropertyHandler<T> handler, Class<T> type) {
         super(handler.readFromDataSourceItem(), type);
@@ -59,7 +59,6 @@ public class BaseProperty<T> extends ObjectProperty<T> implements HasPropertyHan
 
     @Override
     public void setValue(T newValue) throws com.vaadin.data.Property.ReadOnlyException {
-        i18nValueChange = false;
         super.setValue(newValue);
         if (handler != null) {
             handler.writeToDataSourceItem(newValue);
@@ -68,9 +67,6 @@ public class BaseProperty<T> extends ObjectProperty<T> implements HasPropertyHan
 
     @Override
     public T getValue() {
-        if (i18nValueChange && handler != null) {
-            return handler.readFromDataSourceItem();
-        }
         return super.getValue();
     }
 
@@ -83,9 +79,11 @@ public class BaseProperty<T> extends ObjectProperty<T> implements HasPropertyHan
         return handler.hasI18NSupport();
     }
 
-
+    /**
+     * In case of i18n change, Reload the Value based on the Handler.
+     */
     public void fireI18NValueChange() {
-        i18nValueChange = true;
+        setValue(handler.readFromDataSourceItem());
         super.fireValueChange();
     }
 }

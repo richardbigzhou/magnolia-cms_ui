@@ -91,7 +91,6 @@ public abstract class AbstractBaseHandler<T> implements PropertyHandler<T> {
      * 
      * @param <T>
      */
-    @SuppressWarnings("unchecked")
     protected <T> Property<T> getOrCreateProperty(Class<T> type, String defaultValueString, T defaultValue) {
         String propertyName = this.basePropertyName;
 
@@ -109,8 +108,8 @@ public abstract class AbstractBaseHandler<T> implements PropertyHandler<T> {
             parent.addItemProperty(propertyName, property);
         }
         return property;
-
     }
+
 
     /**
      * Retrieve or create a child node as {@link JcrNodeAdapter}.

@@ -35,7 +35,6 @@ package info.magnolia.ui.form.field.property.composite;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import java.util.List;
 
@@ -67,25 +66,37 @@ public class SwitchableSimplePropertyCompositeHandler extends SimplePropertyComp
     @Override
     public void writeToDataSourceItem(PropertysetItem newValues) {
         super.writeToDataSourceItem(newValues);
+        String propertyName = getMainPropertyName();
+
         // Add the select property value (select property name == field name)
-        if (newValues.getItemProperty(definition.getName()) != null) {
-            parent.addItemProperty(definition.getName(), newValues.getItemProperty(definition.getName()));
+        if (newValues.getItemProperty(propertyName) != null) {
+            parent.addItemProperty(propertyName, newValues.getItemProperty(propertyName));
         }
         // As parent implementation will create a property called propertyPrefix+definition.getName()
         // representing the select property name with a propertyPrefix, we have to remove this property.
-        if (parent.getItemProperty(definition.getName() + definition.getName()) != null) {
-            parent.removeItemProperty(definition.getName() + definition.getName());
+        if (parent.getItemProperty(definition.getName() + propertyName) != null) {
+            parent.removeItemProperty(definition.getName() + propertyName);
         }
     }
 
     @Override
     public PropertysetItem readFromDataSourceItem() {
         PropertysetItem newValues = super.readFromDataSourceItem();
-        if (!(parent instanceof JcrNewNodeAdapter)) {
-            if (parent.getItemProperty(definition.getName()) != null) {
-                newValues.addItemProperty(definition.getName(), parent.getItemProperty(definition.getName()));
-            }
+        String propertyName = getMainPropertyName();
+        if (parent.getItemProperty(propertyName) != null) {
+            newValues.addItemProperty(propertyName, parent.getItemProperty(propertyName));
         }
         return newValues;
+    }
+
+    /**
+     * Support I18N for the main property name.
+     */
+    private String getMainPropertyName() {
+        String mainPropertyName = definition.getName();
+        if (hasI18NSupport()) {
+            mainPropertyName = i18NPropertyName;
+        }
+        return mainPropertyName;
     }
 }
