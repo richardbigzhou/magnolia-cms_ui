@@ -37,8 +37,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.Iterator;
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -58,7 +56,6 @@ import com.vaadin.server.UIProvider;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinServletRequest;
 import com.vaadin.server.VaadinServletResponse;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ApplicationConstants;
 
 /**
@@ -81,8 +78,12 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
      */
     public static final String RESTART_APPLICATION_PARAM = "?restartApplication";
 
+    private UIProvider admincentralUiProvider;
+
     @Inject
-    AdmincentralModule admincentralModule;
+    public AdmincentralVaadinServlet(UIProvider admincentralUiProvider) {
+        this.admincentralUiProvider = admincentralUiProvider;
+    }
 
     @Override
     protected void servletInitialized() throws ServletException {
@@ -102,47 +103,14 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
                     }
                 });
 
-                // configure the AdmincentralUIProvider
-                configureUiProvider(event.getSession());
-            }
-        });
-    }
-
-    /**
-     * Apply configured properties to the Vaadin UIProvider.
-     * @see {@link AdmincentralUIProvider}
-     */
-    private void configureUiProvider(VaadinSession session) {
-
-        // 1. get module config
-        if (admincentralModule == null) {
-            log.error("Could not inject AdmincentralModule.");
-            return;
-        }
-
-        // 2. get the AdmincentralUIProvider
-        List<UIProvider> uiProviders = session.getUIProviders();
-        AdmincentralUIProvider uiProvider = null;
-        if (session == null || uiProviders == null || uiProviders.isEmpty()) {
-            log.error("Could not find session or UIProvider.");
-            return;
-        } else {
-            Iterator<UIProvider> it = uiProviders.iterator();
-            while (it.hasNext() && uiProvider == null) {
-                UIProvider p = it.next();
-                if (p instanceof AdmincentralUIProvider) {
-                    uiProvider = (AdmincentralUIProvider) p;
+                // Set up and configure UIProvider for the admincentral
+                if (admincentralUiProvider != null) {
+                    event.getSession().addUIProvider(admincentralUiProvider);
+                } else {
+                    log.error("Could not inject AdmincentralUIProvider.");
                 }
             }
-            if (uiProvider == null) {
-                log.error("Could not find the AdmincentralUIProvider.");
-                return;
-            }
-        }
-
-        // 3. configure it
-        uiProvider.setWidgetsetDefinition(admincentralModule.getWidgetset());
-        uiProvider.setThemeDefinition(admincentralModule.getTheme());
+        });
     }
 
     @Override

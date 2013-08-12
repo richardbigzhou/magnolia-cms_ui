@@ -36,6 +36,8 @@ package info.magnolia.ui.admincentral;
 import info.magnolia.ui.api.vaadin.ThemeDefinition;
 import info.magnolia.ui.api.vaadin.WidgetsetDefinition;
 
+import javax.inject.Inject;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.server.DefaultUIProvider;
@@ -49,8 +51,14 @@ public class AdmincentralUIProvider extends DefaultUIProvider {
     public static final String DEFAULT_WIDGETSET_NAME = "info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet";
     public static final String DEFAULT_THEME_NAME = "admincentral";
 
-    private WidgetsetDefinition widgetsetDefinition;
-    private ThemeDefinition themeDefinition;
+    private final WidgetsetDefinition widgetsetDefinition;
+    private final ThemeDefinition themeDefinition;
+
+    @Inject
+    public AdmincentralUIProvider(AdmincentralModule admincentralModule) {
+        this.widgetsetDefinition = admincentralModule.getWidgetset();
+        this.themeDefinition = admincentralModule.getTheme();
+    }
 
     @Override
     public String getWidgetset(UICreateEvent event) {
@@ -73,14 +81,5 @@ public class AdmincentralUIProvider extends DefaultUIProvider {
         }
         return DEFAULT_THEME_NAME;
     }
-
-    public void setWidgetsetDefinition(WidgetsetDefinition widgetsetDefinition) {
-        this.widgetsetDefinition = widgetsetDefinition;
-    }
-
-    public void setThemeDefinition(ThemeDefinition themeDefinition) {
-        this.themeDefinition = themeDefinition;
-    }
-
 
 }
