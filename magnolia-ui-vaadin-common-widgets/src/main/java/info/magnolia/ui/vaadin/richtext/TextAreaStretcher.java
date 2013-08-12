@@ -40,6 +40,7 @@ import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
 
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.AbstractExtension;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextArea;
 
@@ -54,6 +55,18 @@ public class TextAreaStretcher extends AbstractExtension {
             @Override
             public void toggle() {
                 getState().isCollapsed = !getState().isCollapsed;
+                final Component parent = (Component) getParent();
+                if (getState().isCollapsed) {
+                    //parent.setWidth(getState().collapsedStateWidth);
+                    //parent.setHeight(getState().collapsedStateHeight);
+                } else {
+                    float height = parent.getHeight();
+                    float width = parent.getWidth();
+                    //getState().collapsedStateHeight = height != Sizeable.SIZE_UNDEFINED ?
+                            //height + String.valueOf(parent.getHeightUnits()) : "";
+
+                    //getState().collapsedStateHeight =
+                }
             }
         });
     }

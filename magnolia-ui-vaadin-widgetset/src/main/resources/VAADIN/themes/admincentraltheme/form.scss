@@ -317,6 +317,8 @@ fieldset {
   height: 16px;
 }
 
-
+  .v-ckeditortextfield .textarea-expander.collapsed {
+    position: absolute;
+  }
 
 }

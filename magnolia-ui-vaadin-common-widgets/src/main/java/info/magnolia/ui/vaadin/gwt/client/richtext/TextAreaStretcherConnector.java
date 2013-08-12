@@ -38,6 +38,7 @@ import info.magnolia.ui.vaadin.gwt.client.form.widget.FormView;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.richtext.TextAreaStretcher;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -51,7 +52,6 @@ import com.vaadin.client.LayoutManager;
 import com.vaadin.client.ServerConnector;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.extensions.AbstractExtensionConnector;
-import com.vaadin.client.ui.AbstractComponentConnector;
 import com.vaadin.client.ui.layout.ElementResizeEvent;
 import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.client.ui.ui.UIConnector;
@@ -67,15 +67,29 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
     private Widget dialog;
     private Widget textWidget;
     private ComputedStyle parentCs;
-    private Element button;
+    private Element button = DOM.createButton();
     private WindowResizeListener windowResizeListener = new WindowResizeListener();
     private boolean isOverlay = false;
+    private StateChangeEvent.StateChangeHandler textAreaSizeHandler = new StateChangeEvent.StateChangeHandler() {
+        @Override
+        public void onStateChanged(StateChangeEvent stateChangeEvent) {
+            stretchTextArea(textWidget.getElement().getStyle());
+        }
+    };
 
     @Override
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
         super.onStateChanged(stateChangeEvent);
         if (stateChangeEvent.hasPropertyChanged("isCollapsed")) {
             toggleCollapseState();
+
+            final LayoutManager lm = getParent().getLayoutManager();
+            final UIConnector ui = getConnection().getUIConnector();
+
+            if (!getState().isCollapsed) {
+                getParent().addStateChangeHandler(textAreaSizeHandler);
+                lm.addElementResizeListener(ui.getWidget().getElement(), windowResizeListener);
+            }
         }
     }
 
@@ -88,25 +102,37 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
         }
 
         if (!isCollapsed) {
-            final Element header = getDialogHeaderElement();
-            final ComputedStyle cs = new ComputedStyle(header);
             Style style = textWidget.getElement().getStyle();
             style.setPosition(Style.Position.ABSOLUTE);
+            final Element header = getDialogHeaderElement();
+            final ComputedStyle cs = new ComputedStyle(header);
 
-            style.setLeft(form.getAbsoluteLeft(), Style.Unit.PX);
             int dialogHeaderPadding = cs.getPadding()[0] + cs.getPadding()[2];
-            style.setTop(form.getAbsoluteTop() - dialog.getAbsoluteTop() + dialogHeaderPadding, Style.Unit.PX);
-            style.setWidth(form.getOffsetWidth(), Style.Unit.PX);
-        }
 
-        final LayoutManager lm = getParent().getLayoutManager();
-        final UIConnector ui = getConnection().getUIConnector();
+            if (!isOverlay) {
+                style.setLeft(form.getAbsoluteLeft(), Style.Unit.PX);
+                style.setTop(form.getAbsoluteTop() - dialog.getAbsoluteTop() + dialogHeaderPadding, Style.Unit.PX);
+            } else {
+                style.setLeft(0, Style.Unit.PX);
+                style.setTop(form.getAbsoluteTop() - dialog.getAbsoluteTop(), Style.Unit.PX);
+            }
 
-        if (isCollapsed) {
-            lm.removeElementResizeListener(ui.getWidget().getElement(), windowResizeListener);
+            stretchTextArea(style);
+            style.setZIndex(3);
         } else {
-            lm.addElementResizeListener(ui.getWidget().getElement(), windowResizeListener);
+            Style style = textWidget.getElement().getStyle();
+            style.clearLeft();
+            style.clearTop();
+            style.clearPosition();
+            style.clearZIndex();
         }
+    }
+
+    private void stretchTextArea(Style style) {
+        int textAreaPadding = parentCs.getPadding()[1] + parentCs.getPadding()[3];
+        int textAreaBorder = parentCs.getBorder()[1] + parentCs.getBorder()[3];
+        style.setHeight(getConnection().getUIConnector().getWidget().getOffsetHeight(), Style.Unit.PX);
+        style.setWidth(form.getOffsetWidth() - textAreaPadding - textAreaBorder, Style.Unit.PX);
     }
 
     @Override
@@ -116,35 +142,58 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
 
     @Override
     protected void extend(ServerConnector target) {
-        AbstractComponentConnector cc = (AbstractComponentConnector) target;
-        final Widget w = cc.getWidget();
-        final Element rootElement = w.getElement();
         this.textWidget = getParent().getWidget();
         this.parentCs = new ComputedStyle(textWidget.getElement());
-        if ("textarea".equalsIgnoreCase(rootElement.getTagName())) {
-            button = DOM.createButton();
-            button.setInnerHTML("T");
-            button.setClassName("textarea-expander");
-            w.addAttachHandler(new AttachEvent.Handler() {
-                @Override
-                public void onAttachOrDetach(AttachEvent attachEvent) {
-                    initFormView();
-                    initDialog();
-                    checkOverlay();
-                    rootElement.getParentElement().appendChild(button);
-                    Widget parent = w.getParent();
-                    parent.addDomHandler(new ClickHandler() {
+        button.setInnerHTML("T");
+        button.setClassName("textarea-expander");
+        textWidget.addAttachHandler(new AttachEvent.Handler() {
+            @Override
+            public void onAttachOrDetach(AttachEvent attachEvent) {
+                initFormView();
+                initDialog();
+                checkOverlay();
+                if ("textarea".equalsIgnoreCase(textWidget.getElement().getTagName())) {
+                    appendStretcher(textWidget.getElement());
+                } else {
+                    Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
                         @Override
-                        public void onClick(ClickEvent event) {
-                            Element target = event.getNativeEvent().getEventTarget().cast();
-                            if (button.isOrHasChild(target)) {
-                                getRpcProxy(TextAreaStretcherServerRpc.class).toggle();
-                            }
+                        public boolean execute() {
+                            appendStretcher(JQueryWrapper.select(textWidget).find("iframe").get(0));
+                            return false;
                         }
-                    }, ClickEvent.getType());
+                    }, 500);
                 }
-            });
-        }
+            }
+        });
+    }
+
+    private void appendStretcher(Element rootElement) {
+        rootElement.getParentElement().appendChild(button);
+        Widget parent = textWidget.getParent();
+        parent.addDomHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Element target = event.getNativeEvent().getEventTarget().cast();
+                if (button.isOrHasChild(target)) {
+                    if (!getState().isCollapsed) {
+                        final LayoutManager lm = getParent().getLayoutManager();
+                        final UIConnector ui = getConnection().getUIConnector();
+                        getParent().removeStateChangeHandler(textAreaSizeHandler);
+                        lm.removeElementResizeListener(ui.getWidget().getElement(), windowResizeListener);
+                        Style style = textWidget.getElement().getStyle();
+                        style.clearWidth();
+                        style.clearHeight();
+                    }
+                    getRpcProxy(TextAreaStretcherServerRpc.class).toggle();
+
+                }
+            }
+        }, ClickEvent.getType());
+    }
+
+    @Override
+    protected void init() {
+        super.init();
     }
 
     @Override
@@ -176,14 +225,18 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
         this.form = (it instanceof FormView) ? it : null;
     }
 
+    private void adjustTextAreaHeightToScreen(int uiHeight) {
+        int formTop = form.getAbsoluteTop();
+        int textAreaPadding = parentCs.getPadding()[0] + parentCs.getPadding()[2];
+        int textAreaBorder = parentCs.getBorder()[0] + parentCs.getBorder()[2];
+        textWidget.setHeight((uiHeight - formTop - textAreaPadding - textAreaBorder - 1) + "px");
+    }
+
     private class WindowResizeListener implements ElementResizeListener {
         @Override
         public void onElementResize(ElementResizeEvent e) {
-            int formTop = form.getAbsoluteTop();
-            int textAreaPadding = parentCs.getPadding()[0] + parentCs.getPadding()[2];
-            int textAreaBorder = parentCs.getBorder()[0] + parentCs.getBorder()[2];
-            textWidget.setHeight((e.getLayoutManager().getOuterHeight(e.getElement())
-                    - formTop - textAreaPadding - textAreaBorder - 1) + "px");
+            adjustTextAreaHeightToScreen(e.getLayoutManager().getOuterHeight(e.getElement()));
         }
     }
+
 }

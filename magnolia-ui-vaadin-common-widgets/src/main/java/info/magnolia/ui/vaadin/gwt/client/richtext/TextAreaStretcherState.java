@@ -41,4 +41,8 @@ import com.vaadin.shared.communication.SharedState;
 public class TextAreaStretcherState extends SharedState {
 
     public boolean isCollapsed = true;
+
+    public String collapsedStateWidth = "";
+
+    public String collapsedStateHeight = "";
 }
