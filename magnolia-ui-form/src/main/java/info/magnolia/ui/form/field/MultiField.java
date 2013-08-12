@@ -86,14 +86,15 @@ public class MultiField<T> extends AbstractCustomMultiField<MultiFieldDefinition
         root = new VerticalLayout();
         root.setSizeUndefined();
 
-        // Initialize Existing field
-        initFields();
-
-        // Add addButton
+        // Init addButton
         addButton.setCaption(buttonCaptionAdd);
         addButton.addStyleName("magnoliabutton");
         addButton.addClickListener(addButtonClickListener());
-        root.addComponent(addButton);
+
+        // Initialize Existing field
+        initFields();
+
+        addValueChangeListener(datasourceListener);
 
         return root;
     }
@@ -162,21 +163,22 @@ public class MultiField<T> extends AbstractCustomMultiField<MultiFieldDefinition
             getPropertyDataSource().setValue(currentValues);
         }
     };
+
+
     /**
      * Initialize the MultiField. <br>
      * Create as many configured Field as we have related values already stored.
      */
-    private void initFields() {
-        List<T> newValue = (List<T>) getPropertyDataSource().getValue();
-        List<T> currentValues = getCurrentValues(root);
+    @Override
+    protected void initFields(List<T> newValue) {
+        root.removeAllComponents();
         Iterator<T> it = newValue.iterator();
         while (it.hasNext()) {
             T entry = it.next();
-            if (!currentValues.contains(entry)) {
-                root.addComponent(createEntryComponent(entry));
-            }
+            root.addComponent(createEntryComponent(entry));
         }
-    };
+        root.addComponent(addButton);
+    }
 
     /**
      * Retrieve the Values stored as Field value.

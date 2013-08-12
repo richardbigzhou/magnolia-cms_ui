@@ -48,6 +48,7 @@ import java.util.List;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.server.ErrorMessage;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
@@ -81,6 +82,21 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
     }
 
     /**
+     * Initialize the fields based on the newValues.<br>
+     * Implemented logic should: <br>
+     * - remove all component from the root component. <br>
+     * - for every fieldValues value, add the appropriate field.<br>
+     * - add all others needed component (like add button...)
+     */
+    protected abstract void initFields(T fieldValues);
+
+    @SuppressWarnings("unchecked")
+    protected void initFields() {
+        T fieldValues = (T) getPropertyDataSource().getValue();
+        initFields(fieldValues);
+    }
+
+    /**
      * Create a new {@link Field} based on a {@link ConfiguredFieldDefinition}.
      */
     protected Field<?> createLocalField(ConfiguredFieldDefinition fieldDefinition, Item item, boolean setCaptionToNull) {
@@ -91,6 +107,9 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         // FIXME change i18n setting : MGNLUI-1548
         fieldDefinition.setI18nBasename(definition.getI18nBasename());
         Field<?> field = fieldfactory.createField();
+        if (field instanceof AbstractComponent) {
+            ((AbstractComponent) field).setImmediate(true);
+        }
         if (setCaptionToNull) {
             field.setCaption(null);
         }
@@ -106,6 +125,19 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
             Object values = getPropertyDataSource().getValue();
             getPropertyDataSource().setValue(values);
+        }
+    };
+
+    /**
+     * Listener used to update fields based on DataSources changes.<br>
+     * For example if the field support i18n, when the language is changed, the individual field of the custom field have to be updated.
+     */
+    protected Property.ValueChangeListener datasourceListener = new ValueChangeListener() {
+        @SuppressWarnings("unchecked")
+        @Override
+        public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
+            T newValue = (T) event.getProperty().getValue();
+            initFields(newValue);
         }
     };
 

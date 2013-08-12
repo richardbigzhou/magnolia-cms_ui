@@ -72,7 +72,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
     private AbstractSelect selectField;
 
     // Define layout and component
-    private final VerticalLayout rootLayout = new VerticalLayout();
+    private final VerticalLayout root = new VerticalLayout();
     private final HorizontalLayout fieldLayout = new HorizontalLayout();
 
     public SwitchableField(SwitchableFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider, Item relatedFieldItem) {
@@ -82,24 +82,32 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
     @Override
     protected Component initContent() {
         // Initialize root
-        rootLayout.setSizeFull();
-        rootLayout.setSpacing(true);
+        root.setSizeFull();
+        root.setSpacing(true);
+
+        // Create and Add Select section
+        selectField = createSelectionField();
+        selectField.addValueChangeListener(createSelectValueChangeListener());
 
         // Initialize Existing field
         initFields();
-
-        // Add Select section
-        rootLayout.addComponent(selectField);
-        selectField.addValueChangeListener(createSelectValueChangeListener());
+        addValueChangeListener(datasourceListener);
 
         // Add Field section
-        rootLayout.addComponent(fieldLayout);
+        root.addComponent(fieldLayout);
 
-        return rootLayout;
+        return root;
     }
 
-    private void initFields() {
-        PropertysetItem fieldValues = (PropertysetItem) getPropertyDataSource().getValue();
+    @Override
+    protected void initFields(PropertysetItem fieldValues) {
+        root.removeAllComponents();
+        // add the select Field Component.
+        root.addComponent(selectField);
+        // add Field section
+        root.addComponent(fieldLayout);
+        fieldLayout.removeAllComponents();
+
         fieldMap = new HashMap<String, Field<?>>();
         // Create Switchable Fields
         for (ConfiguredFieldDefinition fieldDefinition : definition.getFields()) {
@@ -113,8 +121,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
             field.addValueChangeListener(selectionListener);
             fieldMap.put(name, field);
         }
-        // Create Select Field
-        selectField = createSelectionField();
+
         if (fieldValues.getItemProperty(definition.getName()) != null) {
             selectField.setPropertyDataSource(fieldValues.getItemProperty(definition.getName()));
         } else {

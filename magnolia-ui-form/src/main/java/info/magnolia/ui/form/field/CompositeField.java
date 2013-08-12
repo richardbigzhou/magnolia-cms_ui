@@ -68,13 +68,14 @@ public class CompositeField extends AbstractCustomMultiField<CompositeFieldDefin
 
         // Initialize Existing field
         initFields();
+        addValueChangeListener(datasourceListener);
 
         return root;
     }
 
-    private void initFields() {
-        PropertysetItem fieldValues = (PropertysetItem) getPropertyDataSource().getValue();
-
+    @Override
+    protected void initFields(PropertysetItem fieldValues) {
+        root.removeAllComponents();
         for (ConfiguredFieldDefinition fieldDefinition : definition.getFields()) {
             Field<?> field = createLocalField(fieldDefinition, relatedFieldItem, false);
             if (fieldValues.getItemProperty(fieldDefinition.getName()) != null) {
@@ -86,7 +87,6 @@ public class CompositeField extends AbstractCustomMultiField<CompositeFieldDefin
             root.addComponent(field);
         }
     }
-
 
     @Override
     public Class<? extends PropertysetItem> getType() {
