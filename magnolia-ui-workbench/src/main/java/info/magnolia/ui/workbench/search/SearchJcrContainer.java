@@ -119,7 +119,8 @@ public class SearchJcrContainer extends FlatJcrContainer {
             contains.add(String.format(CONTAINS_TEMPLATE_FOR_SEARCH, propertyName, escapedFullTextExpression));
         }
         final String containsExpression = StringUtils.join(contains, " or ");
-        final String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, ISO9075.encode(escapedFullTextExpression), ISO9075.encode(escapedFullTextExpression), StringUtils.isNotBlank(containsExpression) ? "or " + containsExpression : "");
+        final String encodedSearch = ISO9075.encode(escapedFullTextExpression);
+        final String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, encodedSearch, encodedSearch, StringUtils.isNotBlank(containsExpression) ? "or " + containsExpression : "");
 
         log.debug("Search where-clause is {}", stmt);
         return stmt;
