@@ -241,7 +241,16 @@ public class MessageStore {
         });
     }
 
-    void marshallMessage(Message message, Node node) throws RepositoryException {
+    void marshallMessage(final Message message, final Node node) throws RepositoryException {
+        node.setProperty(AdmincentralNodeTypes.SystemMessage.ID, message.getId());
+        node.setProperty(AdmincentralNodeTypes.SystemMessage.TIMESTAMP, message.getTimestamp());
+        node.setProperty(AdmincentralNodeTypes.SystemMessage.SENDER, message.getSender());
+        node.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGE, message.getMessage());
+        node.setProperty(AdmincentralNodeTypes.SystemMessage.SUBJECT, message.getSubject());
+        node.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE, message.getType().name());
+        node.setProperty(AdmincentralNodeTypes.SystemMessage.VIEW, message.getView());
+        node.setProperty(AdmincentralNodeTypes.SystemMessage.CLEARED, message.isCleared());
+
         final Iterator<String> propertyNames = message.getPropertNames().iterator();
         while (propertyNames.hasNext()) {
             final String propertyName = propertyNames.next();
@@ -255,6 +264,22 @@ public class MessageStore {
 
         final Message message = new Message(timestamp);
         message.setId(node.getName());
+        message.setSender(node.getProperty(AdmincentralNodeTypes.SystemMessage.SENDER).getString());
+        message.setMessage(node.getProperty(AdmincentralNodeTypes.SystemMessage.MESSAGE).getString());
+        message.setSubject(node.getProperty(AdmincentralNodeTypes.SystemMessage.SUBJECT).getString());
+        message.setType(MessageType.valueOf(node.getProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE).getString()));
+        message.setCleared(node.getProperty(AdmincentralNodeTypes.SystemMessage.CLEARED).getBoolean());
+        if (node.hasProperty(AdmincentralNodeTypes.SystemMessage.VIEW)) {
+            message.setView(node.getProperty(AdmincentralNodeTypes.SystemMessage.VIEW).getString());
+        }
+
+        // remove all attributes that are already explicitly treated - see above.
+        map.remove(AdmincentralNodeTypes.SystemMessage.TIMESTAMP);
+        map.remove(AdmincentralNodeTypes.SystemMessage.SENDER);
+        map.remove(AdmincentralNodeTypes.SystemMessage.SUBJECT);
+        map.remove(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE);
+        map.remove(AdmincentralNodeTypes.SystemMessage.VIEW);
+        map.remove(AdmincentralNodeTypes.SystemMessage.CLEARED);
 
         final Iterator<String> propertyNames = map.keySet().iterator();
         while (propertyNames.hasNext()) {

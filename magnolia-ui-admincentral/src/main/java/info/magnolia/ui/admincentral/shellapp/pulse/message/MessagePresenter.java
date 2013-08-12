@@ -47,6 +47,8 @@ import info.magnolia.ui.framework.message.MessagesManager;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.vaadin.data.util.BeanItem;
 
 /**
@@ -81,8 +83,9 @@ public final class MessagePresenter implements MessageView.Listener, ActionbarPr
         String messageView = "ui-admincentral:default";
         view.setTitle(message.getSubject());
         try {
-            if (message.containsKey(Message.MESSAGE_VIEW)) {
-                messageView = (String) message.get(Message.MESSAGE_VIEW);
+            final String specificMessageView = message.getView();
+            if (StringUtils.isNotEmpty(specificMessageView)) {
+                messageView = specificMessageView;
             }
             MessageViewDefinition messageViewDefinition = messageViewDefinitionRegistry.get(messageView);
 

@@ -52,6 +52,7 @@ import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.junit.Before;
@@ -62,13 +63,15 @@ import org.junit.Test;
  */
 public class MessageStoreTest extends MgnlTestCase {
 
+    private MessageStore store;
+
     @Override
     @Before
     public void setUp() throws Exception{
         super.setUp();
         MockContext ctx = MockUtil.getMockContext();
         final User user = mock(User.class);
-        when(user.getName()).thenReturn(Message.DEFAULT_SENDER);
+        when(user.getName()).thenReturn("system");
         ctx.setUser(user);
 
         Session session = new MockSession(MessageStore.WORKSPACE_NAME);
@@ -90,6 +93,8 @@ public class MessageStoreTest extends MgnlTestCase {
         securitySupport.addUserManager(Realm.REALM_SYSTEM.getName(), userMgr);
         ComponentsTestUtil.setInstance(SecuritySupport.class, securitySupport);
         MockUtil.getMockContext().setUser(user);
+
+        store = new MessageStore();
     }
 
     @Test
@@ -102,14 +107,12 @@ public class MessageStoreTest extends MgnlTestCase {
 
         final Message message = new Message(type, subject, messageText);
 
-        final MessageStore store = new MessageStore();
-
         // WHEN
         store.marshallMessage(message, messageNode);
 
         // THEN
         assertEquals(subject, messageNode.getProperty(AdmincentralNodeTypes.SystemMessage.SUBJECT).getString());
-        assertEquals(Message.DEFAULT_SENDER, messageNode.getProperty(AdmincentralNodeTypes.SystemMessage.SENDER).getString());
+        assertEquals("system", messageNode.getProperty(AdmincentralNodeTypes.SystemMessage.SENDER).getString());
         assertEquals(messageText, messageNode.getProperty(AdmincentralNodeTypes.SystemMessage.MESSAGE).getString());
         assertEquals(type.name(), messageNode.getProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE).getString());
     }
@@ -124,6 +127,7 @@ public class MessageStoreTest extends MgnlTestCase {
         final String messageText = "Message in a bottle.";
         final String subject = "Test";
         final MessageType type = MessageType.WARNING;
+        final boolean cleared = false;
 
         messageNode.setName(id);
         messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.TIMESTAMP, now);
@@ -131,8 +135,7 @@ public class MessageStoreTest extends MgnlTestCase {
         messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.SUBJECT, subject);
         messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGE, messageText);
         messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE, type.name());
-
-        MessageStore store = new MessageStore();
+        messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.CLEARED, cleared);
 
         // WHEN
         final Message result = store.unmarshallMessage(messageNode);
@@ -144,6 +147,7 @@ public class MessageStoreTest extends MgnlTestCase {
         assertEquals(subject, result.getSubject());
         assertEquals(messageText, result.getMessage());
         assertEquals(type, result.getType());
+        assertFalse(cleared);
     }
 
     @Test
@@ -151,8 +155,6 @@ public class MessageStoreTest extends MgnlTestCase {
         // GIVEN
         final String id = "1234";
         final MockNode messageNode = createEmptyMessageMockNode(id);
-
-        MessageStore store = new MessageStore();
 
         // WHEN
         final Message result = store.unmarshallMessage(messageNode);
@@ -168,7 +170,6 @@ public class MessageStoreTest extends MgnlTestCase {
         final MockNode messageNode = createEmptyMessageMockNode(id);
 
         final String userName = MgnlContext.getUser().getName();
-        MessageStore store = new MessageStore();
 
         // WHEN
         boolean saved = store.saveMessage(userName, store.unmarshallMessage(messageNode));
@@ -186,7 +187,6 @@ public class MessageStoreTest extends MgnlTestCase {
         final MockNode messageNode = createEmptyMessageMockNode(id);
 
         final String userName = MgnlContext.getUser().getName();
-        MessageStore store = new MessageStore();
         boolean saved = store.saveMessage(userName, store.unmarshallMessage(messageNode));
         assertTrue(saved);
 
@@ -204,7 +204,6 @@ public class MessageStoreTest extends MgnlTestCase {
         final MockNode messageNode = createEmptyMessageMockNode(id);
 
         final String userName = MgnlContext.getUser().getName();
-        MessageStore store = new MessageStore();
         store.saveMessage(userName, store.unmarshallMessage(messageNode));
 
         Message result = store.findMessageById(userName, id);
@@ -225,7 +224,6 @@ public class MessageStoreTest extends MgnlTestCase {
         final MockNode messageNode = createEmptyMessageMockNode(id);
 
         final String userName = MgnlContext.getUser().getName();
-        MessageStore store = new MessageStore();
         store.saveMessage(userName, store.unmarshallMessage(messageNode));
 
         // WHEN
@@ -248,7 +246,6 @@ public class MessageStoreTest extends MgnlTestCase {
         infoMessage.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE, MessageType.INFO.name());
 
         final String userName = MgnlContext.getUser().getName();
-        MessageStore store = new MessageStore();
         store.saveMessage(userName, store.unmarshallMessage(errorMessage));
         store.saveMessage(userName, store.unmarshallMessage(errorMessage2));
         store.saveMessage(userName, store.unmarshallMessage(infoMessage));
@@ -262,13 +259,18 @@ public class MessageStoreTest extends MgnlTestCase {
         assertEquals(1, info);
     }
 
-    private MockNode createEmptyMessageMockNode(final String id) {
+    private MockNode createEmptyMessageMockNode(final String id) throws RepositoryException {
         MockNode messageNode = new MockNode();
         final long now = System.currentTimeMillis();
         messageNode.setName(id);
         // timestamp is mandatory...
         messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.TIMESTAMP, now);
+        messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.SENDER, "sender");
+        messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGE, "message");
+        messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.SUBJECT, "subject");
+        messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.MESSAGETYPE, MessageType.INFO.name());
+        messageNode.setProperty(AdmincentralNodeTypes.SystemMessage.CLEARED, false);
+
         return messageNode;
     }
-
 }
