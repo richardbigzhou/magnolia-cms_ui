@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.workbench.search;
 
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 
 /**
@@ -41,9 +40,11 @@ import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinitio
  */
 public class SearchPresenterDefinition extends ConfiguredContentPresenterDefinition {
 
+    public static final String VIEW_TYPE = "searchview";
+
     public SearchPresenterDefinition() {
         setImplementationClass(SearchPresenter.class);
-        setViewType(ViewType.SEARCH);
+        setViewType(VIEW_TYPE);
         setActive(false);
         setIcon("icon-view-list");
     }

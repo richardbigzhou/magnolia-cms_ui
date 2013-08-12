@@ -34,6 +34,7 @@
 package info.magnolia.ui.contentapp.browser;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
@@ -49,7 +50,7 @@ import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
-import info.magnolia.test.mock.MockContext;
+import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
@@ -61,11 +62,22 @@ import info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinitio
 import info.magnolia.ui.api.action.AbstractActionExecutor;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.SubApp;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.availability.IsDeletedRule;
+import info.magnolia.ui.api.location.DefaultLocation;
+import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.overlay.AlertCallback;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
+import info.magnolia.ui.api.overlay.MessageStyleType;
+import info.magnolia.ui.api.overlay.NotificationCallback;
+import info.magnolia.ui.api.overlay.OverlayCloser;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.ContentSubAppView;
-import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
@@ -81,6 +93,8 @@ import javax.jcr.Node;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * Tests.
@@ -145,21 +159,63 @@ public class BrowserSubAppTest extends MgnlTestCase {
         Node testPage = NodeUtil.createPath(session.getRootNode(), TEST_PAGE, NodeTypes.Page.NAME);
         PropertyUtil.setProperty(testPage, TEST_PROPERTY, "test");
 
-        MockContext ctx = new MockContext();
+        MockWebContext ctx = new MockWebContext();
         ctx.addSession(WORKSPACE, session);
         ctx.setUser(createMockUser("normal"));
         MgnlContext.setInstance(ctx);
         initActionbarGroupsAndSections();
         initSubAppComponents();
+
+        sectionToShow.setAvailability(sAvailabilityAlways);
+        initBrowser();
+        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
+    }
+
+    @Test
+    public void testLocationChangedWithUnknownViewType() {
+        // GIVEN
+
+        // 1. fake basic viewType configuration for the mock browserPresenter (only knows about defaultView)
+        final String defaultViewType = "defaultView";
+        when(browserPresenter.getDefaultViewType()).thenReturn(defaultViewType);
+        when(browserPresenter.hasViewType(anyString())).thenAnswer(new Answer<Boolean>() {
+
+            @Override
+            public Boolean answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                // only return true for our fake defaultViewType, not for the unknownView
+                return defaultViewType.equals(args[0]);
+            }
+        });
+
+        // 2. make sure subAppContext will get updates of current location
+        AppContext mockAppContext = mock(AppContext.class);
+        doAnswer(new Answer<Void>() {
+
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                subAppContext.setLocation((Location) args[1]);
+                return null;
+            }
+        }).when(mockAppContext).updateSubAppLocation(any(SubAppContext.class), any(Location.class));
+        subAppContext.setAppContext(mockAppContext);
+
+        // 3. some location with unknown viewType
+        DefaultLocation location = new DefaultLocation("app", "someApp", "someContentApp", "/some/node:unknownView");
+        subAppContext.setLocation(location);
+
+        // WHEN
+        subApp.locationChanged(location);
+
+        // THEN
+        assertNotNull(subApp.getCurrentLocation().getViewType());
+        assertEquals(defaultViewType, subApp.getCurrentLocation().getViewType());
     }
 
     @Test
     public void testAlwaysVisibleSectionOnRoot() throws Exception {
         // GIVEN
-        sectionToShow.setAvailability(sAvailabilityAlways);
-        initActionbar();
-        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
-        // root
         List<String> ids = new ArrayList<String>(1);
         ids.add(JcrItemUtil.getItemId(session.getRootNode()));
         when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
@@ -177,10 +233,6 @@ public class BrowserSubAppTest extends MgnlTestCase {
     @Test
     public void testAlwaysVisibleSectionOnNonRootNode() throws Exception {
         // GIVEN
-        sectionToShow.setAvailability(sAvailabilityAlways);
-        initActionbar();
-        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
-        // node
         List<String> ids = new ArrayList<String>(1);
         ids.add(JcrItemUtil.getItemId(testContentNode));
         when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
@@ -199,10 +251,6 @@ public class BrowserSubAppTest extends MgnlTestCase {
     @Test
     public void testAlwaysVisibleSectionOnProperty() throws Exception {
         // GIVEN
-        sectionToShow.setAvailability(sAvailabilityAlways);
-        initActionbar();
-        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
-        // property
         List<String> ids = new ArrayList<String>(1);
         ids.add(JcrItemUtil.getItemId(testContentNode.getProperty(TEST_PROPERTY)));
         when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
@@ -230,7 +278,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
         view = mock(ContentSubAppView.class);
     }
 
-    private void initActionbar() {
+    private void initBrowser() {
         ConfiguredActionbarDefinition definition = new ConfiguredActionbarDefinition();
         definition.addSection(sectionToShow);
         definition.addSection(sectionToHide);
@@ -248,8 +296,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
         descriptor.setWorkbench(wbDef);
         descriptor.setActionbar(definition);
 
-        subAppContext = mock(SubAppContext.class);
-        when(subAppContext.getSubAppDescriptor()).thenReturn(descriptor);
+        subAppContext = new TestSubAppContext(descriptor);
     }
 
     private void initActionbarGroupsAndSections() {
@@ -382,4 +429,110 @@ public class BrowserSubAppTest extends MgnlTestCase {
             enabledActions.removeAll(Arrays.asList(actionNames));
         }
     }
+
+    /**
+     * Basic Empty implementation of {@link SubAppContext} for test purpose.
+     */
+    public static class TestSubAppContext implements SubAppContext {
+
+        private Location location;
+        private AppContext appContext;
+        private SubAppDescriptor descriptor;
+
+        public TestSubAppContext(SubAppDescriptor descriptor) {
+            this.descriptor = descriptor;
+        }
+
+        @Override
+        public OverlayCloser openOverlay(View view) {
+            return null;
+        }
+
+        @Override
+        public OverlayCloser openOverlay(View view, ModalityLevel modalityLevel) {
+            return null;
+        }
+
+        @Override
+        public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, AlertCallback cb) {
+        }
+
+        @Override
+        public void openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {
+        }
+
+        @Override
+        public void openConfirmation(MessageStyleType type, View viewToShow, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
+        }
+
+        @Override
+        public void openConfirmation(MessageStyleType type, String title, String body, String confirmButtonText, String cancelButtonText, boolean cancelIsDefault, ConfirmationCallback cb) {
+        }
+
+        @Override
+        public void openNotification(MessageStyleType type, boolean doesTimeout, View viewToShow) {
+        }
+
+        @Override
+        public void openNotification(MessageStyleType type, boolean doesTimeout, String title) {
+        }
+
+        @Override
+        public void openNotification(MessageStyleType type, boolean doesTimeout, String title, String linkText, NotificationCallback cb) {
+        }
+
+        @Override
+        public String getSubAppId() {
+            return null;
+        }
+
+        @Override
+        public SubApp getSubApp() {
+            return null;
+        }
+
+        @Override
+        public Location getLocation() {
+            return location;
+        }
+
+        @Override
+        public AppContext getAppContext() {
+            return appContext;
+        }
+
+        @Override
+        public SubAppDescriptor getSubAppDescriptor() {
+            return descriptor;
+        }
+
+        @Override
+        public void setAppContext(AppContext appContext) {
+            this.appContext = appContext;
+        }
+
+        @Override
+        public void setLocation(Location location) {
+            this.location = location;
+        }
+
+        @Override
+        public void setSubApp(SubApp subApp) {
+        }
+
+        @Override
+        public void setInstanceId(String instanceId) {
+        }
+
+        @Override
+        public String getInstanceId() {
+            return null;
+        }
+
+        @Override
+        public void close() {
+        }
+
+    }
+
 }

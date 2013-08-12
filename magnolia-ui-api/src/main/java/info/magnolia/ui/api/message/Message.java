@@ -35,29 +35,27 @@ package info.magnolia.ui.api.message;
 
 import info.magnolia.context.MgnlContext;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Models a message. Except for timestamp all fields are optional. The sender is {@link #DEFAULT_SENDER} unless
- * diversely set after object construction.
+ * Models a message. Except for timestamp all fields are optional.
  */
-public class Message implements Cloneable, Map<String, Object> {
+public class Message implements Cloneable {
+    private String id;
+    private final long timestamp;
+    private MessageType type;
+    private String subject;
+    private String message;
+    private String sender;
+    private boolean cleared;
+    /**
+     * View associated with this message.
+     */
+    private String view;
 
-    public static String ID = "id";
-    public static String TIMESTAMP = "timestamp";
-    public static String MESSAGETYPE = "messagetype";
-    public static String MESSAGE_VIEW = "messageView";
-
-    public static String SUBJECT = "subject";
-    public static String MESSAGE = "message";
-    public static String CLEARED = "cleared";
-    public static String SENDER = "sender";
-    public static String DEFAULT_SENDER = "system";
-
-    private Map<String, Object> data = new HashMap<String, Object>();
+    private Map<String, Object> properties = new HashMap<String, Object>();
 
     public Message() {
         this(System.currentTimeMillis());
@@ -65,7 +63,7 @@ public class Message implements Cloneable, Map<String, Object> {
     }
 
     public Message(long timestampInMillis) {
-        setTimestamp(timestampInMillis);
+        this.timestamp = timestampInMillis;
         setCleared(false);
     }
 
@@ -77,59 +75,63 @@ public class Message implements Cloneable, Map<String, Object> {
     }
 
     public long getTimestamp() {
-        return ((Long) data.get(TIMESTAMP)).longValue();
-    }
-
-    private void setTimestamp(long timestamp) {
-        data.put(TIMESTAMP, timestamp);
+        return timestamp;
     }
 
     public String getMessage() {
-        return data.get(MESSAGE) != null ? data.get(MESSAGE).toString() : null;
+        return message;
     }
 
     public void setMessage(String message) {
-        data.put(MESSAGE, message);
+        this.message = message;
     }
 
     public String getSubject() {
-        return data.get(SUBJECT) != null ? data.get(SUBJECT).toString() : null;
+        return subject;
     }
 
     public void setSubject(String subject) {
-        data.put(SUBJECT, subject);
+        this.subject = subject;
     }
 
     public MessageType getType() {
-        return data.get(MESSAGETYPE) != null ? MessageType.valueOf(data.get(MESSAGETYPE).toString()) : null;
+        return type;
     }
 
     public void setType(MessageType type) {
-        data.put(MESSAGETYPE, type.name());
+        this.type = type;
     }
 
     public void setId(String id) {
-        data.put(ID, id);
+        this.id = id;
     }
 
     public String getId() {
-        return data.get(ID) != null ? data.get(ID).toString() : null;
+        return id;
     }
 
     public boolean isCleared() {
-        return data.get(CLEARED) != null && ((Boolean) data.get(CLEARED));
+        return cleared;
     }
 
     public void setCleared(boolean cleared) {
-        data.put(CLEARED, cleared);
+        this.cleared = cleared;
     }
 
     public String getSender() {
-        return data.get(SENDER) != null ? data.get(SENDER).toString() : null;
+        return sender;
     }
 
     public void setSender(String sender) {
-        data.put(SENDER, sender);
+        this.sender = sender;
+    }
+
+    public String getView() {
+        return view;
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 
     @Override
@@ -137,78 +139,19 @@ public class Message implements Cloneable, Map<String, Object> {
         return (Message) super.clone();
     }
 
-    // Map methods
-
-    @Override
-    public int size() {
-        return data.size();
+    public void addProperty(final String name, final Object value) {
+        properties.put(name, value);
     }
 
-    @Override
-    public boolean isEmpty() {
-        return data.isEmpty();
+    public Object getProperty(final String name) {
+        return properties.get(name);
     }
 
-    @Override
-    public boolean containsKey(Object key) {
-        return data.containsKey(key);
+    public boolean hasProperty(final String name) {
+        return properties.containsKey(name);
     }
 
-    @Override
-    public boolean containsValue(Object value) {
-        return data.containsValue(value);
-    }
-
-    @Override
-    public Object get(Object key) {
-        return data.get(key);
-    }
-
-    @Override
-    public Object put(String key, Object value) {
-        if (TIMESTAMP.equals(key)) {
-            throw new IllegalArgumentException("Cannot replace timestamp of the message.");
-        }
-        return data.put(key, value);
-    }
-
-    @Override
-    public Object remove(Object key) {
-        if (TIMESTAMP.equals(key)) {
-            throw new IllegalArgumentException("Cannot remove timestamp from the message.");
-        }
-        return data.remove(key);
-    }
-
-    @Override
-    public void putAll(Map<? extends String, ? extends Object> m) {
-        if (m.containsKey(TIMESTAMP)) {
-            // timestamp cannot be replaced, even by "batch" operation
-            m.remove(TIMESTAMP);
-        }
-        data.putAll(m);
-    }
-
-    @Override
-    public void clear() {
-        // preserve timestamp
-        long timestamp = getTimestamp();
-        data.clear();
-        data.put(TIMESTAMP, timestamp);
-    }
-
-    @Override
-    public Set<String> keySet() {
-        return data.keySet();
-    }
-
-    @Override
-    public Collection<Object> values() {
-        return data.values();
-    }
-
-    @Override
-    public Set<java.util.Map.Entry<String, Object>> entrySet() {
-        return data.entrySet();
+    public Set<String> getPropertNames() {
+        return properties.keySet();
     }
 }

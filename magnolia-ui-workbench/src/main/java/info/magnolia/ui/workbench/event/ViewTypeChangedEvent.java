@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.workbench.event;
 
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
 
@@ -50,13 +49,13 @@ public class ViewTypeChangedEvent implements Event<ViewTypeChangedEvent.Handler>
         void onViewChanged(ViewTypeChangedEvent event);
     }
 
-    private ViewType viewType;
+    private String viewType;
 
-    public ViewTypeChangedEvent(ViewType viewType) {
+    public ViewTypeChangedEvent(String viewType) {
         this.viewType = viewType;
     }
 
-    public ViewType getViewType() {
+    public String getViewType() {
         return viewType;
     }
 

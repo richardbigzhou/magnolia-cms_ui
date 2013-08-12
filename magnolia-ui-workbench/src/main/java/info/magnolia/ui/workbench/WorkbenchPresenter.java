@@ -41,18 +41,18 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
+import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 import info.magnolia.ui.workbench.search.SearchPresenter;
+import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenter;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -118,8 +118,8 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                 } else {
                     presenter = componentProvider.newInstance(presenterClass);
                 }
-                contentPresenters.put(presenterDefinition.getViewType().getText(), presenter);
-                ContentView contentView = presenter.start(workbenchDefinition, eventBus, presenterDefinition.getViewType().getText());
+                contentPresenters.put(presenterDefinition.getViewType(), presenter);
+                ContentView contentView = presenter.start(workbenchDefinition, eventBus, presenterDefinition.getViewType());
                 if (presenterDefinition.isActive()) {
                     activePresenter = presenter;
                     try {
@@ -137,7 +137,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                     ((TreePresenter) presenter).disableDragAndDrop();
                 }
             } else {
-                throw new RuntimeException("The provided view type [" + presenterDefinition.getViewType().getText() + "] is not valid.");
+                throw new RuntimeException("The provided view type [" + presenterDefinition.getViewType() + "] is not valid.");
             }
 
         }
@@ -155,16 +155,16 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     }
 
     @Override
-    public void onViewTypeChanged(final ViewType viewType) {
+    public void onViewTypeChanged(final String viewType) {
         setViewType(viewType);
         eventBus.fireEvent(new ViewTypeChangedEvent(viewType));
     }
 
-    private void setViewType(ViewType viewType) {
+    private void setViewType(String viewType) {
         ContentPresenter oldPresenter = activePresenter;
         List<String> itemIds = oldPresenter.getSelectedItemIds();
 
-        activePresenter = contentPresenters.get(viewType.getText());
+        activePresenter = contentPresenters.get(viewType);
         activePresenter.refresh();
         view.setViewType(viewType);
 
@@ -234,7 +234,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         activePresenter.refresh();
     }
 
-    public ContentView.ViewType getDefaultViewType() {
+    public String getDefaultViewType() {
         for (ContentPresenterDefinition definition : this.workbenchDefinition.getContentViews()) {
             if (definition.isActive()) {
                 return definition.getViewType();
@@ -243,11 +243,15 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         return this.workbenchDefinition.getContentViews().get(0).getViewType();
     }
 
-    public void resynch(final List<String> itemIds, final ContentView.ViewType viewType, final String query) {
+    public boolean hasViewType(String viewType) {
+        return contentPresenters.containsKey(viewType);
+    }
+
+    public void resynch(final List<String> itemIds, final String viewType, final String query) {
         setViewType(viewType);
         select(itemIds);
 
-        if (viewType == ViewType.SEARCH) {
+        if (viewType == SearchPresenterDefinition.VIEW_TYPE) {
             doSearch(query);
             // update search field and focus it
             view.setSearchQuery(query);
@@ -256,8 +260,8 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     public void doSearch(String searchExpression) {
         // firing new search forces search view as new view type
-        if (activePresenter != contentPresenters.get(ViewType.SEARCH.getText())) {
-            setViewType(ViewType.SEARCH);
+        if (activePresenter != contentPresenters.get(SearchPresenterDefinition.VIEW_TYPE)) {
+            setViewType(SearchPresenterDefinition.VIEW_TYPE);
         }
         final SearchPresenter searchPresenter = (SearchPresenter) activePresenter;
         if (StringUtils.isBlank(searchExpression)) {

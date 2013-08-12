@@ -63,6 +63,8 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     private Node dialogs;
     private Node actions;
     private Node configActionbarFolderGroups;
+    private Node mainNodeType;
+    private Node folderNodeType;
 
     @Override
     protected String getModuleDescriptorPath() {
@@ -92,10 +94,12 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
 
         actions = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actions", NodeTypes.ContentNode.NAME);
         configActionbarFolderGroups = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups", NodeTypes.ContentNode.NAME);
+        mainNodeType = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/nodeTypes/mainNodeType", NodeTypes.ContentNode.NAME);
+        folderNodeType = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/nodeTypes/folderNodeType", NodeTypes.ContentNode.NAME);
     }
 
     @Test
-    public void testUpdateTo5_0_1WithoutExistingLinkDefinition() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo501WithoutExistingLinkDefinition() throws ModuleManagementException, RepositoryException {
         // GIVEN
         dialogs.addNode("link", NodeTypes.ContentNode.NAME);
         assertTrue(dialogs.hasNode("link"));
@@ -108,7 +112,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo5_0_1WithoutNonExistingLinkDefinition() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo501WithoutNonExistingLinkDefinition() throws ModuleManagementException, RepositoryException {
         // GIVEN
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
@@ -247,5 +251,20 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         // THEN
         assertFalse(actionbarItems.hasNode("delete"));
         assertTrue(actionbarItems.hasNode("confirmDeletion"));
+    }
+
+    @Test
+    public void testUpdateTo5Dot1SetsNodeTypesForConfigurationAppAsStrict() throws ModuleManagementException, RepositoryException {
+
+        // GIVEN
+        assertFalse(mainNodeType.hasProperty("strict"));
+        assertFalse(folderNodeType.hasProperty("strict"));
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.2"));
+
+        // THEN
+        assertTrue(mainNodeType.hasProperty("strict"));
+        assertTrue(folderNodeType.hasProperty("strict"));
     }
 }

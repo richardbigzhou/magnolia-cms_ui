@@ -31,8 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.pages.app.main;
+package info.magnolia.pages.app.editor;
 
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
@@ -41,9 +42,6 @@ import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
-import info.magnolia.pages.app.editor.PageEditorPresenter;
-import info.magnolia.pages.app.editor.PagesEditorSubApp;
-import info.magnolia.pages.app.editor.PagesEditorSubAppView;
 import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
 import info.magnolia.pages.app.editor.location.PagesLocation;
 import info.magnolia.rendering.template.TemplateAvailability;
@@ -257,5 +255,32 @@ public class PagesEditorSubAppTest {
         verify(actionbarPresenter).showSection(sectionName);
         verify(actionbarPresenter).disable(unavailableAction);
         verify(actionbarPresenter).enable(availableAction);
+    }
+
+    @Test
+    public void testPagePreviewSetMgnlPreviewRequestParameter() {
+        // GIVEN
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport);
+
+        // WHEN
+        // param 'view' means preview
+        editor.start(new PagesLocation("/:view"));
+
+        // THEN
+        assertTrue(editor.getParameters().getUrl().contains("mgnlPreview=true"));
+    }
+
+    @Test
+    public void testPageEditRemoveMgnlPreviewRequestParameter() {
+        // GIVEN
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport);
+        editor.start(new PagesLocation("/:view"));
+        assertTrue(editor.getParameters().getUrl().contains("mgnlPreview=true"));
+
+        // WHEN
+        editor.locationChanged(new PagesLocation("/:edit"));
+
+        // THEN
+        assertFalse(editor.getParameters().getUrl().contains("mgnlPreview=true"));
     }
 }

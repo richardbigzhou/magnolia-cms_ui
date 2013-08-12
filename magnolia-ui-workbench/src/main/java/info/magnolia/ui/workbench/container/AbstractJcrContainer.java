@@ -46,15 +46,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.NodeTypeIterator;
+import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
@@ -85,6 +90,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * String separating a properties name and the uuid of its node.
      */
     public static final String PROPERTY_NAME_AND_UUID_SEPARATOR = "@";
+
     private static final Long LONG_ZERO = Long.valueOf(0);
 
     /**
@@ -96,7 +102,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     protected static final String SELECTOR_NAME = "t";
 
-    protected static final String SELECT_TEMPLATE = "select * from [%s] as " + SELECTOR_NAME;
+    protected static final String SELECT_TEMPLATE = "select * from [nt:base] as " + SELECTOR_NAME;
 
     protected static final String WHERE_TEMPLATE_FOR_PATH = " ISDESCENDANTNODE('%s')";
 
@@ -138,9 +144,11 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      */
     private int currentOffset;
 
+    private Set<NodeType> searchableNodeTypes;
 
     public AbstractJcrContainer(WorkbenchDefinition workbenchDefinition) {
         this.workbenchDefinition = workbenchDefinition;
+        this.searchableNodeTypes = findSearchableNodeTypes();
     }
 
     public void addSortableProperty(final String sortableProperty) {
@@ -496,11 +504,11 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     /**
      * @param considerSorting an optional <code>ORDER BY</code> is added if this parameter is <code>true</code>. Sorting options can be configured in the {@link WorkbenchDefinition}.
      * @return a string representing a JCR statement to retrieve this container's items.
-     *         It creates a JCR query in the form {@code select * from [nodeType] as selector [WHERE] [ORDER BY]"}.
-     *         <p>
-     *         Subclasses can customize the optional <code>WHERE</code> clause by overriding {@link #getQueryWhereClause()}.
-     *         <p>
-     *         The main item type (as configured in the {@link WorkbenchDefinition}) in the <code>SELECT</code> statement can be changed to something different by calling {@link #getQuerySelectStatement()}
+     * It creates a JCR query in the form {@code select * from [nt:base] as selectorName [WHERE] [ORDER BY]"}.
+     * <p>
+     * Subclasses can customize the optional <code>WHERE</code> clause by overriding {@link #getQueryWhereClause()} or, at a more fine-grained level, {@link #getQueryWhereClauseNodeTypes()} and {@link #getQueryWhereClauseWorkspacePath()}.
+     * <p>
+     * A restriction on the node types to be searched for can be applied via {@link #getQueryWhereClauseNodeTypes()}.
      */
     protected final String constructJCRQuery(final boolean considerSorting) {
         final String select = getQuerySelectStatement();
@@ -536,23 +544,68 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     /**
-     * @return the JCR query clause to select only nodes with the path configured in the workspace as String - in case
-     *         it's not configured return a blank string so that all nodes are considered. Internally calls {@link #getQueryWhereClauseWorkspacePath()} to determine
-     *         the path under which to perform the search.
+     * @return the JCR query where clause to select only node types which are not hidden in list and nodes under the path configured in the workspace as String - if the latter
+     * is not configured return a blank string so that all nodes are considered.
+     * @see AbstractJcrContainer#getQueryWhereClauseNodeTypes()
+     * @see #getQueryWhereClauseWorkspacePath()
      */
     protected String getQueryWhereClause() {
         String whereClause = "";
         String clauseWorkspacePath = getQueryWhereClauseWorkspacePath();
-        if (!"".equals(clauseWorkspacePath)) {
-            whereClause = " where " + clauseWorkspacePath;
+        String clauseNodeTypes = getQueryWhereClauseNodeTypes();
+        if (StringUtils.isNotBlank(clauseNodeTypes)) {
+            whereClause = " where ((" + clauseNodeTypes + ") ";
+            if (StringUtils.isNotBlank(clauseWorkspacePath)) {
+                whereClause += "and " + clauseWorkspacePath;
+            }
+            whereClause += ") ";
+        } else {
+            whereClause = " where ";
         }
+
         log.debug("JCR query WHERE clause is {}", whereClause);
         return whereClause;
     }
 
     /**
+     * @return a String containing the node types to be displayed in a list view and searched for in a query. All node types declared in a workbench definition are returned
+     * unless their <code>hideInList</code> property is true. E.g. assuming a node types declaration like the following
+     * 
+     * <pre>
+     * ...
+     * + workbench
+     *  + nodeTypes
+     *   + foo
+     *    * name = nt:foo
+     *   + bar
+     *    * name = nt:bar
+     *    * hideInList = true
+     *   + baz (a mixin type)
+     *    * name = nt:baz
+     * ...
+     * </pre>
+     * 
+     * this method will return the following string <code>[jcr:primaryType] = 'nt:foo' or [jcr:mixinTypes] = 'baz'</code>. This will eventually be used to restrict the node types to be displayed in list views and searched for
+     * in search views, i.e. <code>select * from [nt:base] where ([jcr:primaryType] = 'nt:foo' or [jcr:mixinTypes] = 'baz')</code>.
+     * @see #findSearchableNodeTypes()
+     */
+    protected String getQueryWhereClauseNodeTypes() {
+
+        List<String> defs = new ArrayList<String>();
+
+        for (NodeType nt : getSearchableNodeTypes()) {
+            if (nt.isMixin()) {
+                // Mixin type information is found in jcr:mixinTypes node see http://www.day.com/specs/jcr/2.0/10_Writing.html#10.10.3%20Assigning%20Mixin%20Node%20Types
+                defs.add("[jcr:mixinTypes] = '" + nt.getName() + "'");
+            } else {
+                defs.add("[jcr:primaryType] = '" + nt.getName() + "'");
+            }
+        }
+        return StringUtils.join(defs, " or ");
+    }
+
+    /**
      * @return if {@link WorkbenchDefinition#getPath()} is not null or root ("/"), an ISDESCENDATNODE constraint narrowing the scope of search under the configured path, else an empty string.
-     *         Used by {@link #getQueryWhereClause()} to build a where clause.
      */
     protected final String getQueryWhereClauseWorkspacePath() {
         // By default, search the root and therefore do not need a query clause.
@@ -565,15 +618,17 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     /**
-     * @return a <code>SELECT</code> statement with the main item type as configured in the {@link WorkbenchDefinition}. Can be customized by subclasses to utilize other item types, i.e. {@code select * from [my:fancytype]}. Used internally by {@link #constructJCRQuery(boolean)}.
+     * @return a <code>SELECT</code> statement whose node type is <code>nt:base</code>. Can be customized by subclasses to utilize other item types, i.e. {@code select * from [my:fancytype]}. Used internally by {@link #constructJCRQuery(boolean)}.
      */
     protected String getQuerySelectStatement() {
-        return String.format(SELECT_TEMPLATE, getMainNodeType());
+        return SELECT_TEMPLATE;
     }
 
     /**
-     * @return the main NodeType to be used with this container. This is the type that will be used for querying e.g. when populating the list view.
+     * @deprecated since 5.1. All node types declared in the workbench definition are equal, meaning that their position doesn't matter when it comes to which ones are used in a query.
+     * The discriminating factor is the <code>hideInList</code> boolean property. If that property is <code>true</code>, then the node will be excluded from the query.
      */
+    @Deprecated
     protected String getMainNodeType() {
         final List<NodeTypeDefinition> nodeTypes = workbenchDefinition.getNodeTypes();
         return nodeTypes.isEmpty() ? DEFAULT_NODE_TYPE : nodeTypes.get(0).getName();
@@ -604,6 +659,10 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     public String getWorkspace() {
         return workbenchDefinition.getWorkspace();
+    }
+
+    public Set<NodeType> getSearchableNodeTypes() {
+        return searchableNodeTypes;
     }
 
     /**
@@ -659,5 +718,74 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      */
     protected void handleRepositoryException(final Logger logger, final String message, final RepositoryException repositoryException) {
         logger.warn(message + ": " + repositoryException);
+    }
+
+    /**
+     * @return a Set of searchable {@link NodeType}s. A searchable node type is defined as follow
+     * <ul>
+     * <li>It is a <a href="http://jackrabbit.apache.org/node-types.html">primary or mixin</a> node type configured under <code>/modules/myapp/apps/myapp/subApps/browser/workbench/nodeTypes</code>
+     * <li>It is not hidden in list and search views (property <code>hideInList=true</code>). By default nodes are not hidden.
+     * <li>If not strict (property <code>strict=false</code>), then its subtypes (if any) are searchable too. By default nodes are not defined as strict.
+     * <li>Subtypes beginning with <code>jcr:, nt:, mix:, rep:</code> are not taken into account.
+     * </ul>
+     */
+    protected Set<NodeType> findSearchableNodeTypes() {
+        final List<String> hiddenInList = new ArrayList<String>();
+        final List<NodeTypeDefinition> nodeTypeDefinition = workbenchDefinition.getNodeTypes();
+        log.debug("Defined node types are {}", nodeTypeDefinition);
+
+        for (NodeTypeDefinition def : nodeTypeDefinition) {
+            if (def.isHideInList()) {
+                log.debug("{} is hidden in list/search therefore it won't be displayed there.", def.getName());
+                hiddenInList.add(def.getName());
+            }
+        }
+
+        final Set<NodeType> searchableNodeTypes = new HashSet<NodeType>();
+
+        try {
+            final NodeTypeManager nodeTypeManager = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getWorkspace().getNodeTypeManager();
+
+            for (NodeTypeDefinition def : nodeTypeDefinition) {
+            final String nodeTypeName = def.getName();
+                if (hiddenInList.contains(nodeTypeName)) {
+                    continue;
+                }
+
+                final NodeType nt = nodeTypeManager.getNodeType(nodeTypeName);
+                searchableNodeTypes.add(nt);
+
+                if (def.isStrict()) {
+                    log.debug("{} is defined as strict, therefore its possible subtypes won't be taken into account.", nodeTypeName);
+                    continue;
+                }
+
+                final NodeTypeIterator subTypesIterator = nt.getSubtypes();
+
+                while (subTypesIterator.hasNext()) {
+                    final NodeType subType = subTypesIterator.nextNodeType();
+                    final String subTypeName = subType.getName();
+                        if (hiddenInList.contains(subTypeName) || subTypeName.startsWith("jcr:") || subTypeName.startsWith("mix:") || subTypeName.startsWith("rep:") || subTypeName.startsWith("nt:")) {
+                        continue;
+                    }
+                    log.debug("Adding {} as subtype of {}", subTypeName, nodeTypeName);
+                    searchableNodeTypes.add(subType);
+                }
+        }
+        } catch (LoginException e) {
+            handleRepositoryException(log, e.getMessage(), e);
+
+        } catch (RepositoryException e) {
+            handleRepositoryException(log, e.getMessage(), e);
+        }
+        if (log.isDebugEnabled()) {
+            StringBuilder sb = new StringBuilder("[");
+            for (NodeType nt : searchableNodeTypes) {
+                sb.append(String.format("[%s - isMixin? %s] ", nt.getName(), nt.isMixin()));
+            }
+            sb.append("]");
+            log.debug("Found searchable nodetypes (both primary types and mixins) and their subtypes {}", sb.toString());
+        }
+        return searchableNodeTypes;
     }
 }
