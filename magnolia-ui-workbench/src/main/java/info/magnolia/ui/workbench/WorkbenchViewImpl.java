@@ -35,11 +35,13 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.vaadin.icon.Icon;
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
+import info.magnolia.ui.workbench.list.ListPresenterDefinition;
+import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
+import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 import java.io.Serializable;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -77,16 +79,16 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
     private StatusBarView statusBar;
 
-    private Map<ViewType, ContentView> contentViews = new EnumMap<ViewType, ContentView>(ViewType.class);
+    private Map<String, ContentView> contentViews = new HashMap<String, ContentView>();
 
-    private Map<ViewType, Button> contentViewsButton = new EnumMap<ViewType, Button>(ViewType.class);
+    private Map<String, Button> contentViewsButton = new HashMap<String, Button>();
 
-    private ViewType currentViewType = ViewType.TREE;
+    private String currentViewType = TreePresenterDefinition.VIEW_TYPE;
 
     /**
      * for going back from search view if search expression is empty.
      */
-    private ViewType previousViewType = currentViewType;
+    private String previousViewType = currentViewType;
 
     private final Property.ValueChangeListener searchFieldListener = new Property.ValueChangeListener() {
 
@@ -171,14 +173,14 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
     }
 
     @Override
-    public void addContentView(ViewType viewType, ContentView view, ContentPresenterDefinition contentViewDefintion) {
+    public void addContentView(String viewType, ContentView view, ContentPresenterDefinition contentViewDefintion) {
         contentViews.put(viewType, view);
 
-        if (viewType.equals(ViewType.SEARCH)) {
+        if (contentViewDefintion instanceof SearchPresenterDefinition) {
             // do not add a button for search
             return;
         }
-        if (viewType.equals(ViewType.LIST)) {
+        if (contentViewDefintion instanceof ListPresenterDefinition) {
             searchBox.setVisible(true);
         }
 
@@ -193,13 +195,13 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
     }
 
     @Override
-    public void setViewType(ViewType type) {
+    public void setViewType(String type) {
         removeComponent(getSelectedView().asVaadinComponent());
         final Component c = contentViews.get(type).asVaadinComponent();
         addComponent(c, 1); // between tool bar and status bar
         setExpandRatio(c, 1);
 
-        if (type != ViewType.SEARCH) {
+        if (type != SearchPresenterDefinition.VIEW_TYPE) {
             previousViewType = type;
             setSearchQuery(null);
         }
@@ -208,7 +210,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         currentViewType = type;
     }
 
-    private void fireViewTypeChangedEvent(ViewType viewType) {
+    private void fireViewTypeChangedEvent(String viewType) {
         this.listener.onViewTypeChanged(viewType);
     }
 
@@ -239,7 +241,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         this.listener = listener;
     }
 
-    private Button buildButton(final ViewType viewType, final String icon, final boolean active) {
+    private Button buildButton(final String viewType, final String icon, final boolean active) {
         NativeButton button = new NativeButton(null, new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -249,7 +251,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         button.setStyleName(BaseTheme.BUTTON_LINK);
 
         button.setHtmlContentAllowed(true);
-        button.setCaption("<span class=\"" + icon + "\"></span><span class=\"view-type-arrow view-type-arrow-" + viewType.getText() + " icon-arrow2_n\"></span>");
+        button.setCaption("<span class=\"" + icon + "\"></span><span class=\"view-type-arrow view-type-arrow-" + viewType + " icon-arrow2_n\"></span>");
 
         if (active) {
             button.addStyleName("active");
@@ -257,16 +259,16 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         return button;
     }
 
-    private void setViewTypeStyling(final ViewType viewType) {
-        for (Map.Entry<ViewType, Button> entry : contentViewsButton.entrySet()) {
+    private void setViewTypeStyling(final String viewType) {
+        for (Map.Entry<String, Button> entry : contentViewsButton.entrySet()) {
             entry.getValue().removeStyleName("active");
             if (entry.getKey().equals(viewType)) {
                 entry.getValue().addStyleName("active");
             }
         }
         // search is a list view
-        if (viewType.equals(ContentView.ViewType.SEARCH) && contentViewsButton.containsKey(ContentView.ViewType.LIST)) {
-            contentViewsButton.get(ContentView.ViewType.LIST).addStyleName("active");
+        if (viewType.equals(SearchPresenterDefinition.VIEW_TYPE) && contentViews.containsKey(ListPresenterDefinition.VIEW_TYPE)) {
+            contentViewsButton.get(ListPresenterDefinition.VIEW_TYPE).addStyleName("active");
         }
     }
 
@@ -298,7 +300,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
     @Override
     public void setMultiselect(boolean multiselect) {
-        for (ViewType type : contentViews.keySet()) {
+        for (String type : contentViews.keySet()) {
             contentViews.get(type).setMultiselect(multiselect);
         }
     }

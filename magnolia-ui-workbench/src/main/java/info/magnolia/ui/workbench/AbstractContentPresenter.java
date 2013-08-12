@@ -52,11 +52,11 @@ import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import java.util.Iterator;
 import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -217,7 +217,7 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
         Iterator<ContentPresenterDefinition> viewsIterator = workbenchDefinition.getContentViews().iterator();
         while (viewsIterator.hasNext()) {
             ContentPresenterDefinition contentView = viewsIterator.next();
-            if (contentView.getViewType().getText().equals(viewTypeName)) {
+            if (contentView.getViewType().equals(viewTypeName)) {
                 return getAvailableColumns(contentView.getColumns()).iterator();
             }
         }

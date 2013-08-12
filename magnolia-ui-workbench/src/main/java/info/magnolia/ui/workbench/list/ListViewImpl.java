@@ -203,11 +203,6 @@ public class ListViewImpl implements ListView {
     }
 
     @Override
-    public ViewType getViewType() {
-        return ViewType.LIST;
-    }
-
-    @Override
     public Table asVaadinComponent() {
         return table;
     }
