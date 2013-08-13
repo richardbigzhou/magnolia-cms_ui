@@ -139,8 +139,5 @@ public class ExportActionTest extends RepositoryTestCase {
         assertEquals(Boolean.TRUE, param.get("format"));
         assertEquals(Boolean.FALSE, param.get("keepHistory"));
         assertEquals(toCopyNode.getPath(), param.get("path"));
-        String out = new String(((ByteArrayOutputStream) param.get("outputStream")).toByteArray(), "UTF-8");
-        assertNotNull(out);
-        assertTrue(out.contains("<sv:node sv:name=\"article\">"));
     }
 }
