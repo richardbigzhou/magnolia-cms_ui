@@ -44,7 +44,6 @@ import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
-import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.List;
 
@@ -100,7 +99,6 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
         super.onPreExecute();
 
         if (getCurrentItem().getJcrItem().isNode() && getCurrentItem().getJcrItem().getDepth() == 0) {
-            uiContext.openNotification(MessageStyleTypeEnum.INFO, true, "Root node can't be deleted.");
             throw new ActionExecutionException("Root node can't be deleted.");
         }
     }
@@ -114,9 +112,6 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
     protected void onPostExecute() throws Exception {
         // Propagate event
         eventBus.fireEvent(new ContentChangedEvent((String) getParams().get(Context.ATTRIBUTE_REPOSITORY), itemIdOfChangedItem));
-
-        // Show notification
-        uiContext.openNotification(MessageStyleTypeEnum.INFO, true, getSuccessMessage());
     }
 
     /**
@@ -186,7 +181,14 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
         return label.toString();
     }
 
+    @Override
     protected String getSuccessMessage() {
-        return MessagesUtil.get(getDefinition().getSuccessMessage(), getDefinition().getI18nBasename(),new String[] {(jcrItem.isNode()) ? "Node" : "Property"});
+        return MessagesUtil.get(getDefinition().getSuccessMessage(), getDefinition().getI18nBasename());
     }
+
+    @Override
+    protected String getFailureMessage() {
+        return MessagesUtil.get(getDefinition().getFailureMessage(), getDefinition().getI18nBasename());
+    }
+
 }
