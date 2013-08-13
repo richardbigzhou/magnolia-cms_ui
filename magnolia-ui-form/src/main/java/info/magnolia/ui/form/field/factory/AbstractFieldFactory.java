@@ -105,6 +105,12 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
                 this.field.addStyleName(definition.getStyleName());
             }
 
+            String width = definition.getWidth();
+            width = width != null ? width : "100%";
+
+            field.setWidth(width);
+            field.setHeight(definition.getHeight());
+
             // Set label and required marker
             this.field.setCaption(getMessage(getFieldDefinition().getLabel()) + (getFieldDefinition().isRequired() ? "<span class=\"requiredfield\">*</span>" : ""));
 
