@@ -43,9 +43,9 @@ import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Item;
 import javax.jcr.RepositoryException;
@@ -62,9 +62,12 @@ public class MarkNodeAsDeletedAction extends DeleteAction<MarkNodeAsDeletedActio
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Inject
     public MarkNodeAsDeletedAction(MarkNodeAsDeletedActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
         super(definition, item, commandsManager, eventBus, uiContext);
+    }
+
+    public MarkNodeAsDeletedAction(MarkNodeAsDeletedActionDefinition definition, List<JcrItemAdapter> items, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
+        super(definition, items, commandsManager, eventBus, uiContext);
     }
 
     /**
@@ -82,7 +85,7 @@ public class MarkNodeAsDeletedAction extends DeleteAction<MarkNodeAsDeletedActio
     protected String createConfirmationMessage() throws RepositoryException {
         StringBuffer label = new StringBuffer();
         label.append("The node<br>");
-        label.append(getItem().getJcrItem().getPath());
+        label.append(getCurrentItem().getJcrItem().getPath());
         label.append("<br>and its sub nodes will be marked for deletion.<br>");
         label.append("Are you sure ?");
         return label.toString();

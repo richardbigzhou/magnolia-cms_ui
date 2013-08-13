@@ -59,6 +59,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -98,6 +99,10 @@ public class MarkNodeAsDeletedActionTest extends RepositoryTestCase {
         referenceNode.getNode("article1").getNode("article2").setProperty("property_boolean", Boolean.TRUE);
         referenceNode.getNode("article1").getNode("article2").setProperty("property_long", Long.decode("1000"));
         referenceNode.getNode("article1").getNode("article2").setProperty("property_string", "property");
+        referenceNode.addNode("article3", NodeTypes.Page.NAME);
+        referenceNode.getNode("article3").setProperty("property_boolean", Boolean.TRUE);
+        referenceNode.getNode("article3").setProperty("property_long", Long.decode("1000"));
+        referenceNode.getNode("article3").setProperty("property_string", "property");
 
         markNodeAsDeleteCommand = new MarkNodeAsDeletedCommand();
 
@@ -142,6 +147,7 @@ public class MarkNodeAsDeletedActionTest extends RepositoryTestCase {
 
         // THEN
         assertTrue(referenceNode.hasNode("article1"));
+        assertFalse(referenceNode.getNode("article1").hasProperty(NodeTypes.Deleted.DELETED));
         assertTrue(referenceNode.hasNode("article1/article2"));
         assertTrue(referenceNode.getNode("article1/article2").hasProperty(NodeTypes.Deleted.DELETED));
     }
@@ -162,4 +168,24 @@ public class MarkNodeAsDeletedActionTest extends RepositoryTestCase {
         assertTrue(referenceNode.getNode("article1/article2").hasProperty(NodeTypes.Deleted.DELETED));
     }
 
+    @Test
+    public void testMarkMultipleNodesAsDeleted() throws Exception {
+        // GIVEN
+        List<JcrItemAdapter> items = new ArrayList<JcrItemAdapter>(2);
+        items.add(new JcrNodeAdapter(referenceNode.getNode("article1").getNode("article2")));
+        items.add(new JcrNodeAdapter(referenceNode.getNode("article3")));
+        MarkNodeAsDeletedAction deleteAction = new MarkNodeAsDeletedAction(definition, items, commandsManager, eventBus, new ConfirmationActionTest.TestUiContext(true));
+
+        // WHEN
+        deleteAction.execute();
+
+        // THEN
+        assertTrue(referenceNode.hasNode("article1"));
+        assertFalse(referenceNode.getNode("article1").hasProperty(NodeTypes.Deleted.DELETED));
+        assertTrue(referenceNode.hasNode("article1/article2"));
+        assertTrue(referenceNode.getNode("article1/article2").hasProperty(NodeTypes.Deleted.DELETED));
+        assertTrue(referenceNode.hasNode("article3"));
+        assertTrue(referenceNode.getNode("article3").hasProperty(NodeTypes.Deleted.DELETED));
+
+    }
 }
