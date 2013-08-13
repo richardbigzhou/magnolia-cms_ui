@@ -59,6 +59,7 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.converter.AbstractStringToNumberConverter;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -114,11 +115,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
                 this.field.addStyleName(definition.getStyleName());
             }
 
-            String width = definition.getWidth();
-            width = width != null ? width : "100%";
-
-            field.setWidth(width);
-            field.setHeight(definition.getHeight());
+            field.setWidth(100, Unit.PERCENTAGE);
 
             // Set label and required marker
             this.field.setCaption(getMessage(getFieldDefinition().getLabel()) + (getFieldDefinition().isRequired() ? "<span class=\"requiredfield\">*</span>" : ""));
