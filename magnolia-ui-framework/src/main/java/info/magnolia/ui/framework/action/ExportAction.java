@@ -66,33 +66,35 @@ import com.vaadin.server.StreamResource;
  */
 public class ExportAction extends AbstractCommandAction<ExportActionDefinition> {
     private static final Logger log = LoggerFactory.getLogger(ExportAction.class);
-    private File outputFile;
+    private File fileOutput;
     private FileOutputStream fileOutputStream;
-    private FileInputStream inputStream;
 
     @Inject
     public ExportAction(ExportActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext) throws ActionExecutionException {
         super(definition, item, commandsManager, uiContext);
         try {
-            outputFile = File.createTempFile(item.getItemId(), ".xml", Path.getTempDirectory());
-            fileOutputStream = new FileOutputStream(outputFile);
+            // Create a temporary file that will hold the data created by the export command.
+            fileOutput = File.createTempFile(item.getItemId(), ".xml", Path.getTempDirectory());
+            // Create a FileOutputStream link to the temporary file. The command use this FileOutputStream to populate data.
+            fileOutputStream = new FileOutputStream(fileOutput);
         } catch (Exception e) {
-            throw new ActionExecutionException("Not able to create an export tempFile file", e);
+            throw new ActionExecutionException("Not able to create a temporary file.", e);
         }
     }
 
     /**
-     * After command execution we push the created XML to the client browser.
+     * After command execution we push the created XML to the client browser.<br>
+     * The created data is put in the temporary file 'fileOutput' linked to 'fileOutputStream' sent to the export command.<br>
+     * This temporary file is the used to create a {@link DeleteOnCloseFileInputStream} that ensure that this temporary file is removed once the <br>
+     * fileInputStream is closed by Vaadin resource component.
      */
     @Override
     protected void onPostExecute() throws Exception {
-        FileOutputStream outputStream = null;
         try {
             ExportCommand exportCommand = (ExportCommand) getCommand();
-            outputStream = (FileOutputStream) exportCommand.getOutputStream();
             openFileInBlankWindow(exportCommand.getFileName(), exportCommand.getMimeExtension());
         } finally {
-            IOUtils.closeQuietly(outputStream);
+            IOUtils.closeQuietly(fileOutputStream);
         }
     }
 
@@ -111,8 +113,7 @@ public class ExportAction extends AbstractCommandAction<ExportActionDefinition> 
             @Override
             public InputStream getStream() {
                 try {
-                    inputStream = new DeleteOnCloseFileInputStream(outputFile);
-                    return inputStream;
+                    return new DeleteOnCloseFileInputStream(fileOutput);
                 } catch (IOException e) {
                     log.warn("Not able to create an InputStream from the OutputStream. Return null", e);
                     return null;
