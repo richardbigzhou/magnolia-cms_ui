@@ -109,14 +109,14 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
     protected String getConfirmationHeader() throws Exception {
         boolean isNode = getItem().getJcrItem().isNode();
 
-        return MessagesUtil.getWithDefault(getDefinition().getConfirmationHeader(),  getDefinition().getI18nBasename(), new String[]{(isNode) ? "Node" : "Property"});
+        return MessagesUtil.getWithDefault(getDefinition().getConfirmationHeader(),  getDefinition().getI18nBasename(), new String[]{(isNode) ? "item" : "property"});
     }
 
     protected String getConfirmationMessage() throws Exception {
         boolean isNode = getItem().getJcrItem().isNode();
         String path = getItem().getJcrItem().getPath();
 
-        return MessagesUtil.get(getDefinition().getConfirmationMessage(), getDefinition().getI18nBasename(), new String[]{(isNode) ? "Node" : "Property", path});
+        return MessagesUtil.get(getDefinition().getConfirmationMessage(), getDefinition().getI18nBasename(), new String[]{(isNode) ? "item" : "property", path});
     }
 
     protected JcrItemAdapter getItem() {
