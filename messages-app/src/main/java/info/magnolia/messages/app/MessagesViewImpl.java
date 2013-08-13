@@ -42,6 +42,7 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -213,7 +214,7 @@ public class MessagesViewImpl implements MessagesView {
 
     private Field<String> createMessageBodyTextField() {
         final TextArea messageField = new TextArea("Message");
-        messageField.setSizeFull();
+        messageField.setWidth(100, Unit.PERCENTAGE);
         return messageField;
     }
 
@@ -251,7 +252,7 @@ public class MessagesViewImpl implements MessagesView {
     private Field<String> createSubjectTextField() {
         final TextField subjectField = new TextField("Message title");
         subjectField.addStyleName("required");
-        subjectField.setSizeFull();
+        subjectField.setWidth(100, Unit.PERCENTAGE);
         subjectField.setRequired(true);
         // force plain input
         subjectField.setColumns(0);
