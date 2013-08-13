@@ -87,6 +87,10 @@ button.btn-form-help {
     color: $c12;
 }
 
+.v-customcomponent {
+  overflow: visible;
+}
+
 .v-form-field.v-customcomponent.text-and-content {
     width: auto !important;
 }
@@ -104,9 +108,9 @@ button.btn-form-help {
 }
 
 .v-form-field-container {
+  margin-top: 1px;
   padding-right: 40px;
   padding-left: 150px;
-  box-sizing: border-box;
   display: block;
 }
 
@@ -240,10 +244,6 @@ fieldset {
 /*do not display hr on under last tab when in show-all mode*/
 .v-shell-tab:last-child fieldset hr {
     display: none !important;
-}
-
-.v-form-field-container > * {
-  box-sizing: border-box;
 }
 
 .v-form-field-container .v-datefield {
