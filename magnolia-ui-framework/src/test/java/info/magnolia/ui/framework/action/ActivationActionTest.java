@@ -147,6 +147,7 @@ public class ActivationActionTest extends RepositoryTestCase {
 
         // WHEN
         ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class));
+        action.setCurrentItem(action.getItems().get(0));
         action.onPreExecute();
 
         // THEN

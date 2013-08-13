@@ -41,6 +41,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,16 +62,34 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
     private Map<JcrItemAdapter, Exception> failedItems;
     private final UiContext uiContext;
 
+    protected AbstractMultiItemAction(D definition, JcrItemAdapter item, UiContext uiContext) {
+        super(definition);
+        this.items = new ArrayList<JcrItemAdapter>(1);
+        this.items.add(item);
+        this.uiContext = uiContext;
+    }
+
     protected AbstractMultiItemAction(D definition, List<JcrItemAdapter> items, UiContext uiContext) {
         super(definition);
         this.items = items;
         this.uiContext = uiContext;
     }
 
+    /**
+     * Executes the action on ONE item.
+     */
     protected abstract void executeOnItem(JcrItemAdapter item) throws Exception;
 
+    /**
+     * Returns the message to display, if the execution succeeds on ALL items. May return <code>null</code>,
+     * if the implementing action handles the user notification on its own.
+     */
     protected abstract String getSuccessMessage();
 
+    /**
+     * Returns the message to display, if the execution fails on at least ONE item. May return <code>null</code>,
+     * if the implementing action handles the user notification on its own.
+     */
     protected abstract String getFailureMessage();
 
     @Override
@@ -86,9 +105,15 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
         }
 
         if (failedItems.isEmpty()) {
-            uiContext.openNotification(MessageStyleTypeEnum.INFO, true, getSuccessMessage());
+            String message = getSuccessMessage();
+            if (message != null) {
+                uiContext.openNotification(MessageStyleTypeEnum.INFO, true, getSuccessMessage());
+            }
         } else {
-            uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, getErrorNotification());
+            String message = getSuccessMessage();
+            if (message != null) {
+                uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, getErrorNotification());
+            }
         }
     }
 
