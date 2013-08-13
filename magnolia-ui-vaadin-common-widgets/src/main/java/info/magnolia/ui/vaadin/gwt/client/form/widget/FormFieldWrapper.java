@@ -110,7 +110,7 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
         helpButton.addStyleName("action-form-help");
         errorAction.addStyleName("action-validation");
 
-        fieldWrapper.appendChild(label);
+        root.appendChild(label);
         root.appendChild(fieldWrapper);
         add(helpButton, fieldWrapper);
         add(errorAction, fieldWrapper);

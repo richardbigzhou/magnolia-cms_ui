@@ -85,7 +85,6 @@ public class FormSection extends AbstractLayout {
         super.addComponent(c);
         components.add(c);
         c.addStyleName("v-form-field");
-        c.setSizeUndefined();
         markAsDirty();
     }
 
