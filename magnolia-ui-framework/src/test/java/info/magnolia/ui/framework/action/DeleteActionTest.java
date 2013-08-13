@@ -57,7 +57,9 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.jcr.Node;
@@ -157,5 +159,25 @@ public class DeleteActionTest extends RepositoryTestCase {
         assertTrue(referenceNode.getNode("article1").hasProperty("property_string"));
         assertFalse(referenceNode.getNode("article1").hasProperty("property_long"));
     }
-    
+
+    @Test
+    public void testDeleteMultipleItems() throws Exception {
+        // GIVEN
+        JcrItemAdapter node = new JcrNodeAdapter(referenceNode.getNode("article1"));
+        JcrItemAdapter prop = new JcrPropertyAdapter(referenceNode.getNode("article2").getProperty("property_long"));
+        List<JcrItemAdapter> items = new ArrayList<JcrItemAdapter>(2);
+        items.add(node);
+        items.add(prop);
+        DeleteAction<DeleteActionDefinition> deleteAction = new DeleteAction<DeleteActionDefinition>(definition, items, commandsManager, eventBus, mock(UiContext.class));
+
+        // WHEN
+        deleteAction.execute();
+
+        // THEN
+        assertTrue(referenceNode.hasNode("article2"));
+        assertFalse(referenceNode.hasNode("article1"));
+        assertTrue(referenceNode.getNode("article2").hasProperty("property_boolean"));
+        assertTrue(referenceNode.getNode("article2").hasProperty("property_string"));
+        assertFalse(referenceNode.getNode("article2").hasProperty("property_long"));
+    }
 }
