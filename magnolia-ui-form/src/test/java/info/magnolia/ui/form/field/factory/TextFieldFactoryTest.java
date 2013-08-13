@@ -39,7 +39,6 @@ import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 
 import org.junit.Test;
 
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
@@ -78,7 +77,6 @@ public class TextFieldFactoryTest extends AbstractFieldFactoryTestCase<TextField
         assertEquals(true, field instanceof TextArea);
         assertEquals(2, ((TextArea) field).getRows());
         assertEquals(250, ((TextArea) field).getMaxLength());
-        assertEquals(Unit.PIXELS, field.getWidthUnits());
     }
 
     @Override
