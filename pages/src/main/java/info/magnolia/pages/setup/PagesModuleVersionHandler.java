@@ -78,6 +78,11 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new NodeExistsDelegateTask("Update actionbar configuration", "Rename action mapping to new confirmation action", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar",
                         new RenameNodesTask("Rename action bar items", "Rename delete to confirmDeletion", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar", "delete", "confirmDeletion", NodeTypes.ContentNode.NAME)))
 
+                // remove and bootstrap new deactivation command
+                .addTask(new NodeExistsDelegateTask("Remove deactivation command", "", RepositoryConstants.CONFIG, "/modules/pages/commands/website/deactivate",
+                        new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/pages/commands/website/deactivate")))
+                .addTask(new PartialBootstrapTask("Bootstrap new deactivation command.", "", "/mgnl-bootstrap/pages/config.modules.pages.commands.xml", "/commands/website/deactivate"))
+
         );
 
 
