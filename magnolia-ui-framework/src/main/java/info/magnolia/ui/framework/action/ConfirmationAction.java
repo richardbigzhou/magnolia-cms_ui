@@ -40,9 +40,11 @@ import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
-import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,16 +60,21 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
     private static final Logger log = LoggerFactory.getLogger(ConfirmationAction.class);
 
 
-    private final JcrItemAdapter item;
+    private final List<JcrItemAdapter> items;
     private final UiContext uiContext;
     private final ActionExecutor actionExecutor;
 
-
-
-    @Inject
     public ConfirmationAction(ConfirmationActionDefinition definition, JcrItemAdapter item, UiContext uiContext, ActionExecutor actionExecutor) {
         super(definition);
-        this.item = item;
+        this.items = new ArrayList<JcrItemAdapter>(1);
+        this.items.add(item);
+        this.uiContext = uiContext;
+        this.actionExecutor = actionExecutor;
+    }
+
+    public ConfirmationAction(ConfirmationActionDefinition definition, List<JcrItemAdapter> items, UiContext uiContext, ActionExecutor actionExecutor) {
+        super(definition);
+        this.items = items;
         this.uiContext = uiContext;
         this.actionExecutor = actionExecutor;
     }
@@ -82,7 +89,11 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
                         public void onSuccess() {
                             if (getDefinition().getSuccessActionName() != null) {
                                 try {
-                                    actionExecutor.execute(getDefinition().getSuccessActionName(), item);
+                                    if (items.size() == 1) {
+                                        actionExecutor.execute(getDefinition().getSuccessActionName(), items.get(0));
+                                    } else {
+                                        actionExecutor.execute(getDefinition().getSuccessActionName(), items);
+                                    }
                                 } catch (ActionExecutionException e) {
                                     onError(e);
                                 }
@@ -93,7 +104,11 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
                         public void onCancel() {
                             if (getDefinition().getCancelActionName() != null) {
                                 try {
-                                    actionExecutor.execute(getDefinition().getCancelActionName(), item);
+                                    if (items.size() == 1) {
+                                        actionExecutor.execute(getDefinition().getCancelActionName(), items.get(0));
+                                    } else {
+                                        actionExecutor.execute(getDefinition().getCancelActionName(), items);
+                                    }
                                 } catch (ActionExecutionException e) {
                                     onError(e);
                                 }
@@ -107,20 +122,68 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
 
 
     protected String getConfirmationHeader() throws Exception {
-        boolean isNode = getItem().getJcrItem().isNode();
+        if (items.size() == 1) {
+            boolean isNode = items.get(0).getJcrItem().isNode();
 
-        return MessagesUtil.getWithDefault(getDefinition().getConfirmationHeader(),  getDefinition().getI18nBasename(), new String[]{(isNode) ? "Node" : "Property"});
+            return MessagesUtil.getWithDefault(getDefinition().getConfirmationHeader(), getDefinition().getI18nBasename(), new String[] { (isNode) ? "Node" : "Property" });
+        }
+        long howMany = items.size();
+        boolean atLeastOneNode = false;
+        boolean atLeastOneProperty = false;
+        for (JcrItemAdapter item : items) {
+            if (item.getJcrItem().isNode()) {
+                atLeastOneNode = true;
+            } else {
+                atLeastOneProperty = true;
+            }
+        }
+        if (atLeastOneNode && atLeastOneProperty) {
+            // mix of nodes and properties
+            return MessagesUtil.getWithDefault(getDefinition().getConfirmationHeader(), getDefinition().getI18nBasename(), new String[] { howMany + " items" });
+        }
+        if (atLeastOneNode) {
+            // only nodes
+            return MessagesUtil.getWithDefault(getDefinition().getConfirmationHeader(), getDefinition().getI18nBasename(), new String[] { howMany + " nodes" });
+        }
+        // only properties
+        return MessagesUtil.getWithDefault(getDefinition().getConfirmationHeader(), getDefinition().getI18nBasename(), new String[] { howMany + " properties" });
     }
 
     protected String getConfirmationMessage() throws Exception {
-        boolean isNode = getItem().getJcrItem().isNode();
-        String path = getItem().getJcrItem().getPath();
+        if (items.size() == 1) {
+            boolean isNode = items.get(0).getJcrItem().isNode();
+            String path = items.get(0).getJcrItem().getPath();
 
-        return MessagesUtil.get(getDefinition().getConfirmationMessage(), getDefinition().getI18nBasename(), new String[]{(isNode) ? "Node" : "Property", path});
+            return MessagesUtil.get(getDefinition().getConfirmationMessage(), getDefinition().getI18nBasename(), new String[] { (isNode) ? "Node" : "Property", path });
+        }
+        boolean atLeastOneNode = false;
+        boolean atLeastOneProperty = false;
+        for (JcrItemAdapter item : items) {
+            if (item.getJcrItem().isNode()) {
+                atLeastOneNode = true;
+            } else {
+                atLeastOneProperty = true;
+            }
+        }
+        if (atLeastOneNode && atLeastOneProperty) {
+            // mix of nodes and properties
+            return MessagesUtil.getWithDefault(getDefinition().getConfirmationMessage(), getDefinition().getI18nBasename(), new String[] { "items", getListOfItemPaths() });
+        }
+        if (atLeastOneNode) {
+            // only nodes
+            return MessagesUtil.getWithDefault(getDefinition().getConfirmationMessage(), getDefinition().getI18nBasename(), new String[] { "nodes", getListOfItemPaths() });
+        }
+        // only properties
+        return MessagesUtil.getWithDefault(getDefinition().getConfirmationMessage(), getDefinition().getI18nBasename(), new String[] { "properties", getListOfItemPaths() });
     }
 
-    protected JcrItemAdapter getItem() {
-        return item;
+    protected String getListOfItemPaths() {
+        StringBuilder builder = new StringBuilder("<ul>");
+        for (JcrItemAdapter item : items) {
+            builder.append("<li>").append(JcrItemUtil.getItemPath(item.getJcrItem())).append("</li>");
+        }
+        builder.append("</ul>");
+        return builder.toString();
     }
 
     /**

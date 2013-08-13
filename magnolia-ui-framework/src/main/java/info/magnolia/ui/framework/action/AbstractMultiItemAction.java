@@ -41,11 +41,10 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,16 +62,34 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
     private Map<JcrItemAdapter, Exception> failedItems;
     private final UiContext uiContext;
 
+    protected AbstractMultiItemAction(D definition, JcrItemAdapter item, UiContext uiContext) {
+        super(definition);
+        this.items = new ArrayList<JcrItemAdapter>(1);
+        this.items.add(item);
+        this.uiContext = uiContext;
+    }
+
     protected AbstractMultiItemAction(D definition, List<JcrItemAdapter> items, UiContext uiContext) {
         super(definition);
         this.items = items;
         this.uiContext = uiContext;
     }
 
+    /**
+     * Executes the action on ONE item.
+     */
     protected abstract void executeOnItem(JcrItemAdapter item) throws Exception;
 
+    /**
+     * Returns the message to display, if the execution succeeds on ALL items. May return <code>null</code>,
+     * if the implementing action handles the user notification on its own.
+     */
     protected abstract String getSuccessMessage();
 
+    /**
+     * Returns the message to display, if the execution fails on at least ONE item. May return <code>null</code>,
+     * if the implementing action handles the user notification on its own.
+     */
     protected abstract String getFailureMessage();
 
     @Override
@@ -88,9 +105,15 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
         }
 
         if (failedItems.isEmpty()) {
-            uiContext.openNotification(MessageStyleTypeEnum.INFO, true, getSuccessMessage());
+            String message = getSuccessMessage();
+            if (message != null) {
+                uiContext.openNotification(MessageStyleTypeEnum.INFO, true, getSuccessMessage());
+            }
         } else {
-            uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, getErrorNotification());
+            String message = getSuccessMessage();
+            if (message != null) {
+                uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, getErrorNotification());
+            }
         }
     }
 
@@ -100,7 +123,7 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
         for (JcrItemAdapter item : failedItems.keySet()) {
             Exception ex = failedItems.get(item);
             notification.append("<li>").append("<b>");
-            notification.append(getPath(item)).append("</b>: ").append(ex.getMessage());
+            notification.append(JcrItemUtil.getItemPath(item.getJcrItem())).append("</b>: ").append(ex.getMessage());
             notification.append("</li>");
         }
         notification.append("</ul>");
@@ -119,20 +142,4 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
         return this.failedItems;
     }
 
-    private String getPath(JcrItemAdapter item) {
-        String path = "unknown";
-        try {
-            if (item.isNode()) {
-                path = item.getJcrItem().getPath();
-            } else {
-                String parentPath = item.getJcrItem().getParent().getPath();
-                String name = item.getJcrItem().getName();
-                path = parentPath + JcrItemUtil.PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR + name;
-            }
-        } catch (RepositoryException re) {
-            log.error("Cannot get path for item: " + item.getItemId());
-            path = item.getItemId();
-        }
-        return path;
-    }
 }

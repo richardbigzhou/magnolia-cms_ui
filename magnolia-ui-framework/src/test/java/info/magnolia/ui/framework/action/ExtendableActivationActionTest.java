@@ -82,6 +82,7 @@ public class ExtendableActivationActionTest extends MgnlTestCase {
 
         // WHEN
         ActivationAction action = new ExtendableActivationAction(new ActivationActionDefinition(), new JcrNodeAdapter(item), params, mock(CommandsManager.class), mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class));
+        action.setCurrentItem(action.getItems().get(0));
         action.onPreExecute();
 
         // THEN
@@ -107,6 +108,7 @@ public class ExtendableActivationActionTest extends MgnlTestCase {
 
         // WHEN
         ActivationAction action = new ExtendableActivationAction(definition, new JcrNodeAdapter(item), paramsCtor, mock(CommandsManager.class), mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class));
+        action.setCurrentItem(action.getItems().get(0));
         action.onPreExecute();
 
         // THEN
