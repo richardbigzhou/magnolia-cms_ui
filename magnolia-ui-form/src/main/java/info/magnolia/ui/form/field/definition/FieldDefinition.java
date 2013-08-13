@@ -88,6 +88,16 @@ public interface FieldDefinition {
     String getDefaultValue();
 
     /**
+     * Width of the field.
+     */
+     String getWidth();
+
+    /**
+     * Height of the field.
+     */
+    String getHeight();
+
+    /**
      * Determines if a Field Property can be changed.
      */
     boolean isReadOnly();

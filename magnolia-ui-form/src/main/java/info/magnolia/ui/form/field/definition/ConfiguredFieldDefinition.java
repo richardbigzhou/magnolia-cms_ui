@@ -65,7 +65,12 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
 
     private String styleName;
 
+    private String width;
+
+    private String height;
+
     private List<FieldValidatorDefinition> validators = new ArrayList<FieldValidatorDefinition>();
+
 
     @Override
     public String getName() {
@@ -111,6 +116,17 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
     public String getDefaultValue() {
         return this.defaultValue;
     }
+
+    @Override
+    public String getWidth() {
+        return this.width;
+    }
+
+    @Override
+    public String getHeight() {
+        return this.height;
+    }
+
 
     @Override
     public boolean isReadOnly() {
@@ -179,4 +195,11 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
         this.defaultValue = defaultValue;
     }
 
+    public void setWidth(String width) {
+        this.width = width;
+    }
+
+    public void setHeight(String height) {
+        this.height = height;
+    }
 }
