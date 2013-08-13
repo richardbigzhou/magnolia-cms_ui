@@ -183,7 +183,7 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
 
     @Override
     protected String getSuccessMessage() {
-        return MessagesUtil.get(getDefinition().getSuccessMessage(), getDefinition().getI18nBasename());
+        return MessagesUtil.get(getDefinition().getSuccessMessage(), getDefinition().getI18nBasename(), new String[] { "" + getItems().size() });
     }
 
     @Override
