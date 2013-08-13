@@ -112,6 +112,7 @@ button.btn-form-help {
   padding-right: 40px;
   padding-left: 150px;
   display: block;
+  position: relative;
 }
 
 .validation-hilight {
@@ -317,8 +318,8 @@ fieldset {
   height: 16px;
 }
 
-  .v-ckeditortextfield .textarea-expander.collapsed {
-    position: absolute;
-  }
+.v-magnolia-form.textarea-stretched .v-shell-tabsheet-tab-wrapper, .v-form-field-container {
+  position: static;
+}
 
 }

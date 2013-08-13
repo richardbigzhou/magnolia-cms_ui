@@ -53,19 +53,17 @@ public class TextAreaStretcher extends AbstractExtension {
     public TextAreaStretcher() {
         registerRpc(new TextAreaStretcherServerRpc() {
             @Override
-            public void toggle() {
+            public void toggle(int width, int height) {
                 getState().isCollapsed = !getState().isCollapsed;
                 final Component parent = (Component) getParent();
                 if (getState().isCollapsed) {
-                    //parent.setWidth(getState().collapsedStateWidth);
-                    //parent.setHeight(getState().collapsedStateHeight);
+                    parent.setWidth(getState().collapsedStateWidth);
+                    parent.setHeight(getState().collapsedStateHeight);
                 } else {
-                    float height = parent.getHeight();
-                    float width = parent.getWidth();
-                    //getState().collapsedStateHeight = height != Sizeable.SIZE_UNDEFINED ?
-                            //height + String.valueOf(parent.getHeightUnits()) : "";
-
-                    //getState().collapsedStateHeight =
+                    getState().collapsedStateHeight = height + "px";
+                    getState().collapsedStateWidth = width  + "px";
+                    parent.setWidth("");
+                    parent.setHeight("");
                 }
             }
         });
