@@ -40,8 +40,8 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.form.AbstractFormItem;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
-import info.magnolia.ui.form.validator.factory.FieldValidatorFactory;
 import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
+import info.magnolia.ui.form.validator.factory.FieldValidatorFactory;
 import info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
@@ -56,6 +56,7 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Field;
@@ -105,11 +106,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
                 this.field.addStyleName(definition.getStyleName());
             }
 
-            String width = definition.getWidth();
-            width = width != null ? width : "100%";
-
-            field.setWidth(width);
-            field.setHeight(definition.getHeight());
+            field.setWidth(100, Unit.PERCENTAGE);
 
             // Set label and required marker
             this.field.setCaption(getMessage(getFieldDefinition().getLabel()) + (getFieldDefinition().isRequired() ? "<span class=\"requiredfield\">*</span>" : ""));

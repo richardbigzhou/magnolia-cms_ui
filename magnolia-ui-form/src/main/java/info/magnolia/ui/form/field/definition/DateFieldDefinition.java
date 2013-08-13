@@ -44,10 +44,6 @@ public class DateFieldDefinition extends ConfiguredFieldDefinition {
 
     private String timeFormat = "HH:mm:ss";
 
-    public DateFieldDefinition() {
-        setWidth("200px");
-    }
-
     public boolean isTime() {
         return time;
     }

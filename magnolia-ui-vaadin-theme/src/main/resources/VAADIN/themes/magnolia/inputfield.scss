@@ -19,7 +19,7 @@
     -webkit-border-radius: 0;
 
     &:focus, &.focus {
-      margin: -1px 1px -1px -1px;
+      margin: -1px;
       border-width: 2px;
       border-color: $c22;
     }
