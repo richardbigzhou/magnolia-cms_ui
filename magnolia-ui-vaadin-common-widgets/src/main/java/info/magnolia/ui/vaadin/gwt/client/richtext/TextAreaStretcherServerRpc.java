@@ -36,10 +36,10 @@ package info.magnolia.ui.vaadin.gwt.client.richtext;
 import com.vaadin.shared.communication.ServerRpc;
 
 /**
- * TextAreaStretcherServerRpc.
+ * RPC interface used for notification of server on stretch/collapse.
  */
 public interface TextAreaStretcherServerRpc extends ServerRpc {
 
-    void toggle();
+    void toggle(int initialWidth, int initialHeight);
 
 }

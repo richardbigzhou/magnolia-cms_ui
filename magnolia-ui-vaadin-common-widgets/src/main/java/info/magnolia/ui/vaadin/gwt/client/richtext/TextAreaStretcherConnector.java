@@ -63,11 +63,12 @@ import com.vaadin.shared.ui.Connect;
 @Connect(TextAreaStretcher.class)
 public class TextAreaStretcherConnector extends AbstractExtensionConnector {
 
+    public static final int DELAY_MS = 500;
     private Widget form;
     private Widget dialog;
     private Widget textWidget;
 
-    private Element button = DOM.createButton();
+    private Element stretchControl = DOM.createDiv();
     private WindowResizeListener windowResizeListener = new WindowResizeListener();
 
     private boolean isOverlay = false;
@@ -98,8 +99,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
     @Override
     protected void extend(ServerConnector target) {
         this.textWidget = getParent().getWidget();
-        button.setInnerHTML("T");
-        button.setClassName("textarea-expander");
+        this.stretchControl.setClassName("textarea-stretcher");
         textWidget.addAttachHandler(new AttachEvent.Handler() {
             @Override
             public void onAttachOrDetach(AttachEvent attachEvent) {
@@ -113,9 +113,10 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
                         @Override
                         public boolean execute() {
                             appendStretcher(JQueryWrapper.select(textWidget).find("iframe").get(0));
+                            stretchControl.addClassName("rich-text");
                             return false;
                         }
-                    }, 500);
+                    }, DELAY_MS);
                 }
             }
         });
@@ -127,13 +128,13 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
     }
 
     private void appendStretcher(Element rootElement) {
-        rootElement.getParentElement().appendChild(button);
+        rootElement.getParentElement().insertAfter(stretchControl, rootElement);
         Widget parent = textWidget.getParent();
         parent.addDomHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 Element target = event.getNativeEvent().getEventTarget().cast();
-                if (button.isOrHasChild(target)) {
+                if (stretchControl.isOrHasChild(target)) {
                     if (!getState().isCollapsed) {
                         unregisterSizeChangeListeners();
                     }
@@ -154,9 +155,13 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
     private void toggleCollapseState() {
         boolean isCollapsed = getState().isCollapsed;
         if (isCollapsed) {
-            button.replaceClassName("stretched", "collapsed");
+            stretchControl.replaceClassName("stretched", "collapsed");
+            stretchControl.replaceClassName("icon-close-fullscreen_2", "icon-open-fullscreen_2");
+            form.asWidget().removeStyleName("textarea-stretched");
         } else {
-            button.replaceClassName("collapsed", "stretched");
+            stretchControl.replaceClassName("icon-open-fullscreen_2", "icon-close-fullscreen_2");
+            stretchControl.replaceClassName("collapsed", "stretched");
+            form.asWidget().addStyleName("textarea-stretched");
         }
 
         if (!isCollapsed) {
