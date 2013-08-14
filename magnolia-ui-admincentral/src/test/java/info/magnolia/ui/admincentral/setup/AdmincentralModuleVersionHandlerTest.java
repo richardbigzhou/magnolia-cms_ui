@@ -65,6 +65,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     private Node configActionbarFolderGroups;
     private Node mainNodeType;
     private Node folderNodeType;
+    private Node confirmDeleteActionAvailability;
 
     @Override
     protected String getModuleDescriptorPath() {
@@ -96,6 +97,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         configActionbarFolderGroups = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups", NodeTypes.ContentNode.NAME);
         mainNodeType = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/nodeTypes/mainNodeType", NodeTypes.ContentNode.NAME);
         folderNodeType = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/nodeTypes/folderNodeType", NodeTypes.ContentNode.NAME);
+        confirmDeleteActionAvailability = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/confirmDeletion/availability", NodeTypes.ContentNode.NAME);
     }
 
     @Test
@@ -266,5 +268,19 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         // THEN
         assertTrue(mainNodeType.hasProperty("strict"));
         assertTrue(folderNodeType.hasProperty("strict"));
+    }
+
+    @Test
+    public void testUpdateTo5Dot1ConfirmDeletionActionAllowsMultipleItems() throws ModuleManagementException, RepositoryException {
+
+        // GIVEN
+        assertFalse(confirmDeleteActionAvailability.hasProperty("multiple"));
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.2"));
+
+        // THEN
+        assertTrue(confirmDeleteActionAvailability.hasProperty("multiple"));
+        assertEquals("true", confirmDeleteActionAvailability.getProperty("multiple").getString());
     }
 }
