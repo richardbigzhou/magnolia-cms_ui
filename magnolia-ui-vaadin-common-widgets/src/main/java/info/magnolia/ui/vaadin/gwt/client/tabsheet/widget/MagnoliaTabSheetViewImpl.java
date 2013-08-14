@@ -145,9 +145,11 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         final JQueryAnimation animation = new JQueryAnimation();
         tabPanelStyle.setProperty(heightPropertyCC, offsetTabHeight + "px");
         animation.setProperty(heightProperty, newHeight);
+        tabPanelStyle.setOverflow(Style.Overflow.HIDDEN);
         animation.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
+              tabPanelStyle.clearOverflow();
               tabPanelStyle.clearProperty(heightPropertyCC);
             }
         });
@@ -219,7 +221,11 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
     @Override
     public void setMaxHeight(int height) {
         height -= tabBar.getOffsetHeight();
-        scroller.getElement().setAttribute("style", "overflow:auto; position:absolute; zoom:1; max-height:" + height + "px;");
+        final Style scrollerStyle = scroller.getElement().getStyle();;
+        scrollerStyle.setPosition(Position.ABSOLUTE);
+        scrollerStyle.setOverflow(Style.Overflow.AUTO);
+        scrollerStyle.setProperty("zoom", "1");
+        scrollerStyle.setProperty("maxHeight", height + "px");
     }
 
     @Override
