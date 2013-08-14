@@ -77,6 +77,9 @@ public class BasicPropertyHandler<T> extends AbstractBaseHandler<T> implements P
     public T readFromDataSourceItem() {
         String defaultValue = definition.getDefaultValue();
         Property<T> p = (Property<T>) getOrCreateProperty(fieldType, defaultValue, null);
+        if (definition.isReadOnly()) {
+            p.setReadOnly(true);
+        }
         return p.getValue();
     }
 
