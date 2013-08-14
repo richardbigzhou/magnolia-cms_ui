@@ -45,41 +45,6 @@ import com.vaadin.data.Item;
  */
 public interface ContentView extends View {
 
-    /**
-     * Enumeration of the supported view types.
-     * <ul>
-     * <li>tree
-     * <li>list
-     * <li>thumbnail
-     * <li>search
-     * </ul>
-     */
-    public enum ViewType {
-        LIST("listview"), TREE("treeview"), THUMBNAIL("thumbnailview"), SEARCH("searchview");
-
-        private final String text;
-
-        ViewType(String text) {
-            this.text = text;
-        }
-
-        public String getText() {
-            return this.text;
-        }
-
-        public static ViewType fromString(String text) {
-            if (text != null && !text.isEmpty()) {
-                for (ViewType type : ViewType.values()) {
-                    if (text.equalsIgnoreCase(type.text)) {
-                        return type;
-                    }
-                }
-            }
-            return null;
-
-        }
-    }
-
     void setListener(ContentView.Listener listener);
 
     /**
@@ -88,8 +53,6 @@ public interface ContentView extends View {
      * @param itemIds IDs
      */
     void select(List<String> itemIds);
-
-    ViewType getViewType();
 
     /**
      * Decides whether the user can select multiple items.

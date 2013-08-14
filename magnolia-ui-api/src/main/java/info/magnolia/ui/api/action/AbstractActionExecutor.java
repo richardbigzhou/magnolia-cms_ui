@@ -130,8 +130,7 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
             }
         }
 
-        // We don't support bulk actions, at least not yet
-        if (items.length > 1) {
+        if (items.length > 1 && !availability.isMultiple()) {
             return false;
         }
 

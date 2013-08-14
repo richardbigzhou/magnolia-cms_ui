@@ -35,7 +35,8 @@ package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
-import info.magnolia.ui.workbench.ContentView;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * ContentLocation used in ContentSubApps. Extends the Default Location by adding fields for the nodePath, viewType and query.
@@ -43,7 +44,7 @@ import info.magnolia.ui.workbench.ContentView;
 public class BrowserLocation extends DefaultLocation {
 
     private String nodePath;
-    private ContentView.ViewType viewType;
+    private String viewType;
     private String query;
 
     public BrowserLocation(String appName, String subAppId, String parameter) {
@@ -65,11 +66,11 @@ public class BrowserLocation extends DefaultLocation {
         this.nodePath = (nodePath == null || nodePath.isEmpty()) ? "/" : nodePath;
     }
 
-    public ContentView.ViewType getViewType() {
+    public String getViewType() {
         return viewType;
     }
 
-    private void setViewType(ContentView.ViewType viewType) {
+    private void setViewType(String viewType) {
         this.viewType = viewType;
     }
 
@@ -86,16 +87,18 @@ public class BrowserLocation extends DefaultLocation {
         return i != -1 ? parameter.substring(0, i) : parameter;
     }
 
-    private ContentView.ViewType extractView(String parameter) {
-        String view = "";
-        // nodePath
+    private String extractView(String parameter) {
+        // first param is path
         int i = parameter.indexOf(':');
         if (i != -1) {
-            // view
+            // isolate view type parameter, there can be more
             int j = parameter.indexOf(':', i + 1);
-            view = (j != -1) ? parameter.substring(i + 1, j) : parameter.substring(i + 1);
+            String view = (j != -1) ? parameter.substring(i + 1, j) : parameter.substring(i + 1);
+            if (StringUtils.isNotBlank(view)) {
+                return view;
+            }
         }
-        return ContentView.ViewType.fromString(view);
+        return null;
     }
 
     public static String extractQuery(String fragment) {
@@ -117,7 +120,7 @@ public class BrowserLocation extends DefaultLocation {
         StringBuilder sb = new StringBuilder();
         sb.append(nodePath);
         sb.append(":");
-        sb.append(viewType.getText());
+        sb.append(viewType);
         sb.append(":");
         sb.append(query);
         super.setParameter(sb.toString());
@@ -132,7 +135,7 @@ public class BrowserLocation extends DefaultLocation {
         updateParameter();
     }
 
-    public void updateViewType(ContentView.ViewType newViewType) {
+    public void updateViewType(String newViewType) {
         setViewType(newViewType);
         updateParameter();
     }

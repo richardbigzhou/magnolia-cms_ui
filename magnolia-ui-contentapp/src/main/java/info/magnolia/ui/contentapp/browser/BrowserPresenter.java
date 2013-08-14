@@ -56,7 +56,6 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
@@ -215,8 +214,12 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
      * @return The configured default view Type.<br>
      * If non define, return the first Content Definition as default.
      */
-    public ViewType getDefaultViewType() {
+    public String getDefaultViewType() {
         return workbenchPresenter.getDefaultViewType();
+    }
+
+    public boolean hasViewType(String viewType) {
+        return workbenchPresenter.hasViewType(viewType);
     }
 
     public BrowserView getView() {
@@ -235,7 +238,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
      * Synchronizes the underlying view to reflect the status extracted from the Location token, i.e. selected itemId,
      * view type and optional query (in case of a search view).
      */
-    public void resync(final List<String> itemIds, final ViewType viewType, final String query) {
+    public void resync(final List<String> itemIds, final String viewType, final String query) {
         workbenchPresenter.resynch(itemIds, viewType, query);
     }
 
@@ -342,10 +345,22 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
     private void executeAction(String actionName) {
         try {
-            // TODO MGNLUI-1515 support actions on more items
-            // now, use just the first item
-            javax.jcr.Item item = JcrItemUtil.getJcrItem(getWorkspace(), getSelectedItemIds().get(0));
-            actionExecutor.execute(actionName, item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((Property) item));
+            if (getSelectedItemIds().size() == 1) {
+                // This is done this way, because most actions do not support multiple items, and expect just one Item
+                // in the constructor. So if we passed List<Item> containing this one Item to the ActionExecutor, it'd
+                // fail, because the ComponentProvider wouldn't find suitable constructor for the Action.
+                // Changing this would require to rewrite all the actions to accept the List<Item> in the constructor...
+                javax.jcr.Item item = JcrItemUtil.getJcrItem(getWorkspace(), getSelectedItemIds().get(0));
+                actionExecutor.execute(actionName, item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((Property) item));
+            } else {
+                List<Item> items = new ArrayList<Item>(getSelectedItemIds().size());
+                for (String itemId : getSelectedItemIds()) {
+                    javax.jcr.Item item = JcrItemUtil.getJcrItem(getWorkspace(), itemId);
+                    JcrItemAdapter adapter = item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((Property) item);
+                    items.add(adapter);
+                }
+                actionExecutor.execute(actionName, items);
+            }
         } catch (PathNotFoundException p) {
             Message error = new Message(MessageType.ERROR, "Could not get item ", "Following Item not found :" + getSelectedItemIds().get(0));
             appContext.sendLocalMessage(error);
@@ -359,40 +374,5 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
             appContext.sendLocalMessage(error);
         }
     }
-
-
-
-    // /**
-    // * TODO: Eliminate redundancy with BrowserSubApp.updateActionBar (MGNLUI-1367) Christopher Zimmermann.
-    // */
-    // private ActionbarSectionDefinition getVisibleSection(List<ActionbarSectionDefinition> sections, javax.jcr.Item item) throws RepositoryException {
-    // for (ActionbarSectionDefinition section : sections) {
-    // if (isSectionVisible(section, item))
-    // return section;
-    // }
-    // return null;
-    // }
-    //
-    // /**
-    // * TODO: Eliminate redundancy with BrowserSubApp.updateActionBar (MGNLUI-1367) Christopher Zimmermann.
-    // */
-    // private boolean isSectionVisible(ActionbarSectionDefinition section, javax.jcr.Item item) throws RepositoryException {
-    // SectionRestrictionsDefinition restrictions = section.getRestrictions();
-    //
-    // // If this is the root item we display the section only if the root property is set
-    // if (item == null)
-    // return restrictions.isRoot();
-    //
-    // // If its a property we display it only if the properties property is set
-    // if (!item.isNode())
-    // return restrictions.isProperties();
-    //
-    // // The node must match at least one of the configured node types
-    // for (String nodeType : restrictions.getNodeTypes()) {
-    // if (NodeUtil.isNodeType((Node) item, nodeType))
-    // return true;
-    // }
-    // return false;
-    // }
-
+    
 }

@@ -293,6 +293,9 @@
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
             </sv:property>
+            <sv:property sv:name="multiple" sv:type="String">
+              <sv:value>true</sv:value>
+            </sv:property>
             <sv:property sv:name="ruleClass" sv:type="String">
               <sv:value>info.magnolia.security.app.action.availability.IsNotCurrentUserRule</sv:value>
             </sv:property>
@@ -565,6 +568,9 @@
             </sv:property>
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
+            </sv:property>
+            <sv:property sv:name="multiple" sv:type="String">
+              <sv:value>true</sv:value>
             </sv:property>
             <sv:node sv:name="nodeTypes">
               <sv:property sv:name="jcr:primaryType" sv:type="Name">

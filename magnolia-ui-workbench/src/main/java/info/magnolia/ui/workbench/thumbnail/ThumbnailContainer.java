@@ -74,7 +74,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
 
     private final ImageProvider imageProvider;
 
-    protected static final String WHERE_TEMPLATE_FOR_PATH = " where ISDESCENDANTNODE('%s') ";
+    protected static final String WHERE_TEMPLATE_FOR_PATH = " WHERE (%s) %s ";
 
     private String workspaceName = "";
 
@@ -118,14 +118,14 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
     }
 
     protected String prepareSelectQueryStatement() {
-        return String.format("select * from ['%s'] as t ", getMainNodeType());
+        return String.format("select * from [nt:base] as t ", getMainNodeType());
     }
 
     protected String prepareFilterQueryStatement() {
-        if (StringUtils.isNotBlank(workbenchDefinition.getPath()) && !"/".equals(workbenchDefinition.getPath())) {
-            return String.format(WHERE_TEMPLATE_FOR_PATH, workbenchDefinition.getPath());
-        }
-        return "";
+        String nodeTypes = getQueryWhereClauseNodeTypes();
+        boolean pathIsNotRoot = StringUtils.isNotBlank(workbenchDefinition.getPath()) && !"/".equals(workbenchDefinition.getPath());
+        return String.format(WHERE_TEMPLATE_FOR_PATH, nodeTypes, pathIsNotRoot ? " AND ISDESCENDANTNODE(" + workbenchDefinition.getPath() + ")" : "");
+
     }
 
     protected String prepareOrderQueryStatement() {
@@ -142,10 +142,10 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
      */
     protected List<String> getAllIdentifiers(final String workspaceName) {
         List<String> uuids = new ArrayList<String>();
-        final String query = prepareSelectQueryStatement();
+        final String query = constructQuery();
         try {
             QueryManager qm = MgnlContext.getJCRSession(workspaceName).getWorkspace().getQueryManager();
-            Query q = qm.createQuery(constructQuery(), Query.JCR_SQL2);
+            Query q = qm.createQuery(query, Query.JCR_SQL2);
 
             log.debug("Executing query statement [{}] on workspace [{}]", query, workspaceName);
             long start = System.currentTimeMillis();
@@ -235,6 +235,39 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
 
     public void setWorkspaceName(String workspaceName) {
         this.workspaceName = workspaceName;
+    }
+
+    /**
+     * @return a String containing the node types to be searched for in a query. All node types declared in a workbench definition are returned
+     * unless their <code>hideInList</code> property is true. E.g. assuming a node types declaration like the following
+     * 
+     * <pre>
+     * ...
+     * + workbench
+     *  + nodeTypes
+     *   + foo
+     *    * name = nt:foo
+     *   + bar
+     *    * name = nt:bar
+     *    * hideInList = true
+     *   + baz
+     *    * name = nt:baz
+     * ...
+     * </pre>
+     * 
+     * this method will return the following string <code>[jcr:primaryType] = 'nt:foo' or [jcr:primaryType] = 'baz'</code>. This will eventually be used to restrict the node types to be searched for
+     * in list and search views, i.e. <code>select * from [nt:base] where ([jcr:primaryType] = 'nt:foo' or [jcr:primaryType] = 'baz')</code>.
+     */
+    protected String getQueryWhereClauseNodeTypes() {
+        List<String> defs = new ArrayList<String>();
+        for (NodeTypeDefinition type : workbenchDefinition.getNodeTypes()) {
+            if (type.isHideInList()) {
+                log.debug("Skipping {} node type. Nodes of such type won't be searched for.", type.getName());
+                continue;
+            }
+            defs.add("[jcr:primaryType] = '" + type.getName() + "'");
+        }
+        return StringUtils.join(defs, " or ");
     }
 
     /**

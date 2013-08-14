@@ -151,11 +151,6 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     }
 
     @Override
-    public ViewType getViewType() {
-        return ViewType.TREE;
-    }
-
-    @Override
     public TreeTable asVaadinComponent() {
         return treeTable;
     }

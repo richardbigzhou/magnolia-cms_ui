@@ -46,6 +46,8 @@ public class ConfiguredNodeTypeDefinition implements NodeTypeDefinition {
 
     private boolean strict;
 
+    private boolean hideInList;
+
     @Override
     public String getName() {
         return name;
@@ -71,5 +73,14 @@ public class ConfiguredNodeTypeDefinition implements NodeTypeDefinition {
 
     public void setStrict(boolean strict) {
         this.strict = strict;
+    }
+
+    @Override
+    public boolean isHideInList() {
+        return this.hideInList;
+    }
+
+    public void setHideInList(boolean hideInList) {
+        this.hideInList = hideInList;
     }
 }

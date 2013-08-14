@@ -70,7 +70,7 @@ public interface ColumnDefinition {
 
     /**
      * Returns whether this column and therefore the underlying JCR property it represents is to be
-     * included in searches.
+     * included in searches. Its value is <code>true</code> by default.
      */
     boolean isSearchable();
 

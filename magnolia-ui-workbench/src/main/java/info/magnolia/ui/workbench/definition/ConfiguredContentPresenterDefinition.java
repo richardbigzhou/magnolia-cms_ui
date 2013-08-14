@@ -34,7 +34,6 @@
 package info.magnolia.ui.workbench.definition;
 
 import info.magnolia.ui.workbench.ContentPresenter;
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 
 import java.util.ArrayList;
@@ -45,7 +44,7 @@ import java.util.List;
  */
 public class ConfiguredContentPresenterDefinition implements ContentPresenterDefinition {
 
-    private ViewType viewType;
+    private String viewType;
 
     private Class<? extends ContentPresenter> implementationClass;
 
@@ -56,11 +55,11 @@ public class ConfiguredContentPresenterDefinition implements ContentPresenterDef
     private List<ColumnDefinition> columns = new ArrayList<ColumnDefinition>();
 
     @Override
-    public ViewType getViewType() {
+    public String getViewType() {
         return viewType;
     }
 
-    public void setViewType(ViewType viewType) {
+    public void setViewType(String viewType) {
         this.viewType = viewType;
     }
 

@@ -123,11 +123,6 @@ public class ThumbnailViewImpl implements ThumbnailView {
     }
 
     @Override
-    public ViewType getViewType() {
-        return ViewType.THUMBNAIL;
-    }
-
-    @Override
     public Component asVaadinComponent() {
         return thumbnailLayout;
     }

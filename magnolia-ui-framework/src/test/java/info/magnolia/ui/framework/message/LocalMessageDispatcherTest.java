@@ -61,7 +61,7 @@ public class LocalMessageDispatcherTest {
         Context ctx = mock(Context.class);
         User usr = mock(User.class);
         when(ctx.getUser()).thenReturn(usr);
-        when(usr.getName()).thenReturn(Message.DEFAULT_SENDER);
+        when(usr.getName()).thenReturn("peter");
         MgnlContext.setInstance(ctx);
     }
 

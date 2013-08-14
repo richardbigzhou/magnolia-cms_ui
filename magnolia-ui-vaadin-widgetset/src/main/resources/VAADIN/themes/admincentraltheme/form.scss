@@ -7,12 +7,7 @@
     padding:0;
     width:720px;
     max-width:100%;
-    position:relative;
 }
-
-
-
-
 
 .form-content {
   overflow:hidden;
@@ -42,6 +37,7 @@
 }
 
 .v-form-layout {
+    overflow-x: hidden;
     background-color: $c16;
     margin-top:25px;
     width: 100%;
@@ -55,7 +51,6 @@
 
 .v-form-layout .v-form-field {
     display: inline-block;
-    width:510px;
     vertical-align: middle;
 }
 .v-form-layout .v-form-field.textcodefield {
@@ -92,8 +87,8 @@ button.btn-form-help {
     color: $c12;
 }
 
-.v-form-field.v-customcomponent {
-    width:525px !important;
+.v-customcomponent {
+  overflow: visible;
 }
 
 .v-form-field.v-customcomponent.text-and-content {
@@ -101,7 +96,6 @@ button.btn-form-help {
 }
 
 .v-form-field-label {
-    display: inline-block;
     text-align: right;
     width: 140px;
     margin-right: 12px;
@@ -110,11 +104,14 @@ button.btn-form-help {
     overflow: hidden;
     vertical-align: top; /*needed by FF*/
     line-height:25px;
+    position: absolute;
 }
 
 .v-form-field-container {
-    display: block;
-    position: relative;
+  margin-top: 1px;
+  padding-right: 40px;
+  padding-left: 150px;
+  display: block;
 }
 
 .validation-hilight {
@@ -247,11 +244,6 @@ fieldset {
 /*do not display hr on under last tab when in show-all mode*/
 .v-shell-tab:last-child fieldset hr {
     display: none !important;
-}
-
-.v-form-field-container .v-datefield {
-    float: none;
-    display: inline;
 }
 
 .v-form-field-container .v-datefield-button {

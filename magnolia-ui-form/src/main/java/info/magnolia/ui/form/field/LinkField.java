@@ -123,7 +123,6 @@ public class LinkField extends CustomField<String> {
         textField.setNullSettingAllowed(true);
         // Handle Link Layout (Text Field & Select Button)
         linkLayout.setSizeFull();
-        linkLayout.setSpacing(true);
         linkLayout.addComponent(textField);
         linkLayout.setExpandRatio(textField, 1);
         linkLayout.setComponentAlignment(textField, Alignment.MIDDLE_LEFT);

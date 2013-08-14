@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.workbench;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
@@ -43,6 +43,7 @@ import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
+import info.magnolia.ui.workbench.thumbnail.ThumbnailPresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 import org.junit.Before;
@@ -71,14 +72,12 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
         doReturn(mock(ContentPresenter.class)).when(componentProvider).newInstance(any(Class.class), anyVararg());
 
         presenter = new WorkbenchPresenter(view, componentProvider, statusBarPresenter);
+        MockUtil.initMockContext();
+        MockUtil.setSessionAndHierarchyManager(new MockSession(WORKSPACE));
     }
 
     @Test
     public void testGetDefaultViewType() {
-
-        MockUtil.initMockContext();
-        MockUtil.setSessionAndHierarchyManager(new MockSession(WORKSPACE));
-
 
         // GIVEN
         ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
@@ -89,9 +88,31 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
         presenter.start(workbenchDefinition, null, null);
 
         // WHEN
-        ContentView.ViewType viewType = presenter.getDefaultViewType();
+        String viewType = presenter.getDefaultViewType();
 
         // THEN
-        assertEquals(ContentView.ViewType.TREE, viewType);
+        assertEquals(TreePresenterDefinition.VIEW_TYPE, viewType);
+    }
+
+    @Test
+    public void testHasViewType() {
+
+        // GIVEN
+        ConfiguredWorkbenchDefinition workbenchDefinition = new ConfiguredWorkbenchDefinition();
+        workbenchDefinition.setWorkspace(WORKSPACE);
+        workbenchDefinition.setPath(ROOT_PATH);
+        workbenchDefinition.getContentViews().add(new TreePresenterDefinition());
+        workbenchDefinition.getContentViews().add(new ListPresenterDefinition());
+        presenter.start(workbenchDefinition, null, null);
+
+        // WHEN
+        boolean hasTreeView = presenter.hasViewType(TreePresenterDefinition.VIEW_TYPE);
+        boolean hasListView = presenter.hasViewType(ListPresenterDefinition.VIEW_TYPE);
+        boolean hasThumbView = presenter.hasViewType(ThumbnailPresenterDefinition.VIEW_TYPE);
+
+        // THEN
+        assertTrue(hasTreeView);
+        assertTrue(hasListView);
+        assertFalse(hasThumbView);
     }
 }

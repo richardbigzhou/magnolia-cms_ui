@@ -79,7 +79,7 @@ public class MessagesManagerImplTest extends MgnlTestCase {
         MockUtil.initMockContext();
         MockUtil.setSystemContextSessionAndHierarchyManager(session);
 
-        MockUtil.getMockContext().setUser(createMockUser(Message.DEFAULT_SENDER));
+        MockUtil.getMockContext().setUser(createMockUser("system"));
 
         MessageStore messageStore = new MessageStore();
 

@@ -54,6 +54,7 @@ public class AdmincentralNodeTypes {
         public static final String MESSAGE = "message";
         public static final String CLEARED = "cleared";
         public static final String SENDER = "sender";
+        public static final String VIEW = "view";
     }
 
     /**

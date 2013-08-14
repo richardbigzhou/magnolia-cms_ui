@@ -37,16 +37,18 @@ import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
-import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.inject.Named;
 import javax.jcr.Item;
-import javax.jcr.RepositoryException;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.Session;
 
 import org.slf4j.Logger;
@@ -57,17 +59,21 @@ import org.slf4j.LoggerFactory;
  *
  * @see DeleteItemActionDefinition
  */
-public class DeleteItemAction extends AbstractAction<DeleteItemActionDefinition> {
+public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDefinition> {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final UiContext uiContext;
-    private final JcrItemAdapter item;
     private final EventBus eventBus;
 
     public DeleteItemAction(DeleteItemActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
-        super(definition);
-        this.item = item;
+        super(definition, Collections.singletonList(item), uiContext);
+        this.uiContext = uiContext;
+        this.eventBus = eventBus;
+    }
+
+    public DeleteItemAction(DeleteItemActionDefinition definition, List<JcrItemAdapter> items, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
+        super(definition, items, uiContext);
         this.uiContext = uiContext;
         this.eventBus = eventBus;
     }
@@ -75,17 +81,8 @@ public class DeleteItemAction extends AbstractAction<DeleteItemActionDefinition>
     @Override
     public void execute() throws ActionExecutionException {
 
-        try {
-            // The root node cannot be deleted
-            if (item.getJcrItem().getDepth() == 0) {
-                return;
-            }
-        } catch (RepositoryException e) {
-            throw new ActionExecutionException("Problem accessing JCR", e);
-        }
-
         uiContext.openConfirmation(
-                MessageStyleTypeEnum.WARNING, "Do you really want to delete this item?", "This action can't be undone.", "Yes, Delete", "No", true,
+                MessageStyleTypeEnum.WARNING, getConfirmationQuestion(), "This action can't be undone.", "Yes, Delete", "No", true,
                 new ConfirmationCallback() {
 
                     @Override
@@ -99,22 +96,47 @@ public class DeleteItemAction extends AbstractAction<DeleteItemActionDefinition>
                 });
     }
 
-    protected void executeAfterConfirmation() {
+    private String getConfirmationQuestion() {
+        if (getItems().size() == 1) {
+            return "Do you really want to delete this item?";
+        }
+        return "Do you really want to delete these " + getItems().size() + " items?";
+    }
 
+    protected void executeAfterConfirmation() {
+        try {
+            super.execute();
+        } catch (ActionExecutionException e) {
+            log.error("Problem occured during deleting items.", e);
+        }
+    }
+
+    @Override
+    protected void executeOnItem(JcrItemAdapter item) throws Exception {
         try {
             final Item jcrItem = item.getJcrItem();
+            if (jcrItem.getDepth() == 0) {
+                // cannot delete root node
+                throw new IllegalArgumentException("Cannot delete root node.");
+            }
             String itemIdOfChangedItem = JcrItemUtil.getItemId(jcrItem.getParent());
             Session session = jcrItem.getSession();
             jcrItem.remove();
             session.save();
 
             eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), itemIdOfChangedItem));
-
-            // Show notification
-            uiContext.openNotification(MessageStyleTypeEnum.INFO, true, "Item deleted.");
-
-        } catch (RepositoryException e) {
-            log.error("Could not execute repository operation", e);
+        } catch (PathNotFoundException e) {
+            // ignore - the item has been probably already deleted (with a parent node)
         }
+    }
+
+    @Override
+    protected String getSuccessMessage() {
+        return getItems().size() == 1 ? "Item deleted." : getItems().size() + " items deleted.";
+    }
+
+    @Override
+    protected String getFailureMessage() {
+        return "Failed to delete " + getFailedItems().size() + " of " + getItems().size() + " items: ";
     }
 }

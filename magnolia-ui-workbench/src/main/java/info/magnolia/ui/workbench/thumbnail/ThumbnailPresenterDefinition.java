@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.workbench.thumbnail;
 
-import info.magnolia.ui.workbench.ContentView.ViewType;
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 
 /**
@@ -41,9 +40,11 @@ import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinitio
  */
 public class ThumbnailPresenterDefinition extends ConfiguredContentPresenterDefinition {
 
+    public static final String VIEW_TYPE = "thumbnailview";
+
     public ThumbnailPresenterDefinition() {
         setImplementationClass(ThumbnailPresenter.class);
-        setViewType(ViewType.THUMBNAIL);
+        setViewType(VIEW_TYPE);
         setActive(false);
         setIcon("icon-view-thumbnails");
     }

@@ -111,6 +111,9 @@
               <includes>
                 <include>com/</include>
               </includes>
+              <excludes>
+                <exclude>com/vaadin/README.txt</exclude>
+              </excludes>
               <followSymlinks>false</followSymlinks>
             </fileset>
           </filesets>

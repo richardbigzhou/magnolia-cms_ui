@@ -111,6 +111,7 @@ public class AbstractCommandActionTest {
                         null);
 
         // WHEN
+        action.setCurrentItem(action.getItems().get(0));
         action.onPreExecute();
         Map<String, Object> params = action.getParams();
 
@@ -136,6 +137,7 @@ public class AbstractCommandActionTest {
                         null);
 
         // WHEN
+        action.setCurrentItem(action.getItems().get(0));
         action.onPreExecute();
         Map<String, Object> params = action.getParams();
 
@@ -167,6 +169,7 @@ public class AbstractCommandActionTest {
                         null);
 
         // WHEN
+        action.setCurrentItem(action.getItems().get(0));
         action.onPreExecute();
         Map<String, Object> params = action.getParams();
 
@@ -210,6 +213,7 @@ public class AbstractCommandActionTest {
         JcrNodeAdapter item = new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub"));
         AbstractCommandAction<CommandActionDefinition> action = new AbstractCommandAction<CommandActionDefinition>(
                 new CommandActionDefinition(), item, commandsManager, null);
+        action.setCurrentItem(action.getItems().get(0));
         action.buildParams(item.getJcrItem());
 
         action.onPreExecute();

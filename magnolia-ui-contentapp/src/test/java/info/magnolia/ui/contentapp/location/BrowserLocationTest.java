@@ -37,9 +37,10 @@ import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockWebContext;
-import info.magnolia.ui.contentapp.browser.BrowserLocation;
 import info.magnolia.ui.api.location.DefaultLocation;
-import info.magnolia.ui.workbench.ContentView;
+import info.magnolia.ui.contentapp.browser.BrowserLocation;
+import info.magnolia.ui.workbench.list.ListPresenterDefinition;
+import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
 
 import org.junit.After;
 import org.junit.Before;
@@ -118,7 +119,7 @@ public class BrowserLocationTest {
         BrowserLocation contentLocation = new BrowserLocation("someApp", "someContentApp", "/some/other/node/00:searchview:found*");
 
         // TEST
-        assertEquals(ContentView.ViewType.SEARCH, contentLocation.getViewType());
+        assertEquals(SearchPresenterDefinition.VIEW_TYPE, contentLocation.getViewType());
 
     }
 
@@ -161,10 +162,10 @@ public class BrowserLocationTest {
         BrowserLocation contentLocation = new BrowserLocation("someApp", "someContentApp", "/some/other/node/00:treeview");
 
         // WHEN
-        contentLocation.updateViewType(ContentView.ViewType.LIST);
+        contentLocation.updateViewType(ListPresenterDefinition.VIEW_TYPE);
 
         // TEST
-        assertEquals(ContentView.ViewType.LIST, contentLocation.getViewType());
+        assertEquals(ListPresenterDefinition.VIEW_TYPE, contentLocation.getViewType());
     }
 
     @Test
@@ -185,7 +186,7 @@ public class BrowserLocationTest {
         BrowserLocation contentLocation = new BrowserLocation("someApp", "someContentApp", "/some/other/node/00:treeview");
 
         // WHEN
-        contentLocation.updateViewType(ContentView.ViewType.LIST);
+        contentLocation.updateViewType(ListPresenterDefinition.VIEW_TYPE);
 
         // TEST
         assertEquals("app:someApp:someContentApp;/some/other/node/00:listview:", contentLocation.toString());
@@ -207,15 +208,6 @@ public class BrowserLocationTest {
          public void testGetNullViewType() {
         // GIVEN
         BrowserLocation browserLocation = new BrowserLocation("someApp", "someContentApp", "/some/other/node/00:");
-
-        // TEST
-        assertNull(browserLocation.getViewType());
-    }
-
-    @Test
-    public void testGetNullViewTypeWhenUnknown() {
-        // GIVEN
-        BrowserLocation browserLocation = new BrowserLocation("someApp", "someContentApp", "/some/other/node/00:someUnknownViewType");
 
         // TEST
         assertNull(browserLocation.getViewType());

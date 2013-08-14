@@ -39,11 +39,14 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
+import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 
 import javax.jcr.Session;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -64,9 +67,15 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         configuredWorkbench = new ConfiguredWorkbenchDefinition();
         configuredWorkbench.setWorkspace(workspace);
         configuredWorkbench.setPath("/");
+        ConfiguredNodeTypeDefinition nt = new ConfiguredNodeTypeDefinition();
+        nt.setName("mgnl:content");
+        nt.setStrict(true);
+
+        configuredWorkbench.addNodeType(nt);
 
         // Add view
         ConfiguredContentPresenterDefinition contentView = new SearchPresenterDefinition();
+
         configuredWorkbench.addContentView(contentView);
 
         // Add columns
@@ -96,7 +105,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testGetQueryWhereClauseReturnsEmptyStringWhenFullTextExpressionIsBlank() throws Exception {
+    public void testGetQueryWhereClauseReturnsNodeTypesWhereClauseWhenFullTextExpressionIsBlank() throws Exception {
         // GIVEN
         jcrContainer.setFullTextExpression("");
 
@@ -104,11 +113,11 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertEquals("", stmt);
+        assertEquals(" where (([jcr:primaryType] = 'mgnl:content'))", stmt);
     }
 
     @Test
-    public void testGetQueryWhereClauseReturnsEmptyStringWhenFullTextExpressionIsNull() throws Exception {
+    public void testGetQueryWhereClauseReturnsNodeTypesWhereClauseWhenFullTextExpressionIsNull() throws Exception {
         // GIVEN
         jcrContainer.setFullTextExpression(null);
 
@@ -116,7 +125,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertEquals("", stmt);
+        assertEquals(" where (([jcr:primaryType] = 'mgnl:content'))", stmt);
     }
 
     @Test
@@ -128,7 +137,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertEquals(" where ( (localname() LIKE '%foo%' or contains(t.*, 'foo')))", stmt);
+        assertEquals(" where (([jcr:primaryType] = 'mgnl:content') and (localname() LIKE 'foo%' or t.[foo] IS NOT NULL or contains(t.[name], 'foo') or contains(t.[shortname], 'foo')) )", stmt);
     }
 
     @Test
@@ -140,7 +149,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertEquals(" where ( (localname() LIKE '%foo OR ''baz bar''%' or contains(t.*, 'foo OR ''baz bar''')))", stmt);
+        assertContains("contains(t.[name], 'foo OR ''baz bar''')", stmt);
     }
 
     @Test
@@ -153,7 +162,24 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertEquals(" where ( ISDESCENDANTNODE('/qux') and  (localname() LIKE '%foo%' or contains(t.*, 'foo')))", stmt);
+        assertContains(" where ( ISDESCENDANTNODE('/qux') and ([jcr:primaryType] = 'mgnl:content') and (localname() LIKE 'foo%'", stmt);
     }
 
+    @Test
+    public void testInvalidJcrCharsInNodeAndPropertiesNamesAreEncoded() throws Exception {
+        // GIVEN
+        jcrContainer.setFullTextExpression("*foo");
+
+        // WHEN
+        String stmt = jcrContainer.getQueryWhereClause();
+
+        // THEN
+        assertContains("localname() LIKE '_x002a_foo%' or t.[_x002a_foo] IS NOT NULL", stmt);
+    }
+
+    protected void assertContains(final String searchString, final String string) {
+        if (!StringUtils.contains(string, searchString)) {
+            Assert.fail(String.format("[%s] was expected to be contained into [%s]", searchString, string));
+        }
+    }
 }
