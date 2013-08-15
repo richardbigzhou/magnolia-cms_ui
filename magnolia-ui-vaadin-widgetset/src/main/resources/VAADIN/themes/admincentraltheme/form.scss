@@ -302,6 +302,12 @@ fieldset {
   height: 1em;
 }
 
+.textarea-stretcher:hover,
+.textarea-stretcher:focus,
+.textarea-stretcher:active {
+  opacity: 0.6;
+}
+
 .textarea-stretcher.stretched {
   position: absolute;
   right: 10px;

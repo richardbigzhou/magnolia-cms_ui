@@ -158,9 +158,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
         final LayoutManager lm = getParent().getLayoutManager();
         final UIConnector ui = getConnection().getUIConnector();
         getParent().addStateChangeHandler(textAreaSizeHandler);
-        if (isRichTextEditor && ui != null) {
-            lm.addElementResizeListener(ui.getWidget().getElement(), windowResizeListener);
-        }
+        lm.addElementResizeListener(ui.getWidget().getElement(), windowResizeListener);
     }
 
     private void toggleCollapseState() {
@@ -206,7 +204,6 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
         style.clearTop();
         style.clearPosition();
         style.clearZIndex();
-        style.clearBottom();
 
         stretchControl.getStyle().clearTop();
         stretchControl.getStyle().clearLeft();
@@ -214,10 +211,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
 
     private void stretchTextArea(Style style) {
         style.setWidth(form.getOffsetWidth(), Style.Unit.PX);
-        style.setBottom(0, Style.Unit.PX);
-        if (isOverlay) {
-            adjustTextAreaHeightToScreen(getConnection().getUIConnector().getWidget().getOffsetHeight());
-        }
+        adjustTextAreaHeightToScreen(getConnection().getUIConnector().getWidget().getOffsetHeight());
     }
 
     private void unregisterSizeChangeListeners() {
