@@ -45,6 +45,13 @@
           <br class="float-clear" />
       </form>
       [#if loginError]
+      <script type="text/javascript">
+      document.getElementById('login-username').focus();
+      //self.setTimeout(100,"document.getElementById('login-username').setAttribute('class', 'error');");
+	 //setInterval(function(){document.getElementById('login-username').setAttribute('class', 'error')},500);
+	document.getElementById('login-username').setAttribute('class', 'error');
+
+      </script>
 	  <div id="error-divet" class="divet"></div>
       <div id="error-message">
         <div class="icon-error"><img src="${contextPath}/.resources/defaultLoginForm/img/icon-error-white.png"/></div>
@@ -68,7 +75,8 @@
   document.ontouchmove = function(e){ e.preventDefault(); }
   var username = document.getElementById('login-username')
   var password = document.getElementById('login-password')
-  function removeErrorClass() {this.removeAttribute('class')}
+  function removeErrorClass() { this.removeAttribute('class')}
+  //username.onfocus = function(e){ e.preventDefault(); }
   username.onblur = removeErrorClass
   password.onblur = removeErrorClass
   </script>

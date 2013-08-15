@@ -138,6 +138,13 @@ button.btn-submit:active {
   margin-bottom: 15px;
 }
 
+/* for login-exception-sitaution */
+.mgnl-form input[type="text"]:focus.error{
+  border: 2px solid #9A3332;
+  margin: -1px;
+  margin-bottom: 15px;
+}
+
 .mgnl-form a{
   color:white;
   margin-left: 100px;
