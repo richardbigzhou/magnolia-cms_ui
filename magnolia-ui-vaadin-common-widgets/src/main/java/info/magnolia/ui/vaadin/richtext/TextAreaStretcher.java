@@ -57,11 +57,15 @@ public class TextAreaStretcher extends AbstractExtension {
                 getState().isCollapsed = !getState().isCollapsed;
                 final Component parent = (Component) getParent();
                 if (getState().isCollapsed) {
+                    // Restore size info from the state.
                     parent.setWidth(getState().collapsedStateWidth);
                     parent.setHeight(getState().collapsedStateHeight);
                 } else {
+                    // We save the initial dimensions and clear size info from the state.
                     getState().collapsedStateHeight = initialHeight + "px";
                     getState().collapsedStateWidth = initialWidth + "px";
+                    parent.setWidth("");
+                    parent.setHeight("");
                 }
             }
         });
@@ -69,8 +73,7 @@ public class TextAreaStretcher extends AbstractExtension {
 
     public static void extend(Field field) {
         if (field instanceof TextArea || field instanceof CKEditorTextField) {
-            TextAreaStretcher tas = new TextAreaStretcher();
-            tas.extend((AbstractClientConnector) field);
+            new TextAreaStretcher().extend((AbstractClientConnector) field);
         }
     }
 

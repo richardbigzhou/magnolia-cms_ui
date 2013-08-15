@@ -36,7 +36,7 @@ package info.magnolia.ui.vaadin.gwt.client.richtext;
 import com.vaadin.shared.communication.SharedState;
 
 /**
- * TODO: Add JavaDoc for TextAreaStretcherState.
+ * Shared state for {@link info.magnolia.ui.vaadin.richtext.TextAreaStretcher}.
  */
 public class TextAreaStretcherState extends SharedState {
 

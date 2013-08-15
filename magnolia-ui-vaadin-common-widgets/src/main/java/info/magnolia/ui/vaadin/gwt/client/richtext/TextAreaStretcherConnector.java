@@ -72,6 +72,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
     private WindowResizeListener windowResizeListener = new WindowResizeListener();
 
     private boolean isOverlay = false;
+    private boolean isRichTextEditor = false;
 
     private StateChangeEvent.StateChangeHandler textAreaSizeHandler = new StateChangeEvent.StateChangeHandler() {
         @Override
@@ -98,7 +99,8 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
 
     @Override
     protected void extend(ServerConnector target) {
-        this.textWidget = getParent().getWidget();
+        this.textWidget = ((ComponentConnector)target).getWidget();
+        this.isRichTextEditor = !"textarea".equalsIgnoreCase(textWidget.getElement().getTagName());
         this.stretchControl.setClassName("textarea-stretcher");
         textWidget.addAttachHandler(new AttachEvent.Handler() {
             @Override
@@ -106,15 +108,22 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
                 initFormView();
                 initDialog();
                 checkOverlay();
-                if ("textarea".equalsIgnoreCase(textWidget.getElement().getTagName())) {
+                if (!isRichTextEditor) {
                     appendStretcher(textWidget.getElement());
                 } else {
                     Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
+                        private int repeats = 0;
+
                         @Override
                         public boolean execute() {
-                            appendStretcher(JQueryWrapper.select(textWidget).find("iframe").get(0));
-                            stretchControl.addClassName("rich-text");
-                            return false;
+                            repeats++;
+                            isRichTextEditor = true;
+                            Element stretcher = JQueryWrapper.select(textWidget).find("iframe").get(0);
+                            if (stretcher != null) {
+                                appendStretcher(stretcher);
+                                stretchControl.addClassName("rich-text");
+                            }
+                            return stretcher == null && repeats < 5;
                         }
                     }, DELAY_MS);
                 }
@@ -149,40 +158,44 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
         final LayoutManager lm = getParent().getLayoutManager();
         final UIConnector ui = getConnection().getUIConnector();
         getParent().addStateChangeHandler(textAreaSizeHandler);
-        lm.addElementResizeListener(ui.getWidget().getElement(), windowResizeListener);
+        if (isRichTextEditor && ui != null) {
+            lm.addElementResizeListener(ui.getWidget().getElement(), windowResizeListener);
+        }
     }
 
     private void toggleCollapseState() {
         boolean isCollapsed = getState().isCollapsed;
-        if (isCollapsed) {
-            stretchControl.replaceClassName("stretched", "collapsed");
-            stretchControl.replaceClassName("icon-close-fullscreen_2", "icon-open-fullscreen_2");
-            form.asWidget().removeStyleName("textarea-stretched");
-        } else {
+        if (!isCollapsed) {
             stretchControl.replaceClassName("icon-open-fullscreen_2", "icon-close-fullscreen_2");
             stretchControl.replaceClassName("collapsed", "stretched");
             form.asWidget().addStyleName("textarea-stretched");
-        }
 
-        if (!isCollapsed) {
             Style style = textWidget.getElement().getStyle();
             style.setPosition(Style.Position.ABSOLUTE);
-            final Element header = getDialogHeaderElement();
-            final ComputedStyle cs = new ComputedStyle(header);
+            Element header = getDialogHeaderElement();
+            ComputedStyle headerCS = new ComputedStyle(header);
 
-            int dialogHeaderPadding = cs.getPadding()[0] + cs.getPadding()[2];
+            int top = form.getAbsoluteTop() - dialog.getAbsoluteTop();
+            top = isOverlay ? top : top + headerCS.getPadding()[0] + headerCS.getPadding()[2];
 
-            if (!isOverlay) {
-                style.setLeft(form.getAbsoluteLeft(), Style.Unit.PX);
-                style.setTop(form.getAbsoluteTop() - dialog.getAbsoluteTop() + dialogHeaderPadding, Style.Unit.PX);
-            } else {
-                style.setLeft(0, Style.Unit.PX);
-                style.setTop(form.getAbsoluteTop() - dialog.getAbsoluteTop(), Style.Unit.PX);
-            }
+            int left = isOverlay ? 0 : form.getAbsoluteLeft();
+
+            style.setLeft(left, Style.Unit.PX);
+            style.setTop(top, Style.Unit.PX);
 
             stretchTextArea(style);
             style.setZIndex(3);
+
+            if (!isOverlay && !isRichTextEditor) {
+                stretchControl.getStyle().setTop(top + 5, Style.Unit.PX);
+                stretchControl.getStyle().setLeft(left + textWidget.getOffsetWidth() - stretchControl.getOffsetWidth() - 5, Style.Unit.PX);
+
+            }
+
         } else {
+            stretchControl.replaceClassName("stretched", "collapsed");
+            stretchControl.replaceClassName("icon-close-fullscreen_2", "icon-open-fullscreen_2");
+            form.asWidget().removeStyleName("textarea-stretched");
             clearTraces();
         }
     }
@@ -193,18 +206,27 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
         style.clearTop();
         style.clearPosition();
         style.clearZIndex();
+        style.clearBottom();
+
+        stretchControl.getStyle().clearTop();
+        stretchControl.getStyle().clearLeft();
     }
 
     private void stretchTextArea(Style style) {
         style.setWidth(form.getOffsetWidth(), Style.Unit.PX);
-        adjustTextAreaHeightToScreen(getConnection().getUIConnector().getWidget().getOffsetHeight());
+        style.setBottom(0, Style.Unit.PX);
+        if (isOverlay) {
+            adjustTextAreaHeightToScreen(getConnection().getUIConnector().getWidget().getOffsetHeight());
+        }
     }
 
     private void unregisterSizeChangeListeners() {
         final LayoutManager lm = getParent().getLayoutManager();
         final UIConnector ui = getConnection().getUIConnector();
-        getParent().removeStateChangeHandler(textAreaSizeHandler);
-        lm.removeElementResizeListener(ui.getWidget().getElement(), windowResizeListener);
+        if (ui != null) {
+            getParent().removeStateChangeHandler(textAreaSizeHandler);
+            lm.removeElementResizeListener(ui.getWidget().getElement(), windowResizeListener);
+        }
     }
 
     private Element getDialogHeaderElement() {

@@ -123,7 +123,6 @@ button.btn-form-help {
 .v-form-field-section {
     color: $c90;
     margin-bottom: 11px;
-    position: relative;
 }
 
 .validation-message-inline,.help-message-inline {
@@ -327,8 +326,8 @@ fieldset {
   position: static;
 }
 
-.v-magnolia-form.textarea-stretched  .v-form-field-section {
-  position: static;
+.v-magnolia-form.textarea-stretched .v-form-field-label {
+  display: none;
 }
 
 }
