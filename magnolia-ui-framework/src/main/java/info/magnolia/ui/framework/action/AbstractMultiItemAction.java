@@ -153,6 +153,9 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
         return this.currentItem;
     }
 
+    /**
+     * This method should be used <b>only in tests</b> (when the test does not call the {@link #execute()} method but e.g. only the {@link AbstractCommandAction#onPreExecute()} so the current item hasn't been set.
+     */
     protected void setCurrentItem(JcrItemAdapter item) {
         this.currentItem = item;
     }
