@@ -37,8 +37,8 @@ import info.magnolia.ui.admincentral.shellapp.ShellApp;
 import info.magnolia.ui.admincentral.shellapp.ShellAppContext;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.MessagePresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.shell.ShellImpl;
 
 import javax.inject.Inject;
@@ -53,6 +53,16 @@ public final class PulseShellApp implements ShellApp, PulseMessagesPresenter.Lis
     private PulseMessagesPresenter messages;
     private MessagePresenter messagePresenter;
     private ShellImpl shell;
+
+    private enum PulseViewType {
+        LIST, DETAIL
+    }
+
+    /*
+     * we keep the current message view type as we need it to know in order to refresh the list (i.e. call showList()) or not. We don't want to refresh the list of messages when we're showing a message detail
+     * but we need to do it when e.g. the list view is the current one and a new message arrives. Not doing so would display the new message not sorted correctly and with title and text displayed as null.
+     */
+    private PulseViewType currentViewType = PulseViewType.LIST;
 
     @Inject
     public PulseShellApp(PulseView pulseView, PulseMessagesPresenter messages, MessagePresenter messagePresenter, ShellImpl shell) {
@@ -73,16 +83,20 @@ public final class PulseShellApp implements ShellApp, PulseMessagesPresenter.Lis
     @Override
     public void locationChanged(Location location) {
         shell.hideAllMessages();
-        showList();
+        if (currentViewType == PulseViewType.LIST) {
+            showList();
+        }
     }
 
     @Override
     public void openMessage(String messageId) {
         pulseView.setPulseView(messagePresenter.start(messageId));
+        currentViewType = PulseViewType.DETAIL;
     }
 
     @Override
     public void showList() {
         pulseView.setPulseView(messages.start());
+        currentViewType = PulseViewType.LIST;
     }
 }
