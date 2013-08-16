@@ -41,11 +41,12 @@ import info.magnolia.ui.vaadin.richtext.TextAreaStretcher;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Widget;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
+import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
+import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ComputedStyle;
 import com.vaadin.client.LayoutManager;
@@ -118,12 +119,12 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
                         public boolean execute() {
                             repeats++;
                             isRichTextEditor = true;
-                            Element stretcher = JQueryWrapper.select(textWidget).find("iframe").get(0);
-                            if (stretcher != null) {
-                                appendStretcher(stretcher);
+                            Element iframe = JQueryWrapper.select(textWidget).find("iframe").get(0);
+                            if (iframe != null) {
+                                appendStretcher(iframe);
                                 stretchControl.addClassName("rich-text");
                             }
-                            return stretcher == null && repeats < 5;
+                            return iframe == null && repeats < 5;
                         }
                     }, DELAY_MS);
                 }
@@ -139,9 +140,10 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
     private void appendStretcher(Element rootElement) {
         rootElement.getParentElement().insertAfter(stretchControl, rootElement);
         Widget parent = textWidget.getParent();
-        parent.addDomHandler(new ClickHandler() {
+        TouchDelegate touchDelegate = new TouchDelegate(parent);
+        touchDelegate.addTouchEndHandler(new TouchEndHandler() {
             @Override
-            public void onClick(ClickEvent event) {
+            public void onTouchEnd(TouchEndEvent event) {
                 Element target = event.getNativeEvent().getEventTarget().cast();
                 if (stretchControl.isOrHasChild(target)) {
                     if (!getState().isCollapsed) {
@@ -151,7 +153,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
 
                 }
             }
-        }, ClickEvent.getType());
+        });
     }
 
     private void registerSizeChangeListeners() {
