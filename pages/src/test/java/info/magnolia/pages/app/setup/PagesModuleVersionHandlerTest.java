@@ -179,4 +179,62 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertFalse(actionbarItems.hasNode("delete"));
         assertTrue(actionbarItems.hasNode("confirmDeletion"));
     }
+
+
+    @Test
+    public void testUpdateTo502ReplacesDeactivateCommand() throws ModuleManagementException, RepositoryException {
+
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node commands = NodeUtil.createPath(session.getRootNode(), "/modules/pages/commands/website", NodeTypes.ContentNode.NAME);
+        Node deactivate = commands.addNode("deactivate", NodeTypes.ContentNode.NAME);
+        deactivate.setProperty("actionName", "default-deactivate");
+        deactivate.getSession().save();
+
+        String identifier = deactivate.getIdentifier();
+
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
+
+        // THEN
+        Node deactivateChain = commands.getNode("deactivate");
+        assertNotEquals(identifier, deactivateChain.getIdentifier());
+
+    }
+
+    @Test
+    public void testUpdateTo502DeactivationCommandBootstrapped() throws ModuleManagementException, RepositoryException {
+
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node commands = NodeUtil.createPath(session.getRootNode(), "/modules/pages/commands/website", NodeTypes.ContentNode.NAME);
+        Node deactivate = commands.addNode("deactivate", NodeTypes.ContentNode.NAME);
+        deactivate.setProperty("actionName", "default-deactivate");
+        deactivate.getSession().save();
+
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
+
+        // THEN
+        Node deactivateChain = commands.getNode("deactivate");
+
+        assertTrue(deactivateChain.hasNode("version"));
+        assertTrue(deactivateChain.hasNode("deactivate"));
+    }
+
+    @Test
+    public void testUpdateTo5dot1ConfirmDeletionIsSetToMultiple() throws RepositoryException, ModuleManagementException {
+        // GIVEN
+        Node availability = NodeUtil.createPath(MgnlContext.getJCRSession(RepositoryConstants.CONFIG).getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/confirmDeletion/availability", NodeTypes.ContentNode.NAME);
+        assertFalse(availability.hasProperty("multiple"));
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.2"));
+
+        // THEN
+        assertTrue(availability.hasProperty("multiple"));
+        assertEquals("true", availability.getProperty("multiple").getString());
+    }
 }

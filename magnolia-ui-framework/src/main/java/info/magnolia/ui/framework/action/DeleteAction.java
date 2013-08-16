@@ -44,9 +44,9 @@ import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
-import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
-import javax.inject.Inject;
+import java.util.List;
+
 import javax.inject.Named;
 import javax.jcr.Item;
 import javax.jcr.RepositoryException;
@@ -68,7 +68,6 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
     protected final EventBus eventBus;
     private String itemIdOfChangedItem;
 
-    @Inject
     public DeleteAction(D definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
         super(definition, item, commandsManager, uiContext);
         this.jcrItem = item.getJcrItem();
@@ -82,13 +81,24 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
         }
     }
 
+    public DeleteAction(D definition, List<JcrItemAdapter> items, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
+        super(definition, items, commandsManager, uiContext);
+        this.jcrItem = items.get(0).getJcrItem();
+        this.uiContext = uiContext;
+        this.eventBus = eventBus;
+        try {
+            itemIdOfChangedItem = JcrItemUtil.getItemId(jcrItem.getParent());
+        } catch (RepositoryException e) {
+            log.error("Could not execute repository operation.", e);
+            onError(e);
+        }
+    }
 
     @Override
     protected void onPreExecute() throws Exception {
         super.onPreExecute();
 
-        if (jcrItem.isNode() && jcrItem.getDepth() == 0) {
-            uiContext.openNotification(MessageStyleTypeEnum.INFO, true, "Root node can't be deleted.");
+        if (getCurrentItem().getJcrItem().isNode() && getCurrentItem().getJcrItem().getDepth() == 0) {
             throw new ActionExecutionException("Root node can't be deleted.");
         }
     }
@@ -102,79 +112,16 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
     protected void onPostExecute() throws Exception {
         // Propagate event
         eventBus.fireEvent(new ContentChangedEvent((String) getParams().get(Context.ATTRIBUTE_REPOSITORY), itemIdOfChangedItem));
-
-        // Show notification
-        uiContext.openNotification(MessageStyleTypeEnum.INFO, true, getSuccessMessage());
     }
 
-    /**
-     * Execute after confirmation.<br>
-     * Call the appropriate command.
-     * @deprecated after 5.0.1 use {@link ConfirmationAction}.
-     */
-    @Deprecated
-    protected void executeAfterConfirmation() {
-
-    }
-
-    @Deprecated
-    protected void setItemIdOfChangedItem(String itemIdOfChangedItem) {
-        this.itemIdOfChangedItem = itemIdOfChangedItem;
-    }
-
-    /**
-     * Create the Header of the confirmation message.
-     * @deprecated after 5.0.1 use {@link ConfirmationAction}.
-     */
-    @Deprecated
-    protected String createConfirmationHeader() throws RepositoryException {
-        StringBuffer label = new StringBuffer();
-        label.append("Delete ");
-        if (jcrItem.isNode()) {
-            label.append("Node");
-        } else {
-            label.append("Property");
-        }
-        label.append("?");
-        return label.toString();
-    }
-
-    /**
-     * Create the Body of the confirmation Message.
-     * @deprecated after 5.0.1 use {@link ConfirmationAction}.
-     */
-    @Deprecated
-    protected String createConfirmationMessage() throws RepositoryException {
-        StringBuffer label = new StringBuffer();
-        label.append("The ");
-        if (jcrItem.isNode()) {
-            label.append("node");
-        } else {
-            label.append("property");
-        }
-        label.append("<br>");
-        label.append(jcrItem.getPath());
-        label.append("<br>will be deleted immediately.<br>");
-        label.append("Are you sure ?");
-        return label.toString();
-    }
-
-    /**
-     * Create the Body of the confirmation Message.
-     */
-    @Deprecated
-    protected String createSuccessMessage() {
-        StringBuffer label = new StringBuffer();
-        if (jcrItem.isNode()) {
-            label.append("Node");
-        } else {
-            label.append("Property");
-        }
-        label.append(" deleted.");
-        return label.toString();
-    }
-
+    @Override
     protected String getSuccessMessage() {
-        return MessagesUtil.get(getDefinition().getSuccessMessage(), getDefinition().getI18nBasename(),new String[] {(jcrItem.isNode()) ? "Node" : "Property"});
+        return MessagesUtil.get(getDefinition().getSuccessMessage(), getDefinition().getI18nBasename(), new String[] { "" + getItems().size() });
     }
+
+    @Override
+    protected String getFailureMessage() {
+        return MessagesUtil.get(getDefinition().getFailureMessage(), getDefinition().getI18nBasename());
+    }
+
 }

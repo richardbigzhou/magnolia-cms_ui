@@ -38,7 +38,6 @@ import info.magnolia.commands.chain.Command;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 import info.magnolia.ui.api.context.UiContext;
@@ -47,9 +46,9 @@ import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -62,11 +61,9 @@ import org.slf4j.LoggerFactory;
  *
  * @param <D> {@link info.magnolia.ui.api.action.CommandActionDefinition}.
  */
-public class AbstractCommandAction<D extends CommandActionDefinition> extends AbstractAction<D> {
+public class AbstractCommandAction<D extends CommandActionDefinition> extends AbstractMultiItemAction<D> {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractCommandAction.class);
-
-    private JcrItemAdapter item;
 
     private CommandsManager commandsManager;
 
@@ -76,12 +73,22 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
 
     private final UiContext uiContext;
 
+    private JcrItemAdapter currentItem;
+
     public static final String COMMAND_RESULT = "command_result";
 
-    @Inject
     public AbstractCommandAction(final D definition, final JcrItemAdapter item, final CommandsManager commandsManager, UiContext uiContext) {
-        super(definition);
-        this.item = item;
+        super(definition, item, uiContext);
+        this.commandsManager = commandsManager;
+        this.uiContext = uiContext;
+        // Init Command.
+        String commandName = getDefinition().getCommand();
+        String catalog = getDefinition().getCatalog();
+        this.command = getCommandsManager().getCommand(catalog, commandName);
+    }
+
+    public AbstractCommandAction(final D definition, final List<JcrItemAdapter> items, final CommandsManager commandsManager, UiContext uiContext) {
+        super(definition, items, uiContext);
         this.commandsManager = commandsManager;
         this.uiContext = uiContext;
         // Init Command.
@@ -130,10 +137,6 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
         return params;
     }
 
-    public JcrItemAdapter getItem() {
-        return item;
-    }
-
     /**
      * @return the <em>immutable</em> map of parameters to be used for command execution.
      * @see AbstractCommandAction#buildParams(javax.jcr.Item)
@@ -153,7 +156,9 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
      * @throws info.magnolia.ui.api.action.ActionExecutionException if no command is found or if command execution throws an exception.
      */
     @Override
-    public void execute() throws ActionExecutionException {
+    protected void executeOnItem(JcrItemAdapter item) throws ActionExecutionException {
+
+        this.currentItem = item;
 
         try {
             onPreExecute();
@@ -187,7 +192,7 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
      * When overriding make sure to call super to build the parameter map.
      */
     protected void onPreExecute() throws Exception {
-        this.params = buildParams(item.getJcrItem());
+        this.params = buildParams(getCurrentItem().getJcrItem());
     }
 
     /**
@@ -212,5 +217,25 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
      */
     protected Command getCommand() {
         return this.command;
+    }
+
+    protected JcrItemAdapter getCurrentItem() {
+        return this.currentItem;
+    }
+
+    protected void setCurrentItem(JcrItemAdapter item) {
+        this.currentItem = item;
+    }
+
+    @Override
+    protected String getSuccessMessage() {
+        // by default, we expect the command-based actions to be limited to single-item
+        return null;
+    }
+
+    @Override
+    protected String getFailureMessage() {
+        // by default, we expect the command-based actions to be limited to single-item
+        return null;
     }
 }

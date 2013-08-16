@@ -38,6 +38,8 @@ import info.magnolia.ui.form.field.definition.DateFieldDefinition;
 import java.util.Date;
 
 import com.vaadin.data.Item;
+import com.vaadin.server.Sizeable;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.PopupDateField;
@@ -49,6 +51,13 @@ public class DateFieldFactory extends AbstractFieldFactory<DateFieldDefinition, 
 
     public DateFieldFactory(DateFieldDefinition definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
+    }
+
+    @Override
+    public Field<Date> createField() {
+        Field<Date> field = super.createField();
+        field.setWidth(Sizeable.SIZE_UNDEFINED, Unit.PIXELS);
+        return field;
     }
 
     @Override

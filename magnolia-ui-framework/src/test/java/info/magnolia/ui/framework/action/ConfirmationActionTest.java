@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.framework.action;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.i18n.Messages;
@@ -58,8 +58,12 @@ import info.magnolia.ui.api.overlay.NotificationCallback;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
@@ -128,6 +132,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
 
         // THEN
         assertEquals(actionExecutor.getExecutedActionName(), SUCCESS_ACTION);
+        assertTrue(actionExecutor.getArgument() instanceof JcrItemAdapter);
     }
 
     @Test
@@ -143,6 +148,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
 
         // THEN
         assertEquals(actionExecutor.getExecutedActionName(), CANCEL_ACTION);
+        assertTrue(actionExecutor.getArgument() instanceof JcrItemAdapter);
     }
 
     @Test
@@ -160,6 +166,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
 
         // THEN
         assertEquals(actionExecutor.getExecutedActionName(), SUCCESS_ACTION);
+        assertTrue(actionExecutor.getArgument() instanceof JcrItemAdapter);
     }
 
     @Test
@@ -177,6 +184,59 @@ public class ConfirmationActionTest extends MgnlTestCase {
 
         // THEN
         assertEquals(actionExecutor.getExecutedActionName(), CANCEL_ACTION);
+        assertTrue(actionExecutor.getArgument() instanceof JcrItemAdapter);
+    }
+
+    @Test
+    public void testProceedMultipleAction() throws Exception {
+        // GIVEN
+        Node root = session.getRootNode();
+        Node node = root.addNode("node1");
+        node.setProperty("property_long", Long.decode("1000"));
+
+        JcrItemAdapter item = new JcrNodeAdapter(node);
+        JcrItemAdapter prop = new JcrPropertyAdapter(node.getProperty("property_long"));
+
+        List<JcrItemAdapter> items = new ArrayList<JcrItemAdapter>(2);
+        items.add(item);
+        items.add(prop);
+
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, items, new TestUiContext(true), actionExecutor);
+
+        // WHEN
+        confirmationAction.execute();
+
+        // THEN
+        assertEquals(actionExecutor.getExecutedActionName(), SUCCESS_ACTION);
+        assertTrue(actionExecutor.getArgument() instanceof List);
+        assertEquals("/node1", JcrItemUtil.getItemPath(((List<JcrItemAdapter>) actionExecutor.getArgument()).get(0).getJcrItem()));
+        assertEquals("/node1@property_long", JcrItemUtil.getItemPath(((List<JcrItemAdapter>) actionExecutor.getArgument()).get(1).getJcrItem()));
+    }
+
+    @Test
+    public void testCancelMultipleAction() throws Exception {
+        // GIVEN
+        Node root = session.getRootNode();
+        Node node = root.addNode("node1");
+        node.setProperty("property_long", Long.decode("1000"));
+
+        JcrItemAdapter item = new JcrNodeAdapter(node);
+        JcrItemAdapter prop = new JcrPropertyAdapter(node.getProperty("property_long"));
+
+        List<JcrItemAdapter> items = new ArrayList<JcrItemAdapter>(2);
+        items.add(item);
+        items.add(prop);
+
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, items, new TestUiContext(false), actionExecutor);
+
+        // WHEN
+        confirmationAction.execute();
+
+        // THEN
+        assertEquals(actionExecutor.getExecutedActionName(), CANCEL_ACTION);
+        assertTrue(actionExecutor.getArgument() instanceof List);
+        assertEquals("/node1", JcrItemUtil.getItemPath(((List<JcrItemAdapter>) actionExecutor.getArgument()).get(0).getJcrItem()));
+        assertEquals("/node1@property_long", JcrItemUtil.getItemPath(((List<JcrItemAdapter>) actionExecutor.getArgument()).get(1).getJcrItem()));
     }
 
     /**
@@ -240,10 +300,12 @@ public class ConfirmationActionTest extends MgnlTestCase {
     public class SimpleActionExecutor implements ActionExecutor {
 
         private String actionName;
+        private Object argument;
 
         @Override
         public void execute(String actionName, Object... args) throws ActionExecutionException {
             this.actionName = actionName;
+            this.argument = args[0];
         }
 
         @Override
@@ -258,6 +320,10 @@ public class ConfirmationActionTest extends MgnlTestCase {
 
         public String getExecutedActionName() {
             return actionName;
+        }
+
+        public Object getArgument() {
+            return this.argument;
         }
     }
 }

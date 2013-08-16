@@ -156,4 +156,24 @@ public class JcrItemUtil {
         }
         return items;
     }
+
+    public static String getItemPath(Item item) {
+        if (item == null) {
+            return null;
+        }
+        String path = "unknown";
+        try {
+            if (item.isNode()) {
+                path = item.getPath();
+            } else {
+                String parentPath = item.getParent().getPath();
+                String name = item.getName();
+                path = parentPath + PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR + name;
+            }
+        } catch (RepositoryException re) {
+            log.error("Cannot get path for item: " + item);
+        }
+        return path;
+    }
+
 }
