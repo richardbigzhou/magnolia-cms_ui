@@ -61,6 +61,8 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
     private final List<JcrItemAdapter> items;
     private Map<JcrItemAdapter, Exception> failedItems;
     private final UiContext uiContext;
+    // the item that is currently BEING processed
+    private JcrItemAdapter currentItem;
 
     protected AbstractMultiItemAction(D definition, JcrItemAdapter item, UiContext uiContext) {
         super(definition);
@@ -97,12 +99,14 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
         failedItems = new LinkedHashMap<JcrItemAdapter, Exception>();
 
         for (JcrItemAdapter item : getItems()) {
+            this.currentItem = item;
             try {
                 executeOnItem(item);
             } catch (Exception ex) {
                 failedItems.put(item, ex);
             }
         }
+        this.currentItem = null;
 
         if (failedItems.isEmpty()) {
             String message = getSuccessMessage();
@@ -142,4 +146,14 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
         return this.failedItems;
     }
 
+    /**
+     * Returns the item that is currently <b>being</b> processed - i.e. <code>null</code> if the {@link #execute()} method is not running.
+     */
+    protected JcrItemAdapter getCurrentItem() {
+        return this.currentItem;
+    }
+
+    protected void setCurrentItem(JcrItemAdapter item) {
+        this.currentItem = item;
+    }
 }
