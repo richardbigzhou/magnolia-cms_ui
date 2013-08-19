@@ -102,7 +102,7 @@ public class BasicUploadFieldFactory extends AbstractFieldFactory<BasicUploadFie
         // Get the related Node
         AbstractJcrNodeAdapter child = null;
         try {
-            Node node = getRelatedNode(item);
+            Node node = ((JcrNodeAdapter) item).getJcrItem();
             if (node.hasNode(definition.getBinaryNodeName()) && !(item instanceof JcrNewNodeAdapter)) {
                 child = new JcrNodeAdapter(node.getNode(definition.getBinaryNodeName()));
                 child.setParent((AbstractJcrNodeAdapter) item);

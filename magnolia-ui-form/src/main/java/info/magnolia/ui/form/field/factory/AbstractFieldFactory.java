@@ -48,13 +48,8 @@ import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
 import info.magnolia.ui.form.validator.factory.FieldValidatorFactory;
 import info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Locale;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -213,28 +208,24 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     }
 
     /**
-     * Return the Class field Type if define in the configuration.
-     * If the Type is not defined in the configuration or not of a supported type, throws
-     * a {@link IllegalArgumentException}:
+     * Return the field Type Class.<br>
+     * Return the value defined by the overriding method {@link AbstractFieldFactory#getDefaultFieldType()}.<br>
+     * If it is not overrides (return null), check the value defined in configuration ('type' property).<br>
+     * If no type is defined return String.
      */
     protected Class<?> getFieldType() {
+        if (getDefaultFieldType() != null) {
+            return getDefaultFieldType();
+        }
         if (StringUtils.isNotBlank(definition.getType())) {
             return DefaultPropertyUtil.getFieldTypeClass(definition.getType());
         }
-        return getDefaultFieldType();
-    }
-
-    protected Class<?> getDefaultFieldType() {
         return String.class;
     }
 
-    /**
-     * Returns the field related node.
-     * If field is of type JcrNewNodeAdapter then return the parent node.
-     * Else get the node associated with the Vaadin item.
-     */
-    protected Node getRelatedNode(Item fieldRelatedItem) throws RepositoryException {
-        return (fieldRelatedItem instanceof JcrNewNodeAdapter) ? ((JcrNewNodeAdapter) fieldRelatedItem).getJcrItem() : ((JcrNodeAdapter) fieldRelatedItem).applyChanges();
+    
+    protected Class<?> getDefaultFieldType() {
+        return null;
     }
 
     public String getPropertyName() {

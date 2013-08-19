@@ -43,13 +43,14 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 
 /**
- * .
+ * Basic implementation of a {@link PropertyHandler}.<br>
+ * This handler is used for most of the basic fields (textBox, Date, ...).
  * 
  * @param <T>
  */
 public class BasicPropertyHandler<T> extends AbstractBaseHandler<T> implements PropertyHandler<T> {
 
-    private Class<T> fieldType;
+    protected Class<T> fieldType;
 
 
     @Inject
