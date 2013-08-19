@@ -539,7 +539,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             }
             stmt.delete(stmt.lastIndexOf(","), stmt.length());
         }
-        log.info("Constructed JCR query is {}", stmt);
+        log.debug("Constructed JCR query is {}", stmt);
         return stmt.toString();
     }
 
