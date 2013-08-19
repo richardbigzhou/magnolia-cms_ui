@@ -41,6 +41,8 @@ import info.magnolia.ui.form.field.property.PropertyHandler;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
 
@@ -60,6 +62,7 @@ public class MultiFieldFactory<T> extends AbstractFieldFactory<MultiFieldDefinit
     private I18nContentSupport i18nContentSupport;
     private ComponentProvider componentProvider;
 
+    @Inject
     public MultiFieldFactory(MultiFieldDefinition definition, Item relatedFieldItem, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem);
         this.fieldFactoryFactory = fieldFactoryFactory;

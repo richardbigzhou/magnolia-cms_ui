@@ -42,6 +42,8 @@ import info.magnolia.ui.form.field.property.PropertyHandler;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Field;
@@ -57,6 +59,7 @@ public class CompositeFieldFactory<D extends FieldDefinition> extends AbstractFi
     private I18nContentSupport i18nContentSupport;
     private ComponentProvider componentProvider;
 
+    @Inject
     public CompositeFieldFactory(CompositeFieldDefinition definition, Item relatedFieldItem, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem);
         this.fieldFactoryFactory = fieldFactoryFactory;
