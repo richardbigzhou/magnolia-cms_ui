@@ -47,7 +47,6 @@ import java.util.List;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.shared.Connector;
 import com.vaadin.ui.AbstractSingleComponentContainer;
 import com.vaadin.ui.Component;
@@ -56,18 +55,14 @@ import com.vaadin.ui.Field;
 /**
  * {@link Form}. The server side implementation of the form view. Displays the
  * form inside a {@link MagnoliaTabSheet}.
- *
- * TODO: TAKE CARE OF FIELDGROUP IN THE FORM BUILDER LATER ON!
  */
 public class Form extends AbstractSingleComponentContainer implements FormViewReduced {
 
     private final String SHOW_ALL = MessagesUtil.get("dialogs.show.all");
 
-    private Item itemDataSource;
-
-    private FieldGroup fieldGroup = new FieldGroup();
-
     private List<Field<?>> fields = new LinkedList<Field<?>>();
+
+    private Item itemDataSource;
 
     private boolean isValidationVisible = false;
 
@@ -109,7 +104,8 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
     private void doFocusNextProblematicField(Connector currentFocused) {
         /**
          * In case the remaining issues are in the current tab above current focus -
-         * we need to wrap the search to check the current tab once we've investigated all th eothers
+         * we need to wrap the search to check the current tab once we've
+         * investigated all the others
          */
         int tabsToIterate = tabSheet.getComponentCount() + 1;
         MagnoliaTab tab = tabSheet.getActiveTab();
@@ -191,7 +187,7 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
             invalidateErrorAmount();
         }
 
-        final Iterator<Component> it = tabSheet.getComponentIterator();
+        final Iterator<Component> it = tabSheet.iterator();
         while (it.hasNext()) {
             final Component c = it.next();
             if (c instanceof MagnoliaFormTab) {

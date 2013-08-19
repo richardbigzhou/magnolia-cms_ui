@@ -33,18 +33,51 @@
  */
 package info.magnolia.ui.framework.app.embedded;
 
-import info.magnolia.ui.framework.app.BaseSubApp;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.framework.app.BaseSubApp;
 
 import javax.inject.Inject;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Sub app for the main tab in an embedded page app.
  */
 public class EmbeddedPageSubApp extends BaseSubApp {
 
+    private static final Logger log = LoggerFactory.getLogger(EmbeddedPageSubApp.class);
+
     @Inject
     public EmbeddedPageSubApp(SubAppContext subAppContext, EmbeddedPageView pageView) {
         super(subAppContext, pageView);
+    }
+
+    @Override
+    public View start(Location location) {
+        String url = location.getParameter();
+        if (StringUtils.isEmpty(url)) {
+            EmbeddedPageSubAppDescriptor subAppDescriptor = ((EmbeddedPageSubAppDescriptor) getSubAppContext().getSubAppDescriptor());
+            url = subAppDescriptor.getUrl();
+        }
+        boolean isInternalPage = !url.startsWith("http");
+
+        if (isInternalPage) {
+            if(isInternalPage) {
+                url = url.startsWith("/") ? MgnlContext.getContextPath() + url : MgnlContext.getContextPath() + "/" + url;
+            }
+        }
+        getView().setUrl(url);
+        return super.start(location);
+    }
+
+    @Override
+    public EmbeddedPageView getView() {
+        return (EmbeddedPageView) super.getView();
     }
 }

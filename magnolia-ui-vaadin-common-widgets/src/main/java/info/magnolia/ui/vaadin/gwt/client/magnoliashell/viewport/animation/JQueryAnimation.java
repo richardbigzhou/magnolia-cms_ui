@@ -60,11 +60,7 @@ public class JQueryAnimation extends Animation {
 
     private boolean isClearTopAfterThisAnimation = false;
 
-    public void setProperty(String property, int value) {
-        settings.setProperty(property, value);
-    }
-
-    public void setProperty(String property, double value) {
+    public void setProperty(String property, Object value) {
         settings.setProperty(property, value);
     }
 

@@ -133,13 +133,12 @@ public class MagnoliaTabSheetConnector extends AbstractComponentContainerConnect
 
         eventBus.addHandler(ActiveTabChangedEvent.TYPE, new ActiveTabChangedEvent.Handler() {
             @Override
-            public void onActiveTabChanged(ActiveTabChangedEvent event) {
+            public void onActiveTabChanged(final ActiveTabChangedEvent event) {
                 final MagnoliaTabWidget tab = event.getTab();
                 if (tab != view.getActiveTab() && event.isNotifyServer()) {
                     view.showPreloader();
                     view.clearTabs();
-                    Connector c = Util.findConnectorFor(event.getTab());
-                    rpc.setActiveTab(c);
+                    rpc.setActiveTab(Util.findConnectorFor(event.getTab()));
                 }
             }
         });
