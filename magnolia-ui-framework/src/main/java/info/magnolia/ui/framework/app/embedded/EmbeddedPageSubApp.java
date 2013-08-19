@@ -34,17 +34,17 @@
 package info.magnolia.ui.framework.app.embedded;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.app.BaseSubApp;
-import info.magnolia.ui.api.app.SubAppContext;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Strings;
 
 /**
  * Sub app for the main tab in an embedded page app.
@@ -61,7 +61,7 @@ public class EmbeddedPageSubApp extends BaseSubApp {
     @Override
     public View start(Location location) {
         String url = location.getParameter();
-        if (Strings.isNullOrEmpty(url)) {
+        if (StringUtils.isEmpty(url)) {
             EmbeddedPageSubAppDescriptor subAppDescriptor = ((EmbeddedPageSubAppDescriptor) getSubAppContext().getSubAppDescriptor());
             url = subAppDescriptor.getUrl();
         }
