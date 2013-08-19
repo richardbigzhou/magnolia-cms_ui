@@ -34,6 +34,8 @@
 package info.magnolia.ui.form.config;
 
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
+import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.form.definition.TabDefinition;
 
 /**
  * FormBuilder that builds form containing tabs and actions.
@@ -47,12 +49,12 @@ public class FormBuilder {
         definition = new ConfiguredFormDefinition();
     }
 
-    public ConfiguredFormDefinition definition() {
-        return definition;
-    }
-
     public FormBuilder(ConfiguredFormDefinition definition) {
         this.definition = definition;
+    }
+
+    public ConfiguredFormDefinition definition() {
+        return definition;
     }
 
     public FormBuilder label(String label) {
@@ -77,4 +79,15 @@ public class FormBuilder {
         return this;
     }
 
+    public TabBuilder tab(String name) {
+        for (TabDefinition tab : definition.getTabs()) {
+            if (tab.getName().equals(name)) {
+                return new TabBuilder((ConfiguredTabDefinition) tab);
+            }
+        }
+
+        TabBuilder tabBuilder = new TabBuilder(name);
+        definition.addTab(tabBuilder.definition());
+        return tabBuilder;
+    }
 }

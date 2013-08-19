@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2012 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,42 +33,45 @@
  */
 package info.magnolia.ui.form.config;
 
-import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
+import static org.junit.Assert.assertTrue;
+
+import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
+import info.magnolia.ui.form.validator.definition.EmailValidatorDefinition;
+import info.magnolia.ui.form.validator.definition.RegexpValidatorDefinition;
+
+import org.junit.Test;
 
 /**
- * Builder for building a tab definition.
+ * Tests for {@link info.magnolia.ui.form.config.ValidatorConfig}.
  */
-public class TabBuilder {
+public class ValidatorConfigTest {
 
-    private final ConfiguredTabDefinition definition;
+    private ValidatorConfig validators = new ValidatorConfig();
 
-    public TabBuilder(String name) {
-        definition = new ConfiguredTabDefinition();
-        definition.setName(name);
+    @Test
+    public void testDigitsOnly() {
+
+        GenericValidatorBuilder builder = validators.digitsOnly();
+        RegexpValidatorDefinition definition = (RegexpValidatorDefinition) builder.definition();
+
+        assertTrue(definition.getPattern().equals("[0-9]+"));
     }
 
-    public TabBuilder(ConfiguredTabDefinition definition) {
-        this.definition = definition;
+    @Test
+    public void testRegexp() {
+
+        GenericValidatorBuilder builder = validators.regexp("test-pattern");
+        RegexpValidatorDefinition definition = (RegexpValidatorDefinition) builder.definition();
+
+        assertTrue(definition.getPattern().equals("test-pattern"));
     }
 
-    public ConfiguredTabDefinition definition() {
-        return definition;
-    }
+    @Test
+    public void testEmail() {
 
-    public TabBuilder label(String label) {
-        definition().setLabel(label);
-        return this;
-    }
+        GenericValidatorBuilder builder = validators.email();
+        ConfiguredFieldValidatorDefinition definition = builder.definition();
 
-    public TabBuilder i18nBasename(String i18nBasename) {
-        definition().setI18nBasename(i18nBasename);
-        return this;
-    }
-
-    public TabBuilder fields(AbstractFieldBuilder... builders) {
-        for (AbstractFieldBuilder builder : builders) {
-            definition().addField(builder.definition());
-        }
-        return this;
+        assertTrue(definition instanceof EmailValidatorDefinition);
     }
 }
