@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.setup;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
+import info.magnolia.module.delta.BootstrapSingleModuleResource;
 import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
@@ -54,7 +55,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * VersionHandler for the Admin Central module.
+ * VersionHandler for the Admincentral module.
  */
 public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandler {
 
@@ -102,6 +103,14 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new NewPropertyTask("Set multiple=true in confirmDeletion action's availability.", "Sets multiple=true in confirmDeletion action's availability., i.e. the Delete action now supports multiple items.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/confirmDeletion/availability", "multiple", true))
                 .addTask(new NewPropertyTask("Set main node type in configuration app as strict", "Sets main node type as strict, i.e. its substypes won't be included in list and search views.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/nodeTypes/mainNodeType", "strict", true))
                 .addTask(new NewPropertyTask("Set folder node type in configuration app as strict", "Sets folder node type as strict, i.e. its substypes won't be included in list and search views.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/nodeTypes/folderNodeType", "strict", true)));
+
+        register(DeltaBuilder.update("5.1", "")
+                // theme + widgetset
+                .addTask(new BootstrapSingleModuleResource("Add widgetset config", "Vaadin Widgetset can be configured, sets the default", "config.modules.ui-admincentral.config.widgetset.xml"))
+                .addTask(new BootstrapSingleModuleResource("Add theme config", "Vaadin theme can be configured, sets the default", "config.modules.ui-admincentral.config.theme.xml"))
+                .addTask(new PropertyExistsDelegateTask("Check widgetset servlet param", "Checks if widgetset is configured as servlet parameter", RepositoryConstants.CONFIG, "/server/filters/servlets/AdminCentral/parameters", "widgetset",
+                        new RemovePropertyTask("Remove widgetset servlet param", "Removes the widgetset property from AdminCentral servlet parameters", RepositoryConstants.CONFIG, "/server/filters/servlets/AdminCentral/parameters", "widgetset")))
+        );
     }
 
     @Override

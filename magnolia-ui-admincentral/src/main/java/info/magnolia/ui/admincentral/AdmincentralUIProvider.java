@@ -46,8 +46,8 @@ import com.vaadin.server.UICreateEvent;
  */
 public class AdmincentralUIProvider extends DefaultUIProvider {
 
-    private static final String DEFAULT_WIDGETSET_NAME = "info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet";
-    private static final String DEFAULT_THEME_NAME = "admincentral";
+    public static final String DEFAULT_WIDGETSET_NAME = "info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet";
+    public static final String DEFAULT_THEME_NAME = "admincentral";
 
     private WidgetsetDefinition widgetsetDefinition;
     private ThemeDefinition themeDefinition;
