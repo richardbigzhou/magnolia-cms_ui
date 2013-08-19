@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,45 +31,51 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.factory;
+package info.magnolia.ui.form.field.property.basic;
 
-import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import com.vaadin.data.Item;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.TwinColSelect;
+import com.vaadin.data.Property;
 
 /**
- * Creates and initializes a select field based on a field definition.
+ * Specific TwinField property Handler.<br
  *
- * @param <T> the definition
+ * @param <T>
  */
-public class TwinColSelectFieldFactory<T extends TwinColSelectFieldDefinition> extends SelectFieldFactory<TwinColSelectFieldDefinition> {
+public class TwinSelectPropertyHandler<T> extends BasicPropertyHandler<T> {
 
-    public TwinColSelectFieldFactory(TwinColSelectFieldDefinition definition, Item relatedFieldItem) {
-        super(definition, relatedFieldItem);
+    public TwinSelectPropertyHandler(Item parent, ConfiguredFieldDefinition definition, String fieldTypeName) {
+        super(parent, definition, fieldTypeName);
     }
 
     @Override
-    protected AbstractSelect createFieldComponent() {
-        super.createFieldComponent();
-        ((TwinColSelect) select).setRows(select.getContainerDataSource().size());
-        select.setMultiSelect(definition.isMultiselect());
-        select.setNullSelectionAllowed(true);
-        ((TwinColSelect) select).setLeftColumnCaption(getMessage(definition.getLeftColumnCaption()));
-        ((TwinColSelect) select).setRightColumnCaption(getMessage(definition.getRightColumnCaption()));
-        return select;
+    public void writeToDataSourceItem(T newValue) {
+        Property<T> p = (Property<T>) getOrCreateProperty(fieldType, "", newValue);
+        if (p.getValue() instanceof Set && newValue instanceof List) {
+            newValue = (T) new HashSet((List) newValue);
+        } else if (p.getValue() instanceof List && newValue instanceof Set) {
+            newValue = (T) new LinkedList((Set) newValue);
+        }
+        p.setValue(newValue);
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    protected AbstractSelect createSelectionField() {
-        return new TwinColSelect();
-    }
+    public T readFromDataSourceItem() {
+        T value = super.readFromDataSourceItem();
 
-    @Override
-    protected Class<?> getDefaultFieldType() {
-        return HashSet.class;
+        if (value == null) {
+            return (T) new HashSet();
+        } else if (value instanceof List) {
+            return (T) new HashSet((List) value);
+        } else {
+            return null;
+        }
     }
 }

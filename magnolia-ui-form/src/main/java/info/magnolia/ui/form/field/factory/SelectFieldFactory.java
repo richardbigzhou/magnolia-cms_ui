@@ -36,6 +36,7 @@ package info.magnolia.ui.form.field.factory;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
+import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
 import java.util.ArrayList;
@@ -119,13 +120,14 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
         IndexedContainer optionContainer = new IndexedContainer();
         List<SelectFieldOptionDefinition> options = getSelectFieldOptionDefinition();
         if (!options.isEmpty()) {
-            optionContainer.addContainerProperty(optionValueName, getFieldType(), null);
+            Class<?> fieldType = DefaultPropertyUtil.getFieldTypeClass(definition.getType());
+            optionContainer.addContainerProperty(optionValueName, fieldType, null);
             optionContainer.addContainerProperty(optionLabelName, String.class, null);
             if (hasOptionIcon) {
                 optionContainer.addContainerProperty(optionIconName, Resource.class, null);
             }
             for (SelectFieldOptionDefinition option : options) {
-                Object value = DefaultPropertyUtil.createTypedValue(getFieldType().getSimpleName(), option.getValue());
+                Object value = DefaultPropertyUtil.createTypedValue(fieldType, option.getValue());
                 Item item = optionContainer.addItem(value);
                 item.getItemProperty(optionValueName).setValue(value);
                 item.getItemProperty(optionLabelName).setValue(option.getLabel());
@@ -222,7 +224,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
      * If not yet stored, set initialSelectedKey as selectedItem
      * Else, set the first element of the list.
      */
-    private void setDefaultSelectedItem(Property<?> dataSource) {
+    private void setDefaultSelectedItem(Property dataSource) {
         Object selectedValue = null;
         Object datasourceValue = dataSource.getValue();
 
@@ -232,7 +234,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
             return;
         } else if (initialSelectedKey != null) {
             selectedValue = initialSelectedKey;
-        } else if (!select.isNullSelectionAllowed() && definition.getOptions() != null && !definition.getOptions().isEmpty()) {
+        } else if (!select.isNullSelectionAllowed() && definition.getOptions() != null && !definition.getOptions().isEmpty() && !(definition instanceof TwinColSelectFieldDefinition)) {
             selectedValue = definition.getOptions().get(0).getValue();
         }
         // Set the selected value (if not null)
@@ -241,6 +243,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
                 selectedValue = datasourceValue;
         }
         this.field.setValue(selectedValue);
+        dataSource.setValue(selectedValue);
     }
 
     /**
