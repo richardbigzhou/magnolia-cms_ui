@@ -137,7 +137,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertEquals(" where (([jcr:primaryType] = 'mgnl:content') and (localname() LIKE 'foo%' or t.[foo] IS NOT NULL or contains(t.[name], 'foo') or contains(t.[shortname], 'foo')) )", stmt);
+        assertEquals(" where (([jcr:primaryType] = 'mgnl:content') and (localname() LIKE 'foo%' or t.[foo] IS NOT NULL or contains(t.*, 'foo')) )", stmt);
     }
 
     @Test
@@ -149,7 +149,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertContains("contains(t.[name], 'foo OR ''baz bar''')", stmt);
+        assertContains("contains(t.*, 'foo OR ''baz bar''')", stmt);
     }
 
     @Test
