@@ -46,6 +46,7 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
+import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.search.SearchPresenter;
 import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenter;
@@ -151,7 +152,12 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     @Override
     public void onSearch(final String searchExpression) {
-        eventBus.fireEvent(new SearchEvent(searchExpression));
+        if (StringUtils.isNotBlank(searchExpression)) {
+            eventBus.fireEvent(new SearchEvent(searchExpression));
+        } else {
+            // if search expression is empty switch to list view
+            onViewTypeChanged(ListPresenterDefinition.VIEW_TYPE);
+        }
     }
 
     @Override

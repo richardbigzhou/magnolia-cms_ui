@@ -79,14 +79,14 @@ import org.vaadin.peter.contextmenu.ContextMenu;
 import com.vaadin.server.ExternalResource;
 
 /**
- * Base implementation of a content subApp. A content subApp displays a collection of data represented inside a {@link info.magnolia.ui.workbench.ContentView}
- * created by the {@link info.magnolia.ui.workbench.WorkbenchPresenter}.
+ * Base implementation of a content subApp. A content subApp displays a collection of data represented inside a {@link info.magnolia.ui.workbench.ContentView} created by the {@link info.magnolia.ui.workbench.WorkbenchPresenter}.
+ * 
  * <pre>
  *  <p>
  *      This class Provides sensible implementation for services shared by all content subApps.
  *      Out-of-the-box it will handle the following:
  *  </p>
- *
+ * 
  *  <ul>
  *      <li>location updates when switching views, selecting items or performing searches: see {@link #locationChanged(Location)}
  *      <li>restoring the browser app status when i.e. coming from a bookmark: see {@link #start(Location)}
@@ -104,7 +104,7 @@ import com.vaadin.server.ExternalResource;
  *      <li>{@link #updateActionbar(ActionbarPresenter)}
  *  </ul>
  * </pre>
- *
+ * 
  * @see BrowserPresenter
  * @see info.magnolia.ui.contentapp.ContentSubAppView
  * @see info.magnolia.ui.contentapp.ContentApp
@@ -169,7 +169,7 @@ public class BrowserSubApp extends BaseSubApp {
      * }
      * <p>
      * then this method will select the root path, set the view type as <code>search</code>, perform a search for "qux" in the workspace used by the app and finally update the available actions.
-     *
+     * 
      * @see BrowserSubApp#updateActionbar(ActionbarPresenter)
      * @see BrowserSubApp#start(Location)
      * @see Location
@@ -209,7 +209,6 @@ public class BrowserSubApp extends BaseSubApp {
         getBrowser().resync(ids, viewType, query);
         updateActionbar(getBrowser().getActionbarPresenter());
     }
-
 
     /**
      * Show the actionPopup for the specified item at the specified coordinates.
@@ -302,7 +301,7 @@ public class BrowserSubApp extends BaseSubApp {
     /**
      * Update the items in the actionbar based on the selected item and the action availability configuration.
      * This method can be overriden to implement custom conditions diverging from {@link #updateActionPopup(info.magnolia.ui.vaadin.actionbar.ActionPopup)}.
-     *
+     * 
      * @see #restoreBrowser(BrowserLocation)
      * @see #locationChanged(Location)
      * @see ActionbarPresenter
@@ -501,8 +500,8 @@ public class BrowserSubApp extends BaseSubApp {
             public void onViewChanged(ViewTypeChangedEvent event) {
                 BrowserLocation location = getCurrentLocation();
                 // remove search term from fragment when switching back
-                if (location.getViewType() == SearchPresenterDefinition.VIEW_TYPE
-                        && event.getViewType() != SearchPresenterDefinition.VIEW_TYPE) {
+                if (location.getViewType().equals(SearchPresenterDefinition.VIEW_TYPE)
+                        && !event.getViewType().equals(SearchPresenterDefinition.VIEW_TYPE)) {
                     location.updateQuery("");
                 }
                 location.updateViewType(event.getViewType());

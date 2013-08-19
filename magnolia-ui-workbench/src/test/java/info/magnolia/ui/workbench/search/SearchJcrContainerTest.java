@@ -33,11 +33,13 @@
  */
 package info.magnolia.ui.workbench.search;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
+import info.magnolia.ui.workbench.container.OrderBy;
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
@@ -175,6 +177,18 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
 
         // THEN
         assertContains("localname() LIKE '_x002a_foo%' or t.[_x002a_foo] IS NOT NULL", stmt);
+    }
+
+    @Test
+    public void testSearchResultsAreSortedByJcrScoreDesc() throws Exception {
+
+        // WHEN
+        String jcrOrderByFunction = jcrContainer.getJcrNameOrderByFunction();
+        OrderBy orderBy = jcrContainer.getDefaultOrderBy(ModelConstants.JCR_NAME);
+
+        // THEN
+        assertEquals(SearchJcrContainer.JCR_SCORE_FUNCTION, jcrOrderByFunction);
+        assertFalse(orderBy.isAscending());
     }
 
     protected void assertContains(final String searchString, final String string) {

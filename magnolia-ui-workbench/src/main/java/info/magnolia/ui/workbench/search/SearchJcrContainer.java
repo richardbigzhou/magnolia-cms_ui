@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.workbench.search;
 
+import info.magnolia.ui.workbench.container.OrderBy;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.list.FlatJcrContainer;
 
@@ -51,6 +52,8 @@ public class SearchJcrContainer extends FlatJcrContainer {
     protected static final String WHERE_TEMPLATE_FOR_SEARCH = "localname() LIKE '%1$s%%' or " + SELECTOR_NAME + ".[%2$s] IS NOT NULL %3$s";
 
     protected static final String CONTAINS_TEMPLATE_FOR_SEARCH = "contains(" + SELECTOR_NAME + ".*, '%1$s')";
+
+    protected static final String JCR_SCORE_FUNCTION = "score(" + SELECTOR_NAME + ")";
 
     private String fullTextExpression;
 
@@ -111,5 +114,18 @@ public class SearchJcrContainer extends FlatJcrContainer {
 
     public String getFullTextExpression() {
         return fullTextExpression;
+    }
+
+    @Override
+    protected String getJcrNameOrderByFunction() {
+        return JCR_SCORE_FUNCTION;
+    }
+
+    @Override
+    /**
+     * Order by jcr score descending.
+     */
+    protected OrderBy getDefaultOrderBy(String property) {
+        return new OrderBy(property, false);
     }
 }
