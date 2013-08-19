@@ -111,6 +111,14 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new PropertyExistsDelegateTask("Check widgetset servlet param", "Checks if widgetset is configured as servlet parameter", RepositoryConstants.CONFIG, "/server/filters/servlets/AdminCentral/parameters", "widgetset",
                         new RemovePropertyTask("Remove widgetset servlet param", "Removes the widgetset property from AdminCentral servlet parameters", RepositoryConstants.CONFIG, "/server/filters/servlets/AdminCentral/parameters", "widgetset")))
         );
+
+        register(DeltaBuilder.update("5.1", "")
+                // theme + widgetset
+                .addTask(new BootstrapSingleModuleResource("Add widgetset config", "Vaadin Widgetset can be configured, sets the default", "config.modules.ui-admincentral.config.widgetset.xml"))
+                .addTask(new BootstrapSingleModuleResource("Add theme config", "Vaadin theme can be configured, sets the default", "config.modules.ui-admincentral.config.theme.xml"))
+                .addTask(new PropertyExistsDelegateTask("Check widgetset servlet param", "Checks if widgetset is configured as servlet parameter", RepositoryConstants.CONFIG, "/server/filters/servlets/AdminCentral/parameters", "widgetset",
+                        new RemovePropertyTask("Remove widgetset servlet param", "Removes the widgetset property from AdminCentral servlet parameters", RepositoryConstants.CONFIG, "/server/filters/servlets/AdminCentral/parameters", "widgetset")))
+        );
     }
 
     @Override
