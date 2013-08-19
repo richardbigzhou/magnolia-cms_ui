@@ -50,7 +50,7 @@ public class SearchJcrContainer extends FlatJcrContainer {
 
     protected static final String WHERE_TEMPLATE_FOR_SEARCH = "localname() LIKE '%1$s%%' or " + SELECTOR_NAME + ".[%2$s] IS NOT NULL %3$s";
 
-    protected static final String CONTAINS_TEMPLATE_FOR_SEARCH = "or contains(" + SELECTOR_NAME + ".*, '%1$s')";
+    protected static final String CONTAINS_TEMPLATE_FOR_SEARCH = "contains(" + SELECTOR_NAME + ".*, '%1$s')";
 
     private String fullTextExpression;
 
@@ -99,7 +99,7 @@ public class SearchJcrContainer extends FlatJcrContainer {
         final String escapedFullTextExpression = getFullTextExpression().replaceAll("'", "''").trim();
 
         final String encodedSearch = ISO9075.encode(escapedFullTextExpression);
-        final String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, encodedSearch, encodedSearch, String.format(CONTAINS_TEMPLATE_FOR_SEARCH, escapedFullTextExpression));
+        final String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, encodedSearch, encodedSearch, String.format("or " + CONTAINS_TEMPLATE_FOR_SEARCH, escapedFullTextExpression));
 
         log.debug("Search where-clause is {}", stmt);
         return stmt;
