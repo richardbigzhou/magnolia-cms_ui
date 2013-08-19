@@ -153,7 +153,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
         actionbarPresenter.setListener(this);
         pageBarView.setListener(this);
-        ActionbarDefinition actionbarDefinition = ((ContentSubAppDescriptor)getSubAppContext().getSubAppDescriptor()).getActionbar();
+        ActionbarDefinition actionbarDefinition = ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getActionbar();
         ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition);
         view.setActionbarView(actionbar);
         view.setPageBarView(pageBarView);
@@ -263,14 +263,14 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             String uri = i18NAuthoringSupport.createI18NURI(node, currentLocale);
             StringBuffer sb = new StringBuffer(uri);
 
-            // reset channel
-            if (!isPreview) {
+            if (isPreview) {
+                LinkUtil.addParameter(sb, "mgnlPreview", "true");
+            } else {
+                // reset channel
                 this.targetPreviewPlatform = PlatformType.DESKTOP;
                 this.parameters.setPlatformType(targetPreviewPlatform);
                 pageBarView.setPlatFormType(targetPreviewPlatform);
-
-            } else {
-                LinkUtil.addParameter(sb, "mgnlPreview", "true");
+                LinkUtil.addParameter(sb, "mgnlEdit", "true");
             }
             LinkUtil.addParameter(sb, "mgnlChannel", targetPreviewPlatform.getId());
 
@@ -361,7 +361,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         try {
             Session session = MgnlContext.getJCRSession(workspace);
             final javax.jcr.Item item = session.getItem(selectedElement.getPath());
-            actionExecutor.execute(actionName, new JcrNodeAdapter((Node)item), selectedElement, pageEditorPresenter);
+            actionExecutor.execute(actionName, new JcrNodeAdapter((Node) item), selectedElement, pageEditorPresenter);
 
         } catch (RepositoryException e) {
             Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());

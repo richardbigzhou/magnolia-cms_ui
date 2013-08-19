@@ -66,7 +66,7 @@ public final class MessageViewImpl extends HorizontalLayout implements MessageVi
         title.setStyleName("message-title");
 
         actionbarContainer.setStyleName("message-actionbar-container");
-
+        actionbarContainer.setHeight("100%");
         messageContainer.addComponent(new SimpleButton());
         title.setSizeUndefined();
         messageContainer.addComponent(title);
