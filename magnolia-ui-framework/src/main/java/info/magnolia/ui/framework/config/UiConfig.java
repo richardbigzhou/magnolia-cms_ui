@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.embedded;
+package info.magnolia.ui.framework.config;
 
-import info.magnolia.ui.api.app.AppContext;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.inject.Inject;
-import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.BrowserFrame;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
+import info.magnolia.ui.api.action.config.ActionConfig;
+import info.magnolia.ui.dialog.config.DialogConfig;
+import info.magnolia.ui.form.config.FieldConfig;
+import info.magnolia.ui.form.config.FormConfig;
+import info.magnolia.ui.form.config.ValidatorConfig;
 
 /**
- * View implementation for an embedded page app.
+ * Main config object for creating UI definitions.
  */
-public class EmbeddedPageViewImpl implements EmbeddedPageView {
+public class UiConfig {
 
-    private static final Logger log = LoggerFactory.getLogger(EmbeddedPageViewImpl.class);
-
-    private final CssLayout layout = new CssLayout();
-
-    @Inject
-    public EmbeddedPageViewImpl() {
-        layout.setSizeFull();
-    }
-
-
-    @Deprecated
-    public EmbeddedPageViewImpl(AppContext appContext) {
-        this();
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return layout;
-    }
-
-    @Override
-    public void setUrl(String url) {
-        final BrowserFrame page = new BrowserFrame(null, new ExternalResource(url));
-        page.setSizeFull();
-
-        layout.addComponent(page);
-    }
+    public final FormConfig forms = new FormConfig();
+    public final DialogConfig dialogs = new DialogConfig();
+    public final ActionConfig actions = new ActionConfig();
+    public final FieldConfig fields = new FieldConfig();
+    public final ValidatorConfig validators = new ValidatorConfig();
 }

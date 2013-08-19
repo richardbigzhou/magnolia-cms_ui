@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.embedded;
+package info.magnolia.ui.form.config;
 
-import info.magnolia.ui.api.app.AppContext;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.inject.Inject;
-import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.BrowserFrame;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
+import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 
 /**
- * View implementation for an embedded page app.
+ * Builder for building a tab definition.
  */
-public class EmbeddedPageViewImpl implements EmbeddedPageView {
+public class TabBuilder {
 
-    private static final Logger log = LoggerFactory.getLogger(EmbeddedPageViewImpl.class);
+    private final ConfiguredTabDefinition definition = new ConfiguredTabDefinition();
 
-    private final CssLayout layout = new CssLayout();
-
-    @Inject
-    public EmbeddedPageViewImpl() {
-        layout.setSizeFull();
+    public ConfiguredTabDefinition definition() {
+        return definition;
     }
 
-
-    @Deprecated
-    public EmbeddedPageViewImpl(AppContext appContext) {
-        this();
+    public TabBuilder(String name) {
+        definition().setName(name);
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        return layout;
+    public TabBuilder label(String label) {
+        definition().setLabel(label);
+        return this;
     }
 
-    @Override
-    public void setUrl(String url) {
-        final BrowserFrame page = new BrowserFrame(null, new ExternalResource(url));
-        page.setSizeFull();
+    public TabBuilder i18nBasename(String i18nBasename) {
+        definition().setI18nBasename(i18nBasename);
+        return this;
+    }
 
-        layout.addComponent(page);
+    public TabBuilder fields(AbstractFieldBuilder... builders) {
+        for (AbstractFieldBuilder builder : builders) {
+            definition().addField(builder.definition());
+        }
+        return this;
     }
 }

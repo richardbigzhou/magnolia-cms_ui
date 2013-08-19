@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,50 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.embedded;
+package info.magnolia.ui.form.config;
 
-import info.magnolia.ui.api.app.AppContext;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.inject.Inject;
-import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.BrowserFrame;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
+import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 
 /**
- * View implementation for an embedded page app.
+ * FormBuilder that builds form containing tabs and actions.
+ * Returns a {@link info.magnolia.ui.form.definition.FormDefinition}.
  */
-public class EmbeddedPageViewImpl implements EmbeddedPageView {
+public class FormBuilder {
 
-    private static final Logger log = LoggerFactory.getLogger(EmbeddedPageViewImpl.class);
+    private final ConfiguredFormDefinition definition;
 
-    private final CssLayout layout = new CssLayout();
-
-    @Inject
-    public EmbeddedPageViewImpl() {
-        layout.setSizeFull();
+    public FormBuilder() {
+        definition = new ConfiguredFormDefinition();
     }
 
-
-    @Deprecated
-    public EmbeddedPageViewImpl(AppContext appContext) {
-        this();
+    public ConfiguredFormDefinition definition() {
+        return definition;
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        return layout;
+    public FormBuilder(ConfiguredFormDefinition definition) {
+        this.definition = definition;
     }
 
-    @Override
-    public void setUrl(String url) {
-        final BrowserFrame page = new BrowserFrame(null, new ExternalResource(url));
-        page.setSizeFull();
-
-        layout.addComponent(page);
+    public FormBuilder label(String label) {
+        definition().setLabel(label);
+        return this;
     }
+
+    public FormBuilder i18nBasename(String i18nBasename) {
+        definition().setI18nBasename(i18nBasename);
+        return this;
+    }
+
+    public FormBuilder description(String description) {
+        definition().setDescription(description);
+        return this;
+    }
+
+    public FormBuilder tabs(TabBuilder... builders) {
+        for (TabBuilder builder : builders) {
+            definition().addTab(builder.definition());
+        }
+        return this;
+    }
+
 }

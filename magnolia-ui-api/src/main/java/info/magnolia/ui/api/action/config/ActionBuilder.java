@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,52 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.embedded;
+package info.magnolia.ui.api.action.config;
 
-import info.magnolia.ui.api.app.AppContext;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.inject.Inject;
-import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.BrowserFrame;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
+import info.magnolia.ui.api.action.Action;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * View implementation for an embedded page app.
+ * Builder for building an action definition.
  */
-public class EmbeddedPageViewImpl implements EmbeddedPageView {
+public class ActionBuilder {
 
-    private static final Logger log = LoggerFactory.getLogger(EmbeddedPageViewImpl.class);
+    private ConfiguredActionDefinition definition = new ConfiguredActionDefinition();
 
-    private final CssLayout layout = new CssLayout();
-
-    @Inject
-    public EmbeddedPageViewImpl() {
-        layout.setSizeFull();
+    public ActionBuilder(String name) {
+        this.definition().setName(name);
     }
 
-
-    @Deprecated
-    public EmbeddedPageViewImpl(AppContext appContext) {
-        this();
+    public ConfiguredActionDefinition definition() {
+        return definition;
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        return layout;
+    public ActionBuilder implementation(Class<? extends Action> subAppClass) {
+        definition().setImplementationClass(subAppClass);
+        return this;
     }
 
-    @Override
-    public void setUrl(String url) {
-        final BrowserFrame page = new BrowserFrame(null, new ExternalResource(url));
-        page.setSizeFull();
+    public String getName() {
+        return definition().getName();
+    }
 
-        layout.addComponent(page);
+    public ActionBuilder label(String label) {
+        definition().setLabel(label);
+        return this;
+    }
+
+    public ActionBuilder icon(String icon) {
+        definition().setIcon(icon);
+        return this;
+    }
+
+    public ActionBuilder i18n(String i18n) {
+        definition().setI18nBasename(i18n);
+        return this;
+    }
+
+    public ActionBuilder description(String description) {
+        definition().setDescription(description);
+        return this;
     }
 }

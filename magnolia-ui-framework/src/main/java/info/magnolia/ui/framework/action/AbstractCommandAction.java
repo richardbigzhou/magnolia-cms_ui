@@ -73,8 +73,6 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
 
     private final UiContext uiContext;
 
-    private JcrItemAdapter currentItem;
-
     public static final String COMMAND_RESULT = "command_result";
 
     public AbstractCommandAction(final D definition, final JcrItemAdapter item, final CommandsManager commandsManager, UiContext uiContext) {
@@ -158,8 +156,6 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
     @Override
     protected void executeOnItem(JcrItemAdapter item) throws ActionExecutionException {
 
-        this.currentItem = item;
-
         try {
             onPreExecute();
         } catch (Exception e) {
@@ -217,14 +213,6 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
      */
     protected Command getCommand() {
         return this.command;
-    }
-
-    protected JcrItemAdapter getCurrentItem() {
-        return this.currentItem;
-    }
-
-    protected void setCurrentItem(JcrItemAdapter item) {
-        this.currentItem = item;
     }
 
     @Override

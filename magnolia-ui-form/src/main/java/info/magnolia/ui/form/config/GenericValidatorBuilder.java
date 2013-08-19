@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.embedded;
+package info.magnolia.ui.form.config;
 
-import info.magnolia.ui.api.app.AppContext;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.inject.Inject;
-import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.BrowserFrame;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
+import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 /**
- * View implementation for an embedded page app.
+ * Builder for creating a validator using only the standard properties.
+ *
+ * @see ValidatorConfig#custom(info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition)
  */
-public class EmbeddedPageViewImpl implements EmbeddedPageView {
+public class GenericValidatorBuilder {
 
-    private static final Logger log = LoggerFactory.getLogger(EmbeddedPageViewImpl.class);
+    private ConfiguredFieldValidatorDefinition definition;
 
-    private final CssLayout layout = new CssLayout();
-
-    @Inject
-    public EmbeddedPageViewImpl() {
-        layout.setSizeFull();
+    public GenericValidatorBuilder(ConfiguredFieldValidatorDefinition definition) {
+        this.definition = definition;
     }
 
-
-    @Deprecated
-    public EmbeddedPageViewImpl(AppContext appContext) {
-        this();
+    public ConfiguredFieldValidatorDefinition definition() {
+        return definition;
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        return layout;
+    public GenericValidatorBuilder errorMessage(String errorMessage) {
+        definition().setErrorMessage(errorMessage);
+        return this;
     }
 
-    @Override
-    public void setUrl(String url) {
-        final BrowserFrame page = new BrowserFrame(null, new ExternalResource(url));
-        page.setSizeFull();
-
-        layout.addComponent(page);
+    public GenericValidatorBuilder i18nBasename(String i18nBasename) {
+        definition().setI18nBasename(i18nBasename);
+        return this;
     }
 }

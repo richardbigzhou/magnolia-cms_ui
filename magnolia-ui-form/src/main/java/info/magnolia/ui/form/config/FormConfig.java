@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.embedded;
-
-import info.magnolia.ui.api.app.AppContext;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.inject.Inject;
-import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.BrowserFrame;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
+package info.magnolia.ui.form.config;
 
 /**
- * View implementation for an embedded page app.
+ * Config object creating builders for form, tab and action.
  */
-public class EmbeddedPageViewImpl implements EmbeddedPageView {
+public class FormConfig {
 
-    private static final Logger log = LoggerFactory.getLogger(EmbeddedPageViewImpl.class);
-
-    private final CssLayout layout = new CssLayout();
-
-    @Inject
-    public EmbeddedPageViewImpl() {
-        layout.setSizeFull();
+    public FormBuilder form() {
+        return new FormBuilder();
     }
 
-
-    @Deprecated
-    public EmbeddedPageViewImpl(AppContext appContext) {
-        this();
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return layout;
-    }
-
-    @Override
-    public void setUrl(String url) {
-        final BrowserFrame page = new BrowserFrame(null, new ExternalResource(url));
-        page.setSizeFull();
-
-        layout.addComponent(page);
+    public TabBuilder tab(String name) {
+        return new TabBuilder(name);
     }
 }

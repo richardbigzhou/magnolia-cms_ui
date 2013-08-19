@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.embedded;
+package info.magnolia.ui.form.config;
 
-import info.magnolia.ui.api.app.AppContext;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.inject.Inject;
-import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.BrowserFrame;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
+import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 
 /**
- * View implementation for an embedded page app.
+ * Builder for building an option for a select field.
  */
-public class EmbeddedPageViewImpl implements EmbeddedPageView {
+public class OptionBuilder {
 
-    private static final Logger log = LoggerFactory.getLogger(EmbeddedPageViewImpl.class);
+    private final SelectFieldOptionDefinition definition = new SelectFieldOptionDefinition();
 
-    private final CssLayout layout = new CssLayout();
-
-    @Inject
-    public EmbeddedPageViewImpl() {
-        layout.setSizeFull();
+    public SelectFieldOptionDefinition definition() {
+        return definition;
     }
 
-
-    @Deprecated
-    public EmbeddedPageViewImpl(AppContext appContext) {
-        this();
+    public OptionBuilder value(String value) {
+        definition().setValue(value);
+        return this;
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        return layout;
+    public OptionBuilder selected(boolean selected) {
+        definition().setSelected(selected);
+        return this;
     }
 
-    @Override
-    public void setUrl(String url) {
-        final BrowserFrame page = new BrowserFrame(null, new ExternalResource(url));
-        page.setSizeFull();
+    public OptionBuilder selected() {
+        definition().setSelected(true);
+        return this;
+    }
 
-        layout.addComponent(page);
+    public OptionBuilder label(String label) {
+        definition().setLabel(label);
+        return this;
+    }
+
+    public OptionBuilder iconSrc(String iconSrc) {
+        definition().setIconSrc(iconSrc);
+        return this;
     }
 }
