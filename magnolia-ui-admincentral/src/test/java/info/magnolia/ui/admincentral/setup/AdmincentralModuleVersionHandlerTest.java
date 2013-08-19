@@ -66,6 +66,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     private Node mainNodeType;
     private Node folderNodeType;
     private Node confirmDeleteActionAvailability;
+    private Node configActionbarSections;
 
     @Override
     protected String getModuleDescriptorPath() {
@@ -98,6 +99,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         mainNodeType = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/nodeTypes/mainNodeType", NodeTypes.ContentNode.NAME);
         folderNodeType = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/nodeTypes/folderNodeType", NodeTypes.ContentNode.NAME);
         confirmDeleteActionAvailability = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/confirmDeletion/availability", NodeTypes.ContentNode.NAME);
+        configActionbarSections = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections", NodeTypes.ContentNode.NAME);
     }
 
     @Test
@@ -282,5 +284,18 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         // THEN
         assertTrue(confirmDeleteActionAvailability.hasProperty("multiple"));
         assertEquals("true", confirmDeleteActionAvailability.getProperty("multiple").getString());
+    }
+
+    @Test
+    public void testUpdateTo5Dot1CreatesNewActionbarSectionInConfigApp() throws ModuleManagementException, RepositoryException {
+
+        // GIVEN
+        assertFalse(configActionbarSections.hasNode("multiple"));
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.2"));
+
+        // THEN
+        assertTrue(configActionbarSections.hasNode("multiple"));
     }
 }
