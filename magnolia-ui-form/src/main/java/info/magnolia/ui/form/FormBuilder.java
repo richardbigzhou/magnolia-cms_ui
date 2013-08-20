@@ -45,6 +45,7 @@ import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.vaadin.richtext.TextAreaStretcher;
 
 import javax.inject.Inject;
 
@@ -124,6 +125,7 @@ public class FormBuilder {
                 if (StringUtils.isNotBlank(fieldDefinition.getDescription())) {
                     tab.setComponentHelpDescription(field, fieldDefinition.getDescription());
                 }
+                TextAreaStretcher.extend(field);
                 view.addField(field);
             }
             view.addFormSection(tab.getMessage(tabDefinition.getLabel()), tab.getContainer());

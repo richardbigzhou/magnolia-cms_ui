@@ -258,10 +258,6 @@ fieldset {
     margin-left: 3px;
 }
 
-.v-form-field.v-richtextarea {
-    width: 523px !important;
-}
-
 /*
 * styles for rendering views of the form
 */
@@ -294,6 +290,50 @@ fieldset {
   padding-top: 6px;
   font-weight: bold;
   text-align: center;
+}
+
+.textarea-stretcher {
+  cursor: pointer;
+  display: inline-block;
+  color: #666666;
+  font-size: 14px;
+  line-height: 1;
+  width: 1em;
+  height: 1em;
+}
+
+.textarea-stretcher:hover,
+.textarea-stretcher:focus,
+.textarea-stretcher:active {
+  opacity: 0.6;
+}
+
+.textarea-stretcher.stretched {
+  position: absolute;
+  right: 10px;
+  top: 45px;
+  z-index: 3;
+}
+
+.textarea-stretcher.stretched.rich-text {
+  right: 5px;
+  top: 47px;
+}
+
+.textarea-stretcher.collapsed {
+  position: relative;
+  vertical-align: top;
+  margin-right: -15px;
+  right: 16px;
+  top: 2px;
+}
+
+.v-magnolia-form.textarea-stretched .v-shell-tabsheet-tab-wrapper {
+  position: static;
+}
+
+.v-magnolia-form.textarea-stretched .v-form-field-label {
+  display: none;
 }
 
 }

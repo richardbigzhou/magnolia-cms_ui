@@ -38,6 +38,7 @@ import info.magnolia.module.delta.CheckAndModifyPartOfPropertyValueTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.NewPropertyTask;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
+import info.magnolia.module.delta.PartialBootstrapTask;
 import info.magnolia.module.delta.SetPropertyTask;
 import info.magnolia.repository.RepositoryConstants;
 
@@ -66,6 +67,8 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                 );
 
         register(DeltaBuilder.update("5.1", "")
+                .addTask(new PartialBootstrapTask("Bootstrap Delete Items action in Security app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/users/actions/deleteItems"))
+                .addTask(new PartialBootstrapTask("Bootstrap new actionbar section in Security app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/users/actionbar/sections/multiple"))
                 .addTask(new NodeExistsDelegateTask("Set ruleClass for deleteUser action to IsNotCurrentUserRule", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteUser/availability",
                         new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteUser/availability", "ruleClass", "info.magnolia.security.app.action.availability.IsNotCurrentUserRule")))
                 .addTask(new NodeExistsDelegateTask("Update class for deleteGroup action", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actions/deleteGroup",

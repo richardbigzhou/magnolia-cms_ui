@@ -283,4 +283,18 @@ public class PagesEditorSubAppTest {
         // THEN
         assertFalse(editor.getParameters().getUrl().contains("mgnlPreview=true"));
     }
+
+    @Test
+    public void testPagePreviewRemoveMgnlEditRequestParameter() {
+        // GIVEN
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport);
+        editor.start(new PagesLocation("/:edit"));
+        assertTrue(editor.getParameters().getUrl().contains("mgnlEdit"));
+
+        // WHEN
+        editor.locationChanged(new PagesLocation("/:view"));
+
+        // THEN
+        assertFalse(editor.getParameters().getUrl().contains("mgnlEdit"));
+    }
 }

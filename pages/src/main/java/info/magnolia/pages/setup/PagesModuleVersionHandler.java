@@ -85,6 +85,8 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
 
         );
 
+        register(DeltaBuilder.update("5.1", "")
+                .addTask(new NewPropertyTask("Set multiple=true in confirmDeletion action's availability.", "Set multiple=true in confirmDeletion action's availability., i.e. the Delete action now supports multiple items.", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/confirmDeletion/availability", "multiple", true)));
 
     }
 

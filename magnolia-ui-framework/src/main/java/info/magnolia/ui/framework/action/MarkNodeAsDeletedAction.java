@@ -50,17 +50,12 @@ import javax.inject.Named;
 import javax.jcr.Item;
 import javax.jcr.RepositoryException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Mark node as Deleted Action. This will create a new Node version marked as deleted.
  *
  * @see MarkNodeAsDeletedActionDefinition
  */
 public class MarkNodeAsDeletedAction extends DeleteAction<MarkNodeAsDeletedActionDefinition> {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public MarkNodeAsDeletedAction(MarkNodeAsDeletedActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
         super(definition, item, commandsManager, eventBus, uiContext);
@@ -71,59 +66,29 @@ public class MarkNodeAsDeletedAction extends DeleteAction<MarkNodeAsDeletedActio
     }
 
     /**
-     * Create the Header of the confirmation message.
-     */
-    @Override
-    protected String createConfirmationHeader() throws RepositoryException {
-        return "Delete Node ?";
-    }
-
-    /**
-     * Create the Body of the confirmation Message.
-     */
-    @Override
-    protected String createConfirmationMessage() throws RepositoryException {
-        StringBuffer label = new StringBuffer();
-        label.append("The node<br>");
-        label.append(getCurrentItem().getJcrItem().getPath());
-        label.append("<br>and its sub nodes will be marked for deletion.<br>");
-        label.append("Are you sure ?");
-        return label.toString();
-    }
-
-    /**
-     * Create the Body of the confirmation Message.
-     */
-    @Override
-    protected String createSuccessMessage() {
-        return "Node and its sub nodes marked for deletion.";
-    }
-
-    /**
      * Override the buildParams(..).<br>
      * The relented command is waiting the following values: <br>
      * Context.ATTRIBUTE_UUID : Parent Node Identifier instead of the Node identifier set by super.buildParams()<br>
      * Context.ATTRIBUTE_PATH : Parent Node Path instead of the Node Path set by super.buildParams()<br>
      */
     @Override
-    protected Map<String, Object> buildParams(final Item jcrItem) {
+    protected Map<String, Object> buildParams(final Item item) {
         Map<String, Object> params = getDefinition().getParams() == null ? new HashMap<String, Object>() : getDefinition().getParams();
         try {
-            final String path = jcrItem.getParent().getPath();
-            final String workspace = jcrItem.getSession().getWorkspace().getName();
-            final String identifier = jcrItem.getParent().getIdentifier();
+            final String path = item.getParent().getPath();
+            final String workspace = item.getSession().getWorkspace().getName();
+            final String identifier = item.getParent().getIdentifier();
 
             params.put(Context.ATTRIBUTE_REPOSITORY, workspace);
             // really only the identifier should be used to identify a piece of content and nothing else
             params.put(Context.ATTRIBUTE_UUID, identifier);
             params.put(Context.ATTRIBUTE_PATH, path);
 
-            params.put(MarkNodeAsDeletedCommand.DELETED_NODE_PROP_NAME, jcrItem.getName());
+            params.put(MarkNodeAsDeletedCommand.DELETED_NODE_PROP_NAME, item.getName());
 
         } catch (RepositoryException e) {
             throw new RuntimeRepositoryException(e);
         }
         return params;
     }
-
 }

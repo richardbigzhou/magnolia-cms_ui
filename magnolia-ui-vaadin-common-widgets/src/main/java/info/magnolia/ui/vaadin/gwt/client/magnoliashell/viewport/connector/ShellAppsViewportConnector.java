@@ -88,6 +88,7 @@ public class ShellAppsViewportConnector extends ViewportConnector implements She
         if (!getWidget().isActive()) {
             getWidget().setActive(true);
         }
+        getLayoutManager().setNeedsMeasure(shellAppConnector);
         eventBus.fireEvent(new ShellAppStartingEvent(type));
     }
 
@@ -136,7 +137,6 @@ public class ShellAppsViewportConnector extends ViewportConnector implements She
     @Override
     public void onShellAppLoaded(Widget shellAppWidget) {
         ComponentConnector shellAppConnector = Util.findConnectorFor(shellAppWidget);
-        getLayoutManager().setNeedsMeasure(shellAppConnector);
         eventBus.fireEvent(new ShellAppStartedEvent(getState().getShellAppType(shellAppConnector)));
     }
 

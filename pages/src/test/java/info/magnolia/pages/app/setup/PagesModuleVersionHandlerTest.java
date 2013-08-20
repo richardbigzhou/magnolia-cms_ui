@@ -223,4 +223,18 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertTrue(deactivateChain.hasNode("version"));
         assertTrue(deactivateChain.hasNode("deactivate"));
     }
+
+    @Test
+    public void testUpdateTo5dot1ConfirmDeletionIsSetToMultiple() throws RepositoryException, ModuleManagementException {
+        // GIVEN
+        Node availability = NodeUtil.createPath(MgnlContext.getJCRSession(RepositoryConstants.CONFIG).getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/confirmDeletion/availability", NodeTypes.ContentNode.NAME);
+        assertFalse(availability.hasProperty("multiple"));
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.2"));
+
+        // THEN
+        assertTrue(availability.hasProperty("multiple"));
+        assertEquals("true", availability.getProperty("multiple").getString());
+    }
 }
