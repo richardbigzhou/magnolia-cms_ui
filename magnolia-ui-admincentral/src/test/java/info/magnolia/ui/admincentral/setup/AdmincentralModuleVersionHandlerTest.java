@@ -218,7 +218,6 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         assertTrue(actions.hasNode("confirmDeletion"));
     }
 
-
     @Test
     public void testUpdateTo502CleanupDeleteAction() throws ModuleManagementException, RepositoryException {
         // GIVEN
@@ -229,7 +228,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         action.getSession().save();
 
         // WHEN
-        NodeUtil.createPath(action, "availability",  NodeTypes.ContentNode.NAME);
+        NodeUtil.createPath(action, "availability", NodeTypes.ContentNode.NAME);
 
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
 
@@ -247,7 +246,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         Node actionbarItems = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folder/groups/addingActions/items", NodeTypes.ContentNode.NAME);
 
-        NodeUtil.createPath(actionbarItems, "delete",  NodeTypes.ContentNode.NAME);
+        NodeUtil.createPath(actionbarItems, "delete", NodeTypes.ContentNode.NAME);
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
@@ -297,5 +296,22 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
 
         // THEN
         assertTrue(configActionbarSections.hasNode("multiple"));
+    }
+
+    @Test
+    public void testUpdateTo5Dot1SetsJCRBrowserAppNodeTypesAsNotStrict() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        Node jcrBrowserSubApp = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/websiteJcrBrowser/subApps/browser/workbench", NodeTypes.ContentNode.NAME);
+        assertFalse(jcrBrowserSubApp.hasNode("nodeTypes"));
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.2"));
+
+        // THEN
+        Node mainNodeType = jcrBrowserSubApp.getNode("nodeTypes/mainNodeType");
+        assertFalse(mainNodeType.getProperty("strict").getBoolean());
+
+        Node folderNodeType = jcrBrowserSubApp.getNode("nodeTypes/folderNodeType");
+        assertFalse(folderNodeType.getProperty("strict").getBoolean());
     }
 }
