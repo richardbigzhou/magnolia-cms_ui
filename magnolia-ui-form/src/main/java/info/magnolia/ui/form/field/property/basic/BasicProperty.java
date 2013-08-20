@@ -39,8 +39,8 @@ import info.magnolia.ui.form.field.property.PropertyHandler;
 import javax.inject.Inject;
 
 /**
- * Basic simple property Handler.<br>
- * This handler is used by default for simple property handling (simple value property).
+ * Basic property Handler.<br>
+ * This handler is used by default for all simple property used in the basic fields (text, date, ...).
  * 
  * @param <T>
  */
@@ -49,7 +49,6 @@ public class BasicProperty<T> extends BaseProperty<T> {
     @Inject
     public BasicProperty(PropertyHandler<T> handler, Class<T> type) {
         super(handler, type);
-        this.handler = handler;
     }
 
 }

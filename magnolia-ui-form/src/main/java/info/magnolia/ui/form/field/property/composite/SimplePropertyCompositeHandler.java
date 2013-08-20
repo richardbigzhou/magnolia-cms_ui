@@ -72,8 +72,9 @@ public class SimplePropertyCompositeHandler extends AbstractBaseHandler<Property
      * @return propertyPrefix used to prefix the property name.
      */
     protected String createPropertyPrefix(ConfiguredFieldDefinition definition) {
-        return definition.getName() + "_";
+        return definition.getName();
     }
+
 
     @Override
     public void writeToDataSourceItem(PropertysetItem newValues) {

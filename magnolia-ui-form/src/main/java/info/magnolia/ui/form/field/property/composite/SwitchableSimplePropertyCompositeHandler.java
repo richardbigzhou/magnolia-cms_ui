@@ -55,14 +55,6 @@ public class SwitchableSimplePropertyCompositeHandler extends SimplePropertyComp
         super(parent, definition, componentProvider, fieldsName);
     }
 
-    /**
-     * propertyPrefix is Name if the field 'select' + FieldName 'date' --> 'selectdate'.
-     */
-    @Override
-    protected String createPropertyPrefix(ConfiguredFieldDefinition definition) {
-        return definition.getName();
-    }
-
     @Override
     public void writeToDataSourceItem(PropertysetItem newValues) {
         super.writeToDataSourceItem(newValues);

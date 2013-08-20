@@ -43,7 +43,7 @@ import com.vaadin.data.Item;
 
 /**
  * Specific OptionGroupField property Handler.<br
- * Vaadin native {@link com.vaadin.ui.OptionGroup} used as root component for configured Option Group Field do not support Links, but only Sets.
+ * Vaadin native {@link com.vaadin.ui.OptionGroup} used as root component for configured Option Group Field do not support List, but only Sets.
  * 
  * @param <T>
  */
@@ -56,6 +56,7 @@ public class OptionGroupPropertyHandler<T> extends BasicPropertyHandler<T> {
         super(parent, definition, fieldTypeName);
         multiselect = ((OptionGroupFieldDefinition) definition).isMultiselect();
     }
+
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override

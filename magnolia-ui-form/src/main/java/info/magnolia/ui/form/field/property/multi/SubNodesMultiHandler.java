@@ -52,10 +52,10 @@ import java.util.List;
 import java.util.Set;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
+import org.apache.jackrabbit.commons.predicate.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,6 +82,14 @@ public class SubNodesMultiHandler<T> extends AbstractBaseHandler<List<T>> implem
     public SubNodesMultiHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
         super(parent, definition, componentProvider);
         this.childValuePropertyName = definition.getName();
+    }
+
+    /**
+     * No I18N Support implemented for subNode.
+     */
+    @Override
+    public boolean hasI18NSupport() {
+        return false;
     }
 
     /**
@@ -113,17 +121,43 @@ public class SubNodesMultiHandler<T> extends AbstractBaseHandler<List<T>> implem
     }
 
     /**
-     * Get all childNodes of parent with type {@link NodeTypes.ContentNode.NAME}.
+     * Get all childNodes of parent passing the {@link Predicate} created by {@link SubNodesMultiHandler#createPredicateToEvaluateChildNode()} or <br>
+     * with type {@link NodeTypes.ContentNode.NAME} if the {@link Predicate} is null.
      */
     protected List<Node> getStoredChildNodes(JcrNodeAdapter parent) {
         try {
             if (!(parent instanceof JcrNewNodeAdapter) && parent.getJcrItem().hasNodes()) {
-                return NodeUtil.asList(NodeUtil.getNodes(parent.getJcrItem(), childNodeType));
+                Predicate predicate = createPredicateToEvaluateChildNode();
+                if (predicate != null) {
+                    return NodeUtil.asList(NodeUtil.getNodes(parent.getJcrItem(), predicate));
+                } else {
+                    return NodeUtil.asList(NodeUtil.getNodes(parent.getJcrItem(), childNodeType));
+                }
             }
         } catch (RepositoryException re) {
             log.warn("Not able to access the Child Nodes of the following Node Identifier {}", parent.getItemId(), re);
         }
         return new ArrayList<Node>();
+    }
+
+    /**
+     * Only return child node that have a number name's.
+     */
+    protected Predicate createPredicateToEvaluateChildNode() {
+
+        return new Predicate() {
+            @Override
+            public boolean evaluate(Object node) {
+                if (node instanceof Node) {
+                    try {
+                        return ((Node) node).getName().matches("[0-9]+");
+                    } catch (RepositoryException e) {
+                        return false;
+                    }
+                }
+                return false;
+            }
+        };
     }
 
     /**
@@ -204,15 +238,11 @@ public class SubNodesMultiHandler<T> extends AbstractBaseHandler<List<T>> implem
      */
     private void detachNoMoreExistingChildren(JcrNodeAdapter rootItem) {
         try {
-            Node rootNode = rootItem.getJcrItem();
-            if (!(rootItem instanceof JcrNewNodeAdapter) && rootNode.hasNodes()) {
-                NodeIterator iterator = rootNode.getNodes();
-                while (iterator.hasNext()) {
-                    Node valueNode = iterator.nextNode();
-                    if (rootItem.getChild(valueNode.getName()) == null) {
-                        JcrNodeAdapter toRemove = new JcrNodeAdapter(valueNode);
-                        rootItem.removeChild(toRemove);
-                    }
+            List<Node> children = getStoredChildNodes(rootItem);
+            for (Node child : children) {
+                if (rootItem.getChild(child.getName()) == null) {
+                    JcrNodeAdapter toRemove = new JcrNodeAdapter(child);
+                    rootItem.removeChild(toRemove);
                 }
             }
         } catch (RepositoryException e) {
@@ -245,7 +275,6 @@ public class SubNodesMultiHandler<T> extends AbstractBaseHandler<List<T>> implem
         childNames.add(name);
         return name;
     }
-
 
     public void setChildValuePropertyName(String newName) {
         this.childValuePropertyName = newName;

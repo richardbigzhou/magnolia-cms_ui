@@ -41,8 +41,8 @@ import javax.inject.Inject;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
- * {@link ObjectProperty} implementation used to handle property used in {@link info.magnolia.ui.form.field.MultiField} or {@link info.magnolia.ui.form.field.SwitchableField}.<br>
- * These MultiProperty are handled as {@PropertysetItem}.
+ * {@link info.magnolia.ui.form.field.property.HasPropertyHandler} implementation used to handle property in {@link info.magnolia.ui.form.field.MultiField} or {@link info.magnolia.ui.form.field.SwitchableField}.<br>
+ * The individual field property are handled by a {@PropertysetItem}.
  */
 public class CompositeProperty extends BaseProperty<PropertysetItem> {
 

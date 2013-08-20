@@ -34,7 +34,7 @@
 package info.magnolia.ui.form.field.property;
 
 /**
- * Generic Interface for used to custom property that are award of handlers.
+ * Property handler definition.
  * 
  * @param <T>
  */

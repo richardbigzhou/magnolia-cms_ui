@@ -37,15 +37,15 @@ package info.magnolia.ui.form.field.property;
 import com.vaadin.data.util.ObjectProperty;
 
 /**
- * .
+ * Basic implementation of an {@link ObjectProperty} that implements {@link HasPropertyHandler}.<br>
+ * This base property delegate to the {@link PropertyHandler} the read and write of the value to the datasource.
  * 
- * @param <T>
+ * @param <T>.
  */
 
 public class BaseProperty<T> extends ObjectProperty<T> implements HasPropertyHandler<T> {
 
     protected PropertyHandler<T> handler;
-
 
     public BaseProperty(PropertyHandler<T> handler, Class<T> type) {
         super(handler.readFromDataSourceItem(), type);
@@ -75,12 +75,15 @@ public class BaseProperty<T> extends ObjectProperty<T> implements HasPropertyHan
         return handler;
     }
 
+    /**
+     * @return true if the handler support I18N.
+     */
     public boolean hasI18NSupport() {
         return handler.hasI18NSupport();
     }
 
     /**
-     * In case of i18n change, Reload the Value based on the Handler.
+     * In case of i18n change, Reload the Value returned by the Handler.
      */
     public void fireI18NValueChange() {
         setValue(handler.readFromDataSourceItem());

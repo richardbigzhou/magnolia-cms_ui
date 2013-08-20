@@ -79,6 +79,14 @@ public class SubNodesCompositeHandler extends AbstractBaseHandler<PropertysetIte
         this.fieldsName = fieldsName;
     }
 
+    /**
+     * No I18N Support implemented for subNode.
+     */
+    @Override
+    public boolean hasI18NSupport() {
+        return false;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public void writeToDataSourceItem(PropertysetItem newValues) {

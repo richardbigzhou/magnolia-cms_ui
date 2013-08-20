@@ -31,27 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.multi;
+package info.magnolia.ui.dialog.setup.migration;
 
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.form.field.property.multi.MultiProperty;
+import info.magnolia.ui.form.field.property.multi.SubNodesMultiIdentifierHandler;
 
-import info.magnolia.ui.form.field.property.BaseProperty;
-import info.magnolia.ui.form.field.property.PropertyHandler;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
- * {@link info.magnolia.ui.form.field.property.HasPropertyHandler} implementation used to handle property in {@link info.magnolia.ui.form.field.MultiField}<br>
- * This property is set as {@link com.vaadin.ui.Field#setPropertyDataSource(com.vaadin.data.Property)} in {@link info.magnolia.ui.form.field.MultiField} and handle a list of generic objects.<br>
- * 
- * @param <T>
+ * Migrate an MultiSelect control to a MultiLinkFieldDefinition.
  */
-public class MultiProperty<T> extends BaseProperty<List<T>> {
+public class DataUUIDMultiSelectControlMigration extends MultiSelectControlMigration {
 
-    @Inject
-    public MultiProperty(PropertyHandler<List<T>> handler) {
-        super(handler);
+
+    public DataUUIDMultiSelectControlMigration(boolean useIdentifier) {
+        super(useIdentifier);
     }
+
+    /**
+     * Set the PropertyBuilder.
+     */
+    @Override
+    protected void setPropertyBuilder(Node controlNode) throws RepositoryException {
+        Node propertyBuilder = controlNode.addNode("propertyBuilder", NodeTypes.ContentNode.NAME);
+        propertyBuilder.setProperty("propertyType", MultiProperty.class.getName());
+        propertyBuilder.setProperty("propertyHandler", SubNodesMultiIdentifierHandler.class.getName());
+    }
+
 }
