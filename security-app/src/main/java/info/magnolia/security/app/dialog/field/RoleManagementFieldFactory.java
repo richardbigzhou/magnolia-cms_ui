@@ -37,16 +37,19 @@ import info.magnolia.cms.util.QueryUtil;
 import info.magnolia.jcr.iterator.FilteringPropertyIterator;
 import info.magnolia.jcr.predicate.JCRMgnlPropertyHidingPredicate;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.ui.form.field.factory.TwinColSelectFieldFactory;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.form.field.factory.TwinColSelectFieldFactory;
+import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
@@ -79,10 +82,13 @@ public class RoleManagementFieldFactory extends TwinColSelectFieldFactory<RoleMa
     }
 
     private static final Logger log = LoggerFactory.getLogger(RoleManagementFieldFactory.class);
+    private ComponentProvider componentProvider;
 
-    public RoleManagementFieldFactory(RoleManagementFieldDefinition definition, Item relatedFieldItem) {
+    @Inject
+    public RoleManagementFieldFactory(RoleManagementFieldDefinition definition, Item relatedFieldItem, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem);
         definition.setOptions(getSelectFieldOptionDefinition());
+        this.componentProvider = componentProvider;
     }
 
     @Override
@@ -137,7 +143,7 @@ public class RoleManagementFieldFactory extends TwinColSelectFieldFactory<RoleMa
     private Set<String> getAssignedRoles() {
         Set<String> roles = new HashSet<String>();
         try {
-            Node mainNode = getRelatedNode(item);
+            Node mainNode = ((JcrNodeAdapter) item).getJcrItem();
             if (mainNode.hasNode("roles")) {
                 Node rolesNode = mainNode.getNode("roles");
                 if (rolesNode == null) {
@@ -155,11 +161,9 @@ public class RoleManagementFieldFactory extends TwinColSelectFieldFactory<RoleMa
         return roles;
     }
 
-
-    public com.vaadin.data.Property<Set> getOrCreateProperty() {
-        DefaultProperty<Set> prop = new DefaultProperty<Set>(Set.class, getAssignedRoles());
-        item.addItemProperty("roles", prop);
-        return prop;
+    @Override
+    protected PropertyHandler<?> initializePropertyHandler(Class<? extends PropertyHandler<?>> handlerClass, Class<?> type) {
+        return this.componentProvider.newInstance(handlerClass, item, definition, componentProvider, type.getName(), getAssignedRoles(), "roles");
     }
 
 }

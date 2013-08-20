@@ -33,12 +33,10 @@
  */
 package info.magnolia.security.app.dialog.field;
 
-import info.magnolia.ui.form.field.factory.CheckBoxFieldFactory;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.form.field.factory.CheckBoxFieldFactory;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 
 /**
  * Enabled field GUI builder. Enabled field handles checkbox bound to a String property (while by default the checkbox
@@ -50,17 +48,17 @@ public class EnabledFieldFactory extends CheckBoxFieldFactory {
         super(definition, relatedFieldItem);
     }
 
-
-    public com.vaadin.data.Property getOrCreateProperty() {
-        Property old = item.getItemProperty("enabled");
-        String stringValue = "true";
-        if (old != null) {
-            stringValue = old.toString();
-        }
-        DefaultProperty prop = new DefaultProperty(Boolean.class, Boolean.parseBoolean(stringValue));
-        item.removeItemProperty("enabled");
-        item.addItemProperty("enabled", prop);
-        return prop;
-    }
+    // @Override
+    // public com.vaadin.data.Property getOrCreateProperty() {
+    // Property old = item.getItemProperty("enabled");
+    // String stringValue = "true";
+    // if (old != null) {
+    // stringValue = old.toString();
+    // }
+    // DefaultProperty prop = new DefaultProperty(Boolean.class, Boolean.parseBoolean(stringValue));
+    // item.removeItemProperty("enabled");
+    // item.addItemProperty("enabled", prop);
+    // return prop;
+    // }
 
 }

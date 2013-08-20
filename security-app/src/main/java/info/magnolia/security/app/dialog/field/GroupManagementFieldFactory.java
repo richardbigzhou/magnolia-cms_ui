@@ -37,16 +37,19 @@ import info.magnolia.cms.util.QueryUtil;
 import info.magnolia.jcr.iterator.FilteringPropertyIterator;
 import info.magnolia.jcr.predicate.JCRMgnlPropertyHidingPredicate;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.ui.form.field.factory.TwinColSelectFieldFactory;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.form.field.factory.TwinColSelectFieldFactory;
+import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
@@ -79,10 +82,13 @@ public class GroupManagementFieldFactory extends TwinColSelectFieldFactory<Group
     }
 
     private static final Logger log = LoggerFactory.getLogger(GroupManagementFieldFactory.class);
+    private ComponentProvider componentProvider;
 
-    public GroupManagementFieldFactory(GroupManagementFieldDefinition definition, Item relatedFieldItem) {
+    @Inject
+    public GroupManagementFieldFactory(GroupManagementFieldDefinition definition, Item relatedFieldItem, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem);
         this.definition.setOptions(getSelectFieldOptionDefinition());
+        this.componentProvider = componentProvider;
     }
 
     @Override
@@ -124,7 +130,7 @@ public class GroupManagementFieldFactory extends TwinColSelectFieldFactory<Group
         Set<String> assignedGroups = getAssignedGroups();
         String currentUUID = null;
         try {
-            currentUUID = getRelatedNode(item).getIdentifier();
+            currentUUID = ((JcrNodeAdapter) item).getJcrItem().getIdentifier();
         } catch (RepositoryException e) {
             // nothing to do
         }
@@ -163,14 +169,14 @@ public class GroupManagementFieldFactory extends TwinColSelectFieldFactory<Group
     private Set<String> getAssignedGroups() {
         Set<String> groups = new HashSet<String>();
         try {
-            Node mainNode = getRelatedNode(item);
+            Node mainNode = ((JcrNodeAdapter) item).getJcrItem();
             if (mainNode.hasNode("groups")) {
                 Node groupsNode = mainNode.getNode("groups");
                 if (groupsNode == null) {
                     // shouldn't happen, just in case
                     return groups;
                 }
-                for (PropertyIterator iter = new FilteringPropertyIterator(groupsNode.getProperties(), new JCRMgnlPropertyHidingPredicate());  iter.hasNext();) {
+                for (PropertyIterator iter = new FilteringPropertyIterator(groupsNode.getProperties(), new JCRMgnlPropertyHidingPredicate()); iter.hasNext();) {
                     Property p = iter.nextProperty();
                     groups.add(p.getString());
 
@@ -182,10 +188,8 @@ public class GroupManagementFieldFactory extends TwinColSelectFieldFactory<Group
         return groups;
     }
 
-
-    public com.vaadin.data.Property<?> getOrCreateProperty() {
-        DefaultProperty<Set> prop = new DefaultProperty<Set>(Set.class, getAssignedGroups());
-        item.addItemProperty("groups", prop);
-        return prop;
+    @Override
+    protected PropertyHandler<?> initializePropertyHandler(Class<? extends PropertyHandler<?>> handlerClass, Class<?> type) {
+        return this.componentProvider.newInstance(handlerClass, item, definition, componentProvider, type.getName(), getAssignedGroups(), "groups");
     }
 }

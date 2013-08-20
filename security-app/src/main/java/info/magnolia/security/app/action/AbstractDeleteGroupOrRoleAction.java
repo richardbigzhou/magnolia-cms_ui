@@ -81,6 +81,7 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteItemAction
         return this.item;
     }
 
+    @Override
     public UiContext getUiContext() {
         return this.uiContext;
     }
