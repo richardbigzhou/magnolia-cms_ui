@@ -67,11 +67,10 @@ public class EmbeddedPageSubApp extends BaseSubApp {
         }
         boolean isInternalPage = !url.startsWith("http");
 
-        if (isInternalPage) {
-            if(isInternalPage) {
-                url = url.startsWith("/") ? MgnlContext.getContextPath() + url : MgnlContext.getContextPath() + "/" + url;
-            }
+        if(isInternalPage) {
+            url = url.startsWith("/") ? MgnlContext.getContextPath() + url : MgnlContext.getContextPath() + "/" + url;
         }
+
         getView().setUrl(url);
         return super.start(location);
     }
