@@ -97,22 +97,14 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 // update actionbar for confirmation
                 .addTask(new NodeExistsDelegateTask("Update actionbar configuration", "Rename action mapping to new confirmation action", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar",
                         new RenameNodesTask("Rename action bar items", "Rename delete to confirmDeletion", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar", "delete", "confirmDeletion", NodeTypes.ContentNode.NAME))));
+
         register(DeltaBuilder.update("5.1", "")
                 .addTask(new PartialBootstrapTask("Bootstrap new actionbar section in Configuration app", "", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actionbar/sections/multiple"))
                 .addTask(new PartialBootstrapTask("JCR browser app node types", "Bootstraps the new node types configuration for the JCR browser app", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.websiteJcrBrowser.xml", "/websiteJcrBrowser/subApps/browser/workbench/nodeTypes"))
                 .addTask(new NewPropertyTask("Set multiple=true in confirmDeletion action's availability.", "Sets multiple=true in confirmDeletion action's availability., i.e. the Delete action now supports multiple items.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/confirmDeletion/availability", "multiple", true))
                 .addTask(new NewPropertyTask("Set main node type in configuration app as strict", "Sets main node type as strict, i.e. its substypes won't be included in list and search views.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/nodeTypes/mainNodeType", "strict", true))
-                .addTask(new NewPropertyTask("Set folder node type in configuration app as strict", "Sets folder node type as strict, i.e. its substypes won't be included in list and search views.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/nodeTypes/folderNodeType", "strict", true)));
+                .addTask(new NewPropertyTask("Set folder node type in configuration app as strict", "Sets folder node type as strict, i.e. its substypes won't be included in list and search views.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/nodeTypes/folderNodeType", "strict", true))
 
-        register(DeltaBuilder.update("5.1", "")
-                // theme + widgetset
-                .addTask(new BootstrapSingleModuleResource("Add widgetset config", "Vaadin Widgetset can be configured, sets the default", "config.modules.ui-admincentral.config.widgetset.xml"))
-                .addTask(new BootstrapSingleModuleResource("Add theme config", "Vaadin theme can be configured, sets the default", "config.modules.ui-admincentral.config.theme.xml"))
-                .addTask(new PropertyExistsDelegateTask("Check widgetset servlet param", "Checks if widgetset is configured as servlet parameter", RepositoryConstants.CONFIG, "/server/filters/servlets/AdminCentral/parameters", "widgetset",
-                        new RemovePropertyTask("Remove widgetset servlet param", "Removes the widgetset property from AdminCentral servlet parameters", RepositoryConstants.CONFIG, "/server/filters/servlets/AdminCentral/parameters", "widgetset")))
-        );
-
-        register(DeltaBuilder.update("5.1", "")
                 // theme + widgetset
                 .addTask(new BootstrapSingleModuleResource("Add widgetset config", "Vaadin Widgetset can be configured, sets the default", "config.modules.ui-admincentral.config.widgetset.xml"))
                 .addTask(new BootstrapSingleModuleResource("Add theme config", "Vaadin theme can be configured, sets the default", "config.modules.ui-admincentral.config.theme.xml"))
