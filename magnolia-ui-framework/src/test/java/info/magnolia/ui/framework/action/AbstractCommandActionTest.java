@@ -50,11 +50,15 @@ import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import javax.jcr.Item;
 import javax.jcr.Property;
 
 import org.junit.After;
@@ -225,11 +229,67 @@ public class AbstractCommandActionTest {
         // THEN exception
     }
 
+    @Test
+    public void testExecuteTwiceReturnsNewMap() throws Exception {
+        // GIVEN
+        CommandActionDefinition definition = new CommandActionDefinition();
+        definition.setCommand("qux");
+        Map<String, Object> params1 = new HashMap<String, Object>();
+        params1.put("param1", "some parameter1");
+
+        Map<String, Object> params2 = new HashMap<String, Object>();
+        params2.put("param2", "some parameter2");
+
+        QuxCommand quxCommand = new QuxCommand();
+        when(commandsManager.getCommand(CommandsManager.DEFAULT_CATALOG, "qux")).thenReturn(quxCommand);
+        when(commandsManager.getCommand("qux")).thenReturn(quxCommand);
+
+        AbstractCommandAction<CommandActionDefinition> action = new TestAbstractCommandAction(
+                definition,
+                new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent")),
+                commandsManager,
+                null, params1);
+
+
+        action.execute();
+        // WHEN
+        AbstractCommandAction<CommandActionDefinition> action2 = new TestAbstractCommandAction(
+                definition,
+                new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent")),
+                commandsManager,
+                null, params2);
+
+
+        action2.execute();
+
+
+        // THEN
+        assertNull(action2.getParams().get("param1"));
+        assertEquals(action2.getParams().get("param2"), params2.get("param2"));
+    }
+
     private static final class QuxCommand extends MgnlCommand {
 
         @Override
         public boolean execute(Context context) throws Exception {
             return false;
+        }
+    }
+
+    private class TestAbstractCommandAction extends AbstractCommandAction<CommandActionDefinition> {
+
+        private Map<String, Object> parameter;
+
+        public TestAbstractCommandAction(CommandActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext, Map<String, Object> parameter) {
+            super(definition, item, commandsManager, uiContext);
+            this.parameter = parameter;
+        }
+
+        @Override
+        protected Map<String, Object> buildParams(Item jcrItem) {
+            Map<String, Object> params = super.buildParams(jcrItem);
+            params.putAll(parameter);
+            return params;
         }
     }
 
