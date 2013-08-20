@@ -101,7 +101,7 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
                                         )
                                 )))
                 )
-
+                .addTask((new TakeActionOnSaveModeTypeFieldDefinition("Update field definition sub task from 'saveModeType' to 'propertyBuilder' ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where name(t) = 'saveModeType' ")))
         );
     }
 
