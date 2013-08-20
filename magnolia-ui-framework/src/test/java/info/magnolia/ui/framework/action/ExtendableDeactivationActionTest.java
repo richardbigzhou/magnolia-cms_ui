@@ -82,6 +82,7 @@ public class ExtendableDeactivationActionTest extends MgnlTestCase {
 
         // WHEN
         DeactivationAction action = new ExtendableDeactivationAction(new DeactivationActionDefinition(), new JcrNodeAdapter(item), params, mock(CommandsManager.class), mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class));
+        action.setCurrentItem(action.getItems().get(0));
         action.onPreExecute();
 
         // THEN
@@ -107,6 +108,7 @@ public class ExtendableDeactivationActionTest extends MgnlTestCase {
 
         // WHEN
         DeactivationAction action = new ExtendableDeactivationAction(definition, new JcrNodeAdapter(item), paramsCtor, mock(CommandsManager.class), mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class));
+        action.setCurrentItem(action.getItems().get(0));
         action.onPreExecute();
 
         // THEN
