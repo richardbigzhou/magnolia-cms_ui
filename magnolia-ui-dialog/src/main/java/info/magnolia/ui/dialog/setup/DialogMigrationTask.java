@@ -47,6 +47,7 @@ import info.magnolia.ui.dialog.setup.migration.CheckBoxRadioControlMigration;
 import info.magnolia.ui.dialog.setup.migration.CheckBoxSwitchControlMigration;
 import info.magnolia.ui.dialog.setup.migration.ControlMigration;
 import info.magnolia.ui.dialog.setup.migration.DamControlMigration;
+import info.magnolia.ui.dialog.setup.migration.DataUUIDMultiSelectControlMigration;
 import info.magnolia.ui.dialog.setup.migration.DateControlMigration;
 import info.magnolia.ui.dialog.setup.migration.EditCodeControlMigration;
 import info.magnolia.ui.dialog.setup.migration.EditControlMigration;
@@ -159,8 +160,8 @@ public class DialogMigrationTask extends AbstractTask {
         customMigrationTask.put("dam", new DamControlMigration());
         customMigrationTask.put("uuidLink", new LinkControlMigration());
         customMigrationTask.put("link", new LinkControlMigration());
-        customMigrationTask.put("categorizationUUIDMultiSelect", new MultiSelectControlMigration(true));
         customMigrationTask.put("multiselect", new MultiSelectControlMigration(false));
+        customMigrationTask.put("dataUUIDMultiSelect", new DataUUIDMultiSelectControlMigration(true));
         customMigrationTask.put("file", new FileControlMigration());
         customMigrationTask.put("static", new StaticControlMigration());
         customMigrationTask.put("hidden", new HiddenControlMigration());
