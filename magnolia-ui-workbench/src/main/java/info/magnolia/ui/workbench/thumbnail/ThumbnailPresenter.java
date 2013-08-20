@@ -149,4 +149,5 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
         return null;
     }
 
+
 }

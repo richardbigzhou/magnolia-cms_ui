@@ -131,4 +131,12 @@ public class ThumbnailViewImpl implements ThumbnailView {
     public void setMultiselect(boolean multiselect) {
         // does nothing
     }
+
+    @Override
+    public void onShortcutKey(int keyCode, int[] modifierKeys) {
+        if (listener != null) {
+            listener.onShortcutKey(keyCode, modifierKeys);
+        }
+    }
+
 }

@@ -212,4 +212,11 @@ public class ListViewImpl implements ListView {
         table.setMultiSelect(multiselect);
     }
 
+    @Override
+    public void onShortcutKey(int keyCode, int[] modifierKeys) {
+        if (listener != null) {
+            listener.onShortcutKey(keyCode, modifierKeys);
+        }
+    }
+
 }

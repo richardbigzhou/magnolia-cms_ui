@@ -359,8 +359,8 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         public Action[] getActions(Object target, Object sender) {
             // TODO: Find a better solution for handling tab key events: MGNLUI-1384
             // Removing tab actions so that tabbing between fields in forms work.
-            // return new Action[] { enter, tabNext, tabPrev, escape };
-            return new Action[] { enter, escape };
+            return new Action[] { enter, tabNext, tabPrev, escape };
+            // return new Action[] { enter, escape };
         }
 
         @Override

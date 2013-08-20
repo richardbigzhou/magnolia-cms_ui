@@ -49,6 +49,7 @@ import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
+import info.magnolia.ui.workbench.event.ItemShortcutKeyEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import java.util.ArrayList;
@@ -207,6 +208,24 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
                 eventBus.fireEvent(new ItemRightClickedEvent(workbenchDefinition.getWorkspace(), (JcrItemAdapter) item, clickX, clickY));
             } catch (Exception e) {
                 log.error("An error occurred while right clicking on a row in the data grid", e);
+            }
+        } else {
+            log.warn("Got null com.vaadin.data.Item. No event will be fired.");
+        }
+    }
+
+    @Override
+    public void onShortcutKey(int keyCode, int[] modifierKeys) {
+        JcrItemAdapter item;
+
+        if (selectedItemIds.size() == 1) {
+            try {
+                item = toJcrItemAdapter(JcrItemUtil.getJcrItem(workbenchDefinition.getWorkspace(), getSelectedItemId()));
+                // item = getSelectedItemId();
+                log.debug("com.vaadin.data.Item at {} was keyboard clicked. Firing ItemShortcutKeyEvent...", getSelectedItemId());
+                eventBus.fireEvent(new ItemShortcutKeyEvent(workbenchDefinition.getWorkspace(), item, keyCode, modifierKeys));
+            } catch (Exception e) {
+                log.error("An error occurred while a key was pressed with a selected row in the data grid", e);
             }
         } else {
             log.warn("Got null com.vaadin.data.Item. No event will be fired.");
