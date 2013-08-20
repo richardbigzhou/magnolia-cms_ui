@@ -73,7 +73,7 @@ public class EmbeddedPageViewImpl implements EmbeddedPageView {
     public void setUrl(String url) {
         final BrowserFrame page = new BrowserFrame(null, new ExternalResource(url));
         page.setSizeFull();
-
+        layout.removeAllComponents();
         layout.addComponent(page);
     }
 }
