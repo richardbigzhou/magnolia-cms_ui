@@ -41,6 +41,7 @@ import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.BootstrapSingleModuleResource;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
+import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RenameNodesTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.nodebuilder.task.ErrorHandling;
@@ -74,6 +75,7 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
                 .addTask(new BootstrapSingleModuleResource("Add dialogs to ui-framework", "", "config.modules.ui-framework.dialogs.xml")));
 
         register(DeltaBuilder.update("5.1", "")
+                .addTask(new RemoveNodeTask("Remove MultiLinkField definition mapping", "", RepositoryConstants.CONFIG, "/modules/ui-framework/fieldTypes/multiLinkField"))
                 .addTask((new NodeBuilderTask("Add definition of the BasicCodeText Field", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/ui-framework",
                         getNode("fieldTypes").then(
                                 addNode("basicTextCodeField", NodeTypes.ContentNode.NAME),
@@ -101,7 +103,8 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
                                         )
                                 )))
                 )
-
+                .addTask((new ReplaceMultiLinkFieldDefinition("Change the MultiLinkFieldDefinition by MultiFieldDefinition ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where contains(t.*,'info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition') ")))
+                .addTask((new ReplaceSaveModeTypeFieldDefinition("Update field definition sub task from 'saveModeType' to 'propertyBuilder' ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where name(t) = 'saveModeType' ")))
         );
     }
 
