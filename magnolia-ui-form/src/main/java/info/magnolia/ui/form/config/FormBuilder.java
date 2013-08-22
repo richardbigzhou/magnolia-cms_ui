@@ -80,7 +80,7 @@ public class FormBuilder {
     }
 
     public TabBuilder tab(String name) {
-        for (TabDefinition tab : definition.getTabs()) {
+        for (TabDefinition tab : definition().getTabs()) {
             if (tab.getName().equals(name)) {
                 return new TabBuilder((ConfiguredTabDefinition) tab);
             }

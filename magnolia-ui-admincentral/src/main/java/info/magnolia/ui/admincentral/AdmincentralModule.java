@@ -37,6 +37,8 @@ import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.registry.ConfiguredMessageViewDefinitionManager;
 import info.magnolia.ui.admincentral.usermenu.definition.UserMenuDefinition;
+import info.magnolia.ui.api.vaadin.ThemeDefinition;
+import info.magnolia.ui.api.vaadin.WidgetsetDefinition;
 
 import javax.inject.Inject;
 
@@ -47,6 +49,9 @@ public class AdmincentralModule implements ModuleLifecycle {
 
     private ConfiguredMessageViewDefinitionManager configuredMessageViewDefinitionManager;
     private UserMenuDefinition userControl;
+
+    private WidgetsetDefinition widgetsetDefinition;
+    private ThemeDefinition themeDefinition;
 
     @Inject
     public AdmincentralModule(ConfiguredMessageViewDefinitionManager configuredMessageViewDefinitionManager) {
@@ -71,4 +76,21 @@ public class AdmincentralModule implements ModuleLifecycle {
     public void setUserMenu(UserMenuDefinition userControl) {
         this.userControl = userControl;
     }
+
+    public WidgetsetDefinition getWidgetset() {
+        return widgetsetDefinition;
+    }
+
+    public void setWidgetset(WidgetsetDefinition widgetsetDefinition) {
+        this.widgetsetDefinition = widgetsetDefinition;
+    }
+
+    public ThemeDefinition getTheme() {
+        return themeDefinition;
+    }
+
+    public void setTheme(ThemeDefinition themeDefinition) {
+        this.themeDefinition = themeDefinition;
+    }
+
 }

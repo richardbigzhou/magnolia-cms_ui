@@ -46,7 +46,7 @@ public class SwitchableFieldBuilder extends AbstractFieldBuilder {
     private SwitchableFieldDefinition definition = new SwitchableFieldDefinition();
 
     public SwitchableFieldBuilder(String name) {
-        definition.setName(name);
+        definition().setName(name);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class SwitchableFieldBuilder extends AbstractFieldBuilder {
     }
 
     public void selectionType(String selectionType) {
-        definition.setSelectionType(selectionType);
+        definition().setSelectionType(selectionType);
     }
 
     public SwitchableFieldBuilder options(OptionBuilder... builders) {

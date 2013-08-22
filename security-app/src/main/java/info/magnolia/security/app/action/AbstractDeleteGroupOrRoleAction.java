@@ -81,10 +81,6 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteItemAction
         return this.item;
     }
 
-    public UiContext getUiContext() {
-        return this.uiContext;
-    }
-
     /**
      * @return the base for the error message shown to the user in case the item is already assigned; the list of users/groups the item is assigned to is added;
      */

@@ -53,7 +53,7 @@ public class BasicTextCodeFieldBuilder extends AbstractFieldBuilder {
     }
 
     public BasicTextCodeFieldBuilder language(String language) {
-        definition.setLanguage(language);
+        definition().setLanguage(language);
         return this;
     }
 
