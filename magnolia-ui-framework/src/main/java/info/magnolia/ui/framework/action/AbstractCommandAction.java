@@ -118,7 +118,10 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
      * </pre>
      */
     protected Map<String, Object> buildParams(final Item jcrItem) {
-        Map<String, Object> params = getDefinition().getParams() == null ? new HashMap<String, Object>() : getDefinition().getParams();
+        Map<String, Object> params = new HashMap<String, Object>();
+        if (!getDefinition().getParams().isEmpty()) {
+            params.putAll(getDefinition().getParams());
+        }
         try {
             final String path = jcrItem.getPath();
             final String workspace = jcrItem.getSession().getWorkspace().getName();

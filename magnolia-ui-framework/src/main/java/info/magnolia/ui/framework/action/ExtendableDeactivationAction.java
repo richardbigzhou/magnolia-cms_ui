@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,49 +31,38 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.app.embedded;
+package info.magnolia.ui.framework.action;
 
-import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.commands.CommandsManager;
+import info.magnolia.event.EventBus;
+import info.magnolia.module.ModuleRegistry;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Map;
 
-import com.google.inject.Inject;
-import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.BrowserFrame;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.jcr.Item;
 
 /**
- * View implementation for an embedded page app.
+ * Extends the {@link DeactivationAction} by the possibility to pass parameters in the constructor.
  */
-public class EmbeddedPageViewImpl implements EmbeddedPageView {
+public class ExtendableDeactivationAction extends DeactivationAction {
 
-    private static final Logger log = LoggerFactory.getLogger(EmbeddedPageViewImpl.class);
-
-    private final CssLayout layout = new CssLayout();
+    private Map<String, Object> parameters;
 
     @Inject
-    public EmbeddedPageViewImpl() {
-        layout.setSizeFull();
-    }
-
-
-    @Deprecated
-    public EmbeddedPageViewImpl(AppContext appContext) {
-        this();
+    public ExtendableDeactivationAction(DeactivationActionDefinition definition, JcrItemAdapter item, Map<String, Object> parameters,  CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, SubAppContext uiContext, ModuleRegistry moduleRegistry) {
+        super(definition, item, commandsManager, admincentralEventBus, uiContext, moduleRegistry);
+        this.parameters = parameters;
     }
 
     @Override
-    public Component asVaadinComponent() {
-        return layout;
-    }
-
-    @Override
-    public void setUrl(String url) {
-        final BrowserFrame page = new BrowserFrame(null, new ExternalResource(url));
-        page.setSizeFull();
-        layout.removeAllComponents();
-        layout.addComponent(page);
+    protected Map<String, Object> buildParams(Item jcrItem) {
+        Map<String, Object> params = super.buildParams(jcrItem);
+        params.putAll(parameters);
+        return params;
     }
 }

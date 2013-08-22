@@ -52,6 +52,7 @@ import org.slf4j.LoggerFactory;
 public class EmbeddedPageSubApp extends BaseSubApp {
 
     private static final Logger log = LoggerFactory.getLogger(EmbeddedPageSubApp.class);
+    private Location lastLocation;
 
     @Inject
     public EmbeddedPageSubApp(SubAppContext subAppContext, EmbeddedPageView pageView) {
@@ -60,24 +61,45 @@ public class EmbeddedPageSubApp extends BaseSubApp {
 
     @Override
     public View start(Location location) {
+        this.lastLocation = location;
         String url = location.getParameter();
         if (StringUtils.isEmpty(url)) {
             EmbeddedPageSubAppDescriptor subAppDescriptor = ((EmbeddedPageSubAppDescriptor) getSubAppContext().getSubAppDescriptor());
             url = subAppDescriptor.getUrl();
         }
-        boolean isInternalPage = !url.startsWith("http");
 
-        if (isInternalPage) {
-            if(isInternalPage) {
-                url = url.startsWith("/") ? MgnlContext.getContextPath() + url : MgnlContext.getContextPath() + "/" + url;
-            }
-        }
+        url = updateUrl(url);
         getView().setUrl(url);
         return super.start(location);
+    }
+
+    /**
+     * Check whether the url has changed, if so update the view to display the new location.
+     */
+    @Override
+    public void locationChanged(Location location) {
+        String url = location.getParameter();
+        if (StringUtils.isNotBlank(url) && !url.equals(lastLocation.getParameter())) {
+            getView().setUrl(updateUrl(url));
+        }
+        this.lastLocation = location;
+        super.locationChanged(location);
     }
 
     @Override
     public EmbeddedPageView getView() {
         return (EmbeddedPageView) super.getView();
+    }
+
+    /**
+     * Add the context path to internal urls.
+     */
+    private String updateUrl(String url) {
+        boolean isInternalPage = !url.startsWith("http");
+
+        if(isInternalPage) {
+            url = url.startsWith("/") ? MgnlContext.getContextPath() + url : MgnlContext.getContextPath() + "/" + url;
+        }
+        return url;
     }
 }
