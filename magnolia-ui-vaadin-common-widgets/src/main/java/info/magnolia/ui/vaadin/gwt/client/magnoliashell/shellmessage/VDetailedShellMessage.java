@@ -56,7 +56,10 @@ public abstract class VDetailedShellMessage extends ShellMessageWidget {
     @Override
     protected void construct() {
         super.construct();
-        detailsEl.setInnerText(getMessage());
+        Element detailMessageElement = DOM.createDiv();
+        detailMessageElement.addClassName("v-shell-message-detail");
+        detailMessageElement.setInnerText(getMessage());
+        detailsEl.appendChild(detailMessageElement);
         getElement().appendChild(detailsEl);
     }
 
