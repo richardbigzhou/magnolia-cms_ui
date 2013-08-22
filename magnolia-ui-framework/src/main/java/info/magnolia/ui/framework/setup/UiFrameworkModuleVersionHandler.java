@@ -48,9 +48,11 @@ import info.magnolia.nodebuilder.task.ErrorHandling;
 import info.magnolia.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
+import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
+import info.magnolia.ui.form.field.factory.CompositeFieldFactory;
 import info.magnolia.ui.form.field.factory.MultiFieldFactory;
 import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
 
@@ -76,33 +78,10 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
 
         register(DeltaBuilder.update("5.1", "")
                 .addTask(new RemoveNodeTask("Remove MultiLinkField definition mapping", "", RepositoryConstants.CONFIG, "/modules/ui-framework/fieldTypes/multiLinkField"))
-                .addTask((new NodeBuilderTask("Add definition of the BasicCodeText Field", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/ui-framework",
-                        getNode("fieldTypes").then(
-                                addNode("basicTextCodeField", NodeTypes.ContentNode.NAME),
-                                getNode("basicTextCodeField").then(
-                                        addProperty("definitionClass", BasicTextCodeFieldDefinition.class.getName()),
-                                        addProperty("factoryClass", BasicTextCodeFieldFactory.class.getName())
-                                        )
-                                )))
-                )
-                .addTask((new NodeBuilderTask("Add definition of the SwitchField Field", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/ui-framework",
-                        getNode("fieldTypes").then(
-                                addNode("switchableField", NodeTypes.ContentNode.NAME),
-                                getNode("switchableField").then(
-                                        addProperty("definitionClass", SwitchableFieldDefinition.class.getName()),
-                                        addProperty("factoryClass", SwitchableFieldFactory.class.getName())
-                                        )
-                                )))
-                )
-                .addTask((new NodeBuilderTask("Add definition of the MultiField Field", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/ui-framework",
-                        getNode("fieldTypes").then(
-                                addNode("multiField", NodeTypes.ContentNode.NAME),
-                                getNode("multiField").then(
-                                        addProperty("definitionClass", MultiFieldDefinition.class.getName()),
-                                        addProperty("factoryClass", MultiFieldFactory.class.getName())
-                                        )
-                                )))
-                )
+                .addTask(createNewFieldDefinition("basicTextCodeField", BasicTextCodeFieldDefinition.class.getName(), BasicTextCodeFieldFactory.class.getName()))
+                .addTask(createNewFieldDefinition("switchableField", SwitchableFieldDefinition.class.getName(), SwitchableFieldFactory.class.getName()))
+                .addTask(createNewFieldDefinition("multiField", MultiFieldDefinition.class.getName(), MultiFieldFactory.class.getName()))
+                .addTask(createNewFieldDefinition("compositeField", CompositeFieldDefinition.class.getName(), CompositeFieldFactory.class.getName()))
                 .addTask((new ReplaceMultiLinkFieldDefinition("Change the MultiLinkFieldDefinition by MultiFieldDefinition ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where contains(t.*,'info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition') ")))
                 .addTask((new ReplaceSaveModeTypeFieldDefinition("Update field definition sub task from 'saveModeType' to 'propertyBuilder' ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where name(t) = 'saveModeType' ")))
         );
@@ -112,5 +91,19 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
         ArrayList<Task> tasks = new ArrayList<Task>();
         return tasks;
+    }
+
+    /**
+     * Create a new Field Definition.
+     */
+    private NodeBuilderTask createNewFieldDefinition(String fieldName, String definitionClass, String factoryClass) {
+        return new NodeBuilderTask("Add definition for the newly introduce field: " + fieldName, "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/ui-framework",
+                getNode("fieldTypes").then(
+                        addNode(fieldName, NodeTypes.ContentNode.NAME),
+                        getNode(fieldName).then(
+                                addProperty("definitionClass", definitionClass),
+                                addProperty("factoryClass", factoryClass)
+                                )
+                        ));
     }
 }
