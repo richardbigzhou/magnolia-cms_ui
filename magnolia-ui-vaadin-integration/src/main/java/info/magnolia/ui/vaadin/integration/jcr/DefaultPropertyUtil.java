@@ -38,7 +38,9 @@ import info.magnolia.cms.util.DateUtil;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import javax.jcr.Binary;
 import javax.jcr.PropertyType;
@@ -58,11 +60,27 @@ public class DefaultPropertyUtil {
     private static final Logger log = LoggerFactory.getLogger(DefaultPropertyUtil.class);
 
     /**
+     * Create a DefaultProperty and set the defaultValue after conversion.
+     */
+    public static <T> DefaultProperty<T> newDefaultProperty(Class<T> type, String defaultValue) {
+        Object value = null;
+        try {
+            value = createTypedValue(type, defaultValue);
+        } catch (Exception e) {
+            log.error("Exception during Value creation", e);
+        }
+        return new DefaultProperty<T>(type, (T) value);
+    }
+
+    /**
      * Create a new DefaultProperty by passing the value as a String.
      * If fieldType is defined, create a Typed Value.
      * If fieldType is not defined, create a String Value.
-     * If stringValue is defined, create a typed value based ont fieldType.
+     * If stringValue is defined, create a typed value based on fieldType.
+     * 
+     * @deprecated since 5.1. use {@link DefaultPropertyUtil#newDefaultProperty(Class, String)} instead.
      */
+    @Deprecated
     public static DefaultProperty newDefaultProperty(String fieldType, String stringValue) throws NumberFormatException {
         Object value = null;
         try {
@@ -75,7 +93,10 @@ public class DefaultPropertyUtil {
 
     /**
      * Create a DefaultProperty based on types defined in {@link PropertyType}.
+     * 
+     * @deprecated since 5.1. use {@link DefaultPropertyUtil#newDefaultProperty(Class, String)} instead.
      */
+    @Deprecated
     public static DefaultProperty newDefaultProperty(int fieldType, Object value) throws NumberFormatException {
         return new DefaultProperty(getFieldTypeClass(fieldType), value);
     }
@@ -84,39 +105,54 @@ public class DefaultPropertyUtil {
      * Create a custom Field Object based on the Type and defaultValue.
      * If the fieldType is null, the defaultValue will be returned as String or null.
      * If the defaultValue is null, null will be returned.
-     *
+     * 
      * @throws NumberFormatException In case of the default value could not be parsed to the desired class.
+     * @deprecated since 5.1. use {@link DefaultPropertyUtil#createTypedValue(Class, String)} instead.
      */
+    @Deprecated
     public static Object createTypedValue(String fieldType, String defaultValue) throws NumberFormatException {
         if (StringUtils.isBlank(fieldType)) {
             return defaultValue;
         } else if (defaultValue != null) {
-            int valueType = PropertyType.valueFromName(fieldType);
+            Class<?> type = getFieldTypeClass(fieldType);
+            return createTypedValue(type, defaultValue);
+        }
+        return null;
+    }
 
-            switch (valueType) {
-                case PropertyType.STRING:
-                    return defaultValue;
-                case PropertyType.BINARY:
-                    return null;
-                case PropertyType.LONG:
-                    return Long.decode(defaultValue);
-                case PropertyType.DOUBLE:
-                    return Double.valueOf(defaultValue);
-                case PropertyType.DATE:
-                    try {
-                        return new SimpleDateFormat(DateUtil.YYYY_MM_DD).parse(defaultValue);
-                    } catch (ParseException e) {
-                        throw new IllegalArgumentException(e);
-                    }
-                case PropertyType.BOOLEAN:
-                    return BooleanUtils.toBoolean(defaultValue);
-                case PropertyType.DECIMAL:
-                    return BigDecimal.valueOf(Long.decode(defaultValue));
-                default: {
-                    String msg = "Unsupported property type " + PropertyType.nameFromValue(valueType);
-                    log.error(msg);
-                    throw new IllegalArgumentException(msg);
+    /**
+     * Create a custom Field Object based on the Type and defaultValue.
+     * If the fieldType is null, the defaultValue will be returned as String or null.
+     * If the defaultValue is null, null will be returned.
+     * 
+     * @throws NumberFormatException In case of the default value could not be parsed to the desired class.
+     */
+    public static Object createTypedValue(Class<?> type, String defaultValue) throws NumberFormatException {
+        if (StringUtils.isBlank(defaultValue)) {
+            return defaultValue;
+        } else if (defaultValue != null) {
+            if (type.getName().equals(String.class.getName())) {
+                return defaultValue;
+            } else if (type.getName().equals(Long.class.getName())) {
+                return Long.decode(defaultValue);
+            } else if (type.isAssignableFrom(Binary.class)) {
+                return null;
+            } else if (type.getName().equals(Double.class.getName())) {
+                return Double.valueOf(defaultValue);
+            } else if (type.getName().equals(Date.class.getName())) {
+                try {
+                    return new SimpleDateFormat(DateUtil.YYYY_MM_DD).parse(defaultValue);
+                } catch (ParseException e) {
+                    throw new IllegalArgumentException(e);
                 }
+            } else if (type.getName().equals(Boolean.class.getName())) {
+                return BooleanUtils.toBoolean(defaultValue);
+            } else if (type.isAssignableFrom(List.class)) {
+                return Arrays.asList(defaultValue.split(","));
+            } else {
+                String msg = "Unsupported property type " + type.getName();
+                log.error(msg);
+                throw new IllegalArgumentException(msg);
             }
         }
         return null;
