@@ -36,6 +36,7 @@ package info.magnolia.ui.form.config;
 import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.ContentPreviewDefinition;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
+import info.magnolia.ui.form.field.definition.PropertyBuilder;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 /**
@@ -179,5 +180,10 @@ public class LinkFieldBuilder extends AbstractFieldBuilder {
     @Override
     public LinkFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
         return (LinkFieldBuilder) super.validator(validatorBuilder);
+    }
+
+    @Override
+    public LinkFieldBuilder propertyBuilder(PropertyBuilder propertyBuilder) {
+        return (LinkFieldBuilder) super.propertyBuilder(propertyBuilder);
     }
 }

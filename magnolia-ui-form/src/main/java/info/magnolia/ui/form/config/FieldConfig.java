@@ -54,10 +54,6 @@ public class FieldConfig {
         return new LinkFieldBuilder(name);
     }
 
-    public MultiLinkFieldBuilder multiLink(String name) {
-        return new MultiLinkFieldBuilder(name);
-    }
-
     public SelectFieldBuilder select(String name) {
         return new SelectFieldBuilder(name);
     }
