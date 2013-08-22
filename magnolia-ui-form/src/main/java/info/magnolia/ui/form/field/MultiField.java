@@ -37,23 +37,18 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
-import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
-import info.magnolia.ui.vaadin.integration.NullItem;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomField;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.HorizontalLayout;
@@ -65,32 +60,23 @@ import com.vaadin.ui.VerticalLayout;
  * This generic MultiField allows to handle a Field Set. It handle :<br>
  * - The creation of new Field<br>
  * - The removal of Field<br>
- * The Field is build based on a generic {@link ConfiguredFieldDefinition}.
- * The Field values are handle by a configured {@link MultiValueHandler}.
- * 
+ * The Field is build based on a generic {@link ConfiguredFieldDefinition}.<br>
+ * The Field values are handle by a configured {@link info.magnolia.ui.form.field.property.PropertyHandler} dedicated to create/retrieve properties as List.<br>
+ *
  * @param <T>
  */
-public class MultiField<T> extends CustomField<List<T>> {
-    private static final Logger log = LoggerFactory.getLogger(MultiField.class);
+public class MultiField<T> extends AbstractCustomMultiField<MultiFieldDefinition, List<T>> {
 
     private VerticalLayout root;
     private final Button addButton = new NativeButton();
-
-    private final FieldFactoryFactory fieldFactoryFactory;
-    private final I18nContentSupport i18nContentSupport;
-    private final ComponentProvider componentProvider;
-    private final MultiFieldDefinition definition;
 
     private final ConfiguredFieldDefinition fieldDefinition;
     private String buttonCaptionAdd;
     private String buttonCaptionRemove;
 
-    public MultiField(MultiFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider) {
-        this.definition = definition;
+    public MultiField(MultiFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider, Item relatedFieldItem) {
+        super(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, relatedFieldItem);
         this.fieldDefinition = definition.getField();
-        this.fieldFactoryFactory = fieldFactoryFactory;
-        this.componentProvider = componentProvider;
-        this.i18nContentSupport = i18nContentSupport;
     }
 
     @Override
@@ -100,14 +86,15 @@ public class MultiField<T> extends CustomField<List<T>> {
         root = new VerticalLayout();
         root.setSizeUndefined();
 
-        // Initialize Existing field
-        initFields();
-
-        // Add addButton
+        // Init addButton
         addButton.setCaption(buttonCaptionAdd);
         addButton.addStyleName("magnoliabutton");
         addButton.addClickListener(addButtonClickListener());
-        root.addComponent(addButton);
+
+        // Initialize Existing field
+        initFields();
+
+        addValueChangeListener(datasourceListener);
 
         return root;
     }
@@ -121,7 +108,7 @@ public class MultiField<T> extends CustomField<List<T>> {
     @SuppressWarnings("unchecked")
     private Component createEntryComponent(T entry) {
         HorizontalLayout layout = new HorizontalLayout();
-        Field<T> field = createLocalField();
+        Field<T> field = (Field<T>) createLocalField(fieldDefinition, relatedFieldItem, true);
         layout.addComponent(field);
         if (entry != null) {
             field.getPropertyDataSource().setValue(entry);
@@ -168,62 +155,41 @@ public class MultiField<T> extends CustomField<List<T>> {
     /**
      * Listener used to update the Data source property.
      */
-    private Property.ValueChangeListener selectionListener = new ValueChangeListener() {
+    protected Property.ValueChangeListener selectionListener = new ValueChangeListener() {
+        @SuppressWarnings("unchecked")
         @Override
         public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
             List<T> currentValues = getCurrentValues(root);
-            setValue(currentValues);
+            getPropertyDataSource().setValue(currentValues);
         }
     };
+
 
     /**
      * Initialize the MultiField. <br>
      * Create as many configured Field as we have related values already stored.
      */
-    private void initFields() {
-        List<T> newValue = (List<T>) getPropertyDataSource().getValue();
-        List<T> currentValues = getCurrentValues(root);
+    @Override
+    protected void initFields(List<T> newValue) {
+        root.removeAllComponents();
         Iterator<T> it = newValue.iterator();
         while (it.hasNext()) {
             T entry = it.next();
-            if (!currentValues.contains(entry)) {
-                root.addComponent(createEntryComponent(entry));
-            }
+            root.addComponent(createEntryComponent(entry));
         }
-    };
+        root.addComponent(addButton);
+    }
 
     /**
      * Retrieve the Values stored as Field value.
      */
     private List<T> getCurrentValues(HasComponents root) {
-        Iterator<Component> it = root.iterator();
-        List<T> newValue = new ArrayList<T>();
-        while (it.hasNext()) {
-            Component c = it.next();
-            if (c instanceof AbstractField) {
-                newValue.add((T) ((AbstractField<?>) c).getConvertedValue());
-            } else if (c instanceof HasComponents) {
-                newValue.addAll(getCurrentValues((HasComponents) c));
-            }
+        List<AbstractField<List<T>>> fields = getFields(root, true);
+        List<T> newValue = new LinkedList<T>();
+        for (AbstractField<List<T>> field : fields) {
+            newValue.add((T) (field.getConvertedValue()));
         }
         return newValue;
-    }
-
-    /**
-     * Create a Configured Field that has to be added to the multiField.<br>
-     * As we do not want that the Configured field is bound to an existing Item but <br>
-     * rather to the custom property initialize by the factory, this Configured field is bound to <br>
-     * a <b>{@link NullItem}</b><br>
-     * .
-     */
-    private Field<T> createLocalField() {
-        NullItem item = new NullItem();
-        FieldFactory fieldfactory = fieldFactoryFactory.createFieldFactory(fieldDefinition, item);
-        fieldfactory.setComponentProvider(componentProvider);
-        fieldfactory.setI18nContentSupport(i18nContentSupport);
-        Field<?> field = fieldfactory.createField();
-        field.setCaption(null);
-        return (Field<T>) field;
     }
 
     @Override
