@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.config;
 
+import info.magnolia.ui.form.field.component.ContentPreviewComponent;
 import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.ContentPreviewDefinition;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
@@ -89,8 +90,13 @@ public class LinkFieldBuilder extends AbstractFieldBuilder {
         return this;
     }
 
-    public LinkFieldBuilder contentPreviewDefinition(ContentPreviewDefinition contentPreviewDefinition) {
-        definition().setContentPreviewDefinition(contentPreviewDefinition);
+    public LinkFieldBuilder contentPreviewClass(Class<ContentPreviewComponent<?>> contentPreviewClass) {
+        ContentPreviewDefinition contentPreviewDefinition = definition().getContentPreviewDefinition();
+        if (contentPreviewDefinition == null) {
+            contentPreviewDefinition = new ContentPreviewDefinition();
+            definition().setContentPreviewDefinition(contentPreviewDefinition);
+        }
+        contentPreviewDefinition.setContentPreviewClass(contentPreviewClass);
         return this;
     }
 
