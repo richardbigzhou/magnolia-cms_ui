@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.assertEquals;
 
+import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.LinkField;
 import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
@@ -56,6 +57,7 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         // GIVEN
         linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
+        linkFieldFactory.setComponentProvider(new MockComponentProvider());
         // WHEN
         Field field = linkFieldFactory.createField();
 
@@ -73,6 +75,8 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         baseItem = new JcrNodeAdapter(baseNode);
         linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
+        linkFieldFactory.setComponentProvider(new MockComponentProvider());
+
         // WHEN
         Field field = linkFieldFactory.createField();
 
@@ -87,6 +91,7 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         // GIVEN
         linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
+        linkFieldFactory.setComponentProvider(new MockComponentProvider());
         definition.setButtonSelectNewLabel("New");
         definition.setButtonSelectOtherLabel("Other");
         // WHEN
@@ -105,6 +110,7 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         baseItem = new JcrNodeAdapter(baseNode);
         linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
+        linkFieldFactory.setComponentProvider(new MockComponentProvider());
         definition.setButtonSelectNewLabel("New");
         definition.setButtonSelectOtherLabel("Other");
         // WHEN
@@ -123,6 +129,7 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         baseItem = new JcrNodeAdapter(baseNode);
         linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
         linkFieldFactory.setI18nContentSupport(i18nContentSupport);
+        linkFieldFactory.setComponentProvider(new MockComponentProvider());
         Field field = linkFieldFactory.createField();
         assertEquals("notChanged", ((LinkField) field).getTextField().getValue());
         // WHEN
