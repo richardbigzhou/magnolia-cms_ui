@@ -34,7 +34,6 @@
 package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.ui.form.field.StaticField;
-import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
 
 import com.vaadin.data.Item;
@@ -73,8 +72,4 @@ public class StaticFieldFactory<D extends StaticFieldDefinition> extends Abstrac
         // do nothing specific
     }
 
-    @Override
-    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
-        return String.class;
-    }
 }

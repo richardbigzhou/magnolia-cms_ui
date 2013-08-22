@@ -34,14 +34,10 @@
 package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.HashSet;
-import java.util.LinkedList;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.OptionGroup;
 
@@ -60,6 +56,9 @@ public class OptionGroupFieldFactory extends SelectFieldFactory<OptionGroupField
         select.setMultiSelect(getFieldDefinition().isMultiselect());
         if (select.isMultiSelect()) {
             select.setNullSelectionAllowed(true);
+            // In case of MultiSelect, type will be set by the getDefaultFieldType().
+            // In any case it should be set to a simple type (String, Long...)
+            definition.setType(null);
         }
         return select;
     }
@@ -69,24 +68,13 @@ public class OptionGroupFieldFactory extends SelectFieldFactory<OptionGroupField
         return new OptionGroup();
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    protected Property<?> getOrCreateProperty() {
+    protected Class<?> getDefaultFieldType() {
         if (!select.isMultiSelect()) {
-            return super.getOrCreateProperty();
-        }
-        String propertyName = definition.getName();
-        Property<?> property = item.getItemProperty(propertyName);
-        if (property == null) {
-            property = new DefaultProperty(HashSet.class, new HashSet());
+            return String.class;
         } else {
-            // Convert LinkedList to HashSet. (Vaadin Select support only Set)
-            LinkedList value = (LinkedList) property.getValue();
-            property = new DefaultProperty(HashSet.class, new HashSet(value));
-            ((JcrNodeAdapter) item).removeItemProperty(propertyName);
+            return HashSet.class;
         }
-        item.addItemProperty(propertyName, property);
-
-        return property;
     }
+
 }
