@@ -47,6 +47,7 @@ import info.magnolia.ui.dialog.setup.migration.CheckBoxRadioControlMigration;
 import info.magnolia.ui.dialog.setup.migration.CheckBoxSwitchControlMigration;
 import info.magnolia.ui.dialog.setup.migration.ControlMigration;
 import info.magnolia.ui.dialog.setup.migration.DamControlMigration;
+import info.magnolia.ui.dialog.setup.migration.DataUUIDMultiSelectControlMigration;
 import info.magnolia.ui.dialog.setup.migration.DateControlMigration;
 import info.magnolia.ui.dialog.setup.migration.EditCodeControlMigration;
 import info.magnolia.ui.dialog.setup.migration.EditControlMigration;
@@ -100,15 +101,17 @@ public class DialogMigrationTask extends AbstractTask {
      */
     @Override
     public void execute(InstallContext installContext) throws TaskExecutionException {
+        Session session = null;
+        String newDialogPath = null;
         try {
             this.controlMigrationMap = getCustomMigrationTask();
             String dialogNodeName = "dialogs";
             String dialogPath = "/modules/" + moduleName + "/" + dialogNodeName;
 
-            Session session = installContext.getJCRSession(RepositoryConstants.CONFIG);
+            session = installContext.getJCRSession(RepositoryConstants.CONFIG);
             Node dialog = session.getNode(dialogPath);
             // Copy to Dialog50
-            String newDialogPath = dialog.getPath() + "50";
+            newDialogPath = dialog.getPath() + "50";
             copyInSession(dialog, newDialogPath);
             NodeUtil.visit(dialog, new NodeVisitor() {
                 @Override
@@ -127,6 +130,16 @@ public class DialogMigrationTask extends AbstractTask {
         } catch (Exception e) {
             log.error("", e);
             installContext.warn("Could not Migrate Dialog for the following module " + moduleName);
+            throw new TaskExecutionException("Could not Migrate Dialog ", e);
+        } finally {
+            try {
+                // In any cases remove the tmp dialog migration node.
+                if (session != null && session.nodeExists(newDialogPath)) {
+                    session.getNode(newDialogPath).remove();
+                }
+            } catch (RepositoryException re) {
+                log.warn("", re);
+            }
         }
     }
 
@@ -147,8 +160,8 @@ public class DialogMigrationTask extends AbstractTask {
         customMigrationTask.put("dam", new DamControlMigration());
         customMigrationTask.put("uuidLink", new LinkControlMigration());
         customMigrationTask.put("link", new LinkControlMigration());
-        customMigrationTask.put("categorizationUUIDMultiSelect", new MultiSelectControlMigration(true));
         customMigrationTask.put("multiselect", new MultiSelectControlMigration(false));
+        customMigrationTask.put("dataUUIDMultiSelect", new DataUUIDMultiSelectControlMigration(true));
         customMigrationTask.put("file", new FileControlMigration());
         customMigrationTask.put("static", new StaticControlMigration());
         customMigrationTask.put("hidden", new HiddenControlMigration());
