@@ -33,35 +33,14 @@
  */
 package info.magnolia.ui.form.field.property;
 
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-
 /**
- * Abstract Base Implementation of {@link MultiValueHandler} used to <br>
- * - store a List of values into a single property <br>
- * - retrieve a List of Value from a single property ,<br>
- * .
- * Expose a generic method that create or retrieve a generic Property (simple or multi value property).
+ * Custom Property definition.
  * 
- * @param <T> type of the element list.
+ * @param <T>
  */
-public abstract class AbstractMultiValueHandler<T> implements MultiValueHandler<T> {
+public interface CustomPropertyType<T> {
 
-    /**
-     * If the desired property (propertyName) already exist in the JcrNodeAdapter, return this property<br>
-     * else create a new Property.
-     *
-     * @param <T>
-     */
-    @SuppressWarnings("unchecked")
-    public <T> DefaultProperty<T> getOrCreateProperty(Class<T> type, T defaultValue, JcrNodeAdapter parent, String propertyName) {
+    PropertyHandler<T> getHandler();
 
-        DefaultProperty<T> property = (DefaultProperty<T>) parent.getItemProperty(propertyName);
-        if (property == null) {
-            property = new DefaultProperty<T>(type, defaultValue);
-            parent.addItemProperty(propertyName, property);
-        }
-        return property;
-    }
 
 }

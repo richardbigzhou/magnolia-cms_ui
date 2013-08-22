@@ -33,42 +33,31 @@
  */
 package info.magnolia.ui.form.field.property;
 
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.api.i18n.I18NAwareHandler;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.inject.Inject;
 
 /**
- * Multi values properties implementation of {@link MultiValueHandler}.<br>
- * Store the list of values as Jcr Multi-property value.<br>
- * Retrieve the Jcr Multi value property as a list.
+ * Base definition for a {@link com.vaadin.data.Property} handler.<br>
+ * Implemented Handler have the responsibility to : <br>
+ * - write : Convert the T newValue to a specific Item format (Single Item property, Multi Item property, Multi sub Items...) <br>
+ * - read : Transform a specific Item values (single property, Multi. property, sub Items) to a specified type T. <br>
  * 
- * @param <T> type of the element list.
+ * @param <T> type of the element handled.
  */
-public class MultiValuesHandler<T> extends AbstractMultiValueHandler<T> {
+public interface PropertyHandler<T> extends I18NAwareHandler {
 
-    private JcrNodeAdapter parent;
-    private String propertyName;
+    /**
+     * Convert the T newValue to a specific Item format.<br>
+     */
+    void writeToDataSourceItem(T newValue);
 
-    @Inject
-    public MultiValuesHandler(JcrNodeAdapter parent, String propertyName) {
-        this.parent = parent;
-        this.propertyName = propertyName;
-    }
+    /**
+     * Transform a specific Item values to a specified type T.<br>
+     */
+    T readFromDataSourceItem();
 
-    @Override
-    public void setValue(List<T> newValue) {
-        DefaultProperty<List> property = getOrCreateProperty(List.class, new LinkedList<T>(), parent, propertyName);
-        property.setValue(new LinkedList<T>(newValue));
-    }
-
-    @Override
-    public List<T> getValue() {
-        DefaultProperty<List> property = getOrCreateProperty(List.class, new LinkedList<T>(), parent, propertyName);
-        return property.getValue();
-    }
-
+    /**
+     * Return true if this Property has to support i18n.
+     */
+    boolean hasI18NSupport();
 }

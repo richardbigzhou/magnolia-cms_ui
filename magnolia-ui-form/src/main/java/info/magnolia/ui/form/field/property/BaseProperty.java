@@ -33,25 +33,60 @@
  */
 package info.magnolia.ui.form.field.property;
 
-import java.util.List;
+
+import com.vaadin.data.util.ObjectProperty;
 
 /**
- * Implemented class have the responsibility to: <br>
- * - store a List of values in a specific format (simple/multi value property/ sub nodes/...).<br>
- * - retrieve properties stored in any format and transform then as a List.
+ * Basic implementation of an {@link ObjectProperty} that implements {@link CustomPropertyType}.<br>
+ * This base property delegate to the {@link PropertyHandler} the read and write of the value to the datasource.<br>
  * 
- * @param <T> type of the element list.
+ * @param <T>.
  */
-public interface MultiValueHandler<T> {
+
+public class BaseProperty<T> extends ObjectProperty<T> implements CustomPropertyType<T> {
+
+    protected PropertyHandler<T> handler;
+
+    public BaseProperty(PropertyHandler<T> handler, Class<T> type) {
+        super(handler.readFromDataSourceItem(), type);
+        this.handler = handler;
+    }
+
+    public BaseProperty(PropertyHandler<T> handler) {
+        super(handler.readFromDataSourceItem());
+        this.handler = handler;
+    }
+
+    @Override
+    public void setValue(T newValue) throws com.vaadin.data.Property.ReadOnlyException {
+        super.setValue(newValue);
+        if (handler != null) {
+            handler.writeToDataSourceItem(newValue);
+        }
+    }
+
+    @Override
+    public T getValue() {
+        return super.getValue();
+    }
+
+    @Override
+    public PropertyHandler<T> getHandler() {
+        return handler;
+    }
 
     /**
-     * @param newValue Set the newValue to the appropriate property.
+     * @return true if the handler support I18N.
      */
-    void setValue(List<T> newValue);
+    public boolean hasI18NSupport() {
+        return handler.hasI18NSupport();
+    }
 
     /**
-     * @return a List representation of the related property.
+     * In case of i18n change, Reload the Value returned by the Handler.
      */
-    List<T> getValue();
-
+    public void fireI18NValueChange() {
+        setValue(handler.readFromDataSourceItem());
+        super.fireValueChange();
+    }
 }
