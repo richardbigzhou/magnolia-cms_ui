@@ -67,6 +67,8 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
 
     private List<FieldValidatorDefinition> validators = new ArrayList<FieldValidatorDefinition>();
 
+    private PropertyBuilder propertyBuilder;
+
     @Override
     public String getName() {
         return name;
@@ -177,6 +179,15 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
 
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
+    }
+
+    @Override
+    public PropertyBuilder getPropertyBuilder() {
+        return this.propertyBuilder;
+    }
+
+    public void setPropertyBuilder(PropertyBuilder propertyBuilder) {
+        this.propertyBuilder = propertyBuilder;
     }
 
 }
