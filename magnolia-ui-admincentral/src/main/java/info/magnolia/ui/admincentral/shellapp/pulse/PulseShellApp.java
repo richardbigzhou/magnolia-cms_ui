@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class PulseShellApp implements ShellApp, PulseMessagesPresenter.Listener, MessagePresenter.Listener {
 
-    private static final Logger log = LoggerFactory.getLogger(PulseShellAppTest.class);
+    private static final Logger log = LoggerFactory.getLogger(PulseShellApp.class);
 
     private PulseView pulseView;
     private PulseMessagesPresenter messages;
