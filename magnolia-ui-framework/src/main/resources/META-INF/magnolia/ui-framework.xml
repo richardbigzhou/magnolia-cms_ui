@@ -64,10 +64,6 @@
       <implementation>info.magnolia.ui.api.action.ConfiguredActionDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.api.i18n.I18NAwareProperty</type>
-      <implementation>info.magnolia.ui.framework.i18n.I18NAwarePropertyImpl</implementation>
-    </type-mapping>
-    <type-mapping>
       <type>info.magnolia.ui.api.availability.AvailabilityDefinition</type>
       <implementation>info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition</implementation>
     </type-mapping>
