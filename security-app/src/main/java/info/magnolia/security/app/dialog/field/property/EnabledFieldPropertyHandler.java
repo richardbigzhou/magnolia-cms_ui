@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,28 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.security.app.dialog.field;
+package info.magnolia.security.app.dialog.field.property;
 
-import info.magnolia.security.app.dialog.field.property.ManagementFieldPropertyHandler;
-import info.magnolia.ui.form.field.definition.PropertyBuilder;
-import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
-import info.magnolia.ui.form.field.property.CustomPropertyType;
-import info.magnolia.ui.form.field.property.PropertyHandler;
-import info.magnolia.ui.form.field.property.basic.BasicProperty;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.property.basic.BasicPropertyHandler;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 
 /**
- * A definition for the Role Management field.
+ * {@link info.magnolia.ui.form.field.property.PropertyHandler} implementation used for {@link info.magnolia.security.app.dialog.field.EnabledFieldFactory}.
+ * 
+ * @param <T>
  */
-public class RoleManagementFieldDefinition extends TwinColSelectFieldDefinition {
+public class EnabledFieldPropertyHandler<T> extends BasicPropertyHandler<T> {
 
-    /**
-     * Option group need a specific {@link PropertyHandler} in order to handle the creation of the basic property.
-     */
-    @SuppressWarnings("unchecked")
-    public RoleManagementFieldDefinition() {
-        PropertyBuilder propertyBuilder = new PropertyBuilder();
-        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) ManagementFieldPropertyHandler.class);
-        propertyBuilder.setPropertyType((Class<? extends CustomPropertyType<?>>) (Object) BasicProperty.class);
-        setPropertyBuilder(propertyBuilder);
+    public EnabledFieldPropertyHandler(Item parent, ConfiguredFieldDefinition definition, String fieldTypeName) {
+        super(parent, definition, fieldTypeName);
     }
+
+    @Override
+    public T readFromDataSourceItem() {
+        Property old = parent.getItemProperty("enabled");
+        String stringValue = "true";
+        if (old != null) {
+            stringValue = old.toString();
+        }
+        DefaultProperty<T> prop = new DefaultProperty(Boolean.class, Boolean.parseBoolean(stringValue));
+        parent.removeItemProperty("enabled");
+        parent.addItemProperty("enabled", prop);
+        return prop.getValue();
+    }
+
 }
