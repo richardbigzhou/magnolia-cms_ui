@@ -108,4 +108,6 @@ public interface FieldDefinition {
 
     List<FieldValidatorDefinition> getValidators();
 
+    PropertyBuilder getPropertyBuilder();
+
 }
