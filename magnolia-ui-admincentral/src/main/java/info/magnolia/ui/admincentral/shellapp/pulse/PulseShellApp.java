@@ -43,13 +43,17 @@ import info.magnolia.ui.framework.shell.ShellImpl;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Pulse shell app.
  */
 public final class PulseShellApp implements ShellApp, PulseMessagesPresenter.Listener, MessagePresenter.Listener {
 
-    private PulseView pulseView;
+    private static final Logger log = LoggerFactory.getLogger(PulseShellAppTest.class);
 
+    private PulseView pulseView;
     private PulseMessagesPresenter messages;
     private MessagePresenter messagePresenter;
     private ShellImpl shell;
@@ -82,9 +86,19 @@ public final class PulseShellApp implements ShellApp, PulseMessagesPresenter.Lis
 
     @Override
     public void locationChanged(Location location) {
-        shell.hideAllMessages();
-        if (currentViewType == PulseViewType.LIST) {
-            showList();
+        if ("pulse".equals(location.getAppName()) && location.getParameter().contains("messages")) {
+            String[] params = location.getParameter().split("/");
+            if (params.length == 2) {
+                String messageId = params[1];
+                openMessage(messageId);
+            } else {
+                log.warn("Got a request to open a message detail but found no message id in the location parameters. Location was [{}]", location);
+            }
+        } else {
+            shell.hideAllMessages();
+            if (currentViewType == PulseViewType.LIST) {
+                showList();
+            }
         }
     }
 

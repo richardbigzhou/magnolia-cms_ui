@@ -226,7 +226,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         try {
             return JcrItemUtil.getJcrItem(getWorkspace(), (String) itemId);
         } catch (PathNotFoundException p) {
-            log.debug("Could not access itemId {} in workspace {} - {}. Most likely it has been (re)moved in the meantime.", new Object[]{itemId, getWorkspace(), p.toString()});
+            log.debug("Could not access itemId {} in workspace {} - {}. Most likely it has been (re)moved in the meantime.", new Object[] { itemId, getWorkspace(), p.toString() });
         } catch (RepositoryException e) {
             handleRepositoryException(log, "Could not retrieve jcr item with id: " + itemId, e);
         }
@@ -440,7 +440,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     /**
      * Determines a new offset for updating the row cache. The offset is calculated from the given index, and will be
      * fixed to match the start of a page, based on the value of pageLength.
-     *
+     * 
      * @param index Index of the item that was requested, but not found in cache
      */
     private void updateOffsetAndCache(int index) {
@@ -483,7 +483,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**
      * Updates this container by storing the items found in the query result passed as argument.
-     *
+     * 
      * @see #getPage()
      */
     private void updateItems(final QueryResult queryResult) throws RepositoryException {
@@ -522,7 +522,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
                 String defaultOrder = workbenchDefinition.getDefaultOrder();
                 String[] defaultOrders = defaultOrder.split(",");
                 for (String current : defaultOrders) {
-                    sorters.add(new OrderBy(current, true));
+                    sorters.add(getDefaultOrderBy(current));
                 }
             }
             stmt.append(ORDER_BY);
@@ -531,7 +531,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
                 String propertyName = orderBy.getProperty();
                 sortOrder = orderBy.isAscending() ? ASCENDING_KEYWORD : DESCENDING_KEYWORD;
                 if (ModelConstants.JCR_NAME.equals(propertyName)) {
-                    stmt.append(JCR_NAME_FUNCTION).append(sortOrder).append(", ");
+                    stmt.append(getJcrNameOrderByFunction()).append(sortOrder).append(", ");
                     continue;
                 }
                 stmt.append(SELECTOR_NAME);
@@ -541,6 +541,20 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         }
         log.debug("Constructed JCR query is {}", stmt);
         return stmt.toString();
+    }
+
+    /**
+     * @return an {@link OrderBy} object for the passed in property to be used for the default order by clause.
+     */
+    protected OrderBy getDefaultOrderBy(final String property) {
+        return new OrderBy(property, true);
+    }
+
+    /**
+     * @return the jcr function used to sort the node name (or jcr name property) column. By default it's {@link #JCR_NAME_FUNCTION}.
+     */
+    protected String getJcrNameOrderByFunction() {
+        return JCR_NAME_FUNCTION;
     }
 
     /**
@@ -701,7 +715,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         if (offset >= 0) {
             query.setOffset(offset);
         }
-        log.debug("Executing query against workspace [{}] with statement [{}] and limit {} and offset {}...", new Object[]{getWorkspace(), statement, limit, offset});
+        log.debug("Executing query against workspace [{}] with statement [{}] and limit {} and offset {}...", new Object[] { getWorkspace(), statement, limit, offset });
         long start = System.currentTimeMillis();
         final QueryResult result = query.execute();
         log.debug("Query execution took {} ms", System.currentTimeMillis() - start);
@@ -711,7 +725,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**
      * Central method for uniform treatment of RepositoryExceptions in JcrContainers.
-     *
+     * 
      * @param logger logger to be used - passed in so subclasses can still user their proper logger
      * @param message message to be used in the handling
      * @param repositoryException exception to be handled
@@ -721,9 +735,9 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     /**
-     * @return a Set of searchable {@link NodeType}s. A searchable node type is defined as follow
+     * @return a Set of searchable {@link NodeType}s. A searchable node type is defined as follows
      * <ul>
-     * <li>It is a <a href="http://jackrabbit.apache.org/node-types.html">primary or mixin</a> node type configured under <code>/modules/myapp/apps/myapp/subApps/browser/workbench/nodeTypes</code>
+     * <li>It is a <a href="http://jackrabbit.apache.org/node-types.html">primary or mixin</a> node type configured under <code>/modules/mymodule/apps/myapp/subApps/browser/workbench/nodeTypes</code>
      * <li>It is not hidden in list and search views (property <code>hideInList=true</code>). By default nodes are not hidden.
      * <li>If not strict (property <code>strict=false</code>), then its subtypes (if any) are searchable too. By default nodes are not defined as strict.
      * <li>Subtypes beginning with <code>jcr:, nt:, mix:, rep:</code> are not taken into account.
@@ -747,7 +761,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
             final NodeTypeManager nodeTypeManager = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getWorkspace().getNodeTypeManager();
 
             for (NodeTypeDefinition def : nodeTypeDefinition) {
-            final String nodeTypeName = def.getName();
+                final String nodeTypeName = def.getName();
                 if (hiddenInList.contains(nodeTypeName)) {
                     continue;
                 }
@@ -765,13 +779,13 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
                 while (subTypesIterator.hasNext()) {
                     final NodeType subType = subTypesIterator.nextNodeType();
                     final String subTypeName = subType.getName();
-                        if (hiddenInList.contains(subTypeName) || subTypeName.startsWith("jcr:") || subTypeName.startsWith("mix:") || subTypeName.startsWith("rep:") || subTypeName.startsWith("nt:")) {
+                    if (hiddenInList.contains(subTypeName) || subTypeName.startsWith("jcr:") || subTypeName.startsWith("mix:") || subTypeName.startsWith("rep:") || subTypeName.startsWith("nt:")) {
                         continue;
                     }
                     log.debug("Adding {} as subtype of {}", subTypeName, nodeTypeName);
                     searchableNodeTypes.add(subType);
                 }
-        }
+            }
         } catch (LoginException e) {
             handleRepositoryException(log, e.getMessage(), e);
 

@@ -71,7 +71,6 @@
 
   .v-select-twincol {
     font-size: 12px;
-    width: 510px ! important;
   }
 
   .v-select-twincol-buttons {
@@ -81,7 +80,6 @@
 
   .v-select-twincol-options,
   .v-select-twincol-selections {
-    width: 230px !important;
     font-family: Verdana, sans-serif;
     font-size: 12px;
     border: 1px solid $c14;
@@ -98,14 +96,10 @@
   /*a bit hackish -  right caption is positioned absolutely whereas left caption is floating left */
   .v-select-twincol-caption-right {
       color: $c10;
-      left: 443px;
-      position: absolute;
-      width: 200px !important;
   }
 
   .v-select-twincol-caption-left {
       color: $c10;
-      width: 200px !important;
   }
 
   input.v-textfield-readonly, textarea.v-textarea-readonly {

@@ -62,14 +62,12 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
 import com.vaadin.annotations.PreserveOnRefresh;
-import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
 
 /**
  * The Application's "main" class.
  */
-@Theme("admincentral")
 @PreserveOnRefresh
 public class AdmincentralUI extends UI {
 

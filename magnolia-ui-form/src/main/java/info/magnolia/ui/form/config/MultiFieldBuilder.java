@@ -46,7 +46,7 @@ public class MultiFieldBuilder extends AbstractFieldBuilder {
     private MultiFieldDefinition definition = new MultiFieldDefinition();
 
     public MultiFieldBuilder(String name) {
-        definition.setName(name);
+        definition().setName(name);
     }
 
     @Override
@@ -55,23 +55,23 @@ public class MultiFieldBuilder extends AbstractFieldBuilder {
     }
 
     public MultiFieldBuilder field(AbstractFieldBuilder fieldBuilder) {
-        definition.setField(fieldBuilder.definition());
+        definition().setField(fieldBuilder.definition());
         return this;
     }
 
     public MultiFieldBuilder multiValueHandler(Class<? extends MultiValueHandler> multiValueHandlerClass) {
         SaveModeType saveModeType = new SaveModeType();
         saveModeType.setMultiValueHandlerClass(multiValueHandlerClass);
-        definition.setSaveModeType(saveModeType);
+        definition().setSaveModeType(saveModeType);
         return this;
     }
 
     public void buttonSelectRemoveLabel(String buttonSelectRemoveLabel) {
-        definition.setButtonSelectRemoveLabel(buttonSelectRemoveLabel);
+        definition().setButtonSelectRemoveLabel(buttonSelectRemoveLabel);
     }
 
     public void buttonSelectAddLabel(String buttonSelectAddLabel) {
-        definition.setButtonSelectAddLabel(buttonSelectAddLabel);
+        definition().setButtonSelectAddLabel(buttonSelectAddLabel);
     }
 
     // Overrides for methods in parent class changing return type to allow method chaining

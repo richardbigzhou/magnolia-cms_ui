@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.form.config;
 
+import info.magnolia.ui.form.field.component.ContentPreviewComponent;
 import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
-import info.magnolia.ui.form.field.definition.ContentPreviewDefinition;
 import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
 import info.magnolia.ui.form.field.definition.SaveModeType;
 import info.magnolia.ui.form.field.property.MultiValueHandler;
@@ -57,19 +57,22 @@ public class MultiLinkFieldBuilder extends LinkFieldBuilder {
     }
 
     public MultiLinkFieldBuilder multiValueHandler(Class<? extends MultiValueHandler> multiValueHandlerClass) {
-        SaveModeType saveModeType = new SaveModeType();
+        SaveModeType saveModeType = definition().getSaveModeType();
+        if (saveModeType == null) {
+            saveModeType = new SaveModeType();
+            definition().setSaveModeType(saveModeType);
+        }
         saveModeType.setMultiValueHandlerClass(multiValueHandlerClass);
-        definition.setSaveModeType(saveModeType);
         return this;
     }
 
     public MultiLinkFieldBuilder buttonSelectAddLabel(String buttonSelectAddLabel) {
-        definition.setButtonSelectAddLabel(buttonSelectAddLabel);
+        definition().setButtonSelectAddLabel(buttonSelectAddLabel);
         return this;
     }
 
     public MultiLinkFieldBuilder buttonSelectRemoveLabel(String buttonSelectRemoveLabel) {
-        definition.setButtonSelectRemoveLabel(buttonSelectRemoveLabel);
+        definition().setButtonSelectRemoveLabel(buttonSelectRemoveLabel);
         return this;
     }
 
@@ -111,8 +114,8 @@ public class MultiLinkFieldBuilder extends LinkFieldBuilder {
     }
 
     @Override
-    public MultiLinkFieldBuilder contentPreviewDefinition(ContentPreviewDefinition contentPreviewDefinition) {
-        return (MultiLinkFieldBuilder) super.contentPreviewDefinition(contentPreviewDefinition);
+    public MultiLinkFieldBuilder contentPreviewClass(Class<ContentPreviewComponent<?>> contentPreviewClass) {
+        return (MultiLinkFieldBuilder) super.contentPreviewClass(contentPreviewClass);
     }
 
     @Override
