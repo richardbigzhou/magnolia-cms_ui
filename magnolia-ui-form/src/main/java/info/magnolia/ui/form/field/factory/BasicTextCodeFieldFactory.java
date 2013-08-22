@@ -42,10 +42,8 @@ import org.vaadin.aceeditor.AceEditor;
 import org.vaadin.aceeditor.AceMode;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
-
 import com.vaadin.ui.Field;
 
 /**
@@ -54,10 +52,10 @@ import com.vaadin.ui.Field;
  * @param <D> type of definition
  */
 public class BasicTextCodeFieldFactory<D extends BasicTextCodeFieldDefinition> extends AbstractFieldFactory<D, String> {
-    
+
     private static final Logger log = LoggerFactory.getLogger(BasicTextCodeFieldFactory.class);
     private AceEditor field;
-    
+
     public BasicTextCodeFieldFactory(D definition, Item relatedFieldItem) {
         super(definition, relatedFieldItem);
     }
@@ -65,21 +63,21 @@ public class BasicTextCodeFieldFactory<D extends BasicTextCodeFieldDefinition> e
     @Override
     protected Field<String> createFieldComponent() {
         field = newAceEditor();
-        // Add a TextChange Listener. This is needed as the current AceEditor implementation do not update the 
+        // Add a TextChange Listener. This is needed as the current AceEditor implementation do not update the
         // linked datasource in case of text change.
         field.addTextChangeListener(createTextChangeListener(field));
-        // Set style 
+        // Set style
         field.setStyleName("textcodefield");
-        
+
         return field;
     }
 
     /**
-     * @return newly constructed {@link AceEditor}. 
+     * @return newly constructed {@link AceEditor}.
      */
     protected AceEditor newAceEditor() {
         AceEditor aceEditor =  new AceEditor();
-        aceEditor.setMode(checkModeType(definition.getLanguage())); 
+        aceEditor.setMode(checkModeType(definition.getLanguage()));
         return aceEditor;
     }
 
@@ -89,17 +87,17 @@ public class BasicTextCodeFieldFactory<D extends BasicTextCodeFieldDefinition> e
     protected void setAceEditorMode() {
         field.setMode(checkModeType(definition.getLanguage()));
     }
-    
-    /** 
-     * @return current {@link AceEditor} field. 
+
+    /**
+     * @return current {@link AceEditor} field.
      */
     protected AceEditor getField() {
         return field;
     }
 
     /**
-     * Create a {@link TextChangeListener} in order to populate the typed text in the 
-     * related property datasource. 
+     * Create a {@link TextChangeListener} in order to populate the typed text in the
+     * related property datasource.
      */
     private TextChangeListener createTextChangeListener(final AceEditor field) {
         return new TextChangeListener() {
@@ -123,20 +121,6 @@ public class BasicTextCodeFieldFactory<D extends BasicTextCodeFieldDefinition> e
             log.warn("Couldn't found the specified language {}. Text language will be used. ",language);
             return AceMode.text.name();
         }
-    }
-
-    /**
-     * Set the DataSource of the current field.
-     * Current implementation do not support null property value.
-     */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    @Override
-    protected Property<?> getOrCreateProperty() {
-        Property p = super.getOrCreateProperty();
-        if (p.getValue() == null) {
-            p.setValue("");
-        }
-        return p;
     }
 
 }
