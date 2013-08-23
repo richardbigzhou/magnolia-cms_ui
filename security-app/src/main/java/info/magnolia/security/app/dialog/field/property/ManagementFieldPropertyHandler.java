@@ -37,7 +37,10 @@ import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.property.basic.BasicPropertyHandler;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
+import java.util.HashSet;
 import java.util.Set;
+
+import javax.inject.Inject;
 
 import com.vaadin.data.Item;
 
@@ -50,11 +53,13 @@ public class ManagementFieldPropertyHandler<T> extends BasicPropertyHandler<T> {
     private Set<String> assignedEntity;
     private String entityName;
 
-    public ManagementFieldPropertyHandler(Item parent, ConfiguredFieldDefinition definition, String fieldTypeName, Set<String> assignedEntity, String entityName) {
-        super(parent, definition, fieldTypeName);
+    @Inject
+    public ManagementFieldPropertyHandler(Item parent, ConfiguredFieldDefinition definition, Class<?> type, Set<String> assignedEntity, String entityName) {
+        super(parent, definition, type.getName());
         this.assignedEntity = assignedEntity;
         this.entityName = entityName;
     }
+
 
     /**
      * Do nothing yet.
@@ -62,6 +67,10 @@ public class ManagementFieldPropertyHandler<T> extends BasicPropertyHandler<T> {
      */
     @Override
     public void writeToDataSourceItem(T newValue) {
+        if (newValue == null) {
+            newValue = (T) new HashSet();
+        }
+        super.writeToDataSourceItem(newValue);
     }
 
     @Override

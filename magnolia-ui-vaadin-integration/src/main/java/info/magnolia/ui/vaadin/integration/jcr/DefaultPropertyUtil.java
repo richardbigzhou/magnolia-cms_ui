@@ -147,6 +147,8 @@ public class DefaultPropertyUtil {
                 }
             } else if (type.getName().equals(Boolean.class.getName())) {
                 return BooleanUtils.toBoolean(defaultValue);
+            } else if (type.getName().equals(BigDecimal.class.getName())) {
+                return BigDecimal.valueOf(Long.decode(defaultValue));
             } else if (type.isAssignableFrom(List.class)) {
                 return Arrays.asList(defaultValue.split(","));
             } else {

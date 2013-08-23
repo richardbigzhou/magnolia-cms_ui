@@ -163,7 +163,7 @@ public class RoleManagementFieldFactory extends TwinColSelectFieldFactory<RoleMa
 
     @Override
     protected PropertyHandler<?> initializePropertyHandler(Class<? extends PropertyHandler<?>> handlerClass, Class<?> type) {
-        return this.componentProvider.newInstance(handlerClass, item, definition, componentProvider, type.getName(), getAssignedRoles(), "roles");
+        return this.componentProvider.newInstance(handlerClass, item, definition, type, getAssignedRoles(), "roles");
     }
 
 }

@@ -39,6 +39,7 @@ import static org.mockito.Mockito.*;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
+import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTest;
 import info.magnolia.ui.form.field.factory.LinkFieldFactory;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTestCase;
@@ -92,6 +93,7 @@ public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<
         baseItem.addItemProperty(LinkFieldFactory.PATH_PROPERTY_NAME, DefaultPropertyUtil.newDefaultProperty(String.class, null));
         builder = new LinkFieldSelectionFactory(definition, baseItem, workbenchPresenter, eventBus);
         builder.setI18nContentSupport(i18nContentSupport);
+        builder.setComponentProvider(new MockComponentProvider());
 
         // WHEN
         Field field = builder.createField();
@@ -107,6 +109,7 @@ public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<
         baseItem.addItemProperty(LinkFieldFactory.PATH_PROPERTY_NAME, DefaultPropertyUtil.newDefaultProperty(String.class, null));
         builder = new LinkFieldSelectionFactory(definition, baseItem, workbenchPresenter, eventBus);
         builder.setI18nContentSupport(i18nContentSupport);
+        builder.setComponentProvider(new MockComponentProvider());
         Field field = builder.createField();
         items.add((JcrItemAdapter) baseItem);
 
@@ -126,6 +129,7 @@ public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<
         baseItem.addItemProperty("newProperty", DefaultPropertyUtil.newDefaultProperty(String.class, "initial"));
         builder = new LinkFieldSelectionFactory(definition, baseItem, workbenchPresenter, eventBus);
         builder.setI18nContentSupport(i18nContentSupport);
+        builder.setComponentProvider(new MockComponentProvider());
         Field field = builder.createField();
         items.add((JcrItemAdapter) baseItem);
 

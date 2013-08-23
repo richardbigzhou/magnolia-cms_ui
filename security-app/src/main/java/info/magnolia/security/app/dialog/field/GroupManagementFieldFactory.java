@@ -190,6 +190,6 @@ public class GroupManagementFieldFactory extends TwinColSelectFieldFactory<Group
 
     @Override
     protected PropertyHandler<?> initializePropertyHandler(Class<? extends PropertyHandler<?>> handlerClass, Class<?> type) {
-        return this.componentProvider.newInstance(handlerClass, item, definition, componentProvider, type.getName(), getAssignedGroups(), "groups");
+        return this.componentProvider.newInstance(handlerClass, item, definition, type, getAssignedGroups(), "groups");
     }
 }

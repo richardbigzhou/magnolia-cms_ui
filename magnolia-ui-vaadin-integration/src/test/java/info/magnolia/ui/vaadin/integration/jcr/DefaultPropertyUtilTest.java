@@ -38,6 +38,7 @@ import static org.junit.Assert.*;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.jcr.Binary;
 import javax.jcr.PropertyType;
@@ -60,6 +61,20 @@ public class DefaultPropertyUtilTest {
         assertEquals(1970, cal.get(Calendar.YEAR));
         assertEquals(6, cal.get(Calendar.MONTH));
         assertEquals(4, cal.get(Calendar.DAY_OF_MONTH));
+    }
+
+    @Test
+    public void testCreateTypedValueForList() throws Exception {
+        // GIVEN
+        final String value = "a,b,c";
+
+        // WHEN
+        List<String> result = (List<String>) DefaultPropertyUtil.createTypedValue(List.class, value);
+
+        // THEN
+        assertTrue(result.contains("a"));
+        assertTrue(result.contains("b"));
+        assertTrue(result.contains("c"));
     }
 
     @Test

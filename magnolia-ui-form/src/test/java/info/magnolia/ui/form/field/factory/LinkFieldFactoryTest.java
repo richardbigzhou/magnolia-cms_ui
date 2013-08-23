@@ -86,40 +86,6 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         assertEquals(baseNode.getPath(), field.getValue());
     }
 
-    @Test
-    public void linkField_SetButtonCaptionNewTest() throws Exception {
-        // GIVEN
-        linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
-        linkFieldFactory.setI18nContentSupport(i18nContentSupport);
-        linkFieldFactory.setComponentProvider(new MockComponentProvider());
-        definition.setButtonSelectNewLabel("New");
-        definition.setButtonSelectOtherLabel("Other");
-        // WHEN
-        Field field = linkFieldFactory.createField();
-
-        // THEN
-        assertEquals(true, field instanceof LinkField);
-        assertEquals("New", ((LinkField) field).getSelectButton().getCaption());
-    }
-
-    @Test
-    public void linkField_SetButtonCaptionOtherTest() throws Exception {
-        // GIVEN
-        definition.setName(propertyName);
-        baseNode.setProperty(propertyName, "notChanged");
-        baseItem = new JcrNodeAdapter(baseNode);
-        linkFieldFactory = new LinkFieldFactory(definition, baseItem, null, null, null);
-        linkFieldFactory.setI18nContentSupport(i18nContentSupport);
-        linkFieldFactory.setComponentProvider(new MockComponentProvider());
-        definition.setButtonSelectNewLabel("New");
-        definition.setButtonSelectOtherLabel("Other");
-        // WHEN
-        Field field = linkFieldFactory.createField();
-
-        // THEN
-        assertEquals(true, field instanceof LinkField);
-        assertEquals("Other", ((LinkField) field).getSelectButton().getCaption());
-    }
 
     @Test
     public void linkField_SetFieldPropagation() throws Exception {
@@ -146,5 +112,6 @@ public class LinkFieldFactoryTest extends AbstractFieldFactoryTestCase<LinkField
         fieldDefinition.setFieldEditable(true);
         this.definition = fieldDefinition;
     }
+
 
 }

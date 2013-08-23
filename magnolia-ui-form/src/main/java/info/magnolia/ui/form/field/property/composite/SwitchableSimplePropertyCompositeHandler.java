@@ -35,7 +35,6 @@ package info.magnolia.ui.form.field.property.composite;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.property.PropertyHandler;
 
 import java.util.List;
 
@@ -43,7 +42,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
- * {@link PropertyHandler} implementation storing and retrieving SwitchableField informations as {@link PropertysetItem}.<br>
+ * {@link info.magnolia.ui.form.field.property.PropertyHandler} implementation storing and retrieving SwitchableField informations as {@link PropertysetItem}.<br>
  * Storing strategy: <br>
  * - property (definition.getName()) : contain the last selected field name <br>
  * - property (propertyPrefix + first field name): contain the value of the first field <br>

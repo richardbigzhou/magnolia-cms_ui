@@ -109,6 +109,38 @@ public class JcrItemUtilTest {
     }
 
     @Test
+    public void testGetItemPathForNode() throws Exception {
+        // GIVEN
+        MockUtil.initMockContext();
+        MockSession session = new MockSession("test");
+        MockUtil.setSessionAndHierarchyManager(session);
+        Node rootNode = session.getRootNode().addNode("new");
+
+
+        // WHEN
+        String res = JcrItemUtil.getItemPath(rootNode);
+
+        // THEN
+        assertEquals("/new", res);
+    }
+
+    @Test
+    public void testGetItemPathForProperty() throws Exception {
+        // GIVEN
+        MockUtil.initMockContext();
+        MockSession session = new MockSession("test");
+        MockUtil.setSessionAndHierarchyManager(session);
+        Node rootNode = session.getRootNode().addNode("new");
+        Property property = rootNode.setProperty("someProperty", "propertyValue");
+
+        // WHEN
+        String res = JcrItemUtil.getItemPath(property);
+
+        // THEN
+        assertEquals("/new@someProperty", res);
+    }
+
+    @Test
     public void testGetItemIdWithProperty() throws Exception {
         // Given
         final String nodeUuid = "ccb8ae64-3ad2-4ffd-93ce-367926f3bcd2";
