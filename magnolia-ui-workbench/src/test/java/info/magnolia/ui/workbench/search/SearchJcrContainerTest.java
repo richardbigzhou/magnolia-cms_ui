@@ -176,7 +176,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertContains("localname() LIKE '_x002a_foo%' or t.[_x002a_foo] IS NOT NULL", stmt);
+        assertContains("localname() LIKE '%2Afoo%' or t.[%2Afoo] IS NOT NULL", stmt);
     }
 
     @Test

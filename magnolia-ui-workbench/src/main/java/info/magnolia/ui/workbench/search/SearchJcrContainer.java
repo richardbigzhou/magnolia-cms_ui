@@ -38,7 +38,7 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.list.FlatJcrContainer;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.util.ISO9075;
+import org.apache.jackrabbit.util.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,11 +98,12 @@ public class SearchJcrContainer extends FlatJcrContainer {
         if (StringUtils.isBlank(getFullTextExpression())) {
             return "";
         }
+        final String unescapedFullTextExpression = getFullTextExpression();
         // See http://wiki.apache.org/jackrabbit/EncodingAndEscaping
-        final String escapedFullTextExpression = getFullTextExpression().replaceAll("'", "''").trim();
+        final String escapedFullTextExpression = unescapedFullTextExpression.replaceAll("'", "''").trim();
 
-        final String encodedSearch = ISO9075.encode(escapedFullTextExpression);
-        final String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, encodedSearch, encodedSearch, String.format("or " + CONTAINS_TEMPLATE_FOR_SEARCH, escapedFullTextExpression));
+        final String escapedSearch = Text.escapeIllegalJcrChars(unescapedFullTextExpression);
+        final String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, escapedSearch, escapedSearch, String.format("or " + CONTAINS_TEMPLATE_FOR_SEARCH, escapedFullTextExpression));
 
         log.debug("Search where-clause is {}", stmt);
         return stmt;
