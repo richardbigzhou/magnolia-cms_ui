@@ -257,7 +257,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         setViewType(viewType);
         select(itemIds);
 
-        if (viewType == SearchPresenterDefinition.VIEW_TYPE) {
+        if (SearchPresenterDefinition.VIEW_TYPE.equals(viewType)) {
             doSearch(query);
             // update search field and focus it
             view.setSearchQuery(query);
