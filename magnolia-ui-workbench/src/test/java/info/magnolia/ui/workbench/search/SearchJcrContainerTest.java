@@ -180,6 +180,18 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
+    public void testDigitsAreNotEncoded() throws Exception {
+        // GIVEN
+        jcrContainer.setFullTextExpression("1");
+
+        // WHEN
+        String stmt = jcrContainer.getQueryWhereClause();
+
+        // THEN
+        assertContains("localname() LIKE '1%' or t.[1] IS NOT NULL", stmt);
+    }
+
+    @Test
     public void testSearchResultsAreSortedByJcrScoreDesc() throws Exception {
 
         // WHEN
