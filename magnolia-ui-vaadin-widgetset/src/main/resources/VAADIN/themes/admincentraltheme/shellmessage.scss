@@ -36,6 +36,13 @@
   height: 25px;
 }
 
+.v-shell-message-detail {
+  height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+}
+
 .v-shell-notification .close {
   background: url("img/icon-close-16.png")no-repeat scroll 4px 4px transparent;
   vertical-align: text-top;
@@ -44,7 +51,8 @@
   height: 20px;
   width: 20px;
   float: right;
-  padding: 2px;
+  //padding: 2px;
+  padding: 2px 4px;
   margin: 0;
   right: 0;
   top: 0;
