@@ -57,6 +57,7 @@ public class EmbeddedPageSubAppTest extends MgnlTestCase {
     private EmbeddedPageView view;
     private String CONTEXT_PATH = "testContext";
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();

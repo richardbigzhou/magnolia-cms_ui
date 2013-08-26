@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.event.EventBusProtector;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
@@ -46,13 +47,12 @@ import info.magnolia.objectfactory.configuration.InstanceConfiguration;
 import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
-import info.magnolia.event.EventBusProtector;
+import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.message.LocalMessageDispatcher;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.api.shell.Shell;
-import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.api.view.View;
 
 import java.util.List;
 
@@ -62,14 +62,12 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
 import com.vaadin.annotations.PreserveOnRefresh;
-import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
 
 /**
  * The Application's "main" class.
  */
-@Theme("admincentral")
 @PreserveOnRefresh
 public class AdmincentralUI extends UI {
 

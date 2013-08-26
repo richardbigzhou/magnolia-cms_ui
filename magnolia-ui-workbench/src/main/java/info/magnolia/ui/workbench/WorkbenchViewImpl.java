@@ -108,7 +108,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
     private WorkbenchView.Listener listener;
 
-    public WorkbenchViewImpl(){
+    public WorkbenchViewImpl() {
 
         setSizeFull();
         setMargin(new MarginInfo(true, false, false, true));
@@ -150,7 +150,6 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
         addComponent(toolBar);
         setExpandRatio(toolBar, 0);
-
 
     }
 
@@ -282,7 +281,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
         // TextField has to be immediate to fire value changes when pressing Enter, avoiding ShortcutListener overkill.
         field.setImmediate(true);
-        field.addListener(searchFieldListener);
+        field.addValueChangeListener(searchFieldListener);
 
         field.addFocusListener(new FieldEvents.FocusListener() {
             @Override

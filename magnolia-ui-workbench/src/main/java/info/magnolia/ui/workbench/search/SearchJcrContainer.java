@@ -33,20 +33,14 @@
  */
 package info.magnolia.ui.workbench.search;
 
-import info.magnolia.ui.api.ModelConstants;
-import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
-import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
+import info.magnolia.ui.workbench.container.OrderBy;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.list.FlatJcrContainer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.util.ISO9075;
+import org.apache.jackrabbit.util.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * The jcr container backing the search view. It provides the subset of items returned by the current search. By default it will perform a full-text search OR a search on the jcr name
@@ -57,7 +51,9 @@ public class SearchJcrContainer extends FlatJcrContainer {
 
     protected static final String WHERE_TEMPLATE_FOR_SEARCH = "localname() LIKE '%1$s%%' or " + SELECTOR_NAME + ".[%2$s] IS NOT NULL %3$s";
 
-    protected static final String CONTAINS_TEMPLATE_FOR_SEARCH = "contains(" + SELECTOR_NAME + ".[%1$s], '%2$s')";
+    protected static final String CONTAINS_TEMPLATE_FOR_SEARCH = "contains(" + SELECTOR_NAME + ".*, '%1$s')";
+
+    protected static final String JCR_SCORE_FUNCTION = "score(" + SELECTOR_NAME + ")";
 
     private String fullTextExpression;
 
@@ -102,30 +98,16 @@ public class SearchJcrContainer extends FlatJcrContainer {
         if (StringUtils.isBlank(getFullTextExpression())) {
             return "";
         }
+        final String unescapedFullTextExpression = getFullTextExpression();
         // See http://wiki.apache.org/jackrabbit/EncodingAndEscaping
-        final String escapedFullTextExpression = getFullTextExpression().replaceAll("'", "''").trim();
+        final String escapedFullTextExpression = unescapedFullTextExpression.replaceAll("'", "''").trim();
 
-        final List<String> contains = new ArrayList<String>();
-
-        // build full-text search
-        for(ColumnDefinition columnDefinition : getColumnDefinitions()) {
-
-            final String propertyName = StringUtils.isNotBlank(columnDefinition.getPropertyName()) ? columnDefinition.getPropertyName() : columnDefinition.getName();
-
-            if (!columnDefinition.isSearchable() || ModelConstants.JCR_NAME.equals(propertyName)) {
-                log.debug("Skipping property {} from full-text search...", propertyName);
-                continue;
-            }
-            contains.add(String.format(CONTAINS_TEMPLATE_FOR_SEARCH, propertyName, escapedFullTextExpression));
-        }
-        final String containsExpression = StringUtils.join(contains, " or ");
-        final String encodedSearch = ISO9075.encode(escapedFullTextExpression);
-        final String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, encodedSearch, encodedSearch, StringUtils.isNotBlank(containsExpression) ? "or " + containsExpression : "");
+        final String escapedSearch = Text.escapeIllegalJcrChars(unescapedFullTextExpression);
+        final String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, escapedSearch, escapedSearch, String.format("or " + CONTAINS_TEMPLATE_FOR_SEARCH, escapedFullTextExpression));
 
         log.debug("Search where-clause is {}", stmt);
         return stmt;
     }
-
 
     public void setFullTextExpression(String fullTextExpression) {
         this.fullTextExpression = fullTextExpression;
@@ -135,13 +117,16 @@ public class SearchJcrContainer extends FlatJcrContainer {
         return fullTextExpression;
     }
 
-    private List<ColumnDefinition> getColumnDefinitions() {
-        for (ContentPresenterDefinition presenter : getWorkbenchDefinition().getContentViews()) {
-            if (presenter.getColumns() != null) {
-                return presenter.getColumns();
-            }
-        }
-        log.warn("no ContentPresenterDefinition containing columns definition was found, returning empty list");
-        return java.util.Collections.emptyList();
+    @Override
+    protected String getJcrNameOrderByFunction() {
+        return JCR_SCORE_FUNCTION;
+    }
+
+    @Override
+    /**
+     * Order by jcr score descending.
+     */
+    protected OrderBy getDefaultOrderBy(String property) {
+        return new OrderBy(property, false);
     }
 }

@@ -51,11 +51,11 @@ public class SwitchableFieldBuilder extends AbstractFieldBuilder {
     private SwitchableFieldDefinition definition = new SwitchableFieldDefinition();
 
     public SwitchableFieldBuilder(String name) {
-        definition.setName(name);
+        definition().setName(name);
         PropertyBuilder propertyBuilder = new PropertyBuilder();
         propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) SwitchableSimplePropertyCompositeHandler.class);
         propertyBuilder.setPropertyType((Class<? extends CustomPropertyType<?>>) (Object) CompositeProperty.class);
-        definition.setPropertyBuilder(propertyBuilder);
+        definition().setPropertyBuilder(propertyBuilder);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class SwitchableFieldBuilder extends AbstractFieldBuilder {
     }
 
     public void selectionType(String selectionType) {
-        definition.setSelectionType(selectionType);
+        definition().setSelectionType(selectionType);
     }
 
     public SwitchableFieldBuilder options(OptionBuilder... builders) {

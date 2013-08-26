@@ -33,11 +33,13 @@
  */
 package info.magnolia.ui.workbench.search;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
+import info.magnolia.ui.workbench.container.OrderBy;
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
@@ -137,7 +139,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertEquals(" where (([jcr:primaryType] = 'mgnl:content') and (localname() LIKE 'foo%' or t.[foo] IS NOT NULL or contains(t.[name], 'foo') or contains(t.[shortname], 'foo')) )", stmt);
+        assertEquals(" where (([jcr:primaryType] = 'mgnl:content') and (localname() LIKE 'foo%' or t.[foo] IS NOT NULL or contains(t.*, 'foo')) )", stmt);
     }
 
     @Test
@@ -149,7 +151,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertContains("contains(t.[name], 'foo OR ''baz bar''')", stmt);
+        assertContains("contains(t.*, 'foo OR ''baz bar''')", stmt);
     }
 
     @Test
@@ -174,7 +176,31 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertContains("localname() LIKE '_x002a_foo%' or t.[_x002a_foo] IS NOT NULL", stmt);
+        assertContains("localname() LIKE '%2Afoo%' or t.[%2Afoo] IS NOT NULL", stmt);
+    }
+
+    @Test
+    public void testDigitsAreNotEncoded() throws Exception {
+        // GIVEN
+        jcrContainer.setFullTextExpression("1");
+
+        // WHEN
+        String stmt = jcrContainer.getQueryWhereClause();
+
+        // THEN
+        assertContains("localname() LIKE '1%' or t.[1] IS NOT NULL", stmt);
+    }
+
+    @Test
+    public void testSearchResultsAreSortedByJcrScoreDesc() throws Exception {
+
+        // WHEN
+        String jcrOrderByFunction = jcrContainer.getJcrNameOrderByFunction();
+        OrderBy orderBy = jcrContainer.getDefaultOrderBy(ModelConstants.JCR_NAME);
+
+        // THEN
+        assertEquals(SearchJcrContainer.JCR_SCORE_FUNCTION, jcrOrderByFunction);
+        assertFalse(orderBy.isAscending());
     }
 
     protected void assertContains(final String searchString, final String string) {
