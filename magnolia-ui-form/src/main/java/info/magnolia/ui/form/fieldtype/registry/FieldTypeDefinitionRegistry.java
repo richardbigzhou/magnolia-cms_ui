@@ -37,6 +37,7 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
+import net.sf.cglib.proxy.Enhancer;
 
 import java.util.List;
 import java.util.Set;
@@ -68,6 +69,11 @@ public class FieldTypeDefinitionRegistry {
     }
 
     public FieldTypeDefinition getByDefinition(Class<? extends FieldDefinition> definitionClass) throws RegistrationException {
+        //TODO hack
+        while (Enhancer.isEnhanced(definitionClass)) {
+            definitionClass = (Class<? extends FieldDefinition>)definitionClass.getSuperclass();
+        }
+        //TODO end hack
         for (FieldTypeDefinitionProvider provider : registry.values()) {
             if (definitionClass.equals(provider.getFieldTypeDefinition().getDefinitionClass())) {
                 return provider.getFieldTypeDefinition();
