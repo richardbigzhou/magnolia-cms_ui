@@ -95,8 +95,6 @@ public class ListViewImpl implements ListView {
             }
         });
 
-        // TODO fgrilli: a workaround for MGNLUI-1651
-        table.addStyleName("no-header-checkbox");
         this.table = table;
         bindHandlers();
     }
