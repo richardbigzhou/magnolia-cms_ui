@@ -33,25 +33,26 @@
  */
 package info.magnolia.ui.mediaeditor;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
+import info.magnolia.ui.actionbar.ActionbarView;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.mediaeditor.field.MediaField;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalLayout;
 
 /**
  * Skeleton implementation of the media editor UI. Contains an actionbar and a dialog laid out horizontally.
  */
 public class MediaEditorViewImpl extends CustomComponent implements MediaEditorView {
-    
+
     private DialogView dialog;
-    
+
     private ActionbarView actionbar;
-    
+
     private HorizontalLayout root = new HorizontalLayout();
-    
+
     public MediaEditorViewImpl() {
         addStyleName("v-media-editor");
         setCompositionRoot(root);
@@ -59,7 +60,7 @@ public class MediaEditorViewImpl extends CustomComponent implements MediaEditorV
         root.setSizeFull();
         root.setSpacing(true);
     }
-    
+
     @Override
     public Component asVaadinComponent() {
         return this;

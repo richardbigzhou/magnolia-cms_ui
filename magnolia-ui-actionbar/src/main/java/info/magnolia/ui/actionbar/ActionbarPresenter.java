@@ -38,7 +38,6 @@ import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.actionbar.builder.ActionbarFactory;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
 import javax.inject.Inject;
 

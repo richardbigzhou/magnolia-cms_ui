@@ -37,6 +37,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.ActionbarView;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
@@ -54,7 +55,6 @@ import info.magnolia.ui.mediaeditor.event.MediaEditorCompletedEvent;
 import info.magnolia.ui.mediaeditor.event.MediaEditorCompletedEvent.CompletionType;
 import info.magnolia.ui.mediaeditor.event.MediaEditorCompletedEvent.Handler;
 import info.magnolia.ui.mediaeditor.event.MediaEditorInternalEvent;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

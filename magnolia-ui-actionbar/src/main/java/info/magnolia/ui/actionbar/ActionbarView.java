@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.actionbar;
+package info.magnolia.ui.actionbar;
 
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
