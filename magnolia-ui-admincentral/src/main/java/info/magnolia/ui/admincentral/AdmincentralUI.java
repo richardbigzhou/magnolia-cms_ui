@@ -108,7 +108,7 @@ public class AdmincentralUI extends UI {
         builder.withParent(parent);
         componentProvider = builder.build();
 
-        getPage().setTitle("Magnolia 5.0");
+        getPage().setTitle("Magnolia 5");
 
         AdmincentralPresenter presenter = componentProvider.newInstance(AdmincentralPresenter.class);
         View view = presenter.start();

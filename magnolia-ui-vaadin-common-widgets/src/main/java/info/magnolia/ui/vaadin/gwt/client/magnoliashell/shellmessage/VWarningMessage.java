@@ -43,7 +43,7 @@ import com.google.gwt.user.client.Element;
  */
 public class VWarningMessage extends VDetailedShellMessage {
 
-    private Element detailsExpanderEl = DOM.createElement("b");
+    private Element detailsExpanderEl = DOM.createElement("span");
 
     public VWarningMessage(MagnoliaShellView shell, String topic, String message, String id) {
         super(shell, topic, message, id);

@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage;
 
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.Callbacks;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellView;
@@ -46,6 +45,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.ui.HTML;
+import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.FadeAnimation;
 
 /**
  * Simple notification object that pops up when warnings/errors occur.
@@ -147,12 +147,20 @@ public abstract class ShellMessageWidget extends HTML {
     }
 
     public void hide() {
-        JQueryWrapper.select(this).slideUp(300, Callbacks.create(new JQueryCallback() {
+        /*JQueryWrapper.select(this).slideUp(300, Callbacks.create(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
                 removeFromParent();
             }
-        }));
+        }));     */
+        FadeAnimation fadeAnimation = new FadeAnimation(0,true);
+        fadeAnimation.addCallback(new JQueryCallback() {
+            @Override
+            public void execute(JQueryWrapper query) {
+                removeFromParent();
+            }
+        });
+        fadeAnimation.run(500,this.getElement());
     }
 
     public void hideWithoutTransition() {
