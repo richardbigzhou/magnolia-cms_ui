@@ -39,7 +39,7 @@ import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
-import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.actionbar.ActionbarView;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.AppContext;
@@ -48,7 +48,6 @@ import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -145,7 +144,7 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
 
         view.setItemView(itemView);
         actionbarPresenter.setListener(this);
-        ActionbarView actionbar = actionbarPresenter.start(subAppDescriptor.getActionbar());
+        ActionbarView actionbar = actionbarPresenter.start(subAppDescriptor.getActionbar(), subAppDescriptor.getActions());
 
         view.setActionbarView(actionbar);
 
@@ -187,18 +186,6 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
             Message error = new Message(MessageType.ERROR, i18n.translate("ui-contentapp.error.action.execution"), e.getMessage());
             appContext.sendLocalMessage(error);
         }
-    }
-
-    @Override
-    public String getLabel(String actionName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
-        return actionDefinition != null ? actionDefinition.getLabel() : null;
-    }
-
-    @Override
-    public String getIcon(String actionName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
-        return actionDefinition != null ? actionDefinition.getIcon() : null;
     }
 
 }

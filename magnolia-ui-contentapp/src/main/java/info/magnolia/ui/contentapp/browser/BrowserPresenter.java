@@ -36,8 +36,8 @@ package info.magnolia.ui.contentapp.browser;
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.ActionbarView;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.AppContext;
@@ -49,7 +49,6 @@ import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
@@ -140,7 +139,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         actionbarPresenter.setListener(this);
 
         WorkbenchView workbenchView = workbenchPresenter.start(subAppDescriptor.getWorkbench(), subAppDescriptor.getImageProvider(), subAppEventBus);
-        ActionbarView actionbar = actionbarPresenter.start(subAppDescriptor.getActionbar());
+        ActionbarView actionbar = actionbarPresenter.start(subAppDescriptor.getActionbar(), subAppDescriptor.getActions());
 
         view.setWorkbenchView(workbenchView);
         view.setActionbarView(actionbar);
@@ -334,18 +333,6 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
     @Override
     public void onActionBarSelection(String actionName) {
         executeAction(actionName);
-    }
-
-    @Override
-    public String getLabel(String itemName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(itemName);
-        return actionDefinition != null ? actionDefinition.getLabel() : null;
-    }
-
-    @Override
-    public String getIcon(String itemName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(itemName);
-        return actionDefinition != null ? actionDefinition.getIcon() : null;
     }
 
     /**

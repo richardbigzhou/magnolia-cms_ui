@@ -47,6 +47,7 @@ import info.magnolia.pages.app.editor.event.ComponentMoveEvent;
 import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.ActionbarView;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
@@ -69,7 +70,6 @@ import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.app.BaseSubApp;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.editor.PageEditorListener;
 import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
 import info.magnolia.ui.vaadin.editor.pagebar.PageBarView;
@@ -82,6 +82,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -159,13 +160,17 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         DetailLocation detailLocation = DetailLocation.wrap(location);
         super.start(detailLocation);
 
-        actionbarPresenter.setListener(this);
-        pageBarView.setListener(this);
         ActionbarDefinition actionbarDefinition = ((ContentSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getActionbar();
-        ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition);
+        Map<String, ActionDefinition> actionDefinitions = getSubAppContext().getSubAppDescriptor().getActions();
+        actionbarPresenter.setListener(this);
+        ActionbarView actionbar = actionbarPresenter.start(actionbarDefinition, actionDefinitions);
+
+        pageBarView.setListener(this);
+
         view.setActionbarView(actionbar);
         view.setPageBarView(pageBarView);
         view.setPageEditorView(pageEditorPresenter.start());
+
         goToLocation(detailLocation);
         return view;
     }
@@ -399,18 +404,6 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
             log.error("An error occurred while executing action [{}]", actionName, e);
             appContext.sendLocalMessage(error);
         }
-    }
-
-    @Override
-    public String getLabel(String actionName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
-        return (actionDefinition != null) ? actionDefinition.getLabel() : null;
-    }
-
-    @Override
-    public String getIcon(String actionName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
-        return (actionDefinition != null) ? actionDefinition.getIcon() : null;
     }
 
     @Override
