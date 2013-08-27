@@ -50,6 +50,9 @@ public class SelectFieldBuilder extends AbstractFieldBuilder {
         this.definition().setName(name);
     }
 
+    public SelectFieldBuilder() {
+    }
+
     @Override
     public SelectFieldDefinition definition() {
         return definition;

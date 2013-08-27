@@ -47,8 +47,11 @@ public class OptionGroupFieldBuilder extends SelectFieldBuilder {
     private final OptionGroupFieldDefinition definition = new OptionGroupFieldDefinition();
 
     public OptionGroupFieldBuilder(String name) {
-        super(name);
+        super();
         this.definition().setName(name);
+    }
+
+    public OptionGroupFieldBuilder() {
     }
 
     @Override

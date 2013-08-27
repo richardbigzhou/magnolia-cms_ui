@@ -66,12 +66,14 @@ public class MultiFieldBuilder extends AbstractFieldBuilder {
         return this;
     }
 
-    public void buttonSelectRemoveLabel(String buttonSelectRemoveLabel) {
+    public MultiFieldBuilder buttonSelectRemoveLabel(String buttonSelectRemoveLabel) {
         definition().setButtonSelectRemoveLabel(buttonSelectRemoveLabel);
+        return this;
     }
 
-    public void buttonSelectAddLabel(String buttonSelectAddLabel) {
+    public MultiFieldBuilder buttonSelectAddLabel(String buttonSelectAddLabel) {
         definition().setButtonSelectAddLabel(buttonSelectAddLabel);
+        return this;
     }
 
     // Overrides for methods in parent class changing return type to allow method chaining

@@ -63,8 +63,9 @@ public class SwitchableFieldBuilder extends AbstractFieldBuilder {
         return definition;
     }
 
-    public void selectionType(String selectionType) {
+    public SwitchableFieldBuilder selectionType(String selectionType) {
         definition().setSelectionType(selectionType);
+        return this;
     }
 
     public SwitchableFieldBuilder options(OptionBuilder... builders) {

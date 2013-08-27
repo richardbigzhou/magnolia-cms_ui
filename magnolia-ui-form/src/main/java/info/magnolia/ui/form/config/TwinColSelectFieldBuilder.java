@@ -47,7 +47,7 @@ public class TwinColSelectFieldBuilder extends OptionGroupFieldBuilder {
     private final TwinColSelectFieldDefinition definition = new TwinColSelectFieldDefinition();
 
     public TwinColSelectFieldBuilder(String name) {
-        super(name);
+        super();
         this.definition().setName(name);
     }
 
