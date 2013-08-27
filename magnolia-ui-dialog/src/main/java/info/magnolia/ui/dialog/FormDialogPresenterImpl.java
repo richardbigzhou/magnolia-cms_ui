@@ -34,6 +34,11 @@
 package info.magnolia.ui.dialog;
 
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.i18n.ContextLocaleProvider;
+import info.magnolia.i18n.I18nizer;
+import info.magnolia.i18n.TranslationServiceImpl;
+import info.magnolia.i18n.proxytoys.ProxytoysI18nizer;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -107,6 +112,11 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     public DialogView start(final Item item, DialogDefinition dialogDefinition, final OverlayLayer overlayLayer, EditorCallback callback) {
         this.callback = callback;
         this.item = item;
+
+        // TODO inject I18nizer
+        // TODO LocaleProvider might be passed to info.magnolia.i18n.I18nizer.decorate instead.
+        final I18nizer i18nizer = new ProxytoysI18nizer(new TranslationServiceImpl(), new ContextLocaleProvider(MgnlContext.getInstance()));
+        dialogDefinition = i18nizer.decorate(dialogDefinition);
 
         actionExecutor.setDialogDefinition(dialogDefinition);
         buildView(dialogDefinition);
