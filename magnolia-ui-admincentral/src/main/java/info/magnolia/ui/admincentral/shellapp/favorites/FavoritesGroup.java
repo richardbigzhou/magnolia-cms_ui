@@ -78,7 +78,7 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
     private EnterKeyShortcutListener enterKeyShortcutListener;
     private EscapeKeyShortcutListener escapeKeyShortcutListener;
     private Shell shell;
-    private Component currentlySelected;
+    private FavoritesView view;
 
     /**
      * Creates an empty placeholder group.
@@ -87,8 +87,9 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
         addStyleName("no-group");
     }
 
-    public FavoritesGroup(final AbstractJcrNodeAdapter favoritesGroup, final FavoritesView.Listener listener, final Shell shell) {
+    public FavoritesGroup(final AbstractJcrNodeAdapter favoritesGroup, final FavoritesView.Listener listener, final Shell shell, final FavoritesView view) {
         this.shell = shell;
+        this.view = view;
 
         addStyleName("favorites-group");
         construct(favoritesGroup, listener);
@@ -102,7 +103,7 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
 
                 @Override
                 public void onSelected(SelectedEvent event) {
-                    unselectCurrentlySelected(event.getComponent());
+                    view.updateSelection(event.getComponent());
                 }
             });
             favEntry.setGroup(this.relPath);
@@ -157,10 +158,6 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
     @Override
     public void removeSelectedListener(SelectedListener listener) {
         removeListener(SelectedEvent.class, listener, SelectedEvent.SELECTED_METHOD);
-    }
-
-    public void setCurrentlySelected(Component newSelection) {
-        currentlySelected = newSelection;
     }
 
     private void setEditable(boolean editable) {
@@ -325,21 +322,6 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
         @Override
         public void handleAction(Object sender, Object target) {
             reset();
-        }
-    }
-
-    /*
-     * Unselect currently selected item, as only one can be selected at any point in time.
-     */
-    private void unselectCurrentlySelected(Component newSelection) {
-        if (newSelection == currentlySelected) {
-            return;
-        }
-        if (currentlySelected instanceof FavoritesEntry) {
-            FavoritesEntry entry = (FavoritesEntry) currentlySelected;
-            entry.reset();
-        } else if (currentlySelected instanceof FavoritesGroup) {
-            ((FavoritesGroup) currentlySelected).reset();
         }
     }
 }

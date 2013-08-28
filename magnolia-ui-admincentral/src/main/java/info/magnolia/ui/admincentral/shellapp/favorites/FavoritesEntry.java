@@ -263,7 +263,6 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
     @Override
     public void addEditingListener(EditingListener listener) {
         addListener("onEdit", EditingEvent.class, listener, EditingEvent.EDITING_METHOD);
-
     }
 
     @Override
@@ -274,13 +273,11 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
     @Override
     public void addSelectedListener(SelectedListener listener) {
         addListener("onSelected", SelectedEvent.class, listener, SelectedEvent.SELECTED_METHOD);
-
     }
 
     @Override
     public void removeSelectedListener(SelectedListener listener) {
         removeListener(SelectedEvent.class, listener, SelectedEvent.SELECTED_METHOD);
-
     }
 
     private void doEditTitle(final FavoritesView.Listener listener) {

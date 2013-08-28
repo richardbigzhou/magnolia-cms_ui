@@ -73,7 +73,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
     private Shell shell;
     private SplitFeed splitPanel = new SplitFeed();
     private Label emptyPlaceHolder = new Label();
-    private Component currentlySelected;
+    private Component currentlySelectedFavoriteItem;
 
     @Override
     public String getId() {
@@ -166,7 +166,6 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
                             } else {
                                 wrapper.setDragStartMode(DragStartMode.WRAPPER);
                             }
-
                         }
                     });
                     favEntry.addSelectedListener(new SelectedListener() {
@@ -174,18 +173,18 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
                         @Override
                         public void onSelected(SelectedEvent event) {
                             final Component newSelection = event.getComponent();
-                            unselectCurrentlySelected(newSelection);
+                            updateSelection(newSelection);
                         }
                     });
                     noGroup.addComponent(wrapper);
                 } else {
-                    FavoritesGroup group = new FavoritesGroup(favoriteAdapter, listener, shell);
+                    FavoritesGroup group = new FavoritesGroup(favoriteAdapter, listener, shell, this);
                     group.addSelectedListener(new SelectedListener() {
 
                         @Override
                         public void onSelected(SelectedEvent event) {
                             final Component newSelection = event.getComponent();
-                            unselectCurrentlySelected(newSelection);
+                            updateSelection(newSelection);
                         }
                     });
                     splitPanel.getRightContainer().addComponent(group);
@@ -256,35 +255,17 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
         }
     }
 
-    /**
-     * Unselect currently selected item, as only one can be selected at any point in time.
-     */
-    private void unselectCurrentlySelected(Component newSelection) {
-        if (newSelection == currentlySelected) {
+    @Override
+    public void updateSelection(final Component newSelection) {
+        if (newSelection == currentlySelectedFavoriteItem) {
             return;
         }
-        if (currentlySelected instanceof FavoritesEntry) {
-            FavoritesEntry entry = (FavoritesEntry) currentlySelected;
+        if (currentlySelectedFavoriteItem instanceof FavoritesEntry) {
+            FavoritesEntry entry = (FavoritesEntry) currentlySelectedFavoriteItem;
             entry.reset();
-        } else if (currentlySelected instanceof FavoritesGroup) {
-            ((FavoritesGroup) currentlySelected).reset();
+        } else if (currentlySelectedFavoriteItem instanceof FavoritesGroup) {
+            ((FavoritesGroup) currentlySelectedFavoriteItem).reset();
         }
-        updateCurrentSelection(newSelection);
-    }
-
-    /**
-     * Updates the current selected element also in groups as they need to be aware of it, in case an entry within one of them is selected.
-     */
-    private void updateCurrentSelection(Component newSelection) {
-        currentlySelected = newSelection;
-        Iterator<Component> components = splitPanel.getRightContainer().iterator();
-
-        while (components.hasNext()) {
-            Component component = components.next();
-
-            if (component instanceof FavoritesGroup) {
-                ((FavoritesGroup) component).setCurrentlySelected(newSelection);
-            }
-        }
+        currentlySelectedFavoriteItem = newSelection;
     }
 }
