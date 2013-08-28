@@ -3,11 +3,11 @@
   <parent>
     <groupId>info.magnolia</groupId>
     <artifactId>magnolia-parent-pom-ce</artifactId>
-    <version>26</version>
+    <version>27</version>
   </parent>
   <groupId>info.magnolia.ui</groupId>
   <artifactId>magnolia-ui-project</artifactId>
-  <version>5.0.4</version>
+  <version>5.0.5-SNAPSHOT</version>
   <name>magnolia-ui-project</name>
   <packaging>pom</packaging>
   <properties>
@@ -16,8 +16,8 @@
     <javaVersion>1.6</javaVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <magnoliaVersion>5.0.4</magnoliaVersion>
-    <imagingVersion>3.0.1</imagingVersion>
+    <magnoliaVersion>5.0.5-SNAPSHOT</magnoliaVersion>
+    <imagingVersion>3.0.2-SNAPSHOT</imagingVersion>
     <vaadinVersion>7.0.7</vaadinVersion>
     <scmTagPrefix>magnolia-ui</scmTagPrefix>
 
@@ -29,7 +29,7 @@
     <connection>scm:git:http://git.magnolia-cms.com/magnolia_ui</connection>
     <developerConnection>scm:git:https://git.magnolia-cms.com/magnolia_ui</developerConnection>
     <url>http://git.magnolia-cms.com/gitweb/?p=magnolia_ui.git</url>
-    <tag>magnolia-ui-5.0.4</tag>
+    <tag>magnolia-ui-5.0.x</tag>
   </scm>
   <dependencyManagement>
     <dependencies>
