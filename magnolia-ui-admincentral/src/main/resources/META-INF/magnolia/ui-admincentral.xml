@@ -72,6 +72,14 @@
       <implementation>info.magnolia.ui.admincentral.AdmincentralPresenter</implementation>
     </component>
     <component>
+      <type>info.magnolia.ui.actionbar.ActionbarPresenter</type>
+      <implementation>info.magnolia.ui.actionbar.ActionbarPresenter</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.actionbar.ActionbarView</type>
+      <implementation>info.magnolia.ui.actionbar.ActionbarViewImpl</implementation>
+    </component>
+    <component>
       <type>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter</type>
       <implementation>info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter</implementation>
     </component>
