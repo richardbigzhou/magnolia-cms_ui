@@ -42,7 +42,6 @@ import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -241,17 +240,10 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
             return;
         }
         favoriteForm.close();
-        noGroup.reset();
-        Iterator<Component> components = splitPanel.getRightContainer().iterator();
-
-        while (components.hasNext()) {
-            Component component = components.next();
-            if (component instanceof EntryDragAndDropWrapper) {
-                component = ((EntryDragAndDropWrapper) component).getWrappedComponent();
-            }
-            if (component instanceof FavoritesGroup) {
-                ((FavoritesGroup) component).reset();
-            }
+        if (currentlySelectedFavoriteItem instanceof FavoritesEntry) {
+            ((FavoritesEntry) currentlySelectedFavoriteItem).reset();
+        } else if (currentlySelectedFavoriteItem instanceof FavoritesGroup) {
+            ((FavoritesGroup) currentlySelectedFavoriteItem).reset();
         }
     }
 
