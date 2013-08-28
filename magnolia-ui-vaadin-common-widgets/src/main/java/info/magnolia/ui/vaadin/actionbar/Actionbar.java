@@ -64,7 +64,7 @@ public class Actionbar extends AbstractComponent {
         setSizeFull();
         setWidth(null);
         setImmediate(true);
-        setOpened(true);
+        setOpen(true);
         registerRpc(new ActionbarServerRpc() {
 
             @Override
@@ -87,15 +87,6 @@ public class Actionbar extends AbstractComponent {
             removeStyleName("open");
         }
 
-    }
-
-    public void setOpened(boolean isOpen) {
-        getState().isOpen = isOpen;
-        if (isOpen) {
-            addStyleName("open");
-        } else {
-            removeStyleName("open");
-        }
     }
 
     @Override
