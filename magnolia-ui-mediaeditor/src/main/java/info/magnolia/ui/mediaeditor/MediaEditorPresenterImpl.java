@@ -38,7 +38,6 @@ import info.magnolia.event.HandlerRegistration;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.ActionbarView;
-import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.AppContext;
@@ -118,9 +117,8 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     @Override
     public View start(final InputStream stream) {
         try {
-            final ActionbarView actionbar = actionbarPresenter.start(definition.getActionBar());
+            final ActionbarView actionbar = actionbarPresenter.start(definition.getActionBar(), definition.getActions());
             final DialogView dialogView = dialogPresenter.start(new ConfiguredDialogDefinition(), appContext);
-
             this.dataSource = new EditHistoryTrackingPropertyImpl(IOUtils.toByteArray(stream), i18n);
             this.dataSource.setListener(this);
             view.setActionBar(actionbar);
@@ -177,18 +175,6 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     @Override
     public void onActionbarItemClicked(String actionName) {
         doExecuteMediaEditorAction(actionName);
-    }
-
-    @Override
-    public String getLabel(String actionName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
-        return actionDefinition != null ? actionDefinition.getLabel() : null;
-    }
-
-    @Override
-    public String getIcon(String actionName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(actionName);
-        return actionDefinition != null ? actionDefinition.getIcon() : null;
     }
 
     @Override
