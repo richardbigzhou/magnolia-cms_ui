@@ -68,7 +68,7 @@ public class BasicPropertyHandler<T> extends AbstractBaseHandler<T> implements P
      */
     @Override
     public void writeToDataSourceItem(T newValue) {
-        Property<T> p = (Property<T>) getOrCreateProperty(fieldType, "", newValue);
+        Property<T> p = getOrCreateProperty(fieldType, null);
         p.setValue(newValue);
     }
 
@@ -80,7 +80,7 @@ public class BasicPropertyHandler<T> extends AbstractBaseHandler<T> implements P
     @Override
     public T readFromDataSourceItem() {
         String defaultValue = definition.getDefaultValue();
-        Property<T> p = (Property<T>) getOrCreateProperty(fieldType, defaultValue, null);
+        Property<T> p = (Property<T>) getOrCreateProperty(fieldType, defaultValue);
         if (definition.isReadOnly()) {
             p.setReadOnly(true);
         }

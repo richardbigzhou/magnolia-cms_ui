@@ -56,7 +56,7 @@ public class TwinSelectPropertyHandler<T> extends BasicPropertyHandler<T> {
 
     @Override
     public void writeToDataSourceItem(T newValue) {
-        Property<T> p = (Property<T>) getOrCreateProperty(fieldType, "", newValue);
+        Property<T> p = getOrCreateProperty(fieldType, null);
         if (p.getValue() instanceof Set && newValue instanceof List) {
             newValue = (T) new HashSet((List) newValue);
         } else if (p.getValue() instanceof List && newValue instanceof Set) {

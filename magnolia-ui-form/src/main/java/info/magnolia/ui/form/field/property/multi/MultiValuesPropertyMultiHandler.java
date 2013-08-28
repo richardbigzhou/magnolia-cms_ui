@@ -63,13 +63,16 @@ public class MultiValuesPropertyMultiHandler<T> extends AbstractBaseHandler<List
 
     @Override
     public void writeToDataSourceItem(List<T> newValue) {
-        Property<List> property = getOrCreateProperty(List.class, null, new LinkedList<T>());
+        Property<List> property = getOrCreateProperty(List.class, null);
         property.setValue(new LinkedList<T>(newValue));
     }
 
     @Override
     public List<T> readFromDataSourceItem() {
-        Property<List> property = getOrCreateProperty(List.class,null,  new LinkedList<T>());
+        Property<List> property = getOrCreateProperty(List.class, null);
+        if (property.getValue() == null) {
+            property.setValue(new LinkedList<T>());
+        }
         return property.getValue();
     }
 

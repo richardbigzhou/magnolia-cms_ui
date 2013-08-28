@@ -61,11 +61,11 @@ import com.vaadin.data.Property;
  * <ul>
  * <li>childNode (nodeName = subNodeName)
  * <ul>
- * <li>valueNode1 (nodeName = 20 first char of the related list value) <br>
+ * <li>valueNode1 (nodeName = 20 first char of the related value) <br>
  * valueNode1.listValue (propertyName = subNodeName)</li>
  * </ul>
  * <ul>
- * <li>valueNode2 (nodeName = 20 first char of the related list value) <br>
+ * <li>valueNode2 (nodeName = 20 first char of the related value) <br>
  * valueNode2.listValue (propertyName = subNodeName)</li>
  * </ul>
  * </li>
