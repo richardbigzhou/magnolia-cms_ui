@@ -57,7 +57,7 @@ import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.TreeTable;
 
 /**
- * Vaadin UI component that displays a tree.
+ * Default Vaadin implementation of the tree view.
  */
 public class TreeViewImpl extends ListViewImpl implements TreeView {
 
