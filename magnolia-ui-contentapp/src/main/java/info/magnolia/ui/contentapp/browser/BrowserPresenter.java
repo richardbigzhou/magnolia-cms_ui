@@ -38,7 +38,6 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.ActionbarView;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.AppContext;
@@ -140,7 +139,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         actionbarPresenter.setListener(this);
 
         WorkbenchView workbenchView = workbenchPresenter.start(subAppDescriptor.getWorkbench(), subAppDescriptor.getImageProvider(), subAppEventBus);
-        ActionbarView actionbar = actionbarPresenter.start(subAppDescriptor.getActionbar());
+        ActionbarView actionbar = actionbarPresenter.start(subAppDescriptor.getActionbar(), subAppDescriptor.getActions());
 
         view.setWorkbenchView(workbenchView);
         view.setActionbarView(actionbar);
@@ -334,18 +333,6 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
     @Override
     public void onActionBarSelection(String actionName) {
         executeAction(actionName);
-    }
-
-    @Override
-    public String getLabel(String itemName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(itemName);
-        return actionDefinition != null ? actionDefinition.getLabel() : null;
-    }
-
-    @Override
-    public String getIcon(String itemName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(itemName);
-        return actionDefinition != null ? actionDefinition.getIcon() : null;
     }
 
     /**
