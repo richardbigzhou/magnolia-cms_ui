@@ -171,8 +171,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
 
                         @Override
                         public void onSelected(SelectedEvent event) {
-                            final Component newSelection = event.getComponent();
-                            updateSelection(newSelection);
+                            updateSelection(event.getComponent());
                         }
                     });
                     noGroup.addComponent(wrapper);
@@ -182,8 +181,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
 
                         @Override
                         public void onSelected(SelectedEvent event) {
-                            final Component newSelection = event.getComponent();
-                            updateSelection(newSelection);
+                            updateSelection(event.getComponent());
                         }
                     });
                     splitPanel.getRightContainer().addComponent(group);
@@ -245,6 +243,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
         } else if (currentlySelectedFavoriteItem instanceof FavoritesGroup) {
             ((FavoritesGroup) currentlySelectedFavoriteItem).reset();
         }
+        currentlySelectedFavoriteItem = null;
     }
 
     @Override
@@ -253,8 +252,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
             return;
         }
         if (currentlySelectedFavoriteItem instanceof FavoritesEntry) {
-            FavoritesEntry entry = (FavoritesEntry) currentlySelectedFavoriteItem;
-            entry.reset();
+            ((FavoritesEntry) currentlySelectedFavoriteItem).reset();
         } else if (currentlySelectedFavoriteItem instanceof FavoritesGroup) {
             ((FavoritesGroup) currentlySelectedFavoriteItem).reset();
         }

@@ -79,6 +79,7 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
     private EscapeKeyShortcutListener escapeKeyShortcutListener;
     private Shell shell;
     private FavoritesView view;
+    private Component currentlySelectedFavEntry;
 
     /**
      * Creates an empty placeholder group.
@@ -103,6 +104,7 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
 
                 @Override
                 public void onSelected(SelectedEvent event) {
+                    currentlySelectedFavEntry = event.getComponent();
                     view.updateSelection(event.getComponent());
                 }
             });
@@ -117,7 +119,6 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
                     } else {
                         wrapper.setDragStartMode(DragStartMode.WRAPPER);
                     }
-
                 }
             });
             addComponent(wrapper);
@@ -142,8 +143,10 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
             Component component = components.next();
             if (component instanceof EntryDragAndDropWrapper) {
                 component = ((EntryDragAndDropWrapper) component).getWrappedComponent();
-            }
-            if (component instanceof FavoritesEntry) {
+            } else if (component instanceof FavoritesEntry) {
+                if (component == currentlySelectedFavEntry) {
+                    continue;
+                }
                 FavoritesEntry fav = (FavoritesEntry) component;
                 fav.reset();
             }
