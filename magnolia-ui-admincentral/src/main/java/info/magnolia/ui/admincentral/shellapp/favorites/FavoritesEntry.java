@@ -36,6 +36,8 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingListener;
 import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingNotifier;
+import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedListener;
+import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedNotifier;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
@@ -63,7 +65,7 @@ import com.vaadin.ui.TextField;
 /**
  * FavoritesEntry.
  */
-public final class FavoritesEntry extends CustomComponent implements EditingNotifier {
+public final class FavoritesEntry extends CustomComponent implements EditingNotifier, SelectedNotifier {
 
     private HorizontalLayout root = new HorizontalLayout();
     private String location;
@@ -78,7 +80,6 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
     private EnterKeyShortcutListener enterKeyShortcutListener;
     private EscapeKeyShortcutListener escapeKeyShortcutListener;
     private Shell shell;
-
 
     public FavoritesEntry(final AbstractJcrNodeAdapter favorite, final FavoritesView.Listener listener, final Shell shell) {
         super();
@@ -132,6 +133,7 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
         this.selected = selected;
         if (selected) {
             addStyleName("selected");
+            fireEvent(new SelectedEvent(this));
         } else {
             removeStyleName("selected");
         }
@@ -163,7 +165,6 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
         iconLabel.setStyleName("icon");
         iconLabel.setContentMode(ContentMode.HTML);
         root.addComponent(iconLabel);
-
 
         titleField = new TextField();
         titleField.setValue(title);
@@ -270,6 +271,18 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
         removeListener(EditingEvent.class, listener, EditingEvent.EDITING_METHOD);
     }
 
+    @Override
+    public void addSelectedListener(SelectedListener listener) {
+        addListener("onSelected", SelectedEvent.class, listener, SelectedEvent.SELECTED_METHOD);
+
+    }
+
+    @Override
+    public void removeSelectedListener(SelectedListener listener) {
+        removeListener(SelectedEvent.class, listener, SelectedEvent.SELECTED_METHOD);
+
+    }
+
     private void doEditTitle(final FavoritesView.Listener listener) {
         if (StringUtils.isBlank(titleField.getValue())) {
             shell.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("favorites.title.required"));
@@ -312,4 +325,5 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
             reset();
         }
     }
+
 }

@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingListener;
+import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedListener;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
@@ -64,7 +65,7 @@ import com.vaadin.ui.TextField;
 /**
  * Favorite group.
  */
-public final class FavoritesGroup extends CssLayout {
+public final class FavoritesGroup extends CssLayout implements SelectedEvent.SelectedNotifier {
 
     private TextField titleField;
     private NativeButton editButton;
@@ -77,6 +78,7 @@ public final class FavoritesGroup extends CssLayout {
     private EnterKeyShortcutListener enterKeyShortcutListener;
     private EscapeKeyShortcutListener escapeKeyShortcutListener;
     private Shell shell;
+    private Component currentlySelected;
 
     /**
      * Creates an empty placeholder group.
@@ -96,6 +98,13 @@ public final class FavoritesGroup extends CssLayout {
         for (String key : nodeAdapters.keySet()) {
             final AbstractJcrNodeAdapter fav = nodeAdapters.get(key);
             final FavoritesEntry favEntry = new FavoritesEntry(fav, listener, shell);
+            favEntry.addSelectedListener(new SelectedListener() {
+
+                @Override
+                public void onSelected(SelectedEvent event) {
+                    unselectCurrentlySelected(event.getComponent());
+                }
+            });
             favEntry.setGroup(this.relPath);
             final EntryDragAndDropWrapper wrapper = new EntryDragAndDropWrapper(favEntry, listener);
             favEntry.addEditingListener(new EditingListener() {
@@ -133,11 +142,25 @@ public final class FavoritesGroup extends CssLayout {
             if (component instanceof EntryDragAndDropWrapper) {
                 component = ((EntryDragAndDropWrapper) component).getWrappedComponent();
             }
-            if(component instanceof FavoritesEntry) {
+            if (component instanceof FavoritesEntry) {
                 FavoritesEntry fav = (FavoritesEntry) component;
                 fav.reset();
             }
         }
+    }
+
+    @Override
+    public void addSelectedListener(SelectedListener listener) {
+        addListener("onSelected", SelectedEvent.class, listener, SelectedEvent.SELECTED_METHOD);
+    }
+
+    @Override
+    public void removeSelectedListener(SelectedListener listener) {
+        removeListener(SelectedEvent.class, listener, SelectedEvent.SELECTED_METHOD);
+    }
+
+    public void setCurrentlySelected(Component newSelection) {
+        currentlySelected = newSelection;
     }
 
     private void setEditable(boolean editable) {
@@ -161,6 +184,7 @@ public final class FavoritesGroup extends CssLayout {
         this.selected = selected;
         if (selected) {
             wrapper.addStyleName("selected");
+            fireEvent(new SelectedEvent(this));
         } else {
             wrapper.removeStyleName("selected");
         }
@@ -301,6 +325,21 @@ public final class FavoritesGroup extends CssLayout {
         @Override
         public void handleAction(Object sender, Object target) {
             reset();
+        }
+    }
+
+    /*
+     * Unselect currently selected item, as only one can be selected at any point in time.
+     */
+    private void unselectCurrentlySelected(Component newSelection) {
+        if (newSelection == currentlySelected) {
+            return;
+        }
+        if (currentlySelected instanceof FavoritesEntry) {
+            FavoritesEntry entry = (FavoritesEntry) currentlySelected;
+            entry.reset();
+        } else if (currentlySelected instanceof FavoritesGroup) {
+            ((FavoritesGroup) currentlySelected).reset();
         }
     }
 }

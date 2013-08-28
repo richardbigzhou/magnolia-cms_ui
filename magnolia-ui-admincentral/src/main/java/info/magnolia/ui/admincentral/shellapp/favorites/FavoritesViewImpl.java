@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingListener;
+import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedListener;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
@@ -72,6 +73,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
     private Shell shell;
     private SplitFeed splitPanel = new SplitFeed();
     private Label emptyPlaceHolder = new Label();
+    private Component currentlySelected;
 
     @Override
     public String getId() {
@@ -167,9 +169,25 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
 
                         }
                     });
+                    favEntry.addSelectedListener(new SelectedListener() {
+
+                        @Override
+                        public void onSelected(SelectedEvent event) {
+                            final Component newSelection = event.getComponent();
+                            unselectCurrentlySelected(newSelection);
+                        }
+                    });
                     noGroup.addComponent(wrapper);
                 } else {
                     FavoritesGroup group = new FavoritesGroup(favoriteAdapter, listener, shell);
+                    group.addSelectedListener(new SelectedListener() {
+
+                        @Override
+                        public void onSelected(SelectedEvent event) {
+                            final Component newSelection = event.getComponent();
+                            unselectCurrentlySelected(newSelection);
+                        }
+                    });
                     splitPanel.getRightContainer().addComponent(group);
                 }
             }
@@ -234,6 +252,38 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
             }
             if (component instanceof FavoritesGroup) {
                 ((FavoritesGroup) component).reset();
+            }
+        }
+    }
+
+    /**
+     * Unselect currently selected item, as only one can be selected at any point in time.
+     */
+    private void unselectCurrentlySelected(Component newSelection) {
+        if (newSelection == currentlySelected) {
+            return;
+        }
+        if (currentlySelected instanceof FavoritesEntry) {
+            FavoritesEntry entry = (FavoritesEntry) currentlySelected;
+            entry.reset();
+        } else if (currentlySelected instanceof FavoritesGroup) {
+            ((FavoritesGroup) currentlySelected).reset();
+        }
+        updateCurrentSelection(newSelection);
+    }
+
+    /**
+     * Updates the current selected element also in groups as they need to be aware of it, in case an entry within one of them is selected.
+     */
+    private void updateCurrentSelection(Component newSelection) {
+        currentlySelected = newSelection;
+        Iterator<Component> components = splitPanel.getRightContainer().iterator();
+
+        while (components.hasNext()) {
+            Component component = components.next();
+
+            if (component instanceof FavoritesGroup) {
+                ((FavoritesGroup) component).setCurrentlySelected(newSelection);
             }
         }
     }
