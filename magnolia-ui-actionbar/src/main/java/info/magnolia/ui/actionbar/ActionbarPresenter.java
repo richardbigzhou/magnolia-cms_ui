@@ -40,7 +40,6 @@ import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarItemDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 
 import java.util.ArrayList;
@@ -69,8 +68,6 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     }
 
     private static final Logger log = LoggerFactory.getLogger(ActionbarPresenter.class);
-
-    private static final String PREVIEW_SECTION_NAME = "preview";
 
     private ActionbarDefinition definition;
 
@@ -155,16 +152,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     }
 
     public void setPreview(final Resource previewResource) {
-        if (previewResource != null) {
-            if (!((Actionbar) view).getSections().containsKey(PREVIEW_SECTION_NAME)) {
-                view.addSection(PREVIEW_SECTION_NAME, translator.translate("actionbar.preview"));
-            }
-            view.setSectionPreview(previewResource, PREVIEW_SECTION_NAME);
-        } else {
-            if (((Actionbar) view).getSections().containsKey(PREVIEW_SECTION_NAME)) {
-                view.removeSection(PREVIEW_SECTION_NAME);
-            }
-        }
+        view.setPreview(previewResource);
     }
 
     // METHODS DELEGATING TO THE VIEW

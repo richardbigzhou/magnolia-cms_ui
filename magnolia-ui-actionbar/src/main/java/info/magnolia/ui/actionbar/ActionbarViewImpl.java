@@ -45,6 +45,8 @@ import com.vaadin.server.Resource;
  */
 public class ActionbarViewImpl implements ActionbarView {
 
+    private static final String PREVIEW_SECTION_NAME = "preview";
+
     private Actionbar actionBar = new Actionbar();
 
     private ActionbarView.Listener listener;
@@ -77,8 +79,17 @@ public class ActionbarViewImpl implements ActionbarView {
     }
 
     @Override
-    public void setSectionPreview(Resource previewResource, String sectionName) {
-        actionBar.setSectionPreview(previewResource, sectionName);
+    public void setPreview(Resource previewResource) {
+        if (previewResource != null) {
+            if (!actionBar.getSections().containsKey(PREVIEW_SECTION_NAME)) {
+                actionBar.addSection(PREVIEW_SECTION_NAME, "Preview");
+            }
+            actionBar.setSectionPreview(previewResource, PREVIEW_SECTION_NAME);
+        } else {
+            if (actionBar.getSections().containsKey(PREVIEW_SECTION_NAME)) {
+                actionBar.removeSection(PREVIEW_SECTION_NAME);
+            }
+        }
     }
 
     @Override
