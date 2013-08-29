@@ -65,6 +65,7 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
     private Node dialogNode;
     private InstallContextImpl installContext;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
