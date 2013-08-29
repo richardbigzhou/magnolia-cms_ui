@@ -33,9 +33,12 @@
  */
 package info.magnolia.ui.workbench.search;
 
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.workbench.container.OrderBy;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.list.FlatJcrContainer;
+
+import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
@@ -43,7 +46,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The jcr container backing the search view. It provides the subset of items returned by the current search. By default it will perform a full-text search OR a search on the jcr name
+ * The jcr container backing the search view. It provides the subset of items returned by the current search. It will include <code>mgnl:folder</code> nodes if the latter are defined as "searchable".
+ * 
+ * @see #findSearchableNodeTypes()
  */
 public class SearchJcrContainer extends FlatJcrContainer {
 
@@ -57,8 +62,19 @@ public class SearchJcrContainer extends FlatJcrContainer {
 
     private String fullTextExpression;
 
+    private String whereCauseNodeTypes;
+
     public SearchJcrContainer(WorkbenchDefinition workbenchDefinition) {
         super(workbenchDefinition);
+        whereCauseNodeTypes = super.getQueryWhereClauseNodeTypes();
+
+        for (NodeType nt : getSearchableNodeTypes()) {
+            // include mgnl:folder if searchable
+            if (NodeTypes.Folder.NAME.equals(nt.getName())) {
+                whereCauseNodeTypes += " or [jcr:primaryType] = '" + NodeTypes.Folder.NAME + "'";
+                break;
+            }
+        }
     }
 
     /**
@@ -68,6 +84,7 @@ public class SearchJcrContainer extends FlatJcrContainer {
     protected String getQueryWhereClause() {
         final String clauseWorkspacePath = getQueryWhereClauseWorkspacePath();
         final String whereClauseSearch = getQueryWhereClauseSearch();
+
         String whereClause = "(" + getQueryWhereClauseNodeTypes() + ")";
 
         if (!"".equals(whereClauseSearch)) {
@@ -88,6 +105,11 @@ public class SearchJcrContainer extends FlatJcrContainer {
 
         log.debug("JCR query WHERE clause is {}", whereClause);
         return whereClause;
+    }
+
+    @Override
+    protected String getQueryWhereClauseNodeTypes() {
+        return whereCauseNodeTypes;
     }
 
     /**
