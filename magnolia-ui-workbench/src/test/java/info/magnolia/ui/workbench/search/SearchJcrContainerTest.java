@@ -192,6 +192,23 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
+    public void testFolderNodeTypeIsIncludedInSearch() throws Exception {
+        // GIVEN
+        ConfiguredNodeTypeDefinition nt = new ConfiguredNodeTypeDefinition();
+        nt.setName("mgnl:folder");
+        configuredWorkbench.addNodeType(nt);
+
+        // inclusion of mgnl:folder happens at construction time
+        SearchJcrContainer jcrContainer = new SearchJcrContainer(configuredWorkbench);
+
+        // WHEN
+        String stmt = jcrContainer.getQueryWhereClause();
+
+        // THEN
+        assertContains("or [jcr:primaryType] = 'mgnl:folder'", stmt);
+    }
+
+    @Test
     public void testSearchResultsAreSortedByJcrScoreDesc() throws Exception {
 
         // WHEN

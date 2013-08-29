@@ -608,6 +608,26 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
+    public void testGetQueryWhereClauseNodeTypesDoesNotIncludeMgnlFolder() throws Exception {
+        // GIVEN
+        ConfiguredNodeTypeDefinition fooDef = new ConfiguredNodeTypeDefinition();
+        fooDef.setName("mgnl:foo");
+        fooDef.setHideInList(true);
+
+        ConfiguredNodeTypeDefinition folderDef = new ConfiguredNodeTypeDefinition();
+        folderDef.setName("mgnl:folder");
+
+        workbenchDefinition.addNodeType(fooDef);
+        workbenchDefinition.addNodeType(folderDef);
+
+        // WHEN
+        String query = jcrContainer.constructJCRQuery(false);
+
+        // THEN
+        assertFalse(query.contains("mgnl:folder"));
+    }
+
+    @Test
     public void testGetSearchableNodeTypesIncludeMixins() throws Exception {
         // GIVEN
         ConfiguredNodeTypeDefinition mixinDef = new ConfiguredNodeTypeDefinition();
