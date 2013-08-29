@@ -33,24 +33,31 @@
  */
 package info.magnolia.ui.form.definition;
 
-import java.lang.reflect.AnnotatedElement;
-import java.util.List;
+import info.magnolia.i18n.AbstractI18nKeyGenerator;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
- * An {@link info.magnolia.i18n.I18nKeyGenerator} for {@link TabDefinition}.
+ * @author gjoseph
  */
-public class TabDefinitionKeyGenerator extends AbstractFormKeyGenerator<TabDefinition> {
+public abstract class AbstractFormKeyGenerator<T> extends AbstractI18nKeyGenerator<T> {
 
-    @Override
-    protected void keysFor(List<String> list, TabDefinition tab, AnnotatedElement el) {
-        final FormDefinition formDef = getParentViaCast(tab);
-        final String dialogId = getDialogId(formDef);
-        addKey(list, dialogId, tab.getName(), fieldOrGetterName(el));
-        addKey(list, tab.getName(), fieldOrGetterName(el));
-    }
+    protected String getDialogId(FormDefinition formDef) {
+        // Can't cast to DialogDefinition, it's not in the classpath of magnolia-ui-form
+        final Object dialogDef = getParentViaCast(formDef);
+        try {
+            final Method getId = dialogDef.getClass().getMethod("getId");
 
-    @Override
-    public String messageBundleNameFor(TabDefinition tab) {
-        return tab.getI18nBasename();
+
+            // TODO split DialogID - see info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager#createId
+
+            return (String) getId.invoke(dialogDef);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e); // TODO
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e); // TODO
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e); // TODO
+        }
     }
 }

@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import info.magnolia.ui.form.definition.AbstractFormKeyGenerator;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.i18n.AbstractI18nKeyGenerator;
@@ -44,21 +45,24 @@ import java.util.List;
 /**
  * An {@link I18nKeyGenerator} for {@link FieldDefinition}.
  */
-public class FieldDefinitionKeyGenerator extends AbstractI18nKeyGenerator<FieldDefinition> {
+public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldDefinition> {
     @Override
     protected void keysFor(List<String> list, FieldDefinition field, AnnotatedElement el) {
         final TabDefinition tab = getParentViaCast(field);
         final String tabName = tab.getName();
         final FormDefinition formDef = getParentViaCast(tab);
-        final String formName = formDef.getLabel(); // TODO this is not correct !
-        // TODO final DialogDefinition dialogDef = getParentViaCast(i18nContextParent);
+        final String dialogID = getDialogId(formDef);
 
         final String fieldName = field.getName();
         final String property = fieldOrGetterName(el);
         final List<String> keys = new ArrayList<String>();
-        addKey(keys, formName, tabName, fieldName, property);
-        addKey(keys, formName, fieldName, property);
+        addKey(keys, dialogID, tabName, fieldName, property);
+        // <dialogId>.<tabName>.<fieldName>.<property>
+        // <dialogId>.<tabName>.<fieldName>
+        addKey(keys, dialogID, fieldName, property);
+        // <dialogId>.<fieldName>.<property>
         addKey(keys, fieldName, property);
+        // <fieldName>.<property>
     }
 
     @Override
