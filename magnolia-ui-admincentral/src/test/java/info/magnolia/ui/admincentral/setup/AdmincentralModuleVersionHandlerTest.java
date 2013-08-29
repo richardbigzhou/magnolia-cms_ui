@@ -69,6 +69,9 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     private Node confirmDeleteActionAvailability;
     private Node configActionbarSections;
     private Node servletParameters;
+    private Node appLauncherLayoutConfigNodeSource;
+    private Node appLauncherLayoutConfigNodeTargetParent;
+
 
     @Override
     protected String getModuleDescriptorPath() {
@@ -103,6 +106,8 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         confirmDeleteActionAvailability = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/confirmDeletion/availability", NodeTypes.ContentNode.NAME);
         configActionbarSections = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections", NodeTypes.ContentNode.NAME);
         servletParameters = NodeUtil.createPath(session.getRootNode(), "/server/filters/servlets/AdminCentral/parameters", NodeTypes.ContentNode.NAME);
+        appLauncherLayoutConfigNodeSource = NodeUtil.createPath(session.getRootNode(),"/modules/ui-framework/config/appLauncherLayout", NodeTypes.ContentNode.NAME);
+        appLauncherLayoutConfigNodeTargetParent = NodeUtil.createPath(session.getRootNode(),"/modules/ui-admincentral/config", NodeTypes.ContentNode.NAME);
     }
 
     @Test
@@ -346,6 +351,10 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         // THEN
         assertFalse(servletParameters.hasProperty("widgetset"));
         assertFalse(servletParameters.hasProperty("UIProvider"));
+    }
+
+    public void testUpdateTo51ChangesAppLauncherLayoutConfigLocation(){
+
     }
 
 }

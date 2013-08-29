@@ -37,6 +37,8 @@ import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.registry.ConfiguredMessageViewDefinitionManager;
 import info.magnolia.ui.admincentral.usermenu.definition.UserMenuDefinition;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutDefinition;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.api.vaadin.ThemeDefinition;
 import info.magnolia.ui.api.vaadin.WidgetsetDefinition;
 
@@ -50,12 +52,17 @@ public class AdmincentralModule implements ModuleLifecycle {
     private ConfiguredMessageViewDefinitionManager configuredMessageViewDefinitionManager;
     private UserMenuDefinition userControl;
 
+    private AppLauncherLayoutManager appLauncherLayoutManager;
+    private AppLauncherLayoutDefinition appLauncherLayout;
+
+
     private WidgetsetDefinition widgetsetDefinition;
     private ThemeDefinition themeDefinition;
 
     @Inject
-    public AdmincentralModule(ConfiguredMessageViewDefinitionManager configuredMessageViewDefinitionManager) {
+    public AdmincentralModule(ConfiguredMessageViewDefinitionManager configuredMessageViewDefinitionManager, AppLauncherLayoutManager appLauncherLayoutManager) {
         this.configuredMessageViewDefinitionManager = configuredMessageViewDefinitionManager;
+        this.appLauncherLayoutManager = appLauncherLayoutManager;
     }
 
     @Override
@@ -63,6 +70,7 @@ public class AdmincentralModule implements ModuleLifecycle {
         if (context.getPhase() == ModuleLifecycleContext.PHASE_SYSTEM_STARTUP) {
             configuredMessageViewDefinitionManager.start();
         }
+        appLauncherLayoutManager.setLayout(getAppLauncherLayout());
     }
 
     @Override
@@ -91,6 +99,15 @@ public class AdmincentralModule implements ModuleLifecycle {
 
     public void setTheme(ThemeDefinition themeDefinition) {
         this.themeDefinition = themeDefinition;
+    }
+
+
+    public AppLauncherLayoutDefinition getAppLauncherLayout() {
+        return appLauncherLayout;
+    }
+
+    public void setAppLauncherLayout(AppLauncherLayoutDefinition appLauncherLayout) {
+        this.appLauncherLayout = appLauncherLayout;
     }
 
 }
