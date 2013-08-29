@@ -35,6 +35,8 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
 
+import java.util.HashSet;
+
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.TwinColSelect;
@@ -64,5 +66,10 @@ public class TwinColSelectFieldFactory<T extends TwinColSelectFieldDefinition> e
     @Override
     protected AbstractSelect createSelectionField() {
         return new TwinColSelect();
+    }
+
+    @Override
+    protected Class<?> getDefaultFieldType() {
+        return HashSet.class;
     }
 }

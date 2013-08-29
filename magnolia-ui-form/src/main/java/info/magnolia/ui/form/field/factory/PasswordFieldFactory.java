@@ -34,7 +34,6 @@
 package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.ui.form.field.PasswordFields;
-import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.PasswordFieldDefinition;
 
 import com.vaadin.data.Item;
@@ -59,10 +58,5 @@ public class PasswordFieldFactory extends AbstractFieldFactory<PasswordFieldDefi
         }
         // Create Field
         return new PasswordFields(definition.isVerification(), verificationMessage, verificationErrorMessage);
-    }
-
-    @Override
-    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
-        return String.class;
     }
 }

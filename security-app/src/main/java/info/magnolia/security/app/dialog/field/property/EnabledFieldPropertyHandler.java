@@ -31,27 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property;
+package info.magnolia.security.app.dialog.field.property;
 
-import java.util.List;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.property.basic.BasicPropertyHandler;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 
 /**
- * Implemented class have the responsibility to: <br>
- * - store a List of values in a specific format (simple/multi value property/ sub nodes/...).<br>
- * - retrieve properties stored in any format and transform then as a List.
+ * {@link info.magnolia.ui.form.field.property.PropertyHandler} implementation used for {@link info.magnolia.security.app.dialog.field.EnabledFieldFactory}.
  * 
- * @param <T> type of the element list.
+ * @param <T>
  */
-public interface MultiValueHandler<T> {
+public class EnabledFieldPropertyHandler<T> extends BasicPropertyHandler<T> {
 
-    /**
-     * @param newValue Set the newValue to the appropriate property.
-     */
-    void setValue(List<T> newValue);
+    public EnabledFieldPropertyHandler(Item parent, ConfiguredFieldDefinition definition, String fieldTypeName) {
+        super(parent, definition, fieldTypeName);
+    }
 
-    /**
-     * @return a List representation of the related property.
-     */
-    List<T> getValue();
+    @Override
+    public T readFromDataSourceItem() {
+        Property old = parent.getItemProperty("enabled");
+        String stringValue = "true";
+        if (old != null) {
+            stringValue = old.toString();
+        }
+        DefaultProperty<T> prop = new DefaultProperty(Boolean.class, Boolean.parseBoolean(stringValue));
+        parent.removeItemProperty("enabled");
+        parent.addItemProperty("enabled", prop);
+        return prop.getValue();
+    }
 
 }

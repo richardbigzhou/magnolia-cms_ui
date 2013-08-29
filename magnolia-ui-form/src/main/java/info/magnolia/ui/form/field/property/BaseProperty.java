@@ -34,41 +34,59 @@
 package info.magnolia.ui.form.field.property;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.vaadin.data.util.ObjectProperty;
 
 /**
- * {@link ObjectProperty} implementation used in order to handle MultiProperty type.<br>
- * This property is set as {@link com.vaadin.ui.Field#setPropertyDataSource(com.vaadin.data.Property)} and handle a list of generic objects.<br>
- * {@link MultiValueHandler} perform the bridge (retrieve/store) between <br>
- * - the stored values (multi value properties, multi nodes,...) <br>
- * and<br>
- * - the list element.
+ * Basic implementation of an {@link ObjectProperty} that implements {@link CustomPropertyType}.<br>
+ * This base property delegate to the {@link PropertyHandler} the read and write of the value to the datasource.<br>
  * 
- * @param <T>
+ * @param <T>.
  */
-public class MultiProperty<T> extends ObjectProperty<List<T>> {
 
-    private MultiValueHandler<T> handler;
+public class BaseProperty<T> extends ObjectProperty<T> implements CustomPropertyType<T> {
 
-    public MultiProperty(MultiValueHandler<T> delegate) {
-        super(new ArrayList<T>());
-        this.handler = delegate;
-        setValue(this.handler.getValue());
+    protected PropertyHandler<T> handler;
+
+    public BaseProperty(PropertyHandler<T> handler, Class<T> type) {
+        super(handler.readFromDataSourceItem(), type);
+        this.handler = handler;
+    }
+
+    public BaseProperty(PropertyHandler<T> handler) {
+        super(handler.readFromDataSourceItem());
+        this.handler = handler;
     }
 
     @Override
-    public void setValue(List<T> newValue) throws com.vaadin.data.Property.ReadOnlyException {
+    public void setValue(T newValue) throws com.vaadin.data.Property.ReadOnlyException {
         super.setValue(newValue);
         if (handler != null) {
-            handler.setValue(newValue);
+            handler.writeToDataSourceItem(newValue);
         }
     }
 
     @Override
-    public List<T> getValue() {
+    public T getValue() {
         return super.getValue();
+    }
+
+    @Override
+    public PropertyHandler<T> getHandler() {
+        return handler;
+    }
+
+    /**
+     * @return true if the handler support I18N.
+     */
+    public boolean hasI18NSupport() {
+        return handler.hasI18NSupport();
+    }
+
+    /**
+     * In case of i18n change, Reload the Value returned by the Handler.
+     */
+    public void fireI18NValueChange() {
+        setValue(handler.readFromDataSourceItem());
+        super.fireValueChange();
     }
 }

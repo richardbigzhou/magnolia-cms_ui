@@ -33,12 +33,28 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import info.magnolia.ui.form.field.property.CustomPropertyType;
+import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.ui.form.field.property.basic.BasicProperty;
+import info.magnolia.ui.form.field.property.basic.OptionGroupPropertyHandler;
+
 /**
  * Field definition for radio and check box select field.
  */
 public class OptionGroupFieldDefinition extends SelectFieldDefinition {
 
     private boolean multiselect = false;
+
+    /**
+     * Option group need a specific {@link PropertyHandler} in order to handle the conversion between Set and List.
+     */
+    @SuppressWarnings("unchecked")
+    public OptionGroupFieldDefinition() {
+        PropertyBuilder propertyBuilder = new PropertyBuilder();
+        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) OptionGroupPropertyHandler.class);
+        propertyBuilder.setPropertyType((Class<? extends CustomPropertyType<?>>) (Object) BasicProperty.class);
+        setPropertyBuilder(propertyBuilder);
+    }
 
     public boolean isMultiselect() {
         return multiselect;

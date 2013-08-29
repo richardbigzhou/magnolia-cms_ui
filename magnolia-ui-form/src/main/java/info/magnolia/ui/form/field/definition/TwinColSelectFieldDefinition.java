@@ -33,6 +33,11 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import info.magnolia.ui.form.field.property.CustomPropertyType;
+import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.ui.form.field.property.basic.BasicProperty;
+import info.magnolia.ui.form.field.property.basic.TwinSelectPropertyHandler;
+
 /**
  * Field definition for twin column select field.
  */
@@ -40,6 +45,17 @@ public class TwinColSelectFieldDefinition extends OptionGroupFieldDefinition {
 
     private String leftColumnCaption = "From";
     private String rightColumnCaption = "To";
+
+    /**
+     * Twin Column need a specific {@link PropertyHandler} in order to handle the conversion between Set and List.
+     */
+    @SuppressWarnings("unchecked")
+    public TwinColSelectFieldDefinition() {
+        PropertyBuilder propertyBuilder = new PropertyBuilder();
+        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) TwinSelectPropertyHandler.class);
+        propertyBuilder.setPropertyType((Class<? extends CustomPropertyType<?>>) (Object) BasicProperty.class);
+        setPropertyBuilder(propertyBuilder);
+    }
 
     public String getLeftColumnCaption() {
         return leftColumnCaption;
@@ -57,4 +73,11 @@ public class TwinColSelectFieldDefinition extends OptionGroupFieldDefinition {
         this.rightColumnCaption = rightColumnCaption;
     }
 
+    /**
+     * Multiselect is always true for twin Column field.
+     */
+    @Override
+    public boolean isMultiselect() {
+        return true;
+    }
 }

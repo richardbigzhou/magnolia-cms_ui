@@ -78,9 +78,5 @@ public class LinkFieldFactory<D extends FieldDefinition> extends AbstractFieldFa
         return linkField;
     }
 
-    @Override
-    protected Class<String> getDefaultFieldType(FieldDefinition fieldDefinition) {
-        return String.class;
-    }
 
 }

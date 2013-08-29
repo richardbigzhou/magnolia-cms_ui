@@ -33,18 +33,32 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import info.magnolia.ui.form.field.property.CustomPropertyType;
+import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.ui.form.field.property.composite.CompositeProperty;
+import info.magnolia.ui.form.field.property.composite.SwitchableSimplePropertyCompositeHandler;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Field definition for a switchable field.
  */
-public class SwitchableFieldDefinition extends ConfiguredFieldDefinition {
+public class SwitchableFieldDefinition extends CompositeFieldDefinition {
     private String selectionType = "radio";
 
     private List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
 
-    private List<ConfiguredFieldDefinition> fields = new ArrayList<ConfiguredFieldDefinition>();
+    /**
+     * Set default {@link PropertyBuilder}.
+     */
+    @SuppressWarnings("unchecked")
+    public SwitchableFieldDefinition() {
+        PropertyBuilder propertyBuilder = new PropertyBuilder();
+        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) SwitchableSimplePropertyCompositeHandler.class);
+        propertyBuilder.setPropertyType((Class<? extends CustomPropertyType<?>>) (Object) CompositeProperty.class);
+        setPropertyBuilder(propertyBuilder);
+    }
 
     /**
      * Default selectionType is 'radio'.
@@ -55,12 +69,12 @@ public class SwitchableFieldDefinition extends ConfiguredFieldDefinition {
         return selectionType;
     }
 
+    /**
+     * @return SelectFieldOptionDefinition. The value (for example 'text') of the Option should match with a <br>
+     * ConfiguredFieldDefinition name of the fields list.
+     */
     public List<SelectFieldOptionDefinition> getOptions() {
         return options;
-    }
-
-    public List<ConfiguredFieldDefinition> getFields() {
-        return fields;
     }
 
     public void setSelectionType(String selectionType) {
@@ -69,10 +83,6 @@ public class SwitchableFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setOptions(List<SelectFieldOptionDefinition> options) {
         this.options = options;
-    }
-
-    public void setFields(List<ConfiguredFieldDefinition> fields) {
-        this.fields = fields;
     }
 
 }

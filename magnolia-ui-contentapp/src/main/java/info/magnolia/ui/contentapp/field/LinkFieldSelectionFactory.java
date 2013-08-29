@@ -35,10 +35,9 @@ package info.magnolia.ui.contentapp.field;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.ui.api.event.ChooseDialogEventBus;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactory;
 import info.magnolia.ui.form.field.factory.LinkFieldFactory;
-import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.api.event.ChooseDialogEventBus;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
@@ -119,7 +118,7 @@ public class LinkFieldSelectionFactory extends AbstractFieldFactory<LinkFieldSel
     }
 
     @Override
-    protected Class<String> getDefaultFieldType(FieldDefinition fieldDefinition) {
+    protected Class<String> getDefaultFieldType() {
         return String.class;
     }
 

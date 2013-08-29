@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.config;
 
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
+import info.magnolia.ui.form.field.definition.PropertyBuilder;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 /**
@@ -237,5 +238,10 @@ public class BasicUploadFieldBuilder extends AbstractFieldBuilder {
     @Override
     public BasicUploadFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
         return (BasicUploadFieldBuilder) super.validator(validatorBuilder);
+    }
+
+    @Override
+    public BasicUploadFieldBuilder propertyBuilder(PropertyBuilder propertyBuilder) {
+        return (BasicUploadFieldBuilder) super.propertyBuilder(propertyBuilder);
     }
 }

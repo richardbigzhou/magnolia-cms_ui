@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.HiddenFieldDefinition;
 
 import com.vaadin.data.Item;
@@ -57,8 +56,4 @@ public class HiddenFieldFactory extends AbstractFieldFactory<HiddenFieldDefiniti
         return field;
     }
 
-    @Override
-    protected Class<String> getDefaultFieldType(FieldDefinition fieldDefinition) {
-        return String.class;
-    }
 }

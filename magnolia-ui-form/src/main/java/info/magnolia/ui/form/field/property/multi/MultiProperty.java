@@ -31,44 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property;
+package info.magnolia.ui.form.field.property.multi;
 
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import java.util.LinkedList;
+import info.magnolia.ui.form.field.property.BaseProperty;
+import info.magnolia.ui.form.field.property.PropertyHandler;
+
 import java.util.List;
 
 import javax.inject.Inject;
 
-/**
- * Multi values properties implementation of {@link MultiValueHandler}.<br>
- * Store the list of values as Jcr Multi-property value.<br>
- * Retrieve the Jcr Multi value property as a list.
- * 
- * @param <T> type of the element list.
- */
-public class MultiValuesHandler<T> extends AbstractMultiValueHandler<T> {
 
-    private JcrNodeAdapter parent;
-    private String propertyName;
+/**
+ * {@link info.magnolia.ui.form.field.property.CustomPropertyType} implementation used to handle property in {@link info.magnolia.ui.form.field.MultiField}<br>
+ * This property is set as {@link com.vaadin.ui.Field#setPropertyDataSource(com.vaadin.data.Property)} in {@link info.magnolia.ui.form.field.MultiField} and handle a list of generic objects.<br>
+ * 
+ * @param <T>
+ */
+public class MultiProperty<T> extends BaseProperty<List<T>> {
 
     @Inject
-    public MultiValuesHandler(JcrNodeAdapter parent, String propertyName) {
-        this.parent = parent;
-        this.propertyName = propertyName;
+    public MultiProperty(PropertyHandler<List<T>> handler) {
+        super(handler);
     }
-
-    @Override
-    public void setValue(List<T> newValue) {
-        DefaultProperty<List> property = getOrCreateProperty(List.class, new LinkedList<T>(), parent, propertyName);
-        property.setValue(new LinkedList<T>(newValue));
-    }
-
-    @Override
-    public List<T> getValue() {
-        DefaultProperty<List> property = getOrCreateProperty(List.class, new LinkedList<T>(), parent, propertyName);
-        return property.getValue();
-    }
-
 }

@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.config;
 
 import info.magnolia.ui.form.field.definition.DateFieldDefinition;
+import info.magnolia.ui.form.field.definition.PropertyBuilder;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 /**
@@ -147,5 +148,10 @@ public class DateFieldBuilder extends AbstractFieldBuilder {
     @Override
     public DateFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
         return (DateFieldBuilder) super.validator(validatorBuilder);
+    }
+
+    @Override
+    public DateFieldBuilder propertyBuilder(PropertyBuilder propertyBuilder) {
+        return (DateFieldBuilder) super.propertyBuilder(propertyBuilder);
     }
 }

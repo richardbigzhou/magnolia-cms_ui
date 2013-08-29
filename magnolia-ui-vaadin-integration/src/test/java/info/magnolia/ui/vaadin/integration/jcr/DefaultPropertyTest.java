@@ -43,6 +43,9 @@ import org.junit.Test;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.converter.Converter;
 
+/**
+ * Test class of {@link DefaultProperty}.
+ */
 public class DefaultPropertyTest {
 
     @Test
@@ -146,6 +149,18 @@ public class DefaultPropertyTest {
 
         // THEN
         assertEquals(List.class, property.getType());
+    }
+
+    @Test
+    public void testGenericOneParamConstructor() throws Exception {
+        // GIVEN
+        final List<String> value = new ArrayList<String>();
+
+        // WHEN
+        final DefaultProperty<List> property = new DefaultProperty<List>(value);
+
+        // THEN
+        assertEquals(ArrayList.class, property.getType());
     }
 
     @SuppressWarnings("rawtypes")

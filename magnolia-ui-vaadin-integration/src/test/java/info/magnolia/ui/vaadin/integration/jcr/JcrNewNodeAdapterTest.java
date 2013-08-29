@@ -108,7 +108,7 @@ public class JcrNewNodeAdapterTest {
         Property propertyInitial = adapter.getItemProperty(id);
         // New property --> null.
         assertEquals(true, propertyInitial == null);
-        propertyInitial = DefaultPropertyUtil.newDefaultProperty(null, "test");
+        propertyInitial = DefaultPropertyUtil.newDefaultProperty(String.class, "test");
         adapter.addItemProperty(id, propertyInitial);
 
         propertyInitial.setValue("new");
@@ -129,18 +129,18 @@ public class JcrNewNodeAdapterTest {
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode, nodeType);
 
-        Property notModifyProperty = DefaultPropertyUtil.newDefaultProperty(null, "");
+        Property notModifyProperty = DefaultPropertyUtil.newDefaultProperty(String.class, "");
         adapter.addItemProperty("notModify", notModifyProperty);
 
-        Property notNotModifyRemovedProperty = DefaultPropertyUtil.newDefaultProperty(null, "");
+        Property notNotModifyRemovedProperty = DefaultPropertyUtil.newDefaultProperty(String.class, "");
         adapter.addItemProperty("notModifyRemoved", notNotModifyRemovedProperty);
         adapter.removeItemProperty("notModifyRemoved");
 
-        Property notNewModifyProperty = DefaultPropertyUtil.newDefaultProperty(null, "");
+        Property notNewModifyProperty = DefaultPropertyUtil.newDefaultProperty(String.class, "");
         adapter.addItemProperty("modify", notNewModifyProperty);
         notNewModifyProperty.setValue("newModify");
 
-        Property modifyRemovedProperty = DefaultPropertyUtil.newDefaultProperty(null, "");
+        Property modifyRemovedProperty = DefaultPropertyUtil.newDefaultProperty(String.class, "");
         adapter.addItemProperty("modifyRemoved", modifyRemovedProperty);
         modifyRemovedProperty.setValue("newModifyRemoved");
         adapter.removeItemProperty("modifyRemoved");
@@ -168,7 +168,7 @@ public class JcrNewNodeAdapterTest {
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode, nodeType);
 
-        Property propertyModified = DefaultPropertyUtil.newDefaultProperty(null, "");
+        Property propertyModified = DefaultPropertyUtil.newDefaultProperty(String.class, "");
         adapter.addItemProperty("id", propertyModified);
         Node node1 = adapter.applyChanges();
 
@@ -188,7 +188,7 @@ public class JcrNewNodeAdapterTest {
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode, nodeType);
 
-        Property propertyModified = DefaultPropertyUtil.newDefaultProperty(null, "");
+        Property propertyModified = DefaultPropertyUtil.newDefaultProperty(String.class, "");
         adapter.addItemProperty("id", propertyModified);
 
         Node nodeBefore = adapter.getJcrItem();
@@ -210,13 +210,13 @@ public class JcrNewNodeAdapterTest {
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode, nodeType);
 
-        Property propertyModified = DefaultPropertyUtil.newDefaultProperty(null, "");
+        Property propertyModified = DefaultPropertyUtil.newDefaultProperty(String.class, "");
         adapter.addItemProperty("id", propertyModified);
 
         Node nodeBefore = adapter.applyChanges();
 
         // WHEN
-        Property propertyModifiedAfter = DefaultPropertyUtil.newDefaultProperty(null, "");
+        Property propertyModifiedAfter = DefaultPropertyUtil.newDefaultProperty(String.class, "");
         adapter.addItemProperty("di", propertyModifiedAfter);
 
         Node nodeAfter = adapter.applyChanges();
@@ -237,7 +237,7 @@ public class JcrNewNodeAdapterTest {
         Node parentNode = session.getRootNode().addNode(nodeName);
         JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode, nodeType);
 
-        Property propertyModified = DefaultPropertyUtil.newDefaultProperty(null, "");
+        Property propertyModified = DefaultPropertyUtil.newDefaultProperty(String.class, "");
         adapter.addItemProperty("id", propertyModified);
 
         Node nodeBefore = adapter.applyChanges();
@@ -265,7 +265,7 @@ public class JcrNewNodeAdapterTest {
 
         assertNull(adapter.getItemProperty("id"));
 
-        Property propertyModified = DefaultPropertyUtil.newDefaultProperty(null, "");
+        Property propertyModified = DefaultPropertyUtil.newDefaultProperty(String.class, "");
         adapter.addItemProperty("id", propertyModified);
 
         // WHEN

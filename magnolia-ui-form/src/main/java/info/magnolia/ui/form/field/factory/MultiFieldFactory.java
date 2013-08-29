@@ -37,17 +37,13 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.MultiField;
 import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
-import info.magnolia.ui.form.field.property.MultiProperty;
-import info.magnolia.ui.form.field.property.MultiValueHandler;
-import info.magnolia.ui.form.field.property.MultiValuesHandler;
+import info.magnolia.ui.form.field.property.PropertyHandler;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.inject.Inject;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.ui.Field;
 
 
@@ -55,18 +51,18 @@ import com.vaadin.ui.Field;
  * Creates and initializes an multi-field based on a field definition.<br>
  * Multi-field basicaly handle: <br>
  * - Add remove Fields <br>
- * This field builder create a {@link MultiProperty} based on the definition and set this property as <br>
+ * This field builder create a {@link ListProperty} based on the definition and set this property as <br>
  * Field property datasource.
  *
  * @param <T>
  */
 public class MultiFieldFactory<T> extends AbstractFieldFactory<MultiFieldDefinition, List<T>> {
 
-    private static final Logger log = LoggerFactory.getLogger(MultiFieldFactory.class);
     private FieldFactoryFactory fieldFactoryFactory;
     private I18nContentSupport i18nContentSupport;
     private ComponentProvider componentProvider;
 
+    @Inject
     public MultiFieldFactory(MultiFieldDefinition definition, Item relatedFieldItem, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem);
         this.fieldFactoryFactory = fieldFactoryFactory;
@@ -76,7 +72,10 @@ public class MultiFieldFactory<T> extends AbstractFieldFactory<MultiFieldDefinit
 
     @Override
     protected Field<List<T>> createFieldComponent() {
-        MultiField<T> field = new MultiField<T>(definition, fieldFactoryFactory, i18nContentSupport, componentProvider);
+        // FIXME change i18n setting : MGNLUI-1548
+        definition.setI18nBasename(getMessages().getBasename());
+
+        MultiField<T> field = new MultiField<T>(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, item);
         // Set Caption
         field.setButtonCaptionAdd(getMessage(definition.getButtonSelectAddLabel()));
         field.setButtonCaptionRemove(getMessage(definition.getButtonSelectRemoveLabel()));
@@ -86,25 +85,10 @@ public class MultiFieldFactory<T> extends AbstractFieldFactory<MultiFieldDefinit
 
     /**
      * Do not link this field directly to an Item property but to the configured MultivalueHandler.<br>
-     * The MultivalueHandler has the responsibility to correctly retrieve and store the values used in the MultiField. <br>
-     * In case of no MultivalueHandler is defined into the definition, {@link MultiValuesHandler} is used by default.
+     * The PropertyHandler has the responsibility to correctly retrieve and store the values used in the MultiField.
      */
     @Override
-    protected Property<T> getOrCreateProperty() {
-
-        Class<? extends MultiValueHandler> multiDelegate = null;
-        String itemName = definition.getName();
-        // Get configured MultiValueHandler class
-        if (definition.getSaveModeType() != null && definition.getSaveModeType().getMultiValueHandlerClass() != null) {
-            multiDelegate = definition.getSaveModeType().getMultiValueHandlerClass();
-        } else {
-            multiDelegate = MultiValuesHandler.class;
-            log.warn("No SaveModeType defined for this Multiselect Field definition. Default one will be taken: '{}'", MultiValuesHandler.class.getSimpleName());
-        }
-
-        MultiValueHandler<T> multiPropertyDelegate = this.componentProvider.newInstance(multiDelegate, item, itemName);
-        MultiProperty<T> property = new MultiProperty<T>(multiPropertyDelegate);
-        return (Property<T>) property;
+    protected PropertyHandler<?> initializePropertyHandler(Class<? extends PropertyHandler<?>> handlerClass, Class<?> type) {
+        return this.componentProvider.newInstance(handlerClass, item, definition, componentProvider);
     }
-
 }
