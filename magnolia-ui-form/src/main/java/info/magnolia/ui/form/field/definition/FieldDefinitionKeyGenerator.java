@@ -36,12 +36,13 @@ package info.magnolia.ui.form.field.definition;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.i18n.AbstractI18nKeyGenerator;
+
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author gjoseph
+ * An {@link I18nKeyGenerator} for {@link FieldDefinition}.
  */
 public class FieldDefinitionKeyGenerator extends AbstractI18nKeyGenerator<FieldDefinition> {
     @Override

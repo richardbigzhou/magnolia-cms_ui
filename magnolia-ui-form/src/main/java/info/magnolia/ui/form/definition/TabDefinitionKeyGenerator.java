@@ -34,11 +34,12 @@
 package info.magnolia.ui.form.definition;
 
 import info.magnolia.i18n.AbstractI18nKeyGenerator;
+
 import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 
 /**
- * @author gjoseph
+ * An {@link I18nKeyGenerator} for {@link TabDefinition}.
  */
 public class TabDefinitionKeyGenerator extends AbstractI18nKeyGenerator<TabDefinition>{
 
