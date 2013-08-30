@@ -218,6 +218,13 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         if (getDefaultFieldType() != null) {
             return getDefaultFieldType();
         }
+        return getDefinitiontType();
+    }
+
+    /**
+     * @return Class Type defined into the field definition. If null, return String.
+     */
+    protected Class<?> getDefinitiontType() {
         if (StringUtils.isNotBlank(definition.getType())) {
             return DefaultPropertyUtil.getFieldTypeClass(definition.getType());
         }
