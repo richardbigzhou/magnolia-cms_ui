@@ -36,10 +36,10 @@ package info.magnolia.ui.form.field.definition;
 import info.magnolia.ui.form.definition.AbstractFormKeyGenerator;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
-import info.magnolia.i18n.AbstractI18nKeyGenerator;
 
 import java.lang.reflect.AnnotatedElement;
-import java.util.ArrayList;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -55,13 +55,12 @@ public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldD
 
         final String fieldName = field.getName();
         final String property = fieldOrGetterName(el);
-        final List<String> keys = new ArrayList<String>();
-        addKey(keys, dialogID, tabName, fieldName, property);
+        addKey(list, dialogID, tabName, fieldName, property);
         // <dialogId>.<tabName>.<fieldName>.<property>
         // <dialogId>.<tabName>.<fieldName>
-        addKey(keys, dialogID, fieldName, property);
+        addKey(list, dialogID, fieldName, property);
         // <dialogId>.<fieldName>.<property>
-        addKey(keys, fieldName, property);
+        addKey(list, fieldName, property);
         // <fieldName>.<property>
     }
 
@@ -75,8 +74,28 @@ public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldD
                 return tab.getI18nBasename();
             } else {
                 final FormDefinition formDef = getParentViaCast(tab);
-                return formDef.getI18nBasename();
+                if (formDef.getI18nBasename() != null) {
+                    return formDef.getI18nBasename();
+                } else {
+                    return getParentDialogMessageBundleName(formDef);
+                }
             }
         }
+    }
+
+    private String getParentDialogMessageBundleName(FormDefinition form) {
+        final Object dialog = getParentViaCast(form);
+        String messageBundleName = null;
+        try {
+            final Method getId = dialog.getClass().getMethod("getI18nBasename");
+            messageBundleName = (String) getId.invoke(dialog);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e); // TODO
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e); // TODO
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e); // TODO
+        }
+        return messageBundleName;
     }
 }
