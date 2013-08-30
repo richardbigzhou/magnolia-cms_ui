@@ -53,7 +53,6 @@ import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
@@ -73,7 +72,6 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
 
     // Define layout and component
     private final VerticalLayout root = new VerticalLayout();
-    private final HorizontalLayout fieldLayout = new HorizontalLayout();
 
     public SwitchableField(SwitchableFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider, Item relatedFieldItem) {
         super(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, relatedFieldItem);
@@ -82,6 +80,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
     @Override
     protected Component initContent() {
         // Initialize root
+        setSizeFull();
         root.setSizeFull();
         root.setSpacing(true);
 
@@ -93,9 +92,6 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
         initFields();
         addValueChangeListener(datasourceListener);
 
-        // Add Field section
-        root.addComponent(fieldLayout);
-
         return root;
     }
 
@@ -105,8 +101,6 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
         // add the select Field Component.
         root.addComponent(selectField);
         // add Field section
-        root.addComponent(fieldLayout);
-        fieldLayout.removeAllComponents();
 
         fieldMap = new HashMap<String, Field<?>>();
         // Create Switchable Fields
@@ -185,12 +179,16 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
      * Switch to the desired field. It the field is not part of the List, display a warn label.
      */
     private void switchField(String fieldName) {
-        fieldLayout.removeAllComponents();
+        if (root.getComponentCount() >= 2) {
+            // detach previous field
+            root.getComponent(1).setParent(null);
+        }
         if (fieldMap.containsKey(fieldName)) {
-            fieldLayout.addComponent(fieldMap.get(fieldName));
+            // add after combobox
+            root.addComponent(fieldMap.get(fieldName), 1);
         } else {
-            log.warn("{} not associated to a field. Nothing will be displayed", fieldName);
-            fieldLayout.addComponent(new Label("No field define for the following selection : " + fieldName));
+            log.warn("{} is not associated to a field. Nothing will be displayed.", fieldName);
+            root.addComponent(new Label("No field defined for the following selection: " + fieldName), 1);
         }
     }
 

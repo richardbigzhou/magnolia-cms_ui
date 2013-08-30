@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.field.property.multi;
 
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.jcr.wrapper.JCRMgnlPropertiesFilteringNodeWrapper;
@@ -69,6 +70,27 @@ public class SubNodesMultiPropertysetItemHandler<T> extends SubNodesMultiHandler
 
     public SubNodesMultiPropertysetItemHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
         super(parent, definition, componentProvider);
+    }
+
+    @Override
+    protected JcrNodeAdapter getRootItem() {
+        JcrNodeAdapter res = null;
+        try {
+            res = getOrCreateChildNode(definition.getName(), NodeTypes.Content.NAME);
+        } catch (RepositoryException re) {
+            log.warn("Not able to retrieve or create a sub node for the parent node {}", ((JcrNodeAdapter) parent).getItemId());
+        }
+        return res;
+    }
+
+    @Override
+    protected void handleRootitemAndParent(JcrNodeAdapter rootItem) {
+        // Attach the child item to the root item
+        if (rootItem.getChildren() != null && !rootItem.getChildren().isEmpty()) {
+            ((JcrNodeAdapter) parent).addChild(rootItem);
+        } else {
+            ((JcrNodeAdapter) parent).removeChild(rootItem);
+        }
     }
 
     @Override
