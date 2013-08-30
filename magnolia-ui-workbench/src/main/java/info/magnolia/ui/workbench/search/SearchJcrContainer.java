@@ -226,7 +226,7 @@ public class SearchJcrContainer extends FlatJcrContainer {
      * <li><code>[abc+]</code> don't escape
      * <li><code>[ab+c]</code> don't escape
      * <li><code>[\]</code> escape
-     * <li><code>[/abc]</code> don't escape
+     * <li><code>[\abc]</code> don't escape
      * <li><code>[abc\]</code> don't escape
      * <li><code>[a\bc]</code> don't escape
      * <li><code>[)]</code> escape
