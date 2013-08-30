@@ -34,11 +34,7 @@
 package info.magnolia.ui.dialog;
 
 import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.context.MgnlContext;
-import info.magnolia.i18n.ContextLocaleProvider;
 import info.magnolia.i18n.I18nizer;
-import info.magnolia.i18n.TranslationServiceImpl;
-import info.magnolia.i18n.proxytoys.ProxytoysI18nizer;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -76,15 +72,17 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     private FormBuilder formBuilder;
     private FormView formView;
     private Item item;
+    private final I18nizer i18nizer;
 
 
     @Inject
-    public FormDialogPresenterImpl(final FormDialogView view, final DialogDefinitionRegistry dialogDefinitionRegistry, final DialogActionExecutor actionExecutor, FormBuilder formBuilder) {
+    public FormDialogPresenterImpl(final FormDialogView view, final DialogDefinitionRegistry dialogDefinitionRegistry, final DialogActionExecutor actionExecutor, FormBuilder formBuilder, I18nizer i18nizer) {
         super(view);
         this.view = view;
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.actionExecutor = actionExecutor;
         this.formBuilder = formBuilder;
+        this.i18nizer = i18nizer;
     }
 
 
@@ -113,10 +111,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         this.callback = callback;
         this.item = item;
 
-        // TODO inject I18nizer
-        // TODO LocaleProvider might be passed to info.magnolia.i18n.I18nizer.decorate instead.
-        final I18nizer i18nizer = new ProxytoysI18nizer(new TranslationServiceImpl(), new ContextLocaleProvider(MgnlContext.getInstance()));
-        dialogDefinition = i18nizer.decorate(dialogDefinition);
+        dialogDefinition = decorateForI18n(dialogDefinition);
 
         actionExecutor.setDialogDefinition(dialogDefinition);
         buildView(dialogDefinition);
@@ -136,6 +131,11 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         initActions(dialogDefinition);
 
         return view;
+    }
+
+    protected DialogDefinition decorateForI18n(DialogDefinition definition) {
+        // TODO LocaleProvider might be passed to info.magnolia.i18n.I18nizer.decorate instead.
+        return i18nizer.decorate(definition);
     }
 
     private void buildView(DialogDefinition dialogDefinition) {
