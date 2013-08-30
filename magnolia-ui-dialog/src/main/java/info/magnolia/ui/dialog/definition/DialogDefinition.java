@@ -33,10 +33,8 @@
  */
 package info.magnolia.ui.dialog.definition;
 
-import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
-
-import java.util.Map;
+import info.magnolia.ui.form.definition.FormDefinition;
 
 /**
  * Defines a dialog.
@@ -44,21 +42,10 @@ import java.util.Map;
  * @see info.magnolia.ui.form.field.definition.FieldDefinition
  * @see ActionDefinition
  */
-public interface DialogDefinition {
-
-    /**
-     * Unique identifier for this dialog.
-     */
-    String getId();
-
-    String getLabel();
-
-    String getI18nBasename();
+public interface DialogDefinition extends BaseDialogDefinition {
 
     String getDescription();
 
     FormDefinition getForm();
-
-    Map<String, ActionDefinition> getActions();
 
 }

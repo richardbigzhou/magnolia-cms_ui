@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,34 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.action;
+package info.magnolia.ui.dialog.definition;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.action.AbstractActionExecutor;
-import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
-import info.magnolia.ui.dialog.definition.DialogDefinition;
-import info.magnolia.ui.api.action.ActionDefinition;
-
-import javax.inject.Inject;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
 
 /**
- * Executes actions configured in a {@link DialogDefinition}.
+ * Created with IntelliJ IDEA.
+ * User: sasha
+ * Date: 8/29/13
+ * Time: 3:18 PM
+ * To change this template use File | Settings | File Templates.
  */
-public class DialogActionExecutor extends AbstractActionExecutor {
+public interface ChooseDialogDefinition extends BaseDialogDefinition {
 
-    private BaseDialogDefinition dialogDefinition;
-
-    @Inject
-    public DialogActionExecutor(ComponentProvider componentProvider) {
-        super(componentProvider);
-    }
-
-    @Override
-    public ActionDefinition getActionDefinition(String actionName) {
-        return dialogDefinition != null ? dialogDefinition.getActions().get(actionName) : null;
-    }
-
-    public void setDialogDefinition(BaseDialogDefinition dialogDefinition) {
-        this.dialogDefinition = dialogDefinition;
-    }
+    FieldDefinition getField();
 }

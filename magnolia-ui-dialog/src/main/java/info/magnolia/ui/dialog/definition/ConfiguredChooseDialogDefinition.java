@@ -31,34 +31,31 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.action;
+package info.magnolia.ui.dialog.definition;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.action.AbstractActionExecutor;
-import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
-import info.magnolia.ui.dialog.definition.DialogDefinition;
-import info.magnolia.ui.api.action.ActionDefinition;
-
-import javax.inject.Inject;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
 
 /**
- * Executes actions configured in a {@link DialogDefinition}.
+ * Created with IntelliJ IDEA.
+ * User: sasha
+ * Date: 8/29/13
+ * Time: 3:20 PM
+ * To change this template use File | Settings | File Templates.
  */
-public class DialogActionExecutor extends AbstractActionExecutor {
+public class ConfiguredChooseDialogDefinition extends ConfiguredBaseDialogDefinition implements ChooseDialogDefinition {
 
-    private BaseDialogDefinition dialogDefinition;
+    public static final String FIELD_NODE_NAME = "field";
 
-    @Inject
-    public DialogActionExecutor(ComponentProvider componentProvider) {
-        super(componentProvider);
-    }
+    private FieldDefinition field;
+
+    public ConfiguredChooseDialogDefinition() {}
 
     @Override
-    public ActionDefinition getActionDefinition(String actionName) {
-        return dialogDefinition != null ? dialogDefinition.getActions().get(actionName) : null;
+    public FieldDefinition getField() {
+        return field;
     }
 
-    public void setDialogDefinition(BaseDialogDefinition dialogDefinition) {
-        this.dialogDefinition = dialogDefinition;
+    public void setField(FieldDefinition field) {
+        this.field = field;
     }
 }

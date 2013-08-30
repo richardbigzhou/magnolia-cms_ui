@@ -1,0 +1,25 @@
+package info.magnolia.ui.dialog.definition;
+
+import info.magnolia.ui.api.action.ActionDefinition;
+
+import java.util.Map;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: sasha
+ * Date: 8/29/13
+ * Time: 9:33 PM
+ * To change this template use File | Settings | File Templates.
+ */
+public interface BaseDialogDefinition {
+    /**
+     * Unique identifier for this dialog.
+     */
+    String getId();
+
+    String getLabel();
+
+    String getI18nBasename();
+
+    Map<String, ActionDefinition> getActions();
+}
