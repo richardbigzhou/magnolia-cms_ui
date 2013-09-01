@@ -33,27 +33,15 @@
  */
 package info.magnolia.ui.contentapp.choosedialog;
 
-import com.vaadin.data.Item;
-
-import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.api.app.ChooseDialogCallback;
+import info.magnolia.ui.api.overlay.OverlayLayer;
+import info.magnolia.ui.dialog.DialogPresenter;
+import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 
 /**
  * Dialog presenter for a dialog that allows for choosing an item.
  */
-public interface ChooseDialogPresenter {
+public interface ChooseDialogPresenter extends DialogPresenter {
 
-    /**
-     * Listener for {@link ChooseDialogPresenter}.
-     */
-    interface Listener {
-
-        void onClose();
-    }
-
-    void setListener(Listener listener);
-
-    View start();
-
-    Item getValue();
-
+    ChooseDialogView start(ChooseDialogCallback callback, ChooseDialogDefinition definition, OverlayLayer overlayLayer);
 }

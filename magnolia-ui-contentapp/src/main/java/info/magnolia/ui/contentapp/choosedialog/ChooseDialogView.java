@@ -43,4 +43,6 @@ public interface ChooseDialogView extends DialogView {
 
     void setContent(View contentView);
 
+    void close();
+
 }

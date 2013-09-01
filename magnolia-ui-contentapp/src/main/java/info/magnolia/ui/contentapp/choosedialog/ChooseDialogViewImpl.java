@@ -52,4 +52,9 @@ public class ChooseDialogViewImpl extends BaseDialog implements ChooseDialogView
         setContent(contentView.asVaadinComponent());
     }
 
+    @Override
+    public void close() {
+        closeSelf();
+    }
+
 }
