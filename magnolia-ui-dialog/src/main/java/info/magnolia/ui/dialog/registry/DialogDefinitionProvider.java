@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.dialog.registry;
 
-import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
 
 /**
@@ -41,9 +40,6 @@ import info.magnolia.ui.dialog.definition.DialogDefinition;
  *
  * @see DialogDefinitionRegistry
  */
-public interface DialogDefinitionProvider {
+public interface  DialogDefinitionProvider extends BaseDialogDefinitionProvider<DialogDefinition>{
 
-    String getId();
-
-    DialogDefinition getDialogDefinition() throws RegistrationException;
 }

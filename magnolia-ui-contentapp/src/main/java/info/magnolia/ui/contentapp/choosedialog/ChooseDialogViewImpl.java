@@ -39,14 +39,12 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog;
 /**
  * Chooses an item from a workbench.
  */
-public class WorkbenchChooseDialogView extends BaseDialog implements ChooseDialogView {
+public class ChooseDialogViewImpl extends BaseDialog implements ChooseDialogView {
 
-    public WorkbenchChooseDialogView() {
+    public ChooseDialogViewImpl() {
         super();
         setHeight("500px");
         addStyleName("choose-dialog");
-        addAction(COMMIT_ACTION_NAME, "Choose");
-        addAction(CANCEL_ACTION_NAME, "Cancel");
     }
 
     @Override

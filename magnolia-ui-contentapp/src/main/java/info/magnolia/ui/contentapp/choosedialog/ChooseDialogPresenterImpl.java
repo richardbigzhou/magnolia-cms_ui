@@ -33,68 +33,73 @@
  */
 package info.magnolia.ui.contentapp.choosedialog;
 
+import com.vaadin.data.Item;
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Field;
+import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.event.EventBus;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.event.ChooseDialogEventBus;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.BaseDialogPresenter;
-import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
+import info.magnolia.ui.form.field.factory.FieldFactory;
+import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
-import info.magnolia.ui.workbench.WorkbenchPresenter;
-import info.magnolia.ui.workbench.WorkbenchView;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
-import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.jcr.Node;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Item;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Factory for creating workbench choose dialog presenters.
  */
-public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implements ChooseDialogPresenter {
+public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements ChooseDialogPresenter {
 
-    private static final Logger log = LoggerFactory.getLogger(WorkbenchChooseDialogPresenter.class);
+    private static final Logger log = LoggerFactory.getLogger(ChooseDialogPresenterImpl.class);
 
-    private Item currentValue = null;
-
-    private String selectedItemId;
 
     private Listener listener;
 
     private final ChooseDialogView chooseDialogView;
 
-    private final WorkbenchPresenter workbenchPresenter;
-
     private final EventBus eventBus;
 
-    private WorkbenchDefinition workbenchDefinition;
+    private FieldFactoryFactory fieldFactoryFactory;
 
-    private ImageProviderDefinition imageProviderDefinition;
+    private ChooseDialogDefinition definition;
 
-    private WorkbenchView workbenchView;
+    private ComponentProvider componentProvider;
+
+    private I18nContentSupport i18nContentSupport;
+
+    private String selectedItemId;
+
+    private Item item;
 
     @Inject
-    public WorkbenchChooseDialogPresenter(ChooseDialogView view, WorkbenchPresenter workbenchPresenter, final @Named(ChooseDialogEventBus.NAME) EventBus eventBus) {
+    public ChooseDialogPresenterImpl(
+            ChooseDialogView view,
+            @Named(ChooseDialogEventBus.NAME) EventBus eventBus,
+            FieldFactoryFactory fieldFactoryFactory,
+            ChooseDialogDefinition definition,
+            ComponentProvider componentProvider,
+            I18nContentSupport i18nContentSupport,
+            Item item) {
         super(view);
         this.chooseDialogView = view;
-        this.workbenchPresenter = workbenchPresenter;
         this.eventBus = eventBus;
+        this.fieldFactoryFactory = fieldFactoryFactory;
+        this.definition = definition;
+        this.componentProvider = componentProvider;
+        this.i18nContentSupport = i18nContentSupport;
+        this.item = item;
 
         showCloseButton();
         bindHandlers();
@@ -105,7 +110,7 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
      * If selectedItemId is a path, get the id for the path.
      */
     public void setSelectedItemId(String selectedItemId) {
-        try {
+        /*try {
             if (StringUtils.isBlank(selectedItemId)) {
                 return;
             }
@@ -116,14 +121,15 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
 
         } catch (RepositoryException e) {
             log.warn("Unable to set the selected item", selectedItemId, e);
-        }
+        } */
+        this.selectedItemId = selectedItemId;
     }
 
     /**
      * Set in the View the already selected itemId.
      */
     private void select(String itemId) {
-        try {
+        /*try {
             // restore selection
             if (JcrItemUtil.itemExists(workbenchDefinition.getWorkspace(), itemId)) {
                 List<String> ids = new ArrayList<String>(1);
@@ -139,7 +145,7 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
             }
         } catch (RepositoryException e) {
             log.warn("Unable to get node or property [{}] for selection", itemId, e);
-        }
+        }     */
     }
 
     private void bindHandlers() {
@@ -147,14 +153,14 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
         eventBus.addHandler(SelectionChangedEvent.class, new SelectionChangedEvent.Handler() {
             @Override
             public void onSelectionChanged(SelectionChangedEvent event) {
-                currentValue = event.getFirstItem();
+                item = event.getFirstItem();
             }
         });
 
         eventBus.addHandler(SearchEvent.class, new SearchEvent.Handler() {
             @Override
             public void onSearch(SearchEvent event) {
-                workbenchPresenter.doSearch(event.getSearchExpression());
+                //workbenchPresenter.doSearch(event.getSearchExpression());
             }
         });
 
@@ -186,29 +192,37 @@ public class WorkbenchChooseDialogPresenter extends BaseDialogPresenter implemen
         this.listener = listener;
     }
 
-    public void setWorkbenchDefinition(WorkbenchDefinition workbenchDefinition) {
-        this.workbenchDefinition = workbenchDefinition;
-    }
-
-    public void setImageProviderDefinition(ImageProviderDefinition imageProviderDefinition) {
-        this.imageProviderDefinition = imageProviderDefinition;
-    }
 
     @Override
     public ChooseDialogView start() {
-        workbenchView = workbenchPresenter.start(workbenchDefinition, imageProviderDefinition, eventBus);
-        workbenchView.setMultiselect(false);
-        workbenchView.setViewType(TreePresenterDefinition.VIEW_TYPE);
-        chooseDialogView.setCaption(workbenchDefinition.getName());
-        chooseDialogView.setContent(workbenchView);
-        if (StringUtils.isNotBlank(selectedItemId)) {
-            select(selectedItemId);
+        final FieldFactory formField = fieldFactoryFactory.createFieldFactory(definition.getField(), item);
+        formField.setComponentProvider(componentProvider);
+        formField.setI18nContentSupport(i18nContentSupport);
+        final Field<?> field = formField.createField();
+        if (field.getType().isAssignableFrom(Item.class)) {
+            if (field instanceof AbstractComponent) {
+                ((AbstractComponent) field).setImmediate(true);
+            }
+
+            chooseDialogView.setCaption(field.getCaption());
+            chooseDialogView.setContent(new View() {
+                @Override
+                public Component asVaadinComponent() {
+                    return field;
+                }
+            });
+
+            if (StringUtils.isNotBlank(selectedItemId)) {
+                select(selectedItemId);
+            }
+            return chooseDialogView;
+        } else {
+            throw new IllegalArgumentException("TODO: HANDLE ME BETTER");
         }
-        return chooseDialogView;
     }
 
     @Override
     public Item getValue() {
-        return currentValue;
+        return item;
     }
 }
