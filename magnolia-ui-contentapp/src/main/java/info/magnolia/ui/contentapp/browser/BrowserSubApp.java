@@ -35,6 +35,7 @@ package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -119,9 +120,10 @@ public class BrowserSubApp extends BaseSubApp {
     private ActionExecutor actionExecutor;
     private ComponentProvider componentProvider;
     private String workbenchRoot;
+    private I18nizer i18nizer;
 
     @Inject
-    public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, ComponentProvider componentProvider) {
+    public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final ComponentProvider componentProvider, final I18nizer i18nizer) {
         super(subAppContext, view);
         if (subAppContext == null || view == null || browser == null || subAppEventBus == null) {
             throw new IllegalArgumentException("Constructor does not allow for null args. Found SubAppContext = " + subAppContext + ", ContentSubAppView = " + view + ", BrowserPresenter = " + browser + ", EventBus = " + subAppEventBus);
@@ -131,6 +133,7 @@ public class BrowserSubApp extends BaseSubApp {
         this.actionExecutor = actionExecutor;
         this.componentProvider = componentProvider;
         this.workbenchRoot = ((BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor()).getWorkbench().getPath();
+        this.i18nizer = i18nizer;
     }
 
     /**
@@ -289,7 +292,7 @@ public class BrowserSubApp extends BaseSubApp {
     private ContextMenu.ContextMenuItem addActionPopupItem(BrowserSubAppDescriptor subAppDescriptor, ActionPopup actionPopup, ActionbarItemDefinition itemDefinition, List<javax.jcr.Item> items) {
         String actionName = itemDefinition.getName();
 
-        ActionDefinition action = subAppDescriptor.getActions().get(actionName);
+        ActionDefinition action = i18nizer.decorate(subAppDescriptor.getActions().get(actionName));
         String label = action.getLabel();
         String iconFontCode = ActionPopup.ICON_FONT_CODE + action.getIcon();
         ExternalResource iconFontResource = new ExternalResource(iconFontCode);

@@ -34,10 +34,10 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.action.AbstractActionExecutor;
 import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppDescriptor;
 
 import javax.inject.Inject;
 
@@ -56,7 +56,7 @@ public class SubAppActionExecutor extends AbstractActionExecutor {
 
     @Override
     public ActionDefinition getActionDefinition(String actionName) {
-        return subAppDescriptor.getActions().get(actionName);
+        return getI18nizer().decorate(subAppDescriptor.getActions().get(actionName));
     }
 
 }
