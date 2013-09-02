@@ -33,23 +33,26 @@
  */
 package info.magnolia.ui.actionbar.definition;
 
+import info.magnolia.i18n.I18nAble;
+
 import java.util.List;
 
 /**
  * The definition for an action bar, made of sections and groups of actions.
  */
+@I18nAble
 public interface ActionbarDefinition {
 
     /**
      * Gets the name of the default action.
-     *
+     * 
      * @return the default action name
      */
     String getDefaultAction();
 
     /**
      * Gets the sections within this action bar.
-     *
+     * 
      * @return the list of sections
      */
     List<ActionbarSectionDefinition> getSections();

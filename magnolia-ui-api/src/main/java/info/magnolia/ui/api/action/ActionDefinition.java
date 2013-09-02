@@ -33,34 +33,41 @@
  */
 package info.magnolia.ui.api.action;
 
+import info.magnolia.i18n.I18nAble;
+import info.magnolia.i18n.I18nText;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 
 /**
  * Action definitions are used to configure actions in many parts of the UI. The definition holds a name which is used
  * to identify the action within a certain scope, for instance within a sub app. Many actions have dedicated action
  * definition classes implementing this interface that allows supplying additional parameters to the action.
- *
  * Implementations are expected to provide correct {@link Object#equals(Object)} and {@link Object#hashCode()} methods.
- *
+ * 
  * @see Action
  * @see ActionExecutor
  */
+@I18nAble(keyGenerator = ActionDefinitionKeyGenerator.class)
 public interface ActionDefinition {
 
     String getName();
 
+    @I18nText
     String getLabel();
 
     String getIcon();
 
     String getI18nBasename();
 
+    @I18nText
     String getDescription();
 
+    @I18nText
     String getSuccessMessage();
 
+    @I18nText
     String getFailureMessage();
 
+    @I18nText
     String getErrorMessage();
 
     Class<? extends Action> getImplementationClass();

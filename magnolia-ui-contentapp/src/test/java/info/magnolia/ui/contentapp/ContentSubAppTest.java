@@ -36,15 +36,16 @@ package info.magnolia.ui.contentapp;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.event.EventBus;
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.contentapp.browser.BrowserPresenter;
 import info.magnolia.ui.contentapp.browser.BrowserSubApp;
-import info.magnolia.ui.api.app.AppContext;
-import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.event.EventBus;
 
 import javax.jcr.Item;
 
@@ -78,7 +79,7 @@ public class ContentSubAppTest {
         view = mock(ContentSubAppView.class);
         workbench = mock(BrowserPresenter.class);
 
-        ActionbarPresenter actionbar = new ActionbarPresenter();
+        ActionbarPresenter actionbar = new ActionbarPresenter(mock(I18nizer.class));
         when(workbench.getActionbarPresenter()).thenReturn(actionbar);
 
         subAppEventBus = mock(EventBus.class);

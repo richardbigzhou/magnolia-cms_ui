@@ -35,20 +35,18 @@ package info.magnolia.ui.mediaeditor.action;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.AbstractActionExecutor;
-import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
 
 import javax.inject.Inject;
 
 /**
- * Executes actions on behalf of
- * {@link info.magnolia.ui.mediaeditor.MediaEditorPresenter}. Needs the
- * {@link MediaEditorDefinition} in order to resolve action definitions.
+ * Executes actions on behalf of {@link info.magnolia.ui.mediaeditor.MediaEditorPresenter}. Needs the {@link MediaEditorDefinition} in order to resolve action definitions.
  */
 public class MediaEditorActionExecutor extends AbstractActionExecutor {
 
     private MediaEditorDefinition def;
-    
+
     @Inject
     public MediaEditorActionExecutor(ComponentProvider componentProvider) {
         super(componentProvider);
@@ -57,10 +55,10 @@ public class MediaEditorActionExecutor extends AbstractActionExecutor {
     public void setDef(MediaEditorDefinition def) {
         this.def = def;
     }
-    
+
     @Override
     public ActionDefinition getActionDefinition(String actionName) {
-        return def.getActions().get(actionName);
+        return getI18nizer().decorate(def.getActions().get(actionName));
     }
 
 }

@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.actionbar.definition;
 
+import info.magnolia.i18n.I18nAble;
+import info.magnolia.i18n.I18nText;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 
 import java.util.List;
@@ -40,17 +42,19 @@ import java.util.List;
 /**
  * The definition for a section of the action bar, made of groups of actions.
  */
+@I18nAble(keyGenerator = ActionbarSectionDefinitionKeyGenerator.class)
 public interface ActionbarSectionDefinition {
 
     String getName();
 
+    @I18nText
     String getLabel();
 
     String getI18nBasename();
 
     /**
      * Gets the groups within this section.
-     *
+     * 
      * @return the list of groups
      */
     List<ActionbarGroupDefinition> getGroups();

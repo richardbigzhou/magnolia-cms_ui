@@ -34,7 +34,6 @@
 package info.magnolia.ui.actionbar.definition;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -53,7 +52,7 @@ public class ConfiguredActionbarGroupDefinition implements ActionbarGroupDefinit
 
     /**
      * Sets the group name.
-     *
+     * 
      * @param name the new name
      */
     public void setName(String name) {
@@ -62,7 +61,7 @@ public class ConfiguredActionbarGroupDefinition implements ActionbarGroupDefinit
 
     @Override
     public List<ActionbarItemDefinition> getItems() {
-        return Collections.unmodifiableList(items);
+        return items;
     }
 
     public void setItems(List<ActionbarItemDefinition> items) {
@@ -71,7 +70,7 @@ public class ConfiguredActionbarGroupDefinition implements ActionbarGroupDefinit
 
     /**
      * Adds an action item to this group.
-     *
+     * 
      * @param itemDefinition the item definition
      */
     public void addItem(ActionbarItemDefinition itemDefinition) {

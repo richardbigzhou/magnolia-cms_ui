@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,24 +33,25 @@
  */
 package info.magnolia.ui.actionbar.definition;
 
+import info.magnolia.i18n.AbstractI18nKeyGenerator;
+
+import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 
 /**
- * The definition for a group of actions in a section of the action bar.
+ * An I18n key generator for the actionbar section labels.
  */
-public interface ActionbarGroupDefinition {
+public class ActionbarSectionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<ActionbarSectionDefinition> {
 
-    /**
-     * Gets the group name.
-     * 
-     * @return the name string
-     */
-    String getName();
+    @Override
+    public String messageBundleNameFor(ActionbarSectionDefinition sectionDefinition) {
+        return null;
+    }
 
-    /**
-     * Gets the action items within this group.
-     * 
-     * @return the list of action items
-     */
-    List<ActionbarItemDefinition> getItems();
+    @Override
+    protected void keysFor(List<String> keys, ActionbarSectionDefinition sectionDefinition, AnnotatedElement el) {
+        String name = sectionDefinition.getName();
+        addKey(keys, "section", name, fieldOrGetterName(el));
+    }
+
 }
