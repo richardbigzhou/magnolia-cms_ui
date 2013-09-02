@@ -91,7 +91,7 @@ public class ConfiguredDialogProviderTest extends RepositoryTestCase {
      * 
      * @Test
      * public void testGetDialogDefinition() throws Exception {
-     * DialogDefinition definition = new ConfiguredDialogProvider(hm.getContent("/modules/test/dialogs/dummyDialog")).getDialogDefinition();
+     * FormDialogDefinition definition = new ConfiguredDialogProvider(hm.getContent("/modules/test/dialogs/dummyDialog")).getDialogDefinition();
      * assertEquals(1, definition.getTabs().size());
      * DialogTab tab = definition.getTabs().get(0);
      * assertEquals("TestDialog", tab.getLabel());

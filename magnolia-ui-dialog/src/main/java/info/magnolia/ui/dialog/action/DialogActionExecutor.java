@@ -36,13 +36,12 @@ package info.magnolia.ui.dialog.action;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.AbstractActionExecutor;
 import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
-import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
 
 import javax.inject.Inject;
 
 /**
- * Executes actions configured in a {@link DialogDefinition}.
+ * Executes actions configured in a {@link info.magnolia.ui.dialog.definition.BaseDialogDefinition}.
  */
 public class DialogActionExecutor extends AbstractActionExecutor {
 

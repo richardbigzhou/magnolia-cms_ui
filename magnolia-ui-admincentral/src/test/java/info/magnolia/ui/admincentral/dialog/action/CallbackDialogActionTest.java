@@ -33,29 +33,27 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import static org.junit.Assert.assertEquals;
-
+import com.vaadin.data.Item;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
-import info.magnolia.ui.dialog.FormDialogPresenter;
-import info.magnolia.ui.dialog.definition.DialogDefinition;
-import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.overlay.OverlayLayer;
+import info.magnolia.ui.dialog.FormDialogPresenter;
+import info.magnolia.ui.dialog.definition.FormDialogDefinition;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import com.vaadin.data.Item;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Main test class for {@link CallbackDialogAction} and {@link CallbackDialogActionDefinition}.
@@ -160,7 +158,7 @@ public class CallbackDialogActionTest extends MgnlTestCase {
         }
 
         @Override
-        public DialogView start(Item item, DialogDefinition dialogDefinition, OverlayLayer overlayLayer, EditorCallback callback) {
+        public DialogView start(Item item, FormDialogDefinition dialogDefinition, OverlayLayer overlayLayer, EditorCallback callback) {
             return null;
         }
 

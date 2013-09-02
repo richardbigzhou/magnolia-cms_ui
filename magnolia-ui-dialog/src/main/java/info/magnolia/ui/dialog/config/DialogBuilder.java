@@ -35,7 +35,7 @@ package info.magnolia.ui.dialog.config;
 
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.config.ActionBuilder;
-import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
+import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
 import info.magnolia.ui.form.config.FormBuilder;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 
@@ -44,13 +44,13 @@ import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
  */
 public class DialogBuilder {
 
-    private final ConfiguredDialogDefinition definition = new ConfiguredDialogDefinition();
+    private final ConfiguredFormDialogDefinition definition = new ConfiguredFormDialogDefinition();
 
     public DialogBuilder(String id) {
         definition().setId(id);
     }
 
-    public ConfiguredDialogDefinition definition() {
+    public ConfiguredFormDialogDefinition definition() {
         return definition;
     }
 

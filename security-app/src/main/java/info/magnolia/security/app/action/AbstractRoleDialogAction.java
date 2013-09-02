@@ -40,25 +40,23 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.repository.RepositoryManager;
+import info.magnolia.security.app.dialog.field.WorkspaceAccessFieldDefinition;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.security.app.dialog.field.WorkspaceAccessFieldDefinition;
-import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
-import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
+import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import org.apache.commons.lang.StringUtils;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-
-import org.apache.commons.lang.StringUtils;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Abstract base class for actions that open dialogs for adding or editing roles.
@@ -79,13 +77,13 @@ public abstract class AbstractRoleDialogAction<D extends ActionDefinition> exten
     /**
      * Loads the dialog definition and adds access control fields for workspaces that have not been explicitly added.
      */
-    protected DialogDefinition getDialogDefinition(String dialogName) throws ActionExecutionException {
+    protected FormDialogDefinition getDialogDefinition(String dialogName) throws ActionExecutionException {
 
         try {
 
             // We read the definition from the JCR directly rather than getting it from the registry and then clone it
             Node node = MgnlContext.getJCRSession(RepositoryConstants.CONFIG).getNode("/modules/security-app/dialogs/" + dialogName);
-            ConfiguredDialogDefinition dialogDefinition = (ConfiguredDialogDefinition) Components.getComponent(Node2BeanProcessor.class).toBean(node, DialogDefinition.class);
+            ConfiguredFormDialogDefinition dialogDefinition = (ConfiguredFormDialogDefinition) Components.getComponent(Node2BeanProcessor.class).toBean(node, FormDialogDefinition.class);
 
             if (dialogDefinition == null) {
                 throw new ActionExecutionException("Unable to load dialog [" + dialogName + "]");

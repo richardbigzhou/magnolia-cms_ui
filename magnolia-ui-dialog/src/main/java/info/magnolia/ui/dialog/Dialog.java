@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.dialog;
 
+import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.form.AbstractFormItem;
-import info.magnolia.ui.dialog.definition.DialogDefinition;
 
 /**
  * Represents a dialog.
@@ -44,9 +44,9 @@ import info.magnolia.ui.dialog.definition.DialogDefinition;
  */
 public class Dialog extends AbstractFormItem {
 
-    private DialogDefinition dialogDefinition;
+    private FormDialogDefinition dialogDefinition;
 
-    public Dialog(DialogDefinition dialogDefinition) {
+    public Dialog(FormDialogDefinition dialogDefinition) {
         this.dialogDefinition = dialogDefinition;
     }
 

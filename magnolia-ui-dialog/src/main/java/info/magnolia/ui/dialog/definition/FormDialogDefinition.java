@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,36 +33,19 @@
  */
 package info.magnolia.ui.dialog.definition;
 
+import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
 
 /**
- * A definition of a configured dialog.
+ * Defines a dialog.
+ *
+ * @see info.magnolia.ui.form.field.definition.FieldDefinition
+ * @see ActionDefinition
  */
-public class ConfiguredDialogDefinition extends ConfiguredBaseDialogDefinition implements DialogDefinition {
+public interface FormDialogDefinition extends BaseDialogDefinition {
 
-    public static final String FORM_NODE_NAME = "form";
+    String getDescription();
 
-    private String description;
-
-    private FormDefinition form;
-
-
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setForm(FormDefinition form) {
-        this.form = form;
-    }
-
-    @Override
-    public FormDefinition getForm() {
-        return form;
-    }
+    FormDefinition getForm();
 
 }

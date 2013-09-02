@@ -38,7 +38,7 @@ import info.magnolia.repository.RepositoryManager;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.dialog.FormDialogPresenter;
-import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
@@ -72,7 +72,7 @@ public class OpenEditRoleDialogAction<D extends OpenEditRoleDialogActionDefiniti
     @Override
     public void execute() throws ActionExecutionException {
 
-        DialogDefinition dialogDefinition = getDialogDefinition("role");
+        FormDialogDefinition dialogDefinition = getDialogDefinition("role");
 
         formDialogPresenter.start(itemToEdit, dialogDefinition, uiContext, new EditorCallback() {
 

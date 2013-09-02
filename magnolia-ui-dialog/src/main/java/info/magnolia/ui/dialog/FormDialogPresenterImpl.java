@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.dialog;
 
+import com.vaadin.data.Item;
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.api.action.ActionDefinition;
@@ -40,7 +41,7 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.dialog.action.DialogActionExecutor;
-import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
@@ -50,12 +51,9 @@ import info.magnolia.ui.vaadin.dialog.DialogView;
 import info.magnolia.ui.vaadin.dialog.FormDialogView;
 import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.form.FormView;
-
-import javax.inject.Inject;
-
 import org.apache.commons.lang.StringUtils;
 
-import com.vaadin.data.Item;
+import javax.inject.Inject;
 
 /**
  * Presenter for forms opened inside dialogs.
@@ -86,7 +84,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     @Override
     public DialogView start(final Item item, String dialogName, final OverlayLayer overlayLayer, EditorCallback callback) {
         try {
-            DialogDefinition dialogDefinition = dialogDefinitionRegistry.get(dialogName);
+            FormDialogDefinition dialogDefinition = dialogDefinitionRegistry.get(dialogName);
 
             return start(item, dialogDefinition, overlayLayer, callback);
 
@@ -104,7 +102,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
      * @param dialogDefinition
      */
     @Override
-    public DialogView start(final Item item, DialogDefinition dialogDefinition, final OverlayLayer overlayLayer, EditorCallback callback) {
+    public DialogView start(final Item item, FormDialogDefinition dialogDefinition, final OverlayLayer overlayLayer, EditorCallback callback) {
         this.callback = callback;
         this.item = item;
 
@@ -128,7 +126,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         return view;
     }
 
-    private void buildView(DialogDefinition dialogDefinition) {
+    private void buildView(FormDialogDefinition dialogDefinition) {
         Dialog dialog = new Dialog(dialogDefinition);
         formView = formBuilder.buildForm(dialogDefinition.getForm(), item, dialog);
         view.setFormView(formView);
@@ -148,7 +146,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         }
     }
 
-    private void initActions(final DialogDefinition dialogDefinition) {
+    private void initActions(final FormDialogDefinition dialogDefinition) {
         for (final ActionDefinition action : dialogDefinition.getActions().values()) {
             addAction(action.getName(), action.getLabel(), new DialogActionListener() {
                 @Override

@@ -47,31 +47,30 @@ import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppEventBus;
+import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.dialog.FormDialogPresenter;
-import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
-import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
+import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
-import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.api.app.SubAppEventBus;
-import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Adds a component underneath the area passed in {@link AreaElement}.
@@ -100,7 +99,7 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
 
     @Override
     public void execute() throws ActionExecutionException {
-        final DialogDefinition dialogDefinition = buildNewComponentDialog(area.getAvailableComponents());
+        final FormDialogDefinition dialogDefinition = buildNewComponentDialog(area.getAvailableComponents());
 
         final FormDialogPresenter formDialogPresenter = componentProvider.getComponent(FormDialogPresenter.class);
         try {
@@ -179,10 +178,10 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
     }
 
     /**
-     * Builds a new {@link DialogDefinition} containing actions and {@link info.magnolia.ui.form.definition.FormDefinition}.
+     * Builds a new {@link info.magnolia.ui.dialog.definition.FormDialogDefinition} containing actions and {@link info.magnolia.ui.form.definition.FormDefinition}.
      * The definition will hold a {@link info.magnolia.ui.form.field.definition.SelectFieldDefinition} with the available components as options.
      */
-    private DialogDefinition buildNewComponentDialog(String availableComponents) {
+    private FormDialogDefinition buildNewComponentDialog(String availableComponents) {
 
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
         form.setDescription("Select the Component to add to the page.");
@@ -216,7 +215,7 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
             }
         }
 
-        ConfiguredDialogDefinition dialog = new ConfiguredDialogDefinition();
+        ConfiguredFormDialogDefinition dialog = new ConfiguredFormDialogDefinition();
         dialog.setId("newComponent");
         dialog.setForm(form);
 
