@@ -33,13 +33,17 @@
  */
 package info.magnolia.ui.dialog.registry;
 
-import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 
 /**
  * Provides a dialog definition.
  *
  * @see DialogDefinitionRegistry
  */
-public interface  DialogDefinitionProvider extends BaseDialogDefinitionProvider<DialogDefinition>{
+public interface DialogDefinitionProvider {
 
+    String getId();
+
+    FormDialogDefinition getDialogDefinition() throws RegistrationException;
 }

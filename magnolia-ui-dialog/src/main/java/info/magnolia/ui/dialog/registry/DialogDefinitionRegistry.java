@@ -33,13 +33,43 @@
  */
 package info.magnolia.ui.dialog.registry;
 
-import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.registry.RegistrationException;
+import info.magnolia.registry.RegistryMap;
+import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 
 import javax.inject.Singleton;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Maintains a registry of dialog providers registered by id.
  */
 @Singleton
-public class DialogDefinitionRegistry extends BaseDialogDefinitionRegistry<DialogDefinition>{
+public class DialogDefinitionRegistry {
+
+    private final RegistryMap<String, DialogDefinitionProvider> registry = new RegistryMap<String, DialogDefinitionProvider>() {
+
+        @Override
+        protected String keyFromValue(DialogDefinitionProvider value) {
+            return value.getId();
+        }
+    };
+
+    public FormDialogDefinition get(String id) throws RegistrationException {
+        DialogDefinitionProvider provider;
+        try {
+            provider = registry.getRequired(id);
+        } catch (RegistrationException e) {
+            throw new RegistrationException("No dialog definition registered for id: " + id, e);
+        }
+        return provider.getDialogDefinition();
+    }
+
+    public void register(DialogDefinitionProvider provider) {
+        registry.put(provider);
+    }
+
+    public Set<String> unregisterAndRegister(Set<String> registeredIds, List<DialogDefinitionProvider> providers) {
+        return registry.removeAndPutAll(registeredIds, providers);
+    }
 }
