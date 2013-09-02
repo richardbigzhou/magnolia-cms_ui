@@ -43,7 +43,7 @@ import java.util.List;
  */
 public class AppLauncherGroupDefinitionKeyGenerator extends AbstractI18nKeyGenerator<AppLauncherGroupDefinition> {
 
-    public static final String APPLAUNCHER_PREFIX = "app-launcher.";
+    public static final String APPLAUNCHER_PREFIX = "app-launcher";
 
     @Override
     public String messageBundleNameFor(AppLauncherGroupDefinition group) {

@@ -127,7 +127,7 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
 
                 AppDescriptor appDescriptor;
                 try {
-                    appDescriptor = appDescriptorRegistry.getAppDescriptor(entryDefinition.getName());
+                    appDescriptor = i18nizer.decorate(appDescriptorRegistry.getAppDescriptor(entryDefinition.getName()));
                 } catch (RegistrationException e) {
                     continue;
                 }
