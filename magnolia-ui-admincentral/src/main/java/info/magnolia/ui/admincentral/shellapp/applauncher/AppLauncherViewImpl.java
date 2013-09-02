@@ -94,7 +94,7 @@ public class AppLauncherViewImpl implements AppLauncherView {
         for (AppLauncherGroup group : layout.getGroups()) {
             appLauncher.addAppGroup(group.getName(), group.getLabel(), group.getColor(), group.isPermanent(), group.isClientGroup());
             for (AppLauncherGroupEntry entry : group.getApps()) {
-                AppDescriptor descriptor = i18nizer.decorate(entry.getAppDescriptor());
+                AppDescriptor descriptor = entry.getAppDescriptor();
                 appLauncher.addAppTile(descriptor.getName(), descriptor.getLabel(), descriptor.getIcon(), group.getName());
             }
         }
