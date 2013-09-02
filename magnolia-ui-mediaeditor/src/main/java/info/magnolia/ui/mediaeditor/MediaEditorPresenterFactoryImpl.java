@@ -37,6 +37,7 @@ import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -80,11 +81,14 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
 
     private EventBus eventBus = new SimpleEventBus();
 
+    private I18nizer i18nizer;
+
     @Inject
-    public MediaEditorPresenterFactoryImpl(ComponentProvider subAppComponentProvider, ModuleRegistry moduleRegistry, MediaEditorRegistry registry) {
+    public MediaEditorPresenterFactoryImpl(ComponentProvider subAppComponentProvider, ModuleRegistry moduleRegistry, MediaEditorRegistry registry, I18nizer i18nizer) {
         this.subAppComponentProvider = subAppComponentProvider;
         this.moduleRegistry = moduleRegistry;
         this.registry = registry;
+        this.i18nizer = i18nizer;
     }
 
     @Override
@@ -112,7 +116,7 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
         // Get components common to all sub apps
         ComponentProviderConfiguration configuration =
                 configurationBuilder.getComponentsFromModules(MEDIA_EDITOR_COMPONENT_ID, moduleDefinitions);
-        log.debug("Creating component provider for media editor");
+        log.debug("Creating component provider for media editor...");
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         builder.withConfiguration(configuration);
         builder.withParent((GuiceComponentProvider) subAppComponentProvider);
@@ -133,10 +137,10 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
         ActionExecutor mediaActionExecutor = mediaEditorComponentProvider.getComponent(ActionExecutor.class);
         DialogPresenter dialogPresenter = new BaseDialogPresenter(mediaEditorComponentProvider, mediaActionExecutor, new BaseDialogViewImpl());
         AppContext appContext = mediaEditorComponentProvider.getComponent(AppContext.class);
-        MediaEditorPresenter mediaEditorPresenter = 
+        MediaEditorPresenter mediaEditorPresenter =
                 new MediaEditorPresenterImpl(
-                        definition, 
-                        eventBus, 
+                        definition,
+                        eventBus,
                         view,
                         actionbarPresenter,
                         dialogPresenter,

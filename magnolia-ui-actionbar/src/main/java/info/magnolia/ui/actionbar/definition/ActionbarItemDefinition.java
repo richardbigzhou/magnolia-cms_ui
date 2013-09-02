@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.actionbar.definition;
 
+
 /**
  * Defines an item within a {@link ActionbarGroupDefinition}.
  */

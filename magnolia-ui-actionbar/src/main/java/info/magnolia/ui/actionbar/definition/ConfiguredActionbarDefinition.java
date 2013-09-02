@@ -34,7 +34,6 @@
 package info.magnolia.ui.actionbar.definition;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -69,7 +68,7 @@ public class ConfiguredActionbarDefinition implements ActionbarDefinition {
 
     @Override
     public List<ActionbarSectionDefinition> getSections() {
-        return Collections.unmodifiableList(sections);
+        return sections;
     }
 
     public void setSections(List<ActionbarSectionDefinition> def) {

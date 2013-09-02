@@ -34,6 +34,7 @@
 package info.magnolia.ui.api.action;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.MgnlInstantiationException;
@@ -50,9 +51,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Abstract base implementation of {@link ActionExecutor}. Creates the {@link Action} from the implementation class
- * using a {@link ComponentProvider} and binds the ActionDefinition to the Action. Subclasses need only implement
- * {@link #getActionDefinition(String)}.
- *
+ * using a {@link ComponentProvider} and binds the ActionDefinition to the Action. Subclasses need only implement {@link #getActionDefinition(String)}.
+ * 
  * @see Action
  * @see ActionDefinition
  * @see ActionExecutor
@@ -63,9 +63,13 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
 
     private ComponentProvider componentProvider;
 
+    private I18nizer i18nizer;
+
     @Inject
     public AbstractActionExecutor(ComponentProvider componentProvider) {
         this.componentProvider = componentProvider;
+        this.i18nizer = componentProvider.getComponent(I18nizer.class);
+
     }
 
     @Override
@@ -148,6 +152,10 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
         return true;
     }
 
+    protected I18nizer getI18nizer() {
+        return i18nizer;
+    }
+
     private boolean isAvailableForItem(AvailabilityDefinition availability, Item item) {
 
         if (item == null) {
@@ -165,7 +173,7 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
 
         for (String nodeType : availability.getNodeTypes()) {
             try {
-                if (NodeUtil.isNodeType((Node)item, nodeType)) {
+                if (NodeUtil.isNodeType((Node) item, nodeType)) {
                     return true;
                 }
             } catch (RepositoryException e) {

@@ -55,7 +55,7 @@ public final class MessageActionExecutor extends AbstractActionExecutor {
 
     @Override
     public ActionDefinition getActionDefinition(String actionName) {
-        return messageViewDefinition.getActions().get(actionName);
+        return getI18nizer().decorate(messageViewDefinition.getActions().get(actionName));
     }
 
     public void setMessageViewDefinition(MessageViewDefinition messageViewDefinition) {
