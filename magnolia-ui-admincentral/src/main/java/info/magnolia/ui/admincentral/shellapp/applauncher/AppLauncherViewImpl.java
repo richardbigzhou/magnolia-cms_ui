@@ -33,11 +33,14 @@
  */
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroup;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroupEntry;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayout;
 import info.magnolia.ui.vaadin.applauncher.AppLauncher;
+
+import javax.inject.Inject;
 
 import com.vaadin.ui.Component;
 
@@ -55,6 +58,12 @@ public class AppLauncherViewImpl implements AppLauncherView {
     private final AppLauncher appLauncher = new AppLauncher();
 
     private Presenter presenter;
+    private final I18nizer i18nizer;
+
+    @Inject
+    public AppLauncherViewImpl(I18nizer i18nizer) {
+        this.i18nizer = i18nizer;
+    }
 
     public Presenter getPresenter() {
         return presenter;
@@ -85,7 +94,7 @@ public class AppLauncherViewImpl implements AppLauncherView {
         for (AppLauncherGroup group : layout.getGroups()) {
             appLauncher.addAppGroup(group.getName(), group.getLabel(), group.getColor(), group.isPermanent(), group.isClientGroup());
             for (AppLauncherGroupEntry entry : group.getApps()) {
-                AppDescriptor descriptor = entry.getAppDescriptor();
+                AppDescriptor descriptor = i18nizer.decorate(entry.getAppDescriptor());
                 appLauncher.addAppTile(descriptor.getName(), descriptor.getLabel(), descriptor.getIcon(), group.getName());
             }
         }

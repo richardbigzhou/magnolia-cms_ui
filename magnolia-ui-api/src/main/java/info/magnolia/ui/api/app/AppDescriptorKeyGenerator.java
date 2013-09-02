@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,34 +33,24 @@
  */
 package info.magnolia.ui.api.app;
 
-import info.magnolia.cms.security.operations.AccessDefinition;
-import info.magnolia.i18n.I18nAble;
-import info.magnolia.i18n.I18nText;
+import info.magnolia.i18n.AbstractI18nKeyGenerator;
 
-import java.io.Serializable;
-import java.util.Map;
+import java.lang.reflect.AnnotatedElement;
+import java.util.List;
 
 /**
- * Describes an app.
+ * Key generator for {@link AppDescriptor}.
  */
-@I18nAble(keyGenerator = AppDescriptorKeyGenerator.class)
-public interface AppDescriptor extends Serializable {
+public class AppDescriptorKeyGenerator extends AbstractI18nKeyGenerator<AppDescriptor> {
 
-    String getName();
+    @Override
+    public String messageBundleNameFor(AppDescriptor object) {
+        return null;
+    }
 
-    @I18nText
-    String getLabel();
+    @Override
+    protected void keysFor(List<String> list, AppDescriptor app, AnnotatedElement el) {
+        addKey(list, app.getName(), fieldOrGetterName(el));
+    }
 
-    boolean isEnabled();
-
-    @I18nText
-    String getIcon();
-
-    String getTheme();
-
-    Class<? extends App> getAppClass();
-
-    Map<String, SubAppDescriptor> getSubApps();
-
-    AccessDefinition getPermissions();
 }

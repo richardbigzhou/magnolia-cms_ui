@@ -37,6 +37,7 @@ import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SystemEventBus;
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.registry.AppRegistryEvent;
@@ -69,10 +70,13 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
 
     private final AtomicReference<AppLauncherLayoutDefinition> layoutDefinitionReference = new AtomicReference<AppLauncherLayoutDefinition>();
 
+    private final I18nizer i18nizer;
+
     @Inject
-    public AppLauncherLayoutManagerImpl(AppDescriptorRegistry appDescriptorRegistry, @Named(SystemEventBus.NAME) EventBus systemEventBus) {
+    public AppLauncherLayoutManagerImpl(AppDescriptorRegistry appDescriptorRegistry, @Named(SystemEventBus.NAME) EventBus systemEventBus, I18nizer i18nizer) {
         this.appDescriptorRegistry = appDescriptorRegistry;
         this.systemEventBus = systemEventBus;
+        this.i18nizer = i18nizer;
 
         /**
          * Propagate events from {@link info.magnolia.ui.api.app.registry.AppDescriptorRegistry} to notify listeners
@@ -157,7 +161,7 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
 
     @Override
     public void setLayout(AppLauncherLayoutDefinition layout) {
-        this.layoutDefinitionReference.set(layout);
+        this.layoutDefinitionReference.set(i18nizer.decorate(layout));
         sendChangedEvent();
     }
 

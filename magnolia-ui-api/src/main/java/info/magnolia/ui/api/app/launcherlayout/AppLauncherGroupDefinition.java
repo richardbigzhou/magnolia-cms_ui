@@ -34,6 +34,8 @@
 package info.magnolia.ui.api.app.launcherlayout;
 
 import info.magnolia.cms.security.operations.AccessDefinition;
+import info.magnolia.i18n.I18nAble;
+import info.magnolia.i18n.I18nText;
 
 import java.util.List;
 
@@ -43,10 +45,12 @@ import java.util.List;
  * @see AppLauncherLayoutDefinition
  * @see AppLauncherGroupEntryDefinition
  */
+@I18nAble(keyGenerator = AppLauncherGroupDefinitionKeyGenerator.class)
 public interface AppLauncherGroupDefinition {
 
     String getName();
 
+    @I18nText
     String getLabel();
 
     boolean isPermanent();
