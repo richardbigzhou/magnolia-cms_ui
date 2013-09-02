@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.api.app.launcherlayout;
 
+import info.magnolia.i18n.I18nAble;
+
 import java.util.List;
 
 /**
@@ -41,6 +43,7 @@ import java.util.List;
  * @see AppLauncherGroupDefinition
  * @see AppLauncherGroupEntryDefinition
  */
+@I18nAble
 public interface AppLauncherLayoutDefinition {
 
     List<AppLauncherGroupDefinition> getGroups();

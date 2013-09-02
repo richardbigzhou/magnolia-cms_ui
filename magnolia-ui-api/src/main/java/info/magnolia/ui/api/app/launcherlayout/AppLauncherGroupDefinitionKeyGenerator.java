@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,32 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.app;
+package info.magnolia.ui.api.app.launcherlayout;
 
-import info.magnolia.cms.security.operations.AccessDefinition;
-import info.magnolia.i18n.I18nAble;
-import info.magnolia.i18n.I18nText;
+import info.magnolia.i18n.AbstractI18nKeyGenerator;
 
-import java.io.Serializable;
-import java.util.Map;
+import java.lang.reflect.AnnotatedElement;
+import java.util.List;
 
 /**
- * Describes an app.
+ * Key generator for {@link AppLauncherGroupDefinition}.
  */
-@I18nAble(keyGenerator = AppDescriptorKeyGenerator.class)
-public interface AppDescriptor extends Serializable {
+public class AppLauncherGroupDefinitionKeyGenerator extends AbstractI18nKeyGenerator<AppLauncherGroupDefinition> {
 
-    String getName();
+    public static final String APPLAUNCHER_PREFIX = "app-launcher.";
 
-    @I18nText
-    String getLabel();
+    @Override
+    public String messageBundleNameFor(AppLauncherGroupDefinition group) {
+        return null;
+    }
 
-    boolean isEnabled();
+    @Override
+    protected void keysFor(List<String> list, AppLauncherGroupDefinition group, AnnotatedElement el) {
+        String groupName = group.getName();
+        addKey(list, APPLAUNCHER_PREFIX, groupName, fieldOrGetterName(el));
+        if ("label".equals(fieldOrGetterName(el))) {
+            addKey(list, APPLAUNCHER_PREFIX, groupName);
+        }
+    }
 
-    @I18nText
-    String getIcon();
-
-    String getTheme();
-
-    Class<? extends App> getAppClass();
-
-    Map<String, SubAppDescriptor> getSubApps();
-
-    AccessDefinition getPermissions();
 }
