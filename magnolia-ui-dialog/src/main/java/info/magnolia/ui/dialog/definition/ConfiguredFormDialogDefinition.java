@@ -69,4 +69,8 @@ public class ConfiguredFormDialogDefinition extends ConfiguredBaseDialogDefiniti
         return form;
     }
 
+    @Override
+    public Class<? extends FormDialogPresenter> getPresenterClass() {
+        return (Class<? extends FormDialogPresenter>) super.getPresenterClass();
+    }
 }
