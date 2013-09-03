@@ -34,6 +34,8 @@
 package info.magnolia.ui.actionbar.definition;
 
 import info.magnolia.i18n.AbstractI18nKeyGenerator;
+import info.magnolia.ui.api.app.AppDescriptor;
+import info.magnolia.ui.api.app.SubAppDescriptor;
 
 import java.lang.reflect.AnnotatedElement;
 import java.util.List;
@@ -48,10 +50,24 @@ public class ActionbarSectionDefinitionKeyGenerator extends AbstractI18nKeyGener
         return null;
     }
 
+    /**
+     * Will generate keys for the message bundle in the following form <code> &lt;app-name&gt;.&lt;sub-app-name&gt;.actionbar.sections.&lt;section-name&gt;[.name of getter or field annotated with {@link info.magnolia.i18n.I18nText}]</code>.
+     */
     @Override
     protected void keysFor(List<String> keys, ActionbarSectionDefinition sectionDefinition, AnnotatedElement el) {
-        String name = sectionDefinition.getName();
-        addKey(keys, "section", name, fieldOrGetterName(el));
+        AppDescriptor appDescriptor = (AppDescriptor) getRoot(sectionDefinition);
+        SubAppDescriptor subAppDescriptor = null;
+        List<?> ancestors = getAncestors(sectionDefinition);
+        for (Object ancestor : ancestors) {
+            if (ancestor instanceof SubAppDescriptor) {
+                subAppDescriptor = (SubAppDescriptor) ancestor;
+                break;
+            }
+        }
+        final String appName = appDescriptor.getName();
+        final String sectionName = sectionDefinition.getName();
+        final String subappName = subAppDescriptor != null ? subAppDescriptor.getName() : "";
+        addKey(keys, appName, subappName, "actionbar", "sections", sectionName, fieldOrGetterName(el));
     }
 
 }

@@ -56,7 +56,7 @@ public class SubAppActionExecutor extends AbstractActionExecutor {
 
     @Override
     public ActionDefinition getActionDefinition(String actionName) {
-        return getI18nizer().decorate(subAppDescriptor.getActions().get(actionName));
+        return subAppDescriptor.getActions().get(actionName);
     }
 
 }

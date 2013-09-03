@@ -58,7 +58,7 @@ public class MediaEditorActionExecutor extends AbstractActionExecutor {
 
     @Override
     public ActionDefinition getActionDefinition(String actionName) {
-        return getI18nizer().decorate(def.getActions().get(actionName));
+        return def.getActions().get(actionName);
     }
 
 }

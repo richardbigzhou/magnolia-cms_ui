@@ -33,13 +33,10 @@
  */
 package info.magnolia.ui.actionbar;
 
-import info.magnolia.i18n.I18nizer;
 import info.magnolia.ui.actionbar.builder.ActionbarFactory;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-
-import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,11 +71,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     private Listener listener;
 
-    private I18nizer i18nizer;
-
-    @Inject
-    public ActionbarPresenter(I18nizer i18nizer) {
-        this.i18nizer = i18nizer;
+    public ActionbarPresenter() {
     }
 
     public void setListener(Listener listener) {
@@ -91,7 +84,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
      */
     public ActionbarView start(final ActionbarDefinition definition) {
         this.definition = definition;
-        actionbar = ActionbarFactory.build(i18nizer.decorate(definition), listener);
+        actionbar = ActionbarFactory.build(definition, listener);
         actionbar.setListener(this);
         return actionbar;
     }

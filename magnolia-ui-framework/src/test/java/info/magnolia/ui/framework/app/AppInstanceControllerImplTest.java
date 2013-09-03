@@ -57,7 +57,7 @@ public class AppInstanceControllerImplTest {
     @Test
     public void testSendGroupMessageForwardsToMessagesManager() {
         // GIVEN
-        appInstanceControllerImpl = new AppInstanceControllerImpl(null, null, null, null, messagesManager, null, null, null);
+        appInstanceControllerImpl = new AppInstanceControllerImpl(null, null, null, null, messagesManager, null, null, null, null);
         final String testGroup = "test";
         final Message message = mock(Message.class);
 
@@ -71,7 +71,7 @@ public class AppInstanceControllerImplTest {
     @Test
     public void testSendUserMessageForwardsToMessagesManager() {
         // GIVEN
-        appInstanceControllerImpl = new AppInstanceControllerImpl(null, null, null, null, messagesManager, null, null, null);
+        appInstanceControllerImpl = new AppInstanceControllerImpl(null, null, null, null, messagesManager, null, null, null, null);
         final String testUser = "test";
         final Message message = mock(Message.class);
 
@@ -85,7 +85,7 @@ public class AppInstanceControllerImplTest {
     @Test
     public void testSendLocalMessageForwardsToMessagesManager() {
         // GIVEN
-        appInstanceControllerImpl = new AppInstanceControllerImpl(null, null, null, null, messagesManager, null, null, null);
+        appInstanceControllerImpl = new AppInstanceControllerImpl(null, null, null, null, messagesManager, null, null, null, null);
         final Message message = mock(Message.class);
 
         // WHEN
@@ -98,7 +98,7 @@ public class AppInstanceControllerImplTest {
     @Test
     public void testBroadcastMessageForwardsToMessagesManager() {
         // GIVEN
-        appInstanceControllerImpl = new AppInstanceControllerImpl(null, null, null, null, messagesManager, null, null, null);
+        appInstanceControllerImpl = new AppInstanceControllerImpl(null, null, null, null, messagesManager, null, null, null, null);
         final Message message = mock(Message.class);
 
         // WHEN
@@ -108,4 +108,3 @@ public class AppInstanceControllerImplTest {
         verify(messagesManager).broadcastMessage(message);
     }
 }
-

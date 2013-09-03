@@ -36,6 +36,7 @@ package info.magnolia.ui.framework.app;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.EventBusProtector;
 import info.magnolia.event.SimpleEventBus;
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.monitoring.SystemMonitor;
@@ -131,13 +132,13 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
 
     @Inject
     public AppInstanceControllerImpl(ModuleRegistry moduleRegistry, AppController appController, LocationController locationController, Shell shell,
-            MessagesManager messagesManager, AppDescriptor appDescriptor, AppLauncherLayoutManager appLauncherLayoutManager, SystemMonitor systemMonitor) {
+            MessagesManager messagesManager, AppDescriptor appDescriptor, AppLauncherLayoutManager appLauncherLayoutManager, SystemMonitor systemMonitor, I18nizer i18nizer) {
         this.moduleRegistry = moduleRegistry;
         this.appController = appController;
         this.locationController = locationController;
         this.shell = shell;
         this.messagesManager = messagesManager;
-        this.appDescriptor = appDescriptor;
+        this.appDescriptor = i18nizer.decorate(appDescriptor);
         this.appLauncherLayoutManager = appLauncherLayoutManager;
         this.systemMonitor = systemMonitor;
     }
@@ -327,8 +328,7 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
 
     /**
      * Used to close a running subApp from server side. Delegates to {@link AppView#closeSubAppView(String)}.
-     * The actual closing and cleaning up, will be handled by the callback {@link AppView.Listener#onClose(String)}
-     * implemented in {@link #onClose(String)}.
+     * The actual closing and cleaning up, will be handled by the callback {@link AppView.Listener#onClose(String)} implemented in {@link #onClose(String)}.
      */
     @Override
     public void closeSubApp(String instanceId) {
@@ -368,14 +368,16 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
     /**
      * Used to update the framework about changes to locations inside the app and circumventing the {@link info.magnolia.ui.api.location.LocationController} mechanism.
      * Example Usages:
+     * 
      * <pre>
      *     <ul>
      *         <li>Inside ContentApp framework to update {@link info.magnolia.ui.api.app.SubAppContext#getLocation()} and the {@link Shell} fragment</li>
      *         <li>In the Pages App when navigating pages inside the PageEditor</li>
      *     </ul>
      * </pre>
+     * 
      * When ever possible use the {@link info.magnolia.ui.api.location.LocationController} to not have to do this.
-     *
+     * 
      * @param subAppContext The subAppContext to be updated.
      * @param location The new {@link Location}.
      */
@@ -444,7 +446,6 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
         }
         return supportingContext;
     }
-
 
     private SubAppDetails createSubAppComponentProvider(String appName, String subAppName, SubAppContext subAppContext, ComponentProvider parent) {
 

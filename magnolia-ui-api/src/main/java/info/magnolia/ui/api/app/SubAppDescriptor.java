@@ -33,15 +33,17 @@
  */
 package info.magnolia.ui.api.app;
 
+import info.magnolia.i18n.I18nAble;
 import info.magnolia.ui.api.action.ActionDefinition;
 
 import java.util.Map;
 
 /**
  * Describes a sub app.
- *
+ * 
  * @see SubApp
  */
+@I18nAble
 public interface SubAppDescriptor {
 
     String getName();
