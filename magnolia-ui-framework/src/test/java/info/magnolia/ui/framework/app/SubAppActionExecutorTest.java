@@ -37,6 +37,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
@@ -77,7 +78,14 @@ public class SubAppActionExecutorTest extends MgnlTestCase {
         when(subAppContext.getSubAppDescriptor()).thenReturn(subAppDescriptor);
 
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
-        builder.withConfiguration(new ComponentProviderConfiguration());
+        ComponentProviderConfiguration config = new ComponentProviderConfiguration();
+        config.registerInstance(I18nizer.class, new I18nizer() {
+            @Override
+            public <C> C decorate(C child) {
+                return child;
+            }
+        });
+        builder.withConfiguration(config);
         GuiceComponentProvider componentProvider = builder.build();
         SubAppActionExecutor actionExecutor = new SubAppActionExecutor(componentProvider, subAppContext);
 
@@ -88,4 +96,5 @@ public class SubAppActionExecutorTest extends MgnlTestCase {
         assertNotNull(returnedActionDefinition);
         assertSame(actionDefinition, returnedActionDefinition);
     }
+
 }
