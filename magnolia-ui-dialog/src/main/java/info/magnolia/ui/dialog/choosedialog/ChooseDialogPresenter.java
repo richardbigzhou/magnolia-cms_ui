@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.choosedialog;
+package info.magnolia.ui.dialog.choosedialog;
 
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.overlay.OverlayLayer;
@@ -43,5 +43,5 @@ import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
  */
 public interface ChooseDialogPresenter extends DialogPresenter {
 
-    ChooseDialogView start(ChooseDialogCallback callback, ChooseDialogDefinition definition, OverlayLayer overlayLayer);
+    ChooseDialogView start(ChooseDialogCallback callback, ChooseDialogDefinition definition, OverlayLayer overlayLayer, String itemId);
 }

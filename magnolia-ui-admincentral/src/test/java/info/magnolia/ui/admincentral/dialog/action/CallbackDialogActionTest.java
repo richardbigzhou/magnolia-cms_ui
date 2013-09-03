@@ -43,6 +43,8 @@ import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.dialog.FormDialogPresenter;
+import info.magnolia.ui.dialog.action.CallbackDialogAction;
+import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
@@ -56,7 +58,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Main test class for {@link CallbackDialogAction} and {@link CallbackDialogActionDefinition}.
+ * Main test class for {@link info.magnolia.ui.dialog.action.CallbackDialogAction} and {@link info.magnolia.ui.dialog.action.CallbackDialogActionDefinition}.
  */
 
 public class CallbackDialogActionTest extends MgnlTestCase {

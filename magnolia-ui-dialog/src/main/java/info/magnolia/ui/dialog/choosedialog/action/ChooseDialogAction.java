@@ -1,10 +1,10 @@
-package info.magnolia.ui.contentapp.choosedialog.action;
+package info.magnolia.ui.dialog.choosedialog.action;
 
 import com.vaadin.data.Item;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
-import info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenter;
+import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 
 /**
  * Created with IntelliJ IDEA.

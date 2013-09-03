@@ -48,7 +48,9 @@ public class ConfiguredChooseDialogDefinition extends ConfiguredBaseDialogDefini
 
     private FieldDefinition field;
 
-    public ConfiguredChooseDialogDefinition() {}
+    public ConfiguredChooseDialogDefinition() {
+        //setPresenterClass(ChooseDialogPresenter.class);
+    }
 
     @Override
     public FieldDefinition getField() {

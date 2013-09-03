@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2011-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,34 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.dialog.action;
+package info.magnolia.ui.dialog.choosedialog;
 
-import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.vaadin.dialog.DialogView;
 
 /**
- * Implements an action for Callback handling on dialog {@link info.magnolia.ui.vaadin.dialog.FormDialog}.
- * This Action can be configured to perform a cancel or a success Action.
- *
- * @see CallbackDialogActionDefinition
+ * View interface for choose dialog views.
  */
-public class CallbackDialogAction extends AbstractAction<CallbackDialogActionDefinition> {
+public interface ChooseDialogView extends DialogView {
 
-    private EditorCallback callback;
+    void setContent(View contentView);
 
-    public CallbackDialogAction(CallbackDialogActionDefinition definition, EditorCallback callback) {
-        super(definition);
-        this.callback = callback;
-    }
+    void close();
 
-    @Override
-    public void execute() throws ActionExecutionException {
-        if (getDefinition().isCallSuccess()) {
-            callback.onSuccess(getDefinition().getSuccessActionName());
-        } else {
-            callback.onCancel();
-        }
-    }
-
+    void addAdditionalAction(View actionView);
 }

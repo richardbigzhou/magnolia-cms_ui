@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2012-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,18 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.choosedialog;
+package info.magnolia.ui.dialog.choosedialog;
 
+import com.vaadin.ui.HorizontalLayout;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.dialog.DialogView;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
 /**
- * View interface for choose dialog views.
+ * Chooses an item from a workbench.
  */
-public interface ChooseDialogView extends DialogView {
+public class ChooseDialogViewImpl extends BaseDialog implements ChooseDialogView {
 
-    void setContent(View contentView);
+    private HorizontalLayout additionalActionsContainer = new HorizontalLayout();
 
-    void close();
+    public ChooseDialogViewImpl() {
+        super();
+        setHeight("500px");
+        addStyleName("choose-dialog");
+        setFooterToolbar(additionalActionsContainer);
+    }
+
+    @Override
+    public void setContent(View contentView) {
+        setContent(contentView.asVaadinComponent());
+    }
+
+    @Override
+    public void close() {
+        closeSelf();
+    }
+
+    @Override
+    public void addAdditionalAction(View additionalActionView) {
+        additionalActionsContainer.addComponent(additionalActionView.asVaadinComponent());
+    }
 
 }

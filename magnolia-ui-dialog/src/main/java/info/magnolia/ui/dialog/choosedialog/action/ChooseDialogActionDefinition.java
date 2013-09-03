@@ -1,6 +1,6 @@
-package info.magnolia.ui.contentapp.choosedialog.action;
+package info.magnolia.ui.dialog.choosedialog.action;
 
-import info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinition;
+import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
 
 /**
  * Created with IntelliJ IDEA.

@@ -31,30 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.choosedialog;
+package info.magnolia.ui.dialog.action;
 
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.dialog.BaseDialog;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.api.action.AbstractAction;
+import info.magnolia.ui.api.action.ActionExecutionException;
 
 /**
- * Chooses an item from a workbench.
+ * Implements an action for Callback handling on dialog {@link info.magnolia.ui.vaadin.dialog.FormDialog}.
+ * This Action can be configured to perform a cancel or a success Action.
+ *
+ * @see CallbackDialogActionDefinition
  */
-public class ChooseDialogViewImpl extends BaseDialog implements ChooseDialogView {
+public class CallbackDialogAction extends AbstractAction<CallbackDialogActionDefinition> {
 
-    public ChooseDialogViewImpl() {
-        super();
-        setHeight("500px");
-        addStyleName("choose-dialog");
+    private EditorCallback callback;
+
+    public CallbackDialogAction(CallbackDialogActionDefinition definition, EditorCallback callback) {
+        super(definition);
+        this.callback = callback;
     }
 
     @Override
-    public void setContent(View contentView) {
-        setContent(contentView.asVaadinComponent());
-    }
-
-    @Override
-    public void close() {
-        closeSelf();
+    public void execute() throws ActionExecutionException {
+        if (getDefinition().isCallSuccess()) {
+            callback.onSuccess(getDefinition().getSuccessActionName());
+        } else {
+            callback.onCancel();
+        }
     }
 
 }

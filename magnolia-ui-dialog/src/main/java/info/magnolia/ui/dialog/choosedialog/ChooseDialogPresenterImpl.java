@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.choosedialog;
+package info.magnolia.ui.dialog.choosedialog;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -41,8 +41,11 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.AuxiliaryDialogAction;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionListener;
+import info.magnolia.ui.api.action.ActionPresenter;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.overlay.OverlayLayer;
@@ -50,6 +53,7 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.BaseDialogPresenter;
 import info.magnolia.ui.dialog.action.DialogActionExecutor;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
+import info.magnolia.ui.form.action.presenter.DefaultEditorActionPresenter;
 import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
@@ -61,6 +65,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.util.Map;
 
 /**
  * Factory for creating workbench choose dialog presenters.
@@ -77,13 +82,13 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
 
     private I18nContentSupport i18nContentSupport;
 
-    private String selectedItemId;
-
     private Item item;
 
     private DialogActionExecutor actionExecutor;
 
     private ChooseDialogCallback callback;
+
+    private Field<Object> field;
 
     @Inject
     public ChooseDialogPresenterImpl(
@@ -102,57 +107,13 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
         showCloseButton();
     }
 
-    /**
-     * Set the selected itemId. <br>
-     * If selectedItemId is a path, get the id for the path.
-     */
-    public void setSelectedItemId(String selectedItemId) {
-        /*try {
-            if (StringUtils.isBlank(selectedItemId)) {
-                return;
-            }
-            this.selectedItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), selectedItemId);
-            if (StringUtils.isBlank(this.selectedItemId) && JcrItemUtil.itemExists(workbenchDefinition.getWorkspace(), selectedItemId)) {
-                this.selectedItemId = selectedItemId;
-            }
-
-        } catch (RepositoryException e) {
-            log.warn("Unable to set the selected item", selectedItemId, e);
-        } */
-        this.selectedItemId = selectedItemId;
-    }
-
-    /**
-     * Set in the View the already selected itemId.
-     */
-    private void select(String itemId) {
-        /*try {
-            // restore selection
-            if (JcrItemUtil.itemExists(workbenchDefinition.getWorkspace(), itemId)) {
-                List<String> ids = new ArrayList<String>(1);
-                ids.add(itemId);
-                workbenchView.getSelectedView().select(ids);
-                javax.jcr.Item jcrItem = JcrItemUtil.getJcrItem(workbenchDefinition.getWorkspace(), itemId);
-
-                if (jcrItem.isNode()) {
-                    currentValue = new JcrNodeAdapter((Node) jcrItem);
-                } else {
-                    currentValue = new JcrPropertyAdapter((Property) jcrItem);
-                }
-            }
-        } catch (RepositoryException e) {
-            log.warn("Unable to get node or property [{}] for selection", itemId, e);
-        }     */
-    }
-
-
     @Override
-    public ChooseDialogView start(ChooseDialogCallback callback, ChooseDialogDefinition definition, OverlayLayer overlayLayer) {
+    public ChooseDialogView start(ChooseDialogCallback callback, ChooseDialogDefinition definition, OverlayLayer overlayLayer, String selectedItemId) {
         this.callback = callback;
         final FieldFactory formField = fieldFactoryFactory.createFieldFactory(definition.getField(), new NullItem());
         formField.setComponentProvider(componentProvider);
         formField.setI18nContentSupport(i18nContentSupport);
-        final Field<?> field = formField.createField();
+        this.field = (Field<Object>) formField.createField();
         if (field.getType().isAssignableFrom(Item.class)) {
             if (field instanceof AbstractComponent) {
                 ((AbstractComponent) field).setImmediate(true);
@@ -160,7 +121,7 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
             field.addValueChangeListener(new ValueChangeListener() {
                 @Override
                 public void valueChange(ValueChangeEvent event) {
-                    item = (Item)event.getProperty().getValue();
+                    item = (Item) event.getProperty().getValue();
                 }
             });
 
@@ -173,7 +134,7 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
             });
 
             if (StringUtils.isNotBlank(selectedItemId)) {
-                select(selectedItemId);
+                field.setValue(selectedItemId);
             }
 
             final OverlayCloser closer = overlayLayer.openOverlay(chooseDialogView);
@@ -195,21 +156,34 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
     private void initActions(ChooseDialogDefinition definition) {
 
         for (final ActionDefinition action : definition.getActions().values()) {
-            addAction(action.getName(), action.getLabel(), new DialogActionListener() {
+            final DialogActionListener dialogActionListener = new DialogActionListener() {
                 @Override
                 public void onActionExecuted(final String actionName) {
                     try {
                         if (item != null) {
-                            actionExecutor.execute(actionName, item,  callback);
+                            actionExecutor.execute(actionName, ChooseDialogPresenterImpl.this, field, chooseDialogView, callback, item);
                         } else {
-                            actionExecutor.execute(actionName, callback);
+                            actionExecutor.execute(actionName, ChooseDialogPresenterImpl.this, field, chooseDialogView, callback);
                         }
-                        chooseDialogView.close();
                     } catch (ActionExecutionException e) {
                         throw new RuntimeException("Could not execute action: " + actionName, e);
                     }
                 }
-            });
+            };
+
+            if (!(action instanceof AuxiliaryDialogAction)) {
+                addAction(action.getName(), action.getLabel(), dialogActionListener);
+            } else {
+                Class<? extends ActionPresenter> actionPresenterClass = action.getPresenterClass();
+                ActionPresenter presenter = actionPresenterClass == null ? new DefaultEditorActionPresenter() : componentProvider.newInstance(actionPresenterClass);
+                View actionView = presenter.start(action, new ActionListener() {
+                    @Override
+                    public void onActionFired(ActionDefinition definition, Map<String, Object> actionParams) {
+                        dialogActionListener.onActionExecuted(definition.getName());
+                    }
+                });
+                chooseDialogView.addAdditionalAction(actionView);
+            }
         }
     }
 }

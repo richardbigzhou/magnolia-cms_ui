@@ -1,4 +1,4 @@
-package info.magnolia.ui.framework.action.presenter;
+package info.magnolia.ui.form.action.presenter;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -18,7 +18,7 @@ import java.util.HashMap;
  * Time: 3:44 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DefaultActionPresenter implements ActionPresenter {
+public class DefaultEditorActionPresenter implements ActionPresenter {
     @Override
     public View start(final ActionDefinition definition, final ActionListener listener) {
         return new View() {
