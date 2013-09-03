@@ -37,6 +37,7 @@ import info.magnolia.jcr.node2bean.Node2BeanException;
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.ConfiguredMessageViewDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition;
 
 import javax.inject.Singleton;
@@ -50,11 +51,14 @@ import javax.jcr.RepositoryException;
 public class ConfiguredMessageViewDefinitionProvider implements MessageViewDefinitionProvider {
     private final String id;
 
-    private final MessageViewDefinition messageViewDefinition;
+    private final ConfiguredMessageViewDefinition messageViewDefinition;
 
     public ConfiguredMessageViewDefinitionProvider(String id, Node configNode) throws RepositoryException, Node2BeanException {
         this.id = id;
-        this.messageViewDefinition = (MessageViewDefinition) Components.getComponent(Node2BeanProcessor.class).toBean(configNode, MessageViewDefinition.class);
+        this.messageViewDefinition = (ConfiguredMessageViewDefinition) Components.getComponent(Node2BeanProcessor.class).toBean(configNode, MessageViewDefinition.class);
+        if (this.messageViewDefinition != null) {
+            this.messageViewDefinition.setId(id);
+        }
     }
 
     @Override

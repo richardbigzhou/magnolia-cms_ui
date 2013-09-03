@@ -45,11 +45,33 @@ import java.util.Map;
  */
 public class ConfiguredMessageViewDefinition implements MessageViewDefinition {
 
+    private String id;
+
+    private String i18nBasename;
+
     private Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
 
     private FormDefinition form;
 
     private ActionbarDefinition actionbar;
+
+    @Override
+    public String getId() {
+        return this.id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @Override
+    public String getI18nBasename() {
+        return this.i18nBasename;
+    }
+
+    public void setI18nBasename(String i18nBasename) {
+        this.i18nBasename = i18nBasename;
+    }
 
     @Override
     public Map<String, ActionDefinition> getActions() {

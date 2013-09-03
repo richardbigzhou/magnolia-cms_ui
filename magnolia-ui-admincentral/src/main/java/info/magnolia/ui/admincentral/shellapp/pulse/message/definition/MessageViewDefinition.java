@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message.definition;
 
+import info.magnolia.i18n.I18nAble;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
@@ -42,7 +43,12 @@ import java.util.Map;
 /**
  * Definition used for building a view for messages.
  */
+@I18nAble
 public interface MessageViewDefinition {
+
+    String getId();
+
+    String getI18nBasename();
 
     Map<String, ActionDefinition> getActions();
 
