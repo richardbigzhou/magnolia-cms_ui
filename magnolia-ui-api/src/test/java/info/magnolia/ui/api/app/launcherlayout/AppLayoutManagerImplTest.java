@@ -42,6 +42,7 @@ import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.api.app.AppDescriptor;
@@ -102,9 +103,16 @@ public class AppLayoutManagerImplTest extends MgnlTestCase {
         when(registry.getAppDescriptor(eq("app2"))).thenReturn(appDescriptor2);
         when(registry.getAppDescriptor(eq("app3"))).thenReturn(appDescriptor3);
 
+        I18nizer i18nizer = new I18nizer() {
+            @Override
+            public <C> C decorate(C child) {
+                return child;
+            }
+        };
+
         systemEventBus = new SimpleEventBus();
 
-        appLayoutManager = new AppLauncherLayoutManagerImpl(registry, systemEventBus);
+        appLayoutManager = new AppLauncherLayoutManagerImpl(registry, systemEventBus, i18nizer);
         appLayoutManager.setLayout(layoutDefinition);
 
         // Set up context with a user having only one role
