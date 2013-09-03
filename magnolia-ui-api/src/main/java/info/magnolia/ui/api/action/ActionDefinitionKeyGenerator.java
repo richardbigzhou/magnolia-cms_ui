@@ -34,6 +34,8 @@
 package info.magnolia.ui.api.action;
 
 import info.magnolia.i18n.AbstractI18nKeyGenerator;
+import info.magnolia.ui.api.app.AppDescriptor;
+import info.magnolia.ui.api.app.SubAppDescriptor;
 
 import java.lang.reflect.AnnotatedElement;
 import java.util.List;
@@ -48,9 +50,13 @@ public class ActionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<Actio
         return null;
     }
 
+    /**
+     * Will generate keys for the message bundle in the following form <code> &lt;app-name&gt;.&lt;sub-app-name&gt;.actions.&lt;action-name&gt;[.name of getter or field annotated with {@link info.magnolia.i18n.I18nText}]</code>.
+     */
     @Override
     protected void keysFor(List<String> keys, ActionDefinition actionDefinition, AnnotatedElement el) {
-        addKey(keys, "actions", actionDefinition.getName(), fieldOrGetterName(el));
-
+        final AppDescriptor appDescriptor = (AppDescriptor) getRoot(actionDefinition);
+        final SubAppDescriptor subAppDescriptor = getParentViaCast(actionDefinition);
+        addKey(keys, appDescriptor.getName(), subAppDescriptor.getName(), "actions", actionDefinition.getName(), fieldOrGetterName(el));
     }
 }

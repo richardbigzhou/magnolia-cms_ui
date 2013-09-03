@@ -37,7 +37,6 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.i18n.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionExecutor;
@@ -79,7 +78,7 @@ public class ContentSubAppTest {
         view = mock(ContentSubAppView.class);
         workbench = mock(BrowserPresenter.class);
 
-        ActionbarPresenter actionbar = new ActionbarPresenter(mock(I18nizer.class));
+        ActionbarPresenter actionbar = new ActionbarPresenter();
         when(workbench.getActionbarPresenter()).thenReturn(actionbar);
 
         subAppEventBus = mock(EventBus.class);
@@ -90,7 +89,7 @@ public class ContentSubAppTest {
         public int foo = 0;
 
         public DummyContentSubApp(ActionExecutor actionExecutor, SubAppContext subAppContext, ContentSubAppView view, BrowserPresenter workbench, EventBus subAppEventBus) {
-            super(actionExecutor, subAppContext, view, workbench, subAppEventBus, componentProvider, mock(I18nizer.class));
+            super(actionExecutor, subAppContext, view, workbench, subAppEventBus, componentProvider);
         }
 
         @Override

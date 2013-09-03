@@ -33,25 +33,25 @@
  */
 package info.magnolia.ui.mediaeditor.definition;
 
+import info.magnolia.i18n.I18nAble;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
 
 import java.util.Map;
 
-
 /**
- * Definition of the media editor. Used by
- * {@link info.magnolia.ui.mediaeditor.MediaEditorPresenter} for configuration
+ * Definition of the media editor. Used by {@link info.magnolia.ui.mediaeditor.MediaEditorPresenter} for configuration
  * of the view. Also used by {@link info.magnolia.ui.mediaeditor.action.MediaEditorActionExecutor} for resolution of
  * action definitions.
  */
+@I18nAble
 public interface MediaEditorDefinition {
-    
+
     String getId();
 
     String getDefaultAction();
 
     ActionbarDefinition getActionBar();
 
-    Map<String, ActionDefinition> getActions(); 
+    Map<String, ActionDefinition> getActions();
 }

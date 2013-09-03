@@ -172,7 +172,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
         sectionToShow.setAvailability(sAvailabilityAlways);
         initBrowser();
-        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider, i18nizer);
+        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
     }
 
     @Test
@@ -286,7 +286,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
         ConfiguredActionbarDefinition definition = new ConfiguredActionbarDefinition();
         definition.addSection(sectionToShow);
         definition.addSection(sectionToHide);
-        testActionbarPresenter = new TestActionbarPresenter(i18nizer);
+        testActionbarPresenter = new TestActionbarPresenter();
         browserPresenter = mock(BrowserPresenter.class);
         when(browserPresenter.getActionbarPresenter()).thenReturn(testActionbarPresenter);
 
@@ -392,15 +392,14 @@ public class BrowserSubAppTest extends MgnlTestCase {
     private SimpleActionExecutor createSimpleActionExecutor() {
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         ComponentProviderConfiguration componentProviderConfig = new ComponentProviderConfiguration();
-        componentProviderConfig.registerInstance(I18nizer.class, i18nizer);
         builder.withConfiguration(componentProviderConfig);
         GuiceComponentProvider componentProvider = builder.build();
         return new SimpleActionExecutor(componentProvider);
     }
 
     private static class TestActionbarPresenter extends ActionbarPresenter {
-        public TestActionbarPresenter(I18nizer i18nizer) {
-            super(i18nizer);
+        public TestActionbarPresenter() {
+            super();
         }
 
         public Set<String> visibleSections;

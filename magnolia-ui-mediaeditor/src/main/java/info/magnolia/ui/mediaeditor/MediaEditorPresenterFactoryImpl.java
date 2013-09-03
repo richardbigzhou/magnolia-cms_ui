@@ -35,7 +35,6 @@ package info.magnolia.ui.mediaeditor;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
-import info.magnolia.i18n.I18nizer;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -81,14 +80,11 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
 
     private EventBus eventBus = new SimpleEventBus();
 
-    private I18nizer i18nizer;
-
     @Inject
-    public MediaEditorPresenterFactoryImpl(ComponentProvider subAppComponentProvider, ModuleRegistry moduleRegistry, MediaEditorRegistry registry, I18nizer i18nizer) {
+    public MediaEditorPresenterFactoryImpl(ComponentProvider subAppComponentProvider, ModuleRegistry moduleRegistry, MediaEditorRegistry registry) {
         this.subAppComponentProvider = subAppComponentProvider;
         this.moduleRegistry = moduleRegistry;
         this.registry = registry;
-        this.i18nizer = i18nizer;
     }
 
     @Override
@@ -133,7 +129,7 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
     public MediaEditorPresenter getPresenterByDefinition(MediaEditorDefinition definition) {
         ComponentProvider mediaEditorComponentProvider = createMediaEditorComponentProvider();
         MediaEditorView view = mediaEditorComponentProvider.getComponent(MediaEditorView.class);
-        ActionbarPresenter actionbarPresenter = new ActionbarPresenter(i18nizer);
+        ActionbarPresenter actionbarPresenter = new ActionbarPresenter();
         AppContext appContext = mediaEditorComponentProvider.getComponent(AppContext.class);
         MediaEditorPresenter mediaEditorPresenter =
                 new MediaEditorPresenterImpl(
