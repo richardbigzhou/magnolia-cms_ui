@@ -90,7 +90,7 @@ public class ContentSubAppTest {
         public int foo = 0;
 
         public DummyContentSubApp(ActionExecutor actionExecutor, SubAppContext subAppContext, ContentSubAppView view, BrowserPresenter workbench, EventBus subAppEventBus) {
-            super(actionExecutor, subAppContext, view, workbench, subAppEventBus, componentProvider);
+            super(actionExecutor, subAppContext, view, workbench, subAppEventBus, componentProvider, mock(I18nizer.class));
         }
 
         @Override
