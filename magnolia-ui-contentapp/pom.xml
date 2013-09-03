@@ -17,26 +17,32 @@
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
+      <version>${magnoliaVersion}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-vaadin-integration</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-workbench</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-admincentral</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-framework</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>uk.com.robust-it</groupId>
@@ -59,12 +65,14 @@
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
+      <version>${magnoliaVersion}</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-admincentral</artifactId>
+      <version>${project.version}</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
@@ -72,6 +80,7 @@
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-form</artifactId>
       <type>test-jar</type>
+      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -33,10 +33,12 @@
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
+      <version>${magnoliaVersion}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-api</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.vaadin.addons</groupId>
@@ -67,6 +69,7 @@
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
       <type>test-jar</type>
+      <version>${magnoliaVersion}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

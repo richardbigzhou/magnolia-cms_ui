@@ -31,138 +31,13 @@
     <url>http://git.magnolia-cms.com/gitweb/?p=magnolia_ui.git</url>
     <tag>HEAD</tag>
   </scm>
-
   <dependencyManagement>
     <dependencies>
-
-      <!-- Dependency management from main -->
       <dependency>
         <groupId>info.magnolia</groupId>
-        <artifactId>magnolia-project</artifactId>
+        <artifactId>magnolia-rendering</artifactId>
         <version>${magnoliaVersion}</version>
-        <type>pom</type>
-        <scope>import</scope>
       </dependency>
-
-      <!-- Deps to reactor (self) -->
-      <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-actionbar</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-admincentral</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-admincentral</artifactId>
-        <type>test-jar</type>
-        <scope>test</scope>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.messages</groupId>
-        <artifactId>magnolia-messages-app</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.pages</groupId>
-        <artifactId>magnolia-pages</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.sample</groupId>
-        <artifactId>magnolia-sample-app</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.security</groupId>
-        <artifactId>magnolia-security-app</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-contentapp</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-dialog</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-form</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-form</artifactId>
-        <type>test-jar</type>
-        <scope>test</scope>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-framework</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-imageprovider</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-mediaeditor</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-vaadin-integration</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-vaadin-integration</artifactId>
-        <type>test-jar</type>
-        <scope>test</scope>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-vaadin-theme</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-widget-editor</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.ui</groupId>
-        <artifactId>magnolia-ui-workbench</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <!-- Other deps: -->
       <dependency>
         <groupId>info.magnolia</groupId>
         <artifactId>magnolia-module-imaging</artifactId>
@@ -207,11 +82,6 @@
         <groupId>org.vaadin.addon</groupId>
         <artifactId>easyuploads</artifactId>
         <version>7.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>org.vaadin.addons</groupId>
-        <artifactId>ckeditor-wrapper-for-vaadin</artifactId>
-         <version>7.8.3</version>
       </dependency>
 
       <dependency>
@@ -263,6 +133,19 @@
       </dependency>
 
       <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>2.5</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>jsp-api</artifactId>
+        <version>2.0</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
         <groupId>com.googlecode.mgwt</groupId>
         <artifactId>mgwt</artifactId>
         <version>1.1.2</version>
@@ -283,7 +166,6 @@
         <classifier>sources</classifier>
         <version>1.0.0.GA</version>
       </dependency>
-
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
@@ -298,7 +180,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <build>
     <pluginManagement>
       <plugins>

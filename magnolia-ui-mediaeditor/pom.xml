@@ -17,10 +17,12 @@
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
+      <version>${magnoliaVersion}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-framework</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
