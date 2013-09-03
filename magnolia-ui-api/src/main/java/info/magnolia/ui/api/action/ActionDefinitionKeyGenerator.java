@@ -55,8 +55,11 @@ public class ActionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<Actio
      */
     @Override
     protected void keysFor(List<String> keys, ActionDefinition actionDefinition, AnnotatedElement el) {
-        final AppDescriptor appDescriptor = (AppDescriptor) getRoot(actionDefinition);
-        final SubAppDescriptor subAppDescriptor = getParentViaCast(actionDefinition);
-        addKey(keys, appDescriptor.getName(), subAppDescriptor.getName(), "actions", actionDefinition.getName(), fieldOrGetterName(el));
+        final Object root = getRoot(actionDefinition);
+        if (root instanceof AppDescriptor) {
+            final AppDescriptor appDescriptor = (AppDescriptor) root;
+            final SubAppDescriptor subAppDescriptor = getParentViaCast(actionDefinition);
+            addKey(keys, appDescriptor.getName(), subAppDescriptor.getName(), "actions", actionDefinition.getName(), fieldOrGetterName(el));
+        }
     }
 }
