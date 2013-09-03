@@ -31,6 +31,7 @@
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
+      <version>${magnoliaVersion}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia</groupId>
@@ -53,6 +54,7 @@
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
+      <version>${magnoliaVersion}</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>

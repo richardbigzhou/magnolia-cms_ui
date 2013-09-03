@@ -33,6 +33,7 @@
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
+      <version>${magnoliaVersion}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia</groupId>
@@ -42,10 +43,12 @@
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-vaadin-integration</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-imageprovider</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.vaadin.addon</groupId>
@@ -62,6 +65,7 @@
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -79,6 +83,7 @@
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-core</artifactId>
+      <version>${magnoliaVersion}</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
