@@ -106,8 +106,8 @@
       <implementation>info.magnolia.ui.form.definition.ConfiguredFormDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.dialog.definition.DialogDefinition</type>
-      <implementation>info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition</implementation>
+      <type>info.magnolia.ui.dialog.definition.FormDialogDefinition</type>
+      <implementation>info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition</implementation>
     </type-mapping>
     <type-mapping>
       <type>info.magnolia.ui.form.definition.TabDefinition</type>
@@ -228,7 +228,21 @@
 
   <components>
     <id>app</id>
+      <component>
+          <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogView</type>
+          <implementation>info.magnolia.ui.contentapp.choosedialog.ChooseDialogViewImpl</implementation>
+      </component>
 
+      <component>
+          <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenter</type>
+          <implementation>info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenterImpl</implementation>
+      </component>
+
+
+      <component>
+          <type>info.magnolia.ui.form.field.factory.FieldFactoryFactory</type>
+          <implementation>info.magnolia.ui.form.field.factory.FieldFactoryFactory</implementation>
+      </component>
     <!-- Dialog -->
     <!--
       The FormDialogPresenter is mapped in admincentral, app and subApp scope to ensure it gets the correct UiContext injected.

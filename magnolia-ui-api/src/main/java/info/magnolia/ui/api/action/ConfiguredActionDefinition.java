@@ -47,6 +47,7 @@ public class ConfiguredActionDefinition implements ActionDefinition {
     private String icon;
     private String i18nBasename;
     private Class<? extends Action> implementationClass;
+    private Class<? extends ActionPresenter> presenterClass;
     private AvailabilityDefinition availability = new ConfiguredAvailabilityDefinition();
     private String successMessage;
     private String failureMessage;
@@ -102,6 +103,11 @@ public class ConfiguredActionDefinition implements ActionDefinition {
         return implementationClass;
     }
 
+    @Override
+    public Class<? extends ActionPresenter> getPresenterClass() {
+        return presenterClass;
+    }
+
     public void setImplementationClass(Class<? extends Action> implementationClass) {
         this.implementationClass = implementationClass;
     }
@@ -141,4 +147,9 @@ public class ConfiguredActionDefinition implements ActionDefinition {
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
+
+    public void setPresenterClass(Class<? extends ActionPresenter> presenterClass) {
+        this.presenterClass = presenterClass;
+    }
 }
+

@@ -65,5 +65,7 @@ public interface ActionDefinition {
 
     Class<? extends Action> getImplementationClass();
 
+    Class<? extends ActionPresenter> getPresenterClass();
+
     AvailabilityDefinition getAvailability();
 }
