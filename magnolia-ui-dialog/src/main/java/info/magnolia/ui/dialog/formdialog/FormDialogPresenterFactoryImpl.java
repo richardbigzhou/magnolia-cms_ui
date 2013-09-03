@@ -36,7 +36,7 @@ public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactor
     @Override
     public FormDialogPresenter createFormDialogPresenterByName(String dialogName) {
         try {
-            createFormDialogPresenter(registry.get(dialogName));
+            return createFormDialogPresenter(registry.get(dialogName));
         } catch (RegistrationException e) {
             log.error("Failed to retreive form dialog definition from registry:", e);
         }

@@ -40,6 +40,7 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.dialog.FormDialogPresenter;
+import info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
@@ -54,22 +55,22 @@ import javax.inject.Named;
 public class OpenEditDialogAction extends AbstractAction<OpenEditDialogActionDefinition> {
 
     private final JcrItemAdapter itemToEdit;
-    private final FormDialogPresenter formDialogPresenter;
+    private final FormDialogPresenterFactory formDialogPresenterFactory;
     private final UiContext uiContext;
     private final EventBus eventBus;
 
     @Inject
-    public OpenEditDialogAction(OpenEditDialogActionDefinition definition, JcrItemAdapter itemToEdit, FormDialogPresenter formDialogPresenter, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
+    public OpenEditDialogAction(OpenEditDialogActionDefinition definition, JcrItemAdapter itemToEdit, FormDialogPresenterFactory formDialogPresenterFactory, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
         super(definition);
         this.itemToEdit = itemToEdit;
-        this.formDialogPresenter = formDialogPresenter;
+        this.formDialogPresenterFactory = formDialogPresenterFactory;
         this.uiContext = uiContext;
         this.eventBus = eventBus;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-
+        final FormDialogPresenter formDialogPresenter = formDialogPresenterFactory.createFormDialogPresenterByName(getDefinition().getDialogName());
         formDialogPresenter.start(itemToEdit, getDefinition().getDialogName(), uiContext, new EditorCallback() {
 
             @Override

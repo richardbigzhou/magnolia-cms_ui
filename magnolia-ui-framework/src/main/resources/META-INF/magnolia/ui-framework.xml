@@ -186,6 +186,10 @@
       <implementation>info.magnolia.ui.imageprovider.DefaultImageProvider</implementation>
     </component>
 
+      <component>
+          <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory</type>
+          <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactoryImpl</implementation>
+      </component>
     <!-- Dialog -->
     <!--
       The FormDialogPresenter is mapped in admincentral, app and subApp scope to ensure it gets the correct UiContext injected.
@@ -228,16 +232,16 @@
 
   <components>
     <id>app</id>
+
       <component>
-          <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogView</type>
-          <implementation>info.magnolia.ui.contentapp.choosedialog.ChooseDialogViewImpl</implementation>
+          <type>info.magnolia.ui.dialog.choosedialog.ChooseDialogView</type>
+          <implementation>info.magnolia.ui.dialog.choosedialog.ChooseDialogViewImpl</implementation>
       </component>
 
       <component>
-          <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenter</type>
-          <implementation>info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenterImpl</implementation>
+          <type>info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter</type>
+          <implementation>info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenterImpl</implementation>
       </component>
-
 
       <component>
           <type>info.magnolia.ui.form.field.factory.FieldFactoryFactory</type>
@@ -247,12 +251,17 @@
     <!--
       The FormDialogPresenter is mapped in admincentral, app and subApp scope to ensure it gets the correct UiContext injected.
     !-->
+
+      <component>
+          <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory</type>
+          <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactoryImpl</implementation>
+      </component>
     <component>
-      <type>info.magnolia.ui.dialog.FormDialogPresenter</type>
-      <implementation>info.magnolia.ui.dialog.FormDialogPresenterImpl</implementation>
+        <type>info.magnolia.ui.dialog.FormDialogPresenter</type>
+        <implementation>info.magnolia.ui.dialog.FormDialogPresenterImpl</implementation>
     </component>
 
-    <!-- Form -->
+      <!-- Form -->
     <component>
       <type>info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory</type>
       <implementation>info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory</implementation>
@@ -321,6 +330,10 @@
       <implementation>info.magnolia.ui.framework.app.SubAppActionExecutor</implementation>
     </component>
 
+      <component>
+          <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory</type>
+          <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactoryImpl</implementation>
+      </component>
     <!-- Dialog -->
     <!--
       The FormDialogPresenter is mapped in admincentral, app and subApp scope to ensure it gets the correct UiContext injected.
