@@ -47,6 +47,7 @@ import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,29 +88,39 @@ public abstract class AbstractBaseHandler<T> implements PropertyHandler<T> {
 
     /**
      * If the desired property (propertyName) already exist in the JcrNodeAdapter, return this property<br>
-     * else create a new {@link Property}.
+     * else create a new {@link Property}.<br>
+     * If the defaultValueString is empty or null, return a typed null value property.
      * 
      * @param <T>
      */
-    protected <T> Property<T> getOrCreateProperty(Class<T> type, String defaultValueString, T defaultValue) {
-        String propertyName = this.basePropertyName;
-
-        if (hasI18NSupport()) {
-            propertyName = this.i18NPropertyName;
-        }
-
+    protected <T> Property<T> getOrCreateProperty(Class<T> type, String defaultValueString) {
+        String propertyName = definePropertyName();
         Property<T> property = parent.getItemProperty(propertyName);
+
         if (property == null) {
-            if (defaultValue != null) {
-                property = new DefaultProperty<T>(defaultValue);
-            } else {
+            if (StringUtils.isNotEmpty(defaultValueString)) {
                 property = DefaultPropertyUtil.newDefaultProperty(type, defaultValueString);
+            } else {
+                property = new DefaultProperty<T>(type, null);
             }
             parent.addItemProperty(propertyName, property);
         }
         return property;
     }
 
+
+    /**
+     * Based on the i18n information, define the property name to use.
+     */
+    private String definePropertyName() {
+        String propertyName = this.basePropertyName;
+
+        if (hasI18NSupport()) {
+            propertyName = this.i18NPropertyName;
+        }
+
+        return propertyName;
+    }
 
     /**
      * Retrieve or create a child node as {@link JcrNodeAdapter}.
