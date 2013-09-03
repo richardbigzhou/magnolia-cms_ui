@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.dialog.definition;
 
+import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 
 /**
@@ -49,7 +50,7 @@ public class ConfiguredChooseDialogDefinition extends ConfiguredBaseDialogDefini
     private FieldDefinition field;
 
     public ConfiguredChooseDialogDefinition() {
-        //setPresenterClass(ChooseDialogPresenter.class);
+        setPresenterClass(ChooseDialogPresenter.class);
     }
 
     @Override

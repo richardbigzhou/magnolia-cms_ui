@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.dialog.definition;
 
+import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.form.definition.FormDefinition;
 
 /**
@@ -46,6 +47,9 @@ public class ConfiguredFormDialogDefinition extends ConfiguredBaseDialogDefiniti
 
     private FormDefinition form;
 
+    public ConfiguredFormDialogDefinition() {
+        setPresenterClass(FormDialogPresenter.class);
+    }
 
     @Override
     public String getDescription() {

@@ -1,6 +1,7 @@
 package info.magnolia.ui.dialog.definition;
 
 import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.dialog.DialogPresenter;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -24,6 +25,8 @@ public class ConfiguredBaseDialogDefinition implements BaseDialogDefinition {
     private String i18nBasename;
 
     private Map<String, ActionDefinition> actions = new LinkedHashMap<String, ActionDefinition>();
+
+    private Class<? extends DialogPresenter> presenterClass;
 
     @Override
     public String getId() {
@@ -57,11 +60,20 @@ public class ConfiguredBaseDialogDefinition implements BaseDialogDefinition {
         return actions;
     }
 
+    @Override
+    public Class<? extends DialogPresenter> getPresenterClass() {
+        return presenterClass;
+    }
+
     public void setActions(Map<String, ActionDefinition> actions) {
         this.actions = actions;
     }
 
     public void addAction(ActionDefinition actionDefinition) {
         actions.put(actionDefinition.getName(), actionDefinition);
+    }
+
+    public void setPresenterClass(Class<? extends DialogPresenter> presenterClass) {
+        this.presenterClass = presenterClass;
     }
 }
