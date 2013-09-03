@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.dialog.definition;
 
+import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 
 /**
@@ -45,4 +46,7 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
 public interface ChooseDialogDefinition extends BaseDialogDefinition {
 
     FieldDefinition getField();
+
+    @Override
+    Class<? extends ChooseDialogPresenter> getPresenterClass();
 }

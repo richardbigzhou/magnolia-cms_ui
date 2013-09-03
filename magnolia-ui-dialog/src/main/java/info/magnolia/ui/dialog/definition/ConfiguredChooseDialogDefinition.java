@@ -45,12 +45,14 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
  */
 public class ConfiguredChooseDialogDefinition extends ConfiguredBaseDialogDefinition implements ChooseDialogDefinition {
 
-    public static final String FIELD_NODE_NAME = "field";
-
     private FieldDefinition field;
 
     public ConfiguredChooseDialogDefinition() {
-        setPresenterClass(ChooseDialogPresenter.class);
+        this(ChooseDialogPresenter.class);
+    }
+
+    public ConfiguredChooseDialogDefinition(Class<? extends ChooseDialogPresenter> presenterClass) {
+        setPresenterClass(presenterClass);
     }
 
     @Override
@@ -60,5 +62,10 @@ public class ConfiguredChooseDialogDefinition extends ConfiguredBaseDialogDefini
 
     public void setField(FieldDefinition field) {
         this.field = field;
+    }
+
+    @Override
+    public Class<? extends ChooseDialogPresenter> getPresenterClass() {
+        return (Class<? extends ChooseDialogPresenter>) super.getPresenterClass();
     }
 }
