@@ -34,10 +34,12 @@
 package info.magnolia.ui.api.action;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
@@ -386,9 +388,10 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
     private SimpleActionExecutor createSimpleActionExecutor() {
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
-        builder.withConfiguration(new ComponentProviderConfiguration());
+        ComponentProviderConfiguration componentProviderConfig = new ComponentProviderConfiguration();
+        componentProviderConfig.registerInstance(I18nizer.class, mock(I18nizer.class));
+        builder.withConfiguration(componentProviderConfig);
         GuiceComponentProvider componentProvider = builder.build();
         return new SimpleActionExecutor(componentProvider);
     }
 }
-

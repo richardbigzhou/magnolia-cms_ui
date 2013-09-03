@@ -41,6 +41,7 @@ import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
@@ -112,7 +113,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
     private final static String ALWAYS = "always";
     private final static String ROOT_ONLY = "rootOnly";
 
-    private final static String[] ALL_ACTIONS = { ALWAYS, ROOT_ONLY};
+    private final static String[] ALL_ACTIONS = { ALWAYS, ROOT_ONLY };
     private final static String[] ONE_ACTION = { ALWAYS };
 
     private final static String SECTION_TO_SHOW = "sectionToShow";
@@ -150,6 +151,8 @@ public class BrowserSubAppTest extends MgnlTestCase {
         ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
 
         componentProvider = mock(ComponentProvider.class);
+        I18nizer i18nizer = mock(I18nizer.class);
+        when(componentProvider.getComponent(I18nizer.class)).thenReturn(i18nizer);
         doReturn(mock(IsDeletedRule.class)).when(componentProvider).newInstance(any(Class.class), anyVararg());
 
         initActions();
@@ -168,7 +171,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
         sectionToShow.setAvailability(sAvailabilityAlways);
         initBrowser();
-        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
+        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider, null);
     }
 
     @Test
@@ -282,7 +285,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
         ConfiguredActionbarDefinition definition = new ConfiguredActionbarDefinition();
         definition.addSection(sectionToShow);
         definition.addSection(sectionToHide);
-        testActionbarPresenter = new TestActionbarPresenter();
+        testActionbarPresenter = new TestActionbarPresenter(mock(I18nizer.class));
         browserPresenter = mock(BrowserPresenter.class);
         when(browserPresenter.getActionbarPresenter()).thenReturn(testActionbarPresenter);
 
@@ -352,7 +355,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
         actRootOnly.setAvailability(availabilityRootOnly);
 
         ConfiguredAccessDefinition access = new ConfiguredAccessDefinition();
-        access.setRoles(Arrays.asList(REQUIRED_ROLE ));
+        access.setRoles(Arrays.asList(REQUIRED_ROLE));
 
     }
 
@@ -387,12 +390,18 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
     private SimpleActionExecutor createSimpleActionExecutor() {
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
-        builder.withConfiguration(new ComponentProviderConfiguration());
+        ComponentProviderConfiguration componentProviderConfig = new ComponentProviderConfiguration();
+        componentProviderConfig.registerInstance(I18nizer.class, mock(I18nizer.class));
+        builder.withConfiguration(componentProviderConfig);
         GuiceComponentProvider componentProvider = builder.build();
         return new SimpleActionExecutor(componentProvider);
     }
 
     private static class TestActionbarPresenter extends ActionbarPresenter {
+        public TestActionbarPresenter(I18nizer i18nizer) {
+            super(i18nizer);
+        }
+
         public Set<String> visibleSections;
         public Set<String> enabledActions;
 
