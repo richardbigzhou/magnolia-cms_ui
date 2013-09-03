@@ -82,7 +82,10 @@ public class ActivationAction extends AbstractCommandAction<ActivationActionDefi
     protected Map<String, Object> buildParams(final Item jcrItem) {
         Map<String, Object> params = super.buildParams(jcrItem);
         params.put(Context.ATTRIBUTE_RECURSIVE, getDefinition().isRecursive());
-        params.put(Message.MESSAGE_VIEW, getDefinition().getMessageView());
+
+        if (StringUtils.isNotBlank(getDefinition().getMessageView())) {
+            params.put(Message.MESSAGE_VIEW, getDefinition().getMessageView());
+        }
         return params;
     }
 
