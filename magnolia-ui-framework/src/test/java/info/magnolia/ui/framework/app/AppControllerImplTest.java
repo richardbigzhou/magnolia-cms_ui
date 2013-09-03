@@ -40,6 +40,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.event.SystemEventBus;
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.ModuleRegistryImpl;
 import info.magnolia.monitoring.SystemMonitor;
@@ -497,6 +498,13 @@ public class AppControllerImplTest {
         components.registerImplementation(LocationController.class);
         components.registerImplementation(ModuleRegistry.class, ModuleRegistryImpl.class);
         components.registerImplementation(AppLauncherLayoutManager.class, AppLauncherLayoutManagerImpl.class);
+
+        components.registerInstance(I18nizer.class, new I18nizer() {
+            @Override
+            public <C> C decorate(C child) {
+                return child;
+            }
+        });
 
         components.registerInstance(AppDescriptorRegistry.class, appRegistry);
         components.registerInstance(Shell.class, mock(Shell.class));

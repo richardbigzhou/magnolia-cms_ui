@@ -42,6 +42,7 @@ import info.magnolia.event.InvocationCountingTestEventHandler;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.event.SystemEventBus;
 import info.magnolia.event.TestEvent;
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.monitoring.SystemMonitor;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
@@ -219,6 +220,12 @@ public class AppEventTest {
         components.registerInstance(Shell.class, mock(Shell.class));
         components.registerInstance(MessagesManager.class, mock(MessagesManagerImpl.class));
 
+        components.registerInstance(I18nizer.class, new I18nizer() {
+            @Override
+            public <C> C decorate(C child) {
+                return child;
+            }
+        });
 
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         TestEventBusConfigurer eventBusConfigurer = new TestEventBusConfigurer(eventBus);
