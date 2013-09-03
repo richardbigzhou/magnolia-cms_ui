@@ -144,6 +144,8 @@ public class BrowserSubAppTest extends MgnlTestCase {
     // nodes
     private Node testContentNode;
 
+    private I18nizer i18nizer;
+
     @Before
     @Override
     public void setUp() throws Exception {
@@ -151,8 +153,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
         ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
 
         componentProvider = mock(ComponentProvider.class);
-        I18nizer i18nizer = mock(I18nizer.class);
-        when(componentProvider.getComponent(I18nizer.class)).thenReturn(i18nizer);
+        i18nizer = mock(I18nizer.class);
         doReturn(mock(IsDeletedRule.class)).when(componentProvider).newInstance(any(Class.class), anyVararg());
 
         initActions();
@@ -171,7 +172,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
         sectionToShow.setAvailability(sAvailabilityAlways);
         initBrowser();
-        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider, null);
+        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider, i18nizer);
     }
 
     @Test
@@ -285,7 +286,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
         ConfiguredActionbarDefinition definition = new ConfiguredActionbarDefinition();
         definition.addSection(sectionToShow);
         definition.addSection(sectionToHide);
-        testActionbarPresenter = new TestActionbarPresenter(mock(I18nizer.class));
+        testActionbarPresenter = new TestActionbarPresenter(i18nizer);
         browserPresenter = mock(BrowserPresenter.class);
         when(browserPresenter.getActionbarPresenter()).thenReturn(testActionbarPresenter);
 
@@ -391,7 +392,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
     private SimpleActionExecutor createSimpleActionExecutor() {
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         ComponentProviderConfiguration componentProviderConfig = new ComponentProviderConfiguration();
-        componentProviderConfig.registerInstance(I18nizer.class, mock(I18nizer.class));
+        componentProviderConfig.registerInstance(I18nizer.class, i18nizer);
         builder.withConfiguration(componentProviderConfig);
         GuiceComponentProvider componentProvider = builder.build();
         return new SimpleActionExecutor(componentProvider);
