@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.MessageActionExecutor;
@@ -64,15 +65,17 @@ public final class MessagePresenter implements MessageView.Listener, ActionbarPr
     private ActionbarPresenter actionbarPresenter;
     private Listener listener;
     private Message message;
+    private I18nizer i18nizer;
 
     @Inject
-    public MessagePresenter(MessageView view, MessagesManager messagesManager, MessageActionExecutor messageActionExecutor, MessageViewDefinitionRegistry messageViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter) {
+    public MessagePresenter(MessageView view, MessagesManager messagesManager, MessageActionExecutor messageActionExecutor, MessageViewDefinitionRegistry messageViewDefinitionRegistry, FormBuilder formbuilder, ActionbarPresenter actionbarPresenter, I18nizer i18nizer) {
         this.view = view;
         this.messagesManager = messagesManager;
         this.messageActionExecutor = messageActionExecutor;
         this.messageViewDefinitionRegistry = messageViewDefinitionRegistry;
         this.formbuilder = formbuilder;
         this.actionbarPresenter = actionbarPresenter;
+        this.i18nizer = i18nizer;
 
         view.setListener(this);
         actionbarPresenter.setListener(this);
@@ -92,7 +95,7 @@ public final class MessagePresenter implements MessageView.Listener, ActionbarPr
             messageActionExecutor.setMessageViewDefinition(messageViewDefinition);
 
             BeanItem<Message> messageItem = new BeanItem<Message>(message);
-            View mView = formbuilder.buildView(messageViewDefinition.getForm(), messageItem);
+            View mView = formbuilder.buildView(i18nizer.decorate(messageViewDefinition.getForm()), messageItem);
             view.setMessageView(mView);
 
             view.setActionbarView(actionbarPresenter.start(messageViewDefinition.getActionbar()));
