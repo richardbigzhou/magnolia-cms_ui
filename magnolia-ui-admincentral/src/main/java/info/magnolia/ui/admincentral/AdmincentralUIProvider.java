@@ -33,8 +33,7 @@
  */
 package info.magnolia.ui.admincentral;
 
-import info.magnolia.ui.api.vaadin.ThemeDefinition;
-import info.magnolia.ui.api.vaadin.WidgetsetDefinition;
+import info.magnolia.init.MagnoliaConfigurationProperties;
 
 import javax.inject.Inject;
 
@@ -44,26 +43,27 @@ import com.vaadin.server.DefaultUIProvider;
 import com.vaadin.server.UICreateEvent;
 
 /**
- * The AdmincentralUIProvider allows for fetching the widgetset and theme names from configuration rather than annotation or servlet params.
+ * The AdmincentralUIProvider allows for fetching the widgetset and theme names from magnolia.properties rather than annotation or servlet params.
  */
 public class AdmincentralUIProvider extends DefaultUIProvider {
+
+    public static final String MAGNOLIA_UI_VAADIN_WIDGETSET = "magnolia.ui.vaadin.widgetset";
+    public static final String MAGNOLIA_UI_VAADIN_THEME = "magnolia.ui.vaadin.theme";
 
     public static final String DEFAULT_WIDGETSET_NAME = "info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet";
     public static final String DEFAULT_THEME_NAME = "admincentral";
 
-    private final WidgetsetDefinition widgetsetDefinition;
-    private final ThemeDefinition themeDefinition;
+    private final MagnoliaConfigurationProperties magnoliaProperties;
 
     @Inject
-    public AdmincentralUIProvider(AdmincentralModule admincentralModule) {
-        this.widgetsetDefinition = admincentralModule.getWidgetset();
-        this.themeDefinition = admincentralModule.getTheme();
+    public AdmincentralUIProvider(MagnoliaConfigurationProperties magnoliaProperties) {
+        this.magnoliaProperties = magnoliaProperties;
     }
 
     @Override
     public String getWidgetset(UICreateEvent event) {
-        if (widgetsetDefinition != null) {
-            String widgetsetName = widgetsetDefinition.getName();
+        if (magnoliaProperties != null) {
+            String widgetsetName = magnoliaProperties.getProperty(MAGNOLIA_UI_VAADIN_WIDGETSET);
             if (StringUtils.isNotBlank(widgetsetName)) {
                 return widgetsetName;
             }
@@ -73,8 +73,8 @@ public class AdmincentralUIProvider extends DefaultUIProvider {
 
     @Override
     public String getTheme(UICreateEvent event) {
-        if (themeDefinition != null) {
-            String themeName = themeDefinition.getName();
+        if (magnoliaProperties != null) {
+            String themeName = magnoliaProperties.getProperty(MAGNOLIA_UI_VAADIN_THEME);
             if (StringUtils.isNotBlank(themeName)) {
                 return themeName;
             }

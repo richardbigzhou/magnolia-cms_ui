@@ -326,22 +326,6 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo51AddsWidgetsetAndThemeConfig() throws ModuleManagementException, RepositoryException {
-        // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        Node config = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config", NodeTypes.ContentNode.NAME);
-
-        // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.2"));
-
-        // THEN
-        assertTrue(config.hasNode("widgetset"));
-        assertEquals(AdmincentralUIProvider.DEFAULT_WIDGETSET_NAME, config.getNode("widgetset").getProperty("name").getString());
-        assertTrue(config.hasNode("theme"));
-        assertEquals(AdmincentralUIProvider.DEFAULT_THEME_NAME, config.getNode("theme").getProperty("name").getString());
-    }
-
-    @Test
     public void testUpdateTo51ChangesAdmincentralServletParameters() throws ModuleManagementException, RepositoryException {
         // GIVEN
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
