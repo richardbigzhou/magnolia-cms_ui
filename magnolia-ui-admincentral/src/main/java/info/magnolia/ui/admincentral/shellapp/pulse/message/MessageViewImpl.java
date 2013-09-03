@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
+import info.magnolia.i18n.LocaleProvider;
+import info.magnolia.i18n.TranslationService;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.icon.Icon;
@@ -120,8 +123,11 @@ public final class MessageViewImpl extends HorizontalLayout implements MessageVi
         private SimpleButton() {
             setStyleName("back-button");
 
+            TranslationService translation = Components.getComponent(TranslationService.class);
+            LocaleProvider localeProvider = Components.getComponent(LocaleProvider.class);
+
             Icon icon = new Icon("arrow2_w", 16);
-            Label label = new Label(BACK_BUTTON_LABEL);
+            Label label = new Label(translation.translate(localeProvider, null, new String[] { BACK_BUTTON_LABEL }));
             label.setSizeUndefined();
             addComponent(icon);
             addComponent(label);
