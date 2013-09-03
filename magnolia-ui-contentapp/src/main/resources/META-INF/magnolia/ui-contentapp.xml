@@ -10,12 +10,6 @@
 
   <components>
     <id>main</id>
-
-      <component>
-          <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogViewImpl</type>
-          <implementation>info.magnolia.ui.contentapp.choosedialog.ChooseDialogViewImpl</implementation>
-      </component>
-
     <type-mapping>
       <type>info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor</type>
       <implementation>info.magnolia.ui.contentapp.browser.ConfiguredBrowserSubAppDescriptor</implementation>
@@ -32,7 +26,26 @@
       <type>info.magnolia.ui.contentapp.definition.FormActionItemDefinition</type>
       <implementation>info.magnolia.ui.contentapp.definition.ConfiguredFormActionItemDefinition</implementation>
     </type-mapping>
+
+      <type-mapping>
+          <type>info.magnolia.ui.api.app.AppDescriptor</type>
+          <implementation>info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor</implementation>
+      </type-mapping>
   </components>
+
+
+    <components>
+        <id>app</id>
+        <component>
+            <type>info.magnolia.ui.dialog.choosedialog.ChooseDialogView</type>
+            <implementation>info.magnolia.ui.dialog.choosedialog.ChooseDialogViewImpl</implementation>
+        </component>
+
+        <component>
+            <type>info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter</type>
+            <implementation>info.magnolia.ui.contentapp.choosedialog.ContentAppChooseDialogPresenter</implementation>
+        </component>
+    </components>
 
   <components>
     <id>subapp</id>

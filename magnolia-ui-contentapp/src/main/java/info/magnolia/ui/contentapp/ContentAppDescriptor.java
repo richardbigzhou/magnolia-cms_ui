@@ -1,11 +1,12 @@
 package info.magnolia.ui.contentapp;
 
+import info.magnolia.ui.api.app.AppDescriptor;
+import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
+
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/1/13
- * Time: 5:10 PM
- * To change this template use File | Settings | File Templates.
+ * Extends {@link AppDescriptor} by providing definition of choose dialog.
  */
-public interface ContentAppDescriptor {
+public interface ContentAppDescriptor extends AppDescriptor {
+
+    ChooseDialogDefinition getChooseDialog();
 }
