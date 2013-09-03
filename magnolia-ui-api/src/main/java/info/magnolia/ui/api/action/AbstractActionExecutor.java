@@ -34,7 +34,6 @@
 package info.magnolia.ui.api.action;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.i18n.I18nizer;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.MgnlInstantiationException;
@@ -63,13 +62,9 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
 
     private ComponentProvider componentProvider;
 
-    private I18nizer i18nizer;
-
     @Inject
     public AbstractActionExecutor(ComponentProvider componentProvider) {
         this.componentProvider = componentProvider;
-        this.i18nizer = componentProvider.getComponent(I18nizer.class);
-
     }
 
     @Override
@@ -150,10 +145,6 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
         }
 
         return true;
-    }
-
-    protected I18nizer getI18nizer() {
-        return i18nizer;
     }
 
     private boolean isAvailableForItem(AvailabilityDefinition availability, Item item) {
