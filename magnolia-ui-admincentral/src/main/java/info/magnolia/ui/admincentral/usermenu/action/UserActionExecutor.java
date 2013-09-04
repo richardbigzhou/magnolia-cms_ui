@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.usermenu.action;
 
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.AdmincentralModule;
 import info.magnolia.ui.admincentral.usermenu.definition.UserMenuDefinition;
@@ -52,9 +53,9 @@ public class UserActionExecutor extends AbstractActionExecutor {
     private final UserMenuDefinition userMenuDefinition;
 
     @Inject
-    public UserActionExecutor(ComponentProvider componentProvider, AdmincentralModule module) {
+    public UserActionExecutor(ComponentProvider componentProvider, AdmincentralModule module, I18nizer i18nizer) {
         super(componentProvider);
-        this.userMenuDefinition = module.getUserMenu();
+        this.userMenuDefinition = i18nizer.decorate(module.getUserMenu());
     }
 
     @Override
