@@ -41,7 +41,7 @@ import info.magnolia.i18n.I18nText;
  *
  * @see info.magnolia.ui.workbench.definition.WorkbenchDefinition
  */
-@I18nAble
+@I18nAble(keyGenerator = ColumnDefinitionKeyGenerator.class)
 public interface ColumnDefinition {
 
     String getName();
