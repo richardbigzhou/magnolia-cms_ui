@@ -37,9 +37,11 @@ import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.objectfactory.configuration.ComponentConfigurer;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationBuilder;
@@ -103,7 +105,8 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
         if (mediaEditorDefinition == null) {
             throw new IllegalArgumentException("No media editor definition registered for name [" + id + "]");
         }
-        return mediaEditorDefinition;
+        I18nizer i18nizer = Components.getComponent(I18nizer.class);
+        return i18nizer.decorate(mediaEditorDefinition);
     }
 
     private ComponentProvider createMediaEditorComponentProvider() {

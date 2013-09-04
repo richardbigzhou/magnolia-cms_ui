@@ -55,7 +55,11 @@ public class ActionbarSectionDefinitionKeyGenerator extends AbstractI18nKeyGener
      */
     @Override
     protected void keysFor(List<String> keys, ActionbarSectionDefinition sectionDefinition, AnnotatedElement el) {
-        AppDescriptor appDescriptor = (AppDescriptor) getRoot(sectionDefinition);
+        Object root = getRoot(sectionDefinition);
+        if (!(root instanceof AppDescriptor)) {
+            return;
+        }
+        AppDescriptor appDescriptor = (AppDescriptor) root;
         SubAppDescriptor subAppDescriptor = null;
         List<?> ancestors = getAncestors(sectionDefinition);
         for (Object ancestor : ancestors) {
