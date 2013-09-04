@@ -33,25 +33,27 @@
  */
 package info.magnolia.ui.mediaeditor.action;
 
+import com.google.inject.name.Named;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 import info.magnolia.event.EventBus;
+import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionListener;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.MediaEditorView;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
 import info.magnolia.ui.mediaeditor.event.MediaEditorInternalEvent;
+import info.magnolia.ui.mediaeditor.event.MediaEditorInternalEvent.EventType;
 import info.magnolia.ui.mediaeditor.field.MediaField;
 import info.magnolia.ui.mediaeditor.field.image.ViewImageField;
 import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.inject.name.Named;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
+import java.util.Map;
 
 /**
  * Simply displays an image with dialog actions to
@@ -71,16 +73,17 @@ public class ViewImageAction extends MediaEditorUIAction {
     @Override
     protected List<ActionContext> getActionContextList() {
         List<ActionContext> result = new ArrayList<ActionContext>();
-        result.add(new ActionContext("cancel", "Cancel Editing", new DialogActionListener() {
+        result.add(new ActionContext(new InternalMediaEditorActionDefinition("save", "Save Changes", false), new ActionListener() {
             @Override
-            public void onActionExecuted(String actionName) {
-                eventBus.fireEvent(new MediaEditorInternalEvent(MediaEditorInternalEvent.EventType.CANCEL_ALL));
+            public void onActionFired(ActionDefinition definition, Map<String, Object> actionParams) {
+                eventBus.fireEvent(new MediaEditorInternalEvent(EventType.APPLY));
             }
         }));
-        result.add(new ActionContext("save", "Save Changes", new DialogActionListener() {
+
+        result.add(new ActionContext(new InternalMediaEditorActionDefinition("cancel", "Cancel Editing", true), new ActionListener() {
             @Override
-            public void onActionExecuted(String actionName) {
-                eventBus.fireEvent(new MediaEditorInternalEvent(MediaEditorInternalEvent.EventType.SUBMIT));
+            public void onActionFired(ActionDefinition definition, Map<String, Object> actionParams) {
+                eventBus.fireEvent(new MediaEditorInternalEvent(EventType.CANCEL_LAST));
             }
         }));
         return result;
@@ -103,7 +106,7 @@ public class ViewImageAction extends MediaEditorUIAction {
 
         actionbar.setActionEnabled("undo", dataSource.getLastDoneActionName() != null);
         actionbar.setActionEnabled("redo", dataSource.getLastUnDoneActionName() != null);
-        view.getDialog().removeStyleName("active-footer");
+        view.getDialog().asVaadinComponent().removeStyleName("active-footer");
         super.execute();
 
     }

@@ -33,20 +33,20 @@
  */
 package info.magnolia.ui.mediaeditor;
 
-import info.magnolia.ui.mediaeditor.field.MediaField;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import info.magnolia.ui.vaadin.dialog.BaseDialog;
-
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.dialog.DialogView;
+import info.magnolia.ui.mediaeditor.field.MediaField;
+import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 
 /**
  * Skeleton implementation of the media editor UI. Contains an actionbar and a dialog laid out horizontally.
  */
 public class MediaEditorViewImpl extends CustomComponent implements MediaEditorView {
     
-    private BaseDialog dialog;
+    private DialogView dialog;
     
     private ActionbarView actionbar;
     
@@ -55,10 +55,8 @@ public class MediaEditorViewImpl extends CustomComponent implements MediaEditorV
     public MediaEditorViewImpl() {
         addStyleName("v-media-editor");
         setCompositionRoot(root);
-        setDialog(new BaseDialog());
         setSizeFull();
         root.setSizeFull();
-        dialog.setSizeFull();
         root.setSpacing(true);
     }
     
@@ -68,10 +66,11 @@ public class MediaEditorViewImpl extends CustomComponent implements MediaEditorV
     }
 
     @Override
-    public void setDialog(BaseDialog dialog) {
+    public void setDialog(DialogView dialog) {
         this.dialog = dialog;
-        root.addComponentAsFirst(dialog);
-        root.setExpandRatio(dialog, 1f);
+        root.addComponentAsFirst(dialog.asVaadinComponent());
+        root.setExpandRatio(dialog.asVaadinComponent(), 1f);
+        dialog.asVaadinComponent().setSizeFull();
     }
 
     @Override
@@ -81,7 +80,7 @@ public class MediaEditorViewImpl extends CustomComponent implements MediaEditorV
     }
 
     @Override
-    public BaseDialog getDialog() {
+    public DialogView getDialog() {
         return dialog;
     }
 
@@ -96,13 +95,18 @@ public class MediaEditorViewImpl extends CustomComponent implements MediaEditorV
     }
 
     @Override
-    public void setMediaContent(MediaField mediaField) {
-        getDialog().setContent(mediaField);
+    public void setMediaContent(final MediaField mediaField) {
+        dialog.setContent(new View() {
+            @Override
+            public Component asVaadinComponent() {
+                return mediaField;
+            }
+        });
     }
 
     @Override
     public void setToolbar(Component controls) {
-        dialog.setFooterToolbar(controls);
+        //dialog.setFooter(controls);
     }
 
 }

@@ -33,20 +33,21 @@
  */
 package info.magnolia.ui.mediaeditor.action;
 
+import com.google.inject.name.Named;
+import com.vaadin.ui.Component;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionPresenter;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.form.action.presenter.DefaultEditorActionPresenter;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.MediaEditorView;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
 import info.magnolia.ui.mediaeditor.field.MediaField;
 import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
-
-import java.util.List;
-
 import org.apache.log4j.Logger;
 
-import com.google.inject.name.Named;
-import com.vaadin.ui.Component;
+import java.util.List;
 
 /**
  * Updates media editor UI in order to perform certain modification
@@ -72,12 +73,14 @@ public abstract class MediaEditorUIAction extends MediaEditorAction {
             view.setToolbar(getStatusControls());
 
             List<ActionContext> actionContexts = getActionContextList();
-            for (ActionContext ctx : actionContexts) {
-                view.getDialog().addAction(ctx.getActionId(), ctx.getLabel(), ctx.getListener());
+            for (final ActionContext action : actionContexts) {
+                ActionPresenter actionPresenter = new DefaultEditorActionPresenter();
+                View actionView = actionPresenter.start(action.getDefinition(), action.getListener());
+                view.getDialog().addPrimaryAction(actionView);
             }
 
             if (!actionContexts.isEmpty()) {
-                view.getDialog().setDefaultAction(actionContexts.get(actionContexts.size() - 1).getActionId());
+                //view.getDialog().setDefaultAction(actionContexts.get(actionContexts.size() - 1).getActionId());
             }
             newMediaField.setPropertyDataSource(dataSource);
         } else {

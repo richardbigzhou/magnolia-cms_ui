@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.mediaeditor;
 
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.module.ModuleRegistry;
@@ -48,19 +50,16 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.dialog.BaseDialogPresenter;
+import info.magnolia.ui.dialog.DialogPresenter;
 import info.magnolia.ui.mediaeditor.action.MediaEditorActionExecutor;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
 import info.magnolia.ui.mediaeditor.registry.MediaEditorRegistry;
-
-import java.util.List;
+import org.apache.log4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import org.apache.log4j.Logger;
-
-import com.google.inject.name.Names;
-import com.google.inject.util.Providers;
+import java.util.List;
 
 /**
  * Implementation of {@link MediaEditorPresenterFactory}.
@@ -130,6 +129,7 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
         ComponentProvider mediaEditorComponentProvider = createMediaEditorComponentProvider();
         MediaEditorView view = mediaEditorComponentProvider.getComponent(MediaEditorView.class);
         ActionbarPresenter actionbarPresenter = new ActionbarPresenter();
+        DialogPresenter dialogPresenter = new BaseDialogPresenter(mediaEditorComponentProvider);
         AppContext appContext = mediaEditorComponentProvider.getComponent(AppContext.class);
         MediaEditorPresenter mediaEditorPresenter = 
                 new MediaEditorPresenterImpl(
@@ -137,6 +137,7 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
                         eventBus, 
                         view,
                         actionbarPresenter,
+                        dialogPresenter,
                         appContext);
         ActionExecutor mediaActionExecutor = mediaEditorComponentProvider.getComponent(ActionExecutor.class);
         ((MediaEditorActionExecutor)mediaActionExecutor).setDef(definition);
