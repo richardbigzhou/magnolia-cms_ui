@@ -45,9 +45,6 @@ public class FormDefinitionKeyGenerator extends AbstractFormKeyGenerator<FormDef
     protected void keysFor(List<String> list, FormDefinition form, AnnotatedElement el) {
         final String dialogId = getDialogId(form);
         addKey(list, dialogId, fieldOrGetterName(el));
-        if ("label".equals(fieldOrGetterName(el))) {
-            addKey(list, dialogId);
-        }
     }
 
     @Override
