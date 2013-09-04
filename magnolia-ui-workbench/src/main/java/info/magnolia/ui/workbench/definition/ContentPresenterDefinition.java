@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.workbench.definition;
 
+import info.magnolia.i18n.I18nAble;
 import info.magnolia.ui.workbench.ContentPresenter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 
@@ -41,6 +42,7 @@ import java.util.List;
 /**
  * Definition for a workbench generic content view.
  */
+@I18nAble
 public interface ContentPresenterDefinition {
 
     String getViewType();
