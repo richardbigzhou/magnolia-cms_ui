@@ -33,6 +33,20 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingListener;
+import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedListener;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
+import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.framework.AdmincentralNodeTypes;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
+
+import java.util.Iterator;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
@@ -47,20 +61,6 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.DragAndDropWrapper.DragStartMode;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;
-import info.magnolia.i18n.LocaleProvider;
-import info.magnolia.i18n.TranslationService;
-import info.magnolia.objectfactory.Components;
-import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingListener;
-import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedListener;
-import info.magnolia.ui.api.overlay.ConfirmationCallback;
-import info.magnolia.ui.api.shell.Shell;
-import info.magnolia.ui.framework.AdmincentralNodeTypes;
-import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
-import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
-import org.apache.commons.lang.StringUtils;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Favorite group.
@@ -80,9 +80,6 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
     private Shell shell;
     private FavoritesView view;
     private Component currentlySelectedFavEntry;
-    private TranslationService translationService = Components.getComponent(TranslationService.class);
-    private LocaleProvider localeProvider;
-
 
     /**
      * Creates an empty placeholder group.
@@ -102,7 +99,7 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
 
         for (String key : nodeAdapters.keySet()) {
             final AbstractJcrNodeAdapter fav = nodeAdapters.get(key);
-            final FavoritesEntry favEntry = new FavoritesEntry(fav, listener, shell,translationService,getLocaleProvider());
+            final FavoritesEntry favEntry = new FavoritesEntry(fav, listener, shell);
             favEntry.addSelectedListener(new SelectedListener() {
 
                 @Override
@@ -256,7 +253,7 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
 
             @Override
             public void buttonClick(ClickEvent event) {
-                shell.openConfirmation(MessageStyleTypeEnum.WARNING, translationService.translate(getLocaleProvider(),null,new String[]{"favorites.group.confirmation.title"}) ,translationService.translate(getLocaleProvider(),null, new String[]{"confirmation.cannot.undo"}) , translationService.translate(getLocaleProvider(),null,new String[]{"confirmation.delete.yes"}) ,translationService.translate(getLocaleProvider(),null,new String[]{"confirmation.no"}) , true, new ConfirmationCallback() {
+                shell.openConfirmation(MessageStyleTypeEnum.WARNING, MessagesUtil.get("favorites.group.confirmation.title"), MessagesUtil.get("confirmation.cannot.undo"), MessagesUtil.get("confirmation.delete.yes"), MessagesUtil.get("confirmation.no"), true, new ConfirmationCallback() {
 
                     @Override
                     public void onSuccess() {
@@ -291,7 +288,7 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
 
     private void doEditTitle(final FavoritesView.Listener listener) {
         if (StringUtils.isBlank(titleField.getValue())) {
-            shell.openNotification(MessageStyleTypeEnum.ERROR, true, translationService.translate(getLocaleProvider(), null, new String[]{"favorites.title.required"}));
+            shell.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("favorites.title.required"));
             return;
         }
         boolean titleHasChanged = !title.equals(titleField.getValue());
@@ -329,12 +326,5 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
         public void handleAction(Object sender, Object target) {
             reset();
         }
-    }
-
-    private LocaleProvider getLocaleProvider(){
-        if(localeProvider==null){
-            localeProvider = Components.getComponent(LocaleProvider.class);
-        }
-        return localeProvider;
     }
 }

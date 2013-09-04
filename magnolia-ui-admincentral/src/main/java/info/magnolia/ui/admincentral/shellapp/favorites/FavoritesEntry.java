@@ -33,6 +33,19 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingListener;
+import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingNotifier;
+import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedListener;
+import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedNotifier;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
+import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.framework.AdmincentralNodeTypes;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
@@ -48,18 +61,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.TextField;
-import info.magnolia.i18n.LocaleProvider;
-import info.magnolia.i18n.TranslationService;
-import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingListener;
-import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingNotifier;
-import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedListener;
-import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedNotifier;
-import info.magnolia.ui.api.overlay.ConfirmationCallback;
-import info.magnolia.ui.api.shell.Shell;
-import info.magnolia.ui.framework.AdmincentralNodeTypes;
-import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
-import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * FavoritesEntry.
@@ -79,14 +80,10 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
     private EnterKeyShortcutListener enterKeyShortcutListener;
     private EscapeKeyShortcutListener escapeKeyShortcutListener;
     private Shell shell;
-    private TranslationService translationService;
-    private LocaleProvider localeProvider;
 
-    public FavoritesEntry(final AbstractJcrNodeAdapter favorite, final FavoritesView.Listener listener, final Shell shell, TranslationService translationService, LocaleProvider localeProvider) {
+    public FavoritesEntry(final AbstractJcrNodeAdapter favorite, final FavoritesView.Listener listener, final Shell shell) {
         super();
         this.shell = shell;
-        this.translationService = translationService;
-        this.localeProvider = localeProvider;
         construct(favorite, listener);
     }
 
@@ -220,11 +217,7 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
 
             @Override
             public void buttonClick(ClickEvent event) {
-                shell.openConfirmation(MessageStyleTypeEnum.WARNING, translationService.translate(localeProvider, null, new String[]{"confirmation.delete.title.generic"}),
-                        translationService.translate(localeProvider, null, new String[]{"confirmation.cannot.undo"}),
-                        translationService.translate(localeProvider, null, new String[]{"confirmation.delete.yes"}),
-                        translationService.translate(localeProvider, null, new String[]{"confirmation.no"}),
-                        true, new ConfirmationCallback() {
+                shell.openConfirmation(MessageStyleTypeEnum.WARNING, MessagesUtil.get("confirmation.delete.title.generic"), MessagesUtil.get("confirmation.cannot.undo"), MessagesUtil.get("confirmation.delete.yes"), MessagesUtil.get("confirmation.no"), true, new ConfirmationCallback() {
 
                     @Override
                     public void onSuccess() {
@@ -289,7 +282,7 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
 
     private void doEditTitle(final FavoritesView.Listener listener) {
         if (StringUtils.isBlank(titleField.getValue())) {
-            shell.openNotification(MessageStyleTypeEnum.ERROR, true, translationService.translate(localeProvider,null,new String[]{"favorites.title.required"}));
+            shell.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("favorites.title.required"));
             return;
         }
 
