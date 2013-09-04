@@ -86,19 +86,6 @@ public class BaseDialogConnector extends AbstractLayoutConnector implements Base
                 view.setDescription(getState().componentDescription);
             }
         });
-
-        addStateChangeHandler("actions", new StateChangeHandler() {
-            @Override
-            public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                updateActionsFromState();
-            }
-        });
-        addStateChangeHandler("defaultButtonName", new StateChangeHandler() {
-            @Override
-            public void onStateChanged(StateChangeEvent stateChangeEvent) {
-                updateActionsFromState();
-            }
-        });
     }
 
     @Override
@@ -121,10 +108,6 @@ public class BaseDialogConnector extends AbstractLayoutConnector implements Base
         updateContent();
         updateHeaderToolbar();
         updateFooterToolbar();
-    }
-
-    protected void updateActionsFromState() {
-        view.setActions(getState().actions, getState().actionOrder, getState().defaultActionName);
     }
 
     @Override
@@ -170,11 +153,6 @@ public class BaseDialogConnector extends AbstractLayoutConnector implements Base
         this.view = createView();
         this.view.setPresenter(this);
         return view.asWidget();
-    }
-
-    @Override
-    public void fireAction(String action) {
-        rpc.fireAction(action);
     }
 
     @Override

@@ -33,11 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.connector;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.vaadin.shared.Connector;
 import com.vaadin.shared.ui.AbstractLayoutState;
 
@@ -45,19 +40,16 @@ import com.vaadin.shared.ui.AbstractLayoutState;
  * BaseDialogState.
  */
 public class BaseDialogState extends AbstractLayoutState {
+
     public String componentDescription = "";
 
     public boolean hasCloseButton = false;
-
-    public Map<String, String> actions = new HashMap<String, String>();
-
-    public List<String> actionOrder = new ArrayList<String>();
-
-    public String defaultActionName;
 
     public Connector content;
 
     public Connector headerToolbar;
 
     public Connector footerToolbar;
+
+    public Connector mainActionContainer;
 }

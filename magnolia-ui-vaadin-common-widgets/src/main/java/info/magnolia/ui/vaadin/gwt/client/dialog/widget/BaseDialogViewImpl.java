@@ -33,19 +33,10 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.widget;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
-import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
  * Basic implementation for {@link BaseDialogView}.
@@ -64,10 +55,10 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
     protected final DialogHeaderWidget header = createHeader();
 
     protected final Element contentEl = DOM.createDiv();
-    protected final Element footerEl = DOM.createDiv();
-    protected final Element footerToolbarEl = DOM.createDiv();
 
-    private final Map<String, Button> actionMap = new HashMap<String, Button>();
+    protected final Element footerEl = DOM.createDiv();
+
+    protected final Element footerToolbarEl = DOM.createDiv();
 
     private Presenter presenter;
 
@@ -164,33 +155,4 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
         footerToolbar = footerToolbarWidget;
         add(footerToolbarWidget, footerToolbarEl);
     }
-
-    @Override
-    public void setActions(Map<String, String> actions, List<String> actionOrder, String defaultActionName) {
-        for (final Button actionButton : this.actionMap.values()) {
-            remove(actionButton);
-        }
-        actionMap.clear();
-        final Iterator<String> orderIt = actionOrder.iterator();
-        while (orderIt.hasNext()) {
-            final String actionId = orderIt.next();
-            final String actionLabel = actions.get(actionId);
-            final Button button = new Button(actionLabel);
-            button.setStyleName(CLASSNAME_BUTTON);
-            button.addStyleDependentName(actionId);
-            if (actionId.equalsIgnoreCase(defaultActionName)) {
-                button.addStyleDependentName("default");
-            }
-            TouchDelegate td = new TouchDelegate(button);
-            td.addTouchEndHandler(new TouchEndHandler() {
-                @Override
-                public void onTouchEnd(TouchEndEvent touchEndEvent) {
-                    getPresenter().fireAction(actionId);
-                }
-            });
-            actionMap.put(actionId, button);
-            add(button, footerEl);
-        }
-    }
-
 }

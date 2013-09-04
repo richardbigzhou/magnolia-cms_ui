@@ -33,12 +33,9 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-
-import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
+import info.magnolia.ui.api.view.View;
 
 /**
  * ConfirmationDialog.
@@ -62,7 +59,7 @@ public class ConfirmationDialog extends LightDialog {
 
     public void init(boolean cancelIsDefault) {
         // Add a class to the default button
-        if (cancelIsDefault) {
+        /*if (cancelIsDefault) {
             this.setDefaultAction(CANCEL_ACTION_NAME);
         } else {
             this.setDefaultAction(CONFIRM_ACTION_NAME);
@@ -82,7 +79,7 @@ public class ConfirmationDialog extends LightDialog {
             public void onActionExecuted(String actionName) {
                 fireEvent(new ConfirmationEvent(ConfirmationDialog.this, false));
             }
-        });
+        });*/
     }
 
 

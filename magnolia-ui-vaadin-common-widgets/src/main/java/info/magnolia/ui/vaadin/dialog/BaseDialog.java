@@ -33,55 +33,36 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
-import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent.Handler;
-import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-import info.magnolia.ui.vaadin.gwt.client.dialog.connector.BaseDialogState;
-import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.DialogServerRpc;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
-import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.event.ShortcutAction.ModifierKey;
-import com.vaadin.event.ShortcutListener;
-import com.vaadin.server.Sizeable;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractSingleComponentContainer;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
+import info.magnolia.ui.vaadin.gwt.client.dialog.connector.BaseDialogState;
+import info.magnolia.ui.vaadin.gwt.client.dialog.rpc.DialogServerRpc;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Basic implementation of dialogs.
  * Provides Action registration and callbacks to the view.
  * Can be closed.
  */
-public class BaseDialog extends AbstractComponent implements HasComponents, DialogView {
+public class BaseDialog extends AbstractComponent implements HasComponents {
 
     public static final String CANCEL_ACTION_NAME = "cancel";
-    public static final String COMMIT_ACTION_NAME = "commit";
 
-    protected final ListMultimap<String, DialogActionListener> actionCallbackMap = ArrayListMultimap.<String, DialogActionListener> create();
-    private final Map<String, ShortcutListener> actionShortcutMap = new HashMap<String, ShortcutListener>();
-    private Panel panel;
+    public static final String COMMIT_ACTION_NAME = "commit";
 
     public BaseDialog() {
         super();
         setImmediate(true);
         setContent(createDefaultContent());
         registerRpc(new DialogServerRpc() {
-            @Override
-            public void fireAction(String actionId) {
-                doFireAction(actionId);
-            }
 
             @Override
             public void closeSelf() {
@@ -93,27 +74,11 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
                 BaseDialog.this.setDescriptionVisibility(isVisible);
             }
         });
-        // We use Panel to keep keystroke events scoped within the currently focused component. Without it, if you have more than one dialog open,
-        // i.e. in different apps running at the same time, then all open dialogs would react to the keyboard event sent on the dialog currently having the focus.
-        panel = new Panel(this);
-        panel.setWidth(Sizeable.SIZE_UNDEFINED, Unit.PIXELS);
-        panel.setHeight(100, Unit.PERCENTAGE); // Required for dynamic dialog shrinking upon window resize.
     }
 
     @Override
     protected BaseDialogState getState() {
         return (BaseDialogState) super.getState();
-    }
-
-    @Override
-    public void attach() {
-        super.attach();
-        panel.focus();
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return panel;
     }
 
     public void closeSelf() {
@@ -124,7 +89,6 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         fireEvent(new DescriptionVisibilityEvent(this, isVisible));
     }
 
-    @Override
     public void setDialogDescription(String description) {
         getState().componentDescription = description;
     }
@@ -205,25 +169,12 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         return (Component) getState().content;
     }
 
-    public void removeAllActions() {
-        getState().actionOrder.clear();
-        getState().actions.clear();
-        actionCallbackMap.clear();
-    }
-
-    public void removeAction(String actionName) {
-        getState().actionOrder.remove(actionName);
-        getState().actions.remove(actionName);
-        actionCallbackMap.removeAll(actionName);
-        removeShortcut(actionName);
-    }
-
     /**
      * If the action name is <code> {@value #COMMIT_ACTION_NAME}</code> a <code>CTRL+S</code> shortcut will be added to perform the action.<br>
      * If the action name is <code> {@value #CANCEL_ACTION_NAME}</code> a <code>CTRL+C</code> and an <code>ESC</code> shortcuts will be added to perform the action.
      */
     public void addAction(String actionName, String actionLabel) {
-        if (!getState().actionOrder.contains(actionName)) {
+        /*if (!getState().actionOrder.contains(actionName)) {
             getState().actionOrder.add(actionName);
         }
         getState().actions.put(actionName, actionLabel);
@@ -232,16 +183,7 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         } else if (CANCEL_ACTION_NAME.equals(actionName)) {
             // addShortcut(actionName, KeyCode.ESCAPE);
             addShortcut(actionName, KeyCode.C, ModifierKey.CTRL, ModifierKey.ALT);
-        }
-    }
-
-    public void setDefaultAction(String actionName) {
-        getState().defaultActionName = actionName;
-    }
-
-    @Deprecated
-    public void setActionLabel(String actionName, String actionLabel) {
-        addAction(actionName, actionLabel);
+        } */
     }
 
     @Override
@@ -262,29 +204,8 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         return new HorizontalLayout();
     }
 
-    public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
-        addAction(actionName, actionLabel);
-        addActionCallback(actionName, callback);
-    }
-
-    public void addActionCallback(String actionName, DialogActionListener callback) {
-        actionCallbackMap.put(actionName, callback);
-    }
-
-    public void clearCallbacks() {
-        actionCallbackMap.clear();
-    }
-
     public void showCloseButton() {
         getState().hasCloseButton = true;
-    }
-
-    public void addDialogCloseHandler(Handler handler) {
-        addListener("dialogCloseEvent", DialogCloseEvent.class, handler, DialogCloseEvent.ON_DIALOG_CLOSE);
-    }
-
-    public void removeDialogCloseHandler(Handler handler) {
-        removeListener("dialogCloseEvent", DialogCloseEvent.class, handler);
     }
 
     public void addDescriptionVisibilityHandler(DescriptionVisibilityEvent.Handler handler) {
@@ -295,12 +216,15 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         removeListener("descriptionVisibilityEvent", DescriptionVisibilityEvent.class, handler);
     }
 
-    private void doFireAction(final String actionId) {
-        Object[] array = actionCallbackMap.get(actionId).toArray();
-        for (Object l : array) {
-            ((DialogActionListener) l).onActionExecuted(actionId);
-        }
+
+    public void addDialogCloseHandler(DialogCloseEvent.Handler handler) {
+        addListener("dialogCloseEvent", DialogCloseEvent.class, handler, DialogCloseEvent.ON_DIALOG_CLOSE);
     }
+
+    public void removeDialogCloseHandler(DialogCloseEvent.Handler handler) {
+        removeListener("dialogCloseEvent", DialogCloseEvent.class, handler);
+    }
+
 
     /**
      * DialogCloseEvent.
@@ -316,7 +240,7 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
 
         public static final java.lang.reflect.Method ON_DIALOG_CLOSE;
 
-        public DialogView view;
+        public BaseDialog dialog;
 
         static {
             try {
@@ -326,15 +250,24 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
             }
         }
 
-        public DialogCloseEvent(Component source, DialogView view) {
+        public DialogCloseEvent(Component source, BaseDialog dialog) {
             super(source);
-            this.view = view;
+            this.dialog = dialog;
         }
 
-        public DialogView getView() {
-            return view;
+        public BaseDialog getDialog() {
+            return dialog;
         }
     }
+
+
+
+
+
+
+
+
+
 
     /**
      * DescriptionVisibilityEvent.
@@ -367,23 +300,6 @@ public class BaseDialog extends AbstractComponent implements HasComponents, Dial
         public boolean isVisible() {
             return isVisible;
         }
-    }
-
-    protected void addShortcut(final String actionName, final int keyCode, final int... modifiers) {
-        final ShortcutListener shortcut = new ShortcutListener("", keyCode, modifiers) {
-
-            @Override
-            public void handleAction(Object sender, Object target) {
-                doFireAction(actionName);
-            }
-        };
-        panel.addShortcutListener(shortcut);
-        actionShortcutMap.put(actionName, shortcut);
-    }
-
-    protected void removeShortcut(String actionName) {
-        removeShortcutListener(actionShortcutMap.get(actionName));
-        actionShortcutMap.remove(actionName);
     }
 
 }

@@ -33,13 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.dialog.connector;
 
-import info.magnolia.ui.vaadin.form.DialogContainingForm;
-import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogView;
-import info.magnolia.ui.vaadin.gwt.client.form.widget.FormViewImpl;
-
-import java.util.Arrays;
-import java.util.List;
-
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -50,13 +43,19 @@ import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ui.layout.ElementResizeEvent;
 import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.ui.Connect;
+import info.magnolia.ui.vaadin.dialog.FormDialog;
+import info.magnolia.ui.vaadin.gwt.client.dialog.widget.BaseDialogView;
+import info.magnolia.ui.vaadin.gwt.client.form.widget.FormViewImpl;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * DialogContainingForm assumes that content of dialog is
  * FormView. This connector will set the height of form view
  * based on how much space this dialog can provide to the form.
  */
-@Connect(DialogContainingForm.class)
+@Connect(FormDialog.class)
 public class DialogContainingFormConnector extends BaseDialogConnector {
 
     private BaseDialogView view;
