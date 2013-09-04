@@ -101,9 +101,9 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
 
     private static final String PAGE_EDITOR_CSS = "/VAADIN/themes/ui-app-pages/page-editor.css";
 
-    private PageEditorServerRpc rpc = RpcProxy.create(PageEditorServerRpc.class, this);
+    private final PageEditorServerRpc rpc = RpcProxy.create(PageEditorServerRpc.class, this);
 
-    private EventBus eventBus = new SimpleEventBus();
+    private final EventBus eventBus = new SimpleEventBus();
 
     private PageEditorView view;
     private MoveWidget moveWidget;
@@ -305,6 +305,7 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
                     GWT.log("Not CMSComment element, skipping: " + e.toString());
                 } catch (Exception e) {
                     GWT.log("Caught undefined exception: " + e.toString());
+                    consoleLog("Caught undefined exception: " + e.toString()); // log also into browser console
                 }
             } else if (childNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = childNode.cast();
@@ -326,8 +327,18 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
                 processor.process();
             } catch (IllegalArgumentException e) {
                 GWT.log("MgnlFactory could not instantiate class. The element is neither an area nor component.");
+            } catch (Exception e) {
+                final String errorMessage = "Error when processing editor components for '" + element.asMgnlElement().getAttribute("path") +
+                        "'. It's possible that the template script for this area or for some subcomponent is incorrect. Please check that all HTML tags are closed properly.\n"
+                        + e.toString();
+                GWT.log(errorMessage);
+                consoleLog(errorMessage); // log also into browser console
             }
         }
     }
+
+    native void consoleLog(String message) /*-{
+                                           console.log( "PageEditor: " + message );
+                                           }-*/;
 
 }
