@@ -69,7 +69,6 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
 
     private static final Logger log = LoggerFactory.getLogger(ChooseDialogPresenterImpl.class);
 
-    private final ChooseDialogView chooseDialogView;
 
     private FieldFactoryFactory fieldFactoryFactory;
 
@@ -85,23 +84,20 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
 
     @Inject
     public ChooseDialogPresenterImpl(
-            ChooseDialogView view,
             FieldFactoryFactory fieldFactoryFactory,
             ComponentProvider componentProvider,
             I18nContentSupport i18nContentSupport,
             DialogActionExecutor actionExecutor) {
         super(componentProvider);
-        this.chooseDialogView = view;
         this.fieldFactoryFactory = fieldFactoryFactory;
         this.componentProvider = componentProvider;
         this.i18nContentSupport = i18nContentSupport;
         this.actionExecutor = actionExecutor;
-
-        showCloseButton();
+        start();
     }
 
     @Override
-    protected ChooseDialogView start() {
+    public ChooseDialogView start() {
         return (ChooseDialogView)super.start();
     }
 
@@ -123,8 +119,8 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
                 }
             });
 
-            chooseDialogView.setCaption(field.getCaption());
-            chooseDialogView.setContent(new View() {
+            getView().setCaption(field.getCaption());
+            getView().setContent(new View() {
                 @Override
                 public Component asVaadinComponent() {
                     return field;
@@ -135,7 +131,7 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
                 field.setValue(selectedItemId);
             }
 
-            final OverlayCloser closer = overlayLayer.openOverlay(chooseDialogView);
+            final OverlayCloser closer = overlayLayer.openOverlay(getView());
             getView().addDialogCloseHandler(new DialogCloseHandler() {
                 @Override
                 public void onDialogClose(DialogView dialogView) {
@@ -144,7 +140,8 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
             });
             actionExecutor.setDialogDefinition(definition);
             initActions(definition);
-            return start();
+            showCloseButton();
+            return getView();
         } else {
             throw new IllegalArgumentException("TODO: HANDLE ME BETTER");
         }
@@ -153,6 +150,11 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
     @Override
     protected DialogView initView() {
         return componentProvider.getComponent(ChooseDialogView.class);
+    }
+
+    @Override
+    public ChooseDialogView getView() {
+        return (ChooseDialogView) super.getView();
     }
 
     private void initActions(ChooseDialogDefinition definition) {
@@ -166,9 +168,9 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
         String actionName = definition.getName();
         try {
             if (item != null) {
-                actionExecutor.execute(actionName, ChooseDialogPresenterImpl.this, field, chooseDialogView, callback, item);
+                actionExecutor.execute(actionName, ChooseDialogPresenterImpl.this, field, getView(), callback, item);
             } else {
-                actionExecutor.execute(actionName, ChooseDialogPresenterImpl.this, field, chooseDialogView, callback);
+                actionExecutor.execute(actionName, ChooseDialogPresenterImpl.this, field, getView(), callback);
             }
         } catch (ActionExecutionException e) {
             throw new RuntimeException("Could not execute action: " + actionName, e);

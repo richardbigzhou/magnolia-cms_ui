@@ -33,6 +33,8 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
 
     private CssLayout additionalActionsContainer = new CssLayout();
 
+    private View contentView;
+
     public BaseDialogViewImpl() {
         this(new BaseDialog());
     }
@@ -76,6 +78,7 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
 
     @Override
     public void setContent(View content) {
+        this.contentView = content;
         dialog.setContent(content.asVaadinComponent());
     }
 
@@ -128,6 +131,12 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
     }
 
     @Override
+    public void removeAllActions() {
+        primaryActionsContainer.removeAllComponents();
+        additionalActionsContainer.removeAllComponents();
+    }
+
+    @Override
     public void attach() {
         super.attach();
         focus();
@@ -136,6 +145,11 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
     @Override
     public Component asVaadinComponent() {
         return this;
+    }
+
+    @Override
+    public View getContentView() {
+        return contentView;
     }
 
     protected BaseDialog getDialog() {

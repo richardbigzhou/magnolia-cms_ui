@@ -105,7 +105,8 @@ public class BaseDialogPresenter implements DialogPresenter {
 
     protected void onActionFired(ActionDefinition definition, Map<String, Object> actionParams) {}
 
-    protected DialogView start() {
+    @Override
+    public DialogView start() {
         this.view = initView();
         return this.view;
     }

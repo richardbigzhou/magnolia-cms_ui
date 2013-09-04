@@ -64,4 +64,8 @@ public interface DialogView extends View {
     void addDialogCloseHandler(DialogCloseHandler handler);
 
     void removeDialogCloseHandler(DialogCloseHandler handler);
+
+    void removeAllActions();
+
+    View getContentView();
 }

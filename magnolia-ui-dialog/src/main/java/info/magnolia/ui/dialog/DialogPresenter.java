@@ -41,6 +41,8 @@ import info.magnolia.ui.api.action.ActionDefinition;
  */
 public interface DialogPresenter {
 
+    DialogView start();
+
     DialogView getView();
 
     void closeDialog();

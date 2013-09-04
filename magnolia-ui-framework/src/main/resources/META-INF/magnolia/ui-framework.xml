@@ -202,10 +202,6 @@
       <type>info.magnolia.ui.dialog.DialogView</type>
       <implementation>info.magnolia.ui.dialog.BaseDialogViewImpl</implementation>
     </component>
-    <component>
-      <type>info.magnolia.ui.dialog.formdialog.FormDialogView</type>
-      <implementation>info.magnolia.ui.dialog.formdialog.FormDialogViewImpl</implementation>
-    </component>
 
     <!-- Form -->
     <component>

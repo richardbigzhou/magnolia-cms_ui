@@ -39,8 +39,8 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
     private AppContext appContext;
 
     @Inject
-    public ContentAppChooseDialogPresenter(ChooseDialogView view, FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18nContentSupport i18nContentSupport, DialogActionExecutor actionExecutor, AppContext appContext) {
-        super(view, fieldFactoryFactory, componentProvider, i18nContentSupport, actionExecutor);
+    public ContentAppChooseDialogPresenter(FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18nContentSupport i18nContentSupport, DialogActionExecutor actionExecutor, AppContext appContext) {
+        super(fieldFactoryFactory, componentProvider, i18nContentSupport, actionExecutor);
         this.appContext = appContext;
     }
 

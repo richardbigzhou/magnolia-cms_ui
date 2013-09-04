@@ -44,4 +44,7 @@ import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 public interface ChooseDialogPresenter extends DialogPresenter {
 
     ChooseDialogView start(ChooseDialogCallback callback, ChooseDialogDefinition definition, OverlayLayer overlayLayer, String itemId);
+
+    @Override
+    ChooseDialogView getView();
 }
