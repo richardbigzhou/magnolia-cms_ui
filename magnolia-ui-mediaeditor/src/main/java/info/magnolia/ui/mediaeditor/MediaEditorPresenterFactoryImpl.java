@@ -41,7 +41,6 @@ import info.magnolia.i18n.I18nizer;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.objectfactory.Components;
 import info.magnolia.objectfactory.configuration.ComponentConfigurer;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationBuilder;
@@ -82,11 +81,14 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
 
     private EventBus eventBus = new SimpleEventBus();
 
+    private I18nizer i18nizer;
+
     @Inject
-    public MediaEditorPresenterFactoryImpl(ComponentProvider subAppComponentProvider, ModuleRegistry moduleRegistry, MediaEditorRegistry registry) {
+    public MediaEditorPresenterFactoryImpl(ComponentProvider subAppComponentProvider, ModuleRegistry moduleRegistry, MediaEditorRegistry registry, I18nizer i18nizer) {
         this.subAppComponentProvider = subAppComponentProvider;
         this.moduleRegistry = moduleRegistry;
         this.registry = registry;
+        this.i18nizer = i18nizer;
     }
 
     @Override
@@ -105,7 +107,6 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
         if (mediaEditorDefinition == null) {
             throw new IllegalArgumentException("No media editor definition registered for name [" + id + "]");
         }
-        I18nizer i18nizer = Components.getComponent(I18nizer.class);
         return i18nizer.decorate(mediaEditorDefinition);
     }
 
