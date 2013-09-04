@@ -31,20 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property;
+package info.magnolia.ui.form.field.property.multi;
 
 import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
-import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.test.mock.MockComponentProvider;
+import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -59,9 +59,10 @@ import org.junit.Test;
 /**
  * .
  */
-public class MultiValuesHandlerTest extends RepositoryTestCase {
+public class CommaSeparatedMultiHandlerTest extends RepositoryTestCase {
     private Node rootNode;
     private final String propertyName = "propertyName";
+    private MultiFieldDefinition definition = new MultiFieldDefinition();
 
     @Override
     @Before
@@ -77,6 +78,7 @@ public class MultiValuesHandlerTest extends RepositoryTestCase {
         Session session = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
         new PropertiesImportExport().createNodes(session.getRootNode(), IOUtils.toInputStream(nodeProperties));
         session.save();
+        definition.setName(propertyName);
 
         rootNode = session.getRootNode().getNode("parent");
     }
@@ -85,77 +87,58 @@ public class MultiValuesHandlerTest extends RepositoryTestCase {
     public void testCreateMultiProperty() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValuesHandler delegate = new MultiValuesHandler(parent, propertyName);
+        CommaSeparatedMultiHandler delegate = new CommaSeparatedMultiHandler(parent, definition, new MockComponentProvider());
 
         // WHEN
-        delegate.setValue(new ArrayList<String>());
+        delegate.writeToDataSourceItem(new ArrayList<String>(Arrays.asList("Jav", "ta")));
 
         // THEN
         assertTrue(parent.getItemProperty(propertyName) != null);
-        assertTrue(parent.getItemProperty(propertyName).getValue() instanceof LinkedList);
+        assertTrue(parent.getItemProperty(propertyName).getValue() instanceof String);
         Node parentNode = parent.applyChanges();
         assertTrue(parentNode.hasProperty(propertyName));
-        assertTrue(parentNode.getProperty(propertyName).isMultiple());
+        assertTrue(!parentNode.getProperty(propertyName).isMultiple());
+        assertEquals("Jav,ta", parentNode.getProperty(propertyName).getValue().getString());
     }
 
     @Test
-    public void testReadMultiStringProperty() throws RepositoryException {
+    public void testReadMultiProperty() throws RepositoryException {
         // GIVEN
-        String[] values = { "Art", "Dan", "Jen" };
+        String values = "Art,Dan,Jen";
         rootNode.setProperty(propertyName, values);
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValuesHandler delegate = new MultiValuesHandler(parent, propertyName);
+        CommaSeparatedMultiHandler delegate = new CommaSeparatedMultiHandler(parent, definition, new MockComponentProvider());
 
         // WHEN
-        List<String> res = delegate.getValue();
+        List<String> res = delegate.readFromDataSourceItem();
 
         // THEN
         assertEquals(3, res.size());
         assertTrue(res.contains("Dan"));
+        assertTrue(res.contains("Jen"));
+        assertTrue(res.contains("Art"));
+
     }
 
     @Test
-    public void testUpdateMultiStringProperty() throws RepositoryException {
+    public void testUpdateMultiProperty() throws RepositoryException {
         // GIVEN
-        String[] initialValues = { "Art", "Dan", "Jen" };
-        String[] newValues = { "Pig", "Ph" };
+        String initialValues = "Art,Dan,Jen";
+        String newValues = "Pig,Ph";
         rootNode.setProperty(propertyName, initialValues);
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValuesHandler delegate = new MultiValuesHandler(parent, propertyName);
+        CommaSeparatedMultiHandler delegate = new CommaSeparatedMultiHandler(parent, definition, new MockComponentProvider());
 
         // WHEN
-        delegate.setValue(Arrays.asList(newValues));
+        delegate.writeToDataSourceItem(Arrays.asList(newValues.split(",")));
 
         // THEN
         assertTrue(parent.getItemProperty(propertyName) != null);
-        assertTrue(parent.getItemProperty(propertyName).getValue() instanceof LinkedList);
+        assertTrue(parent.getItemProperty(propertyName).getValue() instanceof String);
         Node parentNode = parent.applyChanges();
         assertTrue(parentNode.hasProperty(propertyName));
         Property p = parentNode.getProperty(propertyName);
-        assertTrue(p.isMultiple());
-        assertEquals(2, p.getValues().length);
-        assertEquals("Pig", p.getValues()[0].getString());
-        assertEquals("Ph", p.getValues()[1].getString());
+        assertTrue(!p.isMultiple());
+        assertEquals("Pig,Ph", p.getValue().getString());
     }
-
-    @Test
-    public void testReadMultiLongProperty() throws RepositoryException {
-        // GIVEN
-        ArrayList<Long> propertyValue = new ArrayList<Long>();
-        propertyValue.add(1l);
-        propertyValue.add(3l);
-        propertyValue.add(2l);
-        PropertyUtil.setProperty(rootNode, propertyName, propertyValue);
-
-        JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValuesHandler delegate = new MultiValuesHandler(parent, propertyName);
-
-        // WHEN
-        List<Long> res = delegate.getValue();
-
-        // THEN
-        assertEquals(3, res.size());
-        assertTrue(res.contains(3l));
-    }
-
 }

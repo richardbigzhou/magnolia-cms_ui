@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.config;
 
+import info.magnolia.ui.form.field.definition.PropertyBuilder;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
@@ -47,6 +48,9 @@ public class SelectFieldBuilder extends AbstractFieldBuilder {
 
     public SelectFieldBuilder(String name) {
         this.definition().setName(name);
+    }
+
+    public SelectFieldBuilder() {
     }
 
     @Override
@@ -170,4 +174,10 @@ public class SelectFieldBuilder extends AbstractFieldBuilder {
     public SelectFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
         return (SelectFieldBuilder) super.validator(validatorBuilder);
     }
+
+    @Override
+    public SelectFieldBuilder propertyBuilder(PropertyBuilder propertyBuilder) {
+        return (SelectFieldBuilder) super.propertyBuilder(propertyBuilder);
+    }
+
 }

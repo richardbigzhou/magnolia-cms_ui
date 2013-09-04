@@ -31,10 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property;
+package info.magnolia.ui.form.field.property.multi;
 
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.property.AbstractBaseHandler;
+import info.magnolia.ui.form.field.property.PropertyHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,33 +46,34 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+
 /**
- * SingleProperty implementation of {@link MultiValueHandler}.<br>
+ * SingleProperty implementation of {@link ListHandler}.<br>
  * Store the list of values in a single property as a concatenation of string with a ',' separator.<br>
  * Retrieve the single property as a List of String.
  * <b>This handler is implemented for backward capability with Magnolia 4.x. <br>
  * As for Magnolia 4.x, the current implementation only support a list of String</b>
  */
-public class CommaSeparatedValueHandler extends AbstractMultiValueHandler<String> {
+public class CommaSeparatedMultiHandler extends AbstractBaseHandler<List<String>> implements PropertyHandler<List<String>> {
 
-    private JcrNodeAdapter parent;
-    private String propertyName;
 
     @Inject
-    public CommaSeparatedValueHandler(JcrNodeAdapter parent, String propertyName) {
-        this.parent = parent;
-        this.propertyName = propertyName;
+    public CommaSeparatedMultiHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
+        super(parent, definition, componentProvider);
     }
 
     @Override
-    public void setValue(List<String> newValue) {
-        DefaultProperty<String> property = getOrCreateProperty(String.class, "", parent, propertyName);
+    public void writeToDataSourceItem(List<String> newValue) {
+        Property<String> property = getOrCreateProperty(String.class, null);
         property.setValue(StringUtils.join(removeComma(newValue), ","));
     }
 
     @Override
-    public List<String> getValue() {
-        DefaultProperty<String> property = getOrCreateProperty(String.class, "", parent, propertyName);
+    public List<String> readFromDataSourceItem() {
+        String defaultValue = StringUtils.isEmpty(definition.getDefaultValue()) ? "" : definition.getDefaultValue();
+        Property<String> property = getOrCreateProperty(String.class, defaultValue);
         String value = property.getValue();
         return Arrays.asList(value.split(","));
     }
@@ -86,4 +89,5 @@ public class CommaSeparatedValueHandler extends AbstractMultiValueHandler<String
         }
         return res;
     }
+
 }

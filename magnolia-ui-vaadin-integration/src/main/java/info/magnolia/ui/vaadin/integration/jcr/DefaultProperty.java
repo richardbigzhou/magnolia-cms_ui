@@ -33,7 +33,9 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import com.vaadin.data.util.AbstractProperty;
+import javax.inject.Inject;
+
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.converter.Converter.ConversionException;
 
 /**
@@ -41,23 +43,21 @@ import com.vaadin.data.util.converter.Converter.ConversionException;
  *
  * @param <T> generic type of the value.
  */
-public class DefaultProperty<T> extends AbstractProperty<T> {
+public class DefaultProperty<T> extends ObjectProperty<T> {
 
-    private T value;
-    private final Class<T> type;
+    @Inject
+    @SuppressWarnings("unchecked")
+    // the cast is safe, because an object of type T has class Class<T>
+    public DefaultProperty(T value) {
+        this((value != null?(Class<T>) value.getClass():null), value);
+    }
 
     /**
      * Creates a typed DefaultProperty based on the properties name, it's type value and the actual class type.
      * Value can be null.
      */
     public DefaultProperty(Class<T> type, T value) {
-        this.type = type;
-        this.value = value;
-    }
-
-    @Override
-    public T getValue() {
-        return value;
+        super(value, type);
     }
 
     @Override
@@ -68,13 +68,7 @@ public class DefaultProperty<T> extends AbstractProperty<T> {
         if (newValue != null && !getType().isAssignableFrom(newValue.getClass())) {
             throw new ConversionException("Cannot convert " + newValue.getClass() + " to " + getType());
         }
-        value = newValue;
-        fireValueChange();
-    }
-
-    @Override
-    public Class<T> getType() {
-        return type;
+        super.setValue(newValue);
     }
 
     @Override

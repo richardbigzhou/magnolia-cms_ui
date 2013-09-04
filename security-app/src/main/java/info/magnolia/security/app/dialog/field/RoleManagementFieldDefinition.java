@@ -33,11 +33,26 @@
  */
 package info.magnolia.security.app.dialog.field;
 
+import info.magnolia.security.app.dialog.field.property.ManagementFieldPropertyHandler;
+import info.magnolia.ui.form.field.definition.PropertyBuilder;
 import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
+import info.magnolia.ui.form.field.property.CustomPropertyType;
+import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.ui.form.field.property.basic.BasicProperty;
 
 /**
  * A definition for the Role Management field.
  */
 public class RoleManagementFieldDefinition extends TwinColSelectFieldDefinition {
 
+    /**
+     * Option group need a specific {@link PropertyHandler} in order to handle the creation of the basic property.
+     */
+    @SuppressWarnings("unchecked")
+    public RoleManagementFieldDefinition() {
+        PropertyBuilder propertyBuilder = new PropertyBuilder();
+        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) ManagementFieldPropertyHandler.class);
+        propertyBuilder.setPropertyType((Class<? extends CustomPropertyType<?>>) (Object) BasicProperty.class);
+        setPropertyBuilder(propertyBuilder);
+    }
 }

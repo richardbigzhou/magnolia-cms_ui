@@ -31,29 +31,24 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.i18n;
+package info.magnolia.ui.form.field.property.basic;
 
-import java.util.Locale;
+import info.magnolia.ui.form.field.property.BaseProperty;
+import info.magnolia.ui.form.field.property.PropertyHandler;
 
-import com.vaadin.data.Property;
+import javax.inject.Inject;
 
 /**
- * Interface for locale-dependent property.
- *
- * @param <T> property value type.
+ * Basic property definition.<br>
+ * This property is used by default for all simple basic fields (text, date, ...).
+ * 
+ * @param <T>
  */
-public interface I18NAwareProperty<T> extends Property<T> {
+public class BasicProperty<T> extends BaseProperty<T> {
 
-    void setDefaultValue(T defaultValue);
-
-    void setLocale(Locale locale);
-
-    void setI18NPropertyName(String i18NPropertyName);
-
-    Locale getLocale();
-
-    String getBasePropertyName();
-
-    String getLocalizedPropertyName();
+    @Inject
+    public BasicProperty(PropertyHandler<T> handler, Class<T> type) {
+        super(handler, type);
+    }
 
 }

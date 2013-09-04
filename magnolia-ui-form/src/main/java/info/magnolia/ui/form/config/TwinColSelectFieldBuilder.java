@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.config;
 
+import info.magnolia.ui.form.field.definition.PropertyBuilder;
 import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
@@ -46,7 +47,7 @@ public class TwinColSelectFieldBuilder extends OptionGroupFieldBuilder {
     private final TwinColSelectFieldDefinition definition = new TwinColSelectFieldDefinition();
 
     public TwinColSelectFieldBuilder(String name) {
-        super(name);
+        super();
         this.definition().setName(name);
     }
 
@@ -185,5 +186,10 @@ public class TwinColSelectFieldBuilder extends OptionGroupFieldBuilder {
     @Override
     public TwinColSelectFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
         return (TwinColSelectFieldBuilder) super.validator(validatorBuilder);
+    }
+
+    @Override
+    public TwinColSelectFieldBuilder propertyBuilder(PropertyBuilder propertyBuilder) {
+        return (TwinColSelectFieldBuilder) super.propertyBuilder(propertyBuilder);
     }
 }

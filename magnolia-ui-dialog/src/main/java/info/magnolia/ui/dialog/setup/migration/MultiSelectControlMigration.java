@@ -34,10 +34,12 @@
 package info.magnolia.ui.dialog.setup.migration;
 
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
-import info.magnolia.ui.form.field.property.MultiValuesHandler;
-import info.magnolia.ui.form.field.property.CommaSeparatedValueHandler;
-import info.magnolia.ui.form.field.property.SubNodesValueHandler;
+import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
+import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
+import info.magnolia.ui.form.field.property.multi.CommaSeparatedMultiHandler;
+import info.magnolia.ui.form.field.property.multi.MultiProperty;
+import info.magnolia.ui.form.field.property.multi.MultiValuesPropertyMultiHandler;
+import info.magnolia.ui.form.field.property.multi.SubNodesMultiIdentifierHandler;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -47,7 +49,7 @@ import javax.jcr.RepositoryException;
  */
 public class MultiSelectControlMigration implements ControlMigration {
 
-    private boolean useIdentifier;
+    protected boolean useIdentifier;
 
     public MultiSelectControlMigration(boolean useIdentifier) {
         this.useIdentifier = useIdentifier;
@@ -56,36 +58,53 @@ public class MultiSelectControlMigration implements ControlMigration {
     @Override
     public void migrate(Node controlNode) throws RepositoryException {
         controlNode.getProperty("controlType").remove();
-        controlNode.setProperty("class", MultiLinkFieldDefinition.class.getName());
-        if (controlNode.hasProperty("saveHandler")) {
-            String saveHandler = controlNode.getProperty("saveHandler").getString();
-            Node saveModeType = controlNode.addNode("saveModeType", NodeTypes.ContentNode.NAME);
-            if (saveHandler.equals("list")) {
-                saveModeType.setProperty("multiValueHandlerClass", CommaSeparatedValueHandler.class.getName());
-            } else if (saveHandler.equals("multiple")) {
-                saveModeType.setProperty("multiValueHandlerClass", SubNodesValueHandler.class.getName());
-            } else {
-                saveModeType.setProperty("multiValueHandlerClass", MultiValuesHandler.class.getName());
-            }
-            controlNode.getProperty("saveHandler").remove();
-        } else {
-            Node saveModeType = controlNode.addNode("saveModeType", NodeTypes.ContentNode.NAME);
-            saveModeType.setProperty("multiValueHandlerClass", MultiValuesHandler.class.getName());
-        }
+        controlNode.setProperty("class", MultiFieldDefinition.class.getName());
+        // Set propertyBuilder
+        setPropertyBuilder(controlNode);
+        // Create a Field sub node
+        Node field = controlNode.addNode("field", NodeTypes.ContentNode.NAME);
+        field.setProperty("class", LinkFieldDefinition.class.getName());
+        // Set Related Select (App)
         if (controlNode.hasProperty("tree")) {
-            String workspace = controlNode.getProperty("tree").getString();
-            controlNode.setProperty("workspace", workspace);
-            controlNode.getProperty("tree").remove();
-            if (workspace.equals("category")) {
-                controlNode.setProperty("dialogName", "pages:link");
-                controlNode.setProperty("appName", "categories");
-            }
+            setSeletionApp(controlNode, field);
         }
-        controlNode.setProperty("identifier", this.useIdentifier);
+        field.setProperty("identifier", this.useIdentifier);
         controlNode.setProperty("buttonSelectAddLabel", "field.link.select.add");
-        controlNode.setProperty("buttonSelectNewLabel", "field.link.select.new");
-        controlNode.setProperty("buttonSelectOtherLabel", "field.link.select.another");
+        field.setProperty("buttonSelectNewLabel", "field.link.select.new");
+        field.setProperty("buttonSelectOtherLabel", "field.link.select.another");
 
+    }
+
+    /**
+     * Set Selection App.
+     */
+    protected void setSeletionApp(Node controlNode, Node fieldNode) throws RepositoryException {
+        String workspace = controlNode.getProperty("tree").getString();
+        fieldNode.setProperty("workspace", workspace);
+        controlNode.getProperty("tree").remove();
+        if (workspace.equals("category")) {
+            fieldNode.setProperty("dialogName", "pages:link");
+            fieldNode.setProperty("appName", "categories");
+        }
+    }
+
+    /**
+     * Set the PropertyBuilder.
+     */
+    protected void setPropertyBuilder(Node controlNode) throws RepositoryException {
+        Node propertyBuilder = controlNode.addNode("propertyBuilder", NodeTypes.ContentNode.NAME);
+        propertyBuilder.setProperty("propertyType", MultiProperty.class.getName());
+        if (controlNode.hasProperty("saveMode")) {
+            String saveMode = controlNode.getProperty("saveMode").getString();
+            if (saveMode.equals("list")) {
+                propertyBuilder.setProperty("propertyHandler", CommaSeparatedMultiHandler.class.getName());
+            } else {
+                propertyBuilder.setProperty("propertyHandler", MultiValuesPropertyMultiHandler.class.getName());
+            }
+            controlNode.getProperty("saveMode").remove();
+        } else {
+            propertyBuilder.setProperty("propertyHandler", SubNodesMultiIdentifierHandler.class.getName());
+        }
     }
 
 }

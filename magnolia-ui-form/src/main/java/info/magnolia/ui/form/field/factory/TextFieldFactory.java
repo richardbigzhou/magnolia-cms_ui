@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 
 import com.vaadin.data.Item;
@@ -71,8 +70,5 @@ public class TextFieldFactory extends AbstractFieldFactory<TextFieldDefinition, 
         return field;
     }
 
-    @Override
-    protected Class<String> getDefaultFieldType(FieldDefinition fieldDefinition) {
-        return String.class;
-    }
+
 }

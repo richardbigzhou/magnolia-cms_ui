@@ -31,37 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property;
+package info.magnolia.ui.form.field.definition;
 
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.form.field.property.CustomPropertyType;
+import info.magnolia.ui.form.field.property.PropertyHandler;
 
 /**
- * Abstract Base Implementation of {@link MultiValueHandler} used to <br>
- * - store a List of values into a single property <br>
- * - retrieve a List of Value from a single property ,<br>
- * .
- * Expose a generic method that create or retrieve a generic Property (simple or multi value property).
- * 
- * @param <T> type of the element list.
+ * PropertyBuilder definition used to configure the way a property is initialize and assign to a field. <br>
+ * propertyType : Define the Type of the property used by the field ({@link info.magnolia.ui.form.field.property.basic.BasicProperty}, {@link info.magnolia.ui.form.field.property.multi.MultiProperty},... }).<br>
+ * propertyHandler : Handler used to retrieve and store the content of the property related to a Field item.
  */
-public abstract class AbstractMultiValueHandler<T> implements MultiValueHandler<T> {
+public class PropertyBuilder {
 
-    /**
-     * If the desired property (propertyName) already exist in the JcrNodeAdapter, return this property<br>
-     * else create a new Property.
-     *
-     * @param <T>
-     */
-    @SuppressWarnings("unchecked")
-    public <T> DefaultProperty<T> getOrCreateProperty(Class<T> type, T defaultValue, JcrNodeAdapter parent, String propertyName) {
+    private Class<? extends PropertyHandler<?>> propertyHandler;
+    private Class<? extends CustomPropertyType<?>> propertyType;
 
-        DefaultProperty<T> property = (DefaultProperty<T>) parent.getItemProperty(propertyName);
-        if (property == null) {
-            property = new DefaultProperty<T>(type, defaultValue);
-            parent.addItemProperty(propertyName, property);
-        }
-        return property;
+    public Class<? extends PropertyHandler<?>> getPropertyHandler() {
+        return propertyHandler;
     }
 
+    public Class<? extends CustomPropertyType<?>> getPropertyType() {
+        return propertyType;
+    }
+
+    public void setPropertyType(Class<? extends CustomPropertyType<?>> propertyType) {
+        this.propertyType = propertyType;
+    }
+
+    public void setPropertyHandler(Class<? extends PropertyHandler<?>> propertyHandler) {
+        this.propertyHandler = propertyHandler;
+    }
 }

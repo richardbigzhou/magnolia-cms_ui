@@ -33,15 +33,30 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import info.magnolia.ui.form.field.property.CustomPropertyType;
+import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.ui.form.field.property.multi.MultiProperty;
+import info.magnolia.ui.form.field.property.multi.MultiValuesPropertyMultiHandler;
+
 /**
  * Definition used to configure a generic multi field.
  */
 public class MultiFieldDefinition extends ConfiguredFieldDefinition {
 
-    private SaveModeType saveModeType;
     private String buttonSelectAddLabel = "buttons.add";
     private String buttonSelectRemoveLabel = "buttons.delete";
     private ConfiguredFieldDefinition field;
+
+    /**
+     * Set default {@link PropertyBuilder}.
+     */
+    @SuppressWarnings("unchecked")
+    public MultiFieldDefinition() {
+        PropertyBuilder propertyBuilder = new PropertyBuilder();
+        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) MultiValuesPropertyMultiHandler.class);
+        propertyBuilder.setPropertyType((Class<? extends CustomPropertyType<?>>) (Object) MultiProperty.class);
+        setPropertyBuilder(propertyBuilder);
+    }
 
     /**
      * @return i18n property used to configure the Add Button Label.
@@ -58,14 +73,6 @@ public class MultiFieldDefinition extends ConfiguredFieldDefinition {
     }
 
     /**
-     * @return SaveModeType defining the specific {@link info.magnolia.ui.form.field.property.MultiValueHandler} <br>
-     * used to retrieve or store the values in various format (single property, multivalue property or sub nodes).
-     */
-    public SaveModeType getSaveModeType() {
-        return saveModeType;
-    }
-
-    /**
      * @return Generic field that may be used and display as multi field.
      */
     public ConfiguredFieldDefinition getField() {
@@ -78,10 +85,6 @@ public class MultiFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setButtonSelectRemoveLabel(String buttonSelectRemoveLabel) {
         this.buttonSelectRemoveLabel = buttonSelectRemoveLabel;
-    }
-
-    public void setSaveModeType(SaveModeType saveModeType) {
-        this.saveModeType = saveModeType;
     }
 
     public void setField(ConfiguredFieldDefinition field) {

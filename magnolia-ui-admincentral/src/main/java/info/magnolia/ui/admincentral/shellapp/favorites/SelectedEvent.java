@@ -31,49 +31,56 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.definition;
+package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import java.io.Serializable;
+import java.lang.reflect.Method;
 
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Component.Event;
 
 /**
- * Field definition for a Multi-Link field.
+ * An event sent when selecting a favorite item (either a group or an entry).
  */
-public class MultiLinkFieldDefinition extends LinkFieldDefinition {
+@SuppressWarnings("serial")
+public final class SelectedEvent extends Event implements Serializable {
 
-    private SaveModeType saveModeType;
-    private String buttonSelectAddLabel = "buttons.add";
-    private String buttonSelectRemoveLabel = "buttons.delete";
+    public SelectedEvent(Component source) {
+        super(source);
+    }
 
-    /**
-     * @return i18n property used to configure Button Label.
-     */
-    public String getButtonSelectAddLabel() {
-        return buttonSelectAddLabel;
+    public static final Method SELECTED_METHOD;
+
+    static {
+        try {
+            SELECTED_METHOD = SelectedListener.class.getDeclaredMethod(
+                    "onSelected", new Class[] { SelectedEvent.class });
+        } catch (final java.lang.NoSuchMethodException e) {
+            // This should never happen
+            throw new java.lang.RuntimeException();
+        }
     }
 
     /**
-     * @return i18n property used to configure the Remove Button Label.
+     * SelectedListener.
      */
-    public String getButtonSelectRemoveLabel() {
-        return buttonSelectRemoveLabel;
+    public interface SelectedListener extends Serializable {
+        void onSelected(SelectedEvent event);
     }
 
     /**
-     * @return SaveModeType defining the specific {@link info.magnolia.ui.form.field.property.MultiValueHandler} used to retrieve or store the values in various format (single property, multivalue property or sub nodes).
+     * SelectedNotifier.
      */
-    public SaveModeType getSaveModeType() {
-        return saveModeType;
+    public interface SelectedNotifier extends Serializable {
+        /**
+         * Register a listener to handle {@link SelectedEvent}s.
+         */
+        void addSelectedListener(SelectedListener listener);
+
+        /**
+         * Removes an EditingListener.
+         */
+        void removeSelectedListener(SelectedListener listener);
     }
 
-    public void setButtonSelectRemoveLabel(String buttonSelectRemoveLabel) {
-        this.buttonSelectRemoveLabel = buttonSelectRemoveLabel;
-    }
-
-    public void setButtonSelectAddLabel(String buttonSelectAddLabel) {
-        this.buttonSelectAddLabel = buttonSelectAddLabel;
-    }
-
-    public void setSaveModeType(SaveModeType saveModeType) {
-        this.saveModeType = saveModeType;
-    }
 }

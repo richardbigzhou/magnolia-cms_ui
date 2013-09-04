@@ -114,6 +114,7 @@ public class ActivationActionTest extends RepositoryTestCase {
         activationCommand = mock(Command.class);
 
         when(commandsManager.getCommand(CommandsManager.DEFAULT_CATALOG, "activate")).thenReturn(activationCommand);
+        when(commandsManager.getCommand("workflow", "activate")).thenReturn(activationCommand);
         when(commandsManager.getCommand("activate")).thenReturn(activationCommand);
 
     }
@@ -171,6 +172,7 @@ public class ActivationActionTest extends RepositoryTestCase {
     @Test
     public void testWorkflowSuccessMessage() throws Exception {
         // GIVEN
+        definition.setCatalog("workflow");
         ModuleRegistry moduleRegistry = mock(ModuleRegistry.class);
         when(moduleRegistry.isModuleRegistered("workflow")).thenReturn(true);
         when(commandsManager.executeCommand("activate", params)).thenReturn(false);

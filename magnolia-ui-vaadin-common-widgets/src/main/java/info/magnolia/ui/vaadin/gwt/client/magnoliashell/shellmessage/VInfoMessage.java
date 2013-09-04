@@ -47,6 +47,6 @@ public class VInfoMessage extends VDetailedShellMessage {
 
     @Override
     protected String getMessageTypeCaption() {
-        return "Info:";
+        return "Info: ";
     }
 }

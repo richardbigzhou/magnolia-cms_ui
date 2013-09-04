@@ -51,11 +51,8 @@ import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.vaadin.aceeditor.AceEditor;
 
 import com.vaadin.ui.Field;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
 
 /**
  * Test class.
@@ -75,7 +72,9 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
 
         FieldFactoryFactory fieldFactory = new FieldFactoryFactory(componentProvider, fieldDefinitionRegistery, null);
 
+
         factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, fieldFactory, i18nContentSupport, componentProvider);
+        factory.setComponentProvider(componentProvider);
     }
 
     @Test
@@ -89,51 +88,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         assertTrue(field instanceof SwitchableField);
     }
 
-    @Test
-    public void createFieldComponentDefaultOptionFieldCreatedTest() {
-        // GIVEN
 
-        // WHEN
-        Field field = factory.createField();
-
-        // THEN
-        assertNotNull(field);
-        assertTrue(field instanceof SwitchableField);
-        // DefaultOption is text
-        assertNotNull(((SwitchableField) field).getSelectedComponent());
-        assertTrue(((SwitchableField) field).getSelectedComponent() instanceof TextField);
-    }
-
-    @Test
-    public void createFieldComponentDefaultOptionFieldCreatedNotExistingTest() {
-        // GIVEN
-        definition.getFields().clear();
-        // WHEN
-        Field field = factory.createField();
-
-        // THEN
-        assertNotNull(field);
-        assertTrue(field instanceof SwitchableField);
-        // DefaultOption not existing a Label should be displayed
-        assertNotNull(((SwitchableField) field).getSelectedComponent());
-        assertTrue(((SwitchableField) field).getSelectedComponent() instanceof Label);
-    }
-
-    @Test
-    public void switchFieldTest() {
-        // GIVEN
-        Field field = factory.createField();
-        assertNotNull(((SwitchableField) field).getSelectedComponent());
-        assertTrue(((SwitchableField) field).getSelectedComponent() instanceof TextField);
-
-        // WHEN
-        field.setValue("code");
-
-        // THEN
-        // Related field should be a BasicCideTextField is text
-        assertNotNull(((SwitchableField) field).getSelectedComponent());
-        assertTrue(((SwitchableField) field).getSelectedComponent() instanceof AceEditor);
-    }
 
     private FieldTypeDefinitionRegistry createFieldTypeRegistery() {
         FieldTypeDefinitionRegistry registery = new FieldTypeDefinitionRegistry();

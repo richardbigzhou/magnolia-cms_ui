@@ -39,6 +39,8 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import java.util.Map;
 
+import com.vaadin.ui.Component;
+
 /**
  * View for favorites.
  */
@@ -49,6 +51,11 @@ public interface FavoritesView extends View {
     void init(AbstractJcrNodeAdapter favoritesRoot, JcrNewNodeAdapter favoriteSuggestion, JcrNewNodeAdapter groupSuggestion, Map<String, String> availableGroups);
 
     void setFavoriteLocation(JcrNewNodeAdapter location, JcrNewNodeAdapter groupSuggestion, Map<String, String> availableGroups);
+
+    /**
+     * Unselect the currently selected component, as only one can be selected at any point in time.
+     */
+    void updateSelection(Component newSelection);
 
     /**
      * Listener.

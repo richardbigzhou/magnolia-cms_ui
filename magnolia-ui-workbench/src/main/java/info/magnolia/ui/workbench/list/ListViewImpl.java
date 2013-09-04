@@ -95,6 +95,7 @@ public class ListViewImpl implements ListView {
             }
         });
 
+        // this one was re-added since the check-all worked for tree only but nor for list- and search-view, see MGNLUI-1958
         // TODO fgrilli: a workaround for MGNLUI-1651
         table.addStyleName("no-header-checkbox");
         this.table = table;

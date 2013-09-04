@@ -38,12 +38,11 @@ import static org.junit.Assert.assertEquals;
 import info.magnolia.cms.i18n.LocaleDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.mock.MockComponentProvider;
-import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTestCase;
-import info.magnolia.ui.form.field.factory.AbstractFieldFactory;
-import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTest;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.api.i18n.I18NAwareProperty;
+import info.magnolia.ui.form.field.factory.AbstractFieldFactory;
+import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTest;
+import info.magnolia.ui.form.field.factory.AbstractFieldFactoryTestCase;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Locale;
@@ -114,48 +113,13 @@ public class AbstractFieldFactoryI18NPropertyTest extends AbstractFieldFactoryTe
         assertEquals(true, res.hasProperty(propertyName));
     }
 
-    @Test
-    public void i18nPropertyDefined_CurrentIsNotDefault() throws Exception {
-        // GIVEN
-        this.definition.setI18n(true);
-        MgnlContext.getInstance().setLocale(Locale.FRENCH);
-        initBuilder();
-        Field<Object> field = fieldFactory.createField();
-        field.setValue("new Value");
 
-        // THEN
-        // Should not be sufixed by _fr --> setI18n(false)
-        assertEquals(true, field.getPropertyDataSource() instanceof I18NAwareProperty);
-    }
-
-    @Test
-    public void i18nPropertyDefined_CurrentIsNotDefaultAndDefaultAlreadyExist() throws Exception {
-        // GIVEN
-        this.definition.setI18n(true);
-        initBuilder();
-        Field<Object> field = fieldFactory.createField();
-        field.setValue("new Value");
-        Node res = ((JcrNodeAdapter) baseItem).applyChanges();
-        assertEquals(true, res.hasProperty(propertyName));
-
-
-        ((I18NAwarePropertyImpl)field.getPropertyDataSource()).setI18NPropertyName(propertyName + "_fr");
-        field.setValue("new Value FR");
-        // WHEN
-        res = ((JcrNodeAdapter) baseItem).applyChanges();
-
-        // THEN
-        assertEquals(true, res.hasProperty(propertyName + "_fr"));
-        assertEquals("new Value FR", res.getProperty(propertyName + "_fr").getString());
-        assertEquals("new Value", res.getProperty(propertyName).getString());
-    }
 
     protected void initBuilder() {
         fieldFactory = new AbstractFieldFactoryTest.TestTextFieldFactory(definition, baseItem);
         fieldFactory.setI18nContentSupport(i18nContentSupport);
 
         MockComponentProvider cc = new MockComponentProvider();
-        cc.registerImplementation(I18NAwareProperty.class, I18NAwarePropertyImpl.class);
         fieldFactory.setComponentProvider(cc);
     }
 

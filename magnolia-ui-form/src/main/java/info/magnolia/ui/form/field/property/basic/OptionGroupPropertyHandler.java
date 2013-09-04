@@ -31,23 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.definition;
+package info.magnolia.ui.form.field.property.basic;
 
-import info.magnolia.ui.form.field.property.MultiValueHandler;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
+
+import java.util.HashSet;
+import java.util.List;
+
+import com.vaadin.data.Item;
 
 /**
- * Save mode definition of the Multi-Link field.
+ * Specific OptionGroupField property Handler.<br
+ * Vaadin native {@link com.vaadin.ui.OptionGroup} used as root component for configured Option Group Field do not support List, but only Sets.
+ * 
+ * @param <T>
  */
-public class SaveModeType {
+public class OptionGroupPropertyHandler<T> extends BasicPropertyHandler<T> {
 
-    private Class<? extends MultiValueHandler> multiValueHandlerClass;
+    private boolean multiselect = false;
 
-    public Class<? extends MultiValueHandler> getMultiValueHandlerClass() {
-        return multiValueHandlerClass;
+
+    public OptionGroupPropertyHandler(Item parent, ConfiguredFieldDefinition definition, String fieldTypeName) {
+        super(parent, definition, fieldTypeName);
+        multiselect = ((OptionGroupFieldDefinition) definition).isMultiselect();
     }
 
-    public void setMultiValueHandlerClass(Class<? extends MultiValueHandler> multiValueHandlerClass) {
-        this.multiValueHandlerClass = multiValueHandlerClass;
-    }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
+    public T readFromDataSourceItem() {
+        T value = super.readFromDataSourceItem();
+        if (!multiselect) {
+            return value;
+        }
+
+        if (value == null) {
+            return (T) new HashSet();
+        } else if (value instanceof List) {
+            return (T) new HashSet((List) value);
+        } else {
+            return null;
+        }
+    }
 }

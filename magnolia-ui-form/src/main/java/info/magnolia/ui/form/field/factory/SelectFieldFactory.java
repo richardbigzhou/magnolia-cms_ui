@@ -36,6 +36,7 @@ package info.magnolia.ui.form.field.factory;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
+import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -119,13 +121,14 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
         IndexedContainer optionContainer = new IndexedContainer();
         List<SelectFieldOptionDefinition> options = getSelectFieldOptionDefinition();
         if (!options.isEmpty()) {
-            optionContainer.addContainerProperty(optionValueName, getFieldType(definition), null);
+            Class<?> fieldType = DefaultPropertyUtil.getFieldTypeClass(definition.getType());
+            optionContainer.addContainerProperty(optionValueName, fieldType, null);
             optionContainer.addContainerProperty(optionLabelName, String.class, null);
             if (hasOptionIcon) {
                 optionContainer.addContainerProperty(optionIconName, Resource.class, null);
             }
             for (SelectFieldOptionDefinition option : options) {
-                Object value = DefaultPropertyUtil.createTypedValue(getFieldType(definition).getSimpleName(), option.getValue());
+                Object value = DefaultPropertyUtil.createTypedValue(fieldType, option.getValue());
                 Item item = optionContainer.addItem(value);
                 item.getItemProperty(optionValueName).setValue(value);
                 item.getItemProperty(optionLabelName).setValue(option.getLabel());
@@ -222,7 +225,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
      * If not yet stored, set initialSelectedKey as selectedItem
      * Else, set the first element of the list.
      */
-    private void setDefaultSelectedItem(Property<?> dataSource) {
+    private void setDefaultSelectedItem(Property dataSource) {
         Object selectedValue = null;
         Object datasourceValue = dataSource.getValue();
 
@@ -232,15 +235,18 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
             return;
         } else if (initialSelectedKey != null) {
             selectedValue = initialSelectedKey;
-        } else if (!select.isNullSelectionAllowed() && definition.getOptions() != null && !definition.getOptions().isEmpty()) {
+        } else if (!select.isNullSelectionAllowed() && definition.getOptions() != null && !definition.getOptions().isEmpty() && !(definition instanceof TwinColSelectFieldDefinition)) {
             selectedValue = definition.getOptions().get(0).getValue();
         }
+        // Type the selected value
+        selectedValue = DefaultPropertyUtil.createTypedValue(getDefinitiontType(), (String) selectedValue);
         // Set the selected value (if not null)
         if (datasourceValue != null && datasourceValue instanceof Collection && selectedValue != null) {
-                ((Collection) datasourceValue).add(selectedValue);
-                selectedValue = datasourceValue;
+            ((Collection) datasourceValue).add(selectedValue);
+            selectedValue = datasourceValue;
         }
         this.field.setValue(selectedValue);
+        dataSource.setValue(selectedValue);
     }
 
     /**
@@ -258,23 +264,24 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
                 while (iterator.hasNext()) {
                     SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
                     Node child = iterator.nextNode();
-                    if (child.hasProperty(optionValueName) && child.hasProperty(optionLabelName)) {
-                        option.setLabel(getMessage(child.getProperty(optionLabelName).getString()));
-                        option.setValue(child.getProperty(optionValueName).getString());
+                    // Get Label and Value
+                    String label = getRemoteOptionsName(child, optionLabelName);
+                    String value = getRemoteOptionsName(child, optionValueName);
+                    option.setLabel(getMessage(label));
+                    option.setValue(value);
 
-                        if (child.hasProperty(SelectFieldDefinition.OPTION_SELECTED_PROPERTY_NAME)) {
-                            option.setSelected(true);
-                            initialSelectedKey = option.getValue();
-                        }
-                        if (child.hasProperty(SelectFieldDefinition.OPTION_NAME_PROPERTY_NAME)) {
-                            option.setName(child.getProperty(SelectFieldDefinition.OPTION_NAME_PROPERTY_NAME).getString());
-                        }
-                        if (child.hasProperty(SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME)) {
-                            option.setIconSrc(child.getProperty(SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME).getString());
-                            hasOptionIcon = true;
-                        }
-                        res.add(option);
+                    if (child.hasProperty(SelectFieldDefinition.OPTION_SELECTED_PROPERTY_NAME)) {
+                        option.setSelected(true);
+                        initialSelectedKey = option.getValue();
                     }
+                    if (child.hasProperty(SelectFieldDefinition.OPTION_NAME_PROPERTY_NAME)) {
+                        option.setName(child.getProperty(SelectFieldDefinition.OPTION_NAME_PROPERTY_NAME).getString());
+                    }
+                    if (child.hasProperty(SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME)) {
+                        option.setIconSrc(child.getProperty(SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME).getString());
+                        hasOptionIcon = true;
+                    }
+                    res.add(option);
                 }
                 definition.setOptions(res);
             } catch (Exception e) {
@@ -282,4 +289,17 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
             }
         }
     }
+
+    /**
+     * Get the specific node property. <br>
+     * If this property is not defined, return the node name.
+     */
+    private String getRemoteOptionsName(Node option, String propertyName) throws RepositoryException {
+        if (option.hasProperty(propertyName)) {
+            return option.getProperty(propertyName).getString();
+        } else {
+            return option.getName();
+        }
+    }
+
 }

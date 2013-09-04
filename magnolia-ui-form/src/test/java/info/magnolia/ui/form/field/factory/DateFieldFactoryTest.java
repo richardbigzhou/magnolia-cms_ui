@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.assertEquals;
 
+import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.DateFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -64,6 +65,7 @@ public class DateFieldFactoryTest extends AbstractFieldFactoryTestCase<DateField
         baseItem = new JcrNodeAdapter(baseNode);
         dialogDate = new DateFieldFactory(definition, baseItem);
         dialogDate.setI18nContentSupport(i18nContentSupport);
+        dialogDate.setComponentProvider(new MockComponentProvider());
         // WHEN
         Field field = dialogDate.createField();
 
@@ -85,6 +87,7 @@ public class DateFieldFactoryTest extends AbstractFieldFactoryTestCase<DateField
         baseItem = new JcrNodeAdapter(baseNode);
         dialogDate = new DateFieldFactory(definition, baseItem);
         dialogDate.setI18nContentSupport(i18nContentSupport);
+        dialogDate.setComponentProvider(new MockComponentProvider());
         Calendar calNew = Calendar.getInstance();
         calNew.set(Calendar.DAY_OF_MONTH, 20);
         calNew.set(Calendar.MONTH, 2);
@@ -115,6 +118,7 @@ public class DateFieldFactoryTest extends AbstractFieldFactoryTestCase<DateField
         baseItem = new JcrNodeAdapter(baseNode);
         dialogDate = new DateFieldFactory(definition, baseItem);
         dialogDate.setI18nContentSupport(i18nContentSupport);
+        dialogDate.setComponentProvider(new MockComponentProvider());
         // WHEN
         Field field = dialogDate.createField();
 
@@ -129,7 +133,7 @@ public class DateFieldFactoryTest extends AbstractFieldFactoryTestCase<DateField
     protected void createConfiguredFieldDefinition() {
         DateFieldDefinition fieldDefinition = new DateFieldDefinition();
         fieldDefinition = (DateFieldDefinition) AbstractFieldFactoryTest.createConfiguredFieldDefinition(fieldDefinition, propertyName);
-
+        fieldDefinition.setType(null);
         fieldDefinition.setTime(false);
         fieldDefinition.setDateFormat("yyyy-MM-dd");
         fieldDefinition.setTimeFormat("HH:mm:ss");

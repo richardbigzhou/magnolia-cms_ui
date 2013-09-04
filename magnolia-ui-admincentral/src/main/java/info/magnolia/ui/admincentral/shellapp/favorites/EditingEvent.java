@@ -40,7 +40,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Component.Event;
 
 /**
- * EditingEvent.
+ * An event sent when editing a favorite entry.
  */
 @SuppressWarnings("serial")
 public final class EditingEvent extends Event implements Serializable {
