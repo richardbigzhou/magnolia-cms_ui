@@ -31,33 +31,29 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.form;
+package info.magnolia.ui.dialog.formdialog;
 
-
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-
-import java.util.Collection;
-import java.util.Locale;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Field;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.dialog.DialogView;
+import info.magnolia.ui.vaadin.form.FormSection;
+
+import java.util.Collection;
+import java.util.Locale;
 
 /**
- * Interface for {@link Form}.
+ * Interface for {@link info.magnolia.ui.vaadin.form.Form}.
  */
-public interface FormView extends View, Item.Editor {
+public interface FormView extends DialogView, View, Item.Editor {
 
     Collection<Field<?>> getFields();
 
+    void addAction(View actionView);
+
     void addField(Field<?> field);
-
-    void setDescriptionVisibility(boolean isVisible);
-
-    void addAction(String actionName, String actionLabel, DialogActionListener callback);
-
-    void setFormDescription(String description);
 
     void setCaption(String caption);
 

@@ -31,53 +31,44 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.form;
-
-import info.magnolia.objectfactory.Components;
-import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
-import info.magnolia.ui.vaadin.dialog.BaseDialog;
-import info.magnolia.ui.vaadin.dialog.BaseDialog.DescriptionVisibilityEvent;
-import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-
-import java.util.Collection;
-import java.util.Locale;
+package info.magnolia.ui.dialog.formdialog;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.dialog.BaseDialogViewImpl;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
+import info.magnolia.ui.vaadin.dialog.BaseDialog.DescriptionVisibilityEvent;
+import info.magnolia.ui.vaadin.dialog.FormDialog;
+import info.magnolia.ui.vaadin.form.Form;
+import info.magnolia.ui.vaadin.form.FormSection;
+
+import java.util.Collection;
+import java.util.Locale;
 
 /**
  * Owns a Form and Dialog and connects them.
  */
-public class ItemFormView implements FormView {
+public class ItemFormView extends BaseDialogViewImpl implements FormView {
 
     private AbstractSelect languageSelector;
 
-    private BaseDialog dialog;
-
-    private Form form;
+    private Form form = new Form();
 
     public ItemFormView() {
-
-        form = new Form();
-
-        dialog = new DialogContainingForm();
-        dialog.setContent(form);
-
-        dialog.addDescriptionVisibilityHandler(new BaseDialog.DescriptionVisibilityEvent.Handler() {
+        super(new FormDialog());
+        getDialog().setContent(form);
+        getDialog().addDescriptionVisibilityHandler(new BaseDialog.DescriptionVisibilityEvent.Handler() {
 
             @Override
             public void onDescriptionVisibilityChanged(DescriptionVisibilityEvent event) {
                 form.setDescriptionVisibility(event.isVisible());
             }
         });
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return dialog.asVaadinComponent();
     }
 
     @Override
@@ -97,25 +88,8 @@ public class ItemFormView implements FormView {
     }
 
     @Override
-    public void setDescriptionVisibility(boolean isVisible) {
-        form.setDescriptionVisibility(isVisible);
-
-    }
-
-    @Override
-    public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
-        dialog.addAction(actionName, actionLabel, callback);
-    }
-
-    @Override
-    public void setFormDescription(String description) {
-        dialog.setDialogDescription(description);
-
-    }
-
-    @Override
     public void setCaption(String caption) {
-        dialog.setCaption(caption);
+        getDialog().setCaption(caption);
     }
 
     @Override
@@ -146,6 +120,11 @@ public class ItemFormView implements FormView {
     }
 
     @Override
+    public void addAction(View actionView) {
+        addPrimaryAction(actionView);
+    }
+
+    @Override
     public void setCurrentLocale(Locale locale) {
         this.languageSelector.setValue(locale);
     }
@@ -162,7 +141,7 @@ public class ItemFormView implements FormView {
                 }
             }
         });
-        dialog.setFooterToolbar(languageSelector);
+        //dialog.setFooterToolbar(languageSelector);
     }
 
 }

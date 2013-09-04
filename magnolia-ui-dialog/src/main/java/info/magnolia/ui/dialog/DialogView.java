@@ -31,17 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.dialog;
+package info.magnolia.ui.dialog;
 
+import com.vaadin.event.ShortcutListener;
 import info.magnolia.ui.api.view.View;
 
 /**
- * Interface for {@link BaseDialog}.
+ * Interface for {@link info.magnolia.ui.vaadin.dialog.BaseDialog}.
  */
 public interface DialogView extends View {
 
-    void setDialogDescription(String description);
+    void setDescriptionVisible(boolean isDescriptionVisible);
+
+    void setDescription(String description);
 
     void setCaption(String caption);
 
+    void setContent(View content);
+
+    void addPrimaryAction(View actionView);
+
+    void addAdditionalAction(View actionView);
+
+    void close();
+
+    void setClosable(boolean b);
+
+    void addShortcut(ShortcutListener shortcut);
+
+    void removeShortcut(ShortcutListener shortcut);
+
+    void addDialogCloseHandler(DialogCloseHandler handler);
+
+    void removeDialogCloseHandler(DialogCloseHandler handler);
 }

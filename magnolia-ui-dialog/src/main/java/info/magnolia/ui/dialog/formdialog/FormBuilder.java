@@ -31,25 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.form;
-
-import info.magnolia.cms.i18n.I18nContentSupport;
-import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.form.definition.TabDefinition;
-import info.magnolia.ui.form.field.factory.FieldFactory;
-import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.vaadin.form.FormView;
-import info.magnolia.ui.vaadin.richtext.TextAreaStretcher;
-
-import javax.inject.Inject;
-
-import org.apache.commons.lang.StringUtils;
+package info.magnolia.ui.dialog.formdialog;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractComponent;
@@ -57,6 +39,24 @@ import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Field;
+import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.form.Form;
+import info.magnolia.ui.form.FormItem;
+import info.magnolia.ui.form.FormTab;
+import info.magnolia.ui.form.definition.FormDefinition;
+import info.magnolia.ui.form.definition.TabDefinition;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.factory.FieldFactory;
+import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
+import info.magnolia.ui.vaadin.richtext.TextAreaStretcher;
+import org.apache.commons.lang.StringUtils;
+
+import javax.inject.Inject;
 
 /**
  * Builder for forms.
@@ -94,7 +94,7 @@ public class FormBuilder {
 
         if (StringUtils.isNotBlank(description)) {
             String i18nDescription = MessagesUtil.getWithDefault(description, description, basename);
-            view.setFormDescription(i18nDescription);
+            view.setDescription(i18nDescription);
         }
 
         if (StringUtils.isNotBlank(label)) {

@@ -33,37 +33,17 @@
  */
 package info.magnolia.ui.dialog.choosedialog;
 
-import com.vaadin.ui.HorizontalLayout;
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.dialog.BaseDialog;
+import info.magnolia.ui.dialog.BaseDialogViewImpl;
 
 /**
  * Chooses an item from a workbench.
  */
-public class ChooseDialogViewImpl extends BaseDialog implements ChooseDialogView {
-
-    private HorizontalLayout additionalActionsContainer = new HorizontalLayout();
+public class ChooseDialogViewImpl extends BaseDialogViewImpl implements ChooseDialogView {
 
     public ChooseDialogViewImpl() {
         super();
         setHeight("500px");
         addStyleName("choose-dialog");
-        setFooterToolbar(additionalActionsContainer);
+        setDescriptionVisible(false);
     }
-
-    @Override
-    public void setContent(View contentView) {
-        setContent(contentView.asVaadinComponent());
-    }
-
-    @Override
-    public void close() {
-        closeSelf();
-    }
-
-    @Override
-    public void addAdditionalAction(View additionalActionView) {
-        additionalActionsContainer.addComponent(additionalActionView.asVaadinComponent());
-    }
-
 }

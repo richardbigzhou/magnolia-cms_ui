@@ -34,7 +34,7 @@
 package info.magnolia.ui.dialog.definition;
 
 import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.dialog.FormDialogPresenter;
+import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.form.definition.FormDefinition;
 
 /**

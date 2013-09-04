@@ -33,17 +33,11 @@
  */
 package info.magnolia.ui.dialog.choosedialog;
 
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.dialog.DialogView;
+import info.magnolia.ui.dialog.DialogView;
 
 /**
  * View interface for choose dialog views.
  */
 public interface ChooseDialogView extends DialogView {
 
-    void setContent(View contentView);
-
-    void close();
-
-    void addAdditionalAction(View actionView);
 }

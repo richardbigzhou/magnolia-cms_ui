@@ -2,7 +2,6 @@ package info.magnolia.ui.dialog.formdialog;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import org.slf4j.Logger;
@@ -38,7 +37,7 @@ public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactor
         try {
             return createFormDialogPresenter(registry.get(dialogName));
         } catch (RegistrationException e) {
-            log.error("Failed to retreive form dialog definition from registry:", e);
+            log.error("Failed to retrieve form dialog definition from registry:", e);
         }
         return null;
     }

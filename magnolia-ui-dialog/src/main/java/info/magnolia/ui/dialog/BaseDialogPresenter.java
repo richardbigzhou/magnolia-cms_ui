@@ -33,25 +33,31 @@
  */
 package info.magnolia.ui.dialog;
 
-import info.magnolia.ui.vaadin.dialog.BaseDialog;
-import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
-import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
+import com.vaadin.event.ShortcutListener;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.AuxiliaryDialogAction;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionListener;
+import info.magnolia.ui.api.action.ActionPresenter;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.form.action.presenter.DefaultEditorActionPresenter;
 
 import javax.inject.Inject;
-
-import com.vaadin.ui.Panel;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Base implementation of {@link DialogPresenter}.
  */
 public class BaseDialogPresenter implements DialogPresenter {
 
-    private final DialogView view;
+    private DialogView view;
+
+    protected ComponentProvider componentProvider;
 
     @Inject
-    public BaseDialogPresenter(DialogView view) {
-        this.view = view;
+    public BaseDialogPresenter(ComponentProvider componentProvider) {
+        this.componentProvider = componentProvider;
     }
 
     @Override
@@ -61,36 +67,49 @@ public class BaseDialogPresenter implements DialogPresenter {
 
     @Override
     public void showCloseButton() {
-        getBaseDialog().showCloseButton();
+        view.setClosable(true);
     }
 
     @Override
-    public void addDialogCloseHandler(DialogCloseEvent.Handler handler) {
-        getBaseDialog().addDialogCloseHandler(handler);
-    }
-
-
-    @Override
-    public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
-        getBaseDialog().addAction(actionName, actionLabel, callback);
-
-    }
-
-    @Override
-    public void addActionCallback(String actionName, DialogActionListener callback) {
-        getBaseDialog().addActionCallback(actionName, callback);
+    public void addAction(ActionDefinition action) {
+        final Class<? extends ActionPresenter> actionPresenterClass = action.getPresenterClass();
+        final ActionPresenter presenter = actionPresenterClass == null ? new DefaultEditorActionPresenter() : componentProvider.newInstance(actionPresenterClass);
+        final View actionView = presenter.start(action, new ActionListener() {
+            @Override
+            public void onActionFired(ActionDefinition definition, Map<String, Object> actionParams) {
+                BaseDialogPresenter.this.onActionFired(definition, actionParams);
+            }
+        });
+        if (action instanceof AuxiliaryDialogAction) {
+            view.addAdditionalAction(actionView);
+        } else {
+            view.addPrimaryAction(actionView);
+        }
     }
 
     @Override
     public void closeDialog() {
-        getBaseDialog().closeSelf();
+        view.close();
     }
 
-    /**
-     * A convenience method to get hold of the BaseDialog.
-     */
-    protected BaseDialog getBaseDialog() {
-        return (BaseDialog) ((Panel) view.asVaadinComponent()).getContent();
+    @Override
+    public void addShortcut(final ActionDefinition action, final int keyCode, final int... modifiers) {
+        final ShortcutListener shortcut = new ShortcutListener("", keyCode, modifiers) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                onActionFired(action, new HashMap<String, Object>());
+            }
+        };
+        view.addShortcut(shortcut);
     }
 
+    protected void onActionFired(ActionDefinition definition, Map<String, Object> actionParams) {}
+
+    protected DialogView start() {
+        this.view = initView();
+        return this.view;
+    }
+    protected DialogView initView() {
+        return componentProvider.getComponent(DialogView.class);
+    }
 }

@@ -1,6 +1,5 @@
 package info.magnolia.ui.dialog.formdialog;
 
-import info.magnolia.ui.dialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 
 /**

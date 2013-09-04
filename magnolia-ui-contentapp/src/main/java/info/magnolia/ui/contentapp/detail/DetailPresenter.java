@@ -34,31 +34,36 @@
 package info.magnolia.ui.contentapp.detail;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.contentapp.definition.EditorDefinition;
-import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.form.EditorValidator;
-import info.magnolia.ui.form.FormBuilder;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.api.action.ActionListener;
+import info.magnolia.ui.api.action.ActionPresenter;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
-import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.action.ActionExecutor;
-import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.contentapp.definition.EditorDefinition;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
+import info.magnolia.ui.dialog.formdialog.FormBuilder;
+import info.magnolia.ui.form.action.presenter.DefaultEditorActionPresenter;
+import info.magnolia.ui.dialog.formdialog.FormView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.Map;
 
 /**
  * Presenter for the item displayed in the
  * {@link info.magnolia.ui.contentapp.detail.DetailEditorPresenter}. Takes care
  * of building and switching between the right {@link DetailView.ViewType}.
  */
-public class DetailPresenter implements DialogActionListener, EditorCallback, EditorValidator {
+public class DetailPresenter implements EditorCallback, EditorValidator {
 
     private SubAppContext subAppContext;
     private ActionExecutor actionExecutor;
@@ -67,6 +72,7 @@ public class DetailPresenter implements DialogActionListener, EditorCallback, Ed
     private final DetailView view;
 
     private FormBuilder formBuilder;
+    private ComponentProvider componentProvider;
 
     private EditorDefinition editorDefinition;
 
@@ -76,12 +82,13 @@ public class DetailPresenter implements DialogActionListener, EditorCallback, Ed
     @Inject
     public DetailPresenter(SubAppContext subAppContext, final ActionExecutor actionExecutor,
             final @Named(AdmincentralEventBus.NAME) EventBus eventBus, DetailView view,
-            FormBuilder formBuilder) {
+            FormBuilder formBuilder, ComponentProvider componentProvider) {
         this.subAppContext = subAppContext;
         this.actionExecutor = actionExecutor;
         this.eventBus = eventBus;
         this.view = view;
         this.formBuilder = formBuilder;
+        this.componentProvider = componentProvider;
     }
 
     public DetailView start(EditorDefinition editorDefinition, final JcrNodeAdapter item, DetailView.ViewType viewType) {
@@ -106,23 +113,22 @@ public class DetailPresenter implements DialogActionListener, EditorCallback, Ed
 
     private void initActions() {
         for (final ActionDefinition action : subAppContext.getSubAppDescriptor().getActions().values()) {
-            formView.addAction(action.getName(), action.getLabel(), new DialogActionListener() {
+
+            final Class<? extends ActionPresenter> actionPresenterClass = action.getPresenterClass();
+            final ActionPresenter presenter = actionPresenterClass == null ? new DefaultEditorActionPresenter() : componentProvider.newInstance(actionPresenterClass);
+            final View actionView = presenter.start(action, new ActionListener() {
                 @Override
-                public void onActionExecuted(final String actionName) {
-                    try {
-                        actionExecutor.execute(actionName, item, DetailPresenter.this);
-                    } catch (ActionExecutionException e) {
-                        throw new RuntimeException("Could not execute action: " + actionName, e);
-                    }
+                public void onActionFired(ActionDefinition definition, Map<String, Object> actionParams) {
+                    DetailPresenter.this.onActionFired(definition, actionParams);
                 }
             });
+            formView.addAction(actionView);
         }
     }
 
-    @Override
-    public void onActionExecuted(String actionName) {
+    public void onActionFired(ActionDefinition definition, Map<String, Object> actionParams) {
         try {
-            actionExecutor.execute(actionName, item, this, this);
+            actionExecutor.execute(definition.getName(), item, this);
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.",
                     e.getMessage());
