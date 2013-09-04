@@ -33,6 +33,19 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
+import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingListener;
+import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedListener;
+import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.framework.AdmincentralNodeTypes;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
+import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
+
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.dd.DragAndDropEvent;
@@ -46,18 +59,6 @@ import com.vaadin.ui.DragAndDropWrapper;
 import com.vaadin.ui.DragAndDropWrapper.DragStartMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import info.magnolia.i18n.LocaleProvider;
-import info.magnolia.i18n.TranslationService;
-import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingListener;
-import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedListener;
-import info.magnolia.ui.api.shell.Shell;
-import info.magnolia.ui.framework.AdmincentralNodeTypes;
-import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
-import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
-
-import javax.inject.Inject;
-import java.util.Map;
 
 /**
  * Default view implementation for favorites.
@@ -72,8 +73,6 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
     private SplitFeed splitPanel = new SplitFeed();
     private Label emptyPlaceHolder = new Label();
     private Component currentlySelectedFavoriteItem;
-    private TranslationService translationService;
-    private LocaleProvider localeProvider;
 
     @Override
     public String getId() {
@@ -81,11 +80,9 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
     }
 
     @Inject
-    public FavoritesViewImpl(Shell shell, FavoritesManager favoritesManager, TranslationService translationService, LocaleProvider localeProvider) {
+    public FavoritesViewImpl(Shell shell, FavoritesManager favoritesManager) {
         super();
         this.shell = shell;
-        this.translationService = translationService;
-        this.localeProvider = localeProvider;
         construct();
     }
 
@@ -101,7 +98,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
 
         emptyPlaceHolder.addStyleName("emptyplaceholder");
         emptyPlaceHolder.setContentMode(ContentMode.HTML);
-        emptyPlaceHolder.setValue(String.format("<span class=\"icon-favorites\"></span><div class=\"message\">%s</div>", translationService.translate(localeProvider,null,new String[]{"favorites.empty"})));
+        emptyPlaceHolder.setValue(String.format("<span class=\"icon-favorites\"></span><div class=\"message\">%s</div>", MessagesUtil.get("favorites.empty")));
 
         splitPanel.setVisible(false);
 
@@ -131,7 +128,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
     @Override
     public void setFavoriteLocation(JcrNewNodeAdapter newFavorite, JcrNewNodeAdapter newGroup, Map<String, String> availableGroupsNames) {
         layout.removeComponent(favoriteForm);
-        favoriteForm = new FavoritesForm(newFavorite, newGroup, availableGroupsNames, listener, shell, translationService, localeProvider);
+        favoriteForm = new FavoritesForm(newFavorite, newGroup, availableGroupsNames, listener, shell);
         layout.addComponent(favoriteForm);
     }
 
@@ -157,7 +154,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
             for (String key : nodeAdapters.keySet()) {
                 final AbstractJcrNodeAdapter favoriteAdapter = nodeAdapters.get(key);
                 if (AdmincentralNodeTypes.Favorite.NAME.equals(favoriteAdapter.getPrimaryNodeTypeName())) {
-                    final FavoritesEntry favEntry = new FavoritesEntry(favoriteAdapter, listener, shell,translationService,localeProvider);
+                    final FavoritesEntry favEntry = new FavoritesEntry(favoriteAdapter, listener, shell);
                     final EntryDragAndDropWrapper wrapper = new EntryDragAndDropWrapper(favEntry, listener);
                     favEntry.addEditingListener(new EditingListener() {
 
@@ -229,7 +226,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
         if (favoriteForm != null) {
             layout.removeComponent(favoriteForm);
         }
-        favoriteForm = new FavoritesForm(favoriteSuggestion, groupSuggestion, availableGroups, listener, shell, translationService, localeProvider);
+        favoriteForm = new FavoritesForm(favoriteSuggestion, groupSuggestion, availableGroups, listener, shell);
         layout.addComponent(favoriteForm);
     }
 
