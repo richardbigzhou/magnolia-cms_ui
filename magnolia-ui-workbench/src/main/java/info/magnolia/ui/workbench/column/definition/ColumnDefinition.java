@@ -33,17 +33,22 @@
  */
 package info.magnolia.ui.workbench.column.definition;
 
+import info.magnolia.i18n.I18nAble;
+import info.magnolia.i18n.I18nText;
+
 /**
  * Defines a column in a workbench.
  *
  * @see info.magnolia.ui.workbench.definition.WorkbenchDefinition
  */
+@I18nAble
 public interface ColumnDefinition {
 
     String getName();
 
     String getPropertyName();
 
+    @I18nText
     String getLabel();
 
     /**
