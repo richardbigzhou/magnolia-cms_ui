@@ -36,13 +36,49 @@ package info.magnolia.ui.framework.action;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Used to configure a {@link MoveNodeAction}.
- *
- * @see MoveNodeAction
+ * Definition for {@link ConfirmationAction}.
  */
-public class MoveNodeActionDefinition extends ConfiguredActionDefinition {
+public class OpenChooseDialogActionDefinition extends ConfiguredActionDefinition {
 
-    public MoveNodeActionDefinition() {
-        setImplementationClass(MoveNodeAction.class);
+    private String successActionName;
+    private String cancelActionName;
+    private String appName;
+
+    private boolean defaultCancel = true;
+
+    public OpenChooseDialogActionDefinition() {
+        setImplementationClass(OpenChooseDialogAction.class);
+    }
+
+    public String getSuccessActionName() {
+        return successActionName;
+    }
+
+    public String getCancelActionName() {
+        return cancelActionName;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public boolean isDefaultCancel() {
+        return defaultCancel;
+    }
+
+    public void setSuccessActionName(String successActionName) {
+        this.successActionName = successActionName;
+    }
+
+    public void setCancelActionName(String cancelActionName) {
+        this.cancelActionName = cancelActionName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public void setDefaultCancel(boolean defaultCancel) {
+        this.defaultCancel = defaultCancel;
     }
 }
