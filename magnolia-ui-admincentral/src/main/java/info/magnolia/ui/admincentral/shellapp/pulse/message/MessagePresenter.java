@@ -91,11 +91,12 @@ public final class MessagePresenter implements MessageView.Listener, ActionbarPr
                 messageView = specificMessageView;
             }
             MessageViewDefinition messageViewDefinition = messageViewDefinitionRegistry.get(messageView);
+            messageViewDefinition = i18nizer.decorate(messageViewDefinition);
 
             messageActionExecutor.setMessageViewDefinition(messageViewDefinition);
 
             BeanItem<Message> messageItem = new BeanItem<Message>(message);
-            View mView = formbuilder.buildView(i18nizer.decorate(messageViewDefinition.getForm()), messageItem);
+            View mView = formbuilder.buildView(messageViewDefinition.getForm(), messageItem);
             view.setMessageView(mView);
 
             view.setActionbarView(actionbarPresenter.start(messageViewDefinition.getActionbar()));
