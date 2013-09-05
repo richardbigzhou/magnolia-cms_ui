@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.form.config;
 
-import info.magnolia.ui.form.field.definition.PropertyBuilder;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
+import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 import java.util.Collection;
@@ -176,8 +176,8 @@ public class SelectFieldBuilder extends AbstractFieldBuilder {
     }
 
     @Override
-    public SelectFieldBuilder propertyBuilder(PropertyBuilder propertyBuilder) {
-        return (SelectFieldBuilder) super.propertyBuilder(propertyBuilder);
+    public SelectFieldBuilder transformerClass(Class<? extends Transformer<?>> transformerClass) {
+        return (SelectFieldBuilder) super.transformerClass(transformerClass);
     }
 
 }

@@ -33,10 +33,7 @@
  */
 package info.magnolia.ui.form.field.definition;
 
-import info.magnolia.ui.form.field.property.CustomPropertyType;
-import info.magnolia.ui.form.field.property.PropertyHandler;
-import info.magnolia.ui.form.field.property.basic.BasicProperty;
-import info.magnolia.ui.form.field.property.basic.TextCodePropertyHandler;
+import info.magnolia.ui.form.field.transformer.basic.NotNullInitialStringValueTransformer;
 
 /**
  * Field definition for code text box.
@@ -44,12 +41,8 @@ import info.magnolia.ui.form.field.property.basic.TextCodePropertyHandler;
 public class BasicTextCodeFieldDefinition extends ConfiguredFieldDefinition {
     private String language = "text";
 
-    @SuppressWarnings("unchecked")
     public BasicTextCodeFieldDefinition() {
-        PropertyBuilder propertyBuilder = new PropertyBuilder();
-        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) TextCodePropertyHandler.class);
-        propertyBuilder.setPropertyType((Class<? extends CustomPropertyType<?>>) (Object) BasicProperty.class);
-        setPropertyBuilder(propertyBuilder);
+        setTransformerClass(NotNullInitialStringValueTransformer.class);
     }
 
     /**

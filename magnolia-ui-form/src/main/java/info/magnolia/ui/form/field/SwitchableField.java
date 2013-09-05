@@ -90,8 +90,8 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
 
         // Initialize Existing field
         initFields();
+        // Register value change listener for i18n handling.
         addValueChangeListener(datasourceListener);
-
         return root;
     }
 
@@ -144,7 +144,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
             }
             // Copy options to the newly created select definition. definition
             BeanUtils.copyProperties(selectDefinition, definition);
-            selectDefinition.setPropertyBuilder(null);
+            selectDefinition.setTransformerClass(null);
             // Create the field
             field = (AbstractSelect) createLocalField(selectDefinition, relatedFieldItem, false);
             field.addStyleName("horizontal");
@@ -181,7 +181,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
     private void switchField(String fieldName) {
         if (root.getComponentCount() >= 2) {
             // detach previous field
-            root.getComponent(1).setParent(null);
+            root.removeComponent(root.getComponent(1));
         }
         if (fieldMap.containsKey(fieldName)) {
             // add after combobox

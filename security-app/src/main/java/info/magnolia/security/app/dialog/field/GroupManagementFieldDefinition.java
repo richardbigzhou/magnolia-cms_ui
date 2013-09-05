@@ -33,12 +33,9 @@
  */
 package info.magnolia.security.app.dialog.field;
 
-import info.magnolia.security.app.dialog.field.property.ManagementFieldPropertyHandler;
-import info.magnolia.ui.form.field.definition.PropertyBuilder;
+import info.magnolia.security.app.dialog.field.property.ManagementFieldTransformer;
 import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
-import info.magnolia.ui.form.field.property.CustomPropertyType;
-import info.magnolia.ui.form.field.property.PropertyHandler;
-import info.magnolia.ui.form.field.property.basic.BasicProperty;
+import info.magnolia.ui.form.field.transformer.Transformer;
 
 /**
  * A definition for the Group Management field.
@@ -46,14 +43,11 @@ import info.magnolia.ui.form.field.property.basic.BasicProperty;
 public class GroupManagementFieldDefinition extends TwinColSelectFieldDefinition {
 
     /**
-     * Option group need a specific {@link PropertyHandler} in order to handle the creation of the basic property.
+     * Option group need a specific {@link Transformer} in order to handle the creation of the basic property.
      */
     @SuppressWarnings("unchecked")
     public GroupManagementFieldDefinition() {
-        PropertyBuilder propertyBuilder = new PropertyBuilder();
-        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) ManagementFieldPropertyHandler.class);
-        propertyBuilder.setPropertyType((Class<? extends CustomPropertyType<?>>) (Object) BasicProperty.class);
-        setPropertyBuilder(propertyBuilder);
+        setTransformerClass((Class<? extends Transformer<?>>) (Object) ManagementFieldTransformer.class);
     }
 
 }

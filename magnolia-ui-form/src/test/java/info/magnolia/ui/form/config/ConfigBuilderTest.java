@@ -42,20 +42,15 @@ import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.form.field.definition.PasswordFieldDefinition;
-import info.magnolia.ui.form.field.definition.PropertyBuilder;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
-import info.magnolia.ui.form.field.property.CustomPropertyType;
-import info.magnolia.ui.form.field.property.PropertyHandler;
-import info.magnolia.ui.form.field.property.basic.BasicProperty;
-import info.magnolia.ui.form.field.property.basic.BasicPropertyHandler;
-import info.magnolia.ui.form.field.property.basic.OptionGroupPropertyHandler;
-import info.magnolia.ui.form.field.property.basic.TwinSelectPropertyHandler;
-import info.magnolia.ui.form.field.property.composite.CompositeProperty;
-import info.magnolia.ui.form.field.property.composite.SimplePropertyCompositeHandler;
-import info.magnolia.ui.form.field.property.composite.SwitchableSimplePropertyCompositeHandler;
-import info.magnolia.ui.form.field.property.multi.MultiProperty;
-import info.magnolia.ui.form.field.property.multi.MultiValuesPropertyMultiHandler;
+import info.magnolia.ui.form.field.transformer.Transformer;
+import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
+import info.magnolia.ui.form.field.transformer.basic.OptionGroupTransformer;
+import info.magnolia.ui.form.field.transformer.basic.TwinSelectPropertyTransformer;
+import info.magnolia.ui.form.field.transformer.composite.CompositeTransformer;
+import info.magnolia.ui.form.field.transformer.composite.SwitchableTransformer;
+import info.magnolia.ui.form.field.transformer.multi.MultiValueTransformer;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 import org.junit.Test;
@@ -159,7 +154,7 @@ public class ConfigBuilderTest {
 
         // THEN
         checkCommonAttributes(builder);
-        PasswordFieldDefinition definition = (PasswordFieldDefinition) builder.definition();
+        PasswordFieldDefinition definition = builder.definition();
         assertEquals(true, definition.isVerification());
         assertEquals("verificationMessage", definition.getVerificationMessage());
         assertEquals("verificationErrorMessage", definition.getVerificationErrorMessage());
@@ -179,7 +174,7 @@ public class ConfigBuilderTest {
 
         // THEN
         checkCommonAttributes(builder);
-        BasicUploadFieldDefinition definition = (BasicUploadFieldDefinition) builder.definition();
+        BasicUploadFieldDefinition definition = builder.definition();
 
         assertEquals("binaryNodeName", definition.getBinaryNodeName());
         assertEquals(100l, definition.getMaxUploadSize());
@@ -211,7 +206,7 @@ public class ConfigBuilderTest {
 
         // THEN
         checkCommonAttributes(builder);
-        LinkFieldDefinition definition = (LinkFieldDefinition) builder.definition();
+        LinkFieldDefinition definition = builder.definition();
         assertEquals("targetPropertyToPopulate", definition.getTargetPropertyToPopulate());
         assertEquals("targetWorkspace", definition.getTargetWorkspace());
         assertEquals("targetTreeRootPath", definition.getTargetTreeRootPath());
@@ -232,13 +227,11 @@ public class ConfigBuilderTest {
 
         // THEN
         checkCommonAttributes(builder);
-        MultiFieldDefinition definition = (MultiFieldDefinition) builder.definition();
+        MultiFieldDefinition definition = builder.definition();
         assertEquals("buttonSelectRemoveLabel", definition.getButtonSelectRemoveLabel());
         assertEquals("buttonSelectAddLabel", definition.getButtonSelectAddLabel());
-        assertNotNull(definition.getPropertyBuilder());
-        PropertyBuilder propertyBuilder = definition.getPropertyBuilder();
-        assertEquals(MultiProperty.class.getName(),propertyBuilder.getPropertyType().getName());
-        assertEquals(MultiValuesPropertyMultiHandler.class.getName(),propertyBuilder.getPropertyHandler().getName());
+        assertNotNull(definition.getTransformerClass());
+        assertEquals(MultiValueTransformer.class.getName(), definition.getTransformerClass().getName());
     }
 
     @Test
@@ -253,13 +246,11 @@ public class ConfigBuilderTest {
 
         // THEN
         checkCommonAttributes(builder);
-        TwinColSelectFieldDefinition definition = (TwinColSelectFieldDefinition) builder.definition();
+        TwinColSelectFieldDefinition definition = builder.definition();
         assertEquals("leftColumnCaption", definition.getLeftColumnCaption());
         assertEquals("rightColumnCaption", definition.getRightColumnCaption());
-        assertNotNull(definition.getPropertyBuilder());
-        PropertyBuilder propertyBuilder = definition.getPropertyBuilder();
-        assertEquals(BasicProperty.class.getName(), propertyBuilder.getPropertyType().getName());
-        assertEquals(TwinSelectPropertyHandler.class.getName(), propertyBuilder.getPropertyHandler().getName());
+        assertNotNull(definition.getTransformerClass());
+        assertEquals(TwinSelectPropertyTransformer.class.getName(), definition.getTransformerClass().getName());
     }
 
     @Test
@@ -274,12 +265,10 @@ public class ConfigBuilderTest {
 
         // THEN
         checkCommonAttributes(builder);
-        OptionGroupFieldDefinition definition = (OptionGroupFieldDefinition) builder.definition();
+        OptionGroupFieldDefinition definition = builder.definition();
         assertEquals(true, definition.isMultiselect());
-        assertNotNull(definition.getPropertyBuilder());
-        PropertyBuilder propertyBuilder = definition.getPropertyBuilder();
-        assertEquals(BasicProperty.class.getName(), propertyBuilder.getPropertyType().getName());
-        assertEquals(OptionGroupPropertyHandler.class.getName(), propertyBuilder.getPropertyHandler().getName());
+        assertNotNull(definition.getTransformerClass());
+        assertEquals(OptionGroupTransformer.class.getName(), definition.getTransformerClass().getName());
     }
 
     @Test
@@ -298,16 +287,14 @@ public class ConfigBuilderTest {
 
         // THEN
         checkCommonAttributes(builder);
-        SwitchableFieldDefinition definition = (SwitchableFieldDefinition) builder.definition();
+        SwitchableFieldDefinition definition = builder.definition();
         assertEquals("radio", definition.getSelectionType());
         assertEquals(tfb1.definition(), definition.getFields().get(0));
         assertEquals(tfb2.definition(), definition.getFields().get(1));
         assertEquals(optionBuilder1.definition(), definition.getOptions().get(0));
         assertEquals(optionBuilder2.definition(), definition.getOptions().get(1));
-        assertNotNull(definition.getPropertyBuilder());
-        PropertyBuilder propertyBuilder = definition.getPropertyBuilder();
-        assertEquals(CompositeProperty.class.getName(), propertyBuilder.getPropertyType().getName());
-        assertEquals(SwitchableSimplePropertyCompositeHandler.class.getName(), propertyBuilder.getPropertyHandler().getName());
+        assertNotNull(definition.getTransformerClass());
+        assertEquals(SwitchableTransformer.class.getName(), definition.getTransformerClass().getName());
     }
 
     @Test
@@ -324,13 +311,11 @@ public class ConfigBuilderTest {
 
         // THEN
         checkCommonAttributes(builder);
-        CompositeFieldDefinition definition = (CompositeFieldDefinition) builder.definition();
+        CompositeFieldDefinition definition = builder.definition();
         assertEquals(tfb1.definition(), definition.getFields().get(0));
         assertEquals(tfb2.definition(), definition.getFields().get(1));
-        assertNotNull(definition.getPropertyBuilder());
-        PropertyBuilder propertyBuilder = definition.getPropertyBuilder();
-        assertEquals(CompositeProperty.class.getName(), propertyBuilder.getPropertyType().getName());
-        assertEquals(SimplePropertyCompositeHandler.class.getName(), propertyBuilder.getPropertyHandler().getName());
+        assertNotNull(definition.getTransformerClass());
+        assertEquals(CompositeTransformer.class.getName(), definition.getTransformerClass().getName());
     }
 
     /**
@@ -351,25 +336,22 @@ public class ConfigBuilderTest {
         assertNotNull(definition.getValidators());
         assertTrue(definition.getValidators().get(0) instanceof ConfiguredFieldValidatorDefinition);
         assertEquals("validatorErrorMessage", ((ConfiguredFieldValidatorDefinition) definition.getValidators().get(0)).getErrorMessage());
-        assertNotNull(definition.getPropertyBuilder());
+        assertNotNull(definition.getTransformerClass());
     }
 
     /**
      * Init common builder attributes.
      */
     @SuppressWarnings("unchecked")
-    private void initCommonAttributes(AbstractFieldBuilder builder, boolean overridePropertyType) {
+    private void initCommonAttributes(AbstractFieldBuilder builder, boolean overrideTransformerClass) {
         builder.label(label).i18nBasename(i18nBasename).i18n(i18n).description(description);
         builder.type(type).required(required).requiredErrorMessage(requiredErrorMessage);
         builder.readOnly(readOnly).defaultValue(defaultValue).styleName(styleName);
         ConfiguredFieldValidatorDefinition validatorDefinition = new ConfiguredFieldValidatorDefinition();
         validatorDefinition.setErrorMessage("validatorErrorMessage");
         builder.validator(validatorDefinition);
-        if (overridePropertyType) {
-            PropertyBuilder propertyBuilder = new PropertyBuilder();
-            propertyBuilder.setPropertyType((Class<? extends CustomPropertyType<?>>) (Object) BasicProperty.class);
-            propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) BasicPropertyHandler.class);
-            builder.propertyBuilder(propertyBuilder);
+        if (overrideTransformerClass) {
+            builder.transformerClass((Class<? extends Transformer<?>>) (Object) BasicTransformer.class);
         }
     }
 

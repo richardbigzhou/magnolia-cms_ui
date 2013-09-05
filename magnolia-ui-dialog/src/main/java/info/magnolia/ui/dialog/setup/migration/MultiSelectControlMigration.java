@@ -36,10 +36,9 @@ package info.magnolia.ui.dialog.setup.migration;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
-import info.magnolia.ui.form.field.property.multi.CommaSeparatedMultiHandler;
-import info.magnolia.ui.form.field.property.multi.MultiProperty;
-import info.magnolia.ui.form.field.property.multi.MultiValuesPropertyMultiHandler;
-import info.magnolia.ui.form.field.property.multi.SubNodesMultiIdentifierHandler;
+import info.magnolia.ui.form.field.transformer.multi.MultiValueJSONTransformer;
+import info.magnolia.ui.form.field.transformer.multi.MultiValueSubChildrenNodeTransformer;
+import info.magnolia.ui.form.field.transformer.multi.MultiValueTransformer;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -59,8 +58,8 @@ public class MultiSelectControlMigration implements ControlMigration {
     public void migrate(Node controlNode) throws RepositoryException {
         controlNode.getProperty("controlType").remove();
         controlNode.setProperty("class", MultiFieldDefinition.class.getName());
-        // Set propertyBuilder
-        setPropertyBuilder(controlNode);
+        // Set transformerClass
+        setTransformerClass(controlNode);
         // Create a Field sub node
         Node field = controlNode.addNode("field", NodeTypes.ContentNode.NAME);
         field.setProperty("class", LinkFieldDefinition.class.getName());
@@ -89,21 +88,19 @@ public class MultiSelectControlMigration implements ControlMigration {
     }
 
     /**
-     * Set the PropertyBuilder.
+     * Set the transformerClass.
      */
-    protected void setPropertyBuilder(Node controlNode) throws RepositoryException {
-        Node propertyBuilder = controlNode.addNode("propertyBuilder", NodeTypes.ContentNode.NAME);
-        propertyBuilder.setProperty("propertyType", MultiProperty.class.getName());
+    protected void setTransformerClass(Node controlNode) throws RepositoryException {
         if (controlNode.hasProperty("saveMode")) {
             String saveMode = controlNode.getProperty("saveMode").getString();
             if (saveMode.equals("list")) {
-                propertyBuilder.setProperty("propertyHandler", CommaSeparatedMultiHandler.class.getName());
+                controlNode.setProperty("transformerClass", MultiValueJSONTransformer.class.getName());
             } else {
-                propertyBuilder.setProperty("propertyHandler", MultiValuesPropertyMultiHandler.class.getName());
+                controlNode.setProperty("transformerClass", MultiValueTransformer.class.getName());
             }
             controlNode.getProperty("saveMode").remove();
         } else {
-            propertyBuilder.setProperty("propertyHandler", SubNodesMultiIdentifierHandler.class.getName());
+            controlNode.setProperty("transformerClass", MultiValueSubChildrenNodeTransformer.class.getName());
         }
     }
 
