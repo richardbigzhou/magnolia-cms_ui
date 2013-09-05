@@ -35,16 +35,13 @@ package info.magnolia.ui.dialog;
 
 import com.vaadin.event.ShortcutListener;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.AuxiliaryDialogAction;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionListener;
 import info.magnolia.ui.api.action.ActionPresenter;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.form.action.presenter.DefaultEditorActionPresenter;
 
 import javax.inject.Inject;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Base implementation of {@link DialogPresenter}.
@@ -66,21 +63,14 @@ public class BaseDialogPresenter implements DialogPresenter {
     }
 
     @Override
-    public void showCloseButton() {
-        view.setClosable(true);
-    }
-
-    @Override
-    public void addAction(ActionDefinition action) {
-        final Class<? extends ActionPresenter> actionPresenterClass = action.getPresenterClass();
-        final ActionPresenter presenter = actionPresenterClass == null ? new DefaultEditorActionPresenter() : componentProvider.newInstance(actionPresenterClass);
-        final View actionView = presenter.start(action, new ActionListener() {
+    public void addAction(ActionDefinition action, ActionPresenter actionPresenter, boolean isPrimaryAction) {
+        final View actionView = actionPresenter.start(action, new ActionListener() {
             @Override
-            public void onActionFired(ActionDefinition definition, Map<String, Object> actionParams) {
-                BaseDialogPresenter.this.onActionFired(definition, actionParams);
+            public void onActionFired(ActionDefinition definition, Object... actionContextParams) {
+                BaseDialogPresenter.this.onActionFired(definition, actionContextParams);
             }
         });
-        if (action instanceof AuxiliaryDialogAction) {
+        if (!isPrimaryAction) {
             view.addAdditionalAction(actionView);
         } else {
             view.addPrimaryAction(actionView);
@@ -103,13 +93,14 @@ public class BaseDialogPresenter implements DialogPresenter {
         view.addShortcut(shortcut);
     }
 
-    protected void onActionFired(ActionDefinition definition, Map<String, Object> actionParams) {}
+    protected void onActionFired(ActionDefinition definition, Object... actionContextParams) {}
 
     @Override
     public DialogView start() {
         this.view = initView();
         return this.view;
     }
+
     protected DialogView initView() {
         return componentProvider.getComponent(DialogView.class);
     }

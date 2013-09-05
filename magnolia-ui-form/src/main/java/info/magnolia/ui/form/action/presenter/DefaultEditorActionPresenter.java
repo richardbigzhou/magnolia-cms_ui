@@ -25,6 +25,8 @@ public class DefaultEditorActionPresenter implements ActionPresenter {
             @Override
             public Component asVaadinComponent() {
                 Button button = new Button();
+                button.addStyleName("btn-dialog");
+                button.addStyleName(definition.getName());
                 button.setCaption(definition.getLabel());
                 button.addClickListener(new ClickListener() {
                     @Override

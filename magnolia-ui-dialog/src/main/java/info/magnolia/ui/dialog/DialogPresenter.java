@@ -34,6 +34,7 @@
 package info.magnolia.ui.dialog;
 
 import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionPresenter;
 
 /**
  * {@link DialogPresenter} takes care of {@link DialogView} presentation, the main responsibility
@@ -45,11 +46,12 @@ public interface DialogPresenter {
 
     DialogView getView();
 
+    /**
+     * TODO: To be gone.
+     */
     void closeDialog();
 
-    void showCloseButton();
-
-    void addAction(ActionDefinition action);
-
     void addShortcut(ActionDefinition action, int keyCode, int... modifiers);
+
+    void addAction(ActionDefinition action, ActionPresenter actionPresenter, boolean isPrimaryAction);
 }

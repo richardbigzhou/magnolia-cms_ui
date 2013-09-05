@@ -31,7 +31,7 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
 
     private CssLayout primaryActionsContainer = new CssLayout();
 
-    private CssLayout additionalActionsContainer = new CssLayout();
+    private CssLayout secondaryActionsContainer = new CssLayout();
 
     private View contentView;
 
@@ -50,8 +50,14 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
         setHeight(100, Unit.PERCENTAGE); // Required for dynamic dialog shrinking upon window resize.
 
 
-        footer.addComponent(additionalActionsContainer);
+        footer.addComponent(secondaryActionsContainer);
         footer.addComponent(primaryActionsContainer);
+
+        footer.setWidth("100%");
+        secondaryActionsContainer.addStyleName("secondary-actions");
+        primaryActionsContainer.addStyleName("primary-actions");
+        secondaryActionsContainer.setWidth("100%");
+        primaryActionsContainer.setWidth("100%");
         this.dialog.setFooterToolbar(footer);
         this.dialog.addDialogCloseHandler(new Handler() {
             @Override
@@ -84,12 +90,12 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
 
     @Override
     public void addPrimaryAction(View actionView) {
-        primaryActionsContainer.addComponent(actionView.asVaadinComponent());
+        primaryActionsContainer.addComponentAsFirst(actionView.asVaadinComponent());
     }
 
     @Override
     public void addAdditionalAction(View actionView) {
-        additionalActionsContainer.addComponent(actionView.asVaadinComponent());
+        secondaryActionsContainer.addComponentAsFirst(actionView.asVaadinComponent());
     }
 
     @Override
@@ -133,7 +139,7 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
     @Override
     public void removeAllActions() {
         primaryActionsContainer.removeAllComponents();
-        additionalActionsContainer.removeAllComponents();
+        secondaryActionsContainer.removeAllComponents();
     }
 
     @Override

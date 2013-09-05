@@ -1,7 +1,5 @@
 package info.magnolia.ui.api.action;
 
-import java.util.Map;
-
 /**
  * Created with IntelliJ IDEA.
  * User: sasha
@@ -11,5 +9,5 @@ import java.util.Map;
  */
 public interface ActionListener {
 
-    void onActionFired(ActionDefinition definition, Map<String, Object> actionParams);
+    void onActionFired(ActionDefinition definition, Object... actionContextParams);
 }

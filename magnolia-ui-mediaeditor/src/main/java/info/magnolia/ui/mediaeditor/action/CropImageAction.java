@@ -51,7 +51,6 @@ import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Installs UI components necessary for conducting the image crop operations.
@@ -75,7 +74,7 @@ public class CropImageAction extends MediaEditorUIAction {
         List<ActionContext> result = new ArrayList<ActionContext>();
         result.add(new ActionContext(new InternalMediaEditorActionDefinition("crop", "Crop Image", true), new ActionListener() {
             @Override
-            public void onActionFired(ActionDefinition definition, Map<String, Object> actionParams) {
+            public void onActionFired(ActionDefinition definition, Object... actionContextParams) {
                 dataSource.startAction(getDefinition().getTrackingLabel());
                 cropField.execute();
                 eventBus.fireEvent(new MediaEditorInternalEvent(EventType.APPLY));

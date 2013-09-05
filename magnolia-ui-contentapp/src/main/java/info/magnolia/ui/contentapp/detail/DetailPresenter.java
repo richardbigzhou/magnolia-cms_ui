@@ -47,16 +47,15 @@ import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
+import info.magnolia.ui.dialog.formdialog.FormBuilder;
+import info.magnolia.ui.dialog.formdialog.FormView;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
-import info.magnolia.ui.dialog.formdialog.FormBuilder;
 import info.magnolia.ui.form.action.presenter.DefaultEditorActionPresenter;
-import info.magnolia.ui.dialog.formdialog.FormView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.Map;
 
 /**
  * Presenter for the item displayed in the
@@ -112,21 +111,19 @@ public class DetailPresenter implements EditorCallback, EditorValidator {
     }
 
     private void initActions() {
+        final ActionPresenter presenter = new DefaultEditorActionPresenter();
         for (final ActionDefinition action : subAppContext.getSubAppDescriptor().getActions().values()) {
-
-            final Class<? extends ActionPresenter> actionPresenterClass = action.getPresenterClass();
-            final ActionPresenter presenter = actionPresenterClass == null ? new DefaultEditorActionPresenter() : componentProvider.newInstance(actionPresenterClass);
             final View actionView = presenter.start(action, new ActionListener() {
                 @Override
-                public void onActionFired(ActionDefinition definition, Map<String, Object> actionParams) {
-                    DetailPresenter.this.onActionFired(definition, actionParams);
+                public void onActionFired(ActionDefinition definition, Object... actionContextParams) {
+                    DetailPresenter.this.onActionFired(definition, actionContextParams);
                 }
             });
             formView.addAction(actionView);
         }
     }
 
-    public void onActionFired(ActionDefinition definition, Map<String, Object> actionParams) {
+    public void onActionFired(ActionDefinition definition, Object... actionParams) {
         try {
             actionExecutor.execute(definition.getName(), item, this);
         } catch (ActionExecutionException e) {

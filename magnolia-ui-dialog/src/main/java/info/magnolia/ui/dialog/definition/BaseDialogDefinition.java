@@ -3,6 +3,7 @@ package info.magnolia.ui.dialog.definition;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.dialog.DialogPresenter;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,6 +22,10 @@ public interface BaseDialogDefinition {
     String getLabel();
 
     String getI18nBasename();
+
+    List<SecondaryActionDefinition> getSecondaryActions();
+
+    Map<String, ActionPresenterDefinition> getActionPresenters();
 
     Map<String, ActionDefinition> getActions();
 

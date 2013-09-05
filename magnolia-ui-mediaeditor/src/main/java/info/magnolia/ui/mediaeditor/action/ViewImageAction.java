@@ -53,7 +53,6 @@ import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Simply displays an image with dialog actions to
@@ -75,14 +74,14 @@ public class ViewImageAction extends MediaEditorUIAction {
         List<ActionContext> result = new ArrayList<ActionContext>();
         result.add(new ActionContext(new InternalMediaEditorActionDefinition("save", "Save Changes", false), new ActionListener() {
             @Override
-            public void onActionFired(ActionDefinition definition, Map<String, Object> actionParams) {
+            public void onActionFired(ActionDefinition definition, Object... actionContextParams) {
                 eventBus.fireEvent(new MediaEditorInternalEvent(EventType.APPLY));
             }
         }));
 
         result.add(new ActionContext(new InternalMediaEditorActionDefinition("cancel", "Cancel Editing", true), new ActionListener() {
             @Override
-            public void onActionFired(ActionDefinition definition, Map<String, Object> actionParams) {
+            public void onActionFired(ActionDefinition definition, Object... actionContextParams) {
                 eventBus.fireEvent(new MediaEditorInternalEvent(EventType.CANCEL_LAST));
             }
         }));
