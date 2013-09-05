@@ -52,26 +52,21 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
 
     private ChooseDialogDefinition ensureChooseActions(ChooseDialogDefinition definition) {
         ChooseDialogDefinition result = definition;
-        if (!definition.getActions().containsKey(BaseDialog.COMMIT_ACTION_NAME) || !definition.getActions().containsKey(BaseDialog.COMMIT_ACTION_NAME)) {
+        if (definition.getActions().isEmpty()) {
             result = new Cloner().deepClone(definition);
 
-            if (!result.getActions().containsKey(BaseDialog.COMMIT_ACTION_NAME)) {
-                ChooseDialogActionDefinition commitAction = new ChooseDialogActionDefinition();
-                commitAction.setCallSuccess(true);
-                commitAction.setName("commit");
-                commitAction.setLabel("commit");
-                result.getActions().put(BaseDialog.COMMIT_ACTION_NAME, commitAction);
-            }
-        }
+            ChooseDialogActionDefinition commitAction = new ChooseDialogActionDefinition();
+            commitAction.setCallSuccess(true);
+            commitAction.setName("commit");
+            commitAction.setLabel("commit");
+            result.getActions().put(BaseDialog.COMMIT_ACTION_NAME, commitAction);
 
-        if (!result.getActions().containsKey(BaseDialog.CANCEL_ACTION_NAME)) {
             ChooseDialogActionDefinition cancelAction = new ChooseDialogActionDefinition();
             cancelAction.setCallSuccess(false);
             cancelAction.setName("cancel");
             cancelAction.setLabel("cancel");
             result.getActions().put(BaseDialog.CANCEL_ACTION_NAME, cancelAction);
         }
-
         return result;
     }
 
