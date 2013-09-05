@@ -90,7 +90,7 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
     @Override
     protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
         List<String> propertyNames = definition.getFieldsName();
-        return this.componentProvider.newInstance(transformerClass, item, definition, getFieldType(), propertyNames);
+        return this.componentProvider.newInstance(transformerClass, item, definition, PropertysetItem.class, propertyNames);
     }
 
 }

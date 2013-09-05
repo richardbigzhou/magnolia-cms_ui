@@ -37,6 +37,7 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.MultiField;
 import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
+import info.magnolia.ui.form.field.transformer.Transformer;
 
 import javax.inject.Inject;
 
@@ -79,6 +80,14 @@ public class MultiFieldFactory<T> extends AbstractFieldFactory<MultiFieldDefinit
         field.setButtonCaptionRemove(getMessage(definition.getButtonSelectRemoveLabel()));
 
         return field;
+    }
+
+    /**
+     * Create a new Instance of {@link Transformer}.
+     */
+    @Override
+    protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
+        return this.componentProvider.newInstance(transformerClass, item, definition, PropertysetItem.class);
     }
 
 }

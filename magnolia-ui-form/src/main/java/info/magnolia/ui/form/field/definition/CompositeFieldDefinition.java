@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+
 import info.magnolia.ui.form.field.transformer.composite.CompositeTransformer;
 
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
 
 
     /**
-     * Set default {@link PropertyBuilder}.
+     * Set default {@link info.magnolia.ui.form.field.transformer.Transformer}.
      */
     public CompositeFieldDefinition() {
         setTransformerClass(CompositeTransformer.class);

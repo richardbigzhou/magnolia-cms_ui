@@ -148,7 +148,7 @@ public class MultiField extends AbstractCustomMultiField<MultiFieldDefinition, P
             public void buttonClick(ClickEvent event) {
                 int position = root.getComponentIndex(layout);
                 root.removeComponent(layout);
-                getValue().removeItemProperty(position);
+                removeValueProperty(position);
                 getPropertyDataSource().setValue(getValue());
             };
         };
@@ -182,4 +182,26 @@ public class MultiField extends AbstractCustomMultiField<MultiFieldDefinition, P
     public void setButtonCaptionRemove(String buttonCaptionRemove) {
         this.buttonCaptionRemove = buttonCaptionRemove;
     }
+
+    /**
+     * Ensure that id of the {@link PropertysetItem} stay coherent.<br>
+     * Assume that we have 3 values 0:a, 1:b, 2:c, and 1 is removed <br>
+     * If we just remove 1, the {@link PropertysetItem} will contain 0:a, 2:c, .<br>
+     * But we should have : 0:a, 1:c, .
+     */
+    private void removeValueProperty(int fromIndex) {
+        getValue().removeItemProperty(fromIndex);
+        int toIndex = fromIndex;
+        int valuesSize = getValue().getItemPropertyIds().size();
+        if (fromIndex == valuesSize) {
+            return;
+        }
+        while (fromIndex < valuesSize) {
+            toIndex = fromIndex;
+            fromIndex +=1;
+            getValue().addItemProperty(toIndex, getValue().getItemProperty(fromIndex));
+            getValue().removeItemProperty(fromIndex);
+        }
+    }
+
 }

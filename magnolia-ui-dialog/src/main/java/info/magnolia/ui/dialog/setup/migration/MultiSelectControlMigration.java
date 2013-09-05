@@ -58,7 +58,7 @@ public class MultiSelectControlMigration implements ControlMigration {
     public void migrate(Node controlNode) throws RepositoryException {
         controlNode.getProperty("controlType").remove();
         controlNode.setProperty("class", MultiFieldDefinition.class.getName());
-        // Set propertyBuilder
+        // Set transformerClass
         setTransformerClass(controlNode);
         // Create a Field sub node
         Node field = controlNode.addNode("field", NodeTypes.ContentNode.NAME);
@@ -88,7 +88,7 @@ public class MultiSelectControlMigration implements ControlMigration {
     }
 
     /**
-     * Set the PropertyBuilder.
+     * Set the transformerClass.
      */
     protected void setTransformerClass(Node controlNode) throws RepositoryException {
         if (controlNode.hasProperty("saveMode")) {

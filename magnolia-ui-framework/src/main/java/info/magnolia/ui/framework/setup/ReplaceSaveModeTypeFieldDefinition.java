@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Rename or remove the 5.0 node field definition 'saveModeType'.<br>
- * In 5.1, this definition do not exist anymore and is replaced by 'propertyBuilder' definition.
+ * In 5.1, this definition do not exist anymore and is replaced by 'transformerClass' definition.
  */
 public class ReplaceSaveModeTypeFieldDefinition extends QueryTask {
 
@@ -66,9 +66,9 @@ public class ReplaceSaveModeTypeFieldDefinition extends QueryTask {
                 if (node.hasProperty("multiValueHandlerClass")) {
                     String multiValueHandlerClass = node.getProperty("multiValueHandlerClass").getString();
                     if (StringUtils.equals("info.magnolia.ui.form.field.property.MultiValuesHandler", multiValueHandlerClass)) {
-                        // Simply remove the node. The field definition already contains the default PropertyBuilder.
+                        // Simply remove the node. The field definition already contains the default transformerClass.
                         node.remove();
-                        log.debug("The following node will be removed {}. The field definition already contain the definition of the default PropertyBuilder", nodePath);
+                        log.debug("The following node will be removed {}. The field definition already contain the definition of the default transformerClass", nodePath);
                     } else if (StringUtils.equals("info.magnolia.ui.form.field.property.SubNodesValueHandler", multiValueHandlerClass)) {
                         Node parent = node.getParent();
                         parent.setProperty("transformerClass", MultiValueSubChildrenNodeTransformer.class.getName());

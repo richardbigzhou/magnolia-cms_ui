@@ -47,7 +47,7 @@ public class SwitchableFieldDefinition extends CompositeFieldDefinition {
     private List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
 
     /**
-     * Set default {@link PropertyBuilder}.
+     * Set default {@link info.magnolia.ui.form.field.transformer.Transformer}.
      */
     public SwitchableFieldDefinition() {
         setTransformerClass(SwitchableTransformer.class);

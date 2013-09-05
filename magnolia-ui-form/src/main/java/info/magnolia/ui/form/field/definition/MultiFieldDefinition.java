@@ -45,7 +45,7 @@ public class MultiFieldDefinition extends ConfiguredFieldDefinition {
     private ConfiguredFieldDefinition field;
 
     /**
-     * Set default {@link PropertyBuilder}.
+     * Set default {@link info.magnolia.ui.form.field.transformer.Transformer}.
      */
     public MultiFieldDefinition() {
         setTransformerClass(MultiValueTransformer.class);

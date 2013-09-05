@@ -49,7 +49,7 @@ public class DataUUIDMultiSelectControlMigration extends MultiSelectControlMigra
     }
 
     /**
-     * Set the PropertyBuilder.
+     * Set the transformerClass.
      */
     @Override
     protected void setTransformerClass(Node controlNode) throws RepositoryException {
