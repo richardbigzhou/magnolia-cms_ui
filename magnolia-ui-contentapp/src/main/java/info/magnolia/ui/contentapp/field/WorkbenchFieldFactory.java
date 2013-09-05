@@ -67,34 +67,4 @@ public class WorkbenchFieldFactory extends AbstractFieldFactory<WorkbenchFieldDe
     protected Field<Object> createFieldComponent() {
         return new WorkbenchField(definition.getWorkbench(), definition.getImageProvider(), workbenchPresenter);
     }
-
-
-    /*HorizontalLayout additionalContorlsWrapper = new HorizontalLayout();
-    additionalContorlsWrapper.addComponent(new Button("Test", new Button.ClickListener() {
-        @Override
-        public void buttonClick(Button.ClickEvent event) {
-            targetLayer.openOverlay(new View() {
-                @Override
-                public Component asVaadinComponent() {
-                    SubAppDescriptor descriptor = getAppContext().getDefaultSubAppDescriptor();
-
-                    Node root = null;
-                    try {
-                        root = MgnlContext.getInstance().getJCRSession("dam").getNode("/");
-                    } catch (RepositoryException e) {
-                        e.printStackTrace();
-                    }
-                    FieldFactoryFactory ff = provider.get().getComponent(FieldFactoryFactory.class);
-                    Item item = new JcrNewNodeAdapter(root, "mgnl:asset");
-                    DamUploadFieldDefinition def = new DamUploadFieldDefinition();
-                    DamUploadFieldFactory damFactory = (DamUploadFieldFactory) ff.createFieldFactory(def, item);
-
-                    DamUploadField<?> field = (DamUploadField<?>) damFactory.createField();
-                    field.setWidth("500px");
-                    field.setHeight("500px");
-                    return field;
-                }
-            }, OverlayLayer.ModalityLevel.LIGHT);
-        }
-    }));*/
 }

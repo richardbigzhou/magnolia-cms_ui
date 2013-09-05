@@ -36,6 +36,8 @@ import java.util.Locale;
  */
 public class WorkbenchField extends CustomField<Object> {
 
+    private static final String DEFAULT_HEIGHT = "500px";
+
     private Logger log = LoggerFactory.getLogger(getClass());
 
     private ImageProviderDefinition imageProvider;
@@ -58,7 +60,7 @@ public class WorkbenchField extends CustomField<Object> {
     protected Component initContent() {
         this.view = presenter.start(workbenchDefinition, imageProvider, workbenchEventbus);
         this.view.setViewType(TreePresenterDefinition.VIEW_TYPE);
-
+        this.view.asVaadinComponent().setHeight(DEFAULT_HEIGHT);
         if (getConvertedValue() instanceof JcrItemAdapter) {
             presenter.select(Arrays.asList(((JcrItemAdapter) getConvertedValue()).getItemId()));
         }
