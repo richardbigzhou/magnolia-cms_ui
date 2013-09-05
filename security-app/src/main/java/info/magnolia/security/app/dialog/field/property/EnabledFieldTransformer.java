@@ -34,50 +34,34 @@
 package info.magnolia.security.app.dialog.field.property;
 
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.property.basic.BasicPropertyHandler;
+import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.inject.Inject;
-
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 
 /**
- * {@link info.magnolia.ui.form.field.property.PropertyHandler} implementation used for {@link info.magnolia.security.app.dialog.field.RoleManagementFieldFactory} and {@link info.magnolia.security.app.dialog.field.GroupManagementFieldFactory}.
+ * {@link info.magnolia.ui.form.field.property.PropertyHandler} implementation used for {@link info.magnolia.security.app.dialog.field.EnabledFieldFactory}.
  * 
  * @param <T>
  */
-public class ManagementFieldPropertyHandler<T> extends BasicPropertyHandler<T> {
-    private Set<String> assignedEntity;
-    private String entityName;
+public class EnabledFieldTransformer<T> extends BasicTransformer<T> {
 
-    @Inject
-    public ManagementFieldPropertyHandler(Item parent, ConfiguredFieldDefinition definition, Class<?> type, Set<String> assignedEntity, String entityName) {
-        super(parent, definition, type.getName());
-        this.assignedEntity = assignedEntity;
-        this.entityName = entityName;
+    public EnabledFieldTransformer(Item parent, ConfiguredFieldDefinition definition, Class<?> type) {
+        super(parent, definition, (Class<T>) type);
     }
 
-
-    /**
-     * Do nothing yet.
-     * Save is currently handled by an embedded logic.
-     */
     @Override
-    public void writeToDataSourceItem(T newValue) {
-        if (newValue == null) {
-            newValue = (T) new HashSet();
+    public T readFromItem() {
+        Property old = relatedFormItem.getItemProperty("enabled");
+        String stringValue = "true";
+        if (old != null) {
+            stringValue = old.toString();
         }
-        super.writeToDataSourceItem(newValue);
-    }
-
-    @Override
-    public T readFromDataSourceItem() {
-        DefaultProperty<Set> prop = new DefaultProperty<Set>(Set.class, this.assignedEntity);
-        parent.addItemProperty(this.entityName, prop);
-        return (T) prop.getValue();
+        DefaultProperty<T> prop = new DefaultProperty(Boolean.class, Boolean.parseBoolean(stringValue));
+        relatedFormItem.removeItemProperty("enabled");
+        relatedFormItem.addItemProperty("enabled", prop);
+        return prop.getValue();
     }
 
 }

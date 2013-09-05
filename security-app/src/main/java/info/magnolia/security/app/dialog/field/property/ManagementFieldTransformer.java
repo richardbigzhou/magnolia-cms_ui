@@ -34,34 +34,50 @@
 package info.magnolia.security.app.dialog.field.property;
 
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.property.basic.BasicPropertyHandler;
+import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.inject.Inject;
+
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 
 /**
- * {@link info.magnolia.ui.form.field.property.PropertyHandler} implementation used for {@link info.magnolia.security.app.dialog.field.EnabledFieldFactory}.
+ * {@link info.magnolia.ui.form.field.property.PropertyHandler} implementation used for {@link info.magnolia.security.app.dialog.field.RoleManagementFieldFactory} and {@link info.magnolia.security.app.dialog.field.GroupManagementFieldFactory}.
  * 
  * @param <T>
  */
-public class EnabledFieldPropertyHandler<T> extends BasicPropertyHandler<T> {
+public class ManagementFieldTransformer<T> extends BasicTransformer<T> {
+    private Set<String> assignedEntity;
+    private String entityName;
 
-    public EnabledFieldPropertyHandler(Item parent, ConfiguredFieldDefinition definition, String fieldTypeName) {
-        super(parent, definition, fieldTypeName);
+    @Inject
+    public ManagementFieldTransformer(Item parent, ConfiguredFieldDefinition definition, Class<?> type, Set<String> assignedEntity, String entityName) {
+        super(parent, definition, (Class<T>) type);
+        this.assignedEntity = assignedEntity;
+        this.entityName = entityName;
+    }
+
+
+    /**
+     * Do nothing yet.
+     * Save is currently handled by an embedded logic.
+     */
+    @Override
+    public void writeToItem(T newValue) {
+        if (newValue == null) {
+            newValue = (T) new HashSet();
+        }
+        super.writeToItem(newValue);
     }
 
     @Override
-    public T readFromDataSourceItem() {
-        Property old = parent.getItemProperty("enabled");
-        String stringValue = "true";
-        if (old != null) {
-            stringValue = old.toString();
-        }
-        DefaultProperty<T> prop = new DefaultProperty(Boolean.class, Boolean.parseBoolean(stringValue));
-        parent.removeItemProperty("enabled");
-        parent.addItemProperty("enabled", prop);
-        return prop.getValue();
+    public T readFromItem() {
+        DefaultProperty<Set> prop = new DefaultProperty<Set>(Set.class, this.assignedEntity);
+        relatedFormItem.addItemProperty(this.entityName, prop);
+        return (T) prop.getValue();
     }
 
 }
