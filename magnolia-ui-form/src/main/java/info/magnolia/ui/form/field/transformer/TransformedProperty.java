@@ -31,27 +31,55 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.multi;
+package info.magnolia.ui.form.field.transformer;
 
 
-import info.magnolia.ui.form.field.property.BaseProperty;
-import info.magnolia.ui.form.field.property.PropertyHandler;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
+import com.vaadin.data.util.ObjectProperty;
 
 /**
- * {@link info.magnolia.ui.form.field.property.CustomPropertyType} implementation used to handle property in {@link info.magnolia.ui.form.field.MultiField}<br>
- * This property is set as {@link com.vaadin.ui.Field#setPropertyDataSource(com.vaadin.data.Property)} in {@link info.magnolia.ui.form.field.MultiField} and handle a list of generic objects.<br>
+ * Basic implementation of an {@link ObjectProperty} .<br>
+ * This base property delegate to the {@link Transformer} the read and write of the value used by the field.<br>
  * 
- * @param <T>
+ * @param <T>.
  */
-public class MultiProperty<T> extends BaseProperty<List<T>> {
+public class TransformedProperty<T> extends ObjectProperty<T> {
 
-    @Inject
-    public MultiProperty(PropertyHandler<List<T>> handler) {
-        super(handler);
+    private final Transformer<T> transformer;
+
+    public TransformedProperty(Transformer<T> transformer, Class<T> type) {
+        super(transformer.readFromItem(), type);
+        this.transformer = transformer;
+    }
+
+    @Override
+    public void setValue(T newValue) throws com.vaadin.data.Property.ReadOnlyException {
+        super.setValue(newValue);
+        if (transformer != null) {
+            transformer.writeToItem(newValue);
+        }
+    }
+
+    @Override
+    public T getValue() {
+        return super.getValue();
+    }
+
+    /**
+     * @return true if the handler support I18N.
+     */
+    public boolean hasI18NSupport() {
+        return transformer.hasI18NSupport();
+    }
+
+    /**
+     * In case of i18n change, Reload the Value returned by the Handler.
+     */
+    public void fireI18NValueChange() {
+        setValue(transformer.readFromItem());
+        super.fireValueChange();
+    }
+
+    public Transformer<T> getTransformer() {
+        return this.transformer;
     }
 }

@@ -31,9 +31,8 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.composite;
+package info.magnolia.ui.form.field.transformer.composite;
 
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 
 import java.util.List;
@@ -42,53 +41,44 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
- * {@link info.magnolia.ui.form.field.property.PropertyHandler} implementation storing and retrieving SwitchableField informations as {@link PropertysetItem}.<br>
+ * Default switchable field {@link info.magnolia.ui.form.field.transformer.Transformer} implementation storing and retrieving SwitchableField informations as {@link PropertysetItem}.<br>
  * Storing strategy: <br>
  * - property (definition.getName()) : contain the last selected field name <br>
  * - property (propertyPrefix + first field name): contain the value of the first field <br>
  * - property (propertyPrefix + second field name): contain the value of the second field <br>
  * ...<br>
+ * 
+ * @param <T>
  */
-public class SwitchableSimplePropertyCompositeHandler extends SimplePropertyCompositeHandler {
+public class SwitchableTransformer<T> extends CompositeTransformer {
 
-    public SwitchableSimplePropertyCompositeHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider, List<String> fieldsName) {
-        super(parent, definition, componentProvider, fieldsName);
+    public SwitchableTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, List<String> fieldsName) {
+        super(relatedFormItem, definition, type, fieldsName);
     }
 
     @Override
-    public void writeToDataSourceItem(PropertysetItem newValues) {
-        super.writeToDataSourceItem(newValues);
-        String propertyName = getMainPropertyName();
+    public void writeToItem(PropertysetItem newValues) {
+        super.writeToItem(newValues);
+        String propertyName = definePropertyName();
 
         // Add the select property value (select property name == field name)
         if (newValues.getItemProperty(propertyName) != null) {
-            parent.addItemProperty(propertyName, newValues.getItemProperty(propertyName));
+            relatedFormItem.addItemProperty(propertyName, newValues.getItemProperty(propertyName));
         }
         // As parent implementation will create a property called propertyPrefix+definition.getName()
         // representing the select property name with a propertyPrefix, we have to remove this property.
-        if (parent.getItemProperty(definition.getName() + propertyName) != null) {
-            parent.removeItemProperty(definition.getName() + propertyName);
+        if (relatedFormItem.getItemProperty(definition.getName() + propertyName) != null) {
+            relatedFormItem.removeItemProperty(definition.getName() + propertyName);
         }
     }
 
     @Override
-    public PropertysetItem readFromDataSourceItem() {
-        PropertysetItem newValues = super.readFromDataSourceItem();
-        String propertyName = getMainPropertyName();
-        if (parent.getItemProperty(propertyName) != null) {
-            newValues.addItemProperty(propertyName, parent.getItemProperty(propertyName));
+    public PropertysetItem readFromItem() {
+        PropertysetItem newValues = super.readFromItem();
+        String propertyName = definePropertyName();
+        if (relatedFormItem.getItemProperty(propertyName) != null) {
+            newValues.addItemProperty(propertyName, relatedFormItem.getItemProperty(propertyName));
         }
         return newValues;
-    }
-
-    /**
-     * Support I18N for the main property name.
-     */
-    private String getMainPropertyName() {
-        String mainPropertyName = definition.getName();
-        if (hasI18NSupport()) {
-            mainPropertyName = i18NPropertyName;
-        }
-        return mainPropertyName;
     }
 }

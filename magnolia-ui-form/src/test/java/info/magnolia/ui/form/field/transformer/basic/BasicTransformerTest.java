@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.basic;
+package info.magnolia.ui.form.field.transformer.basic;
 
 import static org.junit.Assert.*;
 
@@ -54,7 +54,7 @@ import com.vaadin.data.Property.ReadOnlyException;
 /**
  * .
  */
-public class BasicPropertyHandlerTest extends RepositoryTestCase {
+public class BasicTransformerTest extends RepositoryTestCase {
     private Node rootNode;
     private final String propertyName = "propertyName";
     private ConfiguredFieldDefinition definition = new ConfiguredFieldDefinition();
@@ -77,15 +77,15 @@ public class BasicPropertyHandlerTest extends RepositoryTestCase {
         definition.setDefaultValue("defaultStringValue");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicPropertyHandler<String> handler = new BasicPropertyHandler<String>(rootItem, definition, String.class.getName());
+        BasicTransformer<String> handler = new BasicTransformer<String>(rootItem, definition, String.class);
 
         // WHEN
-        Object value = handler.readFromDataSourceItem();
+        Object value = handler.readFromItem();
 
         // THEN
         assertNotNull(value);
         assertTrue(value instanceof String);
-        assertEquals(definition.getDefaultValue(), (String) value);
+        assertEquals(definition.getDefaultValue(), value);
         assertNotNull(rootItem.getItemProperty(propertyName));
         assertEquals(String.class, rootItem.getItemProperty(propertyName).getType());
         assertEquals(definition.getDefaultValue(), rootItem.getItemProperty(propertyName).getValue());
@@ -97,10 +97,10 @@ public class BasicPropertyHandlerTest extends RepositoryTestCase {
         definition.setType("String");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicPropertyHandler<String> handler = new BasicPropertyHandler<String>(rootItem, definition, String.class.getName());
+        BasicTransformer<String> handler = new BasicTransformer<String>(rootItem, definition, String.class);
 
         // WHEN
-        Object value = handler.readFromDataSourceItem();
+        Object value = handler.readFromItem();
 
         // THEN
         assertNull(value);
@@ -114,15 +114,15 @@ public class BasicPropertyHandlerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, "stringValue");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicPropertyHandler<String> handler = new BasicPropertyHandler<String>(rootItem, definition, String.class.getName());
+        BasicTransformer<String> handler = new BasicTransformer<String>(rootItem, definition, String.class);
 
         // WHEN
-        Object value = handler.readFromDataSourceItem();
+        Object value = handler.readFromItem();
 
         // THEN
         assertNotNull(value);
         assertTrue(value instanceof String);
-        assertEquals(rootNode.getProperty(propertyName).getString(), (String) value);
+        assertEquals(rootNode.getProperty(propertyName).getString(), value);
         assertNotNull(rootItem.getItemProperty(propertyName));
         assertEquals(String.class, rootItem.getItemProperty(propertyName).getType());
         assertEquals(rootNode.getProperty(propertyName).getString(), rootItem.getItemProperty(propertyName).getValue());
@@ -135,15 +135,15 @@ public class BasicPropertyHandlerTest extends RepositoryTestCase {
         definition.setDefaultValue("100");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicPropertyHandler<Long> handler = new BasicPropertyHandler<Long>(rootItem, definition, Long.class.getName());
+        BasicTransformer<Long> handler = new BasicTransformer<Long>(rootItem, definition, Long.class);
 
         // WHEN
-        Object value = handler.readFromDataSourceItem();
+        Object value = handler.readFromItem();
 
         // THEN
         assertNotNull(value);
         assertTrue(value instanceof Long);
-        assertEquals(Long.decode(definition.getDefaultValue()), (Long) value);
+        assertEquals(Long.decode(definition.getDefaultValue()), value);
         assertNotNull(rootItem.getItemProperty(propertyName));
         assertEquals(Long.class, rootItem.getItemProperty(propertyName).getType());
     }
@@ -154,10 +154,10 @@ public class BasicPropertyHandlerTest extends RepositoryTestCase {
         definition.setType("Long");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicPropertyHandler<Long> handler = new BasicPropertyHandler<Long>(rootItem, definition, Long.class.getName());
+        BasicTransformer<Long> handler = new BasicTransformer<Long>(rootItem, definition, Long.class);
 
         // WHEN
-        Object value = handler.readFromDataSourceItem();
+        Object value = handler.readFromItem();
 
         // THEN
         assertNull(value);
@@ -171,15 +171,15 @@ public class BasicPropertyHandlerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, 200l);
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicPropertyHandler<Long> handler = new BasicPropertyHandler<Long>(rootItem, definition, Long.class.getName());
+        BasicTransformer<Long> handler = new BasicTransformer<Long>(rootItem, definition, Long.class);
 
         // WHEN
-        Object value = handler.readFromDataSourceItem();
+        Object value = handler.readFromItem();
 
         // THEN
         assertNotNull(value);
         assertTrue(value instanceof Long);
-        assertEquals((Long) rootNode.getProperty(propertyName).getLong(), (Long) value);
+        assertEquals(rootNode.getProperty(propertyName).getLong(), value);
         assertNotNull(rootItem.getItemProperty(propertyName));
         assertEquals(Long.class, rootItem.getItemProperty(propertyName).getType());
         assertEquals(rootNode.getProperty(propertyName).getLong(), rootItem.getItemProperty(propertyName).getValue());
@@ -194,15 +194,15 @@ public class BasicPropertyHandlerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, "stringValue");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicPropertyHandler<String> handler = new BasicPropertyHandler<String>(rootItem, definition, String.class.getName());
+        BasicTransformer<String> handler = new BasicTransformer<String>(rootItem, definition, String.class);
 
         // WHEN
-        Object value = handler.readFromDataSourceItem();
+        Object value = handler.readFromItem();
 
         // THEN
         assertNotNull(value);
         assertTrue(value instanceof String);
-        assertEquals(rootNode.getProperty(propertyName).getString(), (String) value);
+        assertEquals(rootNode.getProperty(propertyName).getString(), value);
         assertNotNull(rootItem.getItemProperty(propertyName));
         assertEquals(String.class, rootItem.getItemProperty(propertyName).getType());
         assertEquals(rootNode.getProperty(propertyName).getString(), rootItem.getItemProperty(propertyName).getValue());
@@ -216,11 +216,11 @@ public class BasicPropertyHandlerTest extends RepositoryTestCase {
         definition.setDefaultValue("defaultStringValue");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicPropertyHandler<String> handler = new BasicPropertyHandler<String>(rootItem, definition, String.class.getName());
-        handler.readFromDataSourceItem();
+        BasicTransformer<String> handler = new BasicTransformer<String>(rootItem, definition, String.class);
+        handler.readFromItem();
 
         // WHEN
-        handler.writeToDataSourceItem("newValue");
+        handler.writeToItem("newValue");
 
         // THEN
         Node res = rootItem.applyChanges();
@@ -236,11 +236,11 @@ public class BasicPropertyHandlerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, "stringValue");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicPropertyHandler<String> handler = new BasicPropertyHandler<String>(rootItem, definition, String.class.getName());
-        handler.readFromDataSourceItem();
+        BasicTransformer<String> handler = new BasicTransformer<String>(rootItem, definition, String.class);
+        handler.readFromItem();
 
         // WHEN
-        handler.writeToDataSourceItem("newValue");
+        handler.writeToItem("newValue");
 
         // THEN
         Node res = rootItem.applyChanges();
@@ -255,11 +255,11 @@ public class BasicPropertyHandlerTest extends RepositoryTestCase {
         definition.setDefaultValue("100");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicPropertyHandler<Long> handler = new BasicPropertyHandler<Long>(rootItem, definition, Long.class.getName());
-        handler.readFromDataSourceItem();
+        BasicTransformer<Long> handler = new BasicTransformer<Long>(rootItem, definition, Long.class);
+        handler.readFromItem();
 
         // WHEN
-        handler.writeToDataSourceItem(200l);
+        handler.writeToItem(200l);
 
         // THEN
         Node res = rootItem.applyChanges();
@@ -275,11 +275,11 @@ public class BasicPropertyHandlerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, 120l);
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicPropertyHandler<Long> handler = new BasicPropertyHandler<Long>(rootItem, definition, Long.class.getName());
-        handler.readFromDataSourceItem();
+        BasicTransformer<Long> handler = new BasicTransformer<Long>(rootItem, definition, Long.class);
+        handler.readFromItem();
 
         // WHEN
-        handler.writeToDataSourceItem(200l);
+        handler.writeToItem(200l);
 
         // THEN
         Node res = rootItem.applyChanges();
@@ -296,11 +296,11 @@ public class BasicPropertyHandlerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, "stringValue");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        BasicPropertyHandler<String> handler = new BasicPropertyHandler<String>(rootItem, definition, String.class.getName());
-        handler.readFromDataSourceItem();
+        BasicTransformer<String> handler = new BasicTransformer<String>(rootItem, definition, String.class);
+        handler.readFromItem();
 
         // WHEN
-        handler.writeToDataSourceItem("newValue");
+        handler.writeToItem("newValue");
 
         // THEN
     }

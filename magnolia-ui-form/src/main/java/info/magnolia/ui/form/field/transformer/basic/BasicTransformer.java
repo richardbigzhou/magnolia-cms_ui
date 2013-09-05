@@ -31,50 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property;
+package info.magnolia.ui.form.field.transformer.basic;
 
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Locale;
 
 import javax.inject.Inject;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 
 /**
- * Base Handler exposing useful methods for JCR Item properties. <br>
+ * Basic implementation of a {@link Transformer}.<br>
+ * This handler is used for most of the basic fields (textBox, Date, ...).<br>
+ * His responsibility is to: <br>
+ * - retrieve or create a basic property from the related item <br>
+ * - update the item property value in case of changes performed on the related field.
  * 
  * @param <T>
  */
-public abstract class AbstractBaseHandler<T> implements PropertyHandler<T> {
+public class BasicTransformer<T> implements Transformer<T> {
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractBaseHandler.class);
-    protected Item parent;
+    protected Item relatedFormItem;
     protected final ConfiguredFieldDefinition definition;
-    protected final ComponentProvider componentProvider;
 
     protected String basePropertyName;
     protected String i18NPropertyName;
-    protected Locale locale;
+    private Locale locale;
+    protected final Class<T> type;
 
     @Inject
-    public AbstractBaseHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
+    public BasicTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<T> type) {
         this.definition = definition;
-        this.parent = parent;
-        this.componentProvider = componentProvider;
+        this.type = type;
+        this.relatedFormItem = relatedFormItem;
         this.basePropertyName = definition.getName();
         if (hasI18NSupport()) {
             this.i18NPropertyName = this.basePropertyName;
@@ -82,8 +78,19 @@ public abstract class AbstractBaseHandler<T> implements PropertyHandler<T> {
     }
 
     @Override
-    public boolean hasI18NSupport() {
-        return definition.isI18n();
+    public void writeToItem(T newValue) {
+        Property<T> p = getOrCreateProperty(type, null);
+        p.setValue(newValue);
+    }
+
+    @Override
+    public T readFromItem() {
+        String defaultValue = definition.getDefaultValue();
+        Property<T> p = getOrCreateProperty(type, defaultValue);
+        if (definition.isReadOnly()) {
+            p.setReadOnly(true);
+        }
+        return p.getValue();
     }
 
     /**
@@ -93,9 +100,10 @@ public abstract class AbstractBaseHandler<T> implements PropertyHandler<T> {
      * 
      * @param <T>
      */
+    @SuppressWarnings("unchecked")
     protected <T> Property<T> getOrCreateProperty(Class<T> type, String defaultValueString) {
         String propertyName = definePropertyName();
-        Property<T> property = parent.getItemProperty(propertyName);
+        Property<T> property = relatedFormItem.getItemProperty(propertyName);
 
         if (property == null) {
             if (StringUtils.isNotEmpty(defaultValueString)) {
@@ -103,44 +111,26 @@ public abstract class AbstractBaseHandler<T> implements PropertyHandler<T> {
             } else {
                 property = new DefaultProperty<T>(type, null);
             }
-            parent.addItemProperty(propertyName, property);
+            relatedFormItem.addItemProperty(propertyName, property);
         }
         return property;
     }
 
-
     /**
      * Based on the i18n information, define the property name to use.
      */
-    private String definePropertyName() {
+    protected String definePropertyName() {
         String propertyName = this.basePropertyName;
 
         if (hasI18NSupport()) {
             propertyName = this.i18NPropertyName;
         }
-
         return propertyName;
     }
 
-    /**
-     * Retrieve or create a child node as {@link JcrNodeAdapter}.
-     */
-    protected JcrNodeAdapter getOrCreateChildNode(String childNodeName, String childNodeType) throws RepositoryException {
-        JcrNodeAdapter child = null;
-        if (!(parent instanceof JcrNodeAdapter)) {
-            log.warn("Try to retrieve a Jcr Item from a Non Jcr Item Adapter. Will retrun null");
-            return null;
-        }
-        Node node = ((JcrNodeAdapter) parent).getJcrItem();
-        if (node.hasNode(childNodeName) && !(parent instanceof JcrNewNodeAdapter)) {
-            child = new JcrNodeAdapter(node.getNode(childNodeName));
-            child.setParent(((JcrNodeAdapter) parent));
-        } else {
-            child = new JcrNewNodeAdapter(node, NodeTypes.Content.NAME, childNodeName);
-            child.setParent(((JcrNodeAdapter) parent));
-        }
-        return child;
-    }
+    // //////
+    // I18N support
+    // /////
 
     @Override
     public void setLocale(Locale locale) {
@@ -148,8 +138,8 @@ public abstract class AbstractBaseHandler<T> implements PropertyHandler<T> {
     }
 
     @Override
-    public void setI18NPropertyName(String i18NPropertyName) {
-        this.i18NPropertyName = i18NPropertyName;
+    public void setI18NPropertyName(String i18nPropertyName) {
+        this.i18NPropertyName = i18nPropertyName;
     }
 
     @Override
@@ -160,6 +150,11 @@ public abstract class AbstractBaseHandler<T> implements PropertyHandler<T> {
     @Override
     public String getBasePropertyName() {
         return basePropertyName;
+    }
+
+    @Override
+    public boolean hasI18NSupport() {
+        return definition.isI18n();
     }
 
 }

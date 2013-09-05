@@ -31,49 +31,62 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.multi;
+package info.magnolia.ui.form.field.transformer.multi;
 
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.property.AbstractBaseHandler;
-import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.PropertysetItem;
 
 /**
- * Multi values properties implementation of {@link PropertyHandler}.<br>
- * Store the list of values as Jcr Multi-property value.<br>
- * Retrieve the Jcr Multi-property value as a list.
- * 
- * @param <T> type of the element list.
+ * Multi values properties implementation of {@link info.magnolia.ui.form.field.transformer.Transformer}.<br>
+ * Store the list of values as a {@link javax.jcr.Value[]} property.<br>
+ * Retrieve the {@link javax.jcr.Value[]} property value as a list.
  */
-public class MultiValuesPropertyMultiHandler<T> extends AbstractBaseHandler<List<T>> implements PropertyHandler<List<T>> {
 
+public class MultiValueTransformer extends BasicTransformer<PropertysetItem> {
 
-    @Inject
-    public MultiValuesPropertyMultiHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
-        super(parent, definition, componentProvider);
+    public MultiValueTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type) {
+        super(relatedFormItem, definition, type);
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
-    public void writeToDataSourceItem(List<T> newValue) {
+    public void writeToItem(PropertysetItem newValue) {
         Property<List> property = getOrCreateProperty(List.class, null);
-        property.setValue(new LinkedList<T>(newValue));
-    }
 
-    @Override
-    public List<T> readFromDataSourceItem() {
-        Property<List> property = getOrCreateProperty(List.class, null);
-        if (property.getValue() == null) {
-            property.setValue(new LinkedList<T>());
+        List<Object> propertyValue = new LinkedList<Object>();
+        if (newValue != null) {
+            Iterator<?> it = newValue.getItemPropertyIds().iterator();
+            while (it.hasNext()) {
+                propertyValue.add(newValue.getItemProperty(it.next()).getValue());
+            }
         }
-        return property.getValue();
+        property.setValue(propertyValue);
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Override
+    public PropertysetItem readFromItem() {
+        PropertysetItem newValues = new PropertysetItem();
+        Property<List> property = getOrCreateProperty(List.class, null);
+        if (property.getValue() != null) {
+            List<?> values = property.getValue();
+            int position = 0;
+            for (Object o : values) {
+                newValues.addItemProperty(position, new DefaultProperty(o));
+                position += 1;
+            }
+        }
+
+        return newValues;
     }
 
 }

@@ -31,34 +31,37 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.basic;
+package info.magnolia.ui.form.field.transformer.composite;
 
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-
-import javax.inject.Inject;
-
-import org.apache.commons.lang.StringUtils;
+import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.util.PropertysetItem;
 
 /**
- * TextCode specific {@link info.magnolia.ui.form.field.property.PropertyHandler} that return an empty string instead of a null object.<br>
- * Current implementation of the TextCodeField do not support null property value.
+ * Empty Implementation of {@link info.magnolia.ui.form.field.transformer.Transformer} handling {@link PropertysetItem}.<br>
+ * This is mainly used if the {@link PropertysetItem} is handle by a parent field that define a sub node {@link info.magnolia.ui.form.field.transformer.Transformer} like a {@link info.magnolia.ui.form.field.MultiField} displaying {@link info.magnolia.ui.form.field.CompositeField}.
  */
-public class TextCodePropertyHandler extends BasicPropertyHandler<String> {
+public class NoOpCompositeTransformer extends BasicTransformer<PropertysetItem> {
 
-    @Inject
-    public TextCodePropertyHandler(Item parent, ConfiguredFieldDefinition definition, String fieldTypeName) {
-        super(parent, definition, fieldTypeName);
+    public NoOpCompositeTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type) {
+        super(relatedFormItem, definition, type);
     }
 
-    /**
-     * Do not return a Null.
-     */
+    private PropertysetItem propertysetItem;
+
     @Override
-    public String readFromDataSourceItem() {
-        String value = super.readFromDataSourceItem();
-        return (StringUtils.isBlank(value)) ? "" : value;
+    public void writeToItem(PropertysetItem newValue) {
+        this.propertysetItem = newValue;
+    }
+
+    @Override
+    public PropertysetItem readFromItem() {
+        if (this.propertysetItem == null) {
+            return new PropertysetItem();
+        }
+        return this.propertysetItem;
     }
 
 }

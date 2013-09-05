@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.basic;
+package info.magnolia.ui.form.field.transformer.basic;
 
 import static org.junit.Assert.*;
 
@@ -54,7 +54,7 @@ import org.junit.Test;
 /**
  * .
  */
-public class OptionGroupPropertyHandlerTest extends RepositoryTestCase {
+public class OptionGroupTransformerTest extends RepositoryTestCase {
     private Node rootNode;
     private final String propertyName = "propertyName";
     private OptionGroupFieldDefinition definition = new OptionGroupFieldDefinition();
@@ -77,15 +77,15 @@ public class OptionGroupPropertyHandlerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, "stringValue");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        OptionGroupPropertyHandler<String> handler = new OptionGroupPropertyHandler<String>(rootItem, definition, String.class.getName());
+        OptionGroupTransformer<String> handler = new OptionGroupTransformer<String>(rootItem, definition, String.class);
 
         // WHEN
-        Object value = handler.readFromDataSourceItem();
+        Object value = handler.readFromItem();
 
         // THEN
         assertNotNull(value);
         assertTrue(value instanceof String);
-        assertEquals(rootNode.getProperty(propertyName).getString(), (String) value);
+        assertEquals(rootNode.getProperty(propertyName).getString(), value);
         assertNotNull(rootItem.getItemProperty(propertyName));
         assertEquals(String.class, rootItem.getItemProperty(propertyName).getType());
         assertEquals(rootNode.getProperty(propertyName).getString(), rootItem.getItemProperty(propertyName).getValue());
@@ -97,10 +97,10 @@ public class OptionGroupPropertyHandlerTest extends RepositoryTestCase {
         definition.setMultiselect(true);
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        OptionGroupPropertyHandler<String> handler = new OptionGroupPropertyHandler<String>(rootItem, definition, String.class.getName());
+        OptionGroupTransformer<String> handler = new OptionGroupTransformer<String>(rootItem, definition, String.class);
 
         // WHEN
-        Object value = handler.readFromDataSourceItem();
+        Object value = handler.readFromItem();
 
         // THEN
         assertNotNull(value);
@@ -114,10 +114,10 @@ public class OptionGroupPropertyHandlerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, new String[] { "a", "b", "c" });
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        OptionGroupPropertyHandler<String> handler = new OptionGroupPropertyHandler<String>(rootItem, definition, String.class.getName());
+        OptionGroupTransformer<String> handler = new OptionGroupTransformer<String>(rootItem, definition, String.class);
 
         // WHEN
-        Object value = handler.readFromDataSourceItem();
+        Object value = handler.readFromItem();
 
         // THEN
         assertNotNull(value);

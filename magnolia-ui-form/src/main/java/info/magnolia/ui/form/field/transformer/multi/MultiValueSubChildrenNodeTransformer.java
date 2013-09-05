@@ -31,11 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.multi;
+package info.magnolia.ui.form.field.transformer.multi;
 
 import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -50,39 +49,33 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
+import com.vaadin.data.util.PropertysetItem;
 
 /**
- * Sub Nodes implementation of {@link ListHandler}.<br>
- * Store the list of values as subNodes.<br>
- * Node structure:
- * <ul>
- * <li>root
- * <ul>
- * <li>childNode (nodeName = subNodeName)
- * <ul>
- * <li>valueNode1 (nodeName = 20 first char of the related value) <br>
- * valueNode1.listValue (propertyName = subNodeName)</li>
- * </ul>
- * <ul>
- * <li>valueNode2 (nodeName = 20 first char of the related value) <br>
- * valueNode2.listValue (propertyName = subNodeName)</li>
- * </ul>
- * </li>
- * </ul>
- * </ul>
+ * Sub Nodes implementation of {@link info.magnolia.ui.form.field.transformer.Transformer} storing and retrieving properties (as {@link PropertysetItem}) displayed in MultiField.<br>
+ * Storage strategy: <br>
+ * - root node (relatedFormItem)<br>
+ * -- main child node (nodeName = field name) <br>
+ * --- child node 1 (used to store the first value of the MultiField as a property)<br>
+ * ---- property1 (store the first value of the MultiField)<br>
+ * --- child node 2 (used to store the second value of the MultiField as a property)<br>
+ * ---- property2 (store the second value of the MultiField)<br>
+ * ...<br>
+ * Main child node : field name <br>
+ * Child node name : 20 first char of the related value <br>
+ * Property name : field name <br>
  * 
  * @param <T> type of the element list.
  */
-public class SubNodesMultiIdentifierHandler<T> extends SubNodesMultiHandler<Property<T>> {
+public class MultiValueSubChildrenNodeTransformer<T> extends MultiValueChildrenNodeTransformer<PropertysetItem> {
 
-    private static final Logger log = LoggerFactory.getLogger(SubNodesMultiIdentifierHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(MultiValueSubChildrenNodePropertiesTransformer.class);
     private String subNodeName;
     private int valueItemNameSize = 20;
 
     @Inject
-    public SubNodesMultiIdentifierHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
-        super(parent, definition, componentProvider);
+    public MultiValueSubChildrenNodeTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type) {
+        super(relatedFormItem, definition, type);
         this.subNodeName = definition.getName();
     }
 
@@ -92,7 +85,7 @@ public class SubNodesMultiIdentifierHandler<T> extends SubNodesMultiHandler<Prop
         try {
             res = getOrCreateChildNode(subNodeName, NodeTypes.Content.NAME);
         } catch (RepositoryException re) {
-            log.warn("Not able to retrieve or create a sub node for the parent node {}", ((JcrNodeAdapter) parent).getItemId());
+            log.warn("Not able to retrieve or create a sub node for the parent node {}", ((JcrNodeAdapter) relatedFormItem).getItemId());
         }
         return res;
     }
@@ -106,9 +99,9 @@ public class SubNodesMultiIdentifierHandler<T> extends SubNodesMultiHandler<Prop
     protected void handleRootitemAndParent(JcrNodeAdapter rootItem) {
         // Attach the child item to the root item
         if (rootItem.getChildren() != null && !rootItem.getChildren().isEmpty()) {
-            ((JcrNodeAdapter) parent).addChild(rootItem);
+            ((JcrNodeAdapter) relatedFormItem).addChild(rootItem);
         } else {
-            ((JcrNodeAdapter) parent).removeChild(rootItem);
+            ((JcrNodeAdapter) relatedFormItem).removeChild(rootItem);
         }
     }
 

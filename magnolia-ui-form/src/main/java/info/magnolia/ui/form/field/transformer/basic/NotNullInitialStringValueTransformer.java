@@ -31,47 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.basic;
+package info.magnolia.ui.form.field.transformer.basic;
 
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 
-import java.util.HashSet;
-import java.util.List;
+import javax.inject.Inject;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
 
 /**
- * Specific OptionGroupField property Handler.<br
- * Vaadin native {@link com.vaadin.ui.OptionGroup} used as root component for configured Option Group Field do not support List, but only Sets.
- * 
- * @param <T>
+ * Implementation of {@link info.magnolia.ui.form.field.transformer.Transformer} that return a empty String it the requested property value do not exist.
  */
-public class OptionGroupPropertyHandler<T> extends BasicPropertyHandler<T> {
+public class NotNullInitialStringValueTransformer extends BasicTransformer<String> {
 
-    private boolean multiselect = false;
-
-
-    public OptionGroupPropertyHandler(Item parent, ConfiguredFieldDefinition definition, String fieldTypeName) {
-        super(parent, definition, fieldTypeName);
-        multiselect = ((OptionGroupFieldDefinition) definition).isMultiselect();
+    @Inject
+    public NotNullInitialStringValueTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<String> type) {
+        super(relatedFormItem, definition, type);
     }
 
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    /**
+     * If the initial property do not exist, do not return a Null.
+     */
     @Override
-    public T readFromDataSourceItem() {
-        T value = super.readFromDataSourceItem();
-        if (!multiselect) {
-            return value;
-        }
-
-        if (value == null) {
-            return (T) new HashSet();
-        } else if (value instanceof List) {
-            return (T) new HashSet((List) value);
-        } else {
-            return null;
-        }
+    public String readFromItem() {
+        String value = super.readFromItem();
+        return (StringUtils.isBlank(value)) ? StringUtils.EMPTY : value;
     }
+
 }

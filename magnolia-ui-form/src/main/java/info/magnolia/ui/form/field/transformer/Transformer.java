@@ -31,30 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property;
+package info.magnolia.ui.form.field.transformer;
 
 import info.magnolia.ui.api.i18n.I18NAwareHandler;
 
 
 /**
  * Base definition for a {@link com.vaadin.data.Property} handler.<br>
- * Implemented Handler have the responsibility to : <br>
+ * Implemented Transformer have the responsibility to : <br>
  * - write : Convert the T newValue to a specific Item format (Single Item property, Multi Item property, Multi sub Items...) <br>
  * - read : Transform a specific Item values (single property, Multi. property, sub Items) to a specified type T. <br>
  * 
  * @param <T> type of the element handled.
  */
-public interface PropertyHandler<T> extends I18NAwareHandler {
+public interface Transformer<T> extends I18NAwareHandler {
 
     /**
      * Convert the T newValue to a specific Item format.<br>
      */
-    void writeToDataSourceItem(T newValue);
+    void writeToItem(T newValue);
 
     /**
      * Transform a specific Item values to a specified type T.<br>
      */
-    T readFromDataSourceItem();
+    T readFromItem();
 
     /**
      * Return true if this Property has to support i18n.

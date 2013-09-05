@@ -31,13 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.multi;
+package info.magnolia.ui.form.field.transformer.multi;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.jcr.wrapper.JCRMgnlPropertiesFilteringNodeWrapper;
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -56,20 +55,34 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
- * Dedicated {@link PropertysetItem} implementation of {@link SubNodesMultiHandler}.<br>
- * This implementation store/retrieve the {@link PropertysetItem} property under the child node.<br>
- * A sub node is created for every {@link PropertysetItem} element of the List.<br>
- * Used in the case of a {@link info.magnolia.ui.form.field.MultiField} contains {@link info.magnolia.ui.form.field.CompositeField} or {@link info.magnolia.ui.form.field.SwitchableField}.<br>
- * In this case, {@link info.magnolia.ui.form.field.CompositeField} or {@link info.magnolia.ui.form.field.SwitchableField} will have to declare a {@link info.magnolia.ui.form.field.property.composite.NoOpCompositeHandler}.
+ * Sub Nodes implementation of {@link info.magnolia.ui.form.field.transformer.Transformer} storing and retrieving properties (as {@link PropertysetItem}) displayed in MultiField.<br>
+ * <b> In opposition to {@link MultiValueChildrenNodeTransformer} this implementation handle multiple properties stored under a child node.</b> <br>
+ * These multiple properties are put/retrieve into/from a {@link PropertysetItem}.<br>
+ * Storage strategy: <br>
+ * - root node (relatedFormItem)<br>
+ * -- main child node (nodeName = field name) <br>
+ * --- child node 1 (used to store the first values set of the MultiField as a property)<br>
+ * ---- property 1 (store the first property of the first value of the MultiField)<br>
+ * ---- property 2 (store the second property of the first value of the MultiField)<br>
+ * ---- property 3 (store the third property of the first value of the MultiField)<br>
+ * ---- ...
+ * --- child node 2 (used to store the second values of the MultiField as a property)<br>
+ * ---- property 1 (store the first property of the second value of the MultiField)<br>
+ * ---- property 2 (store the second property of the second value of the MultiField)<br>
+ * ---- property 3 (store the third property of the second value of the MultiField)<br>
+ * ...<br>
+ * This implementation store/retrieve the {@link PropertysetItem} properties under the child node.<br>
+ * Used in the case of a {@link info.magnolia.ui.form.field.MultiField} contains a {@link info.magnolia.ui.form.field.CompositeField} or a {@link info.magnolia.ui.form.field.SwitchableField}.<br>
+ * In this case, {@link info.magnolia.ui.form.field.CompositeField} or {@link info.magnolia.ui.form.field.SwitchableField} will have to declare a {@link info.magnolia.ui.form.field.transformer.composite.NoOpCompositeTransformer}.
  * 
  * @param <T>.
  */
-public class SubNodesMultiPropertysetItemHandler<T> extends SubNodesMultiHandler<PropertysetItem> {
+public class MultiValueSubChildrenNodePropertiesTransformer<T> extends MultiValueChildrenNodeTransformer<PropertysetItem> {
 
-    private static final Logger log = LoggerFactory.getLogger(SubNodesMultiPropertysetItemHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(MultiValueSubChildrenNodeTransformer.class);
 
-    public SubNodesMultiPropertysetItemHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
-        super(parent, definition, componentProvider);
+    public MultiValueSubChildrenNodePropertiesTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type) {
+        super(relatedFormItem, definition, type);
     }
 
     @Override
@@ -78,7 +91,7 @@ public class SubNodesMultiPropertysetItemHandler<T> extends SubNodesMultiHandler
         try {
             res = getOrCreateChildNode(definition.getName(), NodeTypes.Content.NAME);
         } catch (RepositoryException re) {
-            log.warn("Not able to retrieve or create a sub node for the parent node {}", ((JcrNodeAdapter) parent).getItemId());
+            log.warn("Not able to retrieve or create a sub node for the parent node {}", ((JcrNodeAdapter) relatedFormItem).getItemId());
         }
         return res;
     }
@@ -87,9 +100,9 @@ public class SubNodesMultiPropertysetItemHandler<T> extends SubNodesMultiHandler
     protected void handleRootitemAndParent(JcrNodeAdapter rootItem) {
         // Attach the child item to the root item
         if (rootItem.getChildren() != null && !rootItem.getChildren().isEmpty()) {
-            ((JcrNodeAdapter) parent).addChild(rootItem);
+            ((JcrNodeAdapter) relatedFormItem).addChild(rootItem);
         } else {
-            ((JcrNodeAdapter) parent).removeChild(rootItem);
+            ((JcrNodeAdapter) relatedFormItem).removeChild(rootItem);
         }
     }
 

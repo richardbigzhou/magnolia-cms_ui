@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.multi;
+package info.magnolia.ui.form.field.transformer.multi;
 
 import static org.junit.Assert.*;
 
@@ -40,14 +40,11 @@ import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -58,10 +55,13 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
+
 /**
  * .
  */
-public class MultiValuesPropertyMultiHandlerTest extends RepositoryTestCase {
+public class MultiValueTransformerTest extends RepositoryTestCase {
     private Node rootNode;
     private final String propertyName = "propertyName";
     private MultiFieldDefinition definition = new MultiFieldDefinition();
@@ -89,10 +89,10 @@ public class MultiValuesPropertyMultiHandlerTest extends RepositoryTestCase {
     public void testCreateMultiProperty() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValuesPropertyMultiHandler delegate = new MultiValuesPropertyMultiHandler(parent, definition, new MockComponentProvider());
+        MultiValueTransformer delegate = new MultiValueTransformer(parent, definition, PropertysetItem.class);
 
         // WHEN
-        delegate.writeToDataSourceItem(new ArrayList<String>());
+        delegate.writeToItem(new PropertysetItem());
 
         // THEN
         assertTrue(parent.getItemProperty(propertyName) != null);
@@ -108,27 +108,31 @@ public class MultiValuesPropertyMultiHandlerTest extends RepositoryTestCase {
         String[] values = { "Art", "Dan", "Jen" };
         rootNode.setProperty(propertyName, values);
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValuesPropertyMultiHandler delegate = new MultiValuesPropertyMultiHandler(parent, definition, new MockComponentProvider());
+        MultiValueTransformer delegate = new MultiValueTransformer(parent, definition, PropertysetItem.class);
 
         // WHEN
-        List<String> res = delegate.readFromDataSourceItem();
+        PropertysetItem res = delegate.readFromItem();
 
         // THEN
-        assertEquals(3, res.size());
-        assertTrue(res.contains("Dan"));
+        assertEquals(3, res.getItemPropertyIds().size());
+        assertEquals("Art", res.getItemProperty(0).getValue());
+        assertEquals("Dan", res.getItemProperty(1).getValue());
+        assertEquals("Jen", res.getItemProperty(2).getValue());
     }
 
     @Test
     public void testUpdateMultiStringProperty() throws RepositoryException {
         // GIVEN
         String[] initialValues = { "Art", "Dan", "Jen" };
-        String[] newValues = { "Pig", "Ph" };
+        PropertysetItem newValues = new PropertysetItem();
+        newValues.addItemProperty(0, new ObjectProperty<String>("Pig"));
+        newValues.addItemProperty(1, new ObjectProperty<String>("Ph"));
         rootNode.setProperty(propertyName, initialValues);
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValuesPropertyMultiHandler delegate = new MultiValuesPropertyMultiHandler(parent, definition, new MockComponentProvider());
+        MultiValueTransformer delegate = new MultiValueTransformer(parent, definition, PropertysetItem.class);
 
         // WHEN
-        delegate.writeToDataSourceItem(Arrays.asList(newValues));
+        delegate.writeToItem(newValues);
 
         // THEN
         assertTrue(parent.getItemProperty(propertyName) != null);
@@ -152,14 +156,16 @@ public class MultiValuesPropertyMultiHandlerTest extends RepositoryTestCase {
         PropertyUtil.setProperty(rootNode, propertyName, propertyValue);
 
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        MultiValuesPropertyMultiHandler delegate = new MultiValuesPropertyMultiHandler(parent, definition, new MockComponentProvider());
+        MultiValueTransformer delegate = new MultiValueTransformer(parent, definition, PropertysetItem.class);
 
         // WHEN
-        List<Long> res = delegate.readFromDataSourceItem();
+        PropertysetItem res = delegate.readFromItem();
 
         // THEN
-        assertEquals(3, res.size());
-        assertTrue(res.contains(3l));
+        assertEquals(3, res.getItemPropertyIds().size());
+        assertEquals(1l, res.getItemProperty(0).getValue());
+        assertEquals(3l, res.getItemProperty(1).getValue());
+        assertEquals(2l, res.getItemProperty(2).getValue());
     }
 
 }

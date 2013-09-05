@@ -31,15 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.multi;
+package info.magnolia.ui.form.field.transformer.multi;
 
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.property.AbstractBaseHandler;
-import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -48,44 +48,55 @@ import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.PropertysetItem;
 
 /**
- * SingleProperty implementation of {@link ListHandler}.<br>
- * Store the list of values in a single property as a concatenation of string with a ',' separator.<br>
+ * SingleProperty implementation of {@link info.magnolia.ui.form.field.transformer.Transformer}.<br>
+ * Store the list of values in a single property as a concatenation of string with ',' as separator.<br>
  * Retrieve the single property as a List of String.
  * <b>This handler is implemented for backward capability with Magnolia 4.x. <br>
  * As for Magnolia 4.x, the current implementation only support a list of String</b>
  */
-public class CommaSeparatedMultiHandler extends AbstractBaseHandler<List<String>> implements PropertyHandler<List<String>> {
-
+public class MultiValueJSONTransformer extends BasicTransformer<PropertysetItem> {
 
     @Inject
-    public CommaSeparatedMultiHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
-        super(parent, definition, componentProvider);
+    public MultiValueJSONTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type) {
+        super(relatedFormItem, definition, type);
     }
 
     @Override
-    public void writeToDataSourceItem(List<String> newValue) {
+    public void writeToItem(PropertysetItem newValue) {
         Property<String> property = getOrCreateProperty(String.class, null);
         property.setValue(StringUtils.join(removeComma(newValue), ","));
     }
 
     @Override
-    public List<String> readFromDataSourceItem() {
+    public PropertysetItem readFromItem() {
+        PropertysetItem newValues = new PropertysetItem();
+
         String defaultValue = StringUtils.isEmpty(definition.getDefaultValue()) ? "" : definition.getDefaultValue();
         Property<String> property = getOrCreateProperty(String.class, defaultValue);
         String value = property.getValue();
-        return Arrays.asList(value.split(","));
+        List<String> list = Arrays.asList(value.split(","));
+        int position = 0;
+        for (String element : list) {
+            newValues.addItemProperty(position, new DefaultProperty(element));
+            position += 1;
+        }
+        return newValues;
     }
 
     /**
      * Simple utility method that remove the , for every elements of a String List.
      */
-    private List<String> removeComma(List<String> newValue) {
+    private List<String> removeComma(PropertysetItem newValue) {
         List<String> res = new ArrayList<String>();
-        for (String element : newValue) {
-            element = StringUtils.replace(element, ",", " ");
-            res.add(element);
+        if (newValue != null) {
+            Iterator<?> it = newValue.getItemPropertyIds().iterator();
+            while (it.hasNext()) {
+                String element = newValue.getItemProperty(it.next()).getValue().toString();
+                res.add(StringUtils.replace(element, ",", " "));
+            }
         }
         return res;
     }

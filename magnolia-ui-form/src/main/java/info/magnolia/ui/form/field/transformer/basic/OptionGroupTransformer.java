@@ -31,16 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property;
+package info.magnolia.ui.form.field.transformer.basic;
+
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
+
+import java.util.HashSet;
+import java.util.List;
+
+import com.vaadin.data.Item;
 
 /**
- * Custom Property definition.
- * 
+ * Specific OptionGroupField {@link info.magnolia.ui.form.field.transformer.Transformer}.<br>
+ * Vaadin native {@link com.vaadin.ui.OptionGroup} used as root component of our configured Option Group Field do not support List, but only Sets.
+ *
  * @param <T>
  */
-public interface CustomPropertyType<T> {
+public class OptionGroupTransformer<T> extends BasicTransformer<T> {
 
-    PropertyHandler<T> getHandler();
+    private boolean multiselect = false;
+
+    public OptionGroupTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<T> type) {
+        super(relatedFormItem, definition, type);
+        multiselect = ((OptionGroupFieldDefinition) definition).isMultiselect();
+    }
 
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
+    public T readFromItem() {
+        T value = super.readFromItem();
+        if (!multiselect) {
+            return value;
+        }
+
+        if (value == null) {
+            return (T) new HashSet();
+        } else if (value instanceof List) {
+            return (T) new HashSet((List) value);
+        } else {
+            return null;
+        }
+    }
 }

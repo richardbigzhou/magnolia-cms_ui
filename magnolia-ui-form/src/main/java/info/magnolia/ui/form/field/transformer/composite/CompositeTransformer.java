@@ -31,12 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.composite;
+package info.magnolia.ui.form.field.transformer.composite;
 
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.property.AbstractBaseHandler;
-import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 
 import java.util.Iterator;
 import java.util.List;
@@ -48,7 +46,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
- * Simple {@link PropertyHandler} implementation storing and retrieving properties defined under an Item as {@link PropertysetItem} element.<br>
+ * Default composite field {@link info.magnolia.ui.form.field.transformer.Transformer} implementation storing and retrieving properties defined under an Item as {@link PropertysetItem} element.<br>
  * Storage strategy: <br>
  * - getValue(): <br>
  * -- iterate the fieldsName property and retrieve all stored property.<br>
@@ -57,13 +55,13 @@ import com.vaadin.data.util.PropertysetItem;
  * -- iterate the incoming {@link PropertysetItem}.<br>
  * -- if the related parent item do not contain this property, add it.<br>
  */
-public class SimplePropertyCompositeHandler extends AbstractBaseHandler<PropertysetItem> implements PropertyHandler<PropertysetItem> {
+public class CompositeTransformer extends BasicTransformer<PropertysetItem> {
 
     protected List<String> fieldsName;
     private String propertyPrefix;
 
-    public SimplePropertyCompositeHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider, List<String> fieldsName) {
-        super(parent, definition, componentProvider);
+    public CompositeTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, List<String> fieldsName) {
+        super(relatedFormItem, definition, type);
         this.fieldsName = fieldsName;
         this.propertyPrefix = createPropertyPrefix(definition);
     }
@@ -75,29 +73,28 @@ public class SimplePropertyCompositeHandler extends AbstractBaseHandler<Property
         return definition.getName();
     }
 
-
     @Override
-    public void writeToDataSourceItem(PropertysetItem newValues) {
+    public void writeToItem(PropertysetItem newValues) {
         // Get iterator.
         Iterator<?> propertyNames = newValues.getItemPropertyIds().iterator();
 
         while (propertyNames.hasNext()) {
             String propertyName = (String) propertyNames.next();
             String compositePropertyName = getCompositePropertyName(propertyName);
-            Property<?> property = parent.getItemProperty(compositePropertyName);
+            Property<?> property = relatedFormItem.getItemProperty(compositePropertyName);
             if (property == null) {
-                parent.addItemProperty(compositePropertyName, newValues.getItemProperty(propertyName));
+                relatedFormItem.addItemProperty(compositePropertyName, newValues.getItemProperty(propertyName));
             }
         }
     }
 
     @Override
-    public PropertysetItem readFromDataSourceItem() {
+    public PropertysetItem readFromItem() {
         PropertysetItem newValues = new PropertysetItem();
         for (String propertyName : fieldsName) {
             String compositePropertyName = getCompositePropertyName(propertyName);
-            if (parent.getItemProperty(compositePropertyName) != null) {
-                newValues.addItemProperty(propertyName, parent.getItemProperty(compositePropertyName));
+            if (relatedFormItem.getItemProperty(compositePropertyName) != null) {
+                newValues.addItemProperty(propertyName, relatedFormItem.getItemProperty(compositePropertyName));
             }
         }
         return newValues;

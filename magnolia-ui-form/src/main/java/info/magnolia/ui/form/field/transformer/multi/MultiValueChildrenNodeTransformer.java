@@ -31,15 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.multi;
+package info.magnolia.ui.form.field.transformer.multi;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.property.AbstractBaseHandler;
-import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -47,7 +45,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -60,27 +58,34 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.util.PropertysetItem;
 
 /**
- * Generic List Sub Nodes {@link info.magnolia.ui.form.field.property.PropertyHandler} implementation.<br>
- * Structure: <br>
- * - root node <br>
- * -- child1 <br>
- * --- property1<br>
- * -- child2 <br>
- * --- property2 ...<br>
+ * Sub Nodes implementation of {@link info.magnolia.ui.form.field.transformer.Transformer} storing and retrieving properties (as {@link PropertysetItem}) displayed in MultiField.<br>
+ * Storage strategy: <br>
+ * - root node (relatedFormItem)<br>
+ * -- child node 1 (used to store the first value of the MultiField as a property)<br>
+ * --- property1 (store the first value of the MultiField)<br>
+ * -- child node 2 (used to store the second value of the MultiField as a property)<br>
+ * --- property2 (store the second value of the MultiField)<br>
+ * ...<br>
+ * Each element of the MultiField is stored in a property located in a child node of the root node. <br>
+ * Child node name : Incremental number (00, 01,....) <br>
+ * Property name : field name <br>
+ * Override {@link MultiValueChildrenNodeTransformer#createChildItemName(Set, Object, JcrNodeAdapter)} to define the child node name.<br>
+ * Override {@link MultiValueChildrenNodeTransformer#setChildValuePropertyName(String)} to change the property name used to store the MultiField value element.
  * 
  * @param <T> type of the element list.
  */
-public class SubNodesMultiHandler<T> extends AbstractBaseHandler<List<T>> implements PropertyHandler<List<T>> {
+public class MultiValueChildrenNodeTransformer<T> extends BasicTransformer<PropertysetItem> {
 
-    private static final Logger log = LoggerFactory.getLogger(SubNodesMultiHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(MultiValueChildrenNodeTransformer.class);
 
     private String childNodeType = NodeTypes.Content.NAME;
     private String childValuePropertyName;
 
-    public SubNodesMultiHandler(Item parent, ConfiguredFieldDefinition definition, ComponentProvider componentProvider) {
-        super(parent, definition, componentProvider);
+    public MultiValueChildrenNodeTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type) {
+        super(relatedFormItem, definition, type);
         this.childValuePropertyName = definition.getName();
     }
 
@@ -95,52 +100,75 @@ public class SubNodesMultiHandler<T> extends AbstractBaseHandler<List<T>> implem
     /**
      * Retrieve a list of values based on the sub nodes.<br>
      * - get a list of childNodes to handle <br>
-     * - for each childNode retrieve the value to set to the list <br>
-     * If no childNodes are present, return an empty List.
+     * - for each childNode retrieve the value to set to the {@link PropertysetItem} <br>
+     * If no childNodes are present, return an empty {@link PropertysetItem}.
      */
     @Override
-    public List<T> readFromDataSourceItem() {
-        LinkedList<T> res = new LinkedList<T>();
+    public PropertysetItem readFromItem() {
+        PropertysetItem newValues = new PropertysetItem();
         JcrNodeAdapter rootItem = getRootItem();
         // Get a list of childNodes
-        List<Node> childNodes = getStoredChildNodes((JcrNodeAdapter) rootItem);
+        List<Node> childNodes = getStoredChildNodes(rootItem);
+        int position = 0;
         for (Node child : childNodes) {
             T value = getValueFromChildNode(child);
             if (value != null) {
-                res.add(value);
+                newValues.addItemProperty(position, new DefaultProperty(value));
+                position += 1;
             }
         }
-        return res;
+        return newValues;
+    }
+
+
+    /**
+     * Create new Child Items based on the newValues. <br>
+     * - on the rootItem, create or update childItems based on the newValues (one ChildItem per new Value).
+     * - remove the no more existing child from the source Item.
+     */
+    @Override
+    public void writeToItem(PropertysetItem newValue) {
+        // Get root Item
+        JcrNodeAdapter rootItem = getRootItem();
+        rootItem.getChildren().clear();
+        // Add childItems to the rootItem
+        setNewChildItem(rootItem, newValue);
+        // Remove all no more existing children
+        detachNoMoreExistingChildren(rootItem);
+        // Attach or Detach rootItem from parent
+        handleRootitemAndParent(rootItem);
     }
 
     /**
-     * Define the root Item use in order to set the List element as SubNodes.
+     * Define the root Item used in order to set the SubNodes list.
      */
     protected JcrNodeAdapter getRootItem() {
-        return (JcrNodeAdapter) parent;
+        return (JcrNodeAdapter) relatedFormItem;
     }
 
     /**
-     * Get all childNodes of parent passing the {@link Predicate} created by {@link SubNodesMultiHandler#createPredicateToEvaluateChildNode()} or <br>
+     * Get all childNodes of parent passing the {@link Predicate} created by {@link MultiValueChildrenNodeTransformer#createPredicateToEvaluateChildNode()} or <br>
      * with type {@link NodeTypes.ContentNode.NAME} if the {@link Predicate} is null.
      */
     protected List<Node> getStoredChildNodes(JcrNodeAdapter parent) {
+        List<Node> res = new ArrayList<Node>();
         try {
             if (!(parent instanceof JcrNewNodeAdapter) && parent.getJcrItem().hasNodes()) {
                 Predicate predicate = createPredicateToEvaluateChildNode();
                 if (predicate != null) {
-                    return NodeUtil.asList(NodeUtil.getNodes(parent.getJcrItem(), predicate));
+                    res = NodeUtil.asList(NodeUtil.getNodes(parent.getJcrItem(), predicate));
                 } else {
-                    return NodeUtil.asList(NodeUtil.getNodes(parent.getJcrItem(), childNodeType));
+                    res = NodeUtil.asList(NodeUtil.getNodes(parent.getJcrItem(), childNodeType));
                 }
             }
         } catch (RepositoryException re) {
             log.warn("Not able to access the Child Nodes of the following Node Identifier {}", parent.getItemId(), re);
         }
-        return new ArrayList<Node>();
+        return res;
     }
 
     /**
+     * Create a {@link Predicate} used to evaluate the child node of the root to handle.<br>
      * Only return child node that have a number name's.
      */
     protected Predicate createPredicateToEvaluateChildNode() {
@@ -174,30 +202,15 @@ public class SubNodesMultiHandler<T> extends AbstractBaseHandler<List<T>> implem
         return null;
     }
 
-    /**
-     * Create new Child Items based on the newValues. <br>
-     * - on the rootItem, create or update childItems based on the newValues (one ChildItem per new Value).
-     * - remove the no more existing child from the source Item.
-     */
-    @Override
-    public void writeToDataSourceItem(List<T> newValue) {
-        // Get root Item
-        JcrNodeAdapter rootItem = getRootItem();
-        rootItem.getChildren().clear();
-        // Add childItems to the rootItem
-        setNewChildItem(rootItem, newValue);
-        // Remove all no more existing children
-        detachNoMoreExistingChildren(rootItem);
-        // Attach or Detach rootItem from parent
-        handleRootitemAndParent(rootItem);
-    }
 
-    protected void setNewChildItem(JcrNodeAdapter rootItem, List<T> newValue) {
+    protected void setNewChildItem(JcrNodeAdapter rootItem, PropertysetItem newValue) {
         // Used to build the ChildItemName;
         Set<String> childNames = new HashSet<String>();
         Node rootNode = rootItem.getJcrItem();
         try {
-            for (T value : newValue) {
+            Iterator<?> it = newValue.getItemPropertyIds().iterator();
+            while (it.hasNext()) {
+                T value = (T) newValue.getItemProperty(it.next()).getValue();
                 // Create the child Item Name
                 String childName = createChildItemName(childNames, value, rootItem);
                 // Get or create the childItem
@@ -278,6 +291,26 @@ public class SubNodesMultiHandler<T> extends AbstractBaseHandler<List<T>> implem
 
     public void setChildValuePropertyName(String newName) {
         this.childValuePropertyName = newName;
+    }
+
+    /**
+     * Retrieve or create a child node as {@link JcrNodeAdapter}.
+     */
+    protected JcrNodeAdapter getOrCreateChildNode(String childNodeName, String childNodeType) throws RepositoryException {
+        JcrNodeAdapter child = null;
+        if (!(relatedFormItem instanceof JcrNodeAdapter)) {
+            log.warn("Try to retrieve a Jcr Item from a Non Jcr Item Adapter. Will retrun null");
+            return null;
+        }
+        Node node = ((JcrNodeAdapter) relatedFormItem).getJcrItem();
+        if (node.hasNode(childNodeName) && !(relatedFormItem instanceof JcrNewNodeAdapter)) {
+            child = new JcrNodeAdapter(node.getNode(childNodeName));
+            child.setParent(((JcrNodeAdapter) relatedFormItem));
+        } else {
+            child = new JcrNewNodeAdapter(node, NodeTypes.Content.NAME, childNodeName);
+            child.setParent(((JcrNodeAdapter) relatedFormItem));
+        }
+        return child;
     }
 
 }

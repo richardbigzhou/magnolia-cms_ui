@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.property.multi;
+package info.magnolia.ui.form.field.transformer.composite;
 
 import static org.junit.Assert.*;
 
@@ -39,16 +39,14 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.test.mock.MockComponentProvider;
-import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
+import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.jcr.Node;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -56,13 +54,16 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.vaadin.data.util.PropertysetItem;
+
 /**
  * .
  */
-public class CommaSeparatedMultiHandlerTest extends RepositoryTestCase {
+public class CompositeTransformerTest extends RepositoryTestCase {
     private Node rootNode;
-    private final String propertyName = "propertyName";
-    private MultiFieldDefinition definition = new MultiFieldDefinition();
+    private final String fieldName = "fieldName";
+    private List<String> fieldsName = Arrays.asList("field1", "field2", "field3");
+    private CompositeFieldDefinition definition = new CompositeFieldDefinition();
 
     @Override
     @Before
@@ -71,74 +72,68 @@ public class CommaSeparatedMultiHandlerTest extends RepositoryTestCase {
         // Init parent Node
         String nodeProperties =
                 "/parent.@type=mgnl:content\n" +
-                        "/parent.propertyString=hello\n" +
-                        "/parent/child.@type=mgnl:content\n" +
-                        "/parent/child.propertyString=chield1\n";
+                        "/parent.fieldNamefield2=hello2\n";
 
         Session session = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
         new PropertiesImportExport().createNodes(session.getRootNode(), IOUtils.toInputStream(nodeProperties));
         session.save();
-        definition.setName(propertyName);
+        definition.setName(fieldName);
 
         rootNode = session.getRootNode().getNode("parent");
     }
 
     @Test
-    public void testCreateMultiProperty() throws RepositoryException {
+    public void testWriteMultiProperty() throws RepositoryException {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        CommaSeparatedMultiHandler delegate = new CommaSeparatedMultiHandler(parent, definition, new MockComponentProvider());
+        CompositeTransformer delegate = new CompositeTransformer(parent, definition, PropertysetItem.class, fieldsName);
+        PropertysetItem itemSet = new PropertysetItem();
+        itemSet.addItemProperty("field1", new DefaultProperty<String>("hello1"));
 
         // WHEN
-        delegate.writeToDataSourceItem(new ArrayList<String>(Arrays.asList("Jav", "ta")));
+        delegate.writeToItem(itemSet);
+        parent.applyChanges();
 
         // THEN
-        assertTrue(parent.getItemProperty(propertyName) != null);
-        assertTrue(parent.getItemProperty(propertyName).getValue() instanceof String);
-        Node parentNode = parent.applyChanges();
-        assertTrue(parentNode.hasProperty(propertyName));
-        assertTrue(!parentNode.getProperty(propertyName).isMultiple());
-        assertEquals("Jav,ta", parentNode.getProperty(propertyName).getValue().getString());
+        assertTrue(rootNode.hasProperty("fieldNamefield1"));
+        assertEquals("hello1", rootNode.getProperty("fieldNamefield1").getString());
+        assertTrue(rootNode.hasProperty("fieldNamefield2"));
+        assertEquals("hello2", rootNode.getProperty("fieldNamefield2").getString());
     }
 
     @Test
     public void testReadMultiProperty() throws RepositoryException {
         // GIVEN
-        String values = "Art,Dan,Jen";
-        rootNode.setProperty(propertyName, values);
+
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        CommaSeparatedMultiHandler delegate = new CommaSeparatedMultiHandler(parent, definition, new MockComponentProvider());
+        CompositeTransformer delegate = new CompositeTransformer(parent, definition, PropertysetItem.class, fieldsName);
 
         // WHEN
-        List<String> res = delegate.readFromDataSourceItem();
+        PropertysetItem res = delegate.readFromItem();
 
         // THEN
-        assertEquals(3, res.size());
-        assertTrue(res.contains("Dan"));
-        assertTrue(res.contains("Jen"));
-        assertTrue(res.contains("Art"));
+        assertNotNull(res.getItemProperty("field2"));
+        assertEquals("hello2", res.getItemProperty("field2").getValue());
 
     }
 
     @Test
-    public void testUpdateMultiProperty() throws RepositoryException {
+    public void testReadWriteMultiProperty() throws RepositoryException {
         // GIVEN
-        String initialValues = "Art,Dan,Jen";
-        String newValues = "Pig,Ph";
-        rootNode.setProperty(propertyName, initialValues);
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
-        CommaSeparatedMultiHandler delegate = new CommaSeparatedMultiHandler(parent, definition, new MockComponentProvider());
+        CompositeTransformer delegate = new CompositeTransformer(parent, definition, PropertysetItem.class, fieldsName);
 
         // WHEN
-        delegate.writeToDataSourceItem(Arrays.asList(newValues.split(",")));
+        PropertysetItem itemSet = delegate.readFromItem();
+        itemSet.addItemProperty("field1", new DefaultProperty<String>("hello1"));
+        itemSet.getItemProperty("field2").setValue(null);
+        delegate.writeToItem(itemSet);
+        parent.applyChanges();
 
         // THEN
-        assertTrue(parent.getItemProperty(propertyName) != null);
-        assertTrue(parent.getItemProperty(propertyName).getValue() instanceof String);
-        Node parentNode = parent.applyChanges();
-        assertTrue(parentNode.hasProperty(propertyName));
-        Property p = parentNode.getProperty(propertyName);
-        assertTrue(!p.isMultiple());
-        assertEquals("Pig,Ph", p.getValue().getString());
+        assertTrue(rootNode.hasProperty("fieldNamefield1"));
+        assertEquals("hello1", rootNode.getProperty("fieldNamefield1").getString());
+        assertFalse(rootNode.hasProperty("fieldNamefield2"));
     }
+
 }
