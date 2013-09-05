@@ -38,12 +38,10 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.form.AbstractFormItem;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.form.field.definition.PropertyBuilder;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
-import info.magnolia.ui.form.field.property.CustomPropertyType;
-import info.magnolia.ui.form.field.property.PropertyHandler;
-import info.magnolia.ui.form.field.property.basic.BasicProperty;
-import info.magnolia.ui.form.field.property.basic.BasicPropertyHandler;
+import info.magnolia.ui.form.field.transformer.TransformedProperty;
+import info.magnolia.ui.form.field.transformer.Transformer;
+import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
 import info.magnolia.ui.form.validator.factory.FieldValidatorFactory;
 import info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory;
@@ -174,38 +172,28 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
 
     /**
      * Initialize the property used as field's Datasource.<br>
-     * If no propertyBuilder is configure to the field definition, use the default handler and property: <br>
-     * - {@link BasicPropertyHandler} <br>
-     * - {@link BasicProperty}.
+     * If no {@link Transformer} is configure to the field definition, use the default {@link BasicTransformer} <br>
      */
+
     @SuppressWarnings("unchecked")
     private Property<?> initializeProperty() {
+        Class<? extends Transformer<?>> transformerClass = definition.getTransformerClass();
 
-        Class<? extends PropertyHandler<?>> handlerClass = null;
-        Class<? extends CustomPropertyType<?>> propertyTypeClass = null;
-
-        PropertyBuilder propertyBuilder = definition.getPropertyBuilder();
-        if (propertyBuilder != null) {
-            handlerClass = propertyBuilder.getPropertyHandler();
-            propertyTypeClass = propertyBuilder.getPropertyType();
+        if (transformerClass == null) {
+            // TODO explain why down cast
+            transformerClass = (Class<? extends Transformer<?>>) (Object) BasicTransformer.class;
         }
-        if (handlerClass == null || propertyTypeClass == null) {
-            // Set Default
-            handlerClass = (Class<? extends PropertyHandler<?>>) (Object) BasicPropertyHandler.class;
-            propertyTypeClass = (Class<? extends CustomPropertyType<?>>) (Object) BasicProperty.class;
-        }
-        Class<?> type = getFieldType();
-        PropertyHandler<?> handler = initializePropertyHandler(handlerClass, type);
+        Transformer<?> transformer = initializeTransformer(transformerClass);
 
-        return (Property<?>) this.componentProvider.newInstance(propertyTypeClass, handler, type);
+        return new TransformedProperty(transformer, getFieldType());
     }
 
     /**
-     * Exposed method used by field's factory to initialize the property handler.<br>
+     * Exposed method used by field's factory to initialize the property {@link Transformer}.<br>
      * This allows to add additional constructor parameter if needed.
      */
-    protected PropertyHandler<?> initializePropertyHandler(Class<? extends PropertyHandler<?>> handlerClass, Class<?> type) {
-        return this.componentProvider.newInstance(handlerClass, item, definition, componentProvider, type.getName());
+    protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
+        return this.componentProvider.newInstance(transformerClass, item, definition, getFieldType());
     }
 
     /**
@@ -218,26 +206,24 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         if (getDefaultFieldType() != null) {
             return getDefaultFieldType();
         }
-        return getDefinitiontType();
+        return getDefinitionType();
     }
 
     /**
      * @return Class Type defined into the field definition. If null, return String.
      */
-    protected Class<?> getDefinitiontType() {
+    protected Class<?> getDefinitionType() {
         if (StringUtils.isNotBlank(definition.getType())) {
             return DefaultPropertyUtil.getFieldTypeClass(definition.getType());
         }
         return String.class;
     }
 
-
+    /**
+     * Exposed method used by field's factory in order to define a default Field Type (decoupled from the definition).
+     */
     protected Class<?> getDefaultFieldType() {
         return null;
-    }
-
-    public String getPropertyName() {
-        return definition.getName();
     }
 
     @Override
