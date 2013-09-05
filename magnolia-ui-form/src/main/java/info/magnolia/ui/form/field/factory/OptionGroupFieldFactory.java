@@ -71,7 +71,7 @@ public class OptionGroupFieldFactory extends SelectFieldFactory<OptionGroupField
     @Override
     protected Class<?> getDefaultFieldType() {
         if (!select.isMultiSelect()) {
-            return String.class;
+            return null;
         } else {
             return HashSet.class;
         }

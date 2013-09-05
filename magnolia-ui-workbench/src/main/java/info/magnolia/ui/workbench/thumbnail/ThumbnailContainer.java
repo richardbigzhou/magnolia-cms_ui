@@ -35,6 +35,7 @@ package info.magnolia.ui.workbench.thumbnail;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
@@ -134,10 +135,10 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
 
     /**
      * @return a List of JCR identifiers for all the nodes recursively found
-     *         under <code>initialPath</code>. This method is called in {@link info.magnolia.ui.workbench.thumbnail.ThumbnailViewImpl#refresh()}. You can override it, if
-     *         you need a different strategy than the default one to fetch the
-     *         identifiers of the nodes for which thumbnails need to be
-     *         displayed.
+     * under <code>initialPath</code>. This method is called in {@link info.magnolia.ui.workbench.thumbnail.ThumbnailViewImpl#refresh()}. You can override it, if
+     * you need a different strategy than the default one to fetch the
+     * identifiers of the nodes for which thumbnails need to be
+     * displayed.
      * @see info.magnolia.ui.vaadin.layout.LazyThumbnailLayout#refresh()
      */
     protected List<String> getAllIdentifiers(final String workspaceName) {
@@ -239,7 +240,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
 
     /**
      * @return a String containing the node types to be searched for in a query. All node types declared in a workbench definition are returned
-     * unless their <code>hideInList</code> property is true. E.g. assuming a node types declaration like the following
+     * unless their <code>hideInList</code> property is true or they are of type <code>mgnl:folder</code>. E.g. assuming a node types declaration like the following
      * 
      * <pre>
      * ...
@@ -261,7 +262,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
     protected String getQueryWhereClauseNodeTypes() {
         List<String> defs = new ArrayList<String>();
         for (NodeTypeDefinition type : workbenchDefinition.getNodeTypes()) {
-            if (type.isHideInList()) {
+            if (type.isHideInList() || NodeTypes.Folder.NAME.equals(type.getName())) {
                 log.debug("Skipping {} node type. Nodes of such type won't be searched for.", type.getName());
                 continue;
             }

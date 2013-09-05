@@ -40,28 +40,21 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Component.Event;
 
 /**
- * An event sent when editing a favorite entry.
+ * An event sent when selecting a favorite item (either a group or an entry).
  */
 @SuppressWarnings("serial")
-public final class EditingEvent extends Event implements Serializable {
+public final class SelectedEvent extends Event implements Serializable {
 
-    private boolean editing;
-
-    public EditingEvent(Component source, boolean editing) {
+    public SelectedEvent(Component source) {
         super(source);
-        this.editing = editing;
     }
 
-    public boolean isEditing() {
-        return editing;
-    }
-
-    public static final Method EDITING_METHOD;
+    public static final Method SELECTED_METHOD;
 
     static {
         try {
-            EDITING_METHOD = EditingListener.class.getDeclaredMethod(
-                    "onEdit", new Class[] { EditingEvent.class });
+            SELECTED_METHOD = SelectedListener.class.getDeclaredMethod(
+                    "onSelected", new Class[] { SelectedEvent.class });
         } catch (final java.lang.NoSuchMethodException e) {
             // This should never happen
             throw new java.lang.RuntimeException();
@@ -69,25 +62,25 @@ public final class EditingEvent extends Event implements Serializable {
     }
 
     /**
-     * EditableListener.
+     * SelectedListener.
      */
-    public interface EditingListener extends Serializable {
-        void onEdit(EditingEvent event);
+    public interface SelectedListener extends Serializable {
+        void onSelected(SelectedEvent event);
     }
 
     /**
-     * EditingListener.
+     * SelectedNotifier.
      */
-    public interface EditingNotifier extends Serializable {
+    public interface SelectedNotifier extends Serializable {
         /**
-         * Register a listener to handle {@link EditingEvent}s.
+         * Register a listener to handle {@link SelectedEvent}s.
          */
-        void addEditingListener(EditingListener listener);
+        void addSelectedListener(SelectedListener listener);
 
         /**
          * Removes an EditingListener.
          */
-        void removeEditingListener(EditingListener listener);
+        void removeSelectedListener(SelectedListener listener);
     }
 
 }

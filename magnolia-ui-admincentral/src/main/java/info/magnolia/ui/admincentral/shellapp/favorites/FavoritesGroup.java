@@ -35,6 +35,7 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingListener;
+import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedListener;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
@@ -64,7 +65,7 @@ import com.vaadin.ui.TextField;
 /**
  * Favorite group.
  */
-public final class FavoritesGroup extends CssLayout {
+public final class FavoritesGroup extends CssLayout implements SelectedEvent.SelectedNotifier {
 
     private TextField titleField;
     private NativeButton editButton;
@@ -77,6 +78,8 @@ public final class FavoritesGroup extends CssLayout {
     private EnterKeyShortcutListener enterKeyShortcutListener;
     private EscapeKeyShortcutListener escapeKeyShortcutListener;
     private Shell shell;
+    private FavoritesView view;
+    private Component currentlySelectedFavEntry;
 
     /**
      * Creates an empty placeholder group.
@@ -85,8 +88,9 @@ public final class FavoritesGroup extends CssLayout {
         addStyleName("no-group");
     }
 
-    public FavoritesGroup(final AbstractJcrNodeAdapter favoritesGroup, final FavoritesView.Listener listener, final Shell shell) {
+    public FavoritesGroup(final AbstractJcrNodeAdapter favoritesGroup, final FavoritesView.Listener listener, final Shell shell, final FavoritesView view) {
         this.shell = shell;
+        this.view = view;
 
         addStyleName("favorites-group");
         construct(favoritesGroup, listener);
@@ -96,6 +100,14 @@ public final class FavoritesGroup extends CssLayout {
         for (String key : nodeAdapters.keySet()) {
             final AbstractJcrNodeAdapter fav = nodeAdapters.get(key);
             final FavoritesEntry favEntry = new FavoritesEntry(fav, listener, shell);
+            favEntry.addSelectedListener(new SelectedListener() {
+
+                @Override
+                public void onSelected(SelectedEvent event) {
+                    currentlySelectedFavEntry = event.getComponent();
+                    view.updateSelection(event.getComponent());
+                }
+            });
             favEntry.setGroup(this.relPath);
             final EntryDragAndDropWrapper wrapper = new EntryDragAndDropWrapper(favEntry, listener);
             favEntry.addEditingListener(new EditingListener() {
@@ -107,7 +119,6 @@ public final class FavoritesGroup extends CssLayout {
                     } else {
                         wrapper.setDragStartMode(DragStartMode.WRAPPER);
                     }
-
                 }
             });
             addComponent(wrapper);
@@ -132,12 +143,24 @@ public final class FavoritesGroup extends CssLayout {
             Component component = components.next();
             if (component instanceof EntryDragAndDropWrapper) {
                 component = ((EntryDragAndDropWrapper) component).getWrappedComponent();
-            }
-            if(component instanceof FavoritesEntry) {
+            } else if (component instanceof FavoritesEntry) {
+                if (component == currentlySelectedFavEntry) {
+                    continue;
+                }
                 FavoritesEntry fav = (FavoritesEntry) component;
                 fav.reset();
             }
         }
+    }
+
+    @Override
+    public void addSelectedListener(SelectedListener listener) {
+        addListener("onSelected", SelectedEvent.class, listener, SelectedEvent.SELECTED_METHOD);
+    }
+
+    @Override
+    public void removeSelectedListener(SelectedListener listener) {
+        removeListener(SelectedEvent.class, listener, SelectedEvent.SELECTED_METHOD);
     }
 
     private void setEditable(boolean editable) {
@@ -161,6 +184,7 @@ public final class FavoritesGroup extends CssLayout {
         this.selected = selected;
         if (selected) {
             wrapper.addStyleName("selected");
+            fireEvent(new SelectedEvent(this));
         } else {
             wrapper.removeStyleName("selected");
         }

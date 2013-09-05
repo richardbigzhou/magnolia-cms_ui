@@ -43,6 +43,9 @@ import java.util.Set;
  * Models a message. Except for timestamp all fields are optional.
  */
 public class Message implements Cloneable {
+
+    public static final String MESSAGE_VIEW = "messageView";
+
     private String id;
     private final long timestamp;
     private MessageType type;

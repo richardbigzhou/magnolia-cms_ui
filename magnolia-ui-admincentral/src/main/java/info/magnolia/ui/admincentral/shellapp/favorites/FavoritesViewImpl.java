@@ -35,13 +35,13 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingListener;
+import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedListener;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.splitfeed.SplitFeed;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -72,6 +72,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
     private Shell shell;
     private SplitFeed splitPanel = new SplitFeed();
     private Label emptyPlaceHolder = new Label();
+    private Component currentlySelectedFavoriteItem;
 
     @Override
     public String getId() {
@@ -164,12 +165,25 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
                             } else {
                                 wrapper.setDragStartMode(DragStartMode.WRAPPER);
                             }
+                        }
+                    });
+                    favEntry.addSelectedListener(new SelectedListener() {
 
+                        @Override
+                        public void onSelected(SelectedEvent event) {
+                            updateSelection(event.getComponent());
                         }
                     });
                     noGroup.addComponent(wrapper);
                 } else {
-                    FavoritesGroup group = new FavoritesGroup(favoriteAdapter, listener, shell);
+                    FavoritesGroup group = new FavoritesGroup(favoriteAdapter, listener, shell, this);
+                    group.addSelectedListener(new SelectedListener() {
+
+                        @Override
+                        public void onSelected(SelectedEvent event) {
+                            updateSelection(event.getComponent());
+                        }
+                    });
                     splitPanel.getRightContainer().addComponent(group);
                 }
             }
@@ -224,17 +238,24 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
             return;
         }
         favoriteForm.close();
-        noGroup.reset();
-        Iterator<Component> components = splitPanel.getRightContainer().iterator();
-
-        while (components.hasNext()) {
-            Component component = components.next();
-            if (component instanceof EntryDragAndDropWrapper) {
-                component = ((EntryDragAndDropWrapper) component).getWrappedComponent();
-            }
-            if (component instanceof FavoritesGroup) {
-                ((FavoritesGroup) component).reset();
-            }
+        if (currentlySelectedFavoriteItem instanceof FavoritesEntry) {
+            ((FavoritesEntry) currentlySelectedFavoriteItem).reset();
+        } else if (currentlySelectedFavoriteItem instanceof FavoritesGroup) {
+            ((FavoritesGroup) currentlySelectedFavoriteItem).reset();
         }
+        currentlySelectedFavoriteItem = null;
+    }
+
+    @Override
+    public void updateSelection(final Component newSelection) {
+        if (newSelection == currentlySelectedFavoriteItem) {
+            return;
+        }
+        if (currentlySelectedFavoriteItem instanceof FavoritesEntry) {
+            ((FavoritesEntry) currentlySelectedFavoriteItem).reset();
+        } else if (currentlySelectedFavoriteItem instanceof FavoritesGroup) {
+            ((FavoritesGroup) currentlySelectedFavoriteItem).reset();
+        }
+        currentlySelectedFavoriteItem = newSelection;
     }
 }

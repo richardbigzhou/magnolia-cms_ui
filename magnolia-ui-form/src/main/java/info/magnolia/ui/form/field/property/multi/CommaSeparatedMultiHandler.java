@@ -66,13 +66,14 @@ public class CommaSeparatedMultiHandler extends AbstractBaseHandler<List<String>
 
     @Override
     public void writeToDataSourceItem(List<String> newValue) {
-        Property<String> property = (Property<String>) getOrCreateProperty(String.class, null, "");
+        Property<String> property = getOrCreateProperty(String.class, null);
         property.setValue(StringUtils.join(removeComma(newValue), ","));
     }
 
     @Override
     public List<String> readFromDataSourceItem() {
-        Property<String> property = getOrCreateProperty(String.class, null, "");
+        String defaultValue = StringUtils.isEmpty(definition.getDefaultValue()) ? "" : definition.getDefaultValue();
+        Property<String> property = getOrCreateProperty(String.class, defaultValue);
         String value = property.getValue();
         return Arrays.asList(value.split(","));
     }

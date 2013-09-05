@@ -155,6 +155,9 @@ public class FormBuilder {
                 }
 
                 final FieldFactory formField = fieldFactoryFactory.createFieldFactory(fieldDefinition, item);
+                formField.setComponentProvider(componentProvider);
+                formField.setI18nContentSupport(i18nContentSupport);
+
                 final View fieldView = formField.getView();
 
                 view.addComponent(fieldView.asVaadinComponent());
