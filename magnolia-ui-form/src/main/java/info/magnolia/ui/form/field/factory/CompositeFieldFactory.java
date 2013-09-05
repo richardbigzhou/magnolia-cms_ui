@@ -38,7 +38,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.CompositeField;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.ui.form.field.transformer.Transformer;
 
 import java.util.List;
 
@@ -77,12 +77,11 @@ public class CompositeFieldFactory<D extends FieldDefinition> extends AbstractFi
     }
 
     /**
-     * Create a new Instance of {@link PropertyHandler} dedicated to {@link info.magnolia.ui.form.field.property.composite.CompositeProperty}.
+     * Create a new Instance of {@link Transformer}.
      */
     @Override
-    protected PropertyHandler<?> initializePropertyHandler(Class<? extends PropertyHandler<?>> handlerClass, Class<?> type) {
+    protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
         List<String> propertyNames = definition.getFieldsName();
-        return this.componentProvider.newInstance(handlerClass, item, definition, componentProvider, propertyNames);
+        return this.componentProvider.newInstance(transformerClass, item, definition, getFieldType(), propertyNames);
     }
-
 }

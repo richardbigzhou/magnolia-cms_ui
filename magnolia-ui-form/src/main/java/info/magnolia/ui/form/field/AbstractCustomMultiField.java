@@ -61,7 +61,7 @@ import com.vaadin.ui.HasComponents;
  * - Build a {@link Field} based on a {@link ConfiguredFieldDefinition}. <br>
  * - Retrieve the list of Fields contained into the main component <br>
  * - Override Validate and get Error Message in order to include these call to the embedded Fields.<br>
- * 
+ *
  * @param <T> Property Type linked to this Field.
  * @param <D> FieldDefinition Implementation used by the implemented Field.
  */
@@ -120,11 +120,16 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
      * Listener used to update the Data source property.
      */
     protected Property.ValueChangeListener selectionListener = new ValueChangeListener() {
+        @SuppressWarnings("unchecked")
         @Override
         public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
             fireValueChange(false);
+            // In case PropertysetItem is used as property set of field's property, in case an individual field is updated, the PropertysetItem is coherent (has also the changes)
+            // but the setValue on the property is never called.
+            getPropertyDataSource().setValue(getValue());
         }
     };
+
 
     /**
      * Listener used to update fields based on DataSources changes.<br>
@@ -141,7 +146,7 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
 
     /**
      * Utility method that return a list of Fields embedded into a root custom field.
-     * 
+     *
      * @param root
      * @param onlyValid if set to true, return only the isValid() fields.
      */

@@ -37,13 +37,11 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.MultiField;
 import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
-import info.magnolia.ui.form.field.property.PropertyHandler;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Field;
 
 
@@ -56,8 +54,8 @@ import com.vaadin.ui.Field;
  *
  * @param <T>
  */
-public class MultiFieldFactory<T> extends AbstractFieldFactory<MultiFieldDefinition, List<T>> {
-
+// public class MultiFieldFactory<T> extends AbstractFieldFactory<MultiFieldDefinition, List<T>> {
+public class MultiFieldFactory<T> extends AbstractFieldFactory<MultiFieldDefinition, PropertysetItem> {
     private FieldFactoryFactory fieldFactoryFactory;
     private I18nContentSupport i18nContentSupport;
     private ComponentProvider componentProvider;
@@ -71,11 +69,11 @@ public class MultiFieldFactory<T> extends AbstractFieldFactory<MultiFieldDefinit
     }
 
     @Override
-    protected Field<List<T>> createFieldComponent() {
+    protected Field<PropertysetItem> createFieldComponent() {
         // FIXME change i18n setting : MGNLUI-1548
         definition.setI18nBasename(getMessages().getBasename());
 
-        MultiField<T> field = new MultiField<T>(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, item);
+        MultiField field = new MultiField(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, item);
         // Set Caption
         field.setButtonCaptionAdd(getMessage(definition.getButtonSelectAddLabel()));
         field.setButtonCaptionRemove(getMessage(definition.getButtonSelectRemoveLabel()));
@@ -83,12 +81,4 @@ public class MultiFieldFactory<T> extends AbstractFieldFactory<MultiFieldDefinit
         return field;
     }
 
-    /**
-     * Do not link this field directly to an Item property but to the configured MultivalueHandler.<br>
-     * The PropertyHandler has the responsibility to correctly retrieve and store the values used in the MultiField.
-     */
-    @Override
-    protected PropertyHandler<?> initializePropertyHandler(Class<? extends PropertyHandler<?>> handlerClass, Class<?> type) {
-        return this.componentProvider.newInstance(handlerClass, item, definition, componentProvider);
-    }
 }

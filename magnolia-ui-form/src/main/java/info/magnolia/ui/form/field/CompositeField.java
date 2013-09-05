@@ -49,7 +49,7 @@ import com.vaadin.ui.HorizontalLayout;
  * Generic Composite Field.<br>
  * This generic Composite Field allows to handle multiple {@link ConfiguredFieldDefinition} as a single Field:<br>
  * The Field is build based on a generic {@link ConfiguredFieldDefinition}.<br>
- * The Field values are handle by a configured {@link info.magnolia.ui.form.field.property.PropertyHandler} dedicated to create/retrieve properties as {@link PropertysetItem}.<br>
+ * The Field values are handle by a configured {@link info.magnolia.ui.form.field.transformer.Transformer} dedicated to create/retrieve properties as {@link PropertysetItem}.<br>
  */
 public class CompositeField extends AbstractCustomMultiField<CompositeFieldDefinition, PropertysetItem> {
 
@@ -68,8 +68,8 @@ public class CompositeField extends AbstractCustomMultiField<CompositeFieldDefin
 
         // Initialize Existing field
         initFields();
+        // Register value change listener for i18n handling.
         addValueChangeListener(datasourceListener);
-
         return root;
     }
 
@@ -84,6 +84,7 @@ public class CompositeField extends AbstractCustomMultiField<CompositeFieldDefin
                 fieldValues.addItemProperty(fieldDefinition.getName(), field.getPropertyDataSource());
             }
             field.addValueChangeListener(selectionListener);
+
             root.addComponent(field);
         }
     }
