@@ -42,7 +42,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 
 /**
- * TODO Type description here.
+ * Key generator for {@link ColumnDefinition}. Generates key in form &lt;app-name&gt;.&lt;sub-app-name&gt;.views.&lt;view-name&gt;.&lt;column-name&gt;.&lt;property-name&gt;.
  */
 public class ColumnDefinitionKeyGenerator extends AbstractI18nKeyGenerator<ColumnDefinition> {
 
@@ -65,11 +65,11 @@ public class ColumnDefinitionKeyGenerator extends AbstractI18nKeyGenerator<Colum
         for (Object ancestor : ancestors) {
             if (ancestor instanceof SubAppDescriptor) {
                 subAppDescriptor = (SubAppDescriptor) ancestor;
-                break;
+                continue;
             }
             if (ancestor instanceof ContentPresenterDefinition) {
                 contentPresenterDefinition = (ContentPresenterDefinition) ancestor;
-                break;
+                continue;
             }
         }
         final String appName = appDescriptor.getName();
