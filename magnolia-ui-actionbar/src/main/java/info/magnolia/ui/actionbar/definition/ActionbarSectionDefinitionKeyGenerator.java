@@ -67,9 +67,9 @@ public class ActionbarSectionDefinitionKeyGenerator extends AbstractI18nKeyGener
             } catch (NoSuchMethodException e) {
                 // not a MessageView - log this?
             } catch (InvocationTargetException e) {
-                throw new RuntimeException(e); // TODO
+                throw new RuntimeException(e); // TODO MGNLUI-2031
             } catch (IllegalAccessException e) {
-                throw new RuntimeException(e); // TODO
+                throw new RuntimeException(e); // TODO MGNLUI-2031
             }
 
             return;

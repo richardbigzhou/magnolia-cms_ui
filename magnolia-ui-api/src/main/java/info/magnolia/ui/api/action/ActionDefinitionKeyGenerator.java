@@ -38,6 +38,8 @@ import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -60,6 +62,20 @@ public class ActionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<Actio
             final AppDescriptor appDescriptor = (AppDescriptor) root;
             final SubAppDescriptor subAppDescriptor = getParentViaCast(actionDefinition);
             addKey(keys, appDescriptor.getName(), subAppDescriptor.getName(), "actions", actionDefinition.getName(), fieldOrGetterName(el));
+        } else {
+            // for actions belonging to a MessageView
+            try {
+                final Method getId = root.getClass().getMethod("getId");
+                String messageViewId = (String) getId.invoke(root);
+                addKey(keys, messageViewId, "actions", actionDefinition.getName(), fieldOrGetterName(el));
+            } catch (NoSuchMethodException e) {
+                // not a MessageView - log this?
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException(e); // TODO MGNLUI-2031
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e); // TODO MGNLUI-2031
+            }
+
         }
     }
 }

@@ -51,7 +51,7 @@ public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldD
         final TabDefinition tab = getParentViaCast(field);
         final String tabName = tab.getName();
         final FormDefinition formDef = getParentViaCast(tab);
-        final String dialogID = getDialogId(formDef);
+        final String dialogID = getParentId(formDef);
 
         final String fieldName = field.getName();
         final String property = fieldOrGetterName(el);
@@ -90,11 +90,11 @@ public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldD
             final Method getId = dialog.getClass().getMethod("getI18nBasename");
             messageBundleName = (String) getId.invoke(dialog);
         } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e); // TODO
+            throw new RuntimeException(e); // TODO MGNLUI-2031
         } catch (InvocationTargetException e) {
-            throw new RuntimeException(e); // TODO
+            throw new RuntimeException(e); // TODO MGNLUI-2031
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e); // TODO
+            throw new RuntimeException(e); // TODO MGNLUI-2031
         }
         return messageBundleName;
     }
