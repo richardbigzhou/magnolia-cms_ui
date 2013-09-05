@@ -33,12 +33,12 @@
  */
 package info.magnolia.security.app;
 
-import info.magnolia.ui.contentapp.ContentApp;
-import info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenterFactory;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
-import info.magnolia.ui.api.app.AppView;
+import info.magnolia.ui.contentapp.ContentApp;
 
 import javax.inject.Inject;
 
@@ -48,8 +48,8 @@ import javax.inject.Inject;
 public class SecurityApp extends ContentApp {
 
     @Inject
-    public SecurityApp(AppContext appContext, AppView view, ChooseDialogPresenterFactory chooseDialogPresenterFactory) {
-        super(appContext, view, chooseDialogPresenterFactory);
+    public SecurityApp(AppContext appContext, AppView view, ComponentProvider componentProvider) {
+        super(appContext, view, componentProvider);
     }
 
     @Override
