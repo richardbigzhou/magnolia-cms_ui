@@ -50,7 +50,7 @@ public class AppDescriptorKeyGenerator extends AbstractI18nKeyGenerator<AppDescr
 
     @Override
     protected void keysFor(List<String> list, AppDescriptor app, AnnotatedElement el) {
-        addKey(list, app.getName(), fieldOrGetterName(el));
+        addKey(list, app.getName(), "app", fieldOrGetterName(el));
     }
 
 }
