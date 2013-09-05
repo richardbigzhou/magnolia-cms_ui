@@ -51,8 +51,8 @@ import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
-import info.magnolia.ui.form.field.property.multi.CommaSeparatedMultiHandler;
-import info.magnolia.ui.form.field.property.multi.SubNodesMultiIdentifierHandler;
+import info.magnolia.ui.form.field.transformer.multi.MultiValueJSONTransformer;
+import info.magnolia.ui.form.field.transformer.multi.MultiValueSubChildrenNodeTransformer;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -331,8 +331,8 @@ public class ControlMigrationTest {
         Node field = controlNode.getNode("field");
         assertTrue(field.hasProperty("identifier"));
         assertEquals("true", field.getProperty("identifier").getString());
-        assertTrue(controlNode.hasNode("propertyBuilder"));
-        assertEquals(CommaSeparatedMultiHandler.class.getName(), controlNode.getNode("propertyBuilder").getProperty("propertyHandler").getString());
+        assertTrue(controlNode.hasProperty("transformerClass"));
+        assertEquals(MultiValueJSONTransformer.class.getName(), controlNode.getProperty("transformerClass").getString());
         assertFalse(controlNode.hasProperty("saveHandler"));
     }
 
@@ -352,8 +352,8 @@ public class ControlMigrationTest {
         Node field = controlNode.getNode("field");
         assertTrue(field.hasProperty("identifier"));
         assertEquals("true", field.getProperty("identifier").getString());
-        assertTrue(controlNode.hasNode("propertyBuilder"));
-        assertEquals(SubNodesMultiIdentifierHandler.class.getName(), controlNode.getNode("propertyBuilder").getProperty("propertyHandler").getString());
+        assertTrue(controlNode.hasProperty("transformerClass"));
+        assertEquals(MultiValueSubChildrenNodeTransformer.class.getName(), controlNode.getProperty("transformerClass").getString());
         assertFalse(controlNode.hasProperty("saveHandler"));
     }
 

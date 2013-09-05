@@ -49,9 +49,8 @@ import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
 import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
-import info.magnolia.ui.form.field.property.multi.CommaSeparatedMultiHandler;
-import info.magnolia.ui.form.field.property.multi.MultiProperty;
-import info.magnolia.ui.form.field.property.multi.SubNodesMultiIdentifierHandler;
+import info.magnolia.ui.form.field.transformer.multi.MultiValueJSONTransformer;
+import info.magnolia.ui.form.field.transformer.multi.MultiValueSubChildrenNodeTransformer;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -196,11 +195,8 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         // THEN
         assertTrue(framework.hasNode("fields"));
         assertFalse(framework.hasNode("fields/saveModeType"));
-        assertTrue(framework.hasNode("fields/propertyBuilder"));
-        assertTrue(framework.getNode("fields/propertyBuilder").hasProperty("propertyType"));
-        assertEquals(MultiProperty.class.getName(), framework.getNode("fields/propertyBuilder").getProperty("propertyType").getString());
-        assertTrue(framework.getNode("fields/propertyBuilder").hasProperty("propertyHandler"));
-        assertEquals(SubNodesMultiIdentifierHandler.class.getName(), framework.getNode("fields/propertyBuilder").getProperty("propertyHandler").getString());
+        assertTrue(framework.hasProperty("fields/transformerClass"));
+        assertEquals(MultiValueSubChildrenNodeTransformer.class.getName(), framework.getProperty("fields/transformerClass").getString());
     }
 
     @Test
@@ -217,11 +213,8 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         // THEN
         assertTrue(framework.hasNode("fields"));
         assertFalse(framework.hasNode("fields/saveModeType"));
-        assertTrue(framework.hasNode("fields/propertyBuilder"));
-        assertTrue(framework.getNode("fields/propertyBuilder").hasProperty("propertyType"));
-        assertEquals(MultiProperty.class.getName(), framework.getNode("fields/propertyBuilder").getProperty("propertyType").getString());
-        assertTrue(framework.getNode("fields/propertyBuilder").hasProperty("propertyHandler"));
-        assertEquals(CommaSeparatedMultiHandler.class.getName(), framework.getNode("fields/propertyBuilder").getProperty("propertyHandler").getString());
+        assertTrue(framework.hasProperty("fields/transformerClass"));
+        assertEquals(MultiValueJSONTransformer.class.getName(), framework.getProperty("fields/transformerClass").getString());
     }
 
 }

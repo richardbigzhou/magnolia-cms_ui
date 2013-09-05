@@ -37,7 +37,7 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.link.LinkUtil;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
-import info.magnolia.ui.form.field.property.BaseProperty;
+import info.magnolia.ui.form.field.transformer.TransformedProperty;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -99,18 +99,18 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
                 if (c instanceof  Field) {
                     Field f = (Field) c;
                     Property p = f.getPropertyDataSource();
-                    if (p instanceof BaseProperty) {
-                        final BaseProperty i18nBaseProperty = (BaseProperty) p;
+                    if (p instanceof TransformedProperty) {
+                        final TransformedProperty i18nBaseProperty = (TransformedProperty) p;
                         if (!i18nBaseProperty.hasI18NSupport()) {
                             continue;
                         }
-                        final Locale formerLocale = i18nBaseProperty.getHandler().getLocale();
-                        final String basePropertyName = i18nBaseProperty.getHandler().getBasePropertyName();
+                        final Locale formerLocale = i18nBaseProperty.getTransformer().getLocale();
+                        final String basePropertyName = i18nBaseProperty.getTransformer().getBasePropertyName();
                         final String localizedPropertyName = isFallbackLanguage ?
                                 basePropertyName :
                                 constructI18NPropertyName(basePropertyName, locale);
-                        i18nBaseProperty.getHandler().setI18NPropertyName(localizedPropertyName);
-                        i18nBaseProperty.getHandler().setLocale(locale);
+                        i18nBaseProperty.getTransformer().setI18NPropertyName(localizedPropertyName);
+                        i18nBaseProperty.getTransformer().setLocale(locale);
                         i18nBaseProperty.fireI18NValueChange();
                         String currentCaption = c.getCaption();
                         if (formerLocale != null) {

@@ -33,13 +33,11 @@
  */
 package info.magnolia.ui.framework.setup;
 
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.QueryTask;
-import info.magnolia.ui.form.field.property.multi.CommaSeparatedMultiHandler;
-import info.magnolia.ui.form.field.property.multi.MultiProperty;
-import info.magnolia.ui.form.field.property.multi.SubNodesMultiIdentifierHandler;
+import info.magnolia.ui.form.field.transformer.multi.MultiValueJSONTransformer;
+import info.magnolia.ui.form.field.transformer.multi.MultiValueSubChildrenNodeTransformer;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -73,16 +71,12 @@ public class ReplaceSaveModeTypeFieldDefinition extends QueryTask {
                         log.debug("The following node will be removed {}. The field definition already contain the definition of the default PropertyBuilder", nodePath);
                     } else if (StringUtils.equals("info.magnolia.ui.form.field.property.SubNodesValueHandler", multiValueHandlerClass)) {
                         Node parent = node.getParent();
-                        Node propertyBuilder = parent.addNode("propertyBuilder", NodeTypes.ContentNode.NAME);
-                        propertyBuilder.setProperty("propertyType", MultiProperty.class.getName());
-                        propertyBuilder.setProperty("propertyHandler", SubNodesMultiIdentifierHandler.class.getName());
+                        parent.setProperty("transformerClass", MultiValueSubChildrenNodeTransformer.class.getName());
                         node.remove();
 
                     } else if (StringUtils.equals("info.magnolia.ui.form.field.property.CommaSeparatedValueHandler", multiValueHandlerClass)) {
                         Node parent = node.getParent();
-                        Node propertyBuilder = parent.addNode("propertyBuilder", NodeTypes.ContentNode.NAME);
-                        propertyBuilder.setProperty("propertyType", MultiProperty.class.getName());
-                        propertyBuilder.setProperty("propertyHandler", CommaSeparatedMultiHandler.class.getName());
+                        parent.setProperty("transformerClass", MultiValueJSONTransformer.class.getName());
                         node.remove();
                     } else {
                         log.warn("Unknown value for property 'multiValueHandlerClass' : {}. This node {} will not be handled", multiValueHandlerClass, nodePath);

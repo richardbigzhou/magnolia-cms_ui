@@ -33,9 +33,7 @@
  */
 package info.magnolia.ui.dialog.setup.migration;
 
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.ui.form.field.property.multi.MultiProperty;
-import info.magnolia.ui.form.field.property.multi.SubNodesMultiIdentifierHandler;
+import info.magnolia.ui.form.field.transformer.multi.MultiValueSubChildrenNodeTransformer;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -54,10 +52,8 @@ public class DataUUIDMultiSelectControlMigration extends MultiSelectControlMigra
      * Set the PropertyBuilder.
      */
     @Override
-    protected void setPropertyBuilder(Node controlNode) throws RepositoryException {
-        Node propertyBuilder = controlNode.addNode("propertyBuilder", NodeTypes.ContentNode.NAME);
-        propertyBuilder.setProperty("propertyType", MultiProperty.class.getName());
-        propertyBuilder.setProperty("propertyHandler", SubNodesMultiIdentifierHandler.class.getName());
+    protected void setTransformerClass(Node controlNode) throws RepositoryException {
+        controlNode.setProperty("transformerClass", MultiValueSubChildrenNodeTransformer.class.getName());
     }
 
 }
