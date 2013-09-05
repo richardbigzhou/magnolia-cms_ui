@@ -33,10 +33,19 @@
  */
 package info.magnolia.ui.framework.shell;
 
+import com.vaadin.ui.Component;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.EventHandlerCollection;
 import info.magnolia.event.HandlerRegistration;
+import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.app.AppLifecycleEvent;
+import info.magnolia.ui.api.app.AppLifecycleEventHandler;
+import info.magnolia.ui.api.event.AdmincentralEventBus;
+import info.magnolia.ui.api.location.DefaultLocation;
+import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.message.Message;
+import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.shell.ConfirmationHandler;
 import info.magnolia.ui.api.shell.FragmentChangedEvent;
@@ -45,32 +54,20 @@ import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.api.view.Viewport;
 import info.magnolia.ui.framework.context.AbstractUIContext;
-import info.magnolia.ui.api.app.AppController;
-import info.magnolia.ui.api.app.AppLifecycleEvent;
-import info.magnolia.ui.api.app.AppLifecycleEventHandler;
-import info.magnolia.ui.api.event.AdmincentralEventBus;
-import info.magnolia.ui.api.location.DefaultLocation;
-import info.magnolia.ui.api.location.Location;
-import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.framework.message.MessageEvent;
 import info.magnolia.ui.framework.message.MessageEventHandler;
-import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.framework.message.MessagesManager;
+import info.magnolia.ui.framework.overlay.OverlayPresenter;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.Fragment;
 import info.magnolia.ui.vaadin.gwt.client.shared.magnoliashell.ShellAppType;
 import info.magnolia.ui.vaadin.magnoliashell.MagnoliaShell;
 import info.magnolia.ui.vaadin.magnoliashell.viewport.ShellViewport;
-import info.magnolia.ui.vaadin.overlay.OverlayPresenter;
-
-import java.util.List;
+import org.apache.commons.lang.StringUtils;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.vaadin.ui.Component;
+import java.util.List;
 
 
 /**

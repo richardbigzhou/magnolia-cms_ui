@@ -40,7 +40,7 @@ import info.magnolia.ui.api.overlay.MessageStyleType;
 import info.magnolia.ui.api.overlay.NotificationCallback;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.overlay.OverlayPresenter;
+import info.magnolia.ui.framework.overlay.OverlayPresenter;
 
 /**
  * Abstract basic implementation of {@link UiContext}. Delegates method calls to {@link OverlayPresenter}.

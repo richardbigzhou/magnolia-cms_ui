@@ -31,23 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.overlay;
-
-import info.magnolia.objectfactory.Classes;
-import info.magnolia.ui.api.overlay.AlertCallback;
-import info.magnolia.ui.api.overlay.ConfirmationCallback;
-import info.magnolia.ui.api.overlay.MessageStyleType;
-import info.magnolia.ui.api.overlay.NotificationCallback;
-import info.magnolia.ui.api.overlay.OverlayCloser;
-import info.magnolia.ui.api.overlay.OverlayLayer;
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.dialog.BaseDialog;
-import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
-import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
-import info.magnolia.ui.vaadin.dialog.LightDialog;
-import info.magnolia.ui.vaadin.dialog.Notification;
-import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-import info.magnolia.ui.vaadin.icon.CompositeIcon;
+package info.magnolia.ui.framework.overlay;
 
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -60,6 +44,28 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.themes.BaseTheme;
+import info.magnolia.objectfactory.Classes;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionListener;
+import info.magnolia.ui.api.action.ActionPresenter;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.api.overlay.AlertCallback;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
+import info.magnolia.ui.api.overlay.MessageStyleType;
+import info.magnolia.ui.api.overlay.NotificationCallback;
+import info.magnolia.ui.api.overlay.OverlayCloser;
+import info.magnolia.ui.api.overlay.OverlayLayer;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.dialog.BaseDialogViewImpl;
+import info.magnolia.ui.dialog.DialogCloseHandler;
+import info.magnolia.ui.dialog.DialogView;
+import info.magnolia.ui.form.action.presenter.DefaultEditorActionPresenter;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
+import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
+import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
+import info.magnolia.ui.vaadin.dialog.LightDialog;
+import info.magnolia.ui.vaadin.dialog.Notification;
+import info.magnolia.ui.vaadin.icon.CompositeIcon;
 
 /**
  * Provides implementations for most OverlayLayer methods.
@@ -82,20 +88,24 @@ public abstract class OverlayPresenter implements OverlayLayer {
      */
     @Override
     public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, final AlertCallback cb) {
-        BaseDialog dialog = createAlertDialog(viewToShow, confirmButtonText, type.getCssClass());
-        dialog.showCloseButton();
-
+        DialogView dialog = createAlertDialog(viewToShow, confirmButtonText, type.getCssClass());
+        dialog.setClosable(true);
         final OverlayCloser overlayCloser = openOverlay(dialog, ModalityLevel.LIGHT);
         dialog.addDialogCloseHandler(createCloseHandler(overlayCloser));
-        dialog.addActionCallback(ACTION_CONFIRM, new DialogActionListener() {
+
+        ConfiguredActionDefinition def = new ConfiguredActionDefinition();
+        def.setLabel(confirmButtonText);
+        ActionPresenter okBtnPresenter = new DefaultEditorActionPresenter();
+        View actionView = okBtnPresenter.start(def, new ActionListener() {
             @Override
-            public void onActionExecuted(String actionName) {
+            public void onActionFired(ActionDefinition definition, Object... actionContextParams) {
                 overlayCloser.close();
                 if (cb != null) {
                     cb.onOk();
                 }
             }
         });
+        dialog.addPrimaryAction(actionView);
     }
 
     /**
@@ -128,18 +138,17 @@ public abstract class OverlayPresenter implements OverlayLayer {
         if (cancelButtonText != null) {
             dialog.setRejectActionLabel(cancelButtonText);
         }
-
         return dialog;
     }
 
-    private BaseDialog createAlertDialog(View contentView, String confirmButtonText, String styleName) {
+    private DialogView createAlertDialog(View contentView, String confirmButtonText, String styleName) {
         BaseDialog dialog = new LightDialog();
         dialog.addStyleName(styleName);
         dialog.addStyleName("alert");
         dialog.setContent(contentView.asVaadinComponent());
         dialog.addAction(ACTION_CONFIRM, confirmButtonText);
-        dialog.setDefaultAction(ACTION_CONFIRM);
-        return dialog;
+        //dialog.setDefaultAction(ACTION_CONFIRM);
+        return new BaseDialogViewImpl(dialog);
     }
 
     private View createConfirmationView(final MessageStyleType type, final String title, final String body) {
@@ -165,12 +174,11 @@ public abstract class OverlayPresenter implements OverlayLayer {
         };
     }
 
-    private BaseDialog.DialogCloseEvent.Handler createCloseHandler(final OverlayCloser overlayCloser) {
-        return new BaseDialog.DialogCloseEvent.Handler() {
+    private DialogCloseHandler createCloseHandler(final OverlayCloser overlayCloser) {
+        return new DialogCloseHandler() {
             @Override
-            public void onClose(BaseDialog.DialogCloseEvent event) {
+            public void onDialogClose(DialogView dialogView) {
                 overlayCloser.close();
-                ((BaseDialog) event.getView()).removeDialogCloseHandler(this);
             }
         };
     }
@@ -182,11 +190,11 @@ public abstract class OverlayPresenter implements OverlayLayer {
     public void openConfirmation(MessageStyleType type, View contentView, String confirmButtonText, String cancelButtonText,
                                  boolean cancelIsDefault, final ConfirmationCallback callback) {
         ConfirmationDialog dialog = createConfirmationDialog(contentView, confirmButtonText, cancelButtonText, type.getCssClass(), cancelIsDefault);
-        dialog.showCloseButton();
-
-        final OverlayCloser overlayCloser = openOverlay(dialog, ModalityLevel.LIGHT);
+        DialogView view = new BaseDialogViewImpl(dialog);
+        view.setClosable(true);
+        OverlayCloser overlayCloser = openOverlay(view, ModalityLevel.LIGHT);
         dialog.addConfirmationHandler(createHandler(overlayCloser, callback));
-        dialog.addDialogCloseHandler(createCloseHandler(overlayCloser));
+        view.addDialogCloseHandler(createCloseHandler(overlayCloser));
 
     }
 
