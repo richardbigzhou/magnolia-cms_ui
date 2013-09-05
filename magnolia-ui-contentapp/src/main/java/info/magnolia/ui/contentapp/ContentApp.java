@@ -49,22 +49,20 @@ import javax.inject.Inject;
  */
 public class ContentApp extends BaseApp {
 
-    private ContentAppDescriptor appDescriptor;
-
     private ComponentProvider componentProvider;
 
     @Inject
     public ContentApp(AppContext appContext, AppView view, ComponentProvider componentProvider) {
         super(appContext, view);
         this.componentProvider = componentProvider;
-        if (appContext.getAppDescriptor() instanceof ContentAppDescriptor) {
-            this.appDescriptor = (ContentAppDescriptor) appContext.getAppDescriptor();
-        }
     }
 
     @Override
     public void openChooseDialog(OverlayLayer overlayLayer, String selectedId, final ChooseDialogCallback callback) {
-        ChooseDialogPresenter presenter = componentProvider.getComponent(appDescriptor.getChooseDialog().getPresenterClass());
-        presenter.start(callback, appDescriptor.getChooseDialog(), overlayLayer, selectedId) ;
+        if (appContext.getAppDescriptor() instanceof ContentAppDescriptor) {
+            ContentAppDescriptor contentAppDescriptor = (ContentAppDescriptor)appContext.getAppDescriptor();
+            ChooseDialogPresenter presenter = componentProvider.getComponent(contentAppDescriptor.getChooseDialog().getPresenterClass());
+            presenter.start(callback, contentAppDescriptor.getChooseDialog(), overlayLayer, selectedId) ;
+        }
     }
 }
