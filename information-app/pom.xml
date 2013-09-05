@@ -1,0 +1,28 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>magnolia-ui-project</artifactId>
+    <groupId>info.magnolia.ui</groupId>
+    <version>5.1-SNAPSHOT</version>
+    <relativePath>..</relativePath>
+  </parent>
+  <groupId>info.magnolia.information</groupId>
+  <artifactId>magnolia-information-app</artifactId>
+  <name>magnolia-information-app</name>
+  <description>The information app shows an overview of the instance version, environment and license information.</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-framework</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-server</artifactId>
+    </dependency>
+  </dependencies>
+</project>
