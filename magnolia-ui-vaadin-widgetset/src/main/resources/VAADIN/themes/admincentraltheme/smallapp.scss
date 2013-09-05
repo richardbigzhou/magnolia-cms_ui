@@ -27,3 +27,26 @@
 .small-app .v-horizontallayout-buttons .v-horizontallayout-spacing-on {padding-left:12px;}
 
 }
+
+@mixin smallapplayout {
+
+  .v-verticallayout-smallapp {
+    max-width: 900px;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .v-label-description {
+    padding-top: 20px;
+    padding-bottom: 30px;
+  }
+
+  .v-csslayout-smallapp-sections {
+    overflow: auto;
+    background-color: $c16;
+  }
+
+  .smallapp-section {
+    border-bottom: 5px solid $c15 !important;
+  }
+}
