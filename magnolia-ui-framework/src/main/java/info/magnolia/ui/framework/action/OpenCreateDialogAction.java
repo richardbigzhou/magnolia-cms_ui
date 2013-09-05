@@ -35,7 +35,7 @@ package info.magnolia.ui.framework.action;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.dialog.FormDialogPresenter;
+import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;

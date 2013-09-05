@@ -42,7 +42,6 @@ import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.api.action.AbstractAction;
@@ -50,9 +49,11 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
-import info.magnolia.ui.dialog.FormDialogPresenter;
+import info.magnolia.ui.dialog.DialogView;
+import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
+import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
@@ -85,6 +86,7 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
     private TemplateDefinitionRegistry templateDefinitionRegistry;
     private SubAppContext subAppContext;
     private ComponentProvider componentProvider;
+    private DialogView dialogView;
 
     @Inject
     public CreateComponentAction(CreateComponentActionDefinition definition, AreaElement area, @Named(SubAppEventBus.NAME) EventBus eventBus, TemplateDefinitionRegistry templateDefinitionRegistry,
@@ -118,44 +120,7 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
             item.addItemProperty(ModelConstants.JCR_NAME, property);
 
             // perform custom chaining of dialogs
-            formDialogPresenter.start(item, dialogDefinition, subAppContext, new EditorCallback() {
-
-                @Override
-                public void onSuccess(String actionName) {
-                    String templateId = String.valueOf(item.getItemProperty(NodeTypes.Renderable.TEMPLATE).getValue());
-                    try {
-                        TemplateDefinition templateDef = templateDefinitionRegistry.getTemplateDefinition(templateId);
-                        String dialogName = templateDef.getDialog();
-
-                        if (StringUtils.isNotEmpty(dialogName)) {
-                            final FormDialogPresenter dialogPresenter = componentProvider.getComponent(FormDialogPresenter.class);
-
-                            openDialog(item, dialogName, dialogPresenter);
-                        } else {
-                            // if there is no dialog defined for the component, persist the node as is and reload.
-                            try {
-                                final Node node = item.applyChanges();
-                                updateLastModified(node);
-                                node.getSession().save();
-
-                            } catch (RepositoryException e) {
-                                log.error("Exception caught: {}", e.getMessage(), e);
-                            }
-
-                            eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
-                        }
-                    } catch (RegistrationException e) {
-                        log.error("Exception caught: {}", e.getMessage(), e);
-                    } finally {
-                        formDialogPresenter.closeDialog();
-                    }
-                }
-
-                @Override
-                public void onCancel() {
-                    formDialogPresenter.closeDialog();
-                }
-            });
+            this.dialogView = formDialogPresenter.start(item, dialogDefinition, subAppContext, new ComponentCreationCallback(item, formDialogPresenter));
         } catch (RepositoryException e) {
             throw new ActionExecutionException(e);
         }
@@ -246,6 +211,52 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
                     && currentNode.getDepth() > 1) {
                 updateLastModified(currentNode.getParent());
             }
+        }
+    }
+
+    private class ComponentCreationCallback implements EditorCallback {
+
+        private final JcrNodeAdapter item;
+        private final FormDialogPresenter formDialogPresenter;
+
+        public ComponentCreationCallback(JcrNodeAdapter item, FormDialogPresenter formDialogPresenter) {
+            this.item = item;
+            this.formDialogPresenter = formDialogPresenter;
+        }
+
+        @Override
+        public void onSuccess(String actionName) {
+            String templateId = String.valueOf(item.getItemProperty(NodeTypes.Renderable.TEMPLATE).getValue());
+            try {
+                TemplateDefinition templateDef = templateDefinitionRegistry.getTemplateDefinition(templateId);
+                String dialogName = templateDef.getDialog();
+
+                if (StringUtils.isNotEmpty(dialogName)) {
+                    final FormDialogPresenter dialogPresenter = componentProvider.getComponent(FormDialogPresenter.class);
+                    openDialog(item, dialogName, dialogPresenter);
+                } else {
+                    // if there is no dialog defined for the component, persist the node as is and reload.
+                    try {
+                        final Node node = item.applyChanges();
+                        updateLastModified(node);
+                        node.getSession().save();
+
+                    } catch (RepositoryException e) {
+                        log.error("Exception caught: {}", e.getMessage(), e);
+                    }
+
+                    eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
+                }
+            } catch (RegistrationException e) {
+                log.error("Exception caught: {}", e.getMessage(), e);
+            } finally {
+                dialogView.close();
+            }
+        }
+
+        @Override
+        public void onCancel() {
+            formDialogPresenter.closeDialog();
         }
     }
 }
