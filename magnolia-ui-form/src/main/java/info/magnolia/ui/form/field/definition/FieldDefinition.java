@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
 
 import java.util.List;
@@ -108,6 +109,6 @@ public interface FieldDefinition {
 
     List<FieldValidatorDefinition> getValidators();
 
-    PropertyBuilder getPropertyBuilder();
+    Class<? extends Transformer<?>> getTransformerClass();
 
 }

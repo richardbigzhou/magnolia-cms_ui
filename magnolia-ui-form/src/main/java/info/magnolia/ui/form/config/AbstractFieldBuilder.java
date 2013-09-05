@@ -34,7 +34,7 @@
 package info.magnolia.ui.form.config;
 
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.definition.PropertyBuilder;
+import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 /**
@@ -119,8 +119,8 @@ public abstract class AbstractFieldBuilder {
         return this;
     }
 
-    public AbstractFieldBuilder propertyBuilder(PropertyBuilder propertyBuilder) {
-        definition().setPropertyBuilder(propertyBuilder);
+    public AbstractFieldBuilder transformerClass(Class<? extends Transformer<?>> transformerClass) {
+        definition().setTransformerClass(transformerClass);
         return this;
     }
 }

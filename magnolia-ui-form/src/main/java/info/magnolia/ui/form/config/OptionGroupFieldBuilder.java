@@ -34,7 +34,7 @@
 package info.magnolia.ui.form.config;
 
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
-import info.magnolia.ui.form.field.definition.PropertyBuilder;
+import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 import java.util.Collection;
@@ -182,7 +182,8 @@ public class OptionGroupFieldBuilder extends SelectFieldBuilder {
     }
 
     @Override
-    public OptionGroupFieldBuilder propertyBuilder(PropertyBuilder propertyBuilder) {
-        return (OptionGroupFieldBuilder) super.propertyBuilder(propertyBuilder);
+    public OptionGroupFieldBuilder transformerClass(Class<? extends Transformer<?>> transformerClass) {
+        return (OptionGroupFieldBuilder) super.transformerClass(transformerClass);
     }
+
 }

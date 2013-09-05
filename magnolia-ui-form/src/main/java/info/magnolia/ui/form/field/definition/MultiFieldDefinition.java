@@ -33,10 +33,7 @@
  */
 package info.magnolia.ui.form.field.definition;
 
-import info.magnolia.ui.form.field.property.CustomPropertyType;
-import info.magnolia.ui.form.field.property.PropertyHandler;
-import info.magnolia.ui.form.field.property.multi.MultiProperty;
-import info.magnolia.ui.form.field.property.multi.MultiValuesPropertyMultiHandler;
+import info.magnolia.ui.form.field.transformer.multi.MultiValueTransformer;
 
 /**
  * Definition used to configure a generic multi field.
@@ -50,12 +47,8 @@ public class MultiFieldDefinition extends ConfiguredFieldDefinition {
     /**
      * Set default {@link PropertyBuilder}.
      */
-    @SuppressWarnings("unchecked")
     public MultiFieldDefinition() {
-        PropertyBuilder propertyBuilder = new PropertyBuilder();
-        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) MultiValuesPropertyMultiHandler.class);
-        propertyBuilder.setPropertyType((Class<? extends CustomPropertyType<?>>) (Object) MultiProperty.class);
-        setPropertyBuilder(propertyBuilder);
+        setTransformerClass(MultiValueTransformer.class);
     }
 
     /**

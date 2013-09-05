@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.config;
 
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
+import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 /**
@@ -132,5 +133,10 @@ public class BasicTextCodeFieldBuilder extends AbstractFieldBuilder {
     @Override
     public BasicTextCodeFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
         return (BasicTextCodeFieldBuilder) super.validator(validatorBuilder);
+    }
+
+    @Override
+    public BasicTextCodeFieldBuilder transformerClass(Class<? extends Transformer<?>> transformerClass) {
+        return (BasicTextCodeFieldBuilder) super.transformerClass(transformerClass);
     }
 }
