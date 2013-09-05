@@ -67,10 +67,10 @@ public interface App {
 
     /**
      * Open a dialog which enables a user to choose an item from the app.
-     * 
+     *
      * @param path The path of an item that should be selected when the dialog is opened. Path relative to the tree root, must start with '/'.
-     * @param overlayLayer The layer over which the opened dialog should be presented and be modal. See Shell, {@link SubAppContext}, {@link AppContext}.
-     * @param listener A listener to handle when user clicks one of the dialog buttons.
+     * @param overlayLayer The layer over which the opened dialog should be presented and be modal. See Shell, {@link info.magnolia.ui.api.app.SubAppContext}, {@link info.magnolia.ui.api.app.AppContext}.
+     * @param callback
      */
-    void openChooseDialog(String path, OverlayLayer overlayLayer, String selectedId, ItemChosenListener listener);
+    void openChooseDialog(OverlayLayer overlayLayer, String selectedId, ChooseDialogCallback callback);
 }

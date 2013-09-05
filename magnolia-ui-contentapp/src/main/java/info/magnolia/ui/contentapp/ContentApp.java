@@ -63,7 +63,7 @@ public class ContentApp extends BaseApp {
     }
 
     @Override
-    public void openChooseDialog(String path, OverlayLayer overlayLayer, String selectedId, final ChooseDialogCallback callback) {
+    public void openChooseDialog(OverlayLayer overlayLayer, String selectedId, final ChooseDialogCallback callback) {
         ChooseDialogPresenter presenter = componentProvider.getComponent(appDescriptor.getChooseDialog().getPresenterClass());
         presenter.start(callback, appDescriptor.getChooseDialog(), overlayLayer, selectedId) ;
     }

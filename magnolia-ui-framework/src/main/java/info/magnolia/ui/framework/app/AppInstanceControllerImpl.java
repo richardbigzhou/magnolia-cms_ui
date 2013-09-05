@@ -71,7 +71,7 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.context.AbstractUIContext;
 import info.magnolia.ui.framework.message.MessagesManager;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
-import info.magnolia.ui.vaadin.overlay.OverlayPresenter;
+import info.magnolia.ui.framework.overlay.OverlayPresenter;
 
 import java.util.Collection;
 import java.util.List;
