@@ -43,7 +43,6 @@ import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.ui.admincentral.AdmincentralUIProvider;
 
 import java.util.Arrays;
 import java.util.List;
@@ -329,7 +328,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     public void testUpdateTo51ChangesAdmincentralServletParameters() throws ModuleManagementException, RepositoryException {
         // GIVEN
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        servletParameters.setProperty("widgetset", AdmincentralUIProvider.DEFAULT_WIDGETSET_NAME);
+        servletParameters.setProperty("widgetset", "some.gwt.package.SomeWidgetset");
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.2"));

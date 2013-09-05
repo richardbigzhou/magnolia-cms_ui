@@ -47,11 +47,11 @@ import com.vaadin.server.UICreateEvent;
  */
 public class AdmincentralUIProvider extends DefaultUIProvider {
 
-    public static final String MAGNOLIA_UI_VAADIN_WIDGETSET = "magnolia.ui.vaadin.widgetset";
-    public static final String MAGNOLIA_UI_VAADIN_THEME = "magnolia.ui.vaadin.theme";
+    private static final String WIDGETSET_PROPERTY_KEY = "magnolia.ui.vaadin.widgetset";
+    private static final String THEME_PROPERTY_KEY = "magnolia.ui.vaadin.theme";
 
-    public static final String DEFAULT_WIDGETSET_NAME = "info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet";
-    public static final String DEFAULT_THEME_NAME = "admincentral";
+    private static final String DEFAULT_WIDGETSET = "info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet";
+    private static final String DEFAULT_THEME = "admincentral";
 
     private final MagnoliaConfigurationProperties magnoliaProperties;
 
@@ -63,23 +63,22 @@ public class AdmincentralUIProvider extends DefaultUIProvider {
     @Override
     public String getWidgetset(UICreateEvent event) {
         if (magnoliaProperties != null) {
-            String widgetsetName = magnoliaProperties.getProperty(MAGNOLIA_UI_VAADIN_WIDGETSET);
-            if (StringUtils.isNotBlank(widgetsetName)) {
-                return widgetsetName;
+            String widgetset = magnoliaProperties.getProperty(WIDGETSET_PROPERTY_KEY);
+            if (StringUtils.isNotBlank(widgetset)) {
+                return widgetset;
             }
         }
-        return DEFAULT_WIDGETSET_NAME;
+        return DEFAULT_WIDGETSET;
     }
 
     @Override
     public String getTheme(UICreateEvent event) {
         if (magnoliaProperties != null) {
-            String themeName = magnoliaProperties.getProperty(MAGNOLIA_UI_VAADIN_THEME);
-            if (StringUtils.isNotBlank(themeName)) {
-                return themeName;
+            String theme = magnoliaProperties.getProperty(THEME_PROPERTY_KEY);
+            if (StringUtils.isNotBlank(theme)) {
+                return theme;
             }
         }
-        return DEFAULT_THEME_NAME;
+        return DEFAULT_THEME;
     }
-
 }
