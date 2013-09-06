@@ -41,6 +41,7 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.form.field.transformer.TransformedProperty;
 import info.magnolia.ui.form.field.transformer.Transformer;
+import info.magnolia.ui.form.field.transformer.UndefinedPropertyType;
 import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
 import info.magnolia.ui.form.validator.factory.FieldValidatorFactory;
@@ -174,7 +175,6 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      * Initialize the property used as field's Datasource.<br>
      * If no {@link Transformer} is configure to the field definition, use the default {@link BasicTransformer} <br>
      */
-
     @SuppressWarnings("unchecked")
     private Property<?> initializeProperty() {
         Class<? extends Transformer<?>> transformerClass = definition.getTransformerClass();
@@ -185,45 +185,47 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         }
         Transformer<?> transformer = initializeTransformer(transformerClass);
 
-        return new TransformedProperty(transformer, getFieldType());
+        return new TransformedProperty(transformer);
     }
 
     /**
      * Exposed method used by field's factory to initialize the property {@link Transformer}.<br>
-     * This allows to add additional constructor parameter if needed.
+     * This allows to add additional constructor parameter if needed.<br>
      */
     protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
         return this.componentProvider.newInstance(transformerClass, item, definition, getFieldType());
     }
 
     /**
-     * Define the field type Class.<br>
-     * Return the value of the overriding method {@link AbstractFieldFactory#getDefaultFieldType()}.<br>
-     * If this method is not override (return null), check the value defined in configuration ('type' property).<br>
-     * If no type is defined in configuration return String.
+     * Define the field property value type Class.<br>
+     * Return the value defined by the configuration ('type' property).<br>
+     * If this value is not defined, return the value of the overriding method {@link AbstractFieldFactory#getDefaultFieldType()}.<br>
+     * If this method is not override, return {@link UndefinedPropertyType}.<br>
+     * In this case, the {@link Transformer} will have the responsibility to define the property type.
      */
     protected Class<?> getFieldType() {
-        if (getDefaultFieldType() != null) {
-            return getDefaultFieldType();
+        Class<?> type = getDefinitionType();
+        if (type == null) {
+            type = getDefaultFieldType();
         }
-        return getDefinitionType();
+        return type;
     }
 
     /**
-     * @return Class Type defined into the field definition. If null, return String.
+     * @return Class Type defined into the field definition or null if not defined.
      */
     protected Class<?> getDefinitionType() {
         if (StringUtils.isNotBlank(definition.getType())) {
             return DefaultPropertyUtil.getFieldTypeClass(definition.getType());
         }
-        return String.class;
+        return null;
     }
 
     /**
      * Exposed method used by field's factory in order to define a default Field Type (decoupled from the definition).
      */
     protected Class<?> getDefaultFieldType() {
-        return null;
+        return UndefinedPropertyType.class;
     }
 
     @Override
