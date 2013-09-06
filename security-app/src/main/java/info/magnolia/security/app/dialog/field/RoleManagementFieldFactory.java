@@ -86,7 +86,7 @@ public class RoleManagementFieldFactory extends TwinColSelectFieldFactory<RoleMa
 
     @Inject
     public RoleManagementFieldFactory(RoleManagementFieldDefinition definition, Item relatedFieldItem, ComponentProvider componentProvider) {
-        super(definition, relatedFieldItem);
+        super(definition, relatedFieldItem, componentProvider);
         definition.setOptions(getSelectFieldOptionDefinition());
         this.componentProvider = componentProvider;
     }
@@ -166,7 +166,7 @@ public class RoleManagementFieldFactory extends TwinColSelectFieldFactory<RoleMa
      */
     @Override
     protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
-        return this.componentProvider.newInstance(transformerClass, item, definition, getFieldType(), getAssignedRoles(), "roles");
+        return this.componentProvider.newInstance(transformerClass, item, definition, HashSet.class, getAssignedRoles(), "roles");
     }
 
 }

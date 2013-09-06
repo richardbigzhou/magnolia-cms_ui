@@ -56,9 +56,8 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
     @Test
     public void simpleRadioFieldTest() throws Exception {
         // GIVEN
-        dialogSelect = new OptionGroupFieldFactory(definition, baseItem);
+        dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
         dialogSelect.setI18nContentSupport(i18nContentSupport);
-        dialogSelect.setComponentProvider(new MockComponentProvider());
 
         // WHEN
         Field field = dialogSelect.createField();
@@ -74,9 +73,8 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
     public void selectedRadioFieldTest() throws Exception {
         // GIVEN
         definition.getOptions().get(2).setSelected(true);
-        dialogSelect = new OptionGroupFieldFactory(definition, baseItem);
+        dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
         dialogSelect.setI18nContentSupport(i18nContentSupport);
-        dialogSelect.setComponentProvider(new MockComponentProvider());
 
         // WHEN
         Field field = dialogSelect.createField();
@@ -89,9 +87,8 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
     public void simpleCheckBoxFieldTest() throws Exception {
         // GIVEN
         definition.setMultiselect(true);
-        dialogSelect = new OptionGroupFieldFactory(definition, baseItem);
+        dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
         dialogSelect.setI18nContentSupport(i18nContentSupport);
-        dialogSelect.setComponentProvider(new MockComponentProvider());
 
         // WHEN
         Field field = dialogSelect.createField();
