@@ -46,6 +46,7 @@ import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
 import info.magnolia.ui.form.validator.factory.FieldValidatorFactory;
 import info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory;
+import info.magnolia.ui.vaadin.integration.ItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
 import java.util.Locale;
@@ -108,7 +109,8 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
             if (Long.class.equals(property.getType()) && field instanceof AbstractTextField) {
                 ((AbstractTextField) field).setConverter(new StringToLongConverter());
             }
-            setPropertyDataSource(property);
+            // Set the created property with the default value as field Property datasource.
+            setPropertyDataSourceAndDefaultValue(property);
 
             if (StringUtils.isNotBlank(definition.getStyleName())) {
                 this.field.addStyleName(definition.getStyleName());
@@ -125,16 +127,49 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         return this.field;
     }
 
-    @Override
-    public D getFieldDefinition() {
-        return this.definition;
+    /**
+     * Set the DataSource of the current field.<br>
+     * Set the default value if : <br>
+     * - the item is an instance of {@link ItemAdapter} and this is a new Item (Not yet stored in the related datasource)
+     * - the item is not an instance of {@link ItemAdapter}.<br>
+     * In this case, the Item is a custom implementation of {@link Item} and we have no possibility to define if it is or not a new Item.
+     */
+    public void setPropertyDataSourceAndDefaultValue(Property<?> property) {
+        this.field.setPropertyDataSource(property);
+
+        if ((item instanceof ItemAdapter && ((ItemAdapter) item).isNew()) || !(item instanceof ItemAdapter)) {
+            setPropertyDataSourceDefaultValue(property);
+        }
     }
 
     /**
-     * Set the DataSource of the current field.
+     * Set the Field default value is required.
      */
-    public void setPropertyDataSource(Property<?> property) {
-        this.field.setPropertyDataSource(property);
+    protected void setPropertyDataSourceDefaultValue(Property property) {
+        Object defaultValue = createDefaultValue(property);
+        if (defaultValue != null) {
+            if (defaultValue.getClass().isAssignableFrom(property.getType())) {
+                property.setValue(defaultValue);
+            } else {
+                log.warn("Default value {} is not assignable to the field of type {}.", defaultValue, field.getPropertyDataSource().getType().getName());
+            }
+        }
+    }
+
+    /**
+     * Create a typed default value.
+     */
+    protected Object createDefaultValue(Property<?> property) {
+        String defaultValue = definition.getDefaultValue();
+        if (StringUtils.isNotBlank(defaultValue)) {
+            return DefaultPropertyUtil.createTypedValue(property.getType(), defaultValue);
+        }
+        return null;
+    }
+
+    @Override
+    public D getFieldDefinition() {
+        return this.definition;
     }
 
     /**
