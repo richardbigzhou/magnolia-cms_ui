@@ -33,8 +33,7 @@
  */
 package info.magnolia.ui.dialog;
 
-import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.action.ActionPresenter;
+import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
 
 /**
  * {@link DialogPresenter} takes care of {@link DialogView} presentation, the main responsibility
@@ -42,16 +41,11 @@ import info.magnolia.ui.api.action.ActionPresenter;
  */
 public interface DialogPresenter {
 
-    DialogView start();
+    DialogView start(BaseDialogDefinition definition);
 
     DialogView getView();
 
-    /**
-     * TODO: To be gone.
-     */
+    void addShortcut(String actionName, int keyCode, int... modifiers);
+
     void closeDialog();
-
-    void addShortcut(ActionDefinition action, int keyCode, int... modifiers);
-
-    void addAction(ActionDefinition action, ActionPresenter actionPresenter, boolean isPrimaryAction);
 }

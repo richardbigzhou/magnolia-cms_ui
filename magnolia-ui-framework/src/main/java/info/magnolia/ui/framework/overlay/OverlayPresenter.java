@@ -38,17 +38,12 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.themes.BaseTheme;
 import info.magnolia.objectfactory.Classes;
-import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.action.ActionListener;
-import info.magnolia.ui.api.action.ActionPresenter;
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.overlay.AlertCallback;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.api.overlay.MessageStyleType;
@@ -56,10 +51,6 @@ import info.magnolia.ui.api.overlay.NotificationCallback;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.dialog.BaseDialogViewImpl;
-import info.magnolia.ui.dialog.DialogCloseHandler;
-import info.magnolia.ui.dialog.DialogView;
-import info.magnolia.ui.form.action.presenter.DefaultEditorActionPresenter;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog;
 import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
@@ -73,6 +64,7 @@ import info.magnolia.ui.vaadin.icon.CompositeIcon;
 public abstract class OverlayPresenter implements OverlayLayer {
 
     public static final int TIMEOUT_SECONDS_DEFAULT = 3;
+
     private static final String ACTION_CONFIRM = "confirm";
 
     /**
@@ -88,24 +80,11 @@ public abstract class OverlayPresenter implements OverlayLayer {
      */
     @Override
     public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, final AlertCallback cb) {
-        DialogView dialog = createAlertDialog(viewToShow, confirmButtonText, type.getCssClass());
-        dialog.setClosable(true);
-        final OverlayCloser overlayCloser = openOverlay(dialog, ModalityLevel.LIGHT);
-        dialog.addDialogCloseHandler(createCloseHandler(overlayCloser));
+        BaseDialog dialog = createAlertDialog(viewToShow, confirmButtonText, type.getCssClass(), cb);
+        dialog.showCloseButton();
 
-        ConfiguredActionDefinition def = new ConfiguredActionDefinition();
-        def.setLabel(confirmButtonText);
-        ActionPresenter okBtnPresenter = new DefaultEditorActionPresenter();
-        View actionView = okBtnPresenter.start(def, new ActionListener() {
-            @Override
-            public void onActionFired(ActionDefinition definition, Object... actionContextParams) {
-                overlayCloser.close();
-                if (cb != null) {
-                    cb.onOk();
-                }
-            }
-        });
-        dialog.addPrimaryAction(actionView);
+        final OverlayCloser overlayCloser = openOverlay(new ViewAdapter(dialog), ModalityLevel.LIGHT);
+        dialog.addDialogCloseHandler(createCloseHandler(overlayCloser));
     }
 
     /**
@@ -131,7 +110,7 @@ public abstract class OverlayPresenter implements OverlayLayer {
     }
 
     private ConfirmationDialog createConfirmationDialog(View contentView, String confirmButtonText, String cancelButtonText, String styleName, boolean cancelIsDefault) {
-        ConfirmationDialog dialog = new ConfirmationDialog(contentView, cancelIsDefault);
+        ConfirmationDialog dialog = new ConfirmationDialog(contentView.asVaadinComponent(), cancelIsDefault);
         dialog.addStyleName(styleName);
         dialog.addStyleName("confirmation");
         dialog.setConfirmActionLabel(confirmButtonText);
@@ -141,43 +120,43 @@ public abstract class OverlayPresenter implements OverlayLayer {
         return dialog;
     }
 
-    private DialogView createAlertDialog(View contentView, String confirmButtonText, String styleName) {
+    private BaseDialog createAlertDialog(View contentView, String confirmButtonText, String styleName, final AlertCallback cb) {
         BaseDialog dialog = new LightDialog();
         dialog.addStyleName(styleName);
         dialog.addStyleName("alert");
         dialog.setContent(contentView.asVaadinComponent());
-        dialog.addAction(ACTION_CONFIRM, confirmButtonText);
+        HorizontalLayout footer = new HorizontalLayout();
+        footer.addComponent(new Button(confirmButtonText, new ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                cb.onOk();
+            }
+        }));
         //dialog.setDefaultAction(ACTION_CONFIRM);
-        return new BaseDialogViewImpl(dialog);
+        return dialog;
     }
 
     private View createConfirmationView(final MessageStyleType type, final String title, final String body) {
-        return new View() {
-            @Override
-            public Component asVaadinComponent() {
-                Layout layout = new CssLayout();
+        Layout layout = new CssLayout();
 
-                Label titleLabel = new Label(title, ContentMode.HTML);
-                titleLabel.addStyleName("title");
-                layout.addComponent(titleLabel);
+        Label titleLabel = new Label(title, ContentMode.HTML);
+        titleLabel.addStyleName("title");
+        layout.addComponent(titleLabel);
 
-                Label bodyLabel = new Label(body, ContentMode.HTML);
-                bodyLabel.addStyleName("body");
-                layout.addComponent(bodyLabel);
+        Label bodyLabel = new Label(body, ContentMode.HTML);
+        bodyLabel.addStyleName("body");
+        layout.addComponent(bodyLabel);
 
-                CompositeIcon icon = (CompositeIcon) Classes.getClassFactory().newInstance(type.getIconClass());
-                icon.setStyleName("dialog-icon");
-                layout.addComponent(icon);
-
-                return layout;
-            }
-        };
+        CompositeIcon icon = (CompositeIcon) Classes.getClassFactory().newInstance(type.getIconClass());
+        icon.setStyleName("dialog-icon");
+        layout.addComponent(icon);
+        return new ViewAdapter(layout);
     }
 
-    private DialogCloseHandler createCloseHandler(final OverlayCloser overlayCloser) {
-        return new DialogCloseHandler() {
+    private BaseDialog.DialogCloseEvent.Handler createCloseHandler(final OverlayCloser overlayCloser) {
+        return new BaseDialog.DialogCloseEvent.Handler() {
             @Override
-            public void onDialogClose(DialogView dialogView) {
+            public void onClose(BaseDialog.DialogCloseEvent event) {
                 overlayCloser.close();
             }
         };
@@ -188,13 +167,13 @@ public abstract class OverlayPresenter implements OverlayLayer {
      */
     @Override
     public void openConfirmation(MessageStyleType type, View contentView, String confirmButtonText, String cancelButtonText,
-                                 boolean cancelIsDefault, final ConfirmationCallback callback) {
+                                 boolean cancelIsDefault, ConfirmationCallback callback) {
         ConfirmationDialog dialog = createConfirmationDialog(contentView, confirmButtonText, cancelButtonText, type.getCssClass(), cancelIsDefault);
-        DialogView view = new BaseDialogViewImpl(dialog);
-        view.setClosable(true);
-        OverlayCloser overlayCloser = openOverlay(view, ModalityLevel.LIGHT);
+        dialog.showCloseButton();
+
+        final OverlayCloser overlayCloser = openOverlay(new ViewAdapter(dialog), ModalityLevel.LIGHT);
         dialog.addConfirmationHandler(createHandler(overlayCloser, callback));
-        view.addDialogCloseHandler(createCloseHandler(overlayCloser));
+        dialog.addDialogCloseHandler(createCloseHandler(overlayCloser));
 
     }
 
@@ -238,13 +217,7 @@ public abstract class OverlayPresenter implements OverlayLayer {
      */
     @Override
     public void openNotification(final MessageStyleType type, final boolean doesTimeout, final String title) {
-        View view = new View() {
-            @Override
-            public Component asVaadinComponent() {
-                return new Label(title, ContentMode.HTML);
-            }
-        };
-        openNotification(type, doesTimeout, view);
+        openNotification(type, doesTimeout, new ViewAdapter(new Label(title, ContentMode.HTML)));
 
     }
 
@@ -253,26 +226,20 @@ public abstract class OverlayPresenter implements OverlayLayer {
      */
     @Override
     public void openNotification(final MessageStyleType type, final boolean doesTimeout, final String title, final String linkText, final NotificationCallback cb) {
-        View view = new View() {
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.setSpacing(true);
+        layout.addComponent(new Label(title, ContentMode.HTML));
+
+        Button button = new Button(linkText, new ClickListener() {
             @Override
-            public Component asVaadinComponent() {
-                HorizontalLayout layout = new HorizontalLayout();
-                layout.setSpacing(true);
-                layout.addComponent(new Label(title, ContentMode.HTML));
-
-                Button button = new Button(linkText, new ClickListener() {
-                    @Override
-                    public void buttonClick(ClickEvent event) {
-                        cb.onLinkClicked();
-                    }
-                });
-                button.setStyleName(BaseTheme.BUTTON_LINK);
-
-                layout.addComponent(button);
-                return layout;
+            public void buttonClick(ClickEvent event) {
+                cb.onLinkClicked();
             }
-        };
-        openNotification(type, doesTimeout, view);
+        });
+        button.setStyleName(BaseTheme.BUTTON_LINK);
+
+        layout.addComponent(button);
+        openNotification(type, doesTimeout, new ViewAdapter(layout));
 
     }
 

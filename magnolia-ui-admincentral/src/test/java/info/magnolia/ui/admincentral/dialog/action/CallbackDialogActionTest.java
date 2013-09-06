@@ -38,15 +38,14 @@ import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
-import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.action.ActionPresenter;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.dialog.action.CallbackDialogAction;
 import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
+import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.formdialog.FormView;
@@ -155,7 +154,7 @@ public class CallbackDialogActionTest extends MgnlTestCase {
         }
 
         @Override
-        public DialogView start() {
+        public DialogView start(BaseDialogDefinition definition) {
             return null;  //To change body of implemented methods use File | Settings | File Templates.
         }
 
@@ -170,12 +169,7 @@ public class CallbackDialogActionTest extends MgnlTestCase {
         }
 
         @Override
-        public void addShortcut(ActionDefinition action, int keyCode, int... modifiers) {
-            //To change body of implemented methods use File | Settings | File Templates.
-        }
-
-        @Override
-        public void addAction(ActionDefinition action, ActionPresenter actionPresenter, boolean isPrimaryAction) {
+        public void addShortcut(String actionName, int keyCode, int... modifiers) {
             //To change body of implemented methods use File | Settings | File Templates.
         }
 

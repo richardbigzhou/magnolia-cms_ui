@@ -38,8 +38,6 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
-import info.magnolia.ui.api.action.ActionListener;
-import info.magnolia.ui.api.action.ActionPresenter;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
@@ -47,11 +45,16 @@ import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
+import info.magnolia.ui.dialog.actionpresenter.ActionListener;
+import info.magnolia.ui.dialog.actionpresenter.DialogActionPresenter;
+import info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredDialogActionPresenterDefinition;
+import info.magnolia.ui.dialog.actionpresenter.renderer.ActionRenderer;
+import info.magnolia.ui.dialog.actionpresenter.renderer.DefaultEditorActionRenderer;
+import info.magnolia.ui.dialog.actionpresenter.view.DialogActionView;
 import info.magnolia.ui.dialog.formdialog.FormBuilder;
 import info.magnolia.ui.dialog.formdialog.FormView;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
-import info.magnolia.ui.form.action.presenter.DefaultEditorActionPresenter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.inject.Inject;
@@ -111,21 +114,32 @@ public class DetailPresenter implements EditorCallback, EditorValidator {
     }
 
     private void initActions() {
-        final ActionPresenter presenter = new DefaultEditorActionPresenter();
+        DialogActionPresenter dialogActionPresenter = componentProvider.getComponent(DialogActionPresenter.class);
+        DialogActionView dialogActionView =
+                dialogActionPresenter.start(subAppContext.getSubAppDescriptor().getActions().values(),
+                        new ConfiguredDialogActionPresenterDefinition(),
+                        new ActionListener() {
+                            @Override
+                            public void onActionFired(String actionName, Object... actionContextParams) {
+                                DetailPresenter.this.onActionFired(actionName, actionContextParams);
+                            }
+                        });
+        formView.setActionView(dialogActionView);
         for (final ActionDefinition action : subAppContext.getSubAppDescriptor().getActions().values()) {
+            final ActionRenderer presenter = componentProvider.newInstance(DefaultEditorActionRenderer.class, action);
             final View actionView = presenter.start(action, new ActionListener() {
                 @Override
-                public void onActionFired(ActionDefinition definition, Object... actionContextParams) {
-                    DetailPresenter.this.onActionFired(definition, actionContextParams);
+                public void onActionFired(String actionName, Object... actionContextParams) {
+                    DetailPresenter.this.onActionFired(actionName, actionContextParams);
                 }
             });
             formView.addAction(actionView);
         }
     }
 
-    public void onActionFired(ActionDefinition definition, Object... actionParams) {
+    public void onActionFired(String actionName, Object... actionParams) {
         try {
-            actionExecutor.execute(definition.getName(), item, this);
+            actionExecutor.execute(actionName, item, this);
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.",
                     e.getMessage());

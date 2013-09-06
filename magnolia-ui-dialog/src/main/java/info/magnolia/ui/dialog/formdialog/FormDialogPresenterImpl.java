@@ -37,9 +37,7 @@ import com.vaadin.data.Item;
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.action.ActionPresenter;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.dialog.BaseDialogPresenter;
@@ -47,12 +45,10 @@ import info.magnolia.ui.dialog.Dialog;
 import info.magnolia.ui.dialog.DialogCloseHandler;
 import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.dialog.action.DialogActionExecutor;
-import info.magnolia.ui.dialog.definition.ActionPresenterDefinition;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
-import info.magnolia.ui.form.action.presenter.DefaultEditorActionPresenter;
 import org.apache.commons.lang.StringUtils;
 
 import javax.inject.Inject;
@@ -115,7 +111,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
             }
         });
         getView().setClosable(true);
-        initActions(dialogDefinition);
         return formView;
     }
 
@@ -127,7 +122,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     private void buildView(FormDialogDefinition dialogDefinition) {
         Dialog dialog = new Dialog(dialogDefinition);
         formView = formBuilder.buildForm(dialogDefinition.getForm(), item, dialog);
-        start();
+        start(dialogDefinition);
         final String description = dialogDefinition.getDescription();
         final String label = dialogDefinition.getLabel();
         final String basename = dialogDefinition.getI18nBasename();
@@ -143,21 +138,18 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         }
     }
 
-    private void initActions(final FormDialogDefinition definition) {
-        DefaultEditorActionPresenter defaultPresenter = new DefaultEditorActionPresenter();
-        for (final ActionDefinition action : definition.getActions().values()) {
-            ActionPresenterDefinition actionPresenterDef = definition.getActionPresenters().get(action.getName());
-            ActionPresenter actionPresenter = actionPresenterDef == null ? defaultPresenter : componentProvider.getComponent(actionPresenterDef.getPresenterClass());
-            addAction(action, actionPresenter, !definition.getSecondaryActions().contains(action.getName()));
-        }
-    }
 
     @Override
-    protected void onActionFired(ActionDefinition definition, Object... actionContextParams) {
+    protected void onActionFired(String action, Object... actionContextParams) {
         try {
-            actionExecutor.execute(definition.getName(), item, FormDialogPresenterImpl.this, callback);
+            Object[] combinedParameters = new Object[actionContextParams.length + 3];
+            combinedParameters[0] = item;
+            combinedParameters[1] = callback;
+            combinedParameters[2] = this;
+            System.arraycopy(actionContextParams, 0, combinedParameters, 3, actionContextParams.length);
+            actionExecutor.execute(action, combinedParameters);
         } catch (ActionExecutionException e) {
-            throw new RuntimeException("Could not execute action: " + definition.getName(), e);
+            throw new RuntimeException("Could not execute action: " + action, e);
         }
     }
 

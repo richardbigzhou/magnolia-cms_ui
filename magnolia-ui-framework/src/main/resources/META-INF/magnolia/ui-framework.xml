@@ -105,10 +105,23 @@
       <type>info.magnolia.ui.form.definition.FormDefinition</type>
       <implementation>info.magnolia.ui.form.definition.ConfiguredFormDefinition</implementation>
     </type-mapping>
+
+    <type-mapping>
+      <type>info.magnolia.ui.dialog.definition.ChooseDialogDefinition</type>
+      <implementation>info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition</implementation>
+    </type-mapping>
+
+    <type-mapping>
+      <type>info.magnolia.ui.dialog.definition.BaseDialogDefinition</type>
+      <implementation>info.magnolia.ui.dialog.definition.ConfiguredBaseDialogDefinition</implementation>
+    </type-mapping>
+
+
     <type-mapping>
       <type>info.magnolia.ui.dialog.definition.FormDialogDefinition</type>
       <implementation>info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition</implementation>
     </type-mapping>
+
     <type-mapping>
       <type>info.magnolia.ui.form.definition.TabDefinition</type>
       <implementation>info.magnolia.ui.form.definition.ConfiguredTabDefinition</implementation>
@@ -122,37 +135,59 @@
       <implementation>info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition</implementation>
     </type-mapping>
 
-    <!-- Workbench -->
     <type-mapping>
+      <type>info.magnolia.ui.dialog.actionpresenter.definition.DialogActionPresenterDefinition</type>
+      <implementation>info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredDialogActionPresenterDefinition</implementation>
+    </type-mapping>
+
+    <type-mapping>
+      <type>info.magnolia.ui.dialog.actionpresenter.definition.ActionPresenterDefinition</type>
+      <implementation>info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredActionPresenterDefinition</implementation>
+    </type-mapping>
+
+      <type-mapping>
+          <type>info.magnolia.ui.dialog.actionpresenter.definition.ActionPresenterDefinition</type>
+          <implementation>info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredActionPresenterDefinition</implementation>
+      </type-mapping>
+
+   <type-mapping>
+      <type>info.magnolia.ui.dialog.actionpresenter.definition.ActionRendererDefinition</type>
+      <implementation>info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredActionRendererDefinition</implementation>
+    </type-mapping>
+
+      <!-- Workbench -->
+      <type-mapping>
       <type>info.magnolia.ui.workbench.definition.WorkbenchDefinition</type>
       <implementation>info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition</implementation>
     </type-mapping>
-    <type-mapping>
+      <type-mapping>
       <type>info.magnolia.ui.workbench.definition.NodeTypeDefinition</type>
       <implementation>info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition</implementation>
     </type-mapping>
-    <type-mapping>
+      <type-mapping>
       <type>info.magnolia.ui.workbench.definition.ContentPresenterDefinition</type>
       <implementation>info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition</implementation>
     </type-mapping>
 
-    <!-- Actionbar -->
-    <type-mapping>
+      <!-- Actionbar -->
+      <type-mapping>
       <type>info.magnolia.ui.actionbar.definition.ActionbarDefinition</type>
       <implementation>info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition</implementation>
     </type-mapping>
-    <type-mapping>
+      <type-mapping>
       <type>info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition</type>
       <implementation>info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition</implementation>
     </type-mapping>
-    <type-mapping>
+      <type-mapping>
       <type>info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition</type>
       <implementation>info.magnolia.ui.actionbar.definition.ConfiguredActionbarGroupDefinition</implementation>
     </type-mapping>
-    <type-mapping>
+      <type-mapping>
       <type>info.magnolia.ui.actionbar.definition.ActionbarItemDefinition</type>
       <implementation>info.magnolia.ui.actionbar.definition.ConfiguredActionbarItemDefinition</implementation>
     </type-mapping>
+
+
   </components>
 
   <components>
@@ -190,6 +225,22 @@
           <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory</type>
           <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactoryImpl</implementation>
       </component>
+
+      <component>
+          <type>info.magnolia.ui.dialog.actionpresenter.view.DialogActionView</type>
+          <implementation>info.magnolia.ui.dialog.actionpresenter.view.DialogActionViewImpl</implementation>
+      </component>
+
+      <component>
+          <type>info.magnolia.ui.dialog.actionpresenter.renderer.ActionRenderer</type>
+          <implementation>info.magnolia.ui.dialog.actionpresenter.renderer.DefaultEditorActionRenderer</implementation>
+      </component>
+
+      <component>
+          <type>info.magnolia.ui.dialog.actionpresenter.DialogActionPresenter</type>
+          <implementation>info.magnolia.ui.dialog.actionpresenter.DialogActionPresenterImpl</implementation>
+      </component>
+
     <!-- Dialog -->
     <!--
       The FormDialogPresenter is mapped in admincentral, app and subApp scope to ensure it gets the correct UiContext injected.

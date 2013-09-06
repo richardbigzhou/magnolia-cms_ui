@@ -2,11 +2,10 @@ package info.magnolia.ui.dialog.definition;
 
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.dialog.DialogPresenter;
+import info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredDialogActionPresenterDefinition;
+import info.magnolia.ui.dialog.actionpresenter.definition.DialogActionPresenterDefinition;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,13 +26,13 @@ public class ConfiguredBaseDialogDefinition implements BaseDialogDefinition {
 
     private String i18nBasename;
 
-    private List<SecondaryActionDefinition> secondaryActions = new ArrayList<SecondaryActionDefinition>();
-
     private Map<String, ActionDefinition> actions = new LinkedHashMap<String, ActionDefinition>();
 
-    private Map<String, ActionPresenterDefinition> actionPresenters = new HashMap<String, ActionPresenterDefinition>();
-
     private Class<? extends DialogPresenter> presenterClass;
+
+    private DialogActionPresenterDefinition actionPresenter = new ConfiguredDialogActionPresenterDefinition();
+
+    public ConfiguredBaseDialogDefinition() {}
 
     @Override
     public String getId() {
@@ -62,7 +61,6 @@ public class ConfiguredBaseDialogDefinition implements BaseDialogDefinition {
         this.i18nBasename = i18nBasename;
     }
 
-
     public Map<String, ActionDefinition> getActions() {
         return actions;
     }
@@ -84,20 +82,11 @@ public class ConfiguredBaseDialogDefinition implements BaseDialogDefinition {
         this.presenterClass = presenterClass;
     }
 
-    public List<SecondaryActionDefinition> getSecondaryActions() {
-        return secondaryActions;
+    public DialogActionPresenterDefinition getActionPresenter() {
+        return actionPresenter;
     }
 
-    @Override
-    public Map<String, ActionPresenterDefinition> getActionPresenters() {
-        return actionPresenters;
-    }
-
-    public void setActionPresenters(Map<String, ActionPresenterDefinition> actionPresenters) {
-        this.actionPresenters = actionPresenters;
-    }
-
-    public void setSecondaryActions(List<SecondaryActionDefinition> secondaryActions) {
-        this.secondaryActions = secondaryActions;
+    public void setActionPresenter(DialogActionPresenterDefinition actionPresenter) {
+        this.actionPresenter = actionPresenter;
     }
 }

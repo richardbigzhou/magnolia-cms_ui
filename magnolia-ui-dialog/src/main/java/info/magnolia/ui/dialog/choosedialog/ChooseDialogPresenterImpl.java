@@ -41,9 +41,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.action.ActionPresenter;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.overlay.OverlayLayer;
@@ -52,10 +50,8 @@ import info.magnolia.ui.dialog.BaseDialogPresenter;
 import info.magnolia.ui.dialog.DialogCloseHandler;
 import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.dialog.action.DialogActionExecutor;
-import info.magnolia.ui.dialog.definition.ActionPresenterDefinition;
+import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
-import info.magnolia.ui.dialog.definition.SecondaryActionDefinition;
-import info.magnolia.ui.form.action.presenter.DefaultEditorActionPresenter;
 import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.vaadin.integration.NullItem;
@@ -71,7 +67,6 @@ import javax.inject.Inject;
 public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements ChooseDialogPresenter {
 
     private static final Logger log = LoggerFactory.getLogger(ChooseDialogPresenterImpl.class);
-
 
     private FieldFactoryFactory fieldFactoryFactory;
 
@@ -96,16 +91,16 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
         this.componentProvider = componentProvider;
         this.i18nContentSupport = i18nContentSupport;
         this.actionExecutor = actionExecutor;
-        start();
     }
 
     @Override
-    public ChooseDialogView start() {
-        return (ChooseDialogView)super.start();
+    public ChooseDialogView start(BaseDialogDefinition definition) {
+        return (ChooseDialogView)super.start(definition);
     }
 
     @Override
     public ChooseDialogView start(ChooseDialogCallback callback, ChooseDialogDefinition definition, OverlayLayer overlayLayer, String selectedItemId) {
+        start(definition);
         this.callback = callback;
         final FieldFactory formField = fieldFactoryFactory.createFieldFactory(definition.getField(), new NullItem());
         formField.setComponentProvider(componentProvider);
@@ -142,7 +137,6 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
                 }
             });
             actionExecutor.setDialogDefinition(definition);
-            initActions(definition);
             getView().setClosable(true);
             return getView();
         } else {
@@ -160,31 +154,17 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
         return (ChooseDialogView) super.getView();
     }
 
-    private void initActions(ChooseDialogDefinition definition) {
-        DefaultEditorActionPresenter defaultPresenter = new DefaultEditorActionPresenter();
-        for (final ActionDefinition action : definition.getActions().values()) {
-            ActionPresenterDefinition actionPresenterDef = definition.getActionPresenters().get(action.getName());
-            ActionPresenter actionPresenter = actionPresenterDef == null ? defaultPresenter : componentProvider.newInstance(actionPresenterDef.getPresenterClass());
-            addAction(action, actionPresenter,
-                    !definition.getSecondaryActions().contains(new SecondaryActionDefinition(action.getName())));
-        }
-    }
-
     @Override
-    protected void onActionFired(ActionDefinition definition, Object... actionContextParams) {
-        String actionName = definition.getName();
+    protected void onActionFired(String actionName, Object... actionContextParams) {
         try {
             Object[] params = new Object[]{actionName, ChooseDialogPresenterImpl.this, field, getView(), callback, actionContextParams};
-            Object[] combinedParameters = params;
-            if (item != null || actionContextParams.length > 0) {
-                combinedParameters = new Object[params.length + actionContextParams.length + (item == null ? 0 : 1)];
-                System.arraycopy(actionContextParams, 0, combinedParameters, 0, actionContextParams.length);
-                System.arraycopy(params, 0, combinedParameters, actionContextParams.length, params.length);
-                if (item != null) {
-                    combinedParameters[params.length + actionContextParams.length] = item;
-                }
+            Object[] combinedParameters = new Object[params.length + actionContextParams.length + (item == null ? 0 : 1)];
+            System.arraycopy(actionContextParams, 0, combinedParameters, 0, actionContextParams.length);
+            System.arraycopy(params, 0, combinedParameters, actionContextParams.length, params.length);
+            if (item != null) {
+                combinedParameters[params.length + actionContextParams.length] = item;
             }
-            actionExecutor.execute(definition.getName(), combinedParameters);
+            actionExecutor.execute(actionName, combinedParameters);
         } catch (ActionExecutionException e) {
             throw new RuntimeException("Could not execute action: " + actionName, e);
         }

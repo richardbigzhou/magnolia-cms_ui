@@ -35,10 +35,10 @@ package info.magnolia.ui.dialog;
 
 import com.vaadin.event.ShortcutListener;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.action.ActionListener;
-import info.magnolia.ui.api.action.ActionPresenter;
-import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.dialog.actionpresenter.ActionListener;
+import info.magnolia.ui.dialog.actionpresenter.DialogActionPresenter;
+import info.magnolia.ui.dialog.actionpresenter.view.DialogActionView;
+import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
 
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -63,41 +63,33 @@ public class BaseDialogPresenter implements DialogPresenter {
     }
 
     @Override
-    public void addAction(ActionDefinition action, ActionPresenter actionPresenter, boolean isPrimaryAction) {
-        final View actionView = actionPresenter.start(action, new ActionListener() {
-            @Override
-            public void onActionFired(ActionDefinition definition, Object... actionContextParams) {
-                BaseDialogPresenter.this.onActionFired(definition, actionContextParams);
-            }
-        });
-        if (!isPrimaryAction) {
-            view.addAdditionalAction(actionView);
-        } else {
-            view.addPrimaryAction(actionView);
-        }
-    }
-
-    @Override
     public void closeDialog() {
         view.close();
     }
 
     @Override
-    public void addShortcut(final ActionDefinition action, final int keyCode, final int... modifiers) {
+    public void addShortcut(final String actionName, final int keyCode, final int... modifiers) {
         final ShortcutListener shortcut = new ShortcutListener("", keyCode, modifiers) {
             @Override
             public void handleAction(Object sender, Object target) {
-                onActionFired(action, new HashMap<String, Object>());
+                onActionFired(actionName, new HashMap<String, Object>());
             }
         };
         view.addShortcut(shortcut);
     }
 
-    protected void onActionFired(ActionDefinition definition, Object... actionContextParams) {}
+    protected void onActionFired(String action, Object... actionContextParams) {}
 
-    @Override
-    public DialogView start() {
+    public DialogView start(BaseDialogDefinition definition) {
         this.view = initView();
+        DialogActionPresenter dialogActionPresenter = componentProvider.newInstance(definition.getActionPresenter().getPresenterClass());
+        DialogActionView dialogActionView = dialogActionPresenter.start(definition.getActions().values(), definition.getActionPresenter(), new ActionListener() {
+            @Override
+            public void onActionFired(String actionName, Object... actionContextParams) {
+                BaseDialogPresenter.this.onActionFired(actionName, actionContextParams);
+            }
+        });
+        this.view.setActionView(dialogActionView);
         return this.view;
     }
 

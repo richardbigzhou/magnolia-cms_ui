@@ -35,6 +35,7 @@ package info.magnolia.ui.dialog;
 
 import com.vaadin.event.ShortcutListener;
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.dialog.actionpresenter.view.DialogActionView;
 
 /**
  * Interface for {@link info.magnolia.ui.vaadin.dialog.BaseDialog}.
@@ -49,10 +50,6 @@ public interface DialogView extends View {
 
     void setContent(View content);
 
-    void addPrimaryAction(View actionView);
-
-    void addAdditionalAction(View actionView);
-
     void close();
 
     void setClosable(boolean b);
@@ -65,7 +62,9 @@ public interface DialogView extends View {
 
     void removeDialogCloseHandler(DialogCloseHandler handler);
 
-    void removeAllActions();
+    void setActionView(DialogActionView actionView);
 
     View getContentView();
+
+    DialogActionView getActionView();
 }

@@ -3,10 +3,9 @@ package info.magnolia.ui.dialog;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.dialog.actionpresenter.view.DialogActionView;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent.Handler;
@@ -27,13 +26,9 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
 
     private Set<DialogCloseHandler> dialogCloseHandlers = new HashSet<DialogCloseHandler>();
 
-    private HorizontalLayout footer = new HorizontalLayout();
-
-    private CssLayout primaryActionsContainer = new CssLayout();
-
-    private CssLayout secondaryActionsContainer = new CssLayout();
-
     private View contentView;
+
+    private DialogActionView actionView;
 
     public BaseDialogViewImpl() {
         this(new BaseDialog());
@@ -48,17 +43,6 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
         // dialogs would react to the keyboard event sent on the dialog currently having the focus.
         setWidth(Sizeable.SIZE_UNDEFINED, Unit.PIXELS);
         setHeight(100, Unit.PERCENTAGE); // Required for dynamic dialog shrinking upon window resize.
-
-
-        footer.addComponent(secondaryActionsContainer);
-        footer.addComponent(primaryActionsContainer);
-
-        footer.setWidth("100%");
-        secondaryActionsContainer.addStyleName("secondary-actions");
-        primaryActionsContainer.addStyleName("primary-actions");
-        secondaryActionsContainer.setWidth("100%");
-        primaryActionsContainer.setWidth("100%");
-        this.dialog.setFooterToolbar(footer);
         this.dialog.addDialogCloseHandler(new Handler() {
             @Override
             public void onClose(DialogCloseEvent event) {
@@ -86,16 +70,6 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
     public void setContent(View content) {
         this.contentView = content;
         dialog.setContent(content.asVaadinComponent());
-    }
-
-    @Override
-    public void addPrimaryAction(View actionView) {
-        primaryActionsContainer.addComponentAsFirst(actionView.asVaadinComponent());
-    }
-
-    @Override
-    public void addAdditionalAction(View actionView) {
-        secondaryActionsContainer.addComponentAsFirst(actionView.asVaadinComponent());
     }
 
     @Override
@@ -137,9 +111,9 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
     }
 
     @Override
-    public void removeAllActions() {
-        primaryActionsContainer.removeAllComponents();
-        secondaryActionsContainer.removeAllComponents();
+    public void setActionView(DialogActionView actionView) {
+        this.actionView = actionView;
+        dialog.setFooterToolbar(actionView.asVaadinComponent());
     }
 
     @Override
@@ -156,6 +130,11 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
     @Override
     public View getContentView() {
         return contentView;
+    }
+
+    @Override
+    public DialogActionView getActionView() {
+        return actionView;
     }
 
     protected BaseDialog getDialog() {

@@ -121,7 +121,7 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
 
     @Override
     public void addAction(View actionView) {
-        addPrimaryAction(actionView);
+        //getActionView().addPrimaryAction(actionView);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package info.magnolia.ui.api.action;
+package info.magnolia.ui.dialog.actionpresenter;
 
 /**
  * Created with IntelliJ IDEA.
@@ -9,5 +9,5 @@ package info.magnolia.ui.api.action;
  */
 public interface ActionListener {
 
-    void onActionFired(ActionDefinition definition, Object... actionContextParams);
+    void onActionFired(String actionName, Object... actionContextParams);
 }

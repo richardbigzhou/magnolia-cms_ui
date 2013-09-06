@@ -1,13 +1,12 @@
-package info.magnolia.ui.form.action.presenter;
+package info.magnolia.ui.dialog.actionpresenter.renderer;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.action.ActionListener;
-import info.magnolia.ui.api.action.ActionPresenter;
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.dialog.actionpresenter.ActionListener;
 
 import java.util.HashMap;
 
@@ -18,7 +17,8 @@ import java.util.HashMap;
  * Time: 3:44 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DefaultEditorActionPresenter implements ActionPresenter {
+public class DefaultEditorActionRenderer implements ActionRenderer {
+
     @Override
     public View start(final ActionDefinition definition, final ActionListener listener) {
         return new View() {
@@ -31,7 +31,7 @@ public class DefaultEditorActionPresenter implements ActionPresenter {
                 button.addClickListener(new ClickListener() {
                     @Override
                     public void buttonClick(ClickEvent event) {
-                        listener.onActionFired(definition, new HashMap<String, Object>());
+                        listener.onActionFired(definition.getName(), new HashMap<String, Object>());
                     }
                 });
                 return button;
