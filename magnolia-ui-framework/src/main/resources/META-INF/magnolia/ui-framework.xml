@@ -33,6 +33,10 @@
       <type>info.magnolia.i18n.I18nizer</type>
       <implementation>info.magnolia.i18n.proxytoys.ProxytoysI18nizer</implementation>
     </component>
+    <component>
+      <type>info.magnolia.i18n.I18nManager</type>
+      <implementation>info.magnolia.i18n.I18nManagerImpl</implementation>
+    </component>
 
     <!-- Ui framework -->
     <component>
