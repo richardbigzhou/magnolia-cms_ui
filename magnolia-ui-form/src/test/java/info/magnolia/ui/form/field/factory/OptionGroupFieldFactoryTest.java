@@ -38,6 +38,7 @@ import static org.junit.Assert.assertEquals;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import java.util.Collection;
 
@@ -56,6 +57,7 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
     @Test
     public void simpleRadioFieldTest() throws Exception {
         // GIVEN
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
         dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
         dialogSelect.setI18nContentSupport(i18nContentSupport);
 
@@ -72,6 +74,7 @@ public class OptionGroupFieldFactoryTest extends AbstractFieldFactoryTestCase<Op
     @Test
     public void selectedRadioFieldTest() throws Exception {
         // GIVEN
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
         definition.getOptions().get(2).setSelected(true);
         dialogSelect = new OptionGroupFieldFactory(definition, baseItem, new MockComponentProvider());
         dialogSelect.setI18nContentSupport(i18nContentSupport);

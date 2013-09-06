@@ -71,27 +71,6 @@ public class BasicTransformerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testReadFromDataSourceItemStringWithDefault() throws RepositoryException {
-        // GIVEN
-        definition.setType("String");
-        definition.setDefaultValue("defaultStringValue");
-        JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
-
-        BasicTransformer<String> handler = new BasicTransformer<String>(rootItem, definition, String.class);
-
-        // WHEN
-        Object value = handler.readFromItem();
-
-        // THEN
-        assertNotNull(value);
-        assertTrue(value instanceof String);
-        assertEquals(definition.getDefaultValue(), value);
-        assertNotNull(rootItem.getItemProperty(propertyName));
-        assertEquals(String.class, rootItem.getItemProperty(propertyName).getType());
-        assertEquals(definition.getDefaultValue(), rootItem.getItemProperty(propertyName).getValue());
-    }
-
-    @Test
     public void testReadFromDataSourceItemStringWithoutDefault() throws RepositoryException {
         // GIVEN
         definition.setType("String");
@@ -128,25 +107,6 @@ public class BasicTransformerTest extends RepositoryTestCase {
         assertEquals(rootNode.getProperty(propertyName).getString(), rootItem.getItemProperty(propertyName).getValue());
     }
 
-    @Test
-    public void testReadFromDataSourceItemLongWithDefault() throws RepositoryException {
-        // GIVEN
-        definition.setType("Long");
-        definition.setDefaultValue("100");
-        JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
-
-        BasicTransformer<Long> handler = new BasicTransformer<Long>(rootItem, definition, Long.class);
-
-        // WHEN
-        Object value = handler.readFromItem();
-
-        // THEN
-        assertNotNull(value);
-        assertTrue(value instanceof Long);
-        assertEquals(Long.decode(definition.getDefaultValue()), value);
-        assertNotNull(rootItem.getItemProperty(propertyName));
-        assertEquals(Long.class, rootItem.getItemProperty(propertyName).getType());
-    }
 
     @Test
     public void testReadFromDataSourceItemLongWithoutDefault() throws RepositoryException {
