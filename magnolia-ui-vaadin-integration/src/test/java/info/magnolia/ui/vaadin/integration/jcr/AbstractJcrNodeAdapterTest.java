@@ -296,6 +296,11 @@ public class AbstractJcrNodeAdapterTest {
             return false;
         }
 
+        @Override
+        public boolean isNew() {
+            return false;
+        }
+
     }
 
 }
