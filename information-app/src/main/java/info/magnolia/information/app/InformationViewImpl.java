@@ -34,16 +34,18 @@ package info.magnolia.information.app;
  *
  */
 
-import com.vaadin.ui.Component;
+import info.magnolia.ui.SmallAppViewImpl;
 
 /**
  * Default Vaadin implementation of the {@link InformationView} interface.
  */
-public class InformationViewImpl implements InformationView {
+public class InformationViewImpl extends SmallAppViewImpl implements InformationView {
 
     private Listener listener;
 
     public InformationViewImpl() {
+        setDescription("The information app shows an overview of the installed Magnolia version and the environment it runs in.\n" +
+                "Please note that this text is for dummies only.<br/>AND YEAH WHAT4S THE MATTER!");
     }
 
     @Override
@@ -51,8 +53,4 @@ public class InformationViewImpl implements InformationView {
         this.listener = listener;
     }
 
-    @Override
-    public Component asVaadinComponent() {
-        return null;
-    }
 }
