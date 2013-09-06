@@ -33,9 +33,11 @@
  */
 package info.magnolia.pages.app.setup;
 
+import static info.magnolia.jcr.nodebuilder.Ops.*;
 import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.nodebuilder.NodeBuilderUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.module.ModuleManagementException;
@@ -62,6 +64,7 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
 
     private Node dialog;
     private Node actions;
+    private Session session;
 
     @Override
     protected String getModuleDescriptorPath() {
@@ -72,7 +75,7 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     protected List<String> getModuleDescriptorPathsForTests() {
         return Arrays.asList(
                 "/META-INF/magnolia/core.xml"
-                );
+        );
     }
 
     @Override
@@ -120,7 +123,7 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     @Test
     public void testUpdateTo501CreatePageDialogHasLabel() throws ModuleManagementException, RepositoryException {
         // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         Node createPage = NodeUtil.createPath(session.getRootNode(), "/modules/pages/dialogs/createPage/form", NodeTypes.ContentNode.NAME);
         createPage.getSession().save();
         // WHEN
@@ -144,7 +147,7 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     @Test
     public void testUpdateTo502CleanupDeleteAction() throws ModuleManagementException, RepositoryException {
         // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         Node action = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/delete", NodeTypes.ContentNode.NAME);
         action.setProperty("label", "Delete item");
         action.setProperty("icon", "icon-delete");
@@ -166,7 +169,7 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     public void testUpdateTo502ActionbarNodesUpdated() throws ModuleManagementException, RepositoryException {
 
         // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         Node actionbarItems = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups/addingActions/items", NodeTypes.ContentNode.NAME);
 
         NodeUtil.createPath(actionbarItems, "delete", NodeTypes.ContentNode.NAME);
@@ -178,50 +181,6 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         // THEN
         assertFalse(actionbarItems.hasNode("delete"));
         assertTrue(actionbarItems.hasNode("confirmDeletion"));
-    }
-
-
-    @Test
-    public void testUpdateTo502ReplacesDeactivateCommand() throws ModuleManagementException, RepositoryException {
-
-        // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        Node commands = NodeUtil.createPath(session.getRootNode(), "/modules/pages/commands/website", NodeTypes.ContentNode.NAME);
-        Node deactivate = commands.addNode("deactivate", NodeTypes.ContentNode.NAME);
-        deactivate.setProperty("actionName", "default-deactivate");
-        deactivate.getSession().save();
-
-        String identifier = deactivate.getIdentifier();
-
-
-        // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
-
-        // THEN
-        Node deactivateChain = commands.getNode("deactivate");
-        assertNotEquals(identifier, deactivateChain.getIdentifier());
-
-    }
-
-    @Test
-    public void testUpdateTo502DeactivationCommandBootstrapped() throws ModuleManagementException, RepositoryException {
-
-        // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        Node commands = NodeUtil.createPath(session.getRootNode(), "/modules/pages/commands/website", NodeTypes.ContentNode.NAME);
-        Node deactivate = commands.addNode("deactivate", NodeTypes.ContentNode.NAME);
-        deactivate.setProperty("actionName", "default-deactivate");
-        deactivate.getSession().save();
-
-
-        // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
-
-        // THEN
-        Node deactivateChain = commands.getNode("deactivate");
-
-        assertTrue(deactivateChain.hasNode("version"));
-        assertTrue(deactivateChain.hasNode("deactivate"));
     }
 
     @Test
@@ -236,5 +195,104 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         // THEN
         assertTrue(availability.hasProperty("multiple"));
         assertEquals("true", availability.getProperty("multiple").getString());
+    }
+
+    @Test
+    public void testUpdateTo51RemovesCommandChains() throws ModuleManagementException, RepositoryException {
+
+        // GIVEN
+        session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node commands = NodeUtil.createPath(session.getRootNode(), "/modules/pages/commands/website", NodeTypes.ContentNode.NAME);
+        // GIVEN
+        NodeBuilderUtil.build(RepositoryConstants.CONFIG, commands.getPath(),
+                addNode("activate", NodeTypes.ContentNode.NAME).then(
+                        addNode("version", NodeTypes.ContentNode.NAME),
+                        addNode("activate", NodeTypes.ContentNode.NAME)
+                ),
+                addNode("deactivate", NodeTypes.ContentNode.NAME).then(
+                        addNode("deactivate", NodeTypes.ContentNode.NAME).then(
+                                addNode("version", NodeTypes.ContentNode.NAME),
+                                addNode("deactivate", NodeTypes.ContentNode.NAME)
+                        )
+                )
+        );
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.2"));
+
+        // THEN
+        assertFalse(session.nodeExists("/modules/pages/commands/website"));
+        assertFalse(session.nodeExists("/modules/pages/commands"));
+    }
+
+    @Test
+    public void testUpdateTo51NonEmptyCommandsRemain() throws ModuleManagementException, RepositoryException {
+
+        // GIVEN
+        session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node commands = NodeUtil.createPath(session.getRootNode(), "/modules/pages/commands/website", NodeTypes.ContentNode.NAME);
+
+        NodeBuilderUtil.build(RepositoryConstants.CONFIG, commands.getPath(),
+                addNode("activate", NodeTypes.ContentNode.NAME).then(
+                        addNode("version", NodeTypes.ContentNode.NAME),
+                        addNode("activate", NodeTypes.ContentNode.NAME)
+                ),
+                addNode("deactivate", NodeTypes.ContentNode.NAME).then(
+                        addNode("deactivate", NodeTypes.ContentNode.NAME).then(
+                                addNode("version", NodeTypes.ContentNode.NAME),
+                                addNode("deactivate", NodeTypes.ContentNode.NAME)
+                        )
+                ),
+                addNode("customCommand", NodeTypes.ContentNode.NAME).then(
+                        addNode("custom", NodeTypes.ContentNode.NAME).then(
+                                addNode("version", NodeTypes.ContentNode.NAME),
+                                addNode("else", NodeTypes.ContentNode.NAME)
+                        )
+                )
+        );
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.2"));
+
+        // THEN
+        assertTrue(session.nodeExists("/modules/pages/commands/website"));
+        assertTrue(session.nodeExists("/modules/pages/commands"));
+    }
+
+    @Test
+    public void testUpdateTo51ActivationUsesVersionedCatalog() throws RepositoryException, ModuleManagementException {
+
+        // GIVEN
+        session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node actions = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions", NodeTypes.ContentNode.NAME);
+
+        NodeBuilderUtil.build(RepositoryConstants.CONFIG, actions.getPath(),
+                addNode("activate", NodeTypes.ContentNode.NAME).then(
+                        addProperty("catalog", "website")
+                ),
+                addNode("activateRecursive", NodeTypes.ContentNode.NAME).then(
+                        addProperty("catalog", "website")
+                ),
+                addNode("deactivate", NodeTypes.ContentNode.NAME).then(
+                        addProperty("catalog", "website")
+                ),
+                addNode("activateDeletion", NodeTypes.ContentNode.NAME).then(
+                        addProperty("catalog", "website")
+                )
+        );
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.2"));
+
+        // THEN
+        Node activate = actions.getNode("activate");
+        Node activateRecursive = actions.getNode("activateRecursive");
+        Node deactivate = actions.getNode("deactivate");
+        Node activateDeletion = actions.getNode("activateDeletion");
+
+        assertEquals("versioned", activate.getProperty("catalog").getString());
+        assertEquals("versioned", activateRecursive.getProperty("catalog").getString());
+        assertEquals("versioned", deactivate.getProperty("catalog").getString());
+        assertEquals("versioned", activateDeletion.getProperty("catalog").getString());
     }
 }

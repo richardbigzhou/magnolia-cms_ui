@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.form.config;
 
-import info.magnolia.ui.form.field.definition.PropertyBuilder;
 import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
+import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 /**
@@ -131,7 +131,7 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder {
     }
 
     @Override
-    public RichTextFieldBuilder propertyBuilder(PropertyBuilder propertyBuilder) {
-        return (RichTextFieldBuilder) super.propertyBuilder(propertyBuilder);
+    public RichTextFieldBuilder transformerClass(Class<? extends Transformer<?>> transformerClass) {
+        return (RichTextFieldBuilder) super.transformerClass(transformerClass);
     }
 }

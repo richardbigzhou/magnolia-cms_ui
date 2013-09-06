@@ -39,7 +39,7 @@ import info.magnolia.objectfactory.Components;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.ui.form.field.property.basic.BasicProperty;
+import info.magnolia.ui.form.field.transformer.TransformedProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
@@ -51,6 +51,8 @@ import org.junit.Test;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.TextField;
@@ -76,7 +78,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         assertEquals(false, field.isRequired());
         assertEquals("label", field.getCaption());
         assertEquals(false, field.getPropertyDataSource().isReadOnly());
-        assertEquals(true, field.getPropertyDataSource() instanceof BasicProperty);
+        assertEquals(true, field.getPropertyDataSource() instanceof TransformedProperty);
     }
 
     @Test
@@ -196,6 +198,38 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         // THEN
         Property<?> p = field.getPropertyDataSource();
         assertEquals("bar", p.getValue().toString());
+    }
+
+    @Test
+    public void testPropertysetItemSupport() throws Exception {
+        // GIVEN
+        baseItem = new PropertysetItem();
+        baseItem.addItemProperty("foo", new ObjectProperty<String>("fooValue"));
+        ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "foo");
+        abstractDialogField = new TestTextFieldFactory(def, baseItem);
+        abstractDialogField.setComponentProvider(new MockComponentProvider());
+        // WHEN
+        Field<?> field = abstractDialogField.createField();
+
+        // THEN
+        Property<?> p = field.getPropertyDataSource();
+        assertEquals("fooValue", p.getValue().toString());
+    }
+
+    @Test
+    public void testPropertysetItemSupportNonExistingProperty() throws Exception {
+        // GIVEN
+        baseItem = new PropertysetItem();
+        baseItem.addItemProperty("foo", new ObjectProperty<String>("fooValue"));
+        ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "bar");
+        abstractDialogField = new TestTextFieldFactory(def, baseItem);
+        abstractDialogField.setComponentProvider(new MockComponentProvider());
+        // WHEN
+        Field<?> field = abstractDialogField.createField();
+
+        // THEN
+        Property<?> p = field.getPropertyDataSource();
+        assertNotNull(p);
     }
 
     public static ConfiguredFieldDefinition createConfiguredFieldDefinition(ConfiguredFieldDefinition configureFieldDefinition, String propertyName) {

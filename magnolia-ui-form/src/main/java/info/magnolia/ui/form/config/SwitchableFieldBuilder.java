@@ -33,12 +33,8 @@
  */
 package info.magnolia.ui.form.config;
 
-import info.magnolia.ui.form.field.definition.PropertyBuilder;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
-import info.magnolia.ui.form.field.property.CustomPropertyType;
-import info.magnolia.ui.form.field.property.PropertyHandler;
-import info.magnolia.ui.form.field.property.composite.CompositeProperty;
-import info.magnolia.ui.form.field.property.composite.SwitchableSimplePropertyCompositeHandler;
+import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 import java.util.Collection;
@@ -52,10 +48,6 @@ public class SwitchableFieldBuilder extends AbstractFieldBuilder {
 
     public SwitchableFieldBuilder(String name) {
         definition().setName(name);
-        PropertyBuilder propertyBuilder = new PropertyBuilder();
-        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) SwitchableSimplePropertyCompositeHandler.class);
-        propertyBuilder.setPropertyType((Class<? extends CustomPropertyType<?>>) (Object) CompositeProperty.class);
-        definition().setPropertyBuilder(propertyBuilder);
     }
 
     @Override
@@ -168,7 +160,7 @@ public class SwitchableFieldBuilder extends AbstractFieldBuilder {
     }
 
     @Override
-    public SwitchableFieldBuilder propertyBuilder(PropertyBuilder propertyBuilder) {
-        return (SwitchableFieldBuilder) super.propertyBuilder(propertyBuilder);
+    public SwitchableFieldBuilder transformerClass(Class<? extends Transformer<?>> transformerClass) {
+        return (SwitchableFieldBuilder) super.transformerClass(transformerClass);
     }
 }

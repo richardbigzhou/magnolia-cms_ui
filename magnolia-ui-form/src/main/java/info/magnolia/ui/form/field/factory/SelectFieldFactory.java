@@ -239,7 +239,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
             selectedValue = definition.getOptions().get(0).getValue();
         }
         // Type the selected value
-        selectedValue = DefaultPropertyUtil.createTypedValue(getDefinitiontType(), (String) selectedValue);
+        selectedValue = DefaultPropertyUtil.createTypedValue(getDefinitionType(), (String) selectedValue);
         // Set the selected value (if not null)
         if (datasourceValue != null && datasourceValue instanceof Collection && selectedValue != null) {
             ((Collection) datasourceValue).add(selectedValue);

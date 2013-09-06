@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.form.config;
 
-import info.magnolia.ui.form.field.definition.PropertyBuilder;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
+import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 /**
@@ -141,7 +141,7 @@ public class TextFieldBuilder extends AbstractFieldBuilder {
     }
 
     @Override
-    public TextFieldBuilder propertyBuilder(PropertyBuilder propertyBuilder) {
-        return (TextFieldBuilder) super.propertyBuilder(propertyBuilder);
+    public TextFieldBuilder transformerClass(Class<? extends Transformer<?>> transformerClass) {
+        return (TextFieldBuilder) super.transformerClass(transformerClass);
     }
 }

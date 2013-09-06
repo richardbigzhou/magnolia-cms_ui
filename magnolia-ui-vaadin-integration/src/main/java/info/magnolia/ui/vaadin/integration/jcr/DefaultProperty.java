@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import javax.inject.Inject;
-
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.converter.Converter.ConversionException;
 
@@ -45,7 +43,6 @@ import com.vaadin.data.util.converter.Converter.ConversionException;
  */
 public class DefaultProperty<T> extends ObjectProperty<T> {
 
-    @Inject
     @SuppressWarnings("unchecked")
     // the cast is safe, because an object of type T has class Class<T>
     public DefaultProperty(T value) {

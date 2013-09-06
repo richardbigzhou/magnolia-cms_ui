@@ -34,7 +34,7 @@
 package info.magnolia.ui.form.config;
 
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
-import info.magnolia.ui.form.field.definition.PropertyBuilder;
+import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 /**
@@ -136,7 +136,7 @@ public class CheckboxFieldBuilder extends AbstractFieldBuilder {
     }
 
     @Override
-    public CheckboxFieldBuilder propertyBuilder(PropertyBuilder propertyBuilder) {
-        return (CheckboxFieldBuilder) super.propertyBuilder(propertyBuilder);
+    public CheckboxFieldBuilder transformerClass(Class<? extends Transformer<?>> transformerClass) {
+        return (CheckboxFieldBuilder) super.transformerClass(transformerClass);
     }
 }

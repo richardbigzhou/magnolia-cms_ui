@@ -33,12 +33,9 @@
  */
 package info.magnolia.security.app.dialog.field;
 
-import info.magnolia.security.app.dialog.field.property.EnabledFieldPropertyHandler;
+import info.magnolia.security.app.dialog.field.property.EnabledFieldTransformer;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
-import info.magnolia.ui.form.field.definition.PropertyBuilder;
-import info.magnolia.ui.form.field.property.CustomPropertyType;
-import info.magnolia.ui.form.field.property.PropertyHandler;
-import info.magnolia.ui.form.field.property.basic.BasicProperty;
+import info.magnolia.ui.form.field.transformer.Transformer;
 
 /**
  * A definition for the Enabled field.
@@ -47,9 +44,6 @@ public class EnabledFieldDefinition extends CheckboxFieldDefinition {
 
     @SuppressWarnings("unchecked")
     public EnabledFieldDefinition() {
-        PropertyBuilder propertyBuilder = new PropertyBuilder();
-        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) EnabledFieldPropertyHandler.class);
-        propertyBuilder.setPropertyType((Class<? extends CustomPropertyType<?>>) (Object) BasicProperty.class);
-        setPropertyBuilder(propertyBuilder);
+        setTransformerClass((Class<? extends Transformer<?>>) (Object) EnabledFieldTransformer.class);
     }
 }

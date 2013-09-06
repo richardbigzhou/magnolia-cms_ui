@@ -41,7 +41,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.form.field.factory.TwinColSelectFieldFactory;
-import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
@@ -161,9 +161,12 @@ public class RoleManagementFieldFactory extends TwinColSelectFieldFactory<RoleMa
         return roles;
     }
 
+    /**
+     * Create a new Instance of {@link Transformer}.
+     */
     @Override
-    protected PropertyHandler<?> initializePropertyHandler(Class<? extends PropertyHandler<?>> handlerClass, Class<?> type) {
-        return this.componentProvider.newInstance(handlerClass, item, definition, type, getAssignedRoles(), "roles");
+    protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
+        return this.componentProvider.newInstance(transformerClass, item, definition, getFieldType(), getAssignedRoles(), "roles");
     }
 
 }

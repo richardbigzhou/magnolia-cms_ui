@@ -49,5 +49,9 @@
       <name>ui-admincentral</name>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <name>activation</name>
+      <version>5.0.2/*</version>
+    </dependency>
   </dependencies>
 </module>
