@@ -102,17 +102,22 @@ public class DialogMigrationTask extends AbstractTask {
     @Override
     public void execute(InstallContext installContext) throws TaskExecutionException {
         Session session = null;
-        String newDialogPath = null;
+        String tempDialogPath = null;
         try {
             this.controlMigrationMap = getCustomMigrationTask();
             String dialogNodeName = "dialogs";
             String dialogPath = "/modules/" + moduleName + "/" + dialogNodeName;
+            // Temp Path
+            tempDialogPath = dialogPath + "50";
 
             session = installContext.getJCRSession(RepositoryConstants.CONFIG);
+            // Check
+            if (!session.itemExists(dialogPath)) {
+                log.warn("Dialog definition do not exist for the following module {}. No Dialog migration task will be performed", moduleName);
+                return;
+            }
             Node dialog = session.getNode(dialogPath);
-            // Copy to Dialog50
-            newDialogPath = dialog.getPath() + "50";
-            copyInSession(dialog, newDialogPath);
+            copyInSession(dialog, tempDialogPath);
             NodeUtil.visit(dialog, new NodeVisitor() {
                 @Override
                 public void visit(Node current) throws RepositoryException {
@@ -122,7 +127,7 @@ public class DialogMigrationTask extends AbstractTask {
                 }
             }, new NodeTypePredicate(NodeTypes.Content.NAME));
             session.removeItem(dialogPath);
-            session.move(newDialogPath, dialogPath);
+            session.move(tempDialogPath, dialogPath);
 
             // Try to resolve references for extends.
             postProcessForExtendsAndReference();
@@ -134,8 +139,8 @@ public class DialogMigrationTask extends AbstractTask {
         } finally {
             try {
                 // In any cases remove the tmp dialog migration node.
-                if (session != null && session.nodeExists(newDialogPath)) {
-                    session.getNode(newDialogPath).remove();
+                if (session != null && session.nodeExists(tempDialogPath)) {
+                    session.getNode(tempDialogPath).remove();
                 }
             } catch (RepositoryException re) {
                 log.warn("", re);
