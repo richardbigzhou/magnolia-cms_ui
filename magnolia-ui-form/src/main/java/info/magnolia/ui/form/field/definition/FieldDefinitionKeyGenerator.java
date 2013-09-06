@@ -63,39 +63,4 @@ public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldD
         addKey(list, fieldName, property);
         // <fieldName>.<property>
     }
-
-    @Override
-    public String messageBundleNameFor(FieldDefinition def) {
-        if (def.getI18nBasename() != null) {
-            return def.getI18nBasename();
-        } else {
-            final TabDefinition tab = getParentViaCast(def);
-            if (tab.getI18nBasename() != null) {
-                return tab.getI18nBasename();
-            } else {
-                final FormDefinition formDef = getParentViaCast(tab);
-                if (formDef.getI18nBasename() != null) {
-                    return formDef.getI18nBasename();
-                } else {
-                    return getParentDialogMessageBundleName(formDef);
-                }
-            }
-        }
-    }
-
-    private String getParentDialogMessageBundleName(FormDefinition form) {
-        final Object dialog = getParentViaCast(form);
-        String messageBundleName = null;
-        try {
-            final Method getId = dialog.getClass().getMethod("getI18nBasename");
-            messageBundleName = (String) getId.invoke(dialog);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e); // TODO MGNLUI-2031
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e); // TODO MGNLUI-2031
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e); // TODO MGNLUI-2031
-        }
-        return messageBundleName;
-    }
 }

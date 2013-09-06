@@ -59,11 +59,6 @@ import com.google.common.collect.Collections2;
  */
 public class ActionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<ActionDefinition> {
 
-    @Override
-    public String messageBundleNameFor(ActionDefinition definition) {
-        return null;
-    }
-
     /**
      * Will generate keys for the message bundle in the following form <code> &lt;app-name&gt;.&lt;sub-app-name&gt;.actions.&lt;action-name&gt;[.name of getter or field annotated with {@link info.magnolia.i18n.I18nText}]</code>.
      */

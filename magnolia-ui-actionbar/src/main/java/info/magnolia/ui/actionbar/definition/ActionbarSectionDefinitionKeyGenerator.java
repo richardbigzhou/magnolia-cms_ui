@@ -47,11 +47,6 @@ import java.util.List;
  */
 public class ActionbarSectionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<ActionbarSectionDefinition> {
 
-    @Override
-    public String messageBundleNameFor(ActionbarSectionDefinition sectionDefinition) {
-        return null;
-    }
-
     /**
      * Will generate keys for the message bundle in the following form <code> &lt;app-name&gt;.&lt;sub-app-name&gt;.actionbar.sections.&lt;section-name&gt;[.name of getter or field annotated with {@link info.magnolia.i18n.I18nText}]</code>.
      */

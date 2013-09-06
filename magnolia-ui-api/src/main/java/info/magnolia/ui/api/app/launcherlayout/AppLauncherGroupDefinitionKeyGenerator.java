@@ -46,11 +46,6 @@ public class AppLauncherGroupDefinitionKeyGenerator extends AbstractI18nKeyGener
     public static final String APPLAUNCHER_PREFIX = "app-launcher";
 
     @Override
-    public String messageBundleNameFor(AppLauncherGroupDefinition group) {
-        return null;
-    }
-
-    @Override
     protected void keysFor(List<String> list, AppLauncherGroupDefinition group, AnnotatedElement el) {
         String groupName = group.getName();
         addKey(list, APPLAUNCHER_PREFIX, groupName, fieldOrGetterName(el));
