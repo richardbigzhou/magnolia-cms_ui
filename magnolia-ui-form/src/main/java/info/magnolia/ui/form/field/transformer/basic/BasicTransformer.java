@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.transformer.basic;
 
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
+import info.magnolia.ui.form.field.transformer.UndefinedPropertyType;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
@@ -64,17 +65,17 @@ public class BasicTransformer<T> implements Transformer<T> {
     protected String basePropertyName;
     protected String i18NPropertyName;
     private Locale locale;
-    protected final Class<T> type;
+    protected Class<T> type;
 
     @Inject
     public BasicTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<T> type) {
         this.definition = definition;
-        this.type = type;
         this.relatedFormItem = relatedFormItem;
         this.basePropertyName = definition.getName();
         if (hasI18NSupport()) {
             this.i18NPropertyName = this.basePropertyName;
         }
+        setType(type);
     }
 
     @Override
@@ -91,6 +92,25 @@ public class BasicTransformer<T> implements Transformer<T> {
             p.setReadOnly(true);
         }
         return p.getValue();
+    }
+
+    /**
+     * If the value type is not initialize by the field factory ({@link UndefinedPropertyType}), check if the property already exist in the Item.<br>
+     * If the Item has already this property, return the property value type.<br>
+     * Else return the default type 'String'
+     */
+    protected void setType(Class<T> typeFromDefinition) {
+        if (typeFromDefinition.isAssignableFrom(UndefinedPropertyType.class)) {
+            String propertyName = definePropertyName();
+            Property<T> property = relatedFormItem.getItemProperty(propertyName);
+            if (property != null) {
+                this.type = (Class<T>) property.getType();
+            } else {
+                this.type = (Class<T>) String.class;
+            }
+        } else {
+            this.type = typeFromDefinition;
+        }
     }
 
     /**
@@ -155,6 +175,11 @@ public class BasicTransformer<T> implements Transformer<T> {
     @Override
     public boolean hasI18NSupport() {
         return definition.isI18n();
+    }
+
+    @Override
+    public Class<T> getType() {
+        return type;
     }
 
 }
