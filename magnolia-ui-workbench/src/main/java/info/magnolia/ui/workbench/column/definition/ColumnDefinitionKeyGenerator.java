@@ -47,11 +47,6 @@ import java.util.List;
 public class ColumnDefinitionKeyGenerator extends AbstractI18nKeyGenerator<ColumnDefinition> {
 
     @Override
-    public String messageBundleNameFor(ColumnDefinition object) {
-        return null;
-    }
-
-    @Override
     protected void keysFor(List<String> keys, ColumnDefinition columnDefinition, AnnotatedElement el) {
         Object root = getRoot(columnDefinition);
         if (!(root instanceof AppDescriptor)) {

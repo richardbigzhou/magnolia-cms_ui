@@ -49,8 +49,4 @@ public class TabDefinitionKeyGenerator extends AbstractFormKeyGenerator<TabDefin
         addKey(list, tab.getName(), fieldOrGetterName(el));
     }
 
-    @Override
-    public String messageBundleNameFor(TabDefinition tab) {
-        return tab.getI18nBasename();
-    }
 }

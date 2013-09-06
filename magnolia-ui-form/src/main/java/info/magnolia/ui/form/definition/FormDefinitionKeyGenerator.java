@@ -47,8 +47,4 @@ public class FormDefinitionKeyGenerator extends AbstractFormKeyGenerator<FormDef
         addKey(list, dialogId, fieldOrGetterName(el));
     }
 
-    @Override
-    public String messageBundleNameFor(FormDefinition form) {
-        return form.getI18nBasename();
-    }
 }

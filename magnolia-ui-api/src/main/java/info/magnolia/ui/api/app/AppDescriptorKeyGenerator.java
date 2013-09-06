@@ -44,11 +44,6 @@ import java.util.List;
 public class AppDescriptorKeyGenerator extends AbstractI18nKeyGenerator<AppDescriptor> {
 
     @Override
-    public String messageBundleNameFor(AppDescriptor object) {
-        return null;
-    }
-
-    @Override
     protected void keysFor(List<String> list, AppDescriptor app, AnnotatedElement el) {
         addKey(list, app.getName(), "app", fieldOrGetterName(el));
     }
