@@ -103,6 +103,18 @@ public class JcrNodeAdapterTest {
     }
 
     @Test
+    public void testIsNew() throws Exception {
+        // GIVEN
+        Node node = session.getRootNode().addNode(nodeName);
+
+        // WHEN
+        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
+
+        // THEN
+        assertFalse(adapter.isNew());
+    }
+
+    @Test
     public void testGetItemPropertyWithNewProperty() throws Exception {
         // GIVEN
         Node node = session.getRootNode().addNode(nodeName);

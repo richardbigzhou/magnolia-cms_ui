@@ -583,7 +583,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
 
     /**
      * @return a String containing the node types to be displayed in a list view and searched for in a query. All node types declared in a workbench definition are returned
-     * unless their <code>hideInList</code> property is true. E.g. assuming a node types declaration like the following
+     * unless their <code>hideInList</code> property is true or the node is of type <code>mgnl:folder</code> (custom implementations of this method may still decide to display folders). Assuming a node types declaration like the following
      * 
      * <pre>
      * ...
@@ -608,8 +608,11 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         List<String> defs = new ArrayList<String>();
 
         for (NodeType nt : getSearchableNodeTypes()) {
+            if (nt.isNodeType(NodeTypes.Folder.NAME)) {
+                continue;
+            }
             if (nt.isMixin()) {
-                // Mixin type information is found in jcr:mixinTypes node see http://www.day.com/specs/jcr/2.0/10_Writing.html#10.10.3%20Assigning%20Mixin%20Node%20Types
+                // Mixin type information is found in jcr:mixinTypes property see http://www.day.com/specs/jcr/2.0/10_Writing.html#10.10.3%20Assigning%20Mixin%20Node%20Types
                 defs.add("[jcr:mixinTypes] = '" + nt.getName() + "'");
             } else {
                 defs.add("[jcr:primaryType] = '" + nt.getName() + "'");

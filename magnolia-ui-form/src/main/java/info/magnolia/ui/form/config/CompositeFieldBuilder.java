@@ -34,11 +34,7 @@
 package info.magnolia.ui.form.config;
 
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
-import info.magnolia.ui.form.field.definition.PropertyBuilder;
-import info.magnolia.ui.form.field.property.CustomPropertyType;
-import info.magnolia.ui.form.field.property.PropertyHandler;
-import info.magnolia.ui.form.field.property.composite.CompositeProperty;
-import info.magnolia.ui.form.field.property.composite.SimplePropertyCompositeHandler;
+import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 /**
@@ -50,10 +46,6 @@ public class CompositeFieldBuilder extends AbstractFieldBuilder {
 
     public CompositeFieldBuilder(String name) {
         definition().setName(name);
-        PropertyBuilder propertyBuilder = new PropertyBuilder();
-        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) SimplePropertyCompositeHandler.class);
-        propertyBuilder.setPropertyType((Class<? extends CustomPropertyType<?>>) (Object) CompositeProperty.class);
-        definition().setPropertyBuilder(propertyBuilder);
     }
 
     @Override
@@ -143,5 +135,10 @@ public class CompositeFieldBuilder extends AbstractFieldBuilder {
     @Override
     public CompositeFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
         return (CompositeFieldBuilder) super.validator(validatorBuilder);
+    }
+
+    @Override
+    public CompositeFieldBuilder transformerClass(Class<? extends Transformer<?>> transformerClass) {
+        return (CompositeFieldBuilder) super.transformerClass(transformerClass);
     }
 }

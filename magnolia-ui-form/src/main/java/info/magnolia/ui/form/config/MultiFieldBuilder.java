@@ -34,11 +34,7 @@
 package info.magnolia.ui.form.config;
 
 import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
-import info.magnolia.ui.form.field.definition.PropertyBuilder;
-import info.magnolia.ui.form.field.property.CustomPropertyType;
-import info.magnolia.ui.form.field.property.PropertyHandler;
-import info.magnolia.ui.form.field.property.multi.MultiProperty;
-import info.magnolia.ui.form.field.property.multi.MultiValuesPropertyMultiHandler;
+import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 /**
@@ -50,10 +46,6 @@ public class MultiFieldBuilder extends AbstractFieldBuilder {
 
     public MultiFieldBuilder(String name) {
         definition().setName(name);
-        PropertyBuilder propertyBuilder = new PropertyBuilder();
-        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) MultiValuesPropertyMultiHandler.class);
-        propertyBuilder.setPropertyType((Class<? extends CustomPropertyType<?>>) (Object) MultiProperty.class);
-        definition().setPropertyBuilder(propertyBuilder);
     }
 
     @Override
@@ -151,5 +143,10 @@ public class MultiFieldBuilder extends AbstractFieldBuilder {
     @Override
     public MultiFieldBuilder validator(GenericValidatorBuilder validatorBuilder) {
         return (MultiFieldBuilder) super.validator(validatorBuilder);
+    }
+
+    @Override
+    public MultiFieldBuilder transformerClass(Class<? extends Transformer<?>> transformerClass) {
+        return (MultiFieldBuilder) super.transformerClass(transformerClass);
     }
 }

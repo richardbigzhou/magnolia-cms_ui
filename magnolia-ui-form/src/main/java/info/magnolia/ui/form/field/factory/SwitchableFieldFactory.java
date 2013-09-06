@@ -38,7 +38,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.SwitchableField;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
-import info.magnolia.ui.form.field.property.PropertyHandler;
+import info.magnolia.ui.form.field.transformer.Transformer;
 
 import java.util.List;
 
@@ -57,7 +57,7 @@ import com.vaadin.ui.Field;
  * - The String property defined into the value property of the definition (value = date) <br>
  * and<br>
  * - The Field name defined into the Fields set (Date field named date).
- * 
+ *
  * @param <D> definition type
  */
 public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractFieldFactory<SwitchableFieldDefinition, PropertysetItem> {
@@ -85,12 +85,12 @@ public class SwitchableFieldFactory<D extends FieldDefinition> extends AbstractF
 
 
     /**
-     * Create a new Instance of {@link PropertyHandler} dedicated to {@link info.magnolia.ui.form.field.property.composite.CompositeProperty}.
+     * Create a new Instance of {@link Transformer}.
      */
     @Override
-    protected PropertyHandler<?> initializePropertyHandler(Class<? extends PropertyHandler<?>> handlerClass, Class<?> type) {
+    protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
         List<String> propertyNames = definition.getFieldsName();
-        return this.componentProvider.newInstance(handlerClass, item, definition, componentProvider, propertyNames);
+        return this.componentProvider.newInstance(transformerClass, item, definition, PropertysetItem.class, propertyNames);
     }
 
 }

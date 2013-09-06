@@ -33,9 +33,13 @@
  */
 package info.magnolia.ui.form.field.factory;
 
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
+import info.magnolia.ui.form.field.transformer.Transformer;
 
 import java.util.HashSet;
+
+import javax.inject.Inject;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractSelect;
@@ -48,8 +52,12 @@ import com.vaadin.ui.TwinColSelect;
  */
 public class TwinColSelectFieldFactory<T extends TwinColSelectFieldDefinition> extends SelectFieldFactory<TwinColSelectFieldDefinition> {
 
-    public TwinColSelectFieldFactory(TwinColSelectFieldDefinition definition, Item relatedFieldItem) {
+    private ComponentProvider componentProvider;
+
+    @Inject
+    public TwinColSelectFieldFactory(TwinColSelectFieldDefinition definition, Item relatedFieldItem, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem);
+        this.componentProvider = componentProvider;
     }
 
     @Override
@@ -68,8 +76,13 @@ public class TwinColSelectFieldFactory<T extends TwinColSelectFieldDefinition> e
         return new TwinColSelect();
     }
 
+    /**
+     * Override in order to define the field property type.<br>
+     * In any case set property type as {@link HashSet}, type used by the Vaadin MultiSelect field.
+     */
     @Override
-    protected Class<?> getDefaultFieldType() {
-        return HashSet.class;
+    protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
+        return this.componentProvider.newInstance(transformerClass, item, definition, HashSet.class);
     }
+
 }

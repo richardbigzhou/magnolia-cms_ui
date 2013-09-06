@@ -40,17 +40,14 @@ import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.ui.AbstractField;
+import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
-import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.VerticalLayout;
@@ -61,11 +58,9 @@ import com.vaadin.ui.VerticalLayout;
  * - The creation of new Field<br>
  * - The removal of Field<br>
  * The Field is build based on a generic {@link ConfiguredFieldDefinition}.<br>
- * The Field values are handle by a configured {@link info.magnolia.ui.form.field.property.PropertyHandler} dedicated to create/retrieve properties as List.<br>
- *
- * @param <T>
+ * The Field values are handle by a configured {@link info.magnolia.ui.form.field.transformer.Transformer} dedicated to create/retrieve properties as {@link PropertysetItem}.<br>
  */
-public class MultiField<T> extends AbstractCustomMultiField<MultiFieldDefinition, List<T>> {
+public class MultiField extends AbstractCustomMultiField<MultiFieldDefinition, PropertysetItem> {
 
     private VerticalLayout root;
     private final Button addButton = new NativeButton();
@@ -93,10 +88,25 @@ public class MultiField<T> extends AbstractCustomMultiField<MultiFieldDefinition
 
         // Initialize Existing field
         initFields();
-
+        // Register value change listener for i18n handling.
         addValueChangeListener(datasourceListener);
 
         return root;
+    }
+
+    /**
+     * Initialize the MultiField. <br>
+     * Create as many configured Field as we have related values already stored.
+     */
+    @Override
+    protected void initFields(PropertysetItem newValue) {
+        root.removeAllComponents();
+        Iterator<?> it = newValue.getItemPropertyIds().iterator();
+        while (it.hasNext()) {
+            Property<?> property = newValue.getItemProperty(it.next());
+            root.addComponent(createEntryComponent(property));
+        }
+        root.addComponent(addButton);
     }
 
     /**
@@ -105,13 +115,15 @@ public class MultiField<T> extends AbstractCustomMultiField<MultiFieldDefinition
      * - a configured field <br>
      * - a remove Button<br>
      */
-    @SuppressWarnings("unchecked")
-    private Component createEntryComponent(T entry) {
+    private Component createEntryComponent(Property<?> property) {
         HorizontalLayout layout = new HorizontalLayout();
-        Field<T> field = (Field<T>) createLocalField(fieldDefinition, relatedFieldItem, true);
+        Field<?> field = createLocalField(fieldDefinition, relatedFieldItem, true);
         layout.addComponent(field);
-        if (entry != null) {
-            field.getPropertyDataSource().setValue(entry);
+        if (property != null) {
+            field.setPropertyDataSource(property);
+        } else {
+            int position = root.getComponentCount() - 1;
+            ((PropertysetItem) getPropertyDataSource().getValue()).addItemProperty(position, field.getPropertyDataSource());
         }
         field.addValueChangeListener(selectionListener);
 
@@ -134,8 +146,10 @@ public class MultiField<T> extends AbstractCustomMultiField<MultiFieldDefinition
         return new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
+                int position = root.getComponentIndex(layout);
                 root.removeComponent(layout);
-                setValue(getCurrentValues(root));
+                removeValueProperty(position);
+                getPropertyDataSource().setValue(getValue());
             };
         };
     }
@@ -152,49 +166,9 @@ public class MultiField<T> extends AbstractCustomMultiField<MultiFieldDefinition
         };
     }
 
-    /**
-     * Listener used to update the Data source property.
-     */
-    protected Property.ValueChangeListener selectionListener = new ValueChangeListener() {
-        @SuppressWarnings("unchecked")
-        @Override
-        public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
-            List<T> currentValues = getCurrentValues(root);
-            getPropertyDataSource().setValue(currentValues);
-        }
-    };
-
-
-    /**
-     * Initialize the MultiField. <br>
-     * Create as many configured Field as we have related values already stored.
-     */
     @Override
-    protected void initFields(List<T> newValue) {
-        root.removeAllComponents();
-        Iterator<T> it = newValue.iterator();
-        while (it.hasNext()) {
-            T entry = it.next();
-            root.addComponent(createEntryComponent(entry));
-        }
-        root.addComponent(addButton);
-    }
-
-    /**
-     * Retrieve the Values stored as Field value.
-     */
-    private List<T> getCurrentValues(HasComponents root) {
-        List<AbstractField<List<T>>> fields = getFields(root, true);
-        List<T> newValue = new LinkedList<T>();
-        for (AbstractField<List<T>> field : fields) {
-            newValue.add((T) (field.getConvertedValue()));
-        }
-        return newValue;
-    }
-
-    @Override
-    public Class getType() {
-        return List.class;
+    public Class<? extends PropertysetItem> getType() {
+        return PropertysetItem.class;
     }
 
 
@@ -208,4 +182,26 @@ public class MultiField<T> extends AbstractCustomMultiField<MultiFieldDefinition
     public void setButtonCaptionRemove(String buttonCaptionRemove) {
         this.buttonCaptionRemove = buttonCaptionRemove;
     }
+
+    /**
+     * Ensure that id of the {@link PropertysetItem} stay coherent.<br>
+     * Assume that we have 3 values 0:a, 1:b, 2:c, and 1 is removed <br>
+     * If we just remove 1, the {@link PropertysetItem} will contain 0:a, 2:c, .<br>
+     * But we should have : 0:a, 1:c, .
+     */
+    private void removeValueProperty(int fromIndex) {
+        getValue().removeItemProperty(fromIndex);
+        int toIndex = fromIndex;
+        int valuesSize = getValue().getItemPropertyIds().size();
+        if (fromIndex == valuesSize) {
+            return;
+        }
+        while (fromIndex < valuesSize) {
+            toIndex = fromIndex;
+            fromIndex +=1;
+            getValue().addItemProperty(toIndex, getValue().getItemProperty(fromIndex));
+            getValue().removeItemProperty(fromIndex);
+        }
+    }
+
 }

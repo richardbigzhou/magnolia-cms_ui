@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.assertEquals;
 
+import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -62,7 +63,7 @@ public class TwinColSelectFieldFactoryTest extends AbstractFieldFactoryTestCase<
     public void simpleTwinColFieldTest() throws Exception {
         // GIVEN
         definition.setMultiselect(true);
-        twinSelect = new TwinColSelectFieldFactory(definition, baseItem);
+        twinSelect = new TwinColSelectFieldFactory(definition, baseItem, new MockComponentProvider());
         twinSelect.setI18nContentSupport(i18nContentSupport);
 
         // WHEN
@@ -80,7 +81,7 @@ public class TwinColSelectFieldFactoryTest extends AbstractFieldFactoryTestCase<
     public void multiSelectTwinColFieldTest() throws Exception {
         // GIVEN
         definition.setMultiselect(true);
-        twinSelect = new TwinColSelectFieldFactory(definition, baseItem);
+        twinSelect = new TwinColSelectFieldFactory(definition, baseItem, new MockComponentProvider());
         twinSelect.setI18nContentSupport(i18nContentSupport);
         Field field = twinSelect.createField();
         // WHEN
@@ -100,7 +101,7 @@ public class TwinColSelectFieldFactoryTest extends AbstractFieldFactoryTestCase<
     public void multiSelectTwinColField_ItemResult_Test() throws Exception {
         // GIVEN
         definition.setMultiselect(true);
-        twinSelect = new TwinColSelectFieldFactory(definition, baseItem);
+        twinSelect = new TwinColSelectFieldFactory(definition, baseItem, new MockComponentProvider());
         twinSelect.setI18nContentSupport(i18nContentSupport);
         Field field = twinSelect.createField();
         // WHEN

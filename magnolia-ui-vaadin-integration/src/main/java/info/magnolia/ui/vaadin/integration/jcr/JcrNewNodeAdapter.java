@@ -161,4 +161,9 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
 
         return Path.getUniqueLabel(item.getSession(), item.getPath(), nodeName);
     }
+
+    @Override
+    public boolean isNew() {
+        return true;
+    }
 }

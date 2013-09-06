@@ -204,4 +204,9 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
     public boolean removeItemProperty(Object id) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("removeItemProperty");
     }
+
+    @Override
+    public boolean isNew() {
+        return false;
+    }
 }

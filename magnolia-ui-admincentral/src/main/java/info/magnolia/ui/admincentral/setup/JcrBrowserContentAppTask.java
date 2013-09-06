@@ -177,7 +177,7 @@ public class JcrBrowserContentAppTask extends AbstractTask {
     }
 
     private void addAppToLauncherLayout(Session configJCRSession) throws RepositoryException {
-        Node configNode = configJCRSession.getNode("/modules/ui-framework/config");
+        Node configNode = configJCRSession.getNode("/modules/ui-admincentral/config");
         NodeUtil.createPath(configNode, "appLauncherLayout/groups/" + appGroup + "/apps/" + appName, NodeTypes.ContentNode.NAME);
     }
 

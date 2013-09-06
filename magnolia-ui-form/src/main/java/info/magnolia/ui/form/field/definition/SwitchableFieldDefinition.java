@@ -33,10 +33,7 @@
  */
 package info.magnolia.ui.form.field.definition;
 
-import info.magnolia.ui.form.field.property.CustomPropertyType;
-import info.magnolia.ui.form.field.property.PropertyHandler;
-import info.magnolia.ui.form.field.property.composite.CompositeProperty;
-import info.magnolia.ui.form.field.property.composite.SwitchableSimplePropertyCompositeHandler;
+import info.magnolia.ui.form.field.transformer.composite.SwitchableTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,14 +47,10 @@ public class SwitchableFieldDefinition extends CompositeFieldDefinition {
     private List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
 
     /**
-     * Set default {@link PropertyBuilder}.
+     * Set default {@link info.magnolia.ui.form.field.transformer.Transformer}.
      */
-    @SuppressWarnings("unchecked")
     public SwitchableFieldDefinition() {
-        PropertyBuilder propertyBuilder = new PropertyBuilder();
-        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) SwitchableSimplePropertyCompositeHandler.class);
-        propertyBuilder.setPropertyType((Class<? extends CustomPropertyType<?>>) (Object) CompositeProperty.class);
-        setPropertyBuilder(propertyBuilder);
+        setTransformerClass(SwitchableTransformer.class);
     }
 
     /**

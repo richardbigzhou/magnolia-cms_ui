@@ -51,6 +51,7 @@ public class ActivationActionDefinition extends CommandActionDefinition {
     private static final String MESSAGE_KEY_WORKFLOW_ERROR = "action.activation.workflow.error";
 
     private boolean recursive = false;
+    private String messageView;
     private String workflowSuccessMessage;
     private String workflowFailureMessage;
     private String workflowErrorMessage;
@@ -95,5 +96,13 @@ public class ActivationActionDefinition extends CommandActionDefinition {
 
     public void setWorkflowErrorMessage(String workflowErrorMessage) {
         this.workflowErrorMessage = workflowErrorMessage;
+    }
+
+    public String getMessageView() {
+        return messageView;
+    }
+
+    public void setMessageView(String messageView) {
+        this.messageView = messageView;
     }
 }

@@ -177,9 +177,11 @@ public class BrowserSubApp extends BaseSubApp {
     protected final void restoreBrowser(final BrowserLocation location) {
         String path = ("/".equals(workbenchRoot) ? "" : workbenchRoot) + location.getNodePath();
         String viewType = location.getViewType();
-        if (StringUtils.isBlank(viewType) || !getBrowser().hasViewType(viewType)) {
-            log.debug("Unknown view type, returning to default view type.");
 
+        if (!getBrowser().hasViewType(viewType)) {
+            if (!StringUtils.isBlank(viewType)) {
+                log.warn("Unknown view type [{}], returning to default view type.", viewType);
+            }
             viewType = getBrowser().getDefaultViewType();
             location.updateViewType(viewType);
             getAppContext().updateSubAppLocation(getSubAppContext(), location);

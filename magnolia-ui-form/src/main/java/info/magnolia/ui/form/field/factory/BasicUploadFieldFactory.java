@@ -121,7 +121,7 @@ public class BasicUploadFieldFactory extends AbstractFieldFactory<BasicUploadFie
      * the creation of the appropriate property.
      */
     @Override
-    public void setPropertyDataSource(Property property) {
+    public void setPropertyDataSourceAndDefaultValue(Property property) {
     }
 
 

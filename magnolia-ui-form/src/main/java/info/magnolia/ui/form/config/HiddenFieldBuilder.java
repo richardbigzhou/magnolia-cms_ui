@@ -34,7 +34,7 @@
 package info.magnolia.ui.form.config;
 
 import info.magnolia.ui.form.field.definition.HiddenFieldDefinition;
-import info.magnolia.ui.form.field.definition.PropertyBuilder;
+import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 /**
@@ -131,7 +131,7 @@ public class HiddenFieldBuilder extends AbstractFieldBuilder {
     }
 
     @Override
-    public HiddenFieldBuilder propertyBuilder(PropertyBuilder propertyBuilder) {
-        return (HiddenFieldBuilder) super.propertyBuilder(propertyBuilder);
+    public HiddenFieldBuilder transformerClass(Class<? extends Transformer<?>> transformerClass) {
+        return (HiddenFieldBuilder) super.transformerClass(transformerClass);
     }
 }

@@ -33,8 +33,6 @@
  */
 package info.magnolia.security.setup;
 
-import static org.junit.Assert.*;
-
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
@@ -43,15 +41,18 @@ import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
+import org.junit.Test;
 
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test class for Security App.
@@ -67,7 +68,7 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     protected List<String> getModuleDescriptorPathsForTests() {
         return Arrays.asList(
                 "/META-INF/magnolia/core.xml"
-                );
+        );
     }
 
     @Override
@@ -213,5 +214,41 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         // THEN
         assertTrue(sections.hasNode("multiple"));
     }
+
+    @Test
+    public void testTo51EnsureSecurityAppLauncherConfigOrderAfterExtraInstallTask() throws RepositoryException, ModuleManagementException {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        String applauncherManageGroupParentPath = "/modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps";
+        String securityNodeName = "security";
+        Node nodeCat = NodeUtil.createPath(session.getRootNode(), applauncherManageGroupParentPath + "/categories", NodeTypes.ContentNode.NAME);
+        Node nodeConf = NodeUtil.createPath(session.getRootNode(), applauncherManageGroupParentPath + "/configuration", NodeTypes.ContentNode.NAME);
+        Node nodeSec = NodeUtil.createPath(session.getRootNode(), applauncherManageGroupParentPath + "/"+securityNodeName, NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(null);
+
+        // THEN
+        NodeIterator someNodes = nodeCat.getParent().getNodes();
+        boolean secNodeExists = false;
+        boolean secNodeIs1st=false;
+        int counter=0;
+        StringBuffer buffer = new StringBuffer("");
+        while (someNodes.hasNext()) {
+            Node node = someNodes.nextNode();
+            String path = node.getPath();
+            buffer.append(path).append(" ,");
+            if ( path.endsWith(securityNodeName)) {
+                secNodeExists = true;
+            }
+            if(counter==0 && secNodeExists){
+                secNodeIs1st = true;
+            }
+            counter++;
+        }
+        assertTrue("secure-node doesn't exist! (found "+counter+"nodes ("+buffer.toString()+"))", secNodeExists);
+        assertTrue("the security-node is not the 1st sibbling within '/modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps'",secNodeIs1st);
+    }
+
 
 }

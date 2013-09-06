@@ -34,13 +34,19 @@
 package info.magnolia.security.setup;
 
 import info.magnolia.module.DefaultModuleVersionHandler;
+import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.CheckAndModifyPartOfPropertyValueTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.NewPropertyTask;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
+import info.magnolia.module.delta.OrderNodeTo1stPosTask;
 import info.magnolia.module.delta.PartialBootstrapTask;
 import info.magnolia.module.delta.SetPropertyTask;
+import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Version handler for Security app module.
@@ -76,6 +82,15 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new NodeExistsDelegateTask("Update class for deleteRole action", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/deleteRole",
                         new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/deleteRole", "class", "info.magnolia.security.app.action.DeleteRoleActionDefinition")))
         );
+    }
+
+    @Override
+    protected List<Task> getExtraInstallTasks(InstallContext installContext) {
+        List<Task> tasks = new ArrayList<Task>();
+        Task orderNodeTo1stPosTask  = new OrderNodeTo1stPosTask("Security app ordering", "Moves the security app before the categories app",RepositoryConstants.CONFIG,"modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps/security");
+        NodeExistsDelegateTask delegateTask = new NodeExistsDelegateTask("Security app ordering delegate task", "Moves the security app before the categories app if the node exists", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps/security", orderNodeTo1stPosTask);
+        tasks.add(delegateTask);
+        return tasks;
     }
 
 

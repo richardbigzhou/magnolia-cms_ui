@@ -33,10 +33,8 @@
  */
 package info.magnolia.ui.form.field.definition;
 
-import info.magnolia.ui.form.field.property.CustomPropertyType;
-import info.magnolia.ui.form.field.property.PropertyHandler;
-import info.magnolia.ui.form.field.property.basic.BasicProperty;
-import info.magnolia.ui.form.field.property.basic.TwinSelectPropertyHandler;
+import info.magnolia.ui.form.field.transformer.Transformer;
+import info.magnolia.ui.form.field.transformer.basic.TwinSelectPropertyTransformer;
 
 /**
  * Field definition for twin column select field.
@@ -51,10 +49,7 @@ public class TwinColSelectFieldDefinition extends OptionGroupFieldDefinition {
      */
     @SuppressWarnings("unchecked")
     public TwinColSelectFieldDefinition() {
-        PropertyBuilder propertyBuilder = new PropertyBuilder();
-        propertyBuilder.setPropertyHandler((Class<? extends PropertyHandler<?>>) (Object) TwinSelectPropertyHandler.class);
-        propertyBuilder.setPropertyType((Class<? extends CustomPropertyType<?>>) (Object) BasicProperty.class);
-        setPropertyBuilder(propertyBuilder);
+        setTransformerClass((Class<? extends Transformer<?>>) (Object) TwinSelectPropertyTransformer.class);
     }
 
     public String getLeftColumnCaption() {

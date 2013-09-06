@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.form.config;
 
+import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
+
 /**
  * Config object creating builders for form fields.
  */
@@ -43,7 +46,7 @@ public class FieldConfig {
     }
 
     public BasicUploadFieldBuilder basicUpload(String name) {
-        return new BasicUploadFieldBuilder(name);
+        return new BasicUploadFieldBuilder(name).binaryNodeName(name);
     }
 
     public TextFieldBuilder text(String name) {
@@ -54,16 +57,16 @@ public class FieldConfig {
         return new LinkFieldBuilder(name);
     }
 
+    public LinkFieldBuilder websiteLink(String name) {
+        return new LinkFieldBuilder(name).appName("pages").targetWorkspace(RepositoryConstants.WEBSITE).identifierToPathConverter(new BaseIdentifierToPathConverter());
+    }
+
     public SelectFieldBuilder select(String name) {
         return new SelectFieldBuilder(name);
     }
 
     public HiddenFieldBuilder hidden(String name) {
         return new HiddenFieldBuilder(name);
-    }
-
-    public BasicUploadFieldBuilder fileUpload(String name) {
-        return new BasicUploadFieldBuilder(name);
     }
 
     public CheckboxFieldBuilder checkbox(String name) {

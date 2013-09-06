@@ -34,7 +34,7 @@
 package info.magnolia.ui.form.config;
 
 import info.magnolia.ui.form.field.definition.PasswordFieldDefinition;
-import info.magnolia.ui.form.field.definition.PropertyBuilder;
+import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
 /**
@@ -151,7 +151,7 @@ public class PasswordFieldBuilder extends AbstractFieldBuilder {
     }
 
     @Override
-    public PasswordFieldBuilder propertyBuilder(PropertyBuilder propertyBuilder) {
-        return (PasswordFieldBuilder) super.propertyBuilder(propertyBuilder);
+    public PasswordFieldBuilder transformerClass(Class<? extends Transformer<?>> transformerClass) {
+        return (PasswordFieldBuilder) super.transformerClass(transformerClass);
     }
 }
