@@ -66,7 +66,7 @@ public class MultiValueJSONTransformer extends BasicTransformer<PropertysetItem>
 
     @Override
     public void writeToItem(PropertysetItem newValue) {
-        Property<String> property = getOrCreateProperty(String.class, null);
+        Property<String> property = getOrCreateProperty(String.class);
         property.setValue(StringUtils.join(removeComma(newValue), ","));
     }
 
@@ -74,8 +74,7 @@ public class MultiValueJSONTransformer extends BasicTransformer<PropertysetItem>
     public PropertysetItem readFromItem() {
         PropertysetItem newValues = new PropertysetItem();
 
-        String defaultValue = StringUtils.isEmpty(definition.getDefaultValue()) ? "" : definition.getDefaultValue();
-        Property<String> property = getOrCreateProperty(String.class, defaultValue);
+        Property<String> property = getOrCreateProperty(String.class);
         String value = property.getValue();
         List<String> list = Arrays.asList(value.split(","));
         int position = 0;

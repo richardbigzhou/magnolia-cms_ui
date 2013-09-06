@@ -56,7 +56,7 @@ public class TwinSelectPropertyTransformer<T> extends BasicTransformer<T> {
 
     @Override
     public void writeToItem(T newValue) {
-        Property<T> p = getOrCreateProperty(type, null);
+        Property<T> p = getOrCreateProperty(type);
         if (p.getValue() instanceof Set && newValue instanceof List) {
             newValue = (T) new HashSet((List) newValue);
         } else if (p.getValue() instanceof List && newValue instanceof Set) {

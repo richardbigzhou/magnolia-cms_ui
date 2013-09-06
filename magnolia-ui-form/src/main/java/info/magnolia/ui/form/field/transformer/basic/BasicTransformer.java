@@ -37,13 +37,10 @@ import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.field.transformer.UndefinedPropertyType;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
 import java.util.Locale;
 
 import javax.inject.Inject;
-
-import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -54,7 +51,7 @@ import com.vaadin.data.Property;
  * His responsibility is to: <br>
  * - retrieve or create a basic property from the related item <br>
  * - update the item property value in case of changes performed on the related field.
- * 
+ *
  * @param <T>
  */
 public class BasicTransformer<T> implements Transformer<T> {
@@ -80,14 +77,14 @@ public class BasicTransformer<T> implements Transformer<T> {
 
     @Override
     public void writeToItem(T newValue) {
-        Property<T> p = getOrCreateProperty(type, null);
+        Property<T> p = getOrCreateProperty(type);
         p.setValue(newValue);
     }
 
     @Override
     public T readFromItem() {
         String defaultValue = definition.getDefaultValue();
-        Property<T> p = getOrCreateProperty(type, defaultValue);
+        Property<T> p = getOrCreateProperty(type);
         if (definition.isReadOnly()) {
             p.setReadOnly(true);
         }
@@ -117,20 +114,16 @@ public class BasicTransformer<T> implements Transformer<T> {
      * If the desired property (propertyName) already exist in the JcrNodeAdapter, return this property<br>
      * else create a new {@link Property}.<br>
      * If the defaultValueString is empty or null, return a typed null value property.
-     * 
+     *
      * @param <T>
      */
     @SuppressWarnings("unchecked")
-    protected <T> Property<T> getOrCreateProperty(Class<T> type, String defaultValueString) {
+    protected <T> Property<T> getOrCreateProperty(Class<T> type) {
         String propertyName = definePropertyName();
         Property<T> property = relatedFormItem.getItemProperty(propertyName);
 
         if (property == null) {
-            if (StringUtils.isNotEmpty(defaultValueString)) {
-                property = DefaultPropertyUtil.newDefaultProperty(type, defaultValueString);
-            } else {
-                property = new DefaultProperty<T>(type, null);
-            }
+            property = new DefaultProperty<T>(type, null);
             relatedFormItem.addItemProperty(propertyName, property);
         }
         return property;
