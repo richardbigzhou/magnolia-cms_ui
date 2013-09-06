@@ -37,9 +37,9 @@ import com.google.inject.name.Named;
 import com.vaadin.ui.Component;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.action.ActionPresenter;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.form.action.presenter.DefaultEditorActionPresenter;
+import info.magnolia.ui.dialog.actionpresenter.renderer.ActionRenderer;
+import info.magnolia.ui.dialog.actionpresenter.renderer.DefaultEditorActionRenderer;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.MediaEditorView;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
@@ -74,9 +74,9 @@ public abstract class MediaEditorUIAction extends MediaEditorAction {
 
             List<ActionContext> actionContexts = getActionContextList();
             for (final ActionContext action : actionContexts) {
-                ActionPresenter actionPresenter = new DefaultEditorActionPresenter();
+                ActionRenderer actionPresenter = new DefaultEditorActionRenderer();
                 View actionView = actionPresenter.start(action.getDefinition(), action.getListener());
-                view.getDialog().addPrimaryAction(actionView);
+                view.getDialog().getActionView().addPrimaryAction(actionView);
             }
 
             if (!actionContexts.isEmpty()) {

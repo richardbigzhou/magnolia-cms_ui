@@ -100,7 +100,9 @@ public class BaseDialogConnector extends AbstractLayoutConnector implements Base
 
     @Override
     public void updateCaption(ComponentConnector connector) {
-        view.setCaption(connector.getState().caption);
+        if (this == connector) {
+            view.setCaption(connector.getState().caption);
+        }
     }
 
     @Override

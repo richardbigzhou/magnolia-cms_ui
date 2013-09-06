@@ -60,6 +60,7 @@ public class BaseDialog extends AbstractComponent implements HasComponents {
 
     public BaseDialog() {
         super();
+        setStyleName("dialog-panel");
         setImmediate(true);
         setContent(createDefaultContent());
         registerRpc(new DialogServerRpc() {
@@ -167,23 +168,6 @@ public class BaseDialog extends AbstractComponent implements HasComponents {
 
     public Component getContent() {
         return (Component) getState().content;
-    }
-
-    /**
-     * If the action name is <code> {@value #COMMIT_ACTION_NAME}</code> a <code>CTRL+S</code> shortcut will be added to perform the action.<br>
-     * If the action name is <code> {@value #CANCEL_ACTION_NAME}</code> a <code>CTRL+C</code> and an <code>ESC</code> shortcuts will be added to perform the action.
-     */
-    public void addAction(String actionName, String actionLabel) {
-        /*if (!getState().actionOrder.contains(actionName)) {
-            getState().actionOrder.add(actionName);
-        }
-        getState().actions.put(actionName, actionLabel);
-        if (COMMIT_ACTION_NAME.equals(actionName)) {
-            addShortcut(actionName, KeyCode.S, ModifierKey.CTRL, ModifierKey.ALT);
-        } else if (CANCEL_ACTION_NAME.equals(actionName)) {
-            // addShortcut(actionName, KeyCode.ESCAPE);
-            addShortcut(actionName, KeyCode.C, ModifierKey.CTRL, ModifierKey.ALT);
-        } */
     }
 
     @Override

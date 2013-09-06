@@ -37,9 +37,8 @@ import com.google.inject.name.Named;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.action.ActionListener;
+import info.magnolia.ui.dialog.actionpresenter.ActionListener;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.MediaEditorView;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
@@ -74,7 +73,7 @@ public class CropImageAction extends MediaEditorUIAction {
         List<ActionContext> result = new ArrayList<ActionContext>();
         result.add(new ActionContext(new InternalMediaEditorActionDefinition("crop", "Crop Image", true), new ActionListener() {
             @Override
-            public void onActionFired(ActionDefinition definition, Object... actionContextParams) {
+            public void onActionFired(String actionName, Object... actionContextParams) {
                 dataSource.startAction(getDefinition().getTrackingLabel());
                 cropField.execute();
                 eventBus.fireEvent(new MediaEditorInternalEvent(EventType.APPLY));

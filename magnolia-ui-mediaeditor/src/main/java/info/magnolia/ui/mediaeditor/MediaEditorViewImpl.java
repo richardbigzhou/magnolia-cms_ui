@@ -91,7 +91,9 @@ public class MediaEditorViewImpl extends CustomComponent implements MediaEditorV
 
     @Override
     public void clearActions() {
-        dialog.removeAllActions();
+        if (dialog.getActionView() != null) {
+            dialog.getActionView().removeAllActions();
+        }
     }
 
     @Override
@@ -106,7 +108,9 @@ public class MediaEditorViewImpl extends CustomComponent implements MediaEditorV
 
     @Override
     public void setToolbar(Component controls) {
-        //dialog.setFooter(controls);
+        if (dialog.getActionView() != null) {
+            //dialog.getActionView().removeAllActions();
+        }
     }
 
 }

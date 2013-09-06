@@ -50,8 +50,6 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
 
     protected static final String CLASSNAME_FOOTER_TOOLBAR = "dialog-footer-toolbar";
 
-    private static final String CLASSNAME_BUTTON = "btn-dialog";
-
     protected final DialogHeaderWidget header = createHeader();
 
     protected final Element contentEl = DOM.createDiv();
@@ -71,17 +69,12 @@ public class BaseDialogViewImpl extends ComplexPanel implements BaseDialogView {
         setElement(root);
         add(header, root);
         root.appendChild(contentEl);
-        setStylePrimaryName(getClassname());
         contentEl.addClassName(CLASSNAME_CONTENT);
 
         root.appendChild(footerEl);
         footerEl.addClassName(CLASSNAME_FOOTER);
         footerEl.appendChild(footerToolbarEl);
         footerToolbarEl.addClassName(CLASSNAME_FOOTER_TOOLBAR);
-    }
-
-    protected String getClassname() {
-        return "dialog-panel";
     }
 
     protected DialogHeaderWidget createHeader() {

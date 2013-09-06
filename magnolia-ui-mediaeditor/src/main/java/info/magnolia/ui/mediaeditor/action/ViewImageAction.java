@@ -37,9 +37,8 @@ import com.google.inject.name.Named;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.action.ActionListener;
+import info.magnolia.ui.dialog.actionpresenter.ActionListener;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.MediaEditorView;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
@@ -74,14 +73,14 @@ public class ViewImageAction extends MediaEditorUIAction {
         List<ActionContext> result = new ArrayList<ActionContext>();
         result.add(new ActionContext(new InternalMediaEditorActionDefinition("save", "Save Changes", false), new ActionListener() {
             @Override
-            public void onActionFired(ActionDefinition definition, Object... actionContextParams) {
+            public void onActionFired(String actionName, Object... actionContextParams) {
                 eventBus.fireEvent(new MediaEditorInternalEvent(EventType.APPLY));
             }
         }));
 
         result.add(new ActionContext(new InternalMediaEditorActionDefinition("cancel", "Cancel Editing", true), new ActionListener() {
             @Override
-            public void onActionFired(ActionDefinition definition, Object... actionContextParams) {
+            public void onActionFired(String actionName, Object... actionContextParams) {
                 eventBus.fireEvent(new MediaEditorInternalEvent(EventType.CANCEL_LAST));
             }
         }));
