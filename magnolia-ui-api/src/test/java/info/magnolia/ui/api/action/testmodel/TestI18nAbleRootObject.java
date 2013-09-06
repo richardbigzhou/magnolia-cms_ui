@@ -31,26 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.app;
+package info.magnolia.ui.api.action.testmodel;
 
-import info.magnolia.i18n.AbstractI18nKeyGenerator;
-
-import java.lang.reflect.AnnotatedElement;
-import java.util.List;
+import info.magnolia.i18n.I18nAble;
+import info.magnolia.i18n.I18nText;
 
 /**
- * Key generator for {@link AppDescriptor}.
+ * TestI18nAbleRootObject.
  */
-public class AppDescriptorKeyGenerator extends AbstractI18nKeyGenerator<AppDescriptor> {
+@I18nAble(keyGenerator = TestI18nAbleRootObjectKeyGen.class)
+public class TestI18nAbleRootObject extends TestRootObject {
 
-    @Override
-    public String messageBundleNameFor(AppDescriptor object) {
-        return null;
-    }
-
-    @Override
-    protected void keysFor(List<String> list, AppDescriptor app, AnnotatedElement el) {
-        addKey(list, app.getName(), "app", fieldOrGetterName(el));
+    @I18nText
+    public String getFoo() {
+        return "foo";
     }
 
 }
