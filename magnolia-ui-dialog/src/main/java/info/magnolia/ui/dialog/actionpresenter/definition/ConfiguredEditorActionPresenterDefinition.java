@@ -1,6 +1,6 @@
 package info.magnolia.ui.dialog.actionpresenter.definition;
 
-import info.magnolia.ui.dialog.actionpresenter.DialogActionPresenterImpl;
+import info.magnolia.ui.dialog.actionpresenter.DialogActionPresenter;
 import info.magnolia.ui.dialog.definition.SecondaryActionDefinition;
 
 import java.util.ArrayList;
@@ -13,12 +13,12 @@ import java.util.List;
  * Time: 11:43 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ConfiguredDialogActionPresenterDefinition extends ConfiguredActionPresenterDefinition implements DialogActionPresenterDefinition {
+public class ConfiguredEditorActionPresenterDefinition extends ConfiguredActionPresenterDefinition implements EditorActionPresenterDefinition {
 
     private List<SecondaryActionDefinition> secondaryActions = new ArrayList<SecondaryActionDefinition>();
 
-    public ConfiguredDialogActionPresenterDefinition() {
-        setPresenterClass(DialogActionPresenterImpl.class);
+    public ConfiguredEditorActionPresenterDefinition() {
+        setPresenterClass(DialogActionPresenter.class);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class ConfiguredDialogActionPresenterDefinition extends ConfiguredActionP
     }
 
     @Override
-    public Class<? extends DialogActionPresenterImpl> getPresenterClass() {
-        return (Class<? extends DialogActionPresenterImpl>) super.getPresenterClass();
+    public Class<? extends DialogActionPresenter> getPresenterClass() {
+        return (Class<? extends DialogActionPresenter>) super.getPresenterClass();
     }
 }

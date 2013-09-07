@@ -136,8 +136,8 @@
     </type-mapping>
 
     <type-mapping>
-      <type>info.magnolia.ui.dialog.actionpresenter.definition.DialogActionPresenterDefinition</type>
-      <implementation>info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredDialogActionPresenterDefinition</implementation>
+      <type>info.magnolia.ui.dialog.actionpresenter.definition.EditorActionPresenterDefinition</type>
+      <implementation>info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredEditorActionPresenterDefinition</implementation>
     </type-mapping>
 
     <type-mapping>
@@ -347,6 +347,7 @@
       <type>info.magnolia.ui.form.action.SaveFormActionDefinition</type>
       <implementation>info.magnolia.ui.form.action.SaveFormActionDefinition</implementation>
     </component>
+
     <!--
       The FormView is mapped twice because of it two use-cases:
       in admin-central scope without app-contexts visible and in app-scope, where the app-context is actually needed,

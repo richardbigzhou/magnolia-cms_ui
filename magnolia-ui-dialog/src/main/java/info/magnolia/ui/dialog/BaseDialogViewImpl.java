@@ -90,12 +90,12 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
 
     @Override
     public void addShortcut(ShortcutListener shortcut) {
-        addShortcut(shortcut);
+        addShortcutListener(shortcut);
     }
 
     @Override
     public void removeShortcut(ShortcutListener shortcut) {
-        removeShortcut(shortcut);
+        removeShortcutListener(shortcut);
     }
 
     @Override

@@ -12,9 +12,10 @@ import java.util.List;
  * Time: 11:40 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface DialogActionPresenterDefinition extends ActionPresenterDefinition {
+public interface EditorActionPresenterDefinition extends ActionPresenterDefinition {
 
     List<SecondaryActionDefinition> getSecondaryActions();
 
     Class<? extends DialogActionPresenter> getPresenterClass();
+
 }

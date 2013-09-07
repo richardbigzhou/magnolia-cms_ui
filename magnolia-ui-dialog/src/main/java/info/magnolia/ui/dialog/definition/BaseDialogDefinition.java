@@ -2,7 +2,7 @@ package info.magnolia.ui.dialog.definition;
 
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.dialog.DialogPresenter;
-import info.magnolia.ui.dialog.actionpresenter.definition.DialogActionPresenterDefinition;
+import info.magnolia.ui.dialog.actionpresenter.definition.EditorActionPresenterDefinition;
 
 import java.util.Map;
 
@@ -27,5 +27,5 @@ public interface BaseDialogDefinition {
 
     Class<? extends DialogPresenter> getPresenterClass();
 
-    DialogActionPresenterDefinition getActionPresenter();
+    EditorActionPresenterDefinition getActionPresenter();
 }

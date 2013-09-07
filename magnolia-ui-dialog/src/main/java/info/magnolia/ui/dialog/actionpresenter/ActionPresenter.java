@@ -1,5 +1,6 @@
 package info.magnolia.ui.dialog.actionpresenter;
 
+import com.vaadin.event.ShortcutListener;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.actionpresenter.definition.ActionPresenterDefinition;
@@ -13,5 +14,7 @@ import info.magnolia.ui.dialog.actionpresenter.definition.ActionPresenterDefinit
  */
 public interface ActionPresenter<T extends ActionPresenterDefinition> {
 
-     View start(Iterable<ActionDefinition> actions, T definition, ActionListener listener);
+    View start(Iterable<ActionDefinition> actions, T definition, ActionParameterProvider parameterProvider);
+
+    ShortcutListener bindShortcut(String actionName, int keyCode, int... modifiers);
 }

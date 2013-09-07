@@ -31,12 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.definition;
+package info.magnolia.ui.dialog.actionpresenter.definition;
 
 /**
- * Describes a form action item.
+ * Simple implementation of {@link FormActionItemDefinition}.
+ *
+ * @see FormActionItemDefinition
  */
-public interface FormActionItemDefinition {
+public class ConfiguredFormActionItemDefinition implements FormActionItemDefinition {
 
-    String getName();
+    private String name;
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

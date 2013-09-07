@@ -37,14 +37,12 @@ import com.vaadin.data.Item;
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
-import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.dialog.BaseDialogPresenter;
 import info.magnolia.ui.dialog.Dialog;
 import info.magnolia.ui.dialog.DialogCloseHandler;
 import info.magnolia.ui.dialog.DialogView;
-import info.magnolia.ui.dialog.action.DialogActionExecutor;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.EditorCallback;
@@ -61,17 +59,15 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     private EditorCallback callback;
 
     private DialogDefinitionRegistry dialogDefinitionRegistry;
-    private DialogActionExecutor actionExecutor;
     private FormBuilder formBuilder;
     private FormView formView;
     private Item item;
 
 
     @Inject
-    public FormDialogPresenterImpl(final DialogDefinitionRegistry dialogDefinitionRegistry, final DialogActionExecutor actionExecutor, FormBuilder formBuilder, ComponentProvider componentProvider) {
+    public FormDialogPresenterImpl(final DialogDefinitionRegistry dialogDefinitionRegistry, FormBuilder formBuilder, ComponentProvider componentProvider) {
         super(componentProvider);
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
-        this.actionExecutor = actionExecutor;
         this.formBuilder = formBuilder;
         this.componentProvider = componentProvider;
     }
@@ -99,11 +95,9 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     public DialogView start(final Item item, FormDialogDefinition dialogDefinition, final OverlayLayer overlayLayer, EditorCallback callback) {
         this.callback = callback;
         this.item = item;
-
-        actionExecutor.setDialogDefinition(dialogDefinition);
         buildView(dialogDefinition);
+        start(dialogDefinition);
         final OverlayCloser overlayCloser = overlayLayer.openOverlay(getView());
-
         getView().addDialogCloseHandler(new DialogCloseHandler() {
             @Override
             public void onDialogClose(DialogView dialogView) {
@@ -138,19 +132,9 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         }
     }
 
-
     @Override
-    protected void onActionFired(String action, Object... actionContextParams) {
-        try {
-            Object[] combinedParameters = new Object[actionContextParams.length + 3];
-            combinedParameters[0] = item;
-            combinedParameters[1] = callback;
-            combinedParameters[2] = this;
-            System.arraycopy(actionContextParams, 0, combinedParameters, 3, actionContextParams.length);
-            actionExecutor.execute(action, combinedParameters);
-        } catch (ActionExecutionException e) {
-            throw new RuntimeException("Could not execute action: " + action, e);
-        }
+    public Object[] getActionParameters(String actionName) {
+        return new Object[]{item, callback, this};
     }
 
     @Override

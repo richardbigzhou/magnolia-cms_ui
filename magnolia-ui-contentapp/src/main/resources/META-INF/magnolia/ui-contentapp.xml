@@ -23,12 +23,12 @@
       <implementation>info.magnolia.ui.contentapp.definition.ConfiguredEditorDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.contentapp.definition.FormActionItemDefinition</type>
-      <implementation>info.magnolia.ui.contentapp.definition.ConfiguredFormActionItemDefinition</implementation>
+      <type>info.magnolia.ui.dialog.actionpresenter.definition.FormActionItemDefinition</type>
+      <implementation>info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredFormActionItemDefinition</implementation>
     </type-mapping>
 
       <type-mapping>
-          <type>info.magnolia.ui.api.app.AppDescriptor</type>
+          <type>info.magnolia.ui.contentapp.ContentAppDescriptor</type>
           <implementation>info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor</implementation>
       </type-mapping>
   </components>

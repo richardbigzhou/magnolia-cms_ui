@@ -41,7 +41,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.overlay.OverlayLayer;
@@ -49,7 +48,6 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.BaseDialogPresenter;
 import info.magnolia.ui.dialog.DialogCloseHandler;
 import info.magnolia.ui.dialog.DialogView;
-import info.magnolia.ui.dialog.action.DialogActionExecutor;
 import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactory;
@@ -74,8 +72,6 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
 
     private Item item;
 
-    private DialogActionExecutor actionExecutor;
-
     private ChooseDialogCallback callback;
 
     private Field<Object> field;
@@ -84,13 +80,11 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
     public ChooseDialogPresenterImpl(
             FieldFactoryFactory fieldFactoryFactory,
             ComponentProvider componentProvider,
-            I18nContentSupport i18nContentSupport,
-            DialogActionExecutor actionExecutor) {
+            I18nContentSupport i18nContentSupport) {
         super(componentProvider);
         this.fieldFactoryFactory = fieldFactoryFactory;
         this.componentProvider = componentProvider;
         this.i18nContentSupport = i18nContentSupport;
-        this.actionExecutor = actionExecutor;
     }
 
     @Override
@@ -136,7 +130,6 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
                     closer.close();
                 }
             });
-            actionExecutor.setDialogDefinition(definition);
             getView().setClosable(true);
             return getView();
         } else {
@@ -155,18 +148,7 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
     }
 
     @Override
-    protected void onActionFired(String actionName, Object... actionContextParams) {
-        try {
-            Object[] params = new Object[]{actionName, ChooseDialogPresenterImpl.this, field, getView(), callback, actionContextParams};
-            Object[] combinedParameters = new Object[params.length + actionContextParams.length + (item == null ? 0 : 1)];
-            System.arraycopy(actionContextParams, 0, combinedParameters, 0, actionContextParams.length);
-            System.arraycopy(params, 0, combinedParameters, actionContextParams.length, params.length);
-            if (item != null) {
-                combinedParameters[params.length + actionContextParams.length] = item;
-            }
-            actionExecutor.execute(actionName, combinedParameters);
-        } catch (ActionExecutionException e) {
-            throw new RuntimeException("Could not execute action: " + actionName, e);
-        }
+    public Object[] getActionParameters(String actionName) {
+        return new Object[] {actionName, ChooseDialogPresenterImpl.this, field, getView(), callback, item};
     }
 }

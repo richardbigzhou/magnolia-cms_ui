@@ -33,24 +33,24 @@
  */
 package info.magnolia.ui.dialog;
 
-import com.vaadin.event.ShortcutListener;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.dialog.actionpresenter.ActionListener;
+import info.magnolia.ui.dialog.actionpresenter.ActionParameterProvider;
 import info.magnolia.ui.dialog.actionpresenter.DialogActionPresenter;
 import info.magnolia.ui.dialog.actionpresenter.view.DialogActionView;
 import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
 
 import javax.inject.Inject;
-import java.util.HashMap;
 
 /**
  * Base implementation of {@link DialogPresenter}.
  */
-public class BaseDialogPresenter implements DialogPresenter {
+public class BaseDialogPresenter implements DialogPresenter, ActionParameterProvider {
 
     private DialogView view;
 
     protected ComponentProvider componentProvider;
+
+    private DialogActionPresenter dialogActionPresenter;
 
     @Inject
     public BaseDialogPresenter(ComponentProvider componentProvider) {
@@ -69,31 +69,23 @@ public class BaseDialogPresenter implements DialogPresenter {
 
     @Override
     public void addShortcut(final String actionName, final int keyCode, final int... modifiers) {
-        final ShortcutListener shortcut = new ShortcutListener("", keyCode, modifiers) {
-            @Override
-            public void handleAction(Object sender, Object target) {
-                onActionFired(actionName, new HashMap<String, Object>());
-            }
-        };
-        view.addShortcut(shortcut);
+        view.addShortcut(this.dialogActionPresenter.bindShortcut(actionName, keyCode, modifiers));
     }
-
-    protected void onActionFired(String action, Object... actionContextParams) {}
 
     public DialogView start(BaseDialogDefinition definition) {
         this.view = initView();
-        DialogActionPresenter dialogActionPresenter = componentProvider.newInstance(definition.getActionPresenter().getPresenterClass());
-        DialogActionView dialogActionView = dialogActionPresenter.start(definition.getActions().values(), definition.getActionPresenter(), new ActionListener() {
-            @Override
-            public void onActionFired(String actionName, Object... actionContextParams) {
-                BaseDialogPresenter.this.onActionFired(actionName, actionContextParams);
-            }
-        });
+        this.dialogActionPresenter = componentProvider.getComponent(definition.getActionPresenter().getPresenterClass());
+        DialogActionView dialogActionView = dialogActionPresenter.start(definition.getActions().values(), definition.getActionPresenter(), this);
         this.view.setActionView(dialogActionView);
         return this.view;
     }
 
     protected DialogView initView() {
         return componentProvider.getComponent(DialogView.class);
+    }
+
+    @Override
+    public Object[] getActionParameters(String actionName) {
+        return new Object[]{this};
     }
 }

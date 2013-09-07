@@ -2,8 +2,8 @@ package info.magnolia.ui.dialog.definition;
 
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.dialog.DialogPresenter;
-import info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredDialogActionPresenterDefinition;
-import info.magnolia.ui.dialog.actionpresenter.definition.DialogActionPresenterDefinition;
+import info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredEditorActionPresenterDefinition;
+import info.magnolia.ui.dialog.actionpresenter.definition.EditorActionPresenterDefinition;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -30,7 +30,7 @@ public class ConfiguredBaseDialogDefinition implements BaseDialogDefinition {
 
     private Class<? extends DialogPresenter> presenterClass;
 
-    private DialogActionPresenterDefinition actionPresenter = new ConfiguredDialogActionPresenterDefinition();
+    private EditorActionPresenterDefinition actionPresenter = new ConfiguredEditorActionPresenterDefinition();
 
     public ConfiguredBaseDialogDefinition() {}
 
@@ -82,11 +82,11 @@ public class ConfiguredBaseDialogDefinition implements BaseDialogDefinition {
         this.presenterClass = presenterClass;
     }
 
-    public DialogActionPresenterDefinition getActionPresenter() {
+    public EditorActionPresenterDefinition getActionPresenter() {
         return actionPresenter;
     }
 
-    public void setActionPresenter(DialogActionPresenterDefinition actionPresenter) {
+    public void setActionPresenter(EditorActionPresenterDefinition actionPresenter) {
         this.actionPresenter = actionPresenter;
     }
 }
