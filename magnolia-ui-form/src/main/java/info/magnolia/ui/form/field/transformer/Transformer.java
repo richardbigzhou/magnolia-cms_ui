@@ -60,4 +60,11 @@ public interface Transformer<T> extends I18NAwareHandler {
      * Return true if this Property has to support i18n.
      */
     boolean hasI18NSupport();
+
+    /**
+     * @return type
+     * the type of the value. <code>value</code> must be assignable
+     * to this type.
+     */
+    Class<T> getType();
 }

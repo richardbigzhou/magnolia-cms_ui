@@ -38,6 +38,7 @@ import static org.junit.Assert.*;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.CheckBoxField;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import org.junit.Test;
 
@@ -72,6 +73,7 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
     @Test
     public void checkBoxField_SetSelectedTest() throws Exception {
         // GIVEN
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
         checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
         checkBoxField.setI18nContentSupport(i18nContentSupport);
         checkBoxField.setComponentProvider(new MockComponentProvider());

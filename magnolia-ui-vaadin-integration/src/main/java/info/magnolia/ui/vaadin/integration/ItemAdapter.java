@@ -31,21 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.vaadin;
+package info.magnolia.ui.vaadin.integration;
+
+import com.vaadin.data.Item;
 
 /**
- * Default implementation of the {@link WidgetsetDefinition} used for configuration in the repository.
+ * Magnolia {@link Item} adapter.
  */
-public class ConfiguredWidgetsetDefinition implements WidgetsetDefinition {
+public interface ItemAdapter extends Item {
 
-    String name;
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    /**
+     * @return true if it's a new Item (not already persisted).
+     */
+    public boolean isNew();
 }

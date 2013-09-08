@@ -50,11 +50,11 @@ import org.slf4j.LoggerFactory;
 /**
  * Replace the 5.0 MultiLinkFieldDefinition by a MultiFieldDefinition. <br>
  */
-public class ReplaceMultiLinkFieldDefinition extends QueryTask {
+public class ReplaceMultiLinkFieldDefinitionTask extends QueryTask {
 
-    private static final Logger log = LoggerFactory.getLogger(ReplaceMultiLinkFieldDefinition.class);
+    private static final Logger log = LoggerFactory.getLogger(ReplaceMultiLinkFieldDefinitionTask.class);
 
-    public ReplaceMultiLinkFieldDefinition(String name, String description, String repositoryName, String query) {
+    public ReplaceMultiLinkFieldDefinitionTask(String name, String description, String repositoryName, String query) {
         super(name, description, repositoryName, query);
     }
 

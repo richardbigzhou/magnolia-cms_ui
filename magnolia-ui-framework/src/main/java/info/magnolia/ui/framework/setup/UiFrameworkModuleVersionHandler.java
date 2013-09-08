@@ -82,8 +82,8 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
                 .addTask(createNewFieldDefinition("switchableField", SwitchableFieldDefinition.class.getName(), SwitchableFieldFactory.class.getName()))
                 .addTask(createNewFieldDefinition("multiField", MultiFieldDefinition.class.getName(), MultiFieldFactory.class.getName()))
                 .addTask(createNewFieldDefinition("compositeField", CompositeFieldDefinition.class.getName(), CompositeFieldFactory.class.getName()))
-                .addTask((new ReplaceMultiLinkFieldDefinition("Change the MultiLinkFieldDefinition by MultiFieldDefinition ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where contains(t.*,'info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition') ")))
-                .addTask((new ReplaceSaveModeTypeFieldDefinition("Update field definition sub task from 'saveModeType' to 'transformerClass' ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where name(t) = 'saveModeType' ")))
+                .addTask((new ReplaceMultiLinkFieldDefinitionTask("Change the MultiLinkFieldDefinition by MultiFieldDefinition ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where contains(t.*,'info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition') ")))
+                .addTask((new ReplaceSaveModeTypeFieldDefinitionTask("Update field definition sub task from 'saveModeType' to 'transformerClass' ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where name(t) = 'saveModeType' ")))
         );
     }
 

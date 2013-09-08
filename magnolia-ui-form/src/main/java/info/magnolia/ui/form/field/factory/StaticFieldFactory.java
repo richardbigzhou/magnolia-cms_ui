@@ -68,7 +68,7 @@ public class StaticFieldFactory<D extends StaticFieldDefinition> extends Abstrac
      * Do not set datasource for a Static field.
      */
     @Override
-    public void setPropertyDataSource(Property property) {
+    public void setPropertyDataSourceAndDefaultValue(Property property) {
         // do nothing specific
     }
 

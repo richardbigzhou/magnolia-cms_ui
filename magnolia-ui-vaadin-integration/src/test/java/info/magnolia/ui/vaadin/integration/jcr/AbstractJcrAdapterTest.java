@@ -205,6 +205,11 @@ public class AbstractJcrAdapterTest {
         public Item applyChanges() throws RepositoryException {
             return null;
         }
+
+        @Override
+        public boolean isNew() {
+            return false;
+        }
     }
 
 }

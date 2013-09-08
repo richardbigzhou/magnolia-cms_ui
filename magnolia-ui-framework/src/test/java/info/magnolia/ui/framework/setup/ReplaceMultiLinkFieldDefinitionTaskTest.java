@@ -58,11 +58,11 @@ import org.junit.Test;
 /**
  * Test class.
  */
-public class ReplaceMultiLinkFieldDefinitionTest extends RepositoryTestCase {
+public class ReplaceMultiLinkFieldDefinitionTaskTest extends RepositoryTestCase {
 
     private Node field;
     private String query = " select * from [nt:base] as t where contains(t.*,'info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition') ";
-    private ReplaceMultiLinkFieldDefinition queryTask;
+    private ReplaceMultiLinkFieldDefinitionTask queryTask;
     private InstallContextImpl installContext;
 
     @Override
@@ -87,7 +87,7 @@ public class ReplaceMultiLinkFieldDefinitionTest extends RepositoryTestCase {
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         field = session.getNode("/modules/generic/tabCategorization/fields/categories");
 
-        queryTask = new ReplaceMultiLinkFieldDefinition("name", "description", RepositoryConstants.CONFIG, query);
+        queryTask = new ReplaceMultiLinkFieldDefinitionTask("name", "description", RepositoryConstants.CONFIG, query);
 
     }
 

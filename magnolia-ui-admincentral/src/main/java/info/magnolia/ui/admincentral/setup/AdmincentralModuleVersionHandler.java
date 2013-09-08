@@ -36,7 +36,6 @@ package info.magnolia.ui.admincentral.setup;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
-import info.magnolia.module.delta.BootstrapSingleModuleResource;
 import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
@@ -107,9 +106,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new NewPropertyTask("Set folder node type in configuration app as strict", "Sets folder node type as strict, i.e. its substypes won't be included in list and search views.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/workbench/nodeTypes/folderNodeType", "strict", true))
                 .addTask(new NodeExistsDelegateTask("Conditional move of configuration of the appLauncherLayout from the ui-framework to the ui-admincentral","Moves the the conf. of the appLauncherLayout from the ui-framework to the ui-admincentral (if the node exists)", RepositoryConstants.CONFIG,"/modules/ui-framework/config/appLauncherLayout",new MoveNodeTask("Move configuration of the appLauncherLayout from the ui-framework to the ui-admincentral", "Moves the the conf. of the appLauncherLayout from the ui-framework to the ui-admincentral", RepositoryConstants.CONFIG, "/modules/ui-framework/config/appLauncherLayout", "/modules/ui-admincentral/config/appLauncherLayout", false)))
 
-                        // theme + widgetset
-                .addTask(new BootstrapSingleModuleResource("Add widgetset config", "Vaadin Widgetset can be configured, sets the default", "config.modules.ui-admincentral.config.widgetset.xml"))
-                .addTask(new BootstrapSingleModuleResource("Add theme config", "Vaadin theme can be configured, sets the default", "config.modules.ui-admincentral.config.theme.xml"))
+                // update vaadin servlet params (we inject a custom UIProvider instead)
                 .addTask(new PropertyExistsDelegateTask("Check widgetset servlet param", "Checks if widgetset is configured as servlet parameter", RepositoryConstants.CONFIG, "/server/filters/servlets/AdminCentral/parameters", "widgetset",
                         new RemovePropertyTask("Remove widgetset servlet param", "Removes the widgetset property from AdminCentral servlet parameters", RepositoryConstants.CONFIG, "/server/filters/servlets/AdminCentral/parameters", "widgetset")))
         );

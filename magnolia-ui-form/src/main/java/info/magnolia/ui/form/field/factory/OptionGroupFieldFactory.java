@@ -33,9 +33,13 @@
  */
 package info.magnolia.ui.form.field.factory;
 
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
+import info.magnolia.ui.form.field.transformer.Transformer;
 
 import java.util.HashSet;
+
+import javax.inject.Inject;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractSelect;
@@ -46,8 +50,12 @@ import com.vaadin.ui.OptionGroup;
  */
 public class OptionGroupFieldFactory extends SelectFieldFactory<OptionGroupFieldDefinition> {
 
-    public OptionGroupFieldFactory(OptionGroupFieldDefinition definition, Item relatedFieldItem) {
+    private ComponentProvider componentProvider;
+
+    @Inject
+    public OptionGroupFieldFactory(OptionGroupFieldDefinition definition, Item relatedFieldItem, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem);
+        this.componentProvider = componentProvider;
     }
 
     @Override
@@ -68,10 +76,20 @@ public class OptionGroupFieldFactory extends SelectFieldFactory<OptionGroupField
         return new OptionGroup();
     }
 
+
+    /**
+     * Override in order to define the field property type.<br>
+     * In case of single select, use the default mechanism.<br>
+     * In case of multi select, set property type as {@link HashSet}, type used by the Vaadin MultiSelect field.
+     */
     @Override
-    protected Class<?> getDefaultFieldType() {
+    protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
+        return this.componentProvider.newInstance(transformerClass, item, definition, defineType());
+    }
+
+    protected Class<?> defineType() {
         if (!select.isMultiSelect()) {
-            return null;
+            return getFieldType();
         } else {
             return HashSet.class;
         }
