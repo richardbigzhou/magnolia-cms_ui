@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.api.app;
 
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.location.Location;
-import info.magnolia.ui.api.overlay.OverlayLayer;
 
 /**
  * Main interface for apps. Apps are started and managed by the {@link AppController}.
@@ -68,9 +68,8 @@ public interface App {
     /**
      * Open a dialog which enables a user to choose an item from the app.
      *
-     * @param path The path of an item that should be selected when the dialog is opened. Path relative to the tree root, must start with '/'.
-     * @param overlayLayer The layer over which the opened dialog should be presented and be modal. See Shell, {@link info.magnolia.ui.api.app.SubAppContext}, {@link info.magnolia.ui.api.app.AppContext}.
+     * @param overlayLayer The layer over which the opened dialog should be presented and be modal. See Shell, {@link SubAppContext}, {@link AppContext}.
      * @param callback
      */
-    void openChooseDialog(OverlayLayer overlayLayer, String selectedId, ChooseDialogCallback callback);
+    void openChooseDialog(UiContext overlayLayer, String selectedId, ChooseDialogCallback callback);
 }

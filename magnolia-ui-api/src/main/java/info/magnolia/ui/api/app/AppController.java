@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.api.app;
 
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.location.Location;
-import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.api.view.Viewport;
 
 /**
@@ -58,5 +58,5 @@ public interface AppController {
 
     void setViewport(Viewport viewport);
 
-    void openChooseDialog(String appName, OverlayLayer overlayLayer, String selectedId, ChooseDialogCallback callback);
+    void openChooseDialog(String appName, UiContext uiContext, String selectedId, ChooseDialogCallback callback);
 }

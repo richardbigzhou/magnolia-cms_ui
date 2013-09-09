@@ -38,7 +38,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
-import info.magnolia.ui.api.overlay.OverlayLayer;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.framework.app.BaseApp;
 
@@ -58,7 +58,7 @@ public class ContentApp extends BaseApp {
     }
 
     @Override
-    public void openChooseDialog(OverlayLayer overlayLayer, String selectedId, final ChooseDialogCallback callback) {
+    public void openChooseDialog(UiContext overlayLayer, String selectedId, final ChooseDialogCallback callback) {
         if (appContext.getAppDescriptor() instanceof ContentAppDescriptor) {
             ContentAppDescriptor contentAppDescriptor = (ContentAppDescriptor)appContext.getAppDescriptor();
             ChooseDialogPresenter presenter = componentProvider.getComponent(contentAppDescriptor.getChooseDialog().getPresenterClass());

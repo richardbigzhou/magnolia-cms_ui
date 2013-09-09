@@ -68,7 +68,6 @@ import info.magnolia.ui.api.location.LocationChangedEvent;
 import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
-import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.api.view.Viewport;
 import info.magnolia.ui.framework.message.MessagesManager;
 import org.apache.commons.lang.StringUtils;
@@ -389,10 +388,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     @Override
-    public void openChooseDialog(String appName, OverlayLayer overlayLayer, String selectedId, ChooseDialogCallback callback) {
+    public void openChooseDialog(String appName, UiContext uiContext, String selectedId, ChooseDialogCallback callback) {
         App targetApp = getAppWithoutStarting(appName);
         if (targetApp != null) {
-            targetApp.openChooseDialog(overlayLayer, selectedId, callback);
+            targetApp.openChooseDialog(uiContext, selectedId, callback);
         }
     }
 

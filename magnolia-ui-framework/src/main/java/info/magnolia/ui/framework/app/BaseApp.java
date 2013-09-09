@@ -37,8 +37,8 @@ import info.magnolia.ui.api.app.App;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.location.Location;
-import info.magnolia.ui.api.overlay.OverlayLayer;
 
 import javax.inject.Inject;
 
@@ -85,6 +85,6 @@ public class BaseApp implements App {
     }
 
     @Override
-    public void openChooseDialog(OverlayLayer overlayLayer, String selectedId, ChooseDialogCallback callback) {
+    public void openChooseDialog(UiContext overlayLayer, String selectedId, ChooseDialogCallback callback) {
     }
 }

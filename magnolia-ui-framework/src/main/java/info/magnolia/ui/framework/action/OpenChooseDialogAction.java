@@ -37,17 +37,15 @@ import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.AppController;
-import info.magnolia.ui.api.app.ItemChosenListener;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Configurable confirmation action. Can be used to intercept the actual action with user feedback.
@@ -103,7 +101,7 @@ public class OpenChooseDialogAction extends AbstractAction<OpenChooseDialogActio
             }
 
             String selectedItemPath = items.get(0).getJcrItem().getPath();
-            appController.openChooseDialog(appName, "/", uiContext, selectedItemPath, new ItemChosenListener() {
+            /*appController.openChooseDialog(appName, "/", uiContext, selectedItemPath, new ItemChosenListener() {
                 @Override
                 public void onItemChosen(final com.vaadin.data.Item chosenValue) {
                     try {
@@ -124,7 +122,7 @@ public class OpenChooseDialogAction extends AbstractAction<OpenChooseDialogActio
                         }
                     }
                 }
-            });
+            });                                  */
 
         } catch (Exception e) {
             throw new ActionExecutionException(e);
