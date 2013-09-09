@@ -5,6 +5,9 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import info.magnolia.ui.api.view.View;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created with IntelliJ IDEA.
  * User: sasha
@@ -20,9 +23,18 @@ public class DialogActionViewImpl implements DialogActionView {
 
     private CssLayout secondaryActionsContainer = new CssLayout();
 
+    private CssLayout toolbarContainer = new CssLayout();
+
+    private Map<String, View> actionNameToView = new HashMap<String, View>();
+
     public DialogActionViewImpl() {
+        footer.addStyleName("footer");
+        footer.addComponent(toolbarContainer);
         footer.addComponent(secondaryActionsContainer);
         footer.addComponent(primaryActionsContainer);
+        footer.setExpandRatio(primaryActionsContainer, 1f);
+        footer.setExpandRatio(secondaryActionsContainer, 1f);
+
 
         footer.setWidth("100%");
         secondaryActionsContainer.addStyleName("secondary-actions");
@@ -37,12 +49,14 @@ public class DialogActionViewImpl implements DialogActionView {
     }
 
     @Override
-    public void addPrimaryAction(View actionView) {
+    public void addPrimaryAction(View actionView, String actionName) {
+        actionNameToView.put(actionName, actionView);
         primaryActionsContainer.addComponentAsFirst(actionView.asVaadinComponent());
     }
 
     @Override
-    public void addSecondaryAction(View actionView) {
+    public void addSecondaryAction(View actionView, String actionName) {
+        actionNameToView.put(actionName, actionView);
         secondaryActionsContainer.addComponentAsFirst(actionView.asVaadinComponent());
     }
 
@@ -50,5 +64,17 @@ public class DialogActionViewImpl implements DialogActionView {
     public void removeAllActions() {
         primaryActionsContainer.removeAllComponents();
         secondaryActionsContainer.removeAllComponents();
+        actionNameToView.clear();
+    }
+
+    @Override
+    public void setToolbarComponent(Component toolbar) {
+        toolbarContainer.removeAllComponents();
+        toolbarContainer.addComponent(toolbar);
+    }
+
+    @Override
+    public View getViewForAction(String actionName) {
+        return actionNameToView.get(actionName);
     }
 }

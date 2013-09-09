@@ -33,11 +33,16 @@
  */
 package info.magnolia.ui.dialog;
 
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.ShortcutAction.ModifierKey;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.dialog.actionpresenter.ActionParameterProvider;
+import info.magnolia.ui.dialog.actionpresenter.ActionPresenter;
 import info.magnolia.ui.dialog.actionpresenter.DialogActionPresenter;
 import info.magnolia.ui.dialog.actionpresenter.view.DialogActionView;
 import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
 import javax.inject.Inject;
 
@@ -63,6 +68,11 @@ public class BaseDialogPresenter implements DialogPresenter, ActionParameterProv
     }
 
     @Override
+    public ActionPresenter getActionPresenter() {
+        return dialogActionPresenter;
+    }
+
+    @Override
     public void closeDialog() {
         view.close();
     }
@@ -72,10 +82,19 @@ public class BaseDialogPresenter implements DialogPresenter, ActionParameterProv
         view.addShortcut(this.dialogActionPresenter.bindShortcut(actionName, keyCode, modifiers));
     }
 
-    public DialogView start(BaseDialogDefinition definition) {
+    public DialogView start(BaseDialogDefinition definition, UiContext uiContext) {
         this.view = initView();
         this.dialogActionPresenter = componentProvider.getComponent(definition.getActionPresenter().getPresenterClass());
-        DialogActionView dialogActionView = dialogActionPresenter.start(definition.getActions().values(), definition.getActionPresenter(), this);
+        DialogActionView dialogActionView = dialogActionPresenter.start(definition.getActions().values(), definition.getActionPresenter(), this, uiContext);
+
+        if (definition.getActions().containsKey(BaseDialog.COMMIT_ACTION_NAME)) {
+             addShortcut(BaseDialog.COMMIT_ACTION_NAME, KeyCode.S, ModifierKey.CTRL);
+        }
+
+        if (definition.getActions().containsKey(BaseDialog.CANCEL_ACTION_NAME)) {
+            addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.ESCAPE);
+            addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.C, ModifierKey.CTRL);
+        }
         this.view.setActionView(dialogActionView);
         return this.view;
     }

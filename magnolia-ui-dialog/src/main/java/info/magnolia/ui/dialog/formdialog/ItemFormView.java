@@ -61,6 +61,7 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
 
     public ItemFormView() {
         super(new FormDialog());
+        setWidth("720px");
         getDialog().setContent(form);
         getDialog().addDescriptionVisibilityHandler(new BaseDialog.DescriptionVisibilityEvent.Handler() {
 
@@ -73,7 +74,6 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
 
     @Override
     public Item getItemDataSource() {
-
         return form.getItemDataSource();
     }
 
@@ -141,7 +141,6 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
                 }
             }
         });
-        //dialog.setFooterToolbar(languageSelector);
+        getActionView().setToolbarComponent(languageSelector);
     }
-
 }

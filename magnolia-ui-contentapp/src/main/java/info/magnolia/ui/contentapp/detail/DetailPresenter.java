@@ -115,14 +115,14 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionP
 
     private void initActions() {
         DialogActionPresenter dialogActionPresenter = componentProvider.getComponent(editorDefinition.getActionPresenter().getPresenterClass());
-        DialogActionView dialogActionView = dialogActionPresenter.start(filterSubAppActions(),editorDefinition.getActionPresenter(), this);
+        DialogActionView dialogActionView = dialogActionPresenter.start(filterSubAppActions(),editorDefinition.getActionPresenter(), this, subAppContext);
         formView.setActionView(dialogActionView);
     }
 
     private Iterable<ActionDefinition> filterSubAppActions() {
         Map<String, ActionDefinition> subAppActions = subAppContext.getSubAppDescriptor().getActions();
         List<ActionDefinition> filteredActions = new LinkedList<ActionDefinition>();
-        List<FormActionItemDefinition> editorActions = editorDefinition.getActionPresenter().getActions();
+        List<FormActionItemDefinition> editorActions = editorDefinition.getActions();
         for (FormActionItemDefinition editorAction : editorActions) {
             ActionDefinition def = subAppActions.get(editorAction.getName());
             if (def != null) {

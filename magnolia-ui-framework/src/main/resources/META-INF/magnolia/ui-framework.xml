@@ -236,11 +236,6 @@
           <implementation>info.magnolia.ui.dialog.actionpresenter.renderer.DefaultEditorActionRenderer</implementation>
       </component>
 
-      <component>
-          <type>info.magnolia.ui.dialog.actionpresenter.DialogActionPresenter</type>
-          <implementation>info.magnolia.ui.dialog.actionpresenter.DialogActionPresenterImpl</implementation>
-      </component>
-
     <!-- Dialog -->
     <!--
       The FormDialogPresenter is mapped in admincentral, app and subApp scope to ensure it gets the correct UiContext injected.
@@ -298,6 +293,10 @@
         <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterImpl</implementation>
     </component>
 
+      <component>
+          <type>info.magnolia.ui.dialog.actionpresenter.DialogActionPresenter</type>
+          <implementation>info.magnolia.ui.dialog.actionpresenter.DialogActionPresenterImpl</implementation>
+      </component>
       <!-- Form -->
     <component>
       <type>info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory</type>
@@ -333,6 +332,11 @@
       <type>info.magnolia.ui.workbench.StatusBarView</type>
       <implementation>info.magnolia.ui.workbench.StatusBarViewImpl</implementation>
     </component>
+
+      <!--<component>-->
+          <!--<type>info.magnolia.event.EventBus</type>-->
+          <!--<implementation>info.magnolia.event.SimpleEventBus</implementation>-->
+      <!--</component>-->
   </components>
 
   <components>
@@ -386,6 +390,21 @@
       <type>info.magnolia.ui.framework.app.embedded.EmbeddedPageView</type>
       <implementation>info.magnolia.ui.framework.app.embedded.EmbeddedPageViewImpl</implementation>
     </component>
+
+      <component>
+          <type>info.magnolia.ui.contentapp.movedialog.MoveDialogActionPresenter</type>
+          <implementation>info.magnolia.ui.contentapp.movedialog.MoveDialogActionPresenterImpl</implementation>
+      </component>
+
+      <component>
+          <type>info.magnolia.ui.contentapp.movedialog.MoveDialogPresenter</type>
+          <implementation>info.magnolia.ui.contentapp.movedialog.MoveDialogPresenterImpl</implementation>
+      </component>
+
+      <component>
+          <type>info.magnolia.ui.contentapp.movedialog.view.MoveDialogActionView</type>
+          <implementation>info.magnolia.ui.contentapp.movedialog.view.MoveDialogActionViewImpl</implementation>
+      </component>
 
   </components>
 </module>

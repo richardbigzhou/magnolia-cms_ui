@@ -33,9 +33,12 @@
  */
 package info.magnolia.ui.contentapp.definition;
 
-import info.magnolia.ui.dialog.actionpresenter.definition.DetailSubAppActionPresenterDefinition;
+import info.magnolia.ui.dialog.actionpresenter.definition.EditorActionPresenterDefinition;
+import info.magnolia.ui.dialog.actionpresenter.definition.FormActionItemDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
+
+import java.util.List;
 
 /**
  * Defines an editor.
@@ -54,5 +57,7 @@ public interface EditorDefinition {
 
     FormDefinition getForm();
 
-    DetailSubAppActionPresenterDefinition getActionPresenter();
+    List<FormActionItemDefinition> getActions();
+
+    EditorActionPresenterDefinition getActionPresenter();
 }

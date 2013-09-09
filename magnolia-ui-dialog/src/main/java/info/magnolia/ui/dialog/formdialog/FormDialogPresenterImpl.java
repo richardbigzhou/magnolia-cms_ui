@@ -37,8 +37,8 @@ import com.vaadin.data.Item;
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.overlay.OverlayCloser;
-import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.dialog.BaseDialogPresenter;
 import info.magnolia.ui.dialog.Dialog;
 import info.magnolia.ui.dialog.DialogCloseHandler;
@@ -74,10 +74,10 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
 
     @Override
-    public DialogView start(final Item item, String dialogName, final OverlayLayer overlayLayer, EditorCallback callback) {
+    public DialogView start(final Item item, String dialogName, final UiContext uiContext, EditorCallback callback) {
         try {
             FormDialogDefinition dialogDefinition = dialogDefinitionRegistry.get(dialogName);
-            return start(item, dialogDefinition, overlayLayer, callback);
+            return start(item, dialogDefinition, uiContext, callback);
         } catch (RegistrationException e) {
             throw new RuntimeException("No dialogDefinition found for " + dialogName, e);
         }
@@ -88,16 +88,17 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
      * <li>Sets the created {@link FormView} as content of the created {@link DialogView}.</li>
      * </ul>
      *
-     * @param item passed on to{@link FormDialogPresenter}
+     * @param item passed on to{@link info.magnolia.ui.dialog.formdialog.FormDialogPresenter}
      * @param dialogDefinition
+     * @param uiContext
      */
     @Override
-    public DialogView start(final Item item, FormDialogDefinition dialogDefinition, final OverlayLayer overlayLayer, EditorCallback callback) {
+    public DialogView start(final Item item, FormDialogDefinition dialogDefinition, final UiContext uiContext, EditorCallback callback) {
         this.callback = callback;
         this.item = item;
         buildView(dialogDefinition);
-        start(dialogDefinition);
-        final OverlayCloser overlayCloser = overlayLayer.openOverlay(getView());
+        start(dialogDefinition, uiContext);
+        final OverlayCloser overlayCloser = uiContext.openOverlay(getView());
         getView().addDialogCloseHandler(new DialogCloseHandler() {
             @Override
             public void onDialogClose(DialogView dialogView) {
@@ -116,7 +117,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     private void buildView(FormDialogDefinition dialogDefinition) {
         Dialog dialog = new Dialog(dialogDefinition);
         formView = formBuilder.buildForm(dialogDefinition.getForm(), item, dialog);
-        start(dialogDefinition);
         final String description = dialogDefinition.getDescription();
         final String label = dialogDefinition.getLabel();
         final String basename = dialogDefinition.getI18nBasename();

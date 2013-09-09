@@ -33,10 +33,13 @@
  */
 package info.magnolia.ui.contentapp.definition;
 
-import info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredDetailSubAppActionPresenterDefinition;
-import info.magnolia.ui.dialog.actionpresenter.definition.DetailSubAppActionPresenterDefinition;
+import info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredEditorActionPresenterDefinition;
+import info.magnolia.ui.dialog.actionpresenter.definition.EditorActionPresenterDefinition;
+import info.magnolia.ui.dialog.actionpresenter.definition.FormActionItemDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
+
+import java.util.List;
 
 /**
  * Simple implementation of {@link EditorDefinition}.
@@ -57,7 +60,9 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
 
     private NodeTypeDefinition nodeType;
 
-    private DetailSubAppActionPresenterDefinition actionPresenter = new ConfiguredDetailSubAppActionPresenterDefinition();
+    private EditorActionPresenterDefinition actionPresenter = new ConfiguredEditorActionPresenterDefinition();
+
+    private List<FormActionItemDefinition> actions;
 
     @Override
     public String getLabel() {
@@ -113,11 +118,19 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
         this.nodeType = nodeType;
     }
 
-    public DetailSubAppActionPresenterDefinition getActionPresenter() {
+    public EditorActionPresenterDefinition getActionPresenter() {
         return actionPresenter;
     }
 
-    public void setActionPresenter(DetailSubAppActionPresenterDefinition actionPresenter) {
+    public void setActionPresenter(EditorActionPresenterDefinition actionPresenter) {
         this.actionPresenter = actionPresenter;
+    }
+
+    public List<FormActionItemDefinition> getActions() {
+        return actions;
+    }
+
+    public void setActions(List<FormActionItemDefinition> actions) {
+        this.actions = actions;
     }
 }

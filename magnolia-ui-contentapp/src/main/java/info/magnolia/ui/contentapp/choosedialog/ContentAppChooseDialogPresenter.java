@@ -2,14 +2,14 @@ package info.magnolia.ui.contentapp.choosedialog;
 
 import com.rits.cloning.Cloner;
 import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.module.ModuleRegistry;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.app.SubAppDescriptor;
-import info.magnolia.ui.api.overlay.OverlayLayer;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition;
-import info.magnolia.ui.dialog.action.DialogActionExecutor;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenterImpl;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogView;
 import info.magnolia.ui.dialog.choosedialog.action.ChooseDialogActionDefinition;
@@ -19,7 +19,6 @@ import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,15 +38,16 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
     private AppContext appContext;
 
     @Inject
-    public ContentAppChooseDialogPresenter(FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18nContentSupport i18nContentSupport, DialogActionExecutor actionExecutor, AppContext appContext) {
-        super(fieldFactoryFactory, componentProvider, i18nContentSupport, actionExecutor);
+    public ContentAppChooseDialogPresenter(FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18nContentSupport i18nContentSupport, AppContext appContext, ModuleRegistry registry) {
+        super(fieldFactoryFactory, componentProvider, i18nContentSupport, registry);
         this.appContext = appContext;
     }
 
     @Override
-    public ChooseDialogView start(ChooseDialogCallback callback, ChooseDialogDefinition definition, OverlayLayer overlayLayer, String selectedItemId) {
+    public ChooseDialogView start(ChooseDialogCallback callback, ChooseDialogDefinition definition, UiContext uiContext, String selectedItemId) {
         ChooseDialogDefinition dialogDefinition = ensureChooseActions(ensureChooseDialogField(definition));
-        return super.start(callback, dialogDefinition, overlayLayer, selectedItemId);
+        ChooseDialogView chooseDialogView = super.start(callback, dialogDefinition, uiContext, selectedItemId);
+        return chooseDialogView;
     }
 
     private ChooseDialogDefinition ensureChooseActions(ChooseDialogDefinition definition) {
@@ -59,7 +59,7 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
             commitAction.setCallSuccess(true);
             commitAction.setName("commit");
             commitAction.setLabel("commit");
-            result.getActions().put(BaseDialog.COMMIT_ACTION_NAME, commitAction);
+            result.getActions().put("choose", commitAction);
 
             ChooseDialogActionDefinition cancelAction = new ChooseDialogActionDefinition();
             cancelAction.setCallSuccess(false);
@@ -86,21 +86,20 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
 
         BrowserSubAppDescriptor subApp = (BrowserSubAppDescriptor) subAppContext;
 
-        WorkbenchDefinition workbench = new Cloner().deepClone(subApp.getWorkbench());
+        ConfiguredWorkbenchDefinition workbench = (ConfiguredWorkbenchDefinition)(new Cloner().deepClone(subApp.getWorkbench()));
         // mark definition as a dialog workbench so that workbench presenter can disable drag n drop
-        ((ConfiguredWorkbenchDefinition) workbench).setDialogWorkbench(true);
-
+        workbench.setDialogWorkbench(true);
+        workbench.setIncludeProperties(false);
         // Create the Choose Dialog Title
         String chooserLabel = appContext.getLabel() + " chooser";
 
-        ((ConfiguredWorkbenchDefinition) workbench).setName(chooserLabel);
+        workbench.setName(chooserLabel);
         ImageProviderDefinition imageProvider = new Cloner().deepClone(subApp.getImageProvider());
 
         WorkbenchFieldDefinition wbFieldDefinition = new WorkbenchFieldDefinition();
         wbFieldDefinition.setWorkbench(workbench);
         wbFieldDefinition.setImageProvider(imageProvider);
         result.setField(wbFieldDefinition);
-
         result.setPresenterClass(getClass());
         return result;
     }

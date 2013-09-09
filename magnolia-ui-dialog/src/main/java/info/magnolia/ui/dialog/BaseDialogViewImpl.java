@@ -1,7 +1,6 @@
 package info.magnolia.ui.dialog;
 
 import com.vaadin.event.ShortcutListener;
-import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Panel;
 import info.magnolia.ui.api.view.View;
@@ -36,12 +35,14 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
 
     public BaseDialogViewImpl(BaseDialog dialog) {
         this.dialog = dialog;
+
         setContent(this.dialog);
         // We use Panel to keep keystroke events scoped within the currently focused component.
         // Without it, if you have more than one dialog open,
         // i.e. in different apps running at the same time, then all open
         // dialogs would react to the keyboard event sent on the dialog currently having the focus.
-        setWidth(Sizeable.SIZE_UNDEFINED, Unit.PIXELS);
+        //setWidth(Sizeable.SIZE_UNDEFINED, Unit.PIXELS);
+        setWidth("720px");
         setHeight(100, Unit.PERCENTAGE); // Required for dynamic dialog shrinking upon window resize.
         this.dialog.addDialogCloseHandler(new Handler() {
             @Override
@@ -49,6 +50,8 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
                 close();
             }
         });
+        this.dialog.setSizeFull();
+        this.dialog.setStyleName("dialog-panel");
     }
 
     @Override

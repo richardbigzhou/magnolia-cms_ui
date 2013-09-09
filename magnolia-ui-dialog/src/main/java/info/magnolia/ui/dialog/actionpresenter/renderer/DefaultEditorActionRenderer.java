@@ -21,21 +21,28 @@ public class DefaultEditorActionRenderer implements ActionRenderer {
 
     @Override
     public View start(final ActionDefinition definition, final ActionListener listener) {
-        return new View() {
+        return new DefaultActionView(definition.getLabel(), definition.getName(), new ClickListener() {
             @Override
-            public Component asVaadinComponent() {
-                Button button = new Button();
-                button.addStyleName("btn-dialog");
-                button.addStyleName(definition.getName());
-                button.setCaption(definition.getLabel());
-                button.addClickListener(new ClickListener() {
-                    @Override
-                    public void buttonClick(ClickEvent event) {
-                        listener.onActionFired(definition.getName(), new HashMap<String, Object>());
-                    }
-                });
-                return button;
+            public void buttonClick(ClickEvent event) {
+                listener.onActionFired(definition.getName(), new HashMap<String, Object>());
             }
-        };
+        });
+    }
+
+    private static class DefaultActionView implements View {
+
+        private Button button;
+
+        private DefaultActionView(String label, String name, ClickListener listener) {
+            this.button = new Button(label, listener);
+            this.button.addStyleName(name);
+            this.button.addStyleName("btn-dialog");
+        }
+
+        @Override
+        public Component asVaadinComponent() {
+            return button;
+        }
+
     }
 }

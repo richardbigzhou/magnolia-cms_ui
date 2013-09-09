@@ -1,5 +1,6 @@
 package info.magnolia.ui.dialog.actionpresenter.view;
 
+import com.vaadin.ui.Component;
 import info.magnolia.ui.api.view.View;
 
 /**
@@ -11,9 +12,13 @@ import info.magnolia.ui.api.view.View;
  */
 public interface DialogActionView extends View {
 
-    void addPrimaryAction(View actionView);
+    void addPrimaryAction(View actionView, String actionName);
 
-    void addSecondaryAction(View actionView);
+    void addSecondaryAction(View actionView, String actionName);
 
     void removeAllActions();
+
+    void setToolbarComponent(Component toolbar);
+
+    View getViewForAction(String actionName);
 }

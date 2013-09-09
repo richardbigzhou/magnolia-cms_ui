@@ -4,6 +4,7 @@ import com.vaadin.event.ShortcutListener;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.actionpresenter.definition.ActionRendererDefinition;
 import info.magnolia.ui.dialog.actionpresenter.definition.EditorActionPresenterDefinition;
@@ -38,14 +39,14 @@ public class DialogActionPresenterImpl implements DialogActionPresenter {
     }
 
     @Override
-    public DialogActionView start(Iterable<ActionDefinition> actions, EditorActionPresenterDefinition definition, final ActionParameterProvider parameterProvider) {
+    public DialogActionView start(Iterable<ActionDefinition> actions, EditorActionPresenterDefinition definition, final ActionParameterProvider parameterProvider, UiContext uiContext) {
         this.actionParameterProvider = parameterProvider;
         actionExecutor.setActions(actions);
         for (ActionDefinition action : actions) {
             ActionRendererDefinition actionPresenterDef = definition.getActionRenderers().get(action.getName());
             ActionRenderer actionRenderer = actionPresenterDef == null ?
                     componentProvider.getComponent(ActionRenderer.class):
-                    componentProvider.newInstance(actionPresenterDef.getPresenterClass(), action);
+                    componentProvider.newInstance(actionPresenterDef.getPresenterClass(), action, actionPresenterDef, uiContext);
             final View actionView = actionRenderer.start(action, new ActionListener() {
                 @Override
                 public void onActionFired(String actionName, Object... actionContextParams) {
@@ -57,9 +58,9 @@ public class DialogActionPresenterImpl implements DialogActionPresenter {
                 }
             });
             if (definition.getSecondaryActions().contains(new SecondaryActionDefinition(action.getName()))) {
-                view.addSecondaryAction(actionView);
+                view.addSecondaryAction(actionView, action.getName());
             } else {
-                view.addPrimaryAction(actionView);
+                view.addPrimaryAction(actionView, action.getName());
             }
         }
         return view;
@@ -81,6 +82,10 @@ public class DialogActionPresenterImpl implements DialogActionPresenter {
         } catch (ActionExecutionException e) {
             handleActionExecutionException(actionName, e);
         }
+    }
+
+    protected DialogActionView getView() {
+        return view;
     }
 
     protected void handleActionExecutionException(String actionName, ActionExecutionException e) {
