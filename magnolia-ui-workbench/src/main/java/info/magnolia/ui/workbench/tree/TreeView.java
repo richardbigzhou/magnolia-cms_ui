@@ -36,6 +36,7 @@ package info.magnolia.ui.workbench.tree;
 import info.magnolia.ui.workbench.list.ListView;
 
 import com.vaadin.data.Item;
+import com.vaadin.event.Action.Container;
 import com.vaadin.event.dd.DropHandler;
 
 /**
@@ -43,7 +44,7 @@ import com.vaadin.event.dd.DropHandler;
  */
 public interface TreeView extends ListView {
 
-    void setEditable(boolean editable);
+    void setEditable(boolean editable, Container shortcutActionHandler);
 
     void setEditableColumns(Object... propertyIds);
 

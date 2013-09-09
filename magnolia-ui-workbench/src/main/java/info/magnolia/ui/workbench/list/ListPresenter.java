@@ -45,6 +45,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import com.vaadin.event.Action.Container;
+
 /**
  * The ListPresenter is responsible for creating, configuring and updating a list of items according to the workbench definition.
  */
@@ -61,8 +63,8 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     }
 
     @Override
-    public ListView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName) {
-        super.start(workbench, eventBus, viewTypeName);
+    public ListView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName, Container shortcutActionHandler) {
+        super.start(workbench, eventBus, viewTypeName, shortcutActionHandler);
 
         this.container = createContainer(workbench);
         view.setListener(this);

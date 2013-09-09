@@ -46,6 +46,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
+import com.vaadin.event.ActionManager;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.ItemClickEvent;
@@ -78,6 +79,8 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
     private ColumnGenerator bypassedColumnGenerator;
 
     private final List<ItemEditedEvent.Handler> listeners = new ArrayList<ItemEditedEvent.Handler>();
+
+    private ActionManager shortcutActionManager;
 
     public InplaceEditingTreeTable() {
         super();
@@ -154,6 +157,9 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         refreshRowCache();
     }
 
+    public void setShortcutActionManager(ActionManager actionManager) {
+        shortcutActionManager = actionManager;
+    }
     // PARTIAL UPDATES
     // MGNLUI-282 partial updates are disabled for inplace-editing to prevent tree from turning unstable.
 
@@ -284,8 +290,9 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
     }
 
-    public void addKeyboardHandlers() {
-        getActionManager().addActionHandler(new EditingKeyboardHandler());
+    public void addKeyboardHandlers(com.vaadin.event.Action.Container shortcutActionManager) {
+        shortcutActionManager.addActionHandler(new EditingKeyboardHandler());
+        // getActionManager().addActionHandler(new EditingKeyboardHandler());
     }
 
     // FIRING ITEM EDITED EVENTS
@@ -351,7 +358,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
         private final ShortcutAction tabNext = new ShortcutAction("Tab", ShortcutAction.KeyCode.TAB, null);
 
-        private final ShortcutAction tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB, new int[] { ShortcutAction.ModifierKey.SHIFT });
+        private final ShortcutAction tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB, new int[] { ShortcutAction.ModifierKey.CTRL });
 
         private final ShortcutAction escape = new ShortcutAction("Esc", ShortcutAction.KeyCode.ESCAPE, null);
 

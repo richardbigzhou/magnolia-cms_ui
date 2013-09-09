@@ -47,6 +47,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.event.Action.Container;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.TreeTable;
@@ -84,11 +85,11 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     }
 
     @Override
-    public void setEditable(boolean editable) {
+    public void setEditable(boolean editable, Container shortcutActionHandler) {
         treeTable.setEditable(editable);
         if (editable && treeTable instanceof InplaceEditingTreeTable) {
             ((InplaceEditingTreeTable) treeTable).addItemEditedListener(itemEditedListener);
-            ((InplaceEditingTreeTable) treeTable).addKeyboardHandlers();
+            ((InplaceEditingTreeTable) treeTable).addKeyboardHandlers(shortcutActionHandler);
         } else {
             ((InplaceEditingTreeTable) treeTable).removeItemEditedListener(itemEditedListener);
         }

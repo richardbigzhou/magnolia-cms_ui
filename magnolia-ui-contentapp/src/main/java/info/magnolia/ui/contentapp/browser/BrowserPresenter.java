@@ -60,6 +60,7 @@ import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
+import info.magnolia.ui.workbench.event.ItemShortcutKeyEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
@@ -78,6 +79,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.Resource;
 
 
@@ -202,6 +204,25 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
             @Override
             public void onItemEdited(ItemEditedEvent event) {
                 editItem(event);
+            }
+        });
+
+        subAppEventBus.addHandler(ItemShortcutKeyEvent.class, new ItemShortcutKeyEvent.Handler() {
+
+            @Override
+            public void onItemShortcutKeyEvent(ItemShortcutKeyEvent event) {
+                int keyCode = event.getKeyCode();
+                int[] modifierKeys = event.getModifierKeys();
+                switch (keyCode) {
+                case ShortcutAction.KeyCode.ENTER:
+                    executeDefaultAction();
+                    break;
+                case ShortcutAction.KeyCode.DELETE:
+                    //
+                    // executeDeleteAction();
+                    break;
+                }
+
             }
         });
     }
@@ -374,5 +395,5 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
             appContext.sendLocalMessage(error);
         }
     }
-    
+
 }
