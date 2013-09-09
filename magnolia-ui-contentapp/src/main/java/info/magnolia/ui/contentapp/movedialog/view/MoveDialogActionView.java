@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.contentapp.movedialog.view;
 
-import info.magnolia.ui.dialog.actionpresenter.view.DialogActionView;
+import info.magnolia.ui.dialog.actionarea.view.EditorActionView;
 
 /**
  * Action view interface for {@link info.magnolia.ui.contentapp.movedialog.MoveDialogPresenter}.
  */
-public interface MoveDialogActionView extends DialogActionView {
+public interface MoveDialogActionView extends EditorActionView {
 
     void setActionEnabled(String actionName, boolean isEnabled);
 

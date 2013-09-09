@@ -136,23 +136,23 @@
     </type-mapping>
 
     <type-mapping>
-      <type>info.magnolia.ui.dialog.actionpresenter.definition.EditorActionPresenterDefinition</type>
-      <implementation>info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredEditorActionPresenterDefinition</implementation>
+      <type>info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition</type>
+      <implementation>info.magnolia.ui.dialog.actionarea.definition.ConfiguredEditorActionAreaDefinition</implementation>
     </type-mapping>
 
     <type-mapping>
-      <type>info.magnolia.ui.dialog.actionpresenter.definition.ActionPresenterDefinition</type>
-      <implementation>info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredActionPresenterDefinition</implementation>
+      <type>info.magnolia.ui.dialog.actionarea.definition.ActionAreaDefinition</type>
+      <implementation>info.magnolia.ui.dialog.actionarea.definition.ConfiguredActionAreaDefinition</implementation>
     </type-mapping>
 
       <type-mapping>
-          <type>info.magnolia.ui.dialog.actionpresenter.definition.ActionPresenterDefinition</type>
-          <implementation>info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredActionPresenterDefinition</implementation>
+          <type>info.magnolia.ui.dialog.actionarea.definition.ActionAreaDefinition</type>
+          <implementation>info.magnolia.ui.dialog.actionarea.definition.ConfiguredActionAreaDefinition</implementation>
       </type-mapping>
 
    <type-mapping>
-      <type>info.magnolia.ui.dialog.actionpresenter.definition.ActionRendererDefinition</type>
-      <implementation>info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredActionRendererDefinition</implementation>
+      <type>info.magnolia.ui.dialog.actionarea.definition.ActionRendererDefinition</type>
+      <implementation>info.magnolia.ui.dialog.actionarea.definition.ConfiguredActionRendererDefinition</implementation>
     </type-mapping>
 
       <!-- Workbench -->
@@ -227,13 +227,13 @@
       </component>
 
       <component>
-          <type>info.magnolia.ui.dialog.actionpresenter.view.DialogActionView</type>
-          <implementation>info.magnolia.ui.dialog.actionpresenter.view.DialogActionViewImpl</implementation>
+          <type>info.magnolia.ui.dialog.actionarea.view.EditorActionView</type>
+          <implementation>info.magnolia.ui.dialog.actionarea.view.EditorActionViewImpl</implementation>
       </component>
 
       <component>
-          <type>info.magnolia.ui.dialog.actionpresenter.renderer.ActionRenderer</type>
-          <implementation>info.magnolia.ui.dialog.actionpresenter.renderer.DefaultEditorActionRenderer</implementation>
+          <type>info.magnolia.ui.dialog.actionarea.renderer.ActionRenderer</type>
+          <implementation>info.magnolia.ui.dialog.actionarea.renderer.DefaultEditorActionRenderer</implementation>
       </component>
 
     <!-- Dialog -->
@@ -294,8 +294,8 @@
     </component>
 
       <component>
-          <type>info.magnolia.ui.dialog.actionpresenter.DialogActionPresenter</type>
-          <implementation>info.magnolia.ui.dialog.actionpresenter.DialogActionPresenterImpl</implementation>
+          <type>info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter</type>
+          <implementation>info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenterImpl</implementation>
       </component>
       <!-- Form -->
     <component>
@@ -393,7 +393,7 @@
 
       <component>
           <type>info.magnolia.ui.contentapp.movedialog.MoveDialogActionPresenter</type>
-          <implementation>info.magnolia.ui.contentapp.movedialog.MoveDialogActionPresenterImpl</implementation>
+          <implementation>info.magnolia.ui.contentapp.movedialog.MoveDialogActionAreaPresenterImpl</implementation>
       </component>
 
       <component>

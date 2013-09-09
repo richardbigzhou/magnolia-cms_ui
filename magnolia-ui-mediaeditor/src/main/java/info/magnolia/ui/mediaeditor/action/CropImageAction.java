@@ -38,7 +38,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.dialog.actionpresenter.ActionListener;
+import info.magnolia.ui.dialog.actionarea.ActionListener;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.MediaEditorView;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;

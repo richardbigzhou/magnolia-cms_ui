@@ -23,8 +23,8 @@
       <implementation>info.magnolia.ui.contentapp.definition.ConfiguredEditorDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.dialog.actionpresenter.definition.FormActionItemDefinition</type>
-      <implementation>info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredFormActionItemDefinition</implementation>
+      <type>info.magnolia.ui.dialog.actionarea.definition.FormActionItemDefinition</type>
+      <implementation>info.magnolia.ui.dialog.actionarea.definition.ConfiguredFormActionItemDefinition</implementation>
     </type-mapping>
 
       <type-mapping>

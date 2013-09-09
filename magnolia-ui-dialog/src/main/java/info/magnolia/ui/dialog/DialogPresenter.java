@@ -34,7 +34,7 @@
 package info.magnolia.ui.dialog;
 
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.dialog.actionpresenter.ActionPresenter;
+import info.magnolia.ui.dialog.actionarea.ActionAreaPresenter;
 import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
 
 /**
@@ -47,7 +47,7 @@ public interface DialogPresenter {
 
     DialogView getView();
 
-    ActionPresenter getActionPresenter();
+    ActionAreaPresenter getActionPresenter();
 
     void addShortcut(String actionName, int keyCode, int... modifiers);
 

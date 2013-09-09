@@ -63,6 +63,7 @@ public class OpenMoveDialogAction extends AbstractAction<OpenMoveDialogActionDef
     private List<JcrNodeAdapter> sourceNodeAdapters;
 
     private MoveDialogPresenter moveDialogPresenter;
+
     private OverlayCloser closeHandle;
 
     public OpenMoveDialogAction(

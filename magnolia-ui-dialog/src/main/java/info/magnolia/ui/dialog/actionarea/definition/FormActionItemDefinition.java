@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,35 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.actionpresenter.definition;
-
-import info.magnolia.ui.dialog.actionpresenter.ActionPresenter;
-
-import java.util.HashMap;
-import java.util.Map;
+package info.magnolia.ui.dialog.actionarea.definition;
 
 /**
- * Implementation of {@link ActionPresenterDefinition}.
+ * Describes a form action item.
  */
-public class ConfiguredActionPresenterDefinition implements ActionPresenterDefinition {
+public interface FormActionItemDefinition {
 
-    private Map<String, ActionRendererDefinition> actionRenderers = new HashMap<String, ActionRendererDefinition>();
-
-    private Class<? extends ActionPresenter> presenterClass;
-
-    public Map<String, ActionRendererDefinition> getActionRenderers() {
-        return actionRenderers;
-    }
-
-    public void setActionRenderers(Map<String, ActionRendererDefinition> actionRenderers) {
-        this.actionRenderers = actionRenderers;
-    }
-
-    public void setPresenterClass(Class<? extends ActionPresenter> presenterClass) {
-        this.presenterClass = presenterClass;
-    }
-
-    public Class<? extends ActionPresenter> getPresenterClass() {
-        return presenterClass;
-    }
+    String getName();
 }

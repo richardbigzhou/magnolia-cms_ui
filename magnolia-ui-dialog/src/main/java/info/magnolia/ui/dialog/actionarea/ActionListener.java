@@ -31,18 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.actionpresenter.definition;
-
-import info.magnolia.ui.dialog.actionpresenter.ActionPresenter;
-
-import java.util.Map;
+package info.magnolia.ui.dialog.actionarea;
 
 /**
- * Definition of {@link ActionPresenter}.
+ * Triggered by {@link info.magnolia.ui.api.view.View} produced by {@link info.magnolia.ui.dialog.actionarea.renderer.ActionRenderer}.
+ * Typical example - a button click. Optionally it can also provide additional parameters
+ * (mouse button type, drop-down selection etc).
  */
-public interface ActionPresenterDefinition {
+public interface ActionListener {
 
-    Class<? extends ActionPresenter> getPresenterClass();
-
-    Map<String, ActionRendererDefinition> getActionRenderers();
+    void onActionFired(String actionName, Object... actionContextParams);
 }

@@ -31,47 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.actionpresenter.renderer;
+package info.magnolia.ui.dialog.actionarea.definition;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
-import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.dialog.actionpresenter.ActionListener;
-
-import java.util.HashMap;
+import info.magnolia.ui.dialog.actionarea.renderer.ActionRenderer;
 
 /**
- * Default implementation of {@link ActionRenderer}. Simply wraps a button.
+ * Implementation of {@link ActionRendererDefinition}.
  */
-public class DefaultEditorActionRenderer implements ActionRenderer {
+public class ConfiguredActionRendererDefinition implements ActionRendererDefinition {
+
+    private Class<? extends ActionRenderer> presenterClass;
 
     @Override
-    public View start(final ActionDefinition definition, final ActionListener listener) {
-        return new DefaultActionView(definition.getLabel(), definition.getName(), new ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                listener.onActionFired(definition.getName(), new HashMap<String, Object>());
-            }
-        });
+    public Class<? extends ActionRenderer> getPresenterClass() {
+        return presenterClass;
     }
 
-    private static class DefaultActionView implements View {
-
-        private Button button;
-
-        private DefaultActionView(String label, String name, ClickListener listener) {
-            this.button = new Button(label, listener);
-            this.button.addStyleName(name);
-            this.button.addStyleName("btn-dialog");
-        }
-
-        @Override
-        public Component asVaadinComponent() {
-            return button;
-        }
-
+    public void setPresenterClass(Class<? extends ActionRenderer> presenterClass) {
+        this.presenterClass = presenterClass;
     }
 }

@@ -34,12 +34,12 @@
 package info.magnolia.ui.contentapp.movedialog.view;
 
 import com.vaadin.ui.Component;
-import info.magnolia.ui.dialog.actionpresenter.view.DialogActionViewImpl;
+import info.magnolia.ui.dialog.actionarea.view.EditorActionViewImpl;
 
 /**
  *
  */
-public class MoveDialogActionViewImpl extends DialogActionViewImpl implements MoveDialogActionView {
+public class MoveDialogActionViewImpl extends EditorActionViewImpl implements MoveDialogActionView {
 
     @Override
     public void setActionEnabled(String actionName, boolean isEnabled) {

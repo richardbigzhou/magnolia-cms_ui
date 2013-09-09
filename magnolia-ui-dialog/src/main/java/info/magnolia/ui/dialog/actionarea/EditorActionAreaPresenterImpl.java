@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.actionpresenter;
+package info.magnolia.ui.dialog.actionarea;
 
 import com.vaadin.event.ShortcutListener;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -39,20 +39,20 @@ import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.dialog.actionpresenter.definition.ActionRendererDefinition;
-import info.magnolia.ui.dialog.actionpresenter.definition.EditorActionPresenterDefinition;
-import info.magnolia.ui.dialog.actionpresenter.renderer.ActionRenderer;
-import info.magnolia.ui.dialog.actionpresenter.view.DialogActionView;
+import info.magnolia.ui.dialog.actionarea.definition.ActionRendererDefinition;
+import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
+import info.magnolia.ui.dialog.actionarea.renderer.ActionRenderer;
+import info.magnolia.ui.dialog.actionarea.view.EditorActionView;
 import info.magnolia.ui.dialog.definition.SecondaryActionDefinition;
 
 import javax.inject.Inject;
 
 /**
- * Implementation of {@link DialogActionPresenter}.
+ * Implementation of {@link EditorActionAreaPresenter}.
  */
-public class DialogActionPresenterImpl implements DialogActionPresenter {
+public class EditorActionAreaPresenterImpl implements EditorActionAreaPresenter {
 
-    private final DialogActionView view;
+    private final EditorActionView view;
 
     private final ComponentProvider componentProvider;
 
@@ -61,14 +61,14 @@ public class DialogActionPresenterImpl implements DialogActionPresenter {
     private ActionParameterProvider actionParameterProvider;
 
     @Inject
-    public DialogActionPresenterImpl(DialogActionView view, ComponentProvider componentProvider, EditorActionExecutor actionExecutor) {
+    public EditorActionAreaPresenterImpl(EditorActionView view, ComponentProvider componentProvider, EditorActionExecutor actionExecutor) {
         this.view = view;
         this.componentProvider = componentProvider;
         this.actionExecutor = actionExecutor;
     }
 
     @Override
-    public DialogActionView start(Iterable<ActionDefinition> actions, EditorActionPresenterDefinition definition, final ActionParameterProvider parameterProvider, UiContext uiContext) {
+    public EditorActionView start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, final ActionParameterProvider parameterProvider, UiContext uiContext) {
         this.actionParameterProvider = parameterProvider;
         actionExecutor.setActions(actions);
         for (ActionDefinition action : actions) {
@@ -113,7 +113,7 @@ public class DialogActionPresenterImpl implements DialogActionPresenter {
         }
     }
 
-    protected DialogActionView getView() {
+    protected EditorActionView getView() {
         return view;
     }
 

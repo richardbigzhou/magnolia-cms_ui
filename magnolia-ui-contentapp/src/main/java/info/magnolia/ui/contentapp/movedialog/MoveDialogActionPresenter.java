@@ -33,16 +33,16 @@
  */
 package info.magnolia.ui.contentapp.movedialog;
 
-import info.magnolia.ui.dialog.actionpresenter.ActionPresenter;
+import info.magnolia.ui.dialog.actionarea.ActionAreaPresenter;
 import info.magnolia.ui.framework.action.MoveLocation;
 
 import java.util.Set;
 
 /**
- * {@link ActionPresenter} extension for the case of node move dialogs. Capable of narrowing the set of
+ * {@link info.magnolia.ui.dialog.actionarea.ActionAreaPresenter} extension for the case of node move dialogs. Capable of narrowing the set of
  * possible move variants.
  */
-public interface MoveDialogActionPresenter extends ActionPresenter {
+public interface MoveDialogActionPresenter extends ActionAreaPresenter {
 
     void setPossibleMoveLocations(Set<MoveLocation> possibleMoveLocations);
 }

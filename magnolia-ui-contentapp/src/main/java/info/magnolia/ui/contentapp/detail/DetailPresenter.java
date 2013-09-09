@@ -40,10 +40,10 @@ import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
-import info.magnolia.ui.dialog.actionpresenter.ActionParameterProvider;
-import info.magnolia.ui.dialog.actionpresenter.DialogActionPresenter;
-import info.magnolia.ui.dialog.actionpresenter.definition.FormActionItemDefinition;
-import info.magnolia.ui.dialog.actionpresenter.view.DialogActionView;
+import info.magnolia.ui.dialog.actionarea.ActionParameterProvider;
+import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
+import info.magnolia.ui.dialog.actionarea.definition.FormActionItemDefinition;
+import info.magnolia.ui.dialog.actionarea.view.EditorActionView;
 import info.magnolia.ui.dialog.formdialog.FormBuilder;
 import info.magnolia.ui.dialog.formdialog.FormView;
 import info.magnolia.ui.form.EditorCallback;
@@ -114,9 +114,9 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionP
     }
 
     private void initActions() {
-        DialogActionPresenter dialogActionPresenter = componentProvider.getComponent(editorDefinition.getActionPresenter().getPresenterClass());
-        DialogActionView dialogActionView = dialogActionPresenter.start(filterSubAppActions(),editorDefinition.getActionPresenter(), this, subAppContext);
-        formView.setActionView(dialogActionView);
+        EditorActionAreaPresenter editorActionAreaPresenter = componentProvider.getComponent(editorDefinition.getActionPresenter().getPresenterClass());
+        EditorActionView editorActionView = editorActionAreaPresenter.start(filterSubAppActions(),editorDefinition.getActionPresenter(), this, subAppContext);
+        formView.setActionView(editorActionView);
     }
 
     private Iterable<ActionDefinition> filterSubAppActions() {

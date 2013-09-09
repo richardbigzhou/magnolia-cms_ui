@@ -34,7 +34,7 @@
 package info.magnolia.ui.mediaeditor.action;
 
 import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.dialog.actionpresenter.ActionListener;
+import info.magnolia.ui.dialog.actionarea.ActionListener;
 
 /**
  * Helper class for storing the dialog actions within media editor.

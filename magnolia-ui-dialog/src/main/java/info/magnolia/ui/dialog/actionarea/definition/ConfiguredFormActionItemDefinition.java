@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,23 +31,23 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.actionpresenter.definition;
-
-import info.magnolia.ui.dialog.actionpresenter.renderer.ActionRenderer;
+package info.magnolia.ui.dialog.actionarea.definition;
 
 /**
- * Implementation of {@link ActionRendererDefinition}.
+ * Simple implementation of {@link FormActionItemDefinition}.
+ *
+ * @see FormActionItemDefinition
  */
-public class ConfiguredActionRendererDefinition implements ActionRendererDefinition {
+public class ConfiguredFormActionItemDefinition implements FormActionItemDefinition {
 
-    private Class<? extends ActionRenderer> presenterClass;
+    private String name;
 
     @Override
-    public Class<? extends ActionRenderer> getPresenterClass() {
-        return presenterClass;
+    public String getName() {
+        return name;
     }
 
-    public void setPresenterClass(Class<? extends ActionRenderer> presenterClass) {
-        this.presenterClass = presenterClass;
+    public void setName(String name) {
+        this.name = name;
     }
 }

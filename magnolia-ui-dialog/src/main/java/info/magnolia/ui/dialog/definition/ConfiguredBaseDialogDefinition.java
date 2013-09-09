@@ -35,8 +35,8 @@ package info.magnolia.ui.dialog.definition;
 
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.dialog.DialogPresenter;
-import info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredEditorActionPresenterDefinition;
-import info.magnolia.ui.dialog.actionpresenter.definition.EditorActionPresenterDefinition;
+import info.magnolia.ui.dialog.actionarea.definition.ConfiguredEditorActionAreaDefinition;
+import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -59,7 +59,7 @@ public class ConfiguredBaseDialogDefinition implements BaseDialogDefinition {
 
     private Class<? extends DialogPresenter> presenterClass;
 
-    private EditorActionPresenterDefinition actionPresenter = new ConfiguredEditorActionPresenterDefinition();
+    private EditorActionAreaDefinition actionArea = new ConfiguredEditorActionAreaDefinition();
 
     public ConfiguredBaseDialogDefinition() {}
 
@@ -111,11 +111,11 @@ public class ConfiguredBaseDialogDefinition implements BaseDialogDefinition {
         this.presenterClass = presenterClass;
     }
 
-    public EditorActionPresenterDefinition getActionPresenter() {
-        return actionPresenter;
+    public EditorActionAreaDefinition getActionArea() {
+        return actionArea;
     }
 
-    public void setActionPresenter(EditorActionPresenterDefinition actionPresenter) {
-        this.actionPresenter = actionPresenter;
+    public void setActionArea(EditorActionAreaDefinition actionArea) {
+        this.actionArea = actionArea;
     }
 }

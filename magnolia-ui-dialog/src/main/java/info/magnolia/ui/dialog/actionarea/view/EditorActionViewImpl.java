@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.actionpresenter.view;
+package info.magnolia.ui.dialog.actionarea.view;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -42,9 +42,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Implementation of {@link DialogActionView}. Composes dialog/editor footer with Vaadin components.
+ * Implementation of {@link EditorActionView}. Composes dialog/editor footer with Vaadin components.
  */
-public class DialogActionViewImpl implements DialogActionView {
+public class EditorActionViewImpl implements EditorActionView {
 
     private HorizontalLayout footer = new HorizontalLayout();
 
@@ -56,7 +56,7 @@ public class DialogActionViewImpl implements DialogActionView {
 
     private Map<String, View> actionNameToView = new HashMap<String, View>();
 
-    public DialogActionViewImpl() {
+    public EditorActionViewImpl() {
         footer.addStyleName("footer");
         footer.addComponent(toolbarContainer);
         footer.addComponent(secondaryActionsContainer);

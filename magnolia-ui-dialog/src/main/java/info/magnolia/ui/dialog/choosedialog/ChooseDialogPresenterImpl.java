@@ -145,7 +145,8 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
             getView().setClosable(true);
             return getView();
         } else {
-            throw new IllegalArgumentException("TODO: HANDLE ME BETTER");
+            log.error("Configured field type is compatible with choose dialogs (com.vaadin.data.Item is required). Choose dialog will not be created.");
+            return null;
         }
     }
 

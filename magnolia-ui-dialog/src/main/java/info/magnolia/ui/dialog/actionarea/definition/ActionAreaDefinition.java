@@ -31,17 +31,18 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.actionpresenter;
+package info.magnolia.ui.dialog.actionarea.definition;
 
-import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.dialog.actionpresenter.definition.EditorActionPresenterDefinition;
-import info.magnolia.ui.dialog.actionpresenter.view.DialogActionView;
+import info.magnolia.ui.dialog.actionarea.ActionAreaPresenter;
+
+import java.util.Map;
 
 /**
- * Extends {@link ActionPresenter} for case of dialogs.
+ * Definition of {@link info.magnolia.ui.dialog.actionarea.ActionAreaPresenter}.
  */
-public interface DialogActionPresenter extends ActionPresenter {
-    @Override
-    DialogActionView start(Iterable<ActionDefinition> actions, EditorActionPresenterDefinition definition, ActionParameterProvider parameterProvider, UiContext uiContext);
+public interface ActionAreaDefinition {
+
+    Class<? extends ActionAreaPresenter> getPresenterClass();
+
+    Map<String, ActionRendererDefinition> getActionRenderers();
 }

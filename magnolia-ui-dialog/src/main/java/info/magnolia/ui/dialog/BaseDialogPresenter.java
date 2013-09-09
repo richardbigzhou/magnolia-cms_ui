@@ -37,10 +37,10 @@ import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutAction.ModifierKey;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.dialog.actionpresenter.ActionParameterProvider;
-import info.magnolia.ui.dialog.actionpresenter.ActionPresenter;
-import info.magnolia.ui.dialog.actionpresenter.DialogActionPresenter;
-import info.magnolia.ui.dialog.actionpresenter.view.DialogActionView;
+import info.magnolia.ui.dialog.actionarea.ActionAreaPresenter;
+import info.magnolia.ui.dialog.actionarea.ActionParameterProvider;
+import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
+import info.magnolia.ui.dialog.actionarea.view.EditorActionView;
 import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
@@ -55,7 +55,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionParameterProv
 
     protected ComponentProvider componentProvider;
 
-    private DialogActionPresenter dialogActionPresenter;
+    private EditorActionAreaPresenter editorActionAreaPresenter;
 
     @Inject
     public BaseDialogPresenter(ComponentProvider componentProvider) {
@@ -68,8 +68,8 @@ public class BaseDialogPresenter implements DialogPresenter, ActionParameterProv
     }
 
     @Override
-    public ActionPresenter getActionPresenter() {
-        return dialogActionPresenter;
+    public ActionAreaPresenter getActionPresenter() {
+        return editorActionAreaPresenter;
     }
 
     @Override
@@ -79,13 +79,13 @@ public class BaseDialogPresenter implements DialogPresenter, ActionParameterProv
 
     @Override
     public void addShortcut(final String actionName, final int keyCode, final int... modifiers) {
-        view.addShortcut(this.dialogActionPresenter.bindShortcut(actionName, keyCode, modifiers));
+        view.addShortcut(this.editorActionAreaPresenter.bindShortcut(actionName, keyCode, modifiers));
     }
 
     public DialogView start(BaseDialogDefinition definition, UiContext uiContext) {
         this.view = initView();
-        this.dialogActionPresenter = componentProvider.getComponent(definition.getActionPresenter().getPresenterClass());
-        DialogActionView dialogActionView = dialogActionPresenter.start(definition.getActions().values(), definition.getActionPresenter(), this, uiContext);
+        this.editorActionAreaPresenter = componentProvider.getComponent(definition.getActionArea().getPresenterClass());
+        EditorActionView editorActionView = editorActionAreaPresenter.start(definition.getActions().values(), definition.getActionArea(), this, uiContext);
 
         if (definition.getActions().containsKey(BaseDialog.COMMIT_ACTION_NAME)) {
              addShortcut(BaseDialog.COMMIT_ACTION_NAME, KeyCode.S, ModifierKey.CTRL);
@@ -95,7 +95,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionParameterProv
             addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.ESCAPE);
             addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.C, ModifierKey.CTRL);
         }
-        this.view.setActionView(dialogActionView);
+        this.view.setActionView(editorActionView);
         return this.view;
     }
 

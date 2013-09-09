@@ -35,7 +35,7 @@ package info.magnolia.ui.dialog.definition;
 
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.dialog.DialogPresenter;
-import info.magnolia.ui.dialog.actionpresenter.definition.EditorActionPresenterDefinition;
+import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
 
 import java.util.Map;
 
@@ -56,5 +56,5 @@ public interface BaseDialogDefinition {
 
     Class<? extends DialogPresenter> getPresenterClass();
 
-    EditorActionPresenterDefinition getActionPresenter();
+    EditorActionAreaDefinition getActionArea();
 }

@@ -31,20 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.actionpresenter;
+package info.magnolia.ui.dialog.actionarea;
 
 import com.vaadin.event.ShortcutListener;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.dialog.actionpresenter.definition.EditorActionPresenterDefinition;
+import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
 
 /**
  * Lays out and manages execution of action set.
  */
-public interface ActionPresenter {
+public interface ActionAreaPresenter {
 
-    View start(Iterable<ActionDefinition> actions, EditorActionPresenterDefinition definition, ActionParameterProvider parameterProvider, UiContext uiContext);
+    View start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, ActionParameterProvider parameterProvider, UiContext uiContext);
 
     ShortcutListener bindShortcut(String actionName, int keyCode, int... modifiers);
 }

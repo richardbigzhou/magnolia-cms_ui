@@ -31,21 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.actionpresenter.definition;
+package info.magnolia.ui.dialog.actionarea.definition;
 
-import info.magnolia.ui.dialog.actionpresenter.DialogActionPresenter;
-import info.magnolia.ui.dialog.definition.SecondaryActionDefinition;
+import info.magnolia.ui.dialog.actionarea.ActionAreaPresenter;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Extension of {@link ActionPresenterDefinition} used for dialogs and detail sub-apps.
+ * Implementation of {@link ActionAreaDefinition}.
  */
-public interface EditorActionPresenterDefinition extends ActionPresenterDefinition {
+public class ConfiguredActionAreaDefinition implements ActionAreaDefinition {
 
-    List<SecondaryActionDefinition> getSecondaryActions();
+    private Map<String, ActionRendererDefinition> actionRenderers = new HashMap<String, ActionRendererDefinition>();
 
-    @Override
-    Class<? extends DialogActionPresenter> getPresenterClass();
+    private Class<? extends ActionAreaPresenter> presenterClass;
 
+    public Map<String, ActionRendererDefinition> getActionRenderers() {
+        return actionRenderers;
+    }
+
+    public void setActionRenderers(Map<String, ActionRendererDefinition> actionRenderers) {
+        this.actionRenderers = actionRenderers;
+    }
+
+    public void setPresenterClass(Class<? extends ActionAreaPresenter> presenterClass) {
+        this.presenterClass = presenterClass;
+    }
+
+    public Class<? extends ActionAreaPresenter> getPresenterClass() {
+        return presenterClass;
+    }
 }

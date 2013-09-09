@@ -34,7 +34,7 @@
 package info.magnolia.ui.dialog.definition;
 
 import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.dialog.actionpresenter.definition.EditorActionPresenterDefinition;
+import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.form.definition.FormDefinition;
 
@@ -54,5 +54,5 @@ public interface FormDialogDefinition extends BaseDialogDefinition {
     Class<? extends FormDialogPresenter> getPresenterClass();
 
     @Override
-    EditorActionPresenterDefinition getActionPresenter();
+    EditorActionAreaDefinition getActionArea();
 }

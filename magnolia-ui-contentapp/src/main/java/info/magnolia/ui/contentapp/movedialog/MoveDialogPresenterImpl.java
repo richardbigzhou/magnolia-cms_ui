@@ -54,7 +54,7 @@ import info.magnolia.ui.contentapp.movedialog.predicate.MovePossibilityPredicate
 import info.magnolia.ui.dialog.BaseDialogPresenter;
 import info.magnolia.ui.dialog.DialogCloseHandler;
 import info.magnolia.ui.dialog.DialogView;
-import info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredEditorActionPresenterDefinition;
+import info.magnolia.ui.dialog.actionarea.definition.ConfiguredEditorActionAreaDefinition;
 import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredBaseDialogDefinition;
 import info.magnolia.ui.dialog.definition.SecondaryActionDefinition;
@@ -205,7 +205,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
             def.addAction(actionMap.get(location));
         }
 
-        ConfiguredEditorActionPresenterDefinition actionPresenterDefinition = new ConfiguredEditorActionPresenterDefinition();
+        ConfiguredEditorActionAreaDefinition actionPresenterDefinition = new ConfiguredEditorActionAreaDefinition();
         actionPresenterDefinition.setPresenterClass(MoveDialogActionPresenter.class);
 
         List<SecondaryActionDefinition> secondaryActions = new LinkedList<SecondaryActionDefinition>();
@@ -213,7 +213,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         secondaryActions.add(new SecondaryActionDefinition(MoveLocation.AFTER.name()));
         actionPresenterDefinition.setSecondaryActions(secondaryActions);
 
-        def.setActionPresenter(actionPresenterDefinition);
+        def.setActionArea(actionPresenterDefinition);
         return def;
     }
 

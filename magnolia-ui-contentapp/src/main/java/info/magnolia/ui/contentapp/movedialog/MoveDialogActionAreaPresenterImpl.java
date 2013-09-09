@@ -37,11 +37,11 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.contentapp.movedialog.view.MoveDialogActionView;
-import info.magnolia.ui.dialog.actionpresenter.ActionParameterProvider;
-import info.magnolia.ui.dialog.actionpresenter.DialogActionPresenterImpl;
-import info.magnolia.ui.dialog.actionpresenter.EditorActionExecutor;
-import info.magnolia.ui.dialog.actionpresenter.definition.EditorActionPresenterDefinition;
-import info.magnolia.ui.dialog.actionpresenter.view.DialogActionView;
+import info.magnolia.ui.dialog.actionarea.ActionParameterProvider;
+import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenterImpl;
+import info.magnolia.ui.dialog.actionarea.EditorActionExecutor;
+import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
+import info.magnolia.ui.dialog.actionarea.view.EditorActionView;
 import info.magnolia.ui.framework.action.MoveLocation;
 
 import javax.inject.Inject;
@@ -50,15 +50,15 @@ import java.util.Set;
 /**
  * Implementation of {@link MoveDialogActionPresenter}.
  */
-public class MoveDialogActionPresenterImpl extends DialogActionPresenterImpl implements MoveDialogActionPresenter {
+public class MoveDialogActionAreaPresenterImpl extends EditorActionAreaPresenterImpl implements MoveDialogActionPresenter {
 
     @Inject
-    public MoveDialogActionPresenterImpl(MoveDialogActionView view, ComponentProvider componentProvider, EditorActionExecutor actionExecutor) {
+    public MoveDialogActionAreaPresenterImpl(MoveDialogActionView view, ComponentProvider componentProvider, EditorActionExecutor actionExecutor) {
         super(view, componentProvider, actionExecutor);
     }
 
     @Override
-    public DialogActionView start(Iterable<ActionDefinition> actions, EditorActionPresenterDefinition definition, ActionParameterProvider parameterProvider, UiContext uiContext) {
+    public EditorActionView start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, ActionParameterProvider parameterProvider, UiContext uiContext) {
         return super.start(actions, definition, parameterProvider, uiContext);
     }
 

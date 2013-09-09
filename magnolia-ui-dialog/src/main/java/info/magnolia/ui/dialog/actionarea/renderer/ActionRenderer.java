@@ -1,8 +1,8 @@
-package info.magnolia.ui.dialog.actionpresenter.renderer;
+package info.magnolia.ui.dialog.actionarea.renderer;
 
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.dialog.actionpresenter.ActionListener;
+import info.magnolia.ui.dialog.actionarea.ActionListener;
 
 /**
  * ActionRenderer is capable of providing UI controls for actions other than a mere button.

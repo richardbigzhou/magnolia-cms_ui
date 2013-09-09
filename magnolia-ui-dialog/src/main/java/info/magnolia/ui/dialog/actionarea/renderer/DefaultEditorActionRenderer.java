@@ -31,40 +31,47 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog;
+package info.magnolia.ui.dialog.actionarea.renderer;
 
-import com.vaadin.event.ShortcutListener;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
+import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.dialog.actionarea.view.EditorActionView;
+import info.magnolia.ui.dialog.actionarea.ActionListener;
+
+import java.util.HashMap;
 
 /**
- * Interface for {@link info.magnolia.ui.vaadin.dialog.BaseDialog}.
+ * Default implementation of {@link ActionRenderer}. Simply wraps a button.
  */
-public interface DialogView extends View {
+public class DefaultEditorActionRenderer implements ActionRenderer {
 
-    void setDescriptionVisible(boolean isDescriptionVisible);
+    @Override
+    public View start(final ActionDefinition definition, final ActionListener listener) {
+        return new DefaultActionView(definition.getLabel(), definition.getName(), new ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                listener.onActionFired(definition.getName(), new HashMap<String, Object>());
+            }
+        });
+    }
 
-    void setDescription(String description);
+    private static class DefaultActionView implements View {
 
-    void setCaption(String caption);
+        private Button button;
 
-    void setContent(View content);
+        private DefaultActionView(String label, String name, ClickListener listener) {
+            this.button = new Button(label, listener);
+            this.button.addStyleName(name);
+            this.button.addStyleName("btn-dialog");
+        }
 
-    void close();
+        @Override
+        public Component asVaadinComponent() {
+            return button;
+        }
 
-    void setClosable(boolean b);
-
-    void addShortcut(ShortcutListener shortcut);
-
-    void removeShortcut(ShortcutListener shortcut);
-
-    void addDialogCloseHandler(DialogCloseHandler handler);
-
-    void removeDialogCloseHandler(DialogCloseHandler handler);
-
-    void setActionView(EditorActionView actionView);
-
-    View getContentView();
-
-    EditorActionView getActionView();
+    }
 }

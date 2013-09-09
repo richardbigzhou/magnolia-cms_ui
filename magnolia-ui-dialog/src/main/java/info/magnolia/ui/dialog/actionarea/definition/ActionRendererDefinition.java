@@ -31,23 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.actionpresenter.view;
+package info.magnolia.ui.dialog.actionarea.definition;
 
-import com.vaadin.ui.Component;
-import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.dialog.actionarea.renderer.ActionRenderer;
 
 /**
- * View interface used by {@link info.magnolia.ui.dialog.actionpresenter.DialogActionPresenter}.
+ * Definition of {@link ActionRenderer}.
  */
-public interface DialogActionView extends View {
+public interface ActionRendererDefinition {
 
-    void addPrimaryAction(View actionView, String actionName);
-
-    void addSecondaryAction(View actionView, String actionName);
-
-    void removeAllActions();
-
-    void setToolbarComponent(Component toolbar);
-
-    View getViewForAction(String actionName);
+    Class<? extends ActionRenderer> getPresenterClass();
 }

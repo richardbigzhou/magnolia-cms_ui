@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,12 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.actionpresenter.definition;
+package info.magnolia.ui.dialog.actionarea;
 
 /**
- * Describes a form action item.
+ * Provides parameters to {@link ActionAreaPresenter} for action execution.
  */
-public interface FormActionItemDefinition {
+public interface ActionParameterProvider {
 
-    String getName();
+    Object[] getActionParameters(String actionName);
 }

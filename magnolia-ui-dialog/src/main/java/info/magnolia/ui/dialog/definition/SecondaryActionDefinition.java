@@ -34,7 +34,7 @@
 package info.magnolia.ui.dialog.definition;
 
 /**
- * Simple definition interface that describes a secondary action for {@link info.magnolia.ui.dialog.actionpresenter.DialogActionPresenter}.
+ * Simple definition interface that describes a secondary action for {@link info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter}.
  */
 public class SecondaryActionDefinition {
 

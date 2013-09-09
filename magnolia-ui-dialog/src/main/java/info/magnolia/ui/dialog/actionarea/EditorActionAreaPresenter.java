@@ -31,37 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.actionpresenter;
+package info.magnolia.ui.dialog.actionarea;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.action.AbstractActionExecutor;
 import info.magnolia.ui.api.action.ActionDefinition;
-
-import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
+import info.magnolia.ui.dialog.actionarea.view.EditorActionView;
 
 /**
- * A common action executor that can be used by both dialogs and detail sub-apps.
- * Simply takes a list of action definitions that it can execute.
+ * Extends {@link ActionAreaPresenter} for case of dialogs.
  */
-public class EditorActionExecutor extends AbstractActionExecutor {
-
-    private Map<String, ActionDefinition> actionMap = new HashMap<String, ActionDefinition>();
-
-    @Inject
-    public EditorActionExecutor(ComponentProvider componentProvider) {
-        super(componentProvider);
-    }
-
-    public void setActions(Iterable<ActionDefinition> actions) {
-        for (ActionDefinition action : actions) {
-            actionMap.put(action.getName(), action);
-        }
-    }
-
+public interface EditorActionAreaPresenter extends ActionAreaPresenter {
     @Override
-    public ActionDefinition getActionDefinition(String actionName) {
-        return actionMap.get(actionName);
-    }
+    EditorActionView start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, ActionParameterProvider parameterProvider, UiContext uiContext);
 }

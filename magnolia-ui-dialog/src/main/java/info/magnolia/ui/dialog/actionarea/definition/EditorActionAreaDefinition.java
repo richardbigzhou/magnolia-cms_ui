@@ -31,14 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.actionpresenter;
+package info.magnolia.ui.dialog.actionarea.definition;
+
+import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
+import info.magnolia.ui.dialog.definition.SecondaryActionDefinition;
+
+import java.util.List;
 
 /**
- * Triggered by {@link info.magnolia.ui.api.view.View} produced by {@link info.magnolia.ui.dialog.actionpresenter.renderer.ActionRenderer}.
- * Typical example - a button click. Optionally it can also provide additional parameters
- * (mouse button type, drop-down selection etc).
+ * Extension of {@link ActionAreaDefinition} used for dialogs and detail sub-apps.
  */
-public interface ActionListener {
+public interface EditorActionAreaDefinition extends ActionAreaDefinition {
 
-    void onActionFired(String actionName, Object... actionContextParams);
+    List<SecondaryActionDefinition> getSecondaryActions();
+
+    @Override
+    Class<? extends EditorActionAreaPresenter> getPresenterClass();
+
 }

@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.contentapp.definition;
 
-import info.magnolia.ui.dialog.actionpresenter.definition.EditorActionPresenterDefinition;
-import info.magnolia.ui.dialog.actionpresenter.definition.FormActionItemDefinition;
+import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
+import info.magnolia.ui.dialog.actionarea.definition.FormActionItemDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 
@@ -59,5 +59,5 @@ public interface EditorDefinition {
 
     List<FormActionItemDefinition> getActions();
 
-    EditorActionPresenterDefinition getActionPresenter();
+    EditorActionAreaDefinition getActionPresenter();
 }

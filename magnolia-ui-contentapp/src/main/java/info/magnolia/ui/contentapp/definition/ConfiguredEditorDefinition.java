@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.contentapp.definition;
 
-import info.magnolia.ui.dialog.actionpresenter.definition.ConfiguredEditorActionPresenterDefinition;
-import info.magnolia.ui.dialog.actionpresenter.definition.EditorActionPresenterDefinition;
-import info.magnolia.ui.dialog.actionpresenter.definition.FormActionItemDefinition;
+import info.magnolia.ui.dialog.actionarea.definition.ConfiguredEditorActionAreaDefinition;
+import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
+import info.magnolia.ui.dialog.actionarea.definition.FormActionItemDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 
@@ -60,7 +60,7 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
 
     private NodeTypeDefinition nodeType;
 
-    private EditorActionPresenterDefinition actionPresenter = new ConfiguredEditorActionPresenterDefinition();
+    private EditorActionAreaDefinition actionPresenter = new ConfiguredEditorActionAreaDefinition();
 
     private List<FormActionItemDefinition> actions;
 
@@ -118,11 +118,11 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
         this.nodeType = nodeType;
     }
 
-    public EditorActionPresenterDefinition getActionPresenter() {
+    public EditorActionAreaDefinition getActionPresenter() {
         return actionPresenter;
     }
 
-    public void setActionPresenter(EditorActionPresenterDefinition actionPresenter) {
+    public void setActionPresenter(EditorActionAreaDefinition actionPresenter) {
         this.actionPresenter = actionPresenter;
     }
 
