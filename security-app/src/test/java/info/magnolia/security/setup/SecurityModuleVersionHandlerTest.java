@@ -222,8 +222,6 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         String applauncherManageGroupParentPath = "/modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps";
         String securityNodeName = "security";
         Node nodeCat = NodeUtil.createPath(session.getRootNode(), applauncherManageGroupParentPath + "/categories", NodeTypes.ContentNode.NAME);
-        Node nodeConf = NodeUtil.createPath(session.getRootNode(), applauncherManageGroupParentPath + "/configuration", NodeTypes.ContentNode.NAME);
-        Node nodeSec = NodeUtil.createPath(session.getRootNode(), applauncherManageGroupParentPath + "/"+securityNodeName, NodeTypes.ContentNode.NAME);
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(null);
