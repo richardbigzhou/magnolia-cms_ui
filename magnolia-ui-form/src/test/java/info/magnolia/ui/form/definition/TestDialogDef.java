@@ -29,37 +29,34 @@
  *
  * Any modifications to this file must keep this entire header
  * intact.
- *
+ * 
  */
-package info.magnolia.ui.form.field.definition;
+package info.magnolia.ui.form.definition;
 
-import info.magnolia.ui.form.definition.AbstractFormKeyGenerator;
-import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.form.definition.TabDefinition;
+import info.magnolia.i18n.I18nAble;
 
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
+@I18nAble
+public class TestDialogDef {
+    private String id;
+    private FormDefinition form;
 
-/**
- * An {@link I18nKeyGenerator} for {@link FieldDefinition}.
- */
-public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldDefinition> {
-    @Override
-    protected void keysFor(List<String> list, FieldDefinition field, AnnotatedElement el) {
-        final TabDefinition tab = getParentViaCast(field);
-        final String tabName = tab.getName();
-        final FormDefinition formDef = getParentViaCast(tab);
-        final String dialogID = getParentId(formDef);
+    public TestDialogDef(String id) {
+        this.id = id;
+    }
 
-        final String fieldName = field.getName();
-        final String property = fieldOrGetterName(el);
-        // <dialogId>.<tabName>.<fieldName>.<property>
-        // <dialogId>.<tabName>.<fieldName> (in case of property==label)
-        addKey(list, dialogID, tabName, fieldName, property);
-        // <dialogId>.<fieldName>.<property>
-        // <dialogId>.<fieldName> (in case property==label)
-        addKey(list, dialogID, fieldName, property);
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public FormDefinition getForm() {
+        return form;
+    }
+
+    public void setForm(FormDefinition form) {
+        this.form = form;
     }
 }

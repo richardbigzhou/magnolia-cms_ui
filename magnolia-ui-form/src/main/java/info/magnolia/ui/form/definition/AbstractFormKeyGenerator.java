@@ -49,8 +49,8 @@ public abstract class AbstractFormKeyGenerator<T> extends AbstractI18nKeyGenerat
         final Object dialogDef = getParentViaCast(formDef);
         try {
             final Method getId = dialogDef.getClass().getMethod("getId");
-            // replace : with . in DialogID - see info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager#createId
-            return ((String) getId.invoke(dialogDef)).replace(':', '.');
+            // replace : and / with . in DialogID - see info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager#createId
+            return ((String) getId.invoke(dialogDef)).replace(':', '.').replace('/', '.');
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e); // TODO MGNLUI-2031
         } catch (InvocationTargetException e) {
