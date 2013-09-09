@@ -44,6 +44,7 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
+import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
@@ -81,6 +82,10 @@ public class ActivationAction extends AbstractCommandAction<ActivationActionDefi
     protected Map<String, Object> buildParams(final Item jcrItem) {
         Map<String, Object> params = super.buildParams(jcrItem);
         params.put(Context.ATTRIBUTE_RECURSIVE, getDefinition().isRecursive());
+
+        if (StringUtils.isNotBlank(getDefinition().getMessageView())) {
+            params.put(Message.MESSAGE_VIEW, getDefinition().getMessageView());
+        }
         return params;
     }
 
@@ -119,6 +124,6 @@ public class ActivationAction extends AbstractCommandAction<ActivationActionDefi
     }
 
     private boolean isWorkflowInstalled() {
-        return moduleRegistry.isModuleRegistered("workflow");
+        return moduleRegistry.isModuleRegistered("workflow") && "workflow".equals(getDefinition().getCatalog());
     }
 }

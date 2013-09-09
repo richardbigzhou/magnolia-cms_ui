@@ -35,22 +35,19 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.i18n.I18NAwareProperty;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.form.AbstractFormItem;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
+import info.magnolia.ui.form.field.transformer.TransformedProperty;
+import info.magnolia.ui.form.field.transformer.Transformer;
+import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
 import info.magnolia.ui.form.validator.factory.FieldValidatorFactory;
 import info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Locale;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -87,6 +84,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         this.item = relatedFieldItem;
     }
 
+
     @Override
     public void setFieldValidatorFactoryFactory(FieldValidatorFactoryFactory fieldValidatorFactoryFactory) {
         this.fieldValidatorFactoryFactory = fieldValidatorFactoryFactory;
@@ -103,7 +101,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
             // Create the Vaadin field
             this.field = createFieldComponent();
 
-            Property<?> property = getOrCreateProperty();
+            Property<?> property = initializeProperty();
 
             // MGNLUI-1855 we need to assign converter for properties with type Long because otherwise Vaadin assigns incompatible StringToNumberConverter.
             if (Long.class.equals(property.getType()) && field instanceof AbstractTextField) {
@@ -145,7 +143,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
 
     @Override
     public View getView() {
-        Property<?> property = getOrCreateProperty();
+        Property<?> property = initializeProperty();
 
         final CssLayout fieldView = new CssLayout();
         fieldView.setStyleName("field-view");
@@ -173,63 +171,59 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
     }
 
     /**
-     * Get a property from the current Item.
-     * <p>
-     *     if the field is i18n-aware - create a special property that would delegate
-     *     the values to the proper localized properties. Otherwise - follow the default pattern.
-     * </p>
-     *
-     * <p>
-     * If the property already exists, return this property.
-     * If the property does not exist, create a new property based on the defined type, default value, and saveInfo.
-     * </p>
+     * Initialize the property used as field's Datasource.<br>
+     * If no {@link Transformer} is configure to the field definition, use the default {@link BasicTransformer} <br>
      */
-    protected Property<?> getOrCreateProperty() {
-        String propertyName = definition.getName();
-        Class<?> fieldType = getFieldType(definition);
-        String defaultValue = definition.getDefaultValue();
-        if (definition.isI18n()) {
-            I18NAwareProperty<String> property = componentProvider.newInstance(I18NAwareProperty.class, propertyName, fieldType, item);
-            property.setDefaultValue(defaultValue);
-            return property;
 
-        } else {
-            Property<?> property = item.getItemProperty(propertyName);
-            if (property == null) {
-                property = DefaultPropertyUtil.newDefaultProperty(fieldType.getSimpleName(), defaultValue);
-                item.addItemProperty(propertyName, property);
-            }
-            return property;
+    @SuppressWarnings("unchecked")
+    private Property<?> initializeProperty() {
+        Class<? extends Transformer<?>> transformerClass = definition.getTransformerClass();
+
+        if (transformerClass == null) {
+            // TODO explain why down cast
+            transformerClass = (Class<? extends Transformer<?>>) (Object) BasicTransformer.class;
         }
+        Transformer<?> transformer = initializeTransformer(transformerClass);
+
+        return new TransformedProperty(transformer, getFieldType());
     }
 
     /**
-     * Return the Class field Type if define in the configuration.
-     * If the Type is not defined in the configuration or not of a supported type, throws
-     * a {@link IllegalArgumentException}:
+     * Exposed method used by field's factory to initialize the property {@link Transformer}.<br>
+     * This allows to add additional constructor parameter if needed.
      */
-    protected Class<?> getFieldType(FieldDefinition fieldDefinition) {
-        if (StringUtils.isNotBlank(fieldDefinition.getType())) {
-            return DefaultPropertyUtil.getFieldTypeClass(fieldDefinition.getType());
-        }
-        return getDefaultFieldType(fieldDefinition);
+    protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
+        return this.componentProvider.newInstance(transformerClass, item, definition, getFieldType());
     }
 
-    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+    /**
+     * Define the field type Class.<br>
+     * Return the value of the overriding method {@link AbstractFieldFactory#getDefaultFieldType()}.<br>
+     * If this method is not override (return null), check the value defined in configuration ('type' property).<br>
+     * If no type is defined in configuration return String.
+     */
+    protected Class<?> getFieldType() {
+        if (getDefaultFieldType() != null) {
+            return getDefaultFieldType();
+        }
+        return getDefinitionType();
+    }
+
+    /**
+     * @return Class Type defined into the field definition. If null, return String.
+     */
+    protected Class<?> getDefinitionType() {
+        if (StringUtils.isNotBlank(definition.getType())) {
+            return DefaultPropertyUtil.getFieldTypeClass(definition.getType());
+        }
         return String.class;
     }
 
     /**
-     * Returns the field related node.
-     * If field is of type JcrNewNodeAdapter then return the parent node.
-     * Else get the node associated with the Vaadin item.
+     * Exposed method used by field's factory in order to define a default Field Type (decoupled from the definition).
      */
-    protected Node getRelatedNode(Item fieldRelatedItem) throws RepositoryException {
-        return (fieldRelatedItem instanceof JcrNewNodeAdapter) ? ((JcrNewNodeAdapter) fieldRelatedItem).getJcrItem() : ((JcrNodeAdapter) fieldRelatedItem).applyChanges();
-    }
-
-    public String getPropertyName() {
-        return definition.getName();
+    protected Class<?> getDefaultFieldType() {
+        return null;
     }
 
     @Override
@@ -291,4 +285,5 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
             return Long.class;
         }
     }
+
 }

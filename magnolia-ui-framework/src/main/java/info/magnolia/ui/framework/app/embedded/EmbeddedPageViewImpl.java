@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.framework.app.embedded;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.api.app.AppContext;
 
 import org.slf4j.Logger;
@@ -55,26 +54,26 @@ public class EmbeddedPageViewImpl implements EmbeddedPageView {
     private final CssLayout layout = new CssLayout();
 
     @Inject
-    public EmbeddedPageViewImpl(AppContext appContext) {
+    public EmbeddedPageViewImpl() {
         layout.setSizeFull();
+    }
 
-        EmbeddedPageSubAppDescriptor subAppDescriptor = ((EmbeddedPageSubAppDescriptor) appContext.getDefaultSubAppDescriptor());
-        boolean isInternalPage = !subAppDescriptor.getUrl().startsWith("http");
-        String url = subAppDescriptor.getUrl();
 
-        if(isInternalPage) {
-            url = url.startsWith("/") ? MgnlContext.getContextPath() + url : MgnlContext.getContextPath() + "/" + url;
-        }
-
-        log.debug("Opening page in an iframe with url [{}]...", url);
-        final BrowserFrame page = new BrowserFrame(null, new ExternalResource(url));
-        page.setSizeFull();
-
-        layout.addComponent(page);
+    @Deprecated
+    public EmbeddedPageViewImpl(AppContext appContext) {
+        this();
     }
 
     @Override
     public Component asVaadinComponent() {
         return layout;
+    }
+
+    @Override
+    public void setUrl(String url) {
+        final BrowserFrame page = new BrowserFrame(null, new ExternalResource(url));
+        page.setSizeFull();
+        layout.removeAllComponents();
+        layout.addComponent(page);
     }
 }

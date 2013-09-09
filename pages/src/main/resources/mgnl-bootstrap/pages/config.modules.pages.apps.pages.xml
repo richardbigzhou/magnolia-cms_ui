@@ -616,7 +616,7 @@
             <sv:value>6e017f85-645b-466c-ba9b-1b29efe1bdb1</sv:value>
           </sv:property>
           <sv:property sv:name="catalog" sv:type="String">
-            <sv:value>website</sv:value>
+            <sv:value>versioned</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
             <sv:value>info.magnolia.ui.framework.action.ActivationActionDefinition</sv:value>
@@ -729,7 +729,7 @@
             <sv:value>79d72e5b-674c-42b2-be92-18d88f7f290d</sv:value>
           </sv:property>
           <sv:property sv:name="catalog" sv:type="String">
-            <sv:value>website</sv:value>
+            <sv:value>versioned</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
             <sv:value>info.magnolia.ui.framework.action.ActivationActionDefinition</sv:value>
@@ -848,7 +848,7 @@
             <sv:value>53c23795-0233-4564-b997-61b3c5a0c81d</sv:value>
           </sv:property>
           <sv:property sv:name="catalog" sv:type="String">
-            <sv:value>website</sv:value>
+            <sv:value>versioned</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
             <sv:value>info.magnolia.ui.framework.action.DeactivationActionDefinition</sv:value>
@@ -1028,7 +1028,7 @@
             <sv:value>ccd73d9c-aedc-4ca9-a80e-52015587ae5e</sv:value>
           </sv:property>
           <sv:property sv:name="catalog" sv:type="String">
-            <sv:value>website</sv:value>
+            <sv:value>versioned</sv:value>
           </sv:property>
           <sv:property sv:name="class" sv:type="String">
             <sv:value>info.magnolia.ui.framework.action.ActivationActionDefinition</sv:value>

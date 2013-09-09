@@ -33,11 +33,13 @@
  */
 package info.magnolia.ui.workbench.search;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
+import info.magnolia.ui.workbench.container.OrderBy;
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
@@ -137,7 +139,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertEquals(" where (([jcr:primaryType] = 'mgnl:content') and (localname() LIKE 'foo%' or t.[foo] IS NOT NULL or contains(t.[name], 'foo') or contains(t.[shortname], 'foo')) )", stmt);
+        assertEquals(" where (([jcr:primaryType] = 'mgnl:content') and (localname() LIKE 'foo%' or t.['foo'] IS NOT NULL or contains(t.*, 'foo')) )", stmt);
     }
 
     @Test
@@ -149,7 +151,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertContains("contains(t.[name], 'foo OR ''baz bar''')", stmt);
+        assertContains("contains(t.*, 'foo OR ''baz bar''')", stmt);
     }
 
     @Test
@@ -174,7 +176,187 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertContains("localname() LIKE '_x002a_foo%' or t.[_x002a_foo] IS NOT NULL", stmt);
+        assertContains("localname() LIKE '%2Afoo%' or t.['%2Afoo'] IS NOT NULL", stmt);
+    }
+
+    @Test
+    public void testDigitsAreNotEncoded() throws Exception {
+        // GIVEN
+        jcrContainer.setFullTextExpression("1");
+
+        // WHEN
+        String stmt = jcrContainer.getQueryWhereClause();
+
+        // THEN
+        assertContains("localname() LIKE '1%' or t.['1'] IS NOT NULL", stmt);
+    }
+
+    @Test
+    public void testFolderNodeTypeIsIncludedInSearch() throws Exception {
+        // GIVEN
+        ConfiguredNodeTypeDefinition nt = new ConfiguredNodeTypeDefinition();
+        nt.setName("mgnl:folder");
+        configuredWorkbench.addNodeType(nt);
+
+        // inclusion of mgnl:folder happens at construction time
+        SearchJcrContainer jcrContainer = new SearchJcrContainer(configuredWorkbench);
+
+        // WHEN
+        String stmt = jcrContainer.getQueryWhereClause();
+
+        // THEN
+        assertContains("or [jcr:primaryType] = 'mgnl:folder'", stmt);
+    }
+
+    @Test
+    public void testSearchResultsAreSortedByJcrScoreDesc() throws Exception {
+
+        // WHEN
+        String jcrOrderByFunction = jcrContainer.getJcrNameOrderByFunction();
+        OrderBy orderBy = jcrContainer.getDefaultOrderBy(ModelConstants.JCR_NAME);
+
+        // THEN
+        assertEquals(SearchJcrContainer.JCR_SCORE_FUNCTION, jcrOrderByFunction);
+        assertFalse(orderBy.isAscending());
+    }
+
+    @Test
+    public void testEscapeIllegalJcrFullTextSearchChars() throws Exception {
+        // GIVEN
+        String simpleTerm = "-";
+
+        // WHEN
+        String escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+
+        // THEN
+        assertEquals("\\-", escaped);
+
+        // GIVEN
+        simpleTerm = "-abc";
+
+        // WHEN
+        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+
+        // THEN
+        assertEquals(simpleTerm, escaped);
+
+        // GIVEN
+        simpleTerm = "abc-";
+
+        // WHEN
+        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+
+        // THEN
+
+        assertEquals(simpleTerm, escaped);
+        // GIVEN
+        simpleTerm = "ab-c";
+
+        // WHEN
+        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+
+        // THEN
+        assertEquals(simpleTerm, escaped);
+
+        // GIVEN
+        simpleTerm = "+";
+
+        // WHEN
+        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+
+        // THEN
+        assertEquals("\\+", escaped);
+
+        // GIVEN
+        simpleTerm = "+abc";
+
+        // WHEN
+        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+
+        // THEN
+        assertEquals(simpleTerm, escaped);
+
+        // GIVEN
+        simpleTerm = "abc+";
+
+        // WHEN
+        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+
+        // THEN
+        assertEquals(simpleTerm, escaped);
+
+        // GIVEN
+        simpleTerm = "ab+c";
+
+        // WHEN
+        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+
+        // THEN
+        assertEquals(simpleTerm, escaped);
+
+        // GIVEN
+        simpleTerm = "\\";
+
+        // WHEN
+        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+
+        // THEN
+        assertEquals("\\\\", escaped);
+
+        // GIVEN
+        simpleTerm = "\\abc";
+
+        // WHEN
+        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+
+        // THEN
+        assertEquals(simpleTerm, escaped);
+
+        // GIVEN
+        simpleTerm = "abc\\";
+
+        // WHEN
+        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+
+        // THEN
+        assertEquals(simpleTerm, escaped);
+
+        // GIVEN
+        simpleTerm = "ab\\c";
+
+        // WHEN
+        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+
+        // THEN
+        assertEquals(simpleTerm, escaped);
+
+        // GIVEN
+        simpleTerm = ")ab)c)";
+
+        // WHEN
+        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+
+        // THEN
+        assertEquals("\\)ab\\)c\\)", escaped);
+
+        // GIVEN
+        simpleTerm = "\"foo bar\"";
+
+        // WHEN
+        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+
+        // THEN
+        assertEquals(simpleTerm, escaped);
+
+        // GIVEN
+        simpleTerm = "\"foo \" bar\"";
+
+        // WHEN
+        escaped = jcrContainer.escapeIllegalFullTextSearchChars(simpleTerm);
+
+        // THEN
+        assertEquals("\"foo \\\" bar\"", escaped);
+
     }
 
     protected void assertContains(final String searchString, final String string) {

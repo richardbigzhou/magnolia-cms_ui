@@ -33,7 +33,7 @@
  */
 package info.magnolia.pages.app.editor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
@@ -271,7 +271,7 @@ public class PagesEditorSubAppTest {
     }
 
     @Test
-    public void testPageEditRemoveMgnlPreviewRequestParameter() {
+    public void testPageEditSetsMgnlPreviewToFalse() {
         // GIVEN
         PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport);
         editor.start(new PagesLocation("/:view"));
@@ -281,6 +281,20 @@ public class PagesEditorSubAppTest {
         editor.locationChanged(new PagesLocation("/:edit"));
 
         // THEN
-        assertFalse(editor.getParameters().getUrl().contains("mgnlPreview=true"));
+        assertTrue(editor.getParameters().getUrl().contains("mgnlPreview=false"));
+    }
+
+    @Test
+    public void testPagePreviewSetsMgnlPreviewToTrue() {
+        // GIVEN
+        PagesEditorSubApp editor = new PagesEditorSubApp(actionExecutor, subAppContext, view, adminCentralEventBus, eventBus, pageEditorPresenter, actionbarPresenter, pageBarView, i18NAuthoringSupport, i18nContentSupport);
+        editor.start(new PagesLocation("/:edit"));
+        assertTrue(editor.getParameters().getUrl().contains("mgnlPreview=false"));
+
+        // WHEN
+        editor.locationChanged(new PagesLocation("/:view"));
+
+        // THEN
+        assertTrue(editor.getParameters().getUrl().contains("mgnlPreview=true"));
     }
 }

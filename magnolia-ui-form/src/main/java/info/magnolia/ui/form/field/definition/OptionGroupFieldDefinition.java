@@ -33,12 +33,23 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import info.magnolia.ui.form.field.transformer.Transformer;
+import info.magnolia.ui.form.field.transformer.basic.OptionGroupTransformer;
+
 /**
  * Field definition for radio and check box select field.
  */
 public class OptionGroupFieldDefinition extends SelectFieldDefinition {
 
     private boolean multiselect = false;
+
+    /**
+     * Option group need a specific {@link PropertyHandler} in order to handle the conversion between Set and List.
+     */
+    @SuppressWarnings("unchecked")
+    public OptionGroupFieldDefinition() {
+        setTransformerClass((Class<? extends Transformer<?>>) (Object) OptionGroupTransformer.class);
+    }
 
     public boolean isMultiselect() {
         return multiselect;

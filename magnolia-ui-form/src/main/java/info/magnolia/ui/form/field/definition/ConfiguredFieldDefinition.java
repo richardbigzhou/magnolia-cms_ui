@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
 
 import java.util.ArrayList;
@@ -66,6 +67,8 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
     private String styleName;
 
     private List<FieldValidatorDefinition> validators = new ArrayList<FieldValidatorDefinition>();
+
+    private Class<? extends Transformer<?>> transformerClass;
 
     @Override
     public String getName() {
@@ -177,6 +180,15 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
 
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
+    }
+
+    @Override
+    public Class<? extends Transformer<?>> getTransformerClass() {
+        return transformerClass;
+    }
+
+    public void setTransformerClass(Class<? extends Transformer<?>> transformerClass) {
+        this.transformerClass = transformerClass;
     }
 
 }

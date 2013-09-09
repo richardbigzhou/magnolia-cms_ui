@@ -35,11 +35,10 @@ package info.magnolia.ui.framework;
 
 import info.magnolia.module.ModuleLifecycle;
 import info.magnolia.module.ModuleLifecycleContext;
+import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutDefinition;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptorManager;
 import info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager;
 import info.magnolia.ui.form.fieldtype.registry.ConfiguredFieldTypeDefinitionManager;
-import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
-import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutDefinition;
 
 import javax.inject.Inject;
 
@@ -49,14 +48,12 @@ import javax.inject.Inject;
 public class UiFrameworkModule implements ModuleLifecycle {
 
     private AppLauncherLayoutDefinition appLauncherLayout;
-    private AppLauncherLayoutManager appLauncherLayoutManager;
     private ConfiguredAppDescriptorManager configuredAppDescriptorManager;
     private ConfiguredDialogDefinitionManager configuredDialogDefinitionManager;
     private ConfiguredFieldTypeDefinitionManager configuredFieldTypeDefinitionManager;
 
     @Inject
-    public UiFrameworkModule(AppLauncherLayoutManager appLauncherLayoutManager, ConfiguredAppDescriptorManager configuredAppDescriptorManager, ConfiguredDialogDefinitionManager configuredDialogDefinitionManager, ConfiguredFieldTypeDefinitionManager configuredFieldTypeDefinitionManager) {
-        this.appLauncherLayoutManager = appLauncherLayoutManager;
+    public UiFrameworkModule(ConfiguredAppDescriptorManager configuredAppDescriptorManager, ConfiguredDialogDefinitionManager configuredDialogDefinitionManager, ConfiguredFieldTypeDefinitionManager configuredFieldTypeDefinitionManager) {
         this.configuredAppDescriptorManager = configuredAppDescriptorManager;
         this.configuredDialogDefinitionManager = configuredDialogDefinitionManager;
         this.configuredFieldTypeDefinitionManager = configuredFieldTypeDefinitionManager;
@@ -68,22 +65,10 @@ public class UiFrameworkModule implements ModuleLifecycle {
             configuredAppDescriptorManager.start();
             configuredDialogDefinitionManager.start();
             configuredFieldTypeDefinitionManager.start();
-            appLauncherLayoutManager.setLayout(getAppLauncherLayout());
-        }
-        if (context.getPhase() == ModuleLifecycleContext.PHASE_MODULE_RESTART) {
-            appLauncherLayoutManager.setLayout(getAppLauncherLayout());
         }
     }
 
     @Override
     public void stop(ModuleLifecycleContext context) {
-    }
-
-    public AppLauncherLayoutDefinition getAppLauncherLayout() {
-        return appLauncherLayout;
-    }
-
-    public void setAppLauncherLayout(AppLauncherLayoutDefinition appLauncherLayout) {
-        this.appLauncherLayout = appLauncherLayout;
     }
 }

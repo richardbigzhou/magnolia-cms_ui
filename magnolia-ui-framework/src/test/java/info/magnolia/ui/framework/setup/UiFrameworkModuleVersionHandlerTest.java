@@ -49,6 +49,8 @@ import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
 import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
+import info.magnolia.ui.form.field.transformer.multi.MultiValueJSONTransformer;
+import info.magnolia.ui.form.field.transformer.multi.MultiValueSubChildrenNodeTransformer;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -155,4 +157,64 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         assertTrue(switchableField.hasProperty("factoryClass"));
         assertEquals(SwitchableFieldFactory.class.getName(), switchableField.getProperty("factoryClass").getString());
     }
+
+    @Test
+    public void testUpdateTo5_1ChangeSaveModeTypeDefaultValue() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        // This one should not be handled as his path is not part of a fields definition
+        Node noFields = framework.addNode("saveModeType", NodeTypes.ContentNode.NAME);
+        noFields.setProperty("multiValueHandlerClass", "info.magnolia.ui.form.field.property.MultiValuesHandler");
+        // This one should be handled
+        Node fields = framework.addNode("fields", NodeTypes.ContentNode.NAME);
+        Node saveModeType = fields.addNode("saveModeType", NodeTypes.ContentNode.NAME);
+        saveModeType.setProperty("multiValueHandlerClass", "info.magnolia.ui.form.field.property.MultiValuesHandler");
+        framework.getSession().save();
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
+
+        // THEN
+        // Basic Code field
+        assertTrue(framework.hasNode("saveModeType"));
+        assertTrue(framework.hasNode("fields"));
+        assertFalse(framework.hasNode("fields/saveModeType"));
+        assertFalse(framework.hasNode("fields/propertyBuilder"));
+    }
+
+    @Test
+    public void testUpdateTo5_1ChangeSaveModeTypeSubNodesValueHandler() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        Node fields = framework.addNode("fields", NodeTypes.ContentNode.NAME);
+        Node saveModeType = fields.addNode("saveModeType", NodeTypes.ContentNode.NAME);
+        saveModeType.setProperty("multiValueHandlerClass", "info.magnolia.ui.form.field.property.SubNodesValueHandler");
+        framework.getSession().save();
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
+
+        // THEN
+        assertTrue(framework.hasNode("fields"));
+        assertFalse(framework.hasNode("fields/saveModeType"));
+        assertTrue(framework.hasProperty("fields/transformerClass"));
+        assertEquals(MultiValueSubChildrenNodeTransformer.class.getName(), framework.getProperty("fields/transformerClass").getString());
+    }
+
+    @Test
+    public void testUpdateTo5_1ChangeSaveModeTypeCommaSeparatedValueHandler() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        Node fields = framework.addNode("fields", NodeTypes.ContentNode.NAME);
+        Node saveModeType = fields.addNode("saveModeType", NodeTypes.ContentNode.NAME);
+        saveModeType.setProperty("multiValueHandlerClass", "info.magnolia.ui.form.field.property.CommaSeparatedValueHandler");
+        framework.getSession().save();
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
+
+        // THEN
+        assertTrue(framework.hasNode("fields"));
+        assertFalse(framework.hasNode("fields/saveModeType"));
+        assertTrue(framework.hasProperty("fields/transformerClass"));
+        assertEquals(MultiValueJSONTransformer.class.getName(), framework.getProperty("fields/transformerClass").getString());
+    }
+
 }

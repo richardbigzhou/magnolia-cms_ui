@@ -307,7 +307,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
         String containerItemId1 = node1.getIdentifier();
-        boolean[] ascending = {true};
+        boolean[] ascending = { true };
         // WHEN
         jcrContainer.sort(Arrays.asList("name").toArray(), ascending);
 
@@ -322,7 +322,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         Node node2 = createNode(rootNode, "node2", NodeTypes.Content.NAME, "name", "name2");
         node1.getSession().save();
         String containerItemId2 = node2.getIdentifier();
-        boolean[] ascending = {false};
+        boolean[] ascending = { false };
 
         // WHEN
         jcrContainer.sort(Arrays.asList("name").toArray(), ascending);
@@ -348,7 +348,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         assertEquals(4, jcrContainer.getCurrentOffset());
 
         // WHEN
-        jcrContainer.sort(Arrays.asList("name").toArray(), new boolean[]{true});
+        jcrContainer.sort(Arrays.asList("name").toArray(), new boolean[] { true });
 
         // THEN
         assertEquals(0, jcrContainer.getCurrentOffset());
@@ -423,7 +423,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testConstructJCRQuerySortBySortableColumn() throws Exception {
         // GIVEN
-        jcrContainer.sort(new String[]{ModelConstants.JCR_NAME}, new boolean[]{true});
+        jcrContainer.sort(new String[] { ModelConstants.JCR_NAME }, new boolean[] { true });
 
         // WHEN
         final String result = jcrContainer.constructJCRQuery(true);
@@ -435,7 +435,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     @Test
     public void testConstructJCRQuerySortByNonSortableColumn() {
         // GIVEN
-        jcrContainer.sort(new String[]{colName2}, new boolean[]{true});
+        jcrContainer.sort(new String[] { colName2 }, new boolean[] { true });
 
         // WHEN
         final String result = jcrContainer.constructJCRQuery(true);
@@ -579,7 +579,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         createNode(rootNode, "QUX", NodeTypes.Content.NAME, "name", "qux");
         fooNode.getSession().save();
         String fooItemId = fooNode.getIdentifier();
-        boolean[] ascending = {true};
+        boolean[] ascending = { true };
         // WHEN
         jcrContainer.sort(Arrays.asList("name").toArray(), ascending);
 
@@ -605,6 +605,26 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
 
         // THEN
         assertEquals(getExpectedSelectStatementWithNodeTypesRestrictions(), query);
+    }
+
+    @Test
+    public void testGetQueryWhereClauseNodeTypesDoesNotIncludeMgnlFolder() throws Exception {
+        // GIVEN
+        ConfiguredNodeTypeDefinition fooDef = new ConfiguredNodeTypeDefinition();
+        fooDef.setName("mgnl:foo");
+        fooDef.setHideInList(true);
+
+        ConfiguredNodeTypeDefinition folderDef = new ConfiguredNodeTypeDefinition();
+        folderDef.setName("mgnl:folder");
+
+        workbenchDefinition.addNodeType(fooDef);
+        workbenchDefinition.addNodeType(folderDef);
+
+        // WHEN
+        String query = jcrContainer.constructJCRQuery(false);
+
+        // THEN
+        assertFalse(query.contains("mgnl:folder"));
     }
 
     @Test
@@ -726,6 +746,18 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
+    public void testOrderByJcrName() throws Exception {
+        // GIVEN
+        workbenchDefinition.setDefaultOrder(ModelConstants.JCR_NAME);
+
+        // WHEN
+        String query = jcrContainer.constructJCRQuery(true);
+
+        // THEN
+        assertTrue(query.contains("order by lower(name(t)) asc"));
+    }
+
+    @Test
     public void testExecuteQueryWithMixins() throws Exception {
         // GIVEN
         final String mixinNodeTypeName = "mgnl:mixin";
@@ -780,7 +812,7 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
      * Define the sorting criteria.
      */
     private void setSorter(String sortingPorperty, boolean ascending) {
-        boolean[] ascendingOrder = {ascending};
+        boolean[] ascendingOrder = { ascending };
         jcrContainer.sort(Arrays.asList(sortingPorperty).toArray(), ascendingOrder);
     }
 

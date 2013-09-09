@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -51,6 +52,7 @@ import com.vaadin.server.BootstrapListener;
 import com.vaadin.server.BootstrapPageResponse;
 import com.vaadin.server.SessionInitEvent;
 import com.vaadin.server.SessionInitListener;
+import com.vaadin.server.UIProvider;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinServletRequest;
 import com.vaadin.server.VaadinServletResponse;
@@ -76,6 +78,13 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
      */
     public static final String RESTART_APPLICATION_PARAM = "?restartApplication";
 
+    private UIProvider admincentralUiProvider;
+
+    @Inject
+    public AdmincentralVaadinServlet(UIProvider admincentralUiProvider) {
+        this.admincentralUiProvider = admincentralUiProvider;
+    }
+
     @Override
     protected void servletInitialized() throws ServletException {
         super.servletInitialized();
@@ -93,6 +102,13 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
                     public void modifyBootstrapFragment(BootstrapFragmentResponse response) {
                     }
                 });
+
+                // Set up and configure UIProvider for the admincentral
+                if (admincentralUiProvider != null) {
+                    event.getSession().addUIProvider(admincentralUiProvider);
+                } else {
+                    log.error("Could not inject AdmincentralUIProvider.");
+                }
             }
         });
     }
@@ -155,7 +171,7 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
             output.append("</div></div>");
 
             // prepend document head if this is the first vaadin request
-            output.insert(0, "<html><head><meta charset=\"UTF-8\"/><meta content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\" name=\"viewport\"/><title>Magnolia 5.0</title><link rel=\"stylesheet\" type=\"text/css\" href=\"./../VAADIN/themes/admincentral/styles.css\"/></head><body>");
+            output.insert(0, "<html><head><meta charset=\"UTF-8\"/><meta content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\" name=\"viewport\"/><title>Magnolia 5</title><link rel=\"stylesheet\" type=\"text/css\" href=\"./../VAADIN/themes/admincentral/styles.css\"/></head><body>");
             output.append("</body></html>");
 
             // make sure vaadin writes this output in the document rather than treat it as a UIDL response

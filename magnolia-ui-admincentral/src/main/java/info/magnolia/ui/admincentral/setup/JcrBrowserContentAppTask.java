@@ -46,7 +46,6 @@ import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
 
-
 /**
  * A task to create a JCR browser content app. The app configuration will be created under <code>/modules/ui-admincentral/apps</code>. An entry for the app will be also created in the app launcher layout under the specified app group.
  * The app group is assumed to be existing at the time of executing this task. The task relies on the existence of the <code>ui-admincentral</code> (part of Magnolia UI project) at its default location under <code>/modules/ui-admincentral</code> as it
@@ -133,6 +132,7 @@ public class JcrBrowserContentAppTask extends AbstractTask {
                 String name = mainNodeType.getName();
                 nodeType.setProperty("icon", StringUtils.defaultIfEmpty(icon, "icon-node-content"));
                 nodeType.setProperty("name", StringUtils.defaultIfEmpty(name, NodeTypes.ContentNode.NAME));
+                nodeType.setProperty("strict", false);
             }
         } catch (RepositoryException e) {
             throw new TaskExecutionException(e.getMessage());
@@ -177,7 +177,7 @@ public class JcrBrowserContentAppTask extends AbstractTask {
     }
 
     private void addAppToLauncherLayout(Session configJCRSession) throws RepositoryException {
-        Node configNode = configJCRSession.getNode("/modules/ui-framework/config");
+        Node configNode = configJCRSession.getNode("/modules/ui-admincentral/config");
         NodeUtil.createPath(configNode, "appLauncherLayout/groups/" + appGroup + "/apps/" + appName, NodeTypes.ContentNode.NAME);
     }
 

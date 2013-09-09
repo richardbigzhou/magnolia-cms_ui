@@ -36,7 +36,6 @@ package info.magnolia.ui.form.field.factory;
 import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.ItemChosenListener;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
@@ -224,10 +223,5 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
         public String path;
         @SuppressWarnings("unused")
         public String caption;
-    }
-
-    @Override
-    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
-        return String.class;
     }
 }

@@ -82,7 +82,7 @@ public class JcrNodeAdapterTypedPropertyTest {
         JcrNodeAdapter adapter = new JcrNodeAdapter(parentNode);
 
         // Create the property
-        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(null, value);
+        Property propertyInitial = DefaultPropertyUtil.newDefaultProperty(String.class, value);
         adapter.addItemProperty(id, propertyInitial);
 
         // WHEN

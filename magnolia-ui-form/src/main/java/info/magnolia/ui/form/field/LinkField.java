@@ -134,7 +134,7 @@ public class LinkField extends CustomField<String> {
             linkLayout.setComponentAlignment(selectButton, Alignment.MIDDLE_RIGHT);
         }
         selectButton.addClickListener(createButtonClickListener());
-
+        setButtonCaption(StringUtils.EMPTY);
         rootLayout.addComponent(linkLayout);
 
         // Register the content preview if it's define.
@@ -160,13 +160,12 @@ public class LinkField extends CustomField<String> {
     @Override
     public void setValue(String newValue) throws ReadOnlyException, ConversionException {
         textField.setValue(newValue);
-        updateComponents(newValue);
-        setButtonCaption(newValue);
     }
 
     /**
-     * Set text Field as read only if desired.
-     * In thsi case remove the add button.
+     * Update the Link component. <br>
+     * - Set text Field as read only if desired. In this case remove the add button.
+     * - If it is not read only. update the button label.
      */
     private void updateComponents(String currentValue) {
         if (!definition.isFieldEditable() && StringUtils.isNotBlank(currentValue)) {
@@ -174,6 +173,8 @@ public class LinkField extends CustomField<String> {
             if (linkLayout.getComponentIndex(selectButton) != -1) {
                 linkLayout.removeComponent(selectButton);
             }
+        } else {
+            setButtonCaption(currentValue);
         }
     }
 
@@ -188,9 +189,13 @@ public class LinkField extends CustomField<String> {
             textField.setConverter(converter);
         }
         textField.setPropertyDataSource(newDataSource);
-        String value = newDataSource.getValue() != null ? newDataSource.getValue().toString() : StringUtils.EMPTY;
-        updateComponents(value);
-        setButtonCaption(value);
+        textField.addValueChangeListener(new ValueChangeListener() {
+            @Override
+            public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
+                String value = event.getProperty().getValue() != null ? event.getProperty().getValue().toString() : StringUtils.EMPTY;
+                updateComponents(value);
+            }
+        });
 
         super.setPropertyDataSource(newDataSource);
     }

@@ -45,13 +45,14 @@ import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 import info.magnolia.ui.form.field.definition.DateFieldDefinition;
 import info.magnolia.ui.form.field.definition.HiddenFieldDefinition;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
-import info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition;
+import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
-import info.magnolia.ui.form.field.property.SubNodesValueHandler;
+import info.magnolia.ui.form.field.transformer.multi.MultiValueJSONTransformer;
+import info.magnolia.ui.form.field.transformer.multi.MultiValueSubChildrenNodeTransformer;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -315,8 +316,8 @@ public class ControlMigrationTest {
     @Test
     public void MultiSelectControlMigrationTest() throws RepositoryException {
         // GIVEN
-        controlNode.setProperty("controlType", "categorizationUUIDMultiSelect");
-        controlNode.setProperty("saveHandler", "multiple");
+        controlNode.setProperty("controlType", "multiselect");
+        controlNode.setProperty("saveMode", "list");
         ControlMigration controlMigration = new MultiSelectControlMigration(true);
 
         // WHEN
@@ -325,11 +326,34 @@ public class ControlMigrationTest {
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));
         assertTrue(controlNode.hasProperty("class"));
-        assertEquals(MultiLinkFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
-        assertTrue(controlNode.hasProperty("identifier"));
-        assertEquals("true", controlNode.getProperty("identifier").getString());
-        assertTrue(controlNode.hasNode("saveModeType"));
-        assertEquals(SubNodesValueHandler.class.getName(), controlNode.getNode("saveModeType").getProperty("multiValueHandlerClass").getString());
+        assertEquals(MultiFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
+        assertTrue(controlNode.hasNode("field"));
+        Node field = controlNode.getNode("field");
+        assertTrue(field.hasProperty("identifier"));
+        assertEquals("true", field.getProperty("identifier").getString());
+        assertTrue(controlNode.hasProperty("transformerClass"));
+        assertEquals(MultiValueJSONTransformer.class.getName(), controlNode.getProperty("transformerClass").getString());
+        assertFalse(controlNode.hasProperty("saveHandler"));
+    }
+
+    @Test
+    public void DataUUIDMultiSelectControlMigrationTest() throws RepositoryException {
+        // GIVEN
+        controlNode.setProperty("controlType", "dataUUIDMultiSelect");
+        ControlMigration controlMigration = new DataUUIDMultiSelectControlMigration(true);
+
+        // WHEN
+        controlMigration.migrate(controlNode);
+
+        // THEN
+        assertFalse(controlNode.hasProperty("controlType"));
+        assertTrue(controlNode.hasProperty("class"));
+        assertEquals(MultiFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
+        Node field = controlNode.getNode("field");
+        assertTrue(field.hasProperty("identifier"));
+        assertEquals("true", field.getProperty("identifier").getString());
+        assertTrue(controlNode.hasProperty("transformerClass"));
+        assertEquals(MultiValueSubChildrenNodeTransformer.class.getName(), controlNode.getProperty("transformerClass").getString());
         assertFalse(controlNode.hasProperty("saveHandler"));
     }
 

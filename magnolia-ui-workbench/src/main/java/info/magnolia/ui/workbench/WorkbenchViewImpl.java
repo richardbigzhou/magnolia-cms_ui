@@ -47,6 +47,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Property;
+import com.vaadin.event.Action.Container;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
@@ -113,7 +114,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
     private WorkbenchView.Listener listener;
 
-    public WorkbenchViewImpl(){
+    public WorkbenchViewImpl() {
 
         setSizeFull();
         setMargin(new MarginInfo(true, false, false, true));
@@ -157,6 +158,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         setExpandRatio(toolBar, 0);
 
 
+
         keyboardEventPanel = new Panel();
         keyboardEventPanel.setSizeFull();
         keyboardEventPanel.addStyleName("keyboard-panel");
@@ -166,6 +168,10 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         bindKeyboardHandlers();
     }
 
+    @Override
+    public Container getShortcutActionHandler() {
+        return keyboardEventPanel;
+    }
 
     public void bindKeyboardHandlers() {
 
@@ -316,7 +322,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
         // TextField has to be immediate to fire value changes when pressing Enter, avoiding ShortcutListener overkill.
         field.setImmediate(true);
-        field.addListener(searchFieldListener);
+        field.addValueChangeListener(searchFieldListener);
 
         field.addFocusListener(new FieldEvents.FocusListener() {
             @Override

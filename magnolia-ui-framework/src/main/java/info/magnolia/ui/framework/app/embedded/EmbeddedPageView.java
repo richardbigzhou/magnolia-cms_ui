@@ -40,4 +40,5 @@ import info.magnolia.ui.api.view.View;
  */
 public interface EmbeddedPageView extends View {
 
+    void setUrl(String url);
 }

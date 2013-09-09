@@ -33,11 +33,17 @@
  */
 package info.magnolia.security.app.dialog.field;
 
+import info.magnolia.security.app.dialog.field.property.EnabledFieldTransformer;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
+import info.magnolia.ui.form.field.transformer.Transformer;
 
 /**
  * A definition for the Enabled field.
  */
 public class EnabledFieldDefinition extends CheckboxFieldDefinition {
 
+    @SuppressWarnings("unchecked")
+    public EnabledFieldDefinition() {
+        setTransformerClass((Class<? extends Transformer<?>>) (Object) EnabledFieldTransformer.class);
+    }
 }

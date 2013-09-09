@@ -34,7 +34,7 @@
 package info.magnolia.ui.form.field.factory;
 
 /**
- * Main test class for {@link info.magnolia.ui.form.field.factory.FieldFactoryFactory}
+ * Main test class for {@link info.magnolia.ui.form.field.factory.FieldFactoryFactory}.
  */
 public class FieldFactoryFactoryTest {
 

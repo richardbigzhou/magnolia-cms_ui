@@ -35,7 +35,6 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.ui.form.field.CheckBoxField;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
-import info.magnolia.ui.form.field.definition.FieldDefinition;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
@@ -57,7 +56,7 @@ public class CheckBoxFieldFactory extends AbstractFieldFactory<CheckboxFieldDefi
     }
 
     @Override
-    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+    protected Class<?> getDefaultFieldType() {
         return Boolean.class;
     }
 

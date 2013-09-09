@@ -33,9 +33,8 @@
  */
 package info.magnolia.pages.app.field;
 
-import info.magnolia.ui.form.field.factory.SelectFieldFactory;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
-import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.factory.SelectFieldFactory;
 
 import java.util.List;
 
@@ -62,7 +61,7 @@ public class ComponentSelectorFieldFactory extends SelectFieldFactory<ComponentS
     }
 
     @Override
-    protected Class<?> getDefaultFieldType(FieldDefinition fieldDefinition) {
+    protected Class<?> getDefaultFieldType() {
         return String.class;
     }
 

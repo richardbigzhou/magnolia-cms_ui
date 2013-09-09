@@ -33,15 +33,20 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import info.magnolia.ui.form.field.transformer.basic.NotNullInitialStringValueTransformer;
+
 /**
  * Field definition for code text box.
  */
 public class BasicTextCodeFieldDefinition extends ConfiguredFieldDefinition {
     private String language = "text";
 
+    public BasicTextCodeFieldDefinition() {
+        setTransformerClass(NotNullInitialStringValueTransformer.class);
+    }
+
     /**
      * Default language is 'text'.
-     * 
      * @return the desired Code language (java, groovy, ...).
      */
     public String getLanguage() {

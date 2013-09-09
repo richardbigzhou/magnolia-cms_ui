@@ -33,11 +33,21 @@
  */
 package info.magnolia.security.app.dialog.field;
 
+import info.magnolia.security.app.dialog.field.property.ManagementFieldTransformer;
 import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
+import info.magnolia.ui.form.field.transformer.Transformer;
 
 /**
  * A definition for the Group Management field.
  */
 public class GroupManagementFieldDefinition extends TwinColSelectFieldDefinition {
+
+    /**
+     * Option group need a specific {@link Transformer} in order to handle the creation of the basic property.
+     */
+    @SuppressWarnings("unchecked")
+    public GroupManagementFieldDefinition() {
+        setTransformerClass((Class<? extends Transformer<?>>) (Object) ManagementFieldTransformer.class);
+    }
 
 }
