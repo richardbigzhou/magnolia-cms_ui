@@ -5,7 +5,6 @@ import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
 import info.magnolia.event.EventBus;
-import info.magnolia.event.SimpleEventBus;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
@@ -36,7 +35,7 @@ import java.util.Locale;
  */
 public class WorkbenchField extends CustomField<Object> {
 
-    private static final String DEFAULT_HEIGHT = "500px";
+    private static final String DEFAULT_HEIGHT = "400px";
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -48,12 +47,13 @@ public class WorkbenchField extends CustomField<Object> {
 
     private WorkbenchView view;
 
-    private EventBus workbenchEventbus = new SimpleEventBus();
+    private EventBus workbenchEventbus;
 
-    public WorkbenchField(WorkbenchDefinition definition, ImageProviderDefinition imageProvider, WorkbenchPresenter presenter) {
+    public WorkbenchField(WorkbenchDefinition definition, ImageProviderDefinition imageProvider, WorkbenchPresenter presenter, EventBus eventBus) {
         this.workbenchDefinition = definition;
         this.imageProvider = imageProvider;
         this.presenter = presenter;
+        this.workbenchEventbus = eventBus;
     }
 
     @Override
@@ -91,6 +91,10 @@ public class WorkbenchField extends CustomField<Object> {
     @Override
     public Class<? extends Item> getType() {
         return Item.class;
+    }
+
+    public WorkbenchPresenter getPresenter() {
+        return presenter;
     }
 
     private class ItemStringConverter implements Converter<Object, Item> {

@@ -35,6 +35,8 @@ package info.magnolia.ui.contentapp.field;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactory;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 
@@ -53,6 +55,8 @@ public class WorkbenchFieldFactory extends AbstractFieldFactory<WorkbenchFieldDe
 
     private WorkbenchPresenter workbenchPresenter;
 
+    private EventBus eventBus;
+
     @Inject
     public WorkbenchFieldFactory(
             WorkbenchFieldDefinition definition,
@@ -61,10 +65,11 @@ public class WorkbenchFieldFactory extends AbstractFieldFactory<WorkbenchFieldDe
         super(definition, relatedFieldItem);
         this.definition = definition;
         this.workbenchPresenter = workbenchPresenter;
+        this.eventBus = new SimpleEventBus();
     }
 
     @Override
     protected Field<Object> createFieldComponent() {
-        return new WorkbenchField(definition.getWorkbench(), definition.getImageProvider(), workbenchPresenter);
+        return new WorkbenchField(definition.getWorkbench(), definition.getImageProvider(), workbenchPresenter, eventBus);
     }
 }
