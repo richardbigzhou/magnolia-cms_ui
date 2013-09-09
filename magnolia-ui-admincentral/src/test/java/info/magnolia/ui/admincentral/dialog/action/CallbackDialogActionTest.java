@@ -41,10 +41,11 @@ import info.magnolia.test.MgnlTestCase;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
-import info.magnolia.ui.api.overlay.OverlayLayer;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.dialog.action.CallbackDialogAction;
 import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
+import info.magnolia.ui.dialog.actionpresenter.ActionPresenter;
 import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
@@ -154,7 +155,7 @@ public class CallbackDialogActionTest extends MgnlTestCase {
         }
 
         @Override
-        public DialogView start(BaseDialogDefinition definition) {
+        public DialogView start(BaseDialogDefinition definition, UiContext uiContext) {
             return null;  //To change body of implemented methods use File | Settings | File Templates.
         }
 
@@ -164,7 +165,12 @@ public class CallbackDialogActionTest extends MgnlTestCase {
         }
 
         @Override
-        public DialogView start(Item item, FormDialogDefinition dialogDefinition, OverlayLayer overlayLayer, EditorCallback callback) {
+        public ActionPresenter getActionPresenter() {
+            return null;  //To change body of implemented methods use File | Settings | File Templates.
+        }
+
+        @Override
+        public DialogView start(Item item, FormDialogDefinition dialogDefinition, UiContext uiContext, EditorCallback callback) {
             return null;
         }
 
@@ -174,7 +180,7 @@ public class CallbackDialogActionTest extends MgnlTestCase {
         }
 
         @Override
-        public DialogView start(Item item, String dialogName, OverlayLayer overlayLayer, EditorCallback callback) {
+        public DialogView start(Item item, String dialogName, UiContext uiContext, EditorCallback callback) {
             return null;
         }
 

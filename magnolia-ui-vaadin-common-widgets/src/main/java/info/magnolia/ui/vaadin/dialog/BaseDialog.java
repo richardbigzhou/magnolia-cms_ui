@@ -60,7 +60,6 @@ public class BaseDialog extends AbstractComponent implements HasComponents {
 
     public BaseDialog() {
         super();
-        setStyleName("dialog-panel");
         setImmediate(true);
         setContent(createDefaultContent());
         registerRpc(new DialogServerRpc() {
@@ -243,15 +242,6 @@ public class BaseDialog extends AbstractComponent implements HasComponents {
             return dialog;
         }
     }
-
-
-
-
-
-
-
-
-
 
     /**
      * DescriptionVisibilityEvent.

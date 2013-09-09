@@ -49,8 +49,11 @@ import info.magnolia.cms.security.Permission;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.ModelConstants;
+import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
+import info.magnolia.ui.dialog.choosedialog.ChooseDialogView;
 import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
@@ -64,6 +67,7 @@ import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -272,11 +276,13 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
     protected void openChooseDialog(final TextField textField) {
         final ChooseDialogPresenter workbenchChooseDialogPresenter = componentProvider.newInstance(ChooseDialogPresenter.class);
         final ConfiguredChooseDialogDefinition def = new ConfiguredChooseDialogDefinition();
-        /*def.
-        workbenchChooseDialogPresenter.setWorkbenchDefinition(resolveWorkbenchDefinition());
+        final WorkbenchDefinition wbDef = resolveWorkbenchDefinition();
+        final WorkbenchFieldDefinition fieldDef = new WorkbenchFieldDefinition();
+        fieldDef.setWorkbench(wbDef);
+        def.setField(fieldDef);
         ChooseDialogView chooseDialogView = workbenchChooseDialogPresenter.start(new ChooseDialogCallback() {
             @Override
-            public void onSuccess(String actionName) {
+            public void onItemChosen(String actionName, Item item) {
                 try {
                     textField.setValue(((AbstractJcrNodeAdapter) item).getJcrItem().getPath());
                 } catch (RepositoryException e) {
@@ -285,10 +291,10 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
             }
 
             @Override
-            public void onCancel() {}
-        }, );
-        chooseDialogView.setCaption(StringUtils.capitalize(getFieldDefinition().getWorkspace()));*/
-        //uiContext.openOverlay(chooseDialogView);
+            public void onCancel() {
+            }
+        }, def, uiContext, null);
+        chooseDialogView.setCaption(StringUtils.capitalize(getFieldDefinition().getWorkspace()));
     }
 
     protected WorkbenchDefinition resolveWorkbenchDefinition() {

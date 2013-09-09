@@ -113,7 +113,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     public View start(final InputStream stream) {
         try {
             final ActionbarView actionbar = actionbarPresenter.start(definition.getActionBar());
-            final DialogView dialogView = dialogPresenter.start(new ConfiguredBaseDialogDefinition());
+            final DialogView dialogView = dialogPresenter.start(new ConfiguredBaseDialogDefinition(), appContext);
 
             this.dataSource = new EditHistoryTrackingPropertyImpl(IOUtils.toByteArray(stream));
             this.dataSource.setListener(this);

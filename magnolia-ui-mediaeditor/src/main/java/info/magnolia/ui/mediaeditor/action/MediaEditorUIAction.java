@@ -47,6 +47,7 @@ import info.magnolia.ui.mediaeditor.field.MediaField;
 import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 import org.apache.log4j.Logger;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -73,14 +74,17 @@ public abstract class MediaEditorUIAction extends MediaEditorAction {
             view.setToolbar(getStatusControls());
 
             List<ActionContext> actionContexts = getActionContextList();
-            for (final ActionContext action : actionContexts) {
+            Iterator<ActionContext> it = actionContexts.iterator();
+            boolean defaultIsSet = false;
+            while (it.hasNext()) {
+                ActionContext action = it.next();
                 ActionRenderer actionPresenter = new DefaultEditorActionRenderer();
                 View actionView = actionPresenter.start(action.getDefinition(), action.getListener());
-                view.getDialog().getActionView().addPrimaryAction(actionView);
-            }
-
-            if (!actionContexts.isEmpty()) {
-                //view.getDialog().setDefaultAction(actionContexts.get(actionContexts.size() - 1).getActionId());
+                view.getDialog().getActionView().addPrimaryAction(actionView, action.getDefinition().getName());
+                if (!defaultIsSet) {
+                     actionView.asVaadinComponent().addStyleName("default");
+                    defaultIsSet = true;
+                }
             }
             newMediaField.setPropertyDataSource(dataSource);
         } else {

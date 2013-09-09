@@ -59,7 +59,6 @@
 
   .dialog-footer {
     background-color: $c13;
-    text-align: right;
     left: 0;
     right: 0;
   }
@@ -190,7 +189,7 @@
 
 /* MessageTypes */
 
-  .light-dialog-panel .btn-dialog-default {
+  .light-dialog-panel .btn-dialog.default {
     float: right;
   }
 
@@ -204,13 +203,13 @@
       color: #A1ADAF;
     }
   }
-  .light-dialog-panel.msginfo .btn-dialog-default {
+  .light-dialog-panel.msginfo .btn-dialog.default {
     background: $c20;
   }
   .light-dialog-panel.msginfo button {
     background: #75868a;
   }
-  .v-ui:not(.tablet) .light-dialog-panel.msginfo .btn-dialog-default:hover {
+  .v-ui:not(.tablet) .light-dialog-panel.msginfo .btn-dialog.default:hover {
     background: $c22;
     color: #2b6879;
   }
@@ -232,14 +231,14 @@
   .light-dialog-panel.msgwarn .m-closebutton {
     color: #F6A51C;
   }
-  .light-dialog-panel.msgwarn .btn-dialog-default {
+  .light-dialog-panel.msgwarn .btn-dialog.default {
     background: $c60;
     color: $c10;
   }
   .light-dialog-panel.msgwarn button {
     background: #a3926c;
   }
-  .v-ui:not(.tablet) .light-dialog-panel.msgwarn .btn-dialog-default:hover {
+  .v-ui:not(.tablet) .light-dialog-panel.msgwarn .btn-dialog.default:hover {
     background: $c62;
     color: $c10;
   }
@@ -247,7 +246,7 @@
     background: #efd79e;
     color: $c10;
   }
-  .v-app .v-ui .light-dialog-panel.msgwarn .btn-dialog-default:active {
+  .v-app .v-ui .light-dialog-panel.msgwarn .btn-dialog.default:active {
     background: $c80;
     color: $c60;
   }
@@ -263,20 +262,20 @@
   .light-dialog-panel.msgerror .m-closebutton {
     color: $c70;
   }
-  .light-dialog-panel.msgerror .btn-dialog-default {
+  .light-dialog-panel.msgerror .btn-dialog.default {
     background: $c70;
   }
   .light-dialog-panel.msgerror button {
     background: #8f7b7b;
   }
-  .v-ui:not(.tablet) .light-dialog-panel.msgerror .btn-dialog-default:hover {
+  .v-ui:not(.tablet) .light-dialog-panel.msgerror .btn-dialog.default:hover {
     background: $c73;
     color: $c70;
   }
   .v-ui:not(.tablet) .light-dialog-panel.msgerror button:hover {
     background: #d2b5b5;
   }
-  .v-app .v-ui .light-dialog-panel.msgerror .btn-dialog-default:active {
+  .v-app .v-ui .light-dialog-panel.msgerror .btn-dialog.default:active {
     background: $c80;
     color: $c70;
   }
@@ -320,5 +319,21 @@
     max-width: 720px;
     max-height: 400px;
     cursor: pointer;
+  }
+
+  .primary-actions{
+    text-align: right;
+  }
+
+  .primary-actions > * {
+    margin-left: 10px;
+  }
+
+  .secondary-actions{
+    text-align: left;
+  }
+
+  .secondary-actions > * {
+    margin-right: 10px;
   }
 }

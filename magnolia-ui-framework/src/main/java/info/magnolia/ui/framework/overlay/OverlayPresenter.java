@@ -42,6 +42,7 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.themes.BaseTheme;
 import info.magnolia.objectfactory.Classes;
 import info.magnolia.ui.api.overlay.AlertCallback;
@@ -126,13 +127,14 @@ public abstract class OverlayPresenter implements OverlayLayer {
         dialog.addStyleName("alert");
         dialog.setContent(contentView.asVaadinComponent());
         HorizontalLayout footer = new HorizontalLayout();
-        footer.addComponent(new Button(confirmButtonText, new ClickListener() {
+        Button confirmButton = new Button(confirmButtonText, new ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
                 cb.onOk();
             }
-        }));
-        //dialog.setDefaultAction(ACTION_CONFIRM);
+        });
+        confirmButton.addStyleName("default");
+        footer.addComponent(confirmButton);
         return dialog;
     }
 
@@ -171,7 +173,11 @@ public abstract class OverlayPresenter implements OverlayLayer {
         ConfirmationDialog dialog = createConfirmationDialog(contentView, confirmButtonText, cancelButtonText, type.getCssClass(), cancelIsDefault);
         dialog.showCloseButton();
 
-        final OverlayCloser overlayCloser = openOverlay(new ViewAdapter(dialog), ModalityLevel.LIGHT);
+        Panel panel = new Panel();
+        panel.setHeight("100%");
+        panel.setWidth(null);
+        panel.setContent(dialog);
+        final OverlayCloser overlayCloser = openOverlay(new ViewAdapter(panel), ModalityLevel.LIGHT);
         dialog.addConfirmationHandler(createHandler(overlayCloser, callback));
         dialog.addDialogCloseHandler(createCloseHandler(overlayCloser));
 

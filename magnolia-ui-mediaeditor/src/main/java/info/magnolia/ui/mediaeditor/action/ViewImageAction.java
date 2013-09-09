@@ -74,14 +74,14 @@ public class ViewImageAction extends MediaEditorUIAction {
         result.add(new ActionContext(new InternalMediaEditorActionDefinition("save", "Save Changes", false), new ActionListener() {
             @Override
             public void onActionFired(String actionName, Object... actionContextParams) {
-                eventBus.fireEvent(new MediaEditorInternalEvent(EventType.APPLY));
+                eventBus.fireEvent(new MediaEditorInternalEvent(EventType.SUBMIT));
             }
         }));
 
         result.add(new ActionContext(new InternalMediaEditorActionDefinition("cancel", "Cancel Editing", true), new ActionListener() {
             @Override
             public void onActionFired(String actionName, Object... actionContextParams) {
-                eventBus.fireEvent(new MediaEditorInternalEvent(EventType.CANCEL_LAST));
+                eventBus.fireEvent(new MediaEditorInternalEvent(EventType.CANCEL_ALL));
             }
         }));
         return result;

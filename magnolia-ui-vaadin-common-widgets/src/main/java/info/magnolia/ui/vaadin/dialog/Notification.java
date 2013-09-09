@@ -76,11 +76,6 @@ public class Notification implements View {
         layout.addComponent(closeButton);
     }
 
-    /**
-     * Set notification content.
-     *
-     * @param content
-     */
     public void setContent(Component content) {
         layout.addComponent(content);
         content.addStyleName("dialog-content");

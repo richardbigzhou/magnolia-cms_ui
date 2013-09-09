@@ -79,20 +79,21 @@ public class ConfirmationDialog extends LightDialog {
         HorizontalLayout footer = new HorizontalLayout();
         footer.addComponent(confirmButton);
         footer.addComponent(cancelButton);
+
+        cancelButton.addStyleName("btn-dialog");
+        confirmButton.addStyleName("btn-dialog");
+
         footer.setComponentAlignment(confirmButton, Alignment.MIDDLE_RIGHT);
         footer.setComponentAlignment(cancelButton, Alignment.MIDDLE_LEFT);
         footer.setSpacing(true);
         setFooterToolbar(footer);
 
-        // we need to explicitly add an ENTER shortcut bound to the confirm action, because addAction(..) do it only for commit and cancel actions.
-        //addShortcut(CONFIRM_ACTION_NAME, KeyCode.ENTER);
-
         // Add a class to the default button
-        /*if (cancelIsDefault) {
-            this.setDefaultAction(CANCEL_ACTION_NAME);
+        if (cancelIsDefault) {
+            cancelButton.addStyleName("default");
         } else {
-            this.setDefaultAction(CONFIRM_ACTION_NAME);
-        } */
+            confirmButton.addStyleName("default");
+        }
     }
 
 
