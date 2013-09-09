@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.field.transformer.basic;
 
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -44,22 +45,25 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 
 /**
- * Specific TwinField {@link info.magnolia.ui.form.field.transformer.Transformer}.<br>
+ * Specific MultiSelect field {@link info.magnolia.ui.form.field.transformer.Transformer}.<br>
+ * For example, the Vaadin native {@link com.vaadin.ui.OptionGroup} used as root component of our configured Option Group Field do not support List, but only Sets.
  * 
  * @param <T>
  */
-public class TwinSelectPropertyTransformer<T> extends BasicTransformer<T> {
+public class ListToSetTransformer<T> extends BasicTransformer<T> {
 
-    public TwinSelectPropertyTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<T> type) {
+    private final boolean multiselect;
+
+    public ListToSetTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<T> type) {
         super(relatedFormItem, definition, type);
+        multiselect = ((OptionGroupFieldDefinition) definition).isMultiselect();
     }
 
     @Override
     public void writeToItem(T newValue) {
         Property<T> p = getOrCreateProperty(type);
-        if (p.getValue() instanceof Set && newValue instanceof List) {
-            newValue = (T) new HashSet((List) newValue);
-        } else if (p.getValue() instanceof List && newValue instanceof Set) {
+
+        if (p.getValue() instanceof List && newValue instanceof Set) {
             newValue = (T) new LinkedList((Set) newValue);
         }
         p.setValue(newValue);
@@ -69,6 +73,9 @@ public class TwinSelectPropertyTransformer<T> extends BasicTransformer<T> {
     @Override
     public T readFromItem() {
         T value = super.readFromItem();
+        if (!multiselect) {
+            return value;
+        }
 
         if (value == null) {
             return (T) new HashSet();
@@ -78,4 +85,5 @@ public class TwinSelectPropertyTransformer<T> extends BasicTransformer<T> {
             return null;
         }
     }
+
 }

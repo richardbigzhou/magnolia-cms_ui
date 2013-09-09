@@ -43,6 +43,7 @@ import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.HashSet;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -54,7 +55,7 @@ import org.junit.Test;
 /**
  * .
  */
-public class OptionGroupTransformerTest extends RepositoryTestCase {
+public class ListToSetTransformerTest extends RepositoryTestCase {
     private Node rootNode;
     private final String propertyName = "propertyName";
     private OptionGroupFieldDefinition definition = new OptionGroupFieldDefinition();
@@ -77,7 +78,7 @@ public class OptionGroupTransformerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, "stringValue");
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        OptionGroupTransformer<String> handler = new OptionGroupTransformer<String>(rootItem, definition, String.class);
+        ListToSetTransformer<String> handler = new ListToSetTransformer<String>(rootItem, definition, String.class);
 
         // WHEN
         Object value = handler.readFromItem();
@@ -91,13 +92,14 @@ public class OptionGroupTransformerTest extends RepositoryTestCase {
         assertEquals(rootNode.getProperty(propertyName).getString(), rootItem.getItemProperty(propertyName).getValue());
     }
 
+
     @Test
     public void testReadFromDataSourceItemEmptyMultiSelect() throws RepositoryException {
         // GIVEN
         definition.setMultiselect(true);
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        OptionGroupTransformer<String> handler = new OptionGroupTransformer<String>(rootItem, definition, String.class);
+        ListToSetTransformer<String> handler = new ListToSetTransformer<String>(rootItem, definition, String.class);
 
         // WHEN
         Object value = handler.readFromItem();
@@ -114,7 +116,7 @@ public class OptionGroupTransformerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, new String[] { "a", "b", "c" });
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        OptionGroupTransformer<String> handler = new OptionGroupTransformer<String>(rootItem, definition, String.class);
+        ListToSetTransformer<String> handler = new ListToSetTransformer<String>(rootItem, definition, String.class);
 
         // WHEN
         Object value = handler.readFromItem();
@@ -124,6 +126,32 @@ public class OptionGroupTransformerTest extends RepositoryTestCase {
         assertTrue(value instanceof HashSet);
         assertFalse(((HashSet) value).isEmpty());
         assertTrue(((HashSet) value).contains("a"));
+    }
+
+    @Test
+    public void testReadWriteFromDataSourceItem() throws RepositoryException {
+        // GIVEN
+        definition.setMultiselect(true);
+        rootNode.setProperty(propertyName, new String[] { "a", "b", "c" });
+        JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
+
+        ListToSetTransformer handler = new ListToSetTransformer(rootItem, definition, String.class);
+        Object value = handler.readFromItem();
+        assertNotNull(value);
+        assertTrue(value instanceof HashSet);
+        ((HashSet) value).add("d");
+
+        // WHEN
+        handler.writeToItem(value);
+
+        // THEN
+        assertNotNull(rootItem.getItemProperty(propertyName));
+        List<String> property = (List<String>) rootItem.getItemProperty(propertyName).getValue();
+        assertTrue(value instanceof HashSet);
+        assertTrue(property.contains("a"));
+        assertTrue(property.contains("b"));
+        assertTrue(property.contains("c"));
+        assertTrue(property.contains("d"));
     }
 
 }

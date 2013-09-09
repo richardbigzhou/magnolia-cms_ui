@@ -34,7 +34,7 @@
 package info.magnolia.ui.form.field.definition;
 
 import info.magnolia.ui.form.field.transformer.Transformer;
-import info.magnolia.ui.form.field.transformer.basic.TwinSelectPropertyTransformer;
+import info.magnolia.ui.form.field.transformer.basic.ListToSetTransformer;
 
 /**
  * Field definition for twin column select field.
@@ -49,7 +49,7 @@ public class TwinColSelectFieldDefinition extends OptionGroupFieldDefinition {
      */
     @SuppressWarnings("unchecked")
     public TwinColSelectFieldDefinition() {
-        setTransformerClass((Class<? extends Transformer<?>>) (Object) TwinSelectPropertyTransformer.class);
+        setTransformerClass((Class<? extends Transformer<?>>) (Object) ListToSetTransformer.class);
     }
 
     public String getLeftColumnCaption() {
