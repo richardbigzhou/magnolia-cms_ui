@@ -43,7 +43,7 @@ import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.dialog.actionarea.ActionParameterProvider;
 import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
 import info.magnolia.ui.dialog.actionarea.definition.FormActionItemDefinition;
-import info.magnolia.ui.dialog.actionarea.view.EditorActionView;
+import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
 import info.magnolia.ui.dialog.formdialog.FormBuilder;
 import info.magnolia.ui.dialog.formdialog.FormView;
 import info.magnolia.ui.form.EditorCallback;
@@ -115,8 +115,8 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionP
 
     private void initActions() {
         EditorActionAreaPresenter editorActionAreaPresenter = componentProvider.getComponent(editorDefinition.getActionPresenter().getPresenterClass());
-        EditorActionView editorActionView = editorActionAreaPresenter.start(filterSubAppActions(),editorDefinition.getActionPresenter(), this, subAppContext);
-        formView.setActionView(editorActionView);
+        EditorActionAreaView editorActionAreaView = editorActionAreaPresenter.start(filterSubAppActions(),editorDefinition.getActionPresenter(), this, subAppContext);
+        formView.setActionView(editorActionAreaView);
     }
 
     private Iterable<ActionDefinition> filterSubAppActions() {

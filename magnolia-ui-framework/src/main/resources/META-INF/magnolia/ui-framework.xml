@@ -227,8 +227,8 @@
       </component>
 
       <component>
-          <type>info.magnolia.ui.dialog.actionarea.view.EditorActionView</type>
-          <implementation>info.magnolia.ui.dialog.actionarea.view.EditorActionViewImpl</implementation>
+          <type>info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView</type>
+          <implementation>info.magnolia.ui.dialog.actionarea.view.EditorActionAreaViewImpl</implementation>
       </component>
 
       <component>
@@ -402,8 +402,8 @@
       </component>
 
       <component>
-          <type>info.magnolia.ui.contentapp.movedialog.view.MoveDialogActionView</type>
-          <implementation>info.magnolia.ui.contentapp.movedialog.view.MoveDialogActionViewImpl</implementation>
+          <type>info.magnolia.ui.contentapp.movedialog.view.MoveDialogActionAreaView</type>
+          <implementation>info.magnolia.ui.contentapp.movedialog.view.MoveDialogActionAreaViewImpl</implementation>
       </component>
 
   </components>

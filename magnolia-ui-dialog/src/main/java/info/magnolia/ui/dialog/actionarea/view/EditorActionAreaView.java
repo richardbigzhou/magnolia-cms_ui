@@ -39,7 +39,7 @@ import info.magnolia.ui.api.view.View;
 /**
  * View interface used by {@link info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter}.
  */
-public interface EditorActionView extends View {
+public interface EditorActionAreaView extends View {
 
     void addPrimaryAction(View actionView, String actionName);
 

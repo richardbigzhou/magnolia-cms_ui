@@ -37,7 +37,7 @@ import com.vaadin.event.ShortcutListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Panel;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.dialog.actionarea.view.EditorActionView;
+import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent.Handler;
@@ -56,7 +56,7 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
 
     private View contentView;
 
-    private EditorActionView actionView;
+    private EditorActionAreaView actionView;
 
     public BaseDialogViewImpl() {
         this(new BaseDialog());
@@ -143,7 +143,7 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
     }
 
     @Override
-    public void setActionView(EditorActionView actionView) {
+    public void setActionView(EditorActionAreaView actionView) {
         this.actionView = actionView;
         dialog.setFooterToolbar(actionView.asVaadinComponent());
     }
@@ -165,7 +165,7 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
     }
 
     @Override
-    public EditorActionView getActionView() {
+    public EditorActionAreaView getActionView() {
         return actionView;
     }
 

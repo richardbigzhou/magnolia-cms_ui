@@ -42,7 +42,7 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.actionarea.definition.ActionRendererDefinition;
 import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
 import info.magnolia.ui.dialog.actionarea.renderer.ActionRenderer;
-import info.magnolia.ui.dialog.actionarea.view.EditorActionView;
+import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
 import info.magnolia.ui.dialog.definition.SecondaryActionDefinition;
 
 import javax.inject.Inject;
@@ -52,7 +52,7 @@ import javax.inject.Inject;
  */
 public class EditorActionAreaPresenterImpl implements EditorActionAreaPresenter {
 
-    private final EditorActionView view;
+    private final EditorActionAreaView view;
 
     private final ComponentProvider componentProvider;
 
@@ -61,14 +61,14 @@ public class EditorActionAreaPresenterImpl implements EditorActionAreaPresenter 
     private ActionParameterProvider actionParameterProvider;
 
     @Inject
-    public EditorActionAreaPresenterImpl(EditorActionView view, ComponentProvider componentProvider, EditorActionExecutor actionExecutor) {
+    public EditorActionAreaPresenterImpl(EditorActionAreaView view, ComponentProvider componentProvider, EditorActionExecutor actionExecutor) {
         this.view = view;
         this.componentProvider = componentProvider;
         this.actionExecutor = actionExecutor;
     }
 
     @Override
-    public EditorActionView start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, final ActionParameterProvider parameterProvider, UiContext uiContext) {
+    public EditorActionAreaView start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, final ActionParameterProvider parameterProvider, UiContext uiContext) {
         this.actionParameterProvider = parameterProvider;
         actionExecutor.setActions(actions);
         for (ActionDefinition action : actions) {
@@ -113,7 +113,7 @@ public class EditorActionAreaPresenterImpl implements EditorActionAreaPresenter 
         }
     }
 
-    protected EditorActionView getView() {
+    protected EditorActionAreaView getView() {
         return view;
     }
 

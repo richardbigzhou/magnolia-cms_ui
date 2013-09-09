@@ -40,7 +40,7 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.dialog.actionarea.ActionAreaPresenter;
 import info.magnolia.ui.dialog.actionarea.ActionParameterProvider;
 import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
-import info.magnolia.ui.dialog.actionarea.view.EditorActionView;
+import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
 import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
@@ -85,7 +85,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionParameterProv
     public DialogView start(BaseDialogDefinition definition, UiContext uiContext) {
         this.view = initView();
         this.editorActionAreaPresenter = componentProvider.getComponent(definition.getActionArea().getPresenterClass());
-        EditorActionView editorActionView = editorActionAreaPresenter.start(definition.getActions().values(), definition.getActionArea(), this, uiContext);
+        EditorActionAreaView editorActionAreaView = editorActionAreaPresenter.start(definition.getActions().values(), definition.getActionArea(), this, uiContext);
 
         if (definition.getActions().containsKey(BaseDialog.COMMIT_ACTION_NAME)) {
              addShortcut(BaseDialog.COMMIT_ACTION_NAME, KeyCode.S, ModifierKey.CTRL);
@@ -95,7 +95,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionParameterProv
             addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.ESCAPE);
             addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.C, ModifierKey.CTRL);
         }
-        this.view.setActionView(editorActionView);
+        this.view.setActionView(editorActionAreaView);
         return this.view;
     }
 

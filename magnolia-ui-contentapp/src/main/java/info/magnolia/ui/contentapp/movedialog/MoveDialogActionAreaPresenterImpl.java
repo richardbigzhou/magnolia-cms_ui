@@ -36,12 +36,12 @@ package info.magnolia.ui.contentapp.movedialog;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.contentapp.movedialog.view.MoveDialogActionView;
+import info.magnolia.ui.contentapp.movedialog.view.MoveDialogActionAreaView;
 import info.magnolia.ui.dialog.actionarea.ActionParameterProvider;
 import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenterImpl;
 import info.magnolia.ui.dialog.actionarea.EditorActionExecutor;
 import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
-import info.magnolia.ui.dialog.actionarea.view.EditorActionView;
+import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
 import info.magnolia.ui.framework.action.MoveLocation;
 
 import javax.inject.Inject;
@@ -53,12 +53,12 @@ import java.util.Set;
 public class MoveDialogActionAreaPresenterImpl extends EditorActionAreaPresenterImpl implements MoveDialogActionPresenter {
 
     @Inject
-    public MoveDialogActionAreaPresenterImpl(MoveDialogActionView view, ComponentProvider componentProvider, EditorActionExecutor actionExecutor) {
+    public MoveDialogActionAreaPresenterImpl(MoveDialogActionAreaView view, ComponentProvider componentProvider, EditorActionExecutor actionExecutor) {
         super(view, componentProvider, actionExecutor);
     }
 
     @Override
-    public EditorActionView start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, ActionParameterProvider parameterProvider, UiContext uiContext) {
+    public EditorActionAreaView start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, ActionParameterProvider parameterProvider, UiContext uiContext) {
         return super.start(actions, definition, parameterProvider, uiContext);
     }
 
@@ -70,7 +70,7 @@ public class MoveDialogActionAreaPresenterImpl extends EditorActionAreaPresenter
     }
 
     @Override
-    protected MoveDialogActionView getView() {
-        return (MoveDialogActionView) super.getView();
+    protected MoveDialogActionAreaView getView() {
+        return (MoveDialogActionAreaView) super.getView();
     }
 }

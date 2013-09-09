@@ -42,9 +42,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Implementation of {@link EditorActionView}. Composes dialog/editor footer with Vaadin components.
+ * Implementation of {@link EditorActionAreaView}. Composes dialog/editor footer with Vaadin components.
  */
-public class EditorActionViewImpl implements EditorActionView {
+public class EditorActionAreaViewImpl implements EditorActionAreaView {
 
     private HorizontalLayout footer = new HorizontalLayout();
 
@@ -56,7 +56,7 @@ public class EditorActionViewImpl implements EditorActionView {
 
     private Map<String, View> actionNameToView = new HashMap<String, View>();
 
-    public EditorActionViewImpl() {
+    public EditorActionAreaViewImpl() {
         footer.addStyleName("footer");
         footer.addComponent(toolbarContainer);
         footer.addComponent(secondaryActionsContainer);

@@ -36,12 +36,12 @@ package info.magnolia.ui.dialog.actionarea;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
-import info.magnolia.ui.dialog.actionarea.view.EditorActionView;
+import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
 
 /**
  * Extends {@link ActionAreaPresenter} for case of dialogs.
  */
 public interface EditorActionAreaPresenter extends ActionAreaPresenter {
     @Override
-    EditorActionView start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, ActionParameterProvider parameterProvider, UiContext uiContext);
+    EditorActionAreaView start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, ActionParameterProvider parameterProvider, UiContext uiContext);
 }

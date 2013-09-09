@@ -33,17 +33,13 @@
  */
 package info.magnolia.ui.contentapp.movedialog.view;
 
-import com.vaadin.ui.Component;
-import info.magnolia.ui.dialog.actionarea.view.EditorActionViewImpl;
+import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
 
 /**
- *
+ * Action view interface for {@link info.magnolia.ui.contentapp.movedialog.MoveDialogPresenter}.
  */
-public class MoveDialogActionViewImpl extends EditorActionViewImpl implements MoveDialogActionView {
+public interface MoveDialogActionAreaView extends EditorActionAreaView {
 
-    @Override
-    public void setActionEnabled(String actionName, boolean isEnabled) {
-        Component actionComponent = getViewForAction(actionName).asVaadinComponent();
-        actionComponent.setEnabled(isEnabled);
-    }
+    void setActionEnabled(String actionName, boolean isEnabled);
+
 }
