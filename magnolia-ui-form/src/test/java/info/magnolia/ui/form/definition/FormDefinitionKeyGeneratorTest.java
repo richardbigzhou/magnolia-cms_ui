@@ -31,35 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.definition;
+package info.magnolia.ui.form.definition;
 
-import info.magnolia.ui.form.definition.AbstractFormKeyGenerator;
-import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.form.definition.TabDefinition;
+import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import info.magnolia.i18n.I18nizer;
+import info.magnolia.i18n.proxytoys.ProxytoysI18nizer;
+
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * An {@link I18nKeyGenerator} for {@link FieldDefinition}.
- */
-public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldDefinition> {
-    @Override
-    protected void keysFor(List<String> list, FieldDefinition field, AnnotatedElement el) {
-        final TabDefinition tab = getParentViaCast(field);
-        final String tabName = tab.getName();
-        final FormDefinition formDef = getParentViaCast(tab);
-        final String dialogID = getParentId(formDef);
+import org.junit.Test;
 
-        final String fieldName = field.getName();
-        final String property = fieldOrGetterName(el);
-        // <dialogId>.<tabName>.<fieldName>.<property>
-        // <dialogId>.<tabName>.<fieldName> (in case of property==label)
-        addKey(list, dialogID, tabName, fieldName, property);
-        // <dialogId>.<fieldName>.<property>
-        // <dialogId>.<fieldName> (in case property==label)
-        addKey(list, dialogID, fieldName, property);
+/**
+ * TODO Type description here.
+ */
+public class FormDefinitionKeyGeneratorTest {
+
+    @Test
+    public void keysForTabLabel() throws SecurityException, NoSuchMethodException {
+        // GIVEN
+        // generator
+        FormDefinitionKeyGenerator generator = new FormDefinitionKeyGenerator();
+        // structure
+        TestDialogDef dialog = new TestDialogDef("test-module:testFolder/testDialog");
+        ConfiguredFormDefinition form = new ConfiguredFormDefinition();
+        // hierarchy
+        dialog.setForm(form);
+        // i18n
+        I18nizer i18nizer = new ProxytoysI18nizer(null, null);
+        dialog = i18nizer.decorate(dialog);
+
+        // WHEN
+        List<String> keys = new ArrayList<String>(4);
+        generator.keysFor(keys, dialog.getForm(), form.getClass().getMethod("getLabel"));
+
+        // THEN
+        assertEquals(2, keys.size());
+        assertEquals("test-module.testFolder.testDialog.label", keys.get(0));
+        assertEquals("test-module.testFolder.testDialog", keys.get(1));
     }
+
 }

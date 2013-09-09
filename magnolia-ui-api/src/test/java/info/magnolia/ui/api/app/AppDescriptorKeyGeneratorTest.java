@@ -60,12 +60,6 @@ public class AppDescriptorKeyGeneratorTest {
     }
 
     @Test
-    public void alwaysReturnNullBundleName() {
-        assertNull(generator.messageBundleNameFor(mock(AppDescriptor.class)));
-        assertNull(generator.messageBundleNameFor(null));
-    }
-
-    @Test
     public void keysForLabel() throws SecurityException, NoSuchMethodException {
         // GIVEN
         Method method = app.getClass().getMethod("getLabel");

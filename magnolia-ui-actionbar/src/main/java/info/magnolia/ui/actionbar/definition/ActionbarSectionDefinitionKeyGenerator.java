@@ -58,7 +58,7 @@ public class ActionbarSectionDefinitionKeyGenerator extends AbstractI18nKeyGener
             try {
                 final Method getId = root.getClass().getMethod("getId");
                 String messageViewId = (String) getId.invoke(root);
-                addKey(keys, messageViewId, "actionbar", "sections", sectionDefinition.getName(), fieldOrGetterName(el));
+                addKey(keys, messageViewId.replace(':', '.').replace('/', '.'), "actionbar", "sections", sectionDefinition.getName(), fieldOrGetterName(el));
             } catch (NoSuchMethodException e) {
                 // not a MessageView - log this?
             } catch (InvocationTargetException e) {
