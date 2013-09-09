@@ -43,11 +43,7 @@ import info.magnolia.ui.workbench.WorkbenchPresenter;
 import javax.inject.Inject;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 8/27/13
- * Time: 12:43 PM
- * To change this template use File | Settings | File Templates.
+ * Factory capable of producing {@link WorkbenchField}.
  */
 public class WorkbenchFieldFactory extends AbstractFieldFactory<WorkbenchFieldDefinition, Object> {
 

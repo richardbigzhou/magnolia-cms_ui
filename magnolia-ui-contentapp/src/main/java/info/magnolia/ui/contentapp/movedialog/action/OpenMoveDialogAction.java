@@ -50,11 +50,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/6/13
- * Time: 6:54 AM
- * To change this template use File | Settings | File Templates.
+ * Opens a move dialog for a collections of node adapters that need to be transferred.
  */
 public class OpenMoveDialogAction extends AbstractAction<OpenMoveDialogActionDefinition>  {
 

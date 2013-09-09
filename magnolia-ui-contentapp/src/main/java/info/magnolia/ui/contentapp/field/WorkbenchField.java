@@ -60,11 +60,8 @@ import java.util.Arrays;
 import java.util.Locale;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/2/13
- * Time: 1:35 AM
- * To change this template use File | Settings | File Templates.
+ * Wraps a workbench instance into a field. While it is quite useful in dialogs the users are discouraged
+ * from using it in a form.
  */
 public class WorkbenchField extends CustomField<Object> {
 

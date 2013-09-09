@@ -37,11 +37,7 @@ import com.vaadin.ui.Component;
 import info.magnolia.ui.api.view.View;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/6/13
- * Time: 5:41 AM
- * To change this template use File | Settings | File Templates.
+ * Simple view class that wraps component. Created in order to avoid many inline {@link View} implementations.
  */
 public class ViewAdapter implements View {
 

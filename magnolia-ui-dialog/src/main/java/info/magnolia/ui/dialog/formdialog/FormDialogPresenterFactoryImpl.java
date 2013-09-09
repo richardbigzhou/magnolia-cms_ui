@@ -44,11 +44,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/3/13
- * Time: 1:50 PM
- * To change this template use File | Settings | File Templates.
+ * Implementation of {@link FormDialogPresenterFactory}. Uses {@link DialogDefinitionRegistry} to fetch dialog definition.
  */
 @Singleton
 public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactory {

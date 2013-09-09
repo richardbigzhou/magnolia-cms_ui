@@ -37,11 +37,7 @@ import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 8/29/13
- * Time: 3:20 PM
- * To change this template use File | Settings | File Templates.
+ * Implementation of {@link ChooseDialogDefinition}.
  */
 public class ConfiguredChooseDialogDefinition extends ConfiguredBaseDialogDefinition implements ChooseDialogDefinition {
 

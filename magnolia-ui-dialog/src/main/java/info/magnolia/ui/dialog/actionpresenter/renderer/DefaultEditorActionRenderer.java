@@ -44,11 +44,7 @@ import info.magnolia.ui.dialog.actionpresenter.ActionListener;
 import java.util.HashMap;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/2/13
- * Time: 3:44 PM
- * To change this template use File | Settings | File Templates.
+ * Default implementation of {@link ActionRenderer}. Simply wraps a button.
  */
 public class DefaultEditorActionRenderer implements ActionRenderer {
 

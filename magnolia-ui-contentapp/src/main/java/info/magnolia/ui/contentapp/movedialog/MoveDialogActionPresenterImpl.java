@@ -48,11 +48,7 @@ import javax.inject.Inject;
 import java.util.Set;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/7/13
- * Time: 8:20 PM
- * To change this template use File | Settings | File Templates.
+ * Implementation of {@link MoveDialogActionPresenter}.
  */
 public class MoveDialogActionPresenterImpl extends DialogActionPresenterImpl implements MoveDialogActionPresenter {
 

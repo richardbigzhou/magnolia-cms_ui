@@ -48,11 +48,7 @@ import info.magnolia.ui.dialog.definition.SecondaryActionDefinition;
 import javax.inject.Inject;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/6/13
- * Time: 12:09 AM
- * To change this template use File | Settings | File Templates.
+ * Implementation of {@link DialogActionPresenter}.
  */
 public class DialogActionPresenterImpl implements DialogActionPresenter {
 

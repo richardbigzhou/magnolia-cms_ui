@@ -40,11 +40,7 @@ import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/8/13
- * Time: 2:44 AM
- * To change this template use File | Settings | File Templates.
+ * Check whether it is possible to place the collection of nodes after the tested node.
  */
 public class MoveAfterPossibilityPredicate extends MovePossibilityPredicate {
 

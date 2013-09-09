@@ -37,11 +37,7 @@ import com.vaadin.ui.Component;
 import info.magnolia.ui.api.view.View;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/6/13
- * Time: 12:37 AM
- * To change this template use File | Settings | File Templates.
+ * View interface used by {@link info.magnolia.ui.dialog.actionpresenter.DialogActionPresenter}.
  */
 public interface DialogActionView extends View {
 

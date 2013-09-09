@@ -34,11 +34,7 @@
 package info.magnolia.ui.dialog.definition;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/4/13
- * Time: 11:32 PM
- * To change this template use File | Settings | File Templates.
+ * Simple definition interface that describes a secondary action for {@link info.magnolia.ui.dialog.actionpresenter.DialogActionPresenter}.
  */
 public class SecondaryActionDefinition {
 

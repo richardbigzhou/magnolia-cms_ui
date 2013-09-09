@@ -58,11 +58,8 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/3/13
- * Time: 6:15 PM
- * To change this template use File | Settings | File Templates.
+ * Extension of {@link ChooseDialogPresenterImpl} capable of restoring choose dialog out of {@link BrowserSubAppDescriptor}
+ * of an app.
  */
 public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
 

@@ -77,11 +77,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/7/13
- * Time: 8:13 PM
- * To change this template use File | Settings | File Templates.
+ * Implementation of {@link MoveDialogPresenter}.
  */
 public class MoveDialogPresenterImpl extends BaseDialogPresenter implements MoveDialogPresenter {
 

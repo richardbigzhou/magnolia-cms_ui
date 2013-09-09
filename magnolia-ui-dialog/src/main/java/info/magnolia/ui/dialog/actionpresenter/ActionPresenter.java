@@ -40,11 +40,7 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.actionpresenter.definition.EditorActionPresenterDefinition;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/5/13
- * Time: 9:07 PM
- * To change this template use File | Settings | File Templates.
+ * Lays out and manages execution of action set.
  */
 public interface ActionPresenter {
 

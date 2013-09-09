@@ -39,11 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/5/13
- * Time: 11:19 PM
- * To change this template use File | Settings | File Templates.
+ * Implementation of {@link ActionPresenterDefinition}.
  */
 public class ConfiguredActionPresenterDefinition implements ActionPresenterDefinition {
 

@@ -42,11 +42,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 8/29/13
- * Time: 9:37 PM
- * To change this template use File | Settings | File Templates.
+ * Implementation of {@link BaseDialogDefinition}.
  */
 public class ConfiguredBaseDialogDefinition implements BaseDialogDefinition {
 

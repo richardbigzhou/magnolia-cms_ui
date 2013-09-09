@@ -40,11 +40,7 @@ import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 8/29/13
- * Time: 10:37 PM
- * To change this template use File | Settings | File Templates.
+ * Base action class for choose dialogs.
  */
 public class ChooseDialogAction extends AbstractAction<ChooseDialogActionDefinition> {
 

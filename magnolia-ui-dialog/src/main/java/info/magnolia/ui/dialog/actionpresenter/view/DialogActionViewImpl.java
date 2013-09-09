@@ -42,11 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/6/13
- * Time: 12:34 AM
- * To change this template use File | Settings | File Templates.
+ * Implementation of {@link DialogActionView}. Composes dialog/editor footer with Vaadin components.
  */
 public class DialogActionViewImpl implements DialogActionView {
 

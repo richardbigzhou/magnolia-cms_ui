@@ -39,11 +39,8 @@ import info.magnolia.ui.framework.action.MoveLocation;
 import java.util.Set;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/7/13
- * Time: 8:19 PM
- * To change this template use File | Settings | File Templates.
+ * {@link ActionPresenter} extension for the case of node move dialogs. Capable of narrowing the set of
+ * possible move variants.
  */
 public interface MoveDialogActionPresenter extends ActionPresenter {
 

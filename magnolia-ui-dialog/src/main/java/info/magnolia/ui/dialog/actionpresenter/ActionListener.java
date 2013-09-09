@@ -34,11 +34,9 @@
 package info.magnolia.ui.dialog.actionpresenter;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/2/13
- * Time: 3:41 PM
- * To change this template use File | Settings | File Templates.
+ * Triggered by {@link info.magnolia.ui.api.view.View} produced by {@link info.magnolia.ui.dialog.actionpresenter.renderer.ActionRenderer}.
+ * Typical example - a button click. Optionally it can also provide additional parameters
+ * (mouse button type, drop-down selection etc).
  */
 public interface ActionListener {
 

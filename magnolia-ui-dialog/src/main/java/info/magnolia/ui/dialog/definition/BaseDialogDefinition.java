@@ -40,11 +40,7 @@ import info.magnolia.ui.dialog.actionpresenter.definition.EditorActionPresenterD
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 8/29/13
- * Time: 9:33 PM
- * To change this template use File | Settings | File Templates.
+ * Base definition of a dialog.
  */
 public interface BaseDialogDefinition {
     /**

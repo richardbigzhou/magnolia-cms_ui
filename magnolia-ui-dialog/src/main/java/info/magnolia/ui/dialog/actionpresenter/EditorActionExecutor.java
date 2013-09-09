@@ -42,11 +42,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/6/13
- * Time: 11:14 AM
- * To change this template use File | Settings | File Templates.
+ * A common action executor that can be used by both dialogs and detail sub-apps.
+ * Simply takes a list of action definitions that it can execute.
  */
 public class EditorActionExecutor extends AbstractActionExecutor {
 

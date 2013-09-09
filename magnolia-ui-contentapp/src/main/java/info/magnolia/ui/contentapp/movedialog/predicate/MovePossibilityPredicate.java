@@ -41,11 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/8/13
- * Time: 2:36 AM
- * To change this template use File | Settings | File Templates.
+ * Checks whether it is possible to place the collection of nodes relatively to the tested node.
  */
 public abstract class MovePossibilityPredicate {
 

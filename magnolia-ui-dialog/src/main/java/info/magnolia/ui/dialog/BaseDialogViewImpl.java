@@ -46,11 +46,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/3/13
- * Time: 11:05 PM
- * To change this template use File | Settings | File Templates.
+ * Base implementation of {@link DialogView}.
  */
 public class BaseDialogViewImpl extends Panel implements DialogView {
 

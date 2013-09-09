@@ -36,11 +36,7 @@ package info.magnolia.ui.mediaeditor.action;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/4/13
- * Time: 12:33 PM
- * To change this template use File | Settings | File Templates.
+ * Definition of media editor's internal event.
  */
 public class InternalMediaEditorActionDefinition extends ConfiguredActionDefinition {
 

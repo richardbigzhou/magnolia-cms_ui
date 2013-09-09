@@ -7,11 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/5/13
- * Time: 11:43 PM
- * To change this template use File | Settings | File Templates.
+ * Implementation of {@link EditorActionPresenterDefinition}.
  */
 public class ConfiguredEditorActionPresenterDefinition extends ConfiguredActionPresenterDefinition implements EditorActionPresenterDefinition {
 
