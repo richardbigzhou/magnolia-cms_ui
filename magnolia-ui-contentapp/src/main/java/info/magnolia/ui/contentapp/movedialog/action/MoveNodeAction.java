@@ -31,8 +31,9 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.action;
+package info.magnolia.ui.contentapp.movedialog.action;
 
+import com.vaadin.data.Item;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.SubAppContext;
@@ -40,20 +41,19 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
+import info.magnolia.ui.contentapp.movedialog.MoveActionCallback;
 import info.magnolia.ui.framework.action.AbstractMultiItemAction;
 import info.magnolia.ui.framework.action.MoveLocation;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
-
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Named;
 import javax.jcr.Session;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
 
 /**
  * Action that moves a node.
@@ -65,24 +65,36 @@ public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefini
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     /** The item where the items should be moved relative to. */
-    private final com.vaadin.data.Item targetItem;
+    private final Item targetItem;
 
     private final AppController appController;
+
     private final UiContext uiContext;
+
     private final SubAppContext subAppContext;
+
     protected final EventBus admincentralEventBus;
+
+    private MoveActionCallback callback;
 
     private MoveLocation moveLocation = MoveLocation.BEFORE;
 
-    public MoveNodeAction(MoveNodeActionDefinition definition, List<JcrItemAdapter> items, com.vaadin.data.Item targetItem, MoveLocation moveLocation, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, AppController appController, UiContext uiContext, SubAppContext subAppContext) {
+    public MoveNodeAction(
+            MoveNodeActionDefinition definition,
+            List<JcrItemAdapter> items,
+            Item targetItem,
+            @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
+            AppController appController,
+            UiContext uiContext,
+            SubAppContext subAppContext,
+            MoveActionCallback callback) {
         super(definition, items, uiContext);
         this.uiContext = uiContext;
         this.subAppContext = subAppContext;
         this.appController = appController;
         this.targetItem = targetItem;
-        this.moveLocation = moveLocation;
         this.admincentralEventBus = admincentralEventBus;
-
+        this.callback = callback;
     }
 
     @Override
@@ -90,7 +102,7 @@ public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefini
         BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor();
         WorkbenchDefinition workbench = subAppDescriptor.getWorkbench();
         HierarchicalJcrContainer container = new HierarchicalJcrContainer(workbench);
-
+        moveLocation = getDefinition().getMoveLocation();
         try {
             javax.jcr.Item source = item.getJcrItem();
             javax.jcr.Item target = null;
@@ -116,24 +128,21 @@ public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefini
 
             Session session = source.getSession();
             admincentralEventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), itemIdOfChangedItem));
+            callback.onMovePerformed(targetItem, moveLocation);
 
         } catch (Exception e) {
-            log.error("Problem occured during moving items.", e);
+            log.error("Problem occurred during moving items.", e);
         }
 
     }
 
     @Override
     protected String getSuccessMessage() {
-        // TODO Auto-generated method stub
-        // return null;
         return "Item(s) moved.";
     }
 
     @Override
     protected String getFailureMessage() {
-        // TODO Auto-generated method stub
-        // return null;
         return "Move failed.";
     }
 

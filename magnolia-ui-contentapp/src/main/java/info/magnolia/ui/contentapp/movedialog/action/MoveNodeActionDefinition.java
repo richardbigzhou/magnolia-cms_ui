@@ -31,9 +31,10 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.action;
+package info.magnolia.ui.contentapp.movedialog.action;
 
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.framework.action.MoveLocation;
 
 /**
  * Used to configure a {@link MoveNodeAction}.
@@ -42,7 +43,22 @@ import info.magnolia.ui.api.action.ConfiguredActionDefinition;
  */
 public class MoveNodeActionDefinition extends ConfiguredActionDefinition {
 
+    private MoveLocation moveLocation;
+
     public MoveNodeActionDefinition() {
+        this(MoveLocation.AFTER);
+    }
+
+    public MoveNodeActionDefinition(MoveLocation moveLocation) {
         setImplementationClass(MoveNodeAction.class);
+        this.moveLocation = moveLocation;
+    }
+
+    public MoveLocation getMoveLocation() {
+        return moveLocation;
+    }
+
+    public void setMoveLocation(MoveLocation moveLocation) {
+        this.moveLocation = moveLocation;
     }
 }
