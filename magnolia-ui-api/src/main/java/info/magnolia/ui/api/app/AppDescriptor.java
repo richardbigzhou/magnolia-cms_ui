@@ -63,4 +63,6 @@ public interface AppDescriptor extends Serializable {
     Map<String, SubAppDescriptor> getSubApps();
 
     AccessDefinition getPermissions();
+
+    String getI18nBasename();
 }
