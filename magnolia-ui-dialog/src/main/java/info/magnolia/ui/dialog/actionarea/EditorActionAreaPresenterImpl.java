@@ -75,7 +75,7 @@ public class EditorActionAreaPresenterImpl implements EditorActionAreaPresenter 
             ActionRendererDefinition actionPresenterDef = definition.getActionRenderers().get(action.getName());
             ActionRenderer actionRenderer = actionPresenterDef == null ?
                     componentProvider.getComponent(ActionRenderer.class):
-                    componentProvider.newInstance(actionPresenterDef.getPresenterClass(), action, actionPresenterDef, uiContext);
+                    componentProvider.newInstance(actionPresenterDef.getRendererClass(), action, actionPresenterDef, uiContext);
             final View actionView = actionRenderer.start(action, new ActionListener() {
                 @Override
                 public void onActionFired(String actionName, Object... actionContextParams) {

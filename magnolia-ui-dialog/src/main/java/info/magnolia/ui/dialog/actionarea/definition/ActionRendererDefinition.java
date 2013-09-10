@@ -40,5 +40,5 @@ import info.magnolia.ui.dialog.actionarea.renderer.ActionRenderer;
  */
 public interface ActionRendererDefinition {
 
-    Class<? extends ActionRenderer> getPresenterClass();
+    Class<? extends ActionRenderer> getRendererClass();
 }

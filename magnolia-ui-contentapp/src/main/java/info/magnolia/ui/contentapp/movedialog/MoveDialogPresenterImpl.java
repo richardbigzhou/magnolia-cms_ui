@@ -46,6 +46,7 @@ import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.field.WorkbenchField;
+import info.magnolia.ui.contentapp.movedialog.action.MoveCancelledAction;
 import info.magnolia.ui.contentapp.movedialog.action.MoveNodeActionDefinition;
 import info.magnolia.ui.contentapp.movedialog.predicate.MoveAfterPossibilityPredicate;
 import info.magnolia.ui.contentapp.movedialog.predicate.MoveBeforePossibilityPredicate;
@@ -189,6 +190,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     }
 
     private void initActions() {
+
         for (MoveLocation location : MoveLocation.values()) {
             ConfiguredActionDefinition definition = new MoveNodeActionDefinition(location);
             definition.setName(location.name());
@@ -199,8 +201,14 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private BaseDialogDefinition prepareDialogDefinition() {
         ConfiguredBaseDialogDefinition def = new ConfiguredBaseDialogDefinition();
-        def.setLabel("Move");
+        def.setLabel("Move destination");
         def.setId("move:dialog");
+
+        ConfiguredActionDefinition cancelDef = new ConfiguredActionDefinition();
+        cancelDef.setLabel("Cancel");
+        cancelDef.setName("cancelMove");
+        cancelDef.setImplementationClass(MoveCancelledAction.class);
+        def.addAction(cancelDef);
         for (MoveLocation location : MoveLocation.values()) {
             def.addAction(actionMap.get(location));
         }

@@ -31,23 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.dialog.actionarea.definition;
+package info.magnolia.ui.contentapp.movedialog.action;
 
-import info.magnolia.ui.dialog.actionarea.renderer.ActionRenderer;
+import info.magnolia.ui.api.action.AbstractAction;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.message.Message;
+import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.contentapp.movedialog.MoveActionCallback;
 
 /**
- * Implementation of {@link ActionRendererDefinition}.
+ * Cancels move operation.
  */
-public class ConfiguredActionRendererDefinition implements ActionRendererDefinition {
+public class MoveCancelledAction extends AbstractAction<ConfiguredActionDefinition> {
 
-    private Class<? extends ActionRenderer> rendererClass;
+    private MoveActionCallback callback;
 
-    @Override
-    public Class<? extends ActionRenderer> getRendererClass() {
-        return rendererClass;
+    private AppContext appContext;
+
+    protected MoveCancelledAction(ConfiguredActionDefinition definition, MoveActionCallback callback, AppContext appContext) {
+        super(definition);
+        this.callback = callback;
+        this.appContext = appContext;
     }
 
-    public void setRendererClass(Class<? extends ActionRenderer> rendererClass) {
-        this.rendererClass = rendererClass;
+    @Override
+    public void execute() throws ActionExecutionException {
+        Message info = new Message(MessageType.INFO, "Move canceled", "");
+        appContext.broadcastMessage(info);
+        callback.onMoveCancelled();
     }
 }
