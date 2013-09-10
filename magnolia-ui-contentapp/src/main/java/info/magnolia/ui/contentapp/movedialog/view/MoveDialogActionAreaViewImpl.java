@@ -37,7 +37,7 @@ import com.vaadin.ui.Component;
 import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaViewImpl;
 
 /**
- *
+ * Implementation of {@link MoveDialogActionAreaView}.
  */
 public class MoveDialogActionAreaViewImpl extends EditorActionAreaViewImpl implements MoveDialogActionAreaView {
 
