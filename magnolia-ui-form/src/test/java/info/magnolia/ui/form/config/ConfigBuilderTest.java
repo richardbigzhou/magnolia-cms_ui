@@ -39,7 +39,7 @@ import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
-import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
+import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.form.field.definition.PasswordFieldDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
@@ -217,7 +217,7 @@ public class ConfigBuilderTest {
     @Test
     public void testMultiFieldBuilder() {
         // GIVEN
-        MultiFieldBuilder builder = new MultiFieldBuilder("MultiFieldBuilder");
+        MultiValueFieldBuilder builder = new MultiValueFieldBuilder("MultiFieldBuilder");
         initCommonAttributes(builder, false);
         // Specific to definition
         builder.buttonSelectRemoveLabel("buttonSelectRemoveLabel").buttonSelectAddLabel("buttonSelectAddLabel");
@@ -226,7 +226,7 @@ public class ConfigBuilderTest {
 
         // THEN
         checkCommonAttributes(builder);
-        MultiFieldDefinition definition = builder.definition();
+        MultiValueFieldDefinition definition = builder.definition();
         assertEquals("buttonSelectRemoveLabel", definition.getButtonSelectRemoveLabel());
         assertEquals("buttonSelectAddLabel", definition.getButtonSelectAddLabel());
         assertNotNull(definition.getTransformerClass());

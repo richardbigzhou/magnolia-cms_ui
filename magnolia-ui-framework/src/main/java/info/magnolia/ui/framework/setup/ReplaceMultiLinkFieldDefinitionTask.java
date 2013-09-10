@@ -38,7 +38,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.QueryTask;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
-import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
+import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -48,7 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Replace the 5.0 MultiLinkFieldDefinition by a MultiFieldDefinition. <br>
+ * Replace the 5.0 MultiLinkFieldDefinition by a MultiValueFieldDefinition. <br>
  */
 public class ReplaceMultiLinkFieldDefinitionTask extends QueryTask {
 
@@ -82,7 +82,7 @@ public class ReplaceMultiLinkFieldDefinitionTask extends QueryTask {
                 copyAndRemoveProperty(fieldNodeDefinition, field, "type");
 
                 // Change the class property
-                fieldNodeDefinition.setProperty("class", MultiFieldDefinition.class.getName());
+                fieldNodeDefinition.setProperty("class", MultiValueFieldDefinition.class.getName());
 
             } else {
                 log.debug("The following node {} is not a field definition. ", nodePath);

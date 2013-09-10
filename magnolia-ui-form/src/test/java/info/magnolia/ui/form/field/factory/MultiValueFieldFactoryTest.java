@@ -37,18 +37,18 @@ import static org.junit.Assert.assertEquals;
 
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.MultiField;
-import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
+import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 
 import org.junit.Test;
 
 import com.vaadin.ui.Field;
 
 /**
- * Main testcase for {@link info.magnolia.ui.form.field.factory.MultiFieldFactory}.
+ * Main testcase for {@link info.magnolia.ui.form.field.factory.MultiValueFieldFactory}.
  */
-public class MultiFieldFactoryTest extends AbstractFieldFactoryTestCase<MultiFieldDefinition> {
+public class MultiValueFieldFactoryTest extends AbstractFieldFactoryTestCase<MultiValueFieldDefinition> {
 
-    private MultiFieldFactory multiFieldFactory;
+    private MultiValueFieldFactory multiFieldFactory;
 
     @Override
     public void setUp() throws Exception {
@@ -58,7 +58,7 @@ public class MultiFieldFactoryTest extends AbstractFieldFactoryTestCase<MultiFie
     @Test
     public void testGetField() throws Exception {
         // GIVEN
-        multiFieldFactory = new MultiFieldFactory(definition, baseItem, null, null, new MockComponentProvider());
+        multiFieldFactory = new MultiValueFieldFactory(definition, baseItem, null, null, new MockComponentProvider());
         multiFieldFactory.setI18nContentSupport(i18nContentSupport);
         multiFieldFactory.setComponentProvider(new MockComponentProvider());
         // WHEN
@@ -70,7 +70,7 @@ public class MultiFieldFactoryTest extends AbstractFieldFactoryTestCase<MultiFie
 
     @Override
     protected void createConfiguredFieldDefinition() {
-        MultiFieldDefinition fieldDefinition = new MultiFieldDefinition();
+        MultiValueFieldDefinition fieldDefinition = new MultiValueFieldDefinition();
         fieldDefinition.setName(propertyName);
         this.definition = fieldDefinition;
     }
