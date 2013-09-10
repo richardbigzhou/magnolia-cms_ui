@@ -45,7 +45,7 @@ import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 import info.magnolia.ui.form.field.definition.DateFieldDefinition;
 import info.magnolia.ui.form.field.definition.HiddenFieldDefinition;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
-import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
+import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
@@ -326,7 +326,7 @@ public class ControlMigrationTest {
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));
         assertTrue(controlNode.hasProperty("class"));
-        assertEquals(MultiFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
+        assertEquals(MultiValueFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
         assertTrue(controlNode.hasNode("field"));
         Node field = controlNode.getNode("field");
         assertTrue(field.hasProperty("identifier"));
@@ -348,7 +348,7 @@ public class ControlMigrationTest {
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));
         assertTrue(controlNode.hasProperty("class"));
-        assertEquals(MultiFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
+        assertEquals(MultiValueFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
         Node field = controlNode.getNode("field");
         assertTrue(field.hasProperty("identifier"));
         assertEquals("true", field.getProperty("identifier").getString());

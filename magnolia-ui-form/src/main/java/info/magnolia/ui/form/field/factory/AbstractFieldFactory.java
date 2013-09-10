@@ -147,7 +147,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      */
     protected void setPropertyDataSourceDefaultValue(Property property) {
         Object defaultValue = createDefaultValue(property);
-        if (defaultValue != null) {
+        if (defaultValue != null && !definition.isReadOnly()) {
             if (defaultValue.getClass().isAssignableFrom(property.getType())) {
                 property.setValue(defaultValue);
             } else {

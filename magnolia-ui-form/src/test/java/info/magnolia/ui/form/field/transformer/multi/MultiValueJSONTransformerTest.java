@@ -39,7 +39,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
+import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
@@ -60,7 +60,7 @@ import com.vaadin.data.util.PropertysetItem;
 public class MultiValueJSONTransformerTest extends RepositoryTestCase {
     private Node rootNode;
     private final String propertyName = "propertyName";
-    private MultiFieldDefinition definition = new MultiFieldDefinition();
+    private MultiValueFieldDefinition definition = new MultiValueFieldDefinition();
 
     @Override
     @Before

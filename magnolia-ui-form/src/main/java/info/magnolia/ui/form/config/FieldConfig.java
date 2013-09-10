@@ -93,8 +93,8 @@ public class FieldConfig {
         return new TwinColSelectFieldBuilder(name);
     }
 
-    public MultiFieldBuilder multi(String name) {
-        return new MultiFieldBuilder(name);
+    public MultiValueFieldBuilder multi(String name) {
+        return new MultiValueFieldBuilder(name);
     }
 
     public BasicTextCodeFieldBuilder basicTextCode(String name) {

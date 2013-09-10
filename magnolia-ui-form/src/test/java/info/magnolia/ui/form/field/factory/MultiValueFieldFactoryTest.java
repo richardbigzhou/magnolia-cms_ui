@@ -31,51 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.transformer.basic;
+package info.magnolia.ui.form.field.factory;
 
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import static org.junit.Assert.assertEquals;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import info.magnolia.test.mock.MockComponentProvider;
+import info.magnolia.ui.form.field.MultiField;
+import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
+import org.junit.Test;
+
+import com.vaadin.ui.Field;
 
 /**
- * Specific TwinField {@link info.magnolia.ui.form.field.transformer.Transformer}.<br>
- * 
- * @param <T>
+ * Main testcase for {@link info.magnolia.ui.form.field.factory.MultiValueFieldFactory}.
  */
-public class TwinSelectPropertyTransformer<T> extends BasicTransformer<T> {
+public class MultiValueFieldFactoryTest extends AbstractFieldFactoryTestCase<MultiValueFieldDefinition> {
 
-    public TwinSelectPropertyTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<T> type) {
-        super(relatedFormItem, definition, type);
+    private MultiValueFieldFactory multiFieldFactory;
+
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    @Test
+    public void testGetField() throws Exception {
+        // GIVEN
+        multiFieldFactory = new MultiValueFieldFactory(definition, baseItem, null, null, new MockComponentProvider());
+        multiFieldFactory.setI18nContentSupport(i18nContentSupport);
+        multiFieldFactory.setComponentProvider(new MockComponentProvider());
+        // WHEN
+        Field field = multiFieldFactory.createField();
+
+        // THEN
+        assertEquals(true, field instanceof MultiField);
     }
 
     @Override
-    public void writeToItem(T newValue) {
-        Property<T> p = getOrCreateProperty(type);
-        if (p.getValue() instanceof Set && newValue instanceof List) {
-            newValue = (T) new HashSet((List) newValue);
-        } else if (p.getValue() instanceof List && newValue instanceof Set) {
-            newValue = (T) new LinkedList((Set) newValue);
-        }
-        p.setValue(newValue);
+    protected void createConfiguredFieldDefinition() {
+        MultiValueFieldDefinition fieldDefinition = new MultiValueFieldDefinition();
+        fieldDefinition.setName(propertyName);
+        this.definition = fieldDefinition;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    @Override
-    public T readFromItem() {
-        T value = super.readFromItem();
-
-        if (value == null) {
-            return (T) new HashSet();
-        } else if (value instanceof List) {
-            return (T) new HashSet((List) value);
-        } else {
-            return null;
-        }
-    }
 }
