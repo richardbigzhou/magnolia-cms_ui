@@ -87,8 +87,8 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
     @Override
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
         List<Task> tasks = new ArrayList<Task>();
-        Task orderNodeTo1stPosTask  = new OrderNodeTo1stPosTask("Security app ordering", "Moves the security app before the categories app",RepositoryConstants.CONFIG,"modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps/security");
-        NodeExistsDelegateTask delegateTask = new NodeExistsDelegateTask("Security app ordering delegate task", "Moves the security app before the categories app if the node exists", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps/security", orderNodeTo1stPosTask);
+        Task orderNodeTo1stPosTask  = new OrderNodeTo1stPosTask("Security app ordering", "Moves the security app before the configuration app",RepositoryConstants.CONFIG,"modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps/security");
+        NodeExistsDelegateTask delegateTask = new NodeExistsDelegateTask("Security app ordering delegate task", "Moves the security app before the configuration app if the node exists", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps/security", orderNodeTo1stPosTask);
         tasks.add(delegateTask);
         return tasks;
     }
