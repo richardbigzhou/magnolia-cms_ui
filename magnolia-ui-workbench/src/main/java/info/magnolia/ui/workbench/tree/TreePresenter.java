@@ -69,8 +69,8 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
     }
 
     @Override
-    public TreeView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName, Container shortcutActionHandler) {
-        TreeView view = (TreeView) super.start(workbench, eventBus, viewTypeName, shortcutActionHandler);
+    public TreeView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName, Container shortcutActionManager) {
+        TreeView view = (TreeView) super.start(workbench, eventBus, viewTypeName, shortcutActionManager);
 
         // inplace-editing
         if (workbench.isEditable()) {
@@ -88,7 +88,7 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
             }
 
             view.setEditableColumns(editableColumns.toArray());
-            view.setEditable(true, shortcutActionHandler);
+            view.setEditable(true, shortcutActionManager);
         }
 
         // Drag and Drop
@@ -102,6 +102,7 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
 
         return view;
     }
+
 
     public void disableDragAndDrop() {
         ((TreeView) view).setDragAndDropHandler(null);
@@ -130,5 +131,6 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
         // Clear preOrder cache of itemIds in case node was renamed
         getContainer().fireItemSetChange();
     }
+
 
 }

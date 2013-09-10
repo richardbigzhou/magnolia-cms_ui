@@ -46,7 +46,7 @@ import java.util.List;
 public interface ContentPresenter {
 
 
-    ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName, com.vaadin.event.Action.Container shortcutActionHandler);
+    ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName, com.vaadin.event.Action.Container shortcutActionManager);
 
     com.vaadin.data.Container getContainer();
 

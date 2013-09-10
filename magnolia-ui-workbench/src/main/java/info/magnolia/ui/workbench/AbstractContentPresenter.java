@@ -100,7 +100,7 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
     }
 
     @Override
-    public ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName, Container shortcutActionHandler) {
+    public ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName, Container shortcutActionManager) {
         this.workbenchDefinition = workbenchDefinition;
         this.eventBus = eventBus;
         this.viewTypeName = viewTypeName;

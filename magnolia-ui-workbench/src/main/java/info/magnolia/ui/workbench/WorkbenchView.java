@@ -78,5 +78,5 @@ public interface WorkbenchView extends View {
      */
     void setMultiselect(boolean multiselect);
 
-    Container getShortcutActionHandler();
+    Container getshortcutActionManager();
 }

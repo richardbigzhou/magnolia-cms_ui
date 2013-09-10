@@ -47,8 +47,12 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.event.Action;
 import com.vaadin.event.Action.Container;
+import com.vaadin.event.Action.Handler;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.dd.DropHandler;
+import com.vaadin.ui.Field;
 import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.TreeTable;
 
@@ -84,14 +88,18 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         this.treeTable = tree;
     }
 
+
     @Override
-    public void setEditable(boolean editable, Container shortcutActionHandler) {
+    public void setEditable(boolean editable, Container shortcutActionManager) {
         treeTable.setEditable(editable);
         if (editable && treeTable instanceof InplaceEditingTreeTable) {
             ((InplaceEditingTreeTable) treeTable).addItemEditedListener(itemEditedListener);
-            ((InplaceEditingTreeTable) treeTable).addKeyboardHandlers(shortcutActionHandler);
+
+            shortcutActionManager.addActionHandler(new EditingKeyboardHandler((InplaceEditingTreeTable) treeTable));
         } else {
             ((InplaceEditingTreeTable) treeTable).removeItemEditedListener(itemEditedListener);
+
+            shortcutActionManager.addActionHandler(new EditingKeyboardHandler((InplaceEditingTreeTable) treeTable));
         }
     }
 
@@ -154,6 +162,74 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     @Override
     public TreeTable asVaadinComponent() {
         return treeTable;
+    }
+
+    // KEYBOARD SHORTCUTS
+
+    /**
+     * The Class EditingKeyboardHandler for keyboard shortcuts with inplace editing.
+     */
+    private class EditingKeyboardHandler implements Handler {
+
+        private final ShortcutAction enter = new ShortcutAction("Enter", ShortcutAction.KeyCode.ENTER, null);
+
+        private final ShortcutAction tabNext = new ShortcutAction("Tab", ShortcutAction.KeyCode.TAB, null);
+
+        private final ShortcutAction tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB, new int[] { ShortcutAction.ModifierKey.CTRL });
+
+        private final ShortcutAction escape = new ShortcutAction("Esc", ShortcutAction.KeyCode.ESCAPE, null);
+
+        private final InplaceEditingTreeTable tree;
+
+        public EditingKeyboardHandler(InplaceEditingTreeTable tree) {
+            this.tree = tree;
+        }
+
+        @Override
+        public Action[] getActions(Object target, Object sender) {
+            // TODO: Find a better solution for handling tab key events: MGNLUI-1384
+            return new Action[] { enter, tabNext, tabPrev, escape };
+        }
+
+        @Override
+        public void handleAction(Action action, Object sender, Object target) {
+            /*
+             * In case of enter the Action needs to be casted back to
+             * ShortcutAction because for some reason the object is not same
+             * as this.enter object. In that case keycode is used in comparison.
+             */
+            if (!(action instanceof ShortcutAction)) {
+                return;
+            }
+            ShortcutAction shortcut = (ShortcutAction) action;
+
+            if (target != tree && target instanceof Field) {
+                Field<?> field = (Field<?>) target;
+
+                if (shortcut == enter || shortcut.getKeyCode() == enter.getKeyCode()) {
+                    tree.fireItemEditedEvent(field.getPropertyDataSource());
+                    tree.setEditing(null, null);
+
+                } else if (action == tabNext) {
+                    tree.editNextCell(field);
+
+                } else if (action == tabPrev) {
+                    tree.editPreviousCell(field);
+
+                } else if (action == escape) {
+                    tree.setEditing(null, null);
+                }
+            } else if (target == treeTable) {
+                if (tree.getValue() == null) {
+                    return;
+                }
+
+                if (shortcut == enter || shortcut.getKeyCode() == enter.getKeyCode()) {
+                    tree.editFirstCellofFirstSelectedRow();
+
+                }
+            }
+        }
     }
 
 }

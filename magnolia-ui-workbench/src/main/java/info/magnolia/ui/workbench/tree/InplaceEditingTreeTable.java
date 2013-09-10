@@ -44,13 +44,10 @@ import java.util.Set;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.event.Action;
-import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ActionManager;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
@@ -157,9 +154,6 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         refreshRowCache();
     }
 
-    public void setShortcutActionManager(ActionManager actionManager) {
-        shortcutActionManager = actionManager;
-    }
     // PARTIAL UPDATES
     // MGNLUI-282 partial updates are disabled for inplace-editing to prevent tree from turning unstable.
 
@@ -290,10 +284,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
     }
 
-    public void addKeyboardHandlers(com.vaadin.event.Action.Container shortcutActionManager) {
-        shortcutActionManager.addActionHandler(new EditingKeyboardHandler());
-        // getActionManager().addActionHandler(new EditingKeyboardHandler());
-    }
+
 
     // FIRING ITEM EDITED EVENTS
 
@@ -314,7 +305,7 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
      * it came from we need to fetch the item from the container and change the property before we send the item in the
      * event.
      */
-    private void fireItemEditedEvent(Property property) {
+    public void fireItemEditedEvent(Property property) {
 
         Item item = getContainerDataSource().getItem(editingItemId);
         if (item == null) {
@@ -347,89 +338,40 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
         return this;
     }
 
-    // KEYBOARD SHORTCUTS
 
-    /**
-     * The Class EditingKeyboardHandler for keyboard shortcuts with inplace editing.
-     */
-    private class EditingKeyboardHandler implements Handler {
+    // EDITING API
 
-        private final ShortcutAction enter = new ShortcutAction("Enter", ShortcutAction.KeyCode.ENTER, null);
+    public void editNextCell(Field<?> field) {
+        // First gets a reference to next candidate
+        TableCell nextCell = getNextEditableCandidate(editingItemId, editingPropertyId);
+        // Then saves
+        fireItemEditedEvent(field.getPropertyDataSource());
 
-        private final ShortcutAction tabNext = new ShortcutAction("Tab", ShortcutAction.KeyCode.TAB, null);
+        setEditing(nextCell.getItemId(), nextCell.getPropertyId());
+    }
 
-        private final ShortcutAction tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB, new int[] { ShortcutAction.ModifierKey.CTRL });
+    public void editPreviousCell(Field<?> field) {
+        // First gets a reference to previous candidate
+        TableCell previousCell = getPreviousEditableCandidate(editingItemId, editingPropertyId);
+        // Then saves
+        fireItemEditedEvent(field.getPropertyDataSource());
 
-        private final ShortcutAction escape = new ShortcutAction("Esc", ShortcutAction.KeyCode.ESCAPE, null);
+        setEditing(previousCell.getItemId(), previousCell.getPropertyId());
+    }
 
-        @Override
-        public Action[] getActions(Object target, Object sender) {
-            // TODO: Find a better solution for handling tab key events: MGNLUI-1384
-            // Removing tab actions so that tabbing between fields in forms work.
-            return new Action[] { enter, tabNext, tabPrev, escape };
-            // return new Action[] { enter, escape };
+    public void editFirstCellofFirstSelectedRow() {
+
+        // get first selected itemId, handles multiple selection mode
+        Object firstSelectedId = getValue();
+        if (firstSelectedId instanceof Set && ((Set<?>) firstSelectedId).size() > 0) {
+            firstSelectedId = ((Set<?>) firstSelectedId).iterator().next();
         }
-
-        @Override
-        public void handleAction(Action action, Object sender, Object target) {
-            /*
-             * In case of enter the Action needs to be casted back to
-             * ShortcutAction because for some reason the object is not same
-             * as this.enter object. In that case keycode is used in comparison.
-             */
-            if (!(action instanceof ShortcutAction)) {
-                return;
-            }
-            ShortcutAction shortcut = (ShortcutAction) action;
-
-            if (target != InplaceEditingTreeTable.this && target instanceof Field) {
-                Field<?> field = (Field<?>) target;
-
-                if (shortcut == enter || shortcut.getKeyCode() == enter.getKeyCode()) {
-                    fireItemEditedEvent(field.getPropertyDataSource());
-                    setEditing(null, null);
-
-                } else if (action == tabNext) {
-                    // First gets a reference to next candidate
-                    TableCell nextCell = getNextEditableCandidate(editingItemId, editingPropertyId);
-
-                    // Then saves
-                    fireItemEditedEvent(field.getPropertyDataSource());
-
-                    setEditing(nextCell.getItemId(), nextCell.getPropertyId());
-
-                } else if (action == tabPrev) {
-                    // First gets a reference to previous candidate
-                    TableCell previousCell = getPreviousEditableCandidate(editingItemId, editingPropertyId);
-
-                    // Then saves
-                    fireItemEditedEvent(field.getPropertyDataSource());
-
-                    setEditing(previousCell.getItemId(), previousCell.getPropertyId());
-
-                } else if (action == escape) {
-                    setEditing(null, null);
-                }
-            } else if (target == InplaceEditingTreeTable.this) {
-                if (getValue() == null) {
-                    return;
-                }
-
-                if (shortcut == enter || shortcut.getKeyCode() == enter.getKeyCode()) {
-                    // get first selected itemId, handles multiple selection mode
-                    Object firstSelectedId = getValue();
-                    if (firstSelectedId instanceof Set && ((Set<?>) firstSelectedId).size() > 0) {
-                        firstSelectedId = ((Set<?>) firstSelectedId).iterator().next();
-                    }
-                    // Edit selected row at first column
-                    Object propertyId = getVisibleColumns()[0];
-                    if (!editableColumns.contains(propertyId)) {
-                        propertyId = getNextEditableCandidate(firstSelectedId, propertyId).getPropertyId();
-                    }
-                    setEditing(firstSelectedId, propertyId);
-                }
-            }
+        // Edit selected row at first column
+        Object propertyId = getVisibleColumns()[0];
+        if (!editableColumns.contains(propertyId)) {
+            propertyId = getNextEditableCandidate(firstSelectedId, propertyId).getPropertyId();
         }
+        setEditing(firstSelectedId, propertyId);
     }
 
     // NEXT/PREVIOUS EDITABLE PROPERTY CANDIDATES

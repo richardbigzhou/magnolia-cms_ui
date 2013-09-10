@@ -169,7 +169,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
     }
 
     @Override
-    public Container getShortcutActionHandler() {
+    public Container getshortcutActionManager() {
         return keyboardEventPanel;
     }
 

@@ -63,8 +63,8 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     }
 
     @Override
-    public ListView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName, Container shortcutActionHandler) {
-        super.start(workbench, eventBus, viewTypeName, shortcutActionHandler);
+    public ListView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName, Container shortcutActionManager) {
+        super.start(workbench, eventBus, viewTypeName, shortcutActionManager);
 
         this.container = createContainer(workbench);
         view.setListener(this);
