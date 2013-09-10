@@ -34,32 +34,33 @@
 package info.magnolia.ui.contentapp.movedialog.action;
 
 import info.magnolia.ui.api.action.AbstractAction;
+import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.api.app.AppContext;
-import info.magnolia.ui.api.message.Message;
-import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.contentapp.movedialog.MoveActionCallback;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
+
+import javax.inject.Inject;
 
 /**
  * Cancels move operation.
  */
-public class MoveCancelledAction extends AbstractAction<ConfiguredActionDefinition> {
+public class MoveCancelledAction extends AbstractAction<ActionDefinition> {
 
     private MoveActionCallback callback;
 
-    private AppContext appContext;
+    private UiContext uiContext;
 
-    public MoveCancelledAction(ConfiguredActionDefinition definition, MoveActionCallback callback, AppContext appContext) {
+    @Inject
+    public MoveCancelledAction(ActionDefinition definition, MoveActionCallback callback, UiContext uiContext) {
         super(definition);
         this.callback = callback;
-        this.appContext = appContext;
+        this.uiContext = uiContext;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
-        Message info = new Message(MessageType.INFO, "Move canceled", "");
-        appContext.broadcastMessage(info);
+        uiContext.openNotification(MessageStyleTypeEnum.INFO, true, "Move Canceled");
         callback.onMoveCancelled();
     }
 }

@@ -64,7 +64,10 @@ import info.magnolia.ui.framework.overlay.ViewAdapter;
 import info.magnolia.ui.imageprovider.definition.ConfiguredImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
+import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
+import info.magnolia.ui.workbench.tree.TreePresenter;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 import javax.inject.Inject;
@@ -118,19 +121,17 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     @Override
     public Object[] getActionParameters(String actionName) {
-        return new Object[]{nodesToMove, callback, currentHostCandidate};
+        if (currentHostCandidate != null) {
+            return new Object[]{nodesToMove, callback, currentHostCandidate, uiContext};
+        }
+        return new Object[]{nodesToMove, callback, uiContext};
     }
 
     @Override
     public DialogView start(BrowserSubAppDescriptor subAppDescriptor, List<JcrNodeAdapter> nodesToMove, MoveActionCallback callback) {
-        final ConfiguredWorkbenchDefinition workbenchDefinition =
-            (ConfiguredWorkbenchDefinition) new Cloner().deepClone(subAppDescriptor.getWorkbench());
 
-        ConfiguredImageProviderDefinition imageProviderDefinition =
-            (ConfiguredImageProviderDefinition) new Cloner().deepClone(subAppDescriptor.getImageProvider());
-
-        workbenchDefinition.setIncludeProperties(false);
-        workbenchDefinition.setDialogWorkbench(true);
+        final ConfiguredImageProviderDefinition imageProviderDefinition = prepareImageProviderDefinition(subAppDescriptor);
+        final ConfiguredWorkbenchDefinition workbenchDefinition = prepareWorkbenchDefinition(subAppDescriptor);
 
         this.nodesToMove = nodesToMove;
         this.constraint = componentProvider.newInstance(workbenchDefinition.getDropConstraintClass());
@@ -168,6 +169,46 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         return dialogView;
     }
 
+    private ConfiguredImageProviderDefinition prepareImageProviderDefinition(BrowserSubAppDescriptor subAppDescriptor) {
+        return (ConfiguredImageProviderDefinition) new Cloner().deepClone(subAppDescriptor.getImageProvider());
+    }
+
+    private ConfiguredWorkbenchDefinition prepareWorkbenchDefinition(BrowserSubAppDescriptor subAppDescriptor) {
+        final ConfiguredWorkbenchDefinition workbenchDefinition =
+                (ConfiguredWorkbenchDefinition) new Cloner().deepClone(subAppDescriptor.getWorkbench());
+
+        workbenchDefinition.setIncludeProperties(false);
+        workbenchDefinition.setDialogWorkbench(true);
+        workbenchDefinition.setEditable(false);
+
+        List<ContentPresenterDefinition> contentPresenters = workbenchDefinition.getContentViews();
+        Iterator<ContentPresenterDefinition> it = contentPresenters.iterator();
+        ContentPresenterDefinition treePresenterDef = null;
+        while (it.hasNext() && treePresenterDef == null) {
+            ContentPresenterDefinition contentPresenterDef = it.next();
+            if (TreePresenter.class.isAssignableFrom(contentPresenterDef.getImplementationClass())) {
+                treePresenterDef = prepareTreePresenter(contentPresenterDef);
+            }
+        }
+
+        if (treePresenterDef != null) {
+            contentPresenters.clear();
+            contentPresenters.add(treePresenterDef);
+        }
+
+        return workbenchDefinition;
+    }
+
+    private ContentPresenterDefinition prepareTreePresenter(ContentPresenterDefinition treePresenter) {
+        ContentPresenterDefinition def = new Cloner().deepClone(treePresenter);
+        if (!def.getColumns().isEmpty()) {
+            ColumnDefinition column = def.getColumns().get(0);
+            def.getColumns().clear();
+            def.getColumns().add(column);
+        }
+        return def;
+    }
+
     private void initMovePossibilityPredicates() {
         possibilityPredicates.put(MoveLocation.AFTER, new MoveAfterPossibilityPredicate(constraint, nodesToMove));
         possibilityPredicates.put(MoveLocation.BEFORE, new MoveBeforePossibilityPredicate(constraint, nodesToMove));
@@ -190,7 +231,6 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     }
 
     private void initActions() {
-
         for (MoveLocation location : MoveLocation.values()) {
             ConfiguredActionDefinition definition = new MoveNodeActionDefinition(location);
             definition.setName(location.name());
