@@ -86,9 +86,9 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
                     editableColumns.add(propertyId);
                 }
             }
-
+            view.setActionManager(shortcutActionManager);
             view.setEditableColumns(editableColumns.toArray());
-            view.setEditable(true, shortcutActionManager);
+            view.setEditable(true);
         }
 
         // Drag and Drop

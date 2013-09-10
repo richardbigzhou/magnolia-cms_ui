@@ -44,7 +44,9 @@ import com.vaadin.event.dd.DropHandler;
  */
 public interface TreeView extends ListView {
 
-    void setEditable(boolean editable, Container shortcutActionManager);
+    void setEditable(boolean editable);
+
+    void setActionManager(Container shortcutActionManager);
 
     void setEditableColumns(Object... propertyIds);
 

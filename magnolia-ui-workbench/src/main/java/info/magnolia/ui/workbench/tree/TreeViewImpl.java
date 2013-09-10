@@ -65,6 +65,10 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
 
     private final TreeTable treeTable;
 
+    private Container shortcutActionManager;
+
+    private Handler editingKeyboardHandler;
+
     private final ItemEditedEvent.Handler itemEditedListener = new ItemEditedEvent.Handler() {
 
         @Override
@@ -90,16 +94,26 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
 
 
     @Override
-    public void setEditable(boolean editable, Container shortcutActionManager) {
+    public void setActionManager(Container shortcutActionManager) {
+        this.shortcutActionManager = shortcutActionManager;
+    }
+
+    @Override
+    public void setEditable(boolean editable) {
         treeTable.setEditable(editable);
         if (editable && treeTable instanceof InplaceEditingTreeTable) {
             ((InplaceEditingTreeTable) treeTable).addItemEditedListener(itemEditedListener);
-
-            shortcutActionManager.addActionHandler(new EditingKeyboardHandler((InplaceEditingTreeTable) treeTable));
+            if (shortcutActionManager != null) {
+                if (editingKeyboardHandler == null) {
+                    editingKeyboardHandler = new EditingKeyboardHandler((InplaceEditingTreeTable) treeTable);
+                }
+                shortcutActionManager.addActionHandler(editingKeyboardHandler);
+            }
         } else {
             ((InplaceEditingTreeTable) treeTable).removeItemEditedListener(itemEditedListener);
-
-            shortcutActionManager.addActionHandler(new EditingKeyboardHandler((InplaceEditingTreeTable) treeTable));
+            if (shortcutActionManager != null) {
+                shortcutActionManager.removeActionHandler(editingKeyboardHandler);
+            }
         }
     }
 
