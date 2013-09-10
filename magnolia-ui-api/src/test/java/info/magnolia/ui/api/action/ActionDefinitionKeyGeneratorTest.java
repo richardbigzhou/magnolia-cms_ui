@@ -50,6 +50,7 @@ import info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -185,6 +186,18 @@ public class ActionDefinitionKeyGeneratorTest {
         @Override
         public Locale getLocale() {
             return locale;
+        }
+
+        @Override
+        public Locale getFallbackLocale() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public Set<Locale> getAvailableLocales() {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 }

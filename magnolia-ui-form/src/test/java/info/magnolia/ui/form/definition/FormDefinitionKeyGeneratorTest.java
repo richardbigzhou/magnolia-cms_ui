@@ -49,7 +49,7 @@ import org.junit.Test;
 public class FormDefinitionKeyGeneratorTest {
 
     @Test
-    public void keysForTabLabel() throws SecurityException, NoSuchMethodException {
+    public void keysForFormLabel() throws SecurityException, NoSuchMethodException {
         // GIVEN
         // generator
         FormDefinitionKeyGenerator generator = new FormDefinitionKeyGenerator();
