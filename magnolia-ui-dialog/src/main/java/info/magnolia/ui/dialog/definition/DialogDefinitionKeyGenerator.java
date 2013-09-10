@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,33 +33,19 @@
  */
 package info.magnolia.ui.dialog.definition;
 
-import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.dialog.DialogPresenter;
-import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
-import info.magnolia.i18n.I18nAble;
-import info.magnolia.i18n.I18nText;
+import info.magnolia.ui.form.definition.AbstractFormKeyGenerator;
 
-import java.util.Map;
+import java.lang.reflect.AnnotatedElement;
+import java.util.List;
 
 /**
- * Base definition of a dialog.
+ * TODO Type description here.
  */
-@I18nAble(keyGenerator = DialogDefinitionKeyGenerator.class)
-public interface BaseDialogDefinition {
+public class DialogDefinitionKeyGenerator extends AbstractFormKeyGenerator<DialogDefinition> {
 
-    /**
-     * Unique identifier for this dialog.
-     */
-    String getId();
+    @Override
+    protected void keysFor(List<String> keys, DialogDefinition object, AnnotatedElement el) {
+        addKey(keys, object.getId().replace(':', '.').replace('/', '.'), fieldOrGetterName(el));
+    }
 
-    @I18nText
-    String getLabel();
-
-    String getI18nBasename();
-
-    Map<String, ActionDefinition> getActions();
-
-    Class<? extends DialogPresenter> getPresenterClass();
-
-    EditorActionAreaDefinition getActionArea();
 }
