@@ -37,25 +37,37 @@ import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 
 /**
- * Specific OptionGroupField {@link info.magnolia.ui.form.field.transformer.Transformer}.<br>
- * Vaadin native {@link com.vaadin.ui.OptionGroup} used as root component of our configured Option Group Field do not support List, but only Sets.
- *
+ * Specific MultiSelect field {@link info.magnolia.ui.form.field.transformer.Transformer}.<br>
+ * For example, the Vaadin native {@link com.vaadin.ui.OptionGroup} used as root component of our configured Option Group Field do not support List, but only Sets.
+ * 
  * @param <T>
  */
-public class OptionGroupTransformer<T> extends BasicTransformer<T> {
+public class ListToSetTransformer<T> extends BasicTransformer<T> {
 
-    private boolean multiselect = false;
+    private final boolean multiselect;
 
-    public OptionGroupTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<T> type) {
+    public ListToSetTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<T> type) {
         super(relatedFormItem, definition, type);
         multiselect = ((OptionGroupFieldDefinition) definition).isMultiselect();
     }
 
+    @Override
+    public void writeToItem(T newValue) {
+        Property<T> p = getOrCreateProperty(type);
+
+        if (p.getValue() instanceof List && newValue instanceof Set) {
+            newValue = (T) new LinkedList((Set) newValue);
+        }
+        p.setValue(newValue);
+    }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
@@ -73,4 +85,5 @@ public class OptionGroupTransformer<T> extends BasicTransformer<T> {
             return null;
         }
     }
+
 }

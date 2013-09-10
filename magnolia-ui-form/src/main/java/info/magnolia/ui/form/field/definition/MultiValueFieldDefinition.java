@@ -38,7 +38,7 @@ import info.magnolia.ui.form.field.transformer.multi.MultiValueTransformer;
 /**
  * Definition used to configure a generic multi field.
  */
-public class MultiFieldDefinition extends ConfiguredFieldDefinition {
+public class MultiValueFieldDefinition extends ConfiguredFieldDefinition {
 
     private String buttonSelectAddLabel = "buttons.add";
     private String buttonSelectRemoveLabel = "buttons.delete";
@@ -47,7 +47,7 @@ public class MultiFieldDefinition extends ConfiguredFieldDefinition {
     /**
      * Set default {@link info.magnolia.ui.form.field.transformer.Transformer}.
      */
-    public MultiFieldDefinition() {
+    public MultiValueFieldDefinition() {
         setTransformerClass(MultiValueTransformer.class);
     }
 
