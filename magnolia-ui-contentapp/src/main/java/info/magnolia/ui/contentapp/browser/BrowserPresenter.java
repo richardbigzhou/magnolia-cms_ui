@@ -218,8 +218,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
                     executeDefaultAction();
                     break;
                 case ShortcutAction.KeyCode.DELETE:
-                    //
-                    // executeDeleteAction();
+                    executeDeleteAction();
                     break;
                 }
 
@@ -361,6 +360,20 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         String defaultAction = actionbarDefinition.getDefaultAction();
         if (StringUtils.isNotEmpty(defaultAction)) {
             executeAction(defaultAction);
+        }
+    }
+
+    /**
+     * Executes the default delete action, as configured in the {@link info.magnolia.ui.actionbar.definition.ActionbarDefinition}.
+     */
+    private void executeDeleteAction() {
+        ActionbarDefinition actionbarDefinition = subAppDescriptor.getActionbar();
+        if (actionbarDefinition == null) {
+            return;
+        }
+        String deleteAction = actionbarDefinition.getDeleteAction();
+        if (StringUtils.isNotEmpty(deleteAction)) {
+            executeAction(deleteAction);
         }
     }
 
