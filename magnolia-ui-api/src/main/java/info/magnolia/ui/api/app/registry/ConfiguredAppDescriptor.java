@@ -62,6 +62,8 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
 
     private AccessDefinition permissions;
 
+    private String i18nBasename;
+
     @Override
     public String getName() {
         return name;
@@ -136,6 +138,15 @@ public class ConfiguredAppDescriptor implements AppDescriptor {
 
     public void setPermissions(AccessDefinition permissions) {
         this.permissions = permissions;
+    }
+
+    @Override
+    public String getI18nBasename() {
+        return i18nBasename;
+    }
+
+    public void setI18nBasename(String i18nBasename) {
+        this.i18nBasename = i18nBasename;
     }
 
     @Override
