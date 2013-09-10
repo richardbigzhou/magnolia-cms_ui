@@ -108,7 +108,6 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
     public AbstractUploadField(D fileWrapper, File tmpUploadDirectory) {
         this.fileWrapper = fileWrapper;
         this.receiver = new UploadReceiver(tmpUploadDirectory);
-
         createUpload();
     }
 
@@ -221,6 +220,13 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
      */
     protected Upload getUpload() {
         return this.upload;
+    }
+
+    /**
+     * @return the initialized DragAndDropWrapper.
+     */
+    protected DragAndDropWrapper getDropZone() {
+        return this.dropZone;
     }
 
     /**

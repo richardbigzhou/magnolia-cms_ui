@@ -107,7 +107,7 @@ public class ContentPresenterTest {
     public void testOnItemSelectionFiresOnEventBus() throws Exception {
         // GIVEN
         final AbstractContentPresenter presenter = new DummyContentPresenter();
-        presenter.start(workbench, eventBus, "");
+        presenter.start(workbench, eventBus, "", null);
         // WHEN
         presenter.onItemSelection(items);
 
@@ -123,7 +123,7 @@ public class ContentPresenterTest {
     public void testOnDoubleClickFiresOnEventBus() throws Exception {
         // GIVEN
         final AbstractContentPresenter presenter = new DummyContentPresenter();
-        presenter.start(workbench, eventBus, "");
+        presenter.start(workbench, eventBus, "", null);
 
         // WHEN
         presenter.onDoubleClick(item);
@@ -139,7 +139,7 @@ public class ContentPresenterTest {
     public void testOnItemSelectionWithNullItemSetSelectedPath() {
         // GIVEN
         AbstractContentPresenter presenter = new DummyContentPresenter();
-        presenter.start(workbench, eventBus, "");
+        presenter.start(workbench, eventBus, "", null);
         items = new HashSet<String>();
         items.add(null);
 

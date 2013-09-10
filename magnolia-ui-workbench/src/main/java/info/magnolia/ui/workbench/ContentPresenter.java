@@ -38,7 +38,6 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.util.List;
 
-import com.vaadin.data.Container;
 
 /**
  * Defines the basic api for a workbench content presenter.
@@ -47,9 +46,9 @@ import com.vaadin.data.Container;
 public interface ContentPresenter {
 
 
-    ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName);
+    ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName, com.vaadin.event.Action.Container shortcutActionManager);
 
-    Container getContainer();
+    com.vaadin.data.Container getContainer();
 
     void refresh();
 

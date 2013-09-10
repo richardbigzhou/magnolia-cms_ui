@@ -54,6 +54,8 @@ public interface ContentView extends View {
      */
     void select(List<String> itemIds);
 
+    public void onShortcutKey(int keyCode, int[] modifierKeys);
+    
     /**
      * Decides whether the user can select multiple items.
      */
@@ -69,6 +71,8 @@ public interface ContentView extends View {
         void onDoubleClick(Item item);
 
         void onRightClick(Item item, int clickX, int clickY);
+
+        void onShortcutKey(int keyCode, int... modifierKeys);
 
         String getIcon(Item item);
     }
