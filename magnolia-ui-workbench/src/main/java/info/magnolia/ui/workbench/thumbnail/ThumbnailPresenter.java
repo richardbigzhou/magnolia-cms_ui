@@ -55,8 +55,8 @@ import javax.jcr.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Container;
 import com.vaadin.data.Item;
+import com.vaadin.event.Action.Container;
 
 /**
  * The ThumbnailPresenter is responsible for creating, configuring and updating a thumbnail grid of items according to the workbench definition.
@@ -79,8 +79,8 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     }
 
     @Override
-    public ContentView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName) {
-        super.start(workbench, eventBus, viewTypeName);
+    public ContentView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName, Container shortcutActionManager) {
+        super.start(workbench, eventBus, viewTypeName, shortcutActionManager);
 
         container = new ThumbnailContainer(workbench, imageProvider);
         container.setWorkspaceName(workbench.getWorkspace());
@@ -106,7 +106,7 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     }
 
     @Override
-    public Container getContainer() {
+    public com.vaadin.data.Container getContainer() {
         return container;
     }
 
