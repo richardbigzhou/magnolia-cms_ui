@@ -13,7 +13,7 @@
     <sv:value>info.magnolia.ui.contentapp.ContentApp</sv:value>
   </sv:property>
   <sv:property sv:name="class" sv:type="String">
-    <sv:value>info.magnolia.ui.api.app.AppDescriptor</sv:value>
+    <sv:value>info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor</sv:value>
   </sv:property>
   <sv:property sv:name="icon" sv:type="String">
     <sv:value>icon-webpages-app</sv:value>

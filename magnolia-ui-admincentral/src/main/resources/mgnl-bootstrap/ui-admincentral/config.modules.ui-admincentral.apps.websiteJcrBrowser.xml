@@ -12,6 +12,9 @@
   <sv:property sv:name="appClass" sv:type="String">
     <sv:value>info.magnolia.ui.contentapp.ContentApp</sv:value>
   </sv:property>
+  <sv:property sv:name="class" sv:type="String">
+    <sv:value>info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor</sv:value>
+  </sv:property>
   <sv:property sv:name="icon" sv:type="String">
     <sv:value>icon-jcr-app</sv:value>
   </sv:property>

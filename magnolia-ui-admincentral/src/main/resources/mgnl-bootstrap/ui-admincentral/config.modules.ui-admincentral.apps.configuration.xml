@@ -13,7 +13,7 @@
     <sv:value>info.magnolia.ui.contentapp.ContentApp</sv:value>
   </sv:property>
   <sv:property sv:name="class" sv:type="String">
-    <sv:value>info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor</sv:value>
+    <sv:value>info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor</sv:value>
   </sv:property>
   <sv:property sv:name="icon" sv:type="String">
     <sv:value>icon-configuration-app</sv:value>
@@ -1671,6 +1671,9 @@
             <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
               <sv:value>mix:lockable</sv:value>
             </sv:property>
+            <sv:property sv:name="jcr:uuid" sv:type="String">
+              <sv:value>ca323d39-8b8d-442b-a36e-0e3865b70b92</sv:value>
+            </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
             </sv:property>
@@ -1689,6 +1692,9 @@
               </sv:property>
               <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
                 <sv:value>mix:lockable</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:uuid" sv:type="String">
+                <sv:value>6c05601c-62c2-4c6b-b2cf-018f8761170b</sv:value>
               </sv:property>
               <sv:property sv:name="extends" sv:type="String">
                 <sv:value>/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups</sv:value>
