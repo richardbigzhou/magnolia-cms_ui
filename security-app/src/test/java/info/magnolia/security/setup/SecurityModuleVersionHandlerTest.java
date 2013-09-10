@@ -222,30 +222,18 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         String applauncherManageGroupParentPath = "/modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps";
         String securityNodeName = "security";
         Node nodeCat = NodeUtil.createPath(session.getRootNode(), applauncherManageGroupParentPath + "/categories", NodeTypes.ContentNode.NAME);
+        Node nodeConf = NodeUtil.createPath(session.getRootNode(), applauncherManageGroupParentPath + "/configuration", NodeTypes.ContentNode.NAME);
+        Node nodeSec = NodeUtil.createPath(session.getRootNode(), applauncherManageGroupParentPath + "/"+securityNodeName, NodeTypes.ContentNode.NAME);
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(null);
 
         // THEN
-        NodeIterator someNodes = nodeCat.getParent().getNodes();
-        boolean secNodeExists = false;
-        boolean secNodeIs1st=false;
-        int counter=0;
-        StringBuffer buffer = new StringBuffer("");
-        while (someNodes.hasNext()) {
-            Node node = someNodes.nextNode();
-            String path = node.getPath();
-            buffer.append(path).append(" ,");
-            if ( path.endsWith(securityNodeName)) {
-                secNodeExists = true;
-            }
-            if(counter==0 && secNodeExists){
-                secNodeIs1st = true;
-            }
-            counter++;
-        }
-        assertTrue("secure-node doesn't exist! (found "+counter+"nodes ("+buffer.toString()+"))", secNodeExists);
-        assertTrue("the security-node is not the 1st sibbling within '/modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps'",secNodeIs1st);
+        NodeIterator someNodes = nodeCat.getParent().getNodes();        StringBuffer buffer = new StringBuffer("");
+        Node node1st = someNodes.nextNode();
+        boolean secNodeIs1st = node1st.getPath().endsWith(securityNodeName);
+
+        assertTrue("'security'-node is NOT the 1st one.",secNodeIs1st);
     }
 
 
