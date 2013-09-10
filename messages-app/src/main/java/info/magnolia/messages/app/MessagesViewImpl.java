@@ -33,10 +33,6 @@
  */
 package info.magnolia.messages.app;
 
-import info.magnolia.ui.api.message.MessageType;
-
-import java.io.Serializable;
-
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -56,6 +52,9 @@ import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import info.magnolia.ui.api.message.MessageType;
+
+import java.io.Serializable;
 
 /**
  * View implementation for the Messages app.
@@ -146,7 +145,7 @@ public class MessagesViewImpl implements MessagesView {
             }
         });
         sendButton.addStyleName("btn-dialog");
-        sendButton.addStyleName("btn-dialog-commit");
+        sendButton.addStyleName("commit");
 
         // reset button
         NativeButton resetButton = new NativeButton("Reset", new Button.ClickListener() {
@@ -158,7 +157,7 @@ public class MessagesViewImpl implements MessagesView {
             }
         });
         resetButton.addStyleName("btn-dialog");
-        resetButton.addStyleName("btn-dialog-cancel");
+        resetButton.addStyleName("cancel");
 
         HorizontalLayout buttons = new HorizontalLayout();
         buttons.addStyleName("buttons");

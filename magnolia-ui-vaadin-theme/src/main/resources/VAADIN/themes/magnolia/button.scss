@@ -16,18 +16,18 @@
   button.btn-dialog {
 
     &.commit,
-    &.btn-dialog-commit {
+    &.v-button-commit {
       background-color: $c40;
     }
     
     .v-ui:not(.tablet) &.commit:hover,
-    .v-ui:not(.tablet) &.btn-dialog-commit:hover {
+    .v-ui:not(.tablet) &.v-button-commit:hover {
       background-color: $c44;
       color: $c40;
     }
 
     .v-app .v-ui &.commit:active,
-    .v-app .v-ui &.btn-dialog-commit:active {
+    .v-app .v-ui &.v-button-commit:active {
       background-color: $c80;
       color: $c40;
     }
