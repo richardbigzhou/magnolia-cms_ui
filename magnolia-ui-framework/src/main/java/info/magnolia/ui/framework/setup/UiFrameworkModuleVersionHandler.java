@@ -49,11 +49,11 @@ import info.magnolia.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
-import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
+import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
 import info.magnolia.ui.form.field.factory.CompositeFieldFactory;
-import info.magnolia.ui.form.field.factory.MultiFieldFactory;
+import info.magnolia.ui.form.field.factory.MultiValueFieldFactory;
 import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
 
 import java.util.ArrayList;
@@ -80,9 +80,9 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
                 .addTask(new RemoveNodeTask("Remove MultiLinkField definition mapping", "", RepositoryConstants.CONFIG, "/modules/ui-framework/fieldTypes/multiLinkField"))
                 .addTask(createNewFieldDefinition("basicTextCodeField", BasicTextCodeFieldDefinition.class.getName(), BasicTextCodeFieldFactory.class.getName()))
                 .addTask(createNewFieldDefinition("switchableField", SwitchableFieldDefinition.class.getName(), SwitchableFieldFactory.class.getName()))
-                .addTask(createNewFieldDefinition("multiField", MultiFieldDefinition.class.getName(), MultiFieldFactory.class.getName()))
+                .addTask(createNewFieldDefinition("multiField", MultiValueFieldDefinition.class.getName(), MultiValueFieldFactory.class.getName()))
                 .addTask(createNewFieldDefinition("compositeField", CompositeFieldDefinition.class.getName(), CompositeFieldFactory.class.getName()))
-                .addTask((new ReplaceMultiLinkFieldDefinitionTask("Change the MultiLinkFieldDefinition by MultiFieldDefinition ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where contains(t.*,'info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition') ")))
+                .addTask((new ReplaceMultiLinkFieldDefinitionTask("Change the MultiLinkFieldDefinition by MultiValueFieldDefinition ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where contains(t.*,'info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition') ")))
                 .addTask((new ReplaceSaveModeTypeFieldDefinitionTask("Update field definition sub task from 'saveModeType' to 'transformerClass' ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where name(t) = 'saveModeType' ")))
         );
     }

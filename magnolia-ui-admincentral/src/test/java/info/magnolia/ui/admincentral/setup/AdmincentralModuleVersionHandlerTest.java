@@ -70,7 +70,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     private Node servletParameters;
     private String appLauncherLayoutConfigNodeSourceParent_path = "/modules/ui-framework/config";
     private String appLauncherLayoutConfigNodeTargetParent_path = "/modules/ui-admincentral/config";
-    //private Node appLauncherLayoutConfigNodeSourceParent;
+    private Node appLauncherLayoutConfigNodeSourceParent;
     private Node appLauncherLayoutConfigNodeTargetParent;
 
 
@@ -107,7 +107,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         confirmDeleteActionAvailability = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/confirmDeletion/availability", NodeTypes.ContentNode.NAME);
         configActionbarSections = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections", NodeTypes.ContentNode.NAME);
         servletParameters = NodeUtil.createPath(session.getRootNode(), "/server/filters/servlets/AdminCentral/parameters", NodeTypes.ContentNode.NAME);
-        //appLauncherLayoutConfigNodeSourceParent = NodeUtil.createPath(session.getRootNode(),appLauncherLayoutConfigNodeSourceParent_path, NodeTypes.ContentNode.NAME);
+        appLauncherLayoutConfigNodeSourceParent = NodeUtil.createPath(session.getRootNode(),appLauncherLayoutConfigNodeSourceParent_path, NodeTypes.ContentNode.NAME);
         appLauncherLayoutConfigNodeTargetParent = NodeUtil.createPath(session.getRootNode(),appLauncherLayoutConfigNodeTargetParent_path, NodeTypes.ContentNode.NAME);
     }
 
@@ -344,12 +344,14 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         // GIVEN
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         Node applauncherLayoutConfig = NodeUtil.createPath( session.getRootNode(),appLauncherLayoutConfigNodeSourceParent_path+"/"+applauncherlayoutNodeName,NodeTypes.ContentNode.NAME);
+        Node appLauncherLayoutConfigNodeSourceGrandParent = appLauncherLayoutConfigNodeSourceParent.getParent();
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.2"));
 
         // THEN
         assertTrue(appLauncherLayoutConfigNodeTargetParent.hasNode(applauncherlayoutNodeName));
+        assertFalse(appLauncherLayoutConfigNodeSourceGrandParent.hasNode("config"));
 
     }
 

@@ -35,7 +35,7 @@ package info.magnolia.ui.dialog.setup.migration;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
-import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
+import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueJSONTransformer;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueSubChildrenNodeTransformer;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueTransformer;
@@ -57,7 +57,7 @@ public class MultiSelectControlMigration implements ControlMigration {
     @Override
     public void migrate(Node controlNode) throws RepositoryException {
         controlNode.getProperty("controlType").remove();
-        controlNode.setProperty("class", MultiFieldDefinition.class.getName());
+        controlNode.setProperty("class", MultiValueFieldDefinition.class.getName());
         // Set transformerClass
         setTransformerClass(controlNode);
         // Create a Field sub node

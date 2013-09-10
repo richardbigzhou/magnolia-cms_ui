@@ -39,15 +39,14 @@ import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
-import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
+import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.form.field.definition.PasswordFieldDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
-import info.magnolia.ui.form.field.transformer.basic.OptionGroupTransformer;
-import info.magnolia.ui.form.field.transformer.basic.TwinSelectPropertyTransformer;
+import info.magnolia.ui.form.field.transformer.basic.ListToSetTransformer;
 import info.magnolia.ui.form.field.transformer.composite.CompositeTransformer;
 import info.magnolia.ui.form.field.transformer.composite.SwitchableTransformer;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueTransformer;
@@ -218,7 +217,7 @@ public class ConfigBuilderTest {
     @Test
     public void testMultiFieldBuilder() {
         // GIVEN
-        MultiFieldBuilder builder = new MultiFieldBuilder("MultiFieldBuilder");
+        MultiValueFieldBuilder builder = new MultiValueFieldBuilder("MultiFieldBuilder");
         initCommonAttributes(builder, false);
         // Specific to definition
         builder.buttonSelectRemoveLabel("buttonSelectRemoveLabel").buttonSelectAddLabel("buttonSelectAddLabel");
@@ -227,7 +226,7 @@ public class ConfigBuilderTest {
 
         // THEN
         checkCommonAttributes(builder);
-        MultiFieldDefinition definition = builder.definition();
+        MultiValueFieldDefinition definition = builder.definition();
         assertEquals("buttonSelectRemoveLabel", definition.getButtonSelectRemoveLabel());
         assertEquals("buttonSelectAddLabel", definition.getButtonSelectAddLabel());
         assertNotNull(definition.getTransformerClass());
@@ -250,7 +249,7 @@ public class ConfigBuilderTest {
         assertEquals("leftColumnCaption", definition.getLeftColumnCaption());
         assertEquals("rightColumnCaption", definition.getRightColumnCaption());
         assertNotNull(definition.getTransformerClass());
-        assertEquals(TwinSelectPropertyTransformer.class.getName(), definition.getTransformerClass().getName());
+        assertEquals(ListToSetTransformer.class.getName(), definition.getTransformerClass().getName());
     }
 
     @Test
@@ -268,7 +267,7 @@ public class ConfigBuilderTest {
         OptionGroupFieldDefinition definition = builder.definition();
         assertEquals(true, definition.isMultiselect());
         assertNotNull(definition.getTransformerClass());
-        assertEquals(OptionGroupTransformer.class.getName(), definition.getTransformerClass().getName());
+        assertEquals(ListToSetTransformer.class.getName(), definition.getTransformerClass().getName());
     }
 
     @Test

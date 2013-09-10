@@ -36,7 +36,7 @@ package info.magnolia.ui.form.field;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
+import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 
 import java.util.Iterator;
@@ -60,7 +60,7 @@ import com.vaadin.ui.VerticalLayout;
  * The Field is build based on a generic {@link ConfiguredFieldDefinition}.<br>
  * The Field values are handle by a configured {@link info.magnolia.ui.form.field.transformer.Transformer} dedicated to create/retrieve properties as {@link PropertysetItem}.<br>
  */
-public class MultiField extends AbstractCustomMultiField<MultiFieldDefinition, PropertysetItem> {
+public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefinition, PropertysetItem> {
 
     private VerticalLayout root;
     private final Button addButton = new NativeButton();
@@ -69,7 +69,7 @@ public class MultiField extends AbstractCustomMultiField<MultiFieldDefinition, P
     private String buttonCaptionAdd;
     private String buttonCaptionRemove;
 
-    public MultiField(MultiFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider, Item relatedFieldItem) {
+    public MultiField(MultiValueFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider, Item relatedFieldItem) {
         super(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, relatedFieldItem);
         this.fieldDefinition = definition.getField();
     }

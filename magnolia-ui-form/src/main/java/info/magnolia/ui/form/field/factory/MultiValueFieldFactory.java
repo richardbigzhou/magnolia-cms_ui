@@ -36,7 +36,7 @@ package info.magnolia.ui.form.field.factory;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.MultiField;
-import info.magnolia.ui.form.field.definition.MultiFieldDefinition;
+import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
 
 import javax.inject.Inject;
@@ -47,22 +47,21 @@ import com.vaadin.ui.Field;
 
 
 /**
- * Creates and initializes an multi-field based on a field definition.<br>
+ * Creates and initializes an multi value field based on a field definition.<br>
  * Multi-field basicaly handle: <br>
  * - Add remove Fields <br>
  * This field builder create a {@link ListProperty} based on the definition and set this property as <br>
  * Field property datasource.
- *
+ * 
  * @param <T>
  */
-// public class MultiFieldFactory<T> extends AbstractFieldFactory<MultiFieldDefinition, List<T>> {
-public class MultiFieldFactory<T> extends AbstractFieldFactory<MultiFieldDefinition, PropertysetItem> {
+public class MultiValueFieldFactory<T> extends AbstractFieldFactory<MultiValueFieldDefinition, PropertysetItem> {
     private FieldFactoryFactory fieldFactoryFactory;
     private I18nContentSupport i18nContentSupport;
     private ComponentProvider componentProvider;
 
     @Inject
-    public MultiFieldFactory(MultiFieldDefinition definition, Item relatedFieldItem, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider) {
+    public MultiValueFieldFactory(MultiValueFieldDefinition definition, Item relatedFieldItem, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider) {
         super(definition, relatedFieldItem);
         this.fieldFactoryFactory = fieldFactoryFactory;
         this.componentProvider = componentProvider;
