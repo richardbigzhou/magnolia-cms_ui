@@ -220,20 +220,17 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         // GIVEN
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         String applauncherManageGroupParentPath = "/modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps";
-        String securityNodeName = "security";
-        Node nodeCat = NodeUtil.createPath(session.getRootNode(), applauncherManageGroupParentPath + "/categories", NodeTypes.ContentNode.NAME);
-        Node nodeConf = NodeUtil.createPath(session.getRootNode(), applauncherManageGroupParentPath + "/configuration", NodeTypes.ContentNode.NAME);
-        Node nodeSec = NodeUtil.createPath(session.getRootNode(), applauncherManageGroupParentPath + "/"+securityNodeName, NodeTypes.ContentNode.NAME);
+        Node appsNode = NodeUtil.createPath(session.getRootNode(), applauncherManageGroupParentPath, NodeTypes.ContentNode.NAME);
+        appsNode.addNode("configuration", NodeTypes.ContentNode.NAME);
+        // we have to create the security node artificially before bootstrapping, otherwise test would fail in maven
+        appsNode.addNode("security", NodeTypes.ContentNode.NAME);
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(null);
 
         // THEN
-        NodeIterator someNodes = nodeCat.getParent().getNodes();        StringBuffer buffer = new StringBuffer("");
-        Node node1st = someNodes.nextNode();
-        boolean secNodeIs1st = node1st.getPath().endsWith(securityNodeName);
-
-        assertTrue("'security'-node is NOT the 1st one.",secNodeIs1st);
+        Node node1st = appsNode.getNodes().nextNode();
+        assertEquals("security", node1st.getName());
     }
 
 
