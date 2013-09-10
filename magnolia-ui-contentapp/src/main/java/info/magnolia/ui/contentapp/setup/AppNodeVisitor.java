@@ -48,16 +48,20 @@ import javax.jcr.RepositoryException;
  */
 public class AppNodeVisitor implements NodeVisitor {
 
+    public static final String CLASS_PROPERTY_NAME  = "class";
+
+    private final static String APP_CLASS_PROPERTY_NAME = "appClass";
+
     private Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public void visit(Node node) throws RepositoryException {
-        Property p =  node.getProperty("appClass");
+        Property p =  node.getProperty(APP_CLASS_PROPERTY_NAME);
         if (p != null) {
             try {
                 Class<?> clazz = Class.forName(p.getValue().getString());
                 if (ContentApp.class.isAssignableFrom(clazz)) {
-                    node.setProperty("class", ConfiguredContentAppDescriptor.class.getCanonicalName());
+                    node.setProperty(CLASS_PROPERTY_NAME, ConfiguredContentAppDescriptor.class.getCanonicalName());
                 }
             } catch (ClassNotFoundException e) {
                 log.error("Failed to resolve app class: " +  p.getValue().getString(), e);
