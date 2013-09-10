@@ -34,14 +34,6 @@
       <implementation>info.magnolia.ui.admincentral.usermenu.definition.ConfiguredUserMenuDefinition</implementation>
     </type-mapping>
 
-    <type-mapping>
-      <type>info.magnolia.ui.api.vaadin.WidgetsetDefinition</type>
-      <implementation>info.magnolia.ui.api.vaadin.ConfiguredWidgetsetDefinition</implementation>
-    </type-mapping>
-    <type-mapping>
-      <type>info.magnolia.ui.api.vaadin.ThemeDefinition</type>
-      <implementation>info.magnolia.ui.api.vaadin.ConfiguredThemeDefinition</implementation>
-    </type-mapping>
   </components>
 
   <components>

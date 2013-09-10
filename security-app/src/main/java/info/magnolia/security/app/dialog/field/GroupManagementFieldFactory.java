@@ -86,7 +86,7 @@ public class GroupManagementFieldFactory extends TwinColSelectFieldFactory<Group
 
     @Inject
     public GroupManagementFieldFactory(GroupManagementFieldDefinition definition, Item relatedFieldItem, ComponentProvider componentProvider) {
-        super(definition, relatedFieldItem);
+        super(definition, relatedFieldItem, componentProvider);
         this.definition.setOptions(getSelectFieldOptionDefinition());
         this.componentProvider = componentProvider;
     }
@@ -193,7 +193,7 @@ public class GroupManagementFieldFactory extends TwinColSelectFieldFactory<Group
      */
     @Override
     protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
-        return this.componentProvider.newInstance(transformerClass, item, definition, getFieldType(), getAssignedGroups(), "groups");
+        return this.componentProvider.newInstance(transformerClass, item, definition, HashSet.class, getAssignedGroups(), "groups");
     }
 
 }

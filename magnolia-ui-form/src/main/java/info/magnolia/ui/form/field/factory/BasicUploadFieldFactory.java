@@ -85,11 +85,7 @@ public class BasicUploadFieldFactory extends AbstractFieldFactory<BasicUploadFie
         BasicFileItemWrapper fileItem = new BasicFileItemWrapper(binaryDataSubNodeItem, tmpDirectory);
 
         // Create Upload Filed.
-        BasicUploadField<BasicFileItemWrapper> uploadField = new BasicUploadField<BasicFileItemWrapper>(fileItem, tmpDirectory, imageProvider, uiContext);
-
-        uploadField.setMaxUploadSize(definition.getMaxUploadSize());
-        uploadField.setAllowedMimeTypePattern(definition.getAllowedMimeTypePattern());
-        populateFromDefinition(uploadField);
+        BasicUploadField<BasicFileItemWrapper> uploadField = new BasicUploadField<BasicFileItemWrapper>(fileItem, tmpDirectory, imageProvider, uiContext, definition);
 
         return uploadField;
     }
@@ -121,33 +117,6 @@ public class BasicUploadFieldFactory extends AbstractFieldFactory<BasicUploadFie
      * the creation of the appropriate property.
      */
     @Override
-    public void setPropertyDataSource(Property property) {
+    public void setPropertyDataSourceAndDefaultValue(Property property) {
     }
-
-
-    /**
-     * Configure Field based on the definition.
-     */
-    protected void populateFromDefinition(BasicUploadField<BasicFileItemWrapper> field) {
-        field.setSelectNewCaption(definition.getSelectNewCaption());
-        field.setSelectAnotherCaption(definition.getSelectAnotherCaption());
-        field.setDropZoneCaption(definition.getDropZoneCaption());
-        field.setInProgressCaption(definition.getInProgressCaption());
-        field.setInProgressRatioCaption(definition.getInProgressRatioCaption());
-        field.setFileDetailHeaderCaption(definition.getFileDetailHeaderCaption());
-        field.setFileDetailNameCaption(definition.getFileDetailNameCaption());
-        field.setFileDetailSizeCaption(definition.getFileDetailSizeCaption());
-        field.setFileDetailFormatCaption(definition.getFileDetailFormatCaption());
-        field.setFileDetailSourceCaption(definition.getFileDetailSourceCaption());
-        field.setSuccessNoteCaption(definition.getSuccessNoteCaption());
-        field.setWarningNoteCaption(definition.getWarningNoteCaption());
-        field.setErrorNoteCaption(definition.getErrorNoteCaption());
-        field.setDeteteCaption(definition.getDeleteCaption());
-        field.setEditFileFormat(definition.isEditFileFormat());
-        field.setEditFileName(definition.isEditFileName());
-        field.setUserInterruption(definition.getUserInterruption());
-        field.setTypeInterruption(definition.getTypeInterruption());
-        field.setSizeInterruption(definition.getSizeInterruption());
-    }
-
 }

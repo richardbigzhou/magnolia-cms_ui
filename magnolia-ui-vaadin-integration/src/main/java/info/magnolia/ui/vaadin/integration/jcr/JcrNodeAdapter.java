@@ -144,4 +144,9 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
             return false;
         }
     }
+
+    @Override
+    public boolean isNew() {
+        return false;
+    }
 }

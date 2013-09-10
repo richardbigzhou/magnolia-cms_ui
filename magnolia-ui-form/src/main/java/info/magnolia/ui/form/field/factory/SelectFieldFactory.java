@@ -211,29 +211,17 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
     }
 
     /**
-     * Set the selected item if the DataSource is not empty.
-     */
-    @Override
-    public void setPropertyDataSource(@SuppressWarnings("rawtypes") Property dataSource) {
-        super.setPropertyDataSource(dataSource);
-        setDefaultSelectedItem(dataSource);
-    }
-
-    /**
      * Set the value selected.
      * Set selectedItem to the last stored value.
      * If not yet stored, set initialSelectedKey as selectedItem
      * Else, set the first element of the list.
      */
-    private void setDefaultSelectedItem(Property dataSource) {
+    @Override
+    protected Object createDefaultValue(Property<?> dataSource) {
         Object selectedValue = null;
         Object datasourceValue = dataSource.getValue();
 
-        // If the current value is not null return
-        if (datasourceValue != null && ((datasourceValue instanceof Collection && !((Collection) datasourceValue).isEmpty()) || (!(datasourceValue instanceof Collection) && StringUtils.isNotEmpty(datasourceValue.toString())))) {
-            this.field.setValue(datasourceValue);
-            return;
-        } else if (initialSelectedKey != null) {
+        if (initialSelectedKey != null) {
             selectedValue = initialSelectedKey;
         } else if (!select.isNullSelectionAllowed() && definition.getOptions() != null && !definition.getOptions().isEmpty() && !(definition instanceof TwinColSelectFieldDefinition)) {
             selectedValue = definition.getOptions().get(0).getValue();
@@ -245,8 +233,16 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
             ((Collection) datasourceValue).add(selectedValue);
             selectedValue = datasourceValue;
         }
-        this.field.setValue(selectedValue);
-        dataSource.setValue(selectedValue);
+        return selectedValue;
+    }
+
+    @Override
+    protected Class<?> getDefinitionType() {
+        Class<?> res = super.getDefinitionType();
+        if (res == null) {
+            res = String.class;
+        }
+        return res;
     }
 
     /**

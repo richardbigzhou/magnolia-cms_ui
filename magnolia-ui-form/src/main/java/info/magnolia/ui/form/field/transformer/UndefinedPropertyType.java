@@ -31,15 +31,11 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.vaadin;
+package info.magnolia.ui.form.field.transformer;
 
 /**
- * Defines the Vaadin theme used by the Admincentral.<br>
- * <br>
- * External modules may include their own stylesheets by providing a new theme.
- * If the theme is not configured, the default <i>admincentral</i> theme is be used.<br>
+ * Class used for a undefined property value type.
  */
-public interface ThemeDefinition {
+public class UndefinedPropertyType {
 
-    String getName();
 }

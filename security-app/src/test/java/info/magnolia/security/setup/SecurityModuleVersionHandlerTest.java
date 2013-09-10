@@ -44,7 +44,6 @@ import info.magnolia.repository.RepositoryConstants;
 import org.junit.Test;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import java.util.Arrays;
@@ -220,34 +219,17 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         // GIVEN
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         String applauncherManageGroupParentPath = "/modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps";
-        String securityNodeName = "security";
-        Node nodeCat = NodeUtil.createPath(session.getRootNode(), applauncherManageGroupParentPath + "/categories", NodeTypes.ContentNode.NAME);
-        Node nodeConf = NodeUtil.createPath(session.getRootNode(), applauncherManageGroupParentPath + "/configuration", NodeTypes.ContentNode.NAME);
-        Node nodeSec = NodeUtil.createPath(session.getRootNode(), applauncherManageGroupParentPath + "/"+securityNodeName, NodeTypes.ContentNode.NAME);
+        Node appsNode = NodeUtil.createPath(session.getRootNode(), applauncherManageGroupParentPath, NodeTypes.ContentNode.NAME);
+        appsNode.addNode("configuration", NodeTypes.ContentNode.NAME);
+        // we have to create the security node artificially before bootstrapping, otherwise test would fail in maven
+        appsNode.addNode("security", NodeTypes.ContentNode.NAME);
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(null);
 
         // THEN
-        NodeIterator someNodes = nodeCat.getParent().getNodes();
-        boolean secNodeExists = false;
-        boolean secNodeIs1st=false;
-        int counter=0;
-        StringBuffer buffer = new StringBuffer("");
-        while (someNodes.hasNext()) {
-            Node node = someNodes.nextNode();
-            String path = node.getPath();
-            buffer.append(path).append(" ,");
-            if ( path.endsWith(securityNodeName)) {
-                secNodeExists = true;
-            }
-            if(counter==0 && secNodeExists){
-                secNodeIs1st = true;
-            }
-            counter++;
-        }
-        assertTrue("secure-node doesn't exist! (found "+counter+"nodes ("+buffer.toString()+"))", secNodeExists);
-        assertTrue("the security-node is not the 1st sibbling within '/modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps'",secNodeIs1st);
+        Node node1st = appsNode.getNodes().nextNode();
+        assertEquals("security", node1st.getName());
     }
 
 

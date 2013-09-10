@@ -31,21 +31,48 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.vaadin;
+package info.magnolia.ui.form.field.factory;
+
+import static org.junit.Assert.assertEquals;
+
+import info.magnolia.test.mock.MockComponentProvider;
+import info.magnolia.ui.form.field.MultiField;
+import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
+
+import org.junit.Test;
+
+import com.vaadin.ui.Field;
 
 /**
- * Default implementation of the {@link WidgetsetDefinition} used for configuration in the repository.
+ * Main testcase for {@link info.magnolia.ui.form.field.factory.MultiValueFieldFactory}.
  */
-public class ConfiguredWidgetsetDefinition implements WidgetsetDefinition {
+public class MultiValueFieldFactoryTest extends AbstractFieldFactoryTestCase<MultiValueFieldDefinition> {
 
-    String name;
+    private MultiValueFieldFactory multiFieldFactory;
 
     @Override
-    public String getName() {
-        return name;
+    public void setUp() throws Exception {
+        super.setUp();
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Test
+    public void testGetField() throws Exception {
+        // GIVEN
+        multiFieldFactory = new MultiValueFieldFactory(definition, baseItem, null, null, new MockComponentProvider());
+        multiFieldFactory.setI18nContentSupport(i18nContentSupport);
+        multiFieldFactory.setComponentProvider(new MockComponentProvider());
+        // WHEN
+        Field field = multiFieldFactory.createField();
+
+        // THEN
+        assertEquals(true, field instanceof MultiField);
     }
+
+    @Override
+    protected void createConfiguredFieldDefinition() {
+        MultiValueFieldDefinition fieldDefinition = new MultiValueFieldDefinition();
+        fieldDefinition.setName(propertyName);
+        this.definition = fieldDefinition;
+    }
+
 }

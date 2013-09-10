@@ -60,7 +60,7 @@ public class MultiValueTransformer extends BasicTransformer<PropertysetItem> {
     @SuppressWarnings("rawtypes")
     @Override
     public void writeToItem(PropertysetItem newValue) {
-        Property<List> property = getOrCreateProperty(List.class, null);
+        Property<List> property = getOrCreateProperty(List.class);
 
         List<Object> propertyValue = new LinkedList<Object>();
         if (newValue != null) {
@@ -76,7 +76,7 @@ public class MultiValueTransformer extends BasicTransformer<PropertysetItem> {
     @Override
     public PropertysetItem readFromItem() {
         PropertysetItem newValues = new PropertysetItem();
-        Property<List> property = getOrCreateProperty(List.class, null);
+        Property<List> property = getOrCreateProperty(List.class);
         if (property.getValue() != null) {
             List<?> values = property.getValue();
             int position = 0;

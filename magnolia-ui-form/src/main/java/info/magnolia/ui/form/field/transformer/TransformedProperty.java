@@ -46,8 +46,17 @@ public class TransformedProperty<T> extends ObjectProperty<T> {
 
     private final Transformer<T> transformer;
 
-    public TransformedProperty(Transformer<T> transformer, Class<T> type) {
-        super(transformer.readFromItem(), type);
+    /**
+     * Creates a new instance of TransformedProperty with the given transformer.<br>
+     * The super {@link ObjectProperty} is initialized with: <br>
+     * - value = {@link Transformer#readFromItem()} in order to get the Item property value,
+     * - type = {@link Transformer#getType()}, the type of the value.
+     * 
+     * @param transformer
+     * the relate Property {@link Transformer}.
+     */
+    public TransformedProperty(Transformer<T> transformer) {
+        super(transformer.readFromItem(), transformer.getType());
         this.transformer = transformer;
     }
 
