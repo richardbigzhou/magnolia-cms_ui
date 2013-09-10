@@ -50,7 +50,7 @@ public class MoveCancelledAction extends AbstractAction<ConfiguredActionDefiniti
 
     private AppContext appContext;
 
-    protected MoveCancelledAction(ConfiguredActionDefinition definition, MoveActionCallback callback, AppContext appContext) {
+    public MoveCancelledAction(ConfiguredActionDefinition definition, MoveActionCallback callback, AppContext appContext) {
         super(definition);
         this.callback = callback;
         this.appContext = appContext;

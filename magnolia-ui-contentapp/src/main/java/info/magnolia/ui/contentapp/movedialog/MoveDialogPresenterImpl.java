@@ -218,7 +218,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
         List<SecondaryActionDefinition> secondaryActions = new LinkedList<SecondaryActionDefinition>();
         secondaryActions.add(new SecondaryActionDefinition(MoveLocation.BEFORE.name()));
-        secondaryActions.add(new SecondaryActionDefinition(MoveLocation.AFTER.name()));
+        secondaryActions.add(new SecondaryActionDefinition(MoveLocation.INSIDE.name()));
         actionPresenterDefinition.setSecondaryActions(secondaryActions);
 
         def.setActionArea(actionPresenterDefinition);
