@@ -36,11 +36,20 @@ package info.magnolia.ui.dialog;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
+import info.magnolia.cms.i18n.DefaultMessagesManager;
+import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.context.Context;
 import info.magnolia.i18n.ContextLocaleProvider;
 import info.magnolia.i18n.LocaleProvider;
 import info.magnolia.i18n.TranslationService;
 import info.magnolia.i18n.proxytoys.ProxytoysI18nizer;
+import info.magnolia.jcr.node2bean.Node2BeanProcessor;
+import info.magnolia.jcr.node2bean.Node2BeanTransformer;
+import info.magnolia.jcr.node2bean.TypeMapping;
+import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
+import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
+import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.ui.dialog.action.DialogActionExecutor;
 import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.dialog.definition.DialogDefinition;
@@ -72,6 +81,11 @@ public class FormDialogPresenterImplTest {
 
     @Before
     public void setUp() throws Exception {
+        // components for the old i18n API
+        ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
+        ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
+        ComponentsTestUtil.setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);
+        ComponentsTestUtil.setImplementation(MessagesManager.class, DefaultMessagesManager.class);
 
         // locale
         Context ctx = mock(Context.class);
