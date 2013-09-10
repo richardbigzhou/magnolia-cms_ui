@@ -35,23 +35,24 @@ package info.magnolia.ui.contentapp.movedialog.action;
 
 import com.vaadin.data.Item;
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.api.app.AppController;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
-import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.movedialog.MoveActionCallback;
 import info.magnolia.ui.framework.action.AbstractMultiItemAction;
 import info.magnolia.ui.framework.action.MoveLocation;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Named;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import java.util.List;
 
@@ -64,12 +65,10 @@ public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefini
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    /** The item where the items should be moved relative to. */
-    private final Item targetItem;
-
-    private final AppController appController;
-
-    private final UiContext uiContext;
+    /**
+     * The item where the items should be moved relative to.
+     */
+    private final JcrNodeAdapter targetItem;
 
     private final SubAppContext subAppContext;
 
@@ -82,58 +81,60 @@ public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefini
     public MoveNodeAction(
             MoveNodeActionDefinition definition,
             List<JcrItemAdapter> items,
-            Item targetItem,
+            JcrNodeAdapter targetItem,
             @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
-            AppController appController,
             UiContext uiContext,
             SubAppContext subAppContext,
             MoveActionCallback callback) {
         super(definition, items, uiContext);
-        this.uiContext = uiContext;
         this.subAppContext = subAppContext;
-        this.appController = appController;
         this.targetItem = targetItem;
         this.admincentralEventBus = admincentralEventBus;
         this.callback = callback;
     }
 
     @Override
-    protected void executeOnItem(JcrItemAdapter item) throws Exception {
-        BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor();
-        WorkbenchDefinition workbench = subAppDescriptor.getWorkbench();
-        HierarchicalJcrContainer container = new HierarchicalJcrContainer(workbench);
-        moveLocation = getDefinition().getMoveLocation();
-        try {
-            javax.jcr.Item source = item.getJcrItem();
-            javax.jcr.Item target = null;
-
-            String itemIdOfChangedItem = JcrItemUtil.getItemId(source.getParent());
-
-            if (!(targetItem instanceof JcrItemAdapter)) {
-                return;
+    public void execute() throws ActionExecutionException {
+        super.execute();
+        Item firstItem = getItems().get(0);
+        if (firstItem instanceof JcrNodeAdapter) {
+            JcrNodeAdapter nodeAdapter = (JcrNodeAdapter) firstItem;
+            String itemIdOfChangedItem;
+            try {
+                itemIdOfChangedItem = JcrItemUtil.getItemId(nodeAdapter.getJcrItem().getParent());
+                admincentralEventBus.fireEvent(new ContentChangedEvent(nodeAdapter.getWorkspace(), itemIdOfChangedItem));
+                callback.onMovePerformed(targetItem, moveLocation);
+            } catch (RepositoryException e) {
+                callback.onMoveCancelled();
             }
-            target = ((JcrItemAdapter) targetItem).getJcrItem();
-            if (!target.isNode()) {
-                return;
-            }
-
-            // TODO: Should validate that it can actually move the item inside.
-            if (moveLocation == MoveLocation.INSIDE) {
-                container.moveItem(source, target);
-            } else if (moveLocation == MoveLocation.BEFORE) {
-                container.moveItemBefore(source, target);
-            } else if (moveLocation == MoveLocation.AFTER) {
-                container.moveItemAfter(source, target);
-            }
-
-            Session session = source.getSession();
-            admincentralEventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), itemIdOfChangedItem));
-            callback.onMovePerformed(targetItem, moveLocation);
-
-        } catch (Exception e) {
-            log.error("Problem occurred during moving items.", e);
         }
+    }
 
+    @Override
+    protected void executeOnItem(JcrItemAdapter item) throws Exception {
+        if (basicMoveCheck(item.getJcrItem(), targetItem.getJcrItem())) {
+            moveLocation = getDefinition().getMoveLocation();
+
+            Node source = (Node) item.getJcrItem();
+            Node target = targetItem.getJcrItem();
+
+            switch (moveLocation) {
+                case INSIDE:
+                    NodeUtil.moveNode(source, target);
+                    break;
+                case BEFORE:
+                    NodeUtil.moveNodeBefore(source, target);
+                    break;
+                case AFTER:
+                    NodeUtil.moveNodeAfter(source, target);
+                    break;
+            }
+            Session session = source.getSession();
+            session.save();
+        } else {
+            callback.onMoveCancelled();
+            throw new IllegalArgumentException("Move operation was not completed due to failed move validation.");
+        }
     }
 
     @Override
@@ -146,4 +147,16 @@ public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefini
         return "Move failed.";
     }
 
+    /**
+     * Perform basic check.
+     */
+    private boolean basicMoveCheck(javax.jcr.Item source, javax.jcr.Item target) throws RepositoryException {
+        if (!target.isNode() || !source.isNode()) {
+            return false;
+        }
+        if (target.getPath().equals(source.getPath())) {
+            return false;
+        }
+        return !NodeUtil.isSame((Node) target, source.getParent());
+    }
 }

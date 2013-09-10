@@ -134,9 +134,6 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionP
         return filteredActions;
     }
 
-    /**
-     * TODO: APCH - figure out how to broadcast an error in case action fails.
-     */
     /*public void onActionFired(String actionName, Object... actionParams) {
         try {
             actionExecutor.execute(actionName, );
