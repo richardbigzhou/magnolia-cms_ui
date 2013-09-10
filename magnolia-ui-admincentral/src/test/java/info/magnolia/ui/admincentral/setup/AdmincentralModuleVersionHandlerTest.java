@@ -43,7 +43,6 @@ import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.ui.admincentral.AdmincentralUIProvider;
 
 import java.util.Arrays;
 import java.util.List;
@@ -71,7 +70,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     private Node servletParameters;
     private String appLauncherLayoutConfigNodeSourceParent_path = "/modules/ui-framework/config";
     private String appLauncherLayoutConfigNodeTargetParent_path = "/modules/ui-admincentral/config";
-    //private Node appLauncherLayoutConfigNodeSourceParent;
+    private Node appLauncherLayoutConfigNodeSourceParent;
     private Node appLauncherLayoutConfigNodeTargetParent;
 
 
@@ -108,7 +107,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         confirmDeleteActionAvailability = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/confirmDeletion/availability", NodeTypes.ContentNode.NAME);
         configActionbarSections = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections", NodeTypes.ContentNode.NAME);
         servletParameters = NodeUtil.createPath(session.getRootNode(), "/server/filters/servlets/AdminCentral/parameters", NodeTypes.ContentNode.NAME);
-        //appLauncherLayoutConfigNodeSourceParent = NodeUtil.createPath(session.getRootNode(),appLauncherLayoutConfigNodeSourceParent_path, NodeTypes.ContentNode.NAME);
+        appLauncherLayoutConfigNodeSourceParent = NodeUtil.createPath(session.getRootNode(),appLauncherLayoutConfigNodeSourceParent_path, NodeTypes.ContentNode.NAME);
         appLauncherLayoutConfigNodeTargetParent = NodeUtil.createPath(session.getRootNode(),appLauncherLayoutConfigNodeTargetParent_path, NodeTypes.ContentNode.NAME);
     }
 
@@ -326,26 +325,10 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo51AddsWidgetsetAndThemeConfig() throws ModuleManagementException, RepositoryException {
-        // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        Node config = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config", NodeTypes.ContentNode.NAME);
-
-        // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.2"));
-
-        // THEN
-        assertTrue(config.hasNode("widgetset"));
-        assertEquals(AdmincentralUIProvider.DEFAULT_WIDGETSET_NAME, config.getNode("widgetset").getProperty("name").getString());
-        assertTrue(config.hasNode("theme"));
-        assertEquals(AdmincentralUIProvider.DEFAULT_THEME_NAME, config.getNode("theme").getProperty("name").getString());
-    }
-
-    @Test
     public void testUpdateTo51ChangesAdmincentralServletParameters() throws ModuleManagementException, RepositoryException {
         // GIVEN
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        servletParameters.setProperty("widgetset", AdmincentralUIProvider.DEFAULT_WIDGETSET_NAME);
+        servletParameters.setProperty("widgetset", "some.gwt.package.SomeWidgetset");
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.2"));
@@ -361,12 +344,14 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         // GIVEN
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         Node applauncherLayoutConfig = NodeUtil.createPath( session.getRootNode(),appLauncherLayoutConfigNodeSourceParent_path+"/"+applauncherlayoutNodeName,NodeTypes.ContentNode.NAME);
+        Node appLauncherLayoutConfigNodeSourceGrandParent = appLauncherLayoutConfigNodeSourceParent.getParent();
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.2"));
 
         // THEN
         assertTrue(appLauncherLayoutConfigNodeTargetParent.hasNode(applauncherlayoutNodeName));
+        assertFalse(appLauncherLayoutConfigNodeSourceGrandParent.hasNode("config"));
 
     }
 

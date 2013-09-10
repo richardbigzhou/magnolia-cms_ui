@@ -41,10 +41,12 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.form.field.transformer.TransformedProperty;
 import info.magnolia.ui.form.field.transformer.Transformer;
+import info.magnolia.ui.form.field.transformer.UndefinedPropertyType;
 import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
 import info.magnolia.ui.form.validator.factory.FieldValidatorFactory;
 import info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory;
+import info.magnolia.ui.vaadin.integration.ItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
 import java.util.Locale;
@@ -107,7 +109,8 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
             if (Long.class.equals(property.getType()) && field instanceof AbstractTextField) {
                 ((AbstractTextField) field).setConverter(new StringToLongConverter());
             }
-            setPropertyDataSource(property);
+            // Set the created property with the default value as field Property datasource.
+            setPropertyDataSourceAndDefaultValue(property);
 
             if (StringUtils.isNotBlank(definition.getStyleName())) {
                 this.field.addStyleName(definition.getStyleName());
@@ -124,16 +127,49 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         return this.field;
     }
 
-    @Override
-    public D getFieldDefinition() {
-        return this.definition;
+    /**
+     * Set the DataSource of the current field.<br>
+     * Set the default value if : <br>
+     * - the item is an instance of {@link ItemAdapter} and this is a new Item (Not yet stored in the related datasource)
+     * - the item is not an instance of {@link ItemAdapter}.<br>
+     * In this case, the Item is a custom implementation of {@link Item} and we have no possibility to define if it is or not a new Item.
+     */
+    public void setPropertyDataSourceAndDefaultValue(Property<?> property) {
+        this.field.setPropertyDataSource(property);
+
+        if ((item instanceof ItemAdapter && ((ItemAdapter) item).isNew()) || !(item instanceof ItemAdapter)) {
+            setPropertyDataSourceDefaultValue(property);
+        }
     }
 
     /**
-     * Set the DataSource of the current field.
+     * Set the Field default value is required.
      */
-    public void setPropertyDataSource(Property<?> property) {
-        this.field.setPropertyDataSource(property);
+    protected void setPropertyDataSourceDefaultValue(Property property) {
+        Object defaultValue = createDefaultValue(property);
+        if (defaultValue != null && !definition.isReadOnly()) {
+            if (defaultValue.getClass().isAssignableFrom(property.getType())) {
+                property.setValue(defaultValue);
+            } else {
+                log.warn("Default value {} is not assignable to the field of type {}.", defaultValue, field.getPropertyDataSource().getType().getName());
+            }
+        }
+    }
+
+    /**
+     * Create a typed default value.
+     */
+    protected Object createDefaultValue(Property<?> property) {
+        String defaultValue = definition.getDefaultValue();
+        if (StringUtils.isNotBlank(defaultValue)) {
+            return DefaultPropertyUtil.createTypedValue(property.getType(), defaultValue);
+        }
+        return null;
+    }
+
+    @Override
+    public D getFieldDefinition() {
+        return this.definition;
     }
 
     /**
@@ -174,7 +210,6 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
      * Initialize the property used as field's Datasource.<br>
      * If no {@link Transformer} is configure to the field definition, use the default {@link BasicTransformer} <br>
      */
-
     @SuppressWarnings("unchecked")
     private Property<?> initializeProperty() {
         Class<? extends Transformer<?>> transformerClass = definition.getTransformerClass();
@@ -185,45 +220,47 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         }
         Transformer<?> transformer = initializeTransformer(transformerClass);
 
-        return new TransformedProperty(transformer, getFieldType());
+        return new TransformedProperty(transformer);
     }
 
     /**
      * Exposed method used by field's factory to initialize the property {@link Transformer}.<br>
-     * This allows to add additional constructor parameter if needed.
+     * This allows to add additional constructor parameter if needed.<br>
      */
     protected Transformer<?> initializeTransformer(Class<? extends Transformer<?>> transformerClass) {
         return this.componentProvider.newInstance(transformerClass, item, definition, getFieldType());
     }
 
     /**
-     * Define the field type Class.<br>
-     * Return the value of the overriding method {@link AbstractFieldFactory#getDefaultFieldType()}.<br>
-     * If this method is not override (return null), check the value defined in configuration ('type' property).<br>
-     * If no type is defined in configuration return String.
+     * Define the field property value type Class.<br>
+     * Return the value defined by the configuration ('type' property).<br>
+     * If this value is not defined, return the value of the overriding method {@link AbstractFieldFactory#getDefaultFieldType()}.<br>
+     * If this method is not override, return {@link UndefinedPropertyType}.<br>
+     * In this case, the {@link Transformer} will have the responsibility to define the property type.
      */
     protected Class<?> getFieldType() {
-        if (getDefaultFieldType() != null) {
-            return getDefaultFieldType();
+        Class<?> type = getDefinitionType();
+        if (type == null) {
+            type = getDefaultFieldType();
         }
-        return getDefinitionType();
+        return type;
     }
 
     /**
-     * @return Class Type defined into the field definition. If null, return String.
+     * @return Class Type defined into the field definition or null if not defined.
      */
     protected Class<?> getDefinitionType() {
         if (StringUtils.isNotBlank(definition.getType())) {
             return DefaultPropertyUtil.getFieldTypeClass(definition.getType());
         }
-        return String.class;
+        return null;
     }
 
     /**
      * Exposed method used by field's factory in order to define a default Field Type (decoupled from the definition).
      */
     protected Class<?> getDefaultFieldType() {
-        return null;
+        return UndefinedPropertyType.class;
     }
 
     @Override

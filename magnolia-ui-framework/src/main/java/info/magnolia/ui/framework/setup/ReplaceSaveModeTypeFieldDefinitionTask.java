@@ -50,11 +50,11 @@ import org.slf4j.LoggerFactory;
  * Rename or remove the 5.0 node field definition 'saveModeType'.<br>
  * In 5.1, this definition do not exist anymore and is replaced by 'transformerClass' definition.
  */
-public class ReplaceSaveModeTypeFieldDefinition extends QueryTask {
+public class ReplaceSaveModeTypeFieldDefinitionTask extends QueryTask {
 
-    private static final Logger log = LoggerFactory.getLogger(ReplaceSaveModeTypeFieldDefinition.class);
+    private static final Logger log = LoggerFactory.getLogger(ReplaceSaveModeTypeFieldDefinitionTask.class);
 
-    public ReplaceSaveModeTypeFieldDefinition(String name, String description, String repositoryName, String query) {
+    public ReplaceSaveModeTypeFieldDefinitionTask(String name, String description, String repositoryName, String query) {
         super(name, description, repositoryName, query);
     }
 

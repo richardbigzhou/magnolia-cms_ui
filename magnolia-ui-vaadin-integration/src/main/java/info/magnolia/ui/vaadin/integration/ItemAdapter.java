@@ -31,51 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.form.field.transformer.basic;
-
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+package info.magnolia.ui.vaadin.integration;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 
 /**
- * Specific TwinField {@link info.magnolia.ui.form.field.transformer.Transformer}.<br>
- * 
- * @param <T>
+ * Magnolia {@link Item} adapter.
  */
-public class TwinSelectPropertyTransformer<T> extends BasicTransformer<T> {
+public interface ItemAdapter extends Item {
 
-    public TwinSelectPropertyTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<T> type) {
-        super(relatedFormItem, definition, type);
-    }
-
-    @Override
-    public void writeToItem(T newValue) {
-        Property<T> p = getOrCreateProperty(type, null);
-        if (p.getValue() instanceof Set && newValue instanceof List) {
-            newValue = (T) new HashSet((List) newValue);
-        } else if (p.getValue() instanceof List && newValue instanceof Set) {
-            newValue = (T) new LinkedList((Set) newValue);
-        }
-        p.setValue(newValue);
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    @Override
-    public T readFromItem() {
-        T value = super.readFromItem();
-
-        if (value == null) {
-            return (T) new HashSet();
-        } else if (value instanceof List) {
-            return (T) new HashSet((List) value);
-        } else {
-            return null;
-        }
-    }
+    /**
+     * @return true if it's a new Item (not already persisted).
+     */
+    public boolean isNew();
 }

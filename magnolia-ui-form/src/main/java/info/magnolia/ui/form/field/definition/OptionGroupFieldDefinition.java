@@ -34,7 +34,7 @@
 package info.magnolia.ui.form.field.definition;
 
 import info.magnolia.ui.form.field.transformer.Transformer;
-import info.magnolia.ui.form.field.transformer.basic.OptionGroupTransformer;
+import info.magnolia.ui.form.field.transformer.basic.ListToSetTransformer;
 
 /**
  * Field definition for radio and check box select field.
@@ -48,7 +48,7 @@ public class OptionGroupFieldDefinition extends SelectFieldDefinition {
      */
     @SuppressWarnings("unchecked")
     public OptionGroupFieldDefinition() {
-        setTransformerClass((Class<? extends Transformer<?>>) (Object) OptionGroupTransformer.class);
+        setTransformerClass((Class<? extends Transformer<?>>) (Object) ListToSetTransformer.class);
     }
 
     public boolean isMultiselect() {

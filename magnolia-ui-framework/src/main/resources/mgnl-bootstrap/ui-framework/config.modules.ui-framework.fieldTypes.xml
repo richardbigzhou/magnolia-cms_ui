@@ -563,10 +563,10 @@
       <sv:value>5a1de1ca-7022-4b66-853d-1a4789173117</sv:value>
     </sv:property>
     <sv:property sv:name="definitionClass" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.definition.MultiFieldDefinition</sv:value>
+      <sv:value>info.magnolia.ui.form.field.definition.MultiValueFieldDefinition</sv:value>
     </sv:property>
     <sv:property sv:name="factoryClass" sv:type="String">
-      <sv:value>info.magnolia.ui.form.field.factory.MultiFieldFactory</sv:value>
+      <sv:value>info.magnolia.ui.form.field.factory.MultiValueFieldFactory</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>

@@ -96,6 +96,21 @@ public class JcrNewNodeAdapterTest {
     }
 
     @Test
+    public void testIsNew() throws Exception {
+        // GIVEN
+        String nodeName = "rootNode";
+        String id = "propertyName";
+        String nodeType = "mgnl:content";
+        Node parentNode = session.getRootNode().addNode(nodeName);
+
+        // WHEN
+        JcrNewNodeAdapter adapter = new JcrNewNodeAdapter(parentNode, nodeType);
+
+        // THEN
+        assertTrue(adapter.isNew());
+    }
+
+    @Test
     public void testGetItemPropertyReturnsModified() throws Exception {
         // GIVEN
         // Create a NewNodeAdapter

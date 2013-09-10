@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.usermenu.action;
 
 import info.magnolia.audit.AuditLoggingUtil;
+import info.magnolia.cms.security.LogoutFilter;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.UserContext;
@@ -61,6 +62,6 @@ public class LogoutAction extends AbstractAction<LogoutActionDefinition> {
             ((UserContext) ctx).logout();
         }
         UI.getCurrent().getSession().close();
-        UI.getCurrent().getPage().setLocation(MgnlContext.getContextPath());
+        UI.getCurrent().getPage().setLocation(MgnlContext.getContextPath() + "?" + LogoutFilter.PARAMETER_LOGOUT + "=true");
     }
 }

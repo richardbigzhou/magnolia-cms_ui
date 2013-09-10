@@ -33,8 +33,7 @@
  */
 package info.magnolia.ui.admincentral;
 
-import info.magnolia.ui.api.vaadin.ThemeDefinition;
-import info.magnolia.ui.api.vaadin.WidgetsetDefinition;
+import info.magnolia.init.MagnoliaConfigurationProperties;
 
 import javax.inject.Inject;
 
@@ -44,42 +43,42 @@ import com.vaadin.server.DefaultUIProvider;
 import com.vaadin.server.UICreateEvent;
 
 /**
- * The AdmincentralUIProvider allows for fetching the widgetset and theme names from configuration rather than annotation or servlet params.
+ * The AdmincentralUIProvider allows for fetching the widgetset and theme names from magnolia.properties rather than annotation or servlet params.
  */
 public class AdmincentralUIProvider extends DefaultUIProvider {
 
-    public static final String DEFAULT_WIDGETSET_NAME = "info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet";
-    public static final String DEFAULT_THEME_NAME = "admincentral";
+    private static final String WIDGETSET_PROPERTY_KEY = "magnolia.ui.vaadin.widgetset";
+    private static final String THEME_PROPERTY_KEY = "magnolia.ui.vaadin.theme";
 
-    private final WidgetsetDefinition widgetsetDefinition;
-    private final ThemeDefinition themeDefinition;
+    private static final String DEFAULT_WIDGETSET = "info.magnolia.ui.vaadin.gwt.MagnoliaWidgetSet";
+    private static final String DEFAULT_THEME = "admincentral";
+
+    private final MagnoliaConfigurationProperties magnoliaProperties;
 
     @Inject
-    public AdmincentralUIProvider(AdmincentralModule admincentralModule) {
-        this.widgetsetDefinition = admincentralModule.getWidgetset();
-        this.themeDefinition = admincentralModule.getTheme();
+    public AdmincentralUIProvider(MagnoliaConfigurationProperties magnoliaProperties) {
+        this.magnoliaProperties = magnoliaProperties;
     }
 
     @Override
     public String getWidgetset(UICreateEvent event) {
-        if (widgetsetDefinition != null) {
-            String widgetsetName = widgetsetDefinition.getName();
-            if (StringUtils.isNotBlank(widgetsetName)) {
-                return widgetsetName;
+        if (magnoliaProperties != null) {
+            String widgetset = magnoliaProperties.getProperty(WIDGETSET_PROPERTY_KEY);
+            if (StringUtils.isNotBlank(widgetset)) {
+                return widgetset;
             }
         }
-        return DEFAULT_WIDGETSET_NAME;
+        return DEFAULT_WIDGETSET;
     }
 
     @Override
     public String getTheme(UICreateEvent event) {
-        if (themeDefinition != null) {
-            String themeName = themeDefinition.getName();
-            if (StringUtils.isNotBlank(themeName)) {
-                return themeName;
+        if (magnoliaProperties != null) {
+            String theme = magnoliaProperties.getProperty(THEME_PROPERTY_KEY);
+            if (StringUtils.isNotBlank(theme)) {
+                return theme;
             }
         }
-        return DEFAULT_THEME_NAME;
+        return DEFAULT_THEME;
     }
-
 }
