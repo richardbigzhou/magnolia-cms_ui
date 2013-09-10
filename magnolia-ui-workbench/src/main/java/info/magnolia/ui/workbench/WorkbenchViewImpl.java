@@ -47,13 +47,17 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Property;
+import com.vaadin.event.Action.Container;
 import com.vaadin.event.FieldEvents;
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.NativeButton;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
@@ -68,6 +72,8 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
     private final CssLayout viewModes = new CssLayout();
 
     private final CssLayout searchBox = new CssLayout();
+
+    protected final Panel keyboardEventPanel;
 
     private TextField searchField;
 
@@ -151,6 +157,40 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         addComponent(toolBar);
         setExpandRatio(toolBar, 0);
 
+
+
+        keyboardEventPanel = new Panel();
+        keyboardEventPanel.setSizeFull();
+        keyboardEventPanel.addStyleName("keyboard-panel");
+        addComponent(keyboardEventPanel, 1); // between tool bar and status bar
+        setExpandRatio(keyboardEventPanel, 1);
+
+        bindKeyboardHandlers();
+    }
+
+    @Override
+    public Container getshortcutActionManager() {
+        return keyboardEventPanel;
+    }
+
+    public void bindKeyboardHandlers() {
+
+        final ShortcutListener enterShortcut = new ShortcutListener("Enter shortcut", ShortcutAction.KeyCode.ENTER, null) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                getSelectedView().onShortcutKey(ShortcutAction.KeyCode.ENTER, null);
+            }
+        };
+        keyboardEventPanel.addShortcutListener(enterShortcut);
+
+        final ShortcutListener deleteShortcut = new ShortcutListener("Delete shortcut", ShortcutAction.KeyCode.DELETE, null) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                getSelectedView().onShortcutKey(ShortcutAction.KeyCode.DELETE, null);
+            }
+        };
+        keyboardEventPanel.addShortcutListener(deleteShortcut);
+
     }
 
     @Override
@@ -195,10 +235,11 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
     @Override
     public void setViewType(String type) {
-        removeComponent(getSelectedView().asVaadinComponent());
+        // removeComponent(getSelectedView().asVaadinComponent());
         final Component c = contentViews.get(type).asVaadinComponent();
-        addComponent(c, 1); // between tool bar and status bar
-        setExpandRatio(c, 1);
+        // addComponent(c, 1); // between tool bar and status bar
+        // setExpandRatio(c, 1);
+        keyboardEventPanel.setContent(c);
 
         if (type != SearchPresenterDefinition.VIEW_TYPE) {
             previousViewType = type;
