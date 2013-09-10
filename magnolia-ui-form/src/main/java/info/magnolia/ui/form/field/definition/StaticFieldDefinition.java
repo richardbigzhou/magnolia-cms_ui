@@ -34,7 +34,7 @@
 package info.magnolia.ui.form.field.definition;
 
 /**
- * Describes a field which is shown with a simple text in the dialog. The displayed text is the label.
+ * Describes a field which displays simple static text in the dialog. The text displayed is read from the value property.
  */
 public class StaticFieldDefinition extends ConfiguredFieldDefinition {
 
