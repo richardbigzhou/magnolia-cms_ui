@@ -44,7 +44,6 @@ import info.magnolia.repository.RepositoryConstants;
 import org.junit.Test;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import java.util.Arrays;
