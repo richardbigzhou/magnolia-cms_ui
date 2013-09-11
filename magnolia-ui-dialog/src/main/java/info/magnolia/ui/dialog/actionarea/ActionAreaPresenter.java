@@ -43,6 +43,9 @@ import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
  */
 public interface ActionAreaPresenter {
 
+    /**
+     * Listener interface for {@link ActionAreaPresenter}.
+     */
     interface Listener {
         void onActionFired(String actionName, Object... parameters);
     }
