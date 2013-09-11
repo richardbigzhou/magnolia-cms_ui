@@ -81,7 +81,9 @@ public class ConfirmationDialog extends LightDialog {
         footer.addComponent(cancelButton);
 
         cancelButton.addStyleName("btn-dialog");
+        cancelButton.addStyleName("cancel");
         confirmButton.addStyleName("btn-dialog");
+        confirmButton.addStyleName("confirm");
 
         footer.setComponentAlignment(confirmButton, Alignment.MIDDLE_RIGHT);
         footer.setComponentAlignment(cancelButton, Alignment.MIDDLE_LEFT);
