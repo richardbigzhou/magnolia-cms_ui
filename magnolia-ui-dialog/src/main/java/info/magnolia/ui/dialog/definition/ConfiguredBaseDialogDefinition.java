@@ -90,6 +90,7 @@ public class ConfiguredBaseDialogDefinition implements BaseDialogDefinition {
         this.i18nBasename = i18nBasename;
     }
 
+    @Override
     public Map<String, ActionDefinition> getActions() {
         return actions;
     }
@@ -111,6 +112,7 @@ public class ConfiguredBaseDialogDefinition implements BaseDialogDefinition {
         this.presenterClass = presenterClass;
     }
 
+    @Override
     public EditorActionAreaDefinition getActionArea() {
         return actionArea;
     }

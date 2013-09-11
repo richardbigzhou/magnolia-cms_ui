@@ -55,6 +55,7 @@ public interface FormView extends DialogView, View, Item.Editor {
 
     void addField(Field<?> field);
 
+    @Override
     void setCaption(String caption);
 
     void addFormSection(String tabName, FormSection inputFields);

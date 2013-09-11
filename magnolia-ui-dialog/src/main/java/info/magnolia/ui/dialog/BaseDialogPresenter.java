@@ -82,6 +82,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionParameterProv
         view.addShortcut(this.editorActionAreaPresenter.bindShortcut(actionName, keyCode, modifiers));
     }
 
+    @Override
     public DialogView start(BaseDialogDefinition definition, UiContext uiContext) {
         this.view = initView();
         this.editorActionAreaPresenter = componentProvider.getComponent(definition.getActionArea().getPresenterClass());
