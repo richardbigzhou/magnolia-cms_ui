@@ -129,9 +129,9 @@ public class FormBuilder {
         }
         view.setShowAllEnabled(formDefinition.getTabs().size() > 1);
         if (hasI18NAwareFields) {
-            final AbstractSelect languageChoser = i18NAuthoringSupport.getLanguageChooser();
-            if (languageChoser != null) {
-                view.setLocaleSelector(languageChoser);
+            final AbstractSelect languageChooser = i18NAuthoringSupport.getLanguageChooser();
+            if (languageChooser != null) {
+                view.setLocaleSelector(languageChooser);
                 view.setCurrentLocale(i18nContentSupport.getFallbackLocale());
             }
         }
