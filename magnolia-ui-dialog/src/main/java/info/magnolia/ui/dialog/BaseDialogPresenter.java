@@ -72,6 +72,10 @@ public class BaseDialogPresenter implements DialogPresenter, ActionParameterProv
         return view;
     }
 
+    protected void setView(DialogView view) {
+        this.view = view;
+    }
+
     @Override
     public ActionAreaPresenter getActionPresenter() {
         return editorActionAreaPresenter;
