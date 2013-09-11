@@ -36,6 +36,7 @@ package info.magnolia.security.setup;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.module.ModuleManagementException;
 import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
@@ -232,5 +233,25 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         assertEquals("security", node1st.getName());
     }
 
+    @Test
+    public void emptyLabelsAreRemovedOnUpdateTo51() throws RepositoryException, ModuleManagementException {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        String static1 = "/modules/security-app/dialogs/role/form/tabs/acls/fields/static1";
+        String static2 = "/modules/security-app/dialogs/role/form/tabs/acls/fields/static2";
+        Node static1Node = NodeUtil.createPath(session.getRootNode(), static1, NodeTypes.ContentNode.NAME);
+        Node static2Node = NodeUtil.createPath(session.getRootNode(), static2, NodeTypes.ContentNode.NAME);
+        PropertyUtil.setProperty(static1Node, "label", "");
+        PropertyUtil.setProperty(static2Node, "label", "");
+        assertTrue(static1Node.hasProperty("label"));
+        assertTrue(static2Node.hasProperty("label"));
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.4"));
+
+        // THEN
+        assertFalse(static1Node.hasProperty("label"));
+        assertFalse(static2Node.hasProperty("label"));
+    }
 
 }

@@ -41,6 +41,7 @@ import info.magnolia.module.delta.NewPropertyTask;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
 import info.magnolia.module.delta.OrderNodeTo1stPosTask;
 import info.magnolia.module.delta.PartialBootstrapTask;
+import info.magnolia.module.delta.RemovePropertyTask;
 import info.magnolia.module.delta.SetPropertyTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
@@ -81,6 +82,8 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                         new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actions/deleteGroup", "class", "info.magnolia.security.app.action.DeleteGroupActionDefinition")))
                 .addTask(new NodeExistsDelegateTask("Update class for deleteRole action", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/deleteRole",
                         new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/deleteRole", "class", "info.magnolia.security.app.action.DeleteRoleActionDefinition")))
+                .addTask(new RemovePropertyTask("Remove label from form field", "Remove label property from the static1 field of the ACL tab of the Role dialog", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/acls/fields/static1", "label"))
+                .addTask(new RemovePropertyTask("Remove label from form field", "Remove label property from the static1 field of the ACL tab of the Role dialog", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/acls/fields/static2", "label"))
         );
     }
 

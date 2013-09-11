@@ -88,6 +88,7 @@ public abstract class AbstractRoleDialogAction<D extends ActionDefinition> exten
             if (dialogDefinition == null) {
                 throw new ActionExecutionException("Unable to load dialog [" + dialogName + "]");
             }
+            dialogDefinition.setId("security-app:" + dialogName);
 
             List<TabDefinition> tabs = dialogDefinition.getForm().getTabs();
             for (TabDefinition tab : tabs) {
