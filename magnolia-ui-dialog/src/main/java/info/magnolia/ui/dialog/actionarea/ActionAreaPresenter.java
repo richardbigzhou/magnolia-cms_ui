@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.dialog.actionarea;
 
-import com.vaadin.event.ShortcutListener;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.view.View;
@@ -44,7 +43,10 @@ import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
  */
 public interface ActionAreaPresenter {
 
-    View start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, ActionParameterProvider parameterProvider, UiContext uiContext);
+    interface Listener {
+        void onActionFired(String actionName, Object... parameters);
+    }
 
-    ShortcutListener bindShortcut(String actionName, int keyCode, int... modifiers);
+    View start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, ActionListener listener, UiContext uiContext);
+
 }

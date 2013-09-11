@@ -36,11 +36,15 @@ package info.magnolia.ui.contentapp.detail;
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
+import info.magnolia.ui.api.message.Message;
+import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
-import info.magnolia.ui.dialog.actionarea.ActionParameterProvider;
+import info.magnolia.ui.dialog.actionarea.ActionListener;
 import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
 import info.magnolia.ui.dialog.actionarea.definition.FormActionItemDefinition;
 import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
@@ -48,6 +52,7 @@ import info.magnolia.ui.dialog.formdialog.FormBuilder;
 import info.magnolia.ui.dialog.formdialog.FormView;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
+import info.magnolia.ui.framework.app.SubAppActionExecutor;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +68,7 @@ import java.util.Map;
  * {@link info.magnolia.ui.contentapp.detail.DetailEditorPresenter}. Takes care
  * of building and switching between the right {@link DetailView.ViewType}.
  */
-public class DetailPresenter implements EditorCallback, EditorValidator, ActionParameterProvider {
+public class DetailPresenter implements EditorCallback, EditorValidator, ActionListener {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -77,6 +82,8 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionP
 
     private ComponentProvider componentProvider;
 
+    private ActionExecutor executor;
+
     private EditorDefinition editorDefinition;
 
     private JcrNodeAdapter item;
@@ -85,12 +92,13 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionP
 
     @Inject
     public DetailPresenter(SubAppContext subAppContext, final @Named(AdmincentralEventBus.NAME) EventBus eventBus, DetailView view,
-            FormBuilder formBuilder, ComponentProvider componentProvider) {
+            FormBuilder formBuilder, ComponentProvider componentProvider, SubAppActionExecutor executor) {
         this.subAppContext = subAppContext;
         this.eventBus = eventBus;
         this.view = view;
         this.formBuilder = formBuilder;
         this.componentProvider = componentProvider;
+        this.executor = executor;
     }
 
     public DetailView start(EditorDefinition editorDefinition, final JcrNodeAdapter item, DetailView.ViewType viewType) {
@@ -134,16 +142,6 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionP
         return filteredActions;
     }
 
-    /*public void onActionFired(String actionName, Object... actionParams) {
-        try {
-            actionExecutor.execute(actionName, );
-        } catch (ActionExecutionException e) {
-            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.",
-                    e.getMessage());
-            subAppContext.getAppContext().broadcastMessage(error);
-        }
-    } */
-
     @Override
     public void onCancel() {
         // setItemView(ItemView.ViewType.VIEW);
@@ -168,7 +166,16 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionP
     }
 
     @Override
-    public Object[] getActionParameters(String actionName) {
-        return new Object[]{item, this};
+    public void onActionFired(String actionName, Object... actionContextParams) {
+        Object[] providedParameters = new Object[]{this};
+        Object[] combinedParameters = new Object[providedParameters.length + actionContextParams.length];
+        System.arraycopy(providedParameters, 0, combinedParameters, 0, providedParameters.length);
+        System.arraycopy(actionContextParams, 0, combinedParameters, providedParameters.length, actionContextParams.length);
+        try {
+            executor.execute(actionName, combinedParameters);
+        } catch (ActionExecutionException e) {
+            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            subAppContext.getAppContext().broadcastMessage(error);
+        }
     }
 }
