@@ -282,7 +282,7 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
 
     private void doEditTitle(final FavoritesView.Listener listener) {
         if (StringUtils.isBlank(titleField.getValue())) {
-            shell.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("favorites.title.required"));
+            shell.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("favorites.title.required", FavoritesView.FAVORITES_BASENAME));
             return;
         }
 

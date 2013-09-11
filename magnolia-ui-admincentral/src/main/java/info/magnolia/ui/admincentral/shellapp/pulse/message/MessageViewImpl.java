@@ -33,9 +33,8 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
-import info.magnolia.i18n.LocaleProvider;
-import info.magnolia.i18n.TranslationService;
-import info.magnolia.objectfactory.Components;
+import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.admincentral.shellapp.pulse.PulseView;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.icon.Icon;
@@ -56,7 +55,6 @@ public final class MessageViewImpl extends HorizontalLayout implements MessageVi
     private Label title = new Label();
     private MessageView.Listener listener;
     private View messageView;
-
 
     public MessageViewImpl() {
         construct();
@@ -87,7 +85,7 @@ public final class MessageViewImpl extends HorizontalLayout implements MessageVi
 
     @Override
     public void setMessageView(View view) {
-        if(messageView != null) {
+        if (messageView != null) {
             messageContainer.replaceComponent(messageView.asVaadinComponent(), view.asVaadinComponent());
         } else {
             messageContainer.addComponent(view.asVaadinComponent());
@@ -100,7 +98,7 @@ public final class MessageViewImpl extends HorizontalLayout implements MessageVi
     public void setActionbarView(View view) {
         Actionbar actionbarComponent = (Actionbar) view.asVaadinComponent();
 
-        if(actionbarContainer.getComponentCount() > 0) {
+        if (actionbarContainer.getComponentCount() > 0) {
             actionbarContainer.removeAllComponents();
         }
         actionbarContainer.addComponent(actionbarComponent);
@@ -116,18 +114,13 @@ public final class MessageViewImpl extends HorizontalLayout implements MessageVi
         this.listener = listener;
     }
 
-    private class SimpleButton extends CssLayout{
-
-        private final static String BACK_BUTTON_LABEL ="Back to all messages";
+    private class SimpleButton extends CssLayout {
 
         private SimpleButton() {
             setStyleName("back-button");
 
-            TranslationService translation = Components.getComponent(TranslationService.class);
-            LocaleProvider localeProvider = Components.getComponent(LocaleProvider.class);
-
             Icon icon = new Icon("arrow2_w", 16);
-            Label label = new Label(translation.translate(localeProvider, null, new String[] { BACK_BUTTON_LABEL }));
+            Label label = new Label(MessagesUtil.get("pulse.messages.back", PulseView.PULSE_BASENAME));
             label.setSizeUndefined();
             addComponent(icon);
             addComponent(label);

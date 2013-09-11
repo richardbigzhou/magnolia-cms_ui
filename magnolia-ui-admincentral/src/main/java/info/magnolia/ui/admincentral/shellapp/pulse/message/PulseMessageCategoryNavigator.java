@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.admincentral.shellapp.pulse.PulseView;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -74,7 +75,7 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
             addComponent(tab);
         }
 
-        groupByTypeCheckBox = new CheckBox(MessagesUtil.get("pulse.messages.groupby"));
+        groupByTypeCheckBox = new CheckBox(MessagesUtil.get("pulse.messages.groupby", PulseView.PULSE_BASENAME));
         groupByTypeCheckBox.addStyleName("navigator-grouping");
         groupByTypeCheckBox.setImmediate(true);
         addComponent(groupByTypeCheckBox);
@@ -93,10 +94,10 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
      * Enumeration for the category types.
      */
     public enum MessageCategory {
-        ALL(MessagesUtil.get("pulse.messages.all")),
-        WORK_ITEM(MessagesUtil.get("pulse.messages.workitems")),
-        PROBLEM(MessagesUtil.get("pulse.messages.problems")),
-        INFO(MessagesUtil.get("pulse.messages.info"));
+        ALL(MessagesUtil.get("pulse.messages.all", PulseView.PULSE_BASENAME)),
+        WORK_ITEM(MessagesUtil.get("pulse.messages.workitems", PulseView.PULSE_BASENAME)),
+        PROBLEM(MessagesUtil.get("pulse.messages.problems", PulseView.PULSE_BASENAME)),
+        INFO(MessagesUtil.get("pulse.messages.info", PulseView.PULSE_BASENAME));
 
         private String caption;
 
@@ -118,7 +119,7 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
 
         static {
             try {
-                MESSAGE_CATEGORY_CHANGED = MessageCategoryChangedListener.class.getDeclaredMethod("messageCategoryChanged", new Class[]{CategoryChangedEvent.class});
+                MESSAGE_CATEGORY_CHANGED = MessageCategoryChangedListener.class.getDeclaredMethod("messageCategoryChanged", new Class[] { CategoryChangedEvent.class });
             } catch (final java.lang.NoSuchMethodException e) {
                 throw new java.lang.RuntimeException(e);
             }

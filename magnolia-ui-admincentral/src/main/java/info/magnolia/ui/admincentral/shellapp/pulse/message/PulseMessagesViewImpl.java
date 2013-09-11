@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse.message;
 import static info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter.*;
 
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.admincentral.shellapp.pulse.PulseView;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.CategoryChangedEvent;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
@@ -98,7 +99,7 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
 
     @Inject
     public PulseMessagesViewImpl(Shell shell) {
-        headers = new String[] { MessagesUtil.get("pulse.messages.new"), MessagesUtil.get("pulse.messages.type"), MessagesUtil.get("pulse.messages.text"), MessagesUtil.get("pulse.messages.sender"), MessagesUtil.get("pulse.messages.date") };
+        headers = new String[] { MessagesUtil.get("pulse.messages.new", PulseView.PULSE_BASENAME), MessagesUtil.get("pulse.messages.type", PulseView.PULSE_BASENAME), MessagesUtil.get("pulse.messages.text", PulseView.PULSE_BASENAME), MessagesUtil.get("pulse.messages.sender", PulseView.PULSE_BASENAME), MessagesUtil.get("pulse.messages.date", PulseView.PULSE_BASENAME) };
         footer = new PulseMessagesFooter(messageTable);
         setSizeFull();
         root.setSizeFull();
@@ -149,7 +150,7 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
 
         emptyPlaceHolder = new Label();
         emptyPlaceHolder.setContentMode(ContentMode.HTML);
-        emptyPlaceHolder.setValue(String.format("<span class=\"icon-pulse\"></span><div class=\"message\">%s</div>", MessagesUtil.get("pulse.messages.empty")));
+        emptyPlaceHolder.setValue(String.format("<span class=\"icon-pulse\"></span><div class=\"message\">%s</div>", MessagesUtil.get("pulse.messages.empty", PulseView.PULSE_BASENAME)));
         emptyPlaceHolder.addStyleName("emptyplaceholder");
 
         root.addComponent(emptyPlaceHolder);
@@ -345,18 +346,18 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
                 Property<MessageType> property = item.getItemProperty(TYPE_PROPERTY_ID);
                 GeneratedRow generated = new GeneratedRow();
 
-                switch(property.getValue()) {
-                case ERROR  :
-                    generated.setText("", "", MessagesUtil.get("pulse.messages.errors"));
+                switch (property.getValue()) {
+                case ERROR:
+                    generated.setText("", "", MessagesUtil.get("pulse.messages.errors", PulseView.PULSE_BASENAME));
                     break;
                 case WARNING:
-                    generated.setText("", "", MessagesUtil.get("pulse.messages.warnings"));
+                    generated.setText("", "", MessagesUtil.get("pulse.messages.warnings", PulseView.PULSE_BASENAME));
                     break;
                 case INFO:
-                    generated.setText("", "", MessagesUtil.get("pulse.messages.info"));
+                    generated.setText("", "", MessagesUtil.get("pulse.messages.info", PulseView.PULSE_BASENAME));
                     break;
                 case WORKITEM:
-                    generated.setText("", "", MessagesUtil.get("pulse.messages.workitems"));
+                    generated.setText("", "", MessagesUtil.get("pulse.messages.workitems", PulseView.PULSE_BASENAME));
                     break;
                 }
                 return generated;

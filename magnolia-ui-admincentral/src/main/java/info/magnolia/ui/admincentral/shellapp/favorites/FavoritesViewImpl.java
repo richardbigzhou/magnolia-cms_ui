@@ -98,7 +98,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
 
         emptyPlaceHolder.addStyleName("emptyplaceholder");
         emptyPlaceHolder.setContentMode(ContentMode.HTML);
-        emptyPlaceHolder.setValue(String.format("<span class=\"icon-favorites\"></span><div class=\"message\">%s</div>", MessagesUtil.get("favorites.empty")));
+        emptyPlaceHolder.setValue(String.format("<span class=\"icon-favorites\"></span><div class=\"message\">%s</div>", MessagesUtil.get("favorites.empty", FavoritesView.FAVORITES_BASENAME)));
 
         splitPanel.setVisible(false);
 
