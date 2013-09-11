@@ -169,13 +169,14 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     @Override
     public void onActionFired(String actionName, Object... actionContextParams) {
-        Object[] providedParameters = new Object[]{this};
+        Object[] providedParameters = new Object[]{this, item};
         Object[] combinedParameters = new Object[providedParameters.length + actionContextParams.length];
         System.arraycopy(providedParameters, 0, combinedParameters, 0, providedParameters.length);
         System.arraycopy(actionContextParams, 0, combinedParameters, providedParameters.length, actionContextParams.length);
         try {
             executor.execute(actionName, combinedParameters);
         } catch (ActionExecutionException e) {
+            log.error("An error occurred while executing an action.", e);
             Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
             subAppContext.getAppContext().broadcastMessage(error);
         }
