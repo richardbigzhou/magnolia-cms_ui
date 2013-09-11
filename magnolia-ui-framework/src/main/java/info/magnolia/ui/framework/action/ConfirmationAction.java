@@ -125,7 +125,7 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
         if (items.size() == 1) {
             boolean isNode = items.get(0).getJcrItem().isNode();
 
-            return MessagesUtil.getWithDefault(getDefinition().getConfirmationHeader(), getDefinition().getI18nBasename(), new String[] { (isNode) ? "Node" : "Property" });
+            return MessagesUtil.get(getDefinition().getConfirmationHeader(), getDefinition().getI18nBasename(), new String[] { (isNode) ? "Node" : "Property" });
         }
         long howMany = items.size();
         boolean atLeastOneNode = false;
@@ -139,14 +139,14 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
         }
         if (atLeastOneNode && atLeastOneProperty) {
             // mix of nodes and properties
-            return MessagesUtil.getWithDefault(getDefinition().getConfirmationHeader(), getDefinition().getI18nBasename(), new String[] { howMany + " items" });
+            return MessagesUtil.get(getDefinition().getConfirmationHeader(), getDefinition().getI18nBasename(), new String[] { howMany + " items" });
         }
         if (atLeastOneNode) {
             // only nodes
-            return MessagesUtil.getWithDefault(getDefinition().getConfirmationHeader(), getDefinition().getI18nBasename(), new String[] { howMany + " nodes" });
+            return MessagesUtil.get(getDefinition().getConfirmationHeader(), getDefinition().getI18nBasename(), new String[] { howMany + " nodes" });
         }
         // only properties
-        return MessagesUtil.getWithDefault(getDefinition().getConfirmationHeader(), getDefinition().getI18nBasename(), new String[] { howMany + " properties" });
+        return MessagesUtil.get(getDefinition().getConfirmationHeader(), getDefinition().getI18nBasename(), new String[] { howMany + " properties" });
     }
 
     protected String getConfirmationMessage() throws Exception {
@@ -167,14 +167,14 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
         }
         if (atLeastOneNode && atLeastOneProperty) {
             // mix of nodes and properties
-            return MessagesUtil.getWithDefault(getDefinition().getConfirmationMessage(), getDefinition().getI18nBasename(), new String[] { "items", getListOfItemPaths() });
+            return MessagesUtil.get(getDefinition().getConfirmationMessage(), getDefinition().getI18nBasename(), new String[] { "items", getListOfItemPaths() });
         }
         if (atLeastOneNode) {
             // only nodes
-            return MessagesUtil.getWithDefault(getDefinition().getConfirmationMessage(), getDefinition().getI18nBasename(), new String[] { "nodes", getListOfItemPaths() });
+            return MessagesUtil.get(getDefinition().getConfirmationMessage(), getDefinition().getI18nBasename(), new String[] { "nodes", getListOfItemPaths() });
         }
         // only properties
-        return MessagesUtil.getWithDefault(getDefinition().getConfirmationMessage(), getDefinition().getI18nBasename(), new String[] { "properties", getListOfItemPaths() });
+        return MessagesUtil.get(getDefinition().getConfirmationMessage(), getDefinition().getI18nBasename(), new String[] { "properties", getListOfItemPaths() });
     }
 
     protected String getListOfItemPaths() {
