@@ -133,7 +133,7 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
         ComponentProvider mediaEditorComponentProvider = createMediaEditorComponentProvider();
         MediaEditorView view = mediaEditorComponentProvider.getComponent(MediaEditorView.class);
         ActionbarPresenter actionbarPresenter = new ActionbarPresenter();
-        DialogPresenter dialogPresenter = new BaseDialogPresenter(mediaEditorComponentProvider);
+        DialogPresenter dialogPresenter = new BaseDialogPresenter(mediaEditorComponentProvider, this.i18nizer);
         AppContext appContext = mediaEditorComponentProvider.getComponent(AppContext.class);
         MediaEditorPresenter mediaEditorPresenter =
                 new MediaEditorPresenterImpl(

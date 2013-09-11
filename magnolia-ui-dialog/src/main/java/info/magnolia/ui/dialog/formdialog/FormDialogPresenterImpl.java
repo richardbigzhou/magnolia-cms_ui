@@ -34,6 +34,7 @@
 package info.magnolia.ui.dialog.formdialog;
 
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.api.context.UiContext;
@@ -66,8 +67,8 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     private Item item;
 
     @Inject
-    public FormDialogPresenterImpl(final DialogDefinitionRegistry dialogDefinitionRegistry, FormBuilder formBuilder, ComponentProvider componentProvider) {
-        super(componentProvider);
+    public FormDialogPresenterImpl(final DialogDefinitionRegistry dialogDefinitionRegistry, FormBuilder formBuilder, ComponentProvider componentProvider, I18nizer i18nizer) {
+        super(componentProvider, i18nizer);
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.formBuilder = formBuilder;
         this.componentProvider = componentProvider;
@@ -116,6 +117,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     }
 
     private void buildView(FormDialogDefinition dialogDefinition) {
+        dialogDefinition = (FormDialogDefinition) super.decorateForI18n(dialogDefinition);
         Dialog dialog = new Dialog(dialogDefinition);
         formView = formBuilder.buildForm(dialogDefinition.getForm(), item, dialog);
         final String description = dialogDefinition.getDescription();

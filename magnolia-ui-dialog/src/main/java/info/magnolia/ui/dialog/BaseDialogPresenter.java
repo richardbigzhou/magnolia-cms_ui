@@ -35,6 +35,8 @@ package info.magnolia.ui.dialog;
 
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutAction.ModifierKey;
+
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.dialog.actionarea.ActionAreaPresenter;
@@ -57,9 +59,12 @@ public class BaseDialogPresenter implements DialogPresenter, ActionParameterProv
 
     private EditorActionAreaPresenter editorActionAreaPresenter;
 
+    private final I18nizer i18nizer;
+
     @Inject
-    public BaseDialogPresenter(ComponentProvider componentProvider) {
+    public BaseDialogPresenter(ComponentProvider componentProvider, I18nizer i18nizer) {
         this.componentProvider = componentProvider;
+        this.i18nizer = i18nizer;
     }
 
     @Override
@@ -82,8 +87,10 @@ public class BaseDialogPresenter implements DialogPresenter, ActionParameterProv
         view.addShortcut(this.editorActionAreaPresenter.bindShortcut(actionName, keyCode, modifiers));
     }
 
+    @Override
     public DialogView start(BaseDialogDefinition definition, UiContext uiContext) {
         this.view = initView();
+        definition = i18nizer.decorate(definition);
         this.editorActionAreaPresenter = componentProvider.getComponent(definition.getActionArea().getPresenterClass());
         EditorActionAreaView editorActionAreaView = editorActionAreaPresenter.start(definition.getActions().values(), definition.getActionArea(), this, uiContext);
 
@@ -106,5 +113,9 @@ public class BaseDialogPresenter implements DialogPresenter, ActionParameterProv
     @Override
     public Object[] getActionParameters(String actionName) {
         return new Object[]{this};
+    }
+
+    public BaseDialogDefinition decorateForI18n(BaseDialogDefinition definition) {
+        return i18nizer.decorate(definition);
     }
 }

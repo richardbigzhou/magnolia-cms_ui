@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.dialog.definition;
 
+import info.magnolia.i18n.I18nAble;
+import info.magnolia.i18n.I18nText;
 import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.form.definition.FormDefinition;
@@ -43,8 +45,10 @@ import info.magnolia.ui.form.definition.FormDefinition;
  * @see info.magnolia.ui.form.field.definition.FieldDefinition
  * @see info.magnolia.ui.api.action.ActionDefinition
  */
+@I18nAble(keyGenerator = DialogDefinitionKeyGenerator.class)
 public interface FormDialogDefinition extends BaseDialogDefinition {
 
+    @I18nText
     String getDescription();
 
     FormDefinition getForm();

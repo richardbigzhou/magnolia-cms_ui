@@ -35,6 +35,7 @@ package info.magnolia.ui.contentapp.choosedialog;
 
 import com.rits.cloning.Cloner;
 import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppContext;
@@ -68,8 +69,8 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
     private AppContext appContext;
 
     @Inject
-    public ContentAppChooseDialogPresenter(FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18nContentSupport i18nContentSupport, AppContext appContext, ModuleRegistry registry) {
-        super(fieldFactoryFactory, componentProvider, i18nContentSupport, registry);
+    public ContentAppChooseDialogPresenter(FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18nContentSupport i18nContentSupport, AppContext appContext, ModuleRegistry registry, I18nizer i18nizer) {
+        super(fieldFactoryFactory, componentProvider, i18nContentSupport, registry, i18nizer);
         this.appContext = appContext;
     }
 

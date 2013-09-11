@@ -36,11 +36,11 @@ package info.magnolia.ui.mediaeditor;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
 
 /**
- * Creates an {@link MediaEditorPresenter} instance by either name or definition. 
+ * Creates an {@link MediaEditorPresenter} instance by either name or definition.
  */
 public interface MediaEditorPresenterFactory {
 
     MediaEditorPresenter getPresenterById(String id);
-    
+
     MediaEditorPresenter getPresenterByDefinition(MediaEditorDefinition definition);
 }

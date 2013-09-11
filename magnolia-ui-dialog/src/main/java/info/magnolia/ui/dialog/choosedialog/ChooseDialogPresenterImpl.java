@@ -40,6 +40,7 @@ import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -91,8 +92,9 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
             FieldFactoryFactory fieldFactoryFactory,
             ComponentProvider componentProvider,
             I18nContentSupport i18nContentSupport,
-            ModuleRegistry moduleRegistry) {
-        super(componentProvider);
+            ModuleRegistry moduleRegistry,
+            I18nizer i18nizer) {
+        super(componentProvider, i18nizer);
         this.fieldFactoryFactory = fieldFactoryFactory;
         this.moduleRegistry = moduleRegistry;
         this.componentProvider = componentProvider;
