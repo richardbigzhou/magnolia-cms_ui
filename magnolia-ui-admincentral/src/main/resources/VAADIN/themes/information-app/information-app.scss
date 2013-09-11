@@ -1,0 +1,35 @@
+@charset "UTF-8";
+
+@mixin information-app {
+
+  .smallapp-section {
+
+    padding: 10px 45px 10px 15px;
+
+    .v-formlayout-captioncell .v-caption {
+      display: inline-block;
+      width: 155px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    v-formlayout-contentcell {
+      min-width: 320px;
+    }
+
+    .v-label {
+      font-size: 12px;
+    }
+
+    .section-title {
+      font-family: DINWebPro;
+      font-size: 22px;
+    }
+
+    .fieldset-title {
+      font-weight: bold;
+      margin-top: 16px;
+    }
+
+  }
+}
