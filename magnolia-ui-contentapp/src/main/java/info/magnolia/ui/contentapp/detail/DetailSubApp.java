@@ -110,7 +110,13 @@ public class DetailSubApp extends BaseSubApp {
             log.warn("Could not retrieve item at path {} in workspace {}", detailLocation.getNodePath(), getWorkspace());
         }
 
-        getView().setContentView(workbench.start(detailLocation.getNodePath(), detailLocation.getViewType()));
+        View view;
+        if (detailLocation.hasVersion()) {
+            view = workbench.start(detailLocation.getNodePath(), detailLocation.getViewType(), detailLocation.getVersion());
+        } else {
+            view = workbench.start(detailLocation.getNodePath(), detailLocation.getViewType());
+        }
+        getView().setContentView(view);
         return getView();
     }
 

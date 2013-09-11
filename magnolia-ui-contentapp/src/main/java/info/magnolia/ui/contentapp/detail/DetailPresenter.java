@@ -44,6 +44,7 @@ import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
+import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.dialog.actionarea.ActionListener;
 import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
 import info.magnolia.ui.dialog.actionarea.definition.FormActionItemDefinition;
@@ -52,17 +53,25 @@ import info.magnolia.ui.dialog.formdialog.FormBuilder;
 import info.magnolia.ui.dialog.formdialog.FormView;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
+import info.magnolia.ui.form.definition.FormDefinition;
+import info.magnolia.ui.form.definition.TabDefinition;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.framework.app.SubAppActionExecutor;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.rits.cloning.Cloner;
 
 /**
  * Presenter for the item displayed in the
@@ -89,44 +98,51 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     private JcrNodeAdapter item;
 
-    private FormView formView;
+    private DialogView dialogView;
 
     @Inject
     public DetailPresenter(SubAppContext subAppContext, final @Named(AdmincentralEventBus.NAME) EventBus eventBus, DetailView view,
-            FormBuilder formBuilder, ComponentProvider componentProvider, SubAppActionExecutor executor, FormView formView) {
+                           FormBuilder formBuilder, ComponentProvider componentProvider, SubAppActionExecutor executor) {
         this.subAppContext = subAppContext;
         this.eventBus = eventBus;
         this.view = view;
         this.formBuilder = formBuilder;
         this.componentProvider = componentProvider;
         this.executor = executor;
-        this.formView = formView;
     }
 
     public DetailView start(EditorDefinition editorDefinition, final JcrNodeAdapter item, DetailView.ViewType viewType) {
         this.editorDefinition = editorDefinition;
         this.item = item;
-        initActions();
         setItemView(viewType);
         return view;
     }
 
     private void setItemView(DetailView.ViewType viewType) {
+        FormView formView = componentProvider.getComponent(FormView.class);
+        this.dialogView = formView;
+
+        FormDefinition formDefinition;
 
         switch (viewType) {
         case VIEW:
+            formDefinition = cloneFormDefinitionReadOnly(editorDefinition.getForm());
+            break;
         case EDIT:
         default:
-            formBuilder.buildForm(formView, editorDefinition.getForm(), item, null);
-            view.setItemView(formView.asVaadinComponent(), viewType);
+            formDefinition = editorDefinition.getForm();
             break;
         }
+
+        formBuilder.buildForm(formView, formDefinition, item, null);
+        initActions();
+        view.setItemView(dialogView.asVaadinComponent(), viewType);
     }
 
     private void initActions() {
         EditorActionAreaPresenter editorActionAreaPresenter = componentProvider.getComponent(editorDefinition.getActionArea().getPresenterClass());
         EditorActionAreaView editorActionAreaView = editorActionAreaPresenter.start(filterSubAppActions(),editorDefinition.getActionArea(), this, subAppContext);
-        formView.setActionAreaView(editorActionAreaView);
+        dialogView.setActionAreaView(editorActionAreaView);
     }
 
     private Iterable<ActionDefinition> filterSubAppActions() {
@@ -136,13 +152,30 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
         boolean isJcrItemAdapter = (item instanceof JcrItemAdapter);
         for (FormActionItemDefinition editorAction : editorActions) {
             ActionDefinition def = subAppActions.get(editorAction.getName());
-            if (def != null || (isJcrItemAdapter && executor.isAvailable(editorAction.getName(), ((JcrItemAdapter)item).getJcrItem()))) {
-                filteredActions.add(subAppActions.get(editorAction.getName()));
+            if (def != null && (!isJcrItemAdapter || (isJcrItemAdapter && executor.isAvailable(editorAction.getName(), ((JcrItemAdapter)item).getJcrItem())))) {
+                filteredActions.add(def);
             } else {
-                 log.warn("Action is configured for an editor but not configured for sub-app: " + editorAction.getName());
+                log.debug("Action is configured for an editor but not configured for sub-app: " + editorAction.getName());
             }
         }
         return filteredActions;
+    }
+
+    /**
+     * Return clone of a form definition with all fields definitions set to read only.
+     * @see ConfiguredFieldDefinition#setReadOnly(boolean)
+     */
+    private FormDefinition cloneFormDefinitionReadOnly(FormDefinition formDefinition) {
+        Cloner cloner = new Cloner();
+        FormDefinition formDefinitionClone = cloner.deepClone(formDefinition);
+
+        for (TabDefinition tab : formDefinitionClone.getTabs()) {
+            for (FieldDefinition field : tab.getFields()) {
+                ((ConfiguredFieldDefinition)field).setReadOnly(true);
+            }
+        }
+
+        return formDefinitionClone;
     }
 
     @Override
@@ -160,12 +193,14 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     @Override
     public void showValidation(boolean visible) {
-        formView.showValidation(visible);
+        if (dialogView instanceof FormView) {
+            ((FormView)dialogView).showValidation(visible);
+        }
     }
 
     @Override
     public boolean isValid() {
-        return formView.isValid();
+        return dialogView instanceof FormView ? ((FormView)dialogView).isValid() : true;
     }
 
     @Override
