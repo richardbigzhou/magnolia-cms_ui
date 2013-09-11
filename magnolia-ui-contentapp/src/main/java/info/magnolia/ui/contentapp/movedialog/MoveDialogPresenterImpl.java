@@ -40,6 +40,7 @@ import com.vaadin.data.Property.ValueChangeListener;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.ResettableEventBus;
 import info.magnolia.event.SimpleEventBus;
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
@@ -107,8 +108,8 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     private JcrNodeAdapter currentHostCandidate;
 
     @Inject
-    public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, DialogActionExecutor executor, AppContext appContext) {
-        super(componentProvider, executor, dialogView);
+    public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, UiContext uiContext, I18nizer i18nizer) {
+        super(componentProvider, i18nizer);
         this.dialogView = dialogView;
         this.workbenchPresenter = workbenchPresenter;
         this.appContext = appContext;

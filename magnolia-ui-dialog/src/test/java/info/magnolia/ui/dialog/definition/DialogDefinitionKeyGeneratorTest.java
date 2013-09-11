@@ -56,7 +56,7 @@ public class DialogDefinitionKeyGeneratorTest {
         // generator
         DialogDefinitionKeyGenerator generator = new DialogDefinitionKeyGenerator();
         // structure
-        ConfiguredDialogDefinition dialog = new ConfiguredDialogDefinition();
+        ConfiguredFormDialogDefinition dialog = new ConfiguredFormDialogDefinition();
         dialog.setId("test-module:testFolder/testDialog");
         // i18n
         I18nizer i18nizer = new ProxytoysI18nizer(null, null);
@@ -78,7 +78,7 @@ public class DialogDefinitionKeyGeneratorTest {
         // generator
         DialogDefinitionKeyGenerator generator = new DialogDefinitionKeyGenerator();
         // structure
-        ConfiguredDialogDefinition dialog = new ConfiguredDialogDefinition();
+        ConfiguredFormDialogDefinition dialog = new ConfiguredFormDialogDefinition();
         dialog.setId("test-module:testFolder/testDialog");
         // i18n
         I18nizer i18nizer = new ProxytoysI18nizer(null, null);

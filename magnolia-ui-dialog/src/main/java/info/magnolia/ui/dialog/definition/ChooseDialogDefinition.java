@@ -33,12 +33,14 @@
  */
 package info.magnolia.ui.dialog.definition;
 
+import info.magnolia.i18n.I18nAble;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 
 /**
  * Definition of a choose dialog.
  */
+@I18nAble(keyGenerator = DialogDefinitionKeyGenerator.class)
 public interface ChooseDialogDefinition extends BaseDialogDefinition {
 
     FieldDefinition getField();

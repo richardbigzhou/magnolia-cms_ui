@@ -36,6 +36,8 @@ package info.magnolia.ui.dialog;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutAction.ModifierKey;
 import com.vaadin.event.ShortcutListener;
+
+import info.magnolia.i18n.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -71,15 +73,12 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
 
     private EditorActionAreaPresenter editorActionAreaPresenter;
 
-    private UiContext uiContext;
-
-    private BaseDialogDefinition definition;
+    private final I18nizer i18nizer;
 
     @Inject
-    public BaseDialogPresenter(ComponentProvider componentProvider, ActionExecutor executor, DialogView view) {
+    public BaseDialogPresenter(ComponentProvider componentProvider, I18nizer i18nizer) {
         this.componentProvider = componentProvider;
-        this.executor = executor;
-        this.view = view;
+        this.i18nizer = i18nizer;
     }
 
     @Override
@@ -107,9 +106,10 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
         });
     }
 
+    @Override
     public DialogView start(BaseDialogDefinition definition, UiContext uiContext) {
-        this.uiContext = uiContext;
-        this.definition = definition;
+        this.view = initView();
+        definition = i18nizer.decorate(definition);
         this.editorActionAreaPresenter = componentProvider.getComponent(definition.getActionArea().getPresenterClass());
         EditorActionAreaView editorActionAreaView = editorActionAreaPresenter.start(filterActions(), definition.getActionArea(), this, uiContext);
 
@@ -133,37 +133,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
         return new Object[]{this};
     }
 
-    @Override
-    public void onActionFired(String actionName, Object... actionContextParams) {
-        executeAction(actionName, actionContextParams);
+    public BaseDialogDefinition decorateForI18n(BaseDialogDefinition definition) {
+        return i18nizer.decorate(definition);
     }
-
-    protected void executeAction(String actionName, Object[] actionContextParams) {
-        Object[] providedParameters = getActionParameters(actionName);
-        Object[] combinedParameters = new Object[providedParameters.length + actionContextParams.length];
-        System.arraycopy(providedParameters, 0, combinedParameters, 0, providedParameters.length);
-        System.arraycopy(actionContextParams, 0, combinedParameters, providedParameters.length, actionContextParams.length);
-        try {
-            executor.execute(actionName, combinedParameters);
-        } catch (ActionExecutionException e) {
-            log.error("An error occurred while executing an action: ", e);
-            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
-            if (uiContext instanceof AppContext) {
-                ((AppContext)uiContext).broadcastMessage(error);
-            } else if (uiContext instanceof SubAppContext) {
-                ((SubAppContext)uiContext).getAppContext().broadcastMessage(error);
-            }
-
-        }
-    }
-
-    protected BaseDialogDefinition getDefinition() {
-        return definition;
-    }
-
-    protected ActionExecutor getExecutor() {
-        return executor;
-    }
-
-
 }
