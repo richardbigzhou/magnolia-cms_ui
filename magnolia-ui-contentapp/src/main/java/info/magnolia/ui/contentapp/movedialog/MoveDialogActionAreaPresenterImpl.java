@@ -37,9 +37,8 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.contentapp.movedialog.view.MoveDialogActionAreaView;
-import info.magnolia.ui.dialog.actionarea.ActionParameterProvider;
+import info.magnolia.ui.dialog.actionarea.ActionListener;
 import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenterImpl;
-import info.magnolia.ui.dialog.actionarea.EditorActionExecutor;
 import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
 import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
 import info.magnolia.ui.framework.action.MoveLocation;
@@ -53,13 +52,13 @@ import java.util.Set;
 public class MoveDialogActionAreaPresenterImpl extends EditorActionAreaPresenterImpl implements MoveDialogActionPresenter {
 
     @Inject
-    public MoveDialogActionAreaPresenterImpl(MoveDialogActionAreaView view, ComponentProvider componentProvider, EditorActionExecutor actionExecutor) {
-        super(view, componentProvider, actionExecutor);
+    public MoveDialogActionAreaPresenterImpl(MoveDialogActionAreaView view, ComponentProvider componentProvider) {
+        super(view, componentProvider);
     }
 
     @Override
-    public EditorActionAreaView start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, ActionParameterProvider parameterProvider, UiContext uiContext) {
-        return super.start(actions, definition, parameterProvider, uiContext);
+    public EditorActionAreaView start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, ActionListener listener, UiContext uiContext) {
+        return super.start(actions, definition, listener, uiContext);
     }
 
     @Override

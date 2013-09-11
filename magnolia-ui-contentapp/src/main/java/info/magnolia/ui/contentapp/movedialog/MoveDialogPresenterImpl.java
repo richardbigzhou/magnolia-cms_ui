@@ -43,7 +43,7 @@ import info.magnolia.event.SimpleEventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.field.WorkbenchField;
 import info.magnolia.ui.contentapp.movedialog.action.MoveCancelledAction;
@@ -55,6 +55,7 @@ import info.magnolia.ui.contentapp.movedialog.predicate.MovePossibilityPredicate
 import info.magnolia.ui.dialog.BaseDialogPresenter;
 import info.magnolia.ui.dialog.DialogCloseHandler;
 import info.magnolia.ui.dialog.DialogView;
+import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.actionarea.definition.ConfiguredEditorActionAreaDefinition;
 import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredBaseDialogDefinition;
@@ -91,7 +92,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private WorkbenchPresenter workbenchPresenter;
 
-    private UiContext uiContext;
+    private AppContext appContext;
 
     private List<JcrNodeAdapter> nodesToMove;
 
@@ -106,11 +107,11 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     private JcrNodeAdapter currentHostCandidate;
 
     @Inject
-    public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, UiContext uiContext) {
-        super(componentProvider);
+    public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, DialogActionExecutor executor, AppContext appContext) {
+        super(componentProvider, executor);
         this.dialogView = dialogView;
         this.workbenchPresenter = workbenchPresenter;
-        this.uiContext = uiContext;
+        this.appContext = appContext;
     }
 
     @Override
@@ -122,9 +123,9 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     @Override
     public Object[] getActionParameters(String actionName) {
         if (currentHostCandidate != null) {
-            return new Object[]{nodesToMove, callback, currentHostCandidate, uiContext};
+            return new Object[]{nodesToMove, callback, currentHostCandidate, appContext};
         }
-        return new Object[]{nodesToMove, callback, uiContext};
+        return new Object[]{nodesToMove, callback, appContext};
     }
 
     @Override
@@ -157,6 +158,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         });
 
         BaseDialogDefinition dialogDefinition = prepareDialogDefinition();
+        getExecutor().setDialogDefinition(dialogDefinition);
         dialogView.setCaption(dialogDefinition.getLabel());
         dialogView.addDialogCloseHandler(new DialogCloseHandler() {
             @Override
@@ -164,7 +166,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
                 ((ResettableEventBus)eventBus).reset();
             }
         });
-        super.start(dialogDefinition, uiContext);
+        super.start(dialogDefinition, appContext);
         updatePossibleMoveLocations(null);
         return dialogView;
     }
@@ -268,5 +270,10 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     @Override
     public MoveDialogActionPresenter getActionPresenter() {
         return (MoveDialogActionPresenter) super.getActionPresenter();
+    }
+
+    @Override
+    protected DialogActionExecutor getExecutor() {
+        return (DialogActionExecutor) super.getExecutor();
     }
 }

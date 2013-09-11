@@ -35,7 +35,6 @@ package info.magnolia.ui.contentapp.choosedialog;
 
 import com.rits.cloning.Cloner;
 import info.magnolia.cms.i18n.I18nContentSupport;
-import info.magnolia.module.ModuleRegistry;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
@@ -43,6 +42,7 @@ import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition;
+import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenterImpl;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogView;
 import info.magnolia.ui.dialog.choosedialog.action.ChooseDialogActionDefinition;
@@ -68,8 +68,8 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
     private AppContext appContext;
 
     @Inject
-    public ContentAppChooseDialogPresenter(FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18nContentSupport i18nContentSupport, AppContext appContext, ModuleRegistry registry) {
-        super(fieldFactoryFactory, componentProvider, i18nContentSupport, registry);
+    public ContentAppChooseDialogPresenter(FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18nContentSupport i18nContentSupport, DialogActionExecutor executor, AppContext appContext) {
+        super(fieldFactoryFactory, componentProvider, i18nContentSupport, executor);
         this.appContext = appContext;
     }
 

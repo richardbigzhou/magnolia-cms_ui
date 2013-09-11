@@ -43,5 +43,5 @@ import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
  */
 public interface EditorActionAreaPresenter extends ActionAreaPresenter {
     @Override
-    EditorActionAreaView start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, ActionParameterProvider parameterProvider, UiContext uiContext);
+    EditorActionAreaView start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, ActionListener listener, UiContext uiContext);
 }

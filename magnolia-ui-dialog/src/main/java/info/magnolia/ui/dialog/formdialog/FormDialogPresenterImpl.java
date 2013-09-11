@@ -43,6 +43,7 @@ import info.magnolia.ui.dialog.BaseDialogPresenter;
 import info.magnolia.ui.dialog.Dialog;
 import info.magnolia.ui.dialog.DialogCloseHandler;
 import info.magnolia.ui.dialog.DialogView;
+import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.EditorCallback;
@@ -59,14 +60,17 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     private EditorCallback callback;
 
     private DialogDefinitionRegistry dialogDefinitionRegistry;
+
     private FormBuilder formBuilder;
+
     private FormView formView;
+
     private Item item;
 
 
     @Inject
-    public FormDialogPresenterImpl(final DialogDefinitionRegistry dialogDefinitionRegistry, FormBuilder formBuilder, ComponentProvider componentProvider) {
-        super(componentProvider);
+    public FormDialogPresenterImpl(final DialogDefinitionRegistry dialogDefinitionRegistry, FormBuilder formBuilder, ComponentProvider componentProvider, DialogActionExecutor executor) {
+        super(componentProvider, executor);
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.formBuilder = formBuilder;
         this.componentProvider = componentProvider;
@@ -96,6 +100,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     public DialogView start(final Item item, FormDialogDefinition dialogDefinition, final UiContext uiContext, EditorCallback callback) {
         this.callback = callback;
         this.item = item;
+        getExecutor().setDialogDefinition(dialogDefinition);
         buildView(dialogDefinition);
         start(dialogDefinition, uiContext);
         final OverlayCloser overlayCloser = uiContext.openOverlay(getView());
@@ -133,11 +138,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     }
 
     @Override
-    public Object[] getActionParameters(String actionName) {
-        return new Object[]{item, callback, this};
-    }
-
-    @Override
     public FormView getView() {
         return formView;
     }
@@ -150,5 +150,10 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     @Override
     public boolean isValid() {
         return formView.isValid();
+    }
+
+    @Override
+    protected DialogActionExecutor getExecutor() {
+        return (DialogActionExecutor)super.getExecutor();
     }
 }
