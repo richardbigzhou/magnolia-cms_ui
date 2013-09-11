@@ -34,12 +34,12 @@
 package info.magnolia.ui.workbench.column.definition;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.i18n.I18nizer;
 import info.magnolia.i18n.LocaleProvider;
 import info.magnolia.i18n.TranslationService;
 import info.magnolia.i18n.proxytoys.ProxytoysI18nizer;
-import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor;
@@ -56,9 +56,6 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
 
 /**
  * Tests for {@link ColumnDefinitionKeyGenerator}.
