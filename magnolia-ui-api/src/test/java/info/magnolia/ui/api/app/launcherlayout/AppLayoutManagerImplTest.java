@@ -71,6 +71,13 @@ public class AppLayoutManagerImplTest extends MgnlTestCase {
     private EventBus systemEventBus;
     private AppLauncherLayoutManagerImpl appLayoutManager;
 
+    private I18nizer i18nizer = new I18nizer() {
+        @Override
+        public <C> C decorate(C child) {
+            return child;
+        }
+    };
+
     @Override
     @Before
     public void setUp() throws Exception {
@@ -102,13 +109,6 @@ public class AppLayoutManagerImplTest extends MgnlTestCase {
         when(registry.getAppDescriptor(eq("app1"))).thenReturn(appDescriptor1);
         when(registry.getAppDescriptor(eq("app2"))).thenReturn(appDescriptor2);
         when(registry.getAppDescriptor(eq("app3"))).thenReturn(appDescriptor3);
-
-        I18nizer i18nizer = new I18nizer() {
-            @Override
-            public <C> C decorate(C child) {
-                return child;
-            }
-        };
 
         systemEventBus = new SimpleEventBus();
 
@@ -221,7 +221,7 @@ public class AppLayoutManagerImplTest extends MgnlTestCase {
     public void testHidesEntriesThatAreNotEnabled() {
 
         // GIVEN
-        ((ConfiguredAppLauncherGroupEntryDefinition)this.appGroup1.getApps().get(0)).setEnabled(false);
+        ((ConfiguredAppLauncherGroupEntryDefinition) this.appGroup1.getApps().get(0)).setEnabled(false);
 
         // WHEN
         AppLauncherLayout layout = appLayoutManager.getLayoutForCurrentUser();
@@ -286,4 +286,5 @@ public class AppLayoutManagerImplTest extends MgnlTestCase {
         }
         return group;
     }
+
 }
