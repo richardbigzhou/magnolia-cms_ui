@@ -142,3 +142,4 @@ public class ConfiguredActionDefinition implements ActionDefinition {
         this.errorMessage = errorMessage;
     }
 }
+

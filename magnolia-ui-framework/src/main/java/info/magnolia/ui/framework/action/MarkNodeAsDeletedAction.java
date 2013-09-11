@@ -73,7 +73,10 @@ public class MarkNodeAsDeletedAction extends DeleteAction<MarkNodeAsDeletedActio
      */
     @Override
     protected Map<String, Object> buildParams(final Item item) {
-        Map<String, Object> params = getDefinition().getParams() == null ? new HashMap<String, Object>() : getDefinition().getParams();
+        Map<String, Object> params = new HashMap<String, Object>();
+        if (!getDefinition().getParams().isEmpty()) {
+            params.putAll(getDefinition().getParams());
+        }
         try {
             final String path = item.getParent().getPath();
             final String workspace = item.getSession().getWorkspace().getName();

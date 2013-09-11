@@ -34,8 +34,23 @@
 package info.magnolia.ui.contentapp.setup;
 
 import info.magnolia.module.DefaultModuleVersionHandler;
+import info.magnolia.module.delta.DeltaBuilder;
+import info.magnolia.module.delta.RemoveNodeTask;
+import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.framework.setup.ReplaceMultiLinkFieldDefinitionTask;
+import info.magnolia.ui.framework.setup.ReplaceSaveModeTypeFieldDefinitionTask;
 
 /**
  * Handles versioning for {@link info.magnolia.ui.contentapp.ContentAppModule}.
  */
-public class ContentAppModuleVersionHandler extends DefaultModuleVersionHandler {}
+public class ContentAppModuleVersionHandler extends DefaultModuleVersionHandler {
+
+    public ContentAppModuleVersionHandler() {
+        register(DeltaBuilder.update("5.1", "")
+                .addTask(new RemoveNodeTask("Remove MultiLinkField definition mapping", "", RepositoryConstants.CONFIG, "/modules/ui-framework/fieldTypes/multiLinkField"))
+                .addTask((new ReplaceMultiLinkFieldDefinitionTask("Change the MultiLinkFieldDefinition by MultiFieldDefinition ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where contains(t.*,'info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition') ")))
+                .addTask((new ReplaceSaveModeTypeFieldDefinitionTask("Update field definition sub task from 'saveModeType' to 'transformerClass' ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where name(t) = 'saveModeType' ")))
+                .addTask((new ContentAppDescriptorMigrationTask("Update field definition sub task from 'saveModeType' to 'transformerClass' ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where name(t) = 'subApps' ")))
+        );
+    }
+}

@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
+import com.vaadin.data.util.BeanItem;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.i18n.I18nizer;
 import info.magnolia.registry.RegistrationException;
@@ -41,16 +42,13 @@ import info.magnolia.ui.admincentral.shellapp.pulse.MessageActionExecutor;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.definition.MessageViewDefinition;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.registry.MessageViewDefinitionRegistry;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.form.FormBuilder;
 import info.magnolia.ui.api.message.Message;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.dialog.formdialog.FormBuilder;
 import info.magnolia.ui.framework.message.MessagesManager;
-
-import javax.inject.Inject;
-
 import org.apache.commons.lang.StringUtils;
 
-import com.vaadin.data.util.BeanItem;
+import javax.inject.Inject;
 
 /**
  * MessagePresenter.

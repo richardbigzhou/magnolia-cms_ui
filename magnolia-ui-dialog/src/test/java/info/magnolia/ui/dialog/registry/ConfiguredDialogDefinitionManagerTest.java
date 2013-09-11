@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.dialog.registry;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
 import info.magnolia.jcr.node2bean.TypeMapping;
 import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
@@ -50,24 +47,25 @@ import info.magnolia.test.mock.jcr.MockEvent;
 import info.magnolia.test.mock.jcr.MockObservationManager;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
 import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
-import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
+import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
+import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
-import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
+import org.junit.Before;
+import org.junit.Test;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.observation.Event;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests for the dialog definition manager.
@@ -87,14 +85,14 @@ public class ConfiguredDialogDefinitionManagerTest {
     @Before
     public void setUp() throws Exception {
 
-        ComponentsTestUtil.setImplementation(DialogDefinition.class, ConfiguredDialogDefinition.class);
+        ComponentsTestUtil.setImplementation(FormDialogDefinition.class, ConfiguredFormDialogDefinition.class);
         ComponentsTestUtil.setImplementation(FormDefinition.class, ConfiguredFormDefinition.class);
         ComponentsTestUtil.setImplementation(TabDefinition.class, ConfiguredTabDefinition.class);
         ComponentsTestUtil.setImplementation(ActionDefinition.class, ConfiguredActionDefinition.class);
 
         session = SessionTestUtil.createSession(RepositoryConstants.CONFIG,
                 A_DIALOG_PATH + ".id=aModule:aDialog",
-                A_DIALOG_PATH + ".class=" + ConfiguredDialogDefinition.class.getName(),
+                A_DIALOG_PATH + ".class=" + ConfiguredFormDialogDefinition.class.getName(),
                 A_DIALOG_PATH + "/form/tabs/taba",
                 A_DIALOG_PATH + "/form/tabs/taba.label=label",
                 B_DIALOG_PATH + ".id=bModule:bDialog",
@@ -128,11 +126,11 @@ public class ConfiguredDialogDefinitionManagerTest {
         dialogManager.start();
 
         // THEN
-        DialogDefinition aDialog = dialogRegistry.get("aModule:aDialog");
+        FormDialogDefinition aDialog = dialogRegistry.get("aModule:aDialog");
         assertNotNull(aDialog);
         assertEquals("aModule:aDialog", aDialog.getId());
 
-        DialogDefinition bDialog = dialogRegistry.get("bModule:bDialog");
+        FormDialogDefinition bDialog = dialogRegistry.get("bModule:bDialog");
         assertNotNull(bDialog);
         assertEquals("bModule:bDialog", bDialog.getId());
     }
@@ -148,7 +146,7 @@ public class ConfiguredDialogDefinitionManagerTest {
 
         // THEN
         // Make sure dialog a is there.
-        DialogDefinition aDialog = dialogRegistry.get("aModule:aDialog");
+        FormDialogDefinition aDialog = dialogRegistry.get("aModule:aDialog");
         assertNotNull(aDialog);
 
         // WHEN
@@ -170,7 +168,7 @@ public class ConfiguredDialogDefinitionManagerTest {
         Thread.sleep(6000);
         // THEN
         // dialog b has its property modified.
-        DialogDefinition bDialog = dialogRegistry.get("bModule:bDialog");
+        FormDialogDefinition bDialog = dialogRegistry.get("bModule:bDialog");
         assertNotNull(bDialog);
         assertEquals("dialog for bItems", bDialog.getDescription());
 

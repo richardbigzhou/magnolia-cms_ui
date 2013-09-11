@@ -3,7 +3,7 @@
 @mixin uploadfield {
 
 .upload-image-field {
-  height: auto !important;
+  height: auto;
 }
 
 .upload-image-field .v-csslayout-container {
@@ -24,7 +24,7 @@
 
 .upload {
   background-color: $c15;
-  height: 118px !important;
+  height: 118px;
   border: 1px solid $c12;
   border-radius: 0px;
   -webkit-border-radius: 0px;
@@ -36,15 +36,15 @@
 }
 
 .in-progress {
-  height: 118px !important;
+  height: 118px;
 }
 
 .done {
-  height: 192px !important;
+  height: 192px;
 }
 
 .initial {
-  height: 118px !important;
+  height: 118px;
 }
 
 .file-details {
@@ -104,7 +104,7 @@
 }
 
 .upload-text {
-  width: auto !important;
+  width: auto;
   position: absolute;
   top: 46px;
   left: 210px;
@@ -118,7 +118,6 @@
 
 /* Progress indicator styles*/
 .uploading-progress-indicator {
-    margin: 0 0 0 20px;
     padding: 0;
     height: auto;
 }
@@ -127,22 +126,25 @@
     background: #94B9C6;
     height: 22px;
     border:none;
-    width: 455px;
     border-radius: 0px;
     -webkit-border-radius: 0px;
     -moz-border-radius: 0px;
 }
+
+  .uploading-progress-indicator .v-progressbar {
+    border-right: 30px solid #c9dde1
+  }
 
 .uploading-progress-indicator  .v-progressbar-wrapper .v-progressbar-indicator {
     background: $c10;
  }
 
 .uploading-progress-indicator .uploading-file-progress {
-    position: absolute;
     color:white;
-    top:50px;
-    left: 46%;
     font-size:11px;
+    position: absolute;
+    left: 50%;
+    top: 3px;
 }
 
 .upload-image-field button.cancel {
@@ -163,7 +165,26 @@
  }
 
 .uploading-progress-indicator .uploaded-file {
-    margin-left:160px
 }
 
+  .progress-layout {
+    position: relative;
+  }
+
+  .direct-upload-progress-indicator > div {
+    position: absolute;
+    top: 150px;
+    left: 0;
+    right: 0;
+  }
+
+  .direct-upload-progress-indicator {
+    height: 600px;
+    width: 500px;
+  }
+
+  form {
+    white-space: nowrap;
+    width: 66px;
+  }
 }

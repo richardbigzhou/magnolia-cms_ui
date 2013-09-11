@@ -42,7 +42,7 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.context.AbstractUIContext;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.shell.Shell;
-import info.magnolia.ui.vaadin.overlay.OverlayPresenter;
+import info.magnolia.ui.framework.overlay.OverlayPresenter;
 
 /**
  * Implementation of {@link info.magnolia.ui.api.app.SubAppContext}.

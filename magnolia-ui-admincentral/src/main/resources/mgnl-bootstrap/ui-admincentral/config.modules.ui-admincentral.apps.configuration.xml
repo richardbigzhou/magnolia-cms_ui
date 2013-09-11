@@ -732,6 +732,47 @@
             <sv:value>superuser</sv:value>
           </sv:property>
         </sv:node>
+        <sv:node sv:name="move">
+          <sv:property sv:name="jcr:primaryType" sv:type="Name">
+            <sv:value>mgnl:contentNode</sv:value>
+          </sv:property>
+          <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+            <sv:value>mix:lockable</sv:value>
+          </sv:property>
+          <sv:property sv:name="jcr:uuid" sv:type="String">
+            <sv:value>35895f78-780b-4f7b-950e-a4d9fe0cd455</sv:value>
+          </sv:property>
+          <sv:property sv:name="class" sv:type="String">
+            <sv:value>info.magnolia.ui.contentapp.movedialog.action.OpenMoveDialogActionDefinition</sv:value>
+          </sv:property>
+          <sv:property sv:name="icon" sv:type="String">
+            <sv:value>icon-move</sv:value>
+          </sv:property>
+          <sv:property sv:name="jcr:createdBy" sv:type="String">
+            <sv:value>admin</sv:value>
+          </sv:property>
+          <sv:property sv:name="label" sv:type="String">
+            <sv:value>Move item</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
+            <sv:value>false</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:created" sv:type="Date">
+            <sv:value>2010-09-08T15:02:53.617+02:00</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:lastActivated" sv:type="Date">
+            <sv:value>2013-09-11T00:53:31.246+03:00</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:lastActivatedBy" sv:type="String">
+            <sv:value>superuser</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+            <sv:value>2013-09-11T00:54:19.595+03:00</sv:value>
+          </sv:property>
+          <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+            <sv:value>superuser</sv:value>
+          </sv:property>
+        </sv:node>
       </sv:node>
       <sv:node sv:name="actionbar">
         <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -743,6 +784,9 @@
         <sv:property sv:name="jcr:uuid" sv:type="String">
           <sv:value>1b8f2631-ec52-4f11-b798-ed19a7b782b8</sv:value>
         </sv:property>
+        <sv:property sv:name="deleteAction" sv:type="String">
+          <sv:value>confirmDeletion</sv:value>
+        </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
         </sv:property>
@@ -753,7 +797,7 @@
           <sv:value>2012-06-11T15:08:19.740+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-          <sv:value>2012-11-27T18:48:44.292+01:00</sv:value>
+          <sv:value>2013-09-10T16:10:52.677+02:00</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
           <sv:value>superuser</sv:value>
@@ -1426,6 +1470,29 @@
                       <sv:value>superuser</sv:value>
                     </sv:property>
                   </sv:node>
+                  <sv:node sv:name="move">
+                    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+                      <sv:value>mgnl:contentNode</sv:value>
+                    </sv:property>
+                    <sv:property sv:name="jcr:uuid" sv:type="String">
+                      <sv:value>93a83312-559d-474e-8c5f-60c5ce1d7580</sv:value>
+                    </sv:property>
+                    <sv:property sv:name="jcr:createdBy" sv:type="String">
+                      <sv:value>admin</sv:value>
+                    </sv:property>
+                    <sv:property sv:name="mgnl:created" sv:type="Date">
+                      <sv:value>2013-09-11T00:55:14.282+03:00</sv:value>
+                    </sv:property>
+                    <sv:property sv:name="mgnl:createdBy" sv:type="String">
+                      <sv:value>superuser</sv:value>
+                    </sv:property>
+                    <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+                      <sv:value>2013-09-11T00:55:17.242+03:00</sv:value>
+                    </sv:property>
+                    <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+                      <sv:value>superuser</sv:value>
+                    </sv:property>
+                  </sv:node>
                 </sv:node>
               </sv:node>
               <sv:node sv:name="activationActions">
@@ -1668,6 +1735,9 @@
             <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
               <sv:value>mix:lockable</sv:value>
             </sv:property>
+            <sv:property sv:name="jcr:uuid" sv:type="String">
+              <sv:value>57948ef7-f1dd-4184-a4d7-6ae0956709b2</sv:value>
+            </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
             </sv:property>
@@ -1686,6 +1756,9 @@
               </sv:property>
               <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
                 <sv:value>mix:lockable</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:uuid" sv:type="String">
+                <sv:value>8a62a999-fc37-43d3-a192-20875a3982d4</sv:value>
               </sv:property>
               <sv:property sv:name="extends" sv:type="String">
                 <sv:value>/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups</sv:value>
@@ -1706,6 +1779,9 @@
               </sv:property>
               <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
                 <sv:value>mix:lockable</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:uuid" sv:type="String">
+                <sv:value>98144ad9-5105-414c-9415-17390adbaadd</sv:value>
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>

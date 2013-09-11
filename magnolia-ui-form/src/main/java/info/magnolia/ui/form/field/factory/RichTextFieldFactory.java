@@ -33,29 +33,26 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import info.magnolia.ui.api.app.AppController;
-import info.magnolia.ui.api.app.ItemChosenListener;
-import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
-import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig;
-import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig.ToolbarGroup;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.jcr.Node;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.vaadin.data.Item;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.Field;
+import info.magnolia.ui.api.app.AppController;
+import info.magnolia.ui.api.app.ChooseDialogCallback;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
+import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig;
+import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig.ToolbarGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.jcr.Node;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Creates and initializes an edit field based on a field definition.
@@ -169,10 +166,10 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
 
     private void openLinkDialog(String path, String workspace) {
 
-        appController.openChooseDialog(mapWorkSpaceToApp(workspace), path, uiContext, null, new ItemChosenListener() {
+        appController.openChooseDialog(mapWorkSpaceToApp(workspace), uiContext, null, new ChooseDialogCallback() {
 
             @Override
-            public void onItemChosen(Item chosenValue) {
+            public void onItemChosen(String actionName, Item chosenValue) {
                 if (!(chosenValue instanceof JcrItemAdapter)) {
                     richTextEditor
                             .firePluginEvent(EVENT_CANCEL_LINK);
@@ -208,7 +205,7 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
             }
 
             @Override
-            public void onChooseCanceled() {
+            public void onCancel() {
                 richTextEditor.firePluginEvent(EVENT_CANCEL_LINK);
             }
         });

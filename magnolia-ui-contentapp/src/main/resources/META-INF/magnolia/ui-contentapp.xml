@@ -23,28 +23,29 @@
       <implementation>info.magnolia.ui.contentapp.definition.ConfiguredEditorDefinition</implementation>
     </type-mapping>
     <type-mapping>
-      <type>info.magnolia.ui.contentapp.definition.FormActionItemDefinition</type>
-      <implementation>info.magnolia.ui.contentapp.definition.ConfiguredFormActionItemDefinition</implementation>
+      <type>info.magnolia.ui.dialog.actionarea.definition.FormActionItemDefinition</type>
+      <implementation>info.magnolia.ui.dialog.actionarea.definition.ConfiguredFormActionItemDefinition</implementation>
     </type-mapping>
+
+      <type-mapping>
+          <type>info.magnolia.ui.contentapp.ContentAppDescriptor</type>
+          <implementation>info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor</implementation>
+      </type-mapping>
   </components>
 
-  <components>
-    <id>app</id>
 
-    <component>
-      <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenterFactory</type>
-      <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogPresenterFactory</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogView</type>
-      <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogView</implementation>
-    </component>
-    <component>
-      <type>info.magnolia.ui.contentapp.choosedialog.ChooseDialogView</type>
-      <implementation>info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogView</implementation>
-    </component>
+    <components>
+        <id>app</id>
+        <component>
+            <type>info.magnolia.ui.dialog.choosedialog.ChooseDialogView</type>
+            <implementation>info.magnolia.ui.dialog.choosedialog.ChooseDialogViewImpl</implementation>
+        </component>
 
-  </components>
+        <component>
+            <type>info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter</type>
+            <implementation>info.magnolia.ui.contentapp.choosedialog.ContentAppChooseDialogPresenter</implementation>
+        </component>
+    </components>
 
   <components>
     <id>subapp</id>

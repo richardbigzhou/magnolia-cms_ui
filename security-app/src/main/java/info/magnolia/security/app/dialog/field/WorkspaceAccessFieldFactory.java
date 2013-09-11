@@ -33,42 +33,6 @@
  */
 package info.magnolia.security.app.dialog.field;
 
-import info.magnolia.cms.security.Permission;
-import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.ModelConstants;
-import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.api.overlay.OverlayCloser;
-import info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenter;
-import info.magnolia.ui.contentapp.choosedialog.ChooseDialogView;
-import info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogPresenter;
-import info.magnolia.ui.contentapp.choosedialog.WorkbenchChooseDialogView;
-import info.magnolia.ui.api.app.ItemChosenListener;
-import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
-import info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition;
-import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
-import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
-import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.JcrConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.ui.AbstractOrderedLayout;
@@ -81,6 +45,37 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import info.magnolia.cms.security.Permission;
+import info.magnolia.jcr.RuntimeRepositoryException;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.ModelConstants;
+import info.magnolia.ui.api.app.ChooseDialogCallback;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition;
+import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
+import info.magnolia.ui.dialog.choosedialog.ChooseDialogView;
+import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
+import info.magnolia.ui.workbench.column.definition.PropertyColumnDefinition;
+import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
+import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
+import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
+import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.JcrConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Field builder for the workspace ACL field.  Adds data to the item in an intermediary format that is transformed to the
@@ -279,11 +274,15 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
     }
 
     protected void openChooseDialog(final TextField textField) {
-
-        final ItemChosenListener listener = new ItemChosenListener() {
-
+        final ChooseDialogPresenter workbenchChooseDialogPresenter = componentProvider.newInstance(ChooseDialogPresenter.class);
+        final ConfiguredChooseDialogDefinition def = new ConfiguredChooseDialogDefinition();
+        final WorkbenchDefinition wbDef = resolveWorkbenchDefinition();
+        final WorkbenchFieldDefinition fieldDef = new WorkbenchFieldDefinition();
+        fieldDef.setWorkbench(wbDef);
+        def.setField(fieldDef);
+        ChooseDialogView chooseDialogView = workbenchChooseDialogPresenter.start(new ChooseDialogCallback() {
             @Override
-            public void onItemChosen(Item item) {
+            public void onItemChosen(String actionName, Item item) {
                 try {
                     textField.setValue(((AbstractJcrNodeAdapter) item).getJcrItem().getPath());
                 } catch (RepositoryException e) {
@@ -292,39 +291,10 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
             }
 
             @Override
-            public void onChooseCanceled() {
+            public void onCancel() {
             }
-        };
-
-        final WorkbenchChooseDialogPresenter workbenchChooseDialogPresenter = componentProvider.newInstance(WorkbenchChooseDialogPresenter.class);
-        workbenchChooseDialogPresenter.setWorkbenchDefinition(resolveWorkbenchDefinition());
-
-        workbenchChooseDialogPresenter.addActionCallback(WorkbenchChooseDialogView.COMMIT_ACTION_NAME, new DialogActionListener() {
-            @Override
-            public void onActionExecuted(final String actionName) {
-                listener.onItemChosen(workbenchChooseDialogPresenter.getValue());
-            }
-        });
-
-        workbenchChooseDialogPresenter.addActionCallback(WorkbenchChooseDialogView.CANCEL_ACTION_NAME, new DialogActionListener() {
-            @Override
-            public void onActionExecuted(final String actionName) {
-                listener.onChooseCanceled();
-            }
-        });
-
-        ChooseDialogView chooseDialogView = workbenchChooseDialogPresenter.start();
+        }, def, uiContext, null);
         chooseDialogView.setCaption(StringUtils.capitalize(getFieldDefinition().getWorkspace()));
-
-        final OverlayCloser overlayCloser = uiContext.openOverlay(chooseDialogView);
-
-        workbenchChooseDialogPresenter.setListener(new ChooseDialogPresenter.Listener() {
-
-            @Override
-            public void onClose() {
-                overlayCloser.close();
-            }
-        });
     }
 
     protected WorkbenchDefinition resolveWorkbenchDefinition() {

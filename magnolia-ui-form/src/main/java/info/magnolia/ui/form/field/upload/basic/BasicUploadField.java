@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.upload.basic;
 
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.upload.AbstractUploadField;
 import info.magnolia.ui.form.field.upload.FileItemWrapper;
 import info.magnolia.ui.form.field.upload.UploadProgressIndicator;
@@ -85,19 +86,24 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     private boolean editFileFormat = false;
     protected UiContext uiContext;
 
-    public BasicUploadField(D fileWrapper, File tmpUploadDirectory, ImageProvider imageProvider, UiContext uiContext) {
+    public BasicUploadField(D fileWrapper, File tmpUploadDirectory, ImageProvider imageProvider, UiContext uiContext, BasicUploadFieldDefinition definition) {
         super(fileWrapper, tmpUploadDirectory);
+        // Propagate definition.
+        populateFromDefinition(definition);
+
         this.imageProvider = imageProvider;
         this.layout = new CssLayout();
         this.layout.setSizeUndefined();
         this.uiContext = uiContext;
-        setRootLayout(createDropZone(layout));
 
+        setRootLayout(createDropZone(layout));
         // Update Style Name
         addStyleName("upload-image-field");
         addStyleName("no-horizontal-drag-hints");
         addStyleName("no-vertical-drag-hints");
 
+        // set read only
+        setReadOnly(definition.isReadOnly());
     }
 
 
@@ -123,6 +129,9 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     @Override
     protected void buildEmptyLayout() {
         layout.removeAllComponents();
+        if (isReadOnly()) {
+            return;
+        }
         // Add Upload Button
         getUpload().setButtonCaption(getCaption(selectNewCaption, null));
         layout.addComponent(getUpload());
@@ -274,7 +283,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     /**
      * Initialize a Component displaying some File Informations.
      * Override getFileDetail...() in order to display custom info's you may want to display.
-     * 
+     *
      * @return A file Info Component. Generally a {@link FormLayout}.
      */
     private Component createFileInfoComponent() {
@@ -303,7 +312,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
      * Else display a simple label.
      */
     protected Component getFileDetailFileName() {
-        if (this.editFileName) {
+        if (this.editFileName && !isReadOnly()) {
             TextField textField = new TextField(getFileWrapper().getFileNameProperty());
             textField.setNullRepresentation("");
             textField.setCaption(MessagesUtil.get(fileDetailNameCaption));
@@ -332,7 +341,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
      * Else display a simple label.
      */
     protected Component getFileDetailFileFormat() {
-        if (this.editFileFormat) {
+        if (this.editFileFormat && !isReadOnly()) {
             TextField textField = new TextField(getFileWrapper().getFileFormatProperty());
             textField.setNullRepresentation("");
             textField.setCaption(MessagesUtil.get(fileDetailFormatCaption));
@@ -372,6 +381,34 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     @Override
     protected Component initContent() {
         return getRootLayout();
+    }
+
+    /**
+     * Configure Field based on the definition.
+     */
+    protected void populateFromDefinition(BasicUploadFieldDefinition definition) {
+        this.setMaxUploadSize(definition.getMaxUploadSize());
+        this.setAllowedMimeTypePattern(definition.getAllowedMimeTypePattern());
+
+        this.setSelectNewCaption(definition.getSelectNewCaption());
+        this.setSelectAnotherCaption(definition.getSelectAnotherCaption());
+        this.setDropZoneCaption(definition.getDropZoneCaption());
+        this.setInProgressCaption(definition.getInProgressCaption());
+        this.setInProgressRatioCaption(definition.getInProgressRatioCaption());
+        this.setFileDetailHeaderCaption(definition.getFileDetailHeaderCaption());
+        this.setFileDetailNameCaption(definition.getFileDetailNameCaption());
+        this.setFileDetailSizeCaption(definition.getFileDetailSizeCaption());
+        this.setFileDetailFormatCaption(definition.getFileDetailFormatCaption());
+        this.setFileDetailSourceCaption(definition.getFileDetailSourceCaption());
+        this.setSuccessNoteCaption(definition.getSuccessNoteCaption());
+        this.setWarningNoteCaption(definition.getWarningNoteCaption());
+        this.setErrorNoteCaption(definition.getErrorNoteCaption());
+        this.setDeteteCaption(definition.getDeleteCaption());
+        this.setEditFileFormat(definition.isEditFileFormat());
+        this.setEditFileName(definition.isEditFileName());
+        this.setUserInterruption(definition.getUserInterruption());
+        this.setTypeInterruption(definition.getTypeInterruption());
+        this.setSizeInterruption(definition.getSizeInterruption());
     }
 
     /**
@@ -509,5 +546,25 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     @Override
     protected boolean isEmpty() {
         return getFileWrapper().isEmpty();
+    }
+
+    @Override
+    public void setReadOnly(boolean readOnly) {
+        super.setReadOnly(readOnly);
+        if (readOnly) {
+            // Remove drop zone
+            if (getDropZone() != null) {
+                getDropZone().setDropHandler(null);
+            }
+            if (getUpload() != null) {
+                getUpload().removeStartedListener(this);
+                getUpload().removeFinishedListener(this);
+                getUpload().removeProgressListener(this);
+            }
+            if (getFileWrapper().isEmpty()) {
+                buildEmptyLayout();
+            }
+        }
+
     }
 }

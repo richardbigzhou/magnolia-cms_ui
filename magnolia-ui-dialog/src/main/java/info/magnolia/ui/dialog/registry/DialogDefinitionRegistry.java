@@ -35,12 +35,11 @@ package info.magnolia.ui.dialog.registry;
 
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.registry.RegistryMap;
-import info.magnolia.ui.dialog.definition.DialogDefinition;
-
-import java.util.List;
-import java.util.Set;
+import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 
 import javax.inject.Singleton;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Maintains a registry of dialog providers registered by id.
@@ -56,7 +55,7 @@ public class DialogDefinitionRegistry {
         }
     };
 
-    public DialogDefinition get(String id) throws RegistrationException {
+    public FormDialogDefinition get(String id) throws RegistrationException {
         DialogDefinitionProvider provider;
         try {
             provider = registry.getRequired(id);

@@ -38,12 +38,10 @@ import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
 
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 
 /**
- * An {@link I18nKeyGenerator} for {@link FieldDefinition}.
+ * An {@link info.magnolia.i18n.I18nKeyGenerator} for {@link FieldDefinition}.
  */
 public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldDefinition> {
     @Override

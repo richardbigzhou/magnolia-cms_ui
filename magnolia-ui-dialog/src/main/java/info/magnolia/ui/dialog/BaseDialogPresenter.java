@@ -33,25 +33,33 @@
  */
 package info.magnolia.ui.dialog;
 
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.ShortcutAction.ModifierKey;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.dialog.actionarea.ActionAreaPresenter;
+import info.magnolia.ui.dialog.actionarea.ActionParameterProvider;
+import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
+import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
+import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
-import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
-import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 import javax.inject.Inject;
-
-import com.vaadin.ui.Panel;
 
 /**
  * Base implementation of {@link DialogPresenter}.
  */
-public class BaseDialogPresenter implements DialogPresenter {
+public class BaseDialogPresenter implements DialogPresenter, ActionParameterProvider {
 
-    private final DialogView view;
+    private DialogView view;
+
+    protected ComponentProvider componentProvider;
+
+    private EditorActionAreaPresenter editorActionAreaPresenter;
 
     @Inject
-    public BaseDialogPresenter(DialogView view) {
-        this.view = view;
+    public BaseDialogPresenter(ComponentProvider componentProvider) {
+        this.componentProvider = componentProvider;
     }
 
     @Override
@@ -60,37 +68,43 @@ public class BaseDialogPresenter implements DialogPresenter {
     }
 
     @Override
-    public void showCloseButton() {
-        getBaseDialog().showCloseButton();
-    }
-
-    @Override
-    public void addDialogCloseHandler(DialogCloseEvent.Handler handler) {
-        getBaseDialog().addDialogCloseHandler(handler);
-    }
-
-
-    @Override
-    public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
-        getBaseDialog().addAction(actionName, actionLabel, callback);
-
-    }
-
-    @Override
-    public void addActionCallback(String actionName, DialogActionListener callback) {
-        getBaseDialog().addActionCallback(actionName, callback);
+    public ActionAreaPresenter getActionPresenter() {
+        return editorActionAreaPresenter;
     }
 
     @Override
     public void closeDialog() {
-        getBaseDialog().closeSelf();
+        view.close();
     }
 
-    /**
-     * A convenience method to get hold of the BaseDialog.
-     */
-    protected BaseDialog getBaseDialog() {
-        return (BaseDialog) ((Panel) view.asVaadinComponent()).getContent();
+    @Override
+    public void addShortcut(final String actionName, final int keyCode, final int... modifiers) {
+        view.addShortcut(this.editorActionAreaPresenter.bindShortcut(actionName, keyCode, modifiers));
     }
 
+    public DialogView start(BaseDialogDefinition definition, UiContext uiContext) {
+        this.view = initView();
+        this.editorActionAreaPresenter = componentProvider.getComponent(definition.getActionArea().getPresenterClass());
+        EditorActionAreaView editorActionAreaView = editorActionAreaPresenter.start(definition.getActions().values(), definition.getActionArea(), this, uiContext);
+
+        if (definition.getActions().containsKey(BaseDialog.COMMIT_ACTION_NAME)) {
+             addShortcut(BaseDialog.COMMIT_ACTION_NAME, KeyCode.S, ModifierKey.CTRL);
+        }
+
+        if (definition.getActions().containsKey(BaseDialog.CANCEL_ACTION_NAME)) {
+            addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.ESCAPE);
+            addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.C, ModifierKey.CTRL);
+        }
+        this.view.setActionView(editorActionAreaView);
+        return this.view;
+    }
+
+    protected DialogView initView() {
+        return componentProvider.getComponent(DialogView.class);
+    }
+
+    @Override
+    public Object[] getActionParameters(String actionName) {
+        return new Object[]{this};
+    }
 }

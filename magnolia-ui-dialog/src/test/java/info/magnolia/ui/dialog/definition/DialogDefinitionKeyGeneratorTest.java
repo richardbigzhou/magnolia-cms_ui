@@ -37,9 +37,6 @@ import static org.junit.Assert.assertEquals;
 
 import info.magnolia.i18n.I18nizer;
 import info.magnolia.i18n.proxytoys.ProxytoysI18nizer;
-import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
-import info.magnolia.ui.form.definition.FormDefinitionKeyGenerator;
-import info.magnolia.ui.form.definition.TestDialogDef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +53,7 @@ public class DialogDefinitionKeyGeneratorTest {
         // generator
         DialogDefinitionKeyGenerator generator = new DialogDefinitionKeyGenerator();
         // structure
-        ConfiguredDialogDefinition dialog = new ConfiguredDialogDefinition();
+        ConfiguredBaseDialogDefinition dialog = new ConfiguredBaseDialogDefinition();
         dialog.setId("test-module:testFolder/testDialog");
         // i18n
         I18nizer i18nizer = new ProxytoysI18nizer(null, null);
@@ -78,7 +75,7 @@ public class DialogDefinitionKeyGeneratorTest {
         // generator
         DialogDefinitionKeyGenerator generator = new DialogDefinitionKeyGenerator();
         // structure
-        ConfiguredDialogDefinition dialog = new ConfiguredDialogDefinition();
+        ConfiguredBaseDialogDefinition dialog = new ConfiguredBaseDialogDefinition();
         dialog.setId("test-module:testFolder/testDialog");
         // i18n
         I18nizer i18nizer = new ProxytoysI18nizer(null, null);

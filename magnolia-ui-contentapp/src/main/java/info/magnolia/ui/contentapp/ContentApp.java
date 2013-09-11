@@ -34,14 +34,13 @@
 package info.magnolia.ui.contentapp;
 
 
-import info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenter;
-import info.magnolia.ui.contentapp.choosedialog.ChooseDialogPresenterFactory;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.AppView;
+import info.magnolia.ui.api.app.ChooseDialogCallback;
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.framework.app.BaseApp;
-import info.magnolia.ui.api.app.ItemChosenListener;
-import info.magnolia.ui.api.overlay.OverlayCloser;
-import info.magnolia.ui.api.overlay.OverlayLayer;
 
 import javax.inject.Inject;
 
@@ -50,27 +49,20 @@ import javax.inject.Inject;
  */
 public class ContentApp extends BaseApp {
 
-    private final ChooseDialogPresenterFactory chooseDialogPresenterFactory;
+    private ComponentProvider componentProvider;
 
     @Inject
-    public ContentApp(AppContext appContext, AppView view, ChooseDialogPresenterFactory chooseDialogPresenterFactory) {
+    public ContentApp(AppContext appContext, AppView view, ComponentProvider componentProvider) {
         super(appContext, view);
-        this.chooseDialogPresenterFactory = chooseDialogPresenterFactory;
+        this.componentProvider = componentProvider;
     }
 
     @Override
-    public void openChooseDialog(String path, OverlayLayer overlayLayer, String selectedId, final ItemChosenListener listener) {
-
-        final ChooseDialogPresenter chooseDialogPresenter = chooseDialogPresenterFactory.createChooseDialogPresenter(path, listener, selectedId);
-
-        final OverlayCloser overlayCloser = overlayLayer.openOverlay(chooseDialogPresenter.start());
-
-        chooseDialogPresenter.setListener(new ChooseDialogPresenter.Listener() {
-
-            @Override
-            public void onClose() {
-                overlayCloser.close();
-            }
-        });
+    public void openChooseDialog(UiContext overlayLayer, String selectedId, final ChooseDialogCallback callback) {
+        if (appContext.getAppDescriptor() instanceof ContentAppDescriptor) {
+            ContentAppDescriptor contentAppDescriptor = (ContentAppDescriptor)appContext.getAppDescriptor();
+            ChooseDialogPresenter presenter = componentProvider.getComponent(contentAppDescriptor.getChooseDialog().getPresenterClass());
+            presenter.start(callback, contentAppDescriptor.getChooseDialog(), overlayLayer, selectedId) ;
+        }
     }
 }

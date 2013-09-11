@@ -33,18 +33,20 @@
  */
 package info.magnolia.ui.form.field.upload.basic;
 
-import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.form.field.upload.UploadProgressIndicator;
-
-import java.text.NumberFormat;
-
-import org.apache.commons.io.FileUtils;
-
+import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.VerticalLayout;
+import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.form.field.upload.UploadProgressIndicator;
+import org.apache.commons.io.FileUtils;
+
+import java.text.NumberFormat;
+import java.util.Iterator;
 
 /**
  * Custom Component used to create a custom display for the progress indicator.
@@ -96,9 +98,21 @@ public class BasicUploadProgressIndicator extends CustomComponent implements Upl
         mainLayout.setSizeFull();
 
         mainLayout.addComponent(uploadFileLocation);
-        mainLayout.addComponent(progressIndicator);
-        mainLayout.addComponent(uploadFileProgress);
+
+        CssLayout progressLayout = new CssLayout();
+        progressLayout.addStyleName("progress-layout");
+        progressLayout.addComponent(progressIndicator);
+        progressLayout.addComponent(uploadFileProgress);
+        progressLayout.setWidth("100%");
+        mainLayout.addComponent(progressLayout);
         mainLayout.addComponent(uploadFileRatio);
+
+        Iterator<Component> it = mainLayout.iterator();
+        while (it.hasNext()) {
+            Component c = it.next();
+            mainLayout.setComponentAlignment(c, Alignment.MIDDLE_CENTER);
+        }
+        mainLayout.setMargin(new MarginInfo(false, true, false, true));
 
         setCompositionRoot(mainLayout);
         addStyleName("uploading-progress-indicator");

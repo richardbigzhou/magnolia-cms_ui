@@ -34,54 +34,63 @@
 package info.magnolia.ui.contentapp.detail;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.contentapp.definition.EditorDefinition;
-import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.form.EditorValidator;
-import info.magnolia.ui.form.FormBuilder;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
-import info.magnolia.ui.api.message.Message;
-import info.magnolia.ui.api.message.MessageType;
-import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.action.ActionExecutor;
-import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-import info.magnolia.ui.vaadin.form.FormView;
+import info.magnolia.ui.contentapp.definition.EditorDefinition;
+import info.magnolia.ui.dialog.actionarea.ActionParameterProvider;
+import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
+import info.magnolia.ui.dialog.actionarea.definition.FormActionItemDefinition;
+import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
+import info.magnolia.ui.dialog.formdialog.FormBuilder;
+import info.magnolia.ui.dialog.formdialog.FormView;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Presenter for the item displayed in the
  * {@link info.magnolia.ui.contentapp.detail.DetailEditorPresenter}. Takes care
  * of building and switching between the right {@link DetailView.ViewType}.
  */
-public class DetailPresenter implements DialogActionListener, EditorCallback, EditorValidator {
+public class DetailPresenter implements EditorCallback, EditorValidator, ActionParameterProvider {
+
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     private SubAppContext subAppContext;
-    private ActionExecutor actionExecutor;
+
     private final EventBus eventBus;
 
     private final DetailView view;
 
     private FormBuilder formBuilder;
 
+    private ComponentProvider componentProvider;
+
     private EditorDefinition editorDefinition;
 
     private JcrNodeAdapter item;
+
     private FormView formView;
 
     @Inject
-    public DetailPresenter(SubAppContext subAppContext, final ActionExecutor actionExecutor,
-            final @Named(AdmincentralEventBus.NAME) EventBus eventBus, DetailView view,
-            FormBuilder formBuilder) {
+    public DetailPresenter(SubAppContext subAppContext, final @Named(AdmincentralEventBus.NAME) EventBus eventBus, DetailView view,
+            FormBuilder formBuilder, ComponentProvider componentProvider) {
         this.subAppContext = subAppContext;
-        this.actionExecutor = actionExecutor;
         this.eventBus = eventBus;
         this.view = view;
         this.formBuilder = formBuilder;
+        this.componentProvider = componentProvider;
     }
 
     public DetailView start(EditorDefinition editorDefinition, final JcrNodeAdapter item, DetailView.ViewType viewType) {
@@ -105,30 +114,35 @@ public class DetailPresenter implements DialogActionListener, EditorCallback, Ed
     }
 
     private void initActions() {
-        for (final ActionDefinition action : subAppContext.getSubAppDescriptor().getActions().values()) {
-            formView.addAction(action.getName(), action.getLabel(), new DialogActionListener() {
-                @Override
-                public void onActionExecuted(final String actionName) {
-                    try {
-                        actionExecutor.execute(actionName, item, DetailPresenter.this);
-                    } catch (ActionExecutionException e) {
-                        throw new RuntimeException("Could not execute action: " + actionName, e);
-                    }
-                }
-            });
-        }
+        EditorActionAreaPresenter editorActionAreaPresenter = componentProvider.getComponent(editorDefinition.getActionPresenter().getPresenterClass());
+        EditorActionAreaView editorActionAreaView = editorActionAreaPresenter.start(filterSubAppActions(),editorDefinition.getActionPresenter(), this, subAppContext);
+        formView.setActionView(editorActionAreaView);
     }
 
-    @Override
-    public void onActionExecuted(String actionName) {
+    private Iterable<ActionDefinition> filterSubAppActions() {
+        Map<String, ActionDefinition> subAppActions = subAppContext.getSubAppDescriptor().getActions();
+        List<ActionDefinition> filteredActions = new LinkedList<ActionDefinition>();
+        List<FormActionItemDefinition> editorActions = editorDefinition.getActions();
+        for (FormActionItemDefinition editorAction : editorActions) {
+            ActionDefinition def = subAppActions.get(editorAction.getName());
+            if (def != null) {
+                filteredActions.add(subAppActions.get(editorAction.getName()));
+            } else {
+                 log.warn("Action is configured for an editor but not configured for sub-app: " + editorAction.getName());
+            }
+        }
+        return filteredActions;
+    }
+
+    /*public void onActionFired(String actionName, Object... actionParams) {
         try {
-            actionExecutor.execute(actionName, item, this, this);
+            actionExecutor.execute(actionName, );
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.",
                     e.getMessage());
             subAppContext.getAppContext().broadcastMessage(error);
         }
-    }
+    } */
 
     @Override
     public void onCancel() {
@@ -151,5 +165,10 @@ public class DetailPresenter implements DialogActionListener, EditorCallback, Ed
     @Override
     public boolean isValid() {
         return formView.isValid();
+    }
+
+    @Override
+    public Object[] getActionParameters(String actionName) {
+        return new Object[]{item, this};
     }
 }

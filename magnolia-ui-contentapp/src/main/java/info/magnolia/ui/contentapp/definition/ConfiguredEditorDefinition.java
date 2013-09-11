@@ -33,10 +33,12 @@
  */
 package info.magnolia.ui.contentapp.definition;
 
+import info.magnolia.ui.dialog.actionarea.definition.ConfiguredEditorActionAreaDefinition;
+import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
+import info.magnolia.ui.dialog.actionarea.definition.FormActionItemDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,8 +50,6 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
 
     private FormDefinition form;
 
-    private List<FormActionItemDefinition> actions = new ArrayList<FormActionItemDefinition>();
-
     private String label;
 
     private String i18nBasename;
@@ -59,6 +59,10 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
     private String workspace;
 
     private NodeTypeDefinition nodeType;
+
+    private EditorActionAreaDefinition actionPresenter = new ConfiguredEditorActionAreaDefinition();
+
+    private List<FormActionItemDefinition> actions;
 
     @Override
     public String getLabel() {
@@ -90,11 +94,6 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
         return form;
     }
 
-    @Override
-    public List<FormActionItemDefinition> getActions() {
-        return actions;
-    }
-
     public void setLabel(String label) {
         this.label = label;
     }
@@ -115,11 +114,23 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
         this.form = form;
     }
 
-    public void setActions(List<FormActionItemDefinition> actions) {
-        this.actions = actions;
-    }
-
     public void setNodeType(NodeTypeDefinition nodeType) {
         this.nodeType = nodeType;
+    }
+
+    public EditorActionAreaDefinition getActionPresenter() {
+        return actionPresenter;
+    }
+
+    public void setActionPresenter(EditorActionAreaDefinition actionPresenter) {
+        this.actionPresenter = actionPresenter;
+    }
+
+    public List<FormActionItemDefinition> getActions() {
+        return actions;
+    }
+
+    public void setActions(List<FormActionItemDefinition> actions) {
+        this.actions = actions;
     }
 }

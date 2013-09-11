@@ -33,23 +33,23 @@
  */
 package info.magnolia.ui.mediaeditor.action;
 
+import com.google.inject.name.Named;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.dialog.actionarea.ActionListener;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.MediaEditorView;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
 import info.magnolia.ui.mediaeditor.event.MediaEditorInternalEvent;
+import info.magnolia.ui.mediaeditor.event.MediaEditorInternalEvent.EventType;
 import info.magnolia.ui.mediaeditor.field.MediaField;
 import info.magnolia.ui.mediaeditor.field.image.CropField;
 import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
-import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.inject.name.Named;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
 
 /**
  * Installs UI components necessary for conducting the image crop operations.
@@ -65,24 +65,18 @@ public class CropImageAction extends MediaEditorUIAction {
     @Override
     public void execute() throws ActionExecutionException {
         super.execute();
-        view.getDialog().addStyleName("active-footer");
+        view.getDialog().asVaadinComponent().addStyleName("active-footer");
     }
 
     @Override
     protected List<ActionContext> getActionContextList() {
         List<ActionContext> result = new ArrayList<ActionContext>();
-        result.add(new ActionContext("cancel", "Cancel", new DialogActionListener() {
+        result.add(new ActionContext(new InternalMediaEditorActionDefinition("crop", "Crop Image", true), new ActionListener() {
             @Override
-            public void onActionExecuted(String actionName) {
-                eventBus.fireEvent(new MediaEditorInternalEvent(MediaEditorInternalEvent.EventType.CANCEL_LAST));
-            }
-        }));
-        result.add(new ActionContext("crop", "Crop Image", new DialogActionListener() {
-            @Override
-            public void onActionExecuted(String actionName) {
+            public void onActionFired(String actionName, Object... actionContextParams) {
                 dataSource.startAction(getDefinition().getTrackingLabel());
                 cropField.execute();
-                eventBus.fireEvent(new MediaEditorInternalEvent(MediaEditorInternalEvent.EventType.APPLY));
+                eventBus.fireEvent(new MediaEditorInternalEvent(EventType.APPLY));
             }
         }));
         return result;

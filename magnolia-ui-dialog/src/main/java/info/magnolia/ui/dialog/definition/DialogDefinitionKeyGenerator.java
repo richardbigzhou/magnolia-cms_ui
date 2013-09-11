@@ -39,13 +39,13 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 
 /**
- * TODO Type description here.
+ * DialogDefinitionKeyGenerator.
  */
-public class DialogDefinitionKeyGenerator extends AbstractFormKeyGenerator<DialogDefinition> {
+public class DialogDefinitionKeyGenerator extends AbstractFormKeyGenerator<BaseDialogDefinition> {
 
     @Override
-    protected void keysFor(List<String> keys, DialogDefinition object, AnnotatedElement el) {
-        addKey(keys, object.getId().replace(':', '.').replace('/', '.'), fieldOrGetterName(el));
+    protected void keysFor(List<String> keys, BaseDialogDefinition definition, AnnotatedElement el) {
+        addKey(keys, definition.getId().replace(':', '.').replace('/', '.'), fieldOrGetterName(el));
     }
 
 }

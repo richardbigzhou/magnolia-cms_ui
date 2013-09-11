@@ -33,16 +33,20 @@
  */
 package info.magnolia.ui.mediaeditor;
 
+import com.vaadin.server.ClientConnector;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.dialog.DialogPresenter;
+import info.magnolia.ui.dialog.DialogView;
+import info.magnolia.ui.dialog.definition.ConfiguredBaseDialogDefinition;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingPropertyImpl;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
@@ -51,17 +55,14 @@ import info.magnolia.ui.mediaeditor.event.MediaEditorCompletedEvent.CompletionTy
 import info.magnolia.ui.mediaeditor.event.MediaEditorCompletedEvent.Handler;
 import info.magnolia.ui.mediaeditor.event.MediaEditorInternalEvent;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
-
-import com.vaadin.server.ClientConnector;
 
 /**
  * Implementation of {@link MediaEditorPresenter}.
@@ -72,6 +73,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     private MediaEditorView view;
     private ActionbarPresenter actionbarPresenter;
     private MediaEditorDefinition definition;
+    private DialogPresenter dialogPresenter;
     private AppContext appContext;
     private EditHistoryTrackingProperty dataSource;
     private EventBus eventBus;
@@ -84,11 +86,13 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
             EventBus eventBus,
             MediaEditorView view,
             ActionbarPresenter actionbarPresenter,
+            DialogPresenter dialogPresenter,
             AppContext appContext) {
         this.eventBus = eventBus;
         this.view = view;
         this.actionbarPresenter = actionbarPresenter;
         this.definition = definition;
+        this.dialogPresenter = dialogPresenter;
         this.appContext = appContext;
         this.actionbarPresenter.setListener(this);
         this.internalMediaEditorEventHandlerRegistration = eventBus.addHandler(MediaEditorInternalEvent.class, this);
@@ -109,9 +113,12 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     public View start(final InputStream stream) {
         try {
             final ActionbarView actionbar = actionbarPresenter.start(definition.getActionBar());
+            final DialogView dialogView = dialogPresenter.start(new ConfiguredBaseDialogDefinition(), appContext);
+
             this.dataSource = new EditHistoryTrackingPropertyImpl(IOUtils.toByteArray(stream));
             this.dataSource.setListener(this);
             view.setActionBar(actionbar);
+            view.setDialog(dialogView);
             switchToDefaultMode();
             return view;
         } catch (IOException e) {

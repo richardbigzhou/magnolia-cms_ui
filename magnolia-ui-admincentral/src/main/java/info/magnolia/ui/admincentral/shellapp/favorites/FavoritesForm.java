@@ -33,14 +33,6 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.api.shell.Shell;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
-import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
-
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
@@ -60,6 +52,13 @@ import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
+
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * FavoritesForm.
@@ -209,7 +208,7 @@ public final class FavoritesForm extends CustomComponent {
                     addFavorite(newFavorite, binder);
                 }
             });
-            addButton.addStyleName("btn-dialog-commit");
+            addButton.addStyleName("commit");
             buttons.addComponent(addButton);
             layout.addComponent(buttons);
 
@@ -273,7 +272,7 @@ public final class FavoritesForm extends CustomComponent {
                     addGroup(newGroup, binder);
                 }
             });
-            addButton.addStyleName("btn-dialog-commit");
+            addButton.addStyleName("v-button-commit");
             buttons.addComponent(addButton);
             layout.addComponent(buttons);
 

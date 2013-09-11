@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.dialog;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
 
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
@@ -50,15 +50,13 @@ import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
 import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.test.ComponentsTestUtil;
-import info.magnolia.ui.dialog.action.DialogActionExecutor;
-import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
-import info.magnolia.ui.dialog.definition.DialogDefinition;
+import info.magnolia.ui.dialog.definition.ConfiguredBaseDialogDefinition;
+import info.magnolia.ui.dialog.formdialog.FormDialogPresenterImpl;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
-import info.magnolia.ui.form.FormBuilder;
+import info.magnolia.ui.form.config.FormBuilder;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.vaadin.dialog.FormDialogView;
 
 import java.util.Locale;
 
@@ -70,14 +68,12 @@ import org.junit.Test;
  */
 public class FormDialogPresenterImplTest {
 
-    private FormDialogView view;
     private DialogDefinitionRegistry dialogDefinitionRegistry;
-    private DialogActionExecutor actionExecutor;
     private FormBuilder formBuilder;
     private FormDialogPresenterImpl presenter;
 
     private TranslationService service;
-    private ConfiguredDialogDefinition def;
+    private ConfiguredBaseDialogDefinition def;
 
     @Before
     public void setUp() throws Exception {
@@ -95,11 +91,9 @@ public class FormDialogPresenterImplTest {
         service = new TestTranslationService();
         ProxytoysI18nizer i18nizer = new ProxytoysI18nizer(service, new ContextLocaleProvider(ctx));
 
-        view = mock(FormDialogView.class);
         dialogDefinitionRegistry = mock(DialogDefinitionRegistry.class);
-        actionExecutor = mock(DialogActionExecutor.class);
         formBuilder = mock(FormBuilder.class);
-        presenter = new FormDialogPresenterImpl(view, dialogDefinitionRegistry, actionExecutor, formBuilder, i18nizer);
+        presenter = new FormDialogPresenterImpl(dialogDefinitionRegistry, formBuilder, i18nizer);
 
     }
 
@@ -113,7 +107,7 @@ public class FormDialogPresenterImplTest {
         def.setForm(form);
 
         // WHEN
-        DialogDefinition decoratedDialogDefinition = presenter.decorateForI18n(def);
+        ConfiguredBaseDialogDefinition decoratedDialogDefinition = presenter.decorateForI18n(def);
 
         // THEN
         assertEquals("translated with key [dialogID.label] and basename [null] and locale [en]", decoratedDialogDefinition.getForm().getLabel());
@@ -133,7 +127,7 @@ public class FormDialogPresenterImplTest {
         form.addTab(tab);
 
         // WHEN
-        DialogDefinition decoratedDialogDefinition = presenter.decorateForI18n(def);
+        ConfiguredBaseDialogDefinition decoratedDialogDefinition = presenter.decorateForI18n(def);
 
         // THEN
         assertEquals("translated with key [dialogID.tab1.label] and basename [null] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getLabel());
@@ -157,7 +151,7 @@ public class FormDialogPresenterImplTest {
         tab.addField(field);
 
         // WHEN
-        DialogDefinition decoratedDialogDefinition = presenter.decorateForI18n(def);
+        ConfiguredBaseDialogDefinition decoratedDialogDefinition = presenter.decorateForI18n(def);
 
         // THEN
         assertEquals("translated with key [dialogID.tab1.field1.label] and basename [null] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel());
@@ -181,7 +175,7 @@ public class FormDialogPresenterImplTest {
         tab.addField(field);
 
         // WHEN
-        DialogDefinition decoratedDialogDefinition = presenter.decorateForI18n(def);
+        ConfiguredBaseDialogDefinition decoratedDialogDefinition = presenter.decorateForI18n(def);
 
         // THEN
         assertEquals("translated with key [dialogID.tab1.field1.description] and basename [null] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getDescription());
@@ -209,7 +203,7 @@ public class FormDialogPresenterImplTest {
         tab.addField(field);
 
         // WHEN
-        DialogDefinition decoratedDialogDefinition = presenter.decorateForI18n(def);
+        ConfiguredBaseDialogDefinition decoratedDialogDefinition = presenter.decorateForI18n(def);
 
         // THEN
         assertEquals("translated with key [dialogID.tab1.field1.label] and basename [basenameField] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel());
@@ -236,7 +230,7 @@ public class FormDialogPresenterImplTest {
         tab.addField(field);
 
         // WHEN
-        DialogDefinition decoratedDialogDefinition = presenter.decorateForI18n(def);
+        ConfiguredBaseDialogDefinition decoratedDialogDefinition = presenter.decorateForI18n(def);
 
         // THEN
         assertEquals("translated with key [dialogID.tab1.field1.label] and basename [basenameT] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel());
@@ -262,7 +256,7 @@ public class FormDialogPresenterImplTest {
         tab.addField(field);
 
         // WHEN
-        DialogDefinition decoratedDialogDefinition = presenter.decorateForI18n(def);
+        ConfiguredBaseDialogDefinition decoratedDialogDefinition = presenter.decorateForI18n(def);
 
         // THEN
         assertEquals("translated with key [dialogID.tab1.field1.label] and basename [basenameF] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel());
@@ -287,14 +281,14 @@ public class FormDialogPresenterImplTest {
         tab.addField(field);
 
         // WHEN
-        DialogDefinition decoratedDialogDefinition = presenter.decorateForI18n(def);
+        ConfiguredBaseDialogDefinition decoratedDialogDefinition = presenter.decorateForI18n(def);
 
         // THEN
         assertEquals("translated with key [dialogID.tab1.field1.label] and basename [basenameD] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel());
     }
 
-    private ConfiguredDialogDefinition getBasicDialogDefinition() {
-        ConfiguredDialogDefinition cdd = new ConfiguredDialogDefinition();
+    private ConfiguredBaseDialogDefinition getBasicDialogDefinition() {
+        ConfiguredBaseDialogDefinition cdd = new ConfiguredBaseDialogDefinition();
         cdd.setId("dialogID");
         return cdd;
     }

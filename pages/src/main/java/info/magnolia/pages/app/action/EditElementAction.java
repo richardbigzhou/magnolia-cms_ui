@@ -37,11 +37,12 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.dialog.FormDialogPresenter;
-import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
+import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
+import info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory;
+import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.vaadin.gwt.client.shared.AbstractElement;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -55,20 +56,19 @@ import javax.jcr.Session;
  * EditElementAction.
  */
 public class EditElementAction extends AbstractAction<EditElementActionDefinition> {
-
+    private FormDialogPresenterFactory dialogPresenterFactory;
     private AbstractElement element;
-    private FormDialogPresenter formDialogPresenter;
     private SubAppContext subAppContext;
     private EventBus eventBus;
 
     @Inject
-    public EditElementAction(EditElementActionDefinition definition, AbstractElement element, FormDialogPresenter formDialogPresenter,
-                             SubAppContext subAppContext, @Named(SubAppEventBus.NAME) EventBus eventBus) {
+    public EditElementAction(EditElementActionDefinition definition, AbstractElement element,
+                             SubAppContext subAppContext, @Named(SubAppEventBus.NAME) EventBus eventBus, FormDialogPresenterFactory dialogPresenterFactory) {
         super(definition);
         this.element = element;
-        this.formDialogPresenter = formDialogPresenter;
         this.subAppContext = subAppContext;
         this.eventBus = eventBus;
+        this.dialogPresenterFactory = dialogPresenterFactory;
     }
 
     @Override
@@ -84,7 +84,7 @@ public class EditElementAction extends AbstractAction<EditElementActionDefinitio
             }
             final Node node = session.getNode(path);
             final JcrNodeAdapter item = new JcrNodeAdapter(node);
-
+            final FormDialogPresenter formDialogPresenter = dialogPresenterFactory.createFormDialogPresenterByName(dialogName);
             formDialogPresenter.start(item, dialogName, subAppContext, new EditorCallback() {
 
                 @Override

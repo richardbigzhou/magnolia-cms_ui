@@ -41,7 +41,10 @@ import java.util.List;
  */
 public class ConfiguredActionbarDefinition implements ActionbarDefinition {
 
+
     private String defaultAction;
+
+    private String deleteAction;
 
     private List<ActionbarSectionDefinition> sections = new ArrayList<ActionbarSectionDefinition>();
 
@@ -50,8 +53,17 @@ public class ConfiguredActionbarDefinition implements ActionbarDefinition {
         return defaultAction;
     }
 
+    @Override
+    public String getDeleteAction() {
+        return deleteAction;
+    }
+
     public void setDefaultAction(final String defaultAction) {
         this.defaultAction = defaultAction;
+    }
+
+    public void setDeleteAction(final String deleteAction) {
+        this.deleteAction = deleteAction;
     }
 
     @Override

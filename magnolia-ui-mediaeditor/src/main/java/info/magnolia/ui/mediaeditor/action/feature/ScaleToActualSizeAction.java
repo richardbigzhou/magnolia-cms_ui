@@ -52,8 +52,8 @@ public class ScaleToActualSizeAction extends AbstractAction<ScaleToActualSizeAct
 
     @Override
     public void execute() throws ActionExecutionException {
-        if (view.getDialog().getContent() instanceof  Scalable) {
-            ((Scalable)view.getDialog().getContent()).scaleToActualSize();
+        if (view.getDialog().getContentView().asVaadinComponent() instanceof  Scalable) {
+            ((Scalable)view.getDialog().getContentView().asVaadinComponent()).scaleToActualSize();
         }
     }
 

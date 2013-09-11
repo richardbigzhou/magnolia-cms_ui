@@ -33,11 +33,12 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-
-import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 
 /**
@@ -47,6 +48,20 @@ public class ConfirmationDialog extends LightDialog {
 
     public static final String CONFIRM_ACTION_NAME = "confirm";
 
+    private Button confirmButton = new Button("OK", new ClickListener() {
+        @Override
+        public void buttonClick(ClickEvent event) {
+            fireEvent(new ConfirmationEvent(ConfirmationDialog.this, true));
+        }
+    });
+
+    private Button cancelButton = new Button("Cancel", new ClickListener() {
+        @Override
+        public void buttonClick(ClickEvent event) {
+            fireEvent(new ConfirmationEvent(ConfirmationDialog.this, false));
+        }
+    });
+
     private String message;
 
     public ConfirmationDialog(final String message, boolean cancelIsDefault) {
@@ -54,44 +69,42 @@ public class ConfirmationDialog extends LightDialog {
         init(cancelIsDefault);
     }
 
-    public ConfirmationDialog(final View contents, boolean cancelIsDefault) {
+    public ConfirmationDialog(final Component contents, boolean cancelIsDefault) {
         message = "";
-        setContent(contents.asVaadinComponent());
+        setContent(contents);
         init(cancelIsDefault);
     }
 
     public void init(boolean cancelIsDefault) {
+        HorizontalLayout footer = new HorizontalLayout();
+        footer.addComponent(confirmButton);
+        footer.addComponent(cancelButton);
+
+        cancelButton.addStyleName("btn-dialog");
+        cancelButton.addStyleName("cancel");
+        confirmButton.addStyleName("btn-dialog");
+        confirmButton.addStyleName("confirm");
+
+        footer.setComponentAlignment(confirmButton, Alignment.MIDDLE_RIGHT);
+        footer.setComponentAlignment(cancelButton, Alignment.MIDDLE_LEFT);
+        footer.setSpacing(true);
+        setFooterToolbar(footer);
+
         // Add a class to the default button
         if (cancelIsDefault) {
-            this.setDefaultAction(CANCEL_ACTION_NAME);
+            cancelButton.addStyleName("default");
         } else {
-            this.setDefaultAction(CONFIRM_ACTION_NAME);
+            confirmButton.addStyleName("default");
         }
-
-        addAction(CONFIRM_ACTION_NAME, "OK", new DialogActionListener() {
-            @Override
-            public void onActionExecuted(String actionName) {
-                fireEvent(new ConfirmationEvent(ConfirmationDialog.this, true));
-            }
-        });
-        // we need to explicitly add an ENTER shortcut bound to the confirm action, because addAction(..) do it only for commit and cancel actions.
-        addShortcut(CONFIRM_ACTION_NAME, KeyCode.ENTER);
-
-        addAction(CANCEL_ACTION_NAME, "Cancel", new DialogActionListener() {
-            @Override
-            public void onActionExecuted(String actionName) {
-                fireEvent(new ConfirmationEvent(ConfirmationDialog.this, false));
-            }
-        });
     }
 
 
-    public void setConfirmActionLabel(final String label) {
-        addAction(CONFIRM_ACTION_NAME, label);
+    public void setConfirmActionLabel(String label) {
+        confirmButton.setCaption(label);
     }
 
-    public void setRejectActionLabel(final String label) {
-        addAction(CANCEL_ACTION_NAME, label);
+    public void setRejectActionLabel(String label) {
+        cancelButton.setCaption(label);
     }
 
     public void setMessage(String message) {

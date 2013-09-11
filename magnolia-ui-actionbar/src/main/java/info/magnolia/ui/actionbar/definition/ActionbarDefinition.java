@@ -51,6 +51,13 @@ public interface ActionbarDefinition {
     String getDefaultAction();
 
     /**
+     * Gets the name of the default delete action.
+     * 
+     * @return the default delete action name
+     */
+    String getDeleteAction();
+
+    /**
      * Gets the sections within this action bar.
      * 
      * @return the list of sections

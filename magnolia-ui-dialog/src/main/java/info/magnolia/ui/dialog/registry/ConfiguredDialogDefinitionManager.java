@@ -39,21 +39,19 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.NodeVisitor;
 import info.magnolia.module.ModuleRegistry;
-import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * ObservedManager for dialogs configured in repository.
@@ -108,9 +106,9 @@ public class ConfiguredDialogDefinitionManager extends ModuleConfigurationObserv
      * Check if this node can be handle as a ConfiguredDialogDefinition.
      */
     private boolean isDialog(Node dialogNode) throws RepositoryException {
-        return dialogNode.hasNode(ConfiguredDialogDefinition.FORM_NODE_NAME)
-                || dialogNode.hasNode(ConfiguredDialogDefinition.ACTIONS_NODE_NAME)
-                || dialogNode.hasProperty(ConfiguredDialogDefinition.EXTEND_PROPERTY_NAME);
+        return dialogNode.hasNode(ConfiguredFormDialogDefinition.FORM_NODE_NAME)
+                || dialogNode.hasNode(ConfiguredFormDialogDefinition.ACTIONS_NODE_NAME)
+                || dialogNode.hasProperty(ConfiguredFormDialogDefinition.EXTEND_PROPERTY_NAME);
     }
 
     protected DialogDefinitionProvider createProvider(Node dialogNode) throws RepositoryException {

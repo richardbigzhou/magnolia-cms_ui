@@ -41,11 +41,9 @@ import info.magnolia.ui.api.location.Location;
  *
  * @see info.magnolia.ui.api.app.App
  */
-public interface AppInstanceController {
+public interface AppInstanceController extends AppContext {
 
    void setAppComponentProvider(ComponentProvider appComponentProvider);
-
-    AppDescriptor getAppDescriptor();
 
     App getApp();
 

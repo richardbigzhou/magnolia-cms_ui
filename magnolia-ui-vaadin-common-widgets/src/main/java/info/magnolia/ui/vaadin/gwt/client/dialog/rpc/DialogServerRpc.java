@@ -40,8 +40,6 @@ import com.vaadin.shared.communication.ServerRpc;
  */
 public interface DialogServerRpc extends ServerRpc {
 
-    void fireAction(String actionId);
-
     void closeSelf();
 
     void setDescriptionVisibility(boolean isVisible);

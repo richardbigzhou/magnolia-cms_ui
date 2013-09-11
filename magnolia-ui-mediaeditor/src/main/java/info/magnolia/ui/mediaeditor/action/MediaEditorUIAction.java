@@ -33,20 +33,22 @@
  */
 package info.magnolia.ui.mediaeditor.action;
 
+import com.google.inject.name.Named;
+import com.vaadin.ui.Component;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.dialog.actionarea.renderer.ActionRenderer;
+import info.magnolia.ui.dialog.actionarea.renderer.DefaultEditorActionRenderer;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.MediaEditorView;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
 import info.magnolia.ui.mediaeditor.field.MediaField;
 import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
-
-import java.util.List;
-
 import org.apache.log4j.Logger;
 
-import com.google.inject.name.Named;
-import com.vaadin.ui.Component;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Updates media editor UI in order to perform certain modification
@@ -72,12 +74,17 @@ public abstract class MediaEditorUIAction extends MediaEditorAction {
             view.setToolbar(getStatusControls());
 
             List<ActionContext> actionContexts = getActionContextList();
-            for (ActionContext ctx : actionContexts) {
-                view.getDialog().addAction(ctx.getActionId(), ctx.getLabel(), ctx.getListener());
-            }
-
-            if (!actionContexts.isEmpty()) {
-                view.getDialog().setDefaultAction(actionContexts.get(actionContexts.size() - 1).getActionId());
+            Iterator<ActionContext> it = actionContexts.iterator();
+            boolean defaultIsSet = false;
+            while (it.hasNext()) {
+                ActionContext action = it.next();
+                ActionRenderer actionPresenter = new DefaultEditorActionRenderer();
+                View actionView = actionPresenter.start(action.getDefinition(), action.getListener());
+                view.getDialog().getActionView().addPrimaryAction(actionView, action.getDefinition().getName());
+                if (!defaultIsSet) {
+                     actionView.asVaadinComponent().addStyleName("default");
+                    defaultIsSet = true;
+                }
             }
             newMediaField.setPropertyDataSource(dataSource);
         } else {

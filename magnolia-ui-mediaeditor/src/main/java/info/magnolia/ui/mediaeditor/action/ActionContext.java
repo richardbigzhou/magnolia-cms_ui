@@ -33,35 +33,36 @@
  */
 package info.magnolia.ui.mediaeditor.action;
 
-import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.dialog.actionarea.ActionListener;
 
 /**
  * Helper class for storing the dialog actions within media editor.
  */
 public class ActionContext {
 
-    private String actionId;
+    private ActionDefinition definition;
 
-    private String label;
+    private ActionListener listener;
 
-    private DialogActionListener listener;
-
-    public ActionContext(String id, String label, DialogActionListener listener) {
-        this.actionId = id;
-        this.label = label;
+    public ActionContext(ActionDefinition definition, ActionListener listener) {
+        this.definition = definition;
         this.listener = listener;
     }
 
-    public String getActionId() {
-        return actionId;
+    public ActionDefinition getDefinition() {
+        return definition;
     }
 
-
-    public String getLabel() {
-        return label;
+    public void setDefinition(ActionDefinition definition) {
+        this.definition = definition;
     }
 
-    public DialogActionListener getListener() {
+    public ActionListener getListener() {
         return listener;
+    }
+
+    public void setListener(ActionListener listener) {
+        this.listener = listener;
     }
 }

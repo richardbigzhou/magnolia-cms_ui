@@ -33,32 +33,32 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import static org.junit.Assert.assertEquals;
-
+import com.vaadin.data.Item;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
-import info.magnolia.ui.dialog.FormDialogPresenter;
-import info.magnolia.ui.dialog.definition.DialogDefinition;
-import info.magnolia.ui.form.EditorCallback;
-import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
-import info.magnolia.ui.api.overlay.OverlayLayer;
-import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent;
-import info.magnolia.ui.vaadin.dialog.DialogView;
-import info.magnolia.ui.vaadin.dialog.FormDialogView;
-import info.magnolia.ui.vaadin.editorlike.DialogActionListener;
-
+import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.dialog.DialogView;
+import info.magnolia.ui.dialog.action.CallbackDialogAction;
+import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
+import info.magnolia.ui.dialog.actionarea.ActionAreaPresenter;
+import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
+import info.magnolia.ui.dialog.definition.FormDialogDefinition;
+import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
+import info.magnolia.ui.dialog.formdialog.FormView;
+import info.magnolia.ui.form.EditorCallback;
+import info.magnolia.ui.form.EditorValidator;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.vaadin.data.Item;
+import static org.junit.Assert.assertEquals;
 
 /**
- * Main test class for {@link CallbackDialogAction} and {@link CallbackDialogActionDefinition}.
+ * Main test class for {@link info.magnolia.ui.dialog.action.CallbackDialogAction} and {@link info.magnolia.ui.dialog.action.CallbackDialogActionDefinition}.
  */
 
 public class CallbackDialogActionTest extends MgnlTestCase {
@@ -155,21 +155,32 @@ public class CallbackDialogActionTest extends MgnlTestCase {
         }
 
         @Override
-        public FormDialogView getView() {
+        public DialogView start(BaseDialogDefinition definition, UiContext uiContext) {
+            return null;  //To change body of implemented methods use File | Settings | File Templates.
+        }
+
+        @Override
+        public FormView getView() {
             return null;
         }
 
         @Override
-        public DialogView start(Item item, DialogDefinition dialogDefinition, OverlayLayer overlayLayer, EditorCallback callback) {
+        public ActionAreaPresenter getActionPresenter() {
+            return null;  //To change body of implemented methods use File | Settings | File Templates.
+        }
+
+        @Override
+        public DialogView start(Item item, FormDialogDefinition dialogDefinition, UiContext uiContext, EditorCallback callback) {
             return null;
         }
 
         @Override
-        public void showCloseButton() {
+        public void addShortcut(String actionName, int keyCode, int... modifiers) {
+            //To change body of implemented methods use File | Settings | File Templates.
         }
 
         @Override
-        public DialogView start(Item item, String dialogName, OverlayLayer overlayLayer, EditorCallback callback) {
+        public DialogView start(Item item, String dialogName, UiContext uiContext, EditorCallback callback) {
             return null;
         }
 
@@ -177,21 +188,6 @@ public class CallbackDialogActionTest extends MgnlTestCase {
         public void closeDialog() {
         }
 
-        @Override
-        public void addDialogCloseHandler(DialogCloseEvent.Handler listener) {
-        }
-
-        @Override
-        public void addAction(String actionName, String actionLabel, DialogActionListener callback) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public void addActionCallback(String actionName, DialogActionListener callback) {
-            // TODO Auto-generated method stub
-
-        }
 
 
         @Override

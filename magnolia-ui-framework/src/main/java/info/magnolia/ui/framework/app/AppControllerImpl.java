@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.framework.app;
 
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.EventBusProtector;
 import info.magnolia.event.SimpleEventBus;
@@ -54,7 +56,7 @@ import info.magnolia.ui.api.app.AppEventBus;
 import info.magnolia.ui.api.app.AppInstanceController;
 import info.magnolia.ui.api.app.AppLifecycleEvent;
 import info.magnolia.ui.api.app.AppLifecycleEventType;
-import info.magnolia.ui.api.app.ItemChosenListener;
+import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
@@ -66,25 +68,19 @@ import info.magnolia.ui.api.location.LocationChangedEvent;
 import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
-import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.api.view.Viewport;
 import info.magnolia.ui.framework.message.MessagesManager;
-
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.name.Names;
-import com.google.inject.util.Providers;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation of the {@link info.magnolia.ui.api.app.AppController}.
@@ -392,10 +388,10 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     }
 
     @Override
-    public void openChooseDialog(String appName, String path, OverlayLayer overlayLayer, String selectedId, ItemChosenListener listener) {
+    public void openChooseDialog(String appName, UiContext uiContext, String selectedId, ChooseDialogCallback callback) {
         App targetApp = getAppWithoutStarting(appName);
         if (targetApp != null) {
-            targetApp.openChooseDialog(path, overlayLayer, selectedId, listener);
+            targetApp.openChooseDialog(uiContext, selectedId, callback);
         }
     }
 

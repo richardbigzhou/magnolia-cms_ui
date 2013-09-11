@@ -68,4 +68,6 @@ public interface AppContext extends AppView.Listener, UiContext {
 
     SubAppContext getActiveSubAppContext();
 
+    AppDescriptor getAppDescriptor();
+
 }
