@@ -35,14 +35,8 @@ package info.magnolia.ui.form.definition;
 
 import static org.junit.Assert.assertEquals;
 
-import info.magnolia.i18n.I18nAble;
 import info.magnolia.i18n.I18nizer;
 import info.magnolia.i18n.proxytoys.ProxytoysI18nizer;
-import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
-import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
-import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
-import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.form.definition.TabDefinitionKeyGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
