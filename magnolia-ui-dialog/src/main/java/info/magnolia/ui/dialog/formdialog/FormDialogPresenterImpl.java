@@ -165,11 +165,15 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         List<ActionDefinition> result = new LinkedList<ActionDefinition>();
         boolean isJcrItemAdapter = (item instanceof JcrItemAdapter);
         for (ActionDefinition action : getDefinition().getActions().values()) {
-            if (!isJcrItemAdapter ||
-                getExecutor().isAvailable(action.getName(), ((JcrItemAdapter)item).getJcrItem())) {
+            if (!isJcrItemAdapter || getExecutor().isAvailable(action.getName(), ((JcrItemAdapter)item).getJcrItem())) {
                 result.add(action);
             }
         }
         return result;
+    }
+
+    @Override
+    protected Object[] getActionParameters(String actionName) {
+        return new Object[]{this, item, callback};
     }
 }
