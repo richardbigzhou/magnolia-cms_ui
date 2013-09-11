@@ -136,6 +136,7 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
             }
 
             final OverlayCloser closer = uiContext.openOverlay(getView());
+            getView().setCaption(definition.getLabel());
             getView().addDialogCloseHandler(new DialogCloseHandler() {
                 @Override
                 public void onDialogClose(DialogView dialogView) {

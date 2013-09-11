@@ -88,13 +88,13 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
             ChooseDialogActionDefinition commitAction = new ChooseDialogActionDefinition();
             commitAction.setCallSuccess(true);
             commitAction.setName("commit");
-            commitAction.setLabel("commit");
-            result.getActions().put("choose", commitAction);
+            commitAction.setLabel("Choose");
+            result.getActions().put(BaseDialog.COMMIT_ACTION_NAME, commitAction);
 
             ChooseDialogActionDefinition cancelAction = new ChooseDialogActionDefinition();
             cancelAction.setCallSuccess(false);
             cancelAction.setName("cancel");
-            cancelAction.setLabel("cancel");
+            cancelAction.setLabel("Cancel");
             result.getActions().put(BaseDialog.CANCEL_ACTION_NAME, cancelAction);
         }
         return result;
@@ -113,6 +113,8 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
         }
 
         result = new Cloner().deepClone(result);
+        String chooserLabel = appContext.getLabel() + " chooser";
+        result.setLabel(chooserLabel);
 
         BrowserSubAppDescriptor subApp = (BrowserSubAppDescriptor) subAppContext;
 
@@ -121,9 +123,7 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
         workbench.setDialogWorkbench(true);
         workbench.setIncludeProperties(false);
         // Create the Choose Dialog Title
-        String chooserLabel = appContext.getLabel() + " chooser";
 
-        workbench.setName(chooserLabel);
         ImageProviderDefinition imageProvider = new Cloner().deepClone(subApp.getImageProvider());
 
         WorkbenchFieldDefinition wbFieldDefinition = new WorkbenchFieldDefinition();
