@@ -139,7 +139,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     @Override
     public FormView getView() {
-        return (FormView) super.getView();
+        return formView;
     }
 
     @Override
