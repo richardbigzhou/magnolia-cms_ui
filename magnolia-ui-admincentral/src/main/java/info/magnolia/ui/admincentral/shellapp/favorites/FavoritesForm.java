@@ -84,8 +84,8 @@ public final class FavoritesForm extends CustomComponent {
 
         tabsheet = new TabSheet();
         tabsheet.addStyleName("favorites-tabs");
-        tabsheet.addTab(favoriteEntryForm, MessagesUtil.get("favorites.form.favorite.add"));
-        tabsheet.addTab(favoriteGroupForm, MessagesUtil.get("favorites.form.group.add"));
+        tabsheet.addTab(favoriteEntryForm, MessagesUtil.get("favorites.form.favorite.add", FavoritesView.FAVORITES_BASENAME));
+        tabsheet.addTab(favoriteGroupForm, MessagesUtil.get("favorites.form.group.add", FavoritesView.FAVORITES_BASENAME));
 
         tabsheet.addSelectedTabChangeListener(new SelectedTabChangeListener() {
 
@@ -121,7 +121,7 @@ public final class FavoritesForm extends CustomComponent {
         addNewIcon.addStyleName("icon");
         addNewIcon.addStyleName("icon-add-fav");
 
-        final Label addNewLabel = new Label(MessagesUtil.get("favorites.form.add"));
+        final Label addNewLabel = new Label(MessagesUtil.get("favorites.form.add", FavoritesView.FAVORITES_BASENAME));
         addNewLabel.setSizeUndefined();
         addNewLabel.addStyleName("title");
 
@@ -169,9 +169,9 @@ public final class FavoritesForm extends CustomComponent {
      */
     private class InternalFavoriteEntryForm extends CustomComponent {
 
-        private TextField url = new TextField(MessagesUtil.get("favorites.form.location"));
+        private TextField url = new TextField(MessagesUtil.get("favorites.form.location", FavoritesView.FAVORITES_BASENAME));
 
-        private TextField title = new TextField(MessagesUtil.get("favorites.form.title"));
+        private TextField title = new TextField(MessagesUtil.get("favorites.form.title", FavoritesView.FAVORITES_BASENAME));
 
         private ComboBox group;
 
@@ -187,7 +187,7 @@ public final class FavoritesForm extends CustomComponent {
             layout.addComponent(title);
             layout.addComponent(url);
 
-            group = new ComboBox(MessagesUtil.get("favorites.form.groups"));
+            group = new ComboBox(MessagesUtil.get("favorites.form.groups", FavoritesView.FAVORITES_BASENAME));
             for (Entry<String, String> entry : availableGroups.entrySet()) {
                 String id = entry.getKey();
                 group.addItem(id);
@@ -202,7 +202,7 @@ public final class FavoritesForm extends CustomComponent {
             final CssLayout buttons = new CssLayout();
             buttons.addStyleName("buttons");
 
-            final Button addButton = new Button(MessagesUtil.get("buttons.add"), new ClickListener() {
+            final Button addButton = new Button(MessagesUtil.get("favorites.button.add", FavoritesView.FAVORITES_BASENAME), new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -212,7 +212,6 @@ public final class FavoritesForm extends CustomComponent {
             addButton.addStyleName("commit");
             buttons.addComponent(addButton);
             layout.addComponent(buttons);
-
 
             this.enterShortcutListener = new ShortcutListener("", KeyCode.ENTER, null) {
 
@@ -239,7 +238,7 @@ public final class FavoritesForm extends CustomComponent {
                 binder.commit();
                 listener.addFavorite(newFavorite);
             } catch (CommitException e) {
-                shell.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("favorites.fields.required"));
+                shell.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("favorites.fields.required", FavoritesView.FAVORITES_BASENAME));
             }
         }
     }
@@ -249,7 +248,7 @@ public final class FavoritesForm extends CustomComponent {
      */
     private class InternalFavoriteGroupForm extends CustomComponent {
 
-        private TextField title = new TextField(MessagesUtil.get("favorites.form.title"));
+        private TextField title = new TextField(MessagesUtil.get("favorites.form.title", FavoritesView.FAVORITES_BASENAME));
         private ShortcutListener enterShortcutListener;
 
         public InternalFavoriteGroupForm(final JcrNewNodeAdapter newGroup) {
@@ -266,7 +265,7 @@ public final class FavoritesForm extends CustomComponent {
             final CssLayout buttons = new CssLayout();
             buttons.addStyleName("buttons");
 
-            final Button addButton = new Button(MessagesUtil.get("buttons.add"), new ClickListener() {
+            final Button addButton = new Button(MessagesUtil.get("favorites.button.add", FavoritesView.FAVORITES_BASENAME), new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -302,7 +301,7 @@ public final class FavoritesForm extends CustomComponent {
                 binder.commit();
                 listener.addGroup(newGroup);
             } catch (CommitException e) {
-                shell.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("favorites.fields.required"));
+                shell.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("favorites.fields.required", FavoritesView.FAVORITES_BASENAME));
             }
         }
     }

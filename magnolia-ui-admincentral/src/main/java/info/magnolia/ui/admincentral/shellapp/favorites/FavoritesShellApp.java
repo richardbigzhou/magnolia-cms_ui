@@ -35,8 +35,8 @@ package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.ui.admincentral.shellapp.ShellApp;
 import info.magnolia.ui.admincentral.shellapp.ShellAppContext;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import javax.inject.Inject;

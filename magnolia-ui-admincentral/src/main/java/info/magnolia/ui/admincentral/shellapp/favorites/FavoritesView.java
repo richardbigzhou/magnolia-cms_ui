@@ -46,6 +46,8 @@ import com.vaadin.ui.Component;
  */
 public interface FavoritesView extends View {
 
+    static final String FAVORITES_BASENAME = "info.magnolia.ui.admincentral.favorites.messages";
+
     void setListener(Listener listener);
 
     void init(AbstractJcrNodeAdapter favoritesRoot, JcrNewNodeAdapter favoriteSuggestion, JcrNewNodeAdapter groupSuggestion, Map<String, String> availableGroups);

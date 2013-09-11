@@ -253,7 +253,7 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
 
             @Override
             public void buttonClick(ClickEvent event) {
-                shell.openConfirmation(MessageStyleTypeEnum.WARNING, MessagesUtil.get("favorites.group.confirmation.title"), MessagesUtil.get("confirmation.cannot.undo"), MessagesUtil.get("confirmation.delete.yes"), MessagesUtil.get("confirmation.no"), true, new ConfirmationCallback() {
+                shell.openConfirmation(MessageStyleTypeEnum.WARNING, MessagesUtil.get("favorites.group.confirmation.title", FavoritesView.FAVORITES_BASENAME), MessagesUtil.get("confirmation.cannot.undo"), MessagesUtil.get("confirmation.delete.yes"), MessagesUtil.get("confirmation.no"), true, new ConfirmationCallback() {
 
                     @Override
                     public void onSuccess() {
@@ -288,7 +288,7 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
 
     private void doEditTitle(final FavoritesView.Listener listener) {
         if (StringUtils.isBlank(titleField.getValue())) {
-            shell.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("favorites.title.required"));
+            shell.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("favorites.title.required", FavoritesView.FAVORITES_BASENAME));
             return;
         }
         boolean titleHasChanged = !title.equals(titleField.getValue());
