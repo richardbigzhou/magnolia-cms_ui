@@ -86,6 +86,10 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
         return view;
     }
 
+    protected void setView(DialogView view) {
+        this.view = view;
+    }
+
     @Override
     public ActionAreaPresenter getActionArea() {
         return editorActionAreaPresenter;

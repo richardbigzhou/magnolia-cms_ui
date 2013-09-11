@@ -68,8 +68,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     private FormBuilder formBuilder;
 
-    private FormView formView;
-
     private Item item;
 
     @Inject
@@ -116,13 +114,18 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
             }
         });
         getView().setClosable(true);
-        return formView;
+        return getView();
+    }
+
+    @Override
+    protected DialogView initView() {
+        return getView();
     }
 
     private void buildView(FormDialogDefinition dialogDefinition) {
         dialogDefinition = (FormDialogDefinition) super.decorateForI18n(dialogDefinition);
         Dialog dialog = new Dialog(dialogDefinition);
-        formBuilder.buildForm(getView(), dialogDefinition.getForm(), item, dialog);
+        setView(formBuilder.buildForm(dialogDefinition.getForm(), item, dialog));
         final String description = dialogDefinition.getDescription();
         final String label = dialogDefinition.getLabel();
         final String basename = dialogDefinition.getI18nBasename();
@@ -145,12 +148,12 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     @Override
     public void showValidation(boolean visible) {
-        formView.showValidation(visible);
+        getView().showValidation(visible);
     }
 
     @Override
     public boolean isValid() {
-        return formView.isValid();
+        return getView().isValid();
     }
 
     @Override
