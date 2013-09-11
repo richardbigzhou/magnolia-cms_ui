@@ -35,11 +35,11 @@ package info.magnolia.ui.admincentral.shellapp.pulse;
 
 import info.magnolia.ui.api.view.View;
 
-
 /**
  * View for pulse.
  */
 public interface PulseView extends View {
+    static final String PULSE_BASENAME = "info.magnolia.ui.admincentral.pulse.messages";
 
     void setPulseView(View view);
 

@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.ui.admincentral.shellapp.pulse.PulseView;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
 
 import java.util.Set;
@@ -74,7 +75,7 @@ public final class PulseMessagesFooter extends CustomComponent {
         footer.setSizeUndefined();
         footer.addStyleName("footer");
 
-        final Label actionLabel = new Label(MessagesUtil.get("pulse.footer.title"));
+        final Label actionLabel = new Label(MessagesUtil.get("pulse.footer.title", PulseView.PULSE_BASENAME));
 
         actionPopupTrigger = new NativeButton();
         actionPopupTrigger.setHtmlContentAllowed(true);
@@ -87,7 +88,7 @@ public final class PulseMessagesFooter extends CustomComponent {
         final String iconFontCode = ActionPopup.ICON_FONT_CODE + "icon-delete";
         final ExternalResource iconFontResource = new ExternalResource(iconFontCode);
 
-        final ContextMenuItem menuItem = contextMenu.addItem(MessagesUtil.get("pulse.actionpop.delete.selected"), iconFontResource);
+        final ContextMenuItem menuItem = contextMenu.addItem(MessagesUtil.get("pulse.actionpop.delete.selected", PulseView.PULSE_BASENAME), iconFontResource);
         menuItem.addItemClickListener(new ContextMenuItemClickListener() {
 
             @Override
@@ -118,7 +119,6 @@ public final class PulseMessagesFooter extends CustomComponent {
         footer.addComponent(status);
     }
 
-
     public void updateStatus() {
         int totalMessages = 0;
         int totalSelected = 0;
@@ -137,9 +137,9 @@ public final class PulseMessagesFooter extends CustomComponent {
             }
             totalSelected++;
         }
-        final String totalMessagesAsString = totalMessages > 0 ? Integer.toString(totalMessages) : MessagesUtil.get("pulse.footer.status.no");
-        final String selectedMessagesAsString = totalSelected > 0 ? Integer.toString(totalSelected) : MessagesUtil.get("pulse.footer.status.none");
-        status.setValue(MessagesUtil.get("pulse.footer.status", new String[] { totalMessagesAsString, selectedMessagesAsString }));
+        final String totalMessagesAsString = totalMessages > 0 ? Integer.toString(totalMessages) : MessagesUtil.get("pulse.footer.status.no", PulseView.PULSE_BASENAME);
+        final String selectedMessagesAsString = totalSelected > 0 ? Integer.toString(totalSelected) : MessagesUtil.get("pulse.footer.status.none", PulseView.PULSE_BASENAME);
+        status.setValue(MessagesUtil.get("pulse.footer.status", PulseView.PULSE_BASENAME, new String[] { totalMessagesAsString, selectedMessagesAsString }));
     }
 
     public void setListener(final PulseMessagesView.Listener listener) {
