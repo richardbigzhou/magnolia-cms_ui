@@ -37,6 +37,7 @@ import com.vaadin.data.Item;
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.dialog.BaseDialogPresenter;
@@ -48,9 +49,12 @@ import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import org.apache.commons.lang.StringUtils;
 
 import javax.inject.Inject;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Presenter for forms opened inside dialogs.
@@ -66,7 +70,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     private FormView formView;
 
     private Item item;
-
 
     @Inject
     public FormDialogPresenterImpl(final DialogDefinitionRegistry dialogDefinitionRegistry, FormBuilder formBuilder, ComponentProvider componentProvider, DialogActionExecutor executor) {
@@ -155,5 +158,18 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     @Override
     protected DialogActionExecutor getExecutor() {
         return (DialogActionExecutor)super.getExecutor();
+    }
+
+    @Override
+    protected Iterable<ActionDefinition> filterActions() {
+        List<ActionDefinition> result = new LinkedList<ActionDefinition>();
+        boolean isJcrItemAdapter = (item instanceof JcrItemAdapter);
+        for (ActionDefinition action : getDefinition().getActions().values()) {
+            if (!isJcrItemAdapter ||
+                getExecutor().isAvailable(action.getName(), ((JcrItemAdapter)item).getJcrItem())) {
+                result.add(action);
+            }
+        }
+        return result;
     }
 }

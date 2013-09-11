@@ -37,6 +37,7 @@ import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutAction.ModifierKey;
 import com.vaadin.event.ShortcutListener;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.AppContext;
@@ -67,6 +68,8 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
     private EditorActionAreaPresenter editorActionAreaPresenter;
 
     private UiContext uiContext;
+
+    private BaseDialogDefinition definition;
 
     @Inject
     public BaseDialogPresenter(ComponentProvider componentProvider, ActionExecutor executor) {
@@ -102,8 +105,9 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
     public DialogView start(BaseDialogDefinition definition, UiContext uiContext) {
         this.uiContext = uiContext;
         this.view = initView();
+        this.definition = definition;
         this.editorActionAreaPresenter = componentProvider.getComponent(definition.getActionArea().getPresenterClass());
-        EditorActionAreaView editorActionAreaView = editorActionAreaPresenter.start(definition.getActions().values(), definition.getActionArea(), this, uiContext);
+        EditorActionAreaView editorActionAreaView = editorActionAreaPresenter.start(filterActions(), definition.getActionArea(), this, uiContext);
 
         if (definition.getActions().containsKey(BaseDialog.COMMIT_ACTION_NAME)) {
              addShortcut(BaseDialog.COMMIT_ACTION_NAME, KeyCode.S, ModifierKey.CTRL);
@@ -115,6 +119,10 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
         }
         this.view.setActionView(editorActionAreaView);
         return this.view;
+    }
+
+    protected Iterable<ActionDefinition> filterActions() {
+        return getDefinition().getActions().values();
     }
 
     protected DialogView initView() {
@@ -146,6 +154,10 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
             }
 
         }
+    }
+
+    protected BaseDialogDefinition getDefinition() {
+        return definition;
     }
 
     protected ActionExecutor getExecutor() {
