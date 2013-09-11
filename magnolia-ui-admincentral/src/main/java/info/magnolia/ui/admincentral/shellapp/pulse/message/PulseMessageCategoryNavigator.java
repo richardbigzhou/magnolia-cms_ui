@@ -94,19 +94,19 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
      * Enumeration for the category types.
      */
     public enum MessageCategory {
-        ALL(MessagesUtil.get("pulse.messages.all", PulseView.PULSE_BASENAME)),
-        WORK_ITEM(MessagesUtil.get("pulse.messages.workitems", PulseView.PULSE_BASENAME)),
-        PROBLEM(MessagesUtil.get("pulse.messages.problems", PulseView.PULSE_BASENAME)),
-        INFO(MessagesUtil.get("pulse.messages.info", PulseView.PULSE_BASENAME));
+        ALL("pulse.messages.all"),
+        WORK_ITEM("pulse.messages.workitems"),
+        PROBLEM("pulse.messages.problems"),
+        INFO("pulse.messages.info");
 
-        private String caption;
+        private String key;
 
-        private MessageCategory(final String caption) {
-            this.caption = caption;
+        private MessageCategory(final String key) {
+            this.key = key;
         }
 
-        public String getCaption() {
-            return caption;
+        public String getKey() {
+            return key;
         }
     }
 
@@ -176,7 +176,7 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
             this.addStyleName("navigator-tab");
             this.setSizeUndefined();
 
-            categoryLabel = new Label(category.getCaption());
+            categoryLabel = new Label(MessagesUtil.get(category.getKey(), PulseView.PULSE_BASENAME));
             categoryLabel.addStyleName("category");
 
             badge = new Label();
@@ -214,6 +214,10 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
                 badge.setValue(countAsString);
                 badge.setVisible(true);
             }
+        }
+
+        public String getLabel() {
+            return categoryLabel.getValue();
         }
     }
 
