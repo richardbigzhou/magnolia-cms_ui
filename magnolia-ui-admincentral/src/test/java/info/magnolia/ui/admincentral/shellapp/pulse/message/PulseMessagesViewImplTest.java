@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.i18n.EmptyMessages;
@@ -47,6 +48,8 @@ import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategory;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+
+import java.util.Locale;
 
 import org.junit.After;
 import org.junit.Before;
@@ -70,7 +73,7 @@ public class PulseMessagesViewImplTest {
         MessagesManager messagesManager = mock(MessagesManager.class);
         ComponentsTestUtil.setInstance(MessagesManager.class, messagesManager);
 
-        when(messagesManager.getMessages()).thenReturn(new EmptyMessages());
+        when(messagesManager.getMessages(anyString(), any(Locale.class))).thenReturn(new EmptyMessages());
 
         ComponentsTestUtil.setImplementation(MessageCategory.class, MessageCategory.class);
     }
