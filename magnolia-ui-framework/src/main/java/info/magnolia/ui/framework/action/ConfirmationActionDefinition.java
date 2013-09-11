@@ -57,26 +57,32 @@ public class ConfirmationActionDefinition extends ConfiguredActionDefinition {
         setImplementationClass(ConfirmationAction.class);
     }
 
+    //@I18nText
     public String getConfirmationHeader() {
         return confirmationHeader;
     }
 
+    //@I18nText
     public String getConfirmationMessage() {
         return confirmationMessage;
     }
 
+    //@I18nText
     public String getSuccessActionName() {
         return successActionName;
     }
 
+    //@I18nText
     public String getCancelActionName() {
         return cancelActionName;
     }
 
+    //@I18nText
     public String getProceedLabel() {
         return proceedLabel;
     }
 
+    //@I18nText
     public String getCancelLabel() {
         return cancelLabel;
     }
