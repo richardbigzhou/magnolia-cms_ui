@@ -53,6 +53,7 @@ import info.magnolia.ui.dialog.formdialog.FormView;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.framework.app.SubAppActionExecutor;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,9 +132,10 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
         Map<String, ActionDefinition> subAppActions = subAppContext.getSubAppDescriptor().getActions();
         List<ActionDefinition> filteredActions = new LinkedList<ActionDefinition>();
         List<FormActionItemDefinition> editorActions = editorDefinition.getActions();
+        boolean isJcrItemAdapter = (item instanceof JcrItemAdapter);
         for (FormActionItemDefinition editorAction : editorActions) {
             ActionDefinition def = subAppActions.get(editorAction.getName());
-            if (def != null) {
+            if (def != null || (isJcrItemAdapter && executor.isAvailable(editorAction.getName(), ((JcrItemAdapter)item).getJcrItem()))) {
                 filteredActions.add(subAppActions.get(editorAction.getName()));
             } else {
                  log.warn("Action is configured for an editor but not configured for sub-app: " + editorAction.getName());
