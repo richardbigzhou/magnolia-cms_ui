@@ -37,6 +37,7 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
@@ -56,9 +57,10 @@ import java.util.List;
  * based on how much space this dialog can provide to the form.
  */
 @Connect(FormDialog.class)
-public class DialogContainingFormConnector extends BaseDialogConnector {
+public class DialogContainingFormConnector extends BaseDialogConnector implements ResizeHandler {
 
     private BaseDialogView view;
+    private HandlerRegistration registration;
 
     @Override
     protected BaseDialogView createView() {
@@ -70,32 +72,31 @@ public class DialogContainingFormConnector extends BaseDialogConnector {
     protected void init() {
         super.init();
         getLayoutManager().addElementResizeListener(getWidget().getElement(), listener);
-
-        Window.addResizeHandler(new ResizeHandler() {
-
-            @Override
-            public void onResize(ResizeEvent event) {
-                updateSize();
-            }
-        });
+        registration = Window.addResizeHandler(this);
     }
 
     private final ElementResizeListener listener = new ElementResizeListener() {
         @Override
         public void onElementResize(ElementResizeEvent e) {
-            updateSize();
+            doResize();
         }
     };
 
     @Override
     public void onUnregister() {
+        registration.removeHandler();
         getLayoutManager().removeElementResizeListener(getWidget().getElement(), listener);
     }
 
     /**
      * Calculates and sets the max height of form view.
      */
-    private void updateSize() {
+    @Override
+    public void onResize(ResizeEvent event) {
+        doResize();
+    }
+
+    private void doResize() {
         Widget content = getContent().getWidget();
         if (content instanceof FormViewImpl) {
             FormViewImpl formView = (FormViewImpl) content;
