@@ -57,7 +57,6 @@ import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.FormBuilder;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
-import info.magnolia.ui.dialog.formdialog.FormDialogPresenterImpl;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
