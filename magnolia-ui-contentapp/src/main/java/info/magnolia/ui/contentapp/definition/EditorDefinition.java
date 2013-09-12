@@ -59,5 +59,5 @@ public interface EditorDefinition {
 
     List<FormActionItemDefinition> getActions();
 
-    EditorActionAreaDefinition getActionPresenter();
+    EditorActionAreaDefinition getActionArea();
 }

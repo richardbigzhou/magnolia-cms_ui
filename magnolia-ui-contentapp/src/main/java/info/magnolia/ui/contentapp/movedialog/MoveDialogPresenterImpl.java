@@ -44,7 +44,7 @@ import info.magnolia.i18n.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
-import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.field.WorkbenchField;
 import info.magnolia.ui.contentapp.movedialog.action.MoveCancelledAction;
@@ -56,6 +56,7 @@ import info.magnolia.ui.contentapp.movedialog.predicate.MovePossibilityPredicate
 import info.magnolia.ui.dialog.BaseDialogPresenter;
 import info.magnolia.ui.dialog.DialogCloseHandler;
 import info.magnolia.ui.dialog.DialogView;
+import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.actionarea.definition.ConfiguredEditorActionAreaDefinition;
 import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredBaseDialogDefinition;
@@ -92,7 +93,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private WorkbenchPresenter workbenchPresenter;
 
-    private UiContext uiContext;
+    private AppContext appContext;
 
     private List<JcrNodeAdapter> nodesToMove;
 
@@ -107,25 +108,20 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     private JcrNodeAdapter currentHostCandidate;
 
     @Inject
-    public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, UiContext uiContext, I18nizer i18nizer) {
-        super(componentProvider, i18nizer);
+    public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, DialogActionExecutor executor, AppContext appContext, I18nizer i18nizer) {
+        super(componentProvider, executor, dialogView, i18nizer);
         this.dialogView = dialogView;
         this.workbenchPresenter = workbenchPresenter;
-        this.uiContext = uiContext;
-    }
-
-    @Override
-    protected DialogView initView() {
+        this.appContext = appContext;
         dialogView.asVaadinComponent().setStyleName("choose-dialog");
-        return dialogView;
     }
 
     @Override
     public Object[] getActionParameters(String actionName) {
         if (currentHostCandidate != null) {
-            return new Object[]{nodesToMove, callback, currentHostCandidate, uiContext};
+            return new Object[]{nodesToMove, callback, currentHostCandidate, appContext};
         }
-        return new Object[]{nodesToMove, callback, uiContext};
+        return new Object[]{nodesToMove, callback, appContext};
     }
 
     @Override
@@ -158,6 +154,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         });
 
         BaseDialogDefinition dialogDefinition = prepareDialogDefinition();
+        getExecutor().setDialogDefinition(dialogDefinition);
         dialogView.setCaption(dialogDefinition.getLabel());
         dialogView.addDialogCloseHandler(new DialogCloseHandler() {
             @Override
@@ -165,7 +162,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
                 ((ResettableEventBus)eventBus).reset();
             }
         });
-        super.start(dialogDefinition, uiContext);
+        super.start(dialogDefinition, appContext);
         updatePossibleMoveLocations(null);
         return dialogView;
     }
@@ -175,8 +172,11 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     }
 
     private ConfiguredWorkbenchDefinition prepareWorkbenchDefinition(BrowserSubAppDescriptor subAppDescriptor) {
+        Cloner cloner = new Cloner();
+        cloner.setDumpClonedClasses(true);
         final ConfiguredWorkbenchDefinition workbenchDefinition =
-                (ConfiguredWorkbenchDefinition) new Cloner().deepClone(subAppDescriptor.getWorkbench());
+                (ConfiguredWorkbenchDefinition) cloner.deepClone(subAppDescriptor.getWorkbench());
+
 
         workbenchDefinition.setIncludeProperties(false);
         workbenchDefinition.setDialogWorkbench(true);
@@ -201,7 +201,9 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     }
 
     private ContentPresenterDefinition prepareTreePresenter(ContentPresenterDefinition treePresenter) {
-        ContentPresenterDefinition def = new Cloner().deepClone(treePresenter);
+        Cloner cloner = new Cloner();
+        ContentPresenterDefinition def = cloner.deepClone(treePresenter);
+        cloner.setDumpClonedClasses(true);
         if (!def.getColumns().isEmpty()) {
             ColumnDefinition column = def.getColumns().get(0);
             def.getColumns().clear();
@@ -228,7 +230,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
                 }
             }
         }
-        getActionPresenter().setPossibleMoveLocations(possibleLocations);
+        getActionArea().setPossibleMoveLocations(possibleLocations);
     }
 
     private void initActions() {
@@ -254,20 +256,25 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
             def.addAction(actionMap.get(location));
         }
 
-        ConfiguredEditorActionAreaDefinition actionPresenterDefinition = new ConfiguredEditorActionAreaDefinition();
-        actionPresenterDefinition.setPresenterClass(MoveDialogActionPresenter.class);
+        ConfiguredEditorActionAreaDefinition actionAreaDefinition = new ConfiguredEditorActionAreaDefinition();
+        actionAreaDefinition.setPresenterClass(MoveDialogActionAreaPresenter.class);
 
         List<SecondaryActionDefinition> secondaryActions = new LinkedList<SecondaryActionDefinition>();
         secondaryActions.add(new SecondaryActionDefinition(MoveLocation.BEFORE.name()));
         secondaryActions.add(new SecondaryActionDefinition(MoveLocation.INSIDE.name()));
-        actionPresenterDefinition.setSecondaryActions(secondaryActions);
+        actionAreaDefinition.setSecondaryActions(secondaryActions);
 
-        def.setActionArea(actionPresenterDefinition);
+        def.setActionArea(actionAreaDefinition);
         return def;
     }
 
     @Override
-    public MoveDialogActionPresenter getActionPresenter() {
-        return (MoveDialogActionPresenter) super.getActionPresenter();
+    public MoveDialogActionAreaPresenter getActionArea() {
+        return (MoveDialogActionAreaPresenter) super.getActionArea();
+    }
+
+    @Override
+    protected DialogActionExecutor getExecutor() {
+        return (DialogActionExecutor) super.getExecutor();
     }
 }

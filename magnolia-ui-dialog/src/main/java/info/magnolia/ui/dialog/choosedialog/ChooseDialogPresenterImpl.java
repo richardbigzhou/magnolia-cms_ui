@@ -41,15 +41,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.i18n.I18nizer;
-import info.magnolia.module.ModuleRegistry;
-import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.objectfactory.configuration.ComponentConfigurer;
-import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
-import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationBuilder;
-import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
-import info.magnolia.objectfactory.guice.GuiceComponentProvider;
-import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.overlay.OverlayCloser;
@@ -57,6 +49,7 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.BaseDialogPresenter;
 import info.magnolia.ui.dialog.DialogCloseHandler;
 import info.magnolia.ui.dialog.DialogView;
+import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactory;
@@ -67,7 +60,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.util.List;
 
 /**
  * Factory for creating workbench choose dialog presenters.
@@ -77,7 +69,6 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
     private static final Logger log = LoggerFactory.getLogger(ChooseDialogPresenterImpl.class);
 
     private FieldFactoryFactory fieldFactoryFactory;
-    private ModuleRegistry moduleRegistry;
 
     private I18nContentSupport i18nContentSupport;
 
@@ -92,24 +83,24 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
             FieldFactoryFactory fieldFactoryFactory,
             ComponentProvider componentProvider,
             I18nContentSupport i18nContentSupport,
-            ModuleRegistry moduleRegistry,
+            DialogActionExecutor executor,
+            ChooseDialogView view,
             I18nizer i18nizer) {
-        super(componentProvider, i18nizer);
+        super(componentProvider, executor, view, i18nizer);
         this.fieldFactoryFactory = fieldFactoryFactory;
-        this.moduleRegistry = moduleRegistry;
         this.componentProvider = componentProvider;
         this.i18nContentSupport = i18nContentSupport;
     }
 
     @Override
     public ChooseDialogView start(BaseDialogDefinition definition, UiContext uiContext) {
+        getExecutor().setDialogDefinition(definition);
         return (ChooseDialogView)super.start(definition, uiContext);
     }
 
     @Override
-    public ChooseDialogView start(ChooseDialogCallback callback, ChooseDialogDefinition definition, UiContext uiContext, String selectedItemId) {
-        this.componentProvider = createMediaEditorComponentProvider(uiContext);
-        start(definition, uiContext);
+    public ChooseDialogView start(ChooseDialogCallback callback, ChooseDialogDefinition definition, UiContext appContext, String selectedItemId) {
+        start(definition, appContext);
         this.callback = callback;
         final FieldFactory formField = fieldFactoryFactory.createFieldFactory(definition.getField(), new NullItem());
         formField.setComponentProvider(componentProvider);
@@ -137,7 +128,8 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
                 field.setValue(selectedItemId);
             }
 
-            final OverlayCloser closer = uiContext.openOverlay(getView());
+            final OverlayCloser closer = appContext.openOverlay(getView());
+            getView().setCaption(definition.getLabel());
             getView().addDialogCloseHandler(new DialogCloseHandler() {
                 @Override
                 public void onDialogClose(DialogView dialogView) {
@@ -153,11 +145,6 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
     }
 
     @Override
-    protected DialogView initView() {
-        return componentProvider.getComponent(ChooseDialogView.class);
-    }
-
-    @Override
     public ChooseDialogView getView() {
         return (ChooseDialogView) super.getView();
     }
@@ -167,22 +154,8 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
         return new Object[] {actionName, ChooseDialogPresenterImpl.this, field, getView(), callback, item};
     }
 
-    private ComponentProvider createMediaEditorComponentProvider(final UiContext layer) {
-        ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
-        List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
-        // Get components common to all sub apps
-        ComponentProviderConfiguration configuration =
-                configurationBuilder.getComponentsFromModules("choose_dialog", moduleDefinitions);
-        log.debug("Creating component provider for media editor");
-        GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
-        builder.withConfiguration(configuration);
-        builder.withParent((GuiceComponentProvider) componentProvider);
-        ComponentConfigurer c = new AbstractGuiceComponentConfigurer() {
-            @Override
-            protected void configure() {
-                bind(UiContext.class).toInstance(layer);
-            }
-        };
-        return builder.build(c);
+    @Override
+    protected DialogActionExecutor getExecutor() {
+        return (DialogActionExecutor)super.getExecutor();
     }
 }

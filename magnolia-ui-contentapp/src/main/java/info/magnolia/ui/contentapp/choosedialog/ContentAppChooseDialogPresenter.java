@@ -36,7 +36,6 @@ package info.magnolia.ui.contentapp.choosedialog;
 import com.rits.cloning.Cloner;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.i18n.I18nizer;
-import info.magnolia.module.ModuleRegistry;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
@@ -44,6 +43,7 @@ import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition;
+import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenterImpl;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogView;
 import info.magnolia.ui.dialog.choosedialog.action.ChooseDialogActionDefinition;
@@ -69,8 +69,8 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
     private AppContext appContext;
 
     @Inject
-    public ContentAppChooseDialogPresenter(FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18nContentSupport i18nContentSupport, AppContext appContext, ModuleRegistry registry, I18nizer i18nizer) {
-        super(fieldFactoryFactory, componentProvider, i18nContentSupport, registry, i18nizer);
+    public ContentAppChooseDialogPresenter(FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18nContentSupport i18nContentSupport, DialogActionExecutor executor, AppContext appContext, ChooseDialogView view, I18nizer i18nizer) {
+        super(fieldFactoryFactory, componentProvider, i18nContentSupport, executor, view, i18nizer);
         this.appContext = appContext;
     }
 
@@ -89,13 +89,13 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
             ChooseDialogActionDefinition commitAction = new ChooseDialogActionDefinition();
             commitAction.setCallSuccess(true);
             commitAction.setName("commit");
-            commitAction.setLabel("commit");
-            result.getActions().put("choose", commitAction);
+            commitAction.setLabel("Choose");
+            result.getActions().put(BaseDialog.COMMIT_ACTION_NAME, commitAction);
 
             ChooseDialogActionDefinition cancelAction = new ChooseDialogActionDefinition();
             cancelAction.setCallSuccess(false);
             cancelAction.setName("cancel");
-            cancelAction.setLabel("cancel");
+            cancelAction.setLabel("Cancel");
             result.getActions().put(BaseDialog.CANCEL_ACTION_NAME, cancelAction);
         }
         return result;
@@ -114,6 +114,8 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
         }
 
         result = new Cloner().deepClone(result);
+        String chooserLabel = appContext.getLabel() + " chooser";
+        result.setLabel(chooserLabel);
 
         BrowserSubAppDescriptor subApp = (BrowserSubAppDescriptor) subAppContext;
 
@@ -122,9 +124,7 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
         workbench.setDialogWorkbench(true);
         workbench.setIncludeProperties(false);
         // Create the Choose Dialog Title
-        String chooserLabel = appContext.getLabel() + " chooser";
 
-        workbench.setName(chooserLabel);
         ImageProviderDefinition imageProvider = new Cloner().deepClone(subApp.getImageProvider());
 
         WorkbenchFieldDefinition wbFieldDefinition = new WorkbenchFieldDefinition();

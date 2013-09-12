@@ -165,7 +165,7 @@ public class CallbackDialogActionTest extends MgnlTestCase {
         }
 
         @Override
-        public ActionAreaPresenter getActionPresenter() {
+        public ActionAreaPresenter getActionArea() {
             return null;  //To change body of implemented methods use File | Settings | File Templates.
         }
 

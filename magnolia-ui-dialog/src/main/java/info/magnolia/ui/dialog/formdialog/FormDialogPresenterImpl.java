@@ -37,20 +37,24 @@ import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.i18n.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
+import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.dialog.BaseDialogPresenter;
 import info.magnolia.ui.dialog.Dialog;
 import info.magnolia.ui.dialog.DialogCloseHandler;
 import info.magnolia.ui.dialog.DialogView;
+import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import org.apache.commons.lang.StringUtils;
 
 import javax.inject.Inject;
-
-import org.apache.commons.lang.StringUtils;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.vaadin.data.Item;
 
@@ -62,15 +66,20 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     private EditorCallback callback;
 
     private DialogDefinitionRegistry dialogDefinitionRegistry;
+
     private FormBuilder formBuilder;
+
+    private FormView formView;
+
     private Item item;
 
     @Inject
-    public FormDialogPresenterImpl(final DialogDefinitionRegistry dialogDefinitionRegistry, FormBuilder formBuilder, ComponentProvider componentProvider, I18nizer i18nizer) {
-        super(componentProvider, i18nizer);
+    public FormDialogPresenterImpl(final DialogDefinitionRegistry dialogDefinitionRegistry, FormBuilder formBuilder, ComponentProvider componentProvider, DialogActionExecutor executor, FormView view, I18nizer i18nizer) {
+        super(componentProvider, executor, view, i18nizer);
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.formBuilder = formBuilder;
         this.componentProvider = componentProvider;
+        this.formView = view;
     }
 
     @Override
@@ -88,17 +97,18 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
      * <ul>
      * <li>Sets the created {@link FormView} as content of the created {@link DialogView}.</li>
      * </ul>
-     * 
+     *
      * @param item passed on to{@link info.magnolia.ui.dialog.formdialog.FormDialogPresenter}
      * @param dialogDefinition
      * @param uiContext
      */
     @Override
     public DialogView start(final Item item, FormDialogDefinition dialogDefinition, final UiContext uiContext, EditorCallback callback) {
+        start(dialogDefinition, uiContext);
         this.callback = callback;
         this.item = item;
+        getExecutor().setDialogDefinition(dialogDefinition);
         buildView(dialogDefinition);
-        start(dialogDefinition, uiContext);
         final OverlayCloser overlayCloser = uiContext.openOverlay(getView());
         getView().addDialogCloseHandler(new DialogCloseHandler() {
             @Override
@@ -110,7 +120,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         return getView();
     }
 
-    @Override
     protected DialogView initView() {
         return getView();
     }
@@ -118,7 +127,8 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     private void buildView(FormDialogDefinition dialogDefinition) {
         dialogDefinition = (FormDialogDefinition) super.decorateForI18n(dialogDefinition);
         Dialog dialog = new Dialog(dialogDefinition);
-        setView(formBuilder.buildForm(dialogDefinition.getForm(), item, dialog));
+        // setView(formBuilder.buildForm(dialogDefinition.getForm(), item, dialog)); // TODO check and delete/uncomment - and remove the next line
+        formBuilder.buildForm(getView(), dialogDefinition.getForm(), item, dialog);
         final String description = dialogDefinition.getDescription();
         final String label = dialogDefinition.getLabel();
         final String basename = dialogDefinition.getI18nBasename();
@@ -135,13 +145,8 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     }
 
     @Override
-    public Object[] getActionParameters(String actionName) {
-        return new Object[] { item, callback, this };
-    }
-
-    @Override
     public FormView getView() {
-        return (FormView) super.getView();
+        return formView;
     }
 
     @Override
@@ -152,5 +157,27 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     @Override
     public boolean isValid() {
         return getView().isValid();
+    }
+
+    @Override
+    protected DialogActionExecutor getExecutor() {
+        return (DialogActionExecutor)super.getExecutor();
+    }
+
+    @Override
+    protected Iterable<ActionDefinition> filterActions() {
+        List<ActionDefinition> result = new LinkedList<ActionDefinition>();
+        boolean isJcrItemAdapter = (item instanceof JcrItemAdapter);
+        for (ActionDefinition action : getDefinition().getActions().values()) {
+            if (!isJcrItemAdapter || getExecutor().isAvailable(action.getName(), ((JcrItemAdapter)item).getJcrItem())) {
+                result.add(action);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    protected Object[] getActionParameters(String actionName) {
+        return new Object[]{this, item, callback};
     }
 }

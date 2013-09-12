@@ -47,7 +47,7 @@ public interface DialogPresenter {
 
     DialogView getView();
 
-    ActionAreaPresenter getActionPresenter();
+    ActionAreaPresenter getActionArea();
 
     void addShortcut(String actionName, int keyCode, int... modifiers);
 

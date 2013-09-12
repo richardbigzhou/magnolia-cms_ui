@@ -36,32 +36,29 @@ package info.magnolia.ui.dialog.actionarea;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.AbstractActionExecutor;
 import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
 
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A common action executor that can be used by both dialogs and detail sub-apps.
  * Simply takes a list of action definitions that it can execute.
  */
-public class EditorActionExecutor extends AbstractActionExecutor {
+public class DialogActionExecutor extends AbstractActionExecutor {
 
-    private Map<String, ActionDefinition> actionMap = new HashMap<String, ActionDefinition>();
+    private BaseDialogDefinition definition;
 
     @Inject
-    public EditorActionExecutor(ComponentProvider componentProvider) {
+    public DialogActionExecutor(ComponentProvider componentProvider) {
         super(componentProvider);
     }
 
-    public void setActions(Iterable<ActionDefinition> actions) {
-        for (ActionDefinition action : actions) {
-            actionMap.put(action.getName(), action);
-        }
+    public void setDialogDefinition(BaseDialogDefinition definition) {
+        this.definition = definition;
     }
 
     @Override
     public ActionDefinition getActionDefinition(String actionName) {
-        return actionMap.get(actionName);
+        return definition.getActions().get(actionName);
     }
 }

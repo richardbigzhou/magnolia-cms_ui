@@ -33,10 +33,8 @@
  */
 package info.magnolia.ui.dialog.actionarea;
 
-import com.vaadin.event.ShortcutListener;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.actionarea.definition.ActionRendererDefinition;
@@ -52,40 +50,24 @@ import javax.inject.Inject;
  */
 public class EditorActionAreaPresenterImpl implements EditorActionAreaPresenter {
 
-    private final EditorActionAreaView view;
+    private EditorActionAreaView view;
 
-    private final ComponentProvider componentProvider;
-
-    private final EditorActionExecutor actionExecutor;
-
-    private ActionParameterProvider actionParameterProvider;
+    private ComponentProvider componentProvider;
 
     @Inject
-    public EditorActionAreaPresenterImpl(EditorActionAreaView view, ComponentProvider componentProvider, EditorActionExecutor actionExecutor) {
+    public EditorActionAreaPresenterImpl(EditorActionAreaView view, ComponentProvider componentProvider) {
         this.view = view;
         this.componentProvider = componentProvider;
-        this.actionExecutor = actionExecutor;
     }
 
     @Override
-    public EditorActionAreaView start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, final ActionParameterProvider parameterProvider, UiContext uiContext) {
-        this.actionParameterProvider = parameterProvider;
-        actionExecutor.setActions(actions);
+    public EditorActionAreaView start(Iterable<ActionDefinition> actions, EditorActionAreaDefinition definition, final ActionListener listener, UiContext uiContext) {
         for (ActionDefinition action : actions) {
-            ActionRendererDefinition actionPresenterDef = definition.getActionRenderers().get(action.getName());
-            ActionRenderer actionRenderer = actionPresenterDef == null ?
+            ActionRendererDefinition actionRendererDef = definition.getActionRenderers().get(action.getName());
+            ActionRenderer actionRenderer = actionRendererDef == null ?
                     componentProvider.getComponent(ActionRenderer.class):
-                    componentProvider.newInstance(actionPresenterDef.getRendererClass(), action, actionPresenterDef, uiContext);
-            final View actionView = actionRenderer.start(action, new ActionListener() {
-                @Override
-                public void onActionFired(String actionName, Object... actionContextParams) {
-                    Object[] providedParameters = parameterProvider.getActionParameters(actionName);
-                    Object[] combinedParameters = new Object[providedParameters.length + actionContextParams.length];
-                    System.arraycopy(providedParameters, 0, combinedParameters, 0, providedParameters.length);
-                    System.arraycopy(actionContextParams, 0, combinedParameters, providedParameters.length, actionContextParams.length);
-                    executeAction(actionName, combinedParameters);
-                }
-            });
+                    componentProvider.newInstance(actionRendererDef.getRendererClass(), action, actionRendererDef, uiContext);
+            final View actionView = actionRenderer.start(action, listener);
             if (definition.getSecondaryActions().contains(new SecondaryActionDefinition(action.getName()))) {
                 view.addSecondaryAction(actionView, action.getName());
             } else {
@@ -95,29 +77,7 @@ public class EditorActionAreaPresenterImpl implements EditorActionAreaPresenter 
         return view;
     }
 
-    @Override
-    public ShortcutListener bindShortcut(final String actionName, int keyCode, int... modifiers) {
-        return new ShortcutListener("", keyCode, modifiers) {
-            @Override
-            public void handleAction(Object sender, Object target) {
-                executeAction(actionName, actionParameterProvider.getActionParameters(actionName));
-            }
-        };
-    }
-
-    protected void executeAction(String actionName, Object[] combinedParameters) {
-        try {
-            actionExecutor.execute(actionName, combinedParameters);
-        } catch (ActionExecutionException e) {
-            handleActionExecutionException(actionName, e);
-        }
-    }
-
     protected EditorActionAreaView getView() {
         return view;
-    }
-
-    protected void handleActionExecutionException(String actionName, ActionExecutionException e) {
-        throw new RuntimeException("Could not execute action: " + actionName, e);
     }
 }

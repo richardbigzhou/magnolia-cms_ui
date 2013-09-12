@@ -37,10 +37,18 @@ import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutAction.ModifierKey;
 
 import info.magnolia.i18n.I18nizer;
+import com.vaadin.event.ShortcutListener;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.message.Message;
+import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.dialog.actionarea.ActionAreaPresenter;
-import info.magnolia.ui.dialog.actionarea.ActionParameterProvider;
+import info.magnolia.ui.dialog.actionarea.ActionListener;
 import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
 import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
 import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
@@ -51,19 +59,27 @@ import javax.inject.Inject;
 /**
  * Base implementation of {@link DialogPresenter}.
  */
-public class BaseDialogPresenter implements DialogPresenter, ActionParameterProvider {
+public class BaseDialogPresenter implements DialogPresenter, ActionListener {
 
     private DialogView view;
 
     protected ComponentProvider componentProvider;
 
+    private ActionExecutor executor;
+
     private EditorActionAreaPresenter editorActionAreaPresenter;
 
     private final I18nizer i18nizer;
 
+    private UiContext uiContext;
+
+    private BaseDialogDefinition definition;
+
     @Inject
-    public BaseDialogPresenter(ComponentProvider componentProvider, I18nizer i18nizer) {
+    public BaseDialogPresenter(ComponentProvider componentProvider, ActionExecutor executor, DialogView view, I18nizer i18nizer) {
         this.componentProvider = componentProvider;
+        this.executor = executor;
+        this.view = view;
         this.i18nizer = i18nizer;
     }
 
@@ -77,7 +93,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionParameterProv
     }
 
     @Override
-    public ActionAreaPresenter getActionPresenter() {
+    public ActionAreaPresenter getActionArea() {
         return editorActionAreaPresenter;
     }
 
@@ -88,15 +104,22 @@ public class BaseDialogPresenter implements DialogPresenter, ActionParameterProv
 
     @Override
     public void addShortcut(final String actionName, final int keyCode, final int... modifiers) {
-        view.addShortcut(this.editorActionAreaPresenter.bindShortcut(actionName, keyCode, modifiers));
+        view.addShortcut(new ShortcutListener(actionName, keyCode, modifiers) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                executeAction(actionName, new Object[0]);
+            }
+        });
     }
 
     @Override
     public DialogView start(BaseDialogDefinition definition, UiContext uiContext) {
-        this.view = initView();
+        // this.view = initView(); // TODO check and delete/uncomment
         definition = i18nizer.decorate(definition);
+        this.uiContext = uiContext;
+        this.definition = definition;
         this.editorActionAreaPresenter = componentProvider.getComponent(definition.getActionArea().getPresenterClass());
-        EditorActionAreaView editorActionAreaView = editorActionAreaPresenter.start(definition.getActions().values(), definition.getActionArea(), this, uiContext);
+        EditorActionAreaView editorActionAreaView = editorActionAreaPresenter.start(filterActions(), definition.getActionArea(), this, uiContext);
 
         if (definition.getActions().containsKey(BaseDialog.COMMIT_ACTION_NAME)) {
              addShortcut(BaseDialog.COMMIT_ACTION_NAME, KeyCode.S, ModifierKey.CTRL);
@@ -106,20 +129,51 @@ public class BaseDialogPresenter implements DialogPresenter, ActionParameterProv
             addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.ESCAPE);
             addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.C, ModifierKey.CTRL);
         }
-        this.view.setActionView(editorActionAreaView);
+        this.view.setActionAreaView(editorActionAreaView);
         return this.view;
     }
 
-    protected DialogView initView() {
-        return componentProvider.getComponent(DialogView.class);
+    protected Iterable<ActionDefinition> filterActions() {
+        return getDefinition().getActions().values();
     }
 
-    @Override
-    public Object[] getActionParameters(String actionName) {
+    protected Object[] getActionParameters(String actionName) {
         return new Object[]{this};
     }
 
     public BaseDialogDefinition decorateForI18n(BaseDialogDefinition definition) {
         return i18nizer.decorate(definition);
     }
+
+    @Override
+    public void onActionFired(String actionName, Object... actionContextParams) {
+        executeAction(actionName, actionContextParams);
+    }
+
+    protected void executeAction(String actionName, Object[] actionContextParams) {
+        Object[] providedParameters = getActionParameters(actionName);
+        Object[] combinedParameters = new Object[providedParameters.length + actionContextParams.length];
+        System.arraycopy(providedParameters, 0, combinedParameters, 0, providedParameters.length);
+        System.arraycopy(actionContextParams, 0, combinedParameters, providedParameters.length, actionContextParams.length);
+        try {
+            executor.execute(actionName, combinedParameters);
+        } catch (ActionExecutionException e) {
+            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            if (uiContext instanceof AppContext) {
+                ((AppContext)uiContext).broadcastMessage(error);
+            } else if (uiContext instanceof SubAppContext) {
+                ((SubAppContext)uiContext).getAppContext().broadcastMessage(error);
+            }
+
+        }
+    }
+
+    protected BaseDialogDefinition getDefinition() {
+        return definition;
+    }
+
+    protected ActionExecutor getExecutor() {
+        return executor;
+    }
+
 }

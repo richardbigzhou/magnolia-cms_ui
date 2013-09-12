@@ -80,10 +80,7 @@ public class FormBuilder {
     /**
      * @return FormView populated with values from FormDefinition and Item.
      */
-    public FormView buildForm(FormDefinition formDefinition, Item item, FormItem parent) {
-
-        FormView view = componentProvider.newInstance(FormView.class);
-
+    public void buildForm(FormView view, FormDefinition formDefinition, Item item, FormItem parent) {
         final Form form = new Form(formDefinition);
         form.setParent(parent);
         view.setItemDataSource(item);
@@ -138,7 +135,6 @@ public class FormBuilder {
                 view.setCurrentLocale(i18nContentSupport.getFallbackLocale());
             }
         }
-        return view;
     }
 
     public View buildView(FormDefinition formDefinition, Item item) {

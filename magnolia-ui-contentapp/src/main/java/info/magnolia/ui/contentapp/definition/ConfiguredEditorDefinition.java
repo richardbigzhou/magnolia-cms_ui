@@ -60,7 +60,7 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
 
     private NodeTypeDefinition nodeType;
 
-    private EditorActionAreaDefinition actionPresenter = new ConfiguredEditorActionAreaDefinition();
+    private EditorActionAreaDefinition actionArea = new ConfiguredEditorActionAreaDefinition();
 
     private List<FormActionItemDefinition> actions;
 
@@ -118,12 +118,12 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
         this.nodeType = nodeType;
     }
 
-    public EditorActionAreaDefinition getActionPresenter() {
-        return actionPresenter;
+    public EditorActionAreaDefinition getActionArea() {
+        return actionArea;
     }
 
-    public void setActionPresenter(EditorActionAreaDefinition actionPresenter) {
-        this.actionPresenter = actionPresenter;
+    public void setActionArea(EditorActionAreaDefinition editorActionAreaDefinition) {
+        this.actionArea = editorActionAreaDefinition;
     }
 
     public List<FormActionItemDefinition> getActions() {
