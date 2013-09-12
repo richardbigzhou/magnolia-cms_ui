@@ -2,8 +2,8 @@
 <!DOCTYPE module SYSTEM "module.dtd">
 <module>
   <name>security-app</name>
-  <displayName>Security App</displayName>
-  <description>Security App</description>
+  <displayName>Security app</displayName>
+  <description>Security app</description>
   <versionHandler>info.magnolia.security.setup.SecurityModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 
