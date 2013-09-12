@@ -35,6 +35,7 @@ package info.magnolia.ui.contentapp.choosedialog;
 
 import com.rits.cloning.Cloner;
 import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.i18n.AbstractLocaleProvider;
 import info.magnolia.i18n.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppContext;
@@ -68,10 +69,13 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
 
     private AppContext appContext;
 
+    private Cloner cloner;
+
     @Inject
     public ContentAppChooseDialogPresenter(FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18nContentSupport i18nContentSupport, DialogActionExecutor executor, AppContext appContext, ChooseDialogView view, I18nizer i18nizer) {
         super(fieldFactoryFactory, componentProvider, i18nContentSupport, executor, view, i18nizer);
         this.appContext = appContext;
+        this.cloner = new Cloner();
     }
 
     @Override
@@ -84,7 +88,7 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
     private ChooseDialogDefinition ensureChooseActions(ChooseDialogDefinition definition) {
         ChooseDialogDefinition result = definition;
         if (definition.getActions().isEmpty()) {
-            result = new Cloner().deepClone(definition);
+            result = cloner.deepClone(definition);
 
             ChooseDialogActionDefinition commitAction = new ChooseDialogActionDefinition();
             commitAction.setCallSuccess(true);
@@ -113,19 +117,19 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
             return definition;
         }
 
-        result = new Cloner().deepClone(result);
+        result = cloner.deepClone(result);
         String chooserLabel = appContext.getLabel() + " chooser";
         result.setLabel(chooserLabel);
 
         BrowserSubAppDescriptor subApp = (BrowserSubAppDescriptor) subAppContext;
 
-        ConfiguredWorkbenchDefinition workbench = (ConfiguredWorkbenchDefinition)(new Cloner().deepClone(subApp.getWorkbench()));
+        ConfiguredWorkbenchDefinition workbench = (ConfiguredWorkbenchDefinition) (cloner.deepClone(subApp.getWorkbench()));
         // mark definition as a dialog workbench so that workbench presenter can disable drag n drop
         workbench.setDialogWorkbench(true);
         workbench.setIncludeProperties(false);
         // Create the Choose Dialog Title
 
-        ImageProviderDefinition imageProvider = new Cloner().deepClone(subApp.getImageProvider());
+        ImageProviderDefinition imageProvider = cloner.deepClone(subApp.getImageProvider());
 
         WorkbenchFieldDefinition wbFieldDefinition = new WorkbenchFieldDefinition();
         wbFieldDefinition.setWorkbench(workbench);
