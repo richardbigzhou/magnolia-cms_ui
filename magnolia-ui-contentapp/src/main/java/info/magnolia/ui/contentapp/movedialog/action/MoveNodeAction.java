@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.contentapp.movedialog.action;
 
-import com.vaadin.data.Item;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -47,14 +46,18 @@ import info.magnolia.ui.framework.action.MoveLocation;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
 
 /**
  * Action that moves a node.
@@ -101,7 +104,7 @@ public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefini
             JcrNodeAdapter nodeAdapter = (JcrNodeAdapter) firstItem;
             String itemIdOfChangedItem;
             try {
-                itemIdOfChangedItem = JcrItemUtil.getItemId(nodeAdapter.getJcrItem().getParent());
+                itemIdOfChangedItem = JcrItemUtil.getItemId(nodeAdapter.getJcrItem());
                 admincentralEventBus.fireEvent(new ContentChangedEvent(nodeAdapter.getWorkspace(), itemIdOfChangedItem));
                 callback.onMovePerformed(targetItem, moveLocation);
             } catch (RepositoryException e) {
