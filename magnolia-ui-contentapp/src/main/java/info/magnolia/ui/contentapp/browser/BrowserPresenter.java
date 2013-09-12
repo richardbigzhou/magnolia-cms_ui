@@ -159,9 +159,19 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
                 if (event.getWorkspace().equals(getWorkspace())) {
 
                     workbenchPresenter.refresh();
-                    workbenchPresenter.select(getSelectedItemIds());
 
-                    // use just the first item to show the preview image
+                    // If the change is a property - only select the property.
+                    // This ensures that the tree will properly select the changed property.
+                    List<String> selectedIds = new ArrayList<String>();
+                    if (event.isPropertyChange()) {
+                        selectedIds.add(0, event.getItemId());
+                    } else {
+                        selectedIds = getSelectedItemIds();
+                    }
+
+                    workbenchPresenter.select(selectedIds);
+
+                    // use just the first selected item to show the preview image
                     String itemId = getSelectedItemIds().get(0);
                     try {
                         if (JcrItemUtil.itemExists(getWorkspace(), itemId)) {
@@ -212,7 +222,6 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
             @Override
             public void onItemShortcutKeyEvent(ItemShortcutKeyEvent event) {
                 int keyCode = event.getKeyCode();
-                int[] modifierKeys = event.getModifierKeys();
                 switch (keyCode) {
                 case ShortcutAction.KeyCode.ENTER:
                     executeDefaultAction();

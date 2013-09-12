@@ -36,10 +36,11 @@ package info.magnolia.ui.framework.action;
 import info.magnolia.cms.core.Path;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -77,6 +78,7 @@ public abstract class AbstractRepositoryAction<D extends ActionDefinition> exten
         this.itemIdOfChangedItem = itemIdOfChangedItem;
     }
 
+
     /**
      * Executes the defined action on the passed in item. When successful, it will fire a {@link ContentChangedEvent}.
      */
@@ -89,7 +91,8 @@ public abstract class AbstractRepositoryAction<D extends ActionDefinition> exten
 
             // If the subclass set it to null this means no change was performed so we won't send an event
             if (itemIdOfChangedItem != null) {
-                eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), itemIdOfChangedItem));
+                boolean propertyChange = JcrItemUtil.isPropertyItemId(itemIdOfChangedItem);
+                eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), itemIdOfChangedItem, propertyChange));
             }
 
         } catch (RepositoryException e) {
