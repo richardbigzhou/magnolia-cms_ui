@@ -83,7 +83,7 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
     public void execute() throws ActionExecutionException {
         try {
             uiContext.openConfirmation(
-                    MessageStyleTypeEnum.WARNING, getConfirmationHeader(), getConfirmationMessage(), MessagesUtil.get(getDefinition().getProceedLabel()), MessagesUtil.get(getDefinition().getCancelLabel()), getDefinition().isDefaultCancel(),
+                    MessageStyleTypeEnum.WARNING, getConfirmationHeader(), getConfirmationMessage(), MessagesUtil.get(getDefinition().getProceedLabel(),"info.magnolia.ui.admincentral.messages"), MessagesUtil.get(getDefinition().getCancelLabel(),"info.magnolia.ui.admincentral.messages"), getDefinition().isDefaultCancel(),
                     new ConfirmationCallback() {
                         @Override
                         public void onSuccess() {
@@ -125,7 +125,7 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
         if (items.size() == 1) {
             boolean isNode = items.get(0).getJcrItem().isNode();
 
-            return MessagesUtil.get(getDefinition().getConfirmationHeader(), getDefinition().getI18nBasename(), new String[] { (isNode) ? "Node" : "Property" });
+            return MessagesUtil.get(getDefinition().getConfirmationHeader(), "info.magnolia.ui.admincentral.messages", new String[] { (isNode) ? "Node" : "Property" });
         }
         long howMany = items.size();
         boolean atLeastOneNode = false;
@@ -139,14 +139,14 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
         }
         if (atLeastOneNode && atLeastOneProperty) {
             // mix of nodes and properties
-            return MessagesUtil.get(getDefinition().getConfirmationHeader(), getDefinition().getI18nBasename(), new String[] { howMany + " items" });
+            return MessagesUtil.get(getDefinition().getConfirmationHeader(), "info.magnolia.ui.admincentral.messages", new String[] { howMany + " items" });
         }
         if (atLeastOneNode) {
             // only nodes
-            return MessagesUtil.get(getDefinition().getConfirmationHeader(), getDefinition().getI18nBasename(), new String[] { howMany + " nodes" });
+            return MessagesUtil.get(getDefinition().getConfirmationHeader(), "info.magnolia.ui.admincentral.messages", new String[] { howMany + " nodes" });
         }
         // only properties
-        return MessagesUtil.get(getDefinition().getConfirmationHeader(), getDefinition().getI18nBasename(), new String[] { howMany + " properties" });
+        return MessagesUtil.get(getDefinition().getConfirmationHeader(), "info.magnolia.ui.admincentral.messages", new String[] { howMany + " properties" });
     }
 
     protected String getConfirmationMessage() throws Exception {
@@ -154,7 +154,7 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
             boolean isNode = items.get(0).getJcrItem().isNode();
             String path = items.get(0).getJcrItem().getPath();
 
-            return MessagesUtil.get(getDefinition().getConfirmationMessage(), getDefinition().getI18nBasename(), new String[] { (isNode) ? "Node" : "Property", path });
+            return MessagesUtil.get(getDefinition().getConfirmationMessage(), "info.magnolia.ui.admincentral.messages", new String[] { (isNode) ? "Node" : "Property", path });
         }
         boolean atLeastOneNode = false;
         boolean atLeastOneProperty = false;
@@ -167,14 +167,14 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
         }
         if (atLeastOneNode && atLeastOneProperty) {
             // mix of nodes and properties
-            return MessagesUtil.get(getDefinition().getConfirmationMessage(), getDefinition().getI18nBasename(), new String[] { "items", getListOfItemPaths() });
+            return MessagesUtil.get(getDefinition().getConfirmationMessage(), "info.magnolia.ui.admincentral.messages", new String[] { "items", getListOfItemPaths() });
         }
         if (atLeastOneNode) {
             // only nodes
-            return MessagesUtil.get(getDefinition().getConfirmationMessage(), getDefinition().getI18nBasename(), new String[] { "nodes", getListOfItemPaths() });
+            return MessagesUtil.get(getDefinition().getConfirmationMessage(), "info.magnolia.ui.admincentral.messages", new String[] { "nodes", getListOfItemPaths() });
         }
         // only properties
-        return MessagesUtil.get(getDefinition().getConfirmationMessage(), getDefinition().getI18nBasename(), new String[] { "properties", getListOfItemPaths() });
+        return MessagesUtil.get(getDefinition().getConfirmationMessage(), "info.magnolia.ui.admincentral.messages", new String[] { "properties", getListOfItemPaths() });
     }
 
     protected String getListOfItemPaths() {

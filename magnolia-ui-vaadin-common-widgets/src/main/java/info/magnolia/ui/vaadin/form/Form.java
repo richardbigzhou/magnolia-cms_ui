@@ -58,7 +58,7 @@ import com.vaadin.ui.Field;
  */
 public class Form extends AbstractSingleComponentContainer implements FormViewReduced {
 
-    private final String SHOW_ALL = MessagesUtil.get("dialogs.show.all");
+    private final String SHOW_ALL = MessagesUtil.get("dialogs.show.all","info.magnolia.ui.admincentral.messages");
 
     private List<Field<?>> fields = new LinkedList<Field<?>>();
 

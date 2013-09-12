@@ -253,7 +253,7 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
 
             @Override
             public void buttonClick(ClickEvent event) {
-                shell.openConfirmation(MessageStyleTypeEnum.WARNING, MessagesUtil.get("favorites.group.confirmation.title", FavoritesView.FAVORITES_BASENAME), MessagesUtil.get("confirmation.cannot.undo"), MessagesUtil.get("confirmation.delete.yes"), MessagesUtil.get("confirmation.no"), true, new ConfirmationCallback() {
+                shell.openConfirmation(MessageStyleTypeEnum.WARNING, MessagesUtil.get("favorites.group.confirmation.title", FavoritesView.FAVORITES_BASENAME), MessagesUtil.get("confirmation.cannot.undo","info.magnolia.ui.admincentral.messages"), MessagesUtil.get("confirmation.delete.yes","info.magnolia.ui.admincentral.messages"), MessagesUtil.get("confirmation.no","info.magnolia.ui.admincentral.messages"), true, new ConfirmationCallback() {
 
                     @Override
                     public void onSuccess() {

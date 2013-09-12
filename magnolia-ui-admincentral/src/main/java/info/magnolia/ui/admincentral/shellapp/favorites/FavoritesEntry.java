@@ -217,7 +217,7 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
 
             @Override
             public void buttonClick(ClickEvent event) {
-                shell.openConfirmation(MessageStyleTypeEnum.WARNING, MessagesUtil.get("confirmation.delete.title.generic"), MessagesUtil.get("confirmation.cannot.undo"), MessagesUtil.get("confirmation.delete.yes"), MessagesUtil.get("confirmation.no"), true, new ConfirmationCallback() {
+                shell.openConfirmation(MessageStyleTypeEnum.WARNING, MessagesUtil.get("confirmation.delete.title.generic","info.magnolia.ui.admincentral.messages"), MessagesUtil.get("confirmation.cannot.undo","info.magnolia.ui.admincentral.messages"), MessagesUtil.get("confirmation.delete.yes","info.magnolia.ui.admincentral.messages"), MessagesUtil.get("confirmation.no","info.magnolia.ui.admincentral.messages"), true, new ConfirmationCallback() {
 
                     @Override
                     public void onSuccess() {
