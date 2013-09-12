@@ -100,6 +100,10 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new PropertyExistsDelegateTask("update activateDeletion action to use versioned command chain", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activateDeletion", "catalog",
                         new CheckAndModifyPropertyValueTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activateDeletion", "catalog", "website", "versioned")))
 
+                        // add show versions action
+                .addTask(new PartialBootstrapTask("Bootstrap showVersions action", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actions/showVersions"))
+                .addTask(new PartialBootstrapTask("Bootstrap actionbar section group for versionActions", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions"))
+
                         // cleanup pages commands
                 .addTask(new NodeExistsDelegateTask("remove the activate command chain from pages app", "", RepositoryConstants.CONFIG, "/modules/pages/commands/website/activate",
                         new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/pages/commands/website/activate")))
