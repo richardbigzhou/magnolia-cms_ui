@@ -42,12 +42,17 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.jcr.RepositoryException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Ordering;
 
 /**
  * Abstract multi-item Action that defines the default behavior.
@@ -98,7 +103,7 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
     public void execute() throws ActionExecutionException {
         failedItems = new LinkedHashMap<JcrItemAdapter, Exception>();
 
-        for (JcrItemAdapter item : getItems()) {
+        for (JcrItemAdapter item : getSortedItems(getItemComparator())) {
             this.currentItem = item;
             try {
                 executeOnItem(item);
@@ -138,6 +143,13 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
         return this.items;
     }
 
+    /**
+     * @return the sorted Items list based on the desired {@link Comparator}.
+     */
+    protected List<JcrItemAdapter> getSortedItems(Comparator<JcrItemAdapter> comparator) {
+        return Ordering.from(comparator).sortedCopy(this.items);
+    }
+
     protected UiContext getUiContext() {
         return this.uiContext;
     }
@@ -158,5 +170,27 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
      */
     protected void setCurrentItem(JcrItemAdapter item) {
         this.currentItem = item;
+    }
+
+    /**
+     * Create a {@link Comparator} used to sort {@link JcrItemAdapter}.
+     * First element of the list are child items:
+     * - /a/b.property
+     * - /a/b
+     * - /a
+     * - /
+     */
+    protected Comparator<JcrItemAdapter> getItemComparator() {
+        return new Comparator<JcrItemAdapter>() {
+            @Override
+            public int compare(JcrItemAdapter o1, JcrItemAdapter o2) {
+                try {
+                    int res = o2.getJcrItem().getDepth() - o1.getJcrItem().getDepth();
+                    return res;
+                } catch (RepositoryException e) {
+                    return 0;
+                }
+            }
+        };
     }
 }

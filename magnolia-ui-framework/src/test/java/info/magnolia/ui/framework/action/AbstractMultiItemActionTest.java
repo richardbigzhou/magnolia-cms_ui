@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.action;
 
 import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
@@ -47,6 +48,8 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import java.util.List;
 
 import javax.jcr.Node;
@@ -60,7 +63,8 @@ import org.junit.Test;
  */
 public class AbstractMultiItemActionTest extends MgnlTestCase {
 
-    List<JcrItemAdapter> items = new ArrayList<JcrItemAdapter>();
+    private List<JcrItemAdapter> items = new ArrayList<JcrItemAdapter>();
+    private Node root;
 
     @Override
     @Before
@@ -71,7 +75,7 @@ public class AbstractMultiItemActionTest extends MgnlTestCase {
         when(systemContext.getJCRSession("test")).thenReturn(session);
         MgnlContext.setInstance(systemContext);
 
-        Node root = session.getRootNode();
+        root = session.getRootNode();
         Node node = root.addNode("node");
         Property prop = node.setProperty("property", "value");
 
@@ -92,6 +96,30 @@ public class AbstractMultiItemActionTest extends MgnlTestCase {
         verify(uiContext).openNotification(MessageStyleTypeEnum.INFO, true, "Success.");
     }
 
+
+    @Test
+    public void testgetSortedItems() throws Exception {
+        // GIVEN
+        items.clear();
+        Node b = root.addNode("b");
+        Node b_b = b.addNode("b_b");
+        Property p_b_b = b_b.setProperty("p_b_b", "p_b_b");
+        addItems(new JcrNodeAdapter(b), new JcrPropertyAdapter(p_b_b), new JcrNodeAdapter(b_b));
+        UiContext uiContext = mock(UiContext.class);
+        SuccessAction action = new SuccessAction(new ConfiguredActionDefinition(), items, uiContext);
+
+        // WHEN
+        List<JcrItemAdapter> res = action.getSortedItems(action.getItemComparator());
+
+        // THEN
+        assertNotNull(res);
+        assertEquals(3, res.size());
+        assertEquals("p_b_b", res.get(0).getJcrItem().getName());
+        assertEquals("b_b", res.get(1).getJcrItem().getName());
+        assertEquals("b", res.get(2).getJcrItem().getName());
+
+    }
+
     @Test
     public void testErrorAction() throws Exception {
         // GIVEN
@@ -102,7 +130,11 @@ public class AbstractMultiItemActionTest extends MgnlTestCase {
         action.execute();
 
         // THEN
-        verify(uiContext).openNotification(MessageStyleTypeEnum.ERROR, false, "Failure.<ul><li><b>/node</b>: Problem.</li><li><b>/node@property</b>: Problem.</li></ul>");
+        verify(uiContext).openNotification(MessageStyleTypeEnum.ERROR, false, "Failure.<ul><li><b>/node@property</b>: Problem.</li><li><b>/node</b>: Problem.</li></ul>");
+    }
+
+    private void addItems(JcrItemAdapter... adapters) {
+        items.addAll(Arrays.asList(adapters));
     }
 
     private static class SuccessAction extends AbstractMultiItemAction<ConfiguredActionDefinition> {
