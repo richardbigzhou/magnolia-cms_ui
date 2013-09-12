@@ -295,4 +295,26 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertEquals("versioned", deactivate.getProperty("catalog").getString());
         assertEquals("versioned", activateDeletion.getProperty("catalog").getString());
     }
+
+    @Test
+    public void testUpdateTo51VersionActionsInstalled() throws RepositoryException, ModuleManagementException {
+
+        // GIVEN
+        session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node actions = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions", NodeTypes.ContentNode.NAME);
+        Node pageActionsGroups = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups", NodeTypes.ContentNode.NAME);
+
+        assertFalse(actions.hasNode("showVersions"));
+        assertFalse(pageActionsGroups.hasNode("versionActions"));
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.2"));
+
+        // THEN
+        assertTrue(actions.hasNode("showVersions"));
+        assertTrue(pageActionsGroups.hasNode("versionActions"));
+        assertTrue(pageActionsGroups.getNode("versionActions").hasNode("items"));
+        assertTrue(pageActionsGroups.getNode("versionActions").getNode("items").hasNode("showVersions"));
+    }
+
 }
