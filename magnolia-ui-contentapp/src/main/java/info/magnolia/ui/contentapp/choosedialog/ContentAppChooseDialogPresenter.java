@@ -35,7 +35,6 @@ package info.magnolia.ui.contentapp.choosedialog;
 
 import com.rits.cloning.Cloner;
 import info.magnolia.cms.i18n.I18nContentSupport;
-import info.magnolia.i18n.AbstractLocaleProvider;
 import info.magnolia.i18n.I18nizer;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.objectfactory.ComponentProvider;
