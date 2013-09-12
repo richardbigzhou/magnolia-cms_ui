@@ -82,8 +82,8 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
             FieldFactoryFactory fieldFactoryFactory,
             ComponentProvider componentProvider,
             I18nContentSupport i18nContentSupport,
-            DialogActionExecutor executor) {
-        super(componentProvider, executor);
+            DialogActionExecutor executor, ChooseDialogView view) {
+        super(componentProvider, executor, view);
         this.fieldFactoryFactory = fieldFactoryFactory;
         this.componentProvider = componentProvider;
         this.i18nContentSupport = i18nContentSupport;
@@ -139,11 +139,6 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
             log.error("Configured field type is compatible with choose dialogs (com.vaadin.data.Item is required). Choose dialog will not be created.");
             return null;
         }
-    }
-
-    @Override
-    protected DialogView initView() {
-        return componentProvider.getComponent(ChooseDialogView.class);
     }
 
     @Override

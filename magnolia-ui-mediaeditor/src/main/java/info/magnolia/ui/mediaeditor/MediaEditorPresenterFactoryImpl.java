@@ -51,6 +51,7 @@ import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.dialog.BaseDialogPresenter;
+import info.magnolia.ui.dialog.BaseDialogViewImpl;
 import info.magnolia.ui.dialog.DialogPresenter;
 import info.magnolia.ui.mediaeditor.action.MediaEditorActionExecutor;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
@@ -130,7 +131,7 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
         MediaEditorView view = mediaEditorComponentProvider.getComponent(MediaEditorView.class);
         ActionbarPresenter actionbarPresenter = new ActionbarPresenter();
         ActionExecutor mediaActionExecutor = mediaEditorComponentProvider.getComponent(ActionExecutor.class);
-        DialogPresenter dialogPresenter = new BaseDialogPresenter(mediaEditorComponentProvider, mediaActionExecutor);
+        DialogPresenter dialogPresenter = new BaseDialogPresenter(mediaEditorComponentProvider, mediaActionExecutor, new BaseDialogViewImpl());
         AppContext appContext = mediaEditorComponentProvider.getComponent(AppContext.class);
         MediaEditorPresenter mediaEditorPresenter = 
                 new MediaEditorPresenterImpl(
