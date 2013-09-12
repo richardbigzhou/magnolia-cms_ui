@@ -1,5 +1,3 @@
-package info.magnolia.information.app;
-
 /**
  * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
@@ -33,6 +31,7 @@ package info.magnolia.information.app;
  * intact.
  *
  */
+package info.magnolia.information.app;
 
 import info.magnolia.ui.api.app.SubApp;
 import info.magnolia.ui.api.view.View;

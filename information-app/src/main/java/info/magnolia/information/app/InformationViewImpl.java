@@ -1,5 +1,3 @@
-package info.magnolia.information.app;
-
 /**
  * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
@@ -33,6 +31,7 @@ package info.magnolia.information.app;
  * intact.
  *
  */
+package info.magnolia.information.app;
 
 import info.magnolia.cms.beans.config.ServerConfiguration;
 import info.magnolia.cms.license.LicenseFileExtractor;
@@ -54,7 +53,7 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 
 /**
- * Default Vaadin implementation of the {@link InformationView} interface.
+ * Default Vaadin implementation of the {@link InformationView} interface, for the community edition.
  */
 public class InformationViewImpl implements InformationView {
 
@@ -62,7 +61,7 @@ public class InformationViewImpl implements InformationView {
 
     private Listener listener;
 
-    private final SmallAppLayout root = new SmallAppLayout();
+    protected final SmallAppLayout root = new SmallAppLayout();
 
     private final ServerConfiguration serverConfiguration;
     private final MagnoliaConfigurationProperties magnoliaProperties;
@@ -75,12 +74,12 @@ public class InformationViewImpl implements InformationView {
         root.setDescription("The information app shows an overview of the installed Magnolia version and the environment it runs in.");
 
         root.addSection(createInstallationSection());
-        // root.addSection(createLicenseSection());
     }
 
     private Component createInstallationSection() {
 
         LicenseFileExtractor licenseProperties = LicenseFileExtractor.getInstance();
+        String magnoliaVersion = licenseProperties.get(LicenseFileExtractor.VERSION_NUMBER);
         String authorInstance = serverConfiguration.isAdmin() ? "Author instance" : "Public instance";
         String osInfo = String.format("%s %s (%s)",
                 magnoliaProperties.getProperty("os.name"),
@@ -110,10 +109,12 @@ public class InformationViewImpl implements InformationView {
 
         layout.addComponent(createFieldsetTitle("Magnolia"));
         layout.addComponent(createField(LicenseFileExtractor.EDITION, "Edition", licenseProperties.get(LicenseFileExtractor.EDITION)));
-        layout.addComponent(createField(LicenseFileExtractor.BUILD_NUMBER, "Version (bundle)", licenseProperties.get(LicenseFileExtractor.BUILD_NUMBER)));
+        layout.addComponent(createField("magnoliaVersion", "Version (bundle)", magnoliaVersion));
         layout.addComponent(createField("authorInstance", "Instance", authorInstance));
 
-        layout.addComponent(createFieldsetTitle("Environment"));
+        Component environmentTitle = createFieldsetTitle("Environment");
+        environmentTitle.addStyleName("spacer");
+        layout.addComponent(environmentTitle);
         layout.addComponent(createField("osInfo", "Operating system", osInfo));
         layout.addComponent(createField("javaInfo", "Java version", javaInfo));
         layout.addComponent(createField("serverInfo", "Application server", serverInfo));
@@ -122,21 +123,17 @@ public class InformationViewImpl implements InformationView {
         return layout;
     }
 
-    private Component createFieldsetTitle(String title) {
+    protected Component createFieldsetTitle(String title) {
         Label fieldsetTitle = new Label(title);
         fieldsetTitle.addStyleName("fieldset-title");
         return fieldsetTitle;
     }
 
-    private Component createField(String key, String caption, String value) {
+    protected Component createField(String key, String caption, String value) {
         Label field = new Label();
         field.setCaption(caption);
         field.setPropertyDataSource(new ObjectProperty<String>(value, String.class, true));
         return field;
-    }
-
-    private Component createLicenseSection() {
-        return null;
     }
 
     @Override
