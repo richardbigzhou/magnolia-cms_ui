@@ -99,7 +99,7 @@ public class FormDialogPresenterImplTest {
         ComponentsTestUtil.setImplementation(MessagesManager.class, DefaultMessagesManager.class);
 
         service = new TestTranslationService();
-        LocaleProvider provider = new ContextLocaleProvider(ctx);
+        LocaleProvider provider = new ContextLocaleProvider();
         ProxytoysI18nizer i18nizer = new ProxytoysI18nizer(service, provider);
 
         view = mock(FormDialogView.class);
