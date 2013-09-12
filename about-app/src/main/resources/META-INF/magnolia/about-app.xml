@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd">
+<module>
+  <name>about-app</name>
+  <displayName>About app</displayName>
+  <description>The about app shows an overview of the instance version, environment and license information.</description>
+  <version>${project.version}</version>
+
+  <!-- Components App definition. -->
+  <!-- id of the components should be app-'appname'. 'appname' is the name of the app configured
+	   in the apps configuration repository of the admincentral. (config/module/apps/appname/name:appname) -->
+  <components>
+    <id>app-about</id>
+  </components>
+
+  <components>
+    <id>app-about-main</id>
+    <component>
+      <type>info.magnolia.about.app.AboutMainSubApp</type>
+      <implementation>info.magnolia.about.app.AboutMainSubApp</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.about.app.AboutView</type>
+      <implementation>info.magnolia.about.app.DefaultAboutView</implementation>
+    </component>
+  </components>
+
+  <dependencies>
+    <dependency>
+      <name>ui-admincentral</name>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- Fake dependency to ensure the about app is last in the apps launcher's tools group. Should be replaced by another mechanism -->
+    <dependency>
+      <name>cache</name>
+      <version>5.0/*</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+</module>

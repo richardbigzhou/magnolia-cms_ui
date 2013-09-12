@@ -6,10 +6,10 @@
     <version>5.1-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
-  <groupId>info.magnolia.information</groupId>
-  <artifactId>magnolia-information-app</artifactId>
-  <name>magnolia-information-app</name>
-  <description>The information app shows an overview of the instance version, environment and license information.</description>
+  <groupId>info.magnolia.about</groupId>
+  <artifactId>magnolia-about-app</artifactId>
+  <name>magnolia-about-app</name>
+  <description>The about app shows an overview of the instance version, environment and license information.</description>
 
   <dependencies>
     <dependency>
