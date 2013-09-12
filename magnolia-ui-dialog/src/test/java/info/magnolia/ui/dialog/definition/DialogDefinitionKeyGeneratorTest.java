@@ -87,7 +87,7 @@ public class DialogDefinitionKeyGeneratorTest {
 
         // THEN
         assertEquals(1, keys.size());
-        assertEquals("test-module.testFolder.testDialog.description", keys.get(0));
+        assertEquals("test-module.testFolder.testDialog.desc", keys.get(0));
     }
 
 }

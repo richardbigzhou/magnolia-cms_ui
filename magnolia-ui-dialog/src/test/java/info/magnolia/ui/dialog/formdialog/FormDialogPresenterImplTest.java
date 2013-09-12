@@ -39,6 +39,7 @@ import static org.mockito.Mockito.*;
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.context.Context;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.i18n.ContextLocaleProvider;
 import info.magnolia.i18n.LocaleProvider;
 import info.magnolia.i18n.TranslationService;
@@ -77,19 +78,22 @@ public class FormDialogPresenterImplTest {
 
     @Before
     public void setUp() throws Exception {
-        // components for the old i18n API
-        ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
-        ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
-        ComponentsTestUtil.setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);
-        ComponentsTestUtil.setImplementation(MessagesManager.class, DefaultMessagesManager.class);
 
         // locale
         Context ctx = mock(Context.class);
         // current context locale
         when(ctx.getLocale()).thenReturn(new Locale("en"));
+        MgnlContext.setInstance(ctx);
+
+        ComponentsTestUtil.setInstance(Context.class, ctx);
+        ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
+        ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
+        ComponentsTestUtil.setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);
+        ComponentsTestUtil.setImplementation(MessagesManager.class, DefaultMessagesManager.class);
 
         service = new TestTranslationService();
-        ProxytoysI18nizer i18nizer = new ProxytoysI18nizer(service, new ContextLocaleProvider(ctx));
+        LocaleProvider provider = new ContextLocaleProvider(ctx);
+        ProxytoysI18nizer i18nizer = new ProxytoysI18nizer(service, provider);
 
         dialogDefinitionRegistry = mock(DialogDefinitionRegistry.class);
         formBuilder = mock(FormBuilder.class);
