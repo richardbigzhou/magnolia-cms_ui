@@ -48,13 +48,27 @@ import java.util.List;
 public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldDefinition> {
     @Override
     protected void keysFor(List<String> list, FieldDefinition field, AnnotatedElement el) {
-        final TabDefinition tab = getParentViaCast(field);
+        TabDefinition tab = null;
+        Object parent = getParentViaCast(field);
+        if (parent instanceof TabDefinition) {
+            tab = (TabDefinition) parent;
+            parent = null;
+        } else {
+            tab = getParentViaCast(parent);
+        }
         final String tabName = tab.getName();
         final FormDefinition formDef = getParentViaCast(tab);
         final String dialogID = getParentId(formDef);
 
         final String fieldName = field.getName();
         final String property = fieldOrGetterName(el);
+        // in case of a field in field
+        if (parent != null) {
+            FieldDefinition parentField = (FieldDefinition) parent;
+            // <dialogId>.<tabName>.<parentFieldName>.<fieldName>.<property>
+            // <dialogId>.<tabName>.<parentFieldName>.<fieldName> (in case of property==label)
+            addKey(list, dialogID, tabName, parentField.getName(), fieldName, property);
+        }
         // <dialogId>.<tabName>.<fieldName>.<property>
         // <dialogId>.<tabName>.<fieldName> (in case of property==label)
         addKey(list, dialogID, tabName, fieldName, property);

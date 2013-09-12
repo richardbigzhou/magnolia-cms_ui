@@ -52,7 +52,7 @@ import org.junit.Test;
 public class FieldDefinitionKeyGeneratorTest {
 
     @Test
-    public void keysForTabLabel() throws SecurityException, NoSuchMethodException {
+    public void keysForFieldLabel() throws SecurityException, NoSuchMethodException {
         // GIVEN
         // generator
         FieldDefinitionKeyGenerator generator = new FieldDefinitionKeyGenerator();
@@ -73,7 +73,7 @@ public class FieldDefinitionKeyGeneratorTest {
 
         // WHEN
         List<String> keys = new ArrayList<String>(4);
-        generator.keysFor(keys, dialog.getForm().getTabs().get(0).getFields().get(0), tab.getClass().getMethod("getLabel"));
+        generator.keysFor(keys, dialog.getForm().getTabs().get(0).getFields().get(0), field.getClass().getMethod("getLabel"));
 
         // THEN
         assertEquals(4, keys.size());
@@ -81,5 +81,45 @@ public class FieldDefinitionKeyGeneratorTest {
         assertEquals("test-module.testFolder.testDialog.testTab.testField", keys.get(1));
         assertEquals("test-module.testFolder.testDialog.testField.label", keys.get(2));
         assertEquals("test-module.testFolder.testDialog.testField", keys.get(3));
+    }
+
+    @Test
+    public void keysForNestedFieldLabel() throws SecurityException, NoSuchMethodException {
+        // GIVEN
+        // generator
+        FieldDefinitionKeyGenerator generator = new FieldDefinitionKeyGenerator();
+        // structure
+        TestDialogDef dialog = new TestDialogDef("test-module:testFolder/testDialog");
+        ConfiguredFormDefinition form = new ConfiguredFormDefinition();
+        ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
+        tab.setName("testTab");
+        MultiValueFieldDefinition parentField = new MultiValueFieldDefinition();
+        parentField.setName("parentField");
+        ConfiguredFieldDefinition field = new ConfiguredFieldDefinition();
+        field.setName("testField");
+        // hierarchy
+        dialog.setForm(form);
+        form.addTab(tab);
+        tab.addField(parentField);
+        parentField.setField(field);
+        // i18n
+        I18nizer i18nizer = new ProxytoysI18nizer(null, null);
+        dialog = i18nizer.decorate(dialog);
+
+        // WHEN
+        List<String> keys = new ArrayList<String>(4);
+        generator.keysFor(
+                keys,
+                ((MultiValueFieldDefinition) dialog.getForm().getTabs().get(0).getFields().get(0)).getField(),
+                field.getClass().getMethod("getLabel"));
+
+        // THEN
+        assertEquals(6, keys.size());
+        assertEquals("test-module.testFolder.testDialog.testTab.parentField.testField.label", keys.get(0));
+        assertEquals("test-module.testFolder.testDialog.testTab.parentField.testField", keys.get(1));
+        assertEquals("test-module.testFolder.testDialog.testTab.testField.label", keys.get(2));
+        assertEquals("test-module.testFolder.testDialog.testTab.testField", keys.get(3));
+        assertEquals("test-module.testFolder.testDialog.testField.label", keys.get(4));
+        assertEquals("test-module.testFolder.testDialog.testField", keys.get(5));
     }
 }
