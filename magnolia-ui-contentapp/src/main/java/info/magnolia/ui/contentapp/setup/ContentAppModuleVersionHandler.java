@@ -50,7 +50,7 @@ public class ContentAppModuleVersionHandler extends DefaultModuleVersionHandler 
                 .addTask(new RemoveNodeTask("Remove MultiLinkField definition mapping", "", RepositoryConstants.CONFIG, "/modules/ui-framework/fieldTypes/multiLinkField"))
                 .addTask((new ReplaceMultiLinkFieldDefinitionTask("Change the MultiLinkFieldDefinition by MultiFieldDefinition ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where contains(t.*,'info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition') ")))
                 .addTask((new ReplaceSaveModeTypeFieldDefinitionTask("Update field definition sub task from 'saveModeType' to 'transformerClass' ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where name(t) = 'saveModeType' ")))
-                .addTask((new ContentAppDescriptorMigrationTask("Update field definition sub task from 'saveModeType' to 'transformerClass' ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where name(t) = 'subApps' ")))
+                .addTask((new ContentAppDescriptorMigrationTask("Update descriptor class properties to ConfiguredContentAppDescriptor for Content Apps ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where name(t) = 'subApps' ")))
         );
     }
 }
