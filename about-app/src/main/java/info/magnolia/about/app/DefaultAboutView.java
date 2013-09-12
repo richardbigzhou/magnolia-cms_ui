@@ -37,7 +37,7 @@ import info.magnolia.cms.beans.config.ServerConfiguration;
 import info.magnolia.cms.license.LicenseFileExtractor;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.init.MagnoliaConfigurationProperties;
-import info.magnolia.ui.SmallAppLayout;
+import info.magnolia.ui.vaadin.layout.SmallAppLayout;
 
 import javax.inject.Inject;
 import javax.jcr.Repository;

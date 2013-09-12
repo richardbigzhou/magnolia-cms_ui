@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui;
+package info.magnolia.ui.vaadin.layout;
 
 import java.util.ArrayList;
 import java.util.Iterator;
