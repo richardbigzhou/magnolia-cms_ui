@@ -126,7 +126,7 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
     }
 
     @Override
-    public void initDomEventListeners() {
+    public void initDomEventListenersOnEditor() {
         if (BrowserInfo.get().isTouchDevice()) {
             handler.initNativeTouchSelectionListener(iframe.getBody(), listener);
         } else {
@@ -134,6 +134,11 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
         }
         handler.initNativeKeyListener(iframe.getElement());
         handler.initScrollListener(content.getElement());
+    }
+
+    @Override
+    public void initDomEventListenersOnPreview() {
+        handler.initNativeKeyListener(iframe.getElement());
     }
 
 }

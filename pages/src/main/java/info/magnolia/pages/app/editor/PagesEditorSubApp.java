@@ -358,6 +358,10 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
 
     @Override
     public void onActionbarItemClicked(String actionName) {
+        prepareAndExecutePagesEditorAction(actionName);
+    }
+
+    protected void prepareAndExecutePagesEditorAction(String actionName) {
         AbstractElement selectedElement = pageEditorPresenter.getSelectedElement();
         try {
             Session session = MgnlContext.getJCRSession(workspace);
@@ -373,7 +377,6 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             log.error("An error occurred while executing action [{}]", actionName, e);
             appContext.sendLocalMessage(error);
         }
-
     }
 
     @Override
@@ -512,6 +515,13 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     public void onEscape() {
         if (pageEditorPresenter.isMoving()) {
             pageEditorPresenter.onAction(PageEditorListener.ACTION_CANCEL_MOVE_COMPONENT);
+        } else {
+            // Toggle preview and edit mode.
+            if (getCurrentLocation().getViewType().equals(DetailView.ViewType.EDIT)) {
+                prepareAndExecutePagesEditorAction(PageEditorListener.ACTION_VIEW_PREVIEW);
+            } else {
+                prepareAndExecutePagesEditorAction(PageEditorListener.ACTION_VIEW_EDIT);
+            }
         }
     }
 }
