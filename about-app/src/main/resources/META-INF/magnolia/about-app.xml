@@ -2,7 +2,7 @@
 <!DOCTYPE module SYSTEM "module.dtd">
 <module>
   <name>about-app</name>
-  <displayName>magnolia-about-app</displayName>
+  <displayName>About app</displayName>
   <description>The about app shows an overview of the instance version, environment and license information.</description>
   <version>${project.version}</version>
 
@@ -29,6 +29,13 @@
     <dependency>
       <name>ui-admincentral</name>
       <version>${project.version}</version>
+    </dependency>
+
+    <!-- Fake dependency to ensure the about app is last in the apps launcher's tools group. Should be replaced by another mechanism -->
+    <dependency>
+      <name>cache</name>
+      <version>5.0/*</version>
+      <optional>true</optional>
     </dependency>
   </dependencies>
 </module>
