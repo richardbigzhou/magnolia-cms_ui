@@ -93,18 +93,20 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     @Inject
     public DetailPresenter(SubAppContext subAppContext, final @Named(AdmincentralEventBus.NAME) EventBus eventBus, DetailView view,
-            FormBuilder formBuilder, ComponentProvider componentProvider, SubAppActionExecutor executor) {
+            FormBuilder formBuilder, ComponentProvider componentProvider, SubAppActionExecutor executor, FormView formView) {
         this.subAppContext = subAppContext;
         this.eventBus = eventBus;
         this.view = view;
         this.formBuilder = formBuilder;
         this.componentProvider = componentProvider;
         this.executor = executor;
+        this.formView = formView;
     }
 
     public DetailView start(EditorDefinition editorDefinition, final JcrNodeAdapter item, DetailView.ViewType viewType) {
         this.editorDefinition = editorDefinition;
         this.item = item;
+        initActions();
         setItemView(viewType);
         return view;
     }
@@ -115,8 +117,7 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
         case VIEW:
         case EDIT:
         default:
-            this.formView = formBuilder.buildForm(editorDefinition.getForm(), item, null);
-            initActions();
+            formBuilder.buildForm(formView, editorDefinition.getForm(), item, null);
             view.setItemView(formView.asVaadinComponent(), viewType);
             break;
         }

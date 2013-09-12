@@ -259,16 +259,16 @@
       <implementation>info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory</implementation>
     </component>
 
+    <!-- Form -->
+    <component>
+      <type>info.magnolia.ui.dialog.formdialog.FormView</type>
+      <implementation>info.magnolia.ui.dialog.formdialog.ItemFormView</implementation>
+    </component>
+
     <!-- Ui framework-->
     <type-mapping>
       <type>info.magnolia.ui.api.app.AppInstanceController</type>
       <implementation>info.magnolia.ui.framework.app.AppInstanceControllerImpl</implementation>
-    </type-mapping>
-
-    <!-- Form -->
-    <type-mapping>
-      <type>info.magnolia.ui.dialog.formdialog.FormView</type>
-      <implementation>info.magnolia.ui.dialog.formdialog.ItemFormView</implementation>
     </type-mapping>
   </components>
 

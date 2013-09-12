@@ -72,11 +72,12 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     private Item item;
 
     @Inject
-    public FormDialogPresenterImpl(final DialogDefinitionRegistry dialogDefinitionRegistry, FormBuilder formBuilder, ComponentProvider componentProvider, DialogActionExecutor executor) {
-        super(componentProvider, executor);
+    public FormDialogPresenterImpl(final DialogDefinitionRegistry dialogDefinitionRegistry, FormBuilder formBuilder, ComponentProvider componentProvider, DialogActionExecutor executor, FormView view) {
+        super(componentProvider, executor, view);
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.formBuilder = formBuilder;
         this.componentProvider = componentProvider;
+        this.formView = view;
     }
 
 
@@ -101,11 +102,11 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
      */
     @Override
     public DialogView start(final Item item, FormDialogDefinition dialogDefinition, final UiContext uiContext, EditorCallback callback) {
+        start(dialogDefinition, uiContext);
         this.callback = callback;
         this.item = item;
         getExecutor().setDialogDefinition(dialogDefinition);
         buildView(dialogDefinition);
-        start(dialogDefinition, uiContext);
         final OverlayCloser overlayCloser = uiContext.openOverlay(getView());
         getView().addDialogCloseHandler(new DialogCloseHandler() {
             @Override
@@ -117,14 +118,9 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         return formView;
     }
 
-    @Override
-    protected DialogView initView() {
-        return formView;
-    }
-
     private void buildView(FormDialogDefinition dialogDefinition) {
         Dialog dialog = new Dialog(dialogDefinition);
-        formView = formBuilder.buildForm(dialogDefinition.getForm(), item, dialog);
+        formBuilder.buildForm(getView(), dialogDefinition.getForm(), item, dialog);
         final String description = dialogDefinition.getDescription();
         final String label = dialogDefinition.getLabel();
         final String basename = dialogDefinition.getI18nBasename();

@@ -72,9 +72,10 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
     private BaseDialogDefinition definition;
 
     @Inject
-    public BaseDialogPresenter(ComponentProvider componentProvider, ActionExecutor executor) {
+    public BaseDialogPresenter(ComponentProvider componentProvider, ActionExecutor executor, DialogView view) {
         this.componentProvider = componentProvider;
         this.executor = executor;
+        this.view = view;
     }
 
     @Override
@@ -104,7 +105,6 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
 
     public DialogView start(BaseDialogDefinition definition, UiContext uiContext) {
         this.uiContext = uiContext;
-        this.view = initView();
         this.definition = definition;
         this.editorActionAreaPresenter = componentProvider.getComponent(definition.getActionArea().getPresenterClass());
         EditorActionAreaView editorActionAreaView = editorActionAreaPresenter.start(filterActions(), definition.getActionArea(), this, uiContext);
@@ -123,10 +123,6 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
 
     protected Iterable<ActionDefinition> filterActions() {
         return getDefinition().getActions().values();
-    }
-
-    protected DialogView initView() {
-        return componentProvider.getComponent(DialogView.class);
     }
 
     protected Object[] getActionParameters(String actionName) {

@@ -108,16 +108,11 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     @Inject
     public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, DialogActionExecutor executor, AppContext appContext) {
-        super(componentProvider, executor);
+        super(componentProvider, executor, dialogView);
         this.dialogView = dialogView;
         this.workbenchPresenter = workbenchPresenter;
         this.appContext = appContext;
-    }
-
-    @Override
-    protected DialogView initView() {
         dialogView.asVaadinComponent().setStyleName("choose-dialog");
-        return dialogView;
     }
 
     @Override
@@ -176,8 +171,11 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     }
 
     private ConfiguredWorkbenchDefinition prepareWorkbenchDefinition(BrowserSubAppDescriptor subAppDescriptor) {
+        Cloner cloner = new Cloner();
+        cloner.setDumpClonedClasses(true);
         final ConfiguredWorkbenchDefinition workbenchDefinition =
-                (ConfiguredWorkbenchDefinition) new Cloner().deepClone(subAppDescriptor.getWorkbench());
+                (ConfiguredWorkbenchDefinition) cloner.deepClone(subAppDescriptor.getWorkbench());
+
 
         workbenchDefinition.setIncludeProperties(false);
         workbenchDefinition.setDialogWorkbench(true);
@@ -202,7 +200,9 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     }
 
     private ContentPresenterDefinition prepareTreePresenter(ContentPresenterDefinition treePresenter) {
-        ContentPresenterDefinition def = new Cloner().deepClone(treePresenter);
+        Cloner cloner = new Cloner();
+        ContentPresenterDefinition def = cloner.deepClone(treePresenter);
+        cloner.setDumpClonedClasses(true);
         if (!def.getColumns().isEmpty()) {
             ColumnDefinition column = def.getColumns().get(0);
             def.getColumns().clear();
