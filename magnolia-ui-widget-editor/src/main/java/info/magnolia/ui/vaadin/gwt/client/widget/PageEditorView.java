@@ -42,9 +42,10 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public interface PageEditorView extends IsWidget {
 
-    void initDomEventListenersOnEditor();
+    void initDomEventListeners();
 
-    void initDomEventListenersOnPreview();
+    void initKeyEventListeners();
+
 
     Widget getContent();
 

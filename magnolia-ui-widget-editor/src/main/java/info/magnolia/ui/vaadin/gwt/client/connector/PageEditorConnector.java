@@ -163,12 +163,14 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
                 model.reset();
                 Document document = event.getFrame().getContentDocument();
                 process(document);
+
+                view.initKeyEventListeners();
+
                 if (!getState().parameters.isPreview()) {
-                    view.initDomEventListenersOnEditor();
+                    view.initDomEventListeners();
                     focusModel.init();
                 }
                 else {
-                    view.initDomEventListenersOnPreview();
                     focusModel.select(model.getRootPage());
                 }
             }
