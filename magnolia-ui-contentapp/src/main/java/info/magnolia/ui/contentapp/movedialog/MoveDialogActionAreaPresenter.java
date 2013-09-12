@@ -42,7 +42,7 @@ import java.util.Set;
  * {@link info.magnolia.ui.dialog.actionarea.ActionAreaPresenter} extension for the case of node move dialogs. Capable of narrowing the set of
  * possible move variants.
  */
-public interface MoveDialogActionPresenter extends ActionAreaPresenter {
+public interface MoveDialogActionAreaPresenter extends ActionAreaPresenter {
 
     void setPossibleMoveLocations(Set<MoveLocation> possibleMoveLocations);
 }

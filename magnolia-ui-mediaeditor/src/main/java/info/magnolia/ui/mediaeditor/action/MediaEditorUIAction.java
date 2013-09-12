@@ -78,11 +78,11 @@ public abstract class MediaEditorUIAction extends MediaEditorAction {
             boolean defaultIsSet = false;
             while (it.hasNext()) {
                 ActionContext action = it.next();
-                ActionRenderer actionPresenter = new DefaultEditorActionRenderer();
-                View actionView = actionPresenter.start(action.getDefinition(), action.getListener());
-                view.getDialog().getActionView().addPrimaryAction(actionView, action.getDefinition().getName());
+                ActionRenderer actionRenderer = new DefaultEditorActionRenderer();
+                View actionView = actionRenderer.start(action.getDefinition(), action.getListener());
+                view.getDialog().getActionAreaView().addPrimaryAction(actionView, action.getDefinition().getName());
                 if (!defaultIsSet) {
-                     actionView.asVaadinComponent().addStyleName("default");
+                    actionView.asVaadinComponent().addStyleName("default");
                     defaultIsSet = true;
                 }
             }

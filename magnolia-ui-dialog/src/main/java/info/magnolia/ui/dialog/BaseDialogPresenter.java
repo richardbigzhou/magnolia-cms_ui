@@ -84,7 +84,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
     }
 
     @Override
-    public ActionAreaPresenter getActionPresenter() {
+    public ActionAreaPresenter getActionArea() {
         return editorActionAreaPresenter;
     }
 
@@ -117,7 +117,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
             addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.ESCAPE);
             addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.C, ModifierKey.CTRL);
         }
-        this.view.setActionView(editorActionAreaView);
+        this.view.setActionAreaView(editorActionAreaView);
         return this.view;
     }
 

@@ -56,7 +56,7 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
 
     private View contentView;
 
-    private EditorActionAreaView actionView;
+    private EditorActionAreaView actionAreaView;
 
     public BaseDialogViewImpl() {
         this(new BaseDialog());
@@ -143,9 +143,9 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
     }
 
     @Override
-    public void setActionView(EditorActionAreaView actionView) {
-        this.actionView = actionView;
-        dialog.setFooterToolbar(actionView.asVaadinComponent());
+    public void setActionAreaView(EditorActionAreaView actionAreaView) {
+        this.actionAreaView = actionAreaView;
+        dialog.setFooterToolbar(actionAreaView.asVaadinComponent());
     }
 
     @Override
@@ -165,8 +165,8 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
     }
 
     @Override
-    public EditorActionAreaView getActionView() {
-        return actionView;
+    public EditorActionAreaView getActionAreaView() {
+        return actionAreaView;
     }
 
     protected BaseDialog getDialog() {

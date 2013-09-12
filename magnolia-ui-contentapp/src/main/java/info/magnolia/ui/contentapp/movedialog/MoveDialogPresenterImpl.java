@@ -229,7 +229,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
                 }
             }
         }
-        getActionPresenter().setPossibleMoveLocations(possibleLocations);
+        getActionArea().setPossibleMoveLocations(possibleLocations);
     }
 
     private void initActions() {
@@ -255,21 +255,21 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
             def.addAction(actionMap.get(location));
         }
 
-        ConfiguredEditorActionAreaDefinition actionPresenterDefinition = new ConfiguredEditorActionAreaDefinition();
-        actionPresenterDefinition.setPresenterClass(MoveDialogActionPresenter.class);
+        ConfiguredEditorActionAreaDefinition actionAreaDefinition = new ConfiguredEditorActionAreaDefinition();
+        actionAreaDefinition.setPresenterClass(MoveDialogActionAreaPresenter.class);
 
         List<SecondaryActionDefinition> secondaryActions = new LinkedList<SecondaryActionDefinition>();
         secondaryActions.add(new SecondaryActionDefinition(MoveLocation.BEFORE.name()));
         secondaryActions.add(new SecondaryActionDefinition(MoveLocation.INSIDE.name()));
-        actionPresenterDefinition.setSecondaryActions(secondaryActions);
+        actionAreaDefinition.setSecondaryActions(secondaryActions);
 
-        def.setActionArea(actionPresenterDefinition);
+        def.setActionArea(actionAreaDefinition);
         return def;
     }
 
     @Override
-    public MoveDialogActionPresenter getActionPresenter() {
-        return (MoveDialogActionPresenter) super.getActionPresenter();
+    public MoveDialogActionAreaPresenter getActionArea() {
+        return (MoveDialogActionAreaPresenter) super.getActionArea();
     }
 
     @Override
