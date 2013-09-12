@@ -266,7 +266,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         deleteButton.setHtmlContentAllowed(true);
         deleteButton.setCaption("<span class=\"" + "icon-trash" + "\"></span>");
         deleteButton.addStyleName("inline");
-        deleteButton.setDescription(MessagesUtil.get(deleteCaption));
+        deleteButton.setDescription(MessagesUtil.get(deleteCaption,"info.magnolia.ui.admincentral.messages"));
 
         deleteButton.addClickListener(new Button.ClickListener() {
             private static final long serialVersionUID = 1L;
@@ -315,11 +315,11 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         if (this.editFileName && !isReadOnly()) {
             TextField textField = new TextField(getFileWrapper().getFileNameProperty());
             textField.setNullRepresentation("");
-            textField.setCaption(MessagesUtil.get(fileDetailNameCaption));
+            textField.setCaption(MessagesUtil.get(fileDetailNameCaption,"info.magnolia.ui.admincentral.messages"));
             return textField;
         } else {
             Label label = new Label("", ContentMode.HTML);
-            label.setCaption(MessagesUtil.get(fileDetailNameCaption));
+            label.setCaption(MessagesUtil.get(fileDetailNameCaption,"info.magnolia.ui.admincentral.messages"));
             label.setValue(getFileWrapper().getFileName());
             return label;
         }
@@ -330,7 +330,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
      */
     protected Component getFileDetailSize() {
         Label label = new Label("", ContentMode.HTML);
-        label.setCaption(MessagesUtil.get(fileDetailSizeCaption));
+        label.setCaption(MessagesUtil.get(fileDetailSizeCaption,"info.magnolia.ui.admincentral.messages"));
         label.setValue(FileUtils.byteCountToDisplaySize(getFileWrapper().getFileSize()));
         return label;
     }
@@ -344,12 +344,12 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         if (this.editFileFormat && !isReadOnly()) {
             TextField textField = new TextField(getFileWrapper().getFileFormatProperty());
             textField.setNullRepresentation("");
-            textField.setCaption(MessagesUtil.get(fileDetailFormatCaption));
+            textField.setCaption(MessagesUtil.get(fileDetailFormatCaption,"info.magnolia.ui.admincentral.messages"));
             return textField;
         } else {
             Label label = new Label("File Format", ContentMode.HTML);
             label.setValue(getFileWrapper().getExtension());
-            label.setCaption(MessagesUtil.get(fileDetailFormatCaption));
+            label.setCaption(MessagesUtil.get(fileDetailFormatCaption,"info.magnolia.ui.admincentral.messages"));
             return label;
         }
     }
@@ -426,9 +426,9 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         }
         caption = StringUtils.isNotBlank(captionExtension) ? caption + "." + captionExtension : caption;
         if (args != null && args.length > 0) {
-            return MessagesUtil.get(caption, args);
+            return MessagesUtil.get(caption, "info.magnolia.ui.admincentral.messages", args);
         } else {
-            return MessagesUtil.get(caption);
+            return MessagesUtil.get(caption, "info.magnolia.ui.admincentral.messages");
         }
     }
 
@@ -515,7 +515,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         } else {
             caption = typeInterruption;
         }
-        uiContext.openNotification(MessageStyleTypeEnum.WARNING, true, getCaption(warningNoteCaption, new String[] { MessagesUtil.get(caption) }));
+        uiContext.openNotification(MessageStyleTypeEnum.WARNING, true, getCaption(warningNoteCaption, new String[] { MessagesUtil.get(caption,"info.magnolia.ui.admincentral.messages") }));
     }
 
     @Override
