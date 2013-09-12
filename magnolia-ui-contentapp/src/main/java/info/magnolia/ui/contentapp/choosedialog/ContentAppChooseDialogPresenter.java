@@ -35,6 +35,7 @@ package info.magnolia.ui.contentapp.choosedialog;
 
 import com.rits.cloning.Cloner;
 import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.i18n.AbstractLocaleProvider;
 import info.magnolia.i18n.I18nizer;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -67,10 +68,13 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
 
     private AppContext appContext;
 
+    private Cloner cloner;
+
     @Inject
     public ContentAppChooseDialogPresenter(FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18nContentSupport i18nContentSupport, AppContext appContext, ModuleRegistry registry, I18nizer i18nizer) {
         super(fieldFactoryFactory, componentProvider, i18nContentSupport, registry, i18nizer);
         this.appContext = appContext;
+        this.cloner = new Cloner();
     }
 
     @Override
@@ -78,6 +82,26 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
         ChooseDialogDefinition dialogDefinition = ensureChooseDialogField(definition);
         ChooseDialogView chooseDialogView = super.start(callback, dialogDefinition, uiContext, selectedItemId);
         return chooseDialogView;
+    }
+
+    private ChooseDialogDefinition ensureChooseActions(ChooseDialogDefinition definition) {
+        ChooseDialogDefinition result = definition;
+        if (definition.getActions().isEmpty()) {
+            result = cloner.deepClone(definition);
+
+            ChooseDialogActionDefinition commitAction = new ChooseDialogActionDefinition();
+            commitAction.setCallSuccess(true);
+            commitAction.setName("commit");
+            commitAction.setLabel("Choose");
+            result.getActions().put(BaseDialog.COMMIT_ACTION_NAME, commitAction);
+
+            ChooseDialogActionDefinition cancelAction = new ChooseDialogActionDefinition();
+            cancelAction.setCallSuccess(false);
+            cancelAction.setName("cancel");
+            cancelAction.setLabel("Cancel");
+            result.getActions().put(BaseDialog.CANCEL_ACTION_NAME, cancelAction);
+        }
+        return result;
     }
 
     private ChooseDialogDefinition ensureChooseDialogField(ChooseDialogDefinition definition) {
@@ -92,19 +116,19 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
             return definition;
         }
 
-        result = new Cloner().deepClone(result);
+        result = cloner.deepClone(result);
         String chooserLabel = appContext.getLabel() + " chooser";
         result.setLabel(chooserLabel);
 
         BrowserSubAppDescriptor subApp = (BrowserSubAppDescriptor) subAppContext;
 
-        ConfiguredWorkbenchDefinition workbench = (ConfiguredWorkbenchDefinition)(new Cloner().deepClone(subApp.getWorkbench()));
+        ConfiguredWorkbenchDefinition workbench = (ConfiguredWorkbenchDefinition) (cloner.deepClone(subApp.getWorkbench()));
         // mark definition as a dialog workbench so that workbench presenter can disable drag n drop
         workbench.setDialogWorkbench(true);
         workbench.setIncludeProperties(false);
         // Create the Choose Dialog Title
 
-        ImageProviderDefinition imageProvider = new Cloner().deepClone(subApp.getImageProvider());
+        ImageProviderDefinition imageProvider = cloner.deepClone(subApp.getImageProvider());
 
         WorkbenchFieldDefinition wbFieldDefinition = new WorkbenchFieldDefinition();
         wbFieldDefinition.setWorkbench(workbench);
