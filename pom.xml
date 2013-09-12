@@ -68,8 +68,8 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>info.magnolia.information</groupId>
-        <artifactId>magnolia-information-app</artifactId>
+        <groupId>info.magnolia.about</groupId>
+        <artifactId>magnolia-about-app</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -375,7 +375,7 @@
     <module>magnolia-ui-vaadin-widgetset</module>
     <module>magnolia-ui-admincentral</module>
     <module>magnolia-ui-actionbar</module>
-    <module>information-app</module>
+    <module>about-app</module>
     <module>sample-app</module>
     <module>messages-app</module>
     <module>pages</module>

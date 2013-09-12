@@ -31,22 +31,22 @@
  * intact.
  *
  */
-package info.magnolia.information.app;
+package info.magnolia.about.app;
 
-import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.framework.app.BaseSubApp;
-
-import javax.inject.Inject;
+import info.magnolia.ui.api.app.SubApp;
+import info.magnolia.ui.api.view.View;
 
 /**
- * The information main subapp shows an overview of the instance version, environment and license information.
+ * The about view interface.
  */
-public class InformationMainSubApp extends BaseSubApp implements InformationView.Listener {
+public interface AboutView extends View {
 
-    @Inject
-    public InformationMainSubApp(SubAppContext subAppContext, InformationView view) {
-        super(subAppContext, view);
-        view.setListener(this);
+    /**
+     * The about view listener interface.
+     */
+    public interface Listener extends SubApp {
+
     }
 
+    void setListener(Listener listener);
 }

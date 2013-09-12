@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module SYSTEM "module.dtd">
 <module>
-  <name>information-app</name>
-  <displayName>magnolia-information-app</displayName>
-  <description>The information app shows an overview of the instance version, environment and license information.</description>
+  <name>about-app</name>
+  <displayName>magnolia-about-app</displayName>
+  <description>The about app shows an overview of the instance version, environment and license information.</description>
   <version>${project.version}</version>
 
   <!-- Components App definition. -->
   <!-- id of the components should be app-'appname'. 'appname' is the name of the app configured
 	   in the apps configuration repository of the admincentral. (config/module/apps/appname/name:appname) -->
   <components>
-    <id>app-information</id>
+    <id>app-about</id>
   </components>
 
   <components>
-    <id>app-information-main</id>
+    <id>app-about-main</id>
     <component>
-      <type>info.magnolia.information.app.InformationMainSubApp</type>
-      <implementation>info.magnolia.information.app.InformationMainSubApp</implementation>
+      <type>info.magnolia.about.app.AboutMainSubApp</type>
+      <implementation>info.magnolia.about.app.AboutMainSubApp</implementation>
     </component>
     <component>
-      <type>info.magnolia.information.app.InformationView</type>
-      <implementation>info.magnolia.information.app.InformationViewImpl</implementation>
+      <type>info.magnolia.about.app.AboutView</type>
+      <implementation>info.magnolia.about.app.DefaultAboutView</implementation>
     </component>
   </components>
 

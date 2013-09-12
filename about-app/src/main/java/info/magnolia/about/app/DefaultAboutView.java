@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.information.app;
+package info.magnolia.about.app;
 
 import info.magnolia.cms.beans.config.ServerConfiguration;
 import info.magnolia.cms.license.LicenseFileExtractor;
@@ -53,11 +53,11 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 
 /**
- * Default Vaadin implementation of the {@link InformationView} interface, for the community edition.
+ * Default Vaadin implementation of the {@link AboutView} interface, for the community edition.
  */
-public class InformationViewImpl implements InformationView {
+public class DefaultAboutView implements AboutView {
 
-    private static final Logger log = LoggerFactory.getLogger(InformationViewImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(DefaultAboutView.class);
 
     private Listener listener;
 
@@ -67,11 +67,11 @@ public class InformationViewImpl implements InformationView {
     private final MagnoliaConfigurationProperties magnoliaProperties;
 
     @Inject
-    public InformationViewImpl(ServerConfiguration serverConfiguration, MagnoliaConfigurationProperties magnoliaProperties) {
+    public DefaultAboutView(ServerConfiguration serverConfiguration, MagnoliaConfigurationProperties magnoliaProperties) {
         this.serverConfiguration = serverConfiguration;
         this.magnoliaProperties = magnoliaProperties;
 
-        root.setDescription("The information app shows an overview of the installed Magnolia version and the environment it runs in.");
+        root.setDescription("The about app shows an overview of the installed Magnolia version and the environment it runs in.");
 
         root.addSection(createInstallationSection());
     }
