@@ -51,8 +51,6 @@ public interface FormView extends DialogView, View, Item.Editor {
 
     Collection<Field<?>> getFields();
 
-    void addAction(View actionView);
-
     void addField(Field<?> field);
 
     void setCaption(String caption);

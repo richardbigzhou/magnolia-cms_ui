@@ -392,8 +392,8 @@
     </component>
 
       <component>
-          <type>info.magnolia.ui.contentapp.movedialog.MoveDialogActionPresenter</type>
-          <implementation>info.magnolia.ui.contentapp.movedialog.MoveDialogActionAreaPresenterImpl</implementation>
+          <type>info.magnolia.ui.contentapp.movedialog.MoveDialogActionAreaPresenter</type>
+          <implementation>info.magnolia.ui.contentapp.movedialog.MoveDialogActionAreaAreaPresenterImpl</implementation>
       </component>
 
       <component>

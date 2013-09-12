@@ -47,12 +47,12 @@ import javax.inject.Inject;
 import java.util.Set;
 
 /**
- * Implementation of {@link MoveDialogActionPresenter}.
+ * Implementation of {@link MoveDialogActionAreaPresenter}.
  */
-public class MoveDialogActionAreaPresenterImpl extends EditorActionAreaPresenterImpl implements MoveDialogActionPresenter {
+public class MoveDialogActionAreaAreaPresenterImpl extends EditorActionAreaPresenterImpl implements MoveDialogActionAreaPresenter {
 
     @Inject
-    public MoveDialogActionAreaPresenterImpl(MoveDialogActionAreaView view, ComponentProvider componentProvider) {
+    public MoveDialogActionAreaAreaPresenterImpl(MoveDialogActionAreaView view, ComponentProvider componentProvider) {
         super(view, componentProvider);
     }
 

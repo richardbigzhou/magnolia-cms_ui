@@ -39,7 +39,6 @@ import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Field;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.BaseDialogViewImpl;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DescriptionVisibilityEvent;
@@ -120,11 +119,6 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
     }
 
     @Override
-    public void addAction(View actionView) {
-        //getActionView().addPrimaryAction(actionView);
-    }
-
-    @Override
     public void setCurrentLocale(Locale locale) {
         this.languageSelector.setValue(locale);
     }
@@ -141,6 +135,6 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
                 }
             }
         });
-        getActionView().setToolbarComponent(languageSelector);
+        getActionAreaView().setToolbarComponent(languageSelector);
     }
 }
