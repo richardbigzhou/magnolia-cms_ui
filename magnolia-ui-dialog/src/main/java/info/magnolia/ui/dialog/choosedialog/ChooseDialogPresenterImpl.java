@@ -148,7 +148,7 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
 
     @Override
     public Object[] getActionParameters(String actionName) {
-        return new Object[] {actionName, ChooseDialogPresenterImpl.this, field, getView(), callback, item};
+        return new Object[] {actionName, ChooseDialogPresenterImpl.this, field, getView(), callback, item != null ? item : new NullItem()};
     }
 
     @Override

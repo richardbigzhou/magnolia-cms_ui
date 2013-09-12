@@ -51,6 +51,8 @@ import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
 import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
 import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
@@ -58,6 +60,8 @@ import javax.inject.Inject;
  * Base implementation of {@link DialogPresenter}.
  */
 public class BaseDialogPresenter implements DialogPresenter, ActionListener {
+
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     private DialogView view;
 
@@ -142,6 +146,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
         try {
             executor.execute(actionName, combinedParameters);
         } catch (ActionExecutionException e) {
+            log.error("An error occurred while executing an action: ", e);
             Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
             if (uiContext instanceof AppContext) {
                 ((AppContext)uiContext).broadcastMessage(error);
