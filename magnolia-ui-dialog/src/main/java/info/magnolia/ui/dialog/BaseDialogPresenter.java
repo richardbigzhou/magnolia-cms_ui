@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.dialog;
 
-import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.event.ShortcutAction.ModifierKey;
-import com.vaadin.event.ShortcutListener;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -51,10 +48,17 @@ import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
 import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
 import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
+
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.ShortcutAction.ModifierKey;
+import com.vaadin.event.ShortcutListener;
+import com.vaadin.server.WebBrowser;
+import com.vaadin.ui.UI;
 
 /**
  * Base implementation of {@link DialogPresenter}.
@@ -113,13 +117,21 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
         this.editorActionAreaPresenter = componentProvider.getComponent(definition.getActionArea().getPresenterClass());
         EditorActionAreaView editorActionAreaView = editorActionAreaPresenter.start(filterActions(), definition.getActionArea(), this, uiContext);
 
-        if (definition.getActions().containsKey(BaseDialog.COMMIT_ACTION_NAME)) {
-             addShortcut(BaseDialog.COMMIT_ACTION_NAME, KeyCode.S, ModifierKey.CTRL);
+        // Set modifier key based on OS.
+        int osSpecificModifierKey;
+        WebBrowser browser = UI.getCurrent().getSession().getBrowser();
+        if (browser.isWindows()) {
+            osSpecificModifierKey = ModifierKey.CTRL;
+        } else {
+            osSpecificModifierKey = ModifierKey.META;
         }
 
+        if (definition.getActions().containsKey(BaseDialog.COMMIT_ACTION_NAME)) {
+            addShortcut(BaseDialog.COMMIT_ACTION_NAME, KeyCode.S, osSpecificModifierKey);
+        }
         if (definition.getActions().containsKey(BaseDialog.CANCEL_ACTION_NAME)) {
             addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.ESCAPE);
-            addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.C, ModifierKey.CTRL);
+            addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.W, osSpecificModifierKey);
         }
         this.view.setActionAreaView(editorActionAreaView);
         return this.view;
