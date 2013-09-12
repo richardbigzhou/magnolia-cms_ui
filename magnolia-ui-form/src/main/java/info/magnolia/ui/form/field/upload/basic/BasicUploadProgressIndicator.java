@@ -129,7 +129,7 @@ public class BasicUploadProgressIndicator extends CustomComponent implements Upl
 
         String bytesRead = FileUtils.byteCountToDisplaySize(readBytes);
         String totalBytes = FileUtils.byteCountToDisplaySize(contentLength);
-        uploadFileRatio.setValue(MessagesUtil.get(this.inProgressRatioCaption, new String[] { bytesRead, totalBytes }));
+        uploadFileRatio.setValue(MessagesUtil.get(this.inProgressRatioCaption, "info.magnolia.ui.admincentral.messages", new String[] { bytesRead, totalBytes }));
     }
 
     @Override
