@@ -283,11 +283,6 @@
         <classifier>sources</classifier>
         <version>1.0.0.GA</version>
       </dependency>
-      <dependency>
-        <groupId>com.thoughtworks.proxytoys</groupId>
-        <artifactId>proxytoys</artifactId>
-        <version>1.0</version>
-      </dependency>
 
       <dependency>
         <groupId>junit</groupId>
