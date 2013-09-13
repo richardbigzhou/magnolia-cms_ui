@@ -123,6 +123,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
         if (browser.isWindows()) {
             osSpecificModifierKey = ModifierKey.CTRL;
         } else {
+            // osx and linux
             osSpecificModifierKey = ModifierKey.META;
         }
 
@@ -130,7 +131,6 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
             addShortcut(BaseDialog.COMMIT_ACTION_NAME, KeyCode.S, osSpecificModifierKey);
         }
         if (definition.getActions().containsKey(BaseDialog.CANCEL_ACTION_NAME)) {
-            addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.ESCAPE);
             addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.W, osSpecificModifierKey);
         }
         this.view.setActionAreaView(editorActionAreaView);
