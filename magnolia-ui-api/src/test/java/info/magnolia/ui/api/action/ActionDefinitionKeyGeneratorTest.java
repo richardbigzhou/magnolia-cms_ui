@@ -207,16 +207,6 @@ public class ActionDefinitionKeyGeneratorTest {
         public Locale getLocale() {
             return locale;
         }
-
-        @Override
-        public Locale getFallbackLocale() {
-            return null;
-        }
-
-        @Override
-        public Set<Locale> getAvailableLocales() {
-            return null;
-        }
     }
 
     /**
