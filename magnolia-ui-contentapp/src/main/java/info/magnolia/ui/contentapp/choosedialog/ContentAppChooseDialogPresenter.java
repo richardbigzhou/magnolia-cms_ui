@@ -36,7 +36,6 @@ package info.magnolia.ui.contentapp.choosedialog;
 import com.rits.cloning.Cloner;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.i18n.I18nizer;
-import info.magnolia.module.ModuleRegistry;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
@@ -86,21 +85,19 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
     }
 
     private ChooseDialogDefinition ensureChooseActions(ChooseDialogDefinition definition) {
-        ChooseDialogDefinition result = definition;
+        ConfiguredChooseDialogDefinition result = (ConfiguredChooseDialogDefinition) definition;
         if (definition.getActions().isEmpty()) {
-            result = cloner.deepClone(definition);
+            result = (ConfiguredChooseDialogDefinition) cloner.deepClone(definition);
 
             ChooseDialogActionDefinition commitAction = new ChooseDialogActionDefinition();
             commitAction.setCallSuccess(true);
-            commitAction.setName("commit");
-            commitAction.setLabel("Choose");
-            result.getActions().put(BaseDialog.COMMIT_ACTION_NAME, commitAction);
+            commitAction.setName(BaseDialog.COMMIT_ACTION_NAME);
+            result.addAction(commitAction);
 
             ChooseDialogActionDefinition cancelAction = new ChooseDialogActionDefinition();
             cancelAction.setCallSuccess(false);
-            cancelAction.setName("cancel");
-            cancelAction.setLabel("Cancel");
-            result.getActions().put(BaseDialog.CANCEL_ACTION_NAME, cancelAction);
+            cancelAction.setName(BaseDialog.CANCEL_ACTION_NAME);
+            result.addAction(cancelAction);
         }
         return result;
     }
@@ -118,8 +115,6 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
         }
 
         result = cloner.deepClone(result);
-        String chooserLabel = appContext.getLabel() + " chooser";
-        result.setLabel(chooserLabel);
 
         BrowserSubAppDescriptor subApp = (BrowserSubAppDescriptor) subAppContext;
 
@@ -132,6 +127,7 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
         ImageProviderDefinition imageProvider = cloner.deepClone(subApp.getImageProvider());
 
         WorkbenchFieldDefinition wbFieldDefinition = new WorkbenchFieldDefinition();
+        wbFieldDefinition.setName("workbenchField");
         wbFieldDefinition.setWorkbench(workbench);
         wbFieldDefinition.setImageProvider(imageProvider);
         result.setField(wbFieldDefinition);
