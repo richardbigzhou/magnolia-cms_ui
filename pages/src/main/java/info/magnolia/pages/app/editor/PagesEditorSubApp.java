@@ -33,7 +33,9 @@
  */
 package info.magnolia.pages.app.editor;
 
+import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
@@ -110,6 +112,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private final EditorDefinition editorDefinition;
     private final String workspace;
     private final AppContext appContext;
+    private final VersionManager versionManager;
 
     private PageEditorParameters parameters;
     private PlatformType targetPreviewPlatform = PlatformType.DESKTOP;
@@ -117,7 +120,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private String caption;
 
     @Inject
-    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView, I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport) {
+    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView, I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager) {
         super(subAppContext, view);
         this.actionExecutor = actionExecutor;
         this.view = view;
@@ -132,6 +135,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         this.workspace = editorDefinition.getWorkspace();
         this.appContext = subAppContext.getAppContext();
         this.currentLocale = i18nContentSupport.getLocale();
+        this.versionManager = versionManager;
         view.setListener(this);
         bindHandlers();
     }
@@ -141,9 +145,9 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         return caption;
     }
 
-    public void updateCaption(String path) {
-        this.caption = getPageTitle(path);
-        pageBarView.setPageName(caption, path);
+    public void updateCaption(DetailLocation location) {
+        this.caption = getPageTitle(location);
+        pageBarView.setPageName(caption, location.getNodePath());
     }
 
     @Override
@@ -280,7 +284,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             }
             uri = sb.toString();
             this.parameters.setUrl(uri);
-            updateCaption(path);
+            updateCaption(location);
             pageBarView.togglePreviewMode(isPreview);
         } catch (RepositoryException e) {
             log.error(e.getMessage(), e);
@@ -297,14 +301,20 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         return true;
     }
 
-    private String getPageTitle(String path) {
-        String caption = null;
+    private String getPageTitle(DetailLocation location) {
+        String caption = StringUtils.EMPTY;
         try {
             Session session = MgnlContext.getJCRSession(workspace);
-            Node node = session.getNode(path);
-            caption = PropertyUtil.getString(node, "title", node.getName());
+            Node node = session.getNode(location.getNodePath());
+            if (StringUtils.isNotBlank(location.getVersion())) {
+                node = versionManager.getVersion(node, location.getVersion());
+                caption = MessagesUtil.get("pages.subapp.versioned_page", new String[] { PropertyUtil.getString(node, "title", node.getName()), location.getVersion() });
+            } else {
+                caption = PropertyUtil.getString(node, "title", node.getName());
+            }
+
         } catch (RepositoryException e) {
-            log.error("Exception caught: {}", e.getMessage(), e);
+            log.warn("Could not set page Tab Title for item : {}", location.getNodePath(), e);
         }
         return caption;
     }
@@ -446,7 +456,6 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         } else {
 
             if (element instanceof PageElement) {
-                updateCaption(path);
 
                 if (!path.equals(parameters.getNodePath())) {
                     updateNodePath(path);

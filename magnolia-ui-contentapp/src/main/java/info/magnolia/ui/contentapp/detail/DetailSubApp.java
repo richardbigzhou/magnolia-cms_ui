@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.contentapp.detail;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.app.SubAppContext;
@@ -49,6 +50,7 @@ import javax.inject.Named;
 import javax.jcr.Item;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,8 +104,8 @@ public class DetailSubApp extends BaseSubApp {
     public View start(final Location location) {
         DetailLocation detailLocation = DetailLocation.wrap(location);
         super.start(detailLocation);
-        this.caption = detailLocation.getNodePath();
-
+        // set caption
+        setCaption(detailLocation);
         try {
             this.itemId = JcrItemUtil.getItemId(getWorkspace(), detailLocation.getNodePath());
         } catch (RepositoryException e) {
@@ -140,16 +142,17 @@ public class DetailSubApp extends BaseSubApp {
         return currentPath.equals(itemLocation.getNodePath());
     }
 
+    /**
+     * On location change, reload the view and tab caption.
+     */
     @Override
     public void locationChanged(Location location) {
-        DetailLocation itemLocation = DetailLocation.wrap(location);
-        // getView().setContentView(workbench.start(itemLocation.getNodePath()));
-        super.locationChanged(location);
+        DetailLocation detailLocation = DetailLocation.wrap(location);
+        setCaption(detailLocation);
+        View view = workbench.update(detailLocation);
+        getView().setContentView(view);
     }
 
-    private boolean hasLocationChanged(DetailLocation location) {
-        return getCurrentLocation().getViewType() != location.getViewType();
-    }
 
     @Override
     public String getCaption() {
@@ -201,8 +204,8 @@ public class DetailSubApp extends BaseSubApp {
                                     location.updateNodePath(item.getPath());
                                     // Update location
                                     getSubAppContext().setLocation(location);
-                                    // Update
-                                    caption = item.getPath();
+                                    // Update Caption
+                                    setCaption(location);
                                 }
                             }
                         } catch (RepositoryException e) {
@@ -218,6 +221,28 @@ public class DetailSubApp extends BaseSubApp {
     protected String getWorkspace() {
         DetailSubAppDescriptor subAppDescriptor = (DetailSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
         return subAppDescriptor.getEditor().getWorkspace();
+    }
+
+
+    /**
+     * Set the Tab caption.
+     * If a version is part of the {@link DetailLocation}, add this version information to the Tab caption.
+     */
+    protected void setCaption(DetailLocation location) {
+        String caption = getBaseCaption(location);
+        // Set version information
+        if (StringUtils.isNotBlank(location.getVersion())) {
+            caption = MessagesUtil.get("pages.subapp.versioned_page", new String[] { caption, location.getVersion() });
+        }
+        this.caption = caption;
+    }
+
+    /**
+     * Create the base caption string.
+     * Default is the item path.
+     */
+    protected String getBaseCaption(DetailLocation location) {
+        return location.getNodePath();
     }
 
 }

@@ -112,6 +112,7 @@ public class DetailEditorViewImpl extends HorizontalLayout implements DetailEdit
 
     @Override
     public void setItemView(final View itemView) {
+        itemViewContainer.removeAllComponents();
         itemView.asVaadinComponent().setHeight("100%");
         itemViewContainer.addComponent(itemView.asVaadinComponent());
     }
