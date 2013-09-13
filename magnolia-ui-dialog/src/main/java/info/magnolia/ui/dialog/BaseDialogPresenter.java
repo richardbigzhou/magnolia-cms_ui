@@ -112,8 +112,8 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
 
     @Override
     public DialogView start(BaseDialogDefinition definition, UiContext uiContext) {
-        this.view = initView();
-        definition = i18nizer.decorate(definition);
+        this.uiContext = uiContext;
+        this.definition = definition;
         this.editorActionAreaPresenter = componentProvider.getComponent(definition.getActionArea().getPresenterClass());
         EditorActionAreaView editorActionAreaView = editorActionAreaPresenter.start(filterActions(), definition.getActionArea(), this, uiContext);
 
