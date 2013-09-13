@@ -172,7 +172,6 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private ConfiguredWorkbenchDefinition prepareWorkbenchDefinition(BrowserSubAppDescriptor subAppDescriptor) {
         Cloner cloner = new Cloner();
-        cloner.setDumpClonedClasses(true);
         final ConfiguredWorkbenchDefinition workbenchDefinition =
                 (ConfiguredWorkbenchDefinition) cloner.deepClone(subAppDescriptor.getWorkbench());
 
