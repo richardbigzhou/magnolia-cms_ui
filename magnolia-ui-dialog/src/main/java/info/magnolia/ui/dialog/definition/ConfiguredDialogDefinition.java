@@ -35,7 +35,7 @@ package info.magnolia.ui.dialog.definition;
 
 /**
  * Early 5.0.x dialog definition
- * @deprecated As of 5.1, replaced by {@link info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition}
+ * @deprecated As of 5.1, replaced by {@link info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition}.
  */
 @Deprecated
 public class ConfiguredDialogDefinition extends ConfiguredFormDialogDefinition {
