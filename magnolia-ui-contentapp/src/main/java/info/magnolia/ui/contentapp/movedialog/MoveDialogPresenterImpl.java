@@ -107,6 +107,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     private MoveActionCallback callback;
 
     private JcrNodeAdapter currentHostCandidate;
+
     private ConfiguredWorkbenchDefinition workbenchDefinition;
 
     @Inject
@@ -201,7 +202,6 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     private ContentPresenterDefinition prepareTreePresenter(ContentPresenterDefinition treePresenter) {
         Cloner cloner = new Cloner();
         ContentPresenterDefinition def = cloner.deepClone(treePresenter);
-        cloner.setDumpClonedClasses(true);
         if (!def.getColumns().isEmpty()) {
             ColumnDefinition column = def.getColumns().get(0);
             def.getColumns().clear();
