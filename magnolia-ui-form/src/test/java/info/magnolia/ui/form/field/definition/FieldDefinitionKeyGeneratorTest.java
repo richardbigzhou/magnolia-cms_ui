@@ -63,7 +63,7 @@ public class FieldDefinitionKeyGeneratorTest {
         app.setName("test-app");
         TestChooseDialogDefinition chooseDialog = new TestChooseDialogDefinition();
         MultiValueFieldDefinition field = new MultiValueFieldDefinition();
-        field.setName("test-field");
+        field.setName("mgnl:testField");
         // hierarchy
         chooseDialog.setField(field);
         app.setChooseDialog(chooseDialog);
@@ -77,8 +77,8 @@ public class FieldDefinitionKeyGeneratorTest {
 
         // THEN
         assertEquals(2, keys.size());
-        assertEquals("test-app.chooseDialog.fields.test-field.label", keys.get(0));
-        assertEquals("test-app.chooseDialog.fields.test-field", keys.get(1));
+        assertEquals("test-app.chooseDialog.fields.mgnl-testField.label", keys.get(0));
+        assertEquals("test-app.chooseDialog.fields.mgnl-testField", keys.get(1));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class FieldDefinitionKeyGeneratorTest {
         ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
         tab.setName("testTab");
         ConfiguredFieldDefinition field = new ConfiguredFieldDefinition();
-        field.setName("testField");
+        field.setName("mgnl:testField");
         // hierarchy
         dialog.setForm(form);
         form.addTab(tab);
@@ -107,10 +107,10 @@ public class FieldDefinitionKeyGeneratorTest {
 
         // THEN
         assertEquals(4, keys.size());
-        assertEquals("test-module.testFolder.testDialog.testTab.testField.label", keys.get(0));
-        assertEquals("test-module.testFolder.testDialog.testTab.testField", keys.get(1));
-        assertEquals("test-module.testFolder.testDialog.testField.label", keys.get(2));
-        assertEquals("test-module.testFolder.testDialog.testField", keys.get(3));
+        assertEquals("test-module.testFolder.testDialog.testTab.mgnl-testField.label", keys.get(0));
+        assertEquals("test-module.testFolder.testDialog.testTab.mgnl-testField", keys.get(1));
+        assertEquals("test-module.testFolder.testDialog.mgnl-testField.label", keys.get(2));
+        assertEquals("test-module.testFolder.testDialog.mgnl-testField", keys.get(3));
     }
 
     @Test
@@ -124,9 +124,9 @@ public class FieldDefinitionKeyGeneratorTest {
         ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
         tab.setName("testTab");
         MultiValueFieldDefinition parentField = new MultiValueFieldDefinition();
-        parentField.setName("parentField");
+        parentField.setName("mgnl:parentField");
         ConfiguredFieldDefinition field = new ConfiguredFieldDefinition();
-        field.setName("testField");
+        field.setName("mgnl:testField");
         // hierarchy
         dialog.setForm(form);
         form.addTab(tab);
@@ -145,12 +145,12 @@ public class FieldDefinitionKeyGeneratorTest {
 
         // THEN
         assertEquals(6, keys.size());
-        assertEquals("test-module.testFolder.testDialog.testTab.parentField.testField.label", keys.get(0));
-        assertEquals("test-module.testFolder.testDialog.testTab.parentField.testField", keys.get(1));
-        assertEquals("test-module.testFolder.testDialog.testTab.testField.label", keys.get(2));
-        assertEquals("test-module.testFolder.testDialog.testTab.testField", keys.get(3));
-        assertEquals("test-module.testFolder.testDialog.testField.label", keys.get(4));
-        assertEquals("test-module.testFolder.testDialog.testField", keys.get(5));
+        assertEquals("test-module.testFolder.testDialog.testTab.mgnl-parentField.mgnl-testField.label", keys.get(0));
+        assertEquals("test-module.testFolder.testDialog.testTab.mgnl-parentField.mgnl-testField", keys.get(1));
+        assertEquals("test-module.testFolder.testDialog.testTab.mgnl-testField.label", keys.get(2));
+        assertEquals("test-module.testFolder.testDialog.testTab.mgnl-testField", keys.get(3));
+        assertEquals("test-module.testFolder.testDialog.mgnl-testField.label", keys.get(4));
+        assertEquals("test-module.testFolder.testDialog.mgnl-testField", keys.get(5));
     }
 
     /**
