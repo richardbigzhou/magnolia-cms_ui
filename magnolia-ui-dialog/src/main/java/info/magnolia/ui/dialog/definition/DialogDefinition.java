@@ -45,8 +45,7 @@ import java.util.Map;
  * Base definition of a dialog.
  */
 @I18nAble(keyGenerator = DialogDefinitionKeyGenerator.class)
-public interface BaseDialogDefinition {
-
+public interface DialogDefinition {
     /**
      * Unique identifier for this dialog.
      */

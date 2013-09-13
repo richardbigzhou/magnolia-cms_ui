@@ -35,8 +35,14 @@ package info.magnolia.ui.contentapp.movedialog.predicate;
 
 
 import com.vaadin.data.Item;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -44,6 +50,8 @@ import java.util.List;
  * Checks whether it is possible to place the collection of nodes relatively to the tested node.
  */
 public abstract class MovePossibilityPredicate {
+
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     private List<? extends Item> candidates;
 
@@ -64,5 +72,30 @@ public abstract class MovePossibilityPredicate {
         return isPossible;
     }
 
-    protected abstract boolean checkItem(Item item, Item hostCandidate);
+    protected boolean checkItem(Item item, Item hostCandidate) {
+        if ((item instanceof JcrItemAdapter) && (hostCandidate instanceof JcrItemAdapter)) {
+            JcrItemAdapter jcrItem = (JcrItemAdapter)item;
+            JcrItemAdapter jcrHost = (JcrItemAdapter)hostCandidate;
+            try {
+                return basicMoveCheck(jcrItem.getJcrItem(), jcrHost.getJcrItem());
+            } catch (RepositoryException e) {
+                log.warn("Error occurred during basic move check: ", e);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Perform basic check.
+     */
+    private boolean basicMoveCheck(javax.jcr.Item source, javax.jcr.Item target) throws RepositoryException {
+        if (!target.isNode() || !source.isNode()) {
+            return false;
+        }
+        if (target.getPath().equals(source.getPath())) {
+            return false;
+        }
+        return !NodeUtil.isSame((Node) target, source.getParent());
+    }
 }

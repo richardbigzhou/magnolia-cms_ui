@@ -148,6 +148,10 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
         return view;
     }
 
+    public View update(DetailLocation location) {
+        return this.start(location.getNodePath(), location.getViewType(), location.getVersion());
+    }
+
     public String getNodePath() {
         return nodePath;
     }

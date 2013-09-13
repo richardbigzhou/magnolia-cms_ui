@@ -46,7 +46,7 @@ import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.dialog.action.CallbackDialogAction;
 import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
 import info.magnolia.ui.dialog.actionarea.ActionAreaPresenter;
-import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.dialog.formdialog.FormView;
@@ -155,7 +155,7 @@ public class CallbackDialogActionTest extends MgnlTestCase {
         }
 
         @Override
-        public DialogView start(BaseDialogDefinition definition, UiContext uiContext) {
+        public DialogView start(DialogDefinition definition, UiContext uiContext) {
             return null;  //To change body of implemented methods use File | Settings | File Templates.
         }
 

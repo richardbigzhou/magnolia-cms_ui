@@ -46,7 +46,7 @@ import info.magnolia.ui.form.definition.FormDefinition;
  * @see info.magnolia.ui.api.action.ActionDefinition
  */
 @I18nAble(keyGenerator = DialogDefinitionKeyGenerator.class)
-public interface FormDialogDefinition extends BaseDialogDefinition {
+public interface FormDialogDefinition extends DialogDefinition {
 
     @I18nText
     String getDescription();

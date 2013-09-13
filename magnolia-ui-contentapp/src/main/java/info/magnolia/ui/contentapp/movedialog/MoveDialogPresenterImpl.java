@@ -37,6 +37,7 @@ import com.rits.cloning.Cloner;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.ResettableEventBus;
 import info.magnolia.event.SimpleEventBus;
@@ -58,8 +59,8 @@ import info.magnolia.ui.dialog.DialogCloseHandler;
 import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.actionarea.definition.ConfiguredEditorActionAreaDefinition;
-import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
-import info.magnolia.ui.dialog.definition.ConfiguredBaseDialogDefinition;
+import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.definition.SecondaryActionDefinition;
 import info.magnolia.ui.framework.action.MoveLocation;
 import info.magnolia.ui.framework.overlay.ViewAdapter;
@@ -73,6 +74,7 @@ import info.magnolia.ui.workbench.tree.TreePresenter;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 import javax.inject.Inject;
+import javax.jcr.RepositoryException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -107,6 +109,8 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private JcrNodeAdapter currentHostCandidate;
 
+    private ConfiguredWorkbenchDefinition workbenchDefinition;
+
     @Inject
     public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, DialogActionExecutor executor, AppContext appContext, I18nizer i18nizer) {
         super(componentProvider, executor, dialogView, i18nizer);
@@ -118,17 +122,14 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     @Override
     public Object[] getActionParameters(String actionName) {
-        if (currentHostCandidate != null) {
-            return new Object[]{nodesToMove, callback, currentHostCandidate, appContext};
-        }
-        return new Object[]{nodesToMove, callback, appContext};
+        return new Object[]{nodesToMove, callback, appContext, getHostCandidate()};
     }
 
     @Override
     public DialogView start(BrowserSubAppDescriptor subAppDescriptor, List<JcrNodeAdapter> nodesToMove, MoveActionCallback callback) {
 
         final ConfiguredImageProviderDefinition imageProviderDefinition = prepareImageProviderDefinition(subAppDescriptor);
-        final ConfiguredWorkbenchDefinition workbenchDefinition = prepareWorkbenchDefinition(subAppDescriptor);
+        this.workbenchDefinition = prepareWorkbenchDefinition(subAppDescriptor);
 
         this.nodesToMove = nodesToMove;
         this.constraint = componentProvider.newInstance(workbenchDefinition.getDropConstraintClass());
@@ -153,7 +154,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
             }
         });
 
-        BaseDialogDefinition dialogDefinition = prepareDialogDefinition();
+        DialogDefinition dialogDefinition = prepareDialogDefinition();
         getExecutor().setDialogDefinition(dialogDefinition);
         dialogView.setCaption(dialogDefinition.getLabel());
         dialogView.addDialogCloseHandler(new DialogCloseHandler() {
@@ -163,7 +164,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
             }
         });
         super.start(dialogDefinition, appContext);
-        updatePossibleMoveLocations(null);
+        updatePossibleMoveLocations(getHostCandidate());
         return dialogView;
     }
 
@@ -173,7 +174,6 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private ConfiguredWorkbenchDefinition prepareWorkbenchDefinition(BrowserSubAppDescriptor subAppDescriptor) {
         Cloner cloner = new Cloner();
-        cloner.setDumpClonedClasses(true);
         final ConfiguredWorkbenchDefinition workbenchDefinition =
                 (ConfiguredWorkbenchDefinition) cloner.deepClone(subAppDescriptor.getWorkbench());
 
@@ -203,7 +203,6 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     private ContentPresenterDefinition prepareTreePresenter(ContentPresenterDefinition treePresenter) {
         Cloner cloner = new Cloner();
         ContentPresenterDefinition def = cloner.deepClone(treePresenter);
-        cloner.setDumpClonedClasses(true);
         if (!def.getColumns().isEmpty()) {
             ColumnDefinition column = def.getColumns().get(0);
             def.getColumns().clear();
@@ -242,8 +241,8 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         }
     }
 
-    private BaseDialogDefinition prepareDialogDefinition() {
-        ConfiguredBaseDialogDefinition def = new ConfiguredBaseDialogDefinition();
+    private DialogDefinition prepareDialogDefinition() {
+        ConfiguredDialogDefinition def = new ConfiguredDialogDefinition();
         def.setLabel("Move destination");
         def.setId("move:dialog");
 
@@ -276,5 +275,17 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     @Override
     protected DialogActionExecutor getExecutor() {
         return (DialogActionExecutor) super.getExecutor();
+    }
+
+    private JcrNodeAdapter getHostCandidate() {
+        if (currentHostCandidate != null) {
+            return currentHostCandidate;
+        } else {
+            try {
+                return new JcrNodeAdapter(MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getRootNode());
+            } catch (RepositoryException e) {
+                return null;
+            }
+        }
     }
 }

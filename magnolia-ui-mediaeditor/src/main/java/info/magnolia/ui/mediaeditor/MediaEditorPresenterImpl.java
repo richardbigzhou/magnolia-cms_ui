@@ -46,7 +46,7 @@ import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.DialogPresenter;
 import info.magnolia.ui.dialog.DialogView;
-import info.magnolia.ui.dialog.definition.ConfiguredBaseDialogDefinition;
+import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingPropertyImpl;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
@@ -113,7 +113,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     public View start(final InputStream stream) {
         try {
             final ActionbarView actionbar = actionbarPresenter.start(definition.getActionBar());
-            final DialogView dialogView = dialogPresenter.start(new ConfiguredBaseDialogDefinition(), appContext);
+            final DialogView dialogView = dialogPresenter.start(new ConfiguredDialogDefinition(), appContext);
 
             this.dataSource = new EditHistoryTrackingPropertyImpl(IOUtils.toByteArray(stream));
             this.dataSource.setListener(this);

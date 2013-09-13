@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,10 +33,89 @@
  */
 package info.magnolia.ui.dialog.definition;
 
+import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.dialog.DialogPresenter;
+import info.magnolia.ui.dialog.actionarea.definition.ConfiguredEditorActionAreaDefinition;
+import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
- * Early 5.0.x dialog definition.
- * @deprecated As of 5.1, replaced by {@link info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition}.
+ * Implementation of {@link DialogDefinition}.
  */
-@Deprecated
-public class ConfiguredDialogDefinition extends ConfiguredFormDialogDefinition {
+public class ConfiguredDialogDefinition implements DialogDefinition {
+
+    public static final String ACTIONS_NODE_NAME = "actions";
+    public static final String EXTEND_PROPERTY_NAME = "extends";
+
+    private String id;
+
+    private String label;
+
+    private String i18nBasename;
+
+    private Map<String, ActionDefinition> actions = new LinkedHashMap<String, ActionDefinition>();
+
+    private Class<? extends DialogPresenter> presenterClass;
+
+    private EditorActionAreaDefinition actionArea = new ConfiguredEditorActionAreaDefinition();
+
+    public ConfiguredDialogDefinition() {}
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @Override
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    @Override
+    public String getI18nBasename() {
+        return i18nBasename;
+    }
+
+    public void setI18nBasename(String i18nBasename) {
+        this.i18nBasename = i18nBasename;
+    }
+
+    public Map<String, ActionDefinition> getActions() {
+        return actions;
+    }
+
+    @Override
+    public Class<? extends DialogPresenter> getPresenterClass() {
+        return presenterClass;
+    }
+
+    public void setActions(Map<String, ActionDefinition> actions) {
+        this.actions = actions;
+    }
+
+    public void addAction(ActionDefinition actionDefinition) {
+        actions.put(actionDefinition.getName(), actionDefinition);
+    }
+
+    public void setPresenterClass(Class<? extends DialogPresenter> presenterClass) {
+        this.presenterClass = presenterClass;
+    }
+
+    public EditorActionAreaDefinition getActionArea() {
+        return actionArea;
+    }
+
+    public void setActionArea(EditorActionAreaDefinition actionArea) {
+        this.actionArea = actionArea;
+    }
 }

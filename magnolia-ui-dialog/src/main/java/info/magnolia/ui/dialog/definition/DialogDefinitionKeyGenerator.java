@@ -42,10 +42,10 @@ import java.util.List;
 /**
  * Key generator for dialogs.
  */
-public class DialogDefinitionKeyGenerator extends AbstractFormKeyGenerator<BaseDialogDefinition> {
+public class DialogDefinitionKeyGenerator extends AbstractFormKeyGenerator<DialogDefinition> {
 
     @Override
-    protected void keysFor(List<String> keys, BaseDialogDefinition definition, AnnotatedElement el) {
+    protected void keysFor(List<String> keys, DialogDefinition definition, AnnotatedElement el) {
         if (definition instanceof ChooseDialogDefinition) {
             AppDescriptor app = (AppDescriptor) getRoot(definition);
             addKey(keys, app.getName(), "chooseDialog", fieldOrGetterName(el));

@@ -40,7 +40,7 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
 /**
  * Implementation of {@link ChooseDialogDefinition}.
  */
-public class ConfiguredChooseDialogDefinition extends ConfiguredBaseDialogDefinition implements ChooseDialogDefinition {
+public class ConfiguredChooseDialogDefinition extends ConfiguredDialogDefinition implements ChooseDialogDefinition {
 
     private FieldDefinition field;
 
