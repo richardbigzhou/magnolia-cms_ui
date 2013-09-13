@@ -49,11 +49,12 @@ public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldD
     protected void keysFor(List<String> list, FieldDefinition field, AnnotatedElement el) {
         TabDefinition tab = null;
         Object parent = getParentViaCast(field);
+        String fieldName = field.getName().replace(':', '-');
         // dirty hack, as the ChooseDialogDefinition is defined in dependent module
         if (parent.getClass().getName().indexOf("ChooseDialogDefinition") > -1) {
             // handle choose dialog
             AppDescriptor app = (AppDescriptor) getRoot(field);
-            addKey(list, app.getName(), "chooseDialog", "fields", field.getName(), fieldOrGetterName(el));
+            addKey(list, app.getName(), "chooseDialog", "fields", fieldName, fieldOrGetterName(el));
         } else {
             if (parent instanceof TabDefinition) {
                 tab = (TabDefinition) parent;
@@ -65,14 +66,14 @@ public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldD
             final FormDefinition formDef = getParentViaCast(tab);
             final String dialogID = getParentId(formDef);
 
-            final String fieldName = field.getName();
             final String property = fieldOrGetterName(el);
             // in case of a field in field
             if (parent != null) {
                 FieldDefinition parentField = (FieldDefinition) parent;
+                String parentName = parentField.getName().replace(':', '-');
                 // <dialogId>.<tabName>.<parentFieldName>.<fieldName>.<property>
                 // <dialogId>.<tabName>.<parentFieldName>.<fieldName> (in case of property==label)
-                addKey(list, dialogID, tabName, parentField.getName(), fieldName, property);
+                addKey(list, dialogID, tabName, parentName, fieldName, property);
             }
             // <dialogId>.<tabName>.<fieldName>.<property>
             // <dialogId>.<tabName>.<fieldName> (in case of property==label)
