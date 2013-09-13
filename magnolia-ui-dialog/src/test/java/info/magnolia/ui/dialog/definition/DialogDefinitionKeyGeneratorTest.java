@@ -37,9 +37,7 @@ import static org.junit.Assert.assertEquals;
 
 import info.magnolia.i18n.I18nizer;
 import info.magnolia.i18n.proxytoys.ProxytoysI18nizer;
-import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
-import info.magnolia.ui.form.definition.FormDefinitionKeyGenerator;
-import info.magnolia.ui.form.definition.TestDialogDef;
+import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,4 +91,43 @@ public class DialogDefinitionKeyGeneratorTest {
         assertEquals("test-module.testFolder.testDialog.description", keys.get(0));
     }
 
+    @Test
+    public void keysForFieldLabelInChooseDialog() throws Exception {
+        // GIVEN
+        // generator
+        DialogDefinitionKeyGenerator generator = new DialogDefinitionKeyGenerator();
+        // structure
+        TestContentAppDescriptor app = new TestContentAppDescriptor();
+        app.setName("test-app");
+        ConfiguredChooseDialogDefinition chooseDialog = new ConfiguredChooseDialogDefinition();
+        // hierarchy
+        app.setChooseDialog(chooseDialog);
+        // i18n
+        I18nizer i18nizer = new ProxytoysI18nizer(null, null);
+        app = i18nizer.decorate(app);
+
+        // WHEN
+        List<String> keys = new ArrayList<String>(2);
+        generator.keysFor(keys, app.getChooseDialog(), chooseDialog.getClass().getMethod("getLabel"));
+
+        // THEN
+        assertEquals(2, keys.size());
+        assertEquals("test-app.chooseDialog.label", keys.get(0));
+        assertEquals("test-app.chooseDialog", keys.get(1));
+    }
+
+    /**
+     * Fake ContentAppDescriptor - cannot use the right one here, as it is defined in a dependent artifact.
+     */
+    public static class TestContentAppDescriptor extends ConfiguredAppDescriptor {
+        private ChooseDialogDefinition chooseDialog;
+
+        public ChooseDialogDefinition getChooseDialog() {
+            return chooseDialog;
+        }
+
+        public void setChooseDialog(ChooseDialogDefinition chooseDialog) {
+            this.chooseDialog = chooseDialog;
+        }
+    }
 }

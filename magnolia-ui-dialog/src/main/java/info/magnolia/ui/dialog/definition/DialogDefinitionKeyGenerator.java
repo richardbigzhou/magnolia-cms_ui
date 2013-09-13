@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.dialog.definition;
 
+import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.form.definition.AbstractFormKeyGenerator;
 
 import java.lang.reflect.AnnotatedElement;
@@ -44,8 +45,13 @@ import java.util.List;
 public class DialogDefinitionKeyGenerator extends AbstractFormKeyGenerator<DialogDefinition> {
 
     @Override
-    protected void keysFor(List<String> keys, DialogDefinition object, AnnotatedElement el) {
-        addKey(keys, object.getId().replace(':', '.').replace('/', '.'), fieldOrGetterName(el));
+    protected void keysFor(List<String> keys, BaseDialogDefinition definition, AnnotatedElement el) {
+        if (definition instanceof ChooseDialogDefinition) {
+            AppDescriptor app = (AppDescriptor) getRoot(definition);
+            addKey(keys, app.getName(), "chooseDialog", fieldOrGetterName(el));
+        } else {
+            addKey(keys, definition.getId().replace(':', '.').replace('/', '.'), fieldOrGetterName(el));
+        }
     }
 
 }
