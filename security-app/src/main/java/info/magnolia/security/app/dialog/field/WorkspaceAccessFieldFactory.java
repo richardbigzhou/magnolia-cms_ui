@@ -93,12 +93,16 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
     public static final String ACCESS_TYPE_PROPERTY_NAME = "accessType";
 
     private final ComponentProvider componentProvider;
+
     private final UiContext uiContext;
 
-    public WorkspaceAccessFieldFactory(D definition, Item relatedFieldItem, ComponentProvider componentProvider, UiContext uiContext) {
+    private ChooseDialogPresenter workbenchChooseDialogPresenter;
+
+    public WorkspaceAccessFieldFactory(D definition, Item relatedFieldItem, ComponentProvider componentProvider, UiContext uiContext, ChooseDialogPresenter workbenchChooseDialogPresenter) {
         super(definition, relatedFieldItem);
         this.componentProvider = componentProvider;
         this.uiContext = uiContext;
+        this.workbenchChooseDialogPresenter = workbenchChooseDialogPresenter;
     }
 
     @Override
@@ -274,7 +278,6 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
     }
 
     protected void openChooseDialog(final TextField textField) {
-        final ChooseDialogPresenter workbenchChooseDialogPresenter = componentProvider.newInstance(ChooseDialogPresenter.class);
         final ConfiguredChooseDialogDefinition def = new ConfiguredChooseDialogDefinition();
         final WorkbenchDefinition wbDef = resolveWorkbenchDefinition();
         final WorkbenchFieldDefinition fieldDef = new WorkbenchFieldDefinition();
