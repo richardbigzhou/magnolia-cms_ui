@@ -132,5 +132,9 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
         getContainer().fireItemSetChange();
     }
 
+    @Override
+    public void expand(String itemId) {
+        view.expand(itemId);
+    }
 
 }

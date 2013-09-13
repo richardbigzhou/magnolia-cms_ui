@@ -54,8 +54,15 @@ public interface ContentView extends View {
      */
     void select(List<String> itemIds);
 
+    /**
+     * Selects the item with given ID in the content view. + Expands that item.
+     * 
+     * @param itemId ID
+     */
+    void expand(String itemId);
+
     public void onShortcutKey(int keyCode, int[] modifierKeys);
-    
+
     /**
      * Decides whether the user can select multiple items.
      */

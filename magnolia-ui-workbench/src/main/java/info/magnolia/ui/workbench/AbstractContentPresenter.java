@@ -296,4 +296,8 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
     @Override
     public void select(List<String> itemIds) {
     }
+
+    @Override
+    public void expand(String itemId) {
+    }
 }

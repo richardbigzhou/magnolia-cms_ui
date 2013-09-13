@@ -133,10 +133,11 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         }
     }
 
+
     @Override
     public void select(List<String> itemIds) {
         String firstItemId = itemIds.get(0);
-        expandTreeToNode(firstItemId);
+        expandTreeToNode(firstItemId, false);
 
         treeTable.setValue(null);
         for (String id : itemIds) {
@@ -145,7 +146,12 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         // do not #setCurrentPageFirstItemId because AbstractJcrContainer's index resolution is super slow.
     }
 
-    private void expandTreeToNode(String nodeId) {
+    @Override
+    public void expand(String itemId) {
+        expandTreeToNode(itemId, true);
+    }
+
+    private void expandTreeToNode(String nodeId, boolean expandNode) {
         HierarchicalJcrContainer container = (HierarchicalJcrContainer) treeTable.getContainerDataSource();
         String workbenchPath = container.getWorkbenchDefinition().getPath();
 
@@ -155,16 +161,24 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
                 return;
             }
 
+            // Determine node to expand.
             Node node = null;
 
             if (item instanceof Property) {
                 node = item.getParent();
             } else {
-                // Check if item is root.
-                if (!StringUtils.equals(((Node) item).getPath(), workbenchPath)) {
-                    node = (Node) item.getParent();
+
+                if (expandNode) {
+                    node = (Node) item;
+                } else {
+                    // Check if item is root.
+                    if (!StringUtils.equals(((Node) item).getPath(), workbenchPath)) {
+                        node = (Node) item.getParent();
+                    }
                 }
+
             }
+
             // as long as parent is within the scope of the workbench
             while (node != null && !StringUtils.equals(node.getPath(), workbenchPath)) {
                 treeTable.setCollapsed(node.getIdentifier(), false);

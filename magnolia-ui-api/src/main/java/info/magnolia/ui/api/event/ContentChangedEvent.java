@@ -56,19 +56,19 @@ public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
     private String itemId;
 
     /**
-     * Whether the content changed is a property.
+     * Whether the contents of an item changed. Set to true if a property or subnode changed.
      */
-    private boolean propertyChange = false;
+    private boolean itemContentChanged = false;
 
     public ContentChangedEvent(String workspace, String itemId) {
         this.workspace = workspace;
         this.itemId = itemId;
     }
 
-    public ContentChangedEvent(String workspace, String itemId, boolean isProperty) {
+    public ContentChangedEvent(String workspace, String itemId, boolean itemContentsChanged) {
         this.workspace = workspace;
         this.itemId = itemId;
-        this.propertyChange = isProperty;
+        this.itemContentChanged = itemContentsChanged;
     }
 
     public String getWorkspace() {
@@ -79,8 +79,8 @@ public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
         return itemId;
     }
 
-    public boolean isPropertyChange() {
-        return propertyChange;
+    public boolean isItemContentChanged() {
+        return itemContentChanged;
     }
 
     @Override

@@ -160,16 +160,11 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
                     workbenchPresenter.refresh();
 
-                    // If the change is a property - only select the property.
-                    // This ensures that the tree will properly select the changed property.
-                    List<String> selectedIds = new ArrayList<String>();
-                    if (event.isPropertyChange()) {
-                        selectedIds.add(0, event.getItemId());
-                    } else {
-                        selectedIds = getSelectedItemIds();
-                    }
+                    workbenchPresenter.select(getSelectedItemIds());
 
-                    workbenchPresenter.select(selectedIds);
+                    if (event.isItemContentChanged()) {
+                        workbenchPresenter.expand(event.getItemId());
+                    }
 
                     // use just the first selected item to show the preview image
                     String itemId = getSelectedItemIds().get(0);

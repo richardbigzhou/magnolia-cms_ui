@@ -68,6 +68,8 @@ public abstract class AbstractRepositoryAction<D extends ActionDefinition> exten
      */
     private String itemIdOfChangedItem;
 
+    private boolean itemContentsChanged;
+
     protected AbstractRepositoryAction(D definition, JcrItemAdapter item, EventBus eventBus) {
         super(definition);
         this.item = item;
@@ -78,6 +80,9 @@ public abstract class AbstractRepositoryAction<D extends ActionDefinition> exten
         this.itemIdOfChangedItem = itemIdOfChangedItem;
     }
 
+    protected void setItemContentsChanged(boolean itemContentsChanged) {
+        this.itemContentsChanged = itemContentsChanged;
+    }
 
     /**
      * Executes the defined action on the passed in item. When successful, it will fire a {@link ContentChangedEvent}.
@@ -92,7 +97,7 @@ public abstract class AbstractRepositoryAction<D extends ActionDefinition> exten
             // If the subclass set it to null this means no change was performed so we won't send an event
             if (itemIdOfChangedItem != null) {
                 boolean propertyChange = JcrItemUtil.isPropertyItemId(itemIdOfChangedItem);
-                eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), itemIdOfChangedItem, propertyChange));
+                eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), itemIdOfChangedItem, itemContentsChanged));
             }
 
         } catch (RepositoryException e) {

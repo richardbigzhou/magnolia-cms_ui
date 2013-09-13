@@ -204,6 +204,13 @@ public class ListViewImpl implements ListView {
     }
 
     @Override
+    public void expand(String itemId) {
+        // table.setValue(null);
+        // table.selectAndExpand(itemId);
+        // do not #setCurrentPageFirstItemId because AbstractJcrContainer's index resolution is super slow.
+    }
+
+    @Override
     public Table asVaadinComponent() {
         return table;
     }

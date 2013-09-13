@@ -188,6 +188,10 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         return activePresenter.getSelectedItemIds();
     }
 
+    public void expand(String itemId) {
+        activePresenter.expand(itemId);
+    }
+
     public void select(String itemId) {
         List<String> ids = new ArrayList<String>(1);
         ids.add(itemId);

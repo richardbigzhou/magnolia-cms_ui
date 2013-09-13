@@ -62,7 +62,8 @@ public class AddPropertyAction extends AbstractRepositoryAction<AddPropertyActio
             String name = getUniqueNewItemName(node);
             Property property = node.setProperty(name, "");
             NodeTypes.LastModified.update(property.getParent());
-            setItemIdOfChangedItem(JcrItemUtil.getItemId(property));
+            setItemIdOfChangedItem(JcrItemUtil.getItemId(property.getParent()));
+            setItemContentsChanged(true);
         }
     }
 }
