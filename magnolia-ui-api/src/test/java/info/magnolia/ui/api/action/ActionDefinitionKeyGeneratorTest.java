@@ -35,6 +35,7 @@ package info.magnolia.ui.api.action;
 
 import static org.junit.Assert.assertEquals;
 
+import info.magnolia.i18n.I18nAble;
 import info.magnolia.i18n.LocaleProvider;
 import info.magnolia.i18n.TranslationService;
 import info.magnolia.i18n.proxytoys.ProxytoysI18nizer;
@@ -84,6 +85,25 @@ public class ActionDefinitionKeyGeneratorTest {
         subappDescriptor.setActions(actions);
         subappDescriptors.put("1", subappDescriptor);
         appDescriptor.setSubApps(subappDescriptors);
+    }
+
+    @Test
+    public void keysForActionInChooseDialog() throws Exception {
+        // GIVEN
+        TestContentAppDescriptor contentApp = new TestContentAppDescriptor();
+        contentApp.setName("contentApp");
+        TestChooseDialogDefinition chooseDialog = new TestChooseDialogDefinition();
+        TestI18nAbleActionDefinition chooseDialogAction = new TestI18nAbleActionDefinition();
+        chooseDialogAction.setName("chooseDialogAction");
+        // hierarchy
+        chooseDialog.getActions().put("chooseDialogAction", chooseDialogAction);
+        contentApp.setChooseDialog(chooseDialog);
+
+        // WHEN
+        contentApp = i18nizer.decorate(contentApp);
+
+        // THEN
+        assertEquals("i18n key is [contentApp.chooseDialog.actions.chooseDialogAction.label]", contentApp.getChooseDialog().getActions().get("chooseDialogAction").getLabel());
     }
 
     @Test
@@ -190,14 +210,39 @@ public class ActionDefinitionKeyGeneratorTest {
 
         @Override
         public Locale getFallbackLocale() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         @Override
         public Set<Locale> getAvailableLocales() {
-            // TODO Auto-generated method stub
             return null;
+        }
+    }
+
+    /**
+     * Fake ContentAppDescriptor - cannot use the right one here, as it is defined in a dependent artifact.
+     */
+    public static class TestContentAppDescriptor extends ConfiguredAppDescriptor {
+        private TestChooseDialogDefinition chooseDialog;
+
+        public TestChooseDialogDefinition getChooseDialog() {
+            return chooseDialog;
+        }
+
+        public void setChooseDialog(TestChooseDialogDefinition chooseDialog) {
+            this.chooseDialog = chooseDialog;
+        }
+    }
+
+    /**
+     * Fake ChooseDialogDefinition - cannot use the right one here, as it is defined in a dependent artifact.
+     */
+    @I18nAble
+    public static class TestChooseDialogDefinition {
+        private Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
+
+        public Map<String, ActionDefinition> getActions() {
+            return this.actions;
         }
     }
 }

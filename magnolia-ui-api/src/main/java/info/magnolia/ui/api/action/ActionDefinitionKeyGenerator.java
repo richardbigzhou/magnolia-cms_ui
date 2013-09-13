@@ -68,8 +68,14 @@ public class ActionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<Actio
 
         if (root instanceof AppDescriptor) {
             final AppDescriptor appDescriptor = (AppDescriptor) root;
-            final SubAppDescriptor subAppDescriptor = getParentViaCast(actionDefinition);
-            addKey(keys, appDescriptor.getName(), subAppDescriptor.getName(), "actions", actionDefinition.getName(), fieldOrGetterName(el));
+            // TODO MGNLUI-2083
+            Object parent = getParentViaCast(actionDefinition);
+            if (parent instanceof SubAppDescriptor) {
+                final SubAppDescriptor subAppDescriptor = (SubAppDescriptor) parent;
+                addKey(keys, appDescriptor.getName(), subAppDescriptor.getName(), "actions", actionDefinition.getName(), fieldOrGetterName(el));
+            } else {
+                addKey(keys, appDescriptor.getName(), "chooseDialog", "actions", actionDefinition.getName(), fieldOrGetterName(el));
+            }
         } else {
             final List<String> ancestorKeys = getKeysfromAncestors(actionDefinition, el, root);
             if (ancestorKeys.isEmpty()) {
