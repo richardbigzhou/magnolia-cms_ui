@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.dialog.formdialog;
 
-import com.vaadin.data.Item;
 import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.i18n.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -57,6 +56,8 @@ import javax.inject.Inject;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.vaadin.data.Item;
+
 /**
  * Presenter for forms opened inside dialogs.
  */
@@ -68,17 +69,18 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     private FormBuilder formBuilder;
 
+    private FormView formView;
+
     private Item item;
 
     @Inject
-    public FormDialogPresenterImpl(final DialogDefinitionRegistry dialogDefinitionRegistry, FormBuilder formBuilder, ComponentProvider componentProvider, I18nizer i18nizer) {
-        super(componentProvider, i18nizer);
+    public FormDialogPresenterImpl(final DialogDefinitionRegistry dialogDefinitionRegistry, FormBuilder formBuilder, ComponentProvider componentProvider, DialogActionExecutor executor, FormView view, I18nizer i18nizer) {
+        super(componentProvider, executor, view, i18nizer);
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.formBuilder = formBuilder;
         this.componentProvider = componentProvider;
         this.formView = view;
     }
-
 
     @Override
     public DialogView start(final Item item, String dialogName, final UiContext uiContext, EditorCallback callback) {
@@ -89,6 +91,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
             throw new RuntimeException("No dialogDefinition found for " + dialogName, e);
         }
     }
+
     /**
      * Returns a {@link DialogView} containing {@link FormView} as content.
      * <ul>
@@ -117,7 +120,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         return getView();
     }
 
-    @Override
     protected DialogView initView() {
         return getView();
     }
@@ -125,7 +127,8 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     private void buildView(FormDialogDefinition dialogDefinition) {
         dialogDefinition = (FormDialogDefinition) super.decorateForI18n(dialogDefinition);
         Dialog dialog = new Dialog(dialogDefinition);
-        setView(formBuilder.buildForm(dialogDefinition.getForm(), item, dialog));
+        // setView(formBuilder.buildForm(dialogDefinition.getForm(), item, dialog)); // TODO check and delete/uncomment - and remove the next line
+        formBuilder.buildForm(getView(), dialogDefinition.getForm(), item, dialog);
         final String description = dialogDefinition.getDescription();
         final String label = dialogDefinition.getLabel();
         final String basename = dialogDefinition.getI18nBasename();

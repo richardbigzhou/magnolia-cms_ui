@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.dialog.formdialog;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
 
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
@@ -52,17 +52,12 @@ import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.test.ComponentsTestUtil;
-import info.magnolia.ui.dialog.action.DialogActionExecutor;
-import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
-import info.magnolia.ui.dialog.definition.DialogDefinition;
-import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
-import info.magnolia.ui.form.FormBuilder;
+import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
-import info.magnolia.ui.vaadin.dialog.FormDialogView;
 
 import java.util.Locale;
 
@@ -74,9 +69,7 @@ import org.junit.Test;
  */
 public class FormDialogPresenterImplTest {
 
-    private FormDialogView view;
     private DialogDefinitionRegistry dialogDefinitionRegistry;
-    private DialogActionExecutor actionExecutor;
     private FormBuilder formBuilder;
     private FormDialogPresenterImpl presenter;
 
@@ -102,11 +95,9 @@ public class FormDialogPresenterImplTest {
         LocaleProvider provider = new ContextLocaleProvider();
         ProxytoysI18nizer i18nizer = new ProxytoysI18nizer(service, provider);
 
-        view = mock(FormDialogView.class);
         dialogDefinitionRegistry = mock(DialogDefinitionRegistry.class);
-        actionExecutor = mock(DialogActionExecutor.class);
         formBuilder = mock(FormBuilder.class);
-        presenter = new FormDialogPresenterImpl(dialogDefinitionRegistry, formBuilder, mock(ComponentProvider.class), i18nizer);
+        presenter = new FormDialogPresenterImpl(dialogDefinitionRegistry, formBuilder, mock(ComponentProvider.class), mock(DialogActionExecutor.class), mock(FormView.class), i18nizer);
 
     }
 

@@ -35,9 +35,9 @@ package info.magnolia.ui.dialog;
 
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutAction.ModifierKey;
-import com.vaadin.event.ShortcutListener;
 
 import info.magnolia.i18n.I18nizer;
+import com.vaadin.event.ShortcutListener;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -53,8 +53,6 @@ import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
 import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
 import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
@@ -62,8 +60,6 @@ import javax.inject.Inject;
  * Base implementation of {@link DialogPresenter}.
  */
 public class BaseDialogPresenter implements DialogPresenter, ActionListener {
-
-    private Logger log = LoggerFactory.getLogger(getClass());
 
     private DialogView view;
 
@@ -75,9 +71,15 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
 
     private final I18nizer i18nizer;
 
+    private UiContext uiContext;
+
+    private BaseDialogDefinition definition;
+
     @Inject
-    public BaseDialogPresenter(ComponentProvider componentProvider, I18nizer i18nizer) {
+    public BaseDialogPresenter(ComponentProvider componentProvider, ActionExecutor executor, DialogView view, I18nizer i18nizer) {
         this.componentProvider = componentProvider;
+        this.executor = executor;
+        this.view = view;
         this.i18nizer = i18nizer;
     }
 
@@ -140,4 +142,36 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
     public BaseDialogDefinition decorateForI18n(BaseDialogDefinition definition) {
         return i18nizer.decorate(definition);
     }
+
+    @Override
+    public void onActionFired(String actionName, Object... actionContextParams) {
+        executeAction(actionName, actionContextParams);
+    }
+
+    protected void executeAction(String actionName, Object[] actionContextParams) {
+        Object[] providedParameters = getActionParameters(actionName);
+        Object[] combinedParameters = new Object[providedParameters.length + actionContextParams.length];
+        System.arraycopy(providedParameters, 0, combinedParameters, 0, providedParameters.length);
+        System.arraycopy(actionContextParams, 0, combinedParameters, providedParameters.length, actionContextParams.length);
+        try {
+            executor.execute(actionName, combinedParameters);
+        } catch (ActionExecutionException e) {
+            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            if (uiContext instanceof AppContext) {
+                ((AppContext) uiContext).broadcastMessage(error);
+            } else if (uiContext instanceof SubAppContext) {
+                ((SubAppContext) uiContext).getAppContext().broadcastMessage(error);
+            }
+
+        }
+    }
+
+    protected BaseDialogDefinition getDefinition() {
+        return definition;
+    }
+
+    protected ActionExecutor getExecutor() {
+        return executor;
+    }
+
 }

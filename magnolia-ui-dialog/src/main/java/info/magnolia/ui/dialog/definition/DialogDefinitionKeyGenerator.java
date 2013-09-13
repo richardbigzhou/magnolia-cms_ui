@@ -40,9 +40,9 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 
 /**
- * TODO Type description here.
+ * Key generator for dialogs.
  */
-public class DialogDefinitionKeyGenerator extends AbstractFormKeyGenerator<DialogDefinition> {
+public class DialogDefinitionKeyGenerator extends AbstractFormKeyGenerator<BaseDialogDefinition> {
 
     @Override
     protected void keysFor(List<String> keys, BaseDialogDefinition definition, AnnotatedElement el) {

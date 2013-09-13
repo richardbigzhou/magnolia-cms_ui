@@ -41,8 +41,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.i18n.I18nizer;
-import info.magnolia.module.ModuleRegistry;
-import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
@@ -85,9 +83,10 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
             FieldFactoryFactory fieldFactoryFactory,
             ComponentProvider componentProvider,
             I18nContentSupport i18nContentSupport,
-            ModuleRegistry moduleRegistry,
+            DialogActionExecutor executor,
+            ChooseDialogView view,
             I18nizer i18nizer) {
-        super(componentProvider, i18nizer);
+        super(componentProvider, executor, view, i18nizer);
         this.fieldFactoryFactory = fieldFactoryFactory;
         this.componentProvider = componentProvider;
         this.i18nContentSupport = i18nContentSupport;
@@ -152,7 +151,7 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
 
     @Override
     public Object[] getActionParameters(String actionName) {
-        return new Object[] {actionName, ChooseDialogPresenterImpl.this, field, getView(), callback, item != null ? item : new NullItem()};
+        return new Object[] { actionName, ChooseDialogPresenterImpl.this, field, getView(), callback, item };
     }
 
     @Override

@@ -47,10 +47,12 @@ import info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition;
 import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenterImpl;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogView;
+import info.magnolia.ui.dialog.choosedialog.action.ChooseDialogActionDefinition;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,8 +72,8 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
     private Cloner cloner;
 
     @Inject
-    public ContentAppChooseDialogPresenter(FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18nContentSupport i18nContentSupport, AppContext appContext, ModuleRegistry registry, I18nizer i18nizer) {
-        super(fieldFactoryFactory, componentProvider, i18nContentSupport, registry, i18nizer);
+    public ContentAppChooseDialogPresenter(FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18nContentSupport i18nContentSupport, DialogActionExecutor executor, AppContext appContext, ChooseDialogView view, I18nizer i18nizer) {
+        super(fieldFactoryFactory, componentProvider, i18nContentSupport, executor, view, i18nizer);
         this.appContext = appContext;
         this.cloner = new Cloner();
     }

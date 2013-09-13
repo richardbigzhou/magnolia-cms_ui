@@ -108,8 +108,8 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     private JcrNodeAdapter currentHostCandidate;
 
     @Inject
-    public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, UiContext uiContext, I18nizer i18nizer) {
-        super(componentProvider, i18nizer);
+    public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, DialogActionExecutor executor, AppContext appContext, I18nizer i18nizer) {
+        super(componentProvider, executor, dialogView, i18nizer);
         this.dialogView = dialogView;
         this.workbenchPresenter = workbenchPresenter;
         this.appContext = appContext;
