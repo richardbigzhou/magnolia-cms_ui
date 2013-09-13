@@ -35,8 +35,10 @@ package info.magnolia.ui.form.field.definition;
 
 import static org.junit.Assert.assertEquals;
 
+import info.magnolia.i18n.I18nAble;
 import info.magnolia.i18n.I18nizer;
 import info.magnolia.i18n.proxytoys.ProxytoysI18nizer;
+import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.definition.TestDialogDef;
@@ -47,9 +49,37 @@ import java.util.List;
 import org.junit.Test;
 
 /**
- * TODO Type description here.
+ * Tests for {@link FieldDefinitionKeyGenerator}.
  */
 public class FieldDefinitionKeyGeneratorTest {
+
+    @Test
+    public void keysForFieldLabelInChooseDialog() throws Exception {
+        // GIVEN
+        // generator
+        FieldDefinitionKeyGenerator generator = new FieldDefinitionKeyGenerator();
+        // structure
+        TestContentAppDescriptor app = new TestContentAppDescriptor();
+        app.setName("test-app");
+        TestChooseDialogDefinition chooseDialog = new TestChooseDialogDefinition();
+        MultiValueFieldDefinition field = new MultiValueFieldDefinition();
+        field.setName("test-field");
+        // hierarchy
+        chooseDialog.setField(field);
+        app.setChooseDialog(chooseDialog);
+        // i18n
+        I18nizer i18nizer = new ProxytoysI18nizer(null, null);
+        app = i18nizer.decorate(app);
+
+        // WHEN
+        List<String> keys = new ArrayList<String>(2);
+        generator.keysFor(keys, app.getChooseDialog().getField(), field.getClass().getMethod("getLabel"));
+
+        // THEN
+        assertEquals(2, keys.size());
+        assertEquals("test-app.chooseDialog.fields.test-field.label", keys.get(0));
+        assertEquals("test-app.chooseDialog.fields.test-field", keys.get(1));
+    }
 
     @Test
     public void keysForFieldLabel() throws SecurityException, NoSuchMethodException {
@@ -121,5 +151,36 @@ public class FieldDefinitionKeyGeneratorTest {
         assertEquals("test-module.testFolder.testDialog.testTab.testField", keys.get(3));
         assertEquals("test-module.testFolder.testDialog.testField.label", keys.get(4));
         assertEquals("test-module.testFolder.testDialog.testField", keys.get(5));
+    }
+
+    /**
+     * Fake ContentAppDescriptor - cannot use the right one here, as it is defined in a dependent artifact.
+     */
+    public static class TestContentAppDescriptor extends ConfiguredAppDescriptor {
+        private TestChooseDialogDefinition chooseDialog;
+
+        public TestChooseDialogDefinition getChooseDialog() {
+            return chooseDialog;
+        }
+
+        public void setChooseDialog(TestChooseDialogDefinition chooseDialog) {
+            this.chooseDialog = chooseDialog;
+        }
+    }
+
+    /**
+     * Fake ChooseDialogDefinition - cannot use the right one here, as it is defined in a dependent artifact.
+     */
+    @I18nAble
+    public static class TestChooseDialogDefinition {
+        private FieldDefinition field;
+
+        public FieldDefinition getField() {
+            return field;
+        }
+
+        public void setField(FieldDefinition field) {
+            this.field = field;
+        }
     }
 }
