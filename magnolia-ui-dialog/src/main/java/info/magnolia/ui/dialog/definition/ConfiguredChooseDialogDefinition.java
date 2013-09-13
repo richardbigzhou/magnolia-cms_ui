@@ -34,6 +34,7 @@
 package info.magnolia.ui.dialog.definition;
 
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
+import info.magnolia.ui.dialog.choosedialog.action.ChooseDialogActionDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 
 /**
@@ -45,6 +46,17 @@ public class ConfiguredChooseDialogDefinition extends ConfiguredBaseDialogDefini
 
     public ConfiguredChooseDialogDefinition() {
         this(ChooseDialogPresenter.class);
+        ChooseDialogActionDefinition commitAction = new ChooseDialogActionDefinition();
+        commitAction.setCallSuccess(true);
+        commitAction.setName("commit");
+        commitAction.setLabel("Choose");
+
+        ChooseDialogActionDefinition cancelAction = new ChooseDialogActionDefinition();
+        cancelAction.setCallSuccess(false);
+        cancelAction.setName("cancel");
+        cancelAction.setLabel("Cancel");
+        addAction(commitAction);
+        addAction(cancelAction);
     }
 
     public ConfiguredChooseDialogDefinition(Class<? extends ChooseDialogPresenter> presenterClass) {
