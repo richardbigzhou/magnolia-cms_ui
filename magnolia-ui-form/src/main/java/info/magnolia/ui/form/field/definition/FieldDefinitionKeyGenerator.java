@@ -39,12 +39,23 @@ import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
 
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An {@link info.magnolia.i18n.I18nKeyGenerator} for {@link FieldDefinition}.
  */
 public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldDefinition> {
+
+    private static final Logger log = LoggerFactory.getLogger(FieldDefinitionKeyGenerator.class);
+
     @Override
     protected void keysFor(List<String> list, FieldDefinition field, AnnotatedElement el) {
         TabDefinition tab = null;
@@ -56,24 +67,38 @@ public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldD
             AppDescriptor app = (AppDescriptor) getRoot(field);
             addKey(list, app.getName(), "chooseDialog", "fields", fieldName, fieldOrGetterName(el));
         } else {
-            if (parent instanceof TabDefinition) {
-                tab = (TabDefinition) parent;
-                parent = null;
-            } else {
-                tab = getParentViaCast(parent);
+            List<String> parentNames = new LinkedList<String>();
+            while (!(parent instanceof TabDefinition)) {
+                try {
+                    Method getName = parent.getClass().getMethod("getName");
+                    String parentName = (String) getName.invoke(parent);
+                    parentNames.add(parentName);
+                    parent = getParentViaCast(parent);
+                } catch (IllegalAccessException e) {
+                    log.warn("Cannot obtain name of parent object: " + e.getMessage());
+                } catch (SecurityException e) {
+                    log.warn("Cannot obtain name of parent object: " + e.getMessage());
+                } catch (NoSuchMethodException e) {
+                    log.warn("Cannot obtain name of parent object: " + e.getMessage());
+                } catch (IllegalArgumentException e) {
+                    log.warn("Cannot obtain name of parent object: " + e.getMessage());
+                } catch (InvocationTargetException e) {
+                    log.warn("Cannot obtain name of parent object: " + e.getMessage());
+                }
             }
+            tab = (TabDefinition) parent;
             final String tabName = tab.getName();
             final FormDefinition formDef = getParentViaCast(tab);
             final String dialogID = getParentId(formDef);
 
             final String property = fieldOrGetterName(el);
             // in case of a field in field
-            if (parent != null) {
-                FieldDefinition parentField = (FieldDefinition) parent;
-                String parentName = parentField.getName().replace(':', '-');
-                // <dialogId>.<tabName>.<parentFieldName>.<fieldName>.<property>
-                // <dialogId>.<tabName>.<parentFieldName>.<fieldName> (in case of property==label)
-                addKey(list, dialogID, tabName, parentName, fieldName, property);
+            if (parentNames.size() > 0) {
+                Collections.reverse(parentNames);
+                String parentKeyPart = StringUtils.join(parentNames, '.').replace(':', '-');
+                // <dialogId>.<tabName>.<parentFieldNames_separated_by_dots>.<fieldName>.<property>
+                // <dialogId>.<tabName>.<parentFieldNames_separated_by_dots>.<fieldName> (in case of property==label)
+                addKey(list, dialogID, tabName, parentKeyPart, fieldName, property);
             }
             // <dialogId>.<tabName>.<fieldName>.<property>
             // <dialogId>.<tabName>.<fieldName> (in case of property==label)

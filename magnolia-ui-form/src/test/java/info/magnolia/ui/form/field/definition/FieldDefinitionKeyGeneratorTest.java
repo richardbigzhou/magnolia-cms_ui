@@ -123,15 +123,18 @@ public class FieldDefinitionKeyGeneratorTest {
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
         ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
         tab.setName("testTab");
-        MultiValueFieldDefinition parentField = new MultiValueFieldDefinition();
-        parentField.setName("mgnl:parentField");
+        MultiValueFieldDefinition parentField1 = new MultiValueFieldDefinition();
+        parentField1.setName("mgnl:parentField1");
+        MultiValueFieldDefinition parentField2 = new MultiValueFieldDefinition();
+        parentField2.setName("mgnl:parentField2");
         ConfiguredFieldDefinition field = new ConfiguredFieldDefinition();
         field.setName("mgnl:testField");
         // hierarchy
         dialog.setForm(form);
         form.addTab(tab);
-        tab.addField(parentField);
-        parentField.setField(field);
+        tab.addField(parentField1);
+        parentField1.setField(parentField2);
+        parentField2.setField(field);
         // i18n
         I18nizer i18nizer = new ProxytoysI18nizer(null, null);
         dialog = i18nizer.decorate(dialog);
@@ -140,13 +143,13 @@ public class FieldDefinitionKeyGeneratorTest {
         List<String> keys = new ArrayList<String>(4);
         generator.keysFor(
                 keys,
-                ((MultiValueFieldDefinition) dialog.getForm().getTabs().get(0).getFields().get(0)).getField(),
+                ((MultiValueFieldDefinition) ((MultiValueFieldDefinition) dialog.getForm().getTabs().get(0).getFields().get(0)).getField()).getField(),
                 field.getClass().getMethod("getLabel"));
 
         // THEN
         assertEquals(6, keys.size());
-        assertEquals("test-module.testFolder.testDialog.testTab.mgnl-parentField.mgnl-testField.label", keys.get(0));
-        assertEquals("test-module.testFolder.testDialog.testTab.mgnl-parentField.mgnl-testField", keys.get(1));
+        assertEquals("test-module.testFolder.testDialog.testTab.mgnl-parentField1.mgnl-parentField2.mgnl-testField.label", keys.get(0));
+        assertEquals("test-module.testFolder.testDialog.testTab.mgnl-parentField1.mgnl-parentField2.mgnl-testField", keys.get(1));
         assertEquals("test-module.testFolder.testDialog.testTab.mgnl-testField.label", keys.get(2));
         assertEquals("test-module.testFolder.testDialog.testTab.mgnl-testField", keys.get(3));
         assertEquals("test-module.testFolder.testDialog.mgnl-testField.label", keys.get(4));
