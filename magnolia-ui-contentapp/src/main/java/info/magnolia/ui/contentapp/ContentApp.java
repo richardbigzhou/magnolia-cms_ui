@@ -39,7 +39,10 @@ import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.contentapp.choosedialog.ContentAppChooseDialogPresenter;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
+import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
+import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
 import info.magnolia.ui.framework.app.BaseApp;
 
 import javax.inject.Inject;
@@ -59,10 +62,16 @@ public class ContentApp extends BaseApp {
 
     @Override
     public void openChooseDialog(UiContext overlayLayer, String selectedId, final ChooseDialogCallback callback) {
+        ChooseDialogPresenter presenter;
+        ChooseDialogDefinition chooseDialogDefinition;
         if (appContext.getAppDescriptor() instanceof ContentAppDescriptor) {
             ContentAppDescriptor contentAppDescriptor = (ContentAppDescriptor)appContext.getAppDescriptor();
-            ChooseDialogPresenter presenter = componentProvider.getComponent(contentAppDescriptor.getChooseDialog().getPresenterClass());
-            presenter.start(callback, contentAppDescriptor.getChooseDialog(), overlayLayer, selectedId) ;
+            presenter = componentProvider.getComponent(contentAppDescriptor.getChooseDialog().getPresenterClass());
+            chooseDialogDefinition = contentAppDescriptor.getChooseDialog();
+        } else {
+            chooseDialogDefinition = new ConfiguredChooseDialogDefinition();
+            presenter = componentProvider.newInstance(ContentAppChooseDialogPresenter.class);
         }
+        presenter.start(callback, chooseDialogDefinition, overlayLayer, selectedId) ;
     }
 }
