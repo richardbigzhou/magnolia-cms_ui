@@ -139,4 +139,8 @@ public class ThumbnailViewImpl implements ThumbnailView {
         }
     }
 
+    @Override
+    public void expand(String itemId) {
+    }
+
 }

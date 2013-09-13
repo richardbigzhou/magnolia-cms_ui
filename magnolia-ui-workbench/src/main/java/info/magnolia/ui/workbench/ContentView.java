@@ -55,7 +55,7 @@ public interface ContentView extends View {
     void select(List<String> itemIds);
 
     /**
-     * Selects the item with given ID in the content view. + Expands that item.
+     * Expands an item if the view supports it.
      * 
      * @param itemId ID
      */

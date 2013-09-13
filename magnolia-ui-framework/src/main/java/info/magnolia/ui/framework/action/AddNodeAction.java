@@ -63,7 +63,7 @@ public class AddNodeAction extends AbstractRepositoryAction<AddNodeActionDefinit
             NodeTypes.Created.set(newNode);
             // Pass the item which had the node added to it.
             setItemIdOfChangedItem(JcrItemUtil.getItemId(node));
-            setItemContentsChanged(true);
+            setItemContentChanged(true);
         }
     }
 }
