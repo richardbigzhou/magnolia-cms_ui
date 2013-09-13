@@ -42,8 +42,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Early 5.0.x dialog definition
- * @deprecated As of 5.1, replaced by {@link info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition}
+ * Implementation of {@link DialogDefinition}.
  */
 public class ConfiguredDialogDefinition implements DialogDefinition {
 
