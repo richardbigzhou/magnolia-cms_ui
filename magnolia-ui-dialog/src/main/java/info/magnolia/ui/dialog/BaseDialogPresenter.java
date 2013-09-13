@@ -173,5 +173,4 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
     protected ActionExecutor getExecutor() {
         return executor;
     }
-
 }

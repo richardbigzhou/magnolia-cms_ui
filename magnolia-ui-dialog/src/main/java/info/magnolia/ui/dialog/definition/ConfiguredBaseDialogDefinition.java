@@ -61,7 +61,8 @@ public class ConfiguredBaseDialogDefinition implements BaseDialogDefinition {
 
     private EditorActionAreaDefinition actionArea = new ConfiguredEditorActionAreaDefinition();
 
-    public ConfiguredBaseDialogDefinition() {}
+    public ConfiguredBaseDialogDefinition() {
+    }
 
     @Override
     public String getId() {

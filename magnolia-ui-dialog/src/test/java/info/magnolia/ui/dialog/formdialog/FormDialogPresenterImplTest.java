@@ -307,5 +307,4 @@ public class FormDialogPresenterImplTest {
             return "translated with key [" + keys[0] + "] and basename [" + basename + "] and locale [" + localeProvider.getLocale() + "]";
         }
     }
-
 }

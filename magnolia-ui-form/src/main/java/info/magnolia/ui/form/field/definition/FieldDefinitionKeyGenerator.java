@@ -42,7 +42,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 
 /**
- * An {@link I18nKeyGenerator} for {@link FieldDefinition}.
+ * An {@link info.magnolia.i18n.I18nKeyGenerator} for {@link FieldDefinition}.
  */
 public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldDefinition> {
     @Override
