@@ -136,4 +136,9 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
         handler.initScrollListener(content.getElement());
     }
 
+    @Override
+    public void initKeyEventListeners() {
+        handler.initNativeKeyListener(iframe.getElement());
+    }
+
 }

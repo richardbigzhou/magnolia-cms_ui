@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,42 +31,46 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.widget;
+package info.magnolia.ui.api.availability;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.repository.RepositoryConstants;
+
+import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.version.Version;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * VPageEditorView.
+ * Availability rule for non-versioned items.
  */
-public interface PageEditorView extends IsWidget {
+public class IsNotVersionedRule extends AbstractAvailabilityRule {
 
-    void initDomEventListeners();
+    private static final Logger log = LoggerFactory.getLogger(IsDeletedRule.class);
 
-    void initKeyEventListeners();
+    @Override
+    protected boolean isAvailableForItem(Item item) {
+        if (item != null && item.isNode()) {
+            Node node = (Node) item;
 
+            if (node instanceof Version) {
+                return false;
+            }
 
-    Widget getContent();
+            try {
+                String workspace = node.getSession().getWorkspace().getName();
+                if (RepositoryConstants.VERSION_STORE.equals(workspace)) {
+                    return false;
+                }
+            } catch (RepositoryException e) {
+                log.warn("Error evaluating availability for node [{}], returning false: {}", NodeUtil.getPathIfPossible(node), e);
+            }
+        }
 
-    /**
-     * Listener.
-     */
-    interface Listener {
-
-        void selectElement(Element element);
+        return true;
     }
-
-    PageEditorFrame getFrame();
-
-    void setListener(Listener listener);
-
-    void setUrl(String url);
-
-    void reload();
-
-    void setLastScrollPosition(int scrollPosition);
-
-    void resetScrollTop();
 
 }

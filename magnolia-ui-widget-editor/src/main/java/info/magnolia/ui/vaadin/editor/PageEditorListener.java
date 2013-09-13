@@ -53,6 +53,9 @@ public interface PageEditorListener {
     static final String ACTION_CANCEL_MOVE_COMPONENT =  "cancelMoveComponent";
     static final String ACTION_DELETE_COMPONENT = "deleteComponent";
 
+    static final String ACTION_VIEW_PREVIEW = "preview";
+    static final String ACTION_VIEW_EDIT = "edit";
+
     void onElementSelect(AbstractElement nodeSelection);
 
     void onAction(String actionName, Object... args);

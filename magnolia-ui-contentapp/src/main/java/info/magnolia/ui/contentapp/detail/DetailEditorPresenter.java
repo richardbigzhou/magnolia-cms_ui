@@ -33,8 +33,10 @@
  */
 package info.magnolia.ui.contentapp.detail;
 
+import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -48,14 +50,16 @@ import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.version.Version;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Presenter for the workbench displayed in the {@link info.magnolia.ui.contentapp.detail.DetailSubApp}.
@@ -72,10 +76,11 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
     private final ActionbarPresenter actionbarPresenter;
     private final DetailSubAppDescriptor subAppDescriptor;
     private final EditorDefinition editorDefinition;
+    private final VersionManager versionManager;
     private String nodePath;
 
     @Inject
-    public DetailEditorPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final DetailEditorView view,final DetailPresenter detailPresenter, final ActionbarPresenter actionbarPresenter) {
+    public DetailEditorPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final DetailEditorView view, final DetailPresenter detailPresenter, final ActionbarPresenter actionbarPresenter, final VersionManager versionManager) {
         this.actionExecutor = actionExecutor;
         this.view = view;
         this.detailPresenter = detailPresenter;
@@ -83,16 +88,44 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
         this.appContext = subAppContext.getAppContext();
         this.subAppDescriptor = (DetailSubAppDescriptor) subAppContext.getSubAppDescriptor();
         this.editorDefinition = subAppDescriptor.getEditor();
+        this.versionManager = versionManager;
+    }
+
+    /**
+     * @deprecated since 5.1 - use {@link DetailEditorPresenter(ActionExecutor, SubAppContext, DetailEditorView, DetailPresenter, ActionbarPresenter, VersionManager)} instead.
+     */
+    @Deprecated
+    public DetailEditorPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final DetailEditorView view, final DetailPresenter detailPresenter, final ActionbarPresenter actionbarPresenter) {
+        this.actionExecutor = actionExecutor;
+        this.view = view;
+        this.detailPresenter = detailPresenter;
+        this.actionbarPresenter = actionbarPresenter;
+        this.appContext = subAppContext.getAppContext();
+        this.subAppDescriptor = (DetailSubAppDescriptor) subAppContext.getSubAppDescriptor();
+        this.editorDefinition = subAppDescriptor.getEditor();
+        this.versionManager = Components.getComponent(VersionManager.class);
     }
 
     public View start(String nodePath, DetailView.ViewType viewType) {
+        return start(nodePath, viewType, null);
+    }
+
+    public View start(String nodePath, DetailView.ViewType viewType, String versionName) {
         view.setListener(this);
         this.nodePath = nodePath;
         JcrNodeAdapter item;
         try {
             Session session = MgnlContext.getJCRSession(editorDefinition.getWorkspace());
             if (session.nodeExists(nodePath) && session.getNode(nodePath).getPrimaryNodeType().getName().equals(editorDefinition.getNodeType().getName())) {
-                item = new JcrNodeAdapter(SessionUtil.getNode(editorDefinition.getWorkspace(), nodePath));
+                Node node = SessionUtil.getNode(editorDefinition.getWorkspace(), nodePath);
+                // Get versioned item if version name was provided
+                // Only show version if in VIEW mode
+                if (StringUtils.isNotEmpty(versionName) && DetailView.ViewType.VIEW.equals(viewType)) {
+                    Version version = versionManager.getVersion(node, versionName);
+                    item = new JcrNodeAdapter(version.getFrozenNode());
+                } else {
+                    item = new JcrNodeAdapter(node);
+                }
             } else {
                 String parentPath = StringUtils.substringBeforeLast(nodePath, "/");
                 parentPath = parentPath.isEmpty() ? "/" : parentPath;

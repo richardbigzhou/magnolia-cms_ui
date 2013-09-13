@@ -155,8 +155,16 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
                 return;
             }
 
-            Node node = (item instanceof Property) ? item.getParent() : (Node) item;
+            Node node = null;
 
+            if (item instanceof Property) {
+                node = item.getParent();
+            } else {
+                // Check if item is root.
+                if (!StringUtils.equals(((Node) item).getPath(), workbenchPath)) {
+                    node = (Node) item.getParent();
+                }
+            }
             // as long as parent is within the scope of the workbench
             while (node != null && !StringUtils.equals(node.getPath(), workbenchPath)) {
                 treeTable.setCollapsed(node.getIdentifier(), false);
@@ -189,7 +197,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
 
         private final ShortcutAction tabNext = new ShortcutAction("Tab", ShortcutAction.KeyCode.TAB, null);
 
-        private final ShortcutAction tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB, new int[] { ShortcutAction.ModifierKey.CTRL });
+        private final ShortcutAction tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB, new int[] { ShortcutAction.ModifierKey.SHIFT });
 
         private final ShortcutAction escape = new ShortcutAction("Esc", ShortcutAction.KeyCode.ESCAPE, null);
 

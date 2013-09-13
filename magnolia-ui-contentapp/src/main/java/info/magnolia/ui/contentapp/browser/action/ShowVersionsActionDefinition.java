@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,42 +31,17 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.gwt.client.widget;
+package info.magnolia.ui.contentapp.browser.action;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
- * VPageEditorView.
+ * Action definition of {@link ShowVersionsAction}.
  */
-public interface PageEditorView extends IsWidget {
+public class ShowVersionsActionDefinition extends ConfiguredActionDefinition {
 
-    void initDomEventListeners();
-
-    void initKeyEventListeners();
-
-
-    Widget getContent();
-
-    /**
-     * Listener.
-     */
-    interface Listener {
-
-        void selectElement(Element element);
+    public ShowVersionsActionDefinition() {
+        setImplementationClass(ShowVersionsAction.class);
     }
-
-    PageEditorFrame getFrame();
-
-    void setListener(Listener listener);
-
-    void setUrl(String url);
-
-    void reload();
-
-    void setLastScrollPosition(int scrollPosition);
-
-    void resetScrollTop();
 
 }

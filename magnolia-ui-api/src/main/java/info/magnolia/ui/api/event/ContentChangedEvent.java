@@ -55,9 +55,20 @@ public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
 
     private String itemId;
 
+    /**
+     * Whether the content changed is a property.
+     */
+    private boolean propertyChange = false;
+
     public ContentChangedEvent(String workspace, String itemId) {
         this.workspace = workspace;
         this.itemId = itemId;
+    }
+
+    public ContentChangedEvent(String workspace, String itemId, boolean isProperty) {
+        this.workspace = workspace;
+        this.itemId = itemId;
+        this.propertyChange = isProperty;
     }
 
     public String getWorkspace() {
@@ -66,6 +77,10 @@ public class ContentChangedEvent implements Event<ContentChangedEvent.Handler> {
 
     public String getItemId() {
         return itemId;
+    }
+
+    public boolean isPropertyChange() {
+        return propertyChange;
     }
 
     @Override

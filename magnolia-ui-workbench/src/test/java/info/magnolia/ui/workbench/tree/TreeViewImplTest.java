@@ -46,6 +46,7 @@ import javax.jcr.Node;
 import javax.jcr.Session;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -103,7 +104,7 @@ public class TreeViewImplTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testSelectExpandsNodeItself() throws Exception {
+    public void testSelectDoesNotExpandNodeItself() throws Exception {
         // GIVEN
         Node root = session.getRootNode();
         Node visibleRoot = root.addNode(NODE_ROOT_ITEM_ID);
@@ -116,9 +117,10 @@ public class TreeViewImplTest extends RepositoryTestCase {
         view.select(Arrays.asList(node.getIdentifier()));
 
         // THEN
-        assertFalse(view.asVaadinComponent().isCollapsed(node.getIdentifier()));
+        assertTrue(view.asVaadinComponent().isCollapsed(node.getIdentifier()));
     }
 
+    @Ignore("See ticket MGNLUI-2078 - Need to verify if test is still relevant.")
     @Test
     public void testSelectExpandsNodeAtRootLevel() throws Exception {
         // GIVEN
