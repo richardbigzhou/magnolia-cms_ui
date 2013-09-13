@@ -57,6 +57,7 @@ import info.magnolia.ui.dialog.choosedialog.ChooseDialogView;
 import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
@@ -287,7 +288,11 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
             @Override
             public void onItemChosen(String actionName, Item item) {
                 try {
-                    textField.setValue(((AbstractJcrNodeAdapter) item).getJcrItem().getPath());
+                    if (item instanceof JcrItemAdapter) {
+                        textField.setValue(((JcrItemAdapter) item).getJcrItem().getPath());
+                    } else {
+                        textField.setValue("/");
+                    }
                 } catch (RepositoryException e) {
                     log.error("Failed to read chosen node", e);
                 }
