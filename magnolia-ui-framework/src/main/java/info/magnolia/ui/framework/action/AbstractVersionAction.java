@@ -34,7 +34,6 @@
 package info.magnolia.ui.framework.action;
 
 import info.magnolia.cms.core.version.VersionInfo;
-import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.jcr.util.VersionUtil;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionDefinition;
@@ -75,15 +74,13 @@ public abstract class AbstractVersionAction<D extends ActionDefinition> extends 
     private final D definition;
     protected final LocationController locationController;
     protected final UiContext uiContext;
-    protected final VersionManager versionManager;
     protected final FormDialogPresenter formDialogPresenter;
     protected final AbstractJcrNodeAdapter nodeAdapter;
     private BeanItem<?> item;
 
-    protected AbstractVersionAction(D definition, VersionManager versionManager, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter) {
+    protected AbstractVersionAction(D definition, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter) {
         super(definition);
         this.definition = definition;
-        this.versionManager = versionManager;
         this.locationController = locationController;
         this.uiContext = uiContext;
         this.formDialogPresenter = formDialogPresenter;
