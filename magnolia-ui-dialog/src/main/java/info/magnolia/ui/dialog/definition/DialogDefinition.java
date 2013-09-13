@@ -42,7 +42,7 @@ import java.util.Map;
 /**
  * Base definition of a dialog.
  */
-public interface BaseDialogDefinition {
+public interface DialogDefinition {
     /**
      * Unique identifier for this dialog.
      */

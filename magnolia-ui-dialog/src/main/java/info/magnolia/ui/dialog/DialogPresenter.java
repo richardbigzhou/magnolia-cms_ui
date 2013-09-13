@@ -35,7 +35,7 @@ package info.magnolia.ui.dialog;
 
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.dialog.actionarea.ActionAreaPresenter;
-import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 
 /**
  * {@link DialogPresenter} takes care of {@link DialogView} presentation, the main responsibility
@@ -43,7 +43,7 @@ import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
  */
 public interface DialogPresenter {
 
-    DialogView start(BaseDialogDefinition definition, UiContext uiContext);
+    DialogView start(DialogDefinition definition, UiContext uiContext);
 
     DialogView getView();
 

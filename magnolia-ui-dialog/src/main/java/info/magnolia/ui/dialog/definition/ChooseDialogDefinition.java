@@ -39,7 +39,7 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
 /**
  * Definition of a choose dialog.
  */
-public interface ChooseDialogDefinition extends BaseDialogDefinition {
+public interface ChooseDialogDefinition extends DialogDefinition {
 
     FieldDefinition getField();
 

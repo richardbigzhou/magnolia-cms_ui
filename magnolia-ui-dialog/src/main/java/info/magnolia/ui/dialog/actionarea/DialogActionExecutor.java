@@ -36,7 +36,7 @@ package info.magnolia.ui.dialog.actionarea;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.AbstractActionExecutor;
 import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 
 import javax.inject.Inject;
 
@@ -46,14 +46,14 @@ import javax.inject.Inject;
  */
 public class DialogActionExecutor extends AbstractActionExecutor {
 
-    private BaseDialogDefinition definition;
+    private DialogDefinition definition;
 
     @Inject
     public DialogActionExecutor(ComponentProvider componentProvider) {
         super(componentProvider);
     }
 
-    public void setDialogDefinition(BaseDialogDefinition definition) {
+    public void setDialogDefinition(DialogDefinition definition) {
         this.definition = definition;
     }
 

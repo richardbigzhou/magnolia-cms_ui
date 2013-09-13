@@ -49,7 +49,7 @@ import info.magnolia.ui.dialog.BaseDialogPresenter;
 import info.magnolia.ui.dialog.DialogCloseHandler;
 import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
-import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
@@ -90,7 +90,7 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
     }
 
     @Override
-    public ChooseDialogView start(BaseDialogDefinition definition, UiContext uiContext) {
+    public ChooseDialogView start(DialogDefinition definition, UiContext uiContext) {
         getExecutor().setDialogDefinition(definition);
         return (ChooseDialogView)super.start(definition, uiContext);
     }

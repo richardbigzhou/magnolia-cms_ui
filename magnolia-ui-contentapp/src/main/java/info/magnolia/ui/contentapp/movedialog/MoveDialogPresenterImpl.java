@@ -57,8 +57,8 @@ import info.magnolia.ui.dialog.DialogCloseHandler;
 import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.actionarea.definition.ConfiguredEditorActionAreaDefinition;
-import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
-import info.magnolia.ui.dialog.definition.ConfiguredBaseDialogDefinition;
+import info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.dialog.definition.SecondaryActionDefinition;
 import info.magnolia.ui.framework.action.MoveLocation;
 import info.magnolia.ui.framework.overlay.ViewAdapter;
@@ -152,7 +152,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
             }
         });
 
-        BaseDialogDefinition dialogDefinition = prepareDialogDefinition();
+        DialogDefinition dialogDefinition = prepareDialogDefinition();
         getExecutor().setDialogDefinition(dialogDefinition);
         dialogView.setCaption(dialogDefinition.getLabel());
         dialogView.addDialogCloseHandler(new DialogCloseHandler() {
@@ -241,8 +241,8 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         }
     }
 
-    private BaseDialogDefinition prepareDialogDefinition() {
-        ConfiguredBaseDialogDefinition def = new ConfiguredBaseDialogDefinition();
+    private DialogDefinition prepareDialogDefinition() {
+        ConfiguredDialogDefinition def = new ConfiguredDialogDefinition();
         def.setLabel("Move destination");
         def.setId("move:dialog");
 

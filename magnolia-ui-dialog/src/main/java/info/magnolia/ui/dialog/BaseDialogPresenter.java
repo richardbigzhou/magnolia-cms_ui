@@ -46,7 +46,7 @@ import info.magnolia.ui.dialog.actionarea.ActionAreaPresenter;
 import info.magnolia.ui.dialog.actionarea.ActionListener;
 import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
 import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
-import info.magnolia.ui.dialog.definition.BaseDialogDefinition;
+import info.magnolia.ui.dialog.definition.DialogDefinition;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
 import javax.inject.Inject;
@@ -77,7 +77,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
 
     private UiContext uiContext;
 
-    private BaseDialogDefinition definition;
+    private DialogDefinition definition;
 
     @Inject
     public BaseDialogPresenter(ComponentProvider componentProvider, ActionExecutor executor, DialogView view) {
@@ -111,7 +111,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
         });
     }
 
-    public DialogView start(BaseDialogDefinition definition, UiContext uiContext) {
+    public DialogView start(DialogDefinition definition, UiContext uiContext) {
         this.uiContext = uiContext;
         this.definition = definition;
         this.editorActionAreaPresenter = componentProvider.getComponent(definition.getActionArea().getPresenterClass());
@@ -169,7 +169,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
         }
     }
 
-    protected BaseDialogDefinition getDefinition() {
+    protected DialogDefinition getDefinition() {
         return definition;
     }
 

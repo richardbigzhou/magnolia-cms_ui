@@ -39,7 +39,7 @@ import info.magnolia.ui.form.definition.FormDefinition;
 /**
  * A definition of a configured dialog.
  */
-public class ConfiguredFormDialogDefinition extends ConfiguredBaseDialogDefinition implements FormDialogDefinition {
+public class ConfiguredFormDialogDefinition extends ConfiguredDialogDefinition implements FormDialogDefinition {
 
     public static final String FORM_NODE_NAME = "form";
 

@@ -43,7 +43,7 @@ import info.magnolia.ui.form.definition.FormDefinition;
  * @see info.magnolia.ui.form.field.definition.FieldDefinition
  * @see info.magnolia.ui.api.action.ActionDefinition
  */
-public interface FormDialogDefinition extends BaseDialogDefinition {
+public interface FormDialogDefinition extends DialogDefinition {
 
     String getDescription();
 

@@ -112,8 +112,8 @@
     </type-mapping>
 
     <type-mapping>
-      <type>info.magnolia.ui.dialog.definition.BaseDialogDefinition</type>
-      <implementation>info.magnolia.ui.dialog.definition.ConfiguredBaseDialogDefinition</implementation>
+      <type>info.magnolia.ui.dialog.definition.DialogDefinition</type>
+      <implementation>info.magnolia.ui.dialog.definition.ConfiguredDialogDefinition</implementation>
     </type-mapping>
 
 
