@@ -34,6 +34,7 @@
 package info.magnolia.ui.framework.action;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.i18n.Messages;
@@ -60,6 +61,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.jcr.Node;
@@ -89,9 +91,8 @@ public class DeleteActionTest extends RepositoryTestCase {
         MessagesManager messagesManager = mock(MessagesManager.class);
         Messages messages = mock(Messages.class);
         ComponentsTestUtil.setInstance(MessagesManager.class, messagesManager);
-        when(messagesManager.getMessages()).thenReturn(messages);
+        when(messagesManager.getMessages(anyString(), any(Locale.class))).thenReturn(messages);
         when(messages.get(anyString())).thenReturn("Some translated string");
-
 
         // Init Command
         Session webSiteSession = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);

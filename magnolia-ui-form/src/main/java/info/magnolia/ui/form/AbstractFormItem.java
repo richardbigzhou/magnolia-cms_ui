@@ -36,6 +36,11 @@ package info.magnolia.ui.form;
 import info.magnolia.cms.i18n.Messages;
 import info.magnolia.cms.i18n.MessagesUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Abstract base class for dialog items, provides resolution of {@link Messages} in the hierarchical.
  * 
@@ -45,6 +50,18 @@ import info.magnolia.cms.i18n.MessagesUtil;
 public abstract class AbstractFormItem implements FormItem {
 
     private FormItem parent;
+
+    private static String[] UI_BASENAMES;
+
+    static {
+        String uiPackagePrefix = "info.magnolia.ui.";
+        String[] uiModules = { "admincentral", "admincentral_legacy", "model", "framework", "widget.actionbar", "widget.dialog", "widget.editor", "widget.magnoliashell", "widget.tabsheet", "vaadin.integration" };
+        List<String> basenames = new ArrayList<String>();
+        for (String module : uiModules) {
+            basenames.add(uiPackagePrefix + module + ".messages");
+        }
+        UI_BASENAMES = basenames.toArray(new String[] {});
+    }
 
     @Override
     public void setParent(FormItem parent) {
@@ -57,12 +74,21 @@ public abstract class AbstractFormItem implements FormItem {
     }
 
     @Override
-    @Deprecated
     /**
      * @deprecated since 5.1. You should use {@link info.magnolia.i18n.I18nizer} mechanism instead.
      */
+    @Deprecated
     public Messages getMessages() {
-        return MessagesUtil.chainWithDefault("info.magnolia.ui.admincentral.messages");
+        Messages messages = null;
+        if (getParent() != null) {
+            messages = getParent().getMessages();
+        } else {
+            messages = MessagesUtil.chain(UI_BASENAMES);
+        }
+        if (StringUtils.isNotBlank(getI18nBasename())) {
+            messages = MessagesUtil.chain(getI18nBasename(), messages);
+        }
+        return messages;
     }
 
     /**
@@ -71,10 +97,10 @@ public abstract class AbstractFormItem implements FormItem {
     @Deprecated
     protected abstract String getI18nBasename();
 
-    @Deprecated
     /**
      * @deprecated since 5.1. You should use {@link info.magnolia.i18n.I18nizer} mechanism instead.
      */
+    @Deprecated
     public String getMessage(String key) {
         String message = getMessages().get(key);
         return message != null && !message.startsWith("???") ? message : key;
