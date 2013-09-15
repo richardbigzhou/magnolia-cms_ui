@@ -55,11 +55,12 @@ public abstract class AbstractFormItem implements FormItem {
 
     static {
         String uiPackagePrefix = "info.magnolia.ui.";
-        String[] uiModules = { "admincentral", "admincentral_legacy", "model", "framework", "widget.actionbar", "widget.dialog", "widget.editor", "widget.magnoliashell", "widget.tabsheet", "vaadin.integration" };
+        String[] uiModules = { "admincentral", "model", "framework", "widget.actionbar", "widget.dialog", "widget.editor", "widget.magnoliashell", "widget.tabsheet", "vaadin.integration" };
         List<String> basenames = new ArrayList<String>();
         for (String module : uiModules) {
             basenames.add(uiPackagePrefix + module + ".messages");
         }
+        basenames.add("info.magnolia.ui.admincentral.messages_legacy");
         UI_BASENAMES = basenames.toArray(new String[] {});
     }
 
