@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.dialog.formdialog;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.i18n.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
@@ -50,11 +49,13 @@ import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import org.apache.commons.lang.StringUtils;
 
-import javax.inject.Inject;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
 
@@ -97,7 +98,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
      * <ul>
      * <li>Sets the created {@link FormView} as content of the created {@link DialogView}.</li>
      * </ul>
-     *
+     * 
      * @param item passed on to{@link info.magnolia.ui.dialog.formdialog.FormDialogPresenter}
      * @param dialogDefinition
      * @param uiContext
@@ -134,13 +135,13 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         final String basename = dialogDefinition.getI18nBasename();
 
         if (StringUtils.isNotBlank(description)) {
-            String i18nDescription = MessagesUtil.getWithDefault(description, description, basename);
-            getView().setDescription(i18nDescription);
+            // String i18nDescription = MessagesUtil.getWithDefault(description, description, basename);
+            getView().setDescription(description);
         }
 
         if (StringUtils.isNotBlank(label)) {
-            String i18nLabel = MessagesUtil.getWithDefault(label, label, basename);
-            getView().setCaption(i18nLabel);
+            // String i18nLabel = MessagesUtil.getWithDefault(label, label, basename);
+            getView().setCaption(label);
         }
     }
 
@@ -161,7 +162,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     @Override
     protected DialogActionExecutor getExecutor() {
-        return (DialogActionExecutor)super.getExecutor();
+        return (DialogActionExecutor) super.getExecutor();
     }
 
     @Override
@@ -169,7 +170,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         List<ActionDefinition> result = new LinkedList<ActionDefinition>();
         boolean isJcrItemAdapter = (item instanceof JcrItemAdapter);
         for (ActionDefinition action : getDefinition().getActions().values()) {
-            if (!isJcrItemAdapter || getExecutor().isAvailable(action.getName(), ((JcrItemAdapter)item).getJcrItem())) {
+            if (!isJcrItemAdapter || getExecutor().isAvailable(action.getName(), ((JcrItemAdapter) item).getJcrItem())) {
                 result.add(action);
             }
         }
@@ -178,6 +179,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
     @Override
     protected Object[] getActionParameters(String actionName) {
-        return new Object[]{this, item, callback};
+        return new Object[] { this, item, callback };
     }
 }

@@ -308,7 +308,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             Node node = session.getNode(location.getNodePath());
             if (StringUtils.isNotBlank(location.getVersion())) {
                 node = versionManager.getVersion(node, location.getVersion());
-                caption = MessagesUtil.get("pages.subapp.versioned_page", new String[] { PropertyUtil.getString(node, "title", node.getName()), location.getVersion() });
+                caption = MessagesUtil.get("pages.subapp.versioned_page", "info.magnolia.ui.admincentral.messages", new String[] { PropertyUtil.getString(node, "title", node.getName()), location.getVersion() });
             } else {
                 caption = PropertyUtil.getString(node, "title", node.getName());
             }

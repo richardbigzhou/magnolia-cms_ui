@@ -70,13 +70,12 @@ import com.vaadin.ui.TextField;
  * <li>InProgressLayout (ProgressBar / Cancel Button...)
  * <li>CompletedLayout (File Detail / Preview ...)
  * </ul>
- *
+ * 
  * @param <D> {@link FileItemWrapper} implemented class.
  */
 public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUploadField<D> {
     private static final long serialVersionUID = 1L;
     private static final Logger log = LoggerFactory.getLogger(BasicUploadField.class);
-
 
     // Root layout
     private final CssLayout layout;
@@ -105,7 +104,6 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         // set read only
         setReadOnly(definition.isReadOnly());
     }
-
 
     /**
      * Initialize the root component.
@@ -179,7 +177,6 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         log.debug("buildInProgressLayout() called ...");
     }
 
-
     @Override
     protected void refreshInProgressLayout(long readBytes, long contentLength, String fileName) {
         if (progress != null) {
@@ -240,7 +237,6 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         return actionLayout;
     }
 
-
     /**
      * Create the Cancel Button.
      * Used to cancel an ongoing Upload.
@@ -266,7 +262,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         deleteButton.setHtmlContentAllowed(true);
         deleteButton.setCaption("<span class=\"" + "icon-trash" + "\"></span>");
         deleteButton.addStyleName("inline");
-        deleteButton.setDescription(MessagesUtil.get(deleteCaption,"info.magnolia.ui.admincentral.messages"));
+        deleteButton.setDescription(MessagesUtil.get(deleteCaption, "info.magnolia.ui.admincentral.messages"));
 
         deleteButton.addClickListener(new Button.ClickListener() {
             private static final long serialVersionUID = 1L;
@@ -283,7 +279,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     /**
      * Initialize a Component displaying some File Informations.
      * Override getFileDetail...() in order to display custom info's you may want to display.
-     *
+     * 
      * @return A file Info Component. Generally a {@link FormLayout}.
      */
     private Component createFileInfoComponent() {
@@ -315,11 +311,11 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         if (this.editFileName && !isReadOnly()) {
             TextField textField = new TextField(getFileWrapper().getFileNameProperty());
             textField.setNullRepresentation("");
-            textField.setCaption(MessagesUtil.get(fileDetailNameCaption,"info.magnolia.ui.admincentral.messages"));
+            textField.setCaption(MessagesUtil.get(fileDetailNameCaption, "info.magnolia.ui.admincentral.messages"));
             return textField;
         } else {
             Label label = new Label("", ContentMode.HTML);
-            label.setCaption(MessagesUtil.get(fileDetailNameCaption,"info.magnolia.ui.admincentral.messages"));
+            label.setCaption(MessagesUtil.get(fileDetailNameCaption, "info.magnolia.ui.admincentral.messages"));
             label.setValue(getFileWrapper().getFileName());
             return label;
         }
@@ -330,7 +326,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
      */
     protected Component getFileDetailSize() {
         Label label = new Label("", ContentMode.HTML);
-        label.setCaption(MessagesUtil.get(fileDetailSizeCaption,"info.magnolia.ui.admincentral.messages"));
+        label.setCaption(MessagesUtil.get(fileDetailSizeCaption, "info.magnolia.ui.admincentral.messages"));
         label.setValue(FileUtils.byteCountToDisplaySize(getFileWrapper().getFileSize()));
         return label;
     }
@@ -344,16 +340,15 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         if (this.editFileFormat && !isReadOnly()) {
             TextField textField = new TextField(getFileWrapper().getFileFormatProperty());
             textField.setNullRepresentation("");
-            textField.setCaption(MessagesUtil.get(fileDetailFormatCaption,"info.magnolia.ui.admincentral.messages"));
+            textField.setCaption(MessagesUtil.get(fileDetailFormatCaption, "info.magnolia.ui.admincentral.messages"));
             return textField;
         } else {
-            Label label = new Label("File Format", ContentMode.HTML);
+            Label label = new Label("", ContentMode.HTML);
             label.setValue(getFileWrapper().getExtension());
-            label.setCaption(MessagesUtil.get(fileDetailFormatCaption,"info.magnolia.ui.admincentral.messages"));
+            label.setCaption(MessagesUtil.get(fileDetailFormatCaption, "info.magnolia.ui.admincentral.messages"));
             return label;
         }
     }
-
 
     /**
      * @return Thumbnail Component.
@@ -370,7 +365,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     /**
      * Create the Icon related to a File. <br>
      * <b>Override this method in order to change the Displayed Icon .</b>
-     *
+     * 
      * @param fileWrapper
      * @return
      */
@@ -417,12 +412,12 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     protected String captionExtension;
 
     protected void setCaptionExtension(String mimeType) {
-        captionExtension = StringUtils.EMPTY;
+        captionExtension = "";
     }
 
     protected String getCaption(String caption, String[] args) {
         if (StringUtils.isEmpty(caption)) {
-            return StringUtils.EMPTY;
+            return "";
         }
         caption = StringUtils.isNotBlank(captionExtension) ? caption + "." + captionExtension : caption;
         if (args != null && args.length > 0) {
@@ -453,42 +448,55 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     public void setSelectNewCaption(String selectNewCaption) {
         this.selectNewCaption = selectNewCaption;
     }
+
     public void setSelectAnotherCaption(String selectAnotherCaption) {
         this.selectAnotherCaption = selectAnotherCaption;
     }
+
     public void setDropZoneCaption(String dropZoneCaption) {
         this.dropZoneCaption = dropZoneCaption;
     }
+
     public void setInProgressCaption(String inProgressCaption) {
         this.inProgressCaption = inProgressCaption;
     }
+
     public void setInProgressRatioCaption(String inProgressRatioCaption) {
         this.inProgressRatioCaption = inProgressRatioCaption;
     }
+
     public void setFileDetailHeaderCaption(String fileDetailHeaderCaption) {
         this.fileDetailHeaderCaption = fileDetailHeaderCaption;
     }
+
     public void setFileDetailNameCaption(String fileDetailNameCaption) {
         this.fileDetailNameCaption = fileDetailNameCaption;
     }
+
     public void setFileDetailSizeCaption(String fileDetailSizeCaption) {
         this.fileDetailSizeCaption = fileDetailSizeCaption;
     }
+
     public void setFileDetailFormatCaption(String fileDetailFormatCaption) {
         this.fileDetailFormatCaption = fileDetailFormatCaption;
     }
+
     public void setFileDetailSourceCaption(String fileDetailSourceCaption) {
         this.fileDetailSourceCaption = fileDetailSourceCaption;
     }
+
     public void setSuccessNoteCaption(String successNoteCaption) {
         this.successNoteCaption = successNoteCaption;
     }
+
     public void setWarningNoteCaption(String warningNoteCaption) {
         this.warningNoteCaption = warningNoteCaption;
     }
+
     public void setErrorNoteCaption(String errorNoteCaption) {
         this.errorNoteCaption = errorNoteCaption;
     }
+
     public void setDeteteCaption(String deleteCaption) {
         this.deleteCaption = deleteCaption;
     }
@@ -515,12 +523,12 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         } else {
             caption = typeInterruption;
         }
-        uiContext.openNotification(MessageStyleTypeEnum.WARNING, true, getCaption(warningNoteCaption, new String[] { MessagesUtil.get(caption,"info.magnolia.ui.admincentral.messages") }));
+        uiContext.openNotification(MessageStyleTypeEnum.WARNING, true, getCaption(warningNoteCaption, new String[] { MessagesUtil.get(caption, "info.magnolia.ui.admincentral.messages") }));
     }
 
     @Override
     protected void displayUploadFinishedNote(String fileName) {
-        uiContext.openNotification(MessageStyleTypeEnum.INFO, true, getCaption(successNoteCaption, new String[]{fileName}));
+        uiContext.openNotification(MessageStyleTypeEnum.INFO, true, getCaption(successNoteCaption, new String[] { fileName }));
     }
 
     @Override

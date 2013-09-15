@@ -153,7 +153,6 @@ public class DetailSubApp extends BaseSubApp {
         getView().setContentView(view);
     }
 
-
     @Override
     public String getCaption() {
         return caption;
@@ -186,7 +185,7 @@ public class DetailSubApp extends BaseSubApp {
                         } catch (RepositoryException e) {
                             log.warn("Could not determine if parent node still exists", e);
                         }
-                    // Editing existing item
+                        // Editing existing item
                     } else {
                         try {
                             Item item = JcrItemUtil.getJcrItem(getWorkspace(), itemId);
@@ -223,7 +222,6 @@ public class DetailSubApp extends BaseSubApp {
         return subAppDescriptor.getEditor().getWorkspace();
     }
 
-
     /**
      * Set the Tab caption.
      * If a version is part of the {@link DetailLocation}, add this version information to the Tab caption.
@@ -232,7 +230,7 @@ public class DetailSubApp extends BaseSubApp {
         String caption = getBaseCaption(location);
         // Set version information
         if (StringUtils.isNotBlank(location.getVersion())) {
-            caption = MessagesUtil.get("pages.subapp.versioned_page", new String[] { caption, location.getVersion() });
+            caption = MessagesUtil.get("pages.subapp.versioned_page", "info.magnolia.ui.admincentral.messages", new String[] { caption, location.getVersion() });
         }
         this.caption = caption;
     }

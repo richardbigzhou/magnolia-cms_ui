@@ -116,12 +116,12 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
 
     @Override
     protected String getSuccessMessage() {
-        return MessagesUtil.get(getDefinition().getSuccessMessage(), getDefinition().getI18nBasename(), new String[] { "" + getItems().size() });
+        return MessagesUtil.get(getDefinition().getSuccessMessage(), "info.magnolia.ui.admincentral.messages", new String[] { "" + getItems().size() });
     }
 
     @Override
     protected String getFailureMessage() {
-        return MessagesUtil.get(getDefinition().getFailureMessage(), getDefinition().getI18nBasename());
+        return MessagesUtil.get(getDefinition().getFailureMessage(), "info.magnolia.ui.admincentral.messages");
     }
 
 }

@@ -33,14 +33,7 @@
  */
 package info.magnolia.ui.dialog.formdialog;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Field;
 import info.magnolia.cms.i18n.I18nContentSupport;
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.api.view.View;
@@ -54,9 +47,17 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.vaadin.richtext.TextAreaStretcher;
-import org.apache.commons.lang.StringUtils;
 
 import javax.inject.Inject;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Field;
 
 /**
  * Builder for forms.
@@ -90,13 +91,13 @@ public class FormBuilder {
         final String basename = formDefinition.getI18nBasename();
 
         if (StringUtils.isNotBlank(description)) {
-            String i18nDescription = MessagesUtil.getWithDefault(description, description, basename);
-            view.setDescription(i18nDescription);
+            // String i18nDescription = MessagesUtil.getWithDefault(description, description, basename);
+            view.setDescription(description);
         }
 
         if (StringUtils.isNotBlank(label)) {
-            String i18nLabel = MessagesUtil.getWithDefault(label, label, basename);
-            view.setCaption(i18nLabel);
+            // String i18nLabel = MessagesUtil.getWithDefault(label, label, basename);
+            view.setCaption(label);
         }
 
         boolean hasI18NAwareFields = false;
@@ -141,7 +142,6 @@ public class FormBuilder {
 
         final CssLayout view = new CssLayout();
         view.setSizeFull();
-
 
         for (TabDefinition tabDefinition : formDefinition.getTabs()) {
             for (final FieldDefinition fieldDefinition : tabDefinition.getFields()) {

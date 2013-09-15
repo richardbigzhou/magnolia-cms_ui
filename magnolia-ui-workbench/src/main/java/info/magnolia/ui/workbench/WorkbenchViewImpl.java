@@ -157,8 +157,6 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         addComponent(toolBar);
         setExpandRatio(toolBar, 0);
 
-
-
         keyboardEventPanel = new Panel();
         keyboardEventPanel.setSizeFull();
         keyboardEventPanel.addStyleName("keyboard-panel");
@@ -314,7 +312,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
     private TextField buildSearchField() {
         final TextField field = new TextField();
-        final String inputPrompt = MessagesUtil.getWithDefault("toolbar.search.prompt", "Search");
+        final String inputPrompt = MessagesUtil.get("toolbar.search.prompt", "info.magnolia.ui.admincentral.messages");
 
         field.setInputPrompt(inputPrompt);
         field.setSizeUndefined();

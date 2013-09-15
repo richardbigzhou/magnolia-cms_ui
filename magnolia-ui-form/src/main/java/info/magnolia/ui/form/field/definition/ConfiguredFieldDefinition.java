@@ -80,7 +80,11 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
         return label;
     }
 
+    /**
+     * @deprecated since 5.1. Use {@link info.magnolia.i18n.I18nizer} mechanism instead.
+     */
     @Override
+    @Deprecated
     public String getI18nBasename() {
         return i18nBasename;
     }
@@ -154,6 +158,10 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
         this.label = label;
     }
 
+    /**
+     * @deprecated since 5.1. Use {@link info.magnolia.i18n.I18nizer} mechanism instead.
+     */
+    @Deprecated
     public void setI18nBasename(String i18nBasename) {
         this.i18nBasename = i18nBasename;
     }
