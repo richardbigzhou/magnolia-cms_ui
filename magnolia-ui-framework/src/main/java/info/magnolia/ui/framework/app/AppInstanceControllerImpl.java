@@ -310,8 +310,8 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
         // launch running subapp
         SubAppContext subAppContext = getSupportingSubAppContext(location);
         if (subAppContext != null) {
-            subAppContext.setLocation(location);
             subAppContext.getSubApp().locationChanged(location);
+            subAppContext.setLocation(location);
             // update the caption
             getView().updateCaption(subAppContext.getInstanceId(), subAppContext.getSubApp().getCaption());
 
