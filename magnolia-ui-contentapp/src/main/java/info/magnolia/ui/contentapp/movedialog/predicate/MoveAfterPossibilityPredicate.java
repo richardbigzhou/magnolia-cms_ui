@@ -49,6 +49,6 @@ public class MoveAfterPossibilityPredicate extends MovePossibilityPredicate {
 
     @Override
     protected boolean checkItem(Item item, Item hostCandidate) {
-        return super.checkItem(item, hostCandidate) && constraint.allowedAfter(item, hostCandidate);
+        return super.checkItem(item, hostCandidate) && !hostIsRoot(hostCandidate) && constraint.allowedAfter(item, hostCandidate);
     }
 }

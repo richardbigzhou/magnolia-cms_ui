@@ -37,6 +37,7 @@ package info.magnolia.ui.contentapp.movedialog.predicate;
 import com.vaadin.data.Item;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,10 +87,24 @@ public abstract class MovePossibilityPredicate {
         return true;
     }
 
+    protected boolean hostIsRoot(Item hostCandidate) {
+        if (hostCandidate instanceof JcrNodeAdapter) {
+            JcrNodeAdapter jcrItem = (JcrNodeAdapter) hostCandidate;
+            try {
+                if (jcrItem.getJcrItem().getParent() == null) {
+                    return true;
+                }
+            } catch (RepositoryException e) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Perform basic check.
      */
-    private boolean basicMoveCheck(javax.jcr.Item source, javax.jcr.Item target) throws RepositoryException {
+    protected boolean basicMoveCheck(javax.jcr.Item source, javax.jcr.Item target) throws RepositoryException {
         if (!target.isNode() || !source.isNode()) {
             return false;
         }
