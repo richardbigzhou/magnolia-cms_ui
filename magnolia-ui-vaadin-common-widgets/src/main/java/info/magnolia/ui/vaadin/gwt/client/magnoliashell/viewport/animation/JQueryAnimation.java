@@ -41,10 +41,14 @@ import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.vaadin.client.ApplicationConnection;
 
+import java.util.logging.Logger;
+
 /**
  * GWT Animation wrapper for JQuery Animations.
  */
 public class JQueryAnimation extends Animation {
+
+    private Logger log = Logger.getLogger(getClass().getName());
 
     private Object lock = new Object();
 
@@ -127,6 +131,10 @@ public class JQueryAnimation extends Animation {
             getJQueryWrapper().setCss("top", "");
             getJQueryWrapper().setCss("-webkit-transform", "");
             getJQueryWrapper().setCss("-webkit-transition", "");
+            getJQueryWrapper().setCss("-moz-transform", "");
+            getJQueryWrapper().setCss("-moz-transition", "");
+            getJQueryWrapper().setCss("-o-transform", "");
+            getJQueryWrapper().setCss("-o-transition", "");
         }
         onComplete();
     }

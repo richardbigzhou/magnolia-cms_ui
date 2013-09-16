@@ -33,6 +33,19 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.tabsheet.widget;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
 import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation.FadeAnimation;
@@ -47,19 +60,6 @@ import info.magnolia.ui.vaadin.gwt.client.tabsheet.util.CollectionUtil;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 
 /**
  * Contains the tabs at the top and the tabs themselves. The tabs are all
@@ -85,6 +85,8 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
 
     private Element logo;
 
+    private ScheduledCommand removePreloaderCommand;
+
     public MagnoliaTabSheetViewImpl(EventBus eventBus) {
         super();
         this.tabBar = new TabBarWidget(eventBus);
@@ -100,16 +102,16 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         this.preloaderFadeOut.addCallback(new JQueryCallback() {
             @Override
             public void execute(JQueryWrapper query) {
-                tabPanel.remove(preloader);
+                doRemovePreloader();
             }
         });
     }
-
 
     @Override
     public TabBarWidget getTabContainer() {
         return tabBar;
     }
+
 
     @Override
     public void removeTab(MagnoliaTabWidget tabToOrphan) {
@@ -156,11 +158,11 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
         animation.run(HEIGHT_CHANGE_ANIMATION_DURATION, tabPanel.getElement());
     }
 
-
     @Override
     public MagnoliaTabWidget getActiveTab() {
         return activeTab;
     }
+
 
     @Override
     public List<MagnoliaTabWidget> getTabs() {
@@ -240,14 +242,18 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
 
     @Override
     public void removePreloader() {
-                Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-                    @Override
-                    public void execute() {
-                        if (tabPanel == preloader.getParent() ) {
-                            preloaderFadeOut.run(500, preloader.getElement());
-                        }
+        if (removePreloaderCommand == null) {
+            removePreloaderCommand = new ScheduledCommand() {
+                @Override
+                public void execute() {
+                    if (tabPanel == preloader.getParent()) {
+                        preloaderFadeOut.run(500, preloader.getElement());
                     }
-                });
+                    removePreloaderCommand = null;
+                }
+            };
+            Scheduler.get().scheduleDeferred(removePreloaderCommand);
+        }
     }
 
     @Override
@@ -262,5 +268,9 @@ public class MagnoliaTabSheetViewImpl extends FlowPanel implements MagnoliaTabSh
                 w.getElement().getStyle().setDisplay(Display.NONE);
             }
         }
+    }
+
+    private void doRemovePreloader() {
+        tabPanel.remove(preloader);
     }
 }
