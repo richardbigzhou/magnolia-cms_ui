@@ -33,22 +33,17 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.viewport.animation;
 
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
-import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
-
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.vaadin.client.ApplicationConnection;
-
-import java.util.logging.Logger;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.AnimationSettings;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryCallback;
+import info.magnolia.ui.vaadin.gwt.client.jquerywrapper.JQueryWrapper;
 
 /**
  * GWT Animation wrapper for JQuery Animations.
  */
 public class JQueryAnimation extends Animation {
-
-    private Logger log = Logger.getLogger(getClass().getName());
 
     private Object lock = new Object();
 
