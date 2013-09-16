@@ -34,7 +34,6 @@
 package info.magnolia.ui.contentapp.movedialog.predicate;
 
 import com.vaadin.data.Item;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 import java.util.List;
@@ -50,16 +49,6 @@ public class MoveAfterPossibilityPredicate extends MovePossibilityPredicate {
 
     @Override
     protected boolean checkItem(Item item, Item hostCandidate) {
-        if (super.checkItem(item, hostCandidate)) {
-            if (hostCandidate instanceof JcrNodeAdapter) {
-                JcrNodeAdapter jcrItem = (JcrNodeAdapter) hostCandidate;
-                if (jcrItem.getParent() == null) {
-                    return false;
-                }
-            }
-            return constraint.allowedAfter(item, hostCandidate);
-        } else {
-            return false;
-        }
+        return super.checkItem(item, hostCandidate) && constraint.allowedAfter(item, hostCandidate);
     }
 }
