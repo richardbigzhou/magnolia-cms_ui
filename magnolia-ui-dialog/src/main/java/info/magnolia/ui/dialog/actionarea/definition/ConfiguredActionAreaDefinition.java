@@ -47,6 +47,7 @@ public class ConfiguredActionAreaDefinition implements ActionAreaDefinition {
 
     private Class<? extends ActionAreaPresenter> presenterClass;
 
+    @Override
     public Map<String, ActionRendererDefinition> getActionRenderers() {
         return actionRenderers;
     }
@@ -59,6 +60,7 @@ public class ConfiguredActionAreaDefinition implements ActionAreaDefinition {
         this.presenterClass = presenterClass;
     }
 
+    @Override
     public Class<? extends ActionAreaPresenter> getPresenterClass() {
         return presenterClass;
     }
