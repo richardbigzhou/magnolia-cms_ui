@@ -39,6 +39,7 @@ import info.magnolia.objectfactory.Components;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
+import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -68,5 +69,10 @@ public class ConfiguredDialogDefinitionProvider implements DialogDefinitionProvi
     @Override
     public FormDialogDefinition getDialogDefinition() throws RegistrationException {
         return dialogDefinition;
+    }
+
+    @Override
+    public Class<? extends FormDialogPresenter> getPresenterClass() throws RegistrationException {
+        return dialogDefinition.getPresenterClass();
     }
 }

@@ -62,9 +62,9 @@ public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactor
     }
 
     @Override
-    public FormDialogPresenter createFormDialogPresenterByName(String dialogName) {
+    public FormDialogPresenter createFormDialogPresenter(String dialogId) {
         try {
-            return createFormDialogPresenter(registry.get(dialogName));
+            return componentProvider.newInstance(registry.getPresenterClass(dialogId));
         } catch (RegistrationException e) {
             log.error("Failed to retrieve form dialog definition from registry:", e);
         }
@@ -73,6 +73,6 @@ public class FormDialogPresenterFactoryImpl implements FormDialogPresenterFactor
 
     @Override
     public FormDialogPresenter createFormDialogPresenter(FormDialogDefinition definition) {
-        return componentProvider.getComponent(definition.getPresenterClass());
+        return componentProvider.newInstance(definition.getPresenterClass());
     }
 }

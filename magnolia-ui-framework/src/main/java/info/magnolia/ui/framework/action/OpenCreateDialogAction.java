@@ -36,6 +36,7 @@ package info.magnolia.ui.framework.action;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
+import info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
@@ -56,14 +57,14 @@ import javax.jcr.Node;
 public class OpenCreateDialogAction extends AbstractAction<OpenCreateDialogActionDefinition> {
 
     private final AbstractJcrNodeAdapter parentItem;
-    private final FormDialogPresenter formDialogPresenter;
+    private final FormDialogPresenterFactory formDialogPresenterFactory;
     private final UiContext uiContext;
     private final EventBus eventBus;
 
-    public OpenCreateDialogAction(OpenCreateDialogActionDefinition definition, AbstractJcrNodeAdapter parentItem, FormDialogPresenter formDialogPresenter, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
+    public OpenCreateDialogAction(OpenCreateDialogActionDefinition definition, AbstractJcrNodeAdapter parentItem, FormDialogPresenterFactory formDialogPresenterFactory, UiContext uiContext, @Named(AdmincentralEventBus.NAME) final EventBus eventBus) {
         super(definition);
         this.parentItem = parentItem;
-        this.formDialogPresenter = formDialogPresenter;
+        this.formDialogPresenterFactory = formDialogPresenterFactory;
         this.uiContext = uiContext;
         this.eventBus = eventBus;
     }
@@ -74,6 +75,8 @@ public class OpenCreateDialogAction extends AbstractAction<OpenCreateDialogActio
         Node parentNode = parentItem.getJcrItem();
 
         final JcrNodeAdapter item = new JcrNewNodeAdapter(parentNode, getDefinition().getNodeType());
+
+        final FormDialogPresenter formDialogPresenter = formDialogPresenterFactory.createFormDialogPresenter(getDefinition().getDialogName());
 
         formDialogPresenter.start(item, getDefinition().getDialogName(), uiContext, new EditorCallback() {
 

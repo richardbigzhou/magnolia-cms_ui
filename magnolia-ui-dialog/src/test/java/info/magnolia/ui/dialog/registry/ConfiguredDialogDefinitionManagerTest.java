@@ -126,11 +126,11 @@ public class ConfiguredDialogDefinitionManagerTest {
         dialogManager.start();
 
         // THEN
-        FormDialogDefinition aDialog = dialogRegistry.get("aModule:aDialog");
+        FormDialogDefinition aDialog = dialogRegistry.getDialogDefinition("aModule:aDialog");
         assertNotNull(aDialog);
         assertEquals("aModule:aDialog", aDialog.getId());
 
-        FormDialogDefinition bDialog = dialogRegistry.get("bModule:bDialog");
+        FormDialogDefinition bDialog = dialogRegistry.getDialogDefinition("bModule:bDialog");
         assertNotNull(bDialog);
         assertEquals("bModule:bDialog", bDialog.getId());
     }
@@ -146,7 +146,7 @@ public class ConfiguredDialogDefinitionManagerTest {
 
         // THEN
         // Make sure dialog a is there.
-        FormDialogDefinition aDialog = dialogRegistry.get("aModule:aDialog");
+        FormDialogDefinition aDialog = dialogRegistry.getDialogDefinition("aModule:aDialog");
         assertNotNull(aDialog);
 
         // WHEN
@@ -156,7 +156,7 @@ public class ConfiguredDialogDefinitionManagerTest {
         Thread.sleep(6000);
         // THEN a is gone
         try {
-            aDialog = dialogRegistry.get("aModule:aDialog");
+            aDialog = dialogRegistry.getDialogDefinition("aModule:aDialog");
             fail();
         } catch (RegistrationException expected) {
         }
@@ -168,7 +168,7 @@ public class ConfiguredDialogDefinitionManagerTest {
         Thread.sleep(6000);
         // THEN
         // dialog b has its property modified.
-        FormDialogDefinition bDialog = dialogRegistry.get("bModule:bDialog");
+        FormDialogDefinition bDialog = dialogRegistry.getDialogDefinition("bModule:bDialog");
         assertNotNull(bDialog);
         assertEquals("dialog for bItems", bDialog.getDescription());
 
@@ -185,11 +185,11 @@ public class ConfiguredDialogDefinitionManagerTest {
         // THEN
         // dialog b is gone.
         try {
-            bDialog = dialogRegistry.get("bModule:bDialog");
+            bDialog = dialogRegistry.getDialogDefinition("bModule:bDialog");
             fail();
         } catch (RegistrationException expected) {
         }
-        bDialog = dialogRegistry.get("cModule:cDialog");
+        bDialog = dialogRegistry.getDialogDefinition("cModule:cDialog");
     }
 
 }

@@ -180,7 +180,7 @@ public class CallbackDialogActionTest extends MgnlTestCase {
         }
 
         @Override
-        public DialogView start(Item item, String dialogName, UiContext uiContext, EditorCallback callback) {
+        public DialogView start(Item item, String dialogId, UiContext uiContext, EditorCallback callback) {
             return null;
         }
 

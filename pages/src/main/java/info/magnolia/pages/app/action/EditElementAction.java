@@ -77,15 +77,15 @@ public class EditElementAction extends AbstractAction<EditElementActionDefinitio
         try {
             String workspace = element.getWorkspace();
             String path = element.getPath();
-            String dialogName = element.getDialog();
+            String dialogId = element.getDialog();
             Session session = MgnlContext.getJCRSession(workspace);
             if (path == null || !session.itemExists(path)) {
                 path = "/";
             }
             final Node node = session.getNode(path);
             final JcrNodeAdapter item = new JcrNodeAdapter(node);
-            final FormDialogPresenter formDialogPresenter = dialogPresenterFactory.createFormDialogPresenterByName(dialogName);
-            formDialogPresenter.start(item, dialogName, subAppContext, new EditorCallback() {
+            final FormDialogPresenter formDialogPresenter = dialogPresenterFactory.createFormDialogPresenter(dialogId);
+            formDialogPresenter.start(item, dialogId, subAppContext, new EditorCallback() {
 
                 @Override
                 public void onSuccess(String actionName) {

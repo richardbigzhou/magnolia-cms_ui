@@ -36,6 +36,7 @@ package info.magnolia.ui.dialog.registry;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.registry.RegistryMap;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
+import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 
 import javax.inject.Singleton;
 import java.util.List;
@@ -55,14 +56,20 @@ public class DialogDefinitionRegistry {
         }
     };
 
-    public FormDialogDefinition get(String id) throws RegistrationException {
-        DialogDefinitionProvider provider;
+    public FormDialogDefinition getDialogDefinition(String id) throws RegistrationException {
+        return getProvider(id).getDialogDefinition();
+    }
+
+    public Class<? extends FormDialogPresenter> getPresenterClass(String id) throws RegistrationException {
+        return getProvider(id).getPresenterClass();
+    }
+
+    private DialogDefinitionProvider getProvider(String id) throws RegistrationException {
         try {
-            provider = registry.getRequired(id);
+            return registry.getRequired(id);
         } catch (RegistrationException e) {
             throw new RegistrationException("No dialog definition registered for id: " + id, e);
         }
-        return provider.getDialogDefinition();
     }
 
     public void register(DialogDefinitionProvider provider) {

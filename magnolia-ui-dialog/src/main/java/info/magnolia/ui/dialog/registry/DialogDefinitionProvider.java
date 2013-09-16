@@ -35,6 +35,7 @@ package info.magnolia.ui.dialog.registry;
 
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
+import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 
 /**
  * Provides a dialog definition.
@@ -46,4 +47,6 @@ public interface DialogDefinitionProvider {
     String getId();
 
     FormDialogDefinition getDialogDefinition() throws RegistrationException;
+
+    Class<? extends FormDialogPresenter> getPresenterClass() throws RegistrationException;
 }

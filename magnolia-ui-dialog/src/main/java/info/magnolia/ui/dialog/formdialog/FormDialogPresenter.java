@@ -53,10 +53,10 @@ public interface FormDialogPresenter extends DialogPresenter {
      * Start the formDialogPresenter.
      *
      * @param item The item on which the form will operate.
-     * @param uiContext The layer over which the opened dialog should be presented and be modal. See {@link Shell}, {@link SubAppContext}, {@link AppContext}.
+     * @param uiContext The layer over which the opened dialog should be presented and be modal.
      */
     DialogView start(Item item, FormDialogDefinition dialogDefinition, UiContext uiContext, EditorCallback callback);
 
-    DialogView start(Item item, String dialogName, UiContext uiContext, EditorCallback callback);
+    DialogView start(Item item, String dialogId, UiContext uiContext, EditorCallback callback);
 
 }

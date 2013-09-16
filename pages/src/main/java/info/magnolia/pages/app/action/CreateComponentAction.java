@@ -54,6 +54,7 @@ import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
 import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
+import info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
@@ -87,23 +88,25 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
     private SubAppContext subAppContext;
     private ComponentProvider componentProvider;
     private DialogView dialogView;
+    private FormDialogPresenterFactory formDialogPresenterFactory;
 
     @Inject
     public CreateComponentAction(CreateComponentActionDefinition definition, AreaElement area, @Named(SubAppEventBus.NAME) EventBus eventBus, TemplateDefinitionRegistry templateDefinitionRegistry,
-                                 SubAppContext subAppContext, ComponentProvider componentProvider) {
+                                 SubAppContext subAppContext, ComponentProvider componentProvider, FormDialogPresenterFactory formDialogPresenterFactory) {
         super(definition);
         this.area = area;
         this.eventBus = eventBus;
         this.templateDefinitionRegistry = templateDefinitionRegistry;
         this.subAppContext = subAppContext;
         this.componentProvider = componentProvider;
+        this.formDialogPresenterFactory = formDialogPresenterFactory;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         final FormDialogDefinition dialogDefinition = buildNewComponentDialog(area.getAvailableComponents());
 
-        final FormDialogPresenter formDialogPresenter = componentProvider.getComponent(FormDialogPresenter.class);
+        final FormDialogPresenter formDialogPresenter = componentProvider.newInstance(FormDialogPresenter.class);
         try {
             String workspace = area.getWorkspace();
             String path = area.getPath();
@@ -126,8 +129,11 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
         }
     }
 
-    private void openDialog(final JcrNodeAdapter item, String dialogName, final FormDialogPresenter dialogPresenter) {
-        dialogPresenter.start(item, dialogName, subAppContext, new EditorCallback() {
+    private void openDialog(final JcrNodeAdapter item, String dialogId) {
+
+        final FormDialogPresenter dialogPresenter = formDialogPresenterFactory.createFormDialogPresenter(dialogId);
+
+        dialogPresenter.start(item, dialogId, subAppContext, new EditorCallback() {
 
             @Override
             public void onSuccess(String actionName) {
@@ -229,11 +235,10 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
             String templateId = String.valueOf(item.getItemProperty(NodeTypes.Renderable.TEMPLATE).getValue());
             try {
                 TemplateDefinition templateDef = templateDefinitionRegistry.getTemplateDefinition(templateId);
-                String dialogName = templateDef.getDialog();
+                String dialogId = templateDef.getDialog();
 
-                if (StringUtils.isNotEmpty(dialogName)) {
-                    final FormDialogPresenter dialogPresenter = componentProvider.getComponent(FormDialogPresenter.class);
-                    openDialog(item, dialogName, dialogPresenter);
+                if (StringUtils.isNotEmpty(dialogId)) {
+                    openDialog(item, dialogId);
                 } else {
                     // if there is no dialog defined for the component, persist the node as is and reload.
                     try {

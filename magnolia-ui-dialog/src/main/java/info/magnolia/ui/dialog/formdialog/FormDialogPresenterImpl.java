@@ -84,12 +84,12 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     }
 
     @Override
-    public DialogView start(final Item item, String dialogName, final UiContext uiContext, EditorCallback callback) {
+    public DialogView start(final Item item, String dialogId, final UiContext uiContext, EditorCallback callback) {
         try {
-            FormDialogDefinition dialogDefinition = dialogDefinitionRegistry.get(dialogName);
+            FormDialogDefinition dialogDefinition = dialogDefinitionRegistry.getDialogDefinition(dialogId);
             return start(item, dialogDefinition, uiContext, callback);
         } catch (RegistrationException e) {
-            throw new RuntimeException("No dialogDefinition found for " + dialogName, e);
+            throw new RuntimeException("No dialogDefinition found for " + dialogId, e);
         }
     }
 
