@@ -118,6 +118,7 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
         this.nodeType = nodeType;
     }
 
+    @Override
     public EditorActionAreaDefinition getActionArea() {
         return actionArea;
     }
@@ -126,6 +127,7 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
         this.actionArea = editorActionAreaDefinition;
     }
 
+    @Override
     public List<FormActionItemDefinition> getActions() {
         return actions;
     }
