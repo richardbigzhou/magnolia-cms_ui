@@ -187,7 +187,8 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
                 getSelectedView().onShortcutKey(ShortcutAction.KeyCode.DELETE, null);
             }
         };
-        keyboardEventPanel.addShortcutListener(deleteShortcut);
+        // MGNLUI-2057 disable the delete shortcut until we apply it without disrupting inplace-editing
+        // keyboardEventPanel.addShortcutListener(deleteShortcut);
 
     }
 
