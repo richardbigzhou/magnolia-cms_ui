@@ -33,6 +33,10 @@
  */
 package info.magnolia.messages.app;
 
+import info.magnolia.ui.api.message.MessageType;
+
+import java.io.Serializable;
+
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -52,9 +56,6 @@ import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
-import info.magnolia.ui.api.message.MessageType;
-
-import java.io.Serializable;
 
 /**
  * View implementation for the Messages app.
@@ -167,8 +168,7 @@ public class MessagesViewImpl implements MessagesView {
         layout.addComponent(buttons);
 
         // intro text
-        Label intro = new Label("This app enables to send different types of messages to some or all users on a Magnolia instance.<br />" +
-                "Please note that this app is for testing purposes only and will be removed in the final release.", ContentMode.HTML);
+        Label intro = new Label("With this development tool, system messages can be sent manually.", ContentMode.HTML);
         intro.addStyleName("intro");
 
         CssLayout container = new CssLayout();
