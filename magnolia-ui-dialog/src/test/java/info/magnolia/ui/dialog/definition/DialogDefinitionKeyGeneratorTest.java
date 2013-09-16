@@ -45,7 +45,7 @@ import java.util.List;
 import org.junit.Test;
 
 /**
- * TODO Type description here.
+ * Tests for {@link DialogDefinitionKeyGenerator}.
  */
 public class DialogDefinitionKeyGeneratorTest {
     @Test

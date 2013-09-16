@@ -44,7 +44,7 @@ import java.util.List;
 import org.junit.Test;
 
 /**
- * TODO Type description here.
+ * Tests for {@link TabDefinitionKeyGenerator}.
  */
 public class TabDefinitionKeyGeneratorTest {
 

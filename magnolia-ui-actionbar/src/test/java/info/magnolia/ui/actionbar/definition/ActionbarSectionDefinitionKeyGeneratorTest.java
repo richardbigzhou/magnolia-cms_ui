@@ -48,7 +48,7 @@ import org.junit.Test;
 
 
 /**
- * TODO Type description here.
+ * Tests for {@link ActionbarSectionDefinitionKeyGenerator}.
  */
 public class ActionbarSectionDefinitionKeyGeneratorTest {
 
