@@ -35,7 +35,7 @@ package info.magnolia.ui.form.field.definition;
 
 import static org.junit.Assert.assertEquals;
 
-import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
@@ -174,7 +174,7 @@ public class FieldDefinitionKeyGeneratorTest {
     /**
      * Fake ChooseDialogDefinition - cannot use the right one here, as it is defined in a dependent artifact.
      */
-    @I18nAble
+    @I18nable
     public static class TestChooseDialogDefinition {
         private FieldDefinition field;
 

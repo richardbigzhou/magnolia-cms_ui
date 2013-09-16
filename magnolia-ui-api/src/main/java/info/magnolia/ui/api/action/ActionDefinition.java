@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.api.action;
 
-import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.i18nsystem.I18nText;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 
@@ -46,7 +46,7 @@ import info.magnolia.ui.api.availability.AvailabilityDefinition;
  * @see Action
  * @see ActionExecutor
  */
-@I18nAble(keyGenerator = ActionDefinitionKeyGenerator.class)
+@I18nable(keyGenerator = ActionDefinitionKeyGenerator.class)
 public interface ActionDefinition {
 
     String getName();

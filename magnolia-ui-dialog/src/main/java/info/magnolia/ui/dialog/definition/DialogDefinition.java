@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.dialog.definition;
 
-import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.i18nsystem.I18nText;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.dialog.DialogPresenter;
@@ -44,7 +44,7 @@ import java.util.Map;
 /**
  * Base definition of a dialog.
  */
-@I18nAble(keyGenerator = DialogDefinitionKeyGenerator.class)
+@I18nable(keyGenerator = DialogDefinitionKeyGenerator.class)
 public interface DialogDefinition {
     /**
      * Unique identifier for this dialog.

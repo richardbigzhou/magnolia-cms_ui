@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.workbench.definition;
 
-import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 import java.io.Serializable;
@@ -42,7 +42,7 @@ import java.util.List;
 /**
  * Defines a workbench. Contains all elements which define a workbench configuration.
  */
-@I18nAble
+@I18nable
 public interface WorkbenchDefinition extends Serializable {
 
     String getName();

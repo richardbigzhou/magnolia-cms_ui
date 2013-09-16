@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.form.definition;
 
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
-import info.magnolia.i18nsystem.I18nAble;
 import info.magnolia.i18nsystem.I18nText;
 
 import java.util.List;
@@ -45,7 +45,7 @@ import java.util.List;
  * @see FormDefinition
  * @see FieldDefinition
  */
-@I18nAble(keyGenerator = TabDefinitionKeyGenerator.class)
+@I18nable(keyGenerator = TabDefinitionKeyGenerator.class)
 public interface TabDefinition {
 
     String getName();

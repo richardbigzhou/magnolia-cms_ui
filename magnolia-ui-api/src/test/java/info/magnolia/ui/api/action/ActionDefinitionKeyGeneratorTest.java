@@ -35,7 +35,7 @@ package info.magnolia.ui.api.action;
 
 import static org.junit.Assert.assertEquals;
 
-import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.TranslationService;
 import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
@@ -226,7 +226,7 @@ public class ActionDefinitionKeyGeneratorTest {
     /**
      * Fake ChooseDialogDefinition - cannot use the right one here, as it is defined in a dependent artifact.
      */
-    @I18nAble
+    @I18nable
     public static class TestChooseDialogDefinition {
         private Map<String, ActionDefinition> actions = new HashMap<String, ActionDefinition>();
 

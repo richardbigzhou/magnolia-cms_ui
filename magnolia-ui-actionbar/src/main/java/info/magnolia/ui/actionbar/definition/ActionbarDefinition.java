@@ -33,14 +33,14 @@
  */
 package info.magnolia.ui.actionbar.definition;
 
-import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nable;
 
 import java.util.List;
 
 /**
  * The definition for an action bar, made of sections and groups of actions.
  */
-@I18nAble
+@I18nable
 public interface ActionbarDefinition {
 
     /**

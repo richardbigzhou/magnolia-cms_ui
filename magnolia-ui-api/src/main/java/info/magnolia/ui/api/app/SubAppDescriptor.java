@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.api.app;
 
-import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.ui.api.action.ActionDefinition;
 
 import java.util.Map;
@@ -43,7 +43,7 @@ import java.util.Map;
  * 
  * @see SubApp
  */
-@I18nAble
+@I18nable
 public interface SubAppDescriptor {
 
     String getName();

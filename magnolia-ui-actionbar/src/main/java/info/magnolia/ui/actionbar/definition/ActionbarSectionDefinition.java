@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.actionbar.definition;
 
-import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.i18nsystem.I18nText;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 
@@ -42,7 +42,7 @@ import java.util.List;
 /**
  * The definition for a section of the action bar, made of groups of actions.
  */
-@I18nAble(keyGenerator = ActionbarSectionDefinitionKeyGenerator.class)
+@I18nable(keyGenerator = ActionbarSectionDefinitionKeyGenerator.class)
 public interface ActionbarSectionDefinition {
 
     String getName();

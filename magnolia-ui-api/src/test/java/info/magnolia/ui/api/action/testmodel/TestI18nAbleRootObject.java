@@ -33,13 +33,13 @@
  */
 package info.magnolia.ui.api.action.testmodel;
 
-import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.i18nsystem.I18nText;
 
 /**
  * TestI18nAbleRootObject.
  */
-@I18nAble(keyGenerator = TestI18nAbleRootObjectKeyGen.class)
+@I18nable(keyGenerator = TestI18nAbleRootObjectKeyGen.class)
 public class TestI18nAbleRootObject extends TestRootObject {
 
     @I18nText

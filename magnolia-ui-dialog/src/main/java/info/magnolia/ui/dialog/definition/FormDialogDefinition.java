@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.dialog.definition;
 
-import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.i18nsystem.I18nText;
 import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
@@ -45,7 +45,7 @@ import info.magnolia.ui.form.definition.FormDefinition;
  * @see info.magnolia.ui.form.field.definition.FieldDefinition
  * @see info.magnolia.ui.api.action.ActionDefinition
  */
-@I18nAble(keyGenerator = DialogDefinitionKeyGenerator.class)
+@I18nable(keyGenerator = DialogDefinitionKeyGenerator.class)
 public interface FormDialogDefinition extends DialogDefinition {
 
     @I18nText

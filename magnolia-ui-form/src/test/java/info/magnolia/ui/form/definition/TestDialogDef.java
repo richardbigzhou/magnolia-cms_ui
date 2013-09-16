@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.form.definition;
 
-import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nable;
 
-@I18nAble
+@I18nable
 public class TestDialogDef {
     private String id;
     private FormDefinition form;

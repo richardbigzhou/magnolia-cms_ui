@@ -34,7 +34,7 @@
 package info.magnolia.ui.form.validator.definition;
 
 import info.magnolia.ui.form.validator.factory.FieldValidatorFactory;
-import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.i18nsystem.I18nText;
 
 /**
@@ -42,7 +42,7 @@ import info.magnolia.i18nsystem.I18nText;
  *
  * @see info.magnolia.ui.form.validator.factory.FieldValidatorFactory
  */
-@I18nAble
+@I18nable
 public interface FieldValidatorDefinition {
 
     /**

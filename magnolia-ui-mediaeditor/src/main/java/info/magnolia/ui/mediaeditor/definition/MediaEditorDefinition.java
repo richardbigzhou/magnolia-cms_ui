@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.mediaeditor.definition;
 
-import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;
 
@@ -44,7 +44,7 @@ import java.util.Map;
  * of the view. Also used by {@link info.magnolia.ui.mediaeditor.action.MediaEditorActionExecutor} for resolution of
  * action definitions.
  */
-@I18nAble
+@I18nable
 public interface MediaEditorDefinition {
 
     String getId();

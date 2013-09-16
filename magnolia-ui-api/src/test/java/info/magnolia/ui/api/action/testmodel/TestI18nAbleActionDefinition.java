@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.api.action.testmodel;
 
-import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.i18nsystem.I18nText;
 import info.magnolia.ui.api.action.ActionDefinitionKeyGenerator;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
@@ -41,7 +41,7 @@ import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 /**
  * TestI18nAbleActionDefinition.
  */
-@I18nAble(keyGenerator = ActionDefinitionKeyGenerator.class)
+@I18nable(keyGenerator = ActionDefinitionKeyGenerator.class)
 public class TestI18nAbleActionDefinition extends ConfiguredActionDefinition {
 
     @Override

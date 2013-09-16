@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.api.action.testmodel;
 
-import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nable;
 
 /**
  * TestI18nAbleRootObjectWithGetNameMethod.
  */
-@I18nAble
+@I18nable
 public class TestI18nAbleRootObjectWithGetNameMethod extends TestRootObject {
     private String name;
 

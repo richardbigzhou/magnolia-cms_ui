@@ -35,7 +35,7 @@ package info.magnolia.ui.actionbar.definition;
 
 import static org.junit.Assert.*;
 
-import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
@@ -138,7 +138,7 @@ public class ActionbarSectionDefinitionKeyGeneratorTest {
      * A class that contains an actionbar, but is not an SubAppDescriptor - e.g. MessageViewDefinition.
      * But the MessageViewDefinition is in a dependent module, so we cannot use it here.
      */
-    @I18nAble
+    @I18nable
     private static class TestMessageView {
         private String id;
         private ActionbarDefinition actionbar;

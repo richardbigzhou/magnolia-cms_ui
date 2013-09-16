@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.usermenu.definition;
 
-import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.ui.api.action.ActionDefinition;
 
 import java.util.Map;
@@ -42,7 +42,7 @@ import java.util.Map;
  * Definition registered under the config node of {@link info.magnolia.ui.admincentral.AdmincentralModule}.
  * Holds actions used by the {@link info.magnolia.ui.admincentral.usermenu.action.UserActionExecutor}.
  */
-@I18nAble
+@I18nable
 public interface UserMenuDefinition {
     Map<String, ActionDefinition> getActions();
 }
