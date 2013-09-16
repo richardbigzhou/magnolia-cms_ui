@@ -33,14 +33,14 @@
  */
 package info.magnolia.ui.framework.action;
 
-import info.magnolia.cms.i18n.MessagesManager;
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.module.ModuleRegistry;
-import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
@@ -54,7 +54,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * UI action that allows to deactivate pages (nodes).
- *
+ * 
  * @see DeactivationActionDefinition
  */
 public class DeactivationAction extends AbstractCommandAction<DeactivationActionDefinition> {
@@ -75,7 +75,7 @@ public class DeactivationAction extends AbstractCommandAction<DeactivationAction
 
     @Override
     protected void onError(Exception e) {
-        uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesManager.get(isWorkflowInstalled() ? getDefinition().getWorkflowErrorMessage() : getDefinition().getErrorMessage()));
+        uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get(isWorkflowInstalled() ? getDefinition().getWorkflowErrorMessage() : getDefinition().getErrorMessage(), "info.magnolia.ui.admincentral.messages"));
     }
 
     @Override
@@ -88,10 +88,10 @@ public class DeactivationAction extends AbstractCommandAction<DeactivationAction
         String message;
         MessageStyleTypeEnum messageStyleType;
         if (!result) {
-            message = MessagesManager.get(isWorkflowInstalled() ? getDefinition().getWorkflowSuccessMessage() : getDefinition().getSuccessMessage());
+            message = MessagesUtil.get(isWorkflowInstalled() ? getDefinition().getWorkflowSuccessMessage() : getDefinition().getSuccessMessage(), "info.magnolia.ui.admincentral.messages");
             messageStyleType = MessageStyleTypeEnum.INFO;
         } else {
-            message = MessagesManager.get(isWorkflowInstalled() ? getDefinition().getWorkflowFailureMessage() : getDefinition().getFailureMessage());
+            message = MessagesUtil.get(isWorkflowInstalled() ? getDefinition().getWorkflowFailureMessage() : getDefinition().getFailureMessage(), "info.magnolia.ui.admincentral.messages");
             messageStyleType = MessageStyleTypeEnum.ERROR;
         }
 
