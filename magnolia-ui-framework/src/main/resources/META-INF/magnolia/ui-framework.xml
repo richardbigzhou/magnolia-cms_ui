@@ -163,44 +163,44 @@
       <implementation>info.magnolia.ui.dialog.actionarea.definition.ConfiguredActionAreaDefinition</implementation>
     </type-mapping>
 
-      <type-mapping>
-          <type>info.magnolia.ui.dialog.actionarea.definition.ActionAreaDefinition</type>
-          <implementation>info.magnolia.ui.dialog.actionarea.definition.ConfiguredActionAreaDefinition</implementation>
-      </type-mapping>
+    <type-mapping>
+      <type>info.magnolia.ui.dialog.actionarea.definition.ActionAreaDefinition</type>
+      <implementation>info.magnolia.ui.dialog.actionarea.definition.ConfiguredActionAreaDefinition</implementation>
+    </type-mapping>
 
-   <type-mapping>
+    <type-mapping>
       <type>info.magnolia.ui.dialog.actionarea.definition.ActionRendererDefinition</type>
       <implementation>info.magnolia.ui.dialog.actionarea.definition.ConfiguredActionRendererDefinition</implementation>
     </type-mapping>
 
-      <!-- Workbench -->
-      <type-mapping>
+    <!-- Workbench -->
+    <type-mapping>
       <type>info.magnolia.ui.workbench.definition.WorkbenchDefinition</type>
       <implementation>info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition</implementation>
     </type-mapping>
-      <type-mapping>
+    <type-mapping>
       <type>info.magnolia.ui.workbench.definition.NodeTypeDefinition</type>
       <implementation>info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition</implementation>
     </type-mapping>
-      <type-mapping>
+    <type-mapping>
       <type>info.magnolia.ui.workbench.definition.ContentPresenterDefinition</type>
       <implementation>info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition</implementation>
     </type-mapping>
 
-      <!-- Actionbar -->
-      <type-mapping>
+    <!-- Actionbar -->
+    <type-mapping>
       <type>info.magnolia.ui.actionbar.definition.ActionbarDefinition</type>
       <implementation>info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition</implementation>
     </type-mapping>
-      <type-mapping>
+    <type-mapping>
       <type>info.magnolia.ui.actionbar.definition.ActionbarSectionDefinition</type>
       <implementation>info.magnolia.ui.actionbar.definition.ConfiguredActionbarSectionDefinition</implementation>
     </type-mapping>
-      <type-mapping>
+    <type-mapping>
       <type>info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition</type>
       <implementation>info.magnolia.ui.actionbar.definition.ConfiguredActionbarGroupDefinition</implementation>
     </type-mapping>
-      <type-mapping>
+    <type-mapping>
       <type>info.magnolia.ui.actionbar.definition.ActionbarItemDefinition</type>
       <implementation>info.magnolia.ui.actionbar.definition.ConfiguredActionbarItemDefinition</implementation>
     </type-mapping>
@@ -239,20 +239,20 @@
       <implementation>info.magnolia.ui.imageprovider.DefaultImageProvider</implementation>
     </component>
 
-      <component>
-          <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory</type>
-          <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactoryImpl</implementation>
-      </component>
+    <component>
+      <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory</type>
+      <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactoryImpl</implementation>
+    </component>
 
-      <component>
-          <type>info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView</type>
-          <implementation>info.magnolia.ui.dialog.actionarea.view.EditorActionAreaViewImpl</implementation>
-      </component>
+    <component>
+      <type>info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView</type>
+      <implementation>info.magnolia.ui.dialog.actionarea.view.EditorActionAreaViewImpl</implementation>
+    </component>
 
-      <component>
-          <type>info.magnolia.ui.dialog.actionarea.renderer.ActionRenderer</type>
-          <implementation>info.magnolia.ui.dialog.actionarea.renderer.DefaultEditorActionRenderer</implementation>
-      </component>
+    <component>
+      <type>info.magnolia.ui.dialog.actionarea.renderer.ActionRenderer</type>
+      <implementation>info.magnolia.ui.dialog.actionarea.renderer.DefaultEditorActionRenderer</implementation>
+    </component>
 
     <!-- Dialog -->
     <component>
@@ -275,7 +275,6 @@
       <type>info.magnolia.ui.dialog.formdialog.FormView</type>
       <implementation>info.magnolia.ui.dialog.formdialog.ItemFormView</implementation>
     </component>
-
     <!-- Ui framework-->
     <type-mapping>
       <type>info.magnolia.ui.api.app.AppInstanceController</type>
@@ -296,18 +295,18 @@
   <components>
     <id>app</id>
 
-      <component>
-          <type>info.magnolia.ui.form.field.factory.FieldFactoryFactory</type>
-          <implementation>info.magnolia.ui.form.field.factory.FieldFactoryFactory</implementation>
-      </component>
+    <component>
+      <type>info.magnolia.ui.form.field.factory.FieldFactoryFactory</type>
+      <implementation>info.magnolia.ui.form.field.factory.FieldFactoryFactory</implementation>
+    </component>
 
     <!-- Dialog -->
     <component>
-        <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory</type>
-        <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactoryImpl</implementation>
+      <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory</type>
+      <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactoryImpl</implementation>
     </component>
 
-     <!-- Form -->
+    <!-- Form -->
     <component>
       <type>info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory</type>
       <implementation>info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory</implementation>
@@ -343,10 +342,10 @@
       <implementation>info.magnolia.ui.workbench.StatusBarViewImpl</implementation>
     </component>
 
-      <!--<component>-->
-          <!--<type>info.magnolia.event.EventBus</type>-->
-          <!--<implementation>info.magnolia.event.SimpleEventBus</implementation>-->
-      <!--</component>-->
+    <!--<component>-->
+    <!--<type>info.magnolia.event.EventBus</type>-->
+    <!--<implementation>info.magnolia.event.SimpleEventBus</implementation>-->
+    <!--</component>-->
   </components>
 
   <components>
@@ -383,10 +382,15 @@
     </component>
 
     <!-- Dialog -->
-      <component>
-          <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory</type>
-          <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactoryImpl</implementation>
-      </component>
+    <component>
+      <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory</type>
+      <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactoryImpl</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenter</type>
+      <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterImpl</implementation>
+    </component>
 
     <!-- Embedded page sub app -->
     <component>
@@ -394,20 +398,19 @@
       <implementation>info.magnolia.ui.framework.app.embedded.EmbeddedPageViewImpl</implementation>
     </component>
 
-      <component>
-          <type>info.magnolia.ui.contentapp.movedialog.MoveDialogActionAreaPresenter</type>
-          <implementation>info.magnolia.ui.contentapp.movedialog.MoveDialogActionAreaAreaPresenterImpl</implementation>
-      </component>
+    <component>
+      <type>info.magnolia.ui.contentapp.movedialog.MoveDialogPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.movedialog.MoveDialogPresenterImpl</implementation>
+    </component>
 
-      <component>
-          <type>info.magnolia.ui.contentapp.movedialog.MoveDialogPresenter</type>
-          <implementation>info.magnolia.ui.contentapp.movedialog.MoveDialogPresenterImpl</implementation>
-      </component>
+    <component>
+      <type>info.magnolia.ui.contentapp.movedialog.view.MoveDialogActionAreaView</type>
+      <implementation>info.magnolia.ui.contentapp.movedialog.view.MoveDialogActionAreaViewImpl</implementation>
+    </component>
 
-      <component>
-          <type>info.magnolia.ui.contentapp.movedialog.view.MoveDialogActionAreaView</type>
-          <implementation>info.magnolia.ui.contentapp.movedialog.view.MoveDialogActionAreaViewImpl</implementation>
-      </component>
-
+    <type-mapping>
+      <type>info.magnolia.ui.contentapp.movedialog.MoveDialogActionAreaPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.movedialog.MoveDialogActionAreaAreaPresenterImpl</implementation>
+    </type-mapping>
   </components>
 </module>
