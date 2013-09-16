@@ -35,10 +35,10 @@ package info.magnolia.ui.api.action;
 
 import static org.junit.Assert.assertEquals;
 
-import info.magnolia.i18n.I18nAble;
-import info.magnolia.i18n.LocaleProvider;
-import info.magnolia.i18n.TranslationService;
-import info.magnolia.i18n.proxytoys.ProxytoysI18nizer;
+import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.LocaleProvider;
+import info.magnolia.i18nsystem.TranslationService;
+import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
 import info.magnolia.ui.api.action.testmodel.TestI18nAbleActionDefinition;
 import info.magnolia.ui.api.action.testmodel.TestI18nAbleRootObject;
 import info.magnolia.ui.api.action.testmodel.TestI18nAbleRootObjectWithGetIdMethod;

@@ -35,8 +35,8 @@ package info.magnolia.ui.dialog.definition;
 
 import static org.junit.Assert.assertEquals;
 
-import info.magnolia.i18n.I18nizer;
-import info.magnolia.i18n.proxytoys.ProxytoysI18nizer;
+import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 
 import java.util.ArrayList;

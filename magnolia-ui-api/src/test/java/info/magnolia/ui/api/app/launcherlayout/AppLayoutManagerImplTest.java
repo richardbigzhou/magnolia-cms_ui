@@ -42,7 +42,7 @@ import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
-import info.magnolia.i18n.I18nizer;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.ui.api.app.AppDescriptor;

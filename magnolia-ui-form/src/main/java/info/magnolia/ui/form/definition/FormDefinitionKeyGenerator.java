@@ -37,7 +37,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 
 /**
- * An {@link info.magnolia.i18n.I18nKeyGenerator} for {@link FormDefinition}.
+ * An {@link info.magnolia.i18nsystem.I18nKeyGenerator} for {@link FormDefinition}.
  */
 public class FormDefinitionKeyGenerator extends AbstractFormKeyGenerator<FormDefinition> {
 

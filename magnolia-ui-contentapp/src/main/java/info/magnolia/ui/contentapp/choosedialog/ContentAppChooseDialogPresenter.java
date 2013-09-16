@@ -35,7 +35,7 @@ package info.magnolia.ui.contentapp.choosedialog;
 
 import com.rits.cloning.Cloner;
 import info.magnolia.cms.i18n.I18nContentSupport;
-import info.magnolia.i18n.I18nizer;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.ChooseDialogCallback;

@@ -34,8 +34,8 @@
 package info.magnolia.ui.api.app;
 
 import info.magnolia.cms.security.operations.AccessDefinition;
-import info.magnolia.i18n.I18nAble;
-import info.magnolia.i18n.I18nText;
+import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nText;
 
 import java.io.Serializable;
 import java.util.Map;

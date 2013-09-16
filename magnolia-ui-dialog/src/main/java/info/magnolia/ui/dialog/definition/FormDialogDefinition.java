@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.dialog.definition;
 
-import info.magnolia.i18n.I18nAble;
-import info.magnolia.i18n.I18nText;
+import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nText;
 import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.form.definition.FormDefinition;

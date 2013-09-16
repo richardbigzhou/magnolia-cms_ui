@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.api.action;
 
-import info.magnolia.i18n.AbstractI18nKeyGenerator;
-import info.magnolia.i18n.I18nKeyGenerator;
-import info.magnolia.i18n.NullKeyGenerator;
+import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
+import info.magnolia.i18nsystem.I18nKeyGenerator;
+import info.magnolia.i18nsystem.NullKeyGenerator;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 
@@ -60,7 +60,7 @@ import com.google.common.collect.Collections2;
 public class ActionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<ActionDefinition> {
 
     /**
-     * Will generate keys for the message bundle in the following form <code> &lt;app-name&gt;.&lt;sub-app-name&gt;.actions.&lt;action-name&gt;[.name of getter or field annotated with {@link info.magnolia.i18n.I18nText}]</code>.
+     * Will generate keys for the message bundle in the following form <code> &lt;app-name&gt;.&lt;sub-app-name&gt;.actions.&lt;action-name&gt;[.name of getter or field annotated with {@link info.magnolia.i18nsystem.I18nText}]</code>.
      */
     @Override
     protected void keysFor(List<String> keys, ActionDefinition actionDefinition, AnnotatedElement el) {

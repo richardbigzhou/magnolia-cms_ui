@@ -35,8 +35,8 @@ package info.magnolia.ui.form.field.definition;
 
 import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
-import info.magnolia.i18n.I18nAble;
-import info.magnolia.i18n.I18nText;
+import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nText;
 
 import java.util.List;
 

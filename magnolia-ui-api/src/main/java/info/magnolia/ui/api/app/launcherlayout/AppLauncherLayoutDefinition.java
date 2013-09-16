@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.api.app.launcherlayout;
 
-import info.magnolia.i18n.I18nAble;
+import info.magnolia.i18nsystem.I18nAble;
 
 import java.util.List;
 

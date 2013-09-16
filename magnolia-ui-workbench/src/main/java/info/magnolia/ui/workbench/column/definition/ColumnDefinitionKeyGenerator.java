@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.workbench.column.definition;
 
-import info.magnolia.i18n.AbstractI18nKeyGenerator;
+import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;

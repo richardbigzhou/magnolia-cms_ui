@@ -22,20 +22,20 @@
 
     <!-- i18n -->
     <component>
-      <type>info.magnolia.i18n.LocaleProvider</type>
-      <implementation>info.magnolia.i18n.ContextLocaleProvider</implementation>
+      <type>info.magnolia.i18nsystem.LocaleProvider</type>
+      <implementation>info.magnolia.i18nsystem.ContextLocaleProvider</implementation>
     </component>
     <component>
-      <type>info.magnolia.i18n.TranslationService</type>
-      <implementation>info.magnolia.i18n.TranslationServiceImpl</implementation>
+      <type>info.magnolia.i18nsystem.TranslationService</type>
+      <implementation>info.magnolia.i18nsystem.TranslationServiceImpl</implementation>
     </component>
     <component>
-      <type>info.magnolia.i18n.DefaultMessageBundlesLoader</type>
-      <implementation>info.magnolia.i18n.DefaultMessageBundlesLoader</implementation>
+      <type>info.magnolia.i18nsystem.DefaultMessageBundlesLoader</type>
+      <implementation>info.magnolia.i18nsystem.DefaultMessageBundlesLoader</implementation>
     </component>
     <component>
-      <type>info.magnolia.i18n.I18nizer</type>
-      <implementation>info.magnolia.i18n.proxytoys.ProxytoysI18nizer</implementation>
+      <type>info.magnolia.i18nsystem.I18nizer</type>
+      <implementation>info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer</implementation>
     </component>
 
     <!-- Ui framework -->

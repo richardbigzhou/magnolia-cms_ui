@@ -34,8 +34,8 @@
 package info.magnolia.ui.form.validator.definition;
 
 import info.magnolia.ui.form.validator.factory.FieldValidatorFactory;
-import info.magnolia.i18n.I18nAble;
-import info.magnolia.i18n.I18nText;
+import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nText;
 
 /**
  * Defines a validator.

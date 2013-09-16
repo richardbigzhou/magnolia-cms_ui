@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.form.definition;
 
-import info.magnolia.i18n.I18nAble;
+import info.magnolia.i18nsystem.I18nAble;
 
 @I18nAble
 public class TestDialogDef {

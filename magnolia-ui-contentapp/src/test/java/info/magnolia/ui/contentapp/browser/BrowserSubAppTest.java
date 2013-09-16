@@ -41,7 +41,7 @@ import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
-import info.magnolia.i18n.I18nizer;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;

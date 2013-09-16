@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.usermenu.definition;
 
-import info.magnolia.i18n.I18nAble;
+import info.magnolia.i18nsystem.I18nAble;
 import info.magnolia.ui.api.action.ActionDefinition;
 
 import java.util.Map;

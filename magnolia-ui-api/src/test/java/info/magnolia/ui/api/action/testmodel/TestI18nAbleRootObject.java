@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.api.action.testmodel;
 
-import info.magnolia.i18n.I18nAble;
-import info.magnolia.i18n.I18nText;
+import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nText;
 
 /**
  * TestI18nAbleRootObject.

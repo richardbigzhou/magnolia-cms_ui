@@ -35,7 +35,7 @@ package info.magnolia.ui.framework.app;
 
 import static org.mockito.Mockito.*;
 
-import info.magnolia.i18n.I18nizer;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 

@@ -40,7 +40,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.event.SystemEventBus;
-import info.magnolia.i18n.I18nizer;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.ModuleRegistryImpl;
 import info.magnolia.monitoring.SystemMonitor;

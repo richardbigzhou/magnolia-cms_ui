@@ -81,7 +81,7 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
     }
 
     /**
-     * @deprecated since 5.1. Use {@link info.magnolia.i18n.I18nizer} mechanism instead.
+     * @deprecated since 5.1. Use {@link info.magnolia.i18nsystem.I18nizer} mechanism instead.
      */
     @Override
     @Deprecated
@@ -159,7 +159,7 @@ public class ConfiguredFieldDefinition implements FieldDefinition {
     }
 
     /**
-     * @deprecated since 5.1. Use {@link info.magnolia.i18n.I18nizer} mechanism instead.
+     * @deprecated since 5.1. Use {@link info.magnolia.i18nsystem.I18nizer} mechanism instead.
      */
     @Deprecated
     public void setI18nBasename(String i18nBasename) {

@@ -36,7 +36,7 @@ package info.magnolia.ui.dialog;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutAction.ModifierKey;
 
-import info.magnolia.i18n.I18nizer;
+import info.magnolia.i18nsystem.I18nizer;
 import com.vaadin.event.ShortcutListener;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;

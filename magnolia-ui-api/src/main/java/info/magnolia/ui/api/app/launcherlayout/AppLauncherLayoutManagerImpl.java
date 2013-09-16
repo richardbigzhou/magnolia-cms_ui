@@ -37,7 +37,7 @@ import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SystemEventBus;
-import info.magnolia.i18n.I18nizer;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.registry.AppRegistryEvent;

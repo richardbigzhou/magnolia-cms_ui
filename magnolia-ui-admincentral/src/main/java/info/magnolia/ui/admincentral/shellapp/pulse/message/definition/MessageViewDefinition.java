@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message.definition;
 
-import info.magnolia.i18n.I18nAble;
+import info.magnolia.i18nsystem.I18nAble;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.api.action.ActionDefinition;

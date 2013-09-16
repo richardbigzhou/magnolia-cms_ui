@@ -35,7 +35,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import com.vaadin.data.util.BeanItem;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.i18n.I18nizer;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.admincentral.shellapp.pulse.MessageActionExecutor;

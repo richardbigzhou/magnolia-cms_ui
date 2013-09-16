@@ -39,7 +39,7 @@ import static org.mockito.Mockito.mock;
 import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.i18n.I18nizer;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;

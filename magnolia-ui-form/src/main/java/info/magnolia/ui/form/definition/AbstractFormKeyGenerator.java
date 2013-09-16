@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.form.definition;
 
-import info.magnolia.i18n.AbstractI18nKeyGenerator;
+import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 

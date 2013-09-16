@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
-import info.magnolia.i18n.I18nizer;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroup;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroupEntry;

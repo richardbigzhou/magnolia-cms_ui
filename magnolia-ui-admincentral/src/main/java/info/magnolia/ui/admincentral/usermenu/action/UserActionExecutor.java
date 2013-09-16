@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.usermenu.action;
 
-import info.magnolia.i18n.I18nizer;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.admincentral.AdmincentralModule;
 import info.magnolia.ui.admincentral.usermenu.definition.UserMenuDefinition;

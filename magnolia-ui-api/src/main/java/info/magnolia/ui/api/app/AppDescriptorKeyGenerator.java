@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.api.app;
 
-import info.magnolia.i18n.AbstractI18nKeyGenerator;
+import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
 
 import java.lang.reflect.AnnotatedElement;
 import java.util.List;

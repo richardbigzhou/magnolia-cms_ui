@@ -35,8 +35,8 @@ package info.magnolia.ui.form.definition;
 
 import static org.junit.Assert.assertEquals;
 
-import info.magnolia.i18n.I18nizer;
-import info.magnolia.i18n.proxytoys.ProxytoysI18nizer;
+import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +61,7 @@ public class TabDefinitionKeyGeneratorTest {
         // hierarchy
         dialog.setForm(form);
         form.addTab(tab);
-        // i18n
+        // 18n
         I18nizer i18nizer = new ProxytoysI18nizer(null, null);
         dialog = i18nizer.decorate(dialog);
 

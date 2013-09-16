@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.actionbar.definition;
 
-import info.magnolia.i18n.AbstractI18nKeyGenerator;
+import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 
@@ -48,7 +48,7 @@ import java.util.List;
 public class ActionbarSectionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<ActionbarSectionDefinition> {
 
     /**
-     * Will generate keys for the message bundle in the following form <code> &lt;app-name&gt;.&lt;sub-app-name&gt;.actionbar.sections.&lt;section-name&gt;[.name of getter or field annotated with {@link info.magnolia.i18n.I18nText}]</code>.
+     * Will generate keys for the message bundle in the following form <code> &lt;app-name&gt;.&lt;sub-app-name&gt;.actionbar.sections.&lt;section-name&gt;[.name of getter or field annotated with {@link info.magnolia.i18nsystem.I18nText}]</code>.
      */
     @Override
     protected void keysFor(List<String> keys, ActionbarSectionDefinition sectionDefinition, AnnotatedElement el) {

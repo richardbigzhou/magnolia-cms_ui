@@ -36,7 +36,7 @@ package info.magnolia.ui.framework.app;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.EventBusProtector;
 import info.magnolia.event.SimpleEventBus;
-import info.magnolia.i18n.I18nizer;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.monitoring.SystemMonitor;

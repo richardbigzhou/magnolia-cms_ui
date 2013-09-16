@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.dialog.formdialog;
 
-import info.magnolia.i18n.I18nizer;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.api.action.ActionDefinition;

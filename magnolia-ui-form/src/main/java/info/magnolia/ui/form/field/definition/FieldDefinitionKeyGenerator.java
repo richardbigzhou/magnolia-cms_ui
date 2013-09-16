@@ -50,7 +50,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An {@link info.magnolia.i18n.I18nKeyGenerator} for {@link FieldDefinition}.
+ * An {@link info.magnolia.i18nsystem.I18nKeyGenerator} for {@link FieldDefinition}.
  */
 public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldDefinition> {
 

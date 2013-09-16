@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.workbench.definition;
 
-import info.magnolia.i18n.I18nAble;
+import info.magnolia.i18nsystem.I18nAble;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 import java.io.Serializable;

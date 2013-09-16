@@ -42,7 +42,7 @@ import info.magnolia.event.InvocationCountingTestEventHandler;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.event.SystemEventBus;
 import info.magnolia.event.TestEvent;
-import info.magnolia.i18n.I18nizer;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.monitoring.SystemMonitor;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;

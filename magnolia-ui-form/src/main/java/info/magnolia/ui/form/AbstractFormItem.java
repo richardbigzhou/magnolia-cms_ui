@@ -76,7 +76,7 @@ public abstract class AbstractFormItem implements FormItem {
 
     @Override
     /**
-     * @deprecated since 5.1. You should use {@link info.magnolia.i18n.I18nizer} mechanism instead.
+     * @deprecated since 5.1. You should use {@link info.magnolia.i18nsystem.I18nizer} mechanism instead.
      */
     @Deprecated
     public Messages getMessages() {
@@ -93,13 +93,13 @@ public abstract class AbstractFormItem implements FormItem {
     }
 
     /**
-     * @deprecated since 5.1. You should use {@link info.magnolia.i18n.I18nizer} mechanism instead.
+     * @deprecated since 5.1. You should use {@link info.magnolia.i18nsystem.I18nizer} mechanism instead.
      */
     @Deprecated
     protected abstract String getI18nBasename();
 
     /**
-     * @deprecated since 5.1. You should use {@link info.magnolia.i18n.I18nizer} mechanism instead.
+     * @deprecated since 5.1. You should use {@link info.magnolia.i18nsystem.I18nizer} mechanism instead.
      */
     @Deprecated
     public String getMessage(String key) {

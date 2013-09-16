@@ -37,7 +37,7 @@ import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
-import info.magnolia.i18n.I18nizer;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;

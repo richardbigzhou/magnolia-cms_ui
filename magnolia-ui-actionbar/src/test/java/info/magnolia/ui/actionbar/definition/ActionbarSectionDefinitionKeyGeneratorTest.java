@@ -35,9 +35,9 @@ package info.magnolia.ui.actionbar.definition;
 
 import static org.junit.Assert.*;
 
-import info.magnolia.i18n.I18nAble;
-import info.magnolia.i18n.I18nizer;
-import info.magnolia.i18n.proxytoys.ProxytoysI18nizer;
+import info.magnolia.i18nsystem.I18nAble;
+import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor;
 
