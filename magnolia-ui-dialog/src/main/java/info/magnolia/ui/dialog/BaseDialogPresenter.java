@@ -119,7 +119,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
     public DialogView start(DialogDefinition definition, UiContext uiContext) {
         this.uiContext = uiContext;
         this.definition = definition;
-        this.editorActionAreaPresenter = componentProvider.getComponent(definition.getActionArea().getPresenterClass());
+        this.editorActionAreaPresenter = componentProvider.newInstance(definition.getActionArea().getPresenterClass());
         EditorActionAreaView editorActionAreaView = editorActionAreaPresenter.start(filterActions(), definition.getActionArea(), this, uiContext);
 
         // Set modifier key based on OS.
