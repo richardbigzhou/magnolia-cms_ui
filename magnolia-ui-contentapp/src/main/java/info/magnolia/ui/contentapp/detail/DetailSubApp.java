@@ -148,9 +148,11 @@ public class DetailSubApp extends BaseSubApp {
     @Override
     public void locationChanged(Location location) {
         DetailLocation detailLocation = DetailLocation.wrap(location);
-        setCaption(detailLocation);
-        View view = workbench.update(detailLocation);
-        getView().setContentView(view);
+        if (!detailLocation.equals(getCurrentLocation())) {
+            setCaption(detailLocation);
+            View view = workbench.update(detailLocation);
+            getView().setContentView(view);
+        }
     }
 
     @Override
