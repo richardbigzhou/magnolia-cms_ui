@@ -74,10 +74,8 @@ import com.vaadin.data.util.PropertysetItem;
  * Property name : field name <br>
  * Override {@link MultiValueChildrenNodeTransformer#createChildItemName(Set, Object, JcrNodeAdapter)} to define the child node name.<br>
  * Override {@link MultiValueChildrenNodeTransformer#setChildValuePropertyName(String)} to change the property name used to store the MultiField value element.
- * 
- * @param <T> type of the element list.
  */
-public class MultiValueChildrenNodeTransformer<T> extends BasicTransformer<PropertysetItem> {
+public class MultiValueChildrenNodeTransformer extends BasicTransformer<PropertysetItem> {
 
     private static final Logger log = LoggerFactory.getLogger(MultiValueChildrenNodeTransformer.class);
 
@@ -111,7 +109,7 @@ public class MultiValueChildrenNodeTransformer<T> extends BasicTransformer<Prope
         List<Node> childNodes = getStoredChildNodes(rootItem);
         int position = 0;
         for (Node child : childNodes) {
-            T value = getValueFromChildNode(child);
+            Object value = getValueFromChildNode(child);
             if (value != null) {
                 newValues.addItemProperty(position, new DefaultProperty(value));
                 position += 1;
@@ -191,10 +189,10 @@ public class MultiValueChildrenNodeTransformer<T> extends BasicTransformer<Prope
     /**
      * Return a specific value from the child node.
      */
-    protected T getValueFromChildNode(Node child) {
+    protected Object getValueFromChildNode(Node child) {
         try {
             if (child.hasProperty(childValuePropertyName)) {
-                return (T) PropertyUtil.getPropertyValueObject(child, childValuePropertyName);
+                return PropertyUtil.getPropertyValueObject(child, childValuePropertyName);
             }
         } catch (RepositoryException re) {
             log.warn("Not able to access the Child Nodes property of the following Child Node Name {}", NodeUtil.getName(child), re);
@@ -210,7 +208,7 @@ public class MultiValueChildrenNodeTransformer<T> extends BasicTransformer<Prope
         try {
             Iterator<?> it = newValue.getItemPropertyIds().iterator();
             while (it.hasNext()) {
-                T value = (T) newValue.getItemProperty(it.next()).getValue();
+                Object value = newValue.getItemProperty(it.next()).getValue();
                 // Create the child Item Name
                 String childName = createChildItemName(childNames, value, rootItem);
                 // Get or create the childItem
@@ -226,8 +224,8 @@ public class MultiValueChildrenNodeTransformer<T> extends BasicTransformer<Prope
     /**
      * Set the value as property to the childItem.
      */
-    protected void setChildItemValue(JcrNodeAdapter childItem, T value) {
-        childItem.addItemProperty(childValuePropertyName, new DefaultProperty<T>(value));
+    protected void setChildItemValue(JcrNodeAdapter childItem, Object value) {
+        childItem.addItemProperty(childValuePropertyName, new DefaultProperty(value));
     }
 
     /**

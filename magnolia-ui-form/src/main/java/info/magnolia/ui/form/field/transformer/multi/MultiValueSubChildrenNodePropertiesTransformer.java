@@ -74,10 +74,8 @@ import com.vaadin.data.util.PropertysetItem;
  * This implementation store/retrieve the {@link PropertysetItem} properties under the child node.<br>
  * Used in the case of a {@link info.magnolia.ui.form.field.MultiField} contains a {@link info.magnolia.ui.form.field.CompositeField} or a {@link info.magnolia.ui.form.field.SwitchableField}.<br>
  * In this case, {@link info.magnolia.ui.form.field.CompositeField} or {@link info.magnolia.ui.form.field.SwitchableField} will have to declare a {@link info.magnolia.ui.form.field.transformer.composite.NoOpCompositeTransformer}.
- * 
- * @param <T>.
  */
-public class MultiValueSubChildrenNodePropertiesTransformer<T> extends MultiValueChildrenNodeTransformer<PropertysetItem> {
+public class MultiValueSubChildrenNodePropertiesTransformer extends MultiValueChildrenNodeTransformer {
 
     private static final Logger log = LoggerFactory.getLogger(MultiValueSubChildrenNodeTransformer.class);
 
@@ -126,17 +124,17 @@ public class MultiValueSubChildrenNodePropertiesTransformer<T> extends MultiValu
     }
 
     @Override
-    protected void setChildItemValue(JcrNodeAdapter childItem, PropertysetItem newValues) {
+    protected void setChildItemValue(JcrNodeAdapter childItem, Object newValues) {
 
-        Iterator<?> propertyNames = newValues.getItemPropertyIds().iterator();
+        Iterator<?> propertyNames = ((PropertysetItem) newValues).getItemPropertyIds().iterator();
         while (propertyNames.hasNext()) {
             String propertyName = (String) propertyNames.next();
             com.vaadin.data.Property<Object> storedProperty = childItem.getItemProperty(propertyName);
 
             if (storedProperty != null) {
-                storedProperty.setValue(newValues.getItemProperty(propertyName).getValue());
+                storedProperty.setValue(((PropertysetItem) newValues).getItemProperty(propertyName).getValue());
             } else {
-                storedProperty = newValues.getItemProperty(propertyName);
+                storedProperty = ((PropertysetItem) newValues).getItemProperty(propertyName);
                 childItem.addItemProperty(propertyName, storedProperty);
             }
         }

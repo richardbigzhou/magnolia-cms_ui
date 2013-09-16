@@ -64,10 +64,8 @@ import com.vaadin.data.util.PropertysetItem;
  * Main child node : field name <br>
  * Child node name : 20 first char of the related value <br>
  * Property name : field name <br>
- * 
- * @param <T> type of the element list.
  */
-public class MultiValueSubChildrenNodeTransformer<T> extends MultiValueChildrenNodeTransformer<PropertysetItem> {
+public class MultiValueSubChildrenNodeTransformer extends MultiValueChildrenNodeTransformer {
 
     private static final Logger log = LoggerFactory.getLogger(MultiValueSubChildrenNodePropertiesTransformer.class);
     private String subNodeName;
