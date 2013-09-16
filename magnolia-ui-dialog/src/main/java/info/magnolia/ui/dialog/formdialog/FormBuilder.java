@@ -34,6 +34,7 @@
 package info.magnolia.ui.dialog.formdialog;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.api.view.View;
@@ -91,13 +92,21 @@ public class FormBuilder {
         final String basename = formDefinition.getI18nBasename();
 
         if (StringUtils.isNotBlank(description)) {
-            // String i18nDescription = MessagesUtil.getWithDefault(description, description, basename);
-            view.setDescription(description);
+            if (isMessageBundleKey(description) && StringUtils.isNotBlank(basename)) {
+                String message = doGetMessage(label, basename);
+                if (message != null) {
+                    view.setDescription(message);
+                }
+            }
         }
 
         if (StringUtils.isNotBlank(label)) {
-            // String i18nLabel = MessagesUtil.getWithDefault(label, label, basename);
-            view.setCaption(label);
+            if (isMessageBundleKey(label) && StringUtils.isNotBlank(basename)) {
+                String message = doGetMessage(label, basename);
+                if (message != null) {
+                    view.setCaption(message);
+                }
+            }
         }
 
         boolean hasI18NAwareFields = false;
@@ -166,6 +175,16 @@ public class FormBuilder {
                 return view;
             }
         };
+    }
+
+    private boolean isMessageBundleKey(final String text) {
+        String trimmed = text.trim();
+        return trimmed.indexOf(" ") == -1 && trimmed.contains(".") && !trimmed.endsWith(".");
+    }
+
+    private String doGetMessage(final String description, final String basename) {
+        String value = MessagesUtil.get(description, basename);
+        return value != null && !value.startsWith("???") ? value : null;
     }
 
 }

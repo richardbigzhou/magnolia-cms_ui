@@ -291,6 +291,25 @@ public class FormDialogPresenterImplTest {
         assertEquals("translated with key [dialogID.tab1.field1.label] and basename [basenameD] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel());
     }
 
+    @Test
+    public void testConfiguredKeyOverridesGeneratedKey() throws Exception {
+        // GIVEN
+        // dialog
+        def = getBasicDialogDefinition();
+        def.setLabel("foo.bar");
+        // form
+        ConfiguredFormDefinition form = new ConfiguredFormDefinition();
+        form.setLabel("baz.qux");
+        def.setForm(form);
+
+        // WHEN
+        ConfiguredFormDialogDefinition decoratedDialogDefinition = (ConfiguredFormDialogDefinition) presenter.decorateForI18n(def);
+
+        // THEN
+        assertEquals("translated with key [foo.bar] and basename [null] and locale [en]", decoratedDialogDefinition.getLabel());
+        assertEquals("translated with key [baz.qux] and basename [null] and locale [en]", decoratedDialogDefinition.getForm().getLabel());
+    }
+
     private ConfiguredFormDialogDefinition getBasicDialogDefinition() {
         ConfiguredFormDialogDefinition cdd = new ConfiguredFormDialogDefinition();
         cdd.setId("dialogID");

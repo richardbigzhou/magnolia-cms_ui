@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.dialog.formdialog;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
@@ -135,13 +136,21 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         final String basename = dialogDefinition.getI18nBasename();
 
         if (StringUtils.isNotBlank(description)) {
-            // String i18nDescription = MessagesUtil.getWithDefault(description, description, basename);
-            getView().setDescription(description);
+            if (isMessageBundleKey(description) && StringUtils.isNotBlank(basename)) {
+                String message = doGetMessage(label, basename);
+                if (message != null) {
+                    getView().setDescription(message);
+                }
+            }
         }
 
         if (StringUtils.isNotBlank(label)) {
-            // String i18nLabel = MessagesUtil.getWithDefault(label, label, basename);
-            getView().setCaption(label);
+            if (isMessageBundleKey(label) && StringUtils.isNotBlank(basename)) {
+                String message = doGetMessage(label, basename);
+                if (message != null) {
+                    getView().setCaption(message);
+                }
+            }
         }
     }
 
@@ -180,5 +189,15 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     @Override
     protected Object[] getActionParameters(String actionName) {
         return new Object[] { this, item, callback };
+    }
+
+    private boolean isMessageBundleKey(final String text) {
+        String trimmed = text.trim();
+        return trimmed.indexOf(" ") == -1 && trimmed.contains(".") && !trimmed.endsWith(".");
+    }
+
+    private String doGetMessage(final String description, final String basename) {
+        String value = MessagesUtil.get(description, basename);
+        return value != null && !value.startsWith("???") ? value : null;
     }
 }
