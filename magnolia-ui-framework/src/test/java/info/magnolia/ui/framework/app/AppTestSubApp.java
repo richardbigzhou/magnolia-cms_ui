@@ -34,6 +34,10 @@
 package info.magnolia.ui.framework.app;
 
 import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.location.Location;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -42,9 +46,24 @@ import javax.inject.Inject;
  */
 public class AppTestSubApp extends BaseSubApp {
 
+    public static Map<String, AppTestSubApp> subApps = new HashMap<String, AppTestSubApp>();
+    public static int subAppNumber = 0;
+    private boolean locationChanged = false;
+
     @Inject
     public AppTestSubApp(SubAppContext subAppContext, AppTestView view) {
         super(subAppContext, view);
+        subApps.put("subApp" + subAppNumber, this);
+        subAppNumber += 1;
     }
 
+    @Override
+    public void locationChanged(Location location) {
+        super.locationChanged(location);
+        this.locationChanged = !location.equals(getCurrentLocation());
+    }
+
+    public boolean isLocationChanged() {
+        return locationChanged;
+    }
 }

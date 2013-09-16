@@ -75,6 +75,7 @@ import info.magnolia.ui.api.view.Viewport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -134,7 +135,8 @@ public class AppControllerImplTest {
         // Reset the static fields
         AppTestImpl.appNumber = 0;
         AppTestImpl.res = new HashMap<String, Object>();
-
+        AppTestSubApp.subAppNumber = 0;
+        AppTestSubApp.subApps = new HashMap<String, AppTestSubApp>();
         MgnlContext.setInstance(null);
     }
 
@@ -455,6 +457,21 @@ public class AppControllerImplTest {
         assertTrue(appController.getCurrentApp().getView().asVaadinComponent().getStyleName().contains("testtheme"));
     }
 
+    @Test
+    public void testLocationChanged() {
+
+        // GIVEN
+        Location location = new DefaultLocation(Location.LOCATION_TYPE_APP, APP_NAME_1 + "_name", SUBAPP_NAME_1 + "_name");
+        locationController.goTo(location);
+
+        // WHEN
+        Location location2 = new DefaultLocation(Location.LOCATION_TYPE_APP, APP_NAME_1 + "_name", SUBAPP_NAME_1 + "_name", "testParameter");
+        locationController.goTo(location2);
+
+        // THEN
+        assertTrue(AppTestSubApp.subApps.get("subApp0").isLocationChanged());
+    }
+
     /**
      * Init a LayoutManager containing 2 groups (group1 and group2) with
      * one app each (app1 and app2) linket to {TestApp}.
@@ -464,9 +481,9 @@ public class AppControllerImplTest {
         this.appRegistry = mock(AppDescriptorRegistry.class);
 
         // create subapps
-        Map<String, SubAppDescriptor> subApps = new HashMap<String, SubAppDescriptor>();
+        Map<String, SubAppDescriptor> subApps = new LinkedHashMap<String, SubAppDescriptor>();
         subApps.put(SUBAPP_NAME_1, AppTestUtility.createSubAppDescriptor(SUBAPP_NAME_1, AppTestSubApp.class, true));
-        subApps.put(SUBAPP_NAME_2, AppTestUtility.createSubAppDescriptor(SUBAPP_NAME_2, AppTestSubApp.class, true));
+        subApps.put(SUBAPP_NAME_2, AppTestUtility.createSubAppDescriptor(SUBAPP_NAME_2, AppTestSubApp.class, false));
 
 
         AppDescriptor app1 = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_1, AppTestImpl.class, subApps);
