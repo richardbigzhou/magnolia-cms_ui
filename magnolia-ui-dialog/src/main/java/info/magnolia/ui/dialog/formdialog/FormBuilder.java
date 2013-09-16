@@ -182,8 +182,8 @@ public class FormBuilder {
         return trimmed.indexOf(" ") == -1 && trimmed.contains(".") && !trimmed.endsWith(".");
     }
 
-    private String doGetMessage(final String description, final String basename) {
-        String value = MessagesUtil.get(description, basename);
+    private String doGetMessage(final String key, final String basename) {
+        String value = MessagesUtil.get(key, basename);
         return value != null && !value.startsWith("???") ? value : null;
     }
 
