@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.dialog.formdialog;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.i18n.DefaultMessagesManager;
@@ -292,7 +292,7 @@ public class FormDialogPresenterImplTest {
     }
 
     @Test
-    public void testConfiguredKeyOverridesGeneratedKey() throws Exception {
+    public void configuredKeyOverridesGeneratedKey() throws Exception {
         // GIVEN
         // dialog
         def = getBasicDialogDefinition();
@@ -308,6 +308,13 @@ public class FormDialogPresenterImplTest {
         // THEN
         assertEquals("translated with key [foo.bar] and basename [null] and locale [en]", decoratedDialogDefinition.getLabel());
         assertEquals("translated with key [baz.qux] and basename [null] and locale [en]", decoratedDialogDefinition.getForm().getLabel());
+    }
+
+    @Test
+    public void isMessageBundleKey() throws Exception {
+        assertTrue(presenter.isMessageBundleKey("foo.bar.baz"));
+        assertFalse(presenter.isMessageBundleKey("foo.bar.baz."));
+        assertFalse(presenter.isMessageBundleKey("Foo Bar. Baz"));
     }
 
     private ConfiguredFormDialogDefinition getBasicDialogDefinition() {
