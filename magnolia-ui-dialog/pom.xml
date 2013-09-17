@@ -20,7 +20,6 @@
     <dependency>
       <groupId>info.magnolia</groupId>
       <artifactId>magnolia-i18n</artifactId>
-      <version>${magnoliaVersion}</version>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
