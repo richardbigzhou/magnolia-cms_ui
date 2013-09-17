@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.framework.action;
 
+import info.magnolia.ui.api.action.Action;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 
 /**
@@ -56,8 +57,12 @@ public class ActivationActionDefinition extends CommandActionDefinition {
     private String workflowFailureMessage;
     private String workflowErrorMessage;
 
+    // Workaround for MAGNOLIA-5317.
+    private Class<? extends Action> implementationClass = ActivationAction.class;
+
     public ActivationActionDefinition() {
-        setImplementationClass(ActivationAction.class);
+        // Workaround for MAGNOLIA-5317.
+        //setImplementationClass(ActivationAction.class);
         setSuccessMessage(MESSAGE_KEY_SUCCESS);
         setFailureMessage(MESSAGE_KEY_FAILURE);
         setErrorMessage(MESSAGE_KEY_ERROR);
@@ -104,5 +109,17 @@ public class ActivationActionDefinition extends CommandActionDefinition {
 
     public void setMessageView(String messageView) {
         this.messageView = messageView;
+    }
+
+    // Workaround for MAGNOLIA-5317.
+    @Override
+    public Class<? extends Action> getImplementationClass() {
+        return implementationClass;
+    }
+
+    // Workaround for MAGNOLIA-5317.
+    @Override
+    public void setImplementationClass(Class<? extends Action> implementationClass) {
+        this.implementationClass = implementationClass;
     }
 }
