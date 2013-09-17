@@ -125,15 +125,15 @@ public class AppsViewportWidget extends ViewportWidget implements HasSwipeHandle
             // enable fullscreen
             RootPanel.get().addStyleName("fullscreen");
 
-            fullScreenButton.getElement().addClassName("icon-close-fullscreen_2");
-            fullScreenButton.getElement().removeClassName("icon-open-fullscreen_2");
+            fullScreenButton.getElement().addClassName("icon-close-fullscreen-2");
+            fullScreenButton.getElement().removeClassName("icon-open-fullscreen-2");
         } else {
 
             // disable fullscreen
             RootPanel.get().removeStyleName("fullscreen");
 
-            fullScreenButton.getElement().addClassName("icon-open-fullscreen_2");
-            fullScreenButton.getElement().removeClassName("icon-close-fullscreen_2");
+            fullScreenButton.getElement().addClassName("icon-open-fullscreen-2");
+            fullScreenButton.getElement().removeClassName("icon-close-fullscreen-2");
         }
     }
 

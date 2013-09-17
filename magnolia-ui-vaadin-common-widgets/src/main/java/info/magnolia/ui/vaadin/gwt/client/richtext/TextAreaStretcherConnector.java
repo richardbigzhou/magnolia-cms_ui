@@ -166,7 +166,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
     private void toggleCollapseState() {
         boolean isCollapsed = getState().isCollapsed;
         if (!isCollapsed) {
-            stretchControl.replaceClassName("icon-open-fullscreen_2", "icon-close-fullscreen_2");
+            stretchControl.replaceClassName("icon-open-fullscreen-2", "icon-close-fullscreen-2");
             stretchControl.replaceClassName("collapsed", "stretched");
             form.asWidget().addStyleName("textarea-stretched");
 
@@ -194,7 +194,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
 
         } else {
             stretchControl.replaceClassName("stretched", "collapsed");
-            stretchControl.replaceClassName("icon-close-fullscreen_2", "icon-open-fullscreen_2");
+            stretchControl.replaceClassName("icon-close-fullscreen-2", "icon-open-fullscreen-2");
             form.asWidget().removeStyleName("textarea-stretched");
             clearTraces();
         }

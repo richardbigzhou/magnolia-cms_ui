@@ -44,7 +44,8 @@ public class WarningIcon extends CompositeIcon {
 
     public WarningIcon(int size) {
         super(
-                new Icon("shape-triangle", size, Icon.COLOR_WARNING),
+                new Icon("shape-circle-plus", size, "#000"),
+                new Icon("shape-circle", size, Icon.COLOR_WARNING),
                 new Icon("warning-mark", size, "#000"));
     }
 

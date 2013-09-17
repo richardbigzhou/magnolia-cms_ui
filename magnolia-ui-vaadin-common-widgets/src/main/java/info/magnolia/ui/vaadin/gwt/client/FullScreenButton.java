@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.UIObject;
 public class FullScreenButton extends UIObject {
 
     private static final String STYLE_NAME = "m-fullscreen-app";
-    private static final String ICON_STYLE_NAME = "icon-open-fullscreen_2";
+    private static final String ICON_STYLE_NAME = "icon-open-fullscreen-2";
 
     public FullScreenButton() {
         setElement(DOM.createSpan());
