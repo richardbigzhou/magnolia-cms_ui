@@ -109,8 +109,6 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 // update vaadin servlet params (we inject a custom UIProvider instead)
                 .addTask(new PropertyExistsDelegateTask("Check widgetset servlet param", "Checks if widgetset is configured as servlet parameter", RepositoryConstants.CONFIG, "/server/filters/servlets/AdminCentral/parameters", "widgetset",
                         new RemovePropertyTask("Remove widgetset servlet param", "Removes the widgetset property from AdminCentral servlet parameters", RepositoryConstants.CONFIG, "/server/filters/servlets/AdminCentral/parameters", "widgetset")))
-                .addTask(new NewPropertyTask("Set deleteAction in Configuration app actionbar.", "Sets deleteAction=confirmDeletion to enable DELETE keyboard shortcut.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar", "deleteAction", "confirmDeletion"))
-
         );
     }
 

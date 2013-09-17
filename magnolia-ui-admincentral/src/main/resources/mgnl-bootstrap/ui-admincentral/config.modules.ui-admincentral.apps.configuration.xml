@@ -784,9 +784,6 @@
         <sv:property sv:name="jcr:uuid" sv:type="String">
           <sv:value>1b8f2631-ec52-4f11-b798-ed19a7b782b8</sv:value>
         </sv:property>
-        <sv:property sv:name="deleteAction" sv:type="String">
-          <sv:value>confirmDeletion</sv:value>
-        </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
         </sv:property>
