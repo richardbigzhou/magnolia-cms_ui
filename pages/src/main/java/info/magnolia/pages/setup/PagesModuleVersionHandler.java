@@ -116,6 +116,7 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                         new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/pages/commands/website/activate")))
                 .addTask(new NodeExistsDelegateTask("remove the deactivate command chain from pages app", "", RepositoryConstants.CONFIG, "/modules/pages/commands/website/deactivate",
                         new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/pages/commands/website/deactivate")))
+
                 .addTask(new PartialBootstrapTask("Bootstrap new activate commands to website catalog.", "", "/mgnl-bootstrap/pages/config.modules.pages.commands.xml", "/commands/website/activate"))
                 .addTask(new PartialBootstrapTask("Bootstrap new deactivate commands to website catalog.", "", "/mgnl-bootstrap/pages/config.modules.pages.commands.xml", "/commands/website/deactivate"))
 
@@ -135,6 +136,11 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                                 addProperty("ruleClass", IsNotVersionedDetailLocationRule.class.getName())
                         )
                 ))
+
+                .addTask(new PartialBootstrapTask("Bootstrap move action in Pages app", "",
+                        "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actions/move"))
+                .addTask(new PartialBootstrapTask("Bootstrap move action to Pages app actionbar", "Adds action move to folder/editingActions section in actionbar.",
+                        "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actionbar/sections/pageActions/groups/editingActions/items/move"))
         );
 
     }
