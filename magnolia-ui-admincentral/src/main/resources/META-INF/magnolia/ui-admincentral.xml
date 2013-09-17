@@ -112,11 +112,11 @@
   <dependencies>
     <dependency>
       <name>core</name>
-      <version>5.0/*</version>
+      <version>5.1/*</version>
     </dependency>
     <dependency>
       <name>imaging</name>
-      <version>3.0/*</version>
+      <version>3.0.1/*</version>
     </dependency>
     <dependency>
       <name>ui-framework</name>
