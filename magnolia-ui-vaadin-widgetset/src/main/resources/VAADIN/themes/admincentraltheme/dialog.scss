@@ -81,10 +81,17 @@
     margin-top: 2px;
   }
 
-  .dialog-footer button.btn-dialog {
+  .dialog-footer .v-button,
+  .dialog-footer button {
     margin-left: 10px;
-    margin-right: 0px;
+    margin-right: 0;
     min-width: 60px;
+  }
+
+  .dialog-footer .secondary-actions .v-button,
+  .dialog-footer .secondary-actions button {
+    margin-left: 0;
+    margin-right: 10px;
   }
 
   .dialog-help {

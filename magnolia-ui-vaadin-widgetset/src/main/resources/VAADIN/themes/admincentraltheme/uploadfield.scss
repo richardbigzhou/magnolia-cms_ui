@@ -157,34 +157,27 @@
     height:16px;
     width:16px;
     border: none;
- }
+}
 
 .uploading-progress-indicator .uploading-file, .uploaded-file {
     margin-top:10px;
     margin-bottom:18px;
- }
-
-.uploading-progress-indicator .uploaded-file {
 }
 
-  .progress-layout {
-    position: relative;
-  }
+.progress-layout {
+  position: relative;
+}
 
-  .direct-upload-progress-indicator > div {
-    position: absolute;
-    top: 150px;
-    left: 0;
-    right: 0;
-  }
+.direct-upload-progress-indicator > div {
+  position: absolute;
+  top: 150px;
+  left: 0;
+  right: 0;
+}
 
-  .direct-upload-progress-indicator {
-    height: 600px;
-    width: 500px;
-  }
+.direct-upload-progress-indicator {
+  height: 600px;
+  width: 500px;
+}
 
-  form {
-    white-space: nowrap;
-    width: 66px;
-  }
 }
