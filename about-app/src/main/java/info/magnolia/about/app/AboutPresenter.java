@@ -37,7 +37,6 @@ import info.magnolia.cms.beans.config.ServerConfiguration;
 import info.magnolia.cms.license.LicenseFileExtractor;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.init.MagnoliaConfigurationProperties;
-import info.magnolia.ui.vaadin.layout.SmallAppLayout;
 
 import javax.inject.Inject;
 import javax.jcr.Repository;
@@ -47,40 +46,38 @@ import org.apache.jackrabbit.commons.JcrUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Property;
 import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Label;
+import com.vaadin.data.util.PropertysetItem;
 
 /**
- * Default Vaadin implementation of the {@link AboutView} interface, for the community edition.
+ * The AboutPresenter.
  */
-public class DefaultAboutView implements AboutView {
+public class AboutPresenter {
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultAboutView.class);
+    private static final Logger log = LoggerFactory.getLogger(AboutPresenter.class);
 
-    private Listener listener;
-
-    protected final SmallAppLayout root = new SmallAppLayout();
+    private final AboutView view;
 
     private final ServerConfiguration serverConfiguration;
     private final MagnoliaConfigurationProperties magnoliaProperties;
 
     @Inject
-    public DefaultAboutView(ServerConfiguration serverConfiguration, MagnoliaConfigurationProperties magnoliaProperties) {
+    public AboutPresenter(AboutView view, ServerConfiguration serverConfiguration, MagnoliaConfigurationProperties magnoliaProperties) {
+        this.view = view;
         this.serverConfiguration = serverConfiguration;
         this.magnoliaProperties = magnoliaProperties;
-
-        root.setDescription("The about app shows an overview of the installed Magnolia version and the environment it runs in.");
-
-        root.addSection(createInstallationSection());
     }
 
-    private Component createInstallationSection() {
+    public AboutView start() {
 
+        // magnolia information
         LicenseFileExtractor licenseProperties = LicenseFileExtractor.getInstance();
-        String magnoliaVersion = licenseProperties.get(LicenseFileExtractor.VERSION_NUMBER);
+        String mgnlEdition = licenseProperties.get(LicenseFileExtractor.EDITION);
+        String mgnlVersion = licenseProperties.get(LicenseFileExtractor.VERSION_NUMBER);
         String authorInstance = serverConfiguration.isAdmin() ? "Author instance" : "Public instance";
+
+        // system information
         String osInfo = String.format("%s %s (%s)",
                 magnoliaProperties.getProperty("os.name"),
                 magnoliaProperties.getProperty("os.version"),
@@ -101,49 +98,21 @@ public class DefaultAboutView implements AboutView {
             jcrInfo = "-";
         }
 
-        FormLayout layout = new FormLayout();
+        // feed the view
+        PropertysetItem item = new PropertysetItem();
+        item.addItemProperty(AboutView.MAGNOLIA_EDITION_KEY, createProperty(mgnlEdition));
+        item.addItemProperty(AboutView.MAGNOLIA_VERSION_KEY, createProperty(mgnlVersion));
+        item.addItemProperty(AboutView.MAGNOLIA_INSTANCE_KEY, createProperty(authorInstance));
+        item.addItemProperty(AboutView.OS_INFO_KEY, createProperty(osInfo));
+        item.addItemProperty(AboutView.JAVA_INFO_KEY, createProperty(javaInfo));
+        item.addItemProperty(AboutView.SERVER_INFO_KEY, createProperty(serverInfo));
+        item.addItemProperty(AboutView.JCR_INFO_KEY, createProperty(jcrInfo));
+        view.setDataSource(item);
 
-        Label sectionTitle = new Label("Installation information");
-        sectionTitle.addStyleName("section-title");
-        layout.addComponent(sectionTitle);
-
-        layout.addComponent(createFieldsetTitle("Magnolia"));
-        layout.addComponent(createField(LicenseFileExtractor.EDITION, "Edition", licenseProperties.get(LicenseFileExtractor.EDITION)));
-        layout.addComponent(createField("magnoliaVersion", "Version (bundle)", magnoliaVersion));
-        layout.addComponent(createField("authorInstance", "Instance", authorInstance));
-
-        Component environmentTitle = createFieldsetTitle("Environment");
-        environmentTitle.addStyleName("spacer");
-        layout.addComponent(environmentTitle);
-        layout.addComponent(createField("osInfo", "Operating system", osInfo));
-        layout.addComponent(createField("javaInfo", "Java version", javaInfo));
-        layout.addComponent(createField("serverInfo", "Application server", serverInfo));
-        layout.addComponent(createField("jcrInfo", "Repository", jcrInfo));
-
-        return layout;
+        return view;
     }
 
-    protected Component createFieldsetTitle(String title) {
-        Label fieldsetTitle = new Label(title);
-        fieldsetTitle.addStyleName("fieldset-title");
-        return fieldsetTitle;
+    private Property<String> createProperty(String value) {
+        return new ObjectProperty<String>(value, String.class);
     }
-
-    protected Component createField(String key, String caption, String value) {
-        Label field = new Label();
-        field.setCaption(caption);
-        field.setPropertyDataSource(new ObjectProperty<String>(value, String.class, true));
-        return field;
-    }
-
-    @Override
-    public void setListener(Listener listener) {
-        this.listener = listener;
-    }
-
-    @Override
-    public Component asVaadinComponent() {
-        return root;
-    }
-
 }

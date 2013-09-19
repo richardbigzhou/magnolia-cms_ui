@@ -20,8 +20,12 @@
       <implementation>info.magnolia.about.app.AboutMainSubApp</implementation>
     </component>
     <component>
+      <type>info.magnolia.about.app.AboutPresenter</type>
+      <implementation>info.magnolia.about.app.AboutPresenter</implementation>
+    </component>
+    <component>
       <type>info.magnolia.about.app.AboutView</type>
-      <implementation>info.magnolia.about.app.DefaultAboutView</implementation>
+      <implementation>info.magnolia.about.app.AboutViewImpl</implementation>
     </component>
   </components>
 

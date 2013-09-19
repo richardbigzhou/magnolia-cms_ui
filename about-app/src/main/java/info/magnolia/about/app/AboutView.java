@@ -33,20 +33,24 @@
  */
 package info.magnolia.about.app;
 
-import info.magnolia.ui.api.app.SubApp;
 import info.magnolia.ui.api.view.View;
+
+import com.vaadin.data.Item;
 
 /**
  * The about view interface.
  */
 public interface AboutView extends View {
 
-    /**
-     * The about view listener interface.
-     */
-    public interface Listener extends SubApp {
+    static final String MAGNOLIA_EDITION_KEY = "mgnlEdition";
+    static final String MAGNOLIA_VERSION_KEY = "mgnlVersion";
+    static final String MAGNOLIA_INSTANCE_KEY = "mgnlInstance";
 
-    }
+    static final String JAVA_INFO_KEY = "javaInfo";
+    static final String OS_INFO_KEY = "osInfo";
+    static final String SERVER_INFO_KEY = "serverInfo";
+    static final String JCR_INFO_KEY = "jcrInfo";
 
-    void setListener(Listener listener);
+    void setDataSource(Item dataSource);
+
 }

@@ -41,12 +41,10 @@ import javax.inject.Inject;
 /**
  * The about main subapp shows an overview of the instance version, environment and license information.
  */
-public class AboutMainSubApp extends BaseSubApp implements AboutView.Listener {
+public class AboutMainSubApp extends BaseSubApp {
 
     @Inject
-    public AboutMainSubApp(SubAppContext subAppContext, AboutView view) {
-        super(subAppContext, view);
-        view.setListener(this);
+    public AboutMainSubApp(SubAppContext subAppContext, AboutPresenter presenter) {
+        super(subAppContext, presenter.start());
     }
-
 }
