@@ -51,6 +51,8 @@ public interface AboutView extends View {
     static final String SERVER_INFO_KEY = "serverInfo";
     static final String JCR_INFO_KEY = "jcrInfo";
 
+    static final String MESSAGES_BASENAME = "mgnl-i18n.about-app-messages";
+
     void setDataSource(Item dataSource);
 
 }

@@ -33,14 +33,12 @@
  */
 package info.magnolia.about.app;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.vaadin.layout.SmallAppLayout;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -53,8 +51,6 @@ import com.vaadin.ui.Label;
  */
 public class AboutViewImpl implements AboutView {
 
-    private static final Logger log = LoggerFactory.getLogger(AboutViewImpl.class);
-
     protected final SmallAppLayout root = new SmallAppLayout();
 
     private Item dataSource;
@@ -62,35 +58,35 @@ public class AboutViewImpl implements AboutView {
     private Map<String, Property.Viewer> dataBindings = new HashMap<String, Property.Viewer>();
 
     public AboutViewImpl() {
-        root.setDescription("The about app shows an overview of the installed Magnolia version and the environment it runs in.");
+        root.setDescription(MessagesUtil.get("about.app.main.description", MESSAGES_BASENAME));
         root.addSection(createInstallationSection());
     }
 
     private Component createInstallationSection() {
 
         // build and bind fields
-        Component mgnlEdition = buildAndBind(AboutView.MAGNOLIA_EDITION_KEY, "Edition");
-        Component mgnlVersion = buildAndBind(AboutView.MAGNOLIA_VERSION_KEY, "Version (bundle)");
-        Component mgnlInstance = buildAndBind(AboutView.MAGNOLIA_INSTANCE_KEY, "Instance");
+        Component mgnlEdition = buildAndBind(AboutView.MAGNOLIA_EDITION_KEY, MessagesUtil.get("about.app.main.mgnledition", MESSAGES_BASENAME));
+        Component mgnlVersion = buildAndBind(AboutView.MAGNOLIA_VERSION_KEY, MessagesUtil.get("about.app.main.mgnlversion", MESSAGES_BASENAME));
+        Component mgnlInstance = buildAndBind(AboutView.MAGNOLIA_INSTANCE_KEY, MessagesUtil.get("about.app.main.instance", MESSAGES_BASENAME));
 
-        Component osInfo = buildAndBind(AboutView.OS_INFO_KEY, "Operating system");
-        Component javaInfo = buildAndBind(AboutView.JAVA_INFO_KEY, "Java version");
-        Component serverInfo = buildAndBind(AboutView.SERVER_INFO_KEY, "Application server");
-        Component jcrInfo = buildAndBind(AboutView.JCR_INFO_KEY, "Repository");
+        Component osInfo = buildAndBind(AboutView.OS_INFO_KEY, MessagesUtil.get("about.app.main.os", MESSAGES_BASENAME));
+        Component javaInfo = buildAndBind(AboutView.JAVA_INFO_KEY, MessagesUtil.get("about.app.main.java", MESSAGES_BASENAME));
+        Component serverInfo = buildAndBind(AboutView.SERVER_INFO_KEY, MessagesUtil.get("about.app.main.server", MESSAGES_BASENAME));
+        Component jcrInfo = buildAndBind(AboutView.JCR_INFO_KEY, MessagesUtil.get("about.app.main.repository", MESSAGES_BASENAME));
 
         // layout
         FormLayout layout = new FormLayout();
 
-        Label sectionTitle = new Label("Installation information");
+        Label sectionTitle = new Label(MessagesUtil.get("about.app.main.installation.title", MESSAGES_BASENAME));
         sectionTitle.addStyleName("section-title");
         layout.addComponent(sectionTitle);
 
-        layout.addComponent(createFieldsetTitle("Magnolia"));
+        layout.addComponent(createFieldsetTitle(MessagesUtil.get("about.app.main.magnolia.title", MESSAGES_BASENAME)));
         layout.addComponent(mgnlEdition);
         layout.addComponent(mgnlVersion);
         layout.addComponent(mgnlInstance);
 
-        Component environmentTitle = createFieldsetTitle("Environment");
+        Component environmentTitle = createFieldsetTitle(MessagesUtil.get("about.app.main.environment.title", MESSAGES_BASENAME));
         environmentTitle.addStyleName("spacer");
         layout.addComponent(environmentTitle);
         layout.addComponent(osInfo);
@@ -117,9 +113,13 @@ public class AboutViewImpl implements AboutView {
     @Override
     public void setDataSource(Item item) {
         this.dataSource = item;
+        refresh();
+    }
+
+    private void refresh() {
         for (Entry<String, Property.Viewer> entry : dataBindings.entrySet()) {
             Property.Viewer field = entry.getValue();
-            Property<?> property = item.getItemProperty(entry.getKey());
+            Property<?> property = dataSource.getItemProperty(entry.getKey());
             field.setPropertyDataSource(property);
         }
     }

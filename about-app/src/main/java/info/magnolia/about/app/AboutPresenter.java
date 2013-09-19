@@ -34,6 +34,7 @@
 package info.magnolia.about.app;
 
 import info.magnolia.cms.beans.config.ServerConfiguration;
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.cms.license.LicenseFileExtractor;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.init.MagnoliaConfigurationProperties;
@@ -46,7 +47,6 @@ import org.apache.jackrabbit.commons.JcrUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Property;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 
@@ -75,7 +75,9 @@ public class AboutPresenter {
         LicenseFileExtractor licenseProperties = LicenseFileExtractor.getInstance();
         String mgnlEdition = licenseProperties.get(LicenseFileExtractor.EDITION);
         String mgnlVersion = licenseProperties.get(LicenseFileExtractor.VERSION_NUMBER);
-        String authorInstance = serverConfiguration.isAdmin() ? "Author instance" : "Public instance";
+        String authorInstance = serverConfiguration.isAdmin() ?
+                MessagesUtil.get("about.app.main.instance.author", AboutView.MESSAGES_BASENAME) :
+                MessagesUtil.get("about.app.main.instance.public", AboutView.MESSAGES_BASENAME);
 
         // system information
         String osInfo = String.format("%s %s (%s)",
@@ -100,19 +102,16 @@ public class AboutPresenter {
 
         // feed the view
         PropertysetItem item = new PropertysetItem();
-        item.addItemProperty(AboutView.MAGNOLIA_EDITION_KEY, createProperty(mgnlEdition));
-        item.addItemProperty(AboutView.MAGNOLIA_VERSION_KEY, createProperty(mgnlVersion));
-        item.addItemProperty(AboutView.MAGNOLIA_INSTANCE_KEY, createProperty(authorInstance));
-        item.addItemProperty(AboutView.OS_INFO_KEY, createProperty(osInfo));
-        item.addItemProperty(AboutView.JAVA_INFO_KEY, createProperty(javaInfo));
-        item.addItemProperty(AboutView.SERVER_INFO_KEY, createProperty(serverInfo));
-        item.addItemProperty(AboutView.JCR_INFO_KEY, createProperty(jcrInfo));
+        item.addItemProperty(AboutView.MAGNOLIA_EDITION_KEY, new ObjectProperty<String>(mgnlEdition));
+        item.addItemProperty(AboutView.MAGNOLIA_VERSION_KEY, new ObjectProperty<String>(mgnlVersion));
+        item.addItemProperty(AboutView.MAGNOLIA_INSTANCE_KEY, new ObjectProperty<String>(authorInstance));
+        item.addItemProperty(AboutView.OS_INFO_KEY, new ObjectProperty<String>(osInfo));
+        item.addItemProperty(AboutView.JAVA_INFO_KEY, new ObjectProperty<String>(javaInfo));
+        item.addItemProperty(AboutView.SERVER_INFO_KEY, new ObjectProperty<String>(serverInfo));
+        item.addItemProperty(AboutView.JCR_INFO_KEY, new ObjectProperty<String>(jcrInfo));
         view.setDataSource(item);
 
         return view;
     }
 
-    private Property<String> createProperty(String value) {
-        return new ObjectProperty<String>(value, String.class);
-    }
 }
