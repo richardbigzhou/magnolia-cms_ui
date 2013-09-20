@@ -33,10 +33,6 @@
  */
 package info.magnolia.ui.contentapp.movedialog;
 
-import com.rits.cloning.Cloner;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.ResettableEventBus;
@@ -73,8 +69,6 @@ import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenter;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
-import javax.inject.Inject;
-import javax.jcr.RepositoryException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -83,6 +77,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import javax.inject.Inject;
+import javax.jcr.RepositoryException;
+
+import com.rits.cloning.Cloner;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 
 /**
  * Implementation of {@link MoveDialogPresenter}.
@@ -165,6 +167,8 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         });
         super.start(dialogDefinition, appContext);
         updatePossibleMoveLocations(getHostCandidate());
+
+        getView().getActionAreaView().getViewForAction(MoveLocation.INSIDE.name()).asVaadinComponent().addStyleName("commit");
         return dialogView;
     }
 
@@ -246,21 +250,22 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         def.setLabel("Move destination");
         def.setId("move:dialog");
 
-        ConfiguredActionDefinition cancelDef = new ConfiguredActionDefinition();
-        cancelDef.setLabel("Cancel");
-        cancelDef.setName("cancelMove");
-        cancelDef.setImplementationClass(MoveCancelledAction.class);
-        def.addAction(cancelDef);
         for (MoveLocation location : MoveLocation.values()) {
             def.addAction(actionMap.get(location));
         }
+
+        ConfiguredActionDefinition cancelDef = new ConfiguredActionDefinition();
+        cancelDef.setLabel("cancel");
+        cancelDef.setName("cancelMove");
+        cancelDef.setImplementationClass(MoveCancelledAction.class);
+        def.addAction(cancelDef);
 
         ConfiguredEditorActionAreaDefinition actionAreaDefinition = new ConfiguredEditorActionAreaDefinition();
         actionAreaDefinition.setPresenterClass(MoveDialogActionAreaPresenter.class);
 
         List<SecondaryActionDefinition> secondaryActions = new LinkedList<SecondaryActionDefinition>();
         secondaryActions.add(new SecondaryActionDefinition(MoveLocation.BEFORE.name()));
-        secondaryActions.add(new SecondaryActionDefinition(MoveLocation.INSIDE.name()));
+        secondaryActions.add(new SecondaryActionDefinition(MoveLocation.AFTER.name()));
         actionAreaDefinition.setSecondaryActions(secondaryActions);
 
         def.setActionArea(actionAreaDefinition);
