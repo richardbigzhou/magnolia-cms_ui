@@ -134,8 +134,8 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
             break;
         }
 
-        formBuilder.buildForm(formView, formDefinition, item, null);
         initActions();
+        formBuilder.buildForm(formView, formDefinition, item, null);
         view.setItemView(dialogView.asVaadinComponent(), viewType);
     }
 
