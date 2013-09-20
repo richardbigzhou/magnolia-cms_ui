@@ -66,6 +66,11 @@
     color: $c10;
   }
 
+  .v-ui:not(.tablet) &.v-disabled:hover {
+    background-color: $c10;
+    color: $c80;
+  }
+
   &:-moz-focusring {
     outline: none;
   }
