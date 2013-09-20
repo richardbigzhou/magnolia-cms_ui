@@ -26,6 +26,12 @@
       color: $c40;
     }
 
+    .v-ui:not(.tablet) &.commit.v-disabled:hover,
+    .v-ui:not(.tablet) &.v-button-commit.v-disabled:hover {
+      background-color: $c40;
+      color: $c80;
+    }
+
     .v-app .v-ui &.commit:active,
     .v-app .v-ui &.v-button-commit:active {
       background-color: $c80;
