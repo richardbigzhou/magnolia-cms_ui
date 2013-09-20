@@ -55,7 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Deletes a node from the repository usin the delete command.
+ * Deletes a node from the repository using the delete command.
  * 
  * @param <D> {@link info.magnolia.ui.api.action.CommandActionDefinition}.
  */
