@@ -240,7 +240,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         for (MoveLocation location : MoveLocation.values()) {
             ConfiguredActionDefinition definition = new MoveNodeActionDefinition(location);
             definition.setName(location.name());
-            definition.setLabel(location.name());
+            definition.setLabel("move " + location.name());
             actionMap.put(location, definition);
         }
     }
