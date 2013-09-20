@@ -33,26 +33,19 @@
  */
 package info.magnolia.pages.setup;
 
-import info.magnolia.cms.core.Content;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
-import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.BootstrapConditionally;
-import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
 import info.magnolia.module.delta.NewPropertyTask;
-import info.magnolia.module.delta.NodeCheckDelegateTask;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
 import info.magnolia.module.delta.PartialBootstrapTask;
 import info.magnolia.module.delta.PropertyExistsDelegateTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RemovePropertyTask;
 import info.magnolia.module.delta.RenameNodesTask;
-import info.magnolia.module.delta.TaskExecutionException;
 import info.magnolia.repository.RepositoryConstants;
-
-import javax.jcr.RepositoryException;
 
 /**
  * Version handler for the pages app module.
@@ -90,16 +83,6 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/confirmDeletion",
                         new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/confirmDeletion/availability", "multiple", true)))
 
-                        // update activation actions to use versioned catalog
-                .addTask(new PropertyExistsDelegateTask("update activate action to use versioned command chain", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activate", "catalog",
-                        new CheckAndModifyPropertyValueTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activate", "catalog", "website", "versioned")))
-                .addTask(new PropertyExistsDelegateTask("update deactivate action to use versioned command chain", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/deactivate", "catalog",
-                        new CheckAndModifyPropertyValueTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/deactivate", "catalog", "website", "versioned")))
-                .addTask(new PropertyExistsDelegateTask("update activateRecursive action to use versioned command chain", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activateRecursive", "catalog",
-                        new CheckAndModifyPropertyValueTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activateRecursive", "catalog", "website", "versioned")))
-                .addTask(new PropertyExistsDelegateTask("update activateDeletion action to use versioned command chain", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activateDeletion", "catalog",
-                        new CheckAndModifyPropertyValueTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/activateDeletion", "catalog", "website", "versioned")))
-
                         // add show versions action
                 .addTask(new PartialBootstrapTask("Bootstrap showVersions action", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actions/showVersions"))
                 .addTask(new PartialBootstrapTask("Bootstrap actionbar section group for versionActions", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions"))
@@ -109,20 +92,9 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                         new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/pages/commands/website/activate")))
                 .addTask(new NodeExistsDelegateTask("remove the deactivate command chain from pages app", "", RepositoryConstants.CONFIG, "/modules/pages/commands/website/deactivate",
                         new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/pages/commands/website/deactivate")))
-                .addTask(new NodeCheckDelegateTask("Remove website commands from pages app if empty", "", RepositoryConstants.CONFIG, "/modules/pages/commands/website", "",
-                        new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/pages/commands/website"), null) {
-                    @Override
-                    protected boolean checkNode(Content node, InstallContext ctx) throws RepositoryException, TaskExecutionException {
-                        return !node.hasChildren();
-                    }
-                })
-                .addTask(new NodeCheckDelegateTask("Remove commands from pages app if empty", "", RepositoryConstants.CONFIG, "/modules/pages/commands", "",
-                        new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/pages/commands"), null) {
-                    @Override
-                    protected boolean checkNode(Content node, InstallContext ctx) throws RepositoryException, TaskExecutionException {
-                        return !node.hasChildren();
-                    }
-                })
+                .addTask(new PartialBootstrapTask("Bootstrap new activate commands to website catalog.", "", "/mgnl-bootstrap/pages/config.modules.pages.commands.xml", "/commands/website/activate"))
+                .addTask(new PartialBootstrapTask("Bootstrap new deactivate commands to website catalog.", "", "/mgnl-bootstrap/pages/config.modules.pages.commands.xml", "/commands/website/deactivate"))
+
         );
 
 
