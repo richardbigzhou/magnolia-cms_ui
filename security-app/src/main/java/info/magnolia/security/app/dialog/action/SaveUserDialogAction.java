@@ -110,7 +110,7 @@ public class SaveUserDialogAction extends SaveDialogAction {
                 String parentPath = parentNode.getPath();
 
                 if ("/".equals(parentPath)) {
-                    throw new ActionExecutionException("Users cannot be created directly under root");
+                    throw new ActionExecutionException("Users cannot be created directly under root"); //TODO-TRANSLATE-MAYBE
                 }
 
                 user = userManager.createUser(parentPath, newUserName, newPassword);
@@ -181,7 +181,7 @@ public class SaveUserDialogAction extends SaveDialogAction {
                 i++;
             }
         } catch (RepositoryException ex) {
-            throw new RepositoryException("Error saving assigned " + name + " of the [" + parentNode.getName() + "] user.", ex);
+            throw new RepositoryException("Error saving assigned " + name + " of the [" + parentNode.getName() + "] user.", ex); //TODO-TRANSLATE-MAYBE
         }
     }
 }

@@ -49,8 +49,8 @@ import javax.inject.Named;
 public class DeleteGroupAction extends AbstractDeleteGroupOrRoleAction<DeleteGroupActionDefinition> {
 
     // TODO MGNLUI-1826 replace with a message bundle key
-    private static final String ERROR_MESSAGE_GROUP_IS_ASSIGNED = "Cannot delete the group. It is already assigned to the following users/groups:<br />";
-    private static final String ERROR_MESSAGE_CANNOT_VERIFY = "Cannot verify that the group you want to delete is not assigned: ";
+    private static final String ERROR_MESSAGE_GROUP_IS_ASSIGNED = "Cannot delete the group. It is already assigned to the following users/groups:<br />"; //TODO-TRANSLATE
+    private static final String ERROR_MESSAGE_CANNOT_VERIFY = "Cannot verify that the group you want to delete is not assigned: "; //TODO-TRANSLATE
 
     @Inject
     public DeleteGroupAction(DeleteGroupActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {

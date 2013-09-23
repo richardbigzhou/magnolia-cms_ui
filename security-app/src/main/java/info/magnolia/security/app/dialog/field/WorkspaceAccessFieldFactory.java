@@ -121,7 +121,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
 
             final VerticalLayout aclLayout = new VerticalLayout();
 
-            final Label emptyLabel = new Label("No access.");
+            final Label emptyLabel = new Label("No access."); //TODO-TRANSLATE
 
             if (roleNode.hasNode(aclName)) {
 
@@ -157,7 +157,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
             }
 
             final HorizontalLayout buttons = new HorizontalLayout();
-            final Button addButton = new Button("Add new");
+            final Button addButton = new Button("Add new"); //TODO-TRANSLATE
             addButton.addClickListener(new Button.ClickListener() {
 
                 @Override
@@ -217,11 +217,11 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         accessRights.setInvalidAllowed(false);
         accessRights.setNewItemsAllowed(false);
         accessRights.addItem(Permission.ALL);
-        accessRights.setItemCaption(Permission.ALL, "Read/Write");
+        accessRights.setItemCaption(Permission.ALL, "Read/Write"); //TODO-TRANSLATE
         accessRights.addItem(Permission.READ);
-        accessRights.setItemCaption(Permission.READ, "Read-only");
+        accessRights.setItemCaption(Permission.READ, "Read-only"); //TODO-TRANSLATE
         accessRights.addItem(Permission.NONE);
-        accessRights.setItemCaption(Permission.NONE, "Deny access");
+        accessRights.setItemCaption(Permission.NONE, "Deny access"); //TODO-TRANSLATE
         accessRights.setPropertyDataSource(ruleItem.getItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME));
         ruleLayout.addComponent(accessRights);
 
@@ -232,11 +232,11 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         accessType.setNewItemsAllowed(false);
         accessType.setWidth("150px");
         accessType.addItem(AccessControlList.ACCESS_TYPE_NODE);
-        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_NODE, "Selected");
+        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_NODE, "Selected"); //TODO-TRANSLATE
         accessType.addItem(AccessControlList.ACCESS_TYPE_CHILDREN);
-        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_CHILDREN, "Sub nodes");
+        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_CHILDREN, "Sub nodes"); //TODO-TRANSLATE
         accessType.addItem(AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN);
-        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, "Selected and sub nodes");
+        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, "Selected and sub nodes"); //TODO-TRANSLATE
         Property accessTypeProperty = ruleItem.getItemProperty(ACCESS_TYPE_PROPERTY_NAME);
         accessType.setPropertyDataSource(accessTypeProperty);
         ruleLayout.addComponent(accessType);
@@ -246,7 +246,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         path.setPropertyDataSource(ruleItem.getItemProperty(AccessControlList.PATH_PROPERTY_NAME));
         ruleLayout.addComponent(path);
 
-        Button chooseButton = new Button("Choose...");
+        Button chooseButton = new Button("Choose..."); //TODO-TRANSLATE
         chooseButton.addClickListener(new Button.ClickListener() {
 
             @Override
@@ -260,7 +260,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         deleteButton.setHtmlContentAllowed(true);
         deleteButton.setCaption("<span class=\"" + "icon-trash" + "\"></span>");
         deleteButton.addStyleName("inline");
-        deleteButton.setDescription("Delete");
+        deleteButton.setDescription("Delete"); //TODO-TRANSLATE
         deleteButton.addClickListener(new Button.ClickListener() {
 
             @Override
@@ -328,7 +328,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         PropertyColumnDefinition column = new PropertyColumnDefinition();
         column.setEditable(false);
         column.setDisplayInChooseDialog(true);
-        column.setLabel("Node name");
+        column.setLabel("Node name"); //TODO-TRANSLATE
         column.setPropertyName(ModelConstants.JCR_NAME);
         column.setName(ModelConstants.JCR_NAME);
         columns.add(column);

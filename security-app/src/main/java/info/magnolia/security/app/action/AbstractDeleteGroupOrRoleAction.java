@@ -57,15 +57,15 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Abstract common supertype for {@link DeleteGroupAction} and {@link DeleteRoleAction}.
- * 
+ *
  * @param <D> the action definition type, must extend the {@link DeleteItemActionDefinition} class.
  */
 public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteItemActionDefinition> extends DeleteItemAction {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractDeleteGroupOrRoleAction.class);
 
-    public static final String PREFIX_USER = "user:";
-    public static final String PREFIX_GROUP = "group:";
+    public static final String PREFIX_USER = "user:"; //TODO-TRANSLATE
+    public static final String PREFIX_GROUP = "group:"; //TODO-TRANSLATE
 
     private final JcrItemAdapter item;
     private final UiContext uiContext;

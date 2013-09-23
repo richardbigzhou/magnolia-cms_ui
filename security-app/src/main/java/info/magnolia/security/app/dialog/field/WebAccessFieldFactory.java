@@ -86,7 +86,7 @@ public class WebAccessFieldFactory<D extends WebAccessFieldDefinition> extends A
 
             final VerticalLayout aclLayout = new VerticalLayout();
 
-            final Label emptyLabel = new Label("No access.");
+            final Label emptyLabel = new Label("No access."); //TODO-TRANSLATE
 
             if (roleNode.hasNode(ACL_NODE_NAME)) {
 
@@ -109,7 +109,7 @@ public class WebAccessFieldFactory<D extends WebAccessFieldDefinition> extends A
             }
 
             final HorizontalLayout buttons = new HorizontalLayout();
-            final Button addButton = new Button("Add new");
+            final Button addButton = new Button("Add new"); //TODO-TRANSLATE
             addButton.addClickListener(new Button.ClickListener() {
 
                 @Override
@@ -157,11 +157,11 @@ public class WebAccessFieldFactory<D extends WebAccessFieldDefinition> extends A
 
         NativeSelect accessRights = new NativeSelect();
         accessRights.addItem(Permission.ALL);
-        accessRights.setItemCaption(Permission.ALL, "Get & Post");
+        accessRights.setItemCaption(Permission.ALL, "Get & Post"); //TODO-TRANSLATE
         accessRights.addItem(Permission.READ);
-        accessRights.setItemCaption(Permission.READ, "Get");
+        accessRights.setItemCaption(Permission.READ, "Get"); //TODO-TRANSLATE
         accessRights.addItem(Permission.NONE);
-        accessRights.setItemCaption(Permission.NONE, "Deny");
+        accessRights.setItemCaption(Permission.NONE, "Deny"); //TODO-TRANSLATE
         accessRights.setNullSelectionAllowed(false);
         accessRights.setImmediate(true);
         accessRights.setInvalidAllowed(false);
@@ -188,7 +188,7 @@ public class WebAccessFieldFactory<D extends WebAccessFieldDefinition> extends A
         deleteButton.setHtmlContentAllowed(true);
         deleteButton.setCaption("<span class=\"" + "icon-trash" + "\"></span>");
         deleteButton.addStyleName("inline");
-        deleteButton.setDescription("Delete");
+        deleteButton.setDescription("Delete"); //TODO-TRANSLATE
         deleteButton.addClickListener(new Button.ClickListener() {
 
             @Override
