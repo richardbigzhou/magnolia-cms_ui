@@ -140,7 +140,7 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
                         openLinkDialog(pluginData.path, pluginData.workspace);
                     } catch (Exception e) {
                         log.error("openLinkDialog failed", e);
-                        richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, "Could not open target App");
+                        richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, "Could not open target App"); //TODO-TRANSLATE-EXCEPTION
                     }
                 }
             }
@@ -198,7 +198,7 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
 
                     richTextEditor.firePluginEvent(EVENT_SEND_MAGNOLIA_LINK, gson.toJson(mlink));
                 } catch (Exception e) {
-                    String error = "Not able to access the selected item. Value will not be set.";
+                    String error = "Not able to access the selected item. Value will not be set."; //TODO-TRANSLATE-EXCEPTION
                     log.error(error, e);
                     richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, error);
                 }
