@@ -116,7 +116,7 @@ public class MessagesViewImpl implements MessagesView {
         layout.setWidth("100%");
 
         // send button
-        NativeButton sendButton = new NativeButton("Send message", new Button.ClickListener() {
+        NativeButton sendButton = new NativeButton("Send message", new Button.ClickListener() { //TODO-TRANSLATE
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -149,7 +149,7 @@ public class MessagesViewImpl implements MessagesView {
         sendButton.addStyleName("commit");
 
         // reset button
-        NativeButton resetButton = new NativeButton("Reset", new Button.ClickListener() {
+        NativeButton resetButton = new NativeButton("Reset", new Button.ClickListener() { //TODO-TRANSLATE
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -168,7 +168,7 @@ public class MessagesViewImpl implements MessagesView {
         layout.addComponent(buttons);
 
         // intro text
-        Label intro = new Label("With this development tool, system messages can be sent manually.", ContentMode.HTML);
+        Label intro = new Label("With this development tool, system messages can be sent manually.", ContentMode.HTML); //TODO-TRANSLATE
         intro.addStyleName("intro");
 
         CssLayout container = new CssLayout();
@@ -187,7 +187,7 @@ public class MessagesViewImpl implements MessagesView {
     }
 
     private Field<String> createUserOrGroupIdTextField() {
-        final TextField userOrGroupField = new TextField("User or group");
+        final TextField userOrGroupField = new TextField("User or group"); //TODO-TRANSLATE
         userOrGroupField.setWidth("360px");
         return userOrGroupField;
     }
@@ -212,44 +212,44 @@ public class MessagesViewImpl implements MessagesView {
     }
 
     private Field<String> createMessageBodyTextField() {
-        final TextArea messageField = new TextArea("Message");
+        final TextArea messageField = new TextArea("Message"); //TODO-TRANSLATE
         messageField.setWidth(100, Unit.PERCENTAGE);
         return messageField;
     }
 
     private OptionGroup createTypeSelectionField() {
-        final OptionGroup types = new OptionGroup("Type of message");
+        final OptionGroup types = new OptionGroup("Type of message"); //TODO-TRANSLATE
         types.setNullSelectionAllowed(false);
         types.addItem(MessageType.INFO);
-        types.setItemCaption(MessageType.INFO, "Informational");
+        types.setItemCaption(MessageType.INFO, "Informational"); //TODO-TRANSLATE
         types.addItem(MessageType.WARNING);
-        types.setItemCaption(MessageType.WARNING, "Warning");
+        types.setItemCaption(MessageType.WARNING, "Warning"); //TODO-TRANSLATE
         types.addItem(MessageType.ERROR);
-        types.setItemCaption(MessageType.ERROR, "Error");
+        types.setItemCaption(MessageType.ERROR, "Error"); //TODO-TRANSLATE
         types.setValue(MessageType.INFO);
         types.addStyleName("horizontal");
         return types;
     }
 
     private OptionGroup createScopeSelectionField() {
-        final OptionGroup scopes = new OptionGroup("Scope");
+        final OptionGroup scopes = new OptionGroup("Scope"); //TODO-TRANSLATE
         scopes.setImmediate(true);
         scopes.setNullSelectionAllowed(false);
         scopes.addItem(MESSAGE_SCOPE_GLOBAL);
-        scopes.setItemCaption(MESSAGE_SCOPE_GLOBAL, "Send to all users");
+        scopes.setItemCaption(MESSAGE_SCOPE_GLOBAL, "Send to all users"); //TODO-TRANSLATE
         scopes.addItem(MESSAGE_SCOPE_LOCAL);
-        scopes.setItemCaption(MESSAGE_SCOPE_LOCAL, "Send to yourself only");
+        scopes.setItemCaption(MESSAGE_SCOPE_LOCAL, "Send to yourself only"); //TODO-TRANSLATE
         scopes.addItem(MESSAGE_SCOPE_USER);
-        scopes.setItemCaption(MESSAGE_SCOPE_USER, "Send to user");
+        scopes.setItemCaption(MESSAGE_SCOPE_USER, "Send to user"); //TODO-TRANSLATE
         scopes.addItem(MESSAGE_SCOPE_GROUP);
-        scopes.setItemCaption(MESSAGE_SCOPE_GROUP, "Send to group");
+        scopes.setItemCaption(MESSAGE_SCOPE_GROUP, "Send to group"); //TODO-TRANSLATE
         // initial selection
         scopes.addStyleName("vertical");
         return scopes;
     }
 
     private Field<String> createSubjectTextField() {
-        final TextField subjectField = new TextField("Message title");
+        final TextField subjectField = new TextField("Message title"); //TODO-TRANSLATE
         subjectField.addStyleName("required");
         subjectField.setWidth(100, Unit.PERCENTAGE);
         subjectField.setRequired(true);
