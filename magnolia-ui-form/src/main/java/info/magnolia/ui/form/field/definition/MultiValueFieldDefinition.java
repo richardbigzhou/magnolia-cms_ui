@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.form.field.definition;
 
-import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueTransformer;
 
 /**
@@ -44,15 +43,12 @@ public class MultiValueFieldDefinition extends ConfiguredFieldDefinition {
     private String buttonSelectAddLabel = "buttons.add";
     private String buttonSelectRemoveLabel = "buttons.delete";
     private ConfiguredFieldDefinition field;
-    private Class<? extends Transformer<?>> transformerClass = MultiValueTransformer.class;
 
     /**
      * Set default {@link info.magnolia.ui.form.field.transformer.Transformer}.
      */
     public MultiValueFieldDefinition() {
-        // FIXME MGNLUI-2102. Should not create a local transformerClass variable with getter and setter but rather used
-        // the super value set in this constructor.
-        // setTransformerClass(MultiValueTransformer.class);
+        setTransformerClass(MultiValueTransformer.class);
     }
 
     /**
@@ -86,16 +82,6 @@ public class MultiValueFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setField(ConfiguredFieldDefinition field) {
         this.field = field;
-    }
-
-    @Override
-    public Class<? extends Transformer<?>> getTransformerClass() {
-        return transformerClass;
-    }
-
-    @Override
-    public void setTransformerClass(Class<? extends Transformer<?>> transformerClass) {
-        this.transformerClass = transformerClass;
     }
 
 }

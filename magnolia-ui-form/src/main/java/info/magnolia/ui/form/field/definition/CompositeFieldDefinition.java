@@ -34,7 +34,6 @@
 package info.magnolia.ui.form.field.definition;
 
 
-import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.field.transformer.composite.CompositeTransformer;
 
 import java.util.ArrayList;
@@ -50,15 +49,13 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
 
     private List<ConfiguredFieldDefinition> fields = new ArrayList<ConfiguredFieldDefinition>();
     private List<String> fieldsName;
-    private Class<? extends Transformer<?>> transformerClass = CompositeTransformer.class;
+
 
     /**
      * Set default {@link info.magnolia.ui.form.field.transformer.Transformer}.
      */
     public CompositeFieldDefinition() {
-        // FIXME MGNLUI-2102. Should not create a local transformerClass variable with getter and setter but rather used
-        // the super value set in this constructor.
-        // setTransformerClass(CompositeTransformer.class);
+        setTransformerClass(CompositeTransformer.class);
     }
 
     public List<ConfiguredFieldDefinition> getFields() {
@@ -83,15 +80,5 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
         for (ConfiguredFieldDefinition definition : fields) {
             fieldsName.add(definition.getName());
         }
-    }
-
-    @Override
-    public Class<? extends Transformer<?>> getTransformerClass() {
-        return transformerClass;
-    }
-
-    @Override
-    public void setTransformerClass(Class<? extends Transformer<?>> transformerClass) {
-        this.transformerClass = transformerClass;
     }
 }
