@@ -36,9 +36,11 @@ package info.magnolia.security.app;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.AppView;
+import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.contentapp.ContentApp;
+import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 
 import javax.inject.Inject;
 
@@ -55,10 +57,10 @@ public class SecurityApp extends ContentApp {
     @Override
     public void start(Location location) {
         super.start(location);
-        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "systemUsers", "/system"));
-        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "groups", ""));
-        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "roles", ""));
-        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", "users", "/admin"));
+        for (SubAppDescriptor subAppDescriptor : appContext.getAppDescriptor().getSubApps().values()) {
+            String path = ((BrowserSubAppDescriptor)subAppDescriptor).getWorkbench().getPath();
+            getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", subAppDescriptor.getName(), path));
+        }
     }
 
 }
