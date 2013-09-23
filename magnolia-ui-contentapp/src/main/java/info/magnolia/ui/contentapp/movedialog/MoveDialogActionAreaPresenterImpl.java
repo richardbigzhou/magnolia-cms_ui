@@ -43,16 +43,17 @@ import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
 import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
 import info.magnolia.ui.framework.action.MoveLocation;
 
-import javax.inject.Inject;
 import java.util.Set;
+
+import javax.inject.Inject;
 
 /**
  * Implementation of {@link MoveDialogActionAreaPresenter}.
  */
-public class MoveDialogActionAreaAreaPresenterImpl extends EditorActionAreaPresenterImpl implements MoveDialogActionAreaPresenter {
+public class MoveDialogActionAreaPresenterImpl extends EditorActionAreaPresenterImpl implements MoveDialogActionAreaPresenter {
 
     @Inject
-    public MoveDialogActionAreaAreaPresenterImpl(MoveDialogActionAreaView view, ComponentProvider componentProvider) {
+    public MoveDialogActionAreaPresenterImpl(MoveDialogActionAreaView view, ComponentProvider componentProvider) {
         super(view, componentProvider);
     }
 
