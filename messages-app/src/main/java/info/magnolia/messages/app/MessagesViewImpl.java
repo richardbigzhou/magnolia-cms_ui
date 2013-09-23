@@ -116,7 +116,7 @@ public class MessagesViewImpl implements MessagesView {
         layout.setWidth("100%");
 
         // send button
-        NativeButton sendButton = new NativeButton("Send message", new Button.ClickListener() { //TODO_TRANSLATE
+        NativeButton sendButton = new NativeButton("Send message", new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -149,7 +149,7 @@ public class MessagesViewImpl implements MessagesView {
         sendButton.addStyleName("commit");
 
         // reset button
-        NativeButton resetButton = new NativeButton("Reset", new Button.ClickListener() {//TODO_TRANSLATE
+        NativeButton resetButton = new NativeButton("Reset", new Button.ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -168,7 +168,7 @@ public class MessagesViewImpl implements MessagesView {
         layout.addComponent(buttons);
 
         // intro text
-        Label intro = new Label("With this development tool, system messages can be sent manually.", ContentMode.HTML);//TODO_TRANSLATE
+        Label intro = new Label("With this development tool, system messages can be sent manually.", ContentMode.HTML);
         intro.addStyleName("intro");
 
         CssLayout container = new CssLayout();
@@ -187,7 +187,7 @@ public class MessagesViewImpl implements MessagesView {
     }
 
     private Field<String> createUserOrGroupIdTextField() {
-        final TextField userOrGroupField = new TextField("User or group");//TODO_TRANSLATE
+        final TextField userOrGroupField = new TextField("User or group");
         userOrGroupField.setWidth("360px");
         return userOrGroupField;
     }
@@ -212,31 +212,31 @@ public class MessagesViewImpl implements MessagesView {
     }
 
     private Field<String> createMessageBodyTextField() {
-        final TextArea messageField = new TextArea("Message");//TODO_TRANSLATE
+        final TextArea messageField = new TextArea("Message");
         messageField.setWidth(100, Unit.PERCENTAGE);
         return messageField;
     }
 
     private OptionGroup createTypeSelectionField() {
-        final OptionGroup types = new OptionGroup("Type of message");//TODO_TRANSLATE
+        final OptionGroup types = new OptionGroup("Type of message");
         types.setNullSelectionAllowed(false);
         types.addItem(MessageType.INFO);
-        types.setItemCaption(MessageType.INFO, "Informational");//TODO_TRANSLATE
+        types.setItemCaption(MessageType.INFO, "Informational");
         types.addItem(MessageType.WARNING);
-        types.setItemCaption(MessageType.WARNING, "Warning");//TODO_TRANSLATE
+        types.setItemCaption(MessageType.WARNING, "Warning");
         types.addItem(MessageType.ERROR);
-        types.setItemCaption(MessageType.ERROR, "Error");//TODO_TRANSLATE
+        types.setItemCaption(MessageType.ERROR, "Error");
         types.setValue(MessageType.INFO);
         types.addStyleName("horizontal");
         return types;
     }
 
     private OptionGroup createScopeSelectionField() {
-        final OptionGroup scopes = new OptionGroup("Scope");//TODO_TRANSLATE
+        final OptionGroup scopes = new OptionGroup("Scope");
         scopes.setImmediate(true);
         scopes.setNullSelectionAllowed(false);
         scopes.addItem(MESSAGE_SCOPE_GLOBAL);
-        scopes.setItemCaption(MESSAGE_SCOPE_GLOBAL, "Send to all users");//TODO_TRANSLATE
+        scopes.setItemCaption(MESSAGE_SCOPE_GLOBAL, "Send to all users");
         scopes.addItem(MESSAGE_SCOPE_LOCAL);
         scopes.setItemCaption(MESSAGE_SCOPE_LOCAL, "Send to yourself only");
         scopes.addItem(MESSAGE_SCOPE_USER);
@@ -249,7 +249,7 @@ public class MessagesViewImpl implements MessagesView {
     }
 
     private Field<String> createSubjectTextField() {
-        final TextField subjectField = new TextField("Message title");//TODO_TRANSLATE
+        final TextField subjectField = new TextField("Message title");
         subjectField.addStyleName("required");
         subjectField.setWidth(100, Unit.PERCENTAGE);
         subjectField.setRequired(true);
