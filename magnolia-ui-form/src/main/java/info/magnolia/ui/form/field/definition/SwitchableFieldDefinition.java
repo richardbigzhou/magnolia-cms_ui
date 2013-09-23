@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.form.field.definition;
 
-import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.field.transformer.composite.SwitchableTransformer;
 
 import java.util.ArrayList;
@@ -44,7 +43,6 @@ import java.util.List;
  */
 public class SwitchableFieldDefinition extends CompositeFieldDefinition {
     private String selectionType = "radio";
-    private Class<? extends Transformer<?>> transformerClass = SwitchableTransformer.class;
 
     private List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
 
@@ -52,9 +50,7 @@ public class SwitchableFieldDefinition extends CompositeFieldDefinition {
      * Set default {@link info.magnolia.ui.form.field.transformer.Transformer}.
      */
     public SwitchableFieldDefinition() {
-        // FIXME MGNLUI-2102. Should not create a local transformerClass variable with getter and setter but rather used
-        // the super value set in this constructor.
-        // setTransformerClass(SwitchableTransformer.class);
+        setTransformerClass(SwitchableTransformer.class);
     }
 
     /**
@@ -82,13 +78,4 @@ public class SwitchableFieldDefinition extends CompositeFieldDefinition {
         this.options = options;
     }
 
-    @Override
-    public Class<? extends Transformer<?>> getTransformerClass() {
-        return transformerClass;
-    }
-
-    @Override
-    public void setTransformerClass(Class<? extends Transformer<?>> transformerClass) {
-        this.transformerClass = transformerClass;
-    }
 }
