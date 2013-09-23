@@ -133,7 +133,7 @@ public class SaveGroupDialogAction extends SaveDialogAction {
             }
         } catch (RepositoryException ex) {
             log.error("Error saving assigned " + name + " of the [" + node.getName() + "] group.", ex);
-            throw new RepositoryException("Error saving assigned " + name + " of the [" + node.getName() + "] group.", ex);
+            throw new RepositoryException("Error saving assigned " + name + " of the [" + node.getName() + "] group.", ex); //TODO-TRANSLATE-MAYBE
         }
     }
 

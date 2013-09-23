@@ -49,8 +49,8 @@ import javax.inject.Named;
 public class DeleteRoleAction extends AbstractDeleteGroupOrRoleAction<DeleteRoleActionDefinition> {
 
     // TODO MGNLUI-1826 replace with a message bundle key
-    private static final String ERROR_MESSAGE_ROLE_IS_ASSIGNED = "Cannot delete the role. It is already assigned to the following users/groups:<br />";
-    private static final String ERROR_MESSAGE_CANNOT_VERIFY = "Cannot verify that the role you want to delete is not assigned: ";
+    private static final String ERROR_MESSAGE_ROLE_IS_ASSIGNED = "Cannot delete the role. It is already assigned to the following users/groups:<br />"; //TODO-TRANSLATE
+    private static final String ERROR_MESSAGE_CANNOT_VERIFY = "Cannot verify that the role you want to delete is not assigned: "; //TODO-TRANSLATE
 
     @Inject
     public DeleteRoleAction(DeleteRoleActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
