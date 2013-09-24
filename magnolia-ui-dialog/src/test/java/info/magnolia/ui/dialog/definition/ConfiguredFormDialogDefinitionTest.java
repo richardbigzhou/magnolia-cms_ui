@@ -33,13 +33,11 @@
  */
 package info.magnolia.ui.dialog.definition;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
-import info.magnolia.ui.dialog.formdialog.FormDialogPresenterImplTest;
+import info.magnolia.ui.dialog.BaseDialogPresenterTest;
 import info.magnolia.ui.form.definition.ConfiguredFormDefinition;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
@@ -75,7 +73,7 @@ public class ConfiguredFormDialogDefinitionTest {
         // Pre Check
         assertEquals(multiField.getTransformerClass(), MultiValueSubChildrenNodePropertiesTransformer.class);
         // initialize a ProxytoysI18nizer
-        final ProxytoysI18nizer i18nizer = new ProxytoysI18nizer(new FormDialogPresenterImplTest.TestTranslationService(), new LocaleProvider() {
+        final ProxytoysI18nizer i18nizer = new ProxytoysI18nizer(new BaseDialogPresenterTest.TestTranslationService(), new LocaleProvider() {
             @Override
             public Locale getLocale() {
                 return Locale.ENGLISH;
