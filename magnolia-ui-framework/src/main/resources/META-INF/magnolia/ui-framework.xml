@@ -260,6 +260,11 @@
       <implementation>info.magnolia.ui.dialog.BaseDialogViewImpl</implementation>
     </component>
 
+    <component>
+      <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenter</type>
+      <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterImpl</implementation>
+    </component>
+
     <!-- Form -->
     <component>
       <type>info.magnolia.ui.form.field.factory.FieldFactoryFactory</type>
@@ -385,11 +390,6 @@
     <component>
       <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory</type>
       <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactoryImpl</implementation>
-    </component>
-
-    <component>
-      <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenter</type>
-      <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterImpl</implementation>
     </component>
 
     <!-- Embedded page sub app -->
