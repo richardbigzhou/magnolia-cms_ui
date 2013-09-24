@@ -36,6 +36,7 @@ package info.magnolia.ui.form.field;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.definition.Layout;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
@@ -137,8 +138,12 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
         try {
             // Create the correct definition class
             SelectFieldDefinition selectDefinition = null;
+            String layout = "horizontal";
             if (definition.getSelectionType().equals("radio")) {
                 selectDefinition = new OptionGroupFieldDefinition();
+                if (definition.getLayout().equals(Layout.vertical)) {
+                    layout = "vertical";
+                }
             } else {
                 selectDefinition = new SelectFieldDefinition();
             }
@@ -147,7 +152,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
             selectDefinition.setTransformerClass(null);
             // Create the field
             field = (AbstractSelect) createLocalField(selectDefinition, relatedFieldItem, false);
-            field.addStyleName("horizontal");
+            field.addStyleName(layout);
             field.setImmediate(true);
         } catch (Exception e) {
             log.warn("Coudn't create the select field. Return null", e.getMessage());

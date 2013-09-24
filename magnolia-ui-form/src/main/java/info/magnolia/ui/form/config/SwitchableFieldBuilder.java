@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.config;
 
+import info.magnolia.ui.form.field.definition.Layout;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
@@ -53,6 +54,11 @@ public class SwitchableFieldBuilder extends AbstractFieldBuilder {
     @Override
     public SwitchableFieldDefinition definition() {
         return definition;
+    }
+
+    public SwitchableFieldBuilder layout(Layout layout) {
+        definition().setLayout(layout);
+        return this;
     }
 
     public SwitchableFieldBuilder selectionType(String selectionType) {

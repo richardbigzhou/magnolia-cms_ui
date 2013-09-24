@@ -49,7 +49,7 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
 
     private List<ConfiguredFieldDefinition> fields = new ArrayList<ConfiguredFieldDefinition>();
     private List<String> fieldsName;
-
+    private Layout layout = Layout.horizontal;
 
     /**
      * Set default {@link info.magnolia.ui.form.field.transformer.Transformer}.
@@ -67,6 +67,17 @@ public class CompositeFieldDefinition extends ConfiguredFieldDefinition {
             initFieldsName();
         }
         return fieldsName;
+    }
+
+    /**
+     * @return desired select part layout.
+     */
+    public Layout getLayout() {
+        return layout;
+    }
+
+    public void setLayout(Layout layout) {
+        this.layout = layout;
     }
 
     public void setFields(List<ConfiguredFieldDefinition> fields) {

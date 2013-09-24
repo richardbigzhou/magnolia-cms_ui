@@ -37,13 +37,16 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.definition.Layout;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * Generic Composite Field.<br>
@@ -53,7 +56,7 @@ import com.vaadin.ui.HorizontalLayout;
  */
 public class CompositeField extends AbstractCustomMultiField<CompositeFieldDefinition, PropertysetItem> {
 
-    private HorizontalLayout root;
+    private AbstractOrderedLayout root;
 
     public CompositeField(CompositeFieldDefinition definition, FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport, ComponentProvider componentProvider, Item relatedFieldItem) {
         super(definition, fieldFactoryFactory, i18nContentSupport, componentProvider, relatedFieldItem);
@@ -63,8 +66,12 @@ public class CompositeField extends AbstractCustomMultiField<CompositeFieldDefin
     protected Component initContent() {
         // Init root layout
         addStyleName("linkfield");
-        root = new HorizontalLayout();
-        root.setWidth("520px");
+        if (definition.getLayout().equals(Layout.horizontal)) {
+            root = new HorizontalLayout();
+            root.setWidth("520px");
+        } else {
+            root = new VerticalLayout();
+        }
 
         // Initialize Existing field
         initFields();
