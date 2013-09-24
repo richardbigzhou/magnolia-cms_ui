@@ -39,6 +39,7 @@ import com.vaadin.data.Item;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.Field;
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
@@ -140,7 +141,7 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
                         openLinkDialog(pluginData.path, pluginData.workspace);
                     } catch (Exception e) {
                         log.error("openLinkDialog failed", e);
-                        richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, "Could not open target App"); //TODO-TRANSLATE-EXCEPTION
+                        richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, MessagesUtil.get("ui-form.richtexteditorexception.opentargetappfailure", "mgnl-i18n.module-ui-form-messages"));
                     }
                 }
             }
@@ -198,7 +199,7 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
 
                     richTextEditor.firePluginEvent(EVENT_SEND_MAGNOLIA_LINK, gson.toJson(mlink));
                 } catch (Exception e) {
-                    String error = "Not able to access the selected item. Value will not be set."; //TODO-TRANSLATE-EXCEPTION
+                    String error = MessagesUtil.get("ui-form.richtexteditorexception.cannotaccessselecteditem", "mgnl-i18n.module-ui-form-messages");
                     log.error(error, e);
                     richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, error);
                 }

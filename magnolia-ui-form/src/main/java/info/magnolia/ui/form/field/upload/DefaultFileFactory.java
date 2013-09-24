@@ -36,6 +36,7 @@ package info.magnolia.ui.form.field.upload;
 import java.io.File;
 import java.io.IOException;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import org.vaadin.easyuploads.FileFactory;
 
 /**
@@ -49,8 +50,7 @@ public class DefaultFileFactory implements FileFactory {
         if (directory.isDirectory() && directory.canWrite()) {
             this.directory = directory;
         } else {
-            throw new IllegalArgumentException(
-                    "The directory does not exist or is not writeable!"); //TODO-TRANSLATE-EXCEPTION
+            throw new IllegalArgumentException(MessagesUtil.get("ui-form.filefactory.nonexitantdirectory", "mgnl-i18n.module-ui-form-messages"));
         }
     }
 
