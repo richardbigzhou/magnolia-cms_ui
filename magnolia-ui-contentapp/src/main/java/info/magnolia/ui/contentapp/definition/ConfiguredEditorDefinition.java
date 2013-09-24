@@ -43,7 +43,7 @@ import java.util.List;
 
 /**
  * Simple implementation of {@link EditorDefinition}.
- *
+ * 
  * @see EditorDefinition
  */
 public class ConfiguredEditorDefinition implements EditorDefinition {
@@ -135,3 +135,4 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
     public void setActions(List<FormActionItemDefinition> actions) {
         this.actions = actions;
     }
+}
