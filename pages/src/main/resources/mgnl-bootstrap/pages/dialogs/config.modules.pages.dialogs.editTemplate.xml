@@ -37,20 +37,11 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>8930d3e2-15ad-4cc4-b6ef-50842070139a</sv:value>
     </sv:property>
-    <sv:property sv:name="description" sv:type="String">
-      <sv:value>Change the template of the page. Be aware that this will ignore the template availability for existing children.</sv:value>
-    </sv:property>
-    <sv:property sv:name="i18nBasename" sv:type="String">
-      <sv:value>info.magnolia.ui.admincentral.messages</sv:value>
-    </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
       <sv:value>2013-06-14T17:02:01.963+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
-    </sv:property>
-    <sv:property sv:name="label" sv:type="String">
-      <sv:value>dialog.template.change</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:created" sv:type="Date">
       <sv:value>2012-11-27T15:16:08.583+01:00</sv:value>
@@ -158,17 +149,11 @@
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.pages.app.field.TemplateSelectorDefinition</sv:value>
             </sv:property>
-            <sv:property sv:name="description" sv:type="String">
-              <sv:value>Select the Template used for rendering.</sv:value>
-            </sv:property>
             <sv:property sv:name="jcr:created" sv:type="Date">
               <sv:value>2013-06-14T17:02:01.966+02:00</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>Template</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
               <sv:value>false</sv:value>
@@ -240,9 +225,6 @@
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
-      <sv:property sv:name="label" sv:type="String">
-        <sv:value>save changes</sv:value>
-      </sv:property>
       <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
         <sv:value>false</sv:value>
       </sv:property>
@@ -274,9 +256,6 @@
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
-      </sv:property>
-      <sv:property sv:name="label" sv:type="String">
-        <sv:value>cancel</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
         <sv:value>false</sv:value>
