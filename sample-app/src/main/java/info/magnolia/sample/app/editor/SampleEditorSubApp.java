@@ -33,13 +33,13 @@
  */
 package info.magnolia.sample.app.editor;
 
-import info.magnolia.sample.app.editor.location.EditorLocation;
-import info.magnolia.ui.framework.app.BaseSubApp;
-import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.sample.app.editor.location.EditorLocation;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.framework.app.BaseSubApp;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -59,7 +59,7 @@ public class SampleEditorSubApp extends BaseSubApp implements SampleEditorView.L
 
     @Override
     public String getCaption() {
-        return "Editor " + view.getName();
+        return "Editor " + view.getName();  //TODO-TRANSLATE
     }
 
     @Override

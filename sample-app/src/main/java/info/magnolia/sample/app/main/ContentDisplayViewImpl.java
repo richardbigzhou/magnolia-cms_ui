@@ -53,8 +53,8 @@ public class ContentDisplayViewImpl implements ContentDisplayView {
         layout = new VerticalLayout();
         layout.setMargin(true);
         layout.setSpacing(true);
-        layout.addComponent(new Label("CONTENT DISPLAY"));
-        layout.addComponent(new Label("Click one of the buttons in the navigation on the left to display it"));
+        layout.addComponent(new Label("CONTENT DISPLAY")); //TODO-TRANSLATE
+        layout.addComponent(new Label("Click one of the buttons in the navigation on the left to display it"));  //TODO-TRANSLATE
     }
 
     @Override
@@ -65,9 +65,9 @@ public class ContentDisplayViewImpl implements ContentDisplayView {
     @Override
     public void setResource(final String name) {
         layout.removeAllComponents();
-        layout.addComponent(new Label("CONTENT DISPLAY"));
-        layout.addComponent(new Label("Displaying " + name));
-        layout.addComponent(new Button("Open in new editor!", new Button.ClickListener() {
+        layout.addComponent(new Label("CONTENT DISPLAY"));  //TODO-TRANSLATE
+        layout.addComponent(new Label("Displaying " + name));  //TODO-TRANSLATE
+        layout.addComponent(new Button("Open in new editor!", new Button.ClickListener() {  //TODO-TRANSLATE
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
