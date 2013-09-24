@@ -64,15 +64,16 @@ import info.magnolia.ui.vaadin.gwt.client.shared.AreaElement;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Adds a component underneath the area passed in {@link AreaElement}.
@@ -155,17 +156,17 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
     private FormDialogDefinition buildNewComponentDialog(String availableComponents) {
 
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
-        form.setDescription("Select the Component to add to the page.");
+        form.setDescription("Select the Component to add to the page."); //TODO-TRANSLATE
         form.setI18nBasename("info.magnolia.ui.admincentral.messages");
         form.setLabel("dialog.paragraph.createNew");
 
         ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
         tab.setName("Components");
-        tab.setLabel("Components");
+        tab.setLabel("Components"); //TODO-TRANSLATE
 
         SelectFieldDefinition select = new SelectFieldDefinition();
         select.setName("mgnl:template");
-        select.setLabel("Component");
+        select.setLabel("Component"); //TODO-TRANSLATE
         tab.addField(select);
 
         form.addTab(tab);
@@ -192,12 +193,12 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
 
         CallbackDialogActionDefinition callbackAction = new CallbackDialogActionDefinition();
         callbackAction.setName("commit");
-        callbackAction.setLabel("choose");
+        callbackAction.setLabel("choose"); //TODO-TRANSLATE
         dialog.getActions().put(callbackAction.getName(), callbackAction);
 
         CancelDialogActionDefinition cancelAction = new CancelDialogActionDefinition();
         cancelAction.setName("cancel");
-        cancelAction.setLabel("cancel");
+        cancelAction.setLabel("cancel"); //TODO-TRANSLATE
         dialog.getActions().put(cancelAction.getName(), cancelAction);
 
         return dialog;
