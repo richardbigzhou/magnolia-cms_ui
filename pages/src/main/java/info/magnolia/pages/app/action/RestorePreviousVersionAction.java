@@ -35,11 +35,11 @@ package info.magnolia.pages.app.action;
 
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.contentapp.detail.DetailLocation;
-import info.magnolia.ui.contentapp.detail.DetailView;
+import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.location.LocationController;
-import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.contentapp.detail.DetailLocation;
+import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
@@ -86,7 +86,7 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
             Version version = getPreviousVersion();
             // Check the version.
             if (version == null) {
-                subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, "This Item do not have a Previous version. Action cancelled.");
+                subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, "This Item do not have a Previous version. Action cancelled.");  //TODO-TRANSLATE
                 return;
             }
             // Restore previous version
@@ -95,7 +95,7 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
             locationController.goTo(location);
 
         } catch (RepositoryException e) {
-            subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, "This Item do not have a Valid Previous version. Action cancelled.");
+            subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, "This Item do not have a Valid Previous version. Action cancelled.");  //TODO-TRANSLATE
             throw new ActionExecutionException("Could not execute RestorePreviousVersionAction: ", e);
         }
     }

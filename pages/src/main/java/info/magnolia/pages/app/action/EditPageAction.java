@@ -37,9 +37,9 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
-import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 
 import javax.inject.Inject;
@@ -71,7 +71,7 @@ public class EditPageAction extends AbstractAction<EditPageActionDefinition> {
                 pageNode = NodeUtil.getNearestAncestorOfType(pageNode, NodeTypes.Page.NAME);
             }
             if (pageNode == null) {
-                throw new ActionExecutionException("Not able to resolve page node from " + nodeItemToEdit.getJcrItem().getPath());
+                throw new ActionExecutionException("Not able to resolve page node from " + nodeItemToEdit.getJcrItem().getPath());  //TODO-TRANSLATE-EXCEPTION
             }
 
             DetailLocation location = new DetailLocation("pages", "detail", DetailView.ViewType.EDIT, pageNode.getPath(), "");

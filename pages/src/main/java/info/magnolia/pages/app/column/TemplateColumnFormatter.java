@@ -95,7 +95,7 @@ public class TemplateColumnFormatter extends AbstractColumnFormatter<TemplateCol
             log.warn("Template with id {} not found.", templateId, e);
         }
 
-        return template != null ? getI18nTitle(template) : "Missing: " + StringUtils.defaultString(templateId);
+        return template != null ? getI18nTitle(template) : "Missing: " + StringUtils.defaultString(templateId);  //TODO-TRANSLATE
     }
 
     private String getI18nTitle(TemplateDefinition template) {

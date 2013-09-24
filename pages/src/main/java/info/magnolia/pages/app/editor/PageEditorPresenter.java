@@ -118,7 +118,7 @@ public class PageEditorPresenter implements PageEditorListener {
         try {
             actionExecutor.execute(actionName, args);
         } catch (ActionExecutionException e) {
-            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage()); //TODO-TRANSLATE
             log.error("An error occurred while executing action [{}]", actionName, e);
             subAppContext.getAppContext().sendLocalMessage(error);
         }
