@@ -62,7 +62,7 @@ public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldD
         Object parent = getParentViaCast(field);
         String fieldName = field.getName().replace(':', '-');
         // dirty hack, as the ChooseDialogDefinition is defined in dependent module
-        if (parent.getClass().getName().indexOf("ChooseDialogDefinition") > -1) {
+        if (parent != null && parent.getClass().getName().indexOf("ChooseDialogDefinition") > -1) {
             // handle choose dialog
             AppDescriptor app = (AppDescriptor) getRoot(field);
             addKey(list, app.getName(), "chooseDialog", "fields", fieldName, fieldOrGetterName(el));

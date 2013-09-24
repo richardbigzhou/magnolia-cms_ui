@@ -34,6 +34,7 @@
 package info.magnolia.ui.contentapp.detail;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -74,8 +75,7 @@ import org.slf4j.LoggerFactory;
 import com.rits.cloning.Cloner;
 
 /**
- * Presenter for the item displayed in the
- * {@link info.magnolia.ui.contentapp.detail.DetailEditorPresenter}. Takes care
+ * Presenter for the item displayed in the {@link info.magnolia.ui.contentapp.detail.DetailEditorPresenter}. Takes care
  * of building and switching between the right {@link DetailView.ViewType}.
  */
 public class DetailPresenter implements EditorCallback, EditorValidator, ActionListener {
@@ -100,15 +100,18 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     private DialogView dialogView;
 
+    private I18nizer i18nizer;
+
     @Inject
     public DetailPresenter(SubAppContext subAppContext, final @Named(AdmincentralEventBus.NAME) EventBus eventBus, DetailView view,
-                           FormBuilder formBuilder, ComponentProvider componentProvider, SubAppActionExecutor executor) {
+            FormBuilder formBuilder, ComponentProvider componentProvider, SubAppActionExecutor executor, I18nizer i18nizer) {
         this.subAppContext = subAppContext;
         this.eventBus = eventBus;
         this.view = view;
         this.formBuilder = formBuilder;
         this.componentProvider = componentProvider;
         this.executor = executor;
+        this.i18nizer = i18nizer;
     }
 
     public DetailView start(EditorDefinition editorDefinition, final JcrNodeAdapter item, DetailView.ViewType viewType) {
@@ -141,7 +144,7 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     private void initActions() {
         EditorActionAreaPresenter editorActionAreaPresenter = componentProvider.newInstance(editorDefinition.getActionArea().getPresenterClass());
-        EditorActionAreaView editorActionAreaView = editorActionAreaPresenter.start(filterSubAppActions(),editorDefinition.getActionArea(), this, subAppContext);
+        EditorActionAreaView editorActionAreaView = editorActionAreaPresenter.start(filterSubAppActions(), editorDefinition.getActionArea(), this, subAppContext);
         dialogView.setActionAreaView(editorActionAreaView);
     }
 
@@ -152,7 +155,7 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
         boolean isJcrItemAdapter = (item instanceof JcrItemAdapter);
         for (FormActionItemDefinition editorAction : editorActions) {
             ActionDefinition def = subAppActions.get(editorAction.getName());
-            if (def != null && (!isJcrItemAdapter || (isJcrItemAdapter && executor.isAvailable(editorAction.getName(), ((JcrItemAdapter)item).getJcrItem())))) {
+            if (def != null && (!isJcrItemAdapter || (isJcrItemAdapter && executor.isAvailable(editorAction.getName(), ((JcrItemAdapter) item).getJcrItem())))) {
                 filteredActions.add(def);
             } else {
                 log.debug("Action is configured for an editor but not configured for sub-app: " + editorAction.getName());
@@ -163,6 +166,7 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     /**
      * Return clone of a form definition with all fields definitions set to read only.
+     * 
      * @see ConfiguredFieldDefinition#setReadOnly(boolean)
      */
     private FormDefinition cloneFormDefinitionReadOnly(FormDefinition formDefinition) {
@@ -171,7 +175,7 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
         for (TabDefinition tab : formDefinitionClone.getTabs()) {
             for (FieldDefinition field : tab.getFields()) {
-                ((ConfiguredFieldDefinition)field).setReadOnly(true);
+                ((ConfiguredFieldDefinition) field).setReadOnly(true);
             }
         }
 
@@ -194,18 +198,18 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
     @Override
     public void showValidation(boolean visible) {
         if (dialogView instanceof FormView) {
-            ((FormView)dialogView).showValidation(visible);
+            ((FormView) dialogView).showValidation(visible);
         }
     }
 
     @Override
     public boolean isValid() {
-        return dialogView instanceof FormView ? ((FormView)dialogView).isValid() : true;
+        return dialogView instanceof FormView ? ((FormView) dialogView).isValid() : true;
     }
 
     @Override
     public void onActionFired(String actionName, Object... actionContextParams) {
-        Object[] providedParameters = new Object[]{this, item};
+        Object[] providedParameters = new Object[] { this, item };
         Object[] combinedParameters = new Object[providedParameters.length + actionContextParams.length];
         System.arraycopy(providedParameters, 0, combinedParameters, 0, providedParameters.length);
         System.arraycopy(actionContextParams, 0, combinedParameters, providedParameters.length, actionContextParams.length);

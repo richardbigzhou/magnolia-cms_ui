@@ -38,7 +38,7 @@ import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefini
 
 /**
  * Base type for FieldValidationBuilders.
- *
+ * 
  * @param <D> definition type.
  */
 public abstract class AbstractFieldValidatorFactory<D extends ConfiguredFieldValidatorDefinition> extends AbstractFormItem implements FieldValidatorFactory {
@@ -50,7 +50,7 @@ public abstract class AbstractFieldValidatorFactory<D extends ConfiguredFieldVal
     }
 
     public String getI18nErrorMessage() {
-        return getMessage(definition.getErrorMessage());
+        return definition.getErrorMessage();
     }
 
     @Override

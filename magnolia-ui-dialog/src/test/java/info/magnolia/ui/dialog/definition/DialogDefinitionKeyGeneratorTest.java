@@ -42,12 +42,20 @@ import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Tests for {@link DialogDefinitionKeyGenerator}.
  */
 public class DialogDefinitionKeyGeneratorTest {
+    private I18nizer i18nizer;
+
+    @Before
+    public void setUp() {
+        i18nizer = new ProxytoysI18nizer(null, null);
+    }
+
     @Test
     public void keysForDialogLabel() throws SecurityException, NoSuchMethodException {
         // GIVEN
@@ -56,8 +64,7 @@ public class DialogDefinitionKeyGeneratorTest {
         // structure
         ConfiguredFormDialogDefinition dialog = new ConfiguredFormDialogDefinition();
         dialog.setId("test-module:testFolder/testDialog");
-        // i18n
-        I18nizer i18nizer = new ProxytoysI18nizer(null, null);
+
         dialog = i18nizer.decorate(dialog);
 
         // WHEN
@@ -78,8 +85,7 @@ public class DialogDefinitionKeyGeneratorTest {
         // structure
         ConfiguredFormDialogDefinition dialog = new ConfiguredFormDialogDefinition();
         dialog.setId("test-module:testFolder/testDialog");
-        // i18n
-        I18nizer i18nizer = new ProxytoysI18nizer(null, null);
+
         dialog = i18nizer.decorate(dialog);
 
         // WHEN
@@ -102,8 +108,7 @@ public class DialogDefinitionKeyGeneratorTest {
         ConfiguredChooseDialogDefinition chooseDialog = new ConfiguredChooseDialogDefinition();
         // hierarchy
         app.setChooseDialog(chooseDialog);
-        // i18n
-        I18nizer i18nizer = new ProxytoysI18nizer(null, null);
+
         app = i18nizer.decorate(app);
 
         // WHEN

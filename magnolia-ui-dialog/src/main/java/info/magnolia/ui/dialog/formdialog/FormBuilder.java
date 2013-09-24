@@ -34,7 +34,6 @@
 package info.magnolia.ui.dialog.formdialog;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.api.view.View;
@@ -88,24 +87,13 @@ public class FormBuilder {
 
         final String description = formDefinition.getDescription();
         final String label = formDefinition.getLabel();
-        final String basename = formDefinition.getI18nBasename();
 
         if (StringUtils.isNotBlank(description)) {
-            if (isMessageBundleKey(description) && StringUtils.isNotBlank(basename)) {
-                String message = doGetMessage(label, basename);
-                if (message != null) {
-                    view.setDescription(message);
-                }
-            }
+            view.setDescription(description);
         }
 
         if (StringUtils.isNotBlank(label)) {
-            if (isMessageBundleKey(label) && StringUtils.isNotBlank(basename)) {
-                String message = doGetMessage(label, basename);
-                if (message != null) {
-                    view.setCaption(message);
-                }
-            }
+            view.setCaption(label);
         }
 
         boolean hasI18NAwareFields = false;
@@ -132,7 +120,7 @@ public class FormBuilder {
                 TextAreaStretcher.extend(field);
                 view.addField(field);
             }
-            view.addFormSection(tab.getMessage(tabDefinition.getLabel()), tab.getContainer());
+            view.addFormSection(tabDefinition.getLabel(), tab.getContainer());
         }
         view.setShowAllEnabled(formDefinition.getTabs().size() > 1);
         if (hasI18NAwareFields) {
@@ -171,15 +159,4 @@ public class FormBuilder {
             }
         };
     }
-
-    private boolean isMessageBundleKey(final String text) {
-        String trimmed = text.trim();
-        return trimmed.indexOf(" ") == -1 && trimmed.contains(".") && !trimmed.endsWith(".");
-    }
-
-    private String doGetMessage(final String key, final String basename) {
-        String value = MessagesUtil.get(key, basename);
-        return value != null && !value.startsWith("???") ? value : null;
-    }
-
 }

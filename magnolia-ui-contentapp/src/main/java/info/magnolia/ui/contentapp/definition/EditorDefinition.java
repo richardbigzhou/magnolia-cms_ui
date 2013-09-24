@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.contentapp.definition;
 
+import info.magnolia.i18nsystem.I18nText;
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
 import info.magnolia.ui.dialog.actionarea.definition.FormActionItemDefinition;
 import info.magnolia.ui.form.definition.FormDefinition;
@@ -43,12 +45,14 @@ import java.util.List;
 /**
  * Defines an editor.
  */
+@I18nable
 public interface EditorDefinition {
-
+    @I18nText
     String getLabel();
 
     String getI18nBasename();
 
+    @I18nText
     String getDescription();
 
     String getWorkspace();

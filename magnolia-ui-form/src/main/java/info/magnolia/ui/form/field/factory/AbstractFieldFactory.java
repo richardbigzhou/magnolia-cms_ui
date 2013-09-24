@@ -68,7 +68,7 @@ import com.vaadin.ui.Label;
 /**
  * Abstract FieldFactory implementations. This class handle all common attributes defined in {@link FieldDefinition} and binds Vaadin {@link Field} instances created
  * by subclasses to the {@link Property} they will be reading and writing to.
- *
+ * 
  * @param <D> definition type
  * @param <T> field value type
  */
@@ -85,7 +85,6 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         this.definition = definition;
         this.item = relatedFieldItem;
     }
-
 
     @Override
     public void setFieldValidatorFactoryFactory(FieldValidatorFactoryFactory fieldValidatorFactoryFactory) {
@@ -119,7 +118,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
             field.setWidth(100, Unit.PERCENTAGE);
 
             // Set label and required marker
-            this.field.setCaption(getMessage(getFieldDefinition().getLabel()) + (getFieldDefinition().isRequired() ? "<span class=\"requiredfield\">*</span>" : ""));
+            this.field.setCaption(getFieldDefinition().getLabel() + (getFieldDefinition().isRequired() ? "<span class=\"requiredfield\">*</span>" : ""));
 
             setConstraints();
 
@@ -287,7 +286,7 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
         // Set Required
         if (definition.isRequired()) {
             field.setRequired(true);
-            field.setRequiredError(getMessage(definition.getRequiredErrorMessage()));
+            field.setRequiredError(definition.getRequiredErrorMessage());
         }
 
         // Set ReadOnly (field property has to be updated)
