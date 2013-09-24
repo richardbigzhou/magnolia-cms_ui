@@ -207,7 +207,7 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
     @Override
     public void start(Location location) {
         if (systemMonitor.isMemoryLimitReached()) {
-            shell.openNotification(MessageStyleTypeEnum.WARNING, false, String.format(SystemMonitor.MEMORY_LIMIT_IS_REACHED_STRING_FORMAT, "You might want to close unused apps in order to free memory"));
+            shell.openNotification(MessageStyleTypeEnum.WARNING, false, String.format(SystemMonitor.MEMORY_LIMIT_IS_REACHED_STRING_FORMAT, "You might want to close unused apps in order to free memory"));      //TODO-TRANSLATE-EXCEPTION
         }
 
         app = componentProvider.newInstance(appDescriptor.getAppClass());
@@ -417,7 +417,7 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
 
     @Override
     public void showConfirmationMessage(String message) {
-        log.info("If confirmation message was already implemented you'd get a {} now...", message);
+        log.info("If confirmation message was already implemented you'd get a {} now...", message);       //TODO-TRANSLATE-EXCEPTION ???
     }
 
     @Override

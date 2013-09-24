@@ -167,9 +167,8 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
         try {
             executor.execute(actionName, combinedParameters);
         } catch (ActionExecutionException e) {
-            String errorStatement = "An error occurred while executing an action.";
-            log.error(errorStatement, e);
-            Message error = new Message(MessageType.ERROR, errorStatement, e.getMessage());
+            log.error("An error occurred while executing an action.", e);
+            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());         //TODO-TRANSLATE
             if (uiContext instanceof AppContext) {
                 ((AppContext) uiContext).broadcastMessage(error);
             } else if (uiContext instanceof SubAppContext) {

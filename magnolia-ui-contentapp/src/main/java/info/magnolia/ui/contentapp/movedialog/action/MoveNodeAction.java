@@ -137,12 +137,12 @@ public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefini
 
     @Override
     protected String getSuccessMessage() {
-        return "Item(s) moved.";
+        return "Item(s) moved.";     //TODO-TRANSLATE
     }
 
     @Override
     protected String getFailureMessage() {
-        return "Move failed.";
+        return "Move failed.";          //TODO-TRANSLATE
     }
 
     /**

@@ -79,7 +79,7 @@ public class FormBuilder {
     }
 
     /**
-     * @return FormView populated with values from FormDefinition and Item.
+     * return FormView populated with values from FormDefinition and Item.
      */
     public void buildForm(FormView view, FormDefinition formDefinition, Item item, FormItem parent) {
         final Form form = new Form(formDefinition);

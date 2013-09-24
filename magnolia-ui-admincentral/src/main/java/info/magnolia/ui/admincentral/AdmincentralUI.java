@@ -71,6 +71,8 @@ import com.vaadin.ui.UI;
 @PreserveOnRefresh
 public class AdmincentralUI extends UI {
 
+    public static final String MESSAGES_BASENAME = "info.magnolia.ui.admincentral.messages";
+
     private static final Logger log = LoggerFactory.getLogger(AdmincentralUI.class);
     private GuiceComponentProvider componentProvider;
     private EventBusProtector eventBusProtector;

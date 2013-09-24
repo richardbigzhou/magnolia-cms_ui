@@ -113,7 +113,7 @@ public abstract class AbstractVersionAction<D extends ActionDefinition> extends 
                     // Open location
                     locationController.goTo(location);
                 } catch (ActionExecutionException e) {
-                    uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, "This Item do not have valid versions. Action cancelled.");
+                    uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, "This Item do not have valid versions. Action cancelled.");       //TODO-TRANSLATE
                 }
 
                 // Close the dialog
@@ -135,12 +135,12 @@ public abstract class AbstractVersionAction<D extends ActionDefinition> extends 
 
             // This should not happen, as we use action availability for this action
             if (versionInfoList == null || versionInfoList.isEmpty()) {
-                throw new ActionExecutionException("Could no get version info list of item [" + nodeAdapter.getItemId() + "]");
+                throw new ActionExecutionException("Could no get version info list of item [" + nodeAdapter.getItemId() + "]");            //TODO-TRANSLATE-EXCEPTION
             }
 
             return versionInfoList;
         } catch (RepositoryException e) {
-            throw new ActionExecutionException("Could no get node of item [" + nodeAdapter.getItemId() + "]");
+            throw new ActionExecutionException("Could no get node of item [" + nodeAdapter.getItemId() + "]");                         //TODO-TRANSLATE-EXCEPTION
         }
     }
 

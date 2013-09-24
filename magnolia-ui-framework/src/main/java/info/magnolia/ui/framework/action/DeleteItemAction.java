@@ -82,7 +82,7 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
     public void execute() throws ActionExecutionException {
 
         uiContext.openConfirmation(
-                MessageStyleTypeEnum.WARNING, getConfirmationQuestion(), "This action can't be undone.", "Yes, Delete", "No", true,
+                MessageStyleTypeEnum.WARNING, getConfirmationQuestion(), "This action can't be undone.", "Yes, Delete", "No", true,     //TODO-TRANSLATE
                 new ConfirmationCallback() {
 
                     @Override
@@ -98,16 +98,16 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
 
     private String getConfirmationQuestion() {
         if (getItems().size() == 1) {
-            return "Do you really want to delete this item?";
+            return "Do you really want to delete this item?";       //TODO-TRANSLATE
         }
-        return "Do you really want to delete these " + getItems().size() + " items?";
+        return "Do you really want to delete these " + getItems().size() + " items?";       //TODO-TRANSLATE
     }
 
     protected void executeAfterConfirmation() {
         try {
             super.execute();
         } catch (ActionExecutionException e) {
-            log.error("Problem occured during deleting items.", e);
+            log.error("Problem occured during deleting items.", e);      //TODO-TRANSLATE
         }
     }
 
@@ -117,7 +117,7 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
             final Item jcrItem = item.getJcrItem();
             if (jcrItem.getDepth() == 0) {
                 // cannot delete root node
-                throw new IllegalArgumentException("Cannot delete root node.");
+                throw new IllegalArgumentException("Cannot delete root node.");          //TODO-TRANSLATE-EXCEPTION
             }
             String itemIdOfChangedItem = JcrItemUtil.getItemId(jcrItem.getParent());
             Session session = jcrItem.getSession();
@@ -132,11 +132,11 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
 
     @Override
     protected String getSuccessMessage() {
-        return getItems().size() == 1 ? "Item deleted." : getItems().size() + " items deleted.";
+        return getItems().size() == 1 ? "Item deleted." : getItems().size() + " items deleted.";       //TODO-TRANSLATE
     }
 
     @Override
     protected String getFailureMessage() {
-        return "Failed to delete " + getFailedItems().size() + " of " + getItems().size() + " items: ";
+        return "Failed to delete " + getFailedItems().size() + " of " + getItems().size() + " items: ";            //TODO-TRANSLATE
     }
 }

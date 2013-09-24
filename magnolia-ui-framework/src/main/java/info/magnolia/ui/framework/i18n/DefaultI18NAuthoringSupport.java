@@ -33,18 +33,6 @@
  */
 package info.magnolia.ui.framework.i18n;
 
-import info.magnolia.cms.i18n.I18nContentSupport;
-import info.magnolia.link.LinkUtil;
-import info.magnolia.objectfactory.Components;
-import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
-import info.magnolia.ui.form.field.transformer.TransformedProperty;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Locale;
-
-import javax.jcr.Node;
-
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
@@ -53,6 +41,16 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HasComponents;
+import info.magnolia.cms.i18n.I18nContentSupport;
+import info.magnolia.link.LinkUtil;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
+import info.magnolia.ui.form.field.transformer.TransformedProperty;
+
+import javax.jcr.Node;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Locale;
 
 /**
  * Default implementation of {@link info.magnolia.ui.api.i18n.I18NAuthoringSupport}.
