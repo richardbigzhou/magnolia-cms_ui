@@ -33,11 +33,7 @@
  */
 package info.magnolia.ui.dialog;
 
-import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.event.ShortcutAction.ModifierKey;
-
 import info.magnolia.i18nsystem.I18nizer;
-import com.vaadin.event.ShortcutListener;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -56,6 +52,9 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
 import javax.inject.Inject;
 
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.ShortcutAction.ModifierKey;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.UI;
 
@@ -89,10 +88,6 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
     @Override
     public DialogView getView() {
         return view;
-    }
-
-    protected void setView(DialogView view) {
-        this.view = view;
     }
 
     @Override
