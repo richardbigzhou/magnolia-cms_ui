@@ -52,6 +52,7 @@ import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.ui.dialog.BaseDialogPresenterTest;
 import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
@@ -91,7 +92,7 @@ public class FormDialogPresenterImplTest {
         ComponentsTestUtil.setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);
         ComponentsTestUtil.setImplementation(MessagesManager.class, DefaultMessagesManager.class);
 
-        service = new TestTranslationService();
+        service = new BaseDialogPresenterTest.TestTranslationService();
         LocaleProvider provider = new ContextLocaleProvider();
         ProxytoysI18nizer i18nizer = new ProxytoysI18nizer(service, provider);
 
@@ -321,16 +322,5 @@ public class FormDialogPresenterImplTest {
         ConfiguredFormDialogDefinition cdd = new ConfiguredFormDialogDefinition();
         cdd.setId("dialogID");
         return cdd;
-    }
-
-    /**
-     * Test translation service.
-     */
-    public static class TestTranslationService implements TranslationService {
-
-        @Override
-        public String translate(LocaleProvider localeProvider, String basename, String[] keys) {
-            return "translated with key [" + keys[0] + "] and basename [" + basename + "] and locale [" + localeProvider.getLocale() + "]";
-        }
     }
 }
