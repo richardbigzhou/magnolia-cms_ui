@@ -62,13 +62,13 @@ public class MediaEditorRegistry implements Serializable {
         try {
             def = registry.getRequired(id);
         } catch (RegistrationException e) {
-            throw new RegistrationException("No media editor definition registered for id: " + id, e);
+            throw new RegistrationException("No media editor definition registered for id: " + id, e);  //TODO-TRANSLATE-EXCEPTION
         }
         return def;
     }
-    
+
     public Set<String> unregisterAndRegister(Set<String> registeredIds, List<MediaEditorDefinition> definitions) {
         return registry.removeAndPutAll(registeredIds, definitions);
     }
-    
+
 }

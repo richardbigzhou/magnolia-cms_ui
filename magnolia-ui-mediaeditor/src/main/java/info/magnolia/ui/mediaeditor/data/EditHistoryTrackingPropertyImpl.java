@@ -114,7 +114,7 @@ public class EditHistoryTrackingPropertyImpl extends TransactionalPropertyWrappe
             doneActions.push(record);
             currentActionInitialized = false;
         } catch (IOException e) {
-            logErrorAndNotify("Failed to create temp file.", e);
+            logErrorAndNotify("Failed to create temp file.", e); //TODO-TRANSLATE-EXCEPTION
         }
     }
 
@@ -163,7 +163,7 @@ public class EditHistoryTrackingPropertyImpl extends TransactionalPropertyWrappe
             IOUtils.write(bytes, fos);
             super.setValue(bytes);
         } catch (IOException e) {
-            logErrorAndNotify("Input/Output exception during media editor data handling", e);
+            logErrorAndNotify("Input/Output exception during media editor data handling", e);  //TODO-TRANSLATE-EXCEPTION
         } finally {
             IOUtils.closeQuietly(fos);
         }
@@ -182,7 +182,7 @@ public class EditHistoryTrackingPropertyImpl extends TransactionalPropertyWrappe
             fis = new FileInputStream(newLastDone.file);
             super.setValue(IOUtils.toByteArray(fis));
         } catch (IOException e) {
-            logErrorAndNotify("Input/Output exception during media editor data handling", e);
+            logErrorAndNotify("Input/Output exception during media editor data handling", e);  //TODO-TRANSLATE-EXCEPTION
         } finally {
             IOUtils.closeQuietly(fis);
         }

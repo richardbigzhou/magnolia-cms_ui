@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form.tab.widget;
 
-import com.google.gwt.user.client.ui.Widget;
 import info.magnolia.ui.vaadin.gwt.client.form.formsection.widget.FormSectionWidget;
 import info.magnolia.ui.vaadin.gwt.client.form.widget.FormFieldWrapper;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.connector.MagnoliaTabConnector;
@@ -42,8 +41,10 @@ import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gwt.user.client.ui.Widget;
+
 /**
- * An extension of {@link MagnoliaTabWidget}. Its content type is restricted to 
+ * An extension of {@link MagnoliaTabWidget}. Its content type is restricted to
  * {@link FormSectionWidget} and the FielWrappers are exposed.
  */
 public class FormTabWidget extends MagnoliaTabWidget {
@@ -57,7 +58,7 @@ public class FormTabWidget extends MagnoliaTabWidget {
     @Override
     public void setWidget(Widget w) {
         if (!(w instanceof FormSectionWidget)) {
-            throw new RuntimeException("Invalid type of tab content. Must be VFormSection. You have used: " + w.getClass());
+            throw new RuntimeException("Invalid type of tab content. Must be VFormSection. You have used: " + w.getClass());  //TODO-TRANSLATE-EXCEPTION
         }
         content = (FormSectionWidget) w;
         super.setWidget(w);

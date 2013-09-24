@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.mediaeditor.action;
 
-import com.google.inject.name.Named;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.dialog.actionarea.ActionListener;
@@ -52,6 +49,10 @@ import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.inject.name.Named;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 
 /**
  * Simply displays an image with dialog actions to
@@ -71,14 +72,14 @@ public class ViewImageAction extends MediaEditorUIAction {
     @Override
     protected List<ActionContext> getActionContextList() {
         List<ActionContext> result = new ArrayList<ActionContext>();
-        result.add(new ActionContext(new InternalMediaEditorActionDefinition("save", "Save Changes", false), new ActionListener() {
+        result.add(new ActionContext(new InternalMediaEditorActionDefinition("save", "Save Changes", false), new ActionListener() {  //TODO-TRANSLATE
             @Override
             public void onActionFired(String actionName, Object... actionContextParams) {
                 eventBus.fireEvent(new MediaEditorInternalEvent(EventType.SUBMIT));
             }
         }));
 
-        result.add(new ActionContext(new InternalMediaEditorActionDefinition("cancel", "Cancel Editing", true), new ActionListener() {
+        result.add(new ActionContext(new InternalMediaEditorActionDefinition("cancel", "Cancel Editing", true), new ActionListener() {  //TODO-TRANSLATE
             @Override
             public void onActionFired(String actionName, Object... actionContextParams) {
                 eventBus.fireEvent(new MediaEditorInternalEvent(EventType.CANCEL_ALL));
@@ -93,8 +94,8 @@ public class ViewImageAction extends MediaEditorUIAction {
         actionbar.removeAction("undo");
         actionbar.removeAction("redo");
 
-        String undoLabel = "Undo " + (dataSource.getLastDoneActionName() != null ? dataSource.getLastDoneActionName() : "");
-        String redoLabel = "Redo " + (dataSource.getLastUnDoneActionName() != null ? dataSource.getLastUnDoneActionName() : "");
+        String undoLabel = "Undo " + (dataSource.getLastDoneActionName() != null ? dataSource.getLastDoneActionName() : "");   //TODO-TRANSLATE
+        String redoLabel = "Redo " + (dataSource.getLastUnDoneActionName() != null ? dataSource.getLastUnDoneActionName() : "");   //TODO-TRANSLATE
 
         ActionbarItem undo = new ActionbarItem("undo", undoLabel, "icon-undo", "track");
         ActionbarItem redo = new ActionbarItem("redo", redoLabel, "icon-redo", "track");
@@ -126,7 +127,7 @@ public class ViewImageAction extends MediaEditorUIAction {
 
         @Override
         public void onSizeChanged(ViewImageField.ImageResizeEvent e) {
-            setValue(String.format("Actual Size: %d x %d px", e.getWidth(), e.getHeight()));
+            setValue(String.format("Actual Size: %d x %d px", e.getWidth(), e.getHeight()));  //TODO-TRANSLATE
         }
     }
 }

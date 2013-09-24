@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.mediaeditor;
 
-import com.google.inject.name.Names;
-import com.google.inject.util.Providers;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.i18nsystem.I18nizer;
@@ -57,11 +55,16 @@ import info.magnolia.ui.dialog.DialogPresenter;
 import info.magnolia.ui.mediaeditor.action.MediaEditorActionExecutor;
 import info.magnolia.ui.mediaeditor.definition.MediaEditorDefinition;
 import info.magnolia.ui.mediaeditor.registry.MediaEditorRegistry;
-import org.apache.log4j.Logger;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 
 /**
  * Implementation of {@link MediaEditorPresenterFactory}.
@@ -105,7 +108,7 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
         }
 
         if (mediaEditorDefinition == null) {
-            throw new IllegalArgumentException("No media editor definition registered for name [" + id + "]");
+            throw new IllegalArgumentException("No media editor definition registered for name [" + id + "]");  //TODO-TRANSLATE-EXCEPTION
         }
         return i18nizer.decorate(mediaEditorDefinition);
     }

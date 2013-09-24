@@ -33,6 +33,15 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form.widget;
 
+import info.magnolia.ui.vaadin.gwt.client.form.tab.widget.FormTabWidget;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabSetChangedEvent;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
+import info.magnolia.ui.vaadin.gwt.client.tabsheet.widget.MagnoliaTabSheetView;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -44,14 +53,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.Util;
-import info.magnolia.ui.vaadin.gwt.client.form.tab.widget.FormTabWidget;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabSetChangedEvent;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.tab.widget.MagnoliaTabWidget;
-import info.magnolia.ui.vaadin.gwt.client.tabsheet.widget.MagnoliaTabSheetView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Actual client side implementation of the form view. Provides the methods for
@@ -149,8 +150,8 @@ public class FormViewImpl extends FlowPanel implements FormView {
     public void setErrorAmount(int totalProblematicFields) {
         errorPanel.setVisible(totalProblematicFields > 0);
         if (totalProblematicFields > 0) {
-            errorPanel.getElement().setInnerHTML("<span>Please correct the <b>" + totalProblematicFields + " errors </b> in this form </span>");
-            final HTML errorButton = new HTML("[Jump to next error]");
+            errorPanel.getElement().setInnerHTML("<span>Please correct the <b>" + totalProblematicFields + " errors </b> in this form </span>"); //TODO-TRANSLATE
+            final HTML errorButton = new HTML("[Jump to next error]");  //TODO-TRANSLATE
             errorButton.setStyleName("action-jump-to-next-error");
             DOM.sinkEvents(errorButton.getElement(), Event.MOUSEEVENTS);
             errorButton.addDomHandler(new ClickHandler() {

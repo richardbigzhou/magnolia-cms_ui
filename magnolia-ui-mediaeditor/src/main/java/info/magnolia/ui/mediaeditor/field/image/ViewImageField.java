@@ -49,11 +49,11 @@ import com.vaadin.util.ReflectTools;
  * Provides the functionality for simple image view.
  */
 public class ViewImageField extends ImageMediaField {
-    
+
     private Image image = new Image();
-    
+
     private BufferedImage bufferedImage;
-    
+
     @Override
     public void refreshImageSource() {
         try {
@@ -68,52 +68,52 @@ public class ViewImageField extends ImageMediaField {
     public void addImageResizeListener(ImageSizeChangeListener listener) {
         addListener(ImageSizeChangeListener.EVENT_ID, ImageResizeEvent.class, listener, ImageSizeChangeListener.EVENT_METHOD);
     }
-    
+
     public void removeImageResizeListener(ImageSizeChangeListener listener) {
         removeListener(ImageSizeChangeListener.EVENT_ID, ImageResizeEvent.class, listener);
     }
-    
+
     @Override
     protected Component createImage() {
         return image;
     }
-    
+
     @Override
     public void attach() {
         super.attach();
     }
-    
+
     /**
      * ImageResizeEvent.
      */
     public static class ImageResizeEvent extends Component.Event {
-        
+
         private int width;
-        
+
         private int height;
-        
+
         public ImageResizeEvent(Component source, int newWidth, int newHeight) {
             super(source);
             this.width = newWidth;
             this.height = newHeight;
         }
-        
+
         public int getWidth() {
             return width;
         }
-        
+
         public int getHeight() {
             return height;
         }
     }
-    
-   
+
+
     /**
      * ImageSizeChangeListener.
      */
     public interface ImageSizeChangeListener {
         public static String EVENT_ID = "image_resize";
-        public static Method EVENT_METHOD = 
+        public static Method EVENT_METHOD =
                 ReflectTools.findMethod(ImageSizeChangeListener.class, "onSizeChanged", ImageResizeEvent.class);
         void onSizeChanged(ImageResizeEvent e);
     }
