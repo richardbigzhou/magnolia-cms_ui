@@ -72,7 +72,7 @@ public class FormSection extends AbstractLayout {
         if (components.contains(c)) {
             getState().helpDescriptions.put(c, description);
         } else {
-            throw new IllegalArgumentException("Layout doesn't contain this component.");
+            throw new IllegalArgumentException("Layout doesn't contain this component.");  //TODO-TRANSLATE-EXCEPTION
         }
     }
 

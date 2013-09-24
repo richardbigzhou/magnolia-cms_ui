@@ -76,7 +76,7 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
                 doAddTab(tab);
                 return tab;
             }
-            throw new IllegalArgumentException("TabSheet inside a Form should only receive the FormSection objects as tab content.");
+            throw new IllegalArgumentException("TabSheet inside a Form should only receive the FormSection objects as tab content."); //TODO-TRANSLATE-EXCEPTION
         }
     };
 

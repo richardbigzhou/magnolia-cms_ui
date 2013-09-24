@@ -33,9 +33,6 @@
  */
 package info.magnolia.ui.mediaeditor.action;
 
-import com.google.inject.name.Named;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.dialog.actionarea.ActionListener;
@@ -50,6 +47,10 @@ import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.inject.name.Named;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 
 /**
  * Installs UI components necessary for conducting the image crop operations.
@@ -71,7 +72,7 @@ public class CropImageAction extends MediaEditorUIAction {
     @Override
     protected List<ActionContext> getActionContextList() {
         List<ActionContext> result = new ArrayList<ActionContext>();
-        result.add(new ActionContext(new InternalMediaEditorActionDefinition("crop", "Crop Image", true), new ActionListener() {
+        result.add(new ActionContext(new InternalMediaEditorActionDefinition("crop", "Crop Image", true), new ActionListener() { //TODO-TRANSLATE
             @Override
             public void onActionFired(String actionName, Object... actionContextParams) {
                 dataSource.startAction(getDefinition().getTrackingLabel());

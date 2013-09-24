@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.mediaeditor;
 
-import com.vaadin.server.ClientConnector;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
@@ -55,14 +54,17 @@ import info.magnolia.ui.mediaeditor.event.MediaEditorCompletedEvent.CompletionTy
 import info.magnolia.ui.mediaeditor.event.MediaEditorCompletedEvent.Handler;
 import info.magnolia.ui.mediaeditor.event.MediaEditorInternalEvent;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
+
+import com.vaadin.server.ClientConnector;
 
 /**
  * Implementation of {@link MediaEditorPresenter}.
@@ -122,7 +124,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
             switchToDefaultMode();
             return view;
         } catch (IOException e) {
-            errorOccurred("Error occurred while editing media: ", e);
+            errorOccurred("Error occurred while editing media: ", e);  //TODO-TRANSLATE-EXCEPTION
             log.error("Error occurred while editing media: " + e.getMessage(), e);
         } finally {
             IOUtils.closeQuietly(stream);
@@ -207,7 +209,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
         try {
             actionExecutor.execute(actionName, this, view, dataSource);
         } catch (ActionExecutionException e) {
-            errorOccurred("Failed to execute media editor action ", e);
+            errorOccurred("Failed to execute media editor action ", e);  //TODO-TRANSLATE-EXCEPTION
             log.warn("Unable to execute action [" + actionName + "]", e);
         }
     }

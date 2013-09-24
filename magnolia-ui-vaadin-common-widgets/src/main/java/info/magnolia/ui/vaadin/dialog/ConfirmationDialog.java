@@ -48,14 +48,14 @@ public class ConfirmationDialog extends LightDialog {
 
     public static final String CONFIRM_ACTION_NAME = "confirm";
 
-    private Button confirmButton = new Button("OK", new ClickListener() {
+    private Button confirmButton = new Button("OK", new ClickListener() { //TODO-TRANSLATE
         @Override
         public void buttonClick(ClickEvent event) {
             fireEvent(new ConfirmationEvent(ConfirmationDialog.this, true));
         }
     });
 
-    private Button cancelButton = new Button("Cancel", new ClickListener() {
+    private Button cancelButton = new Button("Cancel", new ClickListener() { //TODO-TRANSLATE
         @Override
         public void buttonClick(ClickEvent event) {
             fireEvent(new ConfirmationEvent(ConfirmationDialog.this, false));

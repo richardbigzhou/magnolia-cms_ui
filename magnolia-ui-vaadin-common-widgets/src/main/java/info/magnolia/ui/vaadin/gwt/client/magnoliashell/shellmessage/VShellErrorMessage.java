@@ -55,7 +55,7 @@ public class VShellErrorMessage extends ShellMessageWidget {
         super.construct();
         final Element header = getHeader();
         detailsLinkEl.addClassName("link");
-        detailsLinkEl.setInnerHTML("[MORE]");
+        detailsLinkEl.setInnerHTML("[MORE]");  //TODO-TRANSLATE
         header.appendChild(detailsLinkEl);
     }
 
@@ -87,7 +87,7 @@ public class VShellErrorMessage extends ShellMessageWidget {
 
     @Override
     protected String getMessageTypeCaption() {
-        return "Error: ";
+        return "Error: ";  //TODO-TRANSLATE
     }
 
     @Override

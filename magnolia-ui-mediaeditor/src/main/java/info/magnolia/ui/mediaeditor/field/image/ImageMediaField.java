@@ -150,7 +150,7 @@ public abstract class ImageMediaField extends CustomField<byte[]> implements Med
                 refreshImageSource();
             }
         } catch (IOException e) {
-            log.error("Error occurred while converting operation result into stream: " + e.getMessage(), e);
+            log.error("Error occurred while converting operation result into stream: " + e.getMessage(), e);  //TODO-TRANSLATE-EXCEPTION
             revertChanges();
         } finally {
             IOUtils.closeQuietly(stream);
