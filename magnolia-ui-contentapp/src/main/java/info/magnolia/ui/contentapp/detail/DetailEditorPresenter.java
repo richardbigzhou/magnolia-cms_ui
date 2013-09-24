@@ -176,10 +176,10 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
                 throw new IllegalArgumentException("Selected value is not a node. Can only operate on nodes.");
             }
         } catch (RepositoryException e) {
-            Message error = new Message(MessageType.ERROR, "Could not get item: " + nodePath, e.getMessage());
+            Message error = new Message(MessageType.ERROR, "Could not get item: " + nodePath, e.getMessage());     //TODO-TRANSLATE
             appContext.broadcastMessage(error);
         } catch (ActionExecutionException e) {
-            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());     //TODO-TRANSLATE
             appContext.broadcastMessage(error);
         }
     }

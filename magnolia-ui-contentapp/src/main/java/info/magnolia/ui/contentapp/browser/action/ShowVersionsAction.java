@@ -80,16 +80,16 @@ public class ShowVersionsAction extends AbstractVersionAction<ShowVersionsAction
     @Override
     protected FormDialogDefinition buildNewComponentDialog() throws ActionExecutionException, RepositoryException {
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
-        form.setDescription("Select a version to display.");
-        form.setLabel("Versions");
+        form.setDescription("Select a version to display.");   //TODO-TRANSLATE
+        form.setLabel("Versions");    //TODO-TRANSLATE
 
         ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
         tab.setName("versions");
-        tab.setLabel("Versions");
+        tab.setLabel("Versions");        //TODO-TRANSLATE
 
         SelectFieldDefinition select = new SelectFieldDefinition();
         select.setName("versionName");
-        select.setLabel("Version");
+        select.setLabel("Version");      //TODO-TRANSLATE
         tab.addField(select);
 
         // All versions

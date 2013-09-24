@@ -207,7 +207,7 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
      * this in order to perform tasks or notification in case of error.
      */
     protected void onError(Exception e) {
-        String message = "Action execution failed.";
+        String message = "Action execution failed.";  //TODO-TRANSLATE
         uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, message);
     }
 
