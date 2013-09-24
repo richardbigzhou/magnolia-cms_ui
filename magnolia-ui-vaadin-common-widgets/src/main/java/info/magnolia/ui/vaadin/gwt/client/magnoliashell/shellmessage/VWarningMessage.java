@@ -54,7 +54,7 @@ public class VWarningMessage extends VDetailedShellMessage {
     protected void construct() {
         super.construct();
 
-        detailsExpanderEl.setInnerText("[MORE]");
+        detailsExpanderEl.setInnerText("[MORE]");  //TODO-TRANSLATE
         detailsExpanderEl.setClassName("details-expander");
         getHeader().appendChild(detailsExpanderEl);
 
@@ -70,6 +70,6 @@ public class VWarningMessage extends VDetailedShellMessage {
 
     @Override
     protected String getMessageTypeCaption() {
-        return "Warning: ";
+        return "Warning: ";  //TODO-TRANSLATE
     }
 }
