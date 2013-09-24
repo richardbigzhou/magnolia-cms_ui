@@ -196,22 +196,23 @@ button.btn-form-help {
 
 .action-validation {
     background: url("img/icons/icon-error-red.png") no-repeat scroll 1px 1px transparent;
-    border: none;
-    display: inline-block;
-    height: 16px;
-    margin: 0px 1px 0px 2px;
-    padding: 0px;
+    border: medium none;
+    display: inline;
+    height: 18px;
+    margin: 3px 1px 0 2px;
+    position: absolute;
     vertical-align: middle;
-    width: 19px;
+    width: 20px;
 }
 
 .action-form-help {
     background: url("img/icons/icon-help.png") no-repeat scroll 1px 1px transparent;
-    border: none;
+    border: medium none;
     display: inline-block;
     height: 20px;
-    margin: 0px 1px 0px 2px;
-    padding: 0px;
+    margin: 3px 1px 0 2px;
+    padding: 0;
+    position: absolute;
     vertical-align: middle;
     width: 20px;
 }
