@@ -57,10 +57,17 @@ public class SecurityApp extends ContentApp {
     @Override
     public void start(Location location) {
         super.start(location);
+        SubAppDescriptor first = null;
         for (SubAppDescriptor subAppDescriptor : appContext.getAppDescriptor().getSubApps().values()) {
+            if (first == null) {
+                first = subAppDescriptor;
+                continue;
+            }
             String path = ((BrowserSubAppDescriptor)subAppDescriptor).getWorkbench().getPath();
             getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", subAppDescriptor.getName(), path));
         }
+        String path = ((BrowserSubAppDescriptor) first).getWorkbench().getPath();
+        getAppContext().openSubApp(new DefaultLocation(Location.LOCATION_TYPE_APP, "security", first.getName(), path));
     }
 
 }
