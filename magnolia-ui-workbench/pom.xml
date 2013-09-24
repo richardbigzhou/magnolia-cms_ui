@@ -10,7 +10,7 @@
   <artifactId>magnolia-ui-workbench</artifactId>
   <name>magnolia-ui-workbench</name>
   <properties>
-    <cloverCoverageThreshold>31</cloverCoverageThreshold>
+    <cloverCoverageThreshold>39</cloverCoverageThreshold>
   </properties>
 
   <dependencies>
