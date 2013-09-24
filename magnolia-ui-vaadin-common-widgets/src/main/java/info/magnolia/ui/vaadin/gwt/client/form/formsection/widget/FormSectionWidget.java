@@ -90,6 +90,9 @@ public class FormSectionWidget extends FlowPanel {
 
     @Override
     public void insert(Widget w, int beforeIndex) {
+        if (sections.containsKey(w)) {
+            return;
+        }
         FormFieldWrapper fieldSection;
         if (!(w instanceof FormFieldWrapper)) {
             fieldSection = new FormFieldWrapper();
