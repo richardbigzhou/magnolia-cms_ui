@@ -78,80 +78,42 @@ import com.vaadin.ui.UI;
  */
 public class BaseDialogPresenterTest {
 
-    private BaseDialogPresenter presenter;
+    private ComponentProvider componentProvider = mock(ComponentProvider.class);
 
-    private ComponentProvider componentProvider;
+    private UiContext uiContext = mock(UiContext.class);
 
-    private DialogActionExecutor executor;
+    private DialogActionExecutor executor = new DialogActionExecutor(componentProvider);
 
-    private TestBaseDialogViewImpl view;
+    private TestBaseDialogViewImpl view  = new TestBaseDialogViewImpl();
 
-    private I18nizer i18nizer;
+    private EditorActionAreaView actionAreaView = new EditorActionAreaViewImpl();
 
-    private TestEditorActionAreaPresenterImpl actionAreaPresenter;
+    private TestEditorActionAreaPresenterImpl actionAreaPresenter  = new TestEditorActionAreaPresenterImpl(actionAreaView);
 
     private ConfiguredDialogDefinition definition = new ConfiguredDialogDefinition();
-
-    private UiContext uiContext;
 
     private ToggleableAction action1;
 
     private ToggleableAction action2;
 
+    private I18nizer i18nizer = new ProxytoysI18nizer(new TestTranslationService(), new ContextLocaleProvider() {
+        @Override
+        public Locale getLocale() {
+            return Locale.ENGLISH;
+        }
+    });
+
+    private BaseDialogPresenter presenter = new BaseDialogPresenter(componentProvider, executor, view, i18nizer);
+
     @Before
     public void setUp() throws Exception {
-        this.i18nizer = new ProxytoysI18nizer(new TestTranslationService(), new ContextLocaleProvider() {
-            @Override
-            public Locale getLocale() {
-                return Locale.ENGLISH;
-            }
-        });
-        this.view = new TestBaseDialogViewImpl();
-        this.componentProvider = mock(ComponentProvider.class);
-        EditorActionAreaView actionAreaView = new EditorActionAreaViewImpl();
-        this.actionAreaPresenter = new TestEditorActionAreaPresenterImpl(actionAreaView);
-        this.uiContext = mock(UiContext.class);
-        this.executor = new DialogActionExecutor(componentProvider);
+
 
         when(componentProvider.newInstance(EditorActionAreaPresenter.class)).thenReturn(actionAreaPresenter);
         when(componentProvider.getComponent(ActionRenderer.class)).thenReturn(new DefaultEditorActionRenderer());
-        this.presenter = new BaseDialogPresenter(componentProvider, executor, view, i18nizer);
-        UI.setCurrent(new UI() {
-            @Override
-            protected void init(VaadinRequest request) {}
-            @Override
-            public Locale getLocale() {
-                return Locale.ENGLISH;
-            }
-        });
 
-        VaadinSession session = mock(VaadinSession.class);
-        when(session.getBrowser()).thenReturn(new WebBrowser() {
-            @Override
-            public boolean isWindows() {
-                return false;
-            }
-        });
-        when(session.hasLock()).thenReturn(true);
-        UI.getCurrent().setSession(session);
-        UI.getCurrent().getSession().lock();
-
-        ConfiguredActionDefinition actionDef1 = new ConfiguredActionDefinition();
-        actionDef1.setName("action1");
-        actionDef1.setImplementationClass(ToggleableAction.class);
-
-        ConfiguredActionDefinition actionDef2 = new ConfiguredActionDefinition();
-        actionDef2.setName("action2");
-        actionDef2.setImplementationClass(ToggleableAction.class);
-
-        this.definition.addAction(actionDef1);
-        this.definition.addAction(actionDef2);
-
-        this.action1 = new ToggleableAction(actionDef1);
-        this.action2 = new ToggleableAction(actionDef2);
-
-        when(componentProvider.newInstance(ToggleableAction.class, actionDef1, presenter)).thenReturn(action1);
-        when(componentProvider.newInstance(ToggleableAction.class, actionDef2, presenter)).thenReturn(action2);
+        initializeVaadinUI();
+        initializeActions();
 
         this.executor.setDialogDefinition(definition);
     }
@@ -235,8 +197,8 @@ public class BaseDialogPresenterTest {
         public String translate(LocaleProvider localeProvider, String basename, String[] keys) {
             return "translated with key [" + keys[0] + "] and basename [" + basename + "] and locale [" + localeProvider.getLocale() + "]";
         }
-    }
 
+    }
     private static class ToggleableAction extends AbstractAction<ConfiguredActionDefinition> {
 
         private boolean isExecuted = false;
@@ -253,8 +215,8 @@ public class BaseDialogPresenterTest {
         private boolean isExecuted() {
             return isExecuted;
         }
-    }
 
+    }
     private static class TestBaseDialogViewImpl extends BaseDialogViewImpl {
 
         private TestActionManager mgr =  new TestActionManager();
@@ -283,16 +245,58 @@ public class BaseDialogPresenterTest {
                 super.addAction(action);
                 nameToKey.put(action.getCaption(), mapper.key(action));
             }
+
         }
     }
-
     private class TestEditorActionAreaPresenterImpl extends EditorActionAreaPresenterImpl {
+
         public TestEditorActionAreaPresenterImpl(EditorActionAreaView actionAreaView) {
             super(actionAreaView, BaseDialogPresenterTest.this.componentProvider);
         }
-
         public EditorActionAreaView getView() {
             return super.getView();
         }
+
+    }
+    private void initializeActions() {
+        ConfiguredActionDefinition actionDef1 = new ConfiguredActionDefinition();
+        actionDef1.setName("action1");
+        actionDef1.setImplementationClass(ToggleableAction.class);
+
+        ConfiguredActionDefinition actionDef2 = new ConfiguredActionDefinition();
+        actionDef2.setName("action2");
+        actionDef2.setImplementationClass(ToggleableAction.class);
+        this.definition.addAction(actionDef1);
+        this.definition.addAction(actionDef2);
+
+        this.action1 = new ToggleableAction(actionDef1);
+        this.action2 = new ToggleableAction(actionDef2);
+
+        when(componentProvider.newInstance(ToggleableAction.class, actionDef1, presenter)).thenReturn(action1);
+        when(componentProvider.newInstance(ToggleableAction.class, actionDef2, presenter)).thenReturn(action2);
+    }
+
+    private void initializeVaadinUI() {
+        UI.setCurrent(new UI() {
+            @Override
+            protected void init(VaadinRequest request) {
+            }
+
+            @Override
+            public Locale getLocale() {
+                return Locale.ENGLISH;
+            }
+        });
+
+        VaadinSession session = mock(VaadinSession.class);
+        when(session.getBrowser()).thenReturn(new WebBrowser() {
+            @Override
+            public boolean isWindows() {
+                return false;
+            }
+        });
+        when(session.hasLock()).thenReturn(true);
+        UI.getCurrent().setSession(session);
+        UI.getCurrent().getSession().lock();
     }
 }
