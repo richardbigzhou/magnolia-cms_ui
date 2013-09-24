@@ -38,7 +38,9 @@ import info.magnolia.ui.vaadin.gwt.client.form.formsection.widget.FormSectionWid
 import info.magnolia.ui.vaadin.gwt.client.form.rpc.FormSectionClientRpc;
 import info.magnolia.ui.vaadin.gwt.client.form.tab.connector.FormTabConnector;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorHierarchyChangeEvent;
@@ -89,6 +91,14 @@ public class FormSectionConnector extends AbstractLayoutConnector {
         getWidget().setDescriptionVisible(getState().isDescriptionVisible);
         for (final ComponentConnector cc : getChildComponents()) {
             updateChildError(cc);
+        }
+
+        if (stateChangeEvent.hasPropertyChanged("helpDescriptions")) {
+            final Iterator<Map.Entry<Connector, String>> entryIt = getState().helpDescriptions.entrySet().iterator();
+            while (entryIt.hasNext()) {
+                Map.Entry<Connector, String> entry = entryIt.next();
+                getWidget().setFieldDescription(((ComponentConnector)entry.getKey()).getWidget(), entry.getValue());
+            }
         }
     }
 
