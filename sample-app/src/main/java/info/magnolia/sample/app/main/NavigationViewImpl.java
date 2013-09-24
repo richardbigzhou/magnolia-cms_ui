@@ -69,7 +69,7 @@ public class NavigationViewImpl implements NavigationView {
             layout = new VerticalLayout();
             layout.setMargin(true);
             layout.setSpacing(true);
-            layout.addComponent(new Label("NAVIGATION"));
+            layout.addComponent(new Label("NAVIGATION"));  //TODO-TRANSLATE
 
             layout.addComponent(createButton("Alpha"));
             layout.addComponent(createButton("Bravo"));
@@ -81,7 +81,7 @@ public class NavigationViewImpl implements NavigationView {
     }
 
     private Button createButton(final String name) {
-        return new Button("Select " + name, new Button.ClickListener() {
+        return new Button("Select " + name, new Button.ClickListener() {  //TODO-TRANSLATE
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
