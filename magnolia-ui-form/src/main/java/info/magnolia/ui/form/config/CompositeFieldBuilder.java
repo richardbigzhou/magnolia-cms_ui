@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.config;
 
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
+import info.magnolia.ui.form.field.definition.Layout;
 import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefinition;
 
@@ -57,6 +58,11 @@ public class CompositeFieldBuilder extends AbstractFieldBuilder {
         for (AbstractFieldBuilder builder : builders) {
             definition().getFields().add(builder.definition());
         }
+        return this;
+    }
+
+    public CompositeFieldBuilder layout(Layout layout) {
+        definition().setLayout(layout);
         return this;
     }
 

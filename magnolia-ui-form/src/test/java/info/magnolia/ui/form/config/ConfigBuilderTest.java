@@ -38,6 +38,7 @@ import static org.junit.Assert.*;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+import info.magnolia.ui.form.field.definition.Layout;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
@@ -294,6 +295,7 @@ public class ConfigBuilderTest {
         assertEquals(optionBuilder2.definition(), definition.getOptions().get(1));
         assertNotNull(definition.getTransformerClass());
         assertEquals(SwitchableTransformer.class.getName(), definition.getTransformerClass().getName());
+        assertEquals(Layout.horizontal, definition.getLayout());
     }
 
     @Test
@@ -304,7 +306,7 @@ public class ConfigBuilderTest {
         // Specific to definition
         BasicTextCodeFieldBuilder tfb1 = new BasicTextCodeFieldBuilder("tfb1");
         BasicTextCodeFieldBuilder tfb2 = new BasicTextCodeFieldBuilder("tfb2");
-        builder.fields(tfb1, tfb2);
+        builder.fields(tfb1, tfb2).layout(Layout.vertical);
 
         // WHEN
 
@@ -315,6 +317,7 @@ public class ConfigBuilderTest {
         assertEquals(tfb2.definition(), definition.getFields().get(1));
         assertNotNull(definition.getTransformerClass());
         assertEquals(CompositeTransformer.class.getName(), definition.getTransformerClass().getName());
+        assertEquals(Layout.vertical, definition.getLayout());
     }
 
     /**
