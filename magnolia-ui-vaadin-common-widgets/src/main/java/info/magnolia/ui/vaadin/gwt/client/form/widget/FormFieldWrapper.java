@@ -130,14 +130,6 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
         label.setInnerHTML(caption);
     }
 
-    public int getFieldAreaWidth() {
-        return fieldWrapper.getOffsetWidth();
-    }
-
-    public int getFieldAreaHeight() {
-        return fieldWrapper.getOffsetHeight();
-    }
-
     @Override
     public void add(Widget child) {
         add(child, fieldWrapper);
@@ -166,8 +158,12 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
     }
 
     public void setHelpEnabled(boolean isHelpEnabled) {
-        helpButton.setVisible(isHelpEnabled && helpDescription != null && !"".equals(helpDescription));
-        if (!isHelpEnabled && helpSection != null) {
+        helpButton.setVisible(
+                isHelpEnabled &&
+                helpDescription != null &&
+                !"".equals(helpDescription) &&
+                !errorAction.isVisible());
+        if (!isHelpEnabled && helpSection != null ) {
             hideHelp();
         }
     }
@@ -177,10 +173,6 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
         if (helpSection != null && getWidgetIndex(helpSection) >= 0) {
             helpSection.setMessage(helpDescription);
         }
-    }
-
-    public boolean hasError() {
-        return errorSection != null && errorSection.isVisible();
     }
 
     public void focusField() {
@@ -202,11 +194,4 @@ public class FormFieldWrapper extends FlowPanel implements HasFocusHandlers, Has
     public HandlerRegistration addBlurHandler(BlurHandler handler) {
         return field.addDomHandler(handler, BlurEvent.getType());
     }
-
-    public void resetErrorMessage() {
-        if (errorSection != null) {
-            errorSection.setMessage("");
-        }
-    }
-
 }
