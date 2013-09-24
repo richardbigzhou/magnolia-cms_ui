@@ -34,8 +34,6 @@
 package info.magnolia.ui.form.definition;
 
 import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 /**
  * Abstract base class for Form based key generators. Offers a {@link #getParentId(FormDefinition)} method to obtain the ID of the Dialog or the MessageView the Form is part of.
@@ -45,18 +43,6 @@ import java.lang.reflect.Method;
 public abstract class AbstractFormKeyGenerator<T> extends AbstractI18nKeyGenerator<T> {
 
     protected String getParentId(FormDefinition formDef) {
-        // Can't cast to DialogDefinition, it's not in the classpath of magnolia-ui-form
-        final Object dialogDef = getParentViaCast(formDef);
-        try {
-            final Method getId = dialogDef.getClass().getMethod("getId");
-            // replace : and / with . in DialogID - see info.magnolia.ui.dialog.registry.ConfiguredDialogDefinitionManager#createId
-            return ((String) getId.invoke(dialogDef)).replace(':', '.').replace('/', '.');
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e); // TODO MGNLUI-2031
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e); // TODO MGNLUI-2031
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e); // TODO MGNLUI-2031
-        }
+        return getIdOrNameForUnknownRoot(formDef);
     }
 }

@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.dialog.formdialog;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
@@ -99,7 +98,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
      * <ul>
      * <li>Sets the created {@link FormView} as content of the created {@link DialogView}.</li>
      * </ul>
-     * 
+     *
      * @param item passed on to{@link info.magnolia.ui.dialog.formdialog.FormDialogPresenter}
      * @param dialogDefinition
      * @param uiContext
@@ -109,8 +108,11 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         start(dialogDefinition, uiContext);
         this.callback = callback;
         this.item = item;
+
         getExecutor().setDialogDefinition(dialogDefinition);
+
         buildView(dialogDefinition);
+
         final OverlayCloser overlayCloser = uiContext.openOverlay(getView());
         getView().addDialogCloseHandler(new DialogCloseHandler() {
             @Override
@@ -122,31 +124,30 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         return getView();
     }
 
+
+    protected DialogView initView() {
+        return getView();
+    }
+
+    /**
+     * This method has package visibility for testing purposes only. It can't be overridden.
+     */
     private void buildView(FormDialogDefinition dialogDefinition) {
-        dialogDefinition = (FormDialogDefinition) super.decorateForI18n(dialogDefinition);
-        Dialog dialog = new Dialog(dialogDefinition);
+        final FormDialogDefinition decoratedDialogDefinition = getI18nizer().decorate(dialogDefinition);
+        final Dialog dialog = new Dialog(decoratedDialogDefinition);
+
         // setView(formBuilder.buildForm(dialogDefinition.getForm(), item, dialog)); // TODO check and delete/uncomment - and remove the next line
-        formBuilder.buildForm(getView(), dialogDefinition.getForm(), item, dialog);
-        final String description = dialogDefinition.getDescription();
-        final String label = dialogDefinition.getLabel();
-        final String basename = dialogDefinition.getI18nBasename();
+        formBuilder.buildForm(getView(), decoratedDialogDefinition.getForm(), item, dialog);
+
+        final String description = decoratedDialogDefinition.getDescription();
+        final String label = decoratedDialogDefinition.getLabel();
 
         if (StringUtils.isNotBlank(description)) {
-            if (isMessageBundleKey(description) && StringUtils.isNotBlank(basename)) {
-                String message = doGetMessage(label, basename);
-                if (message != null) {
-                    getView().setDescription(message);
-                }
-            }
+            getView().setDescription(description);
         }
 
         if (StringUtils.isNotBlank(label)) {
-            if (isMessageBundleKey(label) && StringUtils.isNotBlank(basename)) {
-                String message = doGetMessage(label, basename);
-                if (message != null) {
-                    getView().setCaption(message);
-                }
-            }
+            getView().setCaption(label);
         }
     }
 
@@ -185,18 +186,5 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     @Override
     protected Object[] getActionParameters(String actionName) {
         return new Object[] { this, item, callback };
-    }
-
-    /**
-     * This method has package visibility for testing purposes.
-     */
-    final boolean isMessageBundleKey(final String text) {
-        String trimmed = text.trim();
-        return trimmed.indexOf(" ") == -1 && trimmed.contains(".") && !trimmed.endsWith(".");
-    }
-
-    private String doGetMessage(final String description, final String basename) {
-        String value = MessagesUtil.get(description, basename);
-        return value != null && !value.startsWith("???") ? value : null;
     }
 }

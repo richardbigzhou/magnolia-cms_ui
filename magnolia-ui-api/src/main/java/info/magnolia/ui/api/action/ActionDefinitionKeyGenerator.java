@@ -40,16 +40,12 @@ import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.reflections.ReflectionUtils;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -79,7 +75,7 @@ public class ActionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<Actio
         } else {
             final List<String> ancestorKeys = getKeysfromAncestors(actionDefinition, el, root);
             if (ancestorKeys.isEmpty()) {
-                String idOrName = getIdOrNameForUnknownRoot(root);
+                String idOrName = getIdOrNameForUnknownRoot(actionDefinition);
                 if (idOrName == null) {
                     addKey(keys, "actions", actionDefinition.getName(), fieldOrGetterName(el));
                 } else {
@@ -88,6 +84,11 @@ public class ActionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<Actio
             } else {
                 addKey(keys, StringUtils.join(ancestorKeys, '.'), "actions", actionDefinition.getName(), fieldOrGetterName(el));
             }
+        }
+
+        final String actionName = actionDefinition.getName().toLowerCase();
+        if ("commit".equals(actionName) || "cancel".equals(actionName)) {
+            addKey(keys, "actions", actionName, fieldOrGetterName(el));
         }
     }
 
@@ -119,36 +120,5 @@ public class ActionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<Actio
             ancestorKeys.add(key);
         }
         return ancestorKeys;
-    }
-
-    private String getIdOrNameForUnknownRoot(Object root) {
-        @SuppressWarnings("unchecked")
-        final Set<Method> methods = ReflectionUtils.getMethods(root.getClass(), new Predicate<Method>() {
-
-            @Override
-            public boolean apply(Method input) {
-                if ("getId".equals(input.getName()) || "getName".equals(input.getName())) {
-                    return true;
-                }
-                return false;
-            }
-        });
-        try {
-            if (methods.isEmpty()) {
-                return null;
-            }
-            String idOrName = (String) methods.iterator().next().invoke(root);
-            return idOrName.replaceAll(":", ".");
-        } catch (IllegalArgumentException e) {
-            // TODO how do we handle this?
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            // TODO how do we handle this?
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            // TODO how do we handle this?
-            e.printStackTrace();
-        }
-        return null;
     }
 }

@@ -118,7 +118,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
     @Override
     public DialogView start(DialogDefinition definition, UiContext uiContext) {
         this.uiContext = uiContext;
-        this.definition = definition;
+        this.definition = i18nizer.decorate(definition);
         this.editorActionAreaPresenter = componentProvider.newInstance(definition.getActionArea().getPresenterClass());
         EditorActionAreaView editorActionAreaView = editorActionAreaPresenter.start(filterActions(), definition.getActionArea(), this, uiContext);
 
@@ -147,11 +147,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
     }
 
     protected Object[] getActionParameters(String actionName) {
-        return new Object[]{this};
-    }
-
-    public DialogDefinition decorateForI18n(DialogDefinition definition) {
-        return i18nizer.decorate(definition);
+        return new Object[] { this };
     }
 
     @Override
@@ -184,5 +180,9 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
 
     protected ActionExecutor getExecutor() {
         return executor;
+    }
+
+    protected I18nizer getI18nizer() {
+        return i18nizer;
     }
 }
