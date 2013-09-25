@@ -42,13 +42,14 @@ import info.magnolia.ui.form.field.component.ContentPreviewComponent;
  * - a Content detail message (Content name, size,...)
  */
 public class ContentPreviewDefinition {
-    private Class<ContentPreviewComponent<?>> contentPreviewClass;
 
-    public Class<ContentPreviewComponent<?>> getContentPreviewClass() {
+    private Class<? extends ContentPreviewComponent<?>> contentPreviewClass;
+
+    public Class<? extends ContentPreviewComponent<?>> getContentPreviewClass() {
         return contentPreviewClass;
     }
 
-    public void setContentPreviewClass(Class<ContentPreviewComponent<?>> contentPreviewClass) {
+    public void setContentPreviewClass(Class<? extends ContentPreviewComponent<?>> contentPreviewClass) {
         this.contentPreviewClass = contentPreviewClass;
     }
 }
