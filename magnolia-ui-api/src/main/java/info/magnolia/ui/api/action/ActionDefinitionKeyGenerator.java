@@ -74,7 +74,7 @@ public class ActionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<Actio
 
         if (root instanceof AppDescriptor) {
             final AppDescriptor appDescriptor = (AppDescriptor) root;
-            // TODO MGNLUI-2083
+
             Object parent = getParentViaCast(actionDefinition);
             if (parent instanceof SubAppDescriptor) {
                 final SubAppDescriptor subAppDescriptor = (SubAppDescriptor) parent;

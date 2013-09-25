@@ -33,7 +33,8 @@
  */
 package info.magnolia.ui.api.action;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.i18nsystem.LocaleProvider;
@@ -52,6 +53,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -66,7 +68,7 @@ public class ActionDefinitionKeyGeneratorTest {
 
     @Before
     public void setup() {
-        i18nizer = new ProxytoysI18nizer(new TestTranslationService(), new FixedLocaleProvider(Locale.ITALIAN));
+        i18nizer = new ProxytoysI18nizer(mock(TranslationService.class), new FixedLocaleProvider(Locale.ITALIAN));
 
         actionDefinition = new TestI18nAbleActionDefinition();
         actionDefinition.setName("myaction");
@@ -102,7 +104,12 @@ public class ActionDefinitionKeyGeneratorTest {
         contentApp = i18nizer.decorate(contentApp);
 
         // THEN
-        assertEquals("i18n key is [contentApp.chooseDialog.actions.chooseDialogAction.label]", contentApp.getChooseDialog().getActions().get("chooseDialogAction").getLabel());
+        final String[] generatedKeys = findGeneratedLabelKeys("some configured value", contentApp.getChooseDialog().getActions().get("chooseDialogAction"));
+        assertThat(generatedKeys, Matchers.arrayContaining(
+                "some configured value",
+                "contentApp.chooseDialog.actions.chooseDialogAction.label",
+                "contentApp.chooseDialog.actions.chooseDialogAction"
+                ));
     }
 
     @Test
@@ -111,7 +118,12 @@ public class ActionDefinitionKeyGeneratorTest {
         appDescriptor = i18nizer.decorate(appDescriptor);
 
         // THEN
-        assertEquals("i18n key is [myapp.browser.actions.myaction.label]", appDescriptor.getSubApps().get("1").getActions().get("1").getLabel());
+        final String[] generatedKeys = findGeneratedLabelKeys("some configured value", appDescriptor.getSubApps().get("1").getActions().get("1"));
+        assertThat(generatedKeys, Matchers.arrayContaining(
+                "some configured value",
+                "myapp.browser.actions.myaction.label",
+                "myapp.browser.actions.myaction"
+                ));
     }
 
     @Test
@@ -124,7 +136,12 @@ public class ActionDefinitionKeyGeneratorTest {
         rootObj = i18nizer.decorate(rootObj);
 
         // THEN
-        assertEquals("i18n key is [parent-keygen.actions.myaction.label]", rootObj.getActionDefinition().getLabel());
+        final String[] generatedKeys = findGeneratedLabelKeys("some configured value", rootObj.getActionDefinition());
+        assertThat(generatedKeys, Matchers.arrayContaining(
+                "some configured value",
+                "parent-keygen.actions.myaction.label",
+                "parent-keygen.actions.myaction"
+                ));
     }
 
     @Test
@@ -137,7 +154,12 @@ public class ActionDefinitionKeyGeneratorTest {
         rootObj = i18nizer.decorate(rootObj);
 
         // THEN
-        assertEquals("i18n key is [actions.myaction.label]", rootObj.getActionDefinition().getLabel());
+        final String[] generatedKeys = findGeneratedLabelKeys("some configured value", rootObj.getActionDefinition());
+        assertThat(generatedKeys, Matchers.arrayContaining(
+                "some configured value",
+                "actions.myaction.label",
+                "actions.myaction"
+                ));
     }
 
     @Test
@@ -151,7 +173,12 @@ public class ActionDefinitionKeyGeneratorTest {
         rootObj = i18nizer.decorate(rootObj);
 
         // THEN
-        assertEquals("i18n key is [foo.actions.myaction.label]", rootObj.getActionDefinition().getLabel());
+        final String[] generatedKeys = findGeneratedLabelKeys("some configured value", rootObj.getActionDefinition());
+        assertThat(generatedKeys, Matchers.arrayContaining(
+                "some configured value",
+                "foo.actions.myaction.label",
+                "foo.actions.myaction"
+                ));
     }
 
     @Test
@@ -165,7 +192,12 @@ public class ActionDefinitionKeyGeneratorTest {
         rootObj = i18nizer.decorate(rootObj);
 
         // THEN
-        assertEquals("i18n key is [foo.bar.actions.myaction.label]", rootObj.getActionDefinition().getLabel());
+        final String[] generatedKeys = findGeneratedLabelKeys("some configured value", rootObj.getActionDefinition());
+        assertThat(generatedKeys, Matchers.arrayContaining(
+                "some configured value",
+                "foo.bar.actions.myaction.label",
+                "foo.bar.actions.myaction"
+                ));
     }
 
     @Test
@@ -179,17 +211,12 @@ public class ActionDefinitionKeyGeneratorTest {
         rootObj = i18nizer.decorate(rootObj);
 
         // THEN
-        assertEquals("i18n key is [baz.qux.actions.myaction.label]", rootObj.getActionDefinition().getLabel());
-    }
-
-    /**
-     * TestTranslationService.
-     */
-    public static class TestTranslationService implements TranslationService {
-        @Override
-        public String translate(LocaleProvider localeProvider, String basename, String[] keys) {
-            return "i18n key is [" + keys[0] + "]";
-        }
+        final String[] generatedKeys = findGeneratedLabelKeys("some configured value", rootObj.getActionDefinition());
+        assertThat(generatedKeys, Matchers.arrayContaining(
+                "some configured value",
+                "baz.qux.actions.myaction.label",
+                "baz.qux.actions.myaction"
+                ));
     }
 
     /**
@@ -233,5 +260,9 @@ public class ActionDefinitionKeyGeneratorTest {
         public Map<String, ActionDefinition> getActions() {
             return this.actions;
         }
+    }
+
+    private String[] findGeneratedLabelKeys(String configuredValue, ActionDefinition actionDefinition) throws NoSuchMethodException {
+        return new ActionDefinitionKeyGenerator().keysFor(configuredValue, actionDefinition, TestI18nAbleActionDefinition.class.getMethod("getLabel"));
     }
 }
