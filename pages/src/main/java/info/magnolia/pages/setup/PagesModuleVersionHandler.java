@@ -33,6 +33,8 @@
  */
 package info.magnolia.pages.setup;
 
+import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromDialogsTask;
+import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromSubappsTask;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.delta.BootstrapConditionally;
@@ -74,20 +76,23 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new PropertyExistsDelegateTask("Remove icon for delete action", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/delete", "icon",
                         new RemovePropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/delete", "icon")))
 
-                        // update actionbar for confirmation
+                // update actionbar for confirmation
                 .addTask(new NodeExistsDelegateTask("Update actionbar configuration", "Rename action mapping to new confirmation action", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar",
-                        new RenameNodesTask("Rename action bar items", "Rename delete to confirmDeletion", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar", "delete", "confirmDeletion", NodeTypes.ContentNode.NAME)))
-        );
+                        new RenameNodesTask("Rename action bar items", "Rename delete to confirmDeletion", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar", "delete", "confirmDeletion", NodeTypes.ContentNode.NAME))));
 
         register(DeltaBuilder.update("5.1", "")
                 .addTask(new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/confirmDeletion",
                         new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/confirmDeletion/availability", "multiple", true)))
 
-                        // add show versions action
+                // add show versions action
                 .addTask(new PartialBootstrapTask("Bootstrap showVersions action", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actions/showVersions"))
                 .addTask(new PartialBootstrapTask("Bootstrap actionbar section group for versionActions", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions"))
 
-                        // cleanup pages commands
+                // Remove hardcoded i18n properties, e.g. label, description, etc.
+                .addTask(new RemoveHardcodedI18nPropertiesFromDialogsTask("pages"))
+                .addTask(new RemoveHardcodedI18nPropertiesFromSubappsTask("pages"))
+
+                // cleanup pages commands
                 .addTask(new NodeExistsDelegateTask("remove the activate command chain from pages app", "", RepositoryConstants.CONFIG, "/modules/pages/commands/website/activate",
                         new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/pages/commands/website/activate")))
                 .addTask(new NodeExistsDelegateTask("remove the deactivate command chain from pages app", "", RepositoryConstants.CONFIG, "/modules/pages/commands/website/deactivate",
@@ -97,9 +102,6 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
 
         );
 
-
-
     }
-
 
 }
