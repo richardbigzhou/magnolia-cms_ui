@@ -66,6 +66,7 @@ public class FieldValidatorDefinitionKeyGeneratorTest {
     public void keyGeneratedFromAppDescriptorIsCompliant() throws Exception {
         // GIVEN
         TestDialogDef dialog = setupDialogDefinition();
+
         // WHEN
         dialog = i18nizer.decorate(dialog);
 

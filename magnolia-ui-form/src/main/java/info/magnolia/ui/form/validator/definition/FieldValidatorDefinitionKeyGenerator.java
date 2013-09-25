@@ -41,7 +41,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 
 /**
- * Generates a key in the form <code> app-name.tab-name.field-name.validation.[name of getter or field annotated with {@link info.magnolia.i18nsystem.I18nText}]</code>.
+ * Generates a key in the form <code> [app-name | dialog-name].tab-name.field-name.validation.[name of getter or field annotated with {@link info.magnolia.i18nsystem.I18nText}]</code>.
  */
 public class FieldValidatorDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldValidatorDefinition> {
 
