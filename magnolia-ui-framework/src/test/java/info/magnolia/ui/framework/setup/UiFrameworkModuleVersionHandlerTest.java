@@ -45,6 +45,7 @@ import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
@@ -215,6 +216,21 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         assertFalse(framework.hasNode("fields/saveModeType"));
         assertTrue(framework.hasProperty("fields/transformerClass"));
         assertEquals(MultiValueJSONTransformer.class.getName(), framework.getProperty("fields/transformerClass").getString());
+    }
+
+    @Test
+    public void testUpdateTo5_1ChangePackageName() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        Node path = framework.addNode("path", NodeTypes.ContentNode.NAME);
+        path.setProperty("callbackDialogActionDefinition", "info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinition");
+        framework.getSession().save();
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
+
+        // THEN
+        assertTrue(path.hasProperty("callbackDialogActionDefinition"));
+        assertEquals(CallbackDialogActionDefinition.class.getName(), path.getProperty("callbackDialogActionDefinition").getString());
     }
 
 }
