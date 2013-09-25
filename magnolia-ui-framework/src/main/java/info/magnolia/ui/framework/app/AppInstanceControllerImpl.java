@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.framework.app;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.EventBusProtector;
 import info.magnolia.event.SimpleEventBus;
@@ -207,7 +208,8 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
     @Override
     public void start(Location location) {
         if (systemMonitor.isMemoryLimitReached()) {
-            shell.openNotification(MessageStyleTypeEnum.WARNING, false, String.format(SystemMonitor.MEMORY_LIMIT_IS_REACHED_STRING_FORMAT, "You might want to close unused apps in order to free memory"));      //TODO-TRANSLATE-EXCEPTION
+            shell.openNotification(MessageStyleTypeEnum.WARNING, false, String.format(SystemMonitor.MEMORY_LIMIT_IS_REACHED_STRING_FORMAT,
+                    MessagesUtil.get("ui-framework.app.appinstance.memory-limit-warning.message", "mgnl-i18n.module-ui-framework-messages")));
         }
 
         app = componentProvider.newInstance(appDescriptor.getAppClass());
@@ -417,7 +419,7 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
 
     @Override
     public void showConfirmationMessage(String message) {
-        log.info("If confirmation message was already implemented you'd get a {} now...", message);       //TODO-TRANSLATE-EXCEPTION ???
+        log.info("If confirmation message was already implemented you'd get a {} now...", message);
     }
 
     @Override

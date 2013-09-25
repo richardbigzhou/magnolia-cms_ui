@@ -35,6 +35,7 @@ package info.magnolia.ui.framework.app;
 
 import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.EventBusProtector;
 import info.magnolia.event.SimpleEventBus;
@@ -406,9 +407,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
             Message errorMessage = new Message();
             errorMessage.setType(MessageType.ERROR);
-            errorMessage.setSubject("Error occurred when trying to read App Descriptor");         //TODO-TRANSLATE-EXCEPTION
-            errorMessage.setMessage("There is no app registered with name: " + name);               //TODO-TRANSLATE-EXCEPTION
-
+            errorMessage.setSubject(MessagesUtil.get("ui-framework.app.appdescriptor-read-error-message.subject", "mgnl-i18n.module-ui-framework-messages"));
+            errorMessage.setMessage(String.format(MessagesUtil.get("ui-framework.app.appdescriptor-read-error-message.message", "mgnl-i18n.module-ui-framework-messages"), name));
             messagesManager.sendLocalMessage(errorMessage);
             throw new RuntimeException(e);
         }

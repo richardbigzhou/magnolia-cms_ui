@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.framework.action;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.chain.Command;
 import info.magnolia.context.Context;
@@ -207,7 +208,7 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
      * this in order to perform tasks or notification in case of error.
      */
     protected void onError(Exception e) {
-        String message = "Action execution failed.";  //TODO-TRANSLATE
+        String message = MessagesUtil.get("ui-framework.abstractcommand.executionfailure", "mgnl-i18n.module-ui-framework-messages");
         uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, message);
     }
 
