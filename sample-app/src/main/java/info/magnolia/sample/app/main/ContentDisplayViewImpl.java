@@ -33,6 +33,8 @@
  */
 package info.magnolia.sample.app.main;
 
+import info.magnolia.cms.i18n.MessagesUtil;
+
 import javax.inject.Inject;
 
 import com.vaadin.ui.Button;
@@ -53,8 +55,8 @@ public class ContentDisplayViewImpl implements ContentDisplayView {
         layout = new VerticalLayout();
         layout.setMargin(true);
         layout.setSpacing(true);
-        layout.addComponent(new Label("CONTENT DISPLAY")); //TODO-TRANSLATE
-        layout.addComponent(new Label("Click one of the buttons in the navigation on the left to display it"));  //TODO-TRANSLATE
+        layout.addComponent(new Label(MessagesUtil.get("sample-app.app.contentDisplay.label.title", "mgnl-i18n.app-sample-messages")));
+        layout.addComponent(new Label(MessagesUtil.get("sample-app.app.contentDisplay.label.description", "mgnl-i18n.app-sample-messages")));
     }
 
     @Override
@@ -65,9 +67,9 @@ public class ContentDisplayViewImpl implements ContentDisplayView {
     @Override
     public void setResource(final String name) {
         layout.removeAllComponents();
-        layout.addComponent(new Label("CONTENT DISPLAY"));  //TODO-TRANSLATE
-        layout.addComponent(new Label("Displaying " + name));  //TODO-TRANSLATE
-        layout.addComponent(new Button("Open in new editor!", new Button.ClickListener() {  //TODO-TRANSLATE
+        layout.addComponent(new Label(MessagesUtil.get("sample-app.app.contentDisplay.label.title", "mgnl-i18n.app-sample-messages")));
+        layout.addComponent(new Label(MessagesUtil.get("sample-app.app.contentDisplay.label.displaying", "mgnl-i18n.app-sample-messages") + " " + name));
+        layout.addComponent(new Button(MessagesUtil.get("sample-app.app.contentDisplay.button.newEditor", "mgnl-i18n.app-sample-messages"), new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {

@@ -33,6 +33,7 @@
  */
 package info.magnolia.sample.app.editor;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.event.EventBus;
 import info.magnolia.sample.app.editor.location.EditorLocation;
 import info.magnolia.ui.api.app.SubAppContext;
@@ -59,7 +60,7 @@ public class SampleEditorSubApp extends BaseSubApp implements SampleEditorView.L
 
     @Override
     public String getCaption() {
-        return "Editor " + view.getName();  //TODO-TRANSLATE
+        return MessagesUtil.get("sample-app.app.editor.label", "mgnl-i18n.app-sample-messages") + " " + view.getName();
     }
 
     @Override
