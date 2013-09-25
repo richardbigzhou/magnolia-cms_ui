@@ -91,7 +91,7 @@ public class LinkFieldBuilder extends AbstractFieldBuilder {
         return this;
     }
 
-    public LinkFieldBuilder contentPreviewClass(Class<ContentPreviewComponent<?>> contentPreviewClass) {
+    public LinkFieldBuilder contentPreviewClass(Class<? extends ContentPreviewComponent<?>> contentPreviewClass) {
         ContentPreviewDefinition contentPreviewDefinition = definition().getContentPreviewDefinition();
         if (contentPreviewDefinition == null) {
             contentPreviewDefinition = new ContentPreviewDefinition();

@@ -44,6 +44,9 @@ public class BasicUploadFieldBuilder extends AbstractFieldBuilder {
 
     private final BasicUploadFieldDefinition definition = new BasicUploadFieldDefinition();
 
+    public BasicUploadFieldBuilder() {
+    }
+
     public BasicUploadFieldBuilder(String name) {
         this.definition().setName(name);
     }
