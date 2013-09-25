@@ -33,6 +33,8 @@
  */
 package info.magnolia.sample.app.editor;
 
+import info.magnolia.cms.i18n.MessagesUtil;
+
 import javax.inject.Inject;
 
 import com.vaadin.ui.Component;
@@ -71,7 +73,9 @@ public class SampleEditorViewImpl implements SampleEditorView {
     public Component asVaadinComponent() {
         if (layout == null) {
             layout = new VerticalLayout();
-            layout.addComponent(new Label("<center>Sample Editor " + name + "</center>", Label.CONTENT_XHTML));  //TODO-TRANSLATE
+            layout.addComponent(new Label(MessagesUtil.get("sample-app.app.sampleEditor.label.titleStart", "mgnl-i18n.app-sample-messages")
+                    + " " + name
+                    + MessagesUtil.get("sample-app.app.sampleEditor.label.titleEnd", "mgnl-i18n.app-sample-messages"), Label.CONTENT_XHTML));
         }
         return layout;
     }
