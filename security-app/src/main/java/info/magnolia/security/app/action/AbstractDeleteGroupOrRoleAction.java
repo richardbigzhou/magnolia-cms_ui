@@ -33,6 +33,7 @@
  */
 package info.magnolia.security.app.action;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.cms.security.Group;
 import info.magnolia.cms.security.Security;
 import info.magnolia.cms.security.User;
@@ -64,8 +65,8 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteItemAction
 
     private static final Logger log = LoggerFactory.getLogger(AbstractDeleteGroupOrRoleAction.class);
 
-    public static final String PREFIX_USER = "user:"; //TODO-TRANSLATE
-    public static final String PREFIX_GROUP = "group:"; //TODO-TRANSLATE
+    public static final String PREFIX_USER = MessagesUtil.get("delete.group.or.role.user", "mgnl-i18n.app-security-messages");
+    public static final String PREFIX_GROUP = MessagesUtil.get("delete.group.or.role.group", "mgnl-i18n.app-security-messages");
 
     private final JcrItemAdapter item;
     private final UiContext uiContext;

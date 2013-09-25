@@ -86,7 +86,7 @@ public abstract class AbstractRoleDialogAction<D extends ActionDefinition> exten
             ConfiguredFormDialogDefinition dialogDefinition = (ConfiguredFormDialogDefinition) Components.getComponent(Node2BeanProcessor.class).toBean(node, FormDialogDefinition.class);
 
             if (dialogDefinition == null) {
-                throw new ActionExecutionException("Unable to load dialog [" + dialogName + "]"); //TODO-TRANSLATE-EXCEPTION
+                throw new ActionExecutionException("Unable to load dialog [" + dialogName + "]");
             }
             dialogDefinition.setId("security-app:" + dialogName);
 
