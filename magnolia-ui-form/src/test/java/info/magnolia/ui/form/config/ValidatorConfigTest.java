@@ -50,28 +50,37 @@ public class ValidatorConfigTest {
 
     @Test
     public void testDigitsOnly() {
-
+        // GIVEN
         GenericValidatorBuilder builder = validators.digitsOnly();
+
+        // WHEN
         RegexpValidatorDefinition definition = (RegexpValidatorDefinition) builder.definition();
 
+        // THEN
         assertTrue(definition.getPattern().equals("[0-9]+"));
     }
 
     @Test
     public void testRegexp() {
-
+        // GIVEN
         GenericValidatorBuilder builder = validators.regexp("test-pattern");
+
+        // WHEN
         RegexpValidatorDefinition definition = (RegexpValidatorDefinition) builder.definition();
 
+        // THEN
         assertTrue(definition.getPattern().equals("test-pattern"));
     }
 
     @Test
     public void testEmail() {
-
+        // GIVEN
         GenericValidatorBuilder builder = validators.email();
+
+        // WHEN
         ConfiguredFieldValidatorDefinition definition = builder.definition();
 
+        // THEN
         assertTrue(definition instanceof EmailValidatorDefinition);
     }
 }
