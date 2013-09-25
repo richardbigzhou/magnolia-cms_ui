@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.form.validator.definition;
 
-import info.magnolia.ui.form.definition.AbstractFormKeyGenerator;
+import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
 import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 
@@ -43,7 +43,7 @@ import java.util.List;
 /**
  * Generates a key in the form <code> [app-name | dialog-name].tab-name.field-name.validation.[name of getter or field annotated with {@link info.magnolia.i18nsystem.I18nText}]</code>.
  */
-public class FieldValidatorDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldValidatorDefinition> {
+public class FieldValidatorDefinitionKeyGenerator extends AbstractI18nKeyGenerator<FieldValidatorDefinition> {
 
     @Override
     protected void keysFor(List<String> keys, FieldValidatorDefinition object, AnnotatedElement el) {
