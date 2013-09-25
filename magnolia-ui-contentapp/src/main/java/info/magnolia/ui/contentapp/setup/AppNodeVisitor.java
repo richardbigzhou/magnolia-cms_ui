@@ -56,8 +56,8 @@ public class AppNodeVisitor implements NodeVisitor {
 
     @Override
     public void visit(Node node) throws RepositoryException {
-        Property p =  node.getProperty(APP_CLASS_PROPERTY_NAME);
-        if (p != null) {
+        if (node.hasProperty(APP_CLASS_PROPERTY_NAME)) {
+            Property p = node.getProperty(APP_CLASS_PROPERTY_NAME);
             try {
                 Class<?> clazz = Class.forName(p.getValue().getString());
                 if (ContentApp.class.isAssignableFrom(clazz)) {
