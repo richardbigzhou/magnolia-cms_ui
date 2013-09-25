@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellView;
 
 import com.google.gwt.user.client.DOM;
@@ -55,7 +54,7 @@ public class VWarningMessage extends VDetailedShellMessage {
     protected void construct() {
         super.construct();
 
-        detailsExpanderEl.setInnerText(MessagesUtil.get("ui-vaadin-common-widgets.shell.warningMessage.more", "mgnl-i18n.ui-vaadin-common-widgets-messages"));
+        detailsExpanderEl.setInnerText("[MORE]");  //TODO-TRANSLATE, but not with Message-Util
         detailsExpanderEl.setClassName("details-expander");
         getHeader().appendChild(detailsExpanderEl);
 
@@ -71,6 +70,6 @@ public class VWarningMessage extends VDetailedShellMessage {
 
     @Override
     protected String getMessageTypeCaption() {
-        return MessagesUtil.get("ui-vaadin-common-widgets.shell.warningMessage.type", "mgnl-i18n.ui-vaadin-common-widgets-messages");
+        return "Warning: ";  //TODO-TRANSLATE, but not with Message-geUUtil
     }
 }

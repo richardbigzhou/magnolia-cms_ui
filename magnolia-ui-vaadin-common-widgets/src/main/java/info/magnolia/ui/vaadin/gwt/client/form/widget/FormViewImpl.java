@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.form.widget;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.vaadin.gwt.client.form.tab.widget.FormTabWidget;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.ActiveTabChangedEvent;
 import info.magnolia.ui.vaadin.gwt.client.tabsheet.event.TabSetChangedEvent;
@@ -151,13 +150,8 @@ public class FormViewImpl extends FlowPanel implements FormView {
     public void setErrorAmount(int totalProblematicFields) {
         errorPanel.setVisible(totalProblematicFields > 0);
         if (totalProblematicFields > 0) {
-            errorPanel.getElement().setInnerHTML(
-                    "<span>"
-                            + MessagesUtil.get("ui-vaadin-common-widgets.formView.correctErrors.start", "mgnl-i18n.ui-vaadin-common-widgets-messages")
-                            + totalProblematicFields
-                            + MessagesUtil.get("ui-vaadin-common-widgets.formView.correctErrors.end", "mgnl-i18n.ui-vaadin-common-widgets-messages")
-                            + "</span>");
-            final HTML errorButton = new HTML(MessagesUtil.get("ui-vaadin-common-widgets.formView.nextError", "mgnl-i18n.ui-vaadin-common-widgets-messages"));
+            errorPanel.getElement().setInnerHTML("<span>Please correct the <b>" + totalProblematicFields + " errors </b> in this form </span>"); //TODO-TRANSLATE, but not with MessageUtil
+            final HTML errorButton = new HTML("[Jump to next error]");  //TODO-TRANSLATE, but not with MessageUtil
             errorButton.setStyleName("action-jump-to-next-error");
             DOM.sinkEvents(errorButton.getElement(), Event.MOUSEEVENTS);
             errorButton.addDomHandler(new ClickHandler() {

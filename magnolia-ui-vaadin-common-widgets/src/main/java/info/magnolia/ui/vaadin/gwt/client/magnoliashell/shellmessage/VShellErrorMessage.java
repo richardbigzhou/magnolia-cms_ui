@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellView;
 
 import com.google.gwt.user.client.DOM;
@@ -56,7 +55,7 @@ public class VShellErrorMessage extends ShellMessageWidget {
         super.construct();
         final Element header = getHeader();
         detailsLinkEl.addClassName("link");
-        detailsLinkEl.setInnerHTML(MessagesUtil.get("ui-vaadin-common-widgets.shell.errorMessage.more", "mgnl-i18n.ui-vaadin-common-widgets-messages"));
+        detailsLinkEl.setInnerHTML("[MORE]");  //TODO-TRANSLATE, but not with MessageUtil
         header.appendChild(detailsLinkEl);
     }
 
@@ -88,7 +87,7 @@ public class VShellErrorMessage extends ShellMessageWidget {
 
     @Override
     protected String getMessageTypeCaption() {
-        return MessagesUtil.get("ui-vaadin-common-widgets.shell.errorMessage.type", "mgnl-i18n.ui-vaadin-common-widgets-messages");
+        return "Error: ";  //TODO-TRANSLATE, but not with MessageUtil
     }
 
     @Override
