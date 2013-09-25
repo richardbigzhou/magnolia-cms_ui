@@ -88,11 +88,11 @@ public class FormBuilder {
         final String description = formDefinition.getDescription();
         final String label = formDefinition.getLabel();
 
-        if (StringUtils.isNotBlank(description)) {
+        if (StringUtils.isNotBlank(description) && !isMessageKey(description)) {
             view.setDescription(description);
         }
 
-        if (StringUtils.isNotBlank(label)) {
+        if (StringUtils.isNotBlank(label) && !isMessageKey(label)) {
             view.setCaption(label);
         }
 
@@ -114,8 +114,10 @@ public class FormBuilder {
                     ((AbstractComponent) field).setImmediate(true);
                 }
                 tab.addField(field);
-                if (StringUtils.isNotBlank(fieldDefinition.getDescription())) {
-                    tab.setComponentHelpDescription(field, fieldDefinition.getDescription());
+                final String helpDescription = fieldDefinition.getDescription();
+
+                if (StringUtils.isNotBlank(helpDescription) && !isMessageKey(helpDescription)) {
+                    tab.setComponentHelpDescription(field, helpDescription);
                 }
                 TextAreaStretcher.extend(field);
                 view.addField(field);
@@ -158,5 +160,9 @@ public class FormBuilder {
                 return view;
             }
         };
+    }
+
+    private boolean isMessageKey(final String text) {
+        return !text.contains(" ") && !text.endsWith(".");
     }
 }

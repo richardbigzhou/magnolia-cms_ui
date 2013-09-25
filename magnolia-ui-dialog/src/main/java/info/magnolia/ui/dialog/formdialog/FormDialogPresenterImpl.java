@@ -142,11 +142,11 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         final String description = decoratedDialogDefinition.getDescription();
         final String label = decoratedDialogDefinition.getLabel();
 
-        if (StringUtils.isNotBlank(description)) {
+        if (StringUtils.isNotBlank(description) && !isMessageKey(description)) {
             getView().setDescription(description);
         }
 
-        if (StringUtils.isNotBlank(label)) {
+        if (StringUtils.isNotBlank(label) && !isMessageKey(label)) {
             getView().setCaption(label);
         }
     }
@@ -186,5 +186,9 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     @Override
     protected Object[] getActionParameters(String actionName) {
         return new Object[] { this, item, callback };
+    }
+
+    private boolean isMessageKey(final String text) {
+        return !text.contains(" ") && !text.endsWith(".");
     }
 }
