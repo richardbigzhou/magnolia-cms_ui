@@ -33,6 +33,7 @@
  */
 package info.magnolia.pages.app.action;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
@@ -156,17 +157,20 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
     private FormDialogDefinition buildNewComponentDialog(String availableComponents) {
 
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
-        form.setDescription("Select the Component to add to the page."); //TODO-TRANSLATE
+
+        form.setDescription(MessagesUtil.get("pages.formDialog.definition.description", "mgnl-i18n.app-pages-messages"));
         form.setI18nBasename("info.magnolia.ui.admincentral.messages");
         form.setLabel("dialog.paragraph.createNew");
 
         ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
         tab.setName("Components");
-        tab.setLabel("Components"); //TODO-TRANSLATE
+
+        tab.setLabel(MessagesUtil.get("pages.formDialog.definition.tabLabel", "mgnl-i18n.app-pages-messages"));
 
         SelectFieldDefinition select = new SelectFieldDefinition();
         select.setName("mgnl:template");
-        select.setLabel("Component"); //TODO-TRANSLATE
+
+        select.setLabel(MessagesUtil.get("pages.formDialog.definition.label", "mgnl-i18n.app-pages-messages"));
         tab.addField(select);
 
         form.addTab(tab);
@@ -193,12 +197,13 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
 
         CallbackDialogActionDefinition callbackAction = new CallbackDialogActionDefinition();
         callbackAction.setName("commit");
-        callbackAction.setLabel("choose"); //TODO-TRANSLATE
+        //
+        callbackAction.setLabel(MessagesUtil.get("pages.formDialog.callbackAction.label", "mgnl-i18n.app-pages-messages"));
         dialog.getActions().put(callbackAction.getName(), callbackAction);
 
         CancelDialogActionDefinition cancelAction = new CancelDialogActionDefinition();
         cancelAction.setName("cancel");
-        cancelAction.setLabel("cancel"); //TODO-TRANSLATE
+        cancelAction.setLabel(MessagesUtil.get("pages.formDialog.cancelAction.label", "mgnl-i18n.app-pages-messages"));
         dialog.getActions().put(cancelAction.getName(), cancelAction);
 
         return dialog;

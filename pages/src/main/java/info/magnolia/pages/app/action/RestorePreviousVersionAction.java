@@ -34,6 +34,7 @@
 package info.magnolia.pages.app.action;
 
 import info.magnolia.cms.core.version.VersionManager;
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.SubAppContext;
@@ -86,7 +87,8 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
             Version version = getPreviousVersion();
             // Check the version.
             if (version == null) {
-                subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, "This Item do not have a Previous version. Action cancelled.");  //TODO-TRANSLATE
+                //
+                subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("pages.restorePreviousVersionAction.noVersion.actionCanceled.message", "mgnl-i18n.app-pages-messages"));
                 return;
             }
             // Restore previous version
@@ -95,7 +97,7 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
             locationController.goTo(location);
 
         } catch (RepositoryException e) {
-            subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, "This Item do not have a Valid Previous version. Action cancelled.");  //TODO-TRANSLATE
+            subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("pages.restorePreviousVersionAction.repositoryException.actionCanceled.message", "mgnl-i18n.app-pages-messages"));
             throw new ActionExecutionException("Could not execute RestorePreviousVersionAction: ", e);
         }
     }

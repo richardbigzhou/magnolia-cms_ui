@@ -379,11 +379,11 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             actionExecutor.execute(actionName, new JcrNodeAdapter((Node) item), selectedElement, pageEditorPresenter);
 
         } catch (RepositoryException e) {
-            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());  //TODO-TRANSLATE-EXCEPTION
+            Message error = new Message(MessageType.ERROR, MessagesUtil.get("pages.pagesEditorSubapp.actionExecutionException.message", "mgnl-i18n.app-pages-messages"), e.getMessage());
             log.error("An error occurred while executing action [{}]", actionName, e);
             appContext.sendLocalMessage(error);
         } catch (ActionExecutionException e) {
-            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());  //TODO-TRANSLATE-EXCEPTION
+            Message error = new Message(MessageType.ERROR, MessagesUtil.get("pages.pagesEditorSubapp.actionExecutionException.message", "mgnl-i18n.app-pages-messages"), e.getMessage());
             log.error("An error occurred while executing action [{}]", actionName, e);
             appContext.sendLocalMessage(error);
         }

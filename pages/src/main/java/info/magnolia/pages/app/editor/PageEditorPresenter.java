@@ -33,6 +33,7 @@
  */
 package info.magnolia.pages.app.editor;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.event.EventBus;
 import info.magnolia.pages.app.editor.event.ComponentMoveEvent;
 import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
@@ -118,7 +119,7 @@ public class PageEditorPresenter implements PageEditorListener {
         try {
             actionExecutor.execute(actionName, args);
         } catch (ActionExecutionException e) {
-            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage()); //TODO-TRANSLATE
+            Message error = new Message(MessageType.ERROR, MessagesUtil.get("pages.pageEditorPresenter.actionExecutionError.message", "mgnl-i18n.app-pages-messages"), e.getMessage());
             log.error("An error occurred while executing action [{}]", actionName, e);
             subAppContext.getAppContext().sendLocalMessage(error);
         }
