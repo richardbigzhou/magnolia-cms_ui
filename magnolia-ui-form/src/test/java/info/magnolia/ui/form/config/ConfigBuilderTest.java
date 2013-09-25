@@ -56,7 +56,9 @@ import info.magnolia.ui.form.validator.definition.ConfiguredFieldValidatorDefini
 import org.junit.Test;
 
 /**
- * .
+ * Collection of tests for builders in info.magnolia.ui.form.config.
+ * As the builders are pretty simple and as the tests need some common setUp,
+ * we didn't go for one unit-test per builder.
  */
 public class ConfigBuilderTest {
 
@@ -76,10 +78,9 @@ public class ConfigBuilderTest {
         // GIVEN
         BasicTextCodeFieldBuilder builder = new BasicTextCodeFieldBuilder("BasicTextCodeFieldBuilder");
         initCommonAttributes(builder, true);
-        // Specific to definition
-        builder.language("java");
 
         // WHEN
+        builder.language("java");
 
         // THEN
         checkCommonAttributes(builder);
@@ -91,10 +92,9 @@ public class ConfigBuilderTest {
         // GIVEN
         TextFieldBuilder builder = new TextFieldBuilder("TextFieldBuilder");
         initCommonAttributes(builder, true);
-        // Specific to definition
-        builder.rows(10).maxLength(100);
 
         // WHEN
+        builder.rows(10).maxLength(100);
 
         // THEN
         checkCommonAttributes(builder);
@@ -107,10 +107,9 @@ public class ConfigBuilderTest {
         // GIVEN
         CheckboxFieldBuilder builder = new CheckboxFieldBuilder("CheckboxFieldBuilder");
         initCommonAttributes(builder, true);
-        // Specific to definition
-        builder.buttonLabel("buttonLabel");
 
         // WHEN
+        builder.buttonLabel("buttonLabel");
 
         // THEN
         checkCommonAttributes(builder);
@@ -122,10 +121,9 @@ public class ConfigBuilderTest {
         // GIVEN
         StaticFieldBuilder builder = new StaticFieldBuilder("StaticFieldBuilder");
         initCommonAttributes(builder, true);
-        // Specific to definition
-        builder.value("value");
 
         // WHEN
+        builder.value("value");
 
         // THEN
         checkCommonAttributes(builder);
@@ -137,6 +135,7 @@ public class ConfigBuilderTest {
         // GIVEN
         RichTextFieldBuilder builder = new RichTextFieldBuilder("RichTextFieldBuilder");
         initCommonAttributes(builder, true);
+
         // WHEN
 
         // THEN
@@ -148,9 +147,9 @@ public class ConfigBuilderTest {
         // GIVEN
         PasswordFieldBuilder builder = new PasswordFieldBuilder("PasswordFieldBuilder");
         initCommonAttributes(builder, true);
-        // Specific to definition
-        builder.verification(true).verificationMessage("verificationMessage").verificationErrorMessage("verificationErrorMessage");
+
         // WHEN
+        builder.verification(true).verificationMessage("verificationMessage").verificationErrorMessage("verificationErrorMessage");
 
         // THEN
         checkCommonAttributes(builder);
@@ -165,12 +164,12 @@ public class ConfigBuilderTest {
         // GIVEN
         BasicUploadFieldBuilder builder = new BasicUploadFieldBuilder("BasicUploadFieldBuilder");
         initCommonAttributes(builder, true);
-        // Specific to definition
+
         builder.binaryNodeName("binaryNodeName").maxUploadSize(100l).allowedMimeTypePattern("*.gif").editFileName(true).editFileFormat(false).selectAnotherCaption("selectAnotherCaption");
         builder.userInterruption("userInterruption").fileDetailFormatCaption("fileDetailFormatCaption").fileDetailHeaderCaption("fileDetailHeaderCaption").fileDetailNameCaption("fileDetailNameCaption").fileDetailSizeCaption("fileDetailSizeCaption");
-        builder.fileDetailSourceCaption("fileDetailSourceCaption").selectNewCaption("selectNewCaption").successNoteCaption("successNoteCaption");
 
         // WHEN
+        builder.fileDetailSourceCaption("fileDetailSourceCaption").selectNewCaption("selectNewCaption").successNoteCaption("successNoteCaption");
 
         // THEN
         checkCommonAttributes(builder);
@@ -198,11 +197,11 @@ public class ConfigBuilderTest {
         // GIVEN
         LinkFieldBuilder builder = new LinkFieldBuilder("LinkFieldBuilder");
         initCommonAttributes(builder, true);
-        // Specific to definition
+
         builder.targetPropertyToPopulate("targetPropertyToPopulate").targetWorkspace("targetWorkspace").targetTreeRootPath("targetTreeRootPath").appName("appName");
-        builder.buttonSelectNewLabel("buttonSelectNewLabel").buttonSelectOtherLabel("buttonSelectOtherLabel");
 
         // WHEN
+        builder.buttonSelectNewLabel("buttonSelectNewLabel").buttonSelectOtherLabel("buttonSelectOtherLabel");
 
         // THEN
         checkCommonAttributes(builder);
@@ -220,10 +219,9 @@ public class ConfigBuilderTest {
         // GIVEN
         MultiValueFieldBuilder builder = new MultiValueFieldBuilder("MultiFieldBuilder");
         initCommonAttributes(builder, false);
-        // Specific to definition
-        builder.buttonSelectRemoveLabel("buttonSelectRemoveLabel").buttonSelectAddLabel("buttonSelectAddLabel");
 
         // WHEN
+        builder.buttonSelectRemoveLabel("buttonSelectRemoveLabel").buttonSelectAddLabel("buttonSelectAddLabel");
 
         // THEN
         checkCommonAttributes(builder);
@@ -239,10 +237,9 @@ public class ConfigBuilderTest {
         // GIVEN
         TwinColSelectFieldBuilder builder = new TwinColSelectFieldBuilder("TwinColSelectFieldBuilder");
         initCommonAttributes(builder, false);
-        // Specific to definition
-        builder.leftColumnCaption("leftColumnCaption").rightColumnCaption("rightColumnCaption");
 
         // WHEN
+        builder.leftColumnCaption("leftColumnCaption").rightColumnCaption("rightColumnCaption");
 
         // THEN
         checkCommonAttributes(builder);
@@ -258,10 +255,9 @@ public class ConfigBuilderTest {
         // GIVEN
         OptionGroupFieldBuilder builder = new OptionGroupFieldBuilder("OptionGroupFieldBuilder");
         initCommonAttributes(builder, false);
-        // Specific to definition
-        builder.multiselect(true);
 
         // WHEN
+        builder.multiselect(true);
 
         // THEN
         checkCommonAttributes(builder);
@@ -276,14 +272,14 @@ public class ConfigBuilderTest {
         // GIVEN
         SwitchableFieldBuilder builder = new SwitchableFieldBuilder("SwitchableFieldBuilder");
         initCommonAttributes(builder, false);
-        // Specific to definition
+
         OptionBuilder optionBuilder1 = new OptionBuilder();
         OptionBuilder optionBuilder2 = new OptionBuilder();
         BasicTextCodeFieldBuilder tfb1 = new BasicTextCodeFieldBuilder("tfb1");
         BasicTextCodeFieldBuilder tfb2 = new BasicTextCodeFieldBuilder("tfb2");
-        builder.options(optionBuilder1, optionBuilder2).fields(tfb1, tfb2).selectionType("radio");
 
         // WHEN
+        builder.options(optionBuilder1, optionBuilder2).fields(tfb1, tfb2).selectionType("radio");
 
         // THEN
         checkCommonAttributes(builder);
@@ -295,7 +291,6 @@ public class ConfigBuilderTest {
         assertEquals(optionBuilder2.definition(), definition.getOptions().get(1));
         assertNotNull(definition.getTransformerClass());
         assertEquals(SwitchableTransformer.class.getName(), definition.getTransformerClass().getName());
-        assertEquals(Layout.horizontal, definition.getLayout());
     }
 
     @Test
@@ -303,12 +298,13 @@ public class ConfigBuilderTest {
         // GIVEN
         CompositeFieldBuilder builder = new CompositeFieldBuilder("CompositeFieldBuilder");
         initCommonAttributes(builder, false);
-        // Specific to definition
+
         BasicTextCodeFieldBuilder tfb1 = new BasicTextCodeFieldBuilder("tfb1");
         BasicTextCodeFieldBuilder tfb2 = new BasicTextCodeFieldBuilder("tfb2");
         builder.fields(tfb1, tfb2).layout(Layout.vertical);
 
         // WHEN
+        builder.fields(tfb1, tfb2);
 
         // THEN
         checkCommonAttributes(builder);
@@ -320,9 +316,6 @@ public class ConfigBuilderTest {
         assertEquals(Layout.vertical, definition.getLayout());
     }
 
-    /**
-     * Common builder test.
-     */
     private void checkCommonAttributes(AbstractFieldBuilder builder) {
         ConfiguredFieldDefinition definition = builder.definition();
         assertEquals(label, definition.getLabel());
@@ -341,10 +334,6 @@ public class ConfigBuilderTest {
         assertNotNull(definition.getTransformerClass());
     }
 
-    /**
-     * Init common builder attributes.
-     */
-    @SuppressWarnings("unchecked")
     private void initCommonAttributes(AbstractFieldBuilder builder, boolean overrideTransformerClass) {
         builder.label(label).i18nBasename(i18nBasename).i18n(i18n).description(description);
         builder.type(type).required(required).requiredErrorMessage(requiredErrorMessage);
@@ -356,5 +345,4 @@ public class ConfigBuilderTest {
             builder.transformerClass((Class<? extends Transformer<?>>) (Object) BasicTransformer.class);
         }
     }
-
 }
