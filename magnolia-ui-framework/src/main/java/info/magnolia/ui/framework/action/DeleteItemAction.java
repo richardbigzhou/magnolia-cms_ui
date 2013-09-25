@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.framework.action;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
@@ -82,7 +83,11 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
     public void execute() throws ActionExecutionException {
 
         uiContext.openConfirmation(
-                MessageStyleTypeEnum.WARNING, getConfirmationQuestion(), "This action can't be undone.", "Yes, Delete", "No", true,     //TODO-TRANSLATE
+                MessageStyleTypeEnum.WARNING, getConfirmationQuestion(),
+                MessagesUtil.get("ui-framework.delete-item-action.warning-text", "mgnl-i18n.module-ui-framework-messages"),
+                MessagesUtil.get("ui-framework.delete-item-action.confirm-text", "mgnl-i18n.module-ui-framework-messages"),
+                MessagesUtil.get("ui-framework.delete-item-action.cancel-text", "mgnl-i18n.module-ui-framework-messages"),
+                true,
                 new ConfirmationCallback() {
 
                     @Override
@@ -98,16 +103,16 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
 
     private String getConfirmationQuestion() {
         if (getItems().size() == 1) {
-            return "Do you really want to delete this item?";       //TODO-TRANSLATE
+            return MessagesUtil.get("ui-framework.delete-item-action.confirmation-question-one-item", "mgnl-i18n.module-ui-framework-messages");
         }
-        return "Do you really want to delete these " + getItems().size() + " items?";       //TODO-TRANSLATE
+        return String.format(MessagesUtil.get("ui-framework.delete-item-action.confirmation-question-many-items", "mgnl-i18n.module-ui-framework-messages"),getItems().size());
     }
 
     protected void executeAfterConfirmation() {
         try {
             super.execute();
         } catch (ActionExecutionException e) {
-            log.error("Problem occured during deleting items.", e);      //TODO-TRANSLATE
+            log.error("Problem occured during deleting items.", e);
         }
     }
 
@@ -117,7 +122,7 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
             final Item jcrItem = item.getJcrItem();
             if (jcrItem.getDepth() == 0) {
                 // cannot delete root node
-                throw new IllegalArgumentException("Cannot delete root node.");          //TODO-TRANSLATE-EXCEPTION
+                throw new IllegalArgumentException(MessagesUtil.get("ui-framework.delete-item-action.cannot-delete-root-item", "mgnl-i18n.module-ui-framework-messages"));
             }
             String itemIdOfChangedItem = JcrItemUtil.getItemId(jcrItem.getParent());
             Session session = jcrItem.getSession();
@@ -132,11 +137,15 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
 
     @Override
     protected String getSuccessMessage() {
-        return getItems().size() == 1 ? "Item deleted." : getItems().size() + " items deleted.";       //TODO-TRANSLATE
+        if(getItems().size()==1){
+            return MessagesUtil.get("ui-framework.delete-item-action.sucess-one-item-deleted", "mgnl-i18n.module-ui-framework-messages");
+        }else {
+            return String.format(MessagesUtil.get("ui-framework.delete-item-action.sucess-many-items-deleted", "mgnl-i18n.module-ui-framework-messages"), getItems().size());
+        }
     }
 
     @Override
     protected String getFailureMessage() {
-        return "Failed to delete " + getFailedItems().size() + " of " + getItems().size() + " items: ";            //TODO-TRANSLATE
+        return String.format( MessagesUtil.get("ui-framework.delete-item-action.deletionfailure", "mgnl-i18n.module-ui-framework-messages"), getFailedItems().size(), getItems().size());
     }
 }
