@@ -35,6 +35,7 @@ package info.magnolia.pages.app.column;
 
 import info.magnolia.cms.i18n.Messages;
 import info.magnolia.cms.i18n.MessagesManager;
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
@@ -95,7 +96,8 @@ public class TemplateColumnFormatter extends AbstractColumnFormatter<TemplateCol
             log.warn("Template with id {} not found.", templateId, e);
         }
 
-        return template != null ? getI18nTitle(template) : "Missing: " + StringUtils.defaultString(templateId);  //TODO-TRANSLATE
+        String missingLabel = MessagesUtil.get("pages.templateColFormatter.missingLabel", "mgnl-i18n.app-pages-messages");
+        return template != null ? getI18nTitle(template) : missingLabel +": " + StringUtils.defaultString(templateId);
     }
 
     private String getI18nTitle(TemplateDefinition template) {
