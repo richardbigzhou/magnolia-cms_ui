@@ -215,14 +215,14 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         return def;
     }
 
-    private void initMovePossibilityPredicates() {
+    protected void initMovePossibilityPredicates() {
         possibilityPredicates.put(MoveLocation.AFTER, new MoveAfterPossibilityPredicate(constraint, nodesToMove));
         possibilityPredicates.put(MoveLocation.BEFORE, new MoveBeforePossibilityPredicate(constraint, nodesToMove));
         possibilityPredicates.put(MoveLocation.INSIDE, new MoveInsidePossibilityPredicate(constraint, nodesToMove));
 
     }
 
-    private void updatePossibleMoveLocations(Item possibleHost) {
+    protected void updatePossibleMoveLocations(Item possibleHost) {
         Set<MoveLocation> possibleLocations = new HashSet<MoveLocation>();
         if (possibleHost != null) {
             Iterator<Entry<MoveLocation, MovePossibilityPredicate>> it = possibilityPredicates.entrySet().iterator();

@@ -34,23 +34,26 @@
 package info.magnolia.ui.contentapp.movedialog.predicate;
 
 
-import com.vaadin.data.Item;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.Iterator;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import java.util.Iterator;
-import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
 
 /**
  * Checks whether it is possible to place the collection of nodes relatively to the tested node.
  */
-public abstract class MovePossibilityPredicate {
+public class MovePossibilityPredicate {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
