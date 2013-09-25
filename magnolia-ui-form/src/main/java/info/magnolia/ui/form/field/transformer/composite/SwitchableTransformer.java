@@ -47,10 +47,8 @@ import com.vaadin.data.util.PropertysetItem;
  * - property (propertyPrefix + first field name): contain the value of the first field <br>
  * - property (propertyPrefix + second field name): contain the value of the second field <br>
  * ...<br>
- * 
- * @param <T>
  */
-public class SwitchableTransformer<T> extends CompositeTransformer {
+public class SwitchableTransformer extends CompositeTransformer {
 
     public SwitchableTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type, List<String> fieldsName) {
         super(relatedFormItem, definition, type, fieldsName);
