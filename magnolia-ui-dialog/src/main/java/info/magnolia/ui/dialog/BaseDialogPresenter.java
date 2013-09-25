@@ -52,6 +52,9 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutAction.ModifierKey;
 import com.vaadin.event.ShortcutListener;
@@ -62,6 +65,8 @@ import com.vaadin.ui.UI;
  * Base implementation of {@link DialogPresenter}.
  */
 public class BaseDialogPresenter implements DialogPresenter, ActionListener {
+
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     private DialogView view;
 
@@ -162,7 +167,9 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
         try {
             executor.execute(actionName, combinedParameters);
         } catch (ActionExecutionException e) {
-            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
+            String errorStatement = "An error occurred while executing an action.";
+            log.error(errorStatement, e);
+            Message error = new Message(MessageType.ERROR, errorStatement, e.getMessage());
             if (uiContext instanceof AppContext) {
                 ((AppContext) uiContext).broadcastMessage(error);
             } else if (uiContext instanceof SubAppContext) {
