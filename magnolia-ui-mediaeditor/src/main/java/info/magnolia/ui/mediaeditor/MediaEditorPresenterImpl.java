@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.mediaeditor;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.HandlerRegistration;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
@@ -124,7 +125,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
             switchToDefaultMode();
             return view;
         } catch (IOException e) {
-            errorOccurred("Error occurred while editing media: ", e);  //TODO-TRANSLATE-EXCEPTION
+            errorOccurred(MessagesUtil.get("ui-mediaeditor.mediaeditorPresenter.errorWhileEditing", "mgnl-i18n.app-ui-mediaeditor-messages")+" ", e);
             log.error("Error occurred while editing media: " + e.getMessage(), e);
         } finally {
             IOUtils.closeQuietly(stream);
@@ -209,7 +210,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
         try {
             actionExecutor.execute(actionName, this, view, dataSource);
         } catch (ActionExecutionException e) {
-            errorOccurred("Failed to execute media editor action ", e);  //TODO-TRANSLATE-EXCEPTION
+            errorOccurred(MessagesUtil.get("ui-mediaeditor.mediaeditorPresenter.actionExecutionException", "mgnl-i18n.app-ui-mediaeditor-messages")+" ", e);
             log.warn("Unable to execute action [" + actionName + "]", e);
         }
     }

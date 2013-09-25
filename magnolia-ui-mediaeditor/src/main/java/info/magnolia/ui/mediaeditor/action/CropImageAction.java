@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.mediaeditor.action;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.dialog.actionarea.ActionListener;
@@ -72,7 +73,7 @@ public class CropImageAction extends MediaEditorUIAction {
     @Override
     protected List<ActionContext> getActionContextList() {
         List<ActionContext> result = new ArrayList<ActionContext>();
-        result.add(new ActionContext(new InternalMediaEditorActionDefinition("crop", "Crop Image", true), new ActionListener() { //TODO-TRANSLATE
+        result.add(new ActionContext(new InternalMediaEditorActionDefinition("crop", MessagesUtil.get("ui-mediaeditor.action.crop.label", "mgnl-i18n.app-ui-mediaeditor-messages"), true), new ActionListener() {
             @Override
             public void onActionFired(String actionName, Object... actionContextParams) {
                 dataSource.startAction(getDefinition().getTrackingLabel());

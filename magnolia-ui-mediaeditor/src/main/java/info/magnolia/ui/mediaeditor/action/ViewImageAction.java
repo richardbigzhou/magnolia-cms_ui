@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.mediaeditor.action;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.dialog.actionarea.ActionListener;
@@ -72,14 +73,14 @@ public class ViewImageAction extends MediaEditorUIAction {
     @Override
     protected List<ActionContext> getActionContextList() {
         List<ActionContext> result = new ArrayList<ActionContext>();
-        result.add(new ActionContext(new InternalMediaEditorActionDefinition("save", "Save Changes", false), new ActionListener() {  //TODO-TRANSLATE
+        result.add(new ActionContext(new InternalMediaEditorActionDefinition("save", MessagesUtil.get("ui-mediaeditor.internalAction.save.label", "mgnl-i18n.app-ui-mediaeditor-messages"), false), new ActionListener() {
             @Override
             public void onActionFired(String actionName, Object... actionContextParams) {
                 eventBus.fireEvent(new MediaEditorInternalEvent(EventType.SUBMIT));
             }
         }));
 
-        result.add(new ActionContext(new InternalMediaEditorActionDefinition("cancel", "Cancel Editing", true), new ActionListener() {  //TODO-TRANSLATE
+        result.add(new ActionContext(new InternalMediaEditorActionDefinition("cancel", MessagesUtil.get("ui-mediaeditor.internalAction.cancel.label", "mgnl-i18n.app-ui-mediaeditor-messages"), true), new ActionListener() {
             @Override
             public void onActionFired(String actionName, Object... actionContextParams) {
                 eventBus.fireEvent(new MediaEditorInternalEvent(EventType.CANCEL_ALL));
@@ -94,8 +95,8 @@ public class ViewImageAction extends MediaEditorUIAction {
         actionbar.removeAction("undo");
         actionbar.removeAction("redo");
 
-        String undoLabel = "Undo " + (dataSource.getLastDoneActionName() != null ? dataSource.getLastDoneActionName() : "");   //TODO-TRANSLATE
-        String redoLabel = "Redo " + (dataSource.getLastUnDoneActionName() != null ? dataSource.getLastUnDoneActionName() : "");   //TODO-TRANSLATE
+        String undoLabel = MessagesUtil.get("ui-mediaeditor.action.undo.label", "mgnl-i18n.app-ui-mediaeditor-messages")+" " + (dataSource.getLastDoneActionName() != null ? dataSource.getLastDoneActionName() : "");
+        String redoLabel = MessagesUtil.get("ui-mediaeditor.action.redo.label", "mgnl-i18n.app-ui-mediaeditor-messages")+" " + (dataSource.getLastUnDoneActionName() != null ? dataSource.getLastUnDoneActionName() : "");
 
         ActionbarItem undo = new ActionbarItem("undo", undoLabel, "icon-undo", "track");
         ActionbarItem redo = new ActionbarItem("redo", redoLabel, "icon-redo", "track");
@@ -127,7 +128,7 @@ public class ViewImageAction extends MediaEditorUIAction {
 
         @Override
         public void onSizeChanged(ViewImageField.ImageResizeEvent e) {
-            setValue(String.format("Actual Size: %d x %d px", e.getWidth(), e.getHeight()));  //TODO-TRANSLATE
+            setValue(String.format(MessagesUtil.get("ui-mediaeditor.view.actualSize.display", "mgnl-i18n.app-ui-mediaeditor-messages"), e.getWidth(), e.getHeight()));
         }
     }
 }
