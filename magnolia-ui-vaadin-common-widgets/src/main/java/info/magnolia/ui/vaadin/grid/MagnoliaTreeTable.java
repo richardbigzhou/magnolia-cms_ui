@@ -37,10 +37,12 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Container;
+import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
 import com.vaadin.shared.ui.treetable.TreeTableState;
 import com.vaadin.ui.TreeTable;
@@ -55,6 +57,12 @@ public class MagnoliaTreeTable extends TreeTable {
     public MagnoliaTreeTable() {
         addStyleName("v-magnolia-table");
         setCacheRate(4);
+    }
+
+    @Override
+    protected String formatPropertyValue(Object rowId, Object colId, Property<?> property) {
+        String result = super.formatPropertyValue(rowId, colId, property);
+        return StringEscapeUtils.escapeHtml(result);
     }
 
     @Override

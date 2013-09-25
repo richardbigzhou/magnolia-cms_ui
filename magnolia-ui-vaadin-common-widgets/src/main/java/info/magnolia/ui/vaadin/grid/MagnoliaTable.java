@@ -36,6 +36,9 @@ package info.magnolia.ui.vaadin.grid;
 import java.util.Collection;
 import java.util.Map;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
+import com.vaadin.data.Property;
 import com.vaadin.ui.Table;
 
 /**
@@ -45,6 +48,12 @@ public class MagnoliaTable extends Table {
 
     public MagnoliaTable() {
         addStyleName("v-magnolia-table");
+    }
+
+    @Override
+    protected String formatPropertyValue(Object rowId, Object colId, Property<?> property) {
+        String result = super.formatPropertyValue(rowId, colId, property);
+        return StringEscapeUtils.escapeHtml(result);
     }
 
     @Override
