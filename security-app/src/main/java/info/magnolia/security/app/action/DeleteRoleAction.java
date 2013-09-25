@@ -33,13 +33,16 @@
  */
 package info.magnolia.security.app.action;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.cms.security.Group;
 import info.magnolia.cms.security.User;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+
 import java.util.Collection;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -49,8 +52,8 @@ import javax.inject.Named;
 public class DeleteRoleAction extends AbstractDeleteGroupOrRoleAction<DeleteRoleActionDefinition> {
 
     // TODO MGNLUI-1826 replace with a message bundle key
-    private static final String ERROR_MESSAGE_ROLE_IS_ASSIGNED = "Cannot delete the role. It is already assigned to the following users/groups:<br />"; //TODO-TRANSLATE
-    private static final String ERROR_MESSAGE_CANNOT_VERIFY = "Cannot verify that the role you want to delete is not assigned: "; //TODO-TRANSLATE
+    private static final String ERROR_MESSAGE_ROLE_IS_ASSIGNED = MessagesUtil.get("delete.role.isAssignedError", "mgnl-i18n.app-security-messages");
+    private static final String ERROR_MESSAGE_CANNOT_VERIFY = MessagesUtil.get("delete.role.cannotVerifyError", "mgnl-i18n.app-security-messages");
 
     @Inject
     public DeleteRoleAction(DeleteRoleActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {

@@ -36,6 +36,7 @@ package info.magnolia.security.app.dialog.action;
 import static info.magnolia.cms.security.MgnlUserManager.*;
 import static info.magnolia.cms.security.SecurityConstants.*;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
@@ -110,7 +111,7 @@ public class SaveUserDialogAction extends SaveDialogAction {
                 String parentPath = parentNode.getPath();
 
                 if ("/".equals(parentPath)) {
-                    throw new ActionExecutionException("Users cannot be created directly under root"); //TODO-TRANSLATE-EXCEPTION
+                    throw new ActionExecutionException(MessagesUtil.get("save.user.dialog.rootError", "mgnl-i18n.app-security-messages"));
                 }
 
                 user = userManager.createUser(parentPath, newUserName, newPassword);
@@ -181,7 +182,7 @@ public class SaveUserDialogAction extends SaveDialogAction {
                 i++;
             }
         } catch (RepositoryException ex) {
-            throw new RepositoryException("Error saving assigned " + name + " of the [" + parentNode.getName() + "] user.", ex); //TODO-TRANSLATE-EXCEPTION
+            throw new RepositoryException("Error saving assigned " + name + " of the [" + parentNode.getName() + "] user.", ex);
         }
     }
 }

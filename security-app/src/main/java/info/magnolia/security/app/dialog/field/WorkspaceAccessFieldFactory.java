@@ -45,6 +45,8 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.cms.security.Permission;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -68,6 +70,7 @@ import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.slf4j.Logger;
@@ -75,6 +78,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,7 +125,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
 
             final VerticalLayout aclLayout = new VerticalLayout();
 
-            final Label emptyLabel = new Label("No access."); //TODO-TRANSLATE
+            final Label emptyLabel = new Label(MessagesUtil.get("workspace.field.noAccess", "mgnl-i18n.app-security-messages"));
 
             if (roleNode.hasNode(aclName)) {
 
@@ -157,7 +161,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
             }
 
             final HorizontalLayout buttons = new HorizontalLayout();
-            final Button addButton = new Button("Add new"); //TODO-TRANSLATE
+            final Button addButton = new Button(MessagesUtil.get("workspace.field.addButton", "mgnl-i18n.app-security-messages"));
             addButton.addClickListener(new Button.ClickListener() {
 
                 @Override
@@ -217,11 +221,11 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         accessRights.setInvalidAllowed(false);
         accessRights.setNewItemsAllowed(false);
         accessRights.addItem(Permission.ALL);
-        accessRights.setItemCaption(Permission.ALL, "Read/Write"); //TODO-TRANSLATE
+        accessRights.setItemCaption(Permission.ALL, MessagesUtil.get("workspace.field.readWrite", "mgnl-i18n.app-security-messages"));
         accessRights.addItem(Permission.READ);
-        accessRights.setItemCaption(Permission.READ, "Read-only"); //TODO-TRANSLATE
+        accessRights.setItemCaption(Permission.READ, MessagesUtil.get("workspace.field.readOnly", "mgnl-i18n.app-security-messages"));
         accessRights.addItem(Permission.NONE);
-        accessRights.setItemCaption(Permission.NONE, "Deny access"); //TODO-TRANSLATE
+        accessRights.setItemCaption(Permission.NONE, MessagesUtil.get("workspace.field.denyAccess", "mgnl-i18n.app-security-messages"));
         accessRights.setPropertyDataSource(ruleItem.getItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME));
         ruleLayout.addComponent(accessRights);
 
@@ -232,11 +236,11 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         accessType.setNewItemsAllowed(false);
         accessType.setWidth("150px");
         accessType.addItem(AccessControlList.ACCESS_TYPE_NODE);
-        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_NODE, "Selected"); //TODO-TRANSLATE
+        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_NODE, MessagesUtil.get("workspace.field.selected", "mgnl-i18n.app-security-messages"));
         accessType.addItem(AccessControlList.ACCESS_TYPE_CHILDREN);
-        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_CHILDREN, "Sub nodes"); //TODO-TRANSLATE
+        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_CHILDREN, MessagesUtil.get("workspace.field.subnodes", "mgnl-i18n.app-security-messages"));
         accessType.addItem(AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN);
-        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, "Selected and sub nodes"); //TODO-TRANSLATE
+        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, MessagesUtil.get("workspace.field.selectedSubnodes", "mgnl-i18n.app-security-messages"));
         Property accessTypeProperty = ruleItem.getItemProperty(ACCESS_TYPE_PROPERTY_NAME);
         accessType.setPropertyDataSource(accessTypeProperty);
         ruleLayout.addComponent(accessType);
@@ -246,7 +250,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         path.setPropertyDataSource(ruleItem.getItemProperty(AccessControlList.PATH_PROPERTY_NAME));
         ruleLayout.addComponent(path);
 
-        Button chooseButton = new Button("Choose..."); //TODO-TRANSLATE
+        Button chooseButton = new Button(MessagesUtil.get("workspace.field.choose", "mgnl-i18n.app-security-messages"));
         chooseButton.addClickListener(new Button.ClickListener() {
 
             @Override
@@ -260,7 +264,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         deleteButton.setHtmlContentAllowed(true);
         deleteButton.setCaption("<span class=\"" + "icon-trash" + "\"></span>");
         deleteButton.addStyleName("inline");
-        deleteButton.setDescription("Delete"); //TODO-TRANSLATE
+        deleteButton.setDescription(MessagesUtil.get("workspace.field.delete", "mgnl-i18n.app-security-messages"));
         deleteButton.addClickListener(new Button.ClickListener() {
 
             @Override
@@ -273,7 +277,6 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
             }
         });
         ruleLayout.addComponent(deleteButton);
-
 
         return ruleLayout;
     }
@@ -328,7 +331,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         PropertyColumnDefinition column = new PropertyColumnDefinition();
         column.setEditable(false);
         column.setDisplayInChooseDialog(true);
-        column.setLabel("Node name"); //TODO-TRANSLATE
+        column.setLabel(MessagesUtil.get("workspace.field.nodeName", "mgnl-i18n.app-security-messages"));
         column.setPropertyName(ModelConstants.JCR_NAME);
         column.setName(ModelConstants.JCR_NAME);
         columns.add(column);
