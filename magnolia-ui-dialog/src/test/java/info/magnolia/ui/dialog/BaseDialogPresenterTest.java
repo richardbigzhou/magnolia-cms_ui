@@ -46,6 +46,7 @@ import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
 import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenterImpl;
@@ -60,7 +61,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -107,8 +107,6 @@ public class BaseDialogPresenterTest {
 
     @Before
     public void setUp() throws Exception {
-
-
         when(componentProvider.newInstance(EditorActionAreaPresenter.class)).thenReturn(actionAreaPresenter);
         when(componentProvider.getComponent(ActionRenderer.class)).thenReturn(new DefaultEditorActionRenderer());
 
@@ -118,73 +116,88 @@ public class BaseDialogPresenterTest {
         this.executor.setDialogDefinition(definition);
     }
 
-    @After
-    public void tearDown() throws Exception {
-
-    }
-
     @Test
     public void testGetView() throws Exception {
+        //GIVEN
+        presenter.start(definition, uiContext);
+
+        //THEN
         assertEquals(presenter.getView(), this.view);
     }
 
     @Test
     public void testGetActionArea() throws Exception {
+        //GIVEN
         presenter.start(definition, uiContext);
+
+        //THEN
         assertEquals(presenter.getActionArea(), this.actionAreaPresenter);
     }
 
-    @Test
-    public void testCloseDialog() throws Exception {
-
-    }
 
     @Test
     public void testAddShortcut() throws Exception {
+        //GIVEN
         presenter.addShortcut("action1", ShortcutAction.KeyCode.T, new int[0]);
         presenter.start(definition, uiContext);
 
+        //WHEN
         view.getActionManager().handleAction("action1");
 
+        //THEN
         assert(action1.isExecuted());
     }
 
     @Test
     public void testStart() throws Exception {
-        assertEquals(presenter.start(definition, uiContext), this.view);
+        //GIVEN
+        View view = presenter.start(definition, uiContext);
+
+        //THEN
+        assertEquals(view, this.view);
     }
 
     @Test
     public void testFilterActions() throws Exception {
+        //GIVEN
         presenter.start(definition, uiContext);
+
+        //THEN
         Collection<?> result = (Collection<?>) presenter.filterActions();
         assertEquals(result.size(), 2);
     }
 
     @Test
     public void testGetActionParameters() throws Exception {
+        //GIVEN
         Object[] params = presenter.getActionParameters("");
+
+        //THEN
         assertEquals(params.length, 1);
         assertEquals(params[0], presenter);
     }
 
     @Test
-    public void testDecorateForI18n() throws Exception {
-
-    }
-
-    @Test
     public void testOnActionFired() throws Exception {
+        //GIVEN
         presenter.start(definition, uiContext);
+
+        //WHEN
         presenter.onActionFired("action1");
+
+        //THEN
         assert(action1.isExecuted());
     }
 
     @Test
     public void testExecuteAction() throws Exception {
-        //((Button)((TestEditorActionAreaPresenterImpl)presenter.getActionArea()).getView().getViewForAction("action1").asVaadinComponent()).click();
+        //GIVEN
         presenter.start(definition, uiContext);
+
+        //WHEN
         presenter.executeAction("action1", new Object[0]);
+
+        //THEN
         assert(action1.isExecuted());
     }
 
