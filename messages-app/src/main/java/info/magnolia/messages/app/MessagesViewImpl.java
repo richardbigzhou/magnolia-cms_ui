@@ -33,6 +33,7 @@
  */
 package info.magnolia.messages.app;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.ui.api.message.MessageType;
 
 import java.io.Serializable;
@@ -116,7 +117,7 @@ public class MessagesViewImpl implements MessagesView {
         layout.setWidth("100%");
 
         // send button
-        NativeButton sendButton = new NativeButton("Send message", new Button.ClickListener() { //TODO-TRANSLATE
+        NativeButton sendButton = new NativeButton(MessagesUtil.get("messages-app.app.button.sendMessage", "mgnl-i18n.app-messages-messages"), new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -149,7 +150,7 @@ public class MessagesViewImpl implements MessagesView {
         sendButton.addStyleName("commit");
 
         // reset button
-        NativeButton resetButton = new NativeButton("Reset", new Button.ClickListener() { //TODO-TRANSLATE
+        NativeButton resetButton = new NativeButton(MessagesUtil.get("messages-app.app.button.reset", "mgnl-i18n.app-messages-messages"), new Button.ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -168,7 +169,7 @@ public class MessagesViewImpl implements MessagesView {
         layout.addComponent(buttons);
 
         // intro text
-        Label intro = new Label("With this development tool, system messages can be sent manually.", ContentMode.HTML); //TODO-TRANSLATE
+        Label intro = new Label(MessagesUtil.get("messages-app.app.label.intro", "mgnl-i18n.app-messages-messages"), ContentMode.HTML);
         intro.addStyleName("intro");
 
         CssLayout container = new CssLayout();
@@ -187,7 +188,7 @@ public class MessagesViewImpl implements MessagesView {
     }
 
     private Field<String> createUserOrGroupIdTextField() {
-        final TextField userOrGroupField = new TextField("User or group"); //TODO-TRANSLATE
+        final TextField userOrGroupField = new TextField(MessagesUtil.get("messages-app.app.field.userOrGroup", "mgnl-i18n.app-messages-messages"));
         userOrGroupField.setWidth("360px");
         return userOrGroupField;
     }
@@ -212,44 +213,44 @@ public class MessagesViewImpl implements MessagesView {
     }
 
     private Field<String> createMessageBodyTextField() {
-        final TextArea messageField = new TextArea("Message"); //TODO-TRANSLATE
+        final TextArea messageField = new TextArea(MessagesUtil.get("messages-app.app.field.messageBody", "mgnl-i18n.app-messages-messages"));
         messageField.setWidth(100, Unit.PERCENTAGE);
         return messageField;
     }
 
     private OptionGroup createTypeSelectionField() {
-        final OptionGroup types = new OptionGroup("Type of message"); //TODO-TRANSLATE
+        final OptionGroup types = new OptionGroup(MessagesUtil.get("messages-app.app.field.messageType", "mgnl-i18n.app-messages-messages"));
         types.setNullSelectionAllowed(false);
         types.addItem(MessageType.INFO);
-        types.setItemCaption(MessageType.INFO, "Informational"); //TODO-TRANSLATE
+        types.setItemCaption(MessageType.INFO, MessagesUtil.get("messages-app.app.field.messageType.option.info", "mgnl-i18n.app-messages-messages"));
         types.addItem(MessageType.WARNING);
-        types.setItemCaption(MessageType.WARNING, "Warning"); //TODO-TRANSLATE
+        types.setItemCaption(MessageType.WARNING, MessagesUtil.get("messages-app.app.field.messageType.option.warning", "mgnl-i18n.app-messages-messages"));
         types.addItem(MessageType.ERROR);
-        types.setItemCaption(MessageType.ERROR, "Error"); //TODO-TRANSLATE
+        types.setItemCaption(MessageType.ERROR, MessagesUtil.get("messages-app.app.field.messageType.option.error", "mgnl-i18n.app-messages-messages"));
         types.setValue(MessageType.INFO);
         types.addStyleName("horizontal");
         return types;
     }
 
     private OptionGroup createScopeSelectionField() {
-        final OptionGroup scopes = new OptionGroup("Scope"); //TODO-TRANSLATE
+        final OptionGroup scopes = new OptionGroup(MessagesUtil.get("messages-app.app.field.scope", "mgnl-i18n.app-messages-messages"));
         scopes.setImmediate(true);
         scopes.setNullSelectionAllowed(false);
         scopes.addItem(MESSAGE_SCOPE_GLOBAL);
-        scopes.setItemCaption(MESSAGE_SCOPE_GLOBAL, "Send to all users"); //TODO-TRANSLATE
+        scopes.setItemCaption(MESSAGE_SCOPE_GLOBAL, MessagesUtil.get("messages-app.app.field.scope.option.global", "mgnl-i18n.app-messages-messages"));
         scopes.addItem(MESSAGE_SCOPE_LOCAL);
-        scopes.setItemCaption(MESSAGE_SCOPE_LOCAL, "Send to yourself only"); //TODO-TRANSLATE
+        scopes.setItemCaption(MESSAGE_SCOPE_LOCAL, MessagesUtil.get("messages-app.app.field.scope.option.local", "mgnl-i18n.app-messages-messages"));
         scopes.addItem(MESSAGE_SCOPE_USER);
-        scopes.setItemCaption(MESSAGE_SCOPE_USER, "Send to user"); //TODO-TRANSLATE
+        scopes.setItemCaption(MESSAGE_SCOPE_USER, MessagesUtil.get("messages-app.app.field.scope.option.user", "mgnl-i18n.app-messages-messages"));
         scopes.addItem(MESSAGE_SCOPE_GROUP);
-        scopes.setItemCaption(MESSAGE_SCOPE_GROUP, "Send to group"); //TODO-TRANSLATE
+        scopes.setItemCaption(MESSAGE_SCOPE_GROUP, MessagesUtil.get("messages-app.app.field.scope.option.group", "mgnl-i18n.app-messages-messages"));
         // initial selection
         scopes.addStyleName("vertical");
         return scopes;
     }
 
     private Field<String> createSubjectTextField() {
-        final TextField subjectField = new TextField("Message title"); //TODO-TRANSLATE
+        final TextField subjectField = new TextField(MessagesUtil.get("messages-app.app.field.messageTitle", "mgnl-i18n.app-messages-messages"));
         subjectField.addStyleName("required");
         subjectField.setWidth(100, Unit.PERCENTAGE);
         subjectField.setRequired(true);
