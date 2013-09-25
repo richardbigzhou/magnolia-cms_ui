@@ -52,6 +52,8 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
 import javax.inject.Inject;
 
+import net.sf.cglib.proxy.Enhancer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,7 +120,12 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
     @Override
     public DialogView start(DialogDefinition definition, UiContext uiContext) {
         this.uiContext = uiContext;
-        this.definition = i18nizer.decorate(definition);
+        // ChooseDialogDefinition is already enhanced as it is obtained via ContentAppDescriptor.getChooseDialog() at ContentApp.openChooseDialog(..)
+        if (Enhancer.isEnhanced(definition.getClass())) {
+            this.definition = definition;
+        } else {
+            this.definition = i18nizer.decorate(definition);
+        }
         this.editorActionAreaPresenter = componentProvider.newInstance(definition.getActionArea().getPresenterClass());
         EditorActionAreaView editorActionAreaView = editorActionAreaPresenter.start(filterActions(), definition.getActionArea(), this, uiContext);
 
@@ -163,8 +170,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
         try {
             executor.execute(actionName, combinedParameters);
         } catch (ActionExecutionException e) {
-            log.error("An error occurred while executing an action.", e);
-            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());         //TODO-TRANSLATE
+            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage()); // TODO-TRANSLATE
             if (uiContext instanceof AppContext) {
                 ((AppContext) uiContext).broadcastMessage(error);
             } else if (uiContext instanceof SubAppContext) {
