@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,28 +33,25 @@
  */
 package info.magnolia.ui.form.validator.definition;
 
-import info.magnolia.i18nsystem.I18nText;
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.ui.form.validator.factory.FieldValidatorFactory;
+import info.magnolia.ui.form.definition.AbstractFormKeyGenerator;
+import info.magnolia.ui.form.definition.ConfiguredTabDefinition;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
+
+import java.lang.reflect.AnnotatedElement;
+import java.util.List;
 
 /**
- * Defines a validator.
- * 
- * @see info.magnolia.ui.form.validator.factory.FieldValidatorFactory
+ * Generates a key in the form <code> app-name.tab-name.field-name.validation.[name of getter or field annotated with {@link info.magnolia.i18nsystem.I18nText}]</code>.
  */
-@I18nable(keyGenerator = FieldValidatorDefinitionKeyGenerator.class)
-public interface FieldValidatorDefinition {
+public class FieldValidatorDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldValidatorDefinition> {
 
-    /**
-     * Return the ErrorMessage to be displayed.
-     */
-    @I18nText
-    String getErrorMessage();
+    @Override
+    protected void keysFor(List<String> keys, FieldValidatorDefinition object, AnnotatedElement el) {
+        ConfiguredFieldDefinition fieldDefinition = getParentViaCast(object);
+        ConfiguredTabDefinition tabDefinition = getParentViaCast(fieldDefinition);
+        String idOrName = getIdOrNameForUnknownRoot(object);
 
-    /**
-     * Message bundle for localized field labels.
-     */
-    String getI18nBasename();
+        addKey(keys, idOrName, tabDefinition.getName(), fieldDefinition.getName(), "validation", fieldOrGetterName(el));
 
-    Class<? extends FieldValidatorFactory> getFactoryClass();
+    }
 }
