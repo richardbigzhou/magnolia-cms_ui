@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.dialog;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
@@ -170,7 +171,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
         try {
             executor.execute(actionName, combinedParameters);
         } catch (ActionExecutionException e) {
-            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage()); // TODO-TRANSLATE
+            Message error = new Message(MessageType.ERROR, MessagesUtil.get("ui-dialog.actionexecutionerror.basemessage", "mgnl-i18n.module-ui-dialog-messages"), e.getMessage());
             if (uiContext instanceof AppContext) {
                 ((AppContext) uiContext).broadcastMessage(error);
             } else if (uiContext instanceof SubAppContext) {
