@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.contentapp.choosedialog;
 
-import com.rits.cloning.Cloner;
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -46,17 +45,18 @@ import info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition;
 import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenterImpl;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogView;
-import info.magnolia.ui.dialog.choosedialog.action.ChooseDialogActionDefinition;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
+
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
+import com.rits.cloning.Cloner;
 
 /**
  * Extension of {@link ChooseDialogPresenterImpl} capable of restoring choose dialog out of {@link BrowserSubAppDescriptor}
@@ -82,24 +82,6 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
         ChooseDialogDefinition dialogDefinition = ensureChooseDialogField(definition);
         ChooseDialogView chooseDialogView = super.start(callback, dialogDefinition, uiContext, selectedItemId);
         return chooseDialogView;
-    }
-
-    private ChooseDialogDefinition ensureChooseActions(ChooseDialogDefinition definition) {
-        ConfiguredChooseDialogDefinition result = (ConfiguredChooseDialogDefinition) definition;
-        if (definition.getActions().isEmpty()) {
-            result = (ConfiguredChooseDialogDefinition) cloner.deepClone(definition);
-
-            ChooseDialogActionDefinition commitAction = new ChooseDialogActionDefinition();
-            commitAction.setCallSuccess(true);
-            commitAction.setName(BaseDialog.COMMIT_ACTION_NAME);
-            result.addAction(commitAction);
-
-            ChooseDialogActionDefinition cancelAction = new ChooseDialogActionDefinition();
-            cancelAction.setCallSuccess(false);
-            cancelAction.setName(BaseDialog.CANCEL_ACTION_NAME);
-            result.addAction(cancelAction);
-        }
-        return result;
     }
 
     private ChooseDialogDefinition ensureChooseDialogField(ChooseDialogDefinition definition) {
