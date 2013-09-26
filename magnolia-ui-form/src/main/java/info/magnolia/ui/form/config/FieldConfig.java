@@ -57,7 +57,7 @@ public class FieldConfig {
         return new LinkFieldBuilder(name);
     }
 
-    public LinkFieldBuilder websiteLink(String name) {
+    public LinkFieldBuilder pageLink(String name) {
         return new LinkFieldBuilder(name).appName("pages").targetWorkspace(RepositoryConstants.WEBSITE).identifierToPathConverter(new BaseIdentifierToPathConverter());
     }
 
