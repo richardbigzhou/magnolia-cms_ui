@@ -34,10 +34,11 @@
 package info.magnolia.ui.contentapp.detail.action;
 
 import info.magnolia.cms.core.version.VersionManager;
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.AbstractAction;
-import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.action.ActionExecutionException;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
@@ -63,6 +64,8 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
     private final SubAppContext subAppContext;
     private final EventBus eventBus;
 
+    private static final String CONTENTAPP_BASENAME = "mgnl-i18n.module-ui-contentapp-messages";
+
     @Inject
     public RestorePreviousVersionAction(RestorePreviousVersionActionDefinition definition, AbstractJcrNodeAdapter nodeItemToEdit, VersionManager versionManager, SubAppContext subAppContext, final @Named(AdmincentralEventBus.NAME) EventBus eventBus) {
         super(definition);
@@ -85,15 +88,15 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
             Version version = getPreviousVersion();
             // Check the version.
             if (version == null) {
-                subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, "This Item do not have a Previous version. Action cancelled.");
+                subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("ui-contentapp.actions.restorePreviousVersion.notification.error", CONTENTAPP_BASENAME));
                 return;
             }
             // Restore previous version
             versionManager.restore(nodeItemToEdit.getJcrItem(), version, true);
             eventBus.fireEvent(new ContentChangedEvent(nodeItemToEdit.getWorkspace(), nodeItemToEdit.getItemId()));
-            subAppContext.openNotification(MessageStyleTypeEnum.INFO, true, "Previous version of the Item has been restored.");       //TODO-TRANSLATE
+            subAppContext.openNotification(MessageStyleTypeEnum.INFO, true, MessagesUtil.get("ui-contentapp.actions.restorePreviousVersion.notification.success", CONTENTAPP_BASENAME));
         } catch (RepositoryException e) {
-            subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, "This Item do not have a Valid Previous version. Action cancelled.");    //TODO-TRANSLATE
+            subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("ui-contentapp.actions.restorePreviousVersion.notification.error", CONTENTAPP_BASENAME));
             throw new ActionExecutionException("Could not execute RestorePreviousVersionAction: ", e);
         }
     }

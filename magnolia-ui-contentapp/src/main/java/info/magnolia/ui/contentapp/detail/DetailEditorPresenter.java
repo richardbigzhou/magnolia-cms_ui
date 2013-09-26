@@ -34,6 +34,7 @@
 package info.magnolia.ui.contentapp.detail;
 
 import info.magnolia.cms.core.version.VersionManager;
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.objectfactory.Components;
@@ -66,6 +67,8 @@ import org.slf4j.LoggerFactory;
  * Contains the {@link ActionbarPresenter} for handling action events and the {@link DetailPresenter} for displaying the actual item.
  */
 public class DetailEditorPresenter implements DetailEditorView.Listener, ActionbarPresenter.Listener {
+
+    private static final String CONTENTAPP_BASENAME = "mgnl-i18n.module-ui-contentapp-messages";
 
     private static final Logger log = LoggerFactory.getLogger(DetailEditorPresenter.class);
 
@@ -175,11 +178,18 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
             } else {
                 throw new IllegalArgumentException("Selected value is not a node. Can only operate on nodes.");
             }
+these are just here for testing - maye in the media editor
+            Message error1 = new Message(MessageType.ERROR, MessagesUtil.get("ui-contentapp.detailEditorPresenter.error.repository", CONTENTAPP_BASENAME) + nodePath, "a");     //TODO-TRANSLATE
+            appContext.broadcastMessage(error1);
+
+            Message error2 = new Message(MessageType.ERROR, MessagesUtil.get("ui-contentapp.detailEditorPresenter.error.action", CONTENTAPP_BASENAME), "b");     //TODO-TRANSLATE
+            appContext.broadcastMessage(error2);
+
         } catch (RepositoryException e) {
-            Message error = new Message(MessageType.ERROR, "Could not get item: " + nodePath, e.getMessage());     //TODO-TRANSLATE
+            Message error = new Message(MessageType.ERROR, MessagesUtil.get("ui-contentapp.detailEditorPresenter.error.repository", CONTENTAPP_BASENAME) + nodePath, e.getMessage());     //TODO-TRANSLATE
             appContext.broadcastMessage(error);
         } catch (ActionExecutionException e) {
-            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());     //TODO-TRANSLATE
+            Message error = new Message(MessageType.ERROR, MessagesUtil.get("ui-contentapp.detailEditorPresenter.error.action", CONTENTAPP_BASENAME), e.getMessage());     //TODO-TRANSLATE
             appContext.broadcastMessage(error);
         }
     }
