@@ -102,5 +102,15 @@ public class ConfiguredFormDialogDefinitionTest {
         public String translate(LocaleProvider localeProvider, String basename, String[] keys) {
             return "translated with key [" + keys[0] + "] and basename [" + basename + "] and locale [" + localeProvider.getLocale() + "]";
         }
+
+        @Override
+        public String translate(LocaleProvider localeProvider, String[] keys) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String translate(LocaleProvider localeProvider, String key) {
+            throw new UnsupportedOperationException();
+        }
     }
 }
