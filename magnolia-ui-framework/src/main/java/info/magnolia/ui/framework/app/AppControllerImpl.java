@@ -407,8 +407,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
             Message errorMessage = new Message();
             errorMessage.setType(MessageType.ERROR);
-            errorMessage.setSubject(MessagesUtil.get("ui-framework.app.appdescriptor-read-error-message.subject", "mgnl-i18n.module-ui-framework-messages"));
-            errorMessage.setMessage(String.format(MessagesUtil.get("ui-framework.app.appdescriptor-read-error-message.message", "mgnl-i18n.module-ui-framework-messages"), name));
+            errorMessage.setSubject(MessagesUtil.get("ui-framework.app.appdescriptorReadError.subject", "mgnl-i18n.module-ui-framework-messages"));
+            errorMessage.setMessage(String.format(MessagesUtil.get("ui-framework.app.appdescriptorReadError.message", "mgnl-i18n.module-ui-framework-messages"), name));
             messagesManager.sendLocalMessage(errorMessage);
             throw new RuntimeException(e);
         }

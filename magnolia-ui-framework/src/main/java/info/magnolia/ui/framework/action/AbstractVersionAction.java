@@ -114,7 +114,7 @@ public abstract class AbstractVersionAction<D extends ActionDefinition> extends 
                     // Open location
                     locationController.goTo(location);
                 } catch (ActionExecutionException e) {
-                    uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("ui-framework.version.execution-exception.no-valid-version", "mgnl-i18n.module-ui-framework-messages"));
+                    uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("ui-framework.version.executionException.noValidVersion", "mgnl-i18n.module-ui-framework-messages"));
                 }
 
                 // Close the dialog
@@ -136,12 +136,12 @@ public abstract class AbstractVersionAction<D extends ActionDefinition> extends 
 
             // This should not happen, as we use action availability for this action
             if (versionInfoList == null || versionInfoList.isEmpty()) {
-                throw new ActionExecutionException(String.format(MessagesUtil.get("ui-framework.version.info-list.no-list-for-item", "mgnl-i18n.module-ui-framework-messages"), nodeAdapter.getItemId()));
+                throw new ActionExecutionException(String.format(MessagesUtil.get("ui-framework.version.infoList.noListForItem", "mgnl-i18n.module-ui-framework-messages"), nodeAdapter.getItemId()));
             }
 
             return versionInfoList;
         } catch (RepositoryException e) {
-            throw new ActionExecutionException(String.format(MessagesUtil.get("ui-framework.version.info-list.repository-exception", "mgnl-i18n.module-ui-framework-messages"), nodeAdapter.getItemId()));
+            throw new ActionExecutionException(String.format(MessagesUtil.get("ui-framework.version.infoList.repositoryException", "mgnl-i18n.module-ui-framework-messages"), nodeAdapter.getItemId()));
         }
     }
 
