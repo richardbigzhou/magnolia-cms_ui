@@ -52,8 +52,8 @@ import javax.inject.Named;
 public class DeleteRoleAction extends AbstractDeleteGroupOrRoleAction<DeleteRoleActionDefinition> {
 
     // TODO MGNLUI-1826 replace with a message bundle key
-    private static final String ERROR_MESSAGE_ROLE_IS_ASSIGNED = MessagesUtil.get("delete.role.isAssignedError", "mgnl-i18n.app-security-messages");
-    private static final String ERROR_MESSAGE_CANNOT_VERIFY = MessagesUtil.get("delete.role.cannotVerifyError", "mgnl-i18n.app-security-messages");
+    private static final String ERROR_MESSAGE_ROLE_IS_ASSIGNED = MessagesUtil.get("security.delete.role.isAssignedError", "mgnl-i18n.app-security-messages");
+    private static final String ERROR_MESSAGE_CANNOT_VERIFY = MessagesUtil.get("security.delete.role.cannotVerifyError", "mgnl-i18n.app-security-messages");
 
     @Inject
     public DeleteRoleAction(DeleteRoleActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {

@@ -125,7 +125,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
 
             final VerticalLayout aclLayout = new VerticalLayout();
 
-            final Label emptyLabel = new Label(MessagesUtil.get("workspace.field.noAccess", "mgnl-i18n.app-security-messages"));
+            final Label emptyLabel = new Label(MessagesUtil.get("security.workspace.field.noAccess", "mgnl-i18n.app-security-messages"));
 
             if (roleNode.hasNode(aclName)) {
 
@@ -161,7 +161,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
             }
 
             final HorizontalLayout buttons = new HorizontalLayout();
-            final Button addButton = new Button(MessagesUtil.get("workspace.field.addButton", "mgnl-i18n.app-security-messages"));
+            final Button addButton = new Button(MessagesUtil.get("security.workspace.field.addButton", "mgnl-i18n.app-security-messages"));
             addButton.addClickListener(new Button.ClickListener() {
 
                 @Override
@@ -221,11 +221,11 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         accessRights.setInvalidAllowed(false);
         accessRights.setNewItemsAllowed(false);
         accessRights.addItem(Permission.ALL);
-        accessRights.setItemCaption(Permission.ALL, MessagesUtil.get("workspace.field.readWrite", "mgnl-i18n.app-security-messages"));
+        accessRights.setItemCaption(Permission.ALL, MessagesUtil.get("security.workspace.field.readWrite", "mgnl-i18n.app-security-messages"));
         accessRights.addItem(Permission.READ);
-        accessRights.setItemCaption(Permission.READ, MessagesUtil.get("workspace.field.readOnly", "mgnl-i18n.app-security-messages"));
+        accessRights.setItemCaption(Permission.READ, MessagesUtil.get("security.workspace.field.readOnly", "mgnl-i18n.app-security-messages"));
         accessRights.addItem(Permission.NONE);
-        accessRights.setItemCaption(Permission.NONE, MessagesUtil.get("workspace.field.denyAccess", "mgnl-i18n.app-security-messages"));
+        accessRights.setItemCaption(Permission.NONE, MessagesUtil.get("security.workspace.field.denyAccess", "mgnl-i18n.app-security-messages"));
         accessRights.setPropertyDataSource(ruleItem.getItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME));
         ruleLayout.addComponent(accessRights);
 
@@ -236,11 +236,11 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         accessType.setNewItemsAllowed(false);
         accessType.setWidth("150px");
         accessType.addItem(AccessControlList.ACCESS_TYPE_NODE);
-        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_NODE, MessagesUtil.get("workspace.field.selected", "mgnl-i18n.app-security-messages"));
+        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_NODE, MessagesUtil.get("security.workspace.field.selected", "mgnl-i18n.app-security-messages"));
         accessType.addItem(AccessControlList.ACCESS_TYPE_CHILDREN);
-        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_CHILDREN, MessagesUtil.get("workspace.field.subnodes", "mgnl-i18n.app-security-messages"));
+        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_CHILDREN, MessagesUtil.get("security.workspace.field.subnodes", "mgnl-i18n.app-security-messages"));
         accessType.addItem(AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN);
-        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, MessagesUtil.get("workspace.field.selectedSubnodes", "mgnl-i18n.app-security-messages"));
+        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, MessagesUtil.get("security.workspace.field.selectedSubnodes", "mgnl-i18n.app-security-messages"));
         Property accessTypeProperty = ruleItem.getItemProperty(ACCESS_TYPE_PROPERTY_NAME);
         accessType.setPropertyDataSource(accessTypeProperty);
         ruleLayout.addComponent(accessType);
@@ -250,7 +250,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         path.setPropertyDataSource(ruleItem.getItemProperty(AccessControlList.PATH_PROPERTY_NAME));
         ruleLayout.addComponent(path);
 
-        Button chooseButton = new Button(MessagesUtil.get("workspace.field.choose", "mgnl-i18n.app-security-messages"));
+        Button chooseButton = new Button(MessagesUtil.get("security.workspace.field.choose", "mgnl-i18n.app-security-messages"));
         chooseButton.addClickListener(new Button.ClickListener() {
 
             @Override
@@ -264,7 +264,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         deleteButton.setHtmlContentAllowed(true);
         deleteButton.setCaption("<span class=\"" + "icon-trash" + "\"></span>");
         deleteButton.addStyleName("inline");
-        deleteButton.setDescription(MessagesUtil.get("workspace.field.delete", "mgnl-i18n.app-security-messages"));
+        deleteButton.setDescription(MessagesUtil.get("security.workspace.field.delete", "mgnl-i18n.app-security-messages"));
         deleteButton.addClickListener(new Button.ClickListener() {
 
             @Override
@@ -331,7 +331,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         PropertyColumnDefinition column = new PropertyColumnDefinition();
         column.setEditable(false);
         column.setDisplayInChooseDialog(true);
-        column.setLabel(MessagesUtil.get("workspace.field.nodeName", "mgnl-i18n.app-security-messages"));
+        column.setLabel(MessagesUtil.get("security.workspace.field.nodeName", "mgnl-i18n.app-security-messages"));
         column.setPropertyName(ModelConstants.JCR_NAME);
         column.setName(ModelConstants.JCR_NAME);
         columns.add(column);

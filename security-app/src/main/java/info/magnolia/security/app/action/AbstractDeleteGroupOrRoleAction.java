@@ -65,8 +65,8 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteItemAction
 
     private static final Logger log = LoggerFactory.getLogger(AbstractDeleteGroupOrRoleAction.class);
 
-    public static final String PREFIX_USER = MessagesUtil.get("delete.group.or.role.user", "mgnl-i18n.app-security-messages");
-    public static final String PREFIX_GROUP = MessagesUtil.get("delete.group.or.role.group", "mgnl-i18n.app-security-messages");
+    public static final String PREFIX_USER = MessagesUtil.get("security.delete.group.or.role.user", "mgnl-i18n.app-security-messages");
+    public static final String PREFIX_GROUP = MessagesUtil.get("security.delete.group.or.role.group", "mgnl-i18n.app-security-messages");
 
     private final JcrItemAdapter item;
     private final UiContext uiContext;
