@@ -36,7 +36,6 @@ package info.magnolia.ui.contentapp.movedialog.action;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.api.action.ActionExecutionException;
-import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
@@ -73,8 +72,6 @@ public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefini
      */
     private final JcrNodeAdapter targetItem;
 
-    private final SubAppContext subAppContext;
-
     protected final EventBus admincentralEventBus;
 
     private MoveActionCallback callback;
@@ -87,10 +84,8 @@ public class MoveNodeAction extends AbstractMultiItemAction<MoveNodeActionDefini
             JcrNodeAdapter targetItem,
             @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
             UiContext uiContext,
-            SubAppContext subAppContext,
             MoveActionCallback callback) {
         super(definition, items, uiContext);
-        this.subAppContext = subAppContext;
         this.targetItem = targetItem;
         this.admincentralEventBus = admincentralEventBus;
         this.callback = callback;
