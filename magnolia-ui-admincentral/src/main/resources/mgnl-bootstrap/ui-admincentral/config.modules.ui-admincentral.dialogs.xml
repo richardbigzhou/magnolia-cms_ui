@@ -34,9 +34,6 @@
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
     </sv:property>
-    <sv:property sv:name="label" sv:type="String">
-      <sv:value>Import</sv:value>
-    </sv:property>
     <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
       <sv:value>false</sv:value>
     </sv:property>
@@ -93,9 +90,6 @@
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
         </sv:property>
-        <sv:property sv:name="label" sv:type="String">
-          <sv:value>Import File</sv:value>
-        </sv:property>
         <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
           <sv:value>false</sv:value>
         </sv:property>
@@ -125,9 +119,6 @@
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
         </sv:property>
-        <sv:property sv:name="label" sv:type="String">
-          <sv:value>Cancel</sv:value>
-        </sv:property>
         <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
           <sv:value>false</sv:value>
         </sv:property>
@@ -151,9 +142,6 @@
       </sv:property>
       <sv:property sv:name="jcr:uuid" sv:type="String">
         <sv:value>2e292108-f561-4afe-9c7a-40e9e6c36dbd</sv:value>
-      </sv:property>
-      <sv:property sv:name="description" sv:type="String">
-        <sv:value>Import file</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -207,9 +195,6 @@
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
-          </sv:property>
-          <sv:property sv:name="label" sv:type="String">
-            <sv:value>Import</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
             <sv:value>false</sv:value>
@@ -267,14 +252,8 @@
               <sv:property sv:name="class" sv:type="String">
                 <sv:value>info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition</sv:value>
               </sv:property>
-              <sv:property sv:name="description" sv:type="String">
-                <sv:value>Select an XML file to import</sv:value>
-              </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
-              </sv:property>
-              <sv:property sv:name="label" sv:type="String">
-                <sv:value>Import XML File</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
                 <sv:value>false</sv:value>
@@ -338,14 +317,8 @@
       <sv:property sv:name="jcr:uuid" sv:type="String">
         <sv:value>e02e4e28-cb97-461e-9a2e-ef6ed54a5dcb</sv:value>
       </sv:property>
-      <sv:property sv:name="description" sv:type="String">
-        <sv:value>Edit all values of a property.</sv:value>
-      </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
-      </sv:property>
-      <sv:property sv:name="label" sv:type="String">
-        <sv:value>Edit property</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:created" sv:type="Date">
         <sv:value>2013-04-08T17:59:40.297+02:00</sv:value>
@@ -391,9 +364,6 @@
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
           </sv:property>
-          <sv:property sv:name="label" sv:type="String">
-            <sv:value>Item</sv:value>
-          </sv:property>
           <sv:property sv:name="mgnl:created" sv:type="Date">
             <sv:value>2013-04-08T17:59:54.349+02:00</sv:value>
           </sv:property>
@@ -438,14 +408,8 @@
               <sv:property sv:name="class" sv:type="String">
                 <sv:value>info.magnolia.ui.form.field.definition.TextFieldDefinition</sv:value>
               </sv:property>
-              <sv:property sv:name="description" sv:type="String">
-                <sv:value>Item name</sv:value>
-              </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
-              </sv:property>
-              <sv:property sv:name="label" sv:type="String">
-                <sv:value>Name</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:created" sv:type="Date">
                 <sv:value>2013-04-08T18:00:16.071+02:00</sv:value>
@@ -470,14 +434,8 @@
               <sv:property sv:name="class" sv:type="String">
                 <sv:value>info.magnolia.ui.form.field.definition.TextFieldDefinition</sv:value>
               </sv:property>
-              <sv:property sv:name="description" sv:type="String">
-                <sv:value>Value of the property</sv:value>
-              </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
-              </sv:property>
-              <sv:property sv:name="label" sv:type="String">
-                <sv:value>Value</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
                 <sv:value>false</sv:value>
@@ -514,14 +472,8 @@
               <sv:property sv:name="class" sv:type="String">
                 <sv:value>info.magnolia.ui.form.field.definition.TextFieldDefinition</sv:value>
               </sv:property>
-              <sv:property sv:name="description" sv:type="String">
-                <sv:value>Value of the property</sv:value>
-              </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
-              </sv:property>
-              <sv:property sv:name="label" sv:type="String">
-                <sv:value>Type</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
                 <sv:value>false</sv:value>
@@ -596,9 +548,6 @@
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
         </sv:property>
-        <sv:property sv:name="label" sv:type="String">
-          <sv:value>save changes</sv:value>
-        </sv:property>
         <sv:property sv:name="mgnl:created" sv:type="Date">
           <sv:value>2013-04-08T18:01:45.780+02:00</sv:value>
         </sv:property>
@@ -653,9 +602,6 @@
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
-        </sv:property>
-        <sv:property sv:name="label" sv:type="String">
-          <sv:value>cancel</sv:value>
         </sv:property>
         <sv:property sv:name="mgnl:created" sv:type="Date">
           <sv:value>2013-04-08T18:01:47.277+02:00</sv:value>
@@ -751,14 +697,8 @@
       <sv:property sv:name="jcr:uuid" sv:type="String">
         <sv:value>9aa67fcf-6967-471c-a759-a3860f51a044</sv:value>
       </sv:property>
-      <sv:property sv:name="description" sv:type="String">
-        <sv:value>Rename the item.</sv:value>
-      </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
-      </sv:property>
-      <sv:property sv:name="label" sv:type="String">
-        <sv:value>Item</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:created" sv:type="Date">
         <sv:value>2013-04-08T17:59:40.297+02:00</sv:value>
@@ -803,9 +743,6 @@
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
-          </sv:property>
-          <sv:property sv:name="label" sv:type="String">
-            <sv:value>Rename Item</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:created" sv:type="Date">
             <sv:value>2013-04-08T17:59:54.349+02:00</sv:value>
