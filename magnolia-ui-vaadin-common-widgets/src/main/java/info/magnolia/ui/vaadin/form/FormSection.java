@@ -76,10 +76,6 @@ public class FormSection extends AbstractLayout {
         }
     }
 
-    public int indexOf(Component c) {
-        return components.indexOf(c);
-    }
-
     @Override
     public void addComponent(Component c) {
         super.addComponent(c);
