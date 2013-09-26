@@ -55,8 +55,8 @@ public class ContentDisplayViewImpl implements ContentDisplayView {
         layout = new VerticalLayout();
         layout.setMargin(true);
         layout.setSpacing(true);
-        layout.addComponent(new Label(MessagesUtil.get("sample-app.app.contentDisplay.label.title", "mgnl-i18n.app-sample-messages")));
-        layout.addComponent(new Label(MessagesUtil.get("sample-app.app.contentDisplay.label.description", "mgnl-i18n.app-sample-messages")));
+        layout.addComponent(new Label(MessagesUtil.get("sample.app.contentDisplay.label.title", "mgnl-i18n.app-sample-messages")));
+        layout.addComponent(new Label(MessagesUtil.get("sample.app.contentDisplay.label.description", "mgnl-i18n.app-sample-messages")));
     }
 
     @Override
@@ -67,9 +67,9 @@ public class ContentDisplayViewImpl implements ContentDisplayView {
     @Override
     public void setResource(final String name) {
         layout.removeAllComponents();
-        layout.addComponent(new Label(MessagesUtil.get("sample-app.app.contentDisplay.label.title", "mgnl-i18n.app-sample-messages")));
-        layout.addComponent(new Label(MessagesUtil.get("sample-app.app.contentDisplay.label.displaying", "mgnl-i18n.app-sample-messages") + " " + name));
-        layout.addComponent(new Button(MessagesUtil.get("sample-app.app.contentDisplay.button.newEditor", "mgnl-i18n.app-sample-messages"), new Button.ClickListener() {
+        layout.addComponent(new Label(MessagesUtil.get("sample.app.contentDisplay.label.title", "mgnl-i18n.app-sample-messages")));
+        layout.addComponent(new Label(MessagesUtil.get("sample.app.contentDisplay.label.displaying", "mgnl-i18n.app-sample-messages") + " " + name));
+        layout.addComponent(new Button(MessagesUtil.get("sample.app.contentDisplay.button.newEditor", "mgnl-i18n.app-sample-messages"), new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {

@@ -60,7 +60,7 @@ public class SampleEditorSubApp extends BaseSubApp implements SampleEditorView.L
 
     @Override
     public String getCaption() {
-        return MessagesUtil.get("sample-app.app.editor.label", "mgnl-i18n.app-sample-messages") + " " + view.getName();
+        return MessagesUtil.get("sample.app.editor.label", "mgnl-i18n.app-sample-messages") + " " + view.getName();
     }
 
     @Override

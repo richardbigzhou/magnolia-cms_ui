@@ -70,7 +70,7 @@ public class NavigationViewImpl implements NavigationView {
             layout = new VerticalLayout();
             layout.setMargin(true);
             layout.setSpacing(true);
-            layout.addComponent(new Label(MessagesUtil.get("sample-app.app.navigation.label", "mgnl-i18n.app-sample-messages")));
+            layout.addComponent(new Label(MessagesUtil.get("sample.app.navigation.label", "mgnl-i18n.app-sample-messages")));
 
             layout.addComponent(createButton("Alpha"));
             layout.addComponent(createButton("Bravo"));
@@ -82,7 +82,7 @@ public class NavigationViewImpl implements NavigationView {
     }
 
     private Button createButton(final String name) {
-        return new Button(MessagesUtil.get("sample-app.app.navigation.button.select", "mgnl-i18n.app-sample-messages") + " " + name, new Button.ClickListener() {
+        return new Button(MessagesUtil.get("sample.app.navigation.button.select", "mgnl-i18n.app-sample-messages") + " " + name, new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
