@@ -53,11 +53,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/24/13
- * Time: 2:07 PM
- * To change this template use File | Settings | File Templates.
+ * Test for {@link MovePossibilityPredicate} and its children.
  */
 public class MovePossibilityPredicateTest {
 
@@ -108,17 +104,21 @@ public class MovePossibilityPredicateTest {
 
     @Test
     public void testIsMovePossible() throws Exception {
+        //GIVEN
         DropConstraint constraint = mock(DropConstraint.class);
         JcrNodeAdapter a1 = new JcrNodeAdapter(node1);
         JcrNodeAdapter a2 = new JcrNodeAdapter(node2);
         JcrNodeAdapter a3 = new JcrNodeAdapter(node3);
-        when(constraint.allowedAfter(a1, a2)).thenReturn(false);
-        when(constraint.allowedBefore(a1, a2)).thenReturn(false);
 
         MoveInsidePossibilityPredicate insidePredicate = new MoveInsidePossibilityPredicate(constraint, Arrays.asList(a2, a3));
         MoveAfterPossibilityPredicate afterPredicate = new MoveAfterPossibilityPredicate(constraint, Arrays.asList(a2, a3));
         MoveAfterPossibilityPredicate beforePredicate = new MoveAfterPossibilityPredicate(constraint, Arrays.asList(a2, a3));
 
+        //WHEN
+        when(constraint.allowedAfter(a1, a2)).thenReturn(false);
+        when(constraint.allowedBefore(a1, a2)).thenReturn(false);
+
+        //THEN
         assert(insidePredicate.isMovePossible(a1));
         assert(!afterPredicate.isMovePossible(a1));
         assert(!beforePredicate.isMovePossible(a1));
@@ -126,15 +126,21 @@ public class MovePossibilityPredicateTest {
 
     @Test
     public void testHostIsRoot() throws Exception {
+        //GIVEN
         MovePossibilityPredicate predicate = new MovePossibilityPredicate(dummyConstraint, Arrays.asList(new JcrNodeAdapter(node1)));
+
+        //THEN
         assert(predicate.hostIsRoot(new JcrNodeAdapter(session.getRootNode())));
         assert(!predicate.hostIsRoot(new JcrNodeAdapter(node2)));
     }
 
     @Test
     public void testBasicMoveCheck() throws Exception {
+        //GIVEN
         JcrNodeAdapter adapter1 = new JcrNodeAdapter(node1);
         MovePossibilityPredicate predicate = new MovePossibilityPredicate(dummyConstraint, Arrays.asList(adapter1));
+
+        //THEN
         assert(!predicate.basicMoveCheck(node1, node1));
         assert(predicate.basicMoveCheck(node1, node2));
         assert(!predicate.basicMoveCheck(node1, propertyAdapter.getJcrItem()));
