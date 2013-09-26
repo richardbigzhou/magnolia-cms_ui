@@ -107,10 +107,5 @@ public class ConfiguredFormDialogDefinitionTest {
         public String translate(LocaleProvider localeProvider, String[] keys) {
             throw new UnsupportedOperationException();
         }
-
-        @Override
-        public String translate(LocaleProvider localeProvider, String key) {
-            throw new UnsupportedOperationException();
-        }
     }
 }
