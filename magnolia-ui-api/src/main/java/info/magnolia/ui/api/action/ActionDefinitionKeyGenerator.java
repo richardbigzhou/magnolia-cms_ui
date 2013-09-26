@@ -58,7 +58,7 @@ public class ActionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<Actio
     /**
      * Will generate keys for the message bundle in the following form <code> &lt;app-name&gt;.&lt;sub-app-name&gt;.actions.&lt;action-name&gt;[.name of getter or field annotated with {@link info.magnolia.i18nsystem.I18nText}]</code>.
      * <p>
-     * Also generates "default" keys for all actions. Still unique keys for those actions are generated in case one wants to override the default ones. For example, if your app you have a save action defined like this <code>/modules/my-module/apps/my-app/subApps/detail/actions/commit</code> besides a <code>my-module.detail.actions.commit</code> key a fallback key will be generated in the form <code>actions.commit</code>
+     * Also generates "default" keys for all actions. Still unique keys for those actions are generated in case one wants to override the default ones. For example, if your app has a commit action defined like this <code>/modules/my-module/apps/my-app/subApps/detail/actions/commit</code> a fallback key will in the form <code>actions.commit</code> will be generated besides a <code>my-module.detail.actions.commit</code> key.
      */
     @Override
     protected void keysFor(List<String> keys, ActionDefinition actionDefinition, AnnotatedElement el) {
