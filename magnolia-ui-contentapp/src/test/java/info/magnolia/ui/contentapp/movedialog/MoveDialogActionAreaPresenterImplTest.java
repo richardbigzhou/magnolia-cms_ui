@@ -57,11 +57,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/24/13
- * Time: 1:19 PM
- * To change this template use File | Settings | File Templates.
+ * Test for {@link MoveDialogActionAreaPresenter}.
  */
 public class MoveDialogActionAreaPresenterImplTest {
 
@@ -96,11 +92,14 @@ public class MoveDialogActionAreaPresenterImplTest {
 
     @Test
     public void testSetPossibleMoveLocations() throws Exception {
+        //GIVEN
         Set<MoveLocation> locations = new HashSet<MoveLocation>();
         locations.add(MoveLocation.AFTER);
 
+        //WHEN
         presenter.setPossibleMoveLocations(locations);
 
+        //THEN
         assert(view.getViewForAction(MoveLocation.AFTER.name()).asVaadinComponent().isEnabled());
         assert(!view.getViewForAction(MoveLocation.BEFORE.name()).asVaadinComponent().isEnabled());
         assert(!view.getViewForAction(MoveLocation.INSIDE.name()).asVaadinComponent().isEnabled());
