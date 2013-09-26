@@ -65,9 +65,6 @@
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
-      <sv:property sv:name="label" sv:type="String">
-        <sv:value>Logout</sv:value>
-      </sv:property>
       <sv:property sv:name="mgnl:created" sv:type="Date">
         <sv:value>2013-06-04T10:43:10.292+02:00</sv:value>
       </sv:property>

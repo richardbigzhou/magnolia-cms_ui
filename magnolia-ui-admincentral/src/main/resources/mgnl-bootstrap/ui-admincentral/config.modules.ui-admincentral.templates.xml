@@ -31,9 +31,6 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>8631a56b-6ce9-4d44-ad2a-1bc00fc83dca</sv:value>
     </sv:property>
-    <sv:property sv:name="i18nBasename" sv:type="String">
-      <sv:value>info.magnolia.module.admininterface.messages</sv:value>
-    </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
       <sv:value>2013-05-10T15:07:25.253+02:00</sv:value>
     </sv:property>

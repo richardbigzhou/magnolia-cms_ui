@@ -96,9 +96,6 @@
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
         </sv:property>
-        <sv:property sv:name="label" sv:type="String">
-          <sv:value>Delete</sv:value>
-        </sv:property>
         <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
           <sv:value>false</sv:value>
         </sv:property>
@@ -229,9 +226,6 @@
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
               </sv:property>
-              <sv:property sv:name="label" sv:type="String">
-                <sv:value>Sender</sv:value>
-              </sv:property>
               <sv:property sv:name="mgnl:created" sv:type="Date">
                 <sv:value>2013-04-09T14:48:33.269+02:00</sv:value>
               </sv:property>
@@ -260,9 +254,6 @@
               </sv:property>
               <sv:property sv:name="jcr:createdBy" sv:type="String">
                 <sv:value>admin</sv:value>
-              </sv:property>
-              <sv:property sv:name="label" sv:type="String">
-                <sv:value>Message text</sv:value>
               </sv:property>
               <sv:property sv:name="mgnl:created" sv:type="Date">
                 <sv:value>2013-04-09T14:48:33.269+02:00</sv:value>
@@ -349,9 +340,6 @@
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
-          </sv:property>
-          <sv:property sv:name="label" sv:type="String">
-            <sv:value>Message actions</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:created" sv:type="Date">
             <sv:value>2013-05-28T14:12:15.836+02:00</sv:value>
