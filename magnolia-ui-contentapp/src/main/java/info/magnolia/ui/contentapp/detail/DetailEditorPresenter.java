@@ -178,7 +178,7 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
             } else {
                 throw new IllegalArgumentException("Selected value is not a node. Can only operate on nodes.");
             }
-these are just here for testing - maye in the media editor
+//these are just here for testing - maye in the media editor
             Message error1 = new Message(MessageType.ERROR, MessagesUtil.get("ui-contentapp.detailEditorPresenter.error.repository", CONTENTAPP_BASENAME) + nodePath, "a");     //TODO-TRANSLATE
             appContext.broadcastMessage(error1);
 
