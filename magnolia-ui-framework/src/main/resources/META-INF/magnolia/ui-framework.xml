@@ -37,6 +37,10 @@
       <type>info.magnolia.i18nsystem.I18nizer</type>
       <implementation>info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer</implementation>
     </component>
+    <component>
+      <type>info.magnolia.i18nsystem.SimpleTranslator</type>
+      <implementation>info.magnolia.i18nsystem.SimpleTranslator</implementation>
+    </component>
 
     <!-- Ui framework -->
     <component>

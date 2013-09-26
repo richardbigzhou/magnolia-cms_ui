@@ -80,16 +80,12 @@ public class ShowVersionsAction extends AbstractVersionAction<ShowVersionsAction
     @Override
     protected FormDialogDefinition buildNewComponentDialog() throws ActionExecutionException, RepositoryException {
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
-        form.setDescription("Select a version to display.");   //TODO-TRANSLATE
-        form.setLabel("Versions");    //TODO-TRANSLATE
 
         ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
         tab.setName("versions");
-        tab.setLabel("Versions");        //TODO-TRANSLATE
 
         SelectFieldDefinition select = new SelectFieldDefinition();
         select.setName("versionName");
-        select.setLabel("Version");      //TODO-TRANSLATE
         tab.addField(select);
 
         // All versions
@@ -101,17 +97,15 @@ public class ShowVersionsAction extends AbstractVersionAction<ShowVersionsAction
         }
 
         ConfiguredFormDialogDefinition dialog = new ConfiguredFormDialogDefinition();
-        dialog.setId("selectVersion");
+        dialog.setId("ui-contentapp:code:ShowVersionsAction.selectVersion");
         dialog.setForm(form);
 
         CallbackDialogActionDefinition callbackAction = new CallbackDialogActionDefinition();
         callbackAction.setName("commit");
-        callbackAction.setLabel("Show");
         dialog.getActions().put(callbackAction.getName(), callbackAction);
 
         CancelDialogActionDefinition cancelAction = new CancelDialogActionDefinition();
         cancelAction.setName("cancel");
-        cancelAction.setLabel("Cancel");
         dialog.getActions().put(cancelAction.getName(), cancelAction);
 
         form.addTab(tab);
