@@ -73,9 +73,7 @@ public class SampleEditorViewImpl implements SampleEditorView {
     public Component asVaadinComponent() {
         if (layout == null) {
             layout = new VerticalLayout();
-            layout.addComponent(new Label(MessagesUtil.get("sample-app.app.sampleEditor.label.titleStart", "mgnl-i18n.app-sample-messages")
-                    + " " + name
-                    + MessagesUtil.get("sample-app.app.sampleEditor.label.titleEnd", "mgnl-i18n.app-sample-messages"), Label.CONTENT_XHTML));
+            layout.addComponent(new Label(String.format(MessagesUtil.get("sample.app.sampleEditor.label.title", "mgnl-i18n.app-sample-messages"), name), Label.CONTENT_XHTML));
         }
         return layout;
     }
