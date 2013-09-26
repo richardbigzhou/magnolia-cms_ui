@@ -108,7 +108,9 @@ public class ActionDefinitionKeyGeneratorTest {
         assertThat(generatedKeys, Matchers.arrayContaining(
                 "some configured value",
                 "contentApp.chooseDialog.actions.chooseDialogAction.label",
-                "contentApp.chooseDialog.actions.chooseDialogAction"
+                "contentApp.chooseDialog.actions.chooseDialogAction",
+                "actions.chooseDialogAction.label",
+                "actions.chooseDialogAction"
                 ));
     }
 
@@ -122,7 +124,9 @@ public class ActionDefinitionKeyGeneratorTest {
         assertThat(generatedKeys, Matchers.arrayContaining(
                 "some configured value",
                 "myapp.browser.actions.myaction.label",
-                "myapp.browser.actions.myaction"
+                "myapp.browser.actions.myaction",
+                "actions.myaction.label",
+                "actions.myaction"
                 ));
     }
 
@@ -140,7 +144,9 @@ public class ActionDefinitionKeyGeneratorTest {
         assertThat(generatedKeys, Matchers.arrayContaining(
                 "some configured value",
                 "parent-keygen.actions.myaction.label",
-                "parent-keygen.actions.myaction"
+                "parent-keygen.actions.myaction",
+                "actions.myaction.label",
+                "actions.myaction"
                 ));
     }
 
@@ -177,7 +183,9 @@ public class ActionDefinitionKeyGeneratorTest {
         assertThat(generatedKeys, Matchers.arrayContaining(
                 "some configured value",
                 "foo.actions.myaction.label",
-                "foo.actions.myaction"
+                "foo.actions.myaction",
+                "actions.myaction.label",
+                "actions.myaction"
                 ));
     }
 
@@ -196,7 +204,9 @@ public class ActionDefinitionKeyGeneratorTest {
         assertThat(generatedKeys, Matchers.arrayContaining(
                 "some configured value",
                 "foo.bar.actions.myaction.label",
-                "foo.bar.actions.myaction"
+                "foo.bar.actions.myaction",
+                "actions.myaction.label",
+                "actions.myaction"
                 ));
     }
 
@@ -215,7 +225,9 @@ public class ActionDefinitionKeyGeneratorTest {
         assertThat(generatedKeys, Matchers.arrayContaining(
                 "some configured value",
                 "baz.qux.actions.myaction.label",
-                "baz.qux.actions.myaction"
+                "baz.qux.actions.myaction",
+                "actions.myaction.label",
+                "actions.myaction"
                 ));
     }
 
