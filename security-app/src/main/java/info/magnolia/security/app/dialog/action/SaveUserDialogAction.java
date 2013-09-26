@@ -111,7 +111,7 @@ public class SaveUserDialogAction extends SaveDialogAction {
                 String parentPath = parentNode.getPath();
 
                 if ("/".equals(parentPath)) {
-                    throw new ActionExecutionException(MessagesUtil.get("save.user.dialog.rootError", "mgnl-i18n.app-security-messages"));
+                    throw new ActionExecutionException(MessagesUtil.get("security.save.user.dialog.rootError", "mgnl-i18n.app-security-messages"));
                 }
 
                 user = userManager.createUser(parentPath, newUserName, newPassword);

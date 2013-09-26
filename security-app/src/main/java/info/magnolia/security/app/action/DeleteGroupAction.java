@@ -52,8 +52,8 @@ import javax.inject.Named;
 public class DeleteGroupAction extends AbstractDeleteGroupOrRoleAction<DeleteGroupActionDefinition> {
 
     // TODO MGNLUI-1826 replace with a message bundle key
-    private static final String ERROR_MESSAGE_GROUP_IS_ASSIGNED = MessagesUtil.get("delete.group.isAssignedError", "mgnl-i18n.app-security-messages");
-    private static final String ERROR_MESSAGE_CANNOT_VERIFY = MessagesUtil.get("delete.group.cannotVerifyError", "mgnl-i18n.app-security-messages");
+    private static final String ERROR_MESSAGE_GROUP_IS_ASSIGNED = MessagesUtil.get("security.delete.group.isAssignedError", "mgnl-i18n.app-security-messages");
+    private static final String ERROR_MESSAGE_CANNOT_VERIFY = MessagesUtil.get("security.delete.group.cannotVerifyError", "mgnl-i18n.app-security-messages");
 
     @Inject
     public DeleteGroupAction(DeleteGroupActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
