@@ -61,11 +61,7 @@ import org.junit.Test;
 import com.vaadin.data.Item;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 9/24/13
- * Time: 9:55 PM
- * To change this template use File | Settings | File Templates.
+ * Test for {@link MoveNodeAction}.
  */
 public class MoveNodeActionTest extends RepositoryTestCase {
 
