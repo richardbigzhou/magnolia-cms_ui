@@ -58,15 +58,7 @@ public class ActionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<Actio
     /**
      * Will generate keys for the message bundle in the following form <code> &lt;app-name&gt;.&lt;sub-app-name&gt;.actions.&lt;action-name&gt;[.name of getter or field annotated with {@link info.magnolia.i18nsystem.I18nText}]</code>.
      * <p>
-     * Also generates "default" keys for <code>commit</code> and <code>cancel</code> special actions which are to be found all over the configuration and do not necessarily need to be unique. Still unique keys for those actions are generated in case one wants to override the default ones.
-     * <p>
-     * The generated default keys are
-     * <ul>
-     * <li>actions.commit
-     * <li>actions.commit.label
-     * <li>actions.cancel
-     * <li>actions.cancel.label
-     * </ul>
+     * Also generates "default" keys for all actions. Still unique keys for those actions are generated in case one wants to override the default ones. For example, if your app you have a save action defined like this <code>/modules/my-module/apps/my-app/subApps/detail/actions/commit</code> besides a <code>my-module.detail.actions.commit</code> key a fallback key will be generated in the form <code>actions.commit</code>
      */
     @Override
     protected void keysFor(List<String> keys, ActionDefinition actionDefinition, AnnotatedElement el) {
@@ -86,20 +78,16 @@ public class ActionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<Actio
             final List<String> ancestorKeys = getKeysfromAncestors(actionDefinition, el, root);
             if (ancestorKeys.isEmpty()) {
                 String idOrName = getIdOrNameForUnknownRoot(actionDefinition);
-                if (idOrName == null) {
-                    addKey(keys, "actions", actionDefinition.getName(), fieldOrGetterName(el));
-                } else {
+                if (idOrName != null) {
                     addKey(keys, idOrName, "actions", actionDefinition.getName(), fieldOrGetterName(el));
                 }
             } else {
                 addKey(keys, StringUtils.join(ancestorKeys, '.'), "actions", actionDefinition.getName(), fieldOrGetterName(el));
             }
         }
-
-        final String actionName = actionDefinition.getName().toLowerCase();
-        if ("commit".equals(actionName) || "cancel".equals(actionName)) {
-            addKey(keys, "actions", actionName, fieldOrGetterName(el));
-        }
+        // add a fallback key for all actions
+        final String actionName = actionDefinition.getName();
+        addKey(keys, "actions", actionName, fieldOrGetterName(el));
     }
 
     private List<String> getKeysfromAncestors(final ActionDefinition actionDefinition, final AnnotatedElement el, final Object root) {
