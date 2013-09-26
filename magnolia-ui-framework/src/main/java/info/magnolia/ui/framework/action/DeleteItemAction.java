@@ -84,9 +84,9 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
 
         uiContext.openConfirmation(
                 MessageStyleTypeEnum.WARNING, getConfirmationQuestion(),
-                MessagesUtil.get("ui-framework.delete-item-action.warning-text", "mgnl-i18n.module-ui-framework-messages"),
-                MessagesUtil.get("ui-framework.delete-item-action.confirm-text", "mgnl-i18n.module-ui-framework-messages"),
-                MessagesUtil.get("ui-framework.delete-item-action.cancel-text", "mgnl-i18n.module-ui-framework-messages"),
+                MessagesUtil.get("ui-framework.actions.deleteItem.warningText", "mgnl-i18n.module-ui-framework-messages"),
+                MessagesUtil.get("ui-framework.actions.deleteItem.confirmText", "mgnl-i18n.module-ui-framework-messages"),
+                MessagesUtil.get("ui-framework.actions.deleteItem.cancelText", "mgnl-i18n.module-ui-framework-messages"),
                 true,
                 new ConfirmationCallback() {
 
@@ -103,9 +103,9 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
 
     private String getConfirmationQuestion() {
         if (getItems().size() == 1) {
-            return MessagesUtil.get("ui-framework.delete-item-action.confirmation-question-one-item", "mgnl-i18n.module-ui-framework-messages");
+            return MessagesUtil.get("ui-framework.actions.deleteItem.confirmationQuestionOneItem", "mgnl-i18n.module-ui-framework-messages");
         }
-        return String.format(MessagesUtil.get("ui-framework.delete-item-action.confirmation-question-many-items", "mgnl-i18n.module-ui-framework-messages"),getItems().size());
+        return String.format(MessagesUtil.get("ui-framework.actions.deleteItem.confirmationQuestionManyItems", "mgnl-i18n.module-ui-framework-messages"),getItems().size());
     }
 
     protected void executeAfterConfirmation() {
@@ -122,7 +122,7 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
             final Item jcrItem = item.getJcrItem();
             if (jcrItem.getDepth() == 0) {
                 // cannot delete root node
-                throw new IllegalArgumentException(MessagesUtil.get("ui-framework.delete-item-action.cannot-delete-root-item", "mgnl-i18n.module-ui-framework-messages"));
+                throw new IllegalArgumentException(MessagesUtil.get("ui-framework.actions.deleteItem.cannotDeleteRootItem", "mgnl-i18n.module-ui-framework-messages"));
             }
             String itemIdOfChangedItem = JcrItemUtil.getItemId(jcrItem.getParent());
             Session session = jcrItem.getSession();
@@ -138,14 +138,14 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
     @Override
     protected String getSuccessMessage() {
         if(getItems().size()==1){
-            return MessagesUtil.get("ui-framework.delete-item-action.sucess-one-item-deleted", "mgnl-i18n.module-ui-framework-messages");
+            return MessagesUtil.get("ui-framework.actions.deleteItem.sucessOneItemDeleted", "mgnl-i18n.module-ui-framework-messages");
         }else {
-            return String.format(MessagesUtil.get("ui-framework.delete-item-action.sucess-many-items-deleted", "mgnl-i18n.module-ui-framework-messages"), getItems().size());
+            return String.format(MessagesUtil.get("ui-framework.actions.deleteItem.sucessManyItemsDeleted", "mgnl-i18n.module-ui-framework-messages"), getItems().size());
         }
     }
 
     @Override
     protected String getFailureMessage() {
-        return String.format( MessagesUtil.get("ui-framework.delete-item-action.deletionfailure", "mgnl-i18n.module-ui-framework-messages"), getFailedItems().size(), getItems().size());
+        return String.format( MessagesUtil.get("ui-framework.actions.deleteItem.deletionfailure", "mgnl-i18n.module-ui-framework-messages"), getFailedItems().size(), getItems().size());
     }
 }
