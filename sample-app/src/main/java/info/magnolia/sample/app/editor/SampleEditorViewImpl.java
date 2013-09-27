@@ -33,7 +33,7 @@
  */
 package info.magnolia.sample.app.editor;
 
-import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.i18nsystem.SimpleTranslator;
 
 import javax.inject.Inject;
 
@@ -49,9 +49,11 @@ public class SampleEditorViewImpl implements SampleEditorView {
     private Listener listener;
     private String name;
     private VerticalLayout layout;
+    private final SimpleTranslator i18n;
 
     @Inject
-    public SampleEditorViewImpl() {
+    public SampleEditorViewImpl(SimpleTranslator i18n) {
+        this.i18n = i18n;
     }
 
     @Override
@@ -73,7 +75,7 @@ public class SampleEditorViewImpl implements SampleEditorView {
     public Component asVaadinComponent() {
         if (layout == null) {
             layout = new VerticalLayout();
-            layout.addComponent(new Label(String.format(MessagesUtil.get("sample.app.sampleEditor.label.title", "mgnl-i18n.app-sample-messages"), name), Label.CONTENT_XHTML));
+            layout.addComponent(new Label(String.format(i18n.translate("sample.app.sampleEditor.label.title"), name), Label.CONTENT_XHTML));
         }
         return layout;
     }

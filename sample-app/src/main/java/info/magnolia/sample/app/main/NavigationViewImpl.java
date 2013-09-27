@@ -33,7 +33,7 @@
  */
 package info.magnolia.sample.app.main;
 
-import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.app.AppController;
 
 import javax.inject.Inject;
@@ -54,9 +54,12 @@ public class NavigationViewImpl implements NavigationView {
 
     private final AppController appController;
 
+    private final SimpleTranslator i18n;
+
     @Inject
-    public NavigationViewImpl(AppController appController) {
+    public NavigationViewImpl(AppController appController, SimpleTranslator i18n) {
         this.appController = appController;
+        this.i18n = i18n;
     }
 
     @Override
@@ -70,7 +73,7 @@ public class NavigationViewImpl implements NavigationView {
             layout = new VerticalLayout();
             layout.setMargin(true);
             layout.setSpacing(true);
-            layout.addComponent(new Label(MessagesUtil.get("sample.app.navigation.label", "mgnl-i18n.app-sample-messages")));
+            layout.addComponent(new Label(i18n.translate("sample.app.navigation.label")));
 
             layout.addComponent(createButton("Alpha"));
             layout.addComponent(createButton("Bravo"));
@@ -82,7 +85,7 @@ public class NavigationViewImpl implements NavigationView {
     }
 
     private Button createButton(final String name) {
-        return new Button(MessagesUtil.get("sample.app.navigation.button.select", "mgnl-i18n.app-sample-messages") + " " + name, new Button.ClickListener() {
+        return new Button(i18n.translate("sample.app.navigation.button.select") + " " + name, new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
