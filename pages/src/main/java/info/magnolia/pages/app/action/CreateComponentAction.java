@@ -33,9 +33,9 @@
  */
 package info.magnolia.pages.app.action;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.pages.app.field.TemplateSelectorFieldFactory;
@@ -91,10 +91,11 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
     private ComponentProvider componentProvider;
     private DialogView dialogView;
     private FormDialogPresenterFactory formDialogPresenterFactory;
+    private final SimpleTranslator i18n;
 
     @Inject
     public CreateComponentAction(CreateComponentActionDefinition definition, AreaElement area, @Named(SubAppEventBus.NAME) EventBus eventBus, TemplateDefinitionRegistry templateDefinitionRegistry,
-                                 SubAppContext subAppContext, ComponentProvider componentProvider, FormDialogPresenterFactory formDialogPresenterFactory) {
+                                 SubAppContext subAppContext, ComponentProvider componentProvider, FormDialogPresenterFactory formDialogPresenterFactory, SimpleTranslator i18n) {
         super(definition);
         this.area = area;
         this.eventBus = eventBus;
@@ -102,6 +103,7 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
         this.subAppContext = subAppContext;
         this.componentProvider = componentProvider;
         this.formDialogPresenterFactory = formDialogPresenterFactory;
+        this.i18n = i18n;
     }
 
     @Override
@@ -158,19 +160,19 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
 
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
 
-        form.setDescription(MessagesUtil.get("pages.formDialog.definition.description", "mgnl-i18n.app-pages-messages"));
+        form.setDescription(i18n.translate("pages.formDialog.definition.description"));
         form.setI18nBasename("info.magnolia.ui.admincentral.messages");
         form.setLabel("dialog.paragraph.createNew");
 
         ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
         tab.setName("Components");
 
-        tab.setLabel(MessagesUtil.get("pages.formDialog.definition.tabLabel", "mgnl-i18n.app-pages-messages"));
+        tab.setLabel(i18n.translate("pages.formDialog.definition.tabLabel"));
 
         SelectFieldDefinition select = new SelectFieldDefinition();
         select.setName("mgnl:template");
 
-        select.setLabel(MessagesUtil.get("pages.formDialog.definition.label", "mgnl-i18n.app-pages-messages"));
+        select.setLabel(i18n.translate("pages.formDialog.definition.label"));
         tab.addField(select);
 
         form.addTab(tab);
@@ -198,12 +200,12 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
         CallbackDialogActionDefinition callbackAction = new CallbackDialogActionDefinition();
         callbackAction.setName("commit");
         //
-        callbackAction.setLabel(MessagesUtil.get("pages.formDialog.callbackAction.label", "mgnl-i18n.app-pages-messages"));
+        callbackAction.setLabel(i18n.translate("pages.formDialog.callbackAction.label"));
         dialog.getActions().put(callbackAction.getName(), callbackAction);
 
         CancelDialogActionDefinition cancelAction = new CancelDialogActionDefinition();
         cancelAction.setName("cancel");
-        cancelAction.setLabel(MessagesUtil.get("pages.formDialog.cancelAction.label", "mgnl-i18n.app-pages-messages"));
+        cancelAction.setLabel(i18n.translate("pages.formDialog.cancelAction.label"));
         dialog.getActions().put(cancelAction.getName(), cancelAction);
 
         return dialog;

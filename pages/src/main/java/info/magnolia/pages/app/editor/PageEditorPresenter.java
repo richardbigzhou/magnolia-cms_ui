@@ -33,8 +33,8 @@
  */
 package info.magnolia.pages.app.editor;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.pages.app.editor.event.ComponentMoveEvent;
 import info.magnolia.pages.app.editor.event.NodeSelectedEvent;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -67,16 +67,19 @@ public class PageEditorPresenter implements PageEditorListener {
     private final PageEditorView view;
     private final EventBus subAppEventBus;
     private final SubAppContext subAppContext;
+    private final SimpleTranslator i18n;
 
     private AbstractElement selectedElement;
     private boolean moving = false;
 
     @Inject
-    public PageEditorPresenter(final ActionExecutor actionExecutor, PageEditorView view, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, SubAppContext subAppContext) {
+    public PageEditorPresenter(final ActionExecutor actionExecutor, PageEditorView view, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus,
+            SubAppContext subAppContext, SimpleTranslator i18n) {
         this.actionExecutor = actionExecutor;
         this.view = view;
         this.subAppEventBus = subAppEventBus;
         this.subAppContext = subAppContext;
+        this.i18n = i18n;
         registerHandlers();
     }
 
@@ -119,7 +122,7 @@ public class PageEditorPresenter implements PageEditorListener {
         try {
             actionExecutor.execute(actionName, args);
         } catch (ActionExecutionException e) {
-            Message error = new Message(MessageType.ERROR, MessagesUtil.get("pages.pageEditorPresenter.actionExecutionError.message", "mgnl-i18n.app-pages-messages"), e.getMessage());
+            Message error = new Message(MessageType.ERROR, i18n.translate("pages.pageEditorPresenter.actionExecutionError.message"), e.getMessage());
             log.error("An error occurred while executing action [{}]", actionName, e);
             subAppContext.getAppContext().sendLocalMessage(error);
         }

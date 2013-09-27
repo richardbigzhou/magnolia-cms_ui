@@ -96,7 +96,7 @@ public class TemplateColumnFormatter extends AbstractColumnFormatter<TemplateCol
             log.warn("Template with id {} not found.", templateId, e);
         }
 
-        String missingLabel = MessagesUtil.get("pages.templateColFormatter.missingLabel", "mgnl-i18n.app-pages-messages");
+        String missingLabel = i18n.translate("pages.templateColFormatter.missingLabel");
         return template != null ? getI18nTitle(template) : missingLabel +": " + StringUtils.defaultString(templateId);
     }
 

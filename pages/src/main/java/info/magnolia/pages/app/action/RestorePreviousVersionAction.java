@@ -34,7 +34,7 @@
 package info.magnolia.pages.app.action;
 
 import info.magnolia.cms.core.version.VersionManager;
-import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.SubAppContext;
@@ -62,16 +62,19 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
     private final LocationController locationController;
     private final VersionManager versionManager;
     private final SubAppContext subAppContext;
+    private final SimpleTranslator i18n;
 
     private static final String CONTENTAPP_BASENAME = "mgnl-i18n.module-ui-contentapp-messages";
 
     @Inject
-    public RestorePreviousVersionAction(RestorePreviousVersionActionDefinition definition, AbstractJcrNodeAdapter nodeItemToEdit, LocationController locationController, VersionManager versionManager, SubAppContext subAppContext) {
+    public RestorePreviousVersionAction(RestorePreviousVersionActionDefinition definition, AbstractJcrNodeAdapter nodeItemToEdit, LocationController locationController,
+            VersionManager versionManager, SubAppContext subAppContext, SimpleTranslator i18n) {
         super(definition);
         this.nodeItemToEdit = nodeItemToEdit;
         this.locationController = locationController;
         this.versionManager = versionManager;
         this.subAppContext = subAppContext;
+        this.i18n = i18n;
     }
 
     @Override
@@ -90,7 +93,7 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
             // Check the version.
             if (version == null) {
                 //
-                subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("pages.restorePreviousVersionAction.noVersion.actionCanceled.message", "mgnl-i18n.app-pages-messages"));
+                subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, i18n.translate("pages.restorePreviousVersionAction.noVersion.actionCanceled.message"));
                 return;
             }
             // Restore previous version
@@ -99,7 +102,7 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
             locationController.goTo(location);
 
         } catch (RepositoryException e) {
-            subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("pages.restorePreviousVersionAction.repositoryException.actionCanceled.message", "mgnl-i18n.app-pages-messages"));
+            subAppContext.openNotification(MessageStyleTypeEnum.ERROR, true, i18n.translate("pages.restorePreviousVersionAction.repositoryException.actionCanceled.message"));
             throw new ActionExecutionException("Could not execute RestorePreviousVersionAction: ", e);
         }
     }
