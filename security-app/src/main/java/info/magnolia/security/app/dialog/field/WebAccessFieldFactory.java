@@ -33,8 +33,8 @@
  */
 package info.magnolia.security.app.dialog.field;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.cms.security.Permission;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
@@ -70,8 +70,11 @@ public class WebAccessFieldFactory<D extends WebAccessFieldDefinition> extends A
     private static final String PERMISSIONS_PROPERTY_NAME = "permissions";
     private static final String PATH_PROPERTY_NAME = "path";
 
-    public WebAccessFieldFactory(D definition, Item relatedFieldItem) {
+    private final SimpleTranslator i18n;
+
+    public WebAccessFieldFactory(D definition, Item relatedFieldItem, SimpleTranslator i18n) {
         super(definition, relatedFieldItem);
+        this.i18n = i18n;
     }
 
     @Override
@@ -87,7 +90,7 @@ public class WebAccessFieldFactory<D extends WebAccessFieldDefinition> extends A
 
             final VerticalLayout aclLayout = new VerticalLayout();
 
-            final Label emptyLabel = new Label(MessagesUtil.get("security.web.field.noAccess", "mgnl-i18n.app-security-messages"));
+            final Label emptyLabel = new Label(i18n.translate("security.web.field.noAccess"));
 
             if (roleNode.hasNode(ACL_NODE_NAME)) {
 
@@ -110,7 +113,7 @@ public class WebAccessFieldFactory<D extends WebAccessFieldDefinition> extends A
             }
 
             final HorizontalLayout buttons = new HorizontalLayout();
-            final Button addButton = new Button(MessagesUtil.get("security.web.field.addNew", "mgnl-i18n.app-security-messages"));
+            final Button addButton = new Button(i18n.translate("security.web.field.addNew"));
             addButton.addClickListener(new Button.ClickListener() {
 
                 @Override
@@ -158,11 +161,11 @@ public class WebAccessFieldFactory<D extends WebAccessFieldDefinition> extends A
 
         NativeSelect accessRights = new NativeSelect();
         accessRights.addItem(Permission.ALL);
-        accessRights.setItemCaption(Permission.ALL, MessagesUtil.get("security.web.field.getPost", "mgnl-i18n.app-security-messages"));
+        accessRights.setItemCaption(Permission.ALL, i18n.translate("security.web.field.getPost"));
         accessRights.addItem(Permission.READ);
-        accessRights.setItemCaption(Permission.READ, MessagesUtil.get("security.web.field.get", "mgnl-i18n.app-security-messages"));
+        accessRights.setItemCaption(Permission.READ, i18n.translate("security.web.field.get"));
         accessRights.addItem(Permission.NONE);
-        accessRights.setItemCaption(Permission.NONE, MessagesUtil.get("security.web.field.deny", "mgnl-i18n.app-security-messages"));
+        accessRights.setItemCaption(Permission.NONE, i18n.translate("security.web.field.deny"));
         accessRights.setNullSelectionAllowed(false);
         accessRights.setImmediate(true);
         accessRights.setInvalidAllowed(false);
@@ -189,7 +192,7 @@ public class WebAccessFieldFactory<D extends WebAccessFieldDefinition> extends A
         deleteButton.setHtmlContentAllowed(true);
         deleteButton.setCaption("<span class=\"" + "icon-trash" + "\"></span>");
         deleteButton.addStyleName("inline");
-        deleteButton.setDescription(MessagesUtil.get("security.web.field.delete", "mgnl-i18n.app-security-messages"));
+        deleteButton.setDescription(i18n.translate("security.web.field.delete"));
         deleteButton.addClickListener(new Button.ClickListener() {
 
             @Override
