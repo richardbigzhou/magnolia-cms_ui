@@ -34,8 +34,8 @@
 package info.magnolia.ui.contentapp.detail;
 
 import info.magnolia.cms.core.version.VersionManager;
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
@@ -80,10 +80,11 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
     private final DetailSubAppDescriptor subAppDescriptor;
     private final EditorDefinition editorDefinition;
     private final VersionManager versionManager;
+    private final SimpleTranslator i18n;
     private String nodePath;
 
     @Inject
-    public DetailEditorPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final DetailEditorView view, final DetailPresenter detailPresenter, final ActionbarPresenter actionbarPresenter, final VersionManager versionManager) {
+    public DetailEditorPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final DetailEditorView view, final DetailPresenter detailPresenter, final ActionbarPresenter actionbarPresenter, final VersionManager versionManager, final SimpleTranslator i18n) {
         this.actionExecutor = actionExecutor;
         this.view = view;
         this.detailPresenter = detailPresenter;
@@ -92,13 +93,14 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
         this.subAppDescriptor = (DetailSubAppDescriptor) subAppContext.getSubAppDescriptor();
         this.editorDefinition = subAppDescriptor.getEditor();
         this.versionManager = versionManager;
+        this.i18n = i18n;
     }
 
     /**
-     * @deprecated since 5.1 - use {@link DetailEditorPresenter(ActionExecutor, SubAppContext, DetailEditorView, DetailPresenter, ActionbarPresenter, VersionManager)} instead.
+     * @deprecated since 5.1 - use {@link DetailEditorPresenter(ActionExecutor, SubAppContext, DetailEditorView, DetailPresenter, ActionbarPresenter, VersionManager, SimpleTranslator)} instead.
      */
     @Deprecated
-    public DetailEditorPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final DetailEditorView view, final DetailPresenter detailPresenter, final ActionbarPresenter actionbarPresenter) {
+    public DetailEditorPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final DetailEditorView view, final DetailPresenter detailPresenter, final ActionbarPresenter actionbarPresenter, final SimpleTranslator i18n) {
         this.actionExecutor = actionExecutor;
         this.view = view;
         this.detailPresenter = detailPresenter;
@@ -107,6 +109,7 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
         this.subAppDescriptor = (DetailSubAppDescriptor) subAppContext.getSubAppDescriptor();
         this.editorDefinition = subAppDescriptor.getEditor();
         this.versionManager = Components.getComponent(VersionManager.class);
+        this.i18n = i18n;
     }
 
     public View start(String nodePath, DetailView.ViewType viewType) {
@@ -180,10 +183,10 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
             }
 
         } catch (RepositoryException e) {
-            Message error = new Message(MessageType.ERROR, MessagesUtil.get("ui-contentapp.detailEditorPresenter.error.repository", CONTENTAPP_BASENAME) + nodePath, e.getMessage());
+            Message error = new Message(MessageType.ERROR, i18n.translate("ui-contentapp.detailEditorPresenter.error.repository") + nodePath, e.getMessage());
             appContext.broadcastMessage(error);
         } catch (ActionExecutionException e) {
-            Message error = new Message(MessageType.ERROR, MessagesUtil.get("ui-contentapp.error.action.execution", CONTENTAPP_BASENAME), e.getMessage());
+            Message error = new Message(MessageType.ERROR, i18n.translate("ui-contentapp.error.action.execution"), e.getMessage());
             appContext.broadcastMessage(error);
         }
     }
