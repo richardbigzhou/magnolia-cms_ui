@@ -35,9 +35,15 @@ package info.magnolia.ui.framework.action;
 
 import static org.junit.Assert.*;
 
+import info.magnolia.cms.i18n.DefaultMessagesManager;
+import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.cms.security.DummyUser;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.RecordingEventBus;
+import info.magnolia.i18nsystem.ContextLocaleProvider;
+import info.magnolia.i18nsystem.LocaleProvider;
+import info.magnolia.i18nsystem.TranslationService;
+import info.magnolia.i18nsystem.TranslationServiceImpl;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
@@ -75,6 +81,9 @@ public class AddFolderActionDefinitionTest extends MgnlTestCase {
     public void setUp() throws Exception {
         super.setUp();
         ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
+        ComponentsTestUtil.setImplementation(TranslationService.class, TranslationServiceImpl.class);
+        ComponentsTestUtil.setImplementation(MessagesManager.class, DefaultMessagesManager.class);
+        ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
         definition = new AddFolderActionDefinition();
         session = new MockSession(WORKSPACE);
         MockContext ctx = new MockContext();

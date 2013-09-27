@@ -37,16 +37,13 @@ import info.magnolia.ui.api.action.CommandActionDefinition;
 
 /**
  * Used to configure a {@link DeleteAction}.
- *
+ * 
  * @see DeleteAction
  */
 public class DeleteActionDefinition extends CommandActionDefinition {
 
-    public static final String SUCCESS_MESSAGE = "confirmation.delete.success";
-
     public DeleteActionDefinition() {
         setImplementationClass(DeleteAction.class);
         setCommand("delete");
-        setSuccessMessage(SUCCESS_MESSAGE);
     }
 }

@@ -37,11 +37,18 @@ import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
+import info.magnolia.cms.i18n.DefaultMessagesManager;
+import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.ContextLocaleProvider;
+import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.i18nsystem.TranslationService;
+import info.magnolia.i18nsystem.TranslationServiceImpl;
 import info.magnolia.module.ModuleRegistry;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -71,6 +78,10 @@ public class ExtendableActivationActionTest extends MgnlTestCase {
         MockContext ctx = new MockContext();
         ctx.addSession("workspace", session);
         MgnlContext.setInstance(ctx);
+
+        ComponentsTestUtil.setImplementation(TranslationService.class, TranslationServiceImpl.class);
+        ComponentsTestUtil.setImplementation(MessagesManager.class, DefaultMessagesManager.class);
+        ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
     }
 
     @Test
@@ -82,7 +93,7 @@ public class ExtendableActivationActionTest extends MgnlTestCase {
         params.put("key2", "value2");
 
         // WHEN
-        ActivationAction action = new ExtendableActivationAction(new ActivationActionDefinition(), new JcrNodeAdapter(item), params, mock(CommandsManager.class), mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class),mock(SimpleTranslator.class));
+        ActivationAction action = new ExtendableActivationAction(new ActivationActionDefinition(), new JcrNodeAdapter(item), params, mock(CommandsManager.class), mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class), mock(SimpleTranslator.class));
         action.setCurrentItem(action.getItems().get(0));
         action.onPreExecute();
 
@@ -108,7 +119,7 @@ public class ExtendableActivationActionTest extends MgnlTestCase {
         Node item = session.getRootNode().addNode("node1");
 
         // WHEN
-        ActivationAction action = new ExtendableActivationAction(definition, new JcrNodeAdapter(item), paramsCtor, mock(CommandsManager.class), mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class),mock(SimpleTranslator.class));
+        ActivationAction action = new ExtendableActivationAction(definition, new JcrNodeAdapter(item), paramsCtor, mock(CommandsManager.class), mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class), mock(SimpleTranslator.class));
         action.setCurrentItem(action.getItems().get(0));
         action.onPreExecute();
 

@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.framework.action;
 
+import info.magnolia.i18nsystem.I18nText;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 
 /**
@@ -40,49 +41,42 @@ import info.magnolia.ui.api.action.ConfiguredActionDefinition;
  */
 public class ConfirmationActionDefinition extends ConfiguredActionDefinition {
 
-    public static final String CONFIRMATION_HEADER = "confirmation.delete.title";
-    public static final String CONFIRMATION_MESSAGE = "confirmation.delete.message";
-    public static final String PROCEED_LABEL = "confirmation.delete.yes";
-    public static final String CANCEL_LABEL = "confirmation.no";
-
-    private String confirmationHeader = CONFIRMATION_HEADER;
-    private String confirmationMessage = CONFIRMATION_MESSAGE;
+    private String confirmationHeader;
+    private String confirmationMessage;
     private String successActionName;
     private String cancelActionName;
-    private String proceedLabel = PROCEED_LABEL;
-    private String cancelLabel = CANCEL_LABEL;
+    private String proceedLabel;
+    private String cancelLabel;
     private boolean defaultCancel = true;
 
     public ConfirmationActionDefinition() {
         setImplementationClass(ConfirmationAction.class);
     }
 
-    //@I18nText
+    @I18nText
     public String getConfirmationHeader() {
         return confirmationHeader;
     }
 
-    //@I18nText
+    @I18nText
     public String getConfirmationMessage() {
         return confirmationMessage;
     }
 
-    //@I18nText
     public String getSuccessActionName() {
         return successActionName;
     }
 
-    //@I18nText
     public String getCancelActionName() {
         return cancelActionName;
     }
 
-    //@I18nText
+    @I18nText
     public String getProceedLabel() {
         return proceedLabel;
     }
 
-    //@I18nText
+    @I18nText
     public String getCancelLabel() {
         return cancelLabel;
     }

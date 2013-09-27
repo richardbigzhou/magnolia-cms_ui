@@ -41,12 +41,12 @@ import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.i18nsystem.ContextLocaleProvider;
+import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.jcr.node2bean.Node2BeanProcessor;
-import info.magnolia.jcr.node2bean.Node2BeanTransformer;
+import info.magnolia.i18nsystem.TranslationService;
+import info.magnolia.i18nsystem.TranslationServiceImpl;
 import info.magnolia.jcr.node2bean.TypeMapping;
-import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
-import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
@@ -100,10 +100,9 @@ public class ConfirmationActionTest extends MgnlTestCase {
         ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
         ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
         ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
-        ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
-        ComponentsTestUtil.setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);
+        ComponentsTestUtil.setImplementation(TranslationService.class, TranslationServiceImpl.class);
         ComponentsTestUtil.setImplementation(MessagesManager.class, DefaultMessagesManager.class);
-
+        ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
 
         session = new MockSession("workspace");
         MockContext ctx = new MockContext();
@@ -114,6 +113,8 @@ public class ConfirmationActionTest extends MgnlTestCase {
         this.definition = new ConfirmationActionDefinition();
         definition.setSuccessActionName(SUCCESS_ACTION);
         definition.setCancelActionName(CANCEL_ACTION);
+        definition.setConfirmationHeader("foo");
+        definition.setConfirmationMessage("bar");
 
         i18n = mock(SimpleTranslator.class);
 
@@ -134,7 +135,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         Node root = session.getRootNode();
         Node node = root.addNode("node1");
 
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, new JcrNodeAdapter(node), new TestUiContext(true), actionExecutor, i18n);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, new JcrNodeAdapter(node), new TestUiContext(true), actionExecutor);
 
         // WHEN
         confirmationAction.execute();
@@ -150,7 +151,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         Node root = session.getRootNode();
         Node node = root.addNode("node2");
 
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, new JcrNodeAdapter(node), new TestUiContext(false), actionExecutor, i18n);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, new JcrNodeAdapter(node), new TestUiContext(false), actionExecutor);
 
         // WHEN
         confirmationAction.execute();
@@ -168,7 +169,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         node.setProperty("property_long", Long.decode("1000"));
 
         JcrItemAdapter item = new JcrPropertyAdapter(node.getProperty("property_long"));
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, item, new TestUiContext(true), actionExecutor, i18n);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, item, new TestUiContext(true), actionExecutor);
 
         // WHEN
         confirmationAction.execute();
@@ -186,7 +187,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         node.setProperty("property_long", Long.decode("1000"));
 
         JcrItemAdapter item = new JcrPropertyAdapter(node.getProperty("property_long"));
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, item, new TestUiContext(false), actionExecutor, i18n);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, item, new TestUiContext(false), actionExecutor);
 
         // WHEN
         confirmationAction.execute();
@@ -210,7 +211,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         items.add(item);
         items.add(prop);
 
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, items, new TestUiContext(true), actionExecutor, i18n);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, items, new TestUiContext(true), actionExecutor);
 
         // WHEN
         confirmationAction.execute();
@@ -236,7 +237,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         items.add(item);
         items.add(prop);
 
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, items, new TestUiContext(false), actionExecutor, i18n);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, items, new TestUiContext(false), actionExecutor);
 
         // WHEN
         confirmationAction.execute();

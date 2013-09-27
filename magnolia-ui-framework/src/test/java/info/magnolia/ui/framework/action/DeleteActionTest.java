@@ -37,6 +37,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.Messages;
 import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.cms.security.operations.AccessDefinition;
@@ -46,7 +47,17 @@ import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.impl.DeleteCommand;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.ContextLocaleProvider;
+import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.i18nsystem.TranslationService;
+import info.magnolia.i18nsystem.TranslationServiceImpl;
+import info.magnolia.jcr.node2bean.Node2BeanProcessor;
+import info.magnolia.jcr.node2bean.Node2BeanTransformer;
+import info.magnolia.jcr.node2bean.TypeMapping;
+import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
+import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
+import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
@@ -89,6 +100,12 @@ public class DeleteActionTest extends RepositoryTestCase {
         super.setUp();
         ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
         ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
+        ComponentsTestUtil.setImplementation(TranslationService.class, TranslationServiceImpl.class);
+        ComponentsTestUtil.setImplementation(MessagesManager.class, DefaultMessagesManager.class);
+        ComponentsTestUtil.setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);
+        ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
+        ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
+        ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
 
         MessagesManager messagesManager = mock(MessagesManager.class);
         Messages messages = mock(Messages.class);

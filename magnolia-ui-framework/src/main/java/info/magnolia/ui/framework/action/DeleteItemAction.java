@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Deletes a node or property from the repository.
- *
+ * 
  * @see DeleteItemActionDefinition
  */
 public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDefinition> {
@@ -108,7 +108,7 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
         if (getItems().size() == 1) {
             return i18n.translate("ui-framework.actions.deleteItem.confirmationQuestionOneItem");
         }
-        return String.format(i18n.translate("ui-framework.actions.deleteItem.confirmationQuestionManyItems"),getItems().size());
+        return String.format(i18n.translate("ui-framework.actions.deleteItem.confirmationQuestionManyItems"), getItems().size());
     }
 
     protected void executeAfterConfirmation() {
@@ -140,15 +140,15 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
 
     @Override
     protected String getSuccessMessage() {
-        if(getItems().size()==1){
+        if (getItems().size() == 1) {
             return i18n.translate("ui-framework.actions.deleteItem.sucessOneItemDeleted");
-        }else {
+        } else {
             return String.format(i18n.translate("ui-framework.actions.deleteItem.sucessManyItemsDeleted"), getItems().size());
         }
     }
 
     @Override
     protected String getFailureMessage() {
-        return String.format( i18n.translate("ui-framework.actions.deleteItem.deletionfailure"), getFailedItems().size(), getItems().size());
+        return String.format(i18n.translate("ui-framework.actions.deleteItem.deletionfailure"), getFailedItems().size(), getItems().size());
     }
 }
