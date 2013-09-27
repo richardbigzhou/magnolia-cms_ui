@@ -61,6 +61,7 @@ import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -104,6 +105,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
 
     private ChooseDialogPresenter workbenchChooseDialogPresenter;
 
+    @Inject
     public WorkspaceAccessFieldFactory(D definition, Item relatedFieldItem, ComponentProvider componentProvider, UiContext uiContext,
             ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n) {
         super(definition, relatedFieldItem);

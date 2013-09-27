@@ -88,7 +88,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
     private DialogDefinition definition;
 
     @Inject
-    public BaseDialogPresenter(ComponentProvider componentProvider, ActionExecutor executor, DialogView view, I18nizer i18nizer,SimpleTranslator i18n) {
+    public BaseDialogPresenter(ComponentProvider componentProvider, ActionExecutor executor, DialogView view, I18nizer i18nizer, SimpleTranslator i18n) {
         this.componentProvider = componentProvider;
         this.executor = executor;
         this.view = view;
@@ -158,7 +158,12 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
     }
 
     protected Object[] getActionParameters(String actionName) {
-        return new Object[] { this };
+        return new Object[]{this};
+    }
+
+    //TODO Christopher Zimmermann - Verify that this is still necessary.
+    public DialogDefinition decorateForI18n(DialogDefinition definition) {
+        return i18nizer.decorate(definition);
     }
 
     @Override
