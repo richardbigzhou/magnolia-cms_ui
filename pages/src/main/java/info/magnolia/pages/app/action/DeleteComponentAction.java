@@ -34,6 +34,7 @@
 package info.magnolia.pages.app.action;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.framework.action.DeleteItemAction;
 import info.magnolia.ui.framework.action.DeleteItemActionDefinition;
 import info.magnolia.ui.api.app.SubAppContext;
@@ -49,7 +50,7 @@ import javax.inject.Named;
 public class DeleteComponentAction extends DeleteItemAction {
 
     @Inject
-    public DeleteComponentAction(DeleteItemActionDefinition definition, JcrItemAdapter item, @Named(SubAppEventBus.NAME) EventBus eventBus, SubAppContext subAppContext) {
-        super(definition, item, eventBus, subAppContext);
+    public DeleteComponentAction(DeleteItemActionDefinition definition, JcrItemAdapter item, @Named(SubAppEventBus.NAME) EventBus eventBus, SubAppContext subAppContext, SimpleTranslator i18n) {
+        super(definition, item, eventBus, subAppContext, i18n);
     }
 }

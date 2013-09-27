@@ -41,6 +41,7 @@ import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.SimpleEventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
@@ -82,6 +83,7 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
     private SimpleEventBus locationEventBus;
     private LocationController locationController;
     private RestorePreviousVersionActionTest.TestSubAppContext subAppContext;
+    SimpleTranslator i18n;
 
     @Override
     @Before
@@ -103,6 +105,7 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
         locationController = new LocationController(locationEventBus, mock(Shell.class));
 
         subAppContext = new RestorePreviousVersionActionTest.TestSubAppContext();
+        i18n = mock(SimpleTranslator.class);
     }
 
 
@@ -112,7 +115,7 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
         VersionManager versionMan = VersionManager.getInstance();
         versionMan.addVersion(node);
         AbstractJcrNodeAdapter item = new JcrNodeAdapter(node);
-        RestorePreviousVersionAction action = new RestorePreviousVersionAction(definition, item, locationController, versionMan, subAppContext);
+        RestorePreviousVersionAction action = new RestorePreviousVersionAction(definition, item, locationController, versionMan, subAppContext, i18n);
 
         // WHEN
         action.execute();
@@ -128,7 +131,7 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
         // GIVEN
         VersionManager versionMan = VersionManager.getInstance();
         AbstractJcrNodeAdapter item = new JcrNodeAdapter(node);
-        RestorePreviousVersionAction action = new RestorePreviousVersionAction(definition, item, locationController, versionMan, subAppContext);
+        RestorePreviousVersionAction action = new RestorePreviousVersionAction(definition, item, locationController, versionMan, subAppContext, i18n);
 
         // WHEN
         action.execute();
@@ -147,7 +150,7 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
         versionMan.addVersion(node);
 
         AbstractJcrNodeAdapter item = new JcrNodeAdapter(node);
-        RestorePreviousVersionAction action = new RestorePreviousVersionAction(definition, item, locationController, versionMan, subAppContext);
+        RestorePreviousVersionAction action = new RestorePreviousVersionAction(definition, item, locationController, versionMan, subAppContext, i18n);
 
 
         // WHEN

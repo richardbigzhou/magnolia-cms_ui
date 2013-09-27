@@ -33,24 +33,21 @@
  */
 package info.magnolia.pages.app.column;
 
+import com.vaadin.ui.Table;
 import info.magnolia.cms.i18n.Messages;
 import info.magnolia.cms.i18n.MessagesManager;
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.assignment.TemplateDefinitionAssignment;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
 import info.magnolia.ui.workbench.column.AbstractColumnFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.vaadin.ui.Table;
+import java.text.MessageFormat;
 
 /**
  * Column formatter used to display the title of a page's template.
@@ -96,8 +93,11 @@ public class TemplateColumnFormatter extends AbstractColumnFormatter<TemplateCol
             log.warn("Template with id {} not found.", templateId, e);
         }
 
-        String missingLabel = i18n.translate("pages.templateColFormatter.missingLabel");
-        return template != null ? getI18nTitle(template) : missingLabel +": " + StringUtils.defaultString(templateId);
+        if (template == null) {
+            return MessageFormat.format(definition.getUnknownTemplateLabel(), templateId);
+        } else {
+            return getI18nTitle(template); // TODO-TRANSLATE (with new i18nsystem framework)
+        }
     }
 
     private String getI18nTitle(TemplateDefinition template) {
