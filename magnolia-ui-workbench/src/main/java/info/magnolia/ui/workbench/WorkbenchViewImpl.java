@@ -62,6 +62,8 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 
+import javax.inject.Inject;
+
 /**
  * Implementation of the workbench view.
  */
@@ -115,6 +117,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
     private WorkbenchView.Listener listener;
     private final SimpleTranslator i18n;
 
+    @Inject
     public WorkbenchViewImpl(SimpleTranslator i18n) {
         this.i18n = i18n;
 
