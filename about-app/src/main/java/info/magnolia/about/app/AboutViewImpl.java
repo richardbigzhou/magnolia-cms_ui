@@ -33,7 +33,7 @@
  */
 package info.magnolia.about.app;
 
-import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.vaadin.layout.SmallAppLayout;
 
 import java.util.HashMap;
@@ -57,36 +57,39 @@ public class AboutViewImpl implements AboutView {
 
     private Map<String, Property.Viewer> dataBindings = new HashMap<String, Property.Viewer>();
 
-    public AboutViewImpl() {
-        root.setDescription(MessagesUtil.get("about.app.main.description", MESSAGES_BASENAME));
+    private final SimpleTranslator i18n;
+
+    public AboutViewImpl(SimpleTranslator i18n) {
+        this.i18n = i18n;
+        root.setDescription(i18n.translate("about.app.main.description"));
         root.addSection(createInstallationSection());
     }
 
     private Component createInstallationSection() {
 
         // build and bind fields
-        Component mgnlEdition = buildAndBind(AboutView.MAGNOLIA_EDITION_KEY, MessagesUtil.get("about.app.main.mgnledition", MESSAGES_BASENAME));
-        Component mgnlVersion = buildAndBind(AboutView.MAGNOLIA_VERSION_KEY, MessagesUtil.get("about.app.main.mgnlversion", MESSAGES_BASENAME));
-        Component mgnlInstance = buildAndBind(AboutView.MAGNOLIA_INSTANCE_KEY, MessagesUtil.get("about.app.main.instance", MESSAGES_BASENAME));
+        Component mgnlEdition = buildAndBind(AboutView.MAGNOLIA_EDITION_KEY, i18n.translate("about.app.main.mgnledition"));
+        Component mgnlVersion = buildAndBind(AboutView.MAGNOLIA_VERSION_KEY, i18n.translate("about.app.main.mgnlversion"));
+        Component mgnlInstance = buildAndBind(AboutView.MAGNOLIA_INSTANCE_KEY, i18n.translate("about.app.main.instance"));
 
-        Component osInfo = buildAndBind(AboutView.OS_INFO_KEY, MessagesUtil.get("about.app.main.os", MESSAGES_BASENAME));
-        Component javaInfo = buildAndBind(AboutView.JAVA_INFO_KEY, MessagesUtil.get("about.app.main.java", MESSAGES_BASENAME));
-        Component serverInfo = buildAndBind(AboutView.SERVER_INFO_KEY, MessagesUtil.get("about.app.main.server", MESSAGES_BASENAME));
-        Component jcrInfo = buildAndBind(AboutView.JCR_INFO_KEY, MessagesUtil.get("about.app.main.repository", MESSAGES_BASENAME));
+        Component osInfo = buildAndBind(AboutView.OS_INFO_KEY, i18n.translate("about.app.main.os"));
+        Component javaInfo = buildAndBind(AboutView.JAVA_INFO_KEY, i18n.translate("about.app.main.java"));
+        Component serverInfo = buildAndBind(AboutView.SERVER_INFO_KEY, i18n.translate("about.app.main.server"));
+        Component jcrInfo = buildAndBind(AboutView.JCR_INFO_KEY, i18n.translate("about.app.main.repository"));
 
         // layout
         FormLayout layout = new FormLayout();
 
-        Label sectionTitle = new Label(MessagesUtil.get("about.app.main.installation.title", MESSAGES_BASENAME));
+        Label sectionTitle = new Label(i18n.translate("about.app.main.installation.title"));
         sectionTitle.addStyleName("section-title");
         layout.addComponent(sectionTitle);
 
-        layout.addComponent(createFieldsetTitle(MessagesUtil.get("about.app.main.magnolia.title", MESSAGES_BASENAME)));
+        layout.addComponent(createFieldsetTitle(i18n.translate("about.app.main.magnolia.title")));
         layout.addComponent(mgnlEdition);
         layout.addComponent(mgnlVersion);
         layout.addComponent(mgnlInstance);
 
-        Component environmentTitle = createFieldsetTitle(MessagesUtil.get("about.app.main.environment.title", MESSAGES_BASENAME));
+        Component environmentTitle = createFieldsetTitle(i18n.translate("about.app.main.environment.title"));
         environmentTitle.addStyleName("spacer");
         layout.addComponent(environmentTitle);
         layout.addComponent(osInfo);
