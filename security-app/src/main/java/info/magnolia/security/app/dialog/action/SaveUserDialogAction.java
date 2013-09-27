@@ -36,7 +36,6 @@ package info.magnolia.security.app.dialog.action;
 import static info.magnolia.cms.security.MgnlUserManager.*;
 import static info.magnolia.cms.security.SecurityConstants.*;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
@@ -48,9 +47,9 @@ import info.magnolia.security.app.util.UsersWorkspaceUtil;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
 import info.magnolia.ui.api.ModelConstants;
+import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
-import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 

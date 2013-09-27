@@ -33,7 +33,6 @@
  */
 package info.magnolia.security.app.action;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.cms.security.Group;
 import info.magnolia.cms.security.Security;
 import info.magnolia.cms.security.User;

@@ -39,6 +39,7 @@ import static org.mockito.Mockito.*;
 import info.magnolia.i18nsystem.ContextLocaleProvider;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.LocaleProvider;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.i18nsystem.TranslationService;
 import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -103,7 +104,9 @@ public class BaseDialogPresenterTest {
         }
     });
 
-    private BaseDialogPresenter presenter = new BaseDialogPresenter(componentProvider, executor, view, i18nizer);
+    private SimpleTranslator i18n = mock(SimpleTranslator.class);
+
+    private BaseDialogPresenter presenter = new BaseDialogPresenter(componentProvider, executor, view, i18nizer, i18n);
 
     @Before
     public void setUp() throws Exception {
@@ -205,6 +208,11 @@ public class BaseDialogPresenterTest {
             return "translated with key [" + keys[0] + "] and basename [" + basename + "] and locale [" + localeProvider.getLocale() + "]";
         }
 
+        @Override
+        public String translate(LocaleProvider localeProvider, String[] keys) {
+            return "translated with key [" + keys[0] + "] and locale [" + localeProvider.getLocale() + "]";
+        }
+
     }
     private static class ToggleableAction extends AbstractAction<ConfiguredActionDefinition> {
 
@@ -260,6 +268,7 @@ public class BaseDialogPresenterTest {
         public TestEditorActionAreaPresenterImpl(EditorActionAreaView actionAreaView) {
             super(actionAreaView, BaseDialogPresenterTest.this.componentProvider);
         }
+        @Override
         public EditorActionAreaView getView() {
             return super.getView();
         }

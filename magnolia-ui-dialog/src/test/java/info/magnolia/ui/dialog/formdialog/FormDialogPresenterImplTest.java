@@ -42,6 +42,7 @@ import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.ContextLocaleProvider;
 import info.magnolia.i18nsystem.LocaleProvider;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.i18nsystem.TranslationService;
 import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
@@ -98,7 +99,7 @@ public class FormDialogPresenterImplTest {
 
         dialogDefinitionRegistry = mock(DialogDefinitionRegistry.class);
         formBuilder = mock(FormBuilder.class);
-        presenter = new FormDialogPresenterImpl(dialogDefinitionRegistry, formBuilder, mock(ComponentProvider.class), mock(DialogActionExecutor.class), mock(FormView.class), i18nizer);
+        presenter = new FormDialogPresenterImpl(dialogDefinitionRegistry, formBuilder, mock(ComponentProvider.class), mock(DialogActionExecutor.class), mock(FormView.class), i18nizer, mock(SimpleTranslator.class));
 
     }
 
