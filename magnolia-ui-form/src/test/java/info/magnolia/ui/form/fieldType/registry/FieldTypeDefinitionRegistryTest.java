@@ -38,6 +38,7 @@ import static org.junit.Assert.*;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
 import info.magnolia.ui.form.field.factory.TextFieldFactory;
@@ -115,6 +116,23 @@ public class FieldTypeDefinitionRegistryTest {
         FieldTypeDefinition res = registery.getByDefinition(BasicUploadFieldDefinition.class);
 
         // THEN
+    }
+
+    /**
+     * Null has to be returned if we ask for a factory for ConfiguredFieldDefinition.
+     */
+    @Test
+    public void testGetByDefinitionNull() throws RegistrationException {
+        // GIVEN
+        ConfiguredFieldTypeDefinition codeFieldDefinition = new ConfiguredFieldTypeDefinition();
+        codeFieldDefinition.setDefinitionClass(ConfiguredFieldDefinition.class);
+        codeFieldDefinition.setFactoryClass(BasicTextCodeFieldFactory.class);
+        registery.register(new TestFieldTypeDefinitionProvider("extend", codeFieldDefinition));
+        // WHEN
+        FieldTypeDefinition res = registery.getByDefinition(ConfiguredFieldDefinition.class);
+
+        // THEN
+        assertNull(res);
     }
 
     /**

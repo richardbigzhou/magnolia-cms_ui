@@ -43,7 +43,6 @@ import info.magnolia.ui.form.FormItem;
 import info.magnolia.ui.form.FormTab;
 import info.magnolia.ui.form.definition.FormDefinition;
 import info.magnolia.ui.form.definition.TabDefinition;
-import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
@@ -114,13 +113,11 @@ public class FormBuilder {
             FormTab tab = new FormTab(tabDefinition);
             tab.setParent(form);
             for (final FieldDefinition fieldDefinition : tabDefinition.getFields()) {
-                // FIXME MGNLUI-829 should introduce a better handling for this
-                // case.
-                if (fieldDefinition.getClass().equals(ConfiguredFieldDefinition.class)) {
-                    continue;
-                }
                 hasI18NAwareFields |= fieldDefinition.isI18n();
                 final FieldFactory formField = fieldFactoryFactory.createFieldFactory(fieldDefinition, item);
+                if (formField == null) {
+                    continue;
+                }
                 formField.setComponentProvider(componentProvider);
                 formField.setI18nContentSupport(i18nContentSupport);
                 formField.setParent(tab);
@@ -154,12 +151,10 @@ public class FormBuilder {
 
         for (TabDefinition tabDefinition : formDefinition.getTabs()) {
             for (final FieldDefinition fieldDefinition : tabDefinition.getFields()) {
-
-                if (fieldDefinition.getClass().equals(ConfiguredFieldDefinition.class)) {
+                final FieldFactory formField = fieldFactoryFactory.createFieldFactory(fieldDefinition, item);
+                if (formField == null) {
                     continue;
                 }
-
-                final FieldFactory formField = fieldFactoryFactory.createFieldFactory(fieldDefinition, item);
                 formField.setComponentProvider(componentProvider);
                 formField.setI18nContentSupport(i18nContentSupport);
 
