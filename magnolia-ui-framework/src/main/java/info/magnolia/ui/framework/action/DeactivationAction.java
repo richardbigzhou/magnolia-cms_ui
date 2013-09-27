@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.framework.action;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
@@ -77,7 +76,7 @@ public class DeactivationAction extends AbstractCommandAction<DeactivationAction
 
     @Override
     protected void onError(Exception e) {
-        uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get(isWorkflowInstalled() ? getDefinition().getWorkflowErrorMessage() : getDefinition().getErrorMessage(), "info.magnolia.ui.admincentral.messages"));
+        uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, isWorkflowInstalled() ? getDefinition().getWorkflowErrorMessage() : getDefinition().getErrorMessage());
     }
 
     @Override
@@ -90,10 +89,10 @@ public class DeactivationAction extends AbstractCommandAction<DeactivationAction
         String message;
         MessageStyleTypeEnum messageStyleType;
         if (!result) {
-            message = MessagesUtil.get(isWorkflowInstalled() ? getDefinition().getWorkflowSuccessMessage() : getDefinition().getSuccessMessage(), "info.magnolia.ui.admincentral.messages");
+            message = isWorkflowInstalled() ? getDefinition().getWorkflowSuccessMessage() : getDefinition().getSuccessMessage();
             messageStyleType = MessageStyleTypeEnum.INFO;
         } else {
-            message = MessagesUtil.get(isWorkflowInstalled() ? getDefinition().getWorkflowFailureMessage() : getDefinition().getFailureMessage(), "info.magnolia.ui.admincentral.messages");
+            message = isWorkflowInstalled() ? getDefinition().getWorkflowFailureMessage() : getDefinition().getFailureMessage();
             messageStyleType = MessageStyleTypeEnum.ERROR;
         }
 

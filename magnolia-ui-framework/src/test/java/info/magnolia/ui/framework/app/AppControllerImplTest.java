@@ -41,6 +41,8 @@ import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.event.SystemEventBus;
 import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.i18nsystem.LocaleProvider;
+import info.magnolia.i18nsystem.TranslationService;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.ModuleRegistryImpl;
 import info.magnolia.monitoring.SystemMonitor;
@@ -59,19 +61,19 @@ import info.magnolia.ui.api.app.AppLifecycleEventHandler;
 import info.magnolia.ui.api.app.AppLifecycleEventType;
 import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.api.app.SubAppDescriptor;
-import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
-import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManagerImpl;
+import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.location.LocationChangedEvent;
 import info.magnolia.ui.api.location.LocationController;
-import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.framework.message.MessagesManagerImpl;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.api.view.Viewport;
+import info.magnolia.ui.framework.message.MessagesManager;
+import info.magnolia.ui.framework.message.MessagesManagerImpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -359,7 +361,6 @@ public class AppControllerImplTest {
         assertEquals(location, appController.getCurrentAppLocation());
     }
 
-
     @Test
     public void testOpenTwoSubApps() {
 
@@ -485,7 +486,6 @@ public class AppControllerImplTest {
         subApps.put(SUBAPP_NAME_1, AppTestUtility.createSubAppDescriptor(SUBAPP_NAME_1, AppTestSubApp.class, true));
         subApps.put(SUBAPP_NAME_2, AppTestUtility.createSubAppDescriptor(SUBAPP_NAME_2, AppTestSubApp.class, false));
 
-
         AppDescriptor app1 = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_1, AppTestImpl.class, subApps);
         AppDescriptor app2 = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_2, AppTestImpl.class, subApps);
         ConfiguredAppDescriptor appThemed = (ConfiguredAppDescriptor) AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_THEMED, AppTestImpl.class, subApps);
@@ -526,6 +526,11 @@ public class AppControllerImplTest {
         components.registerInstance(AppDescriptorRegistry.class, appRegistry);
         components.registerInstance(Shell.class, mock(Shell.class));
         components.registerInstance(MessagesManager.class, mock(MessagesManagerImpl.class));
+
+        components.registerInstance(TranslationService.class, mock(TranslationService.class));
+        components.registerInstance(LocaleProvider.class, mock(LocaleProvider.class));
+        components.registerInstance(info.magnolia.cms.i18n.MessagesManager.class, mock(info.magnolia.cms.i18n.MessagesManager.class));
+
         final SystemMonitor systemMonitor = mock(SystemMonitor.class);
         when(systemMonitor.isMemoryLimitReached()).thenReturn(false);
         components.registerInstance(SystemMonitor.class, systemMonitor);
@@ -581,4 +586,3 @@ public class AppControllerImplTest {
         assertEquals(appName, eventCollector.appLifecycleEvent.get(position).getAppDescriptor().getName());
     }
 }
-

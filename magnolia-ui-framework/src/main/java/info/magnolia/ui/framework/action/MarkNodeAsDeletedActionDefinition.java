@@ -37,15 +37,12 @@ import info.magnolia.ui.api.action.CommandActionDefinition;
 
 /**
  * Used to configure a {@link MarkNodeAsDeletedAction}.
- *
+ * 
  * @see MarkNodeAsDeletedAction
  */
 public class MarkNodeAsDeletedActionDefinition extends CommandActionDefinition {
 
-    public static final String SUCCESS_MESSAGE = "confirmation.mark.delete.success";
-
     public MarkNodeAsDeletedActionDefinition() {
         setImplementationClass(MarkNodeAsDeletedAction.class);
-        setSuccessMessage(SUCCESS_MESSAGE);
     }
 }

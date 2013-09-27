@@ -33,22 +33,15 @@
  */
 package info.magnolia.ui.framework.action;
 
+import info.magnolia.i18nsystem.I18nText;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 
 /**
  * The deactivation action, invoking the deactivation command, and updating the UI accordingly.
- *
+ * 
  * @see DeactivationAction
  */
 public class DeactivationActionDefinition extends CommandActionDefinition {
-
-    private static final String MESSAGE_KEY_SUCCESS = "action.deactivation.success";
-    private static final String MESSAGE_KEY_FAILURE = "action.deactivation.failure";
-    private static final String MESSAGE_KEY_ERROR = "action.deactivation.error";
-
-    private static final String MESSAGE_KEY_WORKFLOW_SUCCESS = "action.deactivation.workflow.success";
-    private static final String MESSAGE_KEY_WORKFLOW_FAILURE = "action.deactivation.workflow.failure";
-    private static final String MESSAGE_KEY_WORKFLOW_ERROR = "action.deactivation.workflow.error";
 
     private String workflowSuccessMessage;
     private String workflowFailureMessage;
@@ -56,14 +49,9 @@ public class DeactivationActionDefinition extends CommandActionDefinition {
 
     public DeactivationActionDefinition() {
         setImplementationClass(DeactivationAction.class);
-        setSuccessMessage(MESSAGE_KEY_SUCCESS);
-        setFailureMessage(MESSAGE_KEY_FAILURE);
-        setErrorMessage(MESSAGE_KEY_ERROR);
-        setWorkflowSuccessMessage(MESSAGE_KEY_WORKFLOW_SUCCESS);
-        setWorkflowFailureMessage(MESSAGE_KEY_WORKFLOW_FAILURE);
-        setWorkflowErrorMessage(MESSAGE_KEY_WORKFLOW_ERROR);
     }
 
+    @I18nText
     public String getWorkflowSuccessMessage() {
         return workflowSuccessMessage;
     }
@@ -72,6 +60,7 @@ public class DeactivationActionDefinition extends CommandActionDefinition {
         this.workflowSuccessMessage = workflowSuccessMessage;
     }
 
+    @I18nText
     public String getWorkflowFailureMessage() {
         return workflowFailureMessage;
     }
@@ -80,6 +69,7 @@ public class DeactivationActionDefinition extends CommandActionDefinition {
         this.workflowFailureMessage = workflowFailureMessage;
     }
 
+    @I18nText
     public String getWorkflowErrorMessage() {
         return workflowErrorMessage;
     }

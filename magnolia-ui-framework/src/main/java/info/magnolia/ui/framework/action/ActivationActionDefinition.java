@@ -33,23 +33,16 @@
  */
 package info.magnolia.ui.framework.action;
 
+import info.magnolia.i18nsystem.I18nText;
 import info.magnolia.ui.api.action.Action;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 
 /**
  * Activation action definition. By default performs a non-recursive activation.
- *
+ * 
  * @see ActivationAction
  */
 public class ActivationActionDefinition extends CommandActionDefinition {
-
-    private static final String MESSAGE_KEY_SUCCESS = "action.activation.success";
-    private static final String MESSAGE_KEY_FAILURE = "action.activation.failure";
-    private static final String MESSAGE_KEY_ERROR = "action.activation.error";
-
-    private static final String MESSAGE_KEY_WORKFLOW_SUCCESS = "action.activation.workflow.success";
-    private static final String MESSAGE_KEY_WORKFLOW_FAILURE = "action.activation.workflow.failure";
-    private static final String MESSAGE_KEY_WORKFLOW_ERROR = "action.activation.workflow.error";
 
     private boolean recursive = false;
     private String messageView;
@@ -62,13 +55,7 @@ public class ActivationActionDefinition extends CommandActionDefinition {
 
     public ActivationActionDefinition() {
         // Workaround for MAGNOLIA-5317.
-        //setImplementationClass(ActivationAction.class);
-        setSuccessMessage(MESSAGE_KEY_SUCCESS);
-        setFailureMessage(MESSAGE_KEY_FAILURE);
-        setErrorMessage(MESSAGE_KEY_ERROR);
-        setWorkflowSuccessMessage(MESSAGE_KEY_WORKFLOW_SUCCESS);
-        setWorkflowFailureMessage(MESSAGE_KEY_WORKFLOW_FAILURE);
-        setWorkflowErrorMessage(MESSAGE_KEY_WORKFLOW_ERROR);
+        // setImplementationClass(ActivationAction.class);
     }
 
     public void setRecursive(boolean recursive) {
@@ -79,6 +66,7 @@ public class ActivationActionDefinition extends CommandActionDefinition {
         return recursive;
     }
 
+    @I18nText
     public String getWorkflowSuccessMessage() {
         return workflowSuccessMessage;
     }
@@ -87,6 +75,7 @@ public class ActivationActionDefinition extends CommandActionDefinition {
         this.workflowSuccessMessage = workflowSuccessMessage;
     }
 
+    @I18nText
     public String getWorkflowFailureMessage() {
         return workflowFailureMessage;
     }
@@ -95,6 +84,7 @@ public class ActivationActionDefinition extends CommandActionDefinition {
         this.workflowFailureMessage = workflowFailureMessage;
     }
 
+    @I18nText
     public String getWorkflowErrorMessage() {
         return workflowErrorMessage;
     }

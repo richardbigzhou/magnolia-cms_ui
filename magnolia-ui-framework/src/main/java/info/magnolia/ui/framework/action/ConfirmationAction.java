@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.framework.action;
 
-import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
@@ -44,8 +42,11 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,41 +54,37 @@ import org.slf4j.LoggerFactory;
 /**
  * Configurable confirmation action. Can be used to intercept the actual action with user feedback.
  * Allows configuration of a success action and a cancel action.
- *
+ * 
  * @see ConfirmationActionDefinition
  */
 public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinition> {
 
     private static final Logger log = LoggerFactory.getLogger(ConfirmationAction.class);
 
-
     private final List<JcrItemAdapter> items;
     private final UiContext uiContext;
     private final ActionExecutor actionExecutor;
-    private final SimpleTranslator i18n;
 
-    public ConfirmationAction(ConfirmationActionDefinition definition, JcrItemAdapter item, UiContext uiContext, ActionExecutor actionExecutor, SimpleTranslator i18n) {
+    public ConfirmationAction(ConfirmationActionDefinition definition, JcrItemAdapter item, UiContext uiContext, ActionExecutor actionExecutor) {
         super(definition);
         this.items = new ArrayList<JcrItemAdapter>(1);
         this.items.add(item);
         this.uiContext = uiContext;
         this.actionExecutor = actionExecutor;
-        this.i18n = i18n;
     }
 
-    public ConfirmationAction(ConfirmationActionDefinition definition, List<JcrItemAdapter> items, UiContext uiContext, ActionExecutor actionExecutor, SimpleTranslator i18n) {
+    public ConfirmationAction(ConfirmationActionDefinition definition, List<JcrItemAdapter> items, UiContext uiContext, ActionExecutor actionExecutor) {
         super(definition);
         this.items = items;
         this.uiContext = uiContext;
         this.actionExecutor = actionExecutor;
-        this.i18n = i18n;
     }
 
     @Override
     public void execute() throws ActionExecutionException {
         try {
             uiContext.openConfirmation(
-                    MessageStyleTypeEnum.WARNING, getConfirmationHeader(), getConfirmationMessage(), MessagesUtil.get(getDefinition().getProceedLabel(),"info.magnolia.ui.admincentral.messages"), MessagesUtil.get(getDefinition().getCancelLabel(),"info.magnolia.ui.admincentral.messages"), getDefinition().isDefaultCancel(),
+                    MessageStyleTypeEnum.WARNING, getConfirmationHeader(), getConfirmationMessage(), getDefinition().getProceedLabel(), getDefinition().getCancelLabel(), getDefinition().isDefaultCancel(),
                     new ConfirmationCallback() {
                         @Override
                         public void onSuccess() {
@@ -124,61 +121,12 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
         }
     }
 
-
     protected String getConfirmationHeader() throws Exception {
-        if (items.size() == 1) {
-            boolean isNode = items.get(0).getJcrItem().isNode();
-
-            return i18n.translate(getDefinition().getConfirmationHeader(),(isNode) ? "Node" : "Property");
-        }
-        long howMany = items.size();
-        boolean atLeastOneNode = false;
-        boolean atLeastOneProperty = false;
-        for (JcrItemAdapter item : items) {
-            if (item.getJcrItem().isNode()) {
-                atLeastOneNode = true;
-            } else {
-                atLeastOneProperty = true;
-            }
-        }
-        if (atLeastOneNode && atLeastOneProperty) {
-            // mix of nodes and properties
-            return i18n.translate(getDefinition().getConfirmationHeader(),howMany + " items");
-        }
-        if (atLeastOneNode) {
-            // only nodes
-            return i18n.translate(getDefinition().getConfirmationHeader(), howMany + " nodes");
-        }
-        // only properties
-        return i18n.translate(getDefinition().getConfirmationHeader(), howMany + " properties");
+        return formatMessage(getDefinition().getConfirmationHeader());
     }
 
     protected String getConfirmationMessage() throws Exception {
-        if (items.size() == 1) {
-            boolean isNode = items.get(0).getJcrItem().isNode();
-            String path = items.get(0).getJcrItem().getPath();
-
-            return i18n.translate(getDefinition().getConfirmationMessage(), (isNode) ? "Node" : "Property", path);
-        }
-        boolean atLeastOneNode = false;
-        boolean atLeastOneProperty = false;
-        for (JcrItemAdapter item : items) {
-            if (item.getJcrItem().isNode()) {
-                atLeastOneNode = true;
-            } else {
-                atLeastOneProperty = true;
-            }
-        }
-        if (atLeastOneNode && atLeastOneProperty) {
-            // mix of nodes and properties
-            return i18n.translate(getDefinition().getConfirmationMessage(), "items", getListOfItemPaths());
-        }
-        if (atLeastOneNode) {
-            // only nodes
-            return i18n.translate(getDefinition().getConfirmationMessage(), "nodes", getListOfItemPaths());
-        }
-        // only properties
-        return i18n.translate(getDefinition().getConfirmationMessage(),"properties", getListOfItemPaths());
+        return formatMessage(getDefinition().getConfirmationMessage());
     }
 
     protected String getListOfItemPaths() {
@@ -198,5 +146,13 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
         String message = "Action execution failed.";
         log.error(message, e);
         uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, message);
+    }
+
+    private String formatMessage(final String message) throws RepositoryException {
+        if (items.size() == 1) {
+            return MessageFormat.format(message, 1, 1);
+        }
+        long howMany = items.size();
+        return MessageFormat.format(message, howMany, howMany);
     }
 }

@@ -40,8 +40,15 @@ import static org.mockito.Mockito.mock;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.ContextLocaleProvider;
+import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.i18nsystem.TranslationService;
+import info.magnolia.i18nsystem.TranslationServiceImpl;
+import info.magnolia.jcr.node2bean.Node2BeanProcessor;
+import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
 import info.magnolia.module.ModuleRegistry;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -71,6 +78,10 @@ public class ExtendableDeactivationActionTest extends MgnlTestCase {
         MockContext ctx = new MockContext();
         ctx.addSession("workspace", session);
         MgnlContext.setInstance(ctx);
+
+        ComponentsTestUtil.setImplementation(TranslationService.class, TranslationServiceImpl.class);
+        ComponentsTestUtil.setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);
+        ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
     }
 
     @Test
@@ -82,7 +93,7 @@ public class ExtendableDeactivationActionTest extends MgnlTestCase {
         params.put("key2", "value2");
 
         // WHEN
-        DeactivationAction action = new ExtendableDeactivationAction(new DeactivationActionDefinition(), new JcrNodeAdapter(item), params, mock(CommandsManager.class), mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class),mock(SimpleTranslator.class));
+        DeactivationAction action = new ExtendableDeactivationAction(new DeactivationActionDefinition(), new JcrNodeAdapter(item), params, mock(CommandsManager.class), mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class), mock(SimpleTranslator.class));
         action.setCurrentItem(action.getItems().get(0));
         action.onPreExecute();
 
@@ -108,7 +119,7 @@ public class ExtendableDeactivationActionTest extends MgnlTestCase {
         Node item = session.getRootNode().addNode("node1");
 
         // WHEN
-        DeactivationAction action = new ExtendableDeactivationAction(definition, new JcrNodeAdapter(item), paramsCtor, mock(CommandsManager.class), mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class),mock(SimpleTranslator.class));
+        DeactivationAction action = new ExtendableDeactivationAction(definition, new JcrNodeAdapter(item), paramsCtor, mock(CommandsManager.class), mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class), mock(SimpleTranslator.class));
         action.setCurrentItem(action.getItems().get(0));
         action.onPreExecute();
 

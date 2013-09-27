@@ -46,7 +46,11 @@ import info.magnolia.commands.chain.Command;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.ContextLocaleProvider;
+import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.i18nsystem.TranslationService;
+import info.magnolia.i18nsystem.TranslationServiceImpl;
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
 import info.magnolia.jcr.node2bean.Node2BeanTransformer;
 import info.magnolia.jcr.node2bean.TypeMapping;
@@ -76,7 +80,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-
 /**
  * Main test class for Activation Action.
  */
@@ -98,6 +101,10 @@ public class ActivationActionTest extends RepositoryTestCase {
         ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
         ComponentsTestUtil.setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);
         ComponentsTestUtil.setImplementation(MessagesManager.class, DefaultMessagesManager.class);
+        ComponentsTestUtil.setImplementation(TranslationService.class, TranslationServiceImpl.class);
+        ComponentsTestUtil.setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);
+
+        ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
 
         session = SessionTestUtil.createSession("website", website);
         ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
@@ -164,7 +171,7 @@ public class ActivationActionTest extends RepositoryTestCase {
         // GIVEN
         when(commandsManager.executeCommand("activate", params)).thenReturn(false);
         TestSubAppContext testCtx = new TestSubAppContext();
-        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), testCtx, mock(ModuleRegistry.class),mock(SimpleTranslator.class));
+        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), testCtx, mock(ModuleRegistry.class), mock(SimpleTranslator.class));
 
         // WHEN
         action.execute();

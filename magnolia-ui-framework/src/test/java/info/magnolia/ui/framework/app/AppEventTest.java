@@ -43,6 +43,8 @@ import info.magnolia.event.SimpleEventBus;
 import info.magnolia.event.SystemEventBus;
 import info.magnolia.event.TestEvent;
 import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.i18nsystem.LocaleProvider;
+import info.magnolia.i18nsystem.TranslationService;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.monitoring.SystemMonitor;
 import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
@@ -58,18 +60,18 @@ import info.magnolia.ui.api.app.AppLifecycleEvent;
 import info.magnolia.ui.api.app.AppLifecycleEventType;
 import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.api.app.SubAppDescriptor;
-import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
-import info.magnolia.ui.framework.app.AppControllerImplTest.AppEventCollector;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManagerImpl;
+import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.location.DefaultLocation;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.location.LocationController;
-import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.framework.message.MessagesManagerImpl;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.api.view.Viewport;
+import info.magnolia.ui.framework.app.AppControllerImplTest.AppEventCollector;
+import info.magnolia.ui.framework.message.MessagesManager;
+import info.magnolia.ui.framework.message.MessagesManagerImpl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -187,7 +189,6 @@ public class AppEventTest {
         subApps.put(subAppName_1, AppTestUtility.createSubAppDescriptor(
                 subAppName_1, AppTestSubApp.class, true));
 
-
         AppDescriptor app = AppTestUtility.createAppDescriptorWithSubApps(name,
                 AppEventTestImpl.class, subApps);
         try {
@@ -227,6 +228,10 @@ public class AppEventTest {
             }
         });
 
+        components.registerInstance(TranslationService.class, mock(TranslationService.class));
+        components.registerInstance(LocaleProvider.class, mock(LocaleProvider.class));
+        components.registerInstance(info.magnolia.cms.i18n.MessagesManager.class, mock(info.magnolia.cms.i18n.MessagesManager.class));
+
         GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
         TestEventBusConfigurer eventBusConfigurer = new TestEventBusConfigurer(eventBus);
 
@@ -234,7 +239,6 @@ public class AppEventTest {
         builder.exposeGlobally();
         return builder.build(eventBusConfigurer);
     }
-
 
     public class TestEventBusConfigurer extends AbstractGuiceComponentConfigurer {
 
