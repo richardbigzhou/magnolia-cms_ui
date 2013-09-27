@@ -33,11 +33,15 @@
  */
 package info.magnolia.pages.app.column;
 
+import info.magnolia.i18nsystem.I18nText;
 import info.magnolia.ui.workbench.column.definition.AbstractColumnDefinition;
 
 /**
  * Definition for a template column.
  */
 public class TemplateColumnDefinition extends AbstractColumnDefinition {
-
+    @I18nText
+    public String getUnknownTemplateLabel() {
+        return null;
+    }
 }
