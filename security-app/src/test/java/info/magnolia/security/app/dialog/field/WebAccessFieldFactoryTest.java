@@ -34,8 +34,10 @@
 package info.magnolia.security.app.dialog.field;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.cms.security.Permission;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.MgnlTestCase;
@@ -77,7 +79,7 @@ public class WebAccessFieldFactoryTest extends MgnlTestCase {
         JcrNewNodeAdapter item = new JcrNewNodeAdapter(session.getRootNode(), NodeTypes.Content.NAME);
 
         WebAccessFieldDefinition definition = new WebAccessFieldDefinition();
-        WebAccessFieldFactory builder = new WebAccessFieldFactory(definition, item);
+        WebAccessFieldFactory builder = new WebAccessFieldFactory(definition, item, mock(SimpleTranslator.class));
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();
@@ -112,7 +114,7 @@ public class WebAccessFieldFactoryTest extends MgnlTestCase {
         JcrNodeAdapter item = new JcrNodeAdapter(session.getNode("/role"));
 
         WebAccessFieldDefinition definition = new WebAccessFieldDefinition();
-        WebAccessFieldFactory builder = new WebAccessFieldFactory<WebAccessFieldDefinition>(definition, item);
+        WebAccessFieldFactory builder = new WebAccessFieldFactory<WebAccessFieldDefinition>(definition, item, mock(SimpleTranslator.class));
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();

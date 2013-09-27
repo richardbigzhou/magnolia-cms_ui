@@ -33,6 +33,28 @@
  */
 package info.magnolia.security.app.dialog.field;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+
+import info.magnolia.cms.security.Permission;
+import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.MgnlTestCase;
+import info.magnolia.test.mock.MockUtil;
+import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.test.mock.jcr.SessionTestUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import java.io.IOException;
+import java.util.Iterator;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
+import org.junit.Test;
+
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
@@ -42,23 +64,6 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import info.magnolia.cms.security.Permission;
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.test.MgnlTestCase;
-import info.magnolia.test.mock.MockUtil;
-import info.magnolia.test.mock.jcr.MockSession;
-import info.magnolia.test.mock.jcr.SessionTestUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import org.junit.Test;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import java.io.IOException;
-import java.util.Iterator;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Test case for {@link WorkspaceAccessFieldFactory}.
@@ -74,7 +79,7 @@ public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
         JcrNewNodeAdapter item = new JcrNewNodeAdapter(session.getRootNode(), NodeTypes.Content.NAME);
 
         WorkspaceAccessFieldDefinition definition = new WorkspaceAccessFieldDefinition();
-        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, null);
+        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, null, mock(SimpleTranslator.class));
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();
@@ -110,7 +115,7 @@ public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
 
         WorkspaceAccessFieldDefinition definition = new WorkspaceAccessFieldDefinition();
         definition.setWorkspace(RepositoryConstants.CONFIG);
-        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, null);
+        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, null, mock(SimpleTranslator.class));
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();
@@ -148,7 +153,7 @@ public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
 
         WorkspaceAccessFieldDefinition definition = new WorkspaceAccessFieldDefinition();
         definition.setWorkspace(RepositoryConstants.CONFIG);
-        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, null);
+        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, null, mock(SimpleTranslator.class));
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();

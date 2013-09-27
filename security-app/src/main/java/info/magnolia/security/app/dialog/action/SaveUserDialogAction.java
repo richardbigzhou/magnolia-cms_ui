@@ -40,6 +40,7 @@ import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
@@ -74,9 +75,12 @@ public class SaveUserDialogAction extends SaveDialogAction {
 
     private SecuritySupport securitySupport;
 
-    public SaveUserDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback, SecuritySupport securitySupport) {
+    protected final SimpleTranslator i18n;
+
+    public SaveUserDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback, SecuritySupport securitySupport, SimpleTranslator i18n) {
         super(definition, item, validator, callback);
         this.securitySupport = securitySupport;
+        this.i18n = i18n;
     }
 
     @Override
