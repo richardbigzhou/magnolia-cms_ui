@@ -35,6 +35,7 @@ package info.magnolia.ui.contentapp.choosedialog;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
@@ -71,8 +72,8 @@ public class ContentAppChooseDialogPresenter extends ChooseDialogPresenterImpl {
     private Cloner cloner;
 
     @Inject
-    public ContentAppChooseDialogPresenter(FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18nContentSupport i18nContentSupport, DialogActionExecutor executor, AppContext appContext, ChooseDialogView view, I18nizer i18nizer) {
-        super(fieldFactoryFactory, componentProvider, i18nContentSupport, executor, view, i18nizer);
+    public ContentAppChooseDialogPresenter(FieldFactoryFactory fieldFactoryFactory, ComponentProvider componentProvider, I18nContentSupport i18nContentSupport, DialogActionExecutor executor, AppContext appContext, ChooseDialogView view, I18nizer i18nizer, SimpleTranslator simpleTranslator) {
+        super(fieldFactoryFactory, componentProvider, i18nContentSupport, executor, view, i18nizer, simpleTranslator);
         this.appContext = appContext;
         this.cloner = new Cloner();
     }
