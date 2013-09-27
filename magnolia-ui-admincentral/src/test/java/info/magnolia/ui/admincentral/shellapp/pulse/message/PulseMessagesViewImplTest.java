@@ -87,7 +87,7 @@ public class PulseMessagesViewImplTest {
     @Test
     public void testEnsureMessageIsEscaped() throws Exception {
         // GIVEN
-        PulseMessagesViewImpl view = new PulseMessagesViewImpl(mock(Shell.class));
+        PulseMessagesViewImpl view = new PulseMessagesViewImpl(mock(Shell.class),null);
         HierarchicalContainer container = mock(HierarchicalContainer.class);
         String itemId = "1234";
         when(container.getContainerProperty(itemId, PulseMessagesPresenter.TEXT_PROPERTY_ID)).thenReturn(new DefaultProperty(String.class, "<span onmouseover=\"alert('xss')\">bug</span>"));

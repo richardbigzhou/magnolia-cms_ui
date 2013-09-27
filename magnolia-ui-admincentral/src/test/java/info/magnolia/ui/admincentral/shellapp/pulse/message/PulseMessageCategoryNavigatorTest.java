@@ -81,7 +81,7 @@ public class PulseMessageCategoryNavigatorTest {
         ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
         ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
 
-        categoryNavigator = new PulseMessageCategoryNavigator();
+        categoryNavigator = new PulseMessageCategoryNavigator(null);
     }
 
     @After

@@ -33,8 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
-import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.admincentral.shellapp.pulse.PulseView;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.icon.Icon;
@@ -55,8 +54,10 @@ public final class MessageViewImpl extends HorizontalLayout implements MessageVi
     private Label title = new Label();
     private MessageView.Listener listener;
     private View messageView;
+    private final SimpleTranslator i18n;
 
-    public MessageViewImpl() {
+    public MessageViewImpl(SimpleTranslator i18n) {
+        this.i18n = i18n;
         construct();
     }
 
@@ -120,7 +121,7 @@ public final class MessageViewImpl extends HorizontalLayout implements MessageVi
             setStyleName("back-button");
 
             Icon icon = new Icon("arrow2_w", 16);
-            Label label = new Label(MessagesUtil.get("pulse.messages.back", PulseView.PULSE_BASENAME));
+            Label label = new Label(i18n.translate("pulse.messages.back"));
             label.setSizeUndefined();
             addComponent(icon);
             addComponent(label);

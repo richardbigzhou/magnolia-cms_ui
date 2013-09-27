@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingListener;
 import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedListener;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
@@ -80,17 +80,20 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
     private Shell shell;
     private FavoritesView view;
     private Component currentlySelectedFavEntry;
+    private final SimpleTranslator i18n;
 
     /**
      * Creates an empty placeholder group.
      */
-    public FavoritesGroup() {
+    public FavoritesGroup(SimpleTranslator i18n) {
+        this.i18n = i18n;
         addStyleName("no-group");
     }
 
-    public FavoritesGroup(final AbstractJcrNodeAdapter favoritesGroup, final FavoritesView.Listener listener, final Shell shell, final FavoritesView view) {
+    public FavoritesGroup(final AbstractJcrNodeAdapter favoritesGroup, final FavoritesView.Listener listener, final Shell shell, final FavoritesView view, final SimpleTranslator i18n) {
         this.shell = shell;
         this.view = view;
+        this.i18n = i18n;
 
         addStyleName("favorites-group");
         construct(favoritesGroup, listener);
@@ -99,7 +102,7 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
 
         for (String key : nodeAdapters.keySet()) {
             final AbstractJcrNodeAdapter fav = nodeAdapters.get(key);
-            final FavoritesEntry favEntry = new FavoritesEntry(fav, listener, shell);
+            final FavoritesEntry favEntry = new FavoritesEntry(fav, listener, shell, i18n);
             favEntry.addSelectedListener(new SelectedListener() {
 
                 @Override
@@ -253,7 +256,7 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
 
             @Override
             public void buttonClick(ClickEvent event) {
-                shell.openConfirmation(MessageStyleTypeEnum.WARNING, MessagesUtil.get("favorites.group.confirmation.title", FavoritesView.FAVORITES_BASENAME), MessagesUtil.get("confirmation.cannot.undo","info.magnolia.ui.admincentral.messages"), MessagesUtil.get("confirmation.delete.yes","info.magnolia.ui.admincentral.messages"), MessagesUtil.get("confirmation.no","info.magnolia.ui.admincentral.messages"), true, new ConfirmationCallback() {
+                shell.openConfirmation(MessageStyleTypeEnum.WARNING, i18n.translate("favorites.group.confirmation.title"), i18n.translate("confirmation.cannot.undo"), i18n.translate("confirmation.delete.yes"), i18n.translate("confirmation.no"), true, new ConfirmationCallback() {
 
                     @Override
                     public void onSuccess() {
@@ -288,7 +291,7 @@ public final class FavoritesGroup extends CssLayout implements SelectedEvent.Sel
 
     private void doEditTitle(final FavoritesView.Listener listener) {
         if (StringUtils.isBlank(titleField.getValue())) {
-            shell.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("favorites.title.required", FavoritesView.FAVORITES_BASENAME));
+            shell.openNotification(MessageStyleTypeEnum.ERROR, true, i18n.translate("favorites.title.required"));
             return;
         }
         boolean titleHasChanged = !title.equals(titleField.getValue());
