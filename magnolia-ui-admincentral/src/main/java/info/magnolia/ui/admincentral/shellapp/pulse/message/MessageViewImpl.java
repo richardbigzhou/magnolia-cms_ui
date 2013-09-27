@@ -44,6 +44,8 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 
+import javax.inject.Inject;
+
 /**
  * View implementation of {@link MessageView}.
  */
@@ -56,6 +58,7 @@ public final class MessageViewImpl extends HorizontalLayout implements MessageVi
     private View messageView;
     private final SimpleTranslator i18n;
 
+    @Inject
     public MessageViewImpl(SimpleTranslator i18n) {
         this.i18n = i18n;
         construct();
