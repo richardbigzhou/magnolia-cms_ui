@@ -33,9 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.ui.admincentral.shellapp.pulse.PulseView;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -180,7 +178,7 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
             this.addStyleName("navigator-tab");
             this.setSizeUndefined();
 
-            categoryLabel = new Label(MessagesUtil.get(category.getKey(), PulseView.PULSE_BASENAME));
+            categoryLabel = new Label(i18n.translate(category.getKey()));
             categoryLabel.addStyleName("category");
 
             badge = new Label();

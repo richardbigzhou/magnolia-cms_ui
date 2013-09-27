@@ -38,6 +38,8 @@ import info.magnolia.ui.api.message.MessageType;
 
 import java.io.Serializable;
 
+import javax.inject.Inject;
+
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -74,6 +76,7 @@ public class MessagesViewImpl implements MessagesView {
     private Field<String> userOrGroupIdField;
     private final SimpleTranslator i18n;
 
+    @Inject
     public MessagesViewImpl(SimpleTranslator i18n) {
 
         this.i18n = i18n;
