@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.vaadin.dialog;
 
-import info.magnolia.cms.i18n.MessagesUtil;
-
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -50,35 +48,40 @@ public class ConfirmationDialog extends LightDialog {
 
     public static final String CONFIRM_ACTION_NAME = "confirm";
 
-    private Button confirmButton = new Button(MessagesUtil.get("ui-vaadin-common-widgets.confirmationDialog.button.ok", "mgnl-i18n.ui-vaadin-common-widgets-messages"), new ClickListener() {
-        @Override
-        public void buttonClick(ClickEvent event) {
-            fireEvent(new ConfirmationEvent(ConfirmationDialog.this, true));
-        }
-    });
-
-    private Button cancelButton = new Button(MessagesUtil.get("ui-vaadin-common-widgets.confirmationDialog.button.cancel", "mgnl-i18n.ui-vaadin-common-widgets-messages"), new ClickListener() {
-        @Override
-        public void buttonClick(ClickEvent event) {
-            fireEvent(new ConfirmationEvent(ConfirmationDialog.this, false));
-        }
-    });
-
     private String message;
 
-    public ConfirmationDialog(final String message, boolean cancelIsDefault) {
+    private Button confirmButton;
+
+    private Button cancelButton;
+
+    public ConfirmationDialog(final String message, String confirmLabel, String cancelLabel, boolean cancelIsDefault) {
         setMessage(message);
-        init(cancelIsDefault);
+        init(confirmLabel, cancelLabel, cancelIsDefault);
     }
 
-    public ConfirmationDialog(final Component contents, boolean cancelIsDefault) {
+    public ConfirmationDialog(final Component contents, String confirmLabel, String cancelLabel, boolean cancelIsDefault) {
         message = "";
         setContent(contents);
-        init(cancelIsDefault);
+        init(confirmLabel, cancelLabel, cancelIsDefault);
     }
 
-    public void init(boolean cancelIsDefault) {
+    public void init(String confirmLabel, String cancelLabel, boolean cancelIsDefault) {
         HorizontalLayout footer = new HorizontalLayout();
+
+        confirmButton = new Button(confirmLabel, new ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                fireEvent(new ConfirmationEvent(ConfirmationDialog.this, true));
+            }
+        });
+
+        cancelButton = new Button(cancelLabel, new ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                fireEvent(new ConfirmationEvent(ConfirmationDialog.this, false));
+            }
+        });
+
         footer.addComponent(confirmButton);
         footer.addComponent(cancelButton);
 
@@ -98,15 +101,6 @@ public class ConfirmationDialog extends LightDialog {
         } else {
             confirmButton.addStyleName("default");
         }
-    }
-
-
-    public void setConfirmActionLabel(String label) {
-        confirmButton.setCaption(label);
-    }
-
-    public void setRejectActionLabel(String label) {
-        cancelButton.setCaption(label);
     }
 
     public void setMessage(String message) {
