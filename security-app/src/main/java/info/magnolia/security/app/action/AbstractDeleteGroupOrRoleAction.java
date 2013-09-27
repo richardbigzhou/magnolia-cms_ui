@@ -75,7 +75,7 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteItemAction
 
     @Inject
     public AbstractDeleteGroupOrRoleAction(D definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
-        super(definition, item, eventBus, uiContext);
+        super(definition, item, eventBus, uiContext, i18n);
         this.item = item;
         this.uiContext = uiContext;
         this.i18n = i18n;
