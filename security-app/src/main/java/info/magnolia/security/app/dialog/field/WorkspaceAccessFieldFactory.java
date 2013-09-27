@@ -33,21 +33,8 @@
  */
 package info.magnolia.security.app.dialog.field;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.ui.AbstractOrderedLayout;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomField;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
-
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.cms.security.Permission;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.ModelConstants;
@@ -71,16 +58,29 @@ import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.ui.AbstractOrderedLayout;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomField;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeSelect;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * Field builder for the workspace ACL field.  Adds data to the item in an intermediary format that is transformed to the
@@ -100,14 +100,17 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
     private final ComponentProvider componentProvider;
 
     private final UiContext uiContext;
+    private final SimpleTranslator i18n;
 
     private ChooseDialogPresenter workbenchChooseDialogPresenter;
 
-    public WorkspaceAccessFieldFactory(D definition, Item relatedFieldItem, ComponentProvider componentProvider, UiContext uiContext, ChooseDialogPresenter workbenchChooseDialogPresenter) {
+    public WorkspaceAccessFieldFactory(D definition, Item relatedFieldItem, ComponentProvider componentProvider, UiContext uiContext,
+            ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n) {
         super(definition, relatedFieldItem);
         this.componentProvider = componentProvider;
         this.uiContext = uiContext;
         this.workbenchChooseDialogPresenter = workbenchChooseDialogPresenter;
+        this.i18n = i18n;
     }
 
     @Override
@@ -125,7 +128,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
 
             final VerticalLayout aclLayout = new VerticalLayout();
 
-            final Label emptyLabel = new Label(MessagesUtil.get("security.workspace.field.noAccess", "mgnl-i18n.app-security-messages"));
+            final Label emptyLabel = new Label(i18n.translate("security.workspace.field.noAccess"));
 
             if (roleNode.hasNode(aclName)) {
 
@@ -161,7 +164,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
             }
 
             final HorizontalLayout buttons = new HorizontalLayout();
-            final Button addButton = new Button(MessagesUtil.get("security.workspace.field.addButton", "mgnl-i18n.app-security-messages"));
+            final Button addButton = new Button(i18n.translate("security.workspace.field.addButton"));
             addButton.addClickListener(new Button.ClickListener() {
 
                 @Override
@@ -221,11 +224,11 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         accessRights.setInvalidAllowed(false);
         accessRights.setNewItemsAllowed(false);
         accessRights.addItem(Permission.ALL);
-        accessRights.setItemCaption(Permission.ALL, MessagesUtil.get("security.workspace.field.readWrite", "mgnl-i18n.app-security-messages"));
+        accessRights.setItemCaption(Permission.ALL, i18n.translate("security.workspace.field.readWrite"));
         accessRights.addItem(Permission.READ);
-        accessRights.setItemCaption(Permission.READ, MessagesUtil.get("security.workspace.field.readOnly", "mgnl-i18n.app-security-messages"));
+        accessRights.setItemCaption(Permission.READ, i18n.translate("security.workspace.field.readOnly"));
         accessRights.addItem(Permission.NONE);
-        accessRights.setItemCaption(Permission.NONE, MessagesUtil.get("security.workspace.field.denyAccess", "mgnl-i18n.app-security-messages"));
+        accessRights.setItemCaption(Permission.NONE, i18n.translate("security.workspace.field.denyAccess"));
         accessRights.setPropertyDataSource(ruleItem.getItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME));
         ruleLayout.addComponent(accessRights);
 
@@ -236,11 +239,11 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         accessType.setNewItemsAllowed(false);
         accessType.setWidth("150px");
         accessType.addItem(AccessControlList.ACCESS_TYPE_NODE);
-        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_NODE, MessagesUtil.get("security.workspace.field.selected", "mgnl-i18n.app-security-messages"));
+        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_NODE, i18n.translate("security.workspace.field.selected"));
         accessType.addItem(AccessControlList.ACCESS_TYPE_CHILDREN);
-        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_CHILDREN, MessagesUtil.get("security.workspace.field.subnodes", "mgnl-i18n.app-security-messages"));
+        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_CHILDREN, i18n.translate("security.workspace.field.subnodes"));
         accessType.addItem(AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN);
-        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, MessagesUtil.get("security.workspace.field.selectedSubnodes", "mgnl-i18n.app-security-messages"));
+        accessType.setItemCaption(AccessControlList.ACCESS_TYPE_NODE_AND_CHILDREN, i18n.translate("security.workspace.field.selectedSubnodes"));
         Property accessTypeProperty = ruleItem.getItemProperty(ACCESS_TYPE_PROPERTY_NAME);
         accessType.setPropertyDataSource(accessTypeProperty);
         ruleLayout.addComponent(accessType);
@@ -250,7 +253,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         path.setPropertyDataSource(ruleItem.getItemProperty(AccessControlList.PATH_PROPERTY_NAME));
         ruleLayout.addComponent(path);
 
-        Button chooseButton = new Button(MessagesUtil.get("security.workspace.field.choose", "mgnl-i18n.app-security-messages"));
+        Button chooseButton = new Button(i18n.translate("security.workspace.field.choose"));
         chooseButton.addClickListener(new Button.ClickListener() {
 
             @Override
@@ -264,7 +267,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         deleteButton.setHtmlContentAllowed(true);
         deleteButton.setCaption("<span class=\"" + "icon-trash" + "\"></span>");
         deleteButton.addStyleName("inline");
-        deleteButton.setDescription(MessagesUtil.get("security.workspace.field.delete", "mgnl-i18n.app-security-messages"));
+        deleteButton.setDescription(i18n.translate("security.workspace.field.delete"));
         deleteButton.addClickListener(new Button.ClickListener() {
 
             @Override
@@ -331,7 +334,7 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         PropertyColumnDefinition column = new PropertyColumnDefinition();
         column.setEditable(false);
         column.setDisplayInChooseDialog(true);
-        column.setLabel(MessagesUtil.get("security.workspace.field.nodeName", "mgnl-i18n.app-security-messages"));
+        column.setLabel(i18n.translate("security.workspace.field.nodeName"));
         column.setPropertyName(ModelConstants.JCR_NAME);
         column.setName(ModelConstants.JCR_NAME);
         columns.add(column);
