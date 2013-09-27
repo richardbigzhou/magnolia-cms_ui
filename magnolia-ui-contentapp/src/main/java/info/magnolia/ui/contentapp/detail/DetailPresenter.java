@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.contentapp.detail;
 
+import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -166,7 +167,7 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     /**
      * Return clone of a form definition with all fields definitions set to read only.
-     * 
+     *
      * @see ConfiguredFieldDefinition#setReadOnly(boolean)
      */
     private FormDefinition cloneFormDefinitionReadOnly(FormDefinition formDefinition) {
@@ -217,7 +218,7 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
             executor.execute(actionName, combinedParameters);
         } catch (ActionExecutionException e) {
             log.error("An error occurred while executing an action.", e);
-            Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());     //TODO-TRANSLATE
+            Message error = new Message(MessageType.ERROR, MessagesUtil.get("ui-contentapp.error.action.execution", "mgnl-i18n.module-ui-contentapp-messages"), e.getMessage());
             subAppContext.getAppContext().broadcastMessage(error);
         }
     }
