@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.contentapp.detail;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
@@ -66,7 +66,7 @@ import org.slf4j.LoggerFactory;
  * </ul>
  * Currently lacking listeners for {@link info.magnolia.ui.api.event.ContentChangedEvent}. Currently
  * lacking handling of locationChanged. Related to MGNLUI-154
- * 
+ *
  * @see DetailEditorPresenter
  * @see info.magnolia.ui.contentapp.ContentSubAppView
  * @see DetailLocation
@@ -77,16 +77,19 @@ public class DetailSubApp extends BaseSubApp {
 
     private final DetailEditorPresenter workbench;
     private final EventBus adminCentralEventBus;
+    private final SimpleTranslator i18n;
 
     private String itemId;
     private String caption;
 
     @Inject
-    protected DetailSubApp(final SubAppContext subAppContext, final ContentSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus adminCentralEventBus, DetailEditorPresenter workbench) {
+    protected DetailSubApp(final SubAppContext subAppContext, final ContentSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus adminCentralEventBus,
+            DetailEditorPresenter workbench, SimpleTranslator i18n) {
         super(subAppContext, view);
 
         this.adminCentralEventBus = adminCentralEventBus;
         this.workbench = workbench;
+        this.i18n = i18n;
 
         bindHandlers();
     }
@@ -232,7 +235,7 @@ public class DetailSubApp extends BaseSubApp {
         String caption = getBaseCaption(location);
         // Set version information
         if (StringUtils.isNotBlank(location.getVersion())) {
-            caption = MessagesUtil.get("pages.subapp.versioned_page", "info.magnolia.ui.admincentral.messages", new String[] { caption, location.getVersion() });
+            caption = i18n.translate("pages.subapp.versioned_page", caption, location.getVersion() );
         }
         this.caption = caption;
     }

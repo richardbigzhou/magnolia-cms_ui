@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.contentapp.detail;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -103,9 +103,11 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     private I18nizer i18nizer;
 
+    private final SimpleTranslator i18n;
+
     @Inject
     public DetailPresenter(SubAppContext subAppContext, final @Named(AdmincentralEventBus.NAME) EventBus eventBus, DetailView view,
-            FormBuilder formBuilder, ComponentProvider componentProvider, SubAppActionExecutor executor, I18nizer i18nizer) {
+            FormBuilder formBuilder, ComponentProvider componentProvider, SubAppActionExecutor executor, I18nizer i18nizer, SimpleTranslator i18n) {
         this.subAppContext = subAppContext;
         this.eventBus = eventBus;
         this.view = view;
@@ -113,6 +115,7 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
         this.componentProvider = componentProvider;
         this.executor = executor;
         this.i18nizer = i18nizer;
+        this.i18n = i18n;
     }
 
     public DetailView start(EditorDefinition editorDefinition, final JcrNodeAdapter item, DetailView.ViewType viewType) {
@@ -218,7 +221,7 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
             executor.execute(actionName, combinedParameters);
         } catch (ActionExecutionException e) {
             log.error("An error occurred while executing an action.", e);
-            Message error = new Message(MessageType.ERROR, MessagesUtil.get("ui-contentapp.error.action.execution", "mgnl-i18n.module-ui-contentapp-messages"), e.getMessage());
+            Message error = new Message(MessageType.ERROR, i18n.translate("ui-contentapp.error.action.execution"), e.getMessage());
             subAppContext.getAppContext().broadcastMessage(error);
         }
     }
