@@ -118,7 +118,7 @@ public class BaseDialogPresenterTest {
 
     @Test
     public void testGetView() throws Exception {
-        //GIVEN
+        //WHEN
         presenter.start(definition, uiContext);
 
         //THEN
@@ -127,7 +127,7 @@ public class BaseDialogPresenterTest {
 
     @Test
     public void testGetActionArea() throws Exception {
-        //GIVEN
+        //WHEN
         presenter.start(definition, uiContext);
 
         //THEN
@@ -137,11 +137,9 @@ public class BaseDialogPresenterTest {
 
     @Test
     public void testAddShortcut() throws Exception {
-        //GIVEN
+        //WHEN
         presenter.addShortcut("action1", ShortcutAction.KeyCode.T, new int[0]);
         presenter.start(definition, uiContext);
-
-        //WHEN
         view.getActionManager().handleAction("action1");
 
         //THEN
@@ -150,7 +148,7 @@ public class BaseDialogPresenterTest {
 
     @Test
     public void testStart() throws Exception {
-        //GIVEN
+        //WHEN
         View view = presenter.start(definition, uiContext);
 
         //THEN
@@ -159,7 +157,7 @@ public class BaseDialogPresenterTest {
 
     @Test
     public void testFilterActions() throws Exception {
-        //GIVEN
+        //WHEN
         presenter.start(definition, uiContext);
 
         //THEN
@@ -169,7 +167,7 @@ public class BaseDialogPresenterTest {
 
     @Test
     public void testGetActionParameters() throws Exception {
-        //GIVEN
+        //WHEN
         Object[] params = presenter.getActionParameters("");
 
         //THEN
@@ -179,10 +177,8 @@ public class BaseDialogPresenterTest {
 
     @Test
     public void testOnActionFired() throws Exception {
-        //GIVEN
-        presenter.start(definition, uiContext);
-
         //WHEN
+        presenter.start(definition, uiContext);
         presenter.onActionFired("action1");
 
         //THEN
@@ -191,10 +187,8 @@ public class BaseDialogPresenterTest {
 
     @Test
     public void testExecuteAction() throws Exception {
-        //GIVEN
-        presenter.start(definition, uiContext);
-
         //WHEN
+        presenter.start(definition, uiContext);
         presenter.executeAction("action1", new Object[0]);
 
         //THEN
