@@ -37,6 +37,7 @@ import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.Context;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 import info.magnolia.ui.api.context.UiContext;
@@ -56,7 +57,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Deletes a node from the repository using the delete command.
- * 
+ *
  * @param <D> {@link info.magnolia.ui.api.action.CommandActionDefinition}.
  */
 public class DeleteAction<D extends CommandActionDefinition> extends AbstractCommandAction<D> {
@@ -67,12 +68,15 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
     protected final Item jcrItem;
     protected final EventBus eventBus;
     private String itemIdOfChangedItem;
+    private final SimpleTranslator i18n;
 
-    public DeleteAction(D definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
-        super(definition, item, commandsManager, uiContext);
+    public DeleteAction(D definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
+        super(definition, item, commandsManager, uiContext, i18n);
         this.jcrItem = item.getJcrItem();
         this.uiContext = uiContext;
         this.eventBus = eventBus;
+        this.i18n = i18n;
+
         try {
             itemIdOfChangedItem = JcrItemUtil.getItemId(jcrItem.getParent());
         } catch (RepositoryException e) {
@@ -81,11 +85,12 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
         }
     }
 
-    public DeleteAction(D definition, List<JcrItemAdapter> items, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
-        super(definition, items, commandsManager, uiContext);
+    public DeleteAction(D definition, List<JcrItemAdapter> items, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
+        super(definition, items, commandsManager, uiContext, i18n);
         this.jcrItem = items.get(0).getJcrItem();
         this.uiContext = uiContext;
         this.eventBus = eventBus;
+        this.i18n = i18n;
         try {
             itemIdOfChangedItem = JcrItemUtil.getItemId(jcrItem.getParent());
         } catch (RepositoryException e) {
@@ -116,7 +121,7 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
 
     @Override
     protected String getSuccessMessage() {
-        return MessagesUtil.get(getDefinition().getSuccessMessage(), "info.magnolia.ui.admincentral.messages", new String[] { "" + getItems().size() });
+        return i18n.translate(getDefinition().getSuccessMessage(), "" + getItems().size());
     }
 
     @Override

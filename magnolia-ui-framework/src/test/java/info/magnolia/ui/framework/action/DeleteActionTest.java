@@ -46,6 +46,7 @@ import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.impl.DeleteCommand;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
@@ -80,6 +81,7 @@ public class DeleteActionTest extends RepositoryTestCase {
     private DeleteCommand deleteCommand;
     private Node referenceNode;
     private EventBus eventBus;
+    private SimpleTranslator i18n;
 
     @Override
     @Before
@@ -128,13 +130,14 @@ public class DeleteActionTest extends RepositoryTestCase {
         when(commandsManager.getCommand("delete")).thenReturn(deleteCommand);
 
         eventBus = mock(EventBus.class);
+        i18n = mock(SimpleTranslator.class);
     }
 
     @Test
     public void testDeleteNode() throws Exception {
         // GIVEN
         JcrItemAdapter item = new JcrNodeAdapter(referenceNode.getNode("article1"));
-        DeleteAction<DeleteActionDefinition> deleteAction = new DeleteAction<DeleteActionDefinition>(definition, item, commandsManager, eventBus, mock(UiContext.class));
+        DeleteAction<DeleteActionDefinition> deleteAction = new DeleteAction<DeleteActionDefinition>(definition, item, commandsManager, eventBus, mock(UiContext.class), i18n);
 
         // WHEN
         deleteAction.execute();
@@ -148,7 +151,7 @@ public class DeleteActionTest extends RepositoryTestCase {
     public void testDeleteProperty() throws Exception {
         // GIVEN
         JcrItemAdapter item = new JcrPropertyAdapter(referenceNode.getNode("article1").getProperty("property_long"));
-        DeleteAction<DeleteActionDefinition> deleteAction = new DeleteAction<DeleteActionDefinition>(definition, item, commandsManager, eventBus, mock(UiContext.class));
+        DeleteAction<DeleteActionDefinition> deleteAction = new DeleteAction<DeleteActionDefinition>(definition, item, commandsManager, eventBus, mock(UiContext.class), i18n);
 
         // WHEN
         deleteAction.execute();
@@ -169,7 +172,7 @@ public class DeleteActionTest extends RepositoryTestCase {
         List<JcrItemAdapter> items = new ArrayList<JcrItemAdapter>(2);
         items.add(node);
         items.add(prop);
-        DeleteAction<DeleteActionDefinition> deleteAction = new DeleteAction<DeleteActionDefinition>(definition, items, commandsManager, eventBus, mock(UiContext.class));
+        DeleteAction<DeleteActionDefinition> deleteAction = new DeleteAction<DeleteActionDefinition>(definition, items, commandsManager, eventBus, mock(UiContext.class), i18n);
 
         // WHEN
         deleteAction.execute();

@@ -35,6 +35,7 @@ package info.magnolia.ui.framework.action;
 
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
@@ -54,8 +55,9 @@ public class ExtendableDeactivationAction extends DeactivationAction {
     private Map<String, Object> parameters;
 
     @Inject
-    public ExtendableDeactivationAction(DeactivationActionDefinition definition, JcrItemAdapter item, Map<String, Object> parameters,  CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, SubAppContext uiContext, ModuleRegistry moduleRegistry) {
-        super(definition, item, commandsManager, admincentralEventBus, uiContext, moduleRegistry);
+    public ExtendableDeactivationAction(DeactivationActionDefinition definition, JcrItemAdapter item, Map<String, Object> parameters,
+            CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, SubAppContext uiContext, ModuleRegistry moduleRegistry, SimpleTranslator i18n) {
+        super(definition, item, commandsManager, admincentralEventBus, uiContext, moduleRegistry, i18n);
         this.parameters = parameters;
     }
 

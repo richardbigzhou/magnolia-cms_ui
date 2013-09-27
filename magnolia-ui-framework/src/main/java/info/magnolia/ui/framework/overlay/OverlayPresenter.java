@@ -33,17 +33,6 @@
  */
 package info.magnolia.ui.framework.overlay;
 
-import com.vaadin.event.LayoutEvents;
-import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.themes.BaseTheme;
 import info.magnolia.objectfactory.Classes;
 import info.magnolia.ui.api.overlay.AlertCallback;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
@@ -58,6 +47,18 @@ import info.magnolia.ui.vaadin.dialog.ConfirmationDialog.ConfirmationEvent;
 import info.magnolia.ui.vaadin.dialog.LightDialog;
 import info.magnolia.ui.vaadin.dialog.Notification;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
+
+import com.vaadin.event.LayoutEvents;
+import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.themes.BaseTheme;
 
 /**
  * Provides implementations for most OverlayLayer methods.
@@ -111,13 +112,9 @@ public abstract class OverlayPresenter implements OverlayLayer {
     }
 
     private ConfirmationDialog createConfirmationDialog(View contentView, String confirmButtonText, String cancelButtonText, String styleName, boolean cancelIsDefault) {
-        ConfirmationDialog dialog = new ConfirmationDialog(contentView.asVaadinComponent(), cancelIsDefault);
+        ConfirmationDialog dialog = new ConfirmationDialog(contentView.asVaadinComponent(), confirmButtonText, cancelButtonText, cancelIsDefault);
         dialog.addStyleName(styleName);
         dialog.addStyleName("confirmation");
-        dialog.setConfirmActionLabel(confirmButtonText);
-        if (cancelButtonText != null) {
-            dialog.setRejectActionLabel(cancelButtonText);
-        }
         return dialog;
     }
 

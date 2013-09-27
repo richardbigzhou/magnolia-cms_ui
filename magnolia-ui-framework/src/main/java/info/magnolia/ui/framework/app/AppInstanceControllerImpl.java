@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.framework.app;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.EventBusProtector;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.monitoring.SystemMonitor;
@@ -72,8 +72,8 @@ import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.context.AbstractUIContext;
 import info.magnolia.ui.framework.message.MessagesManager;
-import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 import info.magnolia.ui.framework.overlay.OverlayPresenter;
+import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.Collection;
 import java.util.List;
@@ -131,9 +131,11 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
 
     private final SystemMonitor systemMonitor;
 
+    private final SimpleTranslator i18n;
+
     @Inject
     public AppInstanceControllerImpl(ModuleRegistry moduleRegistry, AppController appController, LocationController locationController, Shell shell,
-            MessagesManager messagesManager, AppDescriptor appDescriptor, AppLauncherLayoutManager appLauncherLayoutManager, SystemMonitor systemMonitor, I18nizer i18nizer) {
+            MessagesManager messagesManager, AppDescriptor appDescriptor, AppLauncherLayoutManager appLauncherLayoutManager, SystemMonitor systemMonitor, I18nizer i18nizer, SimpleTranslator i18n) {
         this.moduleRegistry = moduleRegistry;
         this.appController = appController;
         this.locationController = locationController;
@@ -142,6 +144,7 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
         this.appDescriptor = i18nizer.decorate(appDescriptor);
         this.appLauncherLayoutManager = appLauncherLayoutManager;
         this.systemMonitor = systemMonitor;
+        this.i18n = i18n;
     }
 
     @Override
@@ -209,7 +212,7 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
     public void start(Location location) {
         if (systemMonitor.isMemoryLimitReached()) {
             shell.openNotification(MessageStyleTypeEnum.WARNING, false, String.format(SystemMonitor.MEMORY_LIMIT_IS_REACHED_STRING_FORMAT,
-                    MessagesUtil.get("ui-framework.app.appinstance.memory-limit-warning.message", "mgnl-i18n.module-ui-framework-messages")));
+                    i18n.translate("ui-framework.app.appinstance.memory-limit-warning.message")));
         }
 
         app = componentProvider.newInstance(appDescriptor.getAppClass());
@@ -370,16 +373,16 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
     /**
      * Used to update the framework about changes to locations inside the app and circumventing the {@link info.magnolia.ui.api.location.LocationController} mechanism.
      * Example Usages:
-     * 
+     *
      * <pre>
      *     <ul>
      *         <li>Inside ContentApp framework to update {@link info.magnolia.ui.api.app.SubAppContext#getLocation()} and the {@link Shell} fragment</li>
      *         <li>In the Pages App when navigating pages inside the PageEditor</li>
      *     </ul>
      * </pre>
-     * 
+     *
      * When ever possible use the {@link info.magnolia.ui.api.location.LocationController} to not have to do this.
-     * 
+     *
      * @param subAppContext The subAppContext to be updated.
      * @param location The new {@link Location}.
      */
