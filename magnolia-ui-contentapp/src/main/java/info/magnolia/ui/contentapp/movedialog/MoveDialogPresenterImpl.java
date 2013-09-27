@@ -120,7 +120,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     @Inject
     public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, DialogActionExecutor executor, AppContext appContext, I18nizer i18nizer, SimpleTranslator simpleTranslator) {
-        super(componentProvider, executor, dialogView, i18nizer);
+        super(componentProvider, executor, dialogView, i18nizer, simpleTranslator);
         this.dialogView = dialogView;
         this.workbenchPresenter = workbenchPresenter;
         this.appContext = appContext;
