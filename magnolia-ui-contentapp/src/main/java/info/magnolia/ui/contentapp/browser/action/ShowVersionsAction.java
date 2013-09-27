@@ -34,6 +34,7 @@
 package info.magnolia.ui.contentapp.browser.action;
 
 import info.magnolia.cms.core.version.VersionInfo;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.AppContext;
@@ -67,8 +68,8 @@ public class ShowVersionsAction extends AbstractVersionAction<ShowVersionsAction
     private final AppContext appContext;
 
     @Inject
-    public ShowVersionsAction(ShowVersionsActionDefinition definition, AppContext appContext, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter) {
-        super(definition, locationController, uiContext, formDialogPresenter, nodeAdapter);
+    public ShowVersionsAction(ShowVersionsActionDefinition definition, AppContext appContext, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n) {
+        super(definition, locationController, uiContext, formDialogPresenter, nodeAdapter, i18n);
         this.appContext = appContext;
     }
 
