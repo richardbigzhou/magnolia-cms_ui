@@ -36,6 +36,7 @@ package info.magnolia.ui.framework.action;
 import info.magnolia.cms.core.Path;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.impl.ExportCommand;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -70,8 +71,8 @@ public class ExportAction extends AbstractCommandAction<ExportActionDefinition> 
     private FileOutputStream fileOutputStream;
 
     @Inject
-    public ExportAction(ExportActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext) throws ActionExecutionException {
-        super(definition, item, commandsManager, uiContext);
+    public ExportAction(ExportActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) throws ActionExecutionException {
+        super(definition, item, commandsManager, uiContext, i18n);
         try {
             // Create a temporary file that will hold the data created by the export command.
             fileOutput = File.createTempFile(item.getItemId(), ".xml", Path.getTempDirectory());

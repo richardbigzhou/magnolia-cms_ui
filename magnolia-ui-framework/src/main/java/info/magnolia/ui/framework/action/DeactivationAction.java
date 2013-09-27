@@ -38,6 +38,7 @@ import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.context.UiContext;
@@ -54,7 +55,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * UI action that allows to deactivate pages (nodes).
- * 
+ *
  * @see DeactivationActionDefinition
  */
 public class DeactivationAction extends AbstractCommandAction<DeactivationActionDefinition> {
@@ -64,9 +65,10 @@ public class DeactivationAction extends AbstractCommandAction<DeactivationAction
     private final UiContext uiContext;
     private ModuleRegistry moduleRegistry;
 
+
     @Inject
-    public DeactivationAction(final DeactivationActionDefinition definition, final JcrItemAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, SubAppContext uiContext, ModuleRegistry moduleRegistry) {
-        super(definition, item, commandsManager, uiContext);
+    public DeactivationAction(final DeactivationActionDefinition definition, final JcrItemAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, SubAppContext uiContext, ModuleRegistry moduleRegistry, SimpleTranslator i18n) {
+        super(definition, item, commandsManager, uiContext, i18n);
         this.jcrNodeAdapter = (AbstractJcrNodeAdapter) item;
         this.eventBus = eventBus;
         this.uiContext = uiContext;

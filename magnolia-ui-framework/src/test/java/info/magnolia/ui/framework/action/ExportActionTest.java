@@ -43,6 +43,7 @@ import info.magnolia.cms.util.ContentUtil;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.impl.ExportCommand;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
@@ -125,7 +126,7 @@ public class ExportActionTest extends RepositoryTestCase {
     @Test
     public void testExportActionGetParam() throws Exception {
         // GIVEN
-        ExportAction exportActionTmp = new ExportAction(definition, new JcrNodeAdapter(toCopyNode), commandsManager, null);
+        ExportAction exportActionTmp = new ExportAction(definition, new JcrNodeAdapter(toCopyNode), commandsManager, null, mock(SimpleTranslator.class));
         ExportAction exportAction = spy(exportActionTmp);
         doNothing().when(exportAction).onPostExecute();
 

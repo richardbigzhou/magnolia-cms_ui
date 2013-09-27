@@ -36,6 +36,7 @@ package info.magnolia.ui.framework.app;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.framework.message.MessagesManager;
 
@@ -50,17 +51,19 @@ public class AppInstanceControllerImplTest {
     private MessagesManager messagesManager;
     private AppInstanceControllerImpl appInstanceControllerImpl;
     private I18nizer i18nizer;
+    private SimpleTranslator i18n;
 
     @Before
     public void setUp() throws Exception {
         messagesManager = mock(MessagesManager.class);
         i18nizer = mock(I18nizer.class);
+        i18n = mock(SimpleTranslator.class);
     }
 
     @Test
     public void testSendGroupMessageForwardsToMessagesManager() {
         // GIVEN
-        appInstanceControllerImpl = new AppInstanceControllerImpl(null, null, null, null, messagesManager, null, null, null, i18nizer);
+        appInstanceControllerImpl = new AppInstanceControllerImpl(null, null, null, null, messagesManager, null, null, null, i18nizer, i18n);
         final String testGroup = "test";
         final Message message = mock(Message.class);
 
@@ -74,7 +77,7 @@ public class AppInstanceControllerImplTest {
     @Test
     public void testSendUserMessageForwardsToMessagesManager() {
         // GIVEN
-        appInstanceControllerImpl = new AppInstanceControllerImpl(null, null, null, null, messagesManager, null, null, null, i18nizer);
+        appInstanceControllerImpl = new AppInstanceControllerImpl(null, null, null, null, messagesManager, null, null, null, i18nizer, i18n);
         final String testUser = "test";
         final Message message = mock(Message.class);
 
@@ -88,7 +91,7 @@ public class AppInstanceControllerImplTest {
     @Test
     public void testSendLocalMessageForwardsToMessagesManager() {
         // GIVEN
-        appInstanceControllerImpl = new AppInstanceControllerImpl(null, null, null, null, messagesManager, null, null, null, i18nizer);
+        appInstanceControllerImpl = new AppInstanceControllerImpl(null, null, null, null, messagesManager, null, null, null, i18nizer, i18n);
         final Message message = mock(Message.class);
 
         // WHEN
@@ -101,7 +104,7 @@ public class AppInstanceControllerImplTest {
     @Test
     public void testBroadcastMessageForwardsToMessagesManager() {
         // GIVEN
-        appInstanceControllerImpl = new AppInstanceControllerImpl(null, null, null, null, messagesManager, null, null, null, i18nizer);
+        appInstanceControllerImpl = new AppInstanceControllerImpl(null, null, null, null, messagesManager, null, null, null, i18nizer, i18n);
         final Message message = mock(Message.class);
 
         // WHEN

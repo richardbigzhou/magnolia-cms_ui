@@ -33,12 +33,12 @@
  */
 package info.magnolia.ui.framework.action;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
-import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
@@ -66,17 +66,20 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
 
     private final UiContext uiContext;
     private final EventBus eventBus;
+    private final SimpleTranslator i18n;
 
-    public DeleteItemAction(DeleteItemActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
+    public DeleteItemAction(DeleteItemActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
         super(definition, Collections.singletonList(item), uiContext);
         this.uiContext = uiContext;
         this.eventBus = eventBus;
+        this.i18n = i18n;
     }
 
-    public DeleteItemAction(DeleteItemActionDefinition definition, List<JcrItemAdapter> items, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
+    public DeleteItemAction(DeleteItemActionDefinition definition, List<JcrItemAdapter> items, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
         super(definition, items, uiContext);
         this.uiContext = uiContext;
         this.eventBus = eventBus;
+        this.i18n = i18n;
     }
 
     @Override
@@ -84,9 +87,9 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
 
         uiContext.openConfirmation(
                 MessageStyleTypeEnum.WARNING, getConfirmationQuestion(),
-                MessagesUtil.get("ui-framework.actions.deleteItem.warningText", "mgnl-i18n.module-ui-framework-messages"),
-                MessagesUtil.get("ui-framework.actions.deleteItem.confirmText", "mgnl-i18n.module-ui-framework-messages"),
-                MessagesUtil.get("ui-framework.actions.deleteItem.cancelText", "mgnl-i18n.module-ui-framework-messages"),
+                i18n.translate("ui-framework.actions.deleteItem.warningText"),
+                i18n.translate("ui-framework.actions.deleteItem.confirmText"),
+                i18n.translate("ui-framework.actions.deleteItem.cancelText"),
                 true,
                 new ConfirmationCallback() {
 
@@ -103,9 +106,9 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
 
     private String getConfirmationQuestion() {
         if (getItems().size() == 1) {
-            return MessagesUtil.get("ui-framework.actions.deleteItem.confirmationQuestionOneItem", "mgnl-i18n.module-ui-framework-messages");
+            return i18n.translate("ui-framework.actions.deleteItem.confirmationQuestionOneItem");
         }
-        return String.format(MessagesUtil.get("ui-framework.actions.deleteItem.confirmationQuestionManyItems", "mgnl-i18n.module-ui-framework-messages"),getItems().size());
+        return String.format(i18n.translate("ui-framework.actions.deleteItem.confirmationQuestionManyItems"),getItems().size());
     }
 
     protected void executeAfterConfirmation() {
@@ -122,7 +125,7 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
             final Item jcrItem = item.getJcrItem();
             if (jcrItem.getDepth() == 0) {
                 // cannot delete root node
-                throw new IllegalArgumentException(MessagesUtil.get("ui-framework.actions.deleteItem.cannotDeleteRootItem", "mgnl-i18n.module-ui-framework-messages"));
+                throw new IllegalArgumentException(i18n.translate("ui-framework.actions.deleteItem.cannotDeleteRootItem"));
             }
             String itemIdOfChangedItem = JcrItemUtil.getItemId(jcrItem.getParent());
             Session session = jcrItem.getSession();
@@ -138,14 +141,14 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
     @Override
     protected String getSuccessMessage() {
         if(getItems().size()==1){
-            return MessagesUtil.get("ui-framework.actions.deleteItem.sucessOneItemDeleted", "mgnl-i18n.module-ui-framework-messages");
+            return i18n.translate("ui-framework.actions.deleteItem.sucessOneItemDeleted");
         }else {
-            return String.format(MessagesUtil.get("ui-framework.actions.deleteItem.sucessManyItemsDeleted", "mgnl-i18n.module-ui-framework-messages"), getItems().size());
+            return String.format(i18n.translate("ui-framework.actions.deleteItem.sucessManyItemsDeleted"), getItems().size());
         }
     }
 
     @Override
     protected String getFailureMessage() {
-        return String.format( MessagesUtil.get("ui-framework.actions.deleteItem.deletionfailure", "mgnl-i18n.module-ui-framework-messages"), getFailedItems().size(), getItems().size());
+        return String.format( i18n.translate("ui-framework.actions.deleteItem.deletionfailure"), getFailedItems().size(), getItems().size());
     }
 }

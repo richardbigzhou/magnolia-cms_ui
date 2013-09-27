@@ -34,7 +34,7 @@
 package info.magnolia.ui.framework.action;
 
 import info.magnolia.cms.core.version.VersionInfo;
-import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.VersionUtil;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionDefinition;
@@ -75,17 +75,19 @@ public abstract class AbstractVersionAction<D extends ActionDefinition> extends 
     private final D definition;
     protected final LocationController locationController;
     protected final UiContext uiContext;
+    private final SimpleTranslator i18n;
     protected final FormDialogPresenter formDialogPresenter;
     protected final AbstractJcrNodeAdapter nodeAdapter;
     private BeanItem<?> item;
 
-    protected AbstractVersionAction(D definition, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter) {
+    protected AbstractVersionAction(D definition, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter,SimpleTranslator i18n) {
         super(definition);
         this.definition = definition;
         this.locationController = locationController;
         this.uiContext = uiContext;
         this.formDialogPresenter = formDialogPresenter;
         this.nodeAdapter = nodeAdapter;
+        this.i18n = i18n;
     }
 
     @Override
@@ -114,7 +116,7 @@ public abstract class AbstractVersionAction<D extends ActionDefinition> extends 
                     // Open location
                     locationController.goTo(location);
                 } catch (ActionExecutionException e) {
-                    uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("ui-framework.version.executionException.noValidVersion", "mgnl-i18n.module-ui-framework-messages"));
+                    uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, i18n.translate("ui-framework.version.executionException.noValidVersion"));
                 }
 
                 // Close the dialog
@@ -136,12 +138,12 @@ public abstract class AbstractVersionAction<D extends ActionDefinition> extends 
 
             // This should not happen, as we use action availability for this action
             if (versionInfoList == null || versionInfoList.isEmpty()) {
-                throw new ActionExecutionException(String.format(MessagesUtil.get("ui-framework.version.infoList.noListForItem", "mgnl-i18n.module-ui-framework-messages"), nodeAdapter.getItemId()));
+                throw new ActionExecutionException(String.format(i18n.translate("ui-framework.version.infoList.noListForItem"), nodeAdapter.getItemId()));
             }
 
             return versionInfoList;
         } catch (RepositoryException e) {
-            throw new ActionExecutionException(String.format(MessagesUtil.get("ui-framework.version.infoList.repositoryException", "mgnl-i18n.module-ui-framework-messages"), nodeAdapter.getItemId()));
+            throw new ActionExecutionException(String.format(i18n.translate("ui-framework.version.infoList.repositoryException"), nodeAdapter.getItemId()));
         }
     }
 

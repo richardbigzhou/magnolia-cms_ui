@@ -33,12 +33,10 @@
  */
 package info.magnolia.ui.framework.app;
 
-import com.google.inject.name.Names;
-import com.google.inject.util.Providers;
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.EventBusProtector;
 import info.magnolia.event.SimpleEventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -71,17 +69,22 @@ import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.api.view.Viewport;
 import info.magnolia.ui.framework.message.MessagesManager;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 
 /**
  * Implementation of the {@link info.magnolia.ui.api.app.AppController}.
@@ -116,18 +119,21 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
     private final Map<String, AppInstanceController> runningApps = new HashMap<String, AppInstanceController>();
     private final LinkedList<AppInstanceController> appHistory = new LinkedList<AppInstanceController>();
     private final MessagesManager messagesManager;
+    private final SimpleTranslator i18n;
+
     private Viewport viewport;
     private AppInstanceController currentAppInstanceController;
     private EventBusProtector eventBusProtector;
 
     @Inject
-    public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppDescriptorRegistry appDescriptorRegistry, LocationController locationController, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, MessagesManager messagesManager) {
+    public AppControllerImpl(ModuleRegistry moduleRegistry, ComponentProvider componentProvider, AppDescriptorRegistry appDescriptorRegistry, LocationController locationController, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, MessagesManager messagesManager, SimpleTranslator i18n) {
         this.moduleRegistry = moduleRegistry;
         this.componentProvider = componentProvider;
         this.appDescriptorRegistry = appDescriptorRegistry;
         this.locationController = locationController;
         this.eventBus = admincentralEventBus;
         this.messagesManager = messagesManager;
+        this.i18n = i18n;
 
         admincentralEventBus.addHandler(LocationChangedEvent.class, this);
         admincentralEventBus.addHandler(LocationChangeRequestedEvent.class, this);
@@ -407,8 +413,8 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
             Message errorMessage = new Message();
             errorMessage.setType(MessageType.ERROR);
-            errorMessage.setSubject(MessagesUtil.get("ui-framework.app.appdescriptorReadError.subject", "mgnl-i18n.module-ui-framework-messages"));
-            errorMessage.setMessage(String.format(MessagesUtil.get("ui-framework.app.appdescriptorReadError.message", "mgnl-i18n.module-ui-framework-messages"), name));
+            errorMessage.setSubject(i18n.translate("ui-framework.app.appdescriptorReadError.subject"));
+            errorMessage.setMessage(String.format(i18n.translate("ui-framework.app.appdescriptorReadError.message"), name));
             messagesManager.sendLocalMessage(errorMessage);
             throw new RuntimeException(e);
         }

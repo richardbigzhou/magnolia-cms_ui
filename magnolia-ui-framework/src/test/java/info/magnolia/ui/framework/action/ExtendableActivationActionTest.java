@@ -40,6 +40,7 @@ import static org.mockito.Mockito.mock;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockContext;
@@ -81,7 +82,7 @@ public class ExtendableActivationActionTest extends MgnlTestCase {
         params.put("key2", "value2");
 
         // WHEN
-        ActivationAction action = new ExtendableActivationAction(new ActivationActionDefinition(), new JcrNodeAdapter(item), params, mock(CommandsManager.class), mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class));
+        ActivationAction action = new ExtendableActivationAction(new ActivationActionDefinition(), new JcrNodeAdapter(item), params, mock(CommandsManager.class), mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class),mock(SimpleTranslator.class));
         action.setCurrentItem(action.getItems().get(0));
         action.onPreExecute();
 
@@ -107,7 +108,7 @@ public class ExtendableActivationActionTest extends MgnlTestCase {
         Node item = session.getRootNode().addNode("node1");
 
         // WHEN
-        ActivationAction action = new ExtendableActivationAction(definition, new JcrNodeAdapter(item), paramsCtor, mock(CommandsManager.class), mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class));
+        ActivationAction action = new ExtendableActivationAction(definition, new JcrNodeAdapter(item), paramsCtor, mock(CommandsManager.class), mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class),mock(SimpleTranslator.class));
         action.setCurrentItem(action.getItems().get(0));
         action.onPreExecute();
 

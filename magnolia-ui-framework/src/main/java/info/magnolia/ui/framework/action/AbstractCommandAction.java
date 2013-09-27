@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.framework.action;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.chain.Command;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.CommandActionDefinition;
@@ -74,22 +74,28 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
 
     private final UiContext uiContext;
 
+    private final SimpleTranslator i18n;
+
     public static final String COMMAND_RESULT = "command_result";
 
-    public AbstractCommandAction(final D definition, final JcrItemAdapter item, final CommandsManager commandsManager, UiContext uiContext) {
+
+    public AbstractCommandAction(final D definition, final JcrItemAdapter item, final CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) {
         super(definition, item, uiContext);
         this.commandsManager = commandsManager;
         this.uiContext = uiContext;
+        this.i18n = i18n;
         // Init Command.
         String commandName = getDefinition().getCommand();
         String catalog = getDefinition().getCatalog();
         this.command = getCommandsManager().getCommand(catalog, commandName);
     }
 
-    public AbstractCommandAction(final D definition, final List<JcrItemAdapter> items, final CommandsManager commandsManager, UiContext uiContext) {
+
+    public AbstractCommandAction(final D definition, final List<JcrItemAdapter> items, final CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n) {
         super(definition, items, uiContext);
         this.commandsManager = commandsManager;
         this.uiContext = uiContext;
+        this.i18n = i18n;
         // Init Command.
         String commandName = getDefinition().getCommand();
         String catalog = getDefinition().getCatalog();
@@ -208,7 +214,7 @@ public class AbstractCommandAction<D extends CommandActionDefinition> extends Ab
      * this in order to perform tasks or notification in case of error.
      */
     protected void onError(Exception e) {
-        String message = MessagesUtil.get("ui-framework.abstractcommand.executionfailure", "mgnl-i18n.module-ui-framework-messages");
+        String message = i18n.translate("ui-framework.abstractcommand.executionfailure");
         uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, message);
     }
 

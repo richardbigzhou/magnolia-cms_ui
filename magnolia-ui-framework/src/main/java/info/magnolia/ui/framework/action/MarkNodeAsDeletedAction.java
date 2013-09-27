@@ -37,6 +37,7 @@ import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.impl.MarkNodeAsDeletedCommand;
 import info.magnolia.context.Context;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
@@ -57,12 +58,12 @@ import javax.jcr.RepositoryException;
  */
 public class MarkNodeAsDeletedAction extends DeleteAction<MarkNodeAsDeletedActionDefinition> {
 
-    public MarkNodeAsDeletedAction(MarkNodeAsDeletedActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
-        super(definition, item, commandsManager, eventBus, uiContext);
+    public MarkNodeAsDeletedAction(MarkNodeAsDeletedActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
+        super(definition, item, commandsManager, eventBus, uiContext, i18n);
     }
 
-    public MarkNodeAsDeletedAction(MarkNodeAsDeletedActionDefinition definition, List<JcrItemAdapter> items, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
-        super(definition, items, commandsManager, eventBus, uiContext);
+    public MarkNodeAsDeletedAction(MarkNodeAsDeletedActionDefinition definition, List<JcrItemAdapter> items, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext,SimpleTranslator i18n) {
+        super(definition, items, commandsManager, eventBus, uiContext, i18n);
     }
 
     /**

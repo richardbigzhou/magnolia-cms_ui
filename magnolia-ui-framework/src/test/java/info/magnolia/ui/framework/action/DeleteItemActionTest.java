@@ -33,24 +33,24 @@
  */
 package info.magnolia.ui.framework.action;
 
-import static org.mockito.Mockito.mock;
-
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.DummyUser;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.RecordingEventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
-import info.magnolia.ui.api.overlay.ConfirmationCallback;
-import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.ContentChangedEvent;
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -77,6 +77,7 @@ public class DeleteItemActionTest extends MgnlTestCase {
 
     private RecordingEventBus eventBus;
     private Session session;
+    private SimpleTranslator i18n;
 
     @Before
     @Override
@@ -91,6 +92,7 @@ public class DeleteItemActionTest extends MgnlTestCase {
         MgnlContext.setInstance(ctx);
 
         eventBus = new RecordingEventBus();
+        i18n = mock(SimpleTranslator.class);
     }
 
     @Test
@@ -118,7 +120,7 @@ public class DeleteItemActionTest extends MgnlTestCase {
             }
         }).when(subAppContext).openConfirmation(any(MessageStyleTypeEnum.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(), any(ConfirmationCallback.class));
 
-        DeleteItemAction action = new DeleteItemAction(new DeleteItemActionDefinition(), nodeAdapter, eventBus, subAppContext);
+        DeleteItemAction action = new DeleteItemAction(new DeleteItemActionDefinition(), nodeAdapter, eventBus, subAppContext, i18n);
 
         // WHEN
         action.execute();
@@ -159,7 +161,7 @@ public class DeleteItemActionTest extends MgnlTestCase {
             }
         }).when(subAppContext).openConfirmation(any(MessageStyleTypeEnum.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(), any(ConfirmationCallback.class));
 
-        DeleteItemAction action = new DeleteItemAction(new DeleteItemActionDefinition(), propertyAdapter, eventBus, subAppContext);
+        DeleteItemAction action = new DeleteItemAction(new DeleteItemActionDefinition(), propertyAdapter, eventBus, subAppContext, i18n);
 
         // WHEN
         action.execute();
@@ -206,7 +208,7 @@ public class DeleteItemActionTest extends MgnlTestCase {
             }
         }).when(subAppContext).openConfirmation(any(MessageStyleTypeEnum.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(), any(ConfirmationCallback.class));
 
-        DeleteItemAction action = new DeleteItemAction(new DeleteItemActionDefinition(), items, eventBus, subAppContext);
+        DeleteItemAction action = new DeleteItemAction(new DeleteItemActionDefinition(), items, eventBus, subAppContext, i18n);
         // WHEN
         action.execute();
 
@@ -255,7 +257,7 @@ public class DeleteItemActionTest extends MgnlTestCase {
             }
         }).when(subAppContext).openConfirmation(any(MessageStyleTypeEnum.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(), any(ConfirmationCallback.class));
 
-        DeleteItemAction action = new DeleteItemAction(new DeleteItemActionDefinition(), items, eventBus, subAppContext);
+        DeleteItemAction action = new DeleteItemAction(new DeleteItemActionDefinition(), items, eventBus, subAppContext, i18n);
         // WHEN
         action.execute();
 

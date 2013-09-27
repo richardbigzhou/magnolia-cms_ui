@@ -39,6 +39,7 @@ import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.context.UiContext;
@@ -58,7 +59,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * UI action that allows to activate a single page (node) or recursively with all its sub-nodes depending on the value of {@link ActivationActionDefinition#isRecursive()}.
- * 
+ *
  * @see ActivationActionDefinition
  */
 public class ActivationAction extends AbstractCommandAction<ActivationActionDefinition> {
@@ -69,9 +70,11 @@ public class ActivationAction extends AbstractCommandAction<ActivationActionDefi
     private final UiContext uiContext;
     private ModuleRegistry moduleRegistry;
 
+
     @Inject
-    public ActivationAction(final ActivationActionDefinition definition, final JcrItemAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, SubAppContext uiContext, ModuleRegistry moduleRegistry) {
-        super(definition, item, commandsManager, uiContext);
+    public ActivationAction(final ActivationActionDefinition definition, final JcrItemAdapter item, final CommandsManager commandsManager,
+            @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, SubAppContext uiContext, ModuleRegistry moduleRegistry, final SimpleTranslator i18n) {
+        super(definition, item, commandsManager, uiContext, i18n);
         this.jcrItemAdapter = item;
         this.admincentralEventBus = admincentralEventBus;
         this.uiContext = uiContext;

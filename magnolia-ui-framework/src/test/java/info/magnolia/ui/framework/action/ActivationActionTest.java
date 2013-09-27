@@ -46,6 +46,7 @@ import info.magnolia.commands.chain.Command;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
 import info.magnolia.jcr.node2bean.Node2BeanTransformer;
 import info.magnolia.jcr.node2bean.TypeMapping;
@@ -131,7 +132,7 @@ public class ActivationActionTest extends RepositoryTestCase {
     @Test(expected = ExchangeException.class)
     public void testGetExchangeException() throws Exception {
         // GIVEN
-        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class));
+        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class), mock(SimpleTranslator.class));
         // for some reason we need to call this twice else no exception is thrown
         when(commandsManager.executeCommand("activate", params)).thenThrow(new ExchangeException());
         when(commandsManager.executeCommand("activate", params)).thenThrow(new ExchangeException());
@@ -148,7 +149,7 @@ public class ActivationActionTest extends RepositoryTestCase {
         definition.setRecursive(true);
 
         // WHEN
-        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class));
+        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class), mock(SimpleTranslator.class));
         action.setCurrentItem(action.getItems().get(0));
         action.onPreExecute();
 
@@ -163,7 +164,7 @@ public class ActivationActionTest extends RepositoryTestCase {
         // GIVEN
         when(commandsManager.executeCommand("activate", params)).thenReturn(false);
         TestSubAppContext testCtx = new TestSubAppContext();
-        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), testCtx, mock(ModuleRegistry.class));
+        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), testCtx, mock(ModuleRegistry.class),mock(SimpleTranslator.class));
 
         // WHEN
         action.execute();
@@ -182,7 +183,7 @@ public class ActivationActionTest extends RepositoryTestCase {
         when(moduleRegistry.isModuleRegistered("workflow")).thenReturn(true);
         when(commandsManager.executeCommand("activate", params)).thenReturn(false);
         TestSubAppContext testCtx = new TestSubAppContext();
-        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), testCtx, moduleRegistry);
+        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), testCtx, moduleRegistry, mock(SimpleTranslator.class));
 
         // WHEN
         action.execute();

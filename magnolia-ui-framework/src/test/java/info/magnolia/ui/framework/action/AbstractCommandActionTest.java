@@ -44,6 +44,7 @@ import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
 import info.magnolia.context.WebContext;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.test.mock.jcr.SessionTestUtil;
@@ -112,6 +113,7 @@ public class AbstractCommandActionTest {
                         new CommandActionDefinition(),
                         new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub")),
                         commandsManager,
+                        null,
                         null);
 
         // WHEN
@@ -138,6 +140,7 @@ public class AbstractCommandActionTest {
                         new CommandActionDefinition(),
                         new JcrPropertyAdapter(jcrProperty),
                         commandsManager,
+                        null,
                         null);
 
         // WHEN
@@ -170,6 +173,7 @@ public class AbstractCommandActionTest {
                         definition,
                         new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub")),
                         commandsManager,
+                        null,
                         null);
 
         // WHEN
@@ -202,6 +206,7 @@ public class AbstractCommandActionTest {
                 definition,
                 new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent")),
                 commandsManager,
+                null,
                 null);
 
         // WHEN
@@ -216,7 +221,7 @@ public class AbstractCommandActionTest {
         // GIVEN
         JcrNodeAdapter item = new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent/sub"));
         AbstractCommandAction<CommandActionDefinition> action = new AbstractCommandAction<CommandActionDefinition>(
-                new CommandActionDefinition(), item, commandsManager, null);
+                new CommandActionDefinition(), item, commandsManager, null, null);
         action.setCurrentItem(action.getItems().get(0));
         action.buildParams(item.getJcrItem());
 
@@ -248,7 +253,7 @@ public class AbstractCommandActionTest {
                 definition,
                 new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent")),
                 commandsManager,
-                null, params1);
+                null, null, params1);
 
 
         action.execute();
@@ -257,7 +262,7 @@ public class AbstractCommandActionTest {
                 definition,
                 new JcrNodeAdapter(MgnlContext.getJCRSession("website").getNode("/parent")),
                 commandsManager,
-                null, params2);
+                null, null, params2);
 
 
         action2.execute();
@@ -280,8 +285,8 @@ public class AbstractCommandActionTest {
 
         private Map<String, Object> parameter;
 
-        public TestAbstractCommandAction(CommandActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext, Map<String, Object> parameter) {
-            super(definition, item, commandsManager, uiContext);
+        public TestAbstractCommandAction(CommandActionDefinition definition, JcrItemAdapter item, CommandsManager commandsManager, UiContext uiContext, SimpleTranslator i18n, Map<String, Object> parameter) {
+            super(definition, item, commandsManager, uiContext, i18n);
             this.parameter = parameter;
         }
 
