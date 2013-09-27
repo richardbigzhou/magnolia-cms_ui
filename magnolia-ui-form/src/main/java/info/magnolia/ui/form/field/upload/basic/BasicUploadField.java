@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.field.upload.basic;
 
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 import info.magnolia.ui.form.field.upload.AbstractUploadField;
@@ -70,7 +71,7 @@ import com.vaadin.ui.TextField;
  * <li>InProgressLayout (ProgressBar / Cancel Button...)
  * <li>CompletedLayout (File Detail / Preview ...)
  * </ul>
- * 
+ *
  * @param <D> {@link FileItemWrapper} implemented class.
  */
 public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUploadField<D> {
@@ -84,9 +85,10 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     private boolean editFileName = false;
     private boolean editFileFormat = false;
     protected UiContext uiContext;
+    private final SimpleTranslator i18n;
 
-    public BasicUploadField(D fileWrapper, File tmpUploadDirectory, ImageProvider imageProvider, UiContext uiContext, BasicUploadFieldDefinition definition) {
-        super(fileWrapper, tmpUploadDirectory);
+    public BasicUploadField(D fileWrapper, File tmpUploadDirectory, ImageProvider imageProvider, UiContext uiContext, BasicUploadFieldDefinition definition, SimpleTranslator i18n) {
+        super(fileWrapper, tmpUploadDirectory, i18n);
         // Propagate definition.
         populateFromDefinition(definition);
 
@@ -94,6 +96,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         this.layout = new CssLayout();
         this.layout.setSizeUndefined();
         this.uiContext = uiContext;
+        this.i18n = i18n;
 
         setRootLayout(createDropZone(layout));
         // Update Style Name
@@ -160,7 +163,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         // Update the caption Extension
         setCaptionExtension(uploadedFileMimeType);
         // Create the process Indigator
-        progress = new BasicUploadProgressIndicator(inProgressCaption, inProgressRatioCaption);
+        progress = new BasicUploadProgressIndicator(inProgressCaption, inProgressRatioCaption, i18n);
         progress.setVisible(true);
         progress.setProgress(0);
         layout.addComponent(progress.asVaadinComponent());
@@ -279,7 +282,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     /**
      * Initialize a Component displaying some File Informations.
      * Override getFileDetail...() in order to display custom info's you may want to display.
-     * 
+     *
      * @return A file Info Component. Generally a {@link FormLayout}.
      */
     private Component createFileInfoComponent() {
@@ -365,7 +368,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     /**
      * Create the Icon related to a File. <br>
      * <b>Override this method in order to change the Displayed Icon .</b>
-     * 
+     *
      * @param fileWrapper
      * @return
      */
@@ -421,7 +424,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         }
         caption = StringUtils.isNotBlank(captionExtension) ? caption + "." + captionExtension : caption;
         if (args != null && args.length > 0) {
-            return MessagesUtil.get(caption, "info.magnolia.ui.admincentral.messages", args);
+            return i18n.translate(caption, args);
         } else {
             return MessagesUtil.get(caption, "info.magnolia.ui.admincentral.messages");
         }

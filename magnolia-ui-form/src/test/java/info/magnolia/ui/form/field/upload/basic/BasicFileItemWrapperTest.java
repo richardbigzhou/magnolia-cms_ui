@@ -34,10 +34,12 @@
 package info.magnolia.ui.form.field.upload.basic;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.util.ClasspathResourcesUtil;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.form.field.upload.UploadReceiver;
@@ -78,6 +80,7 @@ public class BasicFileItemWrapperTest {
     private File uploadFileYou;
     private BasicFileItemWrapper basicFileItemWrapper;
     private File directory;
+    private SimpleTranslator i18n;
 
     @Before
     public void setUp() throws Exception {
@@ -93,6 +96,7 @@ public class BasicFileItemWrapperTest {
 
         directory = Files.createTempDir();
         directory.deleteOnExit();
+        i18n = mock(SimpleTranslator.class);
     }
 
     @After
@@ -173,7 +177,7 @@ public class BasicFileItemWrapperTest {
         basicFileItemWrapper = new BasicFileItemWrapper(jcrItem, directory);
 
         // Create a receiver
-        UploadReceiver receiver = new UploadReceiver(directory);
+        UploadReceiver receiver = new UploadReceiver(directory, i18n);
         receiver.receiveUpload("you.jpg", "image/jpeg");
         receiver.setValue(uploadFileYou);
 
@@ -207,7 +211,7 @@ public class BasicFileItemWrapperTest {
         basicFileItemWrapper = new BasicFileItemWrapper(jcrItem, directory);
 
         // Create a receiver
-        UploadReceiver receiver = new UploadReceiver(directory);
+        UploadReceiver receiver = new UploadReceiver(directory, i18n);
         receiver.receiveUpload("you.jpg", "image/jpeg");
         receiver.setValue(uploadFileYou);
 
@@ -239,7 +243,7 @@ public class BasicFileItemWrapperTest {
         basicFileItemWrapper = new BasicFileItemWrapper(jcrNewItem, directory);
 
         // Create a receiver
-        UploadReceiver receiver = new UploadReceiver(directory);
+        UploadReceiver receiver = new UploadReceiver(directory, i18n);
         receiver.receiveUpload("me.jpg", "image/jpeg");
         receiver.setValue(uploadFileMe);
 
@@ -266,7 +270,7 @@ public class BasicFileItemWrapperTest {
         basicFileItemWrapper = new BasicFileItemWrapper(jcrNewItem, directory);
 
         // Create a receiver
-        UploadReceiver receiver = new UploadReceiver(directory);
+        UploadReceiver receiver = new UploadReceiver(directory, i18n);
         receiver.receiveUpload("me.jpg", "image/jpeg");
         receiver.setValue(uploadFileMe);
 

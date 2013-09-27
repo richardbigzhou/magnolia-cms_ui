@@ -35,6 +35,9 @@ package info.magnolia.ui.form.field.upload;
 
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+
+import info.magnolia.i18nsystem.SimpleTranslator;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +61,7 @@ public class DefaultFileFactoryTest {
         directory.setReadOnly();
 
         // WHEN
-        defaultFieldFactory = new DefaultFileFactory(directory);
+        defaultFieldFactory = new DefaultFileFactory(directory, mock(SimpleTranslator.class));
 
         // THEN
     }
@@ -69,7 +72,7 @@ public class DefaultFileFactoryTest {
         directory = File.createTempFile("", null);
 
         // WHEN
-        defaultFieldFactory = new DefaultFileFactory(directory);
+        defaultFieldFactory = new DefaultFileFactory(directory, mock(SimpleTranslator.class));
 
         // THEN
     }
@@ -78,7 +81,7 @@ public class DefaultFileFactoryTest {
     public void testCreateFile() throws IOException {
         // GIVEN
         directory = Files.createTempDir();
-        defaultFieldFactory = new DefaultFileFactory(directory);
+        defaultFieldFactory = new DefaultFileFactory(directory, mock(SimpleTranslator.class));
         String fileName = "fileName";
 
         // WHEN

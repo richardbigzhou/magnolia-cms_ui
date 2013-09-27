@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.cms.core.Path;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
@@ -66,12 +67,14 @@ public class BasicUploadFieldFactory extends AbstractFieldFactory<BasicUploadFie
 
     private final ImageProvider imageProvider;
     private UiContext uiContext;
+    private final SimpleTranslator i18n;
 
     @Inject
-    public BasicUploadFieldFactory(BasicUploadFieldDefinition definition, Item relatedFieldItem, ImageProvider imageProvider, UiContext uiContext) {
+    public BasicUploadFieldFactory(BasicUploadFieldDefinition definition, Item relatedFieldItem, ImageProvider imageProvider, UiContext uiContext, SimpleTranslator i18n) {
         super(definition, relatedFieldItem);
         this.imageProvider = imageProvider;
         this.uiContext = uiContext;
+        this.i18n = i18n;
     }
 
     @Override
@@ -85,7 +88,7 @@ public class BasicUploadFieldFactory extends AbstractFieldFactory<BasicUploadFie
         BasicFileItemWrapper fileItem = new BasicFileItemWrapper(binaryDataSubNodeItem, tmpDirectory);
 
         // Create Upload Filed.
-        BasicUploadField<BasicFileItemWrapper> uploadField = new BasicUploadField<BasicFileItemWrapper>(fileItem, tmpDirectory, imageProvider, uiContext, definition);
+        BasicUploadField<BasicFileItemWrapper> uploadField = new BasicUploadField<BasicFileItemWrapper>(fileItem, tmpDirectory, imageProvider, uiContext, definition, i18n);
 
         return uploadField;
     }
