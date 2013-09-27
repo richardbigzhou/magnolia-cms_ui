@@ -48,6 +48,7 @@ import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
@@ -90,8 +91,7 @@ public class DeleteRoleActionTest extends RepositoryTestCase {
 
         ComponentsTestUtil.setImplementation(SecuritySupport.class, SecuritySupportImpl.class);
 
-
-        action = new DeleteRoleAction(definition, item, eventBus, uiContext);
+        action = new DeleteRoleAction(definition, item, eventBus, uiContext, mock(SimpleTranslator.class));
     }
 
     @Test
