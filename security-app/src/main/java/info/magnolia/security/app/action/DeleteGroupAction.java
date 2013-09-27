@@ -37,6 +37,7 @@ import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.cms.security.Group;
 import info.magnolia.cms.security.User;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -51,13 +52,9 @@ import javax.inject.Named;
  */
 public class DeleteGroupAction extends AbstractDeleteGroupOrRoleAction<DeleteGroupActionDefinition> {
 
-    // TODO MGNLUI-1826 replace with a message bundle key
-    private static final String ERROR_MESSAGE_GROUP_IS_ASSIGNED = MessagesUtil.get("security.delete.group.isAssignedError", "mgnl-i18n.app-security-messages");
-    private static final String ERROR_MESSAGE_CANNOT_VERIFY = MessagesUtil.get("security.delete.group.cannotVerifyError", "mgnl-i18n.app-security-messages");
-
     @Inject
-    public DeleteGroupAction(DeleteGroupActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
-        super(definition, item, eventBus, uiContext);
+    public DeleteGroupAction(DeleteGroupActionDefinition definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
+        super(definition, item, eventBus, uiContext, i18n);
     }
 
     @Override
@@ -72,12 +69,12 @@ public class DeleteGroupAction extends AbstractDeleteGroupOrRoleAction<DeleteGro
 
     @Override
     protected String getBaseErrorMessage() {
-        return ERROR_MESSAGE_GROUP_IS_ASSIGNED;
+        return getI18n().translate("security.delete.group.isAssignedError");
     }
 
     @Override
     protected String getVerificationErrorMessage() {
-        return ERROR_MESSAGE_CANNOT_VERIFY;
+        return getI18n().translate("security.delete.group.cannotVerifyError");
     }
 
 }

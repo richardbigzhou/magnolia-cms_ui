@@ -38,6 +38,7 @@ import info.magnolia.cms.security.Group;
 import info.magnolia.cms.security.Security;
 import info.magnolia.cms.security.User;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.framework.action.DeleteItemAction;
@@ -65,17 +66,23 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteItemAction
 
     private static final Logger log = LoggerFactory.getLogger(AbstractDeleteGroupOrRoleAction.class);
 
-    public static final String PREFIX_USER = MessagesUtil.get("security.delete.group.or.role.user", "mgnl-i18n.app-security-messages");
-    public static final String PREFIX_GROUP = MessagesUtil.get("security.delete.group.or.role.group", "mgnl-i18n.app-security-messages");
-
     private final JcrItemAdapter item;
     private final UiContext uiContext;
 
+
+
+    private final SimpleTranslator i18n;
+
     @Inject
-    public AbstractDeleteGroupOrRoleAction(D definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext) {
+    public AbstractDeleteGroupOrRoleAction(D definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
         super(definition, item, eventBus, uiContext);
         this.item = item;
         this.uiContext = uiContext;
+        this.i18n = i18n;
+    }
+
+    protected SimpleTranslator getI18n() {
+        return i18n;
     }
 
     public JcrItemAdapter getItem() {
@@ -129,13 +136,13 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteItemAction
         // users
         for (User user : Security.getUserManager().getAllUsers()) {
             if (getGroupsOrRoles(user).contains(groupName)) {
-                assignedTo.add(PREFIX_USER + user.getName());
+                assignedTo.add(i18n.translate("security.delete.group.or.role.user") + user.getName());
             }
         }
         // groups
         for (Group group : Security.getGroupManager().getAllGroups()) {
             if (getGroupsOrRoles(group).contains(groupName)) {
-                assignedTo.add(PREFIX_GROUP + group.getName());
+                assignedTo.add(i18n.translate("security.delete.group.or.role.group") + group.getName());
             }
         }
 
