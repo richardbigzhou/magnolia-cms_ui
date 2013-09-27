@@ -35,11 +35,11 @@ package info.magnolia.ui.framework.setup;
 
 import static info.magnolia.nodebuilder.Ops.*;
 
+import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromDialogsTask;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.BootstrapSingleModuleResource;
-import info.magnolia.module.delta.ChangeAllPropertiesWithCertainValueTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
 import info.magnolia.module.delta.RemoveNodeTask;
@@ -48,7 +48,6 @@ import info.magnolia.module.delta.Task;
 import info.magnolia.nodebuilder.task.ErrorHandling;
 import info.magnolia.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
@@ -86,8 +85,9 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
                 .addTask(createNewFieldDefinition("compositeField", CompositeFieldDefinition.class.getName(), CompositeFieldFactory.class.getName()))
                 .addTask((new ReplaceMultiLinkFieldDefinitionTask("Change the MultiLinkFieldDefinition by MultiValueFieldDefinition ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where contains(t.*,'info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition') ")))
                 .addTask((new ReplaceSaveModeTypeFieldDefinitionTask("Update field definition sub task from 'saveModeType' to 'transformerClass' ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where name(t) = 'saveModeType' ")))
-                .addTask(new ChangeAllPropertiesWithCertainValueTask("Change package name of CallbackDialogActionDefinition class", "", RepositoryConstants.CONFIG, "info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinition", CallbackDialogActionDefinition.class.getName()))
-        );
+                //TODO Christopher Zimmermann ensure that this task is no longer needed - .addTask(new ChangeAllPropertiesWithCertainValueTask("Change package name of CallbackDialogActionDefinition class", "", RepositoryConstants.CONFIG, "info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinition", CallbackDialogActionDefinition.class.getName()))
+                .addTask((new RemoveHardcodedI18nPropertiesFromDialogsTask("ui-framework"))));
+
     }
 
     @Override
