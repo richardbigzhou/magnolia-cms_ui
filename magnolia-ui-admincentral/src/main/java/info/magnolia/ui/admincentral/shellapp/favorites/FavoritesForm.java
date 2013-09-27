@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
@@ -72,11 +72,14 @@ public final class FavoritesForm extends CustomComponent {
     private Label arrowIcon;
     private InternalFavoriteEntryForm favoriteEntryForm;
     private InternalFavoriteGroupForm favoriteGroupForm;
+    private final SimpleTranslator i18n;
 
-    public FavoritesForm(final JcrNewNodeAdapter newFavorite, final JcrNewNodeAdapter newGroup, final Map<String, String> availableGroups, final FavoritesView.Listener listener, final Shell shell) {
+    public FavoritesForm(final JcrNewNodeAdapter newFavorite, final JcrNewNodeAdapter newGroup, final Map<String, String> availableGroups,
+            final FavoritesView.Listener listener, final Shell shell, final SimpleTranslator i18n) {
         addStyleName("favorites-form");
         this.listener = listener;
         this.shell = shell;
+        this.i18n = i18n;
 
         final VerticalLayout favoriteForm = new VerticalLayout();
         favoriteEntryForm = new InternalFavoriteEntryForm(newFavorite, availableGroups);
@@ -84,8 +87,8 @@ public final class FavoritesForm extends CustomComponent {
 
         tabsheet = new TabSheet();
         tabsheet.addStyleName("favorites-tabs");
-        tabsheet.addTab(favoriteEntryForm, MessagesUtil.get("favorites.form.favorite.add", FavoritesView.FAVORITES_BASENAME));
-        tabsheet.addTab(favoriteGroupForm, MessagesUtil.get("favorites.form.group.add", FavoritesView.FAVORITES_BASENAME));
+        tabsheet.addTab(favoriteEntryForm, i18n.translate("favorites.form.favorite.add"));
+        tabsheet.addTab(favoriteGroupForm, i18n.translate("favorites.form.group.add"));
 
         tabsheet.addSelectedTabChangeListener(new SelectedTabChangeListener() {
 
@@ -121,7 +124,7 @@ public final class FavoritesForm extends CustomComponent {
         addNewIcon.addStyleName("icon");
         addNewIcon.addStyleName("icon-add-fav");
 
-        final Label addNewLabel = new Label(MessagesUtil.get("favorites.form.add", FavoritesView.FAVORITES_BASENAME));
+        final Label addNewLabel = new Label(i18n.translate("favorites.form.add"));
         addNewLabel.setSizeUndefined();
         addNewLabel.addStyleName("title");
 
@@ -169,9 +172,9 @@ public final class FavoritesForm extends CustomComponent {
      */
     private class InternalFavoriteEntryForm extends CustomComponent {
 
-        private TextField url = new TextField(MessagesUtil.get("favorites.form.location", FavoritesView.FAVORITES_BASENAME));
+        private TextField url = new TextField(i18n.translate("favorites.form.location"));
 
-        private TextField title = new TextField(MessagesUtil.get("favorites.form.title", FavoritesView.FAVORITES_BASENAME));
+        private TextField title = new TextField(i18n.translate("favorites.form.title"));
 
         private ComboBox group;
 
@@ -187,7 +190,7 @@ public final class FavoritesForm extends CustomComponent {
             layout.addComponent(title);
             layout.addComponent(url);
 
-            group = new ComboBox(MessagesUtil.get("favorites.form.groups", FavoritesView.FAVORITES_BASENAME));
+            group = new ComboBox(i18n.translate("favorites.form.groups"));
             for (Entry<String, String> entry : availableGroups.entrySet()) {
                 String id = entry.getKey();
                 group.addItem(id);
@@ -202,7 +205,7 @@ public final class FavoritesForm extends CustomComponent {
             final CssLayout buttons = new CssLayout();
             buttons.addStyleName("buttons");
 
-            final Button addButton = new Button(MessagesUtil.get("favorites.button.add", FavoritesView.FAVORITES_BASENAME), new ClickListener() {
+            final Button addButton = new Button(i18n.translate("favorites.button.add"), new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -238,7 +241,7 @@ public final class FavoritesForm extends CustomComponent {
                 binder.commit();
                 listener.addFavorite(newFavorite);
             } catch (CommitException e) {
-                shell.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("favorites.fields.required", FavoritesView.FAVORITES_BASENAME));
+                shell.openNotification(MessageStyleTypeEnum.ERROR, true, i18n.translate("favorites.fields.required"));
             }
         }
     }
@@ -248,7 +251,7 @@ public final class FavoritesForm extends CustomComponent {
      */
     private class InternalFavoriteGroupForm extends CustomComponent {
 
-        private TextField title = new TextField(MessagesUtil.get("favorites.form.title", FavoritesView.FAVORITES_BASENAME));
+        private TextField title = new TextField(i18n.translate("favorites.form.title"));
         private ShortcutListener enterShortcutListener;
 
         public InternalFavoriteGroupForm(final JcrNewNodeAdapter newGroup) {
@@ -265,7 +268,7 @@ public final class FavoritesForm extends CustomComponent {
             final CssLayout buttons = new CssLayout();
             buttons.addStyleName("buttons");
 
-            final Button addButton = new Button(MessagesUtil.get("favorites.button.add", FavoritesView.FAVORITES_BASENAME), new ClickListener() {
+            final Button addButton = new Button(i18n.translate("favorites.button.add"), new ClickListener() {
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -301,7 +304,7 @@ public final class FavoritesForm extends CustomComponent {
                 binder.commit();
                 listener.addGroup(newGroup);
             } catch (CommitException e) {
-                shell.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("favorites.fields.required", FavoritesView.FAVORITES_BASENAME));
+                shell.openNotification(MessageStyleTypeEnum.ERROR, true, i18n.translate("favorites.fields.required"));
             }
         }
     }

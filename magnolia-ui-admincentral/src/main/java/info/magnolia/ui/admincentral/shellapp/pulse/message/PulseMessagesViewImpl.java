@@ -35,8 +35,7 @@ package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import static info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessagesPresenter.*;
 
-import info.magnolia.cms.i18n.MessagesUtil;
-import info.magnolia.ui.admincentral.shellapp.pulse.PulseView;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.CategoryChangedEvent;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategoryChangedListener;
@@ -85,7 +84,9 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
 
     private final VerticalLayout root = new VerticalLayout();
 
-    private final PulseMessageCategoryNavigator navigator = new PulseMessageCategoryNavigator();
+    private PulseMessageCategoryNavigator navigator;
+
+    private final SimpleTranslator i18n;
 
     private PulseMessagesView.Listener listener;
 
@@ -98,9 +99,11 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
     private boolean categoryFilterAlreadyApplied;
 
     @Inject
-    public PulseMessagesViewImpl(Shell shell) {
-        headers = new String[] { MessagesUtil.get("pulse.messages.new", PulseView.PULSE_BASENAME), MessagesUtil.get("pulse.messages.type", PulseView.PULSE_BASENAME), MessagesUtil.get("pulse.messages.text", PulseView.PULSE_BASENAME), MessagesUtil.get("pulse.messages.sender", PulseView.PULSE_BASENAME), MessagesUtil.get("pulse.messages.date", PulseView.PULSE_BASENAME) };
-        footer = new PulseMessagesFooter(messageTable);
+    public PulseMessagesViewImpl(Shell shell, SimpleTranslator i18n) {
+        this.i18n = i18n;
+        headers = new String[] { i18n.translate("pulse.messages.new"), i18n.translate("pulse.messages.type"), i18n.translate("pulse.messages.text"), i18n.translate("pulse.messages.sender"), i18n.translate("pulse.messages.date") };
+        footer = new PulseMessagesFooter(messageTable, i18n);
+        navigator = new PulseMessageCategoryNavigator(i18n);
         setSizeFull();
         root.setSizeFull();
         setCompositionRoot(root);
@@ -150,7 +153,7 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
 
         emptyPlaceHolder = new Label();
         emptyPlaceHolder.setContentMode(ContentMode.HTML);
-        emptyPlaceHolder.setValue(String.format("<span class=\"icon-pulse\"></span><div class=\"message\">%s</div>", MessagesUtil.get("pulse.messages.empty", PulseView.PULSE_BASENAME)));
+        emptyPlaceHolder.setValue(String.format("<span class=\"icon-pulse\"></span><div class=\"message\">%s</div>", i18n.translate("pulse.messages.empty")));
         emptyPlaceHolder.addStyleName("emptyplaceholder");
 
         root.addComponent(emptyPlaceHolder);
@@ -348,16 +351,16 @@ public final class PulseMessagesViewImpl extends CustomComponent implements Puls
 
                 switch (property.getValue()) {
                 case ERROR:
-                    generated.setText("", "", MessagesUtil.get("pulse.messages.errors", PulseView.PULSE_BASENAME));
+                    generated.setText("", "", i18n.translate("pulse.messages.errors"));
                     break;
                 case WARNING:
-                    generated.setText("", "", MessagesUtil.get("pulse.messages.warnings", PulseView.PULSE_BASENAME));
+                    generated.setText("", "", i18n.translate("pulse.messages.warnings"));
                     break;
                 case INFO:
-                    generated.setText("", "", MessagesUtil.get("pulse.messages.info", PulseView.PULSE_BASENAME));
+                    generated.setText("", "", i18n.translate("pulse.messages.info"));
                     break;
                 case WORKITEM:
-                    generated.setText("", "", MessagesUtil.get("pulse.messages.workitems", PulseView.PULSE_BASENAME));
+                    generated.setText("", "", i18n.translate("pulse.messages.workitems"));
                     break;
                 }
                 return generated;

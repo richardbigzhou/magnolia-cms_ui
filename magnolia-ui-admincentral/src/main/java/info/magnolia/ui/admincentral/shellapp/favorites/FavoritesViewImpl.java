@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingListener;
 import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedListener;
 import info.magnolia.ui.api.shell.Shell;
@@ -73,6 +73,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
     private SplitFeed splitPanel = new SplitFeed();
     private Label emptyPlaceHolder = new Label();
     private Component currentlySelectedFavoriteItem;
+    private final SimpleTranslator i18n;
 
     @Override
     public String getId() {
@@ -80,9 +81,10 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
     }
 
     @Inject
-    public FavoritesViewImpl(Shell shell, FavoritesManager favoritesManager) {
+    public FavoritesViewImpl(Shell shell, FavoritesManager favoritesManager, SimpleTranslator i18n) {
         super();
         this.shell = shell;
+        this.i18n = i18n;
         construct();
     }
 
@@ -98,7 +100,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
 
         emptyPlaceHolder.addStyleName("emptyplaceholder");
         emptyPlaceHolder.setContentMode(ContentMode.HTML);
-        emptyPlaceHolder.setValue(String.format("<span class=\"icon-favorites\"></span><div class=\"message\">%s</div>", MessagesUtil.get("favorites.empty", FavoritesView.FAVORITES_BASENAME)));
+        emptyPlaceHolder.setValue(String.format("<span class=\"icon-favorites\"></span><div class=\"message\">%s</div>", i18n.translate("favorites.empty")));
 
         splitPanel.setVisible(false);
 
@@ -128,7 +130,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
     @Override
     public void setFavoriteLocation(JcrNewNodeAdapter newFavorite, JcrNewNodeAdapter newGroup, Map<String, String> availableGroupsNames) {
         layout.removeComponent(favoriteForm);
-        favoriteForm = new FavoritesForm(newFavorite, newGroup, availableGroupsNames, listener, shell);
+        favoriteForm = new FavoritesForm(newFavorite, newGroup, availableGroupsNames, listener, shell, i18n);
         layout.addComponent(favoriteForm);
     }
 
@@ -148,13 +150,13 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
             layout.setExpandRatio(splitPanel, 1);
             layout.setExpandRatio(emptyPlaceHolder, 0);
 
-            noGroup = new FavoritesGroup();
+            noGroup = new FavoritesGroup(i18n);
             splitPanel.getLeftContainer().removeAllComponents();
             splitPanel.getRightContainer().removeAllComponents();
             for (String key : nodeAdapters.keySet()) {
                 final AbstractJcrNodeAdapter favoriteAdapter = nodeAdapters.get(key);
                 if (AdmincentralNodeTypes.Favorite.NAME.equals(favoriteAdapter.getPrimaryNodeTypeName())) {
-                    final FavoritesEntry favEntry = new FavoritesEntry(favoriteAdapter, listener, shell);
+                    final FavoritesEntry favEntry = new FavoritesEntry(favoriteAdapter, listener, shell, i18n);
                     final EntryDragAndDropWrapper wrapper = new EntryDragAndDropWrapper(favEntry, listener);
                     favEntry.addEditingListener(new EditingListener() {
 
@@ -176,7 +178,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
                     });
                     noGroup.addComponent(wrapper);
                 } else {
-                    FavoritesGroup group = new FavoritesGroup(favoriteAdapter, listener, shell, this);
+                    FavoritesGroup group = new FavoritesGroup(favoriteAdapter, listener, shell, this, i18n);
                     group.addSelectedListener(new SelectedListener() {
 
                         @Override
@@ -226,7 +228,7 @@ public final class FavoritesViewImpl extends CustomComponent implements Favorite
         if (favoriteForm != null) {
             layout.removeComponent(favoriteForm);
         }
-        favoriteForm = new FavoritesForm(favoriteSuggestion, groupSuggestion, availableGroups, listener, shell);
+        favoriteForm = new FavoritesForm(favoriteSuggestion, groupSuggestion, availableGroups, listener, shell, i18n);
         layout.addComponent(favoriteForm);
     }
 

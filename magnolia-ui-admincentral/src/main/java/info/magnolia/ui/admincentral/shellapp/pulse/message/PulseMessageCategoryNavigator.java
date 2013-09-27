@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.pulse.message;
 
 import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.admincentral.shellapp.pulse.PulseView;
 
 import java.util.HashMap;
@@ -58,8 +59,11 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
 
     private Map<MessageCategory, MessageCategoryTab> messageCategoryTabs = new HashMap<MessageCategory, MessageCategoryTab>();
 
-    public PulseMessageCategoryNavigator() {
+    private final SimpleTranslator i18n;
+
+    public PulseMessageCategoryNavigator(SimpleTranslator i18n) {
         super();
+        this.i18n = i18n;
         setStyleName("navigator");
         construct();
     }
@@ -75,7 +79,7 @@ public final class PulseMessageCategoryNavigator extends CssLayout {
             addComponent(tab);
         }
 
-        groupByTypeCheckBox = new CheckBox(MessagesUtil.get("pulse.messages.groupby", PulseView.PULSE_BASENAME));
+        groupByTypeCheckBox = new CheckBox(i18n.translate("pulse.messages.groupby"));
         groupByTypeCheckBox.addStyleName("navigator-grouping");
         groupByTypeCheckBox.setImmediate(true);
         addComponent(groupByTypeCheckBox);

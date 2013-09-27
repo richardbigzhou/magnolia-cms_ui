@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
-import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingListener;
 import info.magnolia.ui.admincentral.shellapp.favorites.EditingEvent.EditingNotifier;
 import info.magnolia.ui.admincentral.shellapp.favorites.SelectedEvent.SelectedListener;
@@ -80,10 +80,12 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
     private EnterKeyShortcutListener enterKeyShortcutListener;
     private EscapeKeyShortcutListener escapeKeyShortcutListener;
     private Shell shell;
+    private final SimpleTranslator i18n;
 
-    public FavoritesEntry(final AbstractJcrNodeAdapter favorite, final FavoritesView.Listener listener, final Shell shell) {
+    public FavoritesEntry(final AbstractJcrNodeAdapter favorite, final FavoritesView.Listener listener, final Shell shell, SimpleTranslator i18n) {
         super();
         this.shell = shell;
+        this.i18n = i18n;
         construct(favorite, listener);
     }
 
@@ -217,7 +219,7 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
 
             @Override
             public void buttonClick(ClickEvent event) {
-                shell.openConfirmation(MessageStyleTypeEnum.WARNING, MessagesUtil.get("confirmation.delete.title.generic","info.magnolia.ui.admincentral.messages"), MessagesUtil.get("confirmation.cannot.undo","info.magnolia.ui.admincentral.messages"), MessagesUtil.get("confirmation.delete.yes","info.magnolia.ui.admincentral.messages"), MessagesUtil.get("confirmation.no","info.magnolia.ui.admincentral.messages"), true, new ConfirmationCallback() {
+                shell.openConfirmation(MessageStyleTypeEnum.WARNING, i18n.translate("confirmation.delete.title.generic"), i18n.translate("confirmation.cannot.undo"), i18n.translate("confirmation.delete.yes"), i18n.translate("confirmation.no"), true, new ConfirmationCallback() {
 
                     @Override
                     public void onSuccess() {
@@ -282,7 +284,7 @@ public final class FavoritesEntry extends CustomComponent implements EditingNoti
 
     private void doEditTitle(final FavoritesView.Listener listener) {
         if (StringUtils.isBlank(titleField.getValue())) {
-            shell.openNotification(MessageStyleTypeEnum.ERROR, true, MessagesUtil.get("favorites.title.required", FavoritesView.FAVORITES_BASENAME));
+            shell.openNotification(MessageStyleTypeEnum.ERROR, true, i18n.translate("favorites.title.required"));
             return;
         }
 
