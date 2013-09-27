@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.contentapp.movedialog.predicate;
 
-import com.vaadin.data.Item;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.tree.drop.DropConstraint;
 
 import java.util.List;
+
+import com.vaadin.data.Item;
 
 /**
  * Checks whether it is possible to place the collection of nodes as children of the tested node.
@@ -50,16 +50,6 @@ public class MoveInsidePossibilityPredicate extends MovePossibilityPredicate {
 
     @Override
     protected boolean checkItem(Item item, Item hostCandidate) {
-        if (super.checkItem(item, hostCandidate)) {
-            if (hostCandidate instanceof JcrNodeAdapter) {
-                JcrNodeAdapter jcrItemAdapter = (JcrNodeAdapter)hostCandidate;
-                if (jcrItemAdapter.getParent() == null) {
-                    return true;
-                }
-            }
-            return constraint.allowedAsChild(item, hostCandidate);
-        } else {
-            return false;
-        }
+        return hostIsRoot(hostCandidate) || constraint.allowedAsChild(item, hostCandidate);
     }
 }
