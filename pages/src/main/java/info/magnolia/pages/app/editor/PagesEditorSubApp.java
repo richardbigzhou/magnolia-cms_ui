@@ -35,9 +35,9 @@ package info.magnolia.pages.app.editor;
 
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.cms.i18n.I18nContentSupport;
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
@@ -113,6 +113,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private final String workspace;
     private final AppContext appContext;
     private final VersionManager versionManager;
+    private final SimpleTranslator i18n;
 
     private PageEditorParameters parameters;
     private PlatformType targetPreviewPlatform = PlatformType.DESKTOP;
@@ -120,7 +121,9 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     private String caption;
 
     @Inject
-    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView, I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager) {
+    public PagesEditorSubApp(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final PagesEditorSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
+            final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final PageEditorPresenter pageEditorPresenter, final ActionbarPresenter actionbarPresenter, final PageBarView pageBarView,
+            I18NAuthoringSupport i18NAuthoringSupport, I18nContentSupport i18nContentSupport, VersionManager versionManager, final SimpleTranslator i18n) {
         super(subAppContext, view);
         this.actionExecutor = actionExecutor;
         this.view = view;
@@ -136,6 +139,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
         this.appContext = subAppContext.getAppContext();
         this.currentLocale = i18nContentSupport.getLocale();
         this.versionManager = versionManager;
+        this.i18n = i18n;
         view.setListener(this);
         bindHandlers();
     }
@@ -308,7 +312,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             Node node = session.getNode(location.getNodePath());
             if (StringUtils.isNotBlank(location.getVersion())) {
                 node = versionManager.getVersion(node, location.getVersion());
-                caption = MessagesUtil.get("pages.subapp.versioned_page", "info.magnolia.ui.admincentral.messages", new String[] { PropertyUtil.getString(node, "title", node.getName()), location.getVersion() });
+                caption = i18n.translate("pages.subapp.versioned_page", PropertyUtil.getString(node, "title", node.getName()), location.getVersion());
             } else {
                 caption = PropertyUtil.getString(node, "title", node.getName());
             }
@@ -379,11 +383,11 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             actionExecutor.execute(actionName, new JcrNodeAdapter((Node) item), selectedElement, pageEditorPresenter);
 
         } catch (RepositoryException e) {
-            Message error = new Message(MessageType.ERROR, MessagesUtil.get("pages.pagesEditorSubapp.actionExecutionException.message", "mgnl-i18n.app-pages-messages"), e.getMessage());
+            Message error = new Message(MessageType.ERROR, i18n.translate("pages.pagesEditorSubapp.actionExecutionException.message"), e.getMessage());
             log.error("An error occurred while executing action [{}]", actionName, e);
             appContext.sendLocalMessage(error);
         } catch (ActionExecutionException e) {
-            Message error = new Message(MessageType.ERROR, MessagesUtil.get("pages.pagesEditorSubapp.actionExecutionException.message", "mgnl-i18n.app-pages-messages"), e.getMessage());
+            Message error = new Message(MessageType.ERROR, i18n.translate("pages.pagesEditorSubapp.actionExecutionException.message"), e.getMessage());
             log.error("An error occurred while executing action [{}]", actionName, e);
             appContext.sendLocalMessage(error);
         }
