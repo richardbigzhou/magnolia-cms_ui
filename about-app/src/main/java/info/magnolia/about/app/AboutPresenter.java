@@ -34,9 +34,9 @@
 package info.magnolia.about.app;
 
 import info.magnolia.cms.beans.config.ServerConfiguration;
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.cms.license.LicenseFileExtractor;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.init.MagnoliaConfigurationProperties;
 
 import javax.inject.Inject;
@@ -62,11 +62,14 @@ public class AboutPresenter {
     private final ServerConfiguration serverConfiguration;
     private final MagnoliaConfigurationProperties magnoliaProperties;
 
+    private final SimpleTranslator i18n;
+
     @Inject
-    public AboutPresenter(AboutView view, ServerConfiguration serverConfiguration, MagnoliaConfigurationProperties magnoliaProperties) {
+    public AboutPresenter(AboutView view, ServerConfiguration serverConfiguration, MagnoliaConfigurationProperties magnoliaProperties, SimpleTranslator i18n) {
         this.view = view;
         this.serverConfiguration = serverConfiguration;
         this.magnoliaProperties = magnoliaProperties;
+        this.i18n = i18n;
     }
 
     public AboutView start() {
@@ -76,8 +79,8 @@ public class AboutPresenter {
         String mgnlEdition = licenseProperties.get(LicenseFileExtractor.EDITION);
         String mgnlVersion = licenseProperties.get(LicenseFileExtractor.VERSION_NUMBER);
         String authorInstance = serverConfiguration.isAdmin() ?
-                MessagesUtil.get("about.app.main.instance.author", AboutView.MESSAGES_BASENAME) :
-                MessagesUtil.get("about.app.main.instance.public", AboutView.MESSAGES_BASENAME);
+                i18n.translate("about.app.main.instance.author") :
+                i18n.translate("about.app.main.instance.public");
 
         // system information
         String osInfo = String.format("%s %s (%s)",

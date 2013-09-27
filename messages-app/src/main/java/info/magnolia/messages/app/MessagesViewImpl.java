@@ -33,7 +33,7 @@
  */
 package info.magnolia.messages.app;
 
-import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.message.MessageType;
 
 import java.io.Serializable;
@@ -72,8 +72,11 @@ public class MessagesViewImpl implements MessagesView {
 
     private final Component component;
     private Field<String> userOrGroupIdField;
+    private final SimpleTranslator i18n;
 
-    public MessagesViewImpl() {
+    public MessagesViewImpl(SimpleTranslator i18n) {
+
+        this.i18n = i18n;
 
         // create form and data item
         final Message message = new Message(); // message POJO
@@ -117,7 +120,7 @@ public class MessagesViewImpl implements MessagesView {
         layout.setWidth("100%");
 
         // send button
-        NativeButton sendButton = new NativeButton(MessagesUtil.get("messages-app.app.button.sendMessage", "mgnl-i18n.app-messages-messages"), new Button.ClickListener() {
+        NativeButton sendButton = new NativeButton(i18n.translate("messages-app.app.button.sendMessage"), new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
@@ -150,7 +153,7 @@ public class MessagesViewImpl implements MessagesView {
         sendButton.addStyleName("commit");
 
         // reset button
-        NativeButton resetButton = new NativeButton(MessagesUtil.get("messages-app.app.button.reset", "mgnl-i18n.app-messages-messages"), new Button.ClickListener() {
+        NativeButton resetButton = new NativeButton(i18n.translate("messages-app.app.button.reset"), new Button.ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -169,7 +172,7 @@ public class MessagesViewImpl implements MessagesView {
         layout.addComponent(buttons);
 
         // intro text
-        Label intro = new Label(MessagesUtil.get("messages-app.app.label.intro", "mgnl-i18n.app-messages-messages"), ContentMode.HTML);
+        Label intro = new Label(i18n.translate("messages-app.app.label.intro"), ContentMode.HTML);
         intro.addStyleName("intro");
 
         CssLayout container = new CssLayout();
@@ -188,7 +191,7 @@ public class MessagesViewImpl implements MessagesView {
     }
 
     private Field<String> createUserOrGroupIdTextField() {
-        final TextField userOrGroupField = new TextField(MessagesUtil.get("messages-app.app.field.userOrGroup", "mgnl-i18n.app-messages-messages"));
+        final TextField userOrGroupField = new TextField(i18n.translate("messages-app.app.field.userOrGroup"));
         userOrGroupField.setWidth("360px");
         return userOrGroupField;
     }
@@ -213,44 +216,44 @@ public class MessagesViewImpl implements MessagesView {
     }
 
     private Field<String> createMessageBodyTextField() {
-        final TextArea messageField = new TextArea(MessagesUtil.get("messages-app.app.field.messageBody", "mgnl-i18n.app-messages-messages"));
+        final TextArea messageField = new TextArea(i18n.translate("messages-app.app.field.messageBody"));
         messageField.setWidth(100, Unit.PERCENTAGE);
         return messageField;
     }
 
     private OptionGroup createTypeSelectionField() {
-        final OptionGroup types = new OptionGroup(MessagesUtil.get("messages-app.app.field.messageType", "mgnl-i18n.app-messages-messages"));
+        final OptionGroup types = new OptionGroup(i18n.translate("messages-app.app.field.messageType"));
         types.setNullSelectionAllowed(false);
         types.addItem(MessageType.INFO);
-        types.setItemCaption(MessageType.INFO, MessagesUtil.get("messages-app.app.field.messageType.option.info", "mgnl-i18n.app-messages-messages"));
+        types.setItemCaption(MessageType.INFO, i18n.translate("messages-app.app.field.messageType.option.info"));
         types.addItem(MessageType.WARNING);
-        types.setItemCaption(MessageType.WARNING, MessagesUtil.get("messages-app.app.field.messageType.option.warning", "mgnl-i18n.app-messages-messages"));
+        types.setItemCaption(MessageType.WARNING, i18n.translate("messages-app.app.field.messageType.option.warning"));
         types.addItem(MessageType.ERROR);
-        types.setItemCaption(MessageType.ERROR, MessagesUtil.get("messages-app.app.field.messageType.option.error", "mgnl-i18n.app-messages-messages"));
+        types.setItemCaption(MessageType.ERROR, i18n.translate("messages-app.app.field.messageType.option.error"));
         types.setValue(MessageType.INFO);
         types.addStyleName("horizontal");
         return types;
     }
 
     private OptionGroup createScopeSelectionField() {
-        final OptionGroup scopes = new OptionGroup(MessagesUtil.get("messages-app.app.field.scope", "mgnl-i18n.app-messages-messages"));
+        final OptionGroup scopes = new OptionGroup(i18n.translate("messages-app.app.field.scope"));
         scopes.setImmediate(true);
         scopes.setNullSelectionAllowed(false);
         scopes.addItem(MESSAGE_SCOPE_GLOBAL);
-        scopes.setItemCaption(MESSAGE_SCOPE_GLOBAL, MessagesUtil.get("messages-app.app.field.scope.option.global", "mgnl-i18n.app-messages-messages"));
+        scopes.setItemCaption(MESSAGE_SCOPE_GLOBAL, i18n.translate("messages-app.app.field.scope.option.global"));
         scopes.addItem(MESSAGE_SCOPE_LOCAL);
-        scopes.setItemCaption(MESSAGE_SCOPE_LOCAL, MessagesUtil.get("messages-app.app.field.scope.option.local", "mgnl-i18n.app-messages-messages"));
+        scopes.setItemCaption(MESSAGE_SCOPE_LOCAL, i18n.translate("messages-app.app.field.scope.option.local"));
         scopes.addItem(MESSAGE_SCOPE_USER);
-        scopes.setItemCaption(MESSAGE_SCOPE_USER, MessagesUtil.get("messages-app.app.field.scope.option.user", "mgnl-i18n.app-messages-messages"));
+        scopes.setItemCaption(MESSAGE_SCOPE_USER, i18n.translate("messages-app.app.field.scope.option.user"));
         scopes.addItem(MESSAGE_SCOPE_GROUP);
-        scopes.setItemCaption(MESSAGE_SCOPE_GROUP, MessagesUtil.get("messages-app.app.field.scope.option.group", "mgnl-i18n.app-messages-messages"));
+        scopes.setItemCaption(MESSAGE_SCOPE_GROUP, i18n.translate("messages-app.app.field.scope.option.group"));
         // initial selection
         scopes.addStyleName("vertical");
         return scopes;
     }
 
     private Field<String> createSubjectTextField() {
-        final TextField subjectField = new TextField(MessagesUtil.get("messages-app.app.field.messageTitle", "mgnl-i18n.app-messages-messages"));
+        final TextField subjectField = new TextField(i18n.translate("messages-app.app.field.messageTitle"));
         subjectField.addStyleName("required");
         subjectField.setWidth(100, Unit.PERCENTAGE);
         subjectField.setRequired(true);
