@@ -34,13 +34,14 @@
 package info.magnolia.ui.mediaeditor.data;
 
 
+import info.magnolia.i18nsystem.SimpleTranslator;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
@@ -68,8 +69,12 @@ public class EditHistoryTrackingPropertyImpl extends TransactionalPropertyWrappe
 
     private Listener listener;
 
-    public EditHistoryTrackingPropertyImpl(byte[] bytes) {
+    private final SimpleTranslator i18n;
+
+    public EditHistoryTrackingPropertyImpl(byte[] bytes, SimpleTranslator i18n) {
         super(new ObjectProperty<byte[]>(bytes));
+
+        this.i18n = i18n;
         startTransaction();
         startAction("");
         setValue(bytes);
@@ -115,7 +120,7 @@ public class EditHistoryTrackingPropertyImpl extends TransactionalPropertyWrappe
             doneActions.push(record);
             currentActionInitialized = false;
         } catch (IOException e) {
-            logErrorAndNotify(MessagesUtil.get("ui-mediaeditor.editHistoryTrackingProperty.tmpFileCreationFailure.message", "mgnl-i18n.app-ui-mediaeditor-messages"), e);
+            logErrorAndNotify(i18n.translate("ui-mediaeditor.editHistoryTrackingProperty.tmpFileCreationFailure.message"), e);
         }
     }
 
@@ -164,7 +169,7 @@ public class EditHistoryTrackingPropertyImpl extends TransactionalPropertyWrappe
             IOUtils.write(bytes, fos);
             super.setValue(bytes);
         } catch (IOException e) {
-            logErrorAndNotify(MessagesUtil.get("ui-mediaeditor.editHistoryTrackingProperty.ioException.message", "mgnl-i18n.app-ui-mediaeditor-messages"), e);
+            logErrorAndNotify(i18n.translate("ui-mediaeditor.editHistoryTrackingProperty.ioException.message"), e);
         } finally {
             IOUtils.closeQuietly(fos);
         }
@@ -183,7 +188,7 @@ public class EditHistoryTrackingPropertyImpl extends TransactionalPropertyWrappe
             fis = new FileInputStream(newLastDone.file);
             super.setValue(IOUtils.toByteArray(fis));
         } catch (IOException e) {
-            logErrorAndNotify(MessagesUtil.get("ui-mediaeditor.editHistoryTrackingProperty.ioException.message", "mgnl-i18n.app-ui-mediaeditor-messages"), e);
+            logErrorAndNotify(i18n.translate("ui-mediaeditor.editHistoryTrackingProperty.ioException.message"), e);
         } finally {
             IOUtils.closeQuietly(fis);
         }

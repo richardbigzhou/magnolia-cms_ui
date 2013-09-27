@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.mediaeditor;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.HandlerRegistration;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -83,6 +83,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
     private ActionExecutor actionExecutor;
     private HandlerRegistration internalMediaEditorEventHandlerRegistration;
     private Set<HandlerRegistration> completionHandlers = new HashSet<HandlerRegistration>();
+    private final SimpleTranslator i18n;
 
     public MediaEditorPresenterImpl(
             MediaEditorDefinition definition,
@@ -90,13 +91,15 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
             MediaEditorView view,
             ActionbarPresenter actionbarPresenter,
             DialogPresenter dialogPresenter,
-            AppContext appContext) {
+            AppContext appContext,
+            SimpleTranslator i18n) {
         this.eventBus = eventBus;
         this.view = view;
         this.actionbarPresenter = actionbarPresenter;
         this.definition = definition;
         this.dialogPresenter = dialogPresenter;
         this.appContext = appContext;
+        this.i18n = i18n;
         this.actionbarPresenter.setListener(this);
         this.internalMediaEditorEventHandlerRegistration = eventBus.addHandler(MediaEditorInternalEvent.class, this);
         this.view.asVaadinComponent().addDetachListener(new ClientConnector.DetachListener() {
@@ -118,14 +121,14 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
             final ActionbarView actionbar = actionbarPresenter.start(definition.getActionBar());
             final DialogView dialogView = dialogPresenter.start(new ConfiguredDialogDefinition(), appContext);
 
-            this.dataSource = new EditHistoryTrackingPropertyImpl(IOUtils.toByteArray(stream));
+            this.dataSource = new EditHistoryTrackingPropertyImpl(IOUtils.toByteArray(stream), i18n);
             this.dataSource.setListener(this);
             view.setActionBar(actionbar);
             view.setDialog(dialogView);
             switchToDefaultMode();
             return view;
         } catch (IOException e) {
-            errorOccurred(MessagesUtil.get("ui-mediaeditor.mediaeditorPresenter.errorWhileEditing", "mgnl-i18n.app-ui-mediaeditor-messages")+" ", e);
+            errorOccurred(i18n.translate("ui-mediaeditor.mediaeditorPresenter.errorWhileEditing")+" ", e);
             log.error("Error occurred while editing media: " + e.getMessage(), e);
         } finally {
             IOUtils.closeQuietly(stream);
@@ -210,7 +213,7 @@ public class MediaEditorPresenterImpl implements MediaEditorPresenter, Actionbar
         try {
             actionExecutor.execute(actionName, this, view, dataSource);
         } catch (ActionExecutionException e) {
-            errorOccurred(MessagesUtil.get("ui-mediaeditor.mediaeditorPresenter.actionExecutionException", "mgnl-i18n.app-ui-mediaeditor-messages")+" ", e);
+            errorOccurred(i18n.translate("ui-mediaeditor.mediaeditorPresenter.actionExecutionException")+" ", e);
             log.warn("Unable to execute action [" + actionName + "]", e);
         }
     }
