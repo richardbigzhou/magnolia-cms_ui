@@ -36,6 +36,7 @@ package info.magnolia.ui.mediaeditor;
 import info.magnolia.event.EventBus;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -86,12 +87,15 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
 
     private I18nizer i18nizer;
 
+    private final SimpleTranslator i18n;
+
     @Inject
-    public MediaEditorPresenterFactoryImpl(ComponentProvider subAppComponentProvider, ModuleRegistry moduleRegistry, MediaEditorRegistry registry, I18nizer i18nizer) {
+    public MediaEditorPresenterFactoryImpl(ComponentProvider subAppComponentProvider, ModuleRegistry moduleRegistry, MediaEditorRegistry registry, I18nizer i18nizer, SimpleTranslator i18n) {
         this.subAppComponentProvider = subAppComponentProvider;
         this.moduleRegistry = moduleRegistry;
         this.registry = registry;
         this.i18nizer = i18nizer;
+        this.i18n = i18n;
     }
 
     @Override
@@ -138,7 +142,7 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
         MediaEditorView view = mediaEditorComponentProvider.getComponent(MediaEditorView.class);
         ActionbarPresenter actionbarPresenter = new ActionbarPresenter();
         ActionExecutor mediaActionExecutor = mediaEditorComponentProvider.getComponent(ActionExecutor.class);
-        DialogPresenter dialogPresenter = new BaseDialogPresenter(mediaEditorComponentProvider, mediaActionExecutor, new BaseDialogViewImpl(), this.i18nizer);
+        DialogPresenter dialogPresenter = new BaseDialogPresenter(mediaEditorComponentProvider, mediaActionExecutor, new BaseDialogViewImpl(), this.i18nizer, i18n);
         AppContext appContext = mediaEditorComponentProvider.getComponent(AppContext.class);
         MediaEditorPresenter mediaEditorPresenter =
                 new MediaEditorPresenterImpl(
@@ -147,7 +151,8 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
                         view,
                         actionbarPresenter,
                         dialogPresenter,
-                        appContext);
+                        appContext,
+                        i18n);
 
         ((MediaEditorActionExecutor)mediaActionExecutor).setDef(definition);
         mediaEditorPresenter.setActionExecutor(mediaActionExecutor);

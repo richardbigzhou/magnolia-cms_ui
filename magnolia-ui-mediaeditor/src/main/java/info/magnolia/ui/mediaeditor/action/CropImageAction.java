@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.mediaeditor.action;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.dialog.actionarea.ActionListener;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
@@ -60,8 +60,12 @@ public class CropImageAction extends MediaEditorUIAction {
 
     private CropField cropField = new CropField();
 
-    public CropImageAction(MediaEditorActionDefinition definition, MediaEditorView view, @Named(MediaEditorEventBus.NAME) EventBus eventBus, EditHistoryTrackingProperty dataSource) {
+    private final SimpleTranslator i18n;
+
+    public CropImageAction(MediaEditorActionDefinition definition, MediaEditorView view, @Named(MediaEditorEventBus.NAME) EventBus eventBus, EditHistoryTrackingProperty dataSource, SimpleTranslator i18n) {
         super(definition, view, dataSource, eventBus);
+
+        this.i18n = i18n;
     }
 
     @Override
@@ -73,7 +77,7 @@ public class CropImageAction extends MediaEditorUIAction {
     @Override
     protected List<ActionContext> getActionContextList() {
         List<ActionContext> result = new ArrayList<ActionContext>();
-        result.add(new ActionContext(new InternalMediaEditorActionDefinition("crop", MessagesUtil.get("ui-mediaeditor.action.crop.label", "mgnl-i18n.app-ui-mediaeditor-messages"), true), new ActionListener() {
+        result.add(new ActionContext(new InternalMediaEditorActionDefinition("crop", i18n.translate("ui-mediaeditor.action.crop.label"), true), new ActionListener() {
             @Override
             public void onActionFired(String actionName, Object... actionContextParams) {
                 dataSource.startAction(getDefinition().getTrackingLabel());

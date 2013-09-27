@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.mediaeditor.action;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.dialog.actionarea.ActionListener;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
@@ -65,22 +65,26 @@ public class ViewImageAction extends MediaEditorUIAction {
 
     private ImageSizeLabel imageSizeLabel = new ImageSizeLabel();
 
-    public ViewImageAction(MediaEditorActionDefinition definition, MediaEditorView view, @Named(MediaEditorEventBus.NAME) EventBus eventBus, EditHistoryTrackingProperty dataSource) {
+    private final SimpleTranslator i18n;
+
+    public ViewImageAction(MediaEditorActionDefinition definition, MediaEditorView view, @Named(MediaEditorEventBus.NAME) EventBus eventBus,
+            EditHistoryTrackingProperty dataSource, SimpleTranslator i18n) {
         super(definition, view, dataSource, eventBus);
+        this.i18n = i18n;
         viewField.addImageResizeListener(imageSizeLabel);
     }
 
     @Override
     protected List<ActionContext> getActionContextList() {
         List<ActionContext> result = new ArrayList<ActionContext>();
-        result.add(new ActionContext(new InternalMediaEditorActionDefinition("save", MessagesUtil.get("ui-mediaeditor.internalAction.save.label", "mgnl-i18n.app-ui-mediaeditor-messages"), false), new ActionListener() {
+        result.add(new ActionContext(new InternalMediaEditorActionDefinition("save", i18n.translate("ui-mediaeditor.internalAction.save.label"), false), new ActionListener() {
             @Override
             public void onActionFired(String actionName, Object... actionContextParams) {
                 eventBus.fireEvent(new MediaEditorInternalEvent(EventType.SUBMIT));
             }
         }));
 
-        result.add(new ActionContext(new InternalMediaEditorActionDefinition("cancel", MessagesUtil.get("ui-mediaeditor.internalAction.cancel.label", "mgnl-i18n.app-ui-mediaeditor-messages"), true), new ActionListener() {
+        result.add(new ActionContext(new InternalMediaEditorActionDefinition("cancel", i18n.translate("ui-mediaeditor.internalAction.cancel.label"), true), new ActionListener() {
             @Override
             public void onActionFired(String actionName, Object... actionContextParams) {
                 eventBus.fireEvent(new MediaEditorInternalEvent(EventType.CANCEL_ALL));
@@ -95,8 +99,8 @@ public class ViewImageAction extends MediaEditorUIAction {
         actionbar.removeAction("undo");
         actionbar.removeAction("redo");
 
-        String undoLabel = MessagesUtil.get("ui-mediaeditor.action.undo.label", "mgnl-i18n.app-ui-mediaeditor-messages")+" " + (dataSource.getLastDoneActionName() != null ? dataSource.getLastDoneActionName() : "");
-        String redoLabel = MessagesUtil.get("ui-mediaeditor.action.redo.label", "mgnl-i18n.app-ui-mediaeditor-messages")+" " + (dataSource.getLastUnDoneActionName() != null ? dataSource.getLastUnDoneActionName() : "");
+        String undoLabel = i18n.translate("ui-mediaeditor.action.undo.label")+" " + (dataSource.getLastDoneActionName() != null ? dataSource.getLastDoneActionName() : "");
+        String redoLabel = i18n.translate("ui-mediaeditor.action.redo.label")+" " + (dataSource.getLastUnDoneActionName() != null ? dataSource.getLastUnDoneActionName() : "");
 
         ActionbarItem undo = new ActionbarItem("undo", undoLabel, "icon-undo", "track");
         ActionbarItem redo = new ActionbarItem("redo", redoLabel, "icon-redo", "track");
@@ -124,11 +128,11 @@ public class ViewImageAction extends MediaEditorUIAction {
     /**
      * ImageSizeLabel.
      */
-    public static class ImageSizeLabel extends Label implements ViewImageField.ImageSizeChangeListener {
+    public class ImageSizeLabel extends Label implements ViewImageField.ImageSizeChangeListener {
 
         @Override
         public void onSizeChanged(ViewImageField.ImageResizeEvent e) {
-            setValue(String.format(MessagesUtil.get("ui-mediaeditor.view.actualSize.display", "mgnl-i18n.app-ui-mediaeditor-messages"), e.getWidth(), e.getHeight()));
+            setValue(String.format(i18n.translate("ui-mediaeditor.view.actualSize.display"), e.getWidth(), e.getHeight()));
         }
     }
 }
