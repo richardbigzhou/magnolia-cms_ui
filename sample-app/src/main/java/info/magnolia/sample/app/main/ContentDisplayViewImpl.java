@@ -33,7 +33,7 @@
  */
 package info.magnolia.sample.app.main;
 
-import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.i18nsystem.SimpleTranslator;
 
 import javax.inject.Inject;
 
@@ -49,14 +49,17 @@ public class ContentDisplayViewImpl implements ContentDisplayView {
 
     private ContentDisplayView.Listener listener;
     private VerticalLayout layout;
+    private final SimpleTranslator i18n;
 
     @Inject
-    public ContentDisplayViewImpl() {
+    public ContentDisplayViewImpl(SimpleTranslator i18n) {
+        this.i18n = i18n;
+
         layout = new VerticalLayout();
         layout.setMargin(true);
         layout.setSpacing(true);
-        layout.addComponent(new Label(MessagesUtil.get("sample.app.contentDisplay.label.title", "mgnl-i18n.app-sample-messages")));
-        layout.addComponent(new Label(MessagesUtil.get("sample.app.contentDisplay.label.description", "mgnl-i18n.app-sample-messages")));
+        layout.addComponent(new Label(i18n.translate("sample.app.contentDisplay.label.title")));
+        layout.addComponent(new Label(i18n.translate("sample.app.contentDisplay.label.description")));
     }
 
     @Override
@@ -67,9 +70,9 @@ public class ContentDisplayViewImpl implements ContentDisplayView {
     @Override
     public void setResource(final String name) {
         layout.removeAllComponents();
-        layout.addComponent(new Label(MessagesUtil.get("sample.app.contentDisplay.label.title", "mgnl-i18n.app-sample-messages")));
-        layout.addComponent(new Label(MessagesUtil.get("sample.app.contentDisplay.label.displaying", "mgnl-i18n.app-sample-messages") + " " + name));
-        layout.addComponent(new Button(MessagesUtil.get("sample.app.contentDisplay.button.newEditor", "mgnl-i18n.app-sample-messages"), new Button.ClickListener() {
+        layout.addComponent(new Label(i18n.translate("sample.app.contentDisplay.label.title")));
+        layout.addComponent(new Label(i18n.translate("sample.app.contentDisplay.label.displaying") + " " + name));
+        layout.addComponent(new Button(i18n.translate("sample.app.contentDisplay.button.newEditor"), new Button.ClickListener() {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {

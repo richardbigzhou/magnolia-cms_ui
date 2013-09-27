@@ -33,8 +33,8 @@
  */
 package info.magnolia.sample.app.editor;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.event.EventBus;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.sample.app.editor.location.EditorLocation;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
@@ -51,16 +51,18 @@ import javax.inject.Named;
 public class SampleEditorSubApp extends BaseSubApp implements SampleEditorView.Listener {
 
     private final SampleEditorView view;
+    private final SimpleTranslator i18n;
 
     @Inject
-    public SampleEditorSubApp(final SubAppContext subAppContext, final SampleEditorView view, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
+    public SampleEditorSubApp(final SubAppContext subAppContext, final SampleEditorView view, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, SimpleTranslator i18n) {
         super(subAppContext, view);
         this.view = view;
+        this.i18n = i18n;
     }
 
     @Override
     public String getCaption() {
-        return MessagesUtil.get("sample.app.editor.label", "mgnl-i18n.app-sample-messages") + " " + view.getName();
+        return i18n.translate("sample.app.editor.label") + " " + view.getName();
     }
 
     @Override
