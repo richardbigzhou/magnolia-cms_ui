@@ -68,11 +68,21 @@ public class FieldFactoryFactory implements Serializable {
         this.fieldValidatorFactoryFactory = fieldValidatorFactoryFactory;
     }
 
+    /**
+     * Based on the {@link FieldDefinition}, get the related {@link FieldFactory} initialized with the input parameters. <br>
+     * 
+     * @param definition
+     * @param parameters
+     * @return related {@link FieldFactory} or null in case of exception or if no related factory is defined.
+     */
     public FieldFactory createFieldFactory(FieldDefinition definition, Object... parameters) {
 
         FieldTypeDefinition fieldTypeDefinition;
         try {
             fieldTypeDefinition = fieldTypeDefinitionRegistry.getByDefinition(definition.getClass());
+            if (fieldTypeDefinition == null) {
+                return null;
+            }
         } catch (RegistrationException e) {
             log.error("No field type definition found for " + definition.getName(), e);
             return null;

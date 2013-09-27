@@ -35,6 +35,7 @@ package info.magnolia.ui.form.fieldtype.registry;
 
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.registry.RegistryMap;
+import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.fieldtype.definition.FieldTypeDefinition;
 import net.sf.cglib.proxy.Enhancer;
@@ -69,11 +70,16 @@ public class FieldTypeDefinitionRegistry {
     }
 
     public FieldTypeDefinition getByDefinition(Class<? extends FieldDefinition> definitionClass) throws RegistrationException {
-        //TODO hack
+        // TODO hack: i18nizer proxies definition classes, so we have to unwrap them.
         while (Enhancer.isEnhanced(definitionClass)) {
             definitionClass = (Class<? extends FieldDefinition>)definitionClass.getSuperclass();
         }
-        //TODO end hack
+        if (definitionClass.equals(ConfiguredFieldDefinition.class)) {
+            // FIXME MGNLUI-829 Working around side effect of extend=override, can't do anything with ConfiguredFieldDefinition.
+            return null;
+        }
+        // TODO end hack.
+
         for (FieldTypeDefinitionProvider provider : registry.values()) {
             if (definitionClass.equals(provider.getFieldTypeDefinition().getDefinitionClass())) {
                 return provider.getFieldTypeDefinition();
