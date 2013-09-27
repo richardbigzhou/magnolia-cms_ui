@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.form.field.upload;
 
+import info.magnolia.i18nsystem.SimpleTranslator;
+
 import java.io.File;
 import java.io.OutputStream;
 
@@ -105,9 +107,9 @@ public abstract class AbstractUploadField<D extends FileItemWrapper> extends Cus
 
     private HasComponents root;
 
-    public AbstractUploadField(D fileWrapper, File tmpUploadDirectory) {
+    public AbstractUploadField(D fileWrapper, File tmpUploadDirectory, SimpleTranslator i18n) {
         this.fileWrapper = fileWrapper;
-        this.receiver = new UploadReceiver(tmpUploadDirectory);
+        this.receiver = new UploadReceiver(tmpUploadDirectory, i18n);
         createUpload();
     }
 

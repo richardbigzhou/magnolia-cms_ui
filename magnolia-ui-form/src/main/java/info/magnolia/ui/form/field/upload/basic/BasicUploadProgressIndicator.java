@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.form.field.upload.basic;
 
-import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.form.field.upload.UploadProgressIndicator;
 
 import java.text.NumberFormat;
@@ -75,10 +75,12 @@ public class BasicUploadProgressIndicator extends CustomComponent implements Upl
     private String inProgressCaption;
     private String inProgressRatioCaption;
     private VerticalLayout mainLayout;
+    private final SimpleTranslator i18n;
 
-    public BasicUploadProgressIndicator(String inProgressCaption, String inProgressRatioCaption) {
+    public BasicUploadProgressIndicator(String inProgressCaption, String inProgressRatioCaption, SimpleTranslator i18n) {
         this.inProgressCaption = inProgressCaption;
         this.inProgressRatioCaption = inProgressRatioCaption;
+        this.i18n = i18n;
 
         uploadFileLocation = new Label("");
         uploadFileLocation.setSizeUndefined();
@@ -125,13 +127,13 @@ public class BasicUploadProgressIndicator extends CustomComponent implements Upl
     public void refreshLayout(long readBytes, long contentLength, String fileName) {
         progressIndicator.setValue(Float.valueOf(readBytes / (float) contentLength));
 
-        uploadFileLocation.setValue(MessagesUtil.get(this.inProgressCaption, "info.magnolia.ui.admincentral.messages", new String[] { fileName }));
+        uploadFileLocation.setValue(i18n.translate(this.inProgressCaption,fileName ));
 
         uploadFileProgress.setValue(createPercentage(readBytes, contentLength));
 
         String bytesRead = FileUtils.byteCountToDisplaySize(readBytes);
         String totalBytes = FileUtils.byteCountToDisplaySize(contentLength);
-        uploadFileRatio.setValue(MessagesUtil.get(this.inProgressRatioCaption, "info.magnolia.ui.admincentral.messages", new String[] { bytesRead, totalBytes }));
+        uploadFileRatio.setValue(i18n.translate(this.inProgressRatioCaption,bytesRead, totalBytes));
     }
 
     @Override

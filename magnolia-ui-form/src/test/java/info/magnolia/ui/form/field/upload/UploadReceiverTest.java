@@ -34,8 +34,10 @@
 package info.magnolia.ui.form.field.upload;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.cms.util.ClasspathResourcesUtil;
+import info.magnolia.i18nsystem.SimpleTranslator;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -56,6 +58,7 @@ public class UploadReceiverTest {
     private UploadReceiver uploadReceiver;
     private File directory;
     private File uploadFile;
+    private SimpleTranslator i18n;
 
     @Before
     public void setUp() throws Exception {
@@ -63,6 +66,7 @@ public class UploadReceiverTest {
         directory.deleteOnExit();
         URL resource = ClasspathResourcesUtil.getResource("me.jpg");
         uploadFile = new File(resource.toURI());
+        i18n = mock(SimpleTranslator.class);
     }
 
     @After
@@ -76,7 +80,7 @@ public class UploadReceiverTest {
     @Test
     public void testGetFileFactory() {
         // GIVEN
-        uploadReceiver = new UploadReceiver(directory);
+        uploadReceiver = new UploadReceiver(directory, i18n);
 
         // WHEN
         FileFactory factory = uploadReceiver.getFileFactory();
@@ -89,7 +93,7 @@ public class UploadReceiverTest {
     @Test
     public void testReceiveUpload() {
         // GIVEN
-        uploadReceiver = new UploadReceiver(directory);
+        uploadReceiver = new UploadReceiver(directory, i18n);
 
         // WHEN
         OutputStream res = uploadReceiver.receiveUpload("me.jpg", "image/jpeg");
@@ -106,7 +110,7 @@ public class UploadReceiverTest {
     @Test
     public void testSetValue() {
         // GIVEN
-        uploadReceiver = new UploadReceiver(directory);
+        uploadReceiver = new UploadReceiver(directory, i18n);
         uploadReceiver.receiveUpload("me.jpg", "image/jpeg");
 
         // WHEN
@@ -122,7 +126,7 @@ public class UploadReceiverTest {
     @Test
     public void testGetFileName() {
         // GIVEN
-        uploadReceiver = new UploadReceiver(directory);
+        uploadReceiver = new UploadReceiver(directory, i18n);
         uploadReceiver.receiveUpload("me.jpg", "image/jpeg");
         uploadReceiver.setValue(uploadFile);
 
@@ -137,7 +141,7 @@ public class UploadReceiverTest {
     @Test
     public void testGetFileSize() {
         // GIVEN
-        uploadReceiver = new UploadReceiver(directory);
+        uploadReceiver = new UploadReceiver(directory, i18n);
         uploadReceiver.receiveUpload("me.jpg", "image/jpeg");
         uploadReceiver.setValue(uploadFile);
 
@@ -151,7 +155,7 @@ public class UploadReceiverTest {
     @Test
     public void testGetMimeType() {
         // GIVEN
-        uploadReceiver = new UploadReceiver(directory);
+        uploadReceiver = new UploadReceiver(directory, i18n);
         uploadReceiver.receiveUpload("me.jpg", "image/jpeg");
         uploadReceiver.setValue(uploadFile);
 
@@ -166,7 +170,7 @@ public class UploadReceiverTest {
     @Test
     public void testGetExtension() {
         // GIVEN
-        uploadReceiver = new UploadReceiver(directory);
+        uploadReceiver = new UploadReceiver(directory, i18n);
         uploadReceiver.receiveUpload("me.jpg", "image/jpeg");
         uploadReceiver.setValue(uploadFile);
 

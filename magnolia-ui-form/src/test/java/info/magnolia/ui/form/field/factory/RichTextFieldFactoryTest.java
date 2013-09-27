@@ -55,7 +55,7 @@ public class RichTextFieldFactoryTest extends AbstractFieldFactoryTestCase<RichT
     public void testGetField() throws Exception {
 
         // GIVEN
-        richTextFieldFactory = new RichTextFieldFactory(definition, baseItem, null, null);
+        richTextFieldFactory = new RichTextFieldFactory(definition, baseItem, null, null, null);
         richTextFieldFactory.setI18nContentSupport(i18nContentSupport);
         richTextFieldFactory.setComponentProvider(new MockComponentProvider());
         // WHEN

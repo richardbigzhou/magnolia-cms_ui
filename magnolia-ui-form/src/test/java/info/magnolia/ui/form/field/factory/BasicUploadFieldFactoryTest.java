@@ -36,6 +36,7 @@ package info.magnolia.ui.form.field.factory;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
@@ -70,7 +71,7 @@ public class BasicUploadFieldFactoryTest extends AbstractFieldFactoryTestCase<Ba
         UiContext mockUiContext = mock(UiContext.class);
         ImageProvider mockImageProvider = mock(ImageProvider.class);
 
-        basicUploadBuilder = new BasicUploadFieldFactory(definition, baseItem, mockImageProvider, mockUiContext);
+        basicUploadBuilder = new BasicUploadFieldFactory(definition, baseItem, mockImageProvider, mockUiContext, mock(SimpleTranslator.class));
         basicUploadBuilder.setI18nContentSupport(i18nContentSupport);
         basicUploadBuilder.setComponentProvider(new MockComponentProvider());
     }

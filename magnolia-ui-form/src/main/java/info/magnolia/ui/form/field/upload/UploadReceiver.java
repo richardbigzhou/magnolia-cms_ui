@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.field.upload;
 
 import info.magnolia.cms.util.PathUtil;
+import info.magnolia.i18nsystem.SimpleTranslator;
 
 import java.io.File;
 
@@ -50,16 +51,18 @@ public class UploadReceiver extends FileBuffer {
 
     private static final long serialVersionUID = 1L;
     private File directory;
+    private final SimpleTranslator i18n;
 
-    public UploadReceiver(File directory) {
+    public UploadReceiver(File directory, SimpleTranslator i18n) {
         this.directory = directory;
+        this.i18n = i18n;
         setFieldType(FieldType.FILE);
         setDeleteFiles(true);
     }
 
     @Override
     public FileFactory getFileFactory() {
-        return new DefaultFileFactory(directory);
+        return new DefaultFileFactory(directory, i18n);
     }
 
     public String getFileName() {

@@ -33,10 +33,11 @@
  */
 package info.magnolia.ui.form.field.upload;
 
+import info.magnolia.i18nsystem.SimpleTranslator;
+
 import java.io.File;
 import java.io.IOException;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import org.vaadin.easyuploads.FileFactory;
 
 /**
@@ -46,11 +47,11 @@ public class DefaultFileFactory implements FileFactory {
 
     private File directory;
 
-    public DefaultFileFactory(File directory) {
+    public DefaultFileFactory(File directory, SimpleTranslator i18n) {
         if (directory.isDirectory() && directory.canWrite()) {
             this.directory = directory;
         } else {
-            throw new IllegalArgumentException(MessagesUtil.get("ui-form.filefactory.nonexitantdirectory", "mgnl-i18n.module-ui-form-messages"));
+            throw new IllegalArgumentException(i18n.translate("ui-form.filefactory.nonexitantdirectory"));
         }
     }
 

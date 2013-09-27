@@ -33,13 +33,7 @@
  */
 package info.magnolia.ui.form.field.factory;
 
-import com.google.gson.Gson;
-import com.google.inject.Inject;
-import com.vaadin.data.Item;
-import com.vaadin.server.VaadinService;
-import com.vaadin.server.WebBrowser;
-import com.vaadin.ui.Field;
-import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
@@ -48,12 +42,21 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig;
 import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextFieldConfig.ToolbarGroup;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.jcr.Node;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.Node;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.gson.Gson;
+import com.google.inject.Inject;
+import com.vaadin.data.Item;
+import com.vaadin.server.VaadinService;
+import com.vaadin.server.WebBrowser;
+import com.vaadin.ui.Field;
 
 /**
  * Creates and initializes an edit field based on a field definition.
@@ -87,12 +90,14 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
     private static final Logger log = LoggerFactory.getLogger(LinkFieldFactory.class);
 
     private final UiContext uiContext;
+    private final SimpleTranslator i18n;
 
     @Inject
-    public RichTextFieldFactory(RichTextFieldDefinition definition, Item relatedFieldItem, AppController appController, UiContext uiContext) {
+    public RichTextFieldFactory(RichTextFieldDefinition definition, Item relatedFieldItem, AppController appController, UiContext uiContext, SimpleTranslator i18n) {
         super(definition, relatedFieldItem);
         this.appController = appController;
         this.uiContext = uiContext;
+        this.i18n = i18n;
     }
 
     @Override
@@ -141,7 +146,7 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
                         openLinkDialog(pluginData.path, pluginData.workspace);
                     } catch (Exception e) {
                         log.error("openLinkDialog failed", e);
-                        richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, MessagesUtil.get("ui-form.richtexteditorexception.opentargetappfailure", "mgnl-i18n.module-ui-form-messages"));
+                        richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, i18n.translate("ui-form.richtexteditorexception.opentargetappfailure"));
                     }
                 }
             }
@@ -199,7 +204,7 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
 
                     richTextEditor.firePluginEvent(EVENT_SEND_MAGNOLIA_LINK, gson.toJson(mlink));
                 } catch (Exception e) {
-                    String error = MessagesUtil.get("ui-form.richtexteditorexception.cannotaccessselecteditem", "mgnl-i18n.module-ui-form-messages");
+                    String error = i18n.translate("ui-form.richtexteditorexception.cannotaccessselecteditem");
                     log.error(error, e);
                     richTextEditor.firePluginEvent(EVENT_CANCEL_LINK, error);
                 }
