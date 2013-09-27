@@ -35,6 +35,7 @@ package info.magnolia.ui.dialog.choosedialog;
 
 import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
@@ -87,8 +88,9 @@ public class ChooseDialogPresenterImpl extends BaseDialogPresenter implements Ch
             I18nContentSupport i18nContentSupport,
             DialogActionExecutor executor,
             ChooseDialogView view,
-            I18nizer i18nizer) {
-        super(componentProvider, executor, view, i18nizer);
+            I18nizer i18nizer,
+            SimpleTranslator i18n) {
+        super(componentProvider, executor, view, i18nizer, i18n);
         this.fieldFactoryFactory = fieldFactoryFactory;
         this.componentProvider = componentProvider;
         this.i18nContentSupport = i18nContentSupport;

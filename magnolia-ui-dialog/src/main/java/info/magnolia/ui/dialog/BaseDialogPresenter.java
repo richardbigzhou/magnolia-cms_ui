@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.dialog;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -81,16 +81,19 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
 
     private final I18nizer i18nizer;
 
+    private final SimpleTranslator i18n;
+
     private UiContext uiContext;
 
     private DialogDefinition definition;
 
     @Inject
-    public BaseDialogPresenter(ComponentProvider componentProvider, ActionExecutor executor, DialogView view, I18nizer i18nizer) {
+    public BaseDialogPresenter(ComponentProvider componentProvider, ActionExecutor executor, DialogView view, I18nizer i18nizer,SimpleTranslator i18n) {
         this.componentProvider = componentProvider;
         this.executor = executor;
         this.view = view;
         this.i18nizer = i18nizer;
+        this.i18n = i18n;
     }
 
     @Override
@@ -171,7 +174,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
         try {
             executor.execute(actionName, combinedParameters);
         } catch (ActionExecutionException e) {
-            Message error = new Message(MessageType.ERROR, MessagesUtil.get("ui-dialog.actionexecutionerror.basemessage", "mgnl-i18n.module-ui-dialog-messages"), e.getMessage());
+            Message error = new Message(MessageType.ERROR, i18n.translate("ui-dialog.actionexecutionerror.basemessage"), e.getMessage());
             if (uiContext instanceof AppContext) {
                 ((AppContext) uiContext).broadcastMessage(error);
             } else if (uiContext instanceof SubAppContext) {
