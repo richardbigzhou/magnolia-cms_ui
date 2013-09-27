@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.workbench;
 
-import info.magnolia.cms.i18n.MessagesUtil;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.vaadin.icon.Icon;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
@@ -113,8 +113,10 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
     };
 
     private WorkbenchView.Listener listener;
+    private final SimpleTranslator i18n;
 
-    public WorkbenchViewImpl() {
+    public WorkbenchViewImpl(SimpleTranslator i18n) {
+        this.i18n = i18n;
 
         setSizeFull();
         setMargin(new MarginInfo(true, false, false, true));
@@ -313,7 +315,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
 
     private TextField buildSearchField() {
         final TextField field = new TextField();
-        final String inputPrompt = MessagesUtil.get("toolbar.search.prompt", "info.magnolia.ui.admincentral.messages");
+        final String inputPrompt = i18n.translate("toolbar.search.prompt");
 
         field.setInputPrompt(inputPrompt);
         field.setSizeUndefined();
