@@ -34,6 +34,7 @@
 package info.magnolia.ui.dialog.formdialog;
 
 import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.api.action.ActionDefinition;
@@ -75,8 +76,8 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     private Item item;
 
     @Inject
-    public FormDialogPresenterImpl(final DialogDefinitionRegistry dialogDefinitionRegistry, FormBuilder formBuilder, ComponentProvider componentProvider, DialogActionExecutor executor, FormView view, I18nizer i18nizer) {
-        super(componentProvider, executor, view, i18nizer);
+    public FormDialogPresenterImpl(final DialogDefinitionRegistry dialogDefinitionRegistry, FormBuilder formBuilder, ComponentProvider componentProvider, DialogActionExecutor executor, FormView view, I18nizer i18nizer, SimpleTranslator i18n) {
+        super(componentProvider, executor, view, i18nizer, i18n);
         this.dialogDefinitionRegistry = dialogDefinitionRegistry;
         this.formBuilder = formBuilder;
         this.componentProvider = componentProvider;
