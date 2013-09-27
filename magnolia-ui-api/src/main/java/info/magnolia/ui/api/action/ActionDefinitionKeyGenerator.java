@@ -85,6 +85,7 @@ public class ActionDefinitionKeyGenerator extends AbstractI18nKeyGenerator<Actio
                 addKey(keys, StringUtils.join(ancestorKeys, '.'), "actions", actionDefinition.getName(), fieldOrGetterName(el));
             }
         }
+
         // add a fallback key for all actions
         final String actionName = actionDefinition.getName();
         addKey(keys, "actions", actionName, fieldOrGetterName(el));

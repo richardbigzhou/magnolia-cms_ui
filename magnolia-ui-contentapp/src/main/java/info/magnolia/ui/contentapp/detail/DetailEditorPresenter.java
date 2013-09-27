@@ -178,18 +178,12 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
             } else {
                 throw new IllegalArgumentException("Selected value is not a node. Can only operate on nodes.");
             }
-//these are just here for testing - maye in the media editor
-            Message error1 = new Message(MessageType.ERROR, MessagesUtil.get("ui-contentapp.detailEditorPresenter.error.repository", CONTENTAPP_BASENAME) + nodePath, "a");     //TODO-TRANSLATE
-            appContext.broadcastMessage(error1);
-
-            Message error2 = new Message(MessageType.ERROR, MessagesUtil.get("ui-contentapp.detailEditorPresenter.error.action", CONTENTAPP_BASENAME), "b");     //TODO-TRANSLATE
-            appContext.broadcastMessage(error2);
 
         } catch (RepositoryException e) {
-            Message error = new Message(MessageType.ERROR, MessagesUtil.get("ui-contentapp.detailEditorPresenter.error.repository", CONTENTAPP_BASENAME) + nodePath, e.getMessage());     //TODO-TRANSLATE
+            Message error = new Message(MessageType.ERROR, MessagesUtil.get("ui-contentapp.detailEditorPresenter.error.repository", CONTENTAPP_BASENAME) + nodePath, e.getMessage());
             appContext.broadcastMessage(error);
         } catch (ActionExecutionException e) {
-            Message error = new Message(MessageType.ERROR, MessagesUtil.get("ui-contentapp.detailEditorPresenter.error.action", CONTENTAPP_BASENAME), e.getMessage());     //TODO-TRANSLATE
+            Message error = new Message(MessageType.ERROR, MessagesUtil.get("ui-contentapp.error.action.execution", CONTENTAPP_BASENAME), e.getMessage());
             appContext.broadcastMessage(error);
         }
     }

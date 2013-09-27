@@ -38,6 +38,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.event.ResettableEventBus;
 import info.magnolia.event.SimpleEventBus;
 import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
@@ -113,12 +114,18 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private ConfiguredWorkbenchDefinition workbenchDefinition;
 
+    private I18nizer i18nizer;
+
+    private SimpleTranslator simpleTranslator;
+
     @Inject
-    public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, DialogActionExecutor executor, AppContext appContext, I18nizer i18nizer) {
+    public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, DialogActionExecutor executor, AppContext appContext, I18nizer i18nizer, SimpleTranslator simpleTranslator) {
         super(componentProvider, executor, dialogView, i18nizer);
         this.dialogView = dialogView;
         this.workbenchPresenter = workbenchPresenter;
         this.appContext = appContext;
+        this.i18nizer = i18nizer;
+        this.simpleTranslator = simpleTranslator;
         dialogView.asVaadinComponent().setStyleName("choose-dialog");
     }
 
@@ -219,7 +226,6 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         possibilityPredicates.put(MoveLocation.AFTER, new MoveAfterPossibilityPredicate(constraint, nodesToMove));
         possibilityPredicates.put(MoveLocation.BEFORE, new MoveBeforePossibilityPredicate(constraint, nodesToMove));
         possibilityPredicates.put(MoveLocation.INSIDE, new MoveInsidePossibilityPredicate(constraint, nodesToMove));
-
     }
 
     protected void updatePossibleMoveLocations(Item possibleHost) {
@@ -238,25 +244,23 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private void initActions() {
         for (MoveLocation location : MoveLocation.values()) {
-            ConfiguredActionDefinition definition = new MoveNodeActionDefinition(location);
+            ConfiguredActionDefinition definition = i18nizer.decorate(new MoveNodeActionDefinition(location));
             definition.setName(location.name());
-            definition.setLabel("move " + location.name());
             actionMap.put(location, definition);
         }
     }
 
     private DialogDefinition prepareDialogDefinition() {
         ConfiguredDialogDefinition def = new ConfiguredDialogDefinition();
-        def.setLabel("Move destination");
-        def.setId("move:dialog");
+        def = i18nizer.decorate(def);
+        def.setId("ui-contentapp:code:MoveDialogPresenterImpl.moveDialog");
 
         for (MoveLocation location : MoveLocation.values()) {
             def.addAction(actionMap.get(location));
         }
 
         ConfiguredActionDefinition cancelDef = new ConfiguredActionDefinition();
-        cancelDef.setLabel("cancel");
-        cancelDef.setName("cancelMove");
+        cancelDef.setName("cancel");
         cancelDef.setImplementationClass(MoveCancelledAction.class);
         def.addAction(cancelDef);
 
