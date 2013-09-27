@@ -63,7 +63,7 @@ public class ViewImageAction extends MediaEditorUIAction {
 
     private ViewImageField viewField = new ViewImageField();
 
-    private ImageSizeLabel imageSizeLabel = new ImageSizeLabel();
+    private ImageSizeLabel imageSizeLabel;
 
     private final SimpleTranslator i18n;
 
@@ -71,6 +71,7 @@ public class ViewImageAction extends MediaEditorUIAction {
             EditHistoryTrackingProperty dataSource, SimpleTranslator i18n) {
         super(definition, view, dataSource, eventBus);
         this.i18n = i18n;
+        imageSizeLabel = new ImageSizeLabel(i18n);
         viewField.addImageResizeListener(imageSizeLabel);
     }
 
@@ -128,8 +129,13 @@ public class ViewImageAction extends MediaEditorUIAction {
     /**
      * ImageSizeLabel.
      */
-    public class ImageSizeLabel extends Label implements ViewImageField.ImageSizeChangeListener {
+    public static class ImageSizeLabel extends Label implements ViewImageField.ImageSizeChangeListener {
 
+        private final SimpleTranslator i18n;
+
+        public ImageSizeLabel(SimpleTranslator i18n){
+            this.i18n = i18n;
+        }
         @Override
         public void onSizeChanged(ViewImageField.ImageResizeEvent e) {
             setValue(String.format(i18n.translate("ui-mediaeditor.view.actualSize.display"), e.getWidth(), e.getHeight()));
