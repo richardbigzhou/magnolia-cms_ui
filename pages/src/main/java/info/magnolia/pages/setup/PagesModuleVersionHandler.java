@@ -33,6 +33,8 @@
  */
 package info.magnolia.pages.setup;
 
+import static info.magnolia.nodebuilder.Ops.*;
+
 import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromDialogsTask;
 import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromSubappsTask;
 import info.magnolia.jcr.util.NodeTypes;
@@ -47,7 +49,10 @@ import info.magnolia.module.delta.PropertyExistsDelegateTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RemovePropertyTask;
 import info.magnolia.module.delta.RenameNodesTask;
+import info.magnolia.nodebuilder.task.ErrorHandling;
+import info.magnolia.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.contentapp.browser.action.ShowVersionsActionDefinition;
 
 /**
  * Version handler for the pages app module.
@@ -56,9 +61,11 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
 
     public PagesModuleVersionHandler() {
         super();
+
         register(DeltaBuilder.update("5.0", "Configuration update for Magnolia 5.0")
                 .addTask(new IsModuleInstalledOrRegistered("", "", "adminInterface",
                         new BootstrapConditionally("Bootstrap activation commands", "Bootstraps the default activation and deletion commands which no longer reside under adminInterface.", "config.modules.pages.commands.xml"))));
+
         register(DeltaBuilder.update("5.0.1", "")
                 .addTask(new NodeExistsDelegateTask("Remove dialog links Node", "Remove dialog definition in pages/dialogs/links", RepositoryConstants.CONFIG, "/modules/pages/dialogs/link",
                         new RemoveNodeTask("Remove dialog links Node", "Remove dialog definition in pages/dialogs/links", RepositoryConstants.CONFIG, "/modules/pages/dialogs/link")))
@@ -85,8 +92,21 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                         new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/confirmDeletion/availability", "multiple", true)))
 
                 // add show versions action
-                .addTask(new PartialBootstrapTask("Bootstrap showVersions action", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actions/showVersions"))
-                .addTask(new PartialBootstrapTask("Bootstrap actionbar section group for versionActions", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions"))
+                // if module diff is installed, this task will create a second node showVersions
+                // we'll handle the renaming of the correct node in module diff
+                .addTask(new NodeBuilderTask("Create showVersions action", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions",
+                        addNode("showVersions", NodeTypes.ContentNode.NAME).then(
+                                addProperty("class", ShowVersionsActionDefinition.class.getName()),
+                                addProperty("icon", "icon-show-versions"),
+                                addNode("availability", NodeTypes.ContentNode.NAME).then(
+                                        addProperty("ruleClass", "info.magnolia.ui.api.availability.HasVersionsRule")
+                                )
+                        )
+                ))
+                // bootstrap versionActions to action bar if it doesn't exists already
+                .addTask(new NodeExistsDelegateTask("Bootstrap actionbar section group for versionActions", "", RepositoryConstants.CONFIG, "/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions", null,
+                        new PartialBootstrapTask("", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions")
+                ))
 
                 // Remove hardcoded i18n properties, e.g. label, description, etc.
                 .addTask(new RemoveHardcodedI18nPropertiesFromDialogsTask("pages"))

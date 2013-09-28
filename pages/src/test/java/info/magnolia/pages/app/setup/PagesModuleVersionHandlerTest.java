@@ -226,14 +226,13 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
 
     @Test
     public void testUpdateTo51VersionActionsInstalled() throws RepositoryException, ModuleManagementException {
-
         // GIVEN
         session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         Node actions = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions", NodeTypes.ContentNode.NAME);
         Node pageActionsGroups = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups", NodeTypes.ContentNode.NAME);
 
-        assertFalse(actions.hasNode("showVersions"));
-        assertFalse(pageActionsGroups.hasNode("versionActions"));
+        // Also create a showVersions action to simulate an installed module diff
+        NodeUtil.createPath(actions, "showVersions", NodeTypes.ContentNode.NAME);
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.2"));
