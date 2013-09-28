@@ -42,6 +42,7 @@ import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
 import info.magnolia.context.WebContext;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.MockWebContext;
@@ -87,7 +88,7 @@ public class PulseMessagesViewImplTest {
     @Test
     public void testEnsureMessageIsEscaped() throws Exception {
         // GIVEN
-        PulseMessagesViewImpl view = new PulseMessagesViewImpl(mock(Shell.class),null);
+        PulseMessagesViewImpl view = new PulseMessagesViewImpl(mock(Shell.class),mock(SimpleTranslator.class));
         HierarchicalContainer container = mock(HierarchicalContainer.class);
         String itemId = "1234";
         when(container.getContainerProperty(itemId, PulseMessagesPresenter.TEXT_PROPERTY_ID)).thenReturn(new DefaultProperty(String.class, "<span onmouseover=\"alert('xss')\">bug</span>"));
