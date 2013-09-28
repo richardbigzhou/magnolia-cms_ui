@@ -34,7 +34,7 @@
 package info.magnolia.security.app.dialog.field;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.Permission;
 import info.magnolia.i18nsystem.SimpleTranslator;
@@ -49,10 +49,10 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.io.IOException;
 import java.util.Iterator;
-
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.ui.Button;
@@ -70,6 +70,18 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class WebAccessFieldFactoryTest extends MgnlTestCase {
 
+    private SimpleTranslator i18n;
+
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        i18n = mock(SimpleTranslator.class);
+        when(i18n.translate("security.web.field.delete")).thenReturn("Delete");
+        when(i18n.translate("security.web.field.noAccess")).thenReturn("No access.");
+        when(i18n.translate("security.web.field.addNew")).thenReturn("Add new");
+    }
+
     @Test
     public void testShowsAddButtonAndEmptyLabelWhenEmpty() {
 
@@ -79,7 +91,7 @@ public class WebAccessFieldFactoryTest extends MgnlTestCase {
         JcrNewNodeAdapter item = new JcrNewNodeAdapter(session.getRootNode(), NodeTypes.Content.NAME);
 
         WebAccessFieldDefinition definition = new WebAccessFieldDefinition();
-        WebAccessFieldFactory builder = new WebAccessFieldFactory(definition, item, mock(SimpleTranslator.class));
+        WebAccessFieldFactory builder = new WebAccessFieldFactory(definition, item, i18n);
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();
@@ -114,7 +126,7 @@ public class WebAccessFieldFactoryTest extends MgnlTestCase {
         JcrNodeAdapter item = new JcrNodeAdapter(session.getNode("/role"));
 
         WebAccessFieldDefinition definition = new WebAccessFieldDefinition();
-        WebAccessFieldFactory builder = new WebAccessFieldFactory<WebAccessFieldDefinition>(definition, item, mock(SimpleTranslator.class));
+        WebAccessFieldFactory builder = new WebAccessFieldFactory<WebAccessFieldDefinition>(definition, item, i18n);
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();
