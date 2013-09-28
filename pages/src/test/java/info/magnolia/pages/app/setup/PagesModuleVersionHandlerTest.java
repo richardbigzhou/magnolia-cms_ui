@@ -75,14 +75,13 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     protected List<String> getModuleDescriptorPathsForTests() {
         return Arrays.asList(
                 "/META-INF/magnolia/core.xml"
-        );
+                );
     }
 
     @Override
     protected ModuleVersionHandler newModuleVersionHandlerForTests() {
         return new PagesModuleVersionHandler();
     }
-
 
     @Override
     @Before
@@ -121,19 +120,6 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     }
 
     @Test
-    public void testUpdateTo501CreatePageDialogHasLabel() throws ModuleManagementException, RepositoryException {
-        // GIVEN
-        session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        Node createPage = NodeUtil.createPath(session.getRootNode(), "/modules/pages/dialogs/createPage/form", NodeTypes.ContentNode.NAME);
-        createPage.getSession().save();
-        // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("2.0"));
-
-        // THEN
-        assertTrue(createPage.hasProperty("label"));
-    }
-
-    @Test
     public void testUpdateTo502HasNewActions() throws ModuleManagementException, RepositoryException {
 
         // WHEN
@@ -142,7 +128,6 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         // THEN
         assertTrue(actions.hasNode("confirmDeletion"));
     }
-
 
     @Test
     public void testUpdateTo502CleanupDeleteAction() throws ModuleManagementException, RepositoryException {
@@ -174,7 +159,6 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
 
         NodeUtil.createPath(actionbarItems, "delete", NodeTypes.ContentNode.NAME);
 
-
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
 
@@ -197,8 +181,6 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertEquals("true", availability.getProperty("multiple").getString());
     }
 
-
-
     @Test
     public void testUpdateTo51BootstrapsNewCommands() throws ModuleManagementException, RepositoryException {
 
@@ -210,20 +192,20 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
                 addNode("activate", NodeTypes.ContentNode.NAME).then(
                         addNode("version", NodeTypes.ContentNode.NAME),
                         addNode("activate", NodeTypes.ContentNode.NAME)
-                ),
+                        ),
                 addNode("deactivate", NodeTypes.ContentNode.NAME).then(
                         addNode("deactivate", NodeTypes.ContentNode.NAME).then(
                                 addNode("version", NodeTypes.ContentNode.NAME),
                                 addNode("deactivate", NodeTypes.ContentNode.NAME)
-                        )
-                ),
+                                )
+                        ),
                 addNode("customCommand", NodeTypes.ContentNode.NAME).then(
                         addNode("custom", NodeTypes.ContentNode.NAME).then(
                                 addNode("version", NodeTypes.ContentNode.NAME),
                                 addNode("else", NodeTypes.ContentNode.NAME)
+                                )
                         )
-                )
-        );
+                );
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.2"));
