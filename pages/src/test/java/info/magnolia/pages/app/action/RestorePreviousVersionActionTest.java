@@ -41,33 +41,38 @@ import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.SimpleEventBus;
+import info.magnolia.i18nsystem.ContextLocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.i18nsystem.TranslationServiceImpl;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.SubApp;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
+import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.api.overlay.AlertCallback;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.api.overlay.MessageStyleType;
 import info.magnolia.ui.api.overlay.NotificationCallback;
 import info.magnolia.ui.api.overlay.OverlayCloser;
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.api.app.AppContext;
-import info.magnolia.ui.api.app.SubApp;
-import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.api.app.SubAppDescriptor;
-import info.magnolia.ui.api.location.Location;
-import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
+import java.util.Locale;
+
 import javax.jcr.Node;
 import javax.jcr.Session;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -83,7 +88,7 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
     private SimpleEventBus locationEventBus;
     private LocationController locationController;
     private RestorePreviousVersionActionTest.TestSubAppContext subAppContext;
-    SimpleTranslator i18n;
+    private SimpleTranslator i18n;
 
     @Override
     @Before
@@ -105,9 +110,16 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
         locationController = new LocationController(locationEventBus, mock(Shell.class));
 
         subAppContext = new RestorePreviousVersionActionTest.TestSubAppContext();
-        i18n = mock(SimpleTranslator.class);
+        i18n = new SimpleTranslator(new TranslationServiceImpl(), new ContextLocaleProvider());
+        MgnlContext.setLocale(Locale.ENGLISH);
     }
 
+    @Override
+    @After
+    public void tearDown() throws Exception {
+        super.tearDown();
+        ComponentsTestUtil.clear();
+    }
 
     @Test
     public void testExecute() throws Exception {
@@ -137,7 +149,7 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
         action.execute();
 
         // THEN
-        assertEquals(subAppContext.title, "This Item do not have a Previous version. Action cancelled.");
+        assertEquals(subAppContext.title, "This item does not have a previous version. Action cancelled.");
         assertEquals(subAppContext.type, MessageStyleTypeEnum.ERROR);
     }
 
@@ -151,7 +163,6 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
 
         AbstractJcrNodeAdapter item = new JcrNodeAdapter(node);
         RestorePreviousVersionAction action = new RestorePreviousVersionAction(definition, item, locationController, versionMan, subAppContext, i18n);
-
 
         // WHEN
         action.execute();
