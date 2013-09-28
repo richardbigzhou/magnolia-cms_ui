@@ -41,9 +41,7 @@ import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
-import info.magnolia.i18nsystem.ContextLocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.i18nsystem.TranslationServiceImpl;
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
 import info.magnolia.jcr.node2bean.Node2BeanTransformer;
 import info.magnolia.jcr.node2bean.TypeMapping;
@@ -53,8 +51,6 @@ import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategory;
 import info.magnolia.ui.admincentral.shellapp.pulse.message.PulseMessageCategoryNavigator.MessageCategoryTab;
-
-import java.util.Locale;
 
 import org.junit.After;
 import org.junit.Before;
@@ -67,6 +63,7 @@ public class PulseMessageCategoryNavigatorTest {
     private PulseMessageCategoryNavigator categoryNavigator;
     private SystemContext sysCtx;
     private Context ctx;
+    private SimpleTranslator i18n;
 
     @Before
     public void setUp() throws Exception {
@@ -74,7 +71,6 @@ public class PulseMessageCategoryNavigatorTest {
         ctx = mock(Context.class);
         // current context locale
         MgnlContext.setInstance(ctx);
-        when(ctx.getLocale()).thenReturn(Locale.ENGLISH);
 
         sysCtx = mock(SystemContext.class);
         ComponentsTestUtil.setInstance(SystemContext.class, sysCtx);
@@ -84,7 +80,8 @@ public class PulseMessageCategoryNavigatorTest {
         ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
         ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
 
-        SimpleTranslator i18n = new SimpleTranslator(new TranslationServiceImpl(), new ContextLocaleProvider());
+        i18n = mock(SimpleTranslator.class);
+        when(i18n.translate("pulse.messages.problems")).thenReturn("Problems");
         categoryNavigator = new PulseMessageCategoryNavigator(i18n);
     }
 
@@ -100,15 +97,5 @@ public class PulseMessageCategoryNavigatorTest {
         MessageCategoryTab tab = categoryNavigator.new MessageCategoryTab(MessageCategory.PROBLEM);
         // THEN
         assertEquals("Problems", tab.getLabel());
-    }
-
-    @Test
-    public void categoryLabelWithCurrentLocaleAsGerman() throws Exception {
-        // GIVEN
-        when(ctx.getLocale()).thenReturn(Locale.GERMAN);
-        // WHEN
-        MessageCategoryTab tab = categoryNavigator.new MessageCategoryTab(MessageCategory.PROBLEM);
-        // THEN
-        assertEquals("Probleme", tab.getLabel());
     }
 }
