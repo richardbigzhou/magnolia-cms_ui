@@ -33,6 +33,8 @@
  */
 package info.magnolia.security.app.dialog.field;
 
+import static org.mockito.Mockito.when;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
@@ -49,10 +51,10 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.io.IOException;
 import java.util.Iterator;
-
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.vaadin.ui.Button;
@@ -70,6 +72,19 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
 
+    private SimpleTranslator i18n;
+
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        i18n = mock(SimpleTranslator.class);
+        when(i18n.translate("security.workspace.field.choose")).thenReturn("Choose...");
+        when(i18n.translate("security.workspace.field.delete")).thenReturn("Delete");
+        when(i18n.translate("security.workspace.field.noAccess")).thenReturn("No access.");
+        when(i18n.translate("security.workspace.field.addButton")).thenReturn("Add new");
+    }
+
     @Test
     public void testShowsAddButtonAndEmptyLabelWhenEmpty() {
 
@@ -79,7 +94,7 @@ public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
         JcrNewNodeAdapter item = new JcrNewNodeAdapter(session.getRootNode(), NodeTypes.Content.NAME);
 
         WorkspaceAccessFieldDefinition definition = new WorkspaceAccessFieldDefinition();
-        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, null, mock(SimpleTranslator.class));
+        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, null, i18n);
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();
@@ -115,7 +130,7 @@ public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
 
         WorkspaceAccessFieldDefinition definition = new WorkspaceAccessFieldDefinition();
         definition.setWorkspace(RepositoryConstants.CONFIG);
-        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, null, mock(SimpleTranslator.class));
+        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, null, i18n);
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();
@@ -153,7 +168,7 @@ public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
 
         WorkspaceAccessFieldDefinition definition = new WorkspaceAccessFieldDefinition();
         definition.setWorkspace(RepositoryConstants.CONFIG);
-        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, null, mock(SimpleTranslator.class));
+        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, null, i18n);
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();
