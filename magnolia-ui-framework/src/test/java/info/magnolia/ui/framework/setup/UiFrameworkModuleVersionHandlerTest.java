@@ -58,6 +58,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -90,6 +91,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         i18n.getSession().save();
 
         framework = NodeUtil.createPath(session.getRootNode(), "/modules/ui-framework", NodeTypes.ContentNode.NAME);
+        framework.addNode("dialogs", NodeTypes.ContentNode.NAME);
 
         ComponentsTestUtil.setImplementation(UnicodeNormalizer.Normalizer.class, "info.magnolia.cms.util.UnicodeNormalizer$NonNormalizer");
     }
@@ -219,6 +221,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
     }
 
     @Test
+    @Ignore("Task has been commented out")
     public void testUpdateTo5_1ChangePackageName() throws ModuleManagementException, RepositoryException {
         // GIVEN
         Node path = framework.addNode("path", NodeTypes.ContentNode.NAME);
