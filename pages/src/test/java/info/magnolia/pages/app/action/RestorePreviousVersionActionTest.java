@@ -33,7 +33,7 @@
  */
 package info.magnolia.pages.app.action;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
 import info.magnolia.cms.core.version.VersionManager;
@@ -41,9 +41,7 @@ import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.SimpleEventBus;
-import info.magnolia.i18nsystem.ContextLocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.i18nsystem.TranslationServiceImpl;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
@@ -65,11 +63,9 @@ import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
-
-import java.util.Locale;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.junit.After;
@@ -110,8 +106,7 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
         locationController = new LocationController(locationEventBus, mock(Shell.class));
 
         subAppContext = new RestorePreviousVersionActionTest.TestSubAppContext();
-        i18n = new SimpleTranslator(new TranslationServiceImpl(), new ContextLocaleProvider());
-        MgnlContext.setLocale(Locale.ENGLISH);
+        i18n = mock(SimpleTranslator.class);
     }
 
     @Override
@@ -149,8 +144,13 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
         action.execute();
 
         // THEN
-        assertEquals(subAppContext.title, "This item does not have a previous version. Action cancelled.");
-        assertEquals(subAppContext.type, MessageStyleTypeEnum.ERROR);
+        try {
+            versionMan.getBaseVersion(node);
+            fail("Should have failed");
+        } catch (RepositoryException re) {
+            assertTrue(re.getMessage().contains("Node /node was never versioned"));
+        }
+
     }
 
     @Test
