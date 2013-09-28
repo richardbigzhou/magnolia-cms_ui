@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.contentapp.detail.action;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
 import info.magnolia.cms.core.version.VersionManager;
@@ -47,26 +47,26 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.api.app.AppContext;
+import info.magnolia.ui.api.app.SubApp;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
+import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.api.overlay.AlertCallback;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.api.overlay.MessageStyleType;
 import info.magnolia.ui.api.overlay.NotificationCallback;
 import info.magnolia.ui.api.overlay.OverlayCloser;
-import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.api.app.AppContext;
-import info.magnolia.ui.api.app.SubApp;
-import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.api.app.SubAppDescriptor;
-import info.magnolia.ui.api.location.Location;
-import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.junit.Before;
@@ -111,7 +111,6 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
         i18n = mock(SimpleTranslator.class);
     }
 
-
     @Test
     public void testExecute() throws Exception {
         // GIVEN
@@ -138,8 +137,12 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
         action.execute();
 
         // THEN
-        assertEquals(subAppContext.title, "This Item do not have a Previous version. Action cancelled.");
-        assertEquals(subAppContext.type, MessageStyleTypeEnum.ERROR);
+        try {
+            versionMan.getBaseVersion(node);
+            fail("Should have failed");
+        } catch (RepositoryException re) {
+            assertTrue(re.getMessage().contains("Node /node was never versioned"));
+        }
     }
 
     @Test
@@ -152,7 +155,6 @@ public class RestorePreviousVersionActionTest extends RepositoryTestCase {
 
         AbstractJcrNodeAdapter item = new JcrNodeAdapter(node);
         RestorePreviousVersionAction action = new RestorePreviousVersionAction(definition, item, versionMan, subAppContext, eventBus, i18n);
-
 
         // WHEN
         action.execute();
