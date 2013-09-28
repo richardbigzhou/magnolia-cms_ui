@@ -116,6 +116,8 @@ public class BaseDialogPresenterTest {
         initializeVaadinUI();
         initializeActions();
 
+        definition.setId("testDialog");
+
         this.executor.setDialogDefinition(definition);
     }
 
