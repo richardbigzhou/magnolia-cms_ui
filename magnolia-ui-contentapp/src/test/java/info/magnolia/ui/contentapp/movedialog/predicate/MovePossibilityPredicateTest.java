@@ -115,8 +115,10 @@ public class MovePossibilityPredicateTest {
         MoveAfterPossibilityPredicate beforePredicate = new MoveAfterPossibilityPredicate(constraint, Arrays.asList(a2, a3));
 
         //WHEN
-        when(constraint.allowedAfter(a1, a2)).thenReturn(false);
-        when(constraint.allowedBefore(a1, a2)).thenReturn(false);
+        when(constraint.allowedAfter(a2, a1)).thenReturn(false);
+        when(constraint.allowedBefore(a2, a1)).thenReturn(false);
+        when(constraint.allowedAsChild(a2, a1)).thenReturn(true);
+        when(constraint.allowedAsChild(a3, a1)).thenReturn(true);
 
         //THEN
         assert(insidePredicate.isMovePossible(a1));
