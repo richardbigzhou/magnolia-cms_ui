@@ -46,6 +46,7 @@ import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.pages.setup.PagesModuleVersionHandler;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.contentapp.availability.IsNotVersionedDetailLocationRule;
 
 import java.util.Arrays;
 import java.util.List;
@@ -64,6 +65,10 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
 
     private Node dialog;
     private Node actions;
+    private Node detailActions;
+    private Node editPageAction;
+    private Node activatePageAction;
+    private Node deactivatePageAction;
     private Session session;
 
     @Override
@@ -92,7 +97,11 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         dialog.getSession().save();
 
         actions = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions", NodeTypes.ContentNode.NAME);
-
+        // Detail actions
+        detailActions = NodeUtil.createPath(session.getRootNode(), "/modules/pages/apps/pages/subApps/detail/actions", NodeTypes.ContentNode.NAME);
+        editPageAction = NodeUtil.createPath(detailActions, "edit", NodeTypes.ContentNode.NAME);
+        activatePageAction = NodeUtil.createPath(detailActions, "activate", NodeTypes.ContentNode.NAME);
+        deactivatePageAction = NodeUtil.createPath(detailActions, "deactivate", NodeTypes.ContentNode.NAME);
     }
 
     @Test
@@ -242,6 +251,27 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertTrue(pageActionsGroups.hasNode("versionActions"));
         assertTrue(pageActionsGroups.getNode("versionActions").hasNode("items"));
         assertTrue(pageActionsGroups.getNode("versionActions").getNode("items").hasNode("showVersions"));
+    }
+
+    @Test
+    public void testUpdateTo51ActionsHaveAvailabilityRule() throws RepositoryException, ModuleManagementException {
+        // GIVEN
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.2"));
+
+        // THEN
+        assertTrue(editPageAction.hasNode("availability"));
+        assertTrue(editPageAction.getNode("availability").hasProperty("ruleClass"));
+        assertEquals(IsNotVersionedDetailLocationRule.class.getName(), editPageAction.getNode("availability").getProperty("ruleClass").getString());
+
+        assertTrue(activatePageAction.hasNode("availability"));
+        assertTrue(activatePageAction.getNode("availability").hasProperty("ruleClass"));
+        assertEquals(IsNotVersionedDetailLocationRule.class.getName(), activatePageAction.getNode("availability").getProperty("ruleClass").getString());
+
+        assertTrue(deactivatePageAction.hasNode("availability"));
+        assertTrue(deactivatePageAction.getNode("availability").hasProperty("ruleClass"));
+        assertEquals(IsNotVersionedDetailLocationRule.class.getName(), deactivatePageAction.getNode("availability").getProperty("ruleClass").getString());
     }
 
 }

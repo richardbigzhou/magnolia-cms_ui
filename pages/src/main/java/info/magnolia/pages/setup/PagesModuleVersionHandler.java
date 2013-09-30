@@ -52,6 +52,7 @@ import info.magnolia.module.delta.RenameNodesTask;
 import info.magnolia.nodebuilder.task.ErrorHandling;
 import info.magnolia.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.contentapp.availability.IsNotVersionedDetailLocationRule;
 import info.magnolia.ui.contentapp.browser.action.ShowVersionsActionDefinition;
 
 /**
@@ -120,6 +121,22 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new PartialBootstrapTask("Bootstrap new activate commands to website catalog.", "", "/mgnl-bootstrap/pages/config.modules.pages.commands.xml", "/commands/website/activate"))
                 .addTask(new PartialBootstrapTask("Bootstrap new deactivate commands to website catalog.", "", "/mgnl-bootstrap/pages/config.modules.pages.commands.xml", "/commands/website/deactivate"))
 
+                // Add availability rules to detail view actions
+                .addTask(new NodeBuilderTask("Add availability rule to edit action", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/detail/actions/edit",
+                        addNode("availability", NodeTypes.ContentNode.NAME).then(
+                                addProperty("ruleClass", IsNotVersionedDetailLocationRule.class.getName())
+                        )
+                ))
+                .addTask(new NodeBuilderTask("Add availability rule to activate action", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/detail/actions/activate",
+                        addNode("availability", NodeTypes.ContentNode.NAME).then(
+                                addProperty("ruleClass", IsNotVersionedDetailLocationRule.class.getName())
+                        )
+                ))
+                .addTask(new NodeBuilderTask("Add availability rule to deactivate action", "", ErrorHandling.logging, RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/detail/actions/deactivate",
+                        addNode("availability", NodeTypes.ContentNode.NAME).then(
+                                addProperty("ruleClass", IsNotVersionedDetailLocationRule.class.getName())
+                        )
+                ))
         );
 
     }
