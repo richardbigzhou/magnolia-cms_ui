@@ -44,6 +44,7 @@ import info.magnolia.cms.security.SecuritySupportImpl;
 import info.magnolia.cms.security.User;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.context.SystemContext;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockSession;
@@ -112,7 +113,7 @@ public class FavoritesPresenterTest {
         MgnlContext.setInstance(ctx);
 
         AppDescriptorRegistry registry = mock(AppDescriptorRegistry.class);
-        presenter = new FavoritesPresenter(null, null,registry);
+        presenter = new FavoritesPresenter(null, null,registry, mock(I18nizer.class));
     }
 
     @After

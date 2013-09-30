@@ -34,6 +34,7 @@
 package info.magnolia.ui.admincentral.shellapp.favorites;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
@@ -61,15 +62,20 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
 
     private final Logger log = LoggerFactory.getLogger(FavoritesPresenter.class);
 
+    private I18nizer i18nizer;
+
     private FavoritesView view;
+
     private FavoritesManager favoritesManager;
+
     private AppDescriptorRegistry appDescriptorRegistry;
 
     @Inject
-    public FavoritesPresenter(final FavoritesView view, final FavoritesManager favoritesManager, final AppDescriptorRegistry appDescriptorRegistry) {
+    public FavoritesPresenter(final FavoritesView view, final FavoritesManager favoritesManager, final AppDescriptorRegistry appDescriptorRegistry, I18nizer i18nizer) {
         this.view = view;
         this.favoritesManager = favoritesManager;
         this.appDescriptorRegistry = appDescriptorRegistry;
+        this.i18nizer = i18nizer;
     }
 
     public FavoritesView start() {
@@ -143,7 +149,7 @@ public final class FavoritesPresenter implements FavoritesView.Listener {
         } else {
             AppDescriptor appDescriptor;
             try {
-                appDescriptor = appDescriptorRegistry.getAppDescriptor(appName);
+                appDescriptor = i18nizer.decorate(appDescriptorRegistry.getAppDescriptor(appName));
             } catch (RegistrationException e) {
                 throw new RuntimeException(e);
             }
