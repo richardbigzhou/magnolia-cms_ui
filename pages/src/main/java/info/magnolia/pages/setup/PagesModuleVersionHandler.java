@@ -110,7 +110,6 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                 ))
 
                 // Remove hardcoded i18n properties, e.g. label, description, etc.
-                .addTask(new RemoveHardcodedI18nPropertiesFromDialogsTask("pages"))
                 .addTask(new RemoveHardcodedI18nPropertiesFromSubappsTask("pages"))
 
                 // cleanup pages commands
