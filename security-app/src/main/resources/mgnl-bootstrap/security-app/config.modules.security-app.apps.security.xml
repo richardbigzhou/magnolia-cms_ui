@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <sv:node sv:name="security" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <sv:property sv:name="jcr:primaryType" sv:type="Name">
     <sv:value>mgnl:contentNode</sv:value>
@@ -20,9 +19,6 @@
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
-  </sv:property>
-  <sv:property sv:name="label" sv:type="String">
-    <sv:value>Security</sv:value>
   </sv:property>
   <sv:node sv:name="subApps">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -55,9 +51,6 @@
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
-      </sv:property>
-      <sv:property sv:name="label" sv:type="String">
-        <sv:value>Users</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastModified" sv:type="Date">
         <sv:value>2013-05-22T15:11:08.424+02:00</sv:value>
@@ -102,9 +95,6 @@
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
-          </sv:property>
-          <sv:property sv:name="label" sv:type="String">
-            <sv:value>Edit user</sv:value>
           </sv:property>
           <sv:node sv:name="availability">
             <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -180,9 +170,6 @@
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
-          </sv:property>
-          <sv:property sv:name="label" sv:type="String">
-            <sv:value>Add user</sv:value>
           </sv:property>
           <sv:property sv:name="nodeType" sv:type="String">
             <sv:value>mgnl:user</sv:value>
@@ -261,9 +248,6 @@
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
-          </sv:property>
-          <sv:property sv:name="label" sv:type="String">
-            <sv:value>Delete user</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastModified" sv:type="Date">
             <sv:value>2013-06-13T15:14:28.317+02:00</sv:value>
@@ -352,9 +336,6 @@
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
           </sv:property>
-          <sv:property sv:name="label" sv:type="String">
-            <sv:value>Publish</sv:value>
-          </sv:property>
           <sv:property sv:name="mgnl:created" sv:type="Date">
             <sv:value>2013-02-25T12:38:03.268+01:00</sv:value>
           </sv:property>
@@ -387,9 +368,6 @@
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
           </sv:property>
-          <sv:property sv:name="label" sv:type="String">
-            <sv:value>Unpublish</sv:value>
-          </sv:property>
           <sv:property sv:name="mgnl:created" sv:type="Date">
             <sv:value>2013-02-25T12:41:07.950+01:00</sv:value>
           </sv:property>
@@ -418,9 +396,6 @@
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
-          </sv:property>
-          <sv:property sv:name="label" sv:type="String">
-            <sv:value>Add folder</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
             <sv:value>false</sv:value>
@@ -538,9 +513,6 @@
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
           </sv:property>
-          <sv:property sv:name="label" sv:type="String">
-            <sv:value>Delete folder</sv:value>
-          </sv:property>
           <sv:property sv:name="mgnl:lastModified" sv:type="Date">
             <sv:value>2013-06-13T15:14:33.059+02:00</sv:value>
           </sv:property>
@@ -625,9 +597,6 @@
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
           </sv:property>
-          <sv:property sv:name="label" sv:type="String">
-            <sv:value>Rename folder</sv:value>
-          </sv:property>
           <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
             <sv:value>false</sv:value>
           </sv:property>
@@ -711,9 +680,6 @@
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
-          </sv:property>
-          <sv:property sv:name="label" sv:type="String">
-            <sv:value>Delete items</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
             <sv:value>false</sv:value>
@@ -954,9 +920,6 @@
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
                 </sv:property>
-                <sv:property sv:name="label" sv:type="String">
-                  <sv:value>Name</sv:value>
-                </sv:property>
                 <sv:property sv:name="propertyName" sv:type="String">
                   <sv:value>jcrName</sv:value>
                 </sv:property>
@@ -983,9 +946,6 @@
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
                 </sv:property>
-                <sv:property sv:name="label" sv:type="String">
-                  <sv:value>Full name</sv:value>
-                </sv:property>
                 <sv:property sv:name="propertyName" sv:type="String">
                   <sv:value>title</sv:value>
                 </sv:property>
@@ -1011,9 +971,6 @@
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
-                </sv:property>
-                <sv:property sv:name="label" sv:type="String">
-                  <sv:value>Email</sv:value>
                 </sv:property>
                 <sv:property sv:name="propertyName" sv:type="String">
                   <sv:value>email</sv:value>
@@ -1047,9 +1004,6 @@
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
                 </sv:property>
-                <sv:property sv:name="label" sv:type="String">
-                  <sv:value>Status</sv:value>
-                </sv:property>
                 <sv:property sv:name="width" sv:type="String">
                   <sv:value>46</sv:value>
                 </sv:property>
@@ -1078,9 +1032,6 @@
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
-                </sv:property>
-                <sv:property sv:name="label" sv:type="String">
-                  <sv:value>Modification date</sv:value>
                 </sv:property>
                 <sv:property sv:name="propertyName" sv:type="String">
                   <sv:value>mgnl:lastModified</sv:value>
@@ -1134,9 +1085,6 @@
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>Users</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
               <sv:value>2013-05-17T08:40:20.580+02:00</sv:value>
@@ -1268,9 +1216,6 @@
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>User</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
               <sv:value>2013-06-13T16:08:50.462+02:00</sv:value>
@@ -1551,9 +1496,6 @@
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>Folder</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
               <sv:value>false</sv:value>
@@ -1974,9 +1916,6 @@
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
             </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>Multiple items</sv:value>
-            </sv:property>
             <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
               <sv:value>false</sv:value>
             </sv:property>
@@ -2333,9 +2272,6 @@
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
-      <sv:property sv:name="label" sv:type="String">
-        <sv:value>System users</sv:value>
-      </sv:property>
       <sv:property sv:name="mgnl:lastModified" sv:type="Date">
         <sv:value>2013-06-14T17:09:37.580+02:00</sv:value>
       </sv:property>
@@ -2422,9 +2358,6 @@
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
             </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>System user</sv:value>
-            </sv:property>
             <sv:property sv:name="mgnl:created" sv:type="Date">
               <sv:value>2013-06-14T17:08:19.452+02:00</sv:value>
             </sv:property>
@@ -2459,9 +2392,6 @@
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
-      </sv:property>
-      <sv:property sv:name="label" sv:type="String">
-        <sv:value>Groups</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:lastModified" sv:type="Date">
         <sv:value>2013-05-22T15:11:40.975+02:00</sv:value>
@@ -2506,9 +2436,6 @@
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
-          </sv:property>
-          <sv:property sv:name="label" sv:type="String">
-            <sv:value>Add group</sv:value>
           </sv:property>
           <sv:property sv:name="nodeType" sv:type="String">
             <sv:value>mgnl:group</sv:value>
@@ -2565,9 +2492,6 @@
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
           </sv:property>
-          <sv:property sv:name="label" sv:type="String">
-            <sv:value>Delete group</sv:value>
-          </sv:property>
         </sv:node>
         <sv:node sv:name="editGroup">
           <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -2590,9 +2514,6 @@
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
-          </sv:property>
-          <sv:property sv:name="label" sv:type="String">
-            <sv:value>Edit group</sv:value>
           </sv:property>
         </sv:node>
         <sv:node sv:name="activate">
@@ -2823,9 +2744,6 @@
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
                 </sv:property>
-                <sv:property sv:name="label" sv:type="String">
-                  <sv:value>Group name</sv:value>
-                </sv:property>
                 <sv:property sv:name="propertyName" sv:type="String">
                   <sv:value>jcrName</sv:value>
                 </sv:property>
@@ -2854,9 +2772,6 @@
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
-                </sv:property>
-                <sv:property sv:name="label" sv:type="String">
-                  <sv:value>Full group name</sv:value>
                 </sv:property>
                 <sv:property sv:name="propertyName" sv:type="String">
                   <sv:value>title</sv:value>
@@ -2890,9 +2805,6 @@
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
                 </sv:property>
-                <sv:property sv:name="label" sv:type="String">
-                  <sv:value>Status</sv:value>
-                </sv:property>
                 <sv:property sv:name="width" sv:type="String">
                   <sv:value>46</sv:value>
                 </sv:property>
@@ -2921,9 +2833,6 @@
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
-                </sv:property>
-                <sv:property sv:name="label" sv:type="String">
-                  <sv:value>Modification date</sv:value>
                 </sv:property>
                 <sv:property sv:name="propertyName" sv:type="String">
                   <sv:value>mgnl:lastModified</sv:value>
@@ -2980,9 +2889,6 @@
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>Groups</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
               <sv:value>2013-05-17T09:13:11.546+02:00</sv:value>
@@ -3097,9 +3003,6 @@
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>Group</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
               <sv:value>2013-05-17T09:13:22.466+02:00</sv:value>
@@ -3342,9 +3245,6 @@
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
-      <sv:property sv:name="label" sv:type="String">
-        <sv:value>Roles</sv:value>
-      </sv:property>
       <sv:property sv:name="mgnl:lastModified" sv:type="Date">
         <sv:value>2013-05-22T15:11:53.637+02:00</sv:value>
       </sv:property>
@@ -3386,9 +3286,6 @@
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
           </sv:property>
-          <sv:property sv:name="label" sv:type="String">
-            <sv:value>Delete role</sv:value>
-          </sv:property>
         </sv:node>
         <sv:node sv:name="editRole">
           <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -3409,9 +3306,6 @@
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
           </sv:property>
-          <sv:property sv:name="label" sv:type="String">
-            <sv:value>Edit role</sv:value>
-          </sv:property>
         </sv:node>
         <sv:node sv:name="addRole">
           <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -3431,9 +3325,6 @@
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
-          </sv:property>
-          <sv:property sv:name="label" sv:type="String">
-            <sv:value>Add role</sv:value>
           </sv:property>
           <sv:property sv:name="mgnl:lastModified" sv:type="Date">
             <sv:value>2013-06-05T10:59:52.405+02:00</sv:value>
@@ -3702,9 +3593,6 @@
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
                 </sv:property>
-                <sv:property sv:name="label" sv:type="String">
-                  <sv:value>Role name</sv:value>
-                </sv:property>
                 <sv:property sv:name="propertyName" sv:type="String">
                   <sv:value>jcrName</sv:value>
                 </sv:property>
@@ -3733,9 +3621,6 @@
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
-                </sv:property>
-                <sv:property sv:name="label" sv:type="String">
-                  <sv:value>Full role name</sv:value>
                 </sv:property>
                 <sv:property sv:name="propertyName" sv:type="String">
                   <sv:value>title</sv:value>
@@ -3769,9 +3654,6 @@
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
                 </sv:property>
-                <sv:property sv:name="label" sv:type="String">
-                  <sv:value>Status</sv:value>
-                </sv:property>
                 <sv:property sv:name="width" sv:type="String">
                   <sv:value>46</sv:value>
                 </sv:property>
@@ -3800,9 +3682,6 @@
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
-                </sv:property>
-                <sv:property sv:name="label" sv:type="String">
-                  <sv:value>Modification date</sv:value>
                 </sv:property>
                 <sv:property sv:name="propertyName" sv:type="String">
                   <sv:value>mgnl:lastModified</sv:value>
@@ -3859,9 +3738,6 @@
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>Groups</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
               <sv:value>2013-05-17T09:26:18.452+02:00</sv:value>
@@ -3976,9 +3852,6 @@
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>Role</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:lastModified" sv:type="Date">
               <sv:value>2013-05-17T09:28:25.380+02:00</sv:value>

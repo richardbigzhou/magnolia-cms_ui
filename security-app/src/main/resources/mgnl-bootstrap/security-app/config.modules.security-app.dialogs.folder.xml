@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <sv:node sv:name="folder" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <sv:property sv:name="jcr:primaryType" sv:type="Name">
     <sv:value>mgnl:contentNode</sv:value>
@@ -9,17 +8,11 @@
   <sv:property sv:name="jcr:uuid" sv:type="String">
     <sv:value>21562742-238f-45ea-972f-141d92a58a4f</sv:value>
   </sv:property>
-  <sv:property sv:name="description" sv:type="String">
-    <sv:value>Rename folder</sv:value>
-  </sv:property>
   <sv:property sv:name="jcr:created" sv:type="Date">
     <sv:value>2013-06-13T15:04:46.428+02:00</sv:value>
   </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
-  </sv:property>
-  <sv:property sv:name="label" sv:type="String">
-    <sv:value>Edit folder</sv:value>
   </sv:property>
   <sv:property sv:name="mgnl:created" sv:type="Date">
     <sv:value>2013-04-08T17:58:44.556+02:00</sv:value>
@@ -74,9 +67,6 @@
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
-      <sv:property sv:name="label" sv:type="String">
-        <sv:value>save changes</sv:value>
-      </sv:property>
       <sv:property sv:name="mgnl:created" sv:type="Date">
         <sv:value>2013-04-08T18:01:45.780+02:00</sv:value>
       </sv:property>
@@ -105,9 +95,6 @@
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
-      </sv:property>
-      <sv:property sv:name="label" sv:type="String">
-        <sv:value>cancel</sv:value>
       </sv:property>
       <sv:property sv:name="mgnl:created" sv:type="Date">
         <sv:value>2013-04-08T18:01:47.277+02:00</sv:value>
@@ -186,9 +173,6 @@
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
         </sv:property>
-        <sv:property sv:name="label" sv:type="String">
-          <sv:value>Folder</sv:value>
-        </sv:property>
         <sv:property sv:name="mgnl:created" sv:type="Date">
           <sv:value>2013-04-08T17:59:54.349+02:00</sv:value>
         </sv:property>
@@ -236,17 +220,11 @@
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.form.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
-            <sv:property sv:name="description" sv:type="String">
-              <sv:value>Folder name</sv:value>
-            </sv:property>
             <sv:property sv:name="jcr:created" sv:type="Date">
               <sv:value>2013-06-13T15:04:46.435+02:00</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>Name</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:created" sv:type="Date">
               <sv:value>2013-04-08T18:00:16.071+02:00</sv:value>

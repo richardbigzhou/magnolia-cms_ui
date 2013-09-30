@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <sv:node sv:name="role" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <sv:property sv:name="jcr:primaryType" sv:type="Name">
     <sv:value>mgnl:contentNode</sv:value>
@@ -53,9 +52,6 @@
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
-      <sv:property sv:name="label" sv:type="String">
-        <sv:value>save changes</sv:value>
-      </sv:property>
     </sv:node>
     <sv:node sv:name="cancel">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -76,9 +72,6 @@
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
-      <sv:property sv:name="label" sv:type="String">
-        <sv:value>cancel</sv:value>
-      </sv:property>
     </sv:node>
   </sv:node>
   <sv:node sv:name="form">
@@ -91,17 +84,11 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>d45dbb34-fd3e-4289-9434-7f8f6f4eb812</sv:value>
     </sv:property>
-    <sv:property sv:name="description" sv:type="String">
-      <sv:value>Define the role information</sv:value>
-    </sv:property>
     <sv:property sv:name="jcr:created" sv:type="Date">
       <sv:value>2013-06-05T10:28:22.745+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
-    </sv:property>
-    <sv:property sv:name="label" sv:type="String">
-      <sv:value>Role</sv:value>
     </sv:property>
     <sv:node sv:name="tabs">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -135,9 +122,6 @@
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
         </sv:property>
-        <sv:property sv:name="label" sv:type="String">
-          <sv:value>Role info</sv:value>
-        </sv:property>
         <sv:node sv:name="fields">
           <sv:property sv:name="jcr:primaryType" sv:type="Name">
             <sv:value>mgnl:contentNode</sv:value>
@@ -167,17 +151,11 @@
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.form.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
-            <sv:property sv:name="description" sv:type="String">
-              <sv:value>Define unique role name</sv:value>
-            </sv:property>
             <sv:property sv:name="jcr:created" sv:type="Date">
               <sv:value>2013-06-05T10:28:22.747+02:00</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>Role name</sv:value>
             </sv:property>
             <sv:property sv:name="required" sv:type="String">
               <sv:value>true</sv:value>
@@ -211,9 +189,6 @@
                 <sv:property sv:name="class" sv:type="String">
                   <sv:value>info.magnolia.security.app.dialog.field.validator.UniqueRoleNameValidatorDefinition</sv:value>
                 </sv:property>
-                <sv:property sv:name="errorMessage" sv:type="String">
-                  <sv:value>Role name already exists.</sv:value>
-                </sv:property>
                 <sv:property sv:name="jcr:created" sv:type="Date">
                   <sv:value>2013-06-05T10:28:22.749+02:00</sv:value>
                 </sv:property>
@@ -236,17 +211,11 @@
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.form.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
-            <sv:property sv:name="description" sv:type="String">
-              <sv:value>Full name of the role</sv:value>
-            </sv:property>
             <sv:property sv:name="jcr:created" sv:type="Date">
               <sv:value>2013-06-05T10:28:22.749+02:00</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>Full name</sv:value>
             </sv:property>
           </sv:node>
           <sv:node sv:name="description">
@@ -262,17 +231,11 @@
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.form.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
-            <sv:property sv:name="description" sv:type="String">
-              <sv:value>Description of the role</sv:value>
-            </sv:property>
             <sv:property sv:name="jcr:created" sv:type="Date">
               <sv:value>2013-06-05T10:28:22.750+02:00</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>Role Description</sv:value>
             </sv:property>
           </sv:node>
         </sv:node>
@@ -292,9 +255,6 @@
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
-        </sv:property>
-        <sv:property sv:name="label" sv:type="String">
-          <sv:value>Access control lists</sv:value>
         </sv:property>
         <sv:node sv:name="fields">
           <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -400,9 +360,6 @@
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
         </sv:property>
-        <sv:property sv:name="label" sv:type="String">
-          <sv:value>Web access</sv:value>
-        </sv:property>
         <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
           <sv:value>false</sv:value>
         </sv:property>
@@ -461,9 +418,6 @@
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>Web access</sv:value>
             </sv:property>
             <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
               <sv:value>false</sv:value>

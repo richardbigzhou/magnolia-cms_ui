@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <sv:node sv:name="user" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <sv:property sv:name="jcr:primaryType" sv:type="Name">
     <sv:value>mgnl:contentNode</sv:value>
@@ -44,9 +43,6 @@
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
-      <sv:property sv:name="label" sv:type="String">
-        <sv:value>save changes</sv:value>
-      </sv:property>
     </sv:node>
     <sv:node sv:name="cancel">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -64,9 +60,6 @@
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
       </sv:property>
-      <sv:property sv:name="label" sv:type="String">
-        <sv:value>cancel</sv:value>
-      </sv:property>
     </sv:node>
   </sv:node>
   <sv:node sv:name="form">
@@ -79,14 +72,8 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>f5744cbf-8e4c-4fcb-a58f-cde18c779976</sv:value>
     </sv:property>
-    <sv:property sv:name="description" sv:type="String">
-      <sv:value>Define the user information</sv:value>
-    </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
-    </sv:property>
-    <sv:property sv:name="label" sv:type="String">
-      <sv:value>User</sv:value>
     </sv:property>
     <sv:node sv:name="tabs">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -114,9 +101,6 @@
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
         </sv:property>
-        <sv:property sv:name="label" sv:type="String">
-          <sv:value>User info</sv:value>
-        </sv:property>
         <sv:node sv:name="fields">
           <sv:property sv:name="jcr:primaryType" sv:type="Name">
             <sv:value>mgnl:contentNode</sv:value>
@@ -143,14 +127,8 @@
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.form.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
-            <sv:property sv:name="description" sv:type="String">
-              <sv:value>Define user name</sv:value>
-            </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>User name</sv:value>
             </sv:property>
             <sv:property sv:name="required" sv:type="String">
               <sv:value>true</sv:value>
@@ -181,9 +159,6 @@
                 <sv:property sv:name="class" sv:type="String">
                   <sv:value>info.magnolia.security.app.dialog.field.validator.UniqueUserNameValidatorDefinition</sv:value>
                 </sv:property>
-                <sv:property sv:name="errorMessage" sv:type="String">
-                  <sv:value>User name already exists.</sv:value>
-                </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
                 </sv:property>
@@ -206,9 +181,6 @@
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
             </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>Password</sv:value>
-            </sv:property>
           </sv:node>
           <sv:node sv:name="enabled">
             <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -225,9 +197,6 @@
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>Enabled</sv:value>
             </sv:property>
           </sv:node>
           <sv:node sv:name="title">
@@ -246,9 +215,6 @@
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
             </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>Full name</sv:value>
-            </sv:property>
           </sv:node>
           <sv:node sv:name="email">
             <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -263,14 +229,8 @@
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.ui.form.field.definition.TextFieldDefinition</sv:value>
             </sv:property>
-            <sv:property sv:name="description" sv:type="String">
-              <sv:value>Please enter user's e-mail address.</sv:value>
-            </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>E-mail</sv:value>
             </sv:property>
           </sv:node>
           <sv:node sv:name="language">
@@ -288,9 +248,6 @@
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>Language</sv:value>
             </sv:property>
             <sv:node sv:name="options">
               <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -318,9 +275,6 @@
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
                 </sv:property>
-                <sv:property sv:name="label" sv:type="String">
-                  <sv:value>English</sv:value>
-                </sv:property>
                 <sv:property sv:name="selected" sv:type="String">
                   <sv:value>true</sv:value>
                 </sv:property>
@@ -341,9 +295,6 @@
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
                 </sv:property>
-                <sv:property sv:name="label" sv:type="String">
-                  <sv:value>German</sv:value>
-                </sv:property>
                 <sv:property sv:name="value" sv:type="String">
                   <sv:value>de</sv:value>
                 </sv:property>
@@ -361,9 +312,6 @@
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
                 </sv:property>
-                <sv:property sv:name="label" sv:type="String">
-                  <sv:value>Czech</sv:value>
-                </sv:property>
                 <sv:property sv:name="value" sv:type="String">
                   <sv:value>cz</sv:value>
                 </sv:property>
@@ -380,9 +328,6 @@
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
-                </sv:property>
-                <sv:property sv:name="label" sv:type="String">
-                  <sv:value>French</sv:value>
                 </sv:property>
                 <sv:property sv:name="value" sv:type="String">
                   <sv:value>fr</sv:value>
@@ -404,9 +349,6 @@
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
-        </sv:property>
-        <sv:property sv:name="label" sv:type="String">
-          <sv:value>Groups</sv:value>
         </sv:property>
         <sv:node sv:name="fields">
           <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -437,9 +379,6 @@
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
             </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>Assign user to groups</sv:value>
-            </sv:property>
             <sv:property sv:name="leftColumnCaption" sv:type="String">
               <sv:value>Other available groups</sv:value>
             </sv:property>
@@ -461,9 +400,6 @@
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
-        </sv:property>
-        <sv:property sv:name="label" sv:type="String">
-          <sv:value>Roles</sv:value>
         </sv:property>
         <sv:node sv:name="fields">
           <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -493,9 +429,6 @@
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
-            </sv:property>
-            <sv:property sv:name="label" sv:type="String">
-              <sv:value>Grant additional roles to user</sv:value>
             </sv:property>
             <sv:property sv:name="leftColumnCaption" sv:type="String">
               <sv:value>Other available roles</sv:value>

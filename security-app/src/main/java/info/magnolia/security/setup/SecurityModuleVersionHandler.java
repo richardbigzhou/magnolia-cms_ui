@@ -33,6 +33,7 @@
  */
 package info.magnolia.security.setup;
 
+import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromSubappsTask;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.CheckAndModifyPartOfPropertyValueTask;
@@ -84,6 +85,8 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                         new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/deleteRole", "class", "info.magnolia.security.app.action.DeleteRoleActionDefinition")))
                 .addTask(new RemovePropertyTask("Remove label from form field", "Remove label property from the static1 field of the ACL tab of the Role dialog", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/acls/fields/static1", "label"))
                 .addTask(new RemovePropertyTask("Remove label from form field", "Remove label property from the static1 field of the ACL tab of the Role dialog", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/acls/fields/static2", "label"))
+                // Remove hardcoded i18n properties, e.g. label, description, etc.
+                .addTask(new RemoveHardcodedI18nPropertiesFromSubappsTask("security-app"))
         );
     }
 
