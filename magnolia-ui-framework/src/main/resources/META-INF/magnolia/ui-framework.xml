@@ -395,7 +395,10 @@
       <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactory</type>
       <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterFactoryImpl</implementation>
     </component>
-
+    <component>
+      <type>info.magnolia.ui.dialog.formdialog.FormDialogPresenter</type>
+      <implementation>info.magnolia.ui.dialog.formdialog.FormDialogPresenterImpl</implementation>
+    </component>
     <!-- Embedded page sub app -->
     <component>
       <type>info.magnolia.ui.framework.app.embedded.EmbeddedPageView</type>
