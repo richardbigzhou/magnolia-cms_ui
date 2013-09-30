@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,30 +33,20 @@
  */
 package info.magnolia.ui.api.app;
 
-import info.magnolia.i18nsystem.I18nText;
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.i18nsystem.AbstractI18nKeyGenerator;
 
-import java.util.Map;
+import java.lang.reflect.AnnotatedElement;
+import java.util.List;
 
 /**
- * Describes a sub app.
- * 
- * @see SubApp
+ * Key generator for {@link SubAppDescriptor}.
  */
-@I18nable(keyGenerator = SubAppDescriptorKeyGenerator.class)
-public interface SubAppDescriptor {
+public class SubAppDescriptorKeyGenerator extends AbstractI18nKeyGenerator<SubAppDescriptor> {
 
-    String getName();
-
-    @I18nText
-    String getLabel();
-
-    boolean isClosable();
-
-    String getIcon();
-
-    Class<? extends SubApp> getSubAppClass();
-
-    Map<String, ActionDefinition> getActions();
+    @Override
+    protected void keysFor(List<String> keys, SubAppDescriptor subAppDescriptor, AnnotatedElement el) {
+        //To change body of implemented methods use File | Settings | File Templates.
+        AppDescriptor appDescriptor = getParentViaCast(subAppDescriptor);
+        addKey(keys, appDescriptor.getName(), subAppDescriptor.getName() , fieldOrGetterName(el));
+    }
 }
