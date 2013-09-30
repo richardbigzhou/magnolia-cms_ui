@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.form.field.component;
 
+import info.magnolia.ui.vaadin.integration.NullItem;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.ui.Component;
@@ -68,7 +70,7 @@ public abstract class AbstractContentPreviewComponent<T> extends CustomComponent
         if (StringUtils.isNotBlank(itemReference)) {
             item = refreshItem(itemReference);
         }
-        if (item != null) {
+        if (item != null && !(item instanceof NullItem)) {
             contentDetail = refreshContentDetail(item);
             contentPreview = refreshContentPreview(item);
             refreshRootLayout();

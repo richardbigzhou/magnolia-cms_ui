@@ -33,12 +33,9 @@
  */
 package info.magnolia.ui.contentapp.field;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.util.converter.Converter;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomField;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.vaadin.integration.NullItem;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -49,15 +46,22 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
+import java.util.Locale;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
-import java.util.Arrays;
-import java.util.Locale;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.util.converter.Converter;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.CustomField;
 
 /**
  * Wraps a workbench instance into a field. While it is quite useful in dialogs the users are discouraged
@@ -98,7 +102,15 @@ public class WorkbenchField extends CustomField<Object> {
         workbenchEventbus.addHandler(SelectionChangedEvent.class, new SelectionChangedEvent.Handler() {
             @Override
             public void onSelectionChanged(SelectionChangedEvent event) {
-                setValue(event.getFirstItem(), false);
+                try {
+                    JcrItemAdapter firstItem = event.getFirstItem();
+                    Item value = !"/".equals(firstItem.getJcrItem().getPath()) ? firstItem : new NullItem();
+                    setValue(value, false);
+                } catch (RepositoryException e) {
+                    log.error("Error occurred while selecting an item in workbench: ", e);
+                    setValue(new NullItem(), false);
+                }
+
             }
         });
 

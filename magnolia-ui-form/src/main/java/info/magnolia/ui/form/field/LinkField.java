@@ -55,6 +55,7 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.component.ContentPreviewComponent;
 import info.magnolia.ui.form.field.converter.IdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
+import info.magnolia.ui.vaadin.integration.NullItem;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -248,7 +249,7 @@ public class LinkField extends CustomField<String> {
                     public void onItemChosen(String actionName, final Item chosenValue) {
                         String propertyName = definition.getTargetPropertyToPopulate();
                         String newValue = null;
-                        if (chosenValue != null) {
+                        if (chosenValue != null && !(chosenValue instanceof NullItem)) {
                             javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
                             if (jcrItem.isNode()) {
                                 final Node selected = (Node) jcrItem;
