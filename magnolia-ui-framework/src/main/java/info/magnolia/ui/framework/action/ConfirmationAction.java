@@ -51,6 +51,8 @@ import javax.jcr.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Item;
+
 /**
  * Configurable confirmation action. Can be used to intercept the actual action with user feedback.
  * Allows configuration of a success action and a cancel action.
@@ -154,5 +156,16 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
         }
         long howMany = items.size();
         return MessageFormat.format(message, howMany, howMany);
+    }
+
+    /**
+     * @return the Item linked to this action. If this action is used for multi Item return null.
+     */
+    protected Item getItem() {
+        if (items != null && items.size() == 1) {
+            return items.get(0);
+        } else {
+            return null;
+        }
     }
 }
