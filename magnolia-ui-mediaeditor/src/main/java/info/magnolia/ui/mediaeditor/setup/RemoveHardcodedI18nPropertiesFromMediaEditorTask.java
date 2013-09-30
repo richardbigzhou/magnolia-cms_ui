@@ -33,23 +33,24 @@
  */
 package info.magnolia.ui.mediaeditor.setup;
 
-import info.magnolia.module.DefaultModuleVersionHandler;
-import info.magnolia.module.delta.DeltaBuilder;
+import info.magnolia.i18nsystem.setup.AbstractRemoveHardcodedI18nPropertiesTask;
 
 /**
- * Version handler for the mediaeditor module.
+ * Removes hardcoded i18n properties (such as label and description) from mediaeditor configuration.
  */
-public class MediaEditorModuleVersionHandler extends DefaultModuleVersionHandler {
+public class RemoveHardcodedI18nPropertiesFromMediaEditorTask extends AbstractRemoveHardcodedI18nPropertiesTask {
 
-    public MediaEditorModuleVersionHandler() {
-        register(DeltaBuilder.update("5.1", "")
-                // Remove hardcoded i18n properties, e.g. label, description, etc.
-                .addTask((new RemoveHardcodedI18nPropertiesFromMediaEditorTask("ui-mediaeditor"))));
 
+    public RemoveHardcodedI18nPropertiesFromMediaEditorTask(final String appName) {
+        super(appName, "Removes hardcoded i18n properties from mediaeditor. This will typically affect properties found in actions, actionbar and workbench.");
+        addDeprecatedI18nProperty("trackingLabel");
     }
 
 
-
+    @Override
+    protected String[] getAppRelativePaths() {
+        return new String[] { "mediaEditors/" };
+    }
 
 
 }
