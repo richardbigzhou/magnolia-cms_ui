@@ -76,69 +76,7 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         return new SecurityModuleVersionHandler();
     }
 
-    @Test
-    public void testUpdateTo501LabelIsAddFolder() throws ModuleManagementException, RepositoryException {
-        // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        Node action = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/users/actions/addFolder", NodeTypes.ContentNode.NAME);
-        action.setProperty("label", "New folder");
-        action.getSession().save();
 
-        // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
-
-        // THEN
-        String label = action.getProperty("label").getString();
-        assertTrue("Add folder".equals(label));
-    }
-
-    @Test
-    public void testUpdateTo501LabelIsAddUser() throws ModuleManagementException, RepositoryException {
-        // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        Node action = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/users/actions/addUser", NodeTypes.ContentNode.NAME);
-        action.setProperty("label", "New user");
-        action.getSession().save();
-
-        // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
-
-        // THEN
-        String label = action.getProperty("label").getString();
-        assertTrue("Add user".equals(label));
-    }
-
-    @Test
-    public void testUpdateTo501LabelIsAddGroup() throws ModuleManagementException, RepositoryException {
-        // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        Node action = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/groups/actions/addGroup", NodeTypes.ContentNode.NAME);
-        action.setProperty("label", "New group");
-        action.getSession().save();
-
-        // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
-
-        // THEN
-        String label = action.getProperty("label").getString();
-        assertTrue("Add group".equals(label));
-    }
-
-    @Test
-    public void testUpdateTo501LabelIsAddRole() throws ModuleManagementException, RepositoryException {
-        // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        Node action = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/roles/actions/addRole", NodeTypes.ContentNode.NAME);
-        action.setProperty("label", "New role");
-        action.getSession().save();
-
-        // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
-
-        // THEN
-        String label = action.getProperty("label").getString();
-        assertTrue("Add role".equals(label));
-    }
 
     @Test
     public void testUpdateTo51DeleteUserActionAvailability() throws ModuleManagementException, RepositoryException {
