@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <sv:node sv:name="security" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <sv:property sv:name="jcr:primaryType" sv:type="Name">
     <sv:value>mgnl:contentNode</sv:value>
@@ -3151,7 +3152,9 @@
                   <sv:value>bedb584d-9e32-4926-9670-34dd87feaca2</sv:value>
                 </sv:property>
                 <sv:property sv:name="extends" sv:type="String">
-                  <sv:value>/modules/security-app/apps/security/subApps/users/actionbar/sections/user/groups/activationActions</sv:value>
+                  <sv:value>
+                    /modules/security-app/apps/security/subApps/users/actionbar/sections/user/groups/activationActions
+                  </sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
@@ -4000,7 +4003,9 @@
                   <sv:value>c51f07e7-545d-432c-ba77-b1885913488e</sv:value>
                 </sv:property>
                 <sv:property sv:name="extends" sv:type="String">
-                  <sv:value>/modules/security-app/apps/security/subApps/users/actionbar/sections/user/groups/activationActions</sv:value>
+                  <sv:value>
+                    /modules/security-app/apps/security/subApps/users/actionbar/sections/user/groups/activationActions
+                  </sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>

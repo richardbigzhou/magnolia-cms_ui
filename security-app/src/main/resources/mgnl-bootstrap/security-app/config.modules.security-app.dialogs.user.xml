@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <sv:node sv:name="user" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <sv:property sv:name="jcr:primaryType" sv:type="Name">
     <sv:value>mgnl:contentNode</sv:value>
@@ -157,7 +158,8 @@
                   <sv:value>b90aae1c-ed2c-49c8-a0e3-8ad32598a99a</sv:value>
                 </sv:property>
                 <sv:property sv:name="class" sv:type="String">
-                  <sv:value>info.magnolia.security.app.dialog.field.validator.UniqueUserNameValidatorDefinition</sv:value>
+                  <sv:value>info.magnolia.security.app.dialog.field.validator.UniqueUserNameValidatorDefinition
+                  </sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
