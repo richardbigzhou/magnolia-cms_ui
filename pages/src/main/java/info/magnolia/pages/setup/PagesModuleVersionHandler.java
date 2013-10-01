@@ -35,7 +35,6 @@ package info.magnolia.pages.setup;
 
 import static info.magnolia.nodebuilder.Ops.*;
 
-import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromDialogsTask;
 import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromSubappsTask;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
