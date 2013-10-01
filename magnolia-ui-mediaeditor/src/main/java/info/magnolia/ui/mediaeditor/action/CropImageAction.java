@@ -49,6 +49,8 @@ import info.magnolia.ui.mediaeditor.provider.MediaEditorActionDefinition;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.google.inject.name.Named;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -80,7 +82,7 @@ public class CropImageAction extends MediaEditorUIAction {
         result.add(new ActionContext(new InternalMediaEditorActionDefinition("crop", i18n.translate("ui-mediaeditor.action.crop.label"), true), new ActionListener() {
             @Override
             public void onActionFired(String actionName, Object... actionContextParams) {
-                dataSource.startAction(getDefinition().getTrackingLabel());
+                dataSource.startAction(StringUtils.lowerCase(getDefinition().getLabel()));
                 cropField.execute();
                 eventBus.fireEvent(new MediaEditorInternalEvent(EventType.APPLY));
             }

@@ -40,14 +40,4 @@ import info.magnolia.ui.api.action.ConfiguredActionDefinition;
  * {@link info.magnolia.ui.mediaeditor.MediaEditorPresenter}.
  */
 public class MediaEditorActionDefinition extends ConfiguredActionDefinition {
-
-    private String trackingLabel = null;
-
-    public String getTrackingLabel() {
-        return trackingLabel;
-    }
-
-    public void setTrackingLabel(String trackingLabel) {
-        this.trackingLabel = trackingLabel;
-    }
 }

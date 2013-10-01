@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.google.inject.name.Named;
@@ -62,9 +63,7 @@ public abstract class InstantMediaEditorAction extends MediaEditorAction {
 
     @Override
     public void execute() throws ActionExecutionException {
-        if (getDefinition().getTrackingLabel() != null) {
-            dataSource.startAction(getDefinition().getTrackingLabel());
-        }
+        dataSource.startAction(StringUtils.lowerCase(getDefinition().getLabel()));
         InputStream result = new ByteArrayInputStream(dataSource.getValue());
         try {
             result = performModification(result);
