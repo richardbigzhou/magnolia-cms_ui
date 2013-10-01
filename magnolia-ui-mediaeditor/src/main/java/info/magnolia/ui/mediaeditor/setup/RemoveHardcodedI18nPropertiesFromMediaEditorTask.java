@@ -35,6 +35,8 @@ package info.magnolia.ui.mediaeditor.setup;
 
 import info.magnolia.i18nsystem.setup.AbstractRemoveHardcodedI18nPropertiesTask;
 
+import java.util.Arrays;
+
 /**
  * Removes hardcoded i18n properties (such as label and description) from mediaeditor configuration.
  */
@@ -42,8 +44,7 @@ public class RemoveHardcodedI18nPropertiesFromMediaEditorTask extends AbstractRe
 
 
     public RemoveHardcodedI18nPropertiesFromMediaEditorTask(final String appName) {
-        super(appName, "Removes hardcoded i18n properties from mediaeditor. This will typically affect properties found in actions, actionbar and workbench.");
-        addDeprecatedI18nProperty("trackingLabel");
+        super(appName, "Removes hardcoded i18n properties from mediaeditor. This will typically affect properties found in actions, actionbar and workbench.", Arrays.asList(new String[]{"trackingLabel"}));
     }
 
 
