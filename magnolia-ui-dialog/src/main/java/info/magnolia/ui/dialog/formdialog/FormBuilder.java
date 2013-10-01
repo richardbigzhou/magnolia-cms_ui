@@ -88,6 +88,8 @@ public class FormBuilder {
         final String description = formDefinition.getDescription();
         final String label = formDefinition.getLabel();
 
+        // The 'container' of the form (ie a dialog) may already have set these values on the view based on its definition (dialogDefintion).
+        // Only if form specifies values - then use forms values.
         if (StringUtils.isNotBlank(description) && !isMessageKey(description)) {
             view.setDescription(description);
         }
