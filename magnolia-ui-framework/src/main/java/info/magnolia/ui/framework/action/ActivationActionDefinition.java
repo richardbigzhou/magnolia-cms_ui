@@ -34,7 +34,6 @@
 package info.magnolia.ui.framework.action;
 
 import info.magnolia.i18nsystem.I18nText;
-import info.magnolia.ui.api.action.Action;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 
 /**
@@ -50,12 +49,8 @@ public class ActivationActionDefinition extends CommandActionDefinition {
     private String workflowFailureMessage;
     private String workflowErrorMessage;
 
-    // Workaround for MAGNOLIA-5317.
-    private Class<? extends Action> implementationClass = ActivationAction.class;
-
     public ActivationActionDefinition() {
-        // Workaround for MAGNOLIA-5317.
-        // setImplementationClass(ActivationAction.class);
+        setImplementationClass(ActivationAction.class);
     }
 
     public void setRecursive(boolean recursive) {
@@ -99,17 +94,5 @@ public class ActivationActionDefinition extends CommandActionDefinition {
 
     public void setMessageView(String messageView) {
         this.messageView = messageView;
-    }
-
-    // Workaround for MAGNOLIA-5317.
-    @Override
-    public Class<? extends Action> getImplementationClass() {
-        return implementationClass;
-    }
-
-    // Workaround for MAGNOLIA-5317.
-    @Override
-    public void setImplementationClass(Class<? extends Action> implementationClass) {
-        this.implementationClass = implementationClass;
     }
 }
