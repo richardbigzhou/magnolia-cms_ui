@@ -45,8 +45,15 @@ public class SubAppDescriptorKeyGenerator extends AbstractI18nKeyGenerator<SubAp
 
     @Override
     protected void keysFor(List<String> keys, SubAppDescriptor subAppDescriptor, AnnotatedElement el) {
-        //To change body of implemented methods use File | Settings | File Templates.
         AppDescriptor appDescriptor = getParentViaCast(subAppDescriptor);
+
         addKey(keys, appDescriptor.getName(), subAppDescriptor.getName() , fieldOrGetterName(el));
+        /*
+         a fallback, if there is no sub-app-key defined ... and most of the modules already have a key-value-pair
+         so e.g.  <appName>.app.label is used for the label in the app-launcher and for the app "master-tab",
+          if the latter should be different from the former, do specify <appName>.<subAppName>.label, too
+         */
+        addKey(keys, appDescriptor.getName(), "app", fieldOrGetterName(el));
+
     }
 }
