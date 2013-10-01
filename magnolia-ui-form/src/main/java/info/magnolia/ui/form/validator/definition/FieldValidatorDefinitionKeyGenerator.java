@@ -52,6 +52,7 @@ public class FieldValidatorDefinitionKeyGenerator extends AbstractI18nKeyGenerat
         String idOrName = getIdOrNameForUnknownRoot(object);
 
         addKey(keys, idOrName, tabDefinition.getName(), fieldDefinition.getName(), "validation", fieldOrGetterName(el));
-
+        addKey(keys, idOrName, fieldDefinition.getName(), "validation", fieldOrGetterName(el));
+        addKey(keys, fieldDefinition.getName(), "validation", fieldOrGetterName(el));
     }
 }
