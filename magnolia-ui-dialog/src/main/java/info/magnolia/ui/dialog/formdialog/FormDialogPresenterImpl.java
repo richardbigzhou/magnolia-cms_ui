@@ -125,14 +125,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         return getView();
     }
 
-
-    protected DialogView initView() {
-        return getView();
-    }
-
-    /**
-     * This method has package visibility for testing purposes only. It can't be overridden.
-     */
     private void buildView(FormDialogDefinition dialogDefinition) {
         final FormDialogDefinition decoratedDialogDefinition = getI18nizer().decorate(dialogDefinition);
         final Dialog dialog = new Dialog(decoratedDialogDefinition);
