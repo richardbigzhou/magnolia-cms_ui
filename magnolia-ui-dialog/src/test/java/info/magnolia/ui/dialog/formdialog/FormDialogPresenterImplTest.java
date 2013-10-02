@@ -312,13 +312,6 @@ public class FormDialogPresenterImplTest {
         assertEquals("translated with key [baz.qux] and basename [null] and locale [en]", decoratedDialogDefinition.getForm().getLabel());
     }
 
-    @Test
-    public void isMessageBundleKey() throws Exception {
-        assertTrue(presenter.isMessageBundleKey("foo.bar.baz"));
-        assertFalse(presenter.isMessageBundleKey("foo.bar.baz."));
-        assertFalse(presenter.isMessageBundleKey("Foo Bar. Baz"));
-    }
-
     private ConfiguredFormDialogDefinition getBasicDialogDefinition() {
         ConfiguredFormDialogDefinition cdd = new ConfiguredFormDialogDefinition();
         cdd.setId("dialogID");

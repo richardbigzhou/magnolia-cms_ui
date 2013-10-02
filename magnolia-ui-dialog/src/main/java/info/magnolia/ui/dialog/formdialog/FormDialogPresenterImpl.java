@@ -193,13 +193,4 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         return !text.contains(" ") && !text.endsWith(".");
     }
 
-    /**
-     * TODO Christopher Zimmermann - Verify if this is still necessary.
-     * This method has package visibility for testing purposes.
-     */
-    final boolean isMessageBundleKey(final String text) {
-        String trimmed = text.trim();
-        return trimmed.indexOf(" ") == -1 && trimmed.contains(".") && !trimmed.endsWith(".");
-    }
-
 }
