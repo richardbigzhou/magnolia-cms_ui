@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.admincentral.shellapp.applauncher;
 
-import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroup;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroupEntry;
@@ -58,11 +57,9 @@ public class AppLauncherViewImpl implements AppLauncherView {
     private final AppLauncher appLauncher = new AppLauncher();
 
     private Presenter presenter;
-    private final I18nizer i18nizer;
 
     @Inject
-    public AppLauncherViewImpl(I18nizer i18nizer) {
-        this.i18nizer = i18nizer;
+    public AppLauncherViewImpl() {
     }
 
     public Presenter getPresenter() {
