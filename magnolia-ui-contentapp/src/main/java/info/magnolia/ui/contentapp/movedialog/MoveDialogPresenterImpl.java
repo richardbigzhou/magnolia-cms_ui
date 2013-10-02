@@ -116,8 +116,6 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private I18nizer i18nizer;
 
-    private SimpleTranslator simpleTranslator;
-
     @Inject
     public MoveDialogPresenterImpl(ComponentProvider componentProvider, DialogView dialogView, WorkbenchPresenter workbenchPresenter, DialogActionExecutor executor, AppContext appContext, I18nizer i18nizer, SimpleTranslator simpleTranslator) {
         super(componentProvider, executor, dialogView, i18nizer, simpleTranslator);
@@ -125,7 +123,6 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         this.workbenchPresenter = workbenchPresenter;
         this.appContext = appContext;
         this.i18nizer = i18nizer;
-        this.simpleTranslator = simpleTranslator;
         dialogView.asVaadinComponent().setStyleName("choose-dialog");
     }
 
