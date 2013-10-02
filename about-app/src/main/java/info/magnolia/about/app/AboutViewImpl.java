@@ -40,6 +40,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.inject.Inject;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Component;
@@ -59,6 +61,7 @@ public class AboutViewImpl implements AboutView {
 
     private final SimpleTranslator i18n;
 
+    @Inject
     public AboutViewImpl(SimpleTranslator i18n) {
         this.i18n = i18n;
         root.setDescription(i18n.translate("about.app.main.description"));
