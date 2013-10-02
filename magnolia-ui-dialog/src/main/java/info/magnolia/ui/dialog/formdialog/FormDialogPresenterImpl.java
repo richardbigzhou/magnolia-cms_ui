@@ -189,6 +189,9 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         return new Object[] { this, item, callback };
     }
 
+    /**
+     * @deprecated is a hack and should not be used. See MGNLUI-2207.
+     */
     private boolean isMessageKey(final String text) {
         return !text.contains(" ") && !text.endsWith(".");
     }

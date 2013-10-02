@@ -88,6 +88,8 @@ public class FormBuilder {
         final String description = formDefinition.getDescription();
         final String label = formDefinition.getLabel();
 
+        // If we remove the if blocks below, we show up the (first) generated key for this label/description (unless it is translated),
+        // thus overriding the dialog's title. See MGNLUI-2207.
         // The 'container' of the form (ie a dialog) may already have set these values on the view based on its definition (dialogDefintion).
         // Only if form specifies values - then use forms values.
         if (StringUtils.isNotBlank(description) && !isMessageKey(description)) {
@@ -164,6 +166,9 @@ public class FormBuilder {
         };
     }
 
+    /**
+     * @deprecated is a hack and should not be used. See MGNLUI-2207.
+     */
     private boolean isMessageKey(final String text) {
         return !text.contains(" ") && !text.endsWith(".");
     }
