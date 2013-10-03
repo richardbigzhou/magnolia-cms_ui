@@ -34,74 +34,27 @@
 package info.magnolia.ui.framework.action;
 
 import info.magnolia.commands.CommandsManager;
-import info.magnolia.context.Context;
-import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.module.ModuleRegistry;
 import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
-import info.magnolia.ui.api.event.ContentChangedEvent;
-import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * UI action that allows to deactivate pages (nodes).
  *
  * @see DeactivationActionDefinition
+ * @deprecated since 5.1 use {@link ActivationAction} directly.
  */
-public class DeactivationAction extends AbstractCommandAction<DeactivationActionDefinition> {
-
-    private final AbstractJcrNodeAdapter jcrNodeAdapter;
-    private final EventBus eventBus;
-    private final UiContext uiContext;
-    private ModuleRegistry moduleRegistry;
-
+public class DeactivationAction extends ActivationAction {
 
     @Inject
-    public DeactivationAction(final DeactivationActionDefinition definition, final JcrItemAdapter item, final CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, SubAppContext uiContext, ModuleRegistry moduleRegistry, SimpleTranslator i18n) {
-        super(definition, item, commandsManager, uiContext, i18n);
-        this.jcrNodeAdapter = (AbstractJcrNodeAdapter) item;
-        this.eventBus = eventBus;
-        this.uiContext = uiContext;
-        this.moduleRegistry = moduleRegistry;
+    public DeactivationAction(final ActivationActionDefinition definition, final JcrItemAdapter item, final CommandsManager commandsManager,
+                              @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, SubAppContext uiContext, final SimpleTranslator i18n) {
+        super(definition, item, commandsManager, admincentralEventBus, uiContext, i18n);
     }
 
-    @Override
-    protected void onError(Exception e) {
-        uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, isWorkflowInstalled() ? getDefinition().getWorkflowErrorMessage() : getDefinition().getErrorMessage());
-    }
-
-    @Override
-    protected void onPostExecute() throws Exception {
-        eventBus.fireEvent(new ContentChangedEvent(jcrNodeAdapter.getWorkspace(), jcrNodeAdapter.getItemId()));
-
-        // Display a notification
-        Context context = MgnlContext.getInstance();
-        boolean result = (Boolean) context.getAttribute(COMMAND_RESULT);
-        String message;
-        MessageStyleTypeEnum messageStyleType;
-        if (!result) {
-            message = isWorkflowInstalled() ? getDefinition().getWorkflowSuccessMessage() : getDefinition().getSuccessMessage();
-            messageStyleType = MessageStyleTypeEnum.INFO;
-        } else {
-            message = isWorkflowInstalled() ? getDefinition().getWorkflowFailureMessage() : getDefinition().getFailureMessage();
-            messageStyleType = MessageStyleTypeEnum.ERROR;
-        }
-
-        if (StringUtils.isNotBlank(message)) {
-            uiContext.openNotification(messageStyleType, true, message);
-        }
-    }
-
-    private boolean isWorkflowInstalled() {
-        return moduleRegistry.isModuleRegistered("workflow");
-    }
 }
