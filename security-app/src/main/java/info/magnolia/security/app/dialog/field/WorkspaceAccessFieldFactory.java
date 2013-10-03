@@ -36,7 +36,6 @@ package info.magnolia.security.app.dialog.field;
 import info.magnolia.cms.security.Permission;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
@@ -61,7 +60,6 @@ import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -98,18 +96,15 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
     public static final String INTERMEDIARY_FORMAT_PROPERTY_NAME = "__intermediary_format";
     public static final String ACCESS_TYPE_PROPERTY_NAME = "accessType";
 
-    private final ComponentProvider componentProvider;
-
     private final UiContext uiContext;
     private final SimpleTranslator i18n;
 
     private ChooseDialogPresenter workbenchChooseDialogPresenter;
 
-    @Inject
-    public WorkspaceAccessFieldFactory(D definition, Item relatedFieldItem, ComponentProvider componentProvider, UiContext uiContext,
+
+    public WorkspaceAccessFieldFactory(D definition, Item relatedFieldItem, UiContext uiContext,
             ChooseDialogPresenter workbenchChooseDialogPresenter, SimpleTranslator i18n) {
         super(definition, relatedFieldItem);
-        this.componentProvider = componentProvider;
         this.uiContext = uiContext;
         this.workbenchChooseDialogPresenter = workbenchChooseDialogPresenter;
         this.i18n = i18n;

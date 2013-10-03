@@ -39,7 +39,6 @@ import static info.magnolia.cms.security.SecurityConstants.*;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.cms.security.User;
 import info.magnolia.cms.security.UserManager;
-import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
@@ -74,12 +73,9 @@ public class SaveUserDialogAction extends SaveDialogAction {
 
     private SecuritySupport securitySupport;
 
-    protected final SimpleTranslator i18n;
-
-    public SaveUserDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback, SecuritySupport securitySupport, SimpleTranslator i18n) {
+    public SaveUserDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback, SecuritySupport securitySupport) {
         super(definition, item, validator, callback);
         this.securitySupport = securitySupport;
-        this.i18n = i18n;
     }
 
     @Override
@@ -114,7 +110,7 @@ public class SaveUserDialogAction extends SaveDialogAction {
                 String parentPath = parentNode.getPath();
 
                 if ("/".equals(parentPath)) {
-                    throw new ActionExecutionException(i18n.translate("security.save.user.dialog.rootError"));
+                    throw new ActionExecutionException("Users cannot be created directly under root");
                 }
 
                 user = userManager.createUser(parentPath, newUserName, newPassword);
