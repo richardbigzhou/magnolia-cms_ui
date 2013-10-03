@@ -41,13 +41,10 @@ import info.magnolia.cms.security.DummyUser;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.RecordingEventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.api.availability.AvailabilityDefinition;
-import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.overlay.ConfirmationCallback;
@@ -85,7 +82,6 @@ public class DeleteItemActionTest extends MgnlTestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
 
         session = new MockSession("workspace");
         MockContext ctx = new MockContext();
@@ -104,8 +100,6 @@ public class DeleteItemActionTest extends MgnlTestCase {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 Object[] arguments = invocation.getArguments();
-                assertSame(MessageStyleTypeEnum.WARNING, arguments[0]);
-                assertTrue((Boolean) arguments[5]);
                 callback.set((ConfirmationCallback) arguments[6]);
                 return null;
             }
