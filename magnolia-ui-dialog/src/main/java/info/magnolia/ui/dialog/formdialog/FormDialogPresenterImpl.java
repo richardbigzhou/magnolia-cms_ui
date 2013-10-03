@@ -99,7 +99,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
      * <ul>
      * <li>Sets the created {@link FormView} as content of the created {@link DialogView}.</li>
      * </ul>
-     *
+     * 
      * @param item passed on to{@link info.magnolia.ui.dialog.formdialog.FormDialogPresenter}
      * @param dialogDefinition
      * @param uiContext
@@ -125,7 +125,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         return getView();
     }
 
-
     protected DialogView initView() {
         return getView();
     }
@@ -143,11 +142,11 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         final String description = decoratedDialogDefinition.getDescription();
         final String label = decoratedDialogDefinition.getLabel();
 
-        if (StringUtils.isNotBlank(description) && !isMessageKey(description)) {
+        if (StringUtils.isNotBlank(description) && !isMessageBundleKey(description)) {
             getView().setDescription(description);
         }
 
-        if (StringUtils.isNotBlank(label) && !isMessageKey(label)) {
+        if (StringUtils.isNotBlank(label) && !isMessageBundleKey(label)) {
             getView().setCaption(label);
         }
     }
@@ -189,15 +188,10 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         return new Object[] { this, item, callback };
     }
 
-    private boolean isMessageKey(final String text) {
-        return !text.contains(" ") && !text.endsWith(".");
-    }
-
     /**
-     * TODO Christopher Zimmermann - Verify if this is still necessary.
-     * This method has package visibility for testing purposes.
+     * TODO fgrilli - Hack to be removed with MGNLUI-2207.
      */
-    final boolean isMessageBundleKey(final String text) {
+    private boolean isMessageBundleKey(final String text) {
         String trimmed = text.trim();
         return trimmed.indexOf(" ") == -1 && trimmed.contains(".") && !trimmed.endsWith(".");
     }
