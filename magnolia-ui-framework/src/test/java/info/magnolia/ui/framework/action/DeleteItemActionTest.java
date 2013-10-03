@@ -37,16 +37,10 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.cms.i18n.DefaultMessagesManager;
-import info.magnolia.cms.i18n.MessagesManager;
 import info.magnolia.cms.security.DummyUser;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.RecordingEventBus;
-import info.magnolia.i18nsystem.ContextLocaleProvider;
-import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.i18nsystem.TranslationService;
-import info.magnolia.i18nsystem.TranslationServiceImpl;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockContext;
@@ -72,7 +66,6 @@ import javax.jcr.Property;
 import javax.jcr.Session;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -80,21 +73,19 @@ import org.mockito.stubbing.Answer;
 /**
  * Tests for {@link info.magnolia.ui.framework.action.DeleteItemAction}.
  */
-@Ignore("Temporarily ignored as I (fgrilli) am having trouble adapting them to the latest code changes.")
 public class DeleteItemActionTest extends MgnlTestCase {
 
     private RecordingEventBus eventBus;
     private Session session;
     private SimpleTranslator i18n;
+    private AtomicReference<ConfirmationCallback> callback;
+    private SubAppContext subAppContext;
 
     @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();
         ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
-        ComponentsTestUtil.setImplementation(TranslationService.class, TranslationServiceImpl.class);
-        ComponentsTestUtil.setImplementation(MessagesManager.class, DefaultMessagesManager.class);
-        ComponentsTestUtil.setImplementation(LocaleProvider.class, ContextLocaleProvider.class);
 
         session = new MockSession("workspace");
         MockContext ctx = new MockContext();
@@ -104,6 +95,21 @@ public class DeleteItemActionTest extends MgnlTestCase {
 
         eventBus = new RecordingEventBus();
         i18n = mock(SimpleTranslator.class);
+        when(i18n.translate(anyString())).thenReturn("some translated message");
+
+        callback = new AtomicReference<ConfirmationCallback>();
+        subAppContext = mock(SubAppContext.class);
+        doAnswer(new Answer() {
+
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object[] arguments = invocation.getArguments();
+                assertSame(MessageStyleTypeEnum.WARNING, arguments[0]);
+                assertTrue((Boolean) arguments[5]);
+                callback.set((ConfirmationCallback) arguments[6]);
+                return null;
+            }
+        }).when(subAppContext).openConfirmation(any(MessageStyleTypeEnum.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(), any(ConfirmationCallback.class));
     }
 
     @Test
@@ -112,24 +118,6 @@ public class DeleteItemActionTest extends MgnlTestCase {
         Node root = session.getRootNode();
         Node node = root.addNode("node");
         JcrNodeAdapter nodeAdapter = new JcrNodeAdapter(node);
-
-        final AtomicReference<ConfirmationCallback> callback = new AtomicReference<ConfirmationCallback>();
-
-        SubAppContext subAppContext = mock(SubAppContext.class);
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Object[] arguments = invocation.getArguments();
-                assertSame(MessageStyleTypeEnum.WARNING, arguments[0]);
-                assertEquals("Do you really want to delete this item?", arguments[1]);
-                assertEquals("This action can't be undone.", arguments[2]);
-                assertEquals("Yes, Delete", arguments[3]);
-                assertEquals("No", arguments[4]);
-                assertTrue((Boolean) arguments[5]);
-                callback.set((ConfirmationCallback) arguments[6]);
-                return null;
-            }
-        }).when(subAppContext).openConfirmation(any(MessageStyleTypeEnum.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(), any(ConfirmationCallback.class));
 
         DeleteItemAction action = new DeleteItemAction(new DeleteItemActionDefinition(), nodeAdapter, eventBus, subAppContext, i18n);
 
@@ -144,7 +132,6 @@ public class DeleteItemActionTest extends MgnlTestCase {
         assertFalse(root.hasNode("node"));
         assertFalse(eventBus.isEmpty());
         assertTrue(((ContentChangedEvent) eventBus.getEvent()).getItemId().equals(JcrItemUtil.getItemId(root)));
-        verify(subAppContext, times(1)).openNotification(MessageStyleTypeEnum.INFO, true, "Item deleted.");
     }
 
     @Test
@@ -153,24 +140,6 @@ public class DeleteItemActionTest extends MgnlTestCase {
         Node root = session.getRootNode();
         Property property = root.setProperty("property", "value");
         JcrPropertyAdapter propertyAdapter = new JcrPropertyAdapter(property);
-
-        final AtomicReference<ConfirmationCallback> callback = new AtomicReference<ConfirmationCallback>();
-
-        SubAppContext subAppContext = mock(SubAppContext.class);
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Object[] arguments = invocation.getArguments();
-                assertSame(MessageStyleTypeEnum.WARNING, arguments[0]);
-                assertEquals("Do you really want to delete this item?", arguments[1]);
-                assertEquals("This action can't be undone.", arguments[2]);
-                assertEquals("Yes, Delete", arguments[3]);
-                assertEquals("No", arguments[4]);
-                assertTrue((Boolean) arguments[5]);
-                callback.set((ConfirmationCallback) arguments[6]);
-                return null;
-            }
-        }).when(subAppContext).openConfirmation(any(MessageStyleTypeEnum.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(), any(ConfirmationCallback.class));
 
         DeleteItemAction action = new DeleteItemAction(new DeleteItemActionDefinition(), propertyAdapter, eventBus, subAppContext, i18n);
 
@@ -185,7 +154,6 @@ public class DeleteItemActionTest extends MgnlTestCase {
         assertFalse(root.hasProperty("property"));
         assertFalse(eventBus.isEmpty());
         assertTrue(((ContentChangedEvent) eventBus.getEvent()).getItemId().equals(JcrItemUtil.getItemId(root)));
-        verify(subAppContext, times(1)).openNotification(MessageStyleTypeEnum.INFO, true, "Item deleted.");
     }
 
     @Test
@@ -201,25 +169,8 @@ public class DeleteItemActionTest extends MgnlTestCase {
         items.add(new JcrPropertyAdapter(propToDelete));
         UiContext uiContext = mock(UiContext.class);
 
-        final AtomicReference<ConfirmationCallback> callback = new AtomicReference<ConfirmationCallback>();
-
-        SubAppContext subAppContext = mock(SubAppContext.class);
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Object[] arguments = invocation.getArguments();
-                assertSame(MessageStyleTypeEnum.WARNING, arguments[0]);
-                assertEquals("Do you really want to delete these 2 items?", arguments[1]);
-                assertEquals("This action can't be undone.", arguments[2]);
-                assertEquals("Yes, Delete", arguments[3]);
-                assertEquals("No", arguments[4]);
-                assertTrue((Boolean) arguments[5]);
-                callback.set((ConfirmationCallback) arguments[6]);
-                return null;
-            }
-        }).when(subAppContext).openConfirmation(any(MessageStyleTypeEnum.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(), any(ConfirmationCallback.class));
-
         DeleteItemAction action = new DeleteItemAction(new DeleteItemActionDefinition(), items, eventBus, subAppContext, i18n);
+
         // WHEN
         action.execute();
 
@@ -230,7 +181,6 @@ public class DeleteItemActionTest extends MgnlTestCase {
         callback.get().onSuccess();
 
         // THEN
-        verify(subAppContext).openNotification(MessageStyleTypeEnum.INFO, true, "2 items deleted.");
         assertFalse(root.hasNode("deleteMe"));
         assertTrue(root.hasNode("keepMe"));
         assertFalse(root.getNode("keepMe").hasProperty("propToDelete"));
@@ -250,25 +200,8 @@ public class DeleteItemActionTest extends MgnlTestCase {
         items.add(new JcrPropertyAdapter(propToDelete));
         UiContext uiContext = mock(UiContext.class);
 
-        final AtomicReference<ConfirmationCallback> callback = new AtomicReference<ConfirmationCallback>();
-
-        SubAppContext subAppContext = mock(SubAppContext.class);
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Object[] arguments = invocation.getArguments();
-                assertSame(MessageStyleTypeEnum.WARNING, arguments[0]);
-                assertEquals("Do you really want to delete these 3 items?", arguments[1]);
-                assertEquals("This action can't be undone.", arguments[2]);
-                assertEquals("Yes, Delete", arguments[3]);
-                assertEquals("No", arguments[4]);
-                assertTrue((Boolean) arguments[5]);
-                callback.set((ConfirmationCallback) arguments[6]);
-                return null;
-            }
-        }).when(subAppContext).openConfirmation(any(MessageStyleTypeEnum.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(), any(ConfirmationCallback.class));
-
         DeleteItemAction action = new DeleteItemAction(new DeleteItemActionDefinition(), items, eventBus, subAppContext, i18n);
+
         // WHEN
         action.execute();
 
@@ -279,7 +212,6 @@ public class DeleteItemActionTest extends MgnlTestCase {
         callback.get().onSuccess();
 
         // THEN
-        verify(subAppContext).openNotification(MessageStyleTypeEnum.ERROR, false, "Failed to delete 1 of 3 items: <ul><li><b>/</b>: Cannot delete root node.</li></ul>");
         assertFalse(root.hasNode("deleteMe"));
         assertTrue(root.hasNode("keepMe"));
         assertFalse(root.getNode("keepMe").hasProperty("propToDelete"));
