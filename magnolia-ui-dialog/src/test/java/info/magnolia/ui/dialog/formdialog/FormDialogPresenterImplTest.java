@@ -36,23 +36,11 @@ package info.magnolia.ui.dialog.formdialog;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.cms.i18n.DefaultMessagesManager;
-import info.magnolia.cms.i18n.MessagesManager;
-import info.magnolia.context.Context;
-import info.magnolia.context.MgnlContext;
-import info.magnolia.i18nsystem.ContextLocaleProvider;
 import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.i18nsystem.TranslationService;
 import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
-import info.magnolia.jcr.node2bean.Node2BeanProcessor;
-import info.magnolia.jcr.node2bean.Node2BeanTransformer;
-import info.magnolia.jcr.node2bean.TypeMapping;
-import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
-import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
-import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.ui.dialog.BaseDialogPresenterTest;
 import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.definition.ConfiguredFormDialogDefinition;
@@ -68,6 +56,7 @@ import org.junit.Test;
 
 /**
  * Test for FormDialogPresenterImpl. ATM only testing the correct calls of the {@link TranslationService}.
+ * TODO: these tests should be moved. They really only just test the integration of DialogDefinitions and "child" objects with the I18nSystem framework.
  */
 public class FormDialogPresenterImplTest {
 
@@ -75,45 +64,35 @@ public class FormDialogPresenterImplTest {
     private FormBuilder formBuilder;
     private FormDialogPresenterImpl presenter;
 
-    private TranslationService service;
-    private ConfiguredFormDialogDefinition def;
+    private ProxytoysI18nizer i18nizer;
 
     @Before
     public void setUp() throws Exception {
-
-        // locale
-        Context ctx = mock(Context.class);
-        // current context locale
-        when(ctx.getLocale()).thenReturn(new Locale("en"));
-        MgnlContext.setInstance(ctx);
-
-        ComponentsTestUtil.setInstance(Context.class, ctx);
-        ComponentsTestUtil.setImplementation(TypeMapping.class, TypeMappingImpl.class);
-        ComponentsTestUtil.setImplementation(Node2BeanTransformer.class, Node2BeanTransformerImpl.class);
-        ComponentsTestUtil.setImplementation(Node2BeanProcessor.class, Node2BeanProcessorImpl.class);
-        ComponentsTestUtil.setImplementation(MessagesManager.class, DefaultMessagesManager.class);
-
-        service = new BaseDialogPresenterTest.TestTranslationService();
-        LocaleProvider provider = new ContextLocaleProvider();
-        ProxytoysI18nizer i18nizer = new ProxytoysI18nizer(service, provider);
+        final TranslationService service = new BaseDialogPresenterTest.TestTranslationService();
+        final LocaleProvider localeProvider = new LocaleProvider() {
+            @Override
+            public Locale getLocale() {
+                return Locale.ENGLISH;
+            }
+        };
+        i18nizer = new ProxytoysI18nizer(service, localeProvider);
 
         dialogDefinitionRegistry = mock(DialogDefinitionRegistry.class);
         formBuilder = mock(FormBuilder.class);
         presenter = new FormDialogPresenterImpl(dialogDefinitionRegistry, formBuilder, mock(ComponentProvider.class), mock(DialogActionExecutor.class), mock(FormView.class), i18nizer, mock(SimpleTranslator.class));
-
     }
 
     @Test
     public void testFormLabel() throws Exception {
         // GIVEN
         // dialog
-        def = getBasicDialogDefinition();
+        ConfiguredFormDialogDefinition def = getBasicDialogDefinition();
         // form
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
         def.setForm(form);
 
         // WHEN
-        ConfiguredFormDialogDefinition decoratedDialogDefinition = (ConfiguredFormDialogDefinition) presenter.decorateForI18n(def);
+        ConfiguredFormDialogDefinition decoratedDialogDefinition = i18nizer.decorate(def);
 
         // THEN
         assertEquals("translated with key [dialogID.label] and basename [null] and locale [en]", decoratedDialogDefinition.getForm().getLabel());
@@ -123,7 +102,7 @@ public class FormDialogPresenterImplTest {
     public void testTabLabel() throws Exception {
         // GIVEN
         // dialog
-        def = getBasicDialogDefinition();
+        ConfiguredFormDialogDefinition def = getBasicDialogDefinition();
         // form
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
         def.setForm(form);
@@ -133,7 +112,7 @@ public class FormDialogPresenterImplTest {
         form.addTab(tab);
 
         // WHEN
-        ConfiguredFormDialogDefinition decoratedDialogDefinition = (ConfiguredFormDialogDefinition) presenter.decorateForI18n(def);
+        ConfiguredFormDialogDefinition decoratedDialogDefinition = i18nizer.decorate(def);
 
         // THEN
         assertEquals("translated with key [dialogID.tab1.label] and basename [null] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getLabel());
@@ -143,7 +122,7 @@ public class FormDialogPresenterImplTest {
     public void testFieldLabel() throws Exception {
         // GIVEN
         // dialog
-        def = getBasicDialogDefinition();
+        ConfiguredFormDialogDefinition def = getBasicDialogDefinition();
         // form
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
         def.setForm(form);
@@ -157,7 +136,7 @@ public class FormDialogPresenterImplTest {
         tab.addField(field);
 
         // WHEN
-        ConfiguredFormDialogDefinition decoratedDialogDefinition = (ConfiguredFormDialogDefinition) presenter.decorateForI18n(def);
+        ConfiguredFormDialogDefinition decoratedDialogDefinition = i18nizer.decorate(def);
 
         // THEN
         assertEquals("translated with key [dialogID.tab1.field1.label] and basename [null] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel());
@@ -167,7 +146,7 @@ public class FormDialogPresenterImplTest {
     public void testFieldDescription() throws Exception {
         // GIVEN
         // dialog
-        def = getBasicDialogDefinition();
+        ConfiguredFormDialogDefinition def = getBasicDialogDefinition();
         // form
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
         def.setForm(form);
@@ -181,7 +160,7 @@ public class FormDialogPresenterImplTest {
         tab.addField(field);
 
         // WHEN
-        ConfiguredFormDialogDefinition decoratedDialogDefinition = (ConfiguredFormDialogDefinition) presenter.decorateForI18n(def);
+        ConfiguredFormDialogDefinition decoratedDialogDefinition = i18nizer.decorate(def);
 
         // THEN
         assertEquals("translated with key [dialogID.tab1.field1.description] and basename [null] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getDescription());
@@ -191,7 +170,7 @@ public class FormDialogPresenterImplTest {
     public void testFieldLabelWithAllBasenames() throws Exception {
         // GIVEN
         // dialog
-        def = getBasicDialogDefinition();
+        ConfiguredFormDialogDefinition def = getBasicDialogDefinition();
         def.setI18nBasename("basenameD");
         // form
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
@@ -209,7 +188,7 @@ public class FormDialogPresenterImplTest {
         tab.addField(field);
 
         // WHEN
-        ConfiguredFormDialogDefinition decoratedDialogDefinition = (ConfiguredFormDialogDefinition) presenter.decorateForI18n(def);
+        ConfiguredFormDialogDefinition decoratedDialogDefinition = i18nizer.decorate(def);
 
         // THEN
         assertEquals("translated with key [dialogID.tab1.field1.label] and basename [basenameField] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel());
@@ -219,7 +198,7 @@ public class FormDialogPresenterImplTest {
     public void testFieldLabelWithTabBasename() throws Exception {
         // GIVEN
         // dialog
-        def = getBasicDialogDefinition();
+        ConfiguredFormDialogDefinition def = getBasicDialogDefinition();
         def.setI18nBasename("basenameD");
         // form
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
@@ -236,7 +215,7 @@ public class FormDialogPresenterImplTest {
         tab.addField(field);
 
         // WHEN
-        ConfiguredFormDialogDefinition decoratedDialogDefinition = (ConfiguredFormDialogDefinition) presenter.decorateForI18n(def);
+        ConfiguredFormDialogDefinition decoratedDialogDefinition = i18nizer.decorate(def);
 
         // THEN
         assertEquals("translated with key [dialogID.tab1.field1.label] and basename [basenameT] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel());
@@ -246,7 +225,7 @@ public class FormDialogPresenterImplTest {
     public void testFieldLabelWithFormBasename() throws Exception {
         // GIVEN
         // dialog
-        def = getBasicDialogDefinition();
+        ConfiguredFormDialogDefinition def = getBasicDialogDefinition();
         def.setI18nBasename("basenameD");
         // form
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
@@ -262,7 +241,7 @@ public class FormDialogPresenterImplTest {
         tab.addField(field);
 
         // WHEN
-        ConfiguredFormDialogDefinition decoratedDialogDefinition = (ConfiguredFormDialogDefinition) presenter.decorateForI18n(def);
+        ConfiguredFormDialogDefinition decoratedDialogDefinition = i18nizer.decorate(def);
 
         // THEN
         assertEquals("translated with key [dialogID.tab1.field1.label] and basename [basenameF] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel());
@@ -272,7 +251,7 @@ public class FormDialogPresenterImplTest {
     public void testFieldLabelWithDialogBasename() throws Exception {
         // GIVEN
         // dialog
-        def = getBasicDialogDefinition();
+        ConfiguredFormDialogDefinition def = getBasicDialogDefinition();
         def.setI18nBasename("basenameD");
         // form
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
@@ -287,7 +266,7 @@ public class FormDialogPresenterImplTest {
         tab.addField(field);
 
         // WHEN
-        ConfiguredFormDialogDefinition decoratedDialogDefinition = (ConfiguredFormDialogDefinition) presenter.decorateForI18n(def);
+        ConfiguredFormDialogDefinition decoratedDialogDefinition = i18nizer.decorate(def);
 
         // THEN
         assertEquals("translated with key [dialogID.tab1.field1.label] and basename [basenameD] and locale [en]", decoratedDialogDefinition.getForm().getTabs().get(0).getFields().get(0).getLabel());
@@ -297,7 +276,7 @@ public class FormDialogPresenterImplTest {
     public void configuredKeyOverridesGeneratedKey() throws Exception {
         // GIVEN
         // dialog
-        def = getBasicDialogDefinition();
+        ConfiguredFormDialogDefinition def = getBasicDialogDefinition();
         def.setLabel("foo.bar");
         // form
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
@@ -305,7 +284,7 @@ public class FormDialogPresenterImplTest {
         def.setForm(form);
 
         // WHEN
-        ConfiguredFormDialogDefinition decoratedDialogDefinition = (ConfiguredFormDialogDefinition) presenter.decorateForI18n(def);
+        ConfiguredFormDialogDefinition decoratedDialogDefinition = i18nizer.decorate(def);
 
         // THEN
         assertEquals("translated with key [foo.bar] and basename [null] and locale [en]", decoratedDialogDefinition.getLabel());

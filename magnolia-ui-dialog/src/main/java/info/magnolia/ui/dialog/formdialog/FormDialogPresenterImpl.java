@@ -99,7 +99,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
      * <ul>
      * <li>Sets the created {@link FormView} as content of the created {@link DialogView}.</li>
      * </ul>
-     * 
+     *
      * @param item passed on to{@link info.magnolia.ui.dialog.formdialog.FormDialogPresenter}
      * @param dialogDefinition
      * @param uiContext
@@ -125,13 +125,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         return getView();
     }
 
-    protected DialogView initView() {
-        return getView();
-    }
-
-    /**
-     * This method has package visibility for testing purposes only. It can't be overridden.
-     */
     private void buildView(FormDialogDefinition dialogDefinition) {
         final FormDialogDefinition decoratedDialogDefinition = getI18nizer().decorate(dialogDefinition);
         final Dialog dialog = new Dialog(decoratedDialogDefinition);
@@ -142,11 +135,11 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         final String description = decoratedDialogDefinition.getDescription();
         final String label = decoratedDialogDefinition.getLabel();
 
-        if (StringUtils.isNotBlank(description) && !isMessageBundleKey(description)) {
+        if (StringUtils.isNotBlank(description) && !isMessageKey(description)) {
             getView().setDescription(description);
         }
 
-        if (StringUtils.isNotBlank(label) && !isMessageBundleKey(label)) {
+        if (StringUtils.isNotBlank(label) && !isMessageKey(label)) {
             getView().setCaption(label);
         }
     }
@@ -189,11 +182,10 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     }
 
     /**
-     * TODO fgrilli - Hack to be removed with MGNLUI-2207.
+     * @deprecated is a hack and should not be used. See MGNLUI-2207.
      */
-    private boolean isMessageBundleKey(final String text) {
-        String trimmed = text.trim();
-        return trimmed.indexOf(" ") == -1 && trimmed.contains(".") && !trimmed.endsWith(".");
+    private boolean isMessageKey(final String text) {
+        return !text.contains(" ") && !text.endsWith(".");
     }
 
 }
