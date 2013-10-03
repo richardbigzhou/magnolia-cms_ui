@@ -53,6 +53,8 @@ import info.magnolia.ui.vaadin.dialog.BaseDialog;
 
 import javax.inject.Inject;
 
+import net.sf.cglib.proxy.Enhancer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,8 +63,6 @@ import com.vaadin.event.ShortcutAction.ModifierKey;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.UI;
-
-import net.sf.cglib.proxy.Enhancer;
 
 /**
  * Base implementation of {@link DialogPresenter}.
@@ -161,7 +161,10 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
         return new Object[]{this};
     }
 
-    //TODO Christopher Zimmermann - Verify that this is still necessary.
+    /**
+     * @deprecated
+     * Method will be removed.
+     */
     public DialogDefinition decorateForI18n(DialogDefinition definition) {
         return i18nizer.decorate(definition);
     }

@@ -65,8 +65,6 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
     private final EventBus eventBus;
     private final SimpleTranslator i18n;
 
-    private static final String CONTENTAPP_BASENAME = "mgnl-i18n.module-ui-contentapp-messages";
-
     @Inject
     public RestorePreviousVersionAction(RestorePreviousVersionActionDefinition definition, AbstractJcrNodeAdapter nodeItemToEdit,
             VersionManager versionManager, SubAppContext subAppContext, final @Named(AdmincentralEventBus.NAME) EventBus eventBus, SimpleTranslator i18n) {

@@ -194,7 +194,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     }
 
     /**
-     * TODO Christopher Zimmermann - Verify if this is still necessary.
      * This method has package visibility for testing purposes.
      */
     final boolean isMessageBundleKey(final String text) {

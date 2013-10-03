@@ -68,8 +68,6 @@ import org.slf4j.LoggerFactory;
  */
 public class DetailEditorPresenter implements DetailEditorView.Listener, ActionbarPresenter.Listener {
 
-    private static final String CONTENTAPP_BASENAME = "mgnl-i18n.module-ui-contentapp-messages";
-
     private static final Logger log = LoggerFactory.getLogger(DetailEditorPresenter.class);
 
     private final ActionExecutor actionExecutor;
@@ -183,7 +181,7 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
             }
 
         } catch (RepositoryException e) {
-            Message error = new Message(MessageType.ERROR, i18n.translate("ui-contentapp.detailEditorPresenter.error.repository") + nodePath, e.getMessage());
+            Message error = new Message(MessageType.ERROR, i18n.translate("ui-contentapp.detailEditorPresenter.error.repository", nodePath), e.getMessage());
             appContext.broadcastMessage(error);
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, i18n.translate("ui-contentapp.error.action.execution"), e.getMessage());

@@ -64,8 +64,6 @@ public class RestorePreviousVersionAction extends AbstractAction<RestorePrevious
     private final SubAppContext subAppContext;
     private final SimpleTranslator i18n;
 
-    private static final String CONTENTAPP_BASENAME = "mgnl-i18n.module-ui-contentapp-messages";
-
     @Inject
     public RestorePreviousVersionAction(RestorePreviousVersionActionDefinition definition, AbstractJcrNodeAdapter nodeItemToEdit, LocationController locationController,
             VersionManager versionManager, SubAppContext subAppContext, SimpleTranslator i18n) {
