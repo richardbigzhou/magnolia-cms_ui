@@ -71,9 +71,18 @@ public class ColumnDefinitionKeyGenerator extends AbstractI18nKeyGenerator<Colum
         final String viewName = contentPresenterDefinition != null ? contentPresenterDefinition.getViewType() : "";
         final String columnName = columnDefinition.getName();
         if (subAppDescriptor != null) {
+            // sub-app specific, view-specific
             addKey(keys, appName, subAppDescriptor.getName(), "views", viewName, columnName, fieldOrGetterName(el));
-        } else {
-            addKey(keys, appName, "views", viewName, columnName, fieldOrGetterName(el));
+            // sub-app specific, all views
+            addKey(keys, appName, subAppDescriptor.getName(), "views", columnName, fieldOrGetterName(el));
         }
+        // app specific, view-specific
+        addKey(keys, appName, "views", viewName, columnName, fieldOrGetterName(el));
+        // app specific, all views
+        addKey(keys, appName, "views", columnName, fieldOrGetterName(el));
+        // all apps, view-specific
+        addKey(keys, "views", viewName, columnName, fieldOrGetterName(el));
+        // all apps, all views
+        addKey(keys, "views", columnName, fieldOrGetterName(el));
     }
 }

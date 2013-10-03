@@ -33,13 +33,15 @@
  */
 package info.magnolia.ui.workbench.column.definition;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.arrayContaining;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.TranslationService;
 import info.magnolia.i18nsystem.proxytoys.ProxytoysI18nizer;
+import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor;
@@ -62,11 +64,6 @@ import org.junit.Test;
  */
 public class ColumnDefinitionKeyGeneratorTest {
 
-    private static final String APP = "test-app";
-    private static final String SUBAPP = "test-subapp";
-    private static final String VIEW = "test-view";
-    private static final String COLUMN = "test-column";
-
     private ConfiguredAppDescriptor app;
     private TestSubAppDef subapp;
     private ConfiguredWorkbenchDefinition wb;
@@ -83,17 +80,17 @@ public class ColumnDefinitionKeyGeneratorTest {
         column = new AbstractColumnDefinition() {
             // nothing
         };
-        column.setName(COLUMN);
+        column.setName("<column-name>");
         view = new ConfiguredContentPresenterDefinition();
-        view.setViewType(VIEW);
+        view.setViewType("<view-name>");
         wb = new ConfiguredWorkbenchDefinition();
         subapp = new TestSubAppDef();
-        subapp.setName(SUBAPP);
+        subapp.setName("<subapp>");
         app = new ConfiguredAppDescriptor();
-        app.setName(APP);
+        app.setName("<app>");
         // create the tree
         Map<String, SubAppDescriptor> subapps = new HashMap<String, SubAppDescriptor>();
-        subapps.put(SUBAPP, subapp);
+        subapps.put("<subapp>", subapp);
         app.addSubApp(subapp);
         subapp.setWorkbench(wb);
         List<ContentPresenterDefinition> views = new ArrayList<ContentPresenterDefinition>(1);
@@ -102,24 +99,63 @@ public class ColumnDefinitionKeyGeneratorTest {
         List<ColumnDefinition> columns = new ArrayList<ColumnDefinition>(1);
         columns.add(column);
         view.addColumn(column);
-        // decorate
-        I18nizer i18nizer = new ProxytoysI18nizer(mock(TranslationService.class), mock(LocaleProvider.class));
-        app = i18nizer.decorate(app);
     }
 
     @Test
-    public void keysForColumnLabel() throws SecurityException, NoSuchMethodException {
+    public void keysForColumnLabelWithinSubapp() throws SecurityException, NoSuchMethodException {
         // GIVEN
         Method method = column.getClass().getMethod("getLabel");
-        List<String> keys = new ArrayList<String>();
+        // decorate
+        I18nizer i18nizer = new ProxytoysI18nizer(mock(TranslationService.class), mock(LocaleProvider.class));
+        app = i18nizer.decorate(app);
 
         // WHEN
-        generator.keysFor(keys, ((TestSubAppDef) app.getSubApps().get(SUBAPP)).getWorkbench().getContentViews().get(0).getColumns().get(0), method);
+        String[] keys = generator.keysFor((String) null, ((TestSubAppDef) app.getSubApps().get("<subapp>")).getWorkbench().getContentViews().get(0).getColumns().get(0), method);
 
         // THEN
-        assertEquals(2, keys.size());
-        assertEquals(APP + "." + SUBAPP + ".views." + VIEW + "." + COLUMN + ".label", keys.get(0));
-        assertEquals(APP + "." + SUBAPP + ".views." + VIEW + "." + COLUMN, keys.get(1));
+        assertThat(keys, arrayContaining(
+                "<app>.<subapp>.views.<view-name>.<column-name>.label",
+                "<app>.<subapp>.views.<view-name>.<column-name>",
+                "<app>.<subapp>.views.<column-name>.label",
+                "<app>.<subapp>.views.<column-name>",
+
+                "<app>.views.<view-name>.<column-name>.label",
+                "<app>.views.<view-name>.<column-name>",
+                "<app>.views.<column-name>.label",
+                "<app>.views.<column-name>",
+
+                "views.<view-name>.<column-name>.label",
+                "views.<view-name>.<column-name>",
+                "views.<column-name>.label",
+                "views.<column-name>"
+        ));
+    }
+
+    @Test
+    public void keysForColumnLabelWithoutSubapp() throws SecurityException, NoSuchMethodException {
+        // GIVEN
+        Method method = column.getClass().getMethod("getLabel");
+        DummyTypeWithNoSubapp appDescriptor = new DummyTypeWithNoSubapp(wb);
+        appDescriptor.setName("<app>");
+        // decorate
+        I18nizer i18nizer = new ProxytoysI18nizer(mock(TranslationService.class), mock(LocaleProvider.class));
+        appDescriptor = i18nizer.decorate(appDescriptor);
+
+        // WHEN
+        String[] keys = generator.keysFor((String) null, appDescriptor.getWB().getContentViews().get(0).getColumns().get(0), method);
+
+        // THEN
+        assertThat(keys, arrayContaining(
+                "<app>.views.<view-name>.<column-name>.label",
+                "<app>.views.<view-name>.<column-name>",
+                "<app>.views.<column-name>.label",
+                "<app>.views.<column-name>",
+
+                "views.<view-name>.<column-name>.label",
+                "views.<view-name>.<column-name>",
+                "views.<column-name>.label",
+                "views.<column-name>"
+        ));
     }
 
     private static class TestSubAppDef extends ConfiguredSubAppDescriptor {
@@ -136,7 +172,17 @@ public class ColumnDefinitionKeyGeneratorTest {
         public void setWorkbench(WorkbenchDefinition workbench) {
             this.wb = workbench;
         }
-
     }
 
+    private static class DummyTypeWithNoSubapp extends ConfiguredAppDescriptor {
+        private final WorkbenchDefinition wb;
+
+        public DummyTypeWithNoSubapp(WorkbenchDefinition wb) {
+            this.wb = wb;
+        }
+
+        public WorkbenchDefinition getWB() {
+            return wb;
+        }
+    }
 }
