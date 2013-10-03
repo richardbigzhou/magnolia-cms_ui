@@ -33,10 +33,8 @@
  */
 package info.magnolia.security.app.dialog.field;
 
-import static org.mockito.Mockito.when;
-
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.Permission;
 import info.magnolia.i18nsystem.SimpleTranslator;
@@ -51,6 +49,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.io.IOException;
 import java.util.Iterator;
+
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -94,7 +93,7 @@ public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
         JcrNewNodeAdapter item = new JcrNewNodeAdapter(session.getRootNode(), NodeTypes.Content.NAME);
 
         WorkspaceAccessFieldDefinition definition = new WorkspaceAccessFieldDefinition();
-        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, null, i18n);
+        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, i18n);
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();
@@ -130,7 +129,7 @@ public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
 
         WorkspaceAccessFieldDefinition definition = new WorkspaceAccessFieldDefinition();
         definition.setWorkspace(RepositoryConstants.CONFIG);
-        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, null, i18n);
+        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, i18n);
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();
@@ -168,7 +167,7 @@ public class WorkspaceAccessFieldFactoryTest extends MgnlTestCase {
 
         WorkspaceAccessFieldDefinition definition = new WorkspaceAccessFieldDefinition();
         definition.setWorkspace(RepositoryConstants.CONFIG);
-        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, null, i18n);
+        WorkspaceAccessFieldFactory builder = new WorkspaceAccessFieldFactory<WorkspaceAccessFieldDefinition>(definition, item, null, null, i18n);
 
         // WHEN
         Field<Object> field = builder.createFieldComponent();
