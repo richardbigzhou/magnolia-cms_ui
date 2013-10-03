@@ -3152,9 +3152,7 @@
                   <sv:value>bedb584d-9e32-4926-9670-34dd87feaca2</sv:value>
                 </sv:property>
                 <sv:property sv:name="extends" sv:type="String">
-                  <sv:value>
-                    /modules/security-app/apps/security/subApps/users/actionbar/sections/user/groups/activationActions
-                  </sv:value>
+                  <sv:value>/modules/security-app/apps/security/subApps/users/actionbar/sections/user/groups/activationActions</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
@@ -4003,9 +4001,7 @@
                   <sv:value>c51f07e7-545d-432c-ba77-b1885913488e</sv:value>
                 </sv:property>
                 <sv:property sv:name="extends" sv:type="String">
-                  <sv:value>
-                    /modules/security-app/apps/security/subApps/users/actionbar/sections/user/groups/activationActions
-                  </sv:value>
+                  <sv:value>/modules/security-app/apps/security/subApps/users/actionbar/sections/user/groups/activationActions</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:createdBy" sv:type="String">
                   <sv:value>admin</sv:value>
