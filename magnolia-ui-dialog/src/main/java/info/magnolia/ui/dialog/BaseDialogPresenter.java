@@ -161,11 +161,6 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
         return new Object[]{this};
     }
 
-    //TODO Christopher Zimmermann - Verify that this is still necessary.
-    public DialogDefinition decorateForI18n(DialogDefinition definition) {
-        return i18nizer.decorate(definition);
-    }
-
     @Override
     public void onActionFired(String actionName, Object... actionContextParams) {
         executeAction(actionName, actionContextParams);

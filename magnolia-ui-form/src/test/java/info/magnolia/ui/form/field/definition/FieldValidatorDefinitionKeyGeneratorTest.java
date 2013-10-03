@@ -74,7 +74,9 @@ public class FieldValidatorDefinitionKeyGeneratorTest {
         final String[] generatedKeys = findGeneratedLabelKeys("some configured value", dialog.getForm().getTabs().get(0).getFields().get(0).getValidators().get(0));
         assertThat(generatedKeys, Matchers.arrayContaining(
                 "some configured value",
-                "test-module.testDialog.testTab.testField.validation.errorMessage"
+                "test-module.testDialog.testTab.testField.validation.errorMessage",
+                "test-module.testDialog.testField.validation.errorMessage",
+                "testField.validation.errorMessage"
                 ));
     }
 

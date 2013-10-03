@@ -125,14 +125,6 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         return getView();
     }
 
-
-    protected DialogView initView() {
-        return getView();
-    }
-
-    /**
-     * This method has package visibility for testing purposes only. It can't be overridden.
-     */
     private void buildView(FormDialogDefinition dialogDefinition) {
         final FormDialogDefinition decoratedDialogDefinition = getI18nizer().decorate(dialogDefinition);
         final Dialog dialog = new Dialog(decoratedDialogDefinition);
@@ -189,17 +181,11 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         return new Object[] { this, item, callback };
     }
 
+    /**
+     * @deprecated is a hack and should not be used. See MGNLUI-2207.
+     */
     private boolean isMessageKey(final String text) {
         return !text.contains(" ") && !text.endsWith(".");
-    }
-
-    /**
-     * TODO Christopher Zimmermann - Verify if this is still necessary.
-     * This method has package visibility for testing purposes.
-     */
-    final boolean isMessageBundleKey(final String text) {
-        String trimmed = text.trim();
-        return trimmed.indexOf(" ") == -1 && trimmed.contains(".") && !trimmed.endsWith(".");
     }
 
 }

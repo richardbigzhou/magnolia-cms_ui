@@ -76,9 +76,9 @@ import com.vaadin.ui.VerticalLayout;
  */
 public final class PulseMessagesViewImpl extends CustomComponent implements PulseMessagesView {
 
-    private final String[] headers;
-
     private static final String[] order = new String[] { NEW_PROPERTY_ID, TYPE_PROPERTY_ID, TEXT_PROPERTY_ID, SENDER_PROPERTY_ID, DATE_PROPERTY_ID };
+
+    private final String[] headers;
 
     private final TreeTable messageTable = new MagnoliaTreeTable();
 

@@ -33,48 +33,16 @@
  */
 package info.magnolia.ui.framework.action;
 
-import info.magnolia.i18nsystem.I18nText;
-import info.magnolia.ui.api.action.CommandActionDefinition;
-
 /**
  * The deactivation action, invoking the deactivation command, and updating the UI accordingly.
  * 
  * @see DeactivationAction
+ * @deprecated since 5.1 use {@link ActivationActionDefinition} directly.
  */
-public class DeactivationActionDefinition extends CommandActionDefinition {
-
-    private String workflowSuccessMessage;
-    private String workflowFailureMessage;
-    private String workflowErrorMessage;
+public class DeactivationActionDefinition extends ActivationActionDefinition {
 
     public DeactivationActionDefinition() {
-        setImplementationClass(DeactivationAction.class);
+        setImplementationClass(ActivationAction.class);
     }
 
-    @I18nText
-    public String getWorkflowSuccessMessage() {
-        return workflowSuccessMessage;
-    }
-
-    public void setWorkflowSuccessMessage(String workflowSuccessMessage) {
-        this.workflowSuccessMessage = workflowSuccessMessage;
-    }
-
-    @I18nText
-    public String getWorkflowFailureMessage() {
-        return workflowFailureMessage;
-    }
-
-    public void setWorkflowFailureMessage(String workflowFailureMessage) {
-        this.workflowFailureMessage = workflowFailureMessage;
-    }
-
-    @I18nText
-    public String getWorkflowErrorMessage() {
-        return workflowErrorMessage;
-    }
-
-    public void setWorkflowErrorMessage(String workflowErrorMessage) {
-        this.workflowErrorMessage = workflowErrorMessage;
-    }
 }
