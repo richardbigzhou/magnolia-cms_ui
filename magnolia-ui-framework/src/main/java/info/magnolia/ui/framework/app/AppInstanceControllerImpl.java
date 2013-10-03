@@ -211,8 +211,8 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
     @Override
     public void start(Location location) {
         if (systemMonitor.isMemoryLimitReached()) {
-            shell.openNotification(MessageStyleTypeEnum.WARNING, false, String.format(SystemMonitor.MEMORY_LIMIT_IS_REACHED_STRING_FORMAT,
-                    i18n.translate("ui-framework.app.appinstance.memory-limit-warning.message")));
+            String memoryMessageCloseApps = i18n.translate("ui-framework.appInstanceController.memoryLimitWarningMessage.closeApps");
+            shell.openNotification(MessageStyleTypeEnum.WARNING, false, i18n.translate("ui-framework.memoryLimitWarningMessage.template",memoryMessageCloseApps));
         }
 
         app = componentProvider.newInstance(appDescriptor.getAppClass());

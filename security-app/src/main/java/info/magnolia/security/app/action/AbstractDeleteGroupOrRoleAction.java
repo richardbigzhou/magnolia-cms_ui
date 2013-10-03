@@ -135,13 +135,13 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteItemAction
         // users
         for (User user : Security.getUserManager().getAllUsers()) {
             if (getGroupsOrRoles(user).contains(groupName)) {
-                assignedTo.add(i18n.translate("security.delete.group.or.role.user") + user.getName());
+                assignedTo.add(i18n.translate("security.delete.userIdentifier", user.getName()));
             }
         }
         // groups
         for (Group group : Security.getGroupManager().getAllGroups()) {
             if (getGroupsOrRoles(group).contains(groupName)) {
-                assignedTo.add(i18n.translate("security.delete.group.or.role.group") + group.getName());
+                assignedTo.add(i18n.translate("security.delete.groupIdentifier", group.getName()));
             }
         }
 

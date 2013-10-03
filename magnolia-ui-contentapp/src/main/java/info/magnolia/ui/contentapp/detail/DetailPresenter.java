@@ -101,7 +101,7 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
 
     private DialogView dialogView;
 
-    private I18nizer i18nizer;
+    private final I18nizer i18nizer;
 
     private final SimpleTranslator i18n;
 

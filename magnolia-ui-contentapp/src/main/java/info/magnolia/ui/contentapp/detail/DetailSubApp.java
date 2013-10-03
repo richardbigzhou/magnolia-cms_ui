@@ -235,7 +235,7 @@ public class DetailSubApp extends BaseSubApp {
         String caption = getBaseCaption(location);
         // Set version information
         if (StringUtils.isNotBlank(location.getVersion())) {
-            caption = i18n.translate("pages.subapp.versioned_page", caption, location.getVersion() );
+            caption = i18n.translate("subapp.versioned_page", caption, location.getVersion() );
         }
         this.caption = caption;
     }

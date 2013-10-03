@@ -312,7 +312,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
             Node node = session.getNode(location.getNodePath());
             if (StringUtils.isNotBlank(location.getVersion())) {
                 node = versionManager.getVersion(node, location.getVersion());
-                caption = i18n.translate("pages.subapp.versioned_page", PropertyUtil.getString(node, "title", node.getName()), location.getVersion());
+                caption = i18n.translate("subapp.versioned_page", PropertyUtil.getString(node, "title", node.getName()), location.getVersion());
             } else {
                 caption = PropertyUtil.getString(node, "title", node.getName());
             }
