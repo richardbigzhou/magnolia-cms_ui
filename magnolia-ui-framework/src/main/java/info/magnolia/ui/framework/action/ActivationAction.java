@@ -39,12 +39,10 @@ import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.module.ModuleRegistry;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
-import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
@@ -59,25 +57,23 @@ import org.apache.commons.lang.StringUtils;
 /**
  * UI action that allows to activate a single page (node) or recursively with all its sub-nodes depending on the value of {@link ActivationActionDefinition#isRecursive()}.
  *
- * @see ActivationActionDefinition
+ * @param <D> {@link ActivationActionDefinition}.
  */
-public class ActivationAction extends AbstractCommandAction<ActivationActionDefinition> {
+public class ActivationAction<D extends ActivationActionDefinition> extends AbstractCommandAction<D> {
 
     private final JcrItemAdapter jcrItemAdapter;
 
     private final EventBus admincentralEventBus;
     private final UiContext uiContext;
-    private ModuleRegistry moduleRegistry;
 
 
     @Inject
-    public ActivationAction(final ActivationActionDefinition definition, final JcrItemAdapter item, final CommandsManager commandsManager,
-            @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, SubAppContext uiContext, ModuleRegistry moduleRegistry, final SimpleTranslator i18n) {
+    public ActivationAction(final D definition, final JcrItemAdapter item, final CommandsManager commandsManager,
+            @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, SubAppContext uiContext, final SimpleTranslator i18n) {
         super(definition, item, commandsManager, uiContext, i18n);
         this.jcrItemAdapter = item;
         this.admincentralEventBus = admincentralEventBus;
         this.uiContext = uiContext;
-        this.moduleRegistry = moduleRegistry;
     }
 
     @Override
@@ -85,9 +81,6 @@ public class ActivationAction extends AbstractCommandAction<ActivationActionDefi
         Map<String, Object> params = super.buildParams(jcrItem);
         params.put(Context.ATTRIBUTE_RECURSIVE, getDefinition().isRecursive());
 
-        if (StringUtils.isNotBlank(getDefinition().getMessageView())) {
-            params.put(Message.MESSAGE_VIEW, getDefinition().getMessageView());
-        }
         return params;
     }
 
@@ -98,7 +91,7 @@ public class ActivationAction extends AbstractCommandAction<ActivationActionDefi
             errorMessage = e.getCause().getLocalizedMessage();
             errorMessage = StringUtils.substring(errorMessage, StringUtils.indexOf(errorMessage, "error detected:"));
         } else {
-            errorMessage = isWorkflowInstalled() ? getDefinition().getWorkflowErrorMessage() : getDefinition().getErrorMessage();
+            errorMessage = getErrorMessage();
         }
         uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, errorMessage);
     }
@@ -106,26 +99,23 @@ public class ActivationAction extends AbstractCommandAction<ActivationActionDefi
     @Override
     protected void onPostExecute() throws Exception {
         admincentralEventBus.fireEvent(new ContentChangedEvent(jcrItemAdapter.getWorkspace(), jcrItemAdapter.getItemId()));
-        // Display a notification
 
         Context context = MgnlContext.getInstance();
-        boolean result = (Boolean) context.getAttribute(COMMAND_RESULT);
-        String message;
-        MessageStyleTypeEnum messageStyleType;
-        if (!result) {
-            message = isWorkflowInstalled() ? getDefinition().getWorkflowSuccessMessage() : getDefinition().getSuccessMessage();
-            messageStyleType = MessageStyleTypeEnum.INFO;
-        } else {
-            message = isWorkflowInstalled() ? getDefinition().getWorkflowFailureMessage() : getDefinition().getFailureMessage();
-            messageStyleType = MessageStyleTypeEnum.ERROR;
-        }
+        // yes, this is inverted, because a chain returns false when it is finished.
+        boolean success = !(Boolean) context.getAttribute(COMMAND_RESULT);
+        String message = getMessage(success);
+        MessageStyleTypeEnum messageStyleType = success ? MessageStyleTypeEnum.INFO : MessageStyleTypeEnum.ERROR;
 
         if (StringUtils.isNotBlank(message)) {
             uiContext.openNotification(messageStyleType, true, message);
         }
     }
 
-    private boolean isWorkflowInstalled() {
-        return moduleRegistry.isModuleRegistered("workflow") && "workflow".equals(getDefinition().getCatalog());
+    protected String getMessage(boolean success) {
+        return success ? getDefinition().getSuccessMessage() : getDefinition().getFailureMessage();
+    }
+
+    protected String getErrorMessage() {
+        return getDefinition().getErrorMessage();
     }
 }

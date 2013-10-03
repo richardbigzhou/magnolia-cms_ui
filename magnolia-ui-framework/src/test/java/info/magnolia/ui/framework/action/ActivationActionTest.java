@@ -57,7 +57,6 @@ import info.magnolia.jcr.node2bean.TypeMapping;
 import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
 import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
-import info.magnolia.module.ModuleRegistry;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.test.mock.MockContext;
@@ -69,6 +68,7 @@ import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
 import info.magnolia.ui.api.overlay.MessageStyleType;
 import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.HashMap;
@@ -139,7 +139,7 @@ public class ActivationActionTest extends RepositoryTestCase {
     @Test(expected = ExchangeException.class)
     public void testGetExchangeException() throws Exception {
         // GIVEN
-        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class), mock(SimpleTranslator.class));
+        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), mock(SubAppContextImpl.class), mock(SimpleTranslator.class));
         // for some reason we need to call this twice else no exception is thrown
         when(commandsManager.executeCommand("activate", params)).thenThrow(new ExchangeException());
         when(commandsManager.executeCommand("activate", params)).thenThrow(new ExchangeException());
@@ -156,8 +156,8 @@ public class ActivationActionTest extends RepositoryTestCase {
         definition.setRecursive(true);
 
         // WHEN
-        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), mock(SubAppContextImpl.class), mock(ModuleRegistry.class), mock(SimpleTranslator.class));
-        action.setCurrentItem(action.getItems().get(0));
+        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), mock(SubAppContextImpl.class), mock(SimpleTranslator.class));
+        action.setCurrentItem((JcrItemAdapter) action.getItems().get(0));
         action.onPreExecute();
 
         // THEN
@@ -171,32 +171,13 @@ public class ActivationActionTest extends RepositoryTestCase {
         // GIVEN
         when(commandsManager.executeCommand("activate", params)).thenReturn(false);
         TestSubAppContext testCtx = new TestSubAppContext();
-        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), testCtx, mock(ModuleRegistry.class), mock(SimpleTranslator.class));
+        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), testCtx, mock(SimpleTranslator.class));
 
         // WHEN
         action.execute();
 
         // THEN
         assertEquals("Publication has been started.", testCtx.message);
-    }
-
-    // TODO remove Ignore - now due to missing bundle
-    @Ignore
-    @Test
-    public void testWorkflowSuccessMessage() throws Exception {
-        // GIVEN
-        definition.setCatalog("workflow");
-        ModuleRegistry moduleRegistry = mock(ModuleRegistry.class);
-        when(moduleRegistry.isModuleRegistered("workflow")).thenReturn(true);
-        when(commandsManager.executeCommand("activate", params)).thenReturn(false);
-        TestSubAppContext testCtx = new TestSubAppContext();
-        ActivationAction action = new ActivationAction(definition, new JcrNodeAdapter(session.getNode("foo")), commandsManager, mock(EventBus.class), testCtx, moduleRegistry, mock(SimpleTranslator.class));
-
-        // WHEN
-        action.execute();
-
-        // THEN
-        assertEquals("Publication workflow has been launched.", testCtx.message);
     }
 
     private static class TestSubAppContext extends SubAppContextImpl {

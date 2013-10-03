@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.framework.action;
 
-import info.magnolia.i18nsystem.I18nText;
 import info.magnolia.ui.api.action.CommandActionDefinition;
 
 /**
@@ -44,10 +43,6 @@ import info.magnolia.ui.api.action.CommandActionDefinition;
 public class ActivationActionDefinition extends CommandActionDefinition {
 
     private boolean recursive = false;
-    private String messageView;
-    private String workflowSuccessMessage;
-    private String workflowFailureMessage;
-    private String workflowErrorMessage;
 
     public ActivationActionDefinition() {
         setImplementationClass(ActivationAction.class);
@@ -61,38 +56,4 @@ public class ActivationActionDefinition extends CommandActionDefinition {
         return recursive;
     }
 
-    @I18nText
-    public String getWorkflowSuccessMessage() {
-        return workflowSuccessMessage;
-    }
-
-    public void setWorkflowSuccessMessage(String workflowSuccessMessage) {
-        this.workflowSuccessMessage = workflowSuccessMessage;
-    }
-
-    @I18nText
-    public String getWorkflowFailureMessage() {
-        return workflowFailureMessage;
-    }
-
-    public void setWorkflowFailureMessage(String workflowFailureMessage) {
-        this.workflowFailureMessage = workflowFailureMessage;
-    }
-
-    @I18nText
-    public String getWorkflowErrorMessage() {
-        return workflowErrorMessage;
-    }
-
-    public void setWorkflowErrorMessage(String workflowErrorMessage) {
-        this.workflowErrorMessage = workflowErrorMessage;
-    }
-
-    public String getMessageView() {
-        return messageView;
-    }
-
-    public void setMessageView(String messageView) {
-        this.messageView = messageView;
-    }
 }
