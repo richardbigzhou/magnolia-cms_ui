@@ -37,7 +37,7 @@ package info.magnolia.ui.framework.action;
  * Type of move operation performed on the nodes.
  */
 public enum MoveLocation {
-    BEFORE,
     AFTER,
+    BEFORE,
     INSIDE
 }
