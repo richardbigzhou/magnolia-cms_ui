@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <sv:node sv:name="role" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <sv:property sv:name="jcr:primaryType" sv:type="Name">
     <sv:value>mgnl:contentNode</sv:value>
@@ -188,8 +187,7 @@
                   <sv:value>3d0faf61-60b2-40c8-9d1b-b629971f6454</sv:value>
                 </sv:property>
                 <sv:property sv:name="class" sv:type="String">
-                  <sv:value>info.magnolia.security.app.dialog.field.validator.UniqueRoleNameValidatorDefinition
-                  </sv:value>
+                  <sv:value>info.magnolia.security.app.dialog.field.validator.UniqueRoleNameValidatorDefinition</sv:value>
                 </sv:property>
                 <sv:property sv:name="jcr:created" sv:type="Date">
                   <sv:value>2013-06-05T10:28:22.749+02:00</sv:value>
@@ -306,9 +304,7 @@
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="value" sv:type="String">
-              <sv:value>Access control is using access control lists (ACLs) to control access to nodes inside a
-                workspace.
-              </sv:value>
+              <sv:value>Access control is using access control lists (ACLs) to control access to nodes inside a workspace.</sv:value>
             </sv:property>
           </sv:node>
           <sv:node sv:name="static2">
@@ -343,9 +339,7 @@
               <sv:value>superuser</sv:value>
             </sv:property>
             <sv:property sv:name="value" sv:type="String">
-              <sv:value>You may specify any number and combination of ACLs: it's always the best-matching ACL that is
-                applied. ACLs are executed in no particular order.
-              </sv:value>
+              <sv:value>You may specify any number and combination of ACLs: it's always the best-matching ACL that is applied. ACLs are executed in no particular order.</sv:value>
             </sv:property>
           </sv:node>
         </sv:node>
