@@ -45,6 +45,7 @@ import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import java.util.HashMap;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -150,6 +151,9 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
             // Copy options to the newly created select definition. definition
             BeanUtils.copyProperties(selectDefinition, definition);
             selectDefinition.setTransformerClass(null);
+            selectDefinition.setLabel(StringUtils.EMPTY);
+            selectDefinition.setRequired(false);
+
             // Create the field
             field = (AbstractSelect) createLocalField(selectDefinition, relatedFieldItem, false);
             field.addStyleName(layout);
