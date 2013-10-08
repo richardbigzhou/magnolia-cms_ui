@@ -50,9 +50,6 @@ public interface FormViewReduced extends View, Item.Editor {
 
     void setDescriptionVisibility(boolean isVisible);
 
-    @Override
-    public Form asVaadinComponent();
-
     void addFormSection(String tabName, FormSection inputFields);
 
     void showValidation(boolean isVisible);

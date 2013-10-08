@@ -33,10 +33,6 @@
  */
 package info.magnolia.ui.dialog.formdialog;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.Field;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.dialog.BaseDialogViewImpl;
@@ -48,6 +44,11 @@ import info.magnolia.ui.vaadin.form.FormSection;
 
 import java.util.Collection;
 import java.util.Locale;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.Field;
 
 /**
  * Owns a Form and Dialog and connects them.
@@ -87,6 +88,11 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
     }
 
     @Override
+    public void setDescriptionVisibility(boolean isVisible) {
+        form.setDescriptionVisibility(isVisible);
+    }
+
+    @Override
     public void setCaption(String caption) {
         getDialog().setCaption(caption);
     }
@@ -105,7 +111,6 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
     @Override
     public void setShowAllEnabled(boolean enabled) {
         form.setShowAllEnabled(enabled);
-
     }
 
     @Override

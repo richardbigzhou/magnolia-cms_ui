@@ -34,37 +34,21 @@
 package info.magnolia.ui.dialog.formdialog;
 
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.Field;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.DialogView;
-import info.magnolia.ui.vaadin.form.FormSection;
+import info.magnolia.ui.vaadin.form.FormViewReduced;
 
-import java.util.Collection;
 import java.util.Locale;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.AbstractSelect;
 
 /**
  * Interface for {@link info.magnolia.ui.vaadin.form.Form}.
  */
-public interface FormView extends DialogView, View, Item.Editor {
-
-    Collection<Field<?>> getFields();
-
-    void addField(Field<?> field);
-
-    @Override
-    void setCaption(String caption);
-
-    void addFormSection(String tabName, FormSection inputFields);
-
-    void showValidation(boolean isVisible);
-
-    void setShowAllEnabled(boolean enabled);
+public interface FormView extends DialogView, View, Item.Editor, FormViewReduced {
 
     void setCurrentLocale(Locale locale);
 
     void setLocaleSelector(AbstractSelect languageChooser);
-
-    boolean isValid();
 }

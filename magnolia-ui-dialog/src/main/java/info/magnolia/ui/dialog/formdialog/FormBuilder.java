@@ -45,6 +45,7 @@ import info.magnolia.ui.form.definition.TabDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
+import info.magnolia.ui.vaadin.form.FormViewReduced;
 import info.magnolia.ui.vaadin.richtext.TextAreaStretcher;
 
 import javax.inject.Inject;
@@ -81,10 +82,6 @@ public class FormBuilder {
      * return FormView populated with values from FormDefinition and Item.
      */
     public void buildForm(FormView view, FormDefinition formDefinition, Item item, FormItem parent) {
-        final Form form = new Form(formDefinition);
-        form.setParent(parent);
-        view.setItemDataSource(item);
-
         final String description = formDefinition.getDescription();
         final String label = formDefinition.getLabel();
 
@@ -100,35 +97,9 @@ public class FormBuilder {
             view.setCaption(label);
         }
 
-        boolean hasI18NAwareFields = false;
-        for (TabDefinition tabDefinition : formDefinition.getTabs()) {
-            FormTab tab = new FormTab(tabDefinition);
-            tab.setParent(form);
-            for (final FieldDefinition fieldDefinition : tabDefinition.getFields()) {
-                hasI18NAwareFields |= fieldDefinition.isI18n();
-                final FieldFactory formField = fieldFactoryFactory.createFieldFactory(fieldDefinition, item);
-                if (formField == null) {
-                    continue;
-                }
-                formField.setComponentProvider(componentProvider);
-                formField.setI18nContentSupport(i18nContentSupport);
-                formField.setParent(tab);
-                final Field<?> field = formField.createField();
-                if (field instanceof AbstractComponent) {
-                    ((AbstractComponent) field).setImmediate(true);
-                }
-                tab.addField(field);
-                final String helpDescription = fieldDefinition.getDescription();
+        buildReducedForm(formDefinition, view, item, parent);
+        boolean hasI18NAwareFields = hasI18NAwareFields(formDefinition);
 
-                if (StringUtils.isNotBlank(helpDescription) && !isMessageKey(helpDescription)) {
-                    tab.setComponentHelpDescription(field, helpDescription);
-                }
-                TextAreaStretcher.extend(field);
-                view.addField(field);
-            }
-            view.addFormSection(tabDefinition.getLabel(), tab.getContainer());
-        }
-        view.setShowAllEnabled(formDefinition.getTabs().size() > 1);
         if (hasI18NAwareFields) {
             final AbstractSelect languageChooser = i18NAuthoringSupport.getLanguageChooser();
             if (languageChooser != null) {
@@ -164,6 +135,52 @@ public class FormBuilder {
                 return view;
             }
         };
+    }
+
+    public void buildReducedForm(FormDefinition formDefinition, FormViewReduced view, Item item, FormItem parent) {
+        final Form form = new Form(formDefinition);
+        form.setParent(parent);
+        view.setItemDataSource(item);
+
+        for (TabDefinition tabDefinition : formDefinition.getTabs()) {
+            FormTab tab = new FormTab(tabDefinition);
+            tab.setParent(form);
+            for (final FieldDefinition fieldDefinition : tabDefinition.getFields()) {
+                final FieldFactory formField = fieldFactoryFactory.createFieldFactory(fieldDefinition, item);
+                if (formField == null) {
+                    continue;
+                }
+                formField.setComponentProvider(componentProvider);
+                formField.setI18nContentSupport(i18nContentSupport);
+                formField.setParent(tab);
+                final Field<?> field = formField.createField();
+                if (field instanceof AbstractComponent) {
+                    ((AbstractComponent) field).setImmediate(true);
+                }
+                tab.addField(field);
+                final String helpDescription = fieldDefinition.getDescription();
+
+                if (StringUtils.isNotBlank(helpDescription) && !isMessageKey(helpDescription)) {
+                    tab.setComponentHelpDescription(field, helpDescription);
+                }
+                TextAreaStretcher.extend(field);
+                view.addField(field);
+            }
+            view.addFormSection(tabDefinition.getLabel(), tab.getContainer());
+        }
+        view.setShowAllEnabled(formDefinition.getTabs().size() > 1);
+
+    }
+
+    private boolean hasI18NAwareFields(FormDefinition formDefinition) {
+        boolean hasI18NAwareFields = false;
+        for (TabDefinition tabDefinition : formDefinition.getTabs()) {
+            for (final FieldDefinition fieldDefinition : tabDefinition.getFields()) {
+                hasI18NAwareFields |= fieldDefinition.isI18n();
+            }
+        }
+        return hasI18NAwareFields;
+
     }
 
     /**
