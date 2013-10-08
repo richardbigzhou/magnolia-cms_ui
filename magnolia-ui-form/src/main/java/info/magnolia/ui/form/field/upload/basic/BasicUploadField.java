@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.form.field.upload.basic;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
@@ -265,7 +264,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         deleteButton.setHtmlContentAllowed(true);
         deleteButton.setCaption("<span class=\"" + "icon-trash" + "\"></span>");
         deleteButton.addStyleName("inline");
-        deleteButton.setDescription(MessagesUtil.get(deleteCaption, "info.magnolia.ui.admincentral.messages"));
+        deleteButton.setDescription(i18n.translate(deleteCaption));
 
         deleteButton.addClickListener(new Button.ClickListener() {
             private static final long serialVersionUID = 1L;
@@ -314,11 +313,11 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         if (this.editFileName && !isReadOnly()) {
             TextField textField = new TextField(getFileWrapper().getFileNameProperty());
             textField.setNullRepresentation("");
-            textField.setCaption(MessagesUtil.get(fileDetailNameCaption, "info.magnolia.ui.admincentral.messages"));
+            textField.setCaption(i18n.translate(fileDetailNameCaption));
             return textField;
         } else {
             Label label = new Label("", ContentMode.HTML);
-            label.setCaption(MessagesUtil.get(fileDetailNameCaption, "info.magnolia.ui.admincentral.messages"));
+            label.setCaption(i18n.translate(fileDetailNameCaption));
             label.setValue(getFileWrapper().getFileName());
             return label;
         }
@@ -329,7 +328,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
      */
     protected Component getFileDetailSize() {
         Label label = new Label("", ContentMode.HTML);
-        label.setCaption(MessagesUtil.get(fileDetailSizeCaption, "info.magnolia.ui.admincentral.messages"));
+        label.setCaption(i18n.translate(fileDetailSizeCaption));
         label.setValue(FileUtils.byteCountToDisplaySize(getFileWrapper().getFileSize()));
         return label;
     }
@@ -343,12 +342,12 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         if (this.editFileFormat && !isReadOnly()) {
             TextField textField = new TextField(getFileWrapper().getFileFormatProperty());
             textField.setNullRepresentation("");
-            textField.setCaption(MessagesUtil.get(fileDetailFormatCaption, "info.magnolia.ui.admincentral.messages"));
+            textField.setCaption(i18n.translate(fileDetailFormatCaption));
             return textField;
         } else {
             Label label = new Label("", ContentMode.HTML);
             label.setValue(getFileWrapper().getExtension());
-            label.setCaption(MessagesUtil.get(fileDetailFormatCaption, "info.magnolia.ui.admincentral.messages"));
+            label.setCaption(i18n.translate(fileDetailFormatCaption));
             return label;
         }
     }
@@ -426,7 +425,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         if (args != null && args.length > 0) {
             return i18n.translate(caption, args);
         } else {
-            return MessagesUtil.get(caption, "info.magnolia.ui.admincentral.messages");
+            return i18n.translate(caption);
         }
     }
 
@@ -526,7 +525,7 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         } else {
             caption = typeInterruption;
         }
-        uiContext.openNotification(MessageStyleTypeEnum.WARNING, true, getCaption(warningNoteCaption, new String[] { MessagesUtil.get(caption, "info.magnolia.ui.admincentral.messages") }));
+        uiContext.openNotification(MessageStyleTypeEnum.WARNING, true, getCaption(warningNoteCaption, new String[] { i18n.translate(caption) }));
     }
 
     @Override
