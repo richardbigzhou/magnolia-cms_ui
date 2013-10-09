@@ -61,7 +61,7 @@ public class StaticFieldFactory<D extends StaticFieldDefinition> extends Abstrac
      * Create the value displayed into the static field.
      */
     public String createFieldValue() {
-        return getMessage(definition.getValue());
+        return definition.getValue();
     }
 
     /**

@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import info.magnolia.i18nsystem.I18nText;
+
 /**
  * Describes a field which displays simple static text in the dialog. The text displayed is read from the value property.
  */
@@ -40,6 +42,7 @@ public class StaticFieldDefinition extends ConfiguredFieldDefinition {
 
     private String value;
 
+    @I18nText
     public String getValue() {
         return value;
     }
