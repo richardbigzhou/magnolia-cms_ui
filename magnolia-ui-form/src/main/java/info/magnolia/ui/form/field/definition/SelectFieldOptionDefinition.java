@@ -33,10 +33,14 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import info.magnolia.i18nsystem.I18nText;
+import info.magnolia.i18nsystem.I18nable;
+
 /**
  * Simple pojo used to define options used in selection.
  */
 
+@I18nable(keyGenerator = SelectFieldOptionDefinitionKeyGenerator.class)
 public class SelectFieldOptionDefinition {
 
     // Value saved to the repository and displayed to the user.
@@ -74,6 +78,7 @@ public class SelectFieldOptionDefinition {
         this.selected = selected;
     }
 
+    @I18nText
     public String getLabel() {
         return label;
     }
