@@ -42,10 +42,12 @@ import info.magnolia.module.delta.NewPropertyTask;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
 import info.magnolia.module.delta.OrderNodeTo1stPosTask;
 import info.magnolia.module.delta.PartialBootstrapTask;
+import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RemovePropertyTask;
 import info.magnolia.module.delta.SetPropertyTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +89,14 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new RemovePropertyTask("Remove label from form field", "Remove label property from the static1 field of the ACL tab of the Role dialog", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/acls/fields/static2", "label"))
                 // Remove hardcoded i18n properties, e.g. label, description, etc.
                 .addTask(new RemoveHardcodedI18nPropertiesFromSubappsTask("security-app"))
+        );
+
+        register(DeltaBuilder.update("5.1.1", "")
+                .addTask(new PartialBootstrapTask("Bootstrap SystemLanguages field type.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.fieldTypes.xml", "/fieldTypes/systemLanguagesField"))
+                .addTask(new NodeExistsDelegateTask("Update definition class for language field in user dialog.", "", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/user/form/tabs/user/fields/language",
+                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/dialogs/user/form/tabs/user/fields/language", "class", SystemLanguagesFieldDefinition.class.getName())))
+                .addTask(new NodeExistsDelegateTask("Remove now unnecessary options from language field in user dialog.", "", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/user/form/tabs/user/fields/language/options",
+                        new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/user/form/tabs/user/fields/language/options")))
         );
     }
 

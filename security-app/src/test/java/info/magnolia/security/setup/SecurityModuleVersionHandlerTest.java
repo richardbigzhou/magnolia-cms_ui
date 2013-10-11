@@ -42,6 +42,10 @@ import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
+import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
+import info.magnolia.ui.form.field.factory.SelectFieldFactory;
+
 import org.junit.Test;
 
 import javax.jcr.Node;
@@ -192,4 +196,50 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         assertFalse(static2Node.hasProperty("label"));
     }
 
+    @Test
+    public void systemLanguagesFieldAddedOnUpdateTo511() throws Exception {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        String fieldTypes = "/modules/security-app/fieldTypes";
+        Node fieldTypesNode = NodeUtil.createPath(session.getRootNode(), fieldTypes, NodeTypes.ContentNode.NAME);
+        assertFalse(fieldTypesNode.hasNode("systemLanguagesField"));
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1"));
+
+        // THEN
+        assertTrue(fieldTypesNode.hasNode("systemLanguagesField"));
+        assertEquals(SystemLanguagesFieldDefinition.class.getName(), fieldTypesNode.getNode("systemLanguagesField").getProperty("definitionClass").getString());
+        assertEquals(SelectFieldFactory.class.getName(), fieldTypesNode.getNode("systemLanguagesField").getProperty("factoryClass").getString());
+    }
+
+    @Test
+    public void userDialogLanguageFieldHasNewDefinitionOnUpdateTo511() throws Exception {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        String languageField = "/modules/security-app/dialogs/user/form/tabs/user/fields/language";
+        Node languageNode = NodeUtil.createPath(session.getRootNode(), languageField, NodeTypes.ContentNode.NAME);
+        PropertyUtil.setProperty(languageNode, "class", SelectFieldDefinition.class.getName());
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1"));
+
+        // THEN
+        assertEquals(SystemLanguagesFieldDefinition.class.getName(), languageNode.getProperty("class").getString());
+    }
+
+    @Test
+    public void userDialogLanguageFieldOptionsHaveBeenRemovedOnUpdateTo511() throws Exception {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        String languageField = "/modules/security-app/dialogs/user/form/tabs/user/fields/language";
+        Node languageNode = NodeUtil.createPath(session.getRootNode(), languageField, NodeTypes.ContentNode.NAME);
+        NodeUtil.createPath(languageNode, "options", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1"));
+
+        // THEN
+        assertFalse(languageNode.hasNode("options"));
+    }
 }
