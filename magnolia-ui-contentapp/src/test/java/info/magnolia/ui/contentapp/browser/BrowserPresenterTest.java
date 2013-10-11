@@ -44,6 +44,7 @@ import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
@@ -54,11 +55,14 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -92,6 +96,12 @@ public class BrowserPresenterTest {
 
     private BrowserPresenter presenter;
 
+    private ConfiguredBrowserSubAppDescriptor browserSubAppDescriptor;
+
+    private ActionExecutor actionExecutor;
+
+    private WorkbenchPresenter mockWorkbenchPresenter;
+
     @Before
     public void setUp() {
         // spy hooks for session move to avoid unsupported operation exception
@@ -112,7 +122,7 @@ public class BrowserPresenterTest {
         workbenchDefinition.getContentViews().add(new TreePresenterDefinition());
         workbenchDefinition.getContentViews().add(new ListPresenterDefinition());
 
-        ConfiguredBrowserSubAppDescriptor browserSubAppDescriptor = new ConfiguredBrowserSubAppDescriptor();
+        browserSubAppDescriptor = new ConfiguredBrowserSubAppDescriptor();
         browserSubAppDescriptor.setName(SUB_APP_NAME);
         browserSubAppDescriptor.setWorkbench(workbenchDefinition);
 
@@ -127,9 +137,9 @@ public class BrowserPresenterTest {
         subAppEventBus = new SimpleEventBus();
 
         EventBus adminCentralEventBus = mock(EventBus.class);
-        WorkbenchPresenter mockWorkbenchPresenter = mock(WorkbenchPresenter.class);
+        mockWorkbenchPresenter = mock(WorkbenchPresenter.class);
         ActionbarPresenter mockActionbarPresenter = mock(ActionbarPresenter.class);
-        ActionExecutor actionExecutor = mock(ActionExecutor.class);
+        actionExecutor = mock(ActionExecutor.class);
 
         presenter = new BrowserPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus, mockActionbarPresenter, null, mockWorkbenchPresenter);
 
@@ -235,5 +245,48 @@ public class BrowserPresenterTest {
         assertEquals(firstModifiedBy, LastModified.getLastModifiedBy(node));
     }
 
+    @Test
+    public void defaultActionIsNotExecutedWhenNotAvailableForSelectedItem() throws Exception {
+        // GIVEN
+        ConfiguredActionbarDefinition actionbar = new ConfiguredActionbarDefinition();
+        actionbar.setDefaultAction("testDefaultAction");
+        browserSubAppDescriptor.setActionbar(actionbar);
+
+        Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
+        when(actionExecutor.isAvailable("testDefaultAction", node)).thenReturn(false);
+        List<String> ids = new ArrayList<String>(1);
+        ids.add(node.getIdentifier());
+        when(mockWorkbenchPresenter.getSelectedIds()).thenReturn(ids);
+        when(mockWorkbenchPresenter.getWorkspace()).thenReturn(WORKSPACE);
+
+        // WHEN
+        subAppEventBus.fireEvent(new ItemDoubleClickedEvent(WORKSPACE, node.getPath()));
+
+        // THEN
+        // just verifying that the method has NOT been called with the proper action name, not the Item(s) passed to it
+        verify(actionExecutor, never()).execute(eq("testDefaultAction"), anyObject());
+    }
+
+    @Test
+    public void defaultActionIsExecutedWhenAvailableForSelectedItem() throws Exception {
+        // GIVEN
+        ConfiguredActionbarDefinition actionbar = new ConfiguredActionbarDefinition();
+        actionbar.setDefaultAction("testDefaultAction");
+        browserSubAppDescriptor.setActionbar(actionbar);
+
+        Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
+        when(actionExecutor.isAvailable("testDefaultAction", node)).thenReturn(true);
+        List<String> ids = new ArrayList<String>(1);
+        ids.add(node.getIdentifier());
+        when(mockWorkbenchPresenter.getSelectedIds()).thenReturn(ids);
+        when(mockWorkbenchPresenter.getWorkspace()).thenReturn(WORKSPACE);
+
+        // WHEN
+        subAppEventBus.fireEvent(new ItemDoubleClickedEvent(WORKSPACE, node.getPath()));
+
+        // THEN
+        // just verifying that the method has been called with the proper action name, not the Item(s) passed to it
+        verify(actionExecutor).execute(eq("testDefaultAction"), anyObject());
+    }
 
 }

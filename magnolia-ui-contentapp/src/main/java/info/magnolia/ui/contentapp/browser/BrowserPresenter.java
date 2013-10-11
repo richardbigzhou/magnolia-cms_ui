@@ -389,15 +389,21 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
                 // fail, because the ComponentProvider wouldn't find suitable constructor for the Action.
                 // Changing this would require to rewrite all the actions to accept the List<Item> in the constructor...
                 javax.jcr.Item item = JcrItemUtil.getJcrItem(getWorkspace(), getSelectedItemIds().get(0));
-                actionExecutor.execute(actionName, item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((Property) item));
+                if (actionExecutor.isAvailable(actionName, item)) {
+                    actionExecutor.execute(actionName, item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((Property) item));
+                }
             } else {
                 List<Item> items = new ArrayList<Item>(getSelectedItemIds().size());
+                List<javax.jcr.Item> jcrItems = new ArrayList<javax.jcr.Item>(getSelectedItemIds().size());
                 for (String itemId : getSelectedItemIds()) {
                     javax.jcr.Item item = JcrItemUtil.getJcrItem(getWorkspace(), itemId);
+                    jcrItems.add(item);
                     JcrItemAdapter adapter = item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((Property) item);
                     items.add(adapter);
                 }
-                actionExecutor.execute(actionName, items);
+                if (actionExecutor.isAvailable(actionName, jcrItems.toArray(new javax.jcr.Item[] {}))) {
+                    actionExecutor.execute(actionName, items);
+                }
             }
         } catch (PathNotFoundException p) {
             Message error = new Message(MessageType.ERROR, "Could not get item ", "Following Item not found :" + getSelectedItemIds().get(0));
