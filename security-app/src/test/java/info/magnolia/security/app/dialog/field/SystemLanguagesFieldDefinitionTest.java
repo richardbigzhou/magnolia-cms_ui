@@ -103,7 +103,8 @@ public class SystemLanguagesFieldDefinitionTest extends MgnlTestCase {
         assertEquals("en", options.get(0).getValue());
         assertEquals((new Locale("en")).getDisplayLanguage(Locale.ENGLISH), options.get(0).getLabel());
         assertEquals("de_CH", options.get(1).getValue());
-        assertEquals((new Locale("de", "CH")).getDisplayLanguage(Locale.ENGLISH), options.get(1).getLabel());
+        Locale swissGerman = new Locale("de", "CH");
+        assertEquals(swissGerman.getDisplayLanguage(Locale.ENGLISH) + " (" + swissGerman.getDisplayCountry(Locale.ENGLISH) + ")", options.get(1).getLabel());
     }
 
     @Test
@@ -119,6 +120,7 @@ public class SystemLanguagesFieldDefinitionTest extends MgnlTestCase {
         assertEquals("en", options.get(0).getValue());
         assertEquals((new Locale("en")).getDisplayLanguage(Locale.GERMAN), options.get(0).getLabel());
         assertEquals("de_CH", options.get(1).getValue());
-        assertEquals((new Locale("de", "CH")).getDisplayLanguage(Locale.GERMAN), options.get(1).getLabel());
+        Locale swissGerman = new Locale("de", "CH");
+        assertEquals(swissGerman.getDisplayLanguage(Locale.GERMAN) + " (" + swissGerman.getDisplayCountry(Locale.GERMAN) + ")", options.get(1).getLabel());
     }
 }
