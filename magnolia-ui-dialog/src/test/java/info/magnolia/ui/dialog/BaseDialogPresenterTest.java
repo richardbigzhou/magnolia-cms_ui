@@ -215,6 +215,9 @@ public class BaseDialogPresenterTest {
             return "translated with key [" + keys[0] + "] and locale [" + localeProvider.getLocale() + "]";
         }
 
+        @Override
+        public void reloadMessageBundles() {
+        }
     }
     private static class ToggleableAction extends AbstractAction<ConfiguredActionDefinition> {
 

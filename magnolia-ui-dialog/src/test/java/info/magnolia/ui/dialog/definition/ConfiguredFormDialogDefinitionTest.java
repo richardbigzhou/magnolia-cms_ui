@@ -107,5 +107,9 @@ public class ConfiguredFormDialogDefinitionTest {
         public String translate(LocaleProvider localeProvider, String[] keys) {
             throw new UnsupportedOperationException();
         }
+
+        @Override
+        public void reloadMessageBundles() {
+        }
     }
 }

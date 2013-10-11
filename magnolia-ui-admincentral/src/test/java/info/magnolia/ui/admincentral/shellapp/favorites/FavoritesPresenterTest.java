@@ -259,5 +259,9 @@ public class FavoritesPresenterTest {
             return "translated with key [" + keys[0] + "] and locale [" + localeProvider.getLocale() + "]";
         }
 
+        @Override
+        public void reloadMessageBundles() {
+        }
+
     }
 }
