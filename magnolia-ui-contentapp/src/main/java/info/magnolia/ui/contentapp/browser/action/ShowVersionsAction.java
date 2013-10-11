@@ -62,13 +62,14 @@ import javax.jcr.RepositoryException;
  * Opens a dialog with list of versions.
  *
  * @see ShowVersionsActionDefinition
+ * @param <D> {@link ShowVersionsActionDefinition}.
  */
-public class ShowVersionsAction extends AbstractVersionAction<ShowVersionsActionDefinition> {
+public class ShowVersionsAction<D extends ShowVersionsActionDefinition> extends AbstractVersionAction<D> {
 
     private final AppContext appContext;
 
     @Inject
-    public ShowVersionsAction(ShowVersionsActionDefinition definition, AppContext appContext, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n) {
+    public ShowVersionsAction(D definition, AppContext appContext, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n) {
         super(definition, locationController, uiContext, formDialogPresenter, nodeAdapter, i18n);
         this.appContext = appContext;
     }
