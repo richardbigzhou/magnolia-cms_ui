@@ -135,7 +135,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         Node root = session.getRootNode();
         Node node = root.addNode("node1");
 
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, new JcrNodeAdapter(node), new TestUiContext(true), actionExecutor);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, new JcrNodeAdapter(node), new TestUiContext(true), actionExecutor, i18n);
 
         // WHEN
         confirmationAction.execute();
@@ -151,7 +151,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         Node root = session.getRootNode();
         Node node = root.addNode("node2");
 
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, new JcrNodeAdapter(node), new TestUiContext(false), actionExecutor);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, new JcrNodeAdapter(node), new TestUiContext(false), actionExecutor, i18n);
 
         // WHEN
         confirmationAction.execute();
@@ -169,7 +169,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         node.setProperty("property_long", Long.decode("1000"));
 
         JcrItemAdapter item = new JcrPropertyAdapter(node.getProperty("property_long"));
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, item, new TestUiContext(true), actionExecutor);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, item, new TestUiContext(true), actionExecutor, i18n);
 
         // WHEN
         confirmationAction.execute();
@@ -187,7 +187,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         node.setProperty("property_long", Long.decode("1000"));
 
         JcrItemAdapter item = new JcrPropertyAdapter(node.getProperty("property_long"));
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, item, new TestUiContext(false), actionExecutor);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, item, new TestUiContext(false), actionExecutor, i18n);
 
         // WHEN
         confirmationAction.execute();
@@ -211,7 +211,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         items.add(item);
         items.add(prop);
 
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, items, new TestUiContext(true), actionExecutor);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, items, new TestUiContext(true), actionExecutor, i18n);
 
         // WHEN
         confirmationAction.execute();
@@ -237,7 +237,7 @@ public class ConfirmationActionTest extends MgnlTestCase {
         items.add(item);
         items.add(prop);
 
-        ConfirmationAction confirmationAction = new ConfirmationAction(definition, items, new TestUiContext(false), actionExecutor);
+        ConfirmationAction confirmationAction = new ConfirmationAction(definition, items, new TestUiContext(false), actionExecutor, i18n);
 
         // WHEN
         confirmationAction.execute();
