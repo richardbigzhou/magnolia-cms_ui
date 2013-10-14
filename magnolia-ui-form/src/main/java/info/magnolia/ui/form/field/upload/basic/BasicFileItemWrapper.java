@@ -119,11 +119,9 @@ public class BasicFileItemWrapper implements FileItemWrapper {
         fileName = item.getItemProperty(FileProperties.PROPERTY_FILENAME) != null ? (String) item.getItemProperty(FileProperties.PROPERTY_FILENAME).getValue() : "";
         Property<?> data = item.getItemProperty(JcrConstants.JCR_DATA);
         if (data != null) {
-            fileSize = Long.parseLong(item.getItemProperty(FileProperties.PROPERTY_SIZE).getValue().toString());
-            mimeType = String.valueOf(item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue());
-            if (item.getItemProperty(FileProperties.PROPERTY_EXTENSION) != null) {
-                extension = String.valueOf(item.getItemProperty(FileProperties.PROPERTY_EXTENSION).getValue());
-            }
+            fileSize = item.getItemProperty(FileProperties.PROPERTY_SIZE) != null ? Long.parseLong(item.getItemProperty(FileProperties.PROPERTY_SIZE).getValue().toString()) : 0;
+            mimeType = item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE) != null ? String.valueOf(item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue()) : "";
+            extension = item.getItemProperty(FileProperties.PROPERTY_EXTENSION) != null ? String.valueOf(item.getItemProperty(FileProperties.PROPERTY_EXTENSION).getValue()) : "";
             // Create a file based on the Items Binary informations.
             setFile(data);
         }

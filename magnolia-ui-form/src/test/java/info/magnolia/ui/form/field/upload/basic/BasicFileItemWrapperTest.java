@@ -133,6 +133,26 @@ public class BasicFileItemWrapperTest {
     }
 
     @Test
+    public void testPopulateFromItemJcrItemNodeAdapterWithMissingProperties() throws RepositoryException, FileNotFoundException {
+        // GIVEN
+        // Create an image Node
+        Node underlyingNode = session.getRootNode().addNode("photo", "nt:resource");
+        underlyingNode.setProperty("fileName", "me.jpg");
+        underlyingNode.setProperty("size", uploadFileMe.length());
+        underlyingNode.setProperty("jcr:data", ValueFactoryImpl.getInstance().createBinary(new FileInputStream(uploadFileMe)));
+
+        // Create an Image Item
+        JcrNodeAdapter jcrItem = new JcrNodeAdapter(underlyingNode);
+
+        // WHEN
+        basicFileItemWrapper = new BasicFileItemWrapper(jcrItem, directory);
+
+        // THEN
+        assertEquals("me.jpg", basicFileItemWrapper.getFileName());
+        assertEquals(uploadFileMe.length(), basicFileItemWrapper.getFileSize());
+    }
+
+    @Test
     public void testPopulateFromItemJcrItemNewNodeAdapter() throws RepositoryException, FileNotFoundException {
         // GIVEN
         // Create an image Node
