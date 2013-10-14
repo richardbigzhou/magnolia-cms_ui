@@ -99,6 +99,7 @@ public abstract class AbstractDataTypeMigrationTask extends AbstractTask {
             // Init session
             dataSession = installContext.getJCRSession("data");
             newSession = installContext.getJCRSession(newWorkspaceName);
+
             // Init oldToNewNodeTypeMapping
             initOldToNewNodeTypeMappingElement(oldToNewNodeTypeMapping);
 
@@ -158,7 +159,7 @@ public abstract class AbstractDataTypeMigrationTask extends AbstractTask {
             NodeUtil.createPath(newSession.getRootNode(), getParentPath(newRootPath), NodeTypes.Folder.NAME).getSession().save();
         }
         newWorkspace.clone("data", dataRootPath, newRootPath, true);
-        log.info("Following data workspace part {}: is now movet to the following workspace '{}' location '{}'", Arrays.asList(dataRootPath, newWorkspace.getName(), newRootPath).toArray());
+        log.info("Following data workspace part {}: is now moved to the following workspace '{}' location '{}'", Arrays.asList(dataRootPath, newWorkspace.getName(), newRootPath).toArray());
 
         if (this.isTargetRoot) {
             // move to root

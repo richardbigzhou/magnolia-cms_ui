@@ -60,7 +60,7 @@ public class DataTypeMigrationTaskTest extends AbstractAbstractDataTypeMigration
 
         // THEN
         Node rootNode = targetSession.getRootNode();
-        assertTrue(!rootNode.hasNode("MetaData"));
+        assertFalse(rootNode.hasNode("MetaData"));
         assertTrue(rootNode.hasNode("Family"));
         Node family = rootNode.getNode("Family");
         assertTrue(family.hasProperty("level"));
