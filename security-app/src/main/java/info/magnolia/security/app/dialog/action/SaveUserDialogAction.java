@@ -153,7 +153,6 @@ public class SaveUserDialogAction extends SaveDialogAction {
             log.debug("Assigning user the following roles [{}]", roles);
             storeCollectionAsNodeWithProperties(userNode, NODE_ROLES, roles);
 
-            NodeTypes.LastModified.update(userNode);
             userNode.getSession().save();
 
         } catch (final RepositoryException e) {

@@ -34,6 +34,7 @@
 package info.magnolia.ui.contentapp.browser;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.User;
@@ -48,11 +49,10 @@ import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
-import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.api.shell.Shell;
+import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
@@ -65,7 +65,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.jcr.Node;
-import javax.jcr.Property;
 
 import org.junit.After;
 import org.junit.Before;
@@ -173,55 +172,6 @@ public class BrowserPresenterTest {
 
         // THEN
         assertEquals(newValue, node.getProperty(DUMMY_PROPERTY_NAME).getBoolean());
-    }
-
-    @Test
-    public void testEditItemWithNodeUpdatesLastModified() throws Exception {
-        // GIVEN
-        Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
-        node.addMixin(LastModified.NAME);
-        AbstractJcrNodeAdapter adapter = mock(AbstractJcrNodeAdapter.class);
-        when(adapter.applyChanges()).thenReturn(node);
-        // simulate pending change
-        when(adapter.hasChangedProperties()).thenReturn(true);
-
-        Calendar firstModified = LastModified.getLastModified(node);
-        String firstModifiedBy = LastModified.getLastModifiedBy(node);
-
-        // WHEN
-        subAppEventBus.fireEvent(new ItemEditedEvent(adapter));
-
-        // THEN
-        assertNotNull(LastModified.getLastModified(node));
-        assertNotNull(LastModified.getLastModifiedBy(node));
-        assertNotSame(firstModified, LastModified.getLastModified(node));
-        assertNotSame(firstModifiedBy, LastModified.getLastModifiedBy(node));
-        assertEquals(USER, LastModified.getLastModifiedBy(node));
-    }
-
-    @Test
-    public void testEditItemWithPropertyUpdatesLastModified() throws Exception {
-        // GIVEN
-        Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
-        node.addMixin(LastModified.NAME);
-        Property property = node.setProperty(DUMMY_PROPERTY_NAME, true);
-        JcrPropertyAdapter adapter = mock(JcrPropertyAdapter.class);
-        when(adapter.getJcrItem()).thenReturn(property);
-        // simulate pending change
-        when(adapter.hasChangedProperties()).thenReturn(true);
-
-        Calendar firstModified = LastModified.getLastModified(node);
-        String firstModifiedBy = LastModified.getLastModifiedBy(node);
-
-        // WHEN
-        subAppEventBus.fireEvent(new ItemEditedEvent(adapter));
-
-        // THEN
-        assertNotNull(LastModified.getLastModified(node));
-        assertNotNull(LastModified.getLastModifiedBy(node));
-        assertNotSame(firstModified, LastModified.getLastModified(node));
-        assertNotSame(firstModifiedBy, LastModified.getLastModifiedBy(node));
-        assertEquals(USER, LastModified.getLastModifiedBy(node));
     }
 
     @Test

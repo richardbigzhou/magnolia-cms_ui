@@ -35,7 +35,6 @@ package info.magnolia.pages.app.action;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -86,7 +85,6 @@ public class SortComponentAction extends AbstractAction<SortComponentActionDefin
                 NodeUtil.orderAfter(sourceComponent, targetComponent.getName());
             }
 
-            NodeTypes.LastModified.update(parent);
             session.save();
             eventBus.fireEvent(new ContentChangedEvent(areaElement.getWorkspace(), areaElement.getPath()));
         } catch (RepositoryException e) {

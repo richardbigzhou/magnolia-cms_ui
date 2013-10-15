@@ -33,13 +33,12 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import info.magnolia.cms.security.MgnlUser;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
@@ -52,7 +51,6 @@ import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 
 import javax.jcr.Node;
@@ -173,137 +171,4 @@ public class SaveDialogActionTest extends MgnlTestCase {
         node = session.getRootNode().getNode("underlying");
         assertEquals(false, node.hasProperty("property"));
     }
-
-    @Test
-    public void testUpdateLastModified() throws RepositoryException {
-        // GIVEN
-        node = session.getRootNode().addNode("content", NodeTypes.Content.NAME);
-
-        dialogAction = new SaveDialogAction(dialogActionDefinition, item, presenter, presenter.getCallback());
-        Calendar past = Calendar.getInstance();
-        past.set(1970, 3, 3);
-        node.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
-
-        // WHEN
-        dialogAction.updateLastModified(node);
-
-        // THEN
-        Calendar lastModified = NodeTypes.LastModified.getLastModified(node);
-        assertTrue(NodeTypes.LastModified.NAME + " should have been updated.", past.before(lastModified));
-    }
-
-    @Test
-    public void testUpdateLastModifiedDoesNothingForFolder() throws RepositoryException {
-        // GIVEN
-        node = session.getRootNode().addNode("folder", NodeTypes.Folder.NAME);
-        dialogAction = new SaveDialogAction(dialogActionDefinition, item, presenter, presenter.getCallback());
-        Calendar past = Calendar.getInstance();
-        past.set(1970, 3, 3);
-
-        node.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
-
-        // WHEN
-        dialogAction.updateLastModified(node);
-
-        // THEN
-        Calendar lastModified = NodeTypes.LastModified.getLastModified(node);
-        assertEquals(NodeTypes.LastModified.NAME + " should not have been updated.", past, lastModified);
-    }
-
-    @Test
-    public void testUpdateLastModifiedTouchesParent() throws RepositoryException {
-        // GIVEN
-        Node parentOfParent = session.getRootNode().addNode("parentOfParent", NodeTypes.Content.NAME);
-        Node parent = parentOfParent.addNode("parent", NodeTypes.ContentNode.NAME);
-        node = parent.addNode("node", NodeTypes.ContentNode.NAME);
-        Calendar past = Calendar.getInstance();
-        past.set(1970, 3, 3);
-
-        node.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
-        parent.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
-        dialogAction = new SaveDialogAction(dialogActionDefinition, item, presenter, presenter.getCallback());
-
-        // WHEN
-        dialogAction.updateLastModified(node);
-
-        // THEN
-        Calendar lastModified = NodeTypes.LastModified.getLastModified(node);
-        assertTrue(NodeTypes.LastModified.NAME + " of node should have been updated.", past.before(lastModified));
-        lastModified = NodeTypes.LastModified.getLastModified(parent);
-        assertTrue(NodeTypes.LastModified.NAME + " of parent should have been updated.", past.before(lastModified));
-    }
-
-    @Test
-    public void testUpdateLastModifiedDoesNotTouchParentWhenNotWebsiteWorkspace() throws RepositoryException {
-        // GIVEN
-        // session has to be non-Website for this test
-        session = new MockSession(RepositoryConstants.CONFIG);
-        Node parentOfParent = session.getRootNode().addNode("parentOfParent", NodeTypes.Content.NAME);
-        Node parent = parentOfParent.addNode("parent", NodeTypes.ContentNode.NAME);
-        node = parent.addNode("node", NodeTypes.ContentNode.NAME);
-        Calendar past = Calendar.getInstance();
-        past.set(1970, 3, 3);
-
-        node.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
-        parent.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
-        dialogAction = new SaveDialogAction(dialogActionDefinition, item, presenter, presenter.getCallback());
-
-        // WHEN
-        dialogAction.updateLastModified(node);
-
-        // THEN
-        Calendar lastModified = NodeTypes.LastModified.getLastModified(node);
-        assertTrue(NodeTypes.LastModified.NAME + " of node should have been updated.", past.before(lastModified));
-        lastModified = NodeTypes.LastModified.getLastModified(parent);
-        assertEquals(NodeTypes.LastModified.NAME + " of parent should not have been updated.", past, lastModified);
-    }
-
-    @Test
-    public void testUpdateLastModifiedDoesNotTouchParentWhenItHasLevel1() throws RepositoryException {
-        // GIVEN
-        Node parentOfParent = session.getRootNode().addNode("parentOfParent", NodeTypes.ContentNode.NAME);
-        Node parent = parentOfParent.addNode("parent", NodeTypes.ContentNode.NAME);
-        node = parent.addNode("node", NodeTypes.ContentNode.NAME);
-        Calendar past = Calendar.getInstance();
-        past.set(1970, 3, 3);
-
-        node.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
-        parent.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
-        dialogAction = new SaveDialogAction(dialogActionDefinition, item, presenter, presenter.getCallback());
-
-        // WHEN
-        dialogAction.updateLastModified(node);
-
-        // THEN
-        Calendar lastModified = NodeTypes.LastModified.getLastModified(node);
-        assertTrue(NodeTypes.LastModified.NAME + " of node should have been updated.", past.before(lastModified));
-        lastModified = NodeTypes.LastModified.getLastModified(parent);
-        assertTrue(NodeTypes.LastModified.NAME + " of parent should have been updated.", past.before(lastModified));
-        lastModified = NodeTypes.LastModified.getLastModified(parentOfParent);
-        assertTrue(NodeTypes.LastModified.NAME + " of parentOfParent should have been updated.", past.before(lastModified));
-    }
-
-    @Test
-    public void testUpdateLastModifiedDoesNotTouchParentWhenItIsTypeContent() throws RepositoryException {
-        // GIVEN
-        Node parentOfParent = session.getRootNode().addNode("parentOfParent", NodeTypes.Content.NAME);
-        Node parent = parentOfParent.addNode("parent", NodeTypes.Content.NAME);
-        node = parent.addNode("node", NodeTypes.Content.NAME);
-        Calendar past = Calendar.getInstance();
-        past.set(1970, 3, 3);
-
-        node.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
-        parent.setProperty(NodeTypes.LastModified.LAST_MODIFIED, past);
-        dialogAction = new SaveDialogAction(dialogActionDefinition, item, presenter, presenter.getCallback());
-
-        // WHEN
-        dialogAction.updateLastModified(node);
-
-        // THEN
-        Calendar lastModified = NodeTypes.LastModified.getLastModified(node);
-        assertTrue(NodeTypes.LastModified.NAME + " of node should have been updated.", past.before(lastModified));
-        lastModified = NodeTypes.LastModified.getLastModified(parent);
-        assertEquals(NodeTypes.LastModified.NAME + " of parent should not have been updated.", past, lastModified);
-    }
-
 }

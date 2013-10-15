@@ -34,7 +34,6 @@
 package info.magnolia.ui.form.action;
 
 import info.magnolia.cms.core.Path;
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.api.action.AbstractAction;
@@ -91,7 +90,6 @@ public class SaveFormAction extends AbstractAction<SaveFormActionDefinition> {
                 final Node node = item.applyChanges();
                 // Set the Node name.
                 setNodeName(node, item);
-                NodeTypes.LastModified.update(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);

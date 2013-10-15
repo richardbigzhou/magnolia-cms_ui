@@ -33,7 +33,6 @@
  */
 package info.magnolia.security.app.dialog.action;
 
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.security.app.util.UsersWorkspaceUtil;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -69,7 +68,6 @@ public class RenameUsersFolderAction extends SaveDialogAction {
 
                 UsersWorkspaceUtil.updateAcls(node, pathBefore);
 
-                NodeTypes.LastModified.update(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);

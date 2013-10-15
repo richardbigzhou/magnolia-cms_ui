@@ -34,7 +34,6 @@
 package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.jcr.util.NodeTypes.LastModified;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
@@ -300,8 +299,6 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
             try {
                 // get modifications
                 Node node = nodeAdapter.applyChanges();
-
-                LastModified.update(node);
                 node.getSession().save();
             } catch (RepositoryException e) {
                 log.error("Could not save changes to node", e);
@@ -316,8 +313,6 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
                 // get modifications
                 propertyAdapter.applyChanges();
-
-                LastModified.update(parent);
                 parent.getSession().save();
 
                 // update workbench selection in case the property changed name
