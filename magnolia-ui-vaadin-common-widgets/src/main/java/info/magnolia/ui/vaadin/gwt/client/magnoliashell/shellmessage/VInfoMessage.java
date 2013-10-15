@@ -35,10 +35,15 @@ package info.magnolia.ui.vaadin.gwt.client.magnoliashell.shellmessage;
 
 import info.magnolia.ui.vaadin.gwt.client.magnoliashell.shell.MagnoliaShellView;
 
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+
 /**
  * Info message.
  */
 public class VInfoMessage extends VDetailedShellMessage {
+
+    private Element detailsExpanderEl = DOM.createElement("span");
 
     public VInfoMessage(MagnoliaShellView shell, String topic, String message, String id) {
         super(shell, topic, message, id);
@@ -46,7 +51,25 @@ public class VInfoMessage extends VDetailedShellMessage {
     }
 
     @Override
+    protected void construct() {
+        super.construct();
+
+        detailsExpanderEl.setInnerText("[MORE]");  //TODO-TRANSLATE, but not with Message-Util
+        detailsExpanderEl.setClassName("details-expander");
+        getHeader().appendChild(detailsExpanderEl);
+
+    }
+
+    @Override
+    protected void onMessageClicked(Element targetEl) {
+        if (detailsExpanderEl == targetEl) {
+            getShell().navigateToMessageDetails(getId());
+        }
+        super.onMessageClicked(targetEl);
+    }
+
+    @Override
     protected String getMessageTypeCaption() {
-        return "Info: ";
+        return "Info: ";  //TODO-TRANSLATE, but not with Message-geUUtil
     }
 }
