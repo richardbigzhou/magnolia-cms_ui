@@ -52,12 +52,9 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 
 /**
- * {@link Form}. The server side implementation of the form view. Displays the
- * form inside a {@link MagnoliaTabSheet}.
+ * Server side implementation of the form view. Displays the form inside a {@link MagnoliaTabSheet}.
  */
 public class Form extends AbstractSingleComponentContainer implements FormViewReduced {
-
-    private final String SHOW_ALL = "Show All"; //TODO-TRANSLATE ("dialogs.show.all");
 
     private List<Field<?>> fields = new LinkedList<Field<?>>();
 
@@ -83,7 +80,7 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
         super();
         setStyleName("v-magnolia-form");
         tabSheet.setSizeFull();
-        tabSheet.showAllTab(true, SHOW_ALL);
+        tabSheet.showAllTab(true, "");
         setContent(tabSheet);
         registerRpc(new FormServerRpc() {
             @Override
@@ -195,9 +192,13 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
         }
     }
 
+    /**
+     * @deprecated as of 5.1.1, please get the tabsheet through {@link #getContent()} and set the show all behavior there, along with its i18nized caption.
+     */
     @Override
+    @Deprecated
     public void setShowAllEnabled(boolean enabled) {
-        tabSheet.showAllTab(enabled, SHOW_ALL);
+        tabSheet.showAllTab(enabled, "");
     }
 
     @Override
@@ -208,6 +209,11 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
     @Override
     protected FormState getState(boolean markAsDirty) {
         return (FormState) super.getState(markAsDirty);
+    }
+
+    @Override
+    public MagnoliaTabSheet getContent() {
+        return (MagnoliaTabSheet) super.getContent();
     }
 
     @Override

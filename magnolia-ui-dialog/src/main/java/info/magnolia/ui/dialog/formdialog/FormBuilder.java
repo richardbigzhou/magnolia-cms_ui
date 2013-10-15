@@ -186,6 +186,7 @@ public class FormBuilder {
     /**
      * @deprecated is a hack and should not be used. See MGNLUI-2207.
      */
+    @Deprecated
     private boolean isMessageKey(final String text) {
         return !text.contains(" ") && !text.endsWith(".");
     }

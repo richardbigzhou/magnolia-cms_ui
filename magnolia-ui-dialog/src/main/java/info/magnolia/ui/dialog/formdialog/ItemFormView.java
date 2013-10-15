@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.dialog.formdialog;
 
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.dialog.BaseDialogViewImpl;
@@ -44,6 +45,8 @@ import info.magnolia.ui.vaadin.form.FormSection;
 
 import java.util.Collection;
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -59,8 +62,21 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
 
     private Form form = new Form();
 
+    private final SimpleTranslator i18n;
+
+    /**
+     * @deprecated As of 5.1.1 please use {@link #ItemFormView(SimpleTranslator)} instead.
+     */
+    @Deprecated
     public ItemFormView() {
+        this(Components.getComponent(SimpleTranslator.class));
+    }
+
+    @Inject
+    public ItemFormView(SimpleTranslator i18n) {
         super(new FormDialog());
+        this.i18n = i18n;
+
         setWidth("720px");
         getDialog().setContent(form);
         getDialog().addDescriptionVisibilityHandler(new BaseDialog.DescriptionVisibilityEvent.Handler() {
@@ -110,7 +126,7 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
 
     @Override
     public void setShowAllEnabled(boolean enabled) {
-        form.setShowAllEnabled(enabled);
+        form.getContent().showAllTab(enabled, i18n.translate("form.tabs.all"));
     }
 
     @Override
