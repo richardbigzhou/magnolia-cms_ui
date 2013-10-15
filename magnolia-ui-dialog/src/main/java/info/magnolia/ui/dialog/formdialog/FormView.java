@@ -44,7 +44,7 @@ import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractSelect;
 
 /**
- * Interface for {@link info.magnolia.ui.vaadin.form.Form}.
+ * Interface for a locale-enabled form view.
  */
 public interface FormView extends DialogView, View, Item.Editor, FormViewReduced {
 
