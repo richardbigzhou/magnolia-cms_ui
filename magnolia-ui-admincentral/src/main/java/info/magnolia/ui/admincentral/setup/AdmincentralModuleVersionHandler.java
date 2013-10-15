@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.setup;
 
+import info.magnolia.jcr.util.NodeTypeTemplateUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
@@ -50,9 +51,18 @@ import info.magnolia.module.delta.RemovePropertyTask;
 import info.magnolia.module.delta.RenameNodesTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.setup.for5_0.AbstractNodeTypeRegistrationTask;
+import info.magnolia.ui.framework.AdmincentralNodeTypes;
+import info.magnolia.ui.framework.favorite.FavoriteStore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import javax.jcr.nodetype.NodeTypeDefinition;
+import javax.jcr.nodetype.NodeTypeManager;
+
+import org.apache.jackrabbit.JcrConstants;
 
 /**
  * VersionHandler for the Admincentral module.
@@ -115,6 +125,33 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new PartialBootstrapTask("Bootstrap move action in Configuration app", "", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actions/move"))
                 .addTask(new PartialBootstrapTask("Bootstrap move action to Configuration app actionbar", "Adds action move to folder/editActions actionbar.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actionbar/sections/folders/groups/editActions/items/move"))
             );
+
+        register(DeltaBuilder.update("5.1.1", "")
+
+                // update favorite node type
+                .addTask(new AbstractNodeTypeRegistrationTask("Update favorite node type", "This tasks ensures the mgnl:favorite node type is updated with its appropriate mixin supertypes.", FavoriteStore.WORKSPACE_NAME) {
+
+                    @Override
+                    public List<String> getNodeTypesToUnRegister(NodeTypeManager nodeTypeManager) {
+                        return null;
+                    }
+
+                    @Override
+                    public List<NodeTypeDefinition> getNodeTypesToRegister(NodeTypeManager nodeTypeManager) {
+                        List<NodeTypeDefinition> types = new ArrayList<NodeTypeDefinition>();
+
+                        types.add(NodeTypeTemplateUtil.createSimpleNodeType(nodeTypeManager,
+                                AdmincentralNodeTypes.Favorite.NAME,
+                                Arrays.asList(
+                                        JcrConstants.NT_BASE,
+                                        NodeTypes.Created.NAME,
+                                        NodeTypes.LastModified.NAME))
+                                );
+
+                        return types;
+                    }
+                })
+        );
 
     }
 
