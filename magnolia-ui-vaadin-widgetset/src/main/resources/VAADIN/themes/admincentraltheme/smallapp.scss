@@ -50,3 +50,16 @@
     border-bottom: 5px solid $c15 !important;
   }
 }
+
+@mixin smallappactions {
+
+  .v-csslayout-smallapp-actions {
+    position: relative;
+    left: 152px;
+  }
+
+  .v-button-smallapp {
+    width: 120px;
+    margin-right: 20px;
+  }
+}
