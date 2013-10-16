@@ -125,7 +125,7 @@ public class MoveAclPermissionsBetweenWorkspaces  extends AbstractRepositoryTask
             String originalPath = pathProperty.getString();
             originalPath = StringUtils.removeEnd(originalPath, "/*");
             // Check if the defined path exist
-            if (!targetSession.itemExists(originalPath)) {
+            if (StringUtils.isNotBlank(originalPath) && !targetSession.itemExists(originalPath)) {
                 handleNoNoValidACLPath(targetSession, originalPath, pathProperty, installContext);
             } else {
                 log.info("Following ACL link is valid '{}'. ", originalPath);
