@@ -384,7 +384,10 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
                 // fail, because the ComponentProvider wouldn't find suitable constructor for the Action.
                 // Changing this would require to rewrite all the actions to accept the List<Item> in the constructor...
                 javax.jcr.Item item = JcrItemUtil.getJcrItem(getWorkspace(), getSelectedItemIds().get(0));
-                if (actionExecutor.isAvailable(actionName, item)) {
+                String workbenchRootId = JcrItemUtil.getItemId(getWorkspace(), subAppDescriptor.getWorkbench().getPath());
+                boolean isWorkbenchRoot = JcrItemUtil.getItemId(item).equals(workbenchRootId);
+                // if the item is workbench root (i.e. no real item is selected), we have to pass null to the isAvailable method
+                if (actionExecutor.isAvailable(actionName, isWorkbenchRoot ? null : item)) {
                     actionExecutor.execute(actionName, item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((Property) item));
                 }
             } else {

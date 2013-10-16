@@ -55,6 +55,7 @@ import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
@@ -237,6 +238,31 @@ public class BrowserPresenterTest {
         // THEN
         // just verifying that the method has been called with the proper action name, not the Item(s) passed to it
         verify(actionExecutor).execute(eq("testDefaultAction"), anyObject());
+    }
+
+    @Test
+    public void passesNullToActionExecutorIsAvailableWhenWorkbenchRootIsSelected() throws Exception {
+        // GIVEN
+        ConfiguredActionbarDefinition actionbar = new ConfiguredActionbarDefinition();
+        actionbar.setDefaultAction("testAction");
+        browserSubAppDescriptor.setActionbar(actionbar);
+
+        Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
+        WorkbenchDefinition wb = mock(WorkbenchDefinition.class);
+        when(wb.getWorkspace()).thenReturn(WORKSPACE);
+        when(wb.getPath()).thenReturn(node.getPath());
+        browserSubAppDescriptor.setWorkbench(wb);
+        List<String> ids = new ArrayList<String>(1);
+        ids.add(node.getIdentifier());
+        when(mockWorkbenchPresenter.getSelectedIds()).thenReturn(ids);
+        when(mockWorkbenchPresenter.getWorkspace()).thenReturn(WORKSPACE);
+
+        // WHEN
+        subAppEventBus.fireEvent(new ItemDoubleClickedEvent(WORKSPACE, node.getPath()));
+
+        // THEN
+        // just verifying that null is passed to the isAvailable() method instead of the actual item
+        verify(actionExecutor).isAvailable("testAction", null);
     }
 
 }
