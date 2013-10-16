@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.framework.action;
 
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
@@ -66,20 +67,23 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
     private final List<JcrItemAdapter> items;
     private final UiContext uiContext;
     private final ActionExecutor actionExecutor;
+    private final SimpleTranslator i18n;
 
-    public ConfirmationAction(ConfirmationActionDefinition definition, JcrItemAdapter item, UiContext uiContext, ActionExecutor actionExecutor) {
+    public ConfirmationAction(ConfirmationActionDefinition definition, JcrItemAdapter item, UiContext uiContext, ActionExecutor actionExecutor, SimpleTranslator i18n) {
         super(definition);
         this.items = new ArrayList<JcrItemAdapter>(1);
         this.items.add(item);
         this.uiContext = uiContext;
         this.actionExecutor = actionExecutor;
+        this.i18n = i18n;
     }
 
-    public ConfirmationAction(ConfirmationActionDefinition definition, List<JcrItemAdapter> items, UiContext uiContext, ActionExecutor actionExecutor) {
+    public ConfirmationAction(ConfirmationActionDefinition definition, List<JcrItemAdapter> items, UiContext uiContext, ActionExecutor actionExecutor, SimpleTranslator i18n) {
         super(definition);
         this.items = items;
         this.uiContext = uiContext;
         this.actionExecutor = actionExecutor;
+        this.i18n = i18n;
     }
 
     @Override
@@ -145,7 +149,10 @@ public class ConfirmationAction extends AbstractAction<ConfirmationActionDefinit
      * this in order to perform tasks or notification in case of error.
      */
     protected void onError(Exception e) {
-        String message = "Action execution failed.";
+        // it would be possible to use here i18n-izer framework: String message =  getDefinition().getErrorMessage();
+        // but this would require a key for every confirm-action; to keep things simple we are using SimpleTranslator now
+        // enhancement of ActionDefinitionKeyGenerator may allow to use i18n-izer but just with one key ...
+        String message =  i18n.translate("ui-framework.actions.confirmAction.errorMessage");
         log.error(message, e);
         uiContext.openNotification(MessageStyleTypeEnum.ERROR, true, message);
     }

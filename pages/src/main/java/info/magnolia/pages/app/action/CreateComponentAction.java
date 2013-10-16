@@ -42,7 +42,6 @@ import info.magnolia.pages.app.field.TemplateSelectorFieldFactory;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.rendering.template.TemplateDefinition;
 import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
-import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition;
 import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.api.action.AbstractAction;
@@ -211,23 +210,6 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
         return dialog;
     }
 
-    /**
-     * Recursively update LastModified for the node until the parent node is of type
-     * mgnl:content or depth=1. If it's not the 'website' workspace, do not perform recursion.
-     */
-    private void updateLastModified(Node currentNode) throws RepositoryException {
-        if (!currentNode.isNodeType(NodeTypes.Folder.NAME)) {
-            // Update
-            NodeTypes.LastModified.update(currentNode);
-            // Break or perform a recursive call
-            if (RepositoryConstants.WEBSITE.equals(currentNode.getSession().getWorkspace().getName())
-                    && !currentNode.isNodeType(NodeTypes.Content.NAME)
-                    && currentNode.getDepth() > 1) {
-                updateLastModified(currentNode.getParent());
-            }
-        }
-    }
-
     private class ComponentCreationCallback implements EditorCallback {
 
         private final JcrNodeAdapter item;
@@ -251,7 +233,6 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
                     // if there is no dialog defined for the component, persist the node as is and reload.
                     try {
                         final Node node = item.applyChanges();
-                        updateLastModified(node);
                         node.getSession().save();
 
                     } catch (RepositoryException e) {

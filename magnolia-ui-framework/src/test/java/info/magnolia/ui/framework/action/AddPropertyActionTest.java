@@ -41,12 +41,12 @@ import info.magnolia.cms.security.DummyUser;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.context.SystemContext;
 import info.magnolia.event.RecordingEventBus;
 import info.magnolia.i18nsystem.ContextLocaleProvider;
 import info.magnolia.i18nsystem.LocaleProvider;
 import info.magnolia.i18nsystem.TranslationService;
 import info.magnolia.i18nsystem.TranslationServiceImpl;
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
 import info.magnolia.test.mock.MockContext;
@@ -60,6 +60,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.junit.After;
 import org.junit.Before;
@@ -82,7 +83,7 @@ public class AddPropertyActionTest extends MgnlTestCase {
 
     private RecordingEventBus eventBus;
 
-    private MockSession session;
+    private Session session;
 
     @Before
     @Override
@@ -101,6 +102,7 @@ public class AddPropertyActionTest extends MgnlTestCase {
         ctx.addSession(WORKSPACE, session);
         ctx.setUser(new DummyUser());
         MgnlContext.setInstance(ctx);
+        ComponentsTestUtil.setInstance(SystemContext.class, ctx);
 
         eventBus = new RecordingEventBus();
     }
@@ -176,10 +178,11 @@ public class AddPropertyActionTest extends MgnlTestCase {
     }
 
     private void assertAddedNewProperty(Node root, long propertyCountBefore, String newPropertyName) throws RepositoryException {
-        assertEquals(propertyCountBefore + 3, root.getProperties().getSize());
+        // no LUD wrapping on test
+        assertEquals(propertyCountBefore + 1, root.getProperties().getSize());
         assertTrue(root.hasProperty(newPropertyName));
-        assertTrue(root.hasProperty(NodeTypes.LastModified.LAST_MODIFIED));
-        assertTrue(root.hasProperty(NodeTypes.LastModified.LAST_MODIFIED_BY));
+        // assertTrue(root.hasProperty(NodeTypes.LastModified.LAST_MODIFIED));
+        // assertTrue(root.hasProperty(NodeTypes.LastModified.LAST_MODIFIED_BY));
         assertFalse(eventBus.isEmpty());
         assertTrue(((ContentChangedEvent) eventBus.getEvent()).getItemId().equals(JcrItemUtil.getItemId(root)));
     }

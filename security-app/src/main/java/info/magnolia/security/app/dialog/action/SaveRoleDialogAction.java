@@ -33,15 +33,14 @@
  */
 package info.magnolia.security.app.dialog.action;
 
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.security.app.dialog.field.AccessControlList;
 import info.magnolia.security.app.dialog.field.WorkspaceAccessFieldFactory;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
-import info.magnolia.security.app.dialog.field.AccessControlList;
+import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
-import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
@@ -108,7 +107,6 @@ public class SaveRoleDialogAction extends SaveDialogAction {
                     }
                 }
 
-                NodeTypes.LastModified.update(node);
                 node.getSession().save();
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);

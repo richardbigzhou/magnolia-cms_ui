@@ -80,7 +80,6 @@ public class CreateAreaAction extends AbstractAction<CreateAreaActionDefinition>
             Node parentNode = session.getNode(parent);
 
             Node newNode = NodeUtil.createPath(parentNode, relPath, NodeTypes.Area.NAME);
-            NodeTypes.LastModified.update(newNode);
             session.save();
 
             eventBus.fireEvent(new ContentChangedEvent(workspace, path));

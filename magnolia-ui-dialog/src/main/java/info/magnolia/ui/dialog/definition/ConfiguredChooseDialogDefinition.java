@@ -49,12 +49,10 @@ public class ConfiguredChooseDialogDefinition extends ConfiguredDialogDefinition
         ChooseDialogActionDefinition commitAction = new ChooseDialogActionDefinition();
         commitAction.setCallSuccess(true);
         commitAction.setName("commit");
-        commitAction.setLabel("Choose");
 
         ChooseDialogActionDefinition cancelAction = new ChooseDialogActionDefinition();
         cancelAction.setCallSuccess(false);
         cancelAction.setName("cancel");
-        cancelAction.setLabel("Cancel");
         addAction(commitAction);
         addAction(cancelAction);
     }

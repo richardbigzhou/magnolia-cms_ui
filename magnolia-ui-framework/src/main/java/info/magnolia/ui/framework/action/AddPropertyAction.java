@@ -34,7 +34,6 @@
 package info.magnolia.ui.framework.action;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
@@ -61,7 +60,6 @@ public class AddPropertyAction extends AbstractRepositoryAction<AddPropertyActio
             Node node = (Node) item.getJcrItem();
             String name = getUniqueNewItemName(node);
             Property property = node.setProperty(name, "");
-            NodeTypes.LastModified.update(property.getParent());
             setItemIdOfChangedItem(JcrItemUtil.getItemId(property.getParent()));
             setItemContentChanged(true);
         }
