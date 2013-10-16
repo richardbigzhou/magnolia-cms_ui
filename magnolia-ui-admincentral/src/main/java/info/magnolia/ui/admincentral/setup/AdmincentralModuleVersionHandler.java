@@ -134,6 +134,8 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         "pattern",
                         "/.resources/loginForm",
                         "/.resources/defaultLoginForm")));
+        list.add(new NodeExistsDelegateTask("Remove PageEditorServlet from configuration", "Remove 4.5.x PageEditorServlet from the servlet registration. ", RepositoryConstants.CONFIG, "/server/filters/servlets/PageEditorServlet",
+                new RemoveNodeTask("Remove PageEditorServlet from configuration", "Remove 4.5.x PageEditorServlet from the servlet registration. ", RepositoryConstants.CONFIG, "/server/filters/servlets/PageEditorServlet")));
 
         return list;
     }
