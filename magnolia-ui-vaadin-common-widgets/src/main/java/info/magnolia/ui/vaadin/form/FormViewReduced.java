@@ -42,7 +42,7 @@ import com.vaadin.data.Item;
 import com.vaadin.ui.Field;
 
 /**
- * Interface for {@link Form}.
+ * Interface for a basic form view.
  */
 public interface FormViewReduced extends View, Item.Editor {
 

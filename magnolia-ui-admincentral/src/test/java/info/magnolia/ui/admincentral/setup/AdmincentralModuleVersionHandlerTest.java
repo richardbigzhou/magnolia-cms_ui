@@ -36,6 +36,7 @@ package info.magnolia.ui.admincentral.setup;
 import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
+import info.magnolia.jcr.util.NodeTypeTemplateUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.module.ModuleManagementException;
@@ -43,6 +44,8 @@ import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.framework.AdmincentralNodeTypes;
+import info.magnolia.ui.framework.favorite.FavoriteStore;
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,7 +53,10 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.nodetype.NodeTypeManager;
+import javax.jcr.nodetype.NodeTypeTemplate;
 
+import org.apache.jackrabbit.JcrConstants;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -90,6 +96,13 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
                 "/META-INF/magnolia/core.xml",
                 "/META-INF/magnolia/ui-framework.xml"
                 );
+    }
+
+    @Override
+    protected String getRepositoryConfigFileName() {
+        String repositoryFileName = "test-admincentral-repositories.xml";
+        setRepositoryConfigFileName(repositoryFileName);
+        return repositoryFileName;
     }
 
     @Override
@@ -353,6 +366,23 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         assertTrue(appLauncherLayoutConfigNodeTargetParent.hasNode(applauncherlayoutNodeName));
         assertFalse(appLauncherLayoutConfigNodeSourceGrandParent.hasNode("config"));
 
+    }
+
+    @Test
+    public void testUpdateTo511UpdatesFavoriteNodeType() throws RepositoryException, ModuleManagementException {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(FavoriteStore.WORKSPACE_NAME);
+        NodeTypeManager nodeTypeManager = session.getWorkspace().getNodeTypeManager();
+        NodeTypeTemplate template = NodeTypeTemplateUtil.createSimpleNodeType(nodeTypeManager, AdmincentralNodeTypes.Favorite.NAME, Arrays.asList(JcrConstants.NT_BASE));
+        nodeTypeManager.registerNodeType(template, false);
+        assertFalse(nodeTypeManager.getNodeType(AdmincentralNodeTypes.Favorite.NAME).isNodeType(NodeTypes.Created.NAME));
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1"));
+
+        // THEN
+        assertTrue(nodeTypeManager.getNodeType(AdmincentralNodeTypes.Favorite.NAME).isNodeType(NodeTypes.Created.NAME));
+        assertTrue(nodeTypeManager.getNodeType(AdmincentralNodeTypes.Favorite.NAME).isNodeType(NodeTypes.LastModified.NAME));
     }
 
 }
