@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Deletes a node or property from the repository.
- * 
+ *
  * @see DeleteItemActionDefinition
  */
 public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDefinition> {
@@ -141,14 +141,14 @@ public class DeleteItemAction extends AbstractMultiItemAction<DeleteItemActionDe
     @Override
     protected String getSuccessMessage() {
         if (getItems().size() == 1) {
-            return i18n.translate("ui-framework.actions.deleteItem.sucessOneItemDeleted");
+            return i18n.translate("ui-framework.actions.deleteItem.successOneItemDeleted");
         } else {
-            return String.format(i18n.translate("ui-framework.actions.deleteItem.sucessManyItemsDeleted"), getItems().size());
+            return i18n.translate("ui-framework.actions.deleteItem.successManyItemsDeleted", getItems().size());
         }
     }
 
     @Override
     protected String getFailureMessage() {
-        return String.format(i18n.translate("ui-framework.actions.deleteItem.deletionfailure"), getFailedItems().size(), getItems().size());
+        return i18n.translate("ui-framework.actions.deleteItem.deletionfailure", getFailedItems().size(), getItems().size());
     }
 }
