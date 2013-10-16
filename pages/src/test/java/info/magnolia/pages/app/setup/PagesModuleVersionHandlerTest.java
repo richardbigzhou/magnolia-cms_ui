@@ -273,5 +273,18 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertTrue(deactivatePageAction.getNode("availability").hasProperty("ruleClass"));
         assertEquals(IsNotVersionedDetailLocationRule.class.getName(), deactivatePageAction.getNode("availability").getProperty("ruleClass").getString());
     }
+    
+    @Test
+    public void testUpdateTo511ImportActionAvailabilityHasRootProperty() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        Node availability = NodeUtil.createPath(MgnlContext.getJCRSession(RepositoryConstants.CONFIG).getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/import/availability", NodeTypes.ContentNode.NAME);
+        
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1"));
+
+        // THEN
+        assertTrue(availability.hasProperty("root"));
+        assertTrue(availability.getProperty("root").getBoolean());
+    }
 
 }

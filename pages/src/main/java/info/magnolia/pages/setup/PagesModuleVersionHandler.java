@@ -142,6 +142,11 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new PartialBootstrapTask("Bootstrap move action to Pages app actionbar", "Adds action move to folder/editingActions section in actionbar.",
                         "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actionbar/sections/pageActions/groups/editingActions/items/move"))
         );
+        
+        register(DeltaBuilder.update("5.1.1", "")
+                .addTask(new NodeExistsDelegateTask("Add root availability to import", "Add root availability to import action in Pages app", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/import",
+                        new NewPropertyTask("Add root availability to import", "Add root availability to import action in Pages app", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/import/availability", "root", true)))
+        );
 
     }
 
