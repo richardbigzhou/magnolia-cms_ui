@@ -37,9 +37,9 @@ import info.magnolia.cms.i18n.I18nContentSupport;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.Layout;
-import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
+import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 
 import java.util.HashMap;
@@ -132,7 +132,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
     }
 
     /**
-     * Create a RadioSelect or a NormalSelect Field based on the definition.<br>
+     * Creates an option group or a select field based on the definition.
      */
     private AbstractSelect createSelectionField() {
         AbstractSelect field = null;
@@ -148,7 +148,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
             } else {
                 selectDefinition = new SelectFieldDefinition();
             }
-            // Copy options to the newly created select definition. definition
+            // Copy options to the newly created select definition.
             BeanUtils.copyProperties(selectDefinition, definition);
             selectDefinition.setTransformerClass(null);
             selectDefinition.setLabel(StringUtils.EMPTY);
