@@ -12,7 +12,7 @@
 @import "../dam-app-assets/dam-app-assets.scss";
 @import "../ui-contentapp/ui-contentapp.scss";
 @import "../ui-app-pages/ui-app-pages.scss";
-@import "../information-app/information-app.scss";
+@import "../about-app/about-app.scss";
 @import "../dependencies/dependencies.scss";
 
 @include magnolia;
@@ -36,5 +36,5 @@
 @include dam-app-assets;
 @include ui-contentapp;
 @include ui-app-pages;
-@include information-app;
+@include about-app;
 @include dependencies;
