@@ -144,7 +144,7 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
         );
         
         register(DeltaBuilder.update("5.1.1", "")
-                .addTask(new NodeExistsDelegateTask("Add root availability to import", "Add root availability to import action in Pages app", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/import",
+                .addTask(new NodeExistsDelegateTask("Add root availability to import", "Add root availability to import action in Pages app", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/import/availability",
                         new NewPropertyTask("Add root availability to import", "Add root availability to import action in Pages app", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/import/availability", "root", true)))
         );
 
