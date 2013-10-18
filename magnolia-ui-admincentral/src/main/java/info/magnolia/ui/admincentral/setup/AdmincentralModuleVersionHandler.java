@@ -59,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeTypeDefinition;
 import javax.jcr.nodetype.NodeTypeManager;
 
@@ -132,12 +133,12 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new AbstractNodeTypeRegistrationTask("Update favorite node type", "This tasks ensures the mgnl:favorite node type is updated with its appropriate mixin supertypes.", FavoriteStore.WORKSPACE_NAME) {
 
                     @Override
-                    public List<String> getNodeTypesToUnRegister(NodeTypeManager nodeTypeManager) {
+                    public List<String> getNodeTypesToUnregister(NodeTypeManager nodeTypeManager) {
                         return null;
                     }
 
                     @Override
-                    public List<NodeTypeDefinition> getNodeTypesToRegister(NodeTypeManager nodeTypeManager) {
+                    public List<NodeTypeDefinition> getNodeTypesToRegister(NodeTypeManager nodeTypeManager) throws RepositoryException {
                         List<NodeTypeDefinition> types = new ArrayList<NodeTypeDefinition>();
 
                         types.add(NodeTypeTemplateUtil.createSimpleNodeType(nodeTypeManager,
