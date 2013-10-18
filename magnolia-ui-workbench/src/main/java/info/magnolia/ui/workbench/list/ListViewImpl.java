@@ -54,6 +54,7 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.ColumnResizeEvent;
 import com.vaadin.ui.Table.TableDragMode;
 
 /**
@@ -62,6 +63,8 @@ import com.vaadin.ui.Table.TableDragMode;
 public class ListViewImpl implements ListView {
 
     private static final Logger log = LoggerFactory.getLogger(ListViewImpl.class);
+
+    private static final int MINIMUM_COLUMN_WIDTH = 46;
 
     private final Table table;
 
@@ -150,6 +153,16 @@ public class ListViewImpl implements ListView {
                             table.setValue(null);
                         }
                     }
+                }
+            }
+        });
+
+        table.addColumnResizeListener(new Table.ColumnResizeListener() {
+
+            @Override
+            public void columnResize(ColumnResizeEvent event) {
+                if (event.getCurrentWidth() < MINIMUM_COLUMN_WIDTH) {
+                    table.setColumnWidth(event.getPropertyId(), MINIMUM_COLUMN_WIDTH);
                 }
             }
         });
