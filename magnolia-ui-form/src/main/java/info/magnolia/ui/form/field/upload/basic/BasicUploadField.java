@@ -77,6 +77,9 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
     private static final long serialVersionUID = 1L;
     private static final Logger log = LoggerFactory.getLogger(BasicUploadField.class);
 
+    private static final String PREFIX_MEDIA_KEY = "field.upload.media";
+    private static final String MEDIA = "media";
+
     // Root layout
     private final CssLayout layout;
     private UploadProgressIndicator progress;
@@ -421,7 +424,18 @@ public class BasicUploadField<D extends BasicFileItemWrapper> extends AbstractUp
         if (StringUtils.isEmpty(caption)) {
             return "";
         }
-        caption = StringUtils.isNotBlank(captionExtension) ? caption + "." + captionExtension : caption;
+        if (StringUtils.isNotBlank(captionExtension)) {
+            String mediaName = i18n.translate(PREFIX_MEDIA_KEY + '.' + captionExtension);
+            String[] paras;
+            if (args != null && args.length > 0) {
+                paras = new String[args.length + 1];
+                paras[0] = mediaName;
+                System.arraycopy(args, 0, paras, 1, args.length);
+            } else {
+                paras = new String[] { mediaName };
+            }
+            return i18n.translate(caption + '.' + MEDIA, paras);
+        }
         if (args != null && args.length > 0) {
             return i18n.translate(caption, args);
         } else {
