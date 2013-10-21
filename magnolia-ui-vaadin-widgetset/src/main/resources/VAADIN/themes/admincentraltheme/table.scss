@@ -77,6 +77,11 @@
     text-overflow: ellipsis;
   }
 
+  .v-table-header-cell { min-width: 56px; }
+  .v-table-caption-container { min-width: 41px; }
+  .v-table-cell-content { min-width: 46px; }
+  .v-table-cell-wrapper { min-width: 46px; }
+
   /* BODY */
   .v-table-body-wrapper {
     border: none;
