@@ -159,19 +159,12 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
 
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
 
-        form.setDescription(i18n.translate("pages.formDialog.definition.description"));
-        form.setI18nBasename("info.magnolia.ui.admincentral.messages");
-        form.setLabel("dialog.paragraph.createNew");
-
         ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
         tab.setName("Components");
-
-        tab.setLabel(i18n.translate("pages.formDialog.definition.tabLabel"));
 
         SelectFieldDefinition select = new SelectFieldDefinition();
         select.setName("mgnl:template");
 
-        select.setLabel(i18n.translate("pages.formDialog.definition.label"));
         tab.addField(select);
 
         form.addTab(tab);
@@ -193,18 +186,15 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
         }
 
         ConfiguredFormDialogDefinition dialog = new ConfiguredFormDialogDefinition();
-        dialog.setId("newComponent");
+        dialog.setId("pages:newComponent");
         dialog.setForm(form);
 
         CallbackDialogActionDefinition callbackAction = new CallbackDialogActionDefinition();
         callbackAction.setName("commit");
-        //
-        callbackAction.setLabel(i18n.translate("pages.formDialog.callbackAction.label"));
         dialog.getActions().put(callbackAction.getName(), callbackAction);
 
         CancelDialogActionDefinition cancelAction = new CancelDialogActionDefinition();
         cancelAction.setName("cancel");
-        cancelAction.setLabel(i18n.translate("pages.formDialog.cancelAction.label"));
         dialog.getActions().put(cancelAction.getName(), cancelAction);
 
         return dialog;
