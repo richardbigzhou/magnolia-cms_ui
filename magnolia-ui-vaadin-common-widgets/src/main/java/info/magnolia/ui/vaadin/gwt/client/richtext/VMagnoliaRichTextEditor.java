@@ -43,14 +43,14 @@ public class VMagnoliaRichTextEditor extends CKEditor {
     }
 
     public final native void addListener(final Listener listener, final String eventName) /*-{
-                                                                                          this.on( eventName, function( ev ) {
-                                                                                          ev.listenerData.@info.magnolia.ui.vaadin.gwt.client.richtext.VMagnoliaRichTextEditor.Listener::onPluginEvent(Ljava/lang/String;Ljava/lang/String;)(eventName, ev.data);
-                                                                                          }, null, listener);
-                                                                                          }-*/;
+        this.on(eventName, function (ev) {
+            ev.listenerData.@info.magnolia.ui.vaadin.gwt.client.richtext.VMagnoliaRichTextEditor.Listener::onPluginEvent(Ljava/lang/String;Ljava/lang/String;)(eventName, ev.data);
+        }, null, listener);
+    }-*/;
 
     public final native void fire(final String eventName, final String value) /*-{
-                                                                              this.fire(eventName, value);
-                                                                              }-*/;
+        this.fire(eventName, value);
+    }-*/;
 
     /**
      * Listener interface for plugin events.

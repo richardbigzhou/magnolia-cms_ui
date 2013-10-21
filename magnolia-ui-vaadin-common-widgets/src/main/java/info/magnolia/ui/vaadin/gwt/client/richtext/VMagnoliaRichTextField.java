@@ -99,9 +99,9 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
         }
     }
 
-    private static native void loadExternalPlugin(String pluginName, String path) /*-{    
-                                                                                  $wnd.CKEDITOR.plugins.addExternal( pluginName, path, 'plugin.js' );
-                                                                                  }-*/;
+    private static native void loadExternalPlugin(String pluginName, String path) /*-{
+        $wnd.CKEDITOR.plugins.addExternal(pluginName, path, 'plugin.js');
+    }-*/;
 
     /**
      * Will be invoked from CK plugins.
