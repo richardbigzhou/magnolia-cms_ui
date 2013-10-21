@@ -72,6 +72,8 @@ public class MagnoliaRichTextField extends CKEditorTextField {
     public MagnoliaRichTextField(MagnoliaRichTextFieldConfig config) {
         super(config);
         this.config = config;
+        config.setFilebrowserImageBrowseLinkUrl("dummy");
+        config.setFilebrowserImageBrowseUrl("dummy");
         serverPlugins = config.getServerPlugins();
     }
 
@@ -108,7 +110,7 @@ public class MagnoliaRichTextField extends CKEditorTextField {
     public void firePluginEvent(String event, String value) {
         fireEvent = event;
         fireEventValue = value;
-        requestRepaint();
+        markAsDirty();
     }
 
     /**
