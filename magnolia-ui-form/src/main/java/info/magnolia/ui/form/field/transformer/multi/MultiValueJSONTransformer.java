@@ -73,10 +73,12 @@ public class MultiValueJSONTransformer extends BasicTransformer<PropertysetItem>
     @Override
     public PropertysetItem readFromItem() {
         PropertysetItem newValues = new PropertysetItem();
-
+        List<String> list = new ArrayList<String>();
         Property<String> property = getOrCreateProperty(String.class);
         String value = property.getValue();
-        List<String> list = Arrays.asList(value.split(","));
+        if (StringUtils.isNotBlank(value)) {
+            list = Arrays.asList(value.split(","));
+        }
         int position = 0;
         for (String element : list) {
             newValues.addItemProperty(position, new DefaultProperty(element));

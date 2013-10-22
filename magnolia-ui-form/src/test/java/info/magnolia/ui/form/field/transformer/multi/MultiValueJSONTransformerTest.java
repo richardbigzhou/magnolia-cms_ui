@@ -121,6 +121,19 @@ public class MultiValueJSONTransformerTest extends RepositoryTestCase {
     }
 
     @Test
+    public void testReadEmptyMultiProperty() throws RepositoryException {
+        // GIVEN
+        JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
+        MultiValueJSONTransformer delegate = new MultiValueJSONTransformer(parent, definition, PropertysetItem.class);
+
+        // WHEN
+        PropertysetItem res = delegate.readFromItem();
+
+        // THEN
+        assertEquals(0, res.getItemPropertyIds().size());
+    }
+
+    @Test
     public void testUpdateMultiProperty() throws RepositoryException {
         // GIVEN
         String initialValues = "Art,Dan,Jen";
