@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.framework.action;
 
-import info.magnolia.cms.i18n.MessagesUtil;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.context.Context;
 import info.magnolia.event.EventBus;
@@ -126,7 +125,7 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
 
     @Override
     protected String getFailureMessage() {
-        return MessagesUtil.get(getDefinition().getFailureMessage(), "info.magnolia.ui.admincentral.messages");
+        return getDefinition().getFailureMessage();
     }
 
 }
