@@ -160,7 +160,7 @@ public class CreateComponentAction extends AbstractAction<CreateComponentActionD
         ConfiguredFormDefinition form = new ConfiguredFormDefinition();
 
         ConfiguredTabDefinition tab = new ConfiguredTabDefinition();
-        tab.setName("Components");
+        tab.setName("components");
 
         SelectFieldDefinition select = new SelectFieldDefinition();
         select.setName("mgnl:template");
