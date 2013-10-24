@@ -118,7 +118,9 @@ public abstract class AbstractFieldFactory<D extends FieldDefinition, T> extends
             field.setWidth(100, Unit.PERCENTAGE);
 
             // Set label and required marker
-            this.field.setCaption(getFieldDefinition().getLabel() + (getFieldDefinition().isRequired() ? "<span class=\"requiredfield\">*</span>" : ""));
+            if (StringUtils.isNotBlank(getFieldDefinition().getLabel())) {
+                this.field.setCaption(getFieldDefinition().getLabel() + (getFieldDefinition().isRequired() ? "<span class=\"requiredfield\">*</span>" : ""));
+            }
 
             setConstraints();
 

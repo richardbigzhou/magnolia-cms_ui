@@ -232,6 +232,47 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         assertNotNull(p);
     }
 
+    @Test
+    public void testLabelRequired() throws Exception {
+        // GIVEN
+        ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "foo");
+        def.setRequired(true);
+
+        abstractDialogField = new TestTextFieldFactory(def, baseItem);
+        abstractDialogField.setComponentProvider(new MockComponentProvider());
+
+        // WHEN
+        Field<?> field = abstractDialogField.createField();
+
+        // THEN
+        assertTrue(field.getCaption().contains("<span class=\"requiredfield\">*</span>"));
+    }
+
+    @Test
+    public void testEmptyOrNullLabelSetsNoCaption() throws Exception {
+        // GIVEN
+        ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new ConfiguredFieldDefinition(), "foo");
+        def.setLabel("");
+
+        abstractDialogField = new TestTextFieldFactory(def, baseItem);
+        abstractDialogField.setComponentProvider(new MockComponentProvider());
+
+        // WHEN
+        Field<?> field = abstractDialogField.createField();
+
+        // THEN
+        assertNull(field.getCaption());
+
+        // GIVEN
+        def.setLabel(null);
+
+        // WHEN
+        field = abstractDialogField.createField();
+
+        // THEN
+        assertNull(field.getCaption());
+    }
+
     public static ConfiguredFieldDefinition createConfiguredFieldDefinition(ConfiguredFieldDefinition configureFieldDefinition, String propertyName) {
         configureFieldDefinition.setDescription("description");
         configureFieldDefinition.setI18nBasename("i18nBasename");
@@ -259,7 +300,7 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
 
         /**
          * {@link com.vaadin.data.util.converter.ConverterFactory} is bound to the {@link VaadinSession}. To get The default converters to work we need to mock the VaadinSession.
-         *
+         * 
          * @see AbstractFieldFactoryTestCase where we add the {@link com.vaadin.data.util.converter.DefaultConverterFactory} to the {@link info.magnolia.objectfactory.ComponentProvider}.
          */
         private class TestTextField extends TextField {
@@ -288,6 +329,5 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
         ConfiguredFieldDefinition configureFieldDefinition = new ConfiguredFieldDefinition();
         this.definition = createConfiguredFieldDefinition(configureFieldDefinition, propertyName);
     }
-
 
 }
