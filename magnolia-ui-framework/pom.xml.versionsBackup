@@ -4,15 +4,29 @@
   <parent>
     <groupId>info.magnolia.ui</groupId>
     <artifactId>magnolia-ui-project</artifactId>
-    <version>5.2-SNAPSHOT</version>
+    <version>5.1.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>magnolia-ui-contentapp</artifactId>
-  <name>magnolia-ui-contentapp</name>
+  <artifactId>magnolia-ui-framework</artifactId>
+  <name>magnolia-ui-framework</name>
   <properties>
-    <cloverCoverageThreshold>35</cloverCoverageThreshold>
+    <cloverCoverageThreshold>56</cloverCoverageThreshold>
   </properties>
-
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
   <dependencies>
     <dependency>
       <groupId>info.magnolia</groupId>
@@ -20,7 +34,27 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-vaadin-integration</artifactId>
+      <artifactId>magnolia-ui-workbench</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-actionbar</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-dialog</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-form</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-imageprovider</artifactId>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
@@ -28,21 +62,21 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-workbench</artifactId>
+      <artifactId>magnolia-ui-vaadin-integration</artifactId>
     </dependency>
     <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-admincentral</artifactId>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-server</artifactId>
     </dependency>
     <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-framework</artifactId>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>uk.com.robust-it</groupId>
-      <artifactId>cloning</artifactId>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jsp-api</artifactId>
+      <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -64,30 +98,15 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-admincentral</artifactId>
+      <artifactId>magnolia-ui-form</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-form</artifactId>
+      <artifactId>magnolia-ui-vaadin-integration</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

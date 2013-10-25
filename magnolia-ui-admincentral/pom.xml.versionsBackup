@@ -1,18 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>info.magnolia.ui</groupId>
     <artifactId>magnolia-ui-project</artifactId>
-    <version>5.2-SNAPSHOT</version>
+    <version>5.1.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>magnolia-ui-contentapp</artifactId>
-  <name>magnolia-ui-contentapp</name>
+  <artifactId>magnolia-ui-admincentral</artifactId>
+  <packaging>jar</packaging>
+  <name>magnolia-ui-admincentral</name>
   <properties>
-    <cloverCoverageThreshold>35</cloverCoverageThreshold>
+    <cloverCoverageThreshold>17</cloverCoverageThreshold>
   </properties>
-
   <dependencies>
     <dependency>
       <groupId>info.magnolia</groupId>
@@ -20,29 +19,39 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-vaadin-integration</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
+      <artifactId>magnolia-ui-framework</artifactId>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-workbench</artifactId>
     </dependency>
     <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-admincentral</artifactId>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-module-imaging</artifactId>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-framework</artifactId>
+      <artifactId>magnolia-ui-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>uk.com.robust-it</groupId>
-      <artifactId>cloning</artifactId>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-vaadin-theme</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-mediaeditor</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.vaadin.addon</groupId>
+      <artifactId>easyuploads</artifactId>
+    </dependency>
+
+    <!-- For tests -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -54,7 +63,6 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>info.magnolia</groupId>
@@ -64,13 +72,13 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-admincentral</artifactId>
+      <artifactId>magnolia-ui-form</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-form</artifactId>
+      <artifactId>magnolia-ui-vaadin-integration</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
@@ -85,6 +93,35 @@
             <goals>
               <goal>test-jar</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>groovy-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <source>
+                import com.vaadin.sass.SassCompiler
+                import java.util.regex.Matcher
+
+                new File("${project.basedir}").eachFileRecurse {
+                if (it.path =~ /\/target\/.*(\/VAADIN\/.*)(\/.*)\.scss$/) {
+                def sassFile = it.path
+                def cssPath = "${project.basedir}/target/classes"+Matcher.lastMatcher[0][1]
+                def cssFile = cssPath + Matcher.lastMatcher[0][2]+".css"
+                println "Compiling Sass file " + sassFile + " -&gt; " + cssFile
+                new File(cssPath).mkdirs();
+                SassCompiler.main([sassFile, cssFile] as String[])
+                }
+                }
+              </source>
+            </configuration>
           </execution>
         </executions>
       </plugin>

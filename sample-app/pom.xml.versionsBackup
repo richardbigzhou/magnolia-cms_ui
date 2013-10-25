@@ -4,21 +4,29 @@
   <parent>
     <groupId>info.magnolia.ui</groupId>
     <artifactId>magnolia-ui-project</artifactId>
-    <version>5.2-SNAPSHOT</version>
+    <version>5.1.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <groupId>info.magnolia.messages</groupId>
-  <artifactId>magnolia-messages-app</artifactId>
+  <groupId>info.magnolia.sample</groupId>
+  <artifactId>magnolia-sample-app</artifactId>
   <packaging>jar</packaging>
-  <name>magnolia-messages-app</name>
+  <name>magnolia-sample-app</name>
+    <build>
+    <plugins>
+      <plugin>
+        <groupId>org.zeroturnaround</groupId>
+        <artifactId>jrebel-maven-plugin</artifactId>
+        <configuration>
+          <relativePath>../${basedir}</relativePath>
+          <rootPath>$${admincentral.root}</rootPath>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
   <dependencies>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
       <artifactId>magnolia-ui-admincentral</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-server</artifactId>
     </dependency>
   </dependencies>
 </project>

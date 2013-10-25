@@ -4,31 +4,21 @@
   <parent>
     <groupId>info.magnolia.ui</groupId>
     <artifactId>magnolia-ui-project</artifactId>
-    <version>5.2-SNAPSHOT</version>
+    <version>5.1.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>magnolia-ui-contentapp</artifactId>
-  <name>magnolia-ui-contentapp</name>
+  <groupId>info.magnolia.pages</groupId>
+  <artifactId>magnolia-pages</artifactId>
+  <packaging>jar</packaging>
+  <name>magnolia-pages</name>
   <properties>
-    <cloverCoverageThreshold>35</cloverCoverageThreshold>
+    <cloverCoverageThreshold>31</cloverCoverageThreshold>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>info.magnolia</groupId>
-      <artifactId>magnolia-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-vaadin-integration</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-workbench</artifactId>
+      <artifactId>magnolia-rendering</artifactId>
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
@@ -36,20 +26,25 @@
     </dependency>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-framework</artifactId>
+      <artifactId>magnolia-ui-contentapp</artifactId>
     </dependency>
     <dependency>
-      <groupId>uk.com.robust-it</groupId>
-      <artifactId>cloning</artifactId>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-widget-editor</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-vaadin-widgetset</artifactId>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -62,32 +57,5 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-admincentral</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-form</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

@@ -4,21 +4,35 @@
   <parent>
     <groupId>info.magnolia.ui</groupId>
     <artifactId>magnolia-ui-project</artifactId>
-    <version>5.2-SNAPSHOT</version>
+    <version>5.1.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <groupId>info.magnolia.messages</groupId>
-  <artifactId>magnolia-messages-app</artifactId>
-  <packaging>jar</packaging>
-  <name>magnolia-messages-app</name>
+  <artifactId>magnolia-ui-imageprovider</artifactId>
+  <name>magnolia-ui-imageprovider</name>
+  <properties>
+    <cloverCoverageThreshold>47</cloverCoverageThreshold>
+  </properties>
+
   <dependencies>
     <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-admincentral</artifactId>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-core</artifactId>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-server</artifactId>
+    </dependency>
+
+    <!-- For tests -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-core</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>
