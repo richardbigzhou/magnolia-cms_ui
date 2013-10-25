@@ -45,7 +45,6 @@ import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import java.util.HashMap;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -151,7 +150,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
             // Copy options to the newly created select definition.
             BeanUtils.copyProperties(selectDefinition, definition);
             selectDefinition.setTransformerClass(null);
-            selectDefinition.setLabel(StringUtils.EMPTY);
+            selectDefinition.setLabel("");
             selectDefinition.setRequired(false);
 
             // Create the field
@@ -164,19 +163,17 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
         return field;
     }
 
-
     /**
      * Change Listener bound to the select field. Once a selection is done, <br>
      * the value change listener will switch to the field linked to the current select value.
      */
     private ValueChangeListener createSelectValueChangeListener() {
-        ValueChangeListener listener ;
+        ValueChangeListener listener;
         listener = new ValueChangeListener() {
 
             @Override
             public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
-                final String valueString = String.valueOf(event.getProperty()
-                        .getValue());
+                final String valueString = String.valueOf(event.getProperty().getValue());
                 switchField(valueString);
             }
 

@@ -34,13 +34,14 @@
 package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.jcr.util.SessionUtil;
-import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
+import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
 import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -62,7 +63,7 @@ import com.vaadin.ui.ComboBox;
 
 /**
  * Creates and initializes a selection field based on a field definition.
- *
+ * 
  * @param <D> type of definition
  */
 public class SelectFieldFactory<D extends SelectFieldDefinition> extends AbstractFieldFactory<D, Object> {
@@ -119,7 +120,9 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
     @SuppressWarnings("unchecked")
     private IndexedContainer buildOptions() {
         IndexedContainer optionContainer = new IndexedContainer();
+
         List<SelectFieldOptionDefinition> options = getSelectFieldOptionDefinition();
+        Collections.sort(options);
         if (!options.isEmpty()) {
             Class<?> fieldType = DefaultPropertyUtil.getFieldTypeClass(definition.getType());
             optionContainer.addContainerProperty(optionValueName, fieldType, null);

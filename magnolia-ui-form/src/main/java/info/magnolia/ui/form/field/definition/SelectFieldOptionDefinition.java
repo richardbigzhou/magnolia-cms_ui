@@ -41,7 +41,7 @@ import info.magnolia.i18nsystem.I18nable;
  */
 
 @I18nable(keyGenerator = SelectFieldOptionDefinitionKeyGenerator.class)
-public class SelectFieldOptionDefinition {
+public class SelectFieldOptionDefinition implements Comparable<SelectFieldOptionDefinition> {
 
     // Value saved to the repository and displayed to the user.
     private String value;
@@ -93,5 +93,10 @@ public class SelectFieldOptionDefinition {
 
     public void setIconSrc(String iconSrc) {
         this.iconSrc = iconSrc;
+    }
+
+    @Override
+    public int compareTo(SelectFieldOptionDefinition arg) {
+        return this.label.compareToIgnoreCase(arg.getLabel());
     }
 }
