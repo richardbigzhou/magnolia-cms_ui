@@ -197,7 +197,7 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
     }
 
     @Test
-    public void selectOptionsAreSortedAlphabeticallyAscending() throws Exception {
+    public void selectOptionsAreSortedAlphabeticallyAscendingByDefault() throws Exception {
         // GIVEN
         ArrayList<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
 
@@ -231,6 +231,45 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
         // we need to use the values here to ensure the options are sorted as expected
         assertEquals("2", items[0]);
         assertEquals("1", items[1]);
+        assertEquals("3", items[2]);
+    }
+
+    @Test
+    public void selectOptionsAreNotSortedIfSoSpecified() throws Exception {
+        // GIVEN
+        ArrayList<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
+
+        SelectFieldOptionDefinition option1 = new SelectFieldOptionDefinition();
+        option1.setLabel("bb");
+        option1.setValue("1");
+        options.add(option1);
+
+        SelectFieldOptionDefinition option2 = new SelectFieldOptionDefinition();
+        option2.setLabel("AA");
+        option2.setValue("2");
+        options.add(option2);
+
+        SelectFieldOptionDefinition option3 = new SelectFieldOptionDefinition();
+        option3.setLabel("cc");
+        option3.setValue("3");
+        options.add(option3);
+
+        definition.setOptions(options);
+        definition.setSortOptions(false);
+
+        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
+
+        dialogSelect.setI18nContentSupport(i18nContentSupport);
+        dialogSelect.setComponentProvider(new MockComponentProvider());
+
+        // WHEN
+        AbstractSelect field = (AbstractSelect) dialogSelect.createField();
+
+        // THEN
+        String[] items = field.getItemIds().toArray(new String[] {});
+
+        assertEquals("1", items[0]);
+        assertEquals("2", items[1]);
         assertEquals("3", items[2]);
     }
 
