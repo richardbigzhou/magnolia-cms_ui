@@ -2,6 +2,10 @@
 
 @mixin overlay {
 
+.ui-overlapping-ck-editor {
+  z-index: 180;
+}
+
 .overlay {
     position: absolute;
     top: 0px;

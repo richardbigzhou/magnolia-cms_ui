@@ -50,6 +50,7 @@ import com.google.gson.Gson;
 public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
 
     private List<String> events = new ArrayList<String>();
+
     private Map<String, String> serverSidePlugins = new HashMap<String, String>();
 
     public MagnoliaRichTextFieldConfig() {
@@ -77,16 +78,26 @@ public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
         events.add(eventName);
     }
 
-    String[] getListenedEvents() {
+    public String[] getListenedEvents() {
         return events.toArray(new String[0]);
+    }
+
+    public void addPlugin(String pluginName, String source) {
+        addToExtraPlugins(pluginName);
+        this.serverSidePlugins.put(pluginName, source);
+    }
+
+    public Map<String, String> getServerPlugins() {
+        return Collections.unmodifiableMap(this.serverSidePlugins);
     }
 
     /**
      * Bean class for toolbar group.
      */
     public static class ToolbarGroup {
-        @SuppressWarnings("unused")
+
         private String name;
+
         private List<String> items;
 
         public ToolbarGroup(String groupname, String[] toolbarbuttons) {
@@ -96,14 +107,13 @@ public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
                 this.items.add(item);
             }
         }
-    }
 
-    public void addPlugin(String pluginName, String source) {
-        addToExtraPlugins(pluginName);
-        this.serverSidePlugins.put(pluginName, source);
-    }
+        public String getName() {
+            return name;
+        }
 
-    Map<String, String> getServerPlugins() {
-        return Collections.unmodifiableMap(this.serverSidePlugins);
+        public void addItem(String item) {
+            items.add(item);
+        }
     }
 }

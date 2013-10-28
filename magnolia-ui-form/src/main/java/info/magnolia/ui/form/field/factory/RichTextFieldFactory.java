@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
@@ -63,6 +64,8 @@ import com.vaadin.ui.Field;
  */
 public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefinition, String> {
 
+    private static final Logger log = LoggerFactory.getLogger(LinkFieldFactory.class);
+
     private static final String PLUGIN_NAME_MAGNOLIALINK = "magnolialink";
 
     private static final String PLUGIN_PATH_MAGNOLIALINK = "/VAADIN/js/magnolialink/";
@@ -85,12 +88,11 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
      */
     public static final String EVENT_GET_MAGNOLIA_LINK = "mgnlGetLink";
 
-    private final AppController appController;
-    private MagnoliaRichTextField richTextEditor;
-    private static final Logger log = LoggerFactory.getLogger(LinkFieldFactory.class);
+    protected final AppController appController;
+    protected final UiContext uiContext;
+    protected final SimpleTranslator i18n;
+    protected MagnoliaRichTextField richTextEditor;
 
-    private final UiContext uiContext;
-    private final SimpleTranslator i18n;
 
     @Inject
     public RichTextFieldFactory(RichTextFieldDefinition definition, Item relatedFieldItem, AppController appController, UiContext uiContext, SimpleTranslator i18n) {
@@ -102,27 +104,11 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
 
     @Override
     protected Field<String> createFieldComponent() {
-        // RichTextFieldDefinition editDefinition = definition;
-        final MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
-
-        List<ToolbarGroup> toolbars = new ArrayList<ToolbarGroup>();
-        toolbars.add(new ToolbarGroup("basictyles", new String[] { "Bold", "Italic", "Underline", "SpecialChar" }));
-        toolbars.add(new ToolbarGroup("paragraph", new String[] { "NumberedList", "BulletedList" }));
-        toolbars.add(new ToolbarGroup("insert", new String[] { "Link", "InternalLink", "DamLink", "Unlink" }));
-        toolbars.add(new ToolbarGroup("clipboard", new String[] { "Cut", "Copy", "Paste", "PasteText", "PasteFromWord" }));
-        toolbars.add(new ToolbarGroup("objects", new String[] { "Table" }));
-        toolbars.add(new ToolbarGroup("special", new String[] { "Undo", "Redo" }));
-        config.addToolbarLine(toolbars);
-        config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
-        config.setResizeEnabled(false);
-
+        final MagnoliaRichTextFieldConfig config = initializeCKEditorConfig();
         richTextEditor = new MagnoliaRichTextField(config) {
             @Override
             public void attach() {
                 super.attach();
-                String path = VaadinService.getCurrentRequest().getContextPath();
-                config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path + PLUGIN_PATH_MAGNOLIALINK);
-
                 WebBrowser browser = getSession().getBrowser();
                 if (browser.isTouchDevice()) {
                     // MGNLUI-1528: Workaround.
@@ -130,15 +116,12 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
                     richTextEditor.setReadOnly(true);
                     richTextEditor.addStyleName("richtextfield-disabled");
                 }
-
             }
         };
 
         richTextEditor.addListener(new MagnoliaRichTextField.PluginListener() {
-
             @Override
             public void onPluginEvent(String eventName, String value) {
-
                 if (eventName.equals(EVENT_GET_MAGNOLIA_LINK)) {
                     try {
                         Gson gson = new Gson();
@@ -155,15 +138,34 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
         return richTextEditor;
     }
 
-    private static class PluginData {
-        public String workspace;
-        public String path;
+    protected MagnoliaRichTextFieldConfig initializeCKEditorConfig() {
+        final MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
+
+        List<ToolbarGroup> toolbars = initializeToolbarConfig();
+        config.addToolbarLine(toolbars);
+        config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
+        config.setResizeEnabled(false);
+
+        String path = VaadinService.getCurrentRequest().getContextPath();
+        config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path + PLUGIN_PATH_MAGNOLIALINK);
+        return config;
+    }
+
+    protected List<ToolbarGroup> initializeToolbarConfig() {
+        List<ToolbarGroup> toolbars = new ArrayList<ToolbarGroup>();
+        toolbars.add(new ToolbarGroup("basictyles", new String[]{"Bold", "Italic", "Underline", "SpecialChar"}));
+        toolbars.add(new ToolbarGroup("paragraph", new String[]{"NumberedList", "BulletedList"}));
+        toolbars.add(new ToolbarGroup("insert", new String[]{"Link", "InternalLink", "DamLink", "Unlink"}));
+        toolbars.add(new ToolbarGroup("clipboard", new String[]{"Cut", "Copy", "Paste", "PasteText", "PasteFromWord"}));
+        toolbars.add(new ToolbarGroup("objects", new String[]{"Table", "NumberedList", "BulletedList"}));
+        toolbars.add(new ToolbarGroup("special", new String[]{"Undo", "Redo"}));
+        return toolbars;
     }
 
     private String mapWorkSpaceToApp(String workspace) {
         if (workspace.equalsIgnoreCase("dam")) {
             return "assets";
-        } else if (workspace.equalsIgnoreCase("website")) {
+        } else if (workspace.equalsIgnoreCase(RepositoryConstants.WEBSITE)) {
             return "pages";
         }
 
@@ -171,25 +173,18 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
     }
 
     private void openLinkDialog(String path, String workspace) {
-
         appController.openChooseDialog(mapWorkSpaceToApp(workspace), uiContext, null, new ChooseDialogCallback() {
-
             @Override
             public void onItemChosen(String actionName, Item chosenValue) {
                 if (!(chosenValue instanceof JcrItemAdapter)) {
-                    richTextEditor
-                            .firePluginEvent(EVENT_CANCEL_LINK);
+                    richTextEditor.firePluginEvent(EVENT_CANCEL_LINK);
                     return;
                 }
-
                 try {
-
                     javax.jcr.Item jcrItem = ((JcrItemAdapter) chosenValue).getJcrItem();
-
                     if (!jcrItem.isNode()) {
                         return;
                     }
-
                     final Node selected = (Node) jcrItem;
                     Gson gson = new Gson();
                     MagnoliaLink mlink = new MagnoliaLink();
@@ -217,14 +212,26 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
         });
     }
 
-    private static class MagnoliaLink {
-        @SuppressWarnings("unused")
+    /**
+     * Link info wrapper.
+     */
+    protected static class MagnoliaLink {
+
         public String identifier;
-        @SuppressWarnings("unused")
+
         public String repository;
-        @SuppressWarnings("unused")
+
         public String path;
-        @SuppressWarnings("unused")
+
         public String caption;
+
+    }
+
+    /**
+     * Plugin data wrapper.
+     */
+    protected static class PluginData {
+        public String workspace;
+        public String path;
     }
 }

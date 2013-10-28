@@ -120,7 +120,7 @@ public class SaveGroupDialogAction extends SaveDialogAction {
             PropertyIterator pi = subnode.getProperties();
             while (pi.hasNext()) {
                 javax.jcr.Property p = pi.nextProperty();
-                if (!p.getName().startsWith(NodeTypes.JCR_PREFIX)) {
+                if (!p.getName().startsWith(NodeTypes.JCR_PREFIX) && !p.getName().startsWith(NodeTypes.MGNL_PREFIX)) {
                     p.remove();
                 }
             }

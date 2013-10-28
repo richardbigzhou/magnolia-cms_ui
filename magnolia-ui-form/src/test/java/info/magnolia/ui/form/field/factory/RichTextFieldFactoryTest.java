@@ -34,6 +34,7 @@
 package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
@@ -42,7 +43,9 @@ import info.magnolia.ui.vaadin.richtext.MagnoliaRichTextField;
 
 import org.junit.Test;
 
+import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Field;
+import com.vaadin.util.CurrentInstance;
 
 /**
  * Tests.
@@ -54,6 +57,8 @@ public class RichTextFieldFactoryTest extends AbstractFieldFactoryTestCase<RichT
     @Test
     public void testGetField() throws Exception {
 
+        VaadinRequest request = mock(VaadinRequest.class);
+        CurrentInstance.set(VaadinRequest.class, request);
         // GIVEN
         richTextFieldFactory = new RichTextFieldFactory(definition, baseItem, null, null, null);
         richTextFieldFactory.setI18nContentSupport(i18nContentSupport);
