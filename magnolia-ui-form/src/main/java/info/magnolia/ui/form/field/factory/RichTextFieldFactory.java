@@ -192,7 +192,7 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
                     mlink.repository = selected.getSession().getWorkspace().getName();
                     mlink.path = selected.getPath();
                     if (selected.hasProperty("title")) {
-                        mlink.caption = selected.getProperty("title").getString() ;
+                        mlink.caption = selected.getProperty("title").getString();
                     } else {
                         mlink.caption = selected.getName();
                     }
