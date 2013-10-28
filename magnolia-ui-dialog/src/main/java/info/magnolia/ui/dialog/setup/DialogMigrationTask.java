@@ -43,30 +43,32 @@ import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.AbstractTask;
 import info.magnolia.module.delta.TaskExecutionException;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.ui.dialog.setup.migration.CheckBoxRadioControlMigration;
-import info.magnolia.ui.dialog.setup.migration.CheckBoxSwitchControlMigration;
-import info.magnolia.ui.dialog.setup.migration.ControlMigration;
-import info.magnolia.ui.dialog.setup.migration.DamControlMigration;
-import info.magnolia.ui.dialog.setup.migration.DataUUIDMultiSelectControlMigration;
-import info.magnolia.ui.dialog.setup.migration.DateControlMigration;
-import info.magnolia.ui.dialog.setup.migration.EditCodeControlMigration;
-import info.magnolia.ui.dialog.setup.migration.EditControlMigration;
-import info.magnolia.ui.dialog.setup.migration.FckEditControlMigration;
-import info.magnolia.ui.dialog.setup.migration.FileControlMigration;
-import info.magnolia.ui.dialog.setup.migration.HiddenControlMigration;
-import info.magnolia.ui.dialog.setup.migration.LinkControlMigration;
-import info.magnolia.ui.dialog.setup.migration.MultiSelectControlMigration;
-import info.magnolia.ui.dialog.setup.migration.SelectControlMigration;
-import info.magnolia.ui.dialog.setup.migration.StaticControlMigration;
+import info.magnolia.ui.dialog.setup.migration.ActionCreator;
+import info.magnolia.ui.dialog.setup.migration.BaseActionCreation;
+import info.magnolia.ui.dialog.setup.migration.CheckBoxRadioControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.CheckBoxSwitchControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.ControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.DateControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.EditCodeControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.EditControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.FckEditControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.FileControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.HiddenControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.LinkControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.MultiSelectControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.SelectControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.StaticControlMigrator;
 import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.Node;
@@ -80,20 +82,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Dialog migration main task.
- * Migrate dialogs for the specified moduleName.
+ * Dialog migration main task.<br>
+ * Migrate all dialogs defined within the specified module.<br>
+ * Override {@link DialogMigrationTask#registerControlsToMigrate(HashMap)} in order to add custom controls migrator tasks.<br>
+ * Override {@link DialogMigrationTask#registerActionsForDialogToCreate(HashMap)} in order to add custom actions to create.
  */
 public class DialogMigrationTask extends AbstractTask {
 
     private static final Logger log = LoggerFactory.getLogger(DialogMigrationTask.class);
     private final String moduleName;
     private final HashSet<Property> extendsAndReferenceProperty = new HashSet<Property>();
-    private HashMap<String, ControlMigration> controlMigrationMap;
 
-    public DialogMigrationTask(String moduleName) {
-        super("Dialog Migration for 5.x", "Migrate dialog for the following module: " + moduleName);
+    private HashMap<String, ControlMigrator> controlsToMigrate;
+    private String defaultDialogActions = "defaultDialogActions";
+    private HashMap<String, List<ActionCreator>> dialogActionsToMigrate;
+
+
+    public DialogMigrationTask(String taskName, String taskDescription, String moduleName) {
+        super(taskName, taskDescription);
         this.moduleName = moduleName;
-        this.controlMigrationMap = new HashMap<String, ControlMigration>();
+        this.controlsToMigrate = new HashMap<String, ControlMigrator>();
+        this.dialogActionsToMigrate = new HashMap<String, List<ActionCreator>>();
     }
 
     /**
@@ -104,7 +113,9 @@ public class DialogMigrationTask extends AbstractTask {
         Session session = null;
         String tempDialogPath = null;
         try {
-            this.controlMigrationMap = getCustomMigrationTask();
+            registerDefaultControlsToMigrate();
+            registerDefaultDialogActionToCreate();
+
             String dialogNodeName = "dialogs";
             String dialogPath = "/modules/" + moduleName + "/" + dialogNodeName;
             // Temp Path
@@ -149,30 +160,60 @@ public class DialogMigrationTask extends AbstractTask {
     }
 
     /**
-     * Initialize the map used to migrate controls to Fields.<br>
-     * Each control is link to a specific {@link ControlMigration}.
-     * <b>Override this class in order to add your own controls migration task.</b>
+     * Register default UI controls to migrate.
      */
-    protected HashMap<String, ControlMigration> getCustomMigrationTask() {
-        HashMap<String, ControlMigration> customMigrationTask = new HashMap<String, ControlMigration>();
-        customMigrationTask.put("edit", new EditControlMigration());
-        customMigrationTask.put("fckEdit", new FckEditControlMigration());
-        customMigrationTask.put("date", new DateControlMigration());
-        customMigrationTask.put("select", new SelectControlMigration());
-        customMigrationTask.put("checkbox", new CheckBoxRadioControlMigration(true));
-        customMigrationTask.put("checkboxSwitch", new CheckBoxSwitchControlMigration());
-        customMigrationTask.put("radio", new CheckBoxRadioControlMigration(false));
-        customMigrationTask.put("dam", new DamControlMigration());
-        customMigrationTask.put("uuidLink", new LinkControlMigration());
-        customMigrationTask.put("link", new LinkControlMigration());
-        customMigrationTask.put("multiselect", new MultiSelectControlMigration(false));
-        customMigrationTask.put("dataUUIDMultiSelect", new DataUUIDMultiSelectControlMigration(true));
-        customMigrationTask.put("file", new FileControlMigration());
-        customMigrationTask.put("static", new StaticControlMigration());
-        customMigrationTask.put("hidden", new HiddenControlMigration());
-        customMigrationTask.put("editCode", new EditCodeControlMigration());
+    private void registerDefaultControlsToMigrate() {
+        this.controlsToMigrate.put("edit", new EditControlMigrator());
+        this.controlsToMigrate.put("fckEdit", new FckEditControlMigrator());
+        this.controlsToMigrate.put("date", new DateControlMigrator());
+        this.controlsToMigrate.put("select", new SelectControlMigrator());
+        this.controlsToMigrate.put("checkbox", new CheckBoxRadioControlMigrator(true));
+        this.controlsToMigrate.put("checkboxSwitch", new CheckBoxSwitchControlMigrator());
+        this.controlsToMigrate.put("radio", new CheckBoxRadioControlMigrator(false));
+        this.controlsToMigrate.put("uuidLink", new LinkControlMigrator());
+        this.controlsToMigrate.put("link", new LinkControlMigrator());
+        this.controlsToMigrate.put("multiselect", new MultiSelectControlMigrator(false));
+        this.controlsToMigrate.put("file", new FileControlMigrator());
+        this.controlsToMigrate.put("static", new StaticControlMigrator());
+        this.controlsToMigrate.put("hidden", new HiddenControlMigrator());
+        this.controlsToMigrate.put("editCode", new EditCodeControlMigrator());
+        registerControlsToMigrate(this.controlsToMigrate);
+    }
 
-        return customMigrationTask;
+    /**
+     * Override this method in order to register custom controls to migrate.<br>
+     * In case a control name is already define in the default map, the old control migrator is replaced by the newly registered control migrator.
+     *
+     * @param controlsToMigrate. <br>
+     * - key : controls name <br>
+     * - value : {@link ControlMigrator} used to take actions in order to migrate the control into a field.
+     */
+    protected void registerControlsToMigrate(HashMap<String, ControlMigrator> controlsToMigrate) {
+
+    }
+
+    /**
+     * Register default actions to create on dialogs.
+     */
+    private void registerDefaultDialogActionToCreate() {
+        // Save
+        ActionCreator saveAction = new BaseActionCreation("commit", "save changes", "info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition");
+        // Cancel
+        ActionCreator cancelAction = new BaseActionCreation("cancel", "cancel", "info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition");
+        // Create an entry
+        this.dialogActionsToMigrate.put(this.defaultDialogActions, Arrays.asList(saveAction, cancelAction));
+        registerActionsForDialogToCreate(this.dialogActionsToMigrate);
+    }
+
+    /**
+     * Override this method in order to register custom actions to create on a specific dialog.<br>
+     *
+     * @param dialogActionsToMigrate.<br>
+     * - key: Dialog name <br>
+     * - value: List of {@link ActionCreator} to create on the desired dialog.
+     */
+    protected void registerActionsForDialogToCreate(HashMap<String, List<ActionCreator>> dialogActionsToMigrate) {
+
     }
 
     /**
@@ -209,14 +250,19 @@ public class DialogMigrationTask extends AbstractTask {
      * Add action to node.
      */
     private void handleAction(Node dialog) throws RepositoryException {
+        // Create actions node
         dialog.addNode("actions", NodeTypes.ContentNode.NAME);
+        Node actionsNode = dialog.getNode("actions");
 
-        Node node = dialog.getNode("actions");
+        List<ActionCreator> actions = dialogActionsToMigrate.get(defaultDialogActions);
+        //Use the specific Actions list if defined
+        if (dialog.hasProperty("name") && dialogActionsToMigrate.containsKey(dialog.getProperty("name"))) {
+            actions = dialogActionsToMigrate.get(dialog.getProperty("name"));
+        }
 
-        node.addNode("commit", NodeTypes.ContentNode.NAME).setProperty("label", "save changes");
-        node.addNode("cancel", NodeTypes.ContentNode.NAME).setProperty("label", "cancel");
-        node.getNode("commit").setProperty("class", "info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition");
-        node.getNode("cancel").setProperty("class", "info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition");
+        for (ActionCreator action : actions) {
+            action.create(actionsNode);
+        }
 
     }
 
@@ -294,8 +340,8 @@ public class DialogMigrationTask extends AbstractTask {
         if (fieldNode.hasProperty("controlType")) {
             String controlTypeName = fieldNode.getProperty("controlType").getString();
 
-            if (controlMigrationMap.containsKey(controlTypeName)) {
-                ControlMigration controlMigration = controlMigrationMap.get(controlTypeName);
+            if (controlsToMigrate.containsKey(controlTypeName)) {
+                ControlMigrator controlMigration = controlsToMigrate.get(controlTypeName);
                 controlMigration.migrate(fieldNode);
             } else {
                 fieldNode.setProperty("class", StaticFieldDefinition.class.getName());

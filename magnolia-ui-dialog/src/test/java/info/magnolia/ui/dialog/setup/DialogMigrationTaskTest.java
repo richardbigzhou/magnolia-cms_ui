@@ -91,7 +91,7 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
     @Test
     public void testExecuteRemoveTmpPath() throws RepositoryException, TaskExecutionException {
         // GIVEN
-        DialogMigrationTask task = new DialogMigrationTask("testModule");
+        DialogMigrationTask task = new DialogMigrationTask("", "", "testModule");
 
         // WHEN
         task.execute(installContext);
@@ -103,7 +103,7 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
     @Test
     public void testExecuteControlsMigration() throws RepositoryException, TaskExecutionException {
         // GIVEN
-        DialogMigrationTask task = new DialogMigrationTask("testModule");
+        DialogMigrationTask task = new DialogMigrationTask("", "", "testModule");
 
         // WHEN
         task.execute(installContext);
@@ -125,7 +125,7 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
     @Test
     public void testExecuteActionMigration() throws RepositoryException, TaskExecutionException {
         // GIVEN
-        DialogMigrationTask task = new DialogMigrationTask("testModule");
+        DialogMigrationTask task = new DialogMigrationTask("", "", "testModule");
 
         // WHEN
         task.execute(installContext);
@@ -141,9 +141,20 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
     }
 
     @Test
+    public void testExecuteCustomActionMigration() throws RepositoryException, TaskExecutionException {
+        // GIVEN
+        // TODO
+
+        // WHEN
+
+        // THEN
+
+    }
+
+    @Test
     public void testExecuteTabsMigration() throws RepositoryException, TaskExecutionException {
         // GIVEN
-        DialogMigrationTask task = new DialogMigrationTask("testModule");
+        DialogMigrationTask task = new DialogMigrationTask("", "", "testModule");
 
         // WHEN
         task.execute(installContext);
@@ -164,7 +175,7 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
     @Test
     public void testExecuteExtendsMigration() throws RepositoryException, TaskExecutionException {
         // GIVEN
-        DialogMigrationTask task = new DialogMigrationTask("testModule");
+        DialogMigrationTask task = new DialogMigrationTask("", "", "testModule");
 
         // WHEN
         task.execute(installContext);
