@@ -112,7 +112,7 @@ public class JcrNodeAdapter extends AbstractJcrNodeAdapter {
         log.debug("Adding new Property Item named [{}] with value [{}]", propertyId, property.getValue());
 
         // Store Property.
-        getChangedProperties().put((String) propertyId, property);
+        getChangedProperties().put(propertyId.toString(), property);
 
         return true;
     }
