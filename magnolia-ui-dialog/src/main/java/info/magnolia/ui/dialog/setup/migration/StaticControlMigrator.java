@@ -33,27 +33,21 @@
  */
 package info.magnolia.ui.dialog.setup.migration;
 
-import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
+import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * Migrate an CheckboxSwitch control to a CheckboxField.
+ * Migrate an Static control to a StaticField.
  */
-public class CheckBoxSwitchControlMigration implements ControlMigration {
+public class StaticControlMigrator implements ControlMigrator {
 
 
     @Override
     public void migrate(Node controlNode) throws RepositoryException {
         controlNode.getProperty("controlType").remove();
-        controlNode.setProperty("class", CheckboxFieldDefinition.class.getName());
-
-        // replace selected with defaultValue
-        if (controlNode.hasProperty("selected")) {
-            String defaultValue = controlNode.getProperty("selected").getString();
-            controlNode.setProperty("defaultValue", defaultValue);
-        }
+        controlNode.setProperty("class", StaticFieldDefinition.class.getName());
     }
 
 }

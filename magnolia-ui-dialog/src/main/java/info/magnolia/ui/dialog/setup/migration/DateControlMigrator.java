@@ -33,21 +33,21 @@
  */
 package info.magnolia.ui.dialog.setup.migration;
 
-import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
+import info.magnolia.ui.form.field.definition.DateFieldDefinition;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * Migrate an Static control to a StaticField.
+ * Migrate an Date control to a DateField.
  */
-public class StaticControlMigration implements ControlMigration {
+public class DateControlMigrator implements ControlMigrator {
 
 
     @Override
     public void migrate(Node controlNode) throws RepositoryException {
         controlNode.getProperty("controlType").remove();
-        controlNode.setProperty("class", StaticFieldDefinition.class.getName());
+        controlNode.setProperty("class", DateFieldDefinition.class.getName());
     }
 
 }

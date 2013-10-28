@@ -33,21 +33,21 @@
  */
 package info.magnolia.ui.dialog.setup.migration;
 
-import info.magnolia.ui.form.field.definition.DateFieldDefinition;
+import info.magnolia.ui.form.field.definition.HiddenFieldDefinition;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * Migrate an Date control to a DateField.
+ * Migrate an Hidden control to a HiddenField.
  */
-public class DateControlMigration implements ControlMigration {
+public class HiddenControlMigrator implements ControlMigrator {
 
 
     @Override
     public void migrate(Node controlNode) throws RepositoryException {
         controlNode.getProperty("controlType").remove();
-        controlNode.setProperty("class", DateFieldDefinition.class.getName());
+        controlNode.setProperty("class", HiddenFieldDefinition.class.getName());
     }
 
 }

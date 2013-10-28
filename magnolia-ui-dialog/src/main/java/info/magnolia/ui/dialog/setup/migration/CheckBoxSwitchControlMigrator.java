@@ -33,21 +33,27 @@
  */
 package info.magnolia.ui.dialog.setup.migration;
 
-import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
+import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * Migrate an File control to a BasicUploadField.
+ * Migrate an CheckboxSwitch control to a CheckboxField.
  */
-public class FileControlMigration implements ControlMigration {
+public class CheckBoxSwitchControlMigrator implements ControlMigrator {
 
 
     @Override
     public void migrate(Node controlNode) throws RepositoryException {
         controlNode.getProperty("controlType").remove();
-        controlNode.setProperty("class", BasicUploadFieldDefinition.class.getName());
+        controlNode.setProperty("class", CheckboxFieldDefinition.class.getName());
+
+        // replace selected with defaultValue
+        if (controlNode.hasProperty("selected")) {
+            String defaultValue = controlNode.getProperty("selected").getString();
+            controlNode.setProperty("defaultValue", defaultValue);
+        }
     }
 
 }

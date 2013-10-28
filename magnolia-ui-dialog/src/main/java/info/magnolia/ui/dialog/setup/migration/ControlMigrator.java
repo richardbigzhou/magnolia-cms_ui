@@ -33,30 +33,18 @@
  */
 package info.magnolia.ui.dialog.setup.migration;
 
-import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
-
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * Migrate an Checkbox or Radio control to a CheckboxField.
+ * Define the control's migration action to perform.
  */
-public class CheckBoxRadioControlMigration implements ControlMigration {
+public interface ControlMigrator {
 
-    private boolean multiple;
-
-    public CheckBoxRadioControlMigration(boolean multiple) {
-        this.multiple = multiple;
-    }
-
-    @Override
-    public void migrate(Node controlNode) throws RepositoryException {
-        controlNode.getProperty("controlType").remove();
-        controlNode.setProperty("class", OptionGroupFieldDefinition.class.getName());
-        if (multiple) {
-            controlNode.setProperty("multiselect", multiple);
-        }
-    }
-
-
+    /**
+     * Take a specific control's migration action.
+     * 
+     * @param controlNode on witch the migration is done. Topically, remove, rename, add properties, nodes.
+     */
+    public void migrate(Node controlNode) throws RepositoryException;
 }

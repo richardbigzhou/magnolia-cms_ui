@@ -33,21 +33,21 @@
  */
 package info.magnolia.ui.dialog.setup.migration;
 
-import info.magnolia.ui.form.field.definition.HiddenFieldDefinition;
+import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * Migrate an Hidden control to a HiddenField.
+ * Migrate an FckEdit control to a RichTextField.
  */
-public class HiddenControlMigration implements ControlMigration {
+public class FckEditControlMigrator implements ControlMigrator {
 
 
     @Override
     public void migrate(Node controlNode) throws RepositoryException {
         controlNode.getProperty("controlType").remove();
-        controlNode.setProperty("class", HiddenFieldDefinition.class.getName());
+        controlNode.setProperty("class", RichTextFieldDefinition.class.getName());
     }
 
 }

@@ -33,21 +33,21 @@
  */
 package info.magnolia.ui.dialog.setup.migration;
 
-import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
+import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * Migrate an FckEdit control to a RichTextField.
+ * Migrate an Select control to a SelectField.
  */
-public class FckEditControlMigration implements ControlMigration {
+public class SelectControlMigrator implements ControlMigrator {
 
 
     @Override
     public void migrate(Node controlNode) throws RepositoryException {
         controlNode.getProperty("controlType").remove();
-        controlNode.setProperty("class", RichTextFieldDefinition.class.getName());
+        controlNode.setProperty("class", SelectFieldDefinition.class.getName());
     }
 
 }

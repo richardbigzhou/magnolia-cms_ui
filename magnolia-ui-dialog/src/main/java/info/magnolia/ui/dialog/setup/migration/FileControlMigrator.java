@@ -33,21 +33,21 @@
  */
 package info.magnolia.ui.dialog.setup.migration;
 
-import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
+import info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * Migrate an Select control to a SelectField.
+ * Migrate an File control to a BasicUploadField.
  */
-public class SelectControlMigration implements ControlMigration {
+public class FileControlMigrator implements ControlMigrator {
 
 
     @Override
     public void migrate(Node controlNode) throws RepositoryException {
         controlNode.getProperty("controlType").remove();
-        controlNode.setProperty("class", SelectFieldDefinition.class.getName());
+        controlNode.setProperty("class", BasicUploadFieldDefinition.class.getName());
     }
 
 }

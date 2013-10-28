@@ -44,7 +44,7 @@ import javax.jcr.RepositoryException;
 /**
  * Migrate an link or uuidLink control to a HiddenField.
  */
-public class LinkControlMigration implements ControlMigration {
+public class LinkControlMigrator implements ControlMigrator {
 
 
     @Override
@@ -68,13 +68,10 @@ public class LinkControlMigration implements ControlMigration {
                     targetWorkspace = "contacts";
                     controlNode.addNode("contentPreviewDefinition", NodeTypes.ContentNode.NAME);
                     controlNode.getNode("contentPreviewDefinition").setProperty("contentPreviewClass", "info.magnolia.contacts.app.field.component.ContactPreviewComponent");
+                    controlNode.getProperty("repository").remove();
                 }
-            } else if (controlNode.getProperty("repository").getString().equals("dms")) {
-                DamControlMigration damMigration = new DamControlMigration();
-                damMigration.migrate(controlNode);
-                return;
+
             }
-            controlNode.getProperty("repository").remove();
         }
 
         controlNode.setProperty("targetWorkspace", targetWorkspace);

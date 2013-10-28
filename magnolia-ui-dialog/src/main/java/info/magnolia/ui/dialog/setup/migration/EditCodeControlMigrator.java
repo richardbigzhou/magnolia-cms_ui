@@ -33,16 +33,30 @@
  */
 package info.magnolia.ui.dialog.setup.migration;
 
+import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * Interface that define a specific Control (4.5.x) to Field (5.0) migration task.
+ * * Migrate an EditCode control to a CodeTextField.
  */
-public interface ControlMigration {
+public class EditCodeControlMigrator implements ControlMigrator {
 
-    /**
-     * Migrate control to a filed.
-     */
-    public void migrate(Node controlNode) throws RepositoryException;
+    @Override
+    public void migrate(Node controlNode) throws RepositoryException {
+        controlNode.getProperty("controlType").remove();
+        controlNode.setProperty("class", BasicTextCodeFieldDefinition.class.getName());
+        if (controlNode.hasProperty("language")) {
+            String language = controlNode.getProperty("language").getString();
+            if (language.equals("generic")) {
+                controlNode.getProperty("language").setValue("html");
+            } else if (language.equals("js")) {
+                controlNode.getProperty("language").setValue("javascript");
+            } else if (language.equals("freemarker") || language.equals("ftl")) {
+                controlNode.getProperty("language").setValue("text");
+            }
+        }
+    }
+
 }

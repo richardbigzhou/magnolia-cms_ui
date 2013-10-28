@@ -33,30 +33,30 @@
  */
 package info.magnolia.ui.dialog.setup.migration;
 
-import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
+import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * * Migrate an EditCode control to a CodeTextField.
+ * Migrate an Checkbox or Radio control to a CheckboxField.
  */
-public class EditCodeControlMigration implements ControlMigration {
+public class CheckBoxRadioControlMigrator implements ControlMigrator {
+
+    private boolean multiple;
+
+    public CheckBoxRadioControlMigrator(boolean multiple) {
+        this.multiple = multiple;
+    }
 
     @Override
     public void migrate(Node controlNode) throws RepositoryException {
         controlNode.getProperty("controlType").remove();
-        controlNode.setProperty("class", BasicTextCodeFieldDefinition.class.getName());
-        if (controlNode.hasProperty("language")) {
-            String language = controlNode.getProperty("language").getString();
-            if (language.equals("generic")) {
-                controlNode.getProperty("language").setValue("html");
-            } else if (language.equals("js")) {
-                controlNode.getProperty("language").setValue("javascript");
-            } else if (language.equals("freemarker") || language.equals("ftl")) {
-                controlNode.getProperty("language").setValue("text");
-            }
+        controlNode.setProperty("class", OptionGroupFieldDefinition.class.getName());
+        if (multiple) {
+            controlNode.setProperty("multiselect", multiple);
         }
     }
+
 
 }

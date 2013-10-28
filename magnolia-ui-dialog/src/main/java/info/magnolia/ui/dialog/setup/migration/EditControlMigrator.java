@@ -41,7 +41,7 @@ import javax.jcr.RepositoryException;
 /**
  * Migrate an Edit control to a TextField.
  */
-public class EditControlMigration implements ControlMigration {
+public class EditControlMigrator implements ControlMigrator {
 
 
     @Override

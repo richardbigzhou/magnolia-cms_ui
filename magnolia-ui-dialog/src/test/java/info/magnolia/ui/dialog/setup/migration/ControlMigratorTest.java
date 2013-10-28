@@ -52,7 +52,6 @@ import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
 import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueJSONTransformer;
-import info.magnolia.ui.form.field.transformer.multi.MultiValueSubChildrenNodeTransformer;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -64,7 +63,7 @@ import org.junit.Test;
 /**
  * Test class.
  */
-public class ControlMigrationTest {
+public class ControlMigratorTest {
 
     private MockSession session;
     private final String workspaceName = "workspace";
@@ -88,7 +87,7 @@ public class ControlMigrationTest {
     public void EditControlMigrationTest() throws RepositoryException {
         // GIVEN
         controlNode.setProperty("controlType", "edit");
-        ControlMigration controlMigration = new EditControlMigration();
+        ControlMigrator controlMigration = new EditControlMigrator();
 
         // WHEN
         controlMigration.migrate(controlNode);
@@ -104,7 +103,7 @@ public class ControlMigrationTest {
         // GIVEN
         controlNode.setProperty("controlType", "editCode");
         controlNode.setProperty("language", "generic");
-        ControlMigration controlMigration = new EditCodeControlMigration();
+        ControlMigrator controlMigration = new EditCodeControlMigrator();
 
         // WHEN
         controlMigration.migrate(controlNode);
@@ -120,7 +119,7 @@ public class ControlMigrationTest {
     public void HiddenControlMigrationTest() throws RepositoryException {
         // GIVEN
         controlNode.setProperty("controlType", "hidden");
-        ControlMigration controlMigration = new HiddenControlMigration();
+        ControlMigrator controlMigration = new HiddenControlMigrator();
 
         // WHEN
         controlMigration.migrate(controlNode);
@@ -135,7 +134,7 @@ public class ControlMigrationTest {
     public void FckEditControlMigrationTest() throws RepositoryException {
         // GIVEN
         controlNode.setProperty("controlType", "fckEdit");
-        ControlMigration controlMigration = new FckEditControlMigration();
+        ControlMigrator controlMigration = new FckEditControlMigrator();
 
         // WHEN
         controlMigration.migrate(controlNode);
@@ -150,7 +149,7 @@ public class ControlMigrationTest {
     public void DateControlMigrationTest() throws RepositoryException {
         // GIVEN
         controlNode.setProperty("controlType", "date");
-        ControlMigration controlMigration = new DateControlMigration();
+        ControlMigrator controlMigration = new DateControlMigrator();
 
         // WHEN
         controlMigration.migrate(controlNode);
@@ -165,7 +164,7 @@ public class ControlMigrationTest {
     public void SelectControlMigrationTest() throws RepositoryException {
         // GIVEN
         controlNode.setProperty("controlType", "edit");
-        ControlMigration controlMigration = new SelectControlMigration();
+        ControlMigrator controlMigration = new SelectControlMigrator();
 
         // WHEN
         controlMigration.migrate(controlNode);
@@ -180,7 +179,7 @@ public class ControlMigrationTest {
     public void CheckBoxRadioControlMigrationTest() throws RepositoryException {
         // GIVEN
         controlNode.setProperty("controlType", "radio");
-        ControlMigration controlMigration = new CheckBoxRadioControlMigration(false);
+        ControlMigrator controlMigration = new CheckBoxRadioControlMigrator(false);
 
         // WHEN
         controlMigration.migrate(controlNode);
@@ -196,7 +195,7 @@ public class ControlMigrationTest {
     public void CheckBoxRadioControlMigrationMultipleTest() throws RepositoryException {
         // GIVEN
         controlNode.setProperty("controlType", "checkbox");
-        ControlMigration controlMigration = new CheckBoxRadioControlMigration(true);
+        ControlMigrator controlMigration = new CheckBoxRadioControlMigrator(true);
 
         // WHEN
         controlMigration.migrate(controlNode);
@@ -212,7 +211,7 @@ public class ControlMigrationTest {
     public void CheckBoxSwitchControlMigrationTest() throws RepositoryException {
         // GIVEN
         controlNode.setProperty("controlType", "checkboxSwitch");
-        ControlMigration controlMigration = new CheckBoxSwitchControlMigration();
+        ControlMigrator controlMigration = new CheckBoxSwitchControlMigrator();
 
         // WHEN
         controlMigration.migrate(controlNode);
@@ -223,59 +222,14 @@ public class ControlMigrationTest {
         assertEquals(CheckboxFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
     }
 
-    @Test
-    public void DamControlMigrationTest() throws RepositoryException {
-        // GIVEN
-        controlNode.setProperty("controlType", "dam");
-        ControlMigration controlMigration = new DamControlMigration();
 
-        // WHEN
-        controlMigration.migrate(controlNode);
-
-        // THEN
-        assertFalse(controlNode.hasProperty("controlType"));
-        assertTrue(controlNode.hasProperty("class"));
-        assertEquals(LinkFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
-        assertFalse(controlNode.hasProperty("allowedMimeType"));
-        assertTrue(controlNode.hasProperty("appName"));
-        assertEquals("assets", controlNode.getProperty("appName").getString());
-        assertTrue(controlNode.hasNode("identifierToPathConverter"));
-        assertTrue(controlNode.getNode("identifierToPathConverter").hasProperty("class"));
-        assertEquals("info.magnolia.dam.app.assets.field.translator.AssetCompositeIdKeyTranslator", controlNode.getNode("identifierToPathConverter").getProperty("class").getString());
-        assertTrue(controlNode.hasProperty("targetWorkspace"));
-        assertEquals("dam", controlNode.getProperty("targetWorkspace").getString());
-
-    }
-
-    @Test
-    public void LinkControlMigrationRepositoryDmsTest() throws RepositoryException {
-        // GIVEN
-        controlNode.setProperty("controlType", "link");
-        controlNode.setProperty("repository", "dms");
-        ControlMigration controlMigration = new LinkControlMigration();
-
-        // WHEN
-        controlMigration.migrate(controlNode);
-
-        // THEN
-        // Set by DamControlMigration
-        assertFalse(controlNode.hasProperty("controlType"));
-        assertTrue(controlNode.hasProperty("class"));
-        assertEquals(LinkFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
-        assertFalse(controlNode.hasProperty("allowedMimeType"));
-        assertTrue(controlNode.hasProperty("appName"));
-        assertEquals("assets", controlNode.getProperty("appName").getString());
-        assertTrue(controlNode.hasNode("identifierToPathConverter"));
-        assertTrue(controlNode.getNode("identifierToPathConverter").hasProperty("class"));
-        assertEquals("info.magnolia.dam.app.assets.field.translator.AssetCompositeIdKeyTranslator", controlNode.getNode("identifierToPathConverter").getProperty("class").getString());
-    }
 
     @Test
     public void LinkControlMigrationRepositoryWebSiteTest() throws RepositoryException {
         // GIVEN
         controlNode.setProperty("controlType", "uuidLink");
         controlNode.setProperty("repository", "website");
-        ControlMigration controlMigration = new LinkControlMigration();
+        ControlMigrator controlMigration = new LinkControlMigrator();
 
         // WHEN
         controlMigration.migrate(controlNode);
@@ -298,7 +252,7 @@ public class ControlMigrationTest {
         controlNode.setProperty("controlType", "uuidLink");
         controlNode.setProperty("repository", "data");
         controlNode.setProperty("tree", "Contact");
-        ControlMigration controlMigration = new LinkControlMigration();
+        ControlMigrator controlMigration = new LinkControlMigrator();
 
         // WHEN
         controlMigration.migrate(controlNode);
@@ -318,7 +272,7 @@ public class ControlMigrationTest {
         // GIVEN
         controlNode.setProperty("controlType", "multiselect");
         controlNode.setProperty("saveMode", "list");
-        ControlMigration controlMigration = new MultiSelectControlMigration(true);
+        ControlMigrator controlMigration = new MultiSelectControlMigrator(true);
 
         // WHEN
         controlMigration.migrate(controlNode);
@@ -336,32 +290,13 @@ public class ControlMigrationTest {
         assertFalse(controlNode.hasProperty("saveHandler"));
     }
 
-    @Test
-    public void DataUUIDMultiSelectControlMigrationTest() throws RepositoryException {
-        // GIVEN
-        controlNode.setProperty("controlType", "dataUUIDMultiSelect");
-        ControlMigration controlMigration = new DataUUIDMultiSelectControlMigration(true);
 
-        // WHEN
-        controlMigration.migrate(controlNode);
-
-        // THEN
-        assertFalse(controlNode.hasProperty("controlType"));
-        assertTrue(controlNode.hasProperty("class"));
-        assertEquals(MultiValueFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
-        Node field = controlNode.getNode("field");
-        assertTrue(field.hasProperty("identifier"));
-        assertEquals("true", field.getProperty("identifier").getString());
-        assertTrue(controlNode.hasProperty("transformerClass"));
-        assertEquals(MultiValueSubChildrenNodeTransformer.class.getName(), controlNode.getProperty("transformerClass").getString());
-        assertFalse(controlNode.hasProperty("saveHandler"));
-    }
 
     @Test
     public void FileControlMigrationest() throws RepositoryException {
         // GIVEN
         controlNode.setProperty("controlType", "file");
-        ControlMigration controlMigration = new FileControlMigration();
+        ControlMigrator controlMigration = new FileControlMigrator();
 
         // WHEN
         controlMigration.migrate(controlNode);
@@ -376,7 +311,7 @@ public class ControlMigrationTest {
     public void StaticControlMigrationTest() throws RepositoryException {
         // GIVEN
         controlNode.setProperty("controlType", "static");
-        ControlMigration controlMigration = new StaticControlMigration();
+        ControlMigrator controlMigration = new StaticControlMigrator();
 
         // WHEN
         controlMigration.migrate(controlNode);

@@ -36,6 +36,7 @@ package info.magnolia.ui.dialog.setup.migration;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
+import info.magnolia.ui.form.field.transformer.multi.MultiValueChildNodeTransformer;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueJSONTransformer;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueSubChildrenNodeTransformer;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueTransformer;
@@ -46,11 +47,11 @@ import javax.jcr.RepositoryException;
 /**
  * Migrate an MultiSelect control to a MultiLinkFieldDefinition.
  */
-public class MultiSelectControlMigration implements ControlMigration {
+public class MultiSelectControlMigrator implements ControlMigrator {
 
     protected boolean useIdentifier;
 
-    public MultiSelectControlMigration(boolean useIdentifier) {
+    public MultiSelectControlMigrator(boolean useIdentifier) {
         this.useIdentifier = useIdentifier;
     }
 
@@ -82,8 +83,9 @@ public class MultiSelectControlMigration implements ControlMigration {
         fieldNode.setProperty("workspace", workspace);
         controlNode.getProperty("tree").remove();
         if (workspace.equals("category")) {
-            fieldNode.setProperty("dialogName", "pages:link");
             fieldNode.setProperty("appName", "categories");
+        } else if (workspace.equals("website")) {
+            fieldNode.setProperty("appName", "pages");
         }
     }
 
@@ -95,6 +97,8 @@ public class MultiSelectControlMigration implements ControlMigration {
             String saveMode = controlNode.getProperty("saveMode").getString();
             if (saveMode.equals("list")) {
                 controlNode.setProperty("transformerClass", MultiValueJSONTransformer.class.getName());
+            } else if (saveMode.equals("multiple")) {
+                controlNode.setProperty("transformerClass", MultiValueChildNodeTransformer.class.getName());
             } else {
                 controlNode.setProperty("transformerClass", MultiValueTransformer.class.getName());
             }
