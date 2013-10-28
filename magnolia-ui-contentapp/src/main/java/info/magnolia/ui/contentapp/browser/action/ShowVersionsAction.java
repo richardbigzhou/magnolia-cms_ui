@@ -60,7 +60,7 @@ import javax.jcr.RepositoryException;
 
 /**
  * Opens a dialog with list of versions.
- *
+ * 
  * @see ShowVersionsActionDefinition
  * @param <D> {@link ShowVersionsActionDefinition}.
  */
@@ -88,6 +88,7 @@ public class ShowVersionsAction<D extends ShowVersionsActionDefinition> extends 
 
         SelectFieldDefinition select = new SelectFieldDefinition();
         select.setName("versionName");
+        select.setSortOptions(false);
         tab.addField(select);
 
         // All versions
@@ -126,7 +127,7 @@ public class ShowVersionsAction<D extends ShowVersionsActionDefinition> extends 
             final Node node = getNode();
             final String path = node.getPath();
             final String appName = appContext.getName();
-            return new DetailLocation(appName, "detail", DetailView.ViewType.VIEW, path, (String)getItem().getItemProperty("versionName").getValue());
+            return new DetailLocation(appName, "detail", DetailView.ViewType.VIEW, path, (String) getItem().getItemProperty("versionName").getValue());
         } catch (RepositoryException e) {
             throw new ActionExecutionException("Could not get node from nodeAdapter " + nodeAdapter.getItemId());
         }

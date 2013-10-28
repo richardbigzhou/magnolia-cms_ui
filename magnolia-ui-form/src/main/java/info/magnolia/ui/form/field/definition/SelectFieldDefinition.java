@@ -63,6 +63,8 @@ public class SelectFieldDefinition extends ConfiguredFieldDefinition {
 
     private int filteringMode = 0;
 
+    private boolean sortOptions = true;
+
     private List<SelectFieldOptionDefinition> options = new ArrayList<SelectFieldOptionDefinition>();
 
     public List<SelectFieldOptionDefinition> getOptions() {
@@ -122,5 +124,16 @@ public class SelectFieldDefinition extends ConfiguredFieldDefinition {
 
     public void setFilteringMode(int filteringMode) {
         this.filteringMode = filteringMode;
+    }
+
+    /**
+     * By default, options labels are sorted alphabetically (in ascending order) unless <code>false</code> is specified. In that case, the JCR "natural order" should be kept.
+     */
+    public void setSortOptions(boolean sortOptions) {
+        this.sortOptions = sortOptions;
+    }
+
+    public boolean isSortOptions() {
+        return sortOptions;
     }
 }

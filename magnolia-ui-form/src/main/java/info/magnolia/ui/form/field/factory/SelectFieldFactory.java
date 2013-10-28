@@ -75,6 +75,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
     private String optionLabelName;
     private String optionIconName = SelectFieldDefinition.OPTION_ICONSRC_PROPERTY_NAME;
     private boolean hasOptionIcon = false;
+    private boolean sortOptions = true;
 
     protected AbstractSelect select;
 
@@ -87,6 +88,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
         // Get name of the Label and Value property.
         optionValueName = definition.getValueProperty();
         optionLabelName = definition.getLabelProperty();
+        sortOptions = definition.isSortOptions();
 
         select = createSelectionField();
         select.setContainerDataSource(buildOptions());
@@ -114,15 +116,18 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
     /**
      * Create a IndexContainer containing the options.
      * First element of the container is the Value.
-     * Second element is the Label
+     * Second element is the Label.
      * Third element is the Icon is defined.
+     * By default, options labels are sorted alphabetically (in ascending order) unless diversely specified by {@link SelectFieldDefinition#setSortOptions(boolean)}.
      */
     @SuppressWarnings("unchecked")
     private IndexedContainer buildOptions() {
         IndexedContainer optionContainer = new IndexedContainer();
 
         List<SelectFieldOptionDefinition> options = getSelectFieldOptionDefinition();
-        Collections.sort(options);
+        if (sortOptions) {
+            Collections.sort(options);
+        }
         if (!options.isEmpty()) {
             Class<?> fieldType = DefaultPropertyUtil.getFieldTypeClass(definition.getType());
             optionContainer.addContainerProperty(optionValueName, fieldType, null);
