@@ -127,7 +127,7 @@ public class SelectFieldDefinition extends ConfiguredFieldDefinition {
     }
 
     /**
-     * By default, options labels are sorted alphabetically (in ascending order) unless diversely specified.
+     * By default, options labels are sorted alphabetically (in ascending order) unless <code>false</code> is specified. In that case, the JCR "natural order" should be kept.
      */
     public void setSortOptions(boolean sortOptions) {
         this.sortOptions = sortOptions;
