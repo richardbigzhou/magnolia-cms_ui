@@ -103,7 +103,7 @@ public class MoveAclPermissionsBetweenWorkspacesTest extends RepositoryTestCase 
         assertTrue("As a path was not found, we should have one warning message", installContext.getMessages().get("General messages").get(0).getMessage().startsWith("The path '/demo-docs/img' defined for the following ACL '/roleV/acl_website/02' is no more valid"));
 
         assertEquals("/demo-project/img", userRoleSession.getNode("/roleV/acl_website/0").getProperty("path").getString());
-        assertEquals("/demo-project/img/logos/*", userRoleSession.getNode("/roleV/acl_website/00").getProperty("path").getString());
+        assertEquals("/demo-project/img/logos$", userRoleSession.getNode("/roleV/acl_website/00").getProperty("path").getString());
         assertEquals("/demo-docs/*", userRoleSession.getNode("/roleV/acl_website/01").getProperty("path").getString());
         assertEquals("/demo-docs/img", userRoleSession.getNode("/roleV/acl_website/02").getProperty("path").getString());
     }
@@ -137,7 +137,7 @@ public class MoveAclPermissionsBetweenWorkspacesTest extends RepositoryTestCase 
         assertTrue(warn.getMessage().startsWith("The path '/demo-docs/img' defined for the following ACL '/roleV/acl_website/02' is no more valid"));
 
         assertEquals("/demo-project/img", userRoleSession.getNode("/roleV/acl_website/0").getProperty("path").getString());
-        assertEquals("/demo-project/img/logos/*", userRoleSession.getNode("/roleV/acl_website/00").getProperty("path").getString());
+        assertEquals("/demo-project/img/logos$", userRoleSession.getNode("/roleV/acl_website/00").getProperty("path").getString());
         assertEquals("/demo-docs/*", userRoleSession.getNode("/roleV/acl_website/01").getProperty("path").getString());
         assertEquals("/demo-docs/img", userRoleSession.getNode("/roleV/acl_website/02").getProperty("path").getString());
     }
@@ -163,7 +163,7 @@ public class MoveAclPermissionsBetweenWorkspacesTest extends RepositoryTestCase 
         assertTrue("As a path was not found, we should have one warning message", installContext.getMessages().get("General messages").get(0).getMessage().startsWith("The path '/demo-docs/img' defined for the following ACL '/roleV/acl_website/02' is no more valid"));
 
         assertEquals("/sunpath1/demo-project/img", userRoleSession.getNode("/roleV/acl_website/0").getProperty("path").getString());
-        assertEquals("/sunpath1/demo-project/img/logos/*", userRoleSession.getNode("/roleV/acl_website/00").getProperty("path").getString());
+        assertEquals("/sunpath1/demo-project/img/logos$", userRoleSession.getNode("/roleV/acl_website/00").getProperty("path").getString());
         assertEquals("/sunpath2/demo-docs/*", userRoleSession.getNode("/roleV/acl_website/01").getProperty("path").getString());
         assertEquals("/demo-docs/img", userRoleSession.getNode("/roleV/acl_website/02").getProperty("path").getString());
     }

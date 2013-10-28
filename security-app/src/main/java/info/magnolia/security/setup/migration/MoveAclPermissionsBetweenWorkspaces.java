@@ -70,6 +70,9 @@ public class MoveAclPermissionsBetweenWorkspaces  extends AbstractRepositoryTask
 
     private static final Logger log = LoggerFactory.getLogger(MoveAclPermissionsBetweenWorkspaces.class);
 
+    private String everythingUnderThis = "/*";
+    private String SelectedNode = "$";
+
     private final List<String> subPaths;
     private final String sourceWorkspaceName;
     private final String targetWorkspaceName;
@@ -123,10 +126,11 @@ public class MoveAclPermissionsBetweenWorkspaces  extends AbstractRepositoryTask
         while (childNodeIterator.hasNext()) {
             Property pathProperty = childNodeIterator.next().getProperty("path");
             String originalPath = pathProperty.getString();
-            originalPath = StringUtils.removeEnd(originalPath, "/*");
+            String extraParameter = getExtraAclParameter(originalPath);
+            originalPath = StringUtils.removeEnd(originalPath, extraParameter);
             // Check if the defined path exist
             if (StringUtils.isNotBlank(originalPath) && !targetSession.itemExists(originalPath)) {
-                handleNoNoValidACLPath(targetSession, originalPath, pathProperty, installContext);
+                handleNoNoValidACLPath(targetSession, originalPath, extraParameter, pathProperty, installContext);
             } else {
                 log.info("Following ACL link is valid '{}'. ", originalPath);
             }
@@ -138,13 +142,13 @@ public class MoveAclPermissionsBetweenWorkspaces  extends AbstractRepositoryTask
     /**
      * Try to found a valid path based on the defined subpaths.
      */
-    private void handleNoNoValidACLPath(Session targetSession, String originalPath, Property pathProperty, InstallContext installContext) throws RepositoryException {
+    private void handleNoNoValidACLPath(Session targetSession, String originalPath, String extraParameter, Property pathProperty, InstallContext installContext) throws RepositoryException {
         // Check the path prefixed with the subpath
         String validPath = getValidPathWithSubPath(targetSession, originalPath);
         if (StringUtils.isNotBlank(validPath)) {
             if (this.updatePath) {
                 // re-add the /* removed in the previous step.
-                validPath = (StringUtils.endsWith(pathProperty.getString(), "/*")) ? validPath + "/*" : validPath;
+                validPath = validPath + extraParameter;
                 pathProperty.setValue(validPath);
                 log.info("The original path was incorect '{}' and is replaced by '{}'", originalPath, validPath);
             } else {
@@ -171,6 +175,16 @@ public class MoveAclPermissionsBetweenWorkspaces  extends AbstractRepositoryTask
             }
         }
         return null;
+    }
+
+    private String getExtraAclParameter(String acl) {
+        if (StringUtils.endsWith(acl, everythingUnderThis)) {
+            return everythingUnderThis;
+        }
+        if (StringUtils.endsWith(acl, SelectedNode)) {
+            return SelectedNode;
+        }
+        return StringUtils.EMPTY;
     }
 
 }
