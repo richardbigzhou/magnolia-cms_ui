@@ -42,11 +42,16 @@ import info.magnolia.module.ModuleRegistryImpl;
 import info.magnolia.module.delta.TaskExecutionException;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
+import info.magnolia.ui.dialog.setup.migration.ActionCreator;
+import info.magnolia.ui.dialog.setup.migration.BaseActionCreation;
 import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.Node;
@@ -91,7 +96,7 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
     @Test
     public void testExecuteRemoveTmpPath() throws RepositoryException, TaskExecutionException {
         // GIVEN
-        DialogMigrationTask task = new DialogMigrationTask("", "", "testModule");
+        DialogMigrationTask task = new DialogMigrationTask("", "", "testModule", null, null);
 
         // WHEN
         task.execute(installContext);
@@ -103,7 +108,7 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
     @Test
     public void testExecuteControlsMigration() throws RepositoryException, TaskExecutionException {
         // GIVEN
-        DialogMigrationTask task = new DialogMigrationTask("", "", "testModule");
+        DialogMigrationTask task = new DialogMigrationTask("", "", "testModule", null, null);
 
         // WHEN
         task.execute(installContext);
@@ -125,7 +130,7 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
     @Test
     public void testExecuteActionMigration() throws RepositoryException, TaskExecutionException {
         // GIVEN
-        DialogMigrationTask task = new DialogMigrationTask("", "", "testModule");
+        DialogMigrationTask task = new DialogMigrationTask("", "", "testModule", null, null);
 
         // WHEN
         task.execute(installContext);
@@ -143,18 +148,31 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
     @Test
     public void testExecuteCustomActionMigration() throws RepositoryException, TaskExecutionException {
         // GIVEN
-        // TODO
+        HashMap<String, List<ActionCreator>> customActions = new HashMap<String, List<ActionCreator>>();
+        ActionCreator saveAction = new BaseActionCreation("commit", "saveTeaser", "TeaserSaveActionDefinition");
+        ActionCreator cancelAction = new BaseActionCreation("cancel", "cancelTeaser", "TeaserCancelActionDefinition");
+        customActions.put("baseTeaserDownload", Arrays.asList(saveAction, cancelAction));
+
+        DialogMigrationTask task = new DialogMigrationTask("", "", "testModule", null, customActions);
 
         // WHEN
+        task.execute(installContext);
 
         // THEN
+        assertTrue(dialogNode.hasNode("generic/master/baseTeaserDownload/actions"));
+        // Has Commit
+        assertTrue(dialogNode.hasNode("generic/master/baseTeaserDownload/actions/commit"));
+        assertEquals("TeaserSaveActionDefinition", dialogNode.getNode("generic/master/baseTeaserDownload/actions/commit").getProperty("class").getString());
+        // Has Cancel
+        assertTrue(dialogNode.hasNode("generic/master/baseTeaserDownload/actions/cancel"));
+        assertEquals("TeaserCancelActionDefinition", dialogNode.getNode("generic/master/baseTeaserDownload/actions/cancel").getProperty("class").getString());
 
     }
 
     @Test
     public void testExecuteTabsMigration() throws RepositoryException, TaskExecutionException {
         // GIVEN
-        DialogMigrationTask task = new DialogMigrationTask("", "", "testModule");
+        DialogMigrationTask task = new DialogMigrationTask("", "", "testModule", null, null);
 
         // WHEN
         task.execute(installContext);
@@ -175,7 +193,7 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
     @Test
     public void testExecuteExtendsMigration() throws RepositoryException, TaskExecutionException {
         // GIVEN
-        DialogMigrationTask task = new DialogMigrationTask("", "", "testModule");
+        DialogMigrationTask task = new DialogMigrationTask("", "", "testModule", null, null);
 
         // WHEN
         task.execute(installContext);

@@ -84,8 +84,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Dialog migration main task.<br>
  * Migrate all dialogs defined within the specified module.<br>
- * Override {@link DialogMigrationTask#registerControlsToMigrate(HashMap)} in order to add custom controls migrator tasks.<br>
- * Override {@link DialogMigrationTask#registerActionsForDialogToCreate(HashMap)} in order to add custom actions to create.
  */
 public class DialogMigrationTask extends AbstractTask {
 
@@ -98,11 +96,25 @@ public class DialogMigrationTask extends AbstractTask {
     private HashMap<String, List<ActionCreator>> dialogActionsToMigrate;
 
 
+    /**
+     * @param taskName
+     * @param taskDescription
+     * @param moduleName all dialog define under this module name will be migrated.
+     * @param customControlsToMigrate Custom controls to migrate.
+     * @param customDialogActionsToMigrate Custom actions to migrate
+     */
+    public DialogMigrationTask(String taskName, String taskDescription, String moduleName, HashMap<String, ControlMigrator> customControlsToMigrate, HashMap<String, List<ActionCreator>> customDialogActionsToMigrate) {
+        super(taskName, taskDescription);
+        this.moduleName = moduleName;
+        registerControlsToMigrate(customControlsToMigrate);
+        registerDialogActionToCreate(customDialogActionsToMigrate);
+    }
+
     public DialogMigrationTask(String taskName, String taskDescription, String moduleName) {
         super(taskName, taskDescription);
         this.moduleName = moduleName;
-        this.controlsToMigrate = new HashMap<String, ControlMigrator>();
-        this.dialogActionsToMigrate = new HashMap<String, List<ActionCreator>>();
+        registerControlsToMigrate(null);
+        registerDialogActionToCreate(null);
     }
 
     /**
@@ -113,8 +125,8 @@ public class DialogMigrationTask extends AbstractTask {
         Session session = null;
         String tempDialogPath = null;
         try {
-            registerDefaultControlsToMigrate();
-            registerDefaultDialogActionToCreate();
+            addCustomControlsToMigrate(controlsToMigrate);
+            addCustomDialogActionToCreate(dialogActionsToMigrate);
 
             String dialogNodeName = "dialogs";
             String dialogPath = "/modules/" + moduleName + "/" + dialogNodeName;
@@ -162,7 +174,9 @@ public class DialogMigrationTask extends AbstractTask {
     /**
      * Register default UI controls to migrate.
      */
-    private void registerDefaultControlsToMigrate() {
+    private void registerControlsToMigrate(HashMap<String, ControlMigrator> customControlsToMigrate) {
+        this.controlsToMigrate = new HashMap<String, ControlMigrator>();
+        // Register default controls
         this.controlsToMigrate.put("edit", new EditControlMigrator());
         this.controlsToMigrate.put("fckEdit", new FckEditControlMigrator());
         this.controlsToMigrate.put("date", new DateControlMigrator());
@@ -177,43 +191,49 @@ public class DialogMigrationTask extends AbstractTask {
         this.controlsToMigrate.put("static", new StaticControlMigrator());
         this.controlsToMigrate.put("hidden", new HiddenControlMigrator());
         this.controlsToMigrate.put("editCode", new EditCodeControlMigrator());
-        registerControlsToMigrate(this.controlsToMigrate);
+        // Register custom
+        if (customControlsToMigrate != null) {
+            this.controlsToMigrate.putAll(customControlsToMigrate);
+        }
     }
 
     /**
      * Override this method in order to register custom controls to migrate.<br>
      * In case a control name is already define in the default map, the old control migrator is replaced by the newly registered control migrator.
-     *
+     * 
      * @param controlsToMigrate. <br>
      * - key : controls name <br>
      * - value : {@link ControlMigrator} used to take actions in order to migrate the control into a field.
      */
-    protected void registerControlsToMigrate(HashMap<String, ControlMigrator> controlsToMigrate) {
-
+    protected void addCustomControlsToMigrate(HashMap<String, ControlMigrator> controlsToMigrate) {
     }
 
     /**
      * Register default actions to create on dialogs.
      */
-    private void registerDefaultDialogActionToCreate() {
+    private void registerDialogActionToCreate(HashMap<String, List<ActionCreator>> customDialogActionsToMigrate) {
+        this.dialogActionsToMigrate = new HashMap<String, List<ActionCreator>>();
+        // Register default
         // Save
         ActionCreator saveAction = new BaseActionCreation("commit", "save changes", "info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition");
         // Cancel
         ActionCreator cancelAction = new BaseActionCreation("cancel", "cancel", "info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition");
         // Create an entry
         this.dialogActionsToMigrate.put(this.defaultDialogActions, Arrays.asList(saveAction, cancelAction));
-        registerActionsForDialogToCreate(this.dialogActionsToMigrate);
+        // Register custom
+        if (customDialogActionsToMigrate != null) {
+            this.dialogActionsToMigrate.putAll(customDialogActionsToMigrate);
+        }
     }
 
     /**
      * Override this method in order to register custom actions to create on a specific dialog.<br>
-     *
+     * 
      * @param dialogActionsToMigrate.<br>
      * - key: Dialog name <br>
      * - value: List of {@link ActionCreator} to create on the desired dialog.
      */
-    protected void registerActionsForDialogToCreate(HashMap<String, List<ActionCreator>> dialogActionsToMigrate) {
-
+    protected void addCustomDialogActionToCreate(HashMap<String, List<ActionCreator>> dialogActionsToMigrate) {
     }
 
     /**
@@ -256,8 +276,8 @@ public class DialogMigrationTask extends AbstractTask {
 
         List<ActionCreator> actions = dialogActionsToMigrate.get(defaultDialogActions);
         //Use the specific Actions list if defined
-        if (dialog.hasProperty("name") && dialogActionsToMigrate.containsKey(dialog.getProperty("name"))) {
-            actions = dialogActionsToMigrate.get(dialog.getProperty("name"));
+        if (dialogActionsToMigrate.containsKey(dialog.getName())) {
+            actions = dialogActionsToMigrate.get(dialog.getName());
         }
 
         for (ActionCreator action : actions) {
