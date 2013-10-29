@@ -75,7 +75,7 @@ public class DetailSubApp extends BaseSubApp {
 
     private static final Logger log = LoggerFactory.getLogger(DetailSubApp.class);
 
-    private final DetailEditorPresenter workbench;
+    private final DetailEditorPresenter presenter;
     private final EventBus adminCentralEventBus;
     private final SimpleTranslator i18n;
 
@@ -84,11 +84,11 @@ public class DetailSubApp extends BaseSubApp {
 
     @Inject
     protected DetailSubApp(final SubAppContext subAppContext, final ContentSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus adminCentralEventBus,
-            DetailEditorPresenter workbench, SimpleTranslator i18n) {
+            DetailEditorPresenter presenter, SimpleTranslator i18n) {
         super(subAppContext, view);
 
         this.adminCentralEventBus = adminCentralEventBus;
-        this.workbench = workbench;
+        this.presenter = presenter;
         this.i18n = i18n;
 
         bindHandlers();
@@ -99,7 +99,7 @@ public class DetailSubApp extends BaseSubApp {
      * The tasks are:
      * <ul>
      * <li>setting the current location
-     * <li>setting the workbench view
+     * <li>setting the presenter's view
      * <li>calling {@link #onSubAppStart()} a hook-up method subclasses can override to perform additional work.
      * </ul>
      */
@@ -109,17 +109,18 @@ public class DetailSubApp extends BaseSubApp {
         super.start(detailLocation);
         // set caption
         setCaption(detailLocation);
+        String absPath = getPath() + detailLocation.getNodePath();
         try {
-            this.itemId = JcrItemUtil.getItemId(getWorkspace(), detailLocation.getNodePath());
+            this.itemId = JcrItemUtil.getItemId(getWorkspace(), absPath);
         } catch (RepositoryException e) {
-            log.warn("Could not retrieve item at path {} in workspace {}", detailLocation.getNodePath(), getWorkspace());
+            log.warn("Could not retrieve item at path {} in workspace {}", absPath, getWorkspace());
         }
 
         View view;
         if (detailLocation.hasVersion()) {
-            view = workbench.start(detailLocation.getNodePath(), detailLocation.getViewType(), detailLocation.getVersion());
+            view = presenter.start(absPath, detailLocation.getViewType(), detailLocation.getVersion());
         } else {
-            view = workbench.start(detailLocation.getNodePath(), detailLocation.getViewType());
+            view = presenter.start(absPath, detailLocation.getViewType());
         }
         getView().setContentView(view);
         return getView();
@@ -153,7 +154,7 @@ public class DetailSubApp extends BaseSubApp {
         DetailLocation detailLocation = DetailLocation.wrap(location);
         if (!detailLocation.equals(getCurrentLocation())) {
             setCaption(detailLocation);
-            View view = workbench.update(detailLocation);
+            View view = presenter.update(detailLocation);
             getView().setContentView(view);
         }
     }
@@ -171,11 +172,12 @@ public class DetailSubApp extends BaseSubApp {
             public void onContentChanged(ContentChangedEvent event) {
                 // See if workspaces match
                 if (event.getWorkspace().equals(getWorkspace())) {
+                    String absPath = getPath() + getCurrentLocation().getNodePath();
                     // New item
                     if (itemId == null) {
                         try {
                             // Check if parent is still existing, close supApp if it doesn't
-                            String currentNodePath = getCurrentLocation().getNodePath();
+                            String currentNodePath = absPath;
 
                             // resolve parent, removing trailing slash except for root
                             int splitIndex = currentNodePath.lastIndexOf("/");
@@ -201,7 +203,7 @@ public class DetailSubApp extends BaseSubApp {
                             }
                             // Item still exists: update location if necessary
                             else {
-                                String currentNodePath = getCurrentLocation().getNodePath();
+                                String currentNodePath = absPath;
 
                                 if (!item.getPath().equals(currentNodePath)) {
                                     DetailLocation location = DetailLocation.wrap(getSubAppContext().getLocation());
@@ -225,6 +227,12 @@ public class DetailSubApp extends BaseSubApp {
     protected String getWorkspace() {
         DetailSubAppDescriptor subAppDescriptor = (DetailSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
         return subAppDescriptor.getEditor().getWorkspace();
+    }
+
+    protected String getPath() {
+        DetailSubAppDescriptor subAppDescriptor = (DetailSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
+        String path = subAppDescriptor.getEditor().getRootPath();
+        return StringUtils.isBlank(path) ? "" : path;
     }
 
     /**
