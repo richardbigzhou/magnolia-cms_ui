@@ -111,6 +111,42 @@ public class SaveFormActionTest extends RepositoryTestCase {
     }
 
     @Test
+    public void executeKeepsNameProperty() throws Exception {
+        // GIVEN
+        Node node = session.getRootNode().addNode("Culture");
+        node.setProperty("name", "Culture");
+        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
+        SaveFormAction formAction = new SaveFormAction(ACTION_DEFINITION, adapter, callback, validator);
+
+        // WHEN
+        formAction.execute();
+
+        // THEN
+        assertTrue(session.getRootNode().hasNode("Culture"));
+        assertTrue(session.getRootNode().getNode("Culture").hasProperty("name"));
+        assertEquals("Culture", session.getRootNode().getNode("Culture").getProperty("name").getString());
+    }
+
+    @Test
+    public void executeRenamesNodeAndKeepsNameProperty() throws Exception {
+        // GIVEN
+        Node node = session.getRootNode().addNode("Culture");
+        node.setProperty("name", "Culture");
+        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
+        adapter.getItemProperty("name").setValue("Culture and Arts");
+        SaveFormAction formAction = new SaveFormAction(ACTION_DEFINITION, adapter, callback, validator);
+
+        // WHEN
+        formAction.execute();
+
+        // THEN
+        assertFalse(session.getRootNode().hasNode("Culture"));
+        assertTrue(session.getRootNode().hasNode("Culture-and-Arts"));
+        assertTrue(session.getRootNode().getNode("Culture-and-Arts").hasProperty("name"));
+        assertEquals("Culture and Arts", session.getRootNode().getNode("Culture-and-Arts").getProperty("name").getString());
+    }
+
+    @Test
     public void executeSaveChangeNodeNameBasedOnPropertyJcrNameTest() throws RepositoryException, ActionExecutionException {
         // GIVEN
         Node node = session.getRootNode().addNode("underlying");

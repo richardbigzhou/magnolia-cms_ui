@@ -113,7 +113,6 @@ public class SaveFormAction extends AbstractAction<SaveFormActionDefinition> {
             if (!node.getName().equals(newNodeName)) {
                 newNodeName = Path.getUniqueLabel(node.getSession(), node.getParent().getPath(), Path.getValidatedLabel(newNodeName));
                 item.setNodeName(newNodeName);
-                property.setValue(newNodeName);
                 NodeUtil.renameNode(node, newNodeName);
             }
         }
