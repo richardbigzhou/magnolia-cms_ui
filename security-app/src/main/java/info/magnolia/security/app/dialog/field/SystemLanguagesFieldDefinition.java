@@ -81,6 +81,9 @@ public class SystemLanguagesFieldDefinition extends SelectFieldDefinition {
                             label += " (" + locale.getDisplayCountry(currentLocale) + ")";
                         }
                         option.setLabel(label);
+                        if (currentLocale.equals(locale) || currentLocale.getDisplayLanguage().equals(locale.getDisplayLanguage())) {
+                            option.setSelected(true);
+                        }
                         options.add(option);
                     }
                 }

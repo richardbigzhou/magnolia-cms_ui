@@ -123,4 +123,16 @@ public class SystemLanguagesFieldDefinitionTest extends MgnlTestCase {
         Locale swissGerman = new Locale("de", "CH");
         assertEquals(swissGerman.getDisplayLanguage(Locale.GERMAN) + " (" + swissGerman.getDisplayCountry(Locale.GERMAN) + ")", options.get(1).getLabel());
     }
+
+    @Test
+    public void selectedLanguageShouldBeTheOneSetInContext() throws Exception {
+        // GIVEN
+        MgnlContext.setLocale(Locale.GERMAN);
+
+        // WHEN
+        List<SelectFieldOptionDefinition> options = definition.getOptions();
+
+        // THEN
+        assertTrue(options.get(1).isSelected());
+    }
 }
