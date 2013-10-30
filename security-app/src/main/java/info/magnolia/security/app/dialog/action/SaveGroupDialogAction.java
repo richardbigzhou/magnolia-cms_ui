@@ -48,8 +48,6 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 
@@ -57,8 +55,6 @@ import com.vaadin.data.Item;
  * Save group dialog action.
  */
 public class SaveGroupDialogAction extends SaveDialogAction {
-
-    private static final Logger log = LoggerFactory.getLogger(SaveGroupDialogAction.class);
 
     public SaveGroupDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback) {
         super(definition, item, validator, callback);
@@ -68,35 +64,25 @@ public class SaveGroupDialogAction extends SaveDialogAction {
     public void execute() throws ActionExecutionException {
         // First Validate
         validator.showValidation(true);
+        // validation errors are displayed in the UI.
         if (validator.isValid()) {
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
 
             try {
                 final Node node = itemChanged.applyChanges();
-                // the roles (that are assigned to this group) and groups (this group belongs to) handling has to be added here
+                // the roles (that are assigned to this group) and groups (this group belongs to) handling have to be added here
                 // GROUPS
-                try {
-                    replacePropertyWithSubnode(node, "groups", itemPropertyToArray(itemChanged, "groups"));
-                } catch (RepositoryException ex) {
-                    log.error(ex.getMessage(), ex);
-                    throw new ActionExecutionException(ex.getMessage(), ex);
-                }
+                replacePropertyWithSubnode(node, "groups", itemPropertyToArray(itemChanged, "groups"));
+
                 // ROLES
-                try {
-                    replacePropertyWithSubnode(node, "roles", itemPropertyToArray(itemChanged, "roles"));
-                } catch (RepositoryException ex) {
-                    log.error(ex.getMessage(), ex);
-                    throw new ActionExecutionException(ex.getMessage(), ex);
-                }
+                replacePropertyWithSubnode(node, "roles", itemPropertyToArray(itemChanged, "roles"));
+
                 // THE REST
                 node.getSession().save();
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);
             }
             callback.onSuccess(getDefinition().getName());
-
-        } else {
-            // validation errors are displayed in the UI.
         }
     }
 
@@ -108,31 +94,22 @@ public class SaveGroupDialogAction extends SaveDialogAction {
     }
 
     private void replacePropertyWithSubnode(Node node, String name, String[] ids) throws RepositoryException {
-        try {
-            node.getProperty(name).remove();
-        } catch (RepositoryException ex) {
-            log.warn("Cannot remove [" + name + "] property of the group [" + node.getName() + "]: " + ex.getMessage());
+        node.getProperty(name).remove();
+        // create subnode (or get it, if it already exists)
+        Node subnode = NodeUtil.createPath(node, name, NodeTypes.ContentNode.NAME);
+        // sanity: remove all possible non-jcr properties
+        PropertyIterator pi = subnode.getProperties();
+        while (pi.hasNext()) {
+            javax.jcr.Property p = pi.nextProperty();
+            if (!p.getName().startsWith(NodeTypes.JCR_PREFIX) && !p.getName().startsWith(NodeTypes.MGNL_PREFIX)) {
+                p.remove();
+            }
         }
-        try {
-            // create subnode (or get it, if it already exists)
-            Node subnode = NodeUtil.createPath(node, name, NodeTypes.ContentNode.NAME);
-            // sanity: remove all possible non-jcr properties
-            PropertyIterator pi = subnode.getProperties();
-            while (pi.hasNext()) {
-                javax.jcr.Property p = pi.nextProperty();
-                if (!p.getName().startsWith(NodeTypes.JCR_PREFIX) && !p.getName().startsWith(NodeTypes.MGNL_PREFIX)) {
-                    p.remove();
-                }
-            }
-            // add new groups
-            int i = 0;
-            for (String id : ids) {
-                PropertyUtil.setProperty(subnode, "" + i, id.trim());
-                i++;
-            }
-        } catch (RepositoryException ex) {
-            log.error("Error saving assigned " + name + " of the [" + node.getName() + "] group.", ex);
-            throw new RepositoryException("Error saving assigned " + name + " of the [" + node.getName() + "] group.", ex);
+        // add new groups
+        int i = 0;
+        for (String id : ids) {
+            PropertyUtil.setProperty(subnode, "" + i, id.trim());
+            i++;
         }
     }
 

@@ -57,6 +57,11 @@ public interface EditorDefinition {
 
     String getWorkspace();
 
+    /**
+     * @return the path configured as root for this workspace. If not specified, defaults to root ("/").
+     */
+    String getRootPath();
+
     NodeTypeDefinition getNodeType();
 
     FormDefinition getForm();

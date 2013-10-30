@@ -63,7 +63,7 @@ import org.slf4j.LoggerFactory;
  * </ul>
  * <b>a default name if non of these conditions are valid</b> <br>
  * To change this behavior extend this Action and override {@link SaveFormAction#setNodeName(Node, JcrNodeAdapter)}
- * 
+ *
  * @see SaveFormActionDefinition
  */
 public class SaveFormAction extends AbstractAction<SaveFormActionDefinition> {
@@ -113,7 +113,6 @@ public class SaveFormAction extends AbstractAction<SaveFormActionDefinition> {
             if (!node.getName().equals(newNodeName)) {
                 newNodeName = Path.getUniqueLabel(node.getSession(), node.getParent().getPath(), Path.getValidatedLabel(newNodeName));
                 item.setNodeName(newNodeName);
-                property.setValue(newNodeName);
                 NodeUtil.renameNode(node, newNodeName);
             }
         }
