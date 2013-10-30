@@ -82,7 +82,7 @@ public class CompositeTransformer extends BasicTransformer<PropertysetItem> {
             String propertyName = (String) propertyNames.next();
             String compositePropertyName = getCompositePropertyName(propertyName);
             Property<?> property = relatedFormItem.getItemProperty(compositePropertyName);
-            if (property == null) {
+            if (property == null && newValues.getItemProperty(propertyName) != null) {
                 relatedFormItem.addItemProperty(compositePropertyName, newValues.getItemProperty(propertyName));
             }
         }

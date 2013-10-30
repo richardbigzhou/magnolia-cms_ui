@@ -102,6 +102,24 @@ public class CompositeTransformerTest extends RepositoryTestCase {
     }
 
     @Test
+    public void testWriteMultiPropertyWithNullValue() throws RepositoryException {
+        // GIVEN
+        JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
+        CompositeTransformer delegate = new CompositeTransformer(parent, definition, PropertysetItem.class, fieldsName);
+        PropertysetItem itemSet = new PropertysetItem();
+        itemSet.addItemProperty("field1", null);
+
+        // WHEN
+        delegate.writeToItem(itemSet);
+        parent.applyChanges();
+
+        // THEN
+        assertFalse(rootNode.hasProperty("fieldNamefield1"));
+        assertTrue(rootNode.hasProperty("fieldNamefield2"));
+        assertEquals("hello2", rootNode.getProperty("fieldNamefield2").getString());
+    }
+
+    @Test
     public void testReadMultiProperty() throws RepositoryException {
         // GIVEN
 
