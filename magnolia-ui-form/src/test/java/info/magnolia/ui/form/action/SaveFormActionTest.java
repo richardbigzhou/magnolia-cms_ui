@@ -36,8 +36,8 @@ package info.magnolia.ui.form.action;
 import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
@@ -53,37 +53,38 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * SaveFormActionTest.
+ * Tests for the {@link SaveFormAction}.
  */
 public class SaveFormActionTest extends RepositoryTestCase {
-    private SaveFormActionDefinition formActionDefinition;
+
+    private static final SaveFormActionDefinition ACTION_DEFINITION = new SaveFormActionDefinition() {
+        {
+            setName("name");
+            setLabel("label");
+        }
+    };
+
     private CallbackFormActionTest.TestEditorCallback callback;
     private CallbackFormActionTest.TestEditorValidator validator;
     private Session session;
-    private Node node;
-    private JcrNodeAdapter item;
-    private SaveFormAction formAction;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
         ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
-        this.formActionDefinition = new SaveFormActionDefinition();
-        this.callback = new CallbackFormActionTest.TestEditorCallback();
-        this.validator = new CallbackFormActionTest.TestEditorValidator();
-        // Init Node
+        callback = new CallbackFormActionTest.TestEditorCallback();
+        validator = new CallbackFormActionTest.TestEditorValidator();
         session = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
     }
 
     @Test
     public void executeDefaultExecuteTest() throws RepositoryException, ActionExecutionException {
         // GIVEN
-        node = session.getRootNode().addNode("underlying");
+        Node node = session.getRootNode().addNode("underlying");
         node.getSession().save();
-        item = new JcrNodeAdapter(node);
-        initDefinition("name", "label");
-        formAction = new SaveFormAction(formActionDefinition, item, callback, validator);
+        JcrNodeAdapter item = new JcrNodeAdapter(node);
+        SaveFormAction formAction = new SaveFormAction(ACTION_DEFINITION, item, callback, validator);
 
         // WHEN
         formAction.execute();
@@ -95,12 +96,11 @@ public class SaveFormActionTest extends RepositoryTestCase {
     @Test
     public void executeSaveChangeNodeNameBasedOnPropertyNameTest() throws RepositoryException, ActionExecutionException {
         // GIVEN
-        node = session.getRootNode().addNode("underlying");
+        Node node = session.getRootNode().addNode("underlying");
         node.setProperty("name", "newNodeName");
-        item = new JcrNodeAdapter(node);
+        JcrNodeAdapter item = new JcrNodeAdapter(node);
         item.getItemProperty("name").setValue("newNodeNameChanged");
-        initDefinition("name", "label");
-        formAction = new SaveFormAction(formActionDefinition, item, callback, validator);
+        SaveFormAction formAction = new SaveFormAction(ACTION_DEFINITION, item, callback, validator);
 
         // WHEN
         formAction.execute();
@@ -113,14 +113,13 @@ public class SaveFormActionTest extends RepositoryTestCase {
     @Test
     public void executeSaveChangeNodeNameBasedOnPropertyJcrNameTest() throws RepositoryException, ActionExecutionException {
         // GIVEN
-        node = session.getRootNode().addNode("underlying");
+        Node node = session.getRootNode().addNode("underlying");
         node.setProperty("name", "newNodeName");
         node.setProperty("jcrName", "newNodeJcrName");
-        item = new JcrNodeAdapter(node);
+        JcrNodeAdapter item = new JcrNodeAdapter(node);
         item.getItemProperty("name").setValue("newNodeNameChanged");
         item.getItemProperty("jcrName").setValue("newNodeJcrNameChanged");
-        initDefinition("name", "label");
-        formAction = new SaveFormAction(formActionDefinition, item, callback, validator);
+        SaveFormAction formAction = new SaveFormAction(ACTION_DEFINITION, item, callback, validator);
 
         // WHEN
         formAction.execute();
@@ -134,12 +133,11 @@ public class SaveFormActionTest extends RepositoryTestCase {
     @Test
     public void executeSaveUpdatePropertyTest() throws RepositoryException, ActionExecutionException {
         // GIVEN
-        node = session.getRootNode().addNode("underlying");
+        Node node = session.getRootNode().addNode("underlying");
         node.setProperty("property", "initial");
-        item = new JcrNodeAdapter(node);
+        JcrNodeAdapter item = new JcrNodeAdapter(node);
         item.getItemProperty("property").setValue("changed");
-        initDefinition("name", "label");
-        formAction = new SaveFormAction(formActionDefinition,item, callback, validator);
+        SaveFormAction formAction = new SaveFormAction(ACTION_DEFINITION, item, callback, validator);
 
         // WHEN
         formAction.execute();
@@ -153,12 +151,11 @@ public class SaveFormActionTest extends RepositoryTestCase {
     @Test
     public void executeSaveCreatePropertyTest() throws RepositoryException, ActionExecutionException {
         // GIVEN
-        node = session.getRootNode().addNode("underlying");
+        Node node = session.getRootNode().addNode("underlying");
 
-        item = new JcrNodeAdapter(node);
+        JcrNodeAdapter item = new JcrNodeAdapter(node);
         item.addItemProperty("property", DefaultPropertyUtil.newDefaultProperty(String.class, "changed"));
-        initDefinition("name", "label");
-        formAction = new SaveFormAction(formActionDefinition, item, callback, validator);
+        SaveFormAction formAction = new SaveFormAction(ACTION_DEFINITION, item, callback, validator);
 
         // WHEN
         formAction.execute();
@@ -172,12 +169,11 @@ public class SaveFormActionTest extends RepositoryTestCase {
     @Test
     public void executeSaveRemovePropertyTest() throws RepositoryException, ActionExecutionException {
         // GIVEN
-        node = session.getRootNode().addNode("underlying");
+        Node node = session.getRootNode().addNode("underlying");
         node.setProperty("property", "initial");
-        item = new JcrNodeAdapter(node);
+        JcrNodeAdapter item = new JcrNodeAdapter(node);
         item.removeItemProperty("property");
-        initDefinition("name", "label");
-        formAction = new SaveFormAction(formActionDefinition, item, callback, validator);
+        SaveFormAction formAction = new SaveFormAction(ACTION_DEFINITION, item, callback, validator);
         assertEquals(true, node.hasProperty("property"));
         // WHEN
         formAction.execute();
@@ -188,11 +184,4 @@ public class SaveFormActionTest extends RepositoryTestCase {
 
     }
 
-    /**
-     * Init the Definition.
-     */
-    private void initDefinition(String name, String label) {
-        this.formActionDefinition.setLabel(label);
-        this.formActionDefinition.setName(name);
-    }
 }
