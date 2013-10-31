@@ -43,6 +43,7 @@ import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
 import info.magnolia.ui.form.field.definition.PasswordFieldDefinition;
+import info.magnolia.ui.form.field.definition.RichTextFieldDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
@@ -137,9 +138,12 @@ public class ConfigBuilderTest {
         initCommonAttributes(builder, true);
 
         // WHEN
+        builder.images(true);
 
         // THEN
         checkCommonAttributes(builder);
+        RichTextFieldDefinition definition = builder.definition();
+        assertTrue(definition.isImages());
     }
 
     @Test

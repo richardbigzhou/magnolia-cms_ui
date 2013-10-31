@@ -38,4 +38,14 @@ package info.magnolia.ui.form.field.definition;
  */
 public class RichTextFieldDefinition extends ConfiguredFieldDefinition {
 
+    private boolean images = false;
+
+    public boolean isImages() {
+        return images;
+    }
+
+    public void setImages(boolean images) {
+        this.images = images;
+    }
+
 }

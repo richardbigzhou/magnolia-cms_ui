@@ -53,6 +53,11 @@ public class RichTextFieldBuilder extends AbstractFieldBuilder {
         return definition;
     }
 
+    public RichTextFieldBuilder images(boolean images) {
+        definition().setImages(images);
+        return this;
+    }
+
     // Overrides for methods in parent class changing return type to allow method chaining
 
     @Override
