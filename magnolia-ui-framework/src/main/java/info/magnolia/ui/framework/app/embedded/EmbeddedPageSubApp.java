@@ -36,7 +36,6 @@ package info.magnolia.ui.framework.app.embedded;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.location.Location;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.app.BaseSubApp;
 
 import javax.inject.Inject;
@@ -49,7 +48,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Sub app for the main tab in an embedded page app.
  */
-public class EmbeddedPageSubApp extends BaseSubApp {
+public class EmbeddedPageSubApp extends BaseSubApp<EmbeddedPageView> {
 
     private static final Logger log = LoggerFactory.getLogger(EmbeddedPageSubApp.class);
     private Location lastLocation;
@@ -60,7 +59,7 @@ public class EmbeddedPageSubApp extends BaseSubApp {
     }
 
     @Override
-    public View start(Location location) {
+    public EmbeddedPageView start(Location location) {
         this.lastLocation = location;
         String url = location.getParameter();
         if (StringUtils.isEmpty(url)) {
@@ -84,11 +83,6 @@ public class EmbeddedPageSubApp extends BaseSubApp {
         }
         this.lastLocation = location;
         super.locationChanged(location);
-    }
-
-    @Override
-    public EmbeddedPageView getView() {
-        return (EmbeddedPageView) super.getView();
     }
 
     /**

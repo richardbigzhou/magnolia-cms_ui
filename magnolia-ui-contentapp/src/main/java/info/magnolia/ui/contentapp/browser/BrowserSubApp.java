@@ -50,7 +50,6 @@ import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.AvailabilityRule;
 import info.magnolia.ui.api.location.Location;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
@@ -110,7 +109,7 @@ import com.vaadin.server.ExternalResource;
  * @see info.magnolia.ui.contentapp.ContentApp
  * @see BrowserLocation
  */
-public class BrowserSubApp extends BaseSubApp {
+public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
 
     private static final Logger log = LoggerFactory.getLogger(BrowserSubApp.class);
 
@@ -144,7 +143,7 @@ public class BrowserSubApp extends BaseSubApp {
      * </ul>
      */
     @Override
-    public final View start(final Location location) {
+    public final ContentSubAppView start(final Location location) {
         BrowserLocation l = BrowserLocation.wrap(location);
         super.start(l);
         getView().setContentView(browser.start());
@@ -429,11 +428,6 @@ public class BrowserSubApp extends BaseSubApp {
 
     protected final BrowserPresenter getBrowser() {
         return browser;
-    }
-
-    @Override
-    public final ContentSubAppView getView() {
-        return (ContentSubAppView) super.getView();
     }
 
     /**

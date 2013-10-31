@@ -71,7 +71,7 @@ import org.slf4j.LoggerFactory;
  * @see info.magnolia.ui.contentapp.ContentSubAppView
  * @see DetailLocation
  */
-public class DetailSubApp extends BaseSubApp {
+public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
 
     private static final Logger log = LoggerFactory.getLogger(DetailSubApp.class);
 
@@ -104,7 +104,7 @@ public class DetailSubApp extends BaseSubApp {
      * </ul>
      */
     @Override
-    public View start(final Location location) {
+    public ContentSubAppView start(final Location location) {
         DetailLocation detailLocation = DetailLocation.wrap(location);
         super.start(detailLocation);
         // set caption
@@ -132,11 +132,6 @@ public class DetailSubApp extends BaseSubApp {
     @Override
     public DetailLocation getCurrentLocation() {
         return DetailLocation.wrap(super.getCurrentLocation());
-    }
-
-    @Override
-    public ContentSubAppView getView() {
-        return (ContentSubAppView) super.getView();
     }
 
     @Override

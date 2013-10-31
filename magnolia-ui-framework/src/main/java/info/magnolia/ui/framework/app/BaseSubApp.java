@@ -47,15 +47,17 @@ import org.slf4j.LoggerFactory;
  * Basic implementation of a subApp with default behavior suitable for most sub apps.
  *
  * @see info.magnolia.ui.api.app.SubApp
+ *
+ * @param <V> {@link View} implementation used by subApp.
  */
-public class BaseSubApp implements SubApp {
+public class BaseSubApp<V extends View> implements SubApp {
 
     private final SubAppContext subAppContext;
-    private final View view;
+    private final V view;
 
     private static final Logger log = LoggerFactory.getLogger(BaseSubApp.class);
 
-    protected BaseSubApp(final SubAppContext subAppContext, final View view) {
+    protected BaseSubApp(final SubAppContext subAppContext, final V view) {
         if (subAppContext == null || view == null) {
             throw new IllegalArgumentException("Constructor does not allow for null args. Found SubAppContext = " + subAppContext + ", View = " + view);
         }
@@ -64,7 +66,7 @@ public class BaseSubApp implements SubApp {
     }
 
     @Override
-    public View start(Location location) {
+    public V start(Location location) {
         onSubAppStart();
         return view;
     }
@@ -113,7 +115,7 @@ public class BaseSubApp implements SubApp {
     }
 
     @Override
-    public View getView() {
+    public V getView() {
         return view;
     }
 
