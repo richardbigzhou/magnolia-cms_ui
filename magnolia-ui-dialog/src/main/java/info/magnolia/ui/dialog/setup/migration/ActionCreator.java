@@ -44,7 +44,7 @@ public interface ActionCreator {
     /**
      * Perform an Action creation on the specific 'actionsNode'.
      * 
-     * @param actionsNode on witch the specific action node will be created.
+     * @param actionsNode on which the specific action node will be created.
      */
     public void create(Node actionsNode) throws RepositoryException;
 }
