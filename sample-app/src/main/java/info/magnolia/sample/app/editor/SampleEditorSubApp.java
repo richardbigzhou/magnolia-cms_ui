@@ -39,6 +39,7 @@ import info.magnolia.sample.app.editor.location.EditorLocation;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.location.Location;
+import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.framework.app.BaseSubApp;
 
 import javax.inject.Inject;
@@ -47,7 +48,7 @@ import javax.inject.Named;
 /**
  * SubApp for editor tabs in sample app.
  */
-public class SampleEditorSubApp extends BaseSubApp<SampleEditorView> implements SampleEditorView.Listener {
+public class SampleEditorSubApp extends BaseSubApp implements SampleEditorView.Listener {
 
     private final SampleEditorView view;
     private final SimpleTranslator i18n;
@@ -65,7 +66,7 @@ public class SampleEditorSubApp extends BaseSubApp<SampleEditorView> implements 
     }
 
     @Override
-    public SampleEditorView start(Location location) {
+    public View start(Location location) {
         super.start(location);
         this.view.setName(location.getParameter());
         this.view.setListener(this);

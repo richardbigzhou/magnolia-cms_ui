@@ -44,7 +44,7 @@ import javax.inject.Inject;
 /**
  * Sub app for the main tab in the message app.
  */
-public class MessagesMainSubApp extends BaseSubApp<MessagesView> implements MessagesView.Listener {
+public class MessagesMainSubApp extends BaseSubApp implements MessagesView.Listener {
 
     @Inject
     public MessagesMainSubApp(SubAppContext subAppContext, MessagesView view) {

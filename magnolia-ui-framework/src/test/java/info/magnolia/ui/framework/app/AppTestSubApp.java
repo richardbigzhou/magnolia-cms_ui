@@ -44,7 +44,7 @@ import javax.inject.Inject;
 /**
  * sub app test.
  */
-public class AppTestSubApp extends BaseSubApp<AppTestView> {
+public class AppTestSubApp extends BaseSubApp {
 
     public static Map<String, AppTestSubApp> subApps = new HashMap<String, AppTestSubApp>();
     public static int subAppNumber = 0;

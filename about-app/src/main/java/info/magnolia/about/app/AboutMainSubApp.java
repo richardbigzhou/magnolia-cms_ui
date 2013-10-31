@@ -41,7 +41,7 @@ import javax.inject.Inject;
 /**
  * The about main subapp shows an overview of the instance version, environment and license information.
  */
-public class AboutMainSubApp extends BaseSubApp<AboutView> {
+public class AboutMainSubApp extends BaseSubApp {
 
     @Inject
     public AboutMainSubApp(SubAppContext subAppContext, AboutPresenter presenter) {
