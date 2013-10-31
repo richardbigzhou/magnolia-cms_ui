@@ -108,8 +108,10 @@ import com.vaadin.server.ExternalResource;
  * @see info.magnolia.ui.contentapp.ContentSubAppView
  * @see info.magnolia.ui.contentapp.ContentApp
  * @see BrowserLocation
+ *
+ * @param <V> {@link ContentSubAppView} implementation used by {@link BrowserSubApp}.
  */
-public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
+public class BrowserSubApp<V extends ContentSubAppView> extends BaseSubApp<V> {
 
     private static final Logger log = LoggerFactory.getLogger(BrowserSubApp.class);
 
@@ -120,7 +122,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
     private String workbenchRoot;
 
     @Inject
-    public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final ComponentProvider componentProvider) {
+    public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final V view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final ComponentProvider componentProvider) {
         super(subAppContext, view);
         if (subAppContext == null || view == null || browser == null || subAppEventBus == null) {
             throw new IllegalArgumentException("Constructor does not allow for null args. Found SubAppContext = " + subAppContext + ", ContentSubAppView = " + view + ", BrowserPresenter = " + browser + ", EventBus = " + subAppEventBus);
@@ -143,7 +145,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
      * </ul>
      */
     @Override
-    public final ContentSubAppView start(final Location location) {
+    public final V start(final Location location) {
         BrowserLocation l = BrowserLocation.wrap(location);
         super.start(l);
         getView().setContentView(browser.start());

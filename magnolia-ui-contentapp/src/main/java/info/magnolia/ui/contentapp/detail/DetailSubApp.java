@@ -70,8 +70,10 @@ import org.slf4j.LoggerFactory;
  * @see DetailEditorPresenter
  * @see info.magnolia.ui.contentapp.ContentSubAppView
  * @see DetailLocation
+ *
+ * @param <V> {@link ContentSubAppView} implementation used by {@link DetailSubApp}.
  */
-public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
+public class DetailSubApp<V extends ContentSubAppView> extends BaseSubApp<V> {
 
     private static final Logger log = LoggerFactory.getLogger(DetailSubApp.class);
 
@@ -83,7 +85,7 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
     private String caption;
 
     @Inject
-    protected DetailSubApp(final SubAppContext subAppContext, final ContentSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus adminCentralEventBus,
+    protected DetailSubApp(final SubAppContext subAppContext, final V view, @Named(AdmincentralEventBus.NAME) EventBus adminCentralEventBus,
             DetailEditorPresenter presenter, SimpleTranslator i18n) {
         super(subAppContext, view);
 
@@ -104,7 +106,7 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
      * </ul>
      */
     @Override
-    public ContentSubAppView start(final Location location) {
+    public V start(final Location location) {
         DetailLocation detailLocation = DetailLocation.wrap(location);
         super.start(detailLocation);
         // set caption
