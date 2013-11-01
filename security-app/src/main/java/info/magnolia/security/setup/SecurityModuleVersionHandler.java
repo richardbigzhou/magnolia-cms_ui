@@ -36,6 +36,7 @@ package info.magnolia.security.setup;
 import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromSubappsTask;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
+import info.magnolia.module.delta.BootstrapSingleResource;
 import info.magnolia.module.delta.CheckAndModifyPartOfPropertyValueTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.NewPropertyTask;
@@ -98,6 +99,9 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new NodeExistsDelegateTask("Remove now unnecessary options from language field in user dialog.", "", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/user/form/tabs/user/fields/language/options",
                         new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/user/form/tabs/user/fields/language/options")))
         );
+
+        register(DeltaBuilder.update("5.2", "")
+                .addTask(new BootstrapSingleResource("Bootstrap new dialog", "Bootstraps new 'superuserRole' dialog", "/mgnl-bootstrap/security-app/config.modules.security-app.dialogs.superuserRole.xml")));
     }
 
     @Override
