@@ -33,10 +33,13 @@
  */
 package info.magnolia.ui.admincentral;
 
+import info.magnolia.cms.util.ServletUtil;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -50,12 +53,17 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.server.BootstrapFragmentResponse;
 import com.vaadin.server.BootstrapListener;
 import com.vaadin.server.BootstrapPageResponse;
+import com.vaadin.server.DeploymentConfiguration;
+import com.vaadin.server.RequestHandler;
+import com.vaadin.server.ServiceException;
 import com.vaadin.server.SessionInitEvent;
 import com.vaadin.server.SessionInitListener;
 import com.vaadin.server.UIProvider;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinServletRequest;
 import com.vaadin.server.VaadinServletResponse;
+import com.vaadin.server.VaadinServletService;
+import com.vaadin.server.communication.ServletBootstrapHandler;
 import com.vaadin.shared.ApplicationConstants;
 
 /**
@@ -116,7 +124,8 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            if (request.getRequestURI() != null && request.getRequestURI().endsWith("undefined.cache.js")) {
+            String requestURI = ServletUtil.stripPathParameters(request.getRequestURI());
+            if (requestURI != null && requestURI.endsWith("undefined.cache.js")) {
                 writeUnsupportedBrowserPage(request, response);
             } else {
                 super.service(request, response);
@@ -250,5 +259,43 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
         outWriter.flush();
         outWriter.close();
         out.flush();
+    }
+
+    @Override
+    protected VaadinServletService createServletService(DeploymentConfiguration deploymentConfiguration) throws ServiceException {
+        VaadinServletService service = new VaadinServletService(this, deploymentConfiguration) {
+
+            @Override
+            protected List<RequestHandler> createRequestHandlers() throws ServiceException {
+                List<RequestHandler> handlers = super.createRequestHandlers();
+                for (int i = 0; i < handlers.size(); i++) {
+                    RequestHandler handler = handlers.get(i);
+                    if (handler instanceof ServletBootstrapHandler) {
+                        handlers.set(i, new ServletBootstrapHandler() {
+
+                            @Override
+                            protected String getServiceUrl(BootstrapContext context) {
+
+                                // We replace the default ServletBootstrapHandler with our own so that we can specify
+                                // the serviceUrl explicitly. It's otherwise left empty making the client determine it
+                                // using location.href. The client does not play well with this and appends paths after
+                                // the JSESSIONID instead of in front of it. This results in a problem loading resources
+                                // specified using @JavaScript and @StyleSheet.
+                                //
+                                // see com.vaadin.client.ApplicationConfiguration.loadFromDOM()
+                                // see MGNLUI-2291
+                                // see http://dev.vaadin.com/ticket/10974
+
+                                return ServletUtil.getOriginalRequestURI(((VaadinServletRequest)context.getRequest()).getHttpServletRequest());
+                            }
+                        });
+                        break;
+                    }
+                }
+                return handlers;
+            }
+        };
+        service.init();
+        return service;
     }
 }
