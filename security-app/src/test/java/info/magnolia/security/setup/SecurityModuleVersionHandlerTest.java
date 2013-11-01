@@ -242,4 +242,54 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         // THEN
         assertFalse(languageNode.hasNode("options"));
     }
+
+    @Test
+    public void folderSupportAddedToGroupsSubAppOnUpdateTo52() throws Exception {
+        // GIVEN
+        String base = "/modules/security-app/apps/security/subApps/groups";
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        NodeUtil.createPath(session.getRootNode(), base + "/actions/addGroup/availability", NodeTypes.ContentNode.NAME).setProperty("nodes", "foobar");
+        NodeUtil.createPath(session.getRootNode(), base + "/workbench", NodeTypes.ContentNode.NAME);
+        NodeUtil.createPath(session.getRootNode(), base + "/actionbar/sections/root/groups/addActions/items", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1.1"));
+
+        // THEN
+        assertTrue(session.nodeExists(base + "/actions/addFolder"));
+        assertTrue(session.nodeExists(base + "/actions/deleteFolder"));
+        assertTrue(session.nodeExists(base + "/actions/editFolder"));
+        assertTrue(session.nodeExists(base + "/actions/addGroup/availability/nodeTypes"));
+        assertFalse(session.propertyExists(base + "/actions/addGroup/availability/nodes"));
+        assertTrue(session.nodeExists(base + "/actions/deleteGroup/availability"));
+        assertTrue(session.nodeExists(base + "/actions/editGroup/availability"));
+        assertTrue(session.propertyExists(base + "/workbench/dropConstraintClass"));
+        assertTrue(session.nodeExists(base + "/actionbar/sections/folder"));
+        assertTrue(session.nodeExists(base + "/actionbar/sections/root/groups/addActions/items/addFolder"));
+    }
+
+    @Test
+    public void folderSupportAddedToRolesSubAppOnUpdateTo52() throws Exception {
+        // GIVEN
+        String base = "/modules/security-app/apps/security/subApps/roles";
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        NodeUtil.createPath(session.getRootNode(), base + "/actions/addRole/availability", NodeTypes.ContentNode.NAME).setProperty("nodes", "foobar");
+        NodeUtil.createPath(session.getRootNode(), base + "/workbench", NodeTypes.ContentNode.NAME);
+        NodeUtil.createPath(session.getRootNode(), base + "/actionbar/sections/root/groups/addActions/items", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1.1"));
+
+        // THEN
+        assertTrue(session.nodeExists(base + "/actions/addFolder"));
+        assertTrue(session.nodeExists(base + "/actions/deleteFolder"));
+        assertTrue(session.nodeExists(base + "/actions/editFolder"));
+        assertTrue(session.nodeExists(base + "/actions/addRole/availability/nodeTypes"));
+        assertFalse(session.propertyExists(base + "/actions/addRole/availability/nodes"));
+        assertTrue(session.nodeExists(base + "/actions/deleteRole/availability"));
+        assertTrue(session.nodeExists(base + "/actions/editRole/availability"));
+        assertTrue(session.propertyExists(base + "/workbench/dropConstraintClass"));
+        assertTrue(session.nodeExists(base + "/actionbar/sections/folder"));
+        assertTrue(session.nodeExists(base + "/actionbar/sections/root/groups/addActions/items/addFolder"));
+    }
 }
