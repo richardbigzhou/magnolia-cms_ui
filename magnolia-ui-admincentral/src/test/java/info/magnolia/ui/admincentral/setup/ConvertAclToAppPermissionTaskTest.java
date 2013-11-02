@@ -34,27 +34,17 @@
 package info.magnolia.ui.admincentral.setup;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
-import info.magnolia.cms.security.MgnlRoleManager;
-import info.magnolia.cms.security.RoleManager;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.module.InstallContext;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.test.ComponentsTestUtil;
-import info.magnolia.test.mock.MockContext;
-import info.magnolia.test.mock.MockUtil;
-import info.magnolia.test.mock.jcr.MockSession;
+import info.magnolia.test.RepositoryTestCase;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.Workspace;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
+import javax.jcr.Session;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -62,51 +52,32 @@ import org.junit.Test;
 /**
  * Test for {@link ConvertAclToAppPermissionTask}.
  */
-public class ConvertAclToAppPermissionTaskTest {
+public class ConvertAclToAppPermissionTaskTest extends RepositoryTestCase {
 
-    private MockSession userRoles;
+    private Session config;
+    private Session userRoles;
     private InstallContext installContext;
-    private ConvertAclToAppPermissionTask task;
-    private MockSession config;
     private Node permission;
-    private final QueryResult queryResult = mock(QueryResult.class);
+    private ConvertAclToAppPermissionTask task;
 
     @Before
     public void setUp() throws Exception {
-        MockUtil.initMockContext();
+        super.setUp();
+
+        config = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        config.getRootNode().addNode("newApp");
+        config.save();
+
+        userRoles = MgnlContext.getJCRSession(RepositoryConstants.USER_ROLES);
+        final Node acl = NodeUtil.createPath(userRoles.getRootNode(), "someUserRole", NodeTypes.Role.NAME).addNode("acl_uri", NodeTypes.ContentNode.NAME);
+        permission = acl.addNode("0", NodeTypes.ContentNode.NAME);
+        userRoles.save();
 
         installContext = mock(InstallContext.class);
-        Workspace workspace = mock(Workspace.class);
-        QueryManager qm = mock(QueryManager.class);
-        Query query = mock(Query.class);
-
-        config = new MockSession(RepositoryConstants.CONFIG);
-        config.getRootNode().addNode("newApp");
-
-        userRoles = new MockSession(RepositoryConstants.USER_ROLES);
-        userRoles.setWorkspace(workspace);
-
-        Node acl = NodeUtil.createPath(userRoles.getRootNode(), "someUserRole/acl_uri", NodeTypes.Role.NAME);
-        permission = acl.addNode("0", NodeTypes.ContentNode.NAME);
-        NodeIterator nodeIterator = acl.getNodes();
-
-        when(queryResult.getNodes()).thenReturn(acl.getNodes());
-
-        MockContext context = (MockContext) MgnlContext.getInstance();
-        context.addSession(RepositoryConstants.CONFIG, config);
-        context.addSession(RepositoryConstants.USER_ROLES, userRoles);
-
         when(installContext.getJCRSession(RepositoryConstants.CONFIG)).thenReturn(config);
         when(installContext.getJCRSession(RepositoryConstants.USER_ROLES)).thenReturn(userRoles);
-        when(workspace.getQueryManager()).thenReturn(qm);
-        when(qm.createQuery(anyString(), anyString())).thenReturn(query);
-        when(query.execute()).thenReturn(queryResult);
-        when(queryResult.getNodes()).thenReturn(nodeIterator);
 
-        task = new ConvertAclToAppPermissionTask("name", "description", "oldURL", "newApp", true);
-        RoleManager roleManager = new MgnlRoleManager();
-        ComponentsTestUtil.setInstance(RoleManager.class, roleManager);
-        roleManager.createRole("superuser");
+        task = new ConvertAclToAppPermissionTask("name", "description", "oldURL", "/newApp", true);
     }
 
     @Test
@@ -114,6 +85,7 @@ public class ConvertAclToAppPermissionTaskTest {
         // GIVEN
         permission.setProperty("path", "oldURL");
         permission.setProperty("permissions", 0);
+        userRoles.save();
 
         // WHEN
         task.execute(installContext);
@@ -128,6 +100,7 @@ public class ConvertAclToAppPermissionTaskTest {
         // GIVEN
         permission.setProperty("path", "oldURL");
         permission.setProperty("permissions", 4);
+        userRoles.save();
 
         // WHEN
         task.execute(installContext);
@@ -143,6 +116,7 @@ public class ConvertAclToAppPermissionTaskTest {
         permission.setProperty("path", "oldURL");
         permission.setProperty("permissions", 4);
         NodeUtil.createPath(config.getRootNode(), "/newApp/permissions/roles/", NodeTypes.ContentNode.NAME).setProperty("someUserRole", "someUserRole");
+        userRoles.save();
 
         // WHEN
         task.execute(installContext);
@@ -158,6 +132,7 @@ public class ConvertAclToAppPermissionTaskTest {
         permission.setProperty("path", "oldURL");
         permission.setProperty("permissions", 0);
         NodeUtil.createPath(config.getRootNode(), "/newApp/permissions/roles/", NodeTypes.ContentNode.NAME).setProperty("nameDoesntMatter", "someUserRole");
+        userRoles.save();
 
         // WHEN
         task.execute(installContext);
@@ -166,10 +141,5 @@ public class ConvertAclToAppPermissionTaskTest {
         assertTrue(config.itemExists("/newApp/permissions/roles/nameDoesntMatter"));
         assertFalse(config.itemExists("/newApp/permissions/roles/superuser"));
         assertFalse(userRoles.itemExists("/someUser/acl_uri/0"));
-    }
-
-    public void tearDown() {
-        MgnlContext.setInstance(null);
-        ComponentsTestUtil.clear();
     }
 }
