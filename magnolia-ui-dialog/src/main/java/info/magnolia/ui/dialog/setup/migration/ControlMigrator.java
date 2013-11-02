@@ -44,7 +44,7 @@ public interface ControlMigrator {
     /**
      * Take a specific control's migration action.
      * 
-     * @param controlNode on witch the migration is done. Topically, remove, rename, add properties, nodes.
+     * @param controlNode on which the migration is done. Topically, remove, rename, add properties, nodes.
      */
     public void migrate(Node controlNode) throws RepositoryException;
 }
