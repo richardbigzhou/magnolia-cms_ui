@@ -114,6 +114,10 @@ public abstract class MgnlElement extends CmsNode {
         return this.attributes.containsKey(key);
     }
 
+    public boolean isInherited() {
+        return Boolean.parseBoolean(getAttribute("inherited")) || (getParent() != null && ((MgnlElement) getParent()).isInherited());
+    }
+
     public Element getStartComment() {
         return startComment;
     }
