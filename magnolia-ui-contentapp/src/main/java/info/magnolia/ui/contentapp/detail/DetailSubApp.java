@@ -75,7 +75,7 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
 
     private static final Logger log = LoggerFactory.getLogger(DetailSubApp.class);
 
-    private final DetailEditorPresenter workbench;
+    private final DetailEditorPresenter presenter;
     private final EventBus adminCentralEventBus;
     private final SimpleTranslator i18n;
 
@@ -84,11 +84,11 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
 
     @Inject
     protected DetailSubApp(final SubAppContext subAppContext, final ContentSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus adminCentralEventBus,
-            DetailEditorPresenter workbench, SimpleTranslator i18n) {
+            DetailEditorPresenter presenter, SimpleTranslator i18n) {
         super(subAppContext, view);
 
         this.adminCentralEventBus = adminCentralEventBus;
-        this.workbench = workbench;
+        this.presenter = presenter;
         this.i18n = i18n;
 
         bindHandlers();
@@ -99,7 +99,7 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
      * The tasks are:
      * <ul>
      * <li>setting the current location
-     * <li>setting the workbench view
+     * <li>setting the presenter's view
      * <li>calling {@link #onSubAppStart()} a hook-up method subclasses can override to perform additional work.
      * </ul>
      */
@@ -117,9 +117,9 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
 
         View view;
         if (detailLocation.hasVersion()) {
-            view = workbench.start(detailLocation.getNodePath(), detailLocation.getViewType(), detailLocation.getVersion());
+            view = presenter.start(detailLocation.getNodePath(), detailLocation.getViewType(), detailLocation.getVersion());
         } else {
-            view = workbench.start(detailLocation.getNodePath(), detailLocation.getViewType());
+            view = presenter.start(detailLocation.getNodePath(), detailLocation.getViewType());
         }
         getView().setContentView(view);
         return getView();
@@ -148,7 +148,7 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
         DetailLocation detailLocation = DetailLocation.wrap(location);
         if (!detailLocation.equals(getCurrentLocation())) {
             setCaption(detailLocation);
-            View view = workbench.update(detailLocation);
+            View view = presenter.update(detailLocation);
             getView().setContentView(view);
         }
     }
