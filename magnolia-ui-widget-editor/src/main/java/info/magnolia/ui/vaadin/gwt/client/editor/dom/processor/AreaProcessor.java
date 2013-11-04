@@ -131,7 +131,7 @@ public class AreaProcessor extends AbstractMgnlElementProcessor {
     protected boolean hasControlBar(Map<String, String> attributes) {
 
         // break no matter what follows
-        if (attributes.containsKey(ATTRIBUTE_EDITABLE) && !Boolean.parseBoolean(attributes.get(ATTRIBUTE_EDITABLE))) {
+        if (getMgnlElement().isInherited() || (attributes.containsKey(ATTRIBUTE_EDITABLE) && !Boolean.parseBoolean(attributes.get(ATTRIBUTE_EDITABLE)))) {
             return false;
         }
 
