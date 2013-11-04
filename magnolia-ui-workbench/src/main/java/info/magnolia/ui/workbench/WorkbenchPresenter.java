@@ -152,11 +152,15 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     @Override
     public void onSearch(final String searchExpression) {
-        if (StringUtils.isNotBlank(searchExpression)) {
-            eventBus.fireEvent(new SearchEvent(searchExpression));
+        if (hasViewType(SearchPresenterDefinition.VIEW_TYPE)) {
+            if (StringUtils.isNotBlank(searchExpression)) {
+                eventBus.fireEvent(new SearchEvent(searchExpression));
+            } else {
+                // if search expression is empty switch to list view
+                onViewTypeChanged(ListPresenterDefinition.VIEW_TYPE);
+            }
         } else {
-            // if search expression is empty switch to list view
-            onViewTypeChanged(ListPresenterDefinition.VIEW_TYPE);
+            log.warn("Workbench view triggered search although the search view type is not configured in this workbench {}", this);
         }
     }
 

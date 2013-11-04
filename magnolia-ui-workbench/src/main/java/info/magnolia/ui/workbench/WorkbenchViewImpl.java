@@ -44,6 +44,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Property;
@@ -61,8 +63,6 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
-
-import javax.inject.Inject;
 
 /**
  * Implementation of the workbench view.
@@ -219,12 +219,14 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
     public void addContentView(String viewType, ContentView view, ContentPresenterDefinition contentViewDefintion) {
         contentViews.put(viewType, view);
 
-        if (contentViewDefintion instanceof SearchPresenterDefinition) {
-            // do not add a button for search
-            return;
-        }
-        if (contentViewDefintion instanceof ListPresenterDefinition) {
+        // display search-box only if both list and search content presenters are configured
+        if (contentViews.containsKey(ListPresenterDefinition.VIEW_TYPE) && contentViews.containsKey(SearchPresenterDefinition.VIEW_TYPE)) {
             searchBox.setVisible(true);
+        }
+
+        if (contentViewDefintion instanceof SearchPresenterDefinition) {
+            // do not add a view-type button for search
+            return;
         }
 
         // set button
