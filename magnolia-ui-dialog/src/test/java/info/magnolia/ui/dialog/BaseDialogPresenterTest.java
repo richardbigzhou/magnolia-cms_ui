@@ -69,10 +69,6 @@ import com.vaadin.event.Action;
 import com.vaadin.event.ActionManager;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.KeyMapper;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinSession;
-import com.vaadin.server.WebBrowser;
-import com.vaadin.ui.UI;
 
 /**
  * Test class for {@link BaseDialogPresenter}.
@@ -113,7 +109,6 @@ public class BaseDialogPresenterTest {
         when(componentProvider.newInstance(EditorActionAreaPresenter.class)).thenReturn(actionAreaPresenter);
         when(componentProvider.getComponent(ActionRenderer.class)).thenReturn(new DefaultEditorActionRenderer());
 
-        initializeVaadinUI();
         initializeActions();
 
         definition.setId("testDialog");
@@ -301,27 +296,4 @@ public class BaseDialogPresenterTest {
         when(componentProvider.newInstance(ToggleableAction.class, actionDef2, presenter)).thenReturn(action2);
     }
 
-    private void initializeVaadinUI() {
-        UI.setCurrent(new UI() {
-            @Override
-            protected void init(VaadinRequest request) {
-            }
-
-            @Override
-            public Locale getLocale() {
-                return Locale.ENGLISH;
-            }
-        });
-
-        VaadinSession session = mock(VaadinSession.class);
-        when(session.getBrowser()).thenReturn(new WebBrowser() {
-            @Override
-            public boolean isWindows() {
-                return false;
-            }
-        });
-        when(session.hasLock()).thenReturn(true);
-        UI.getCurrent().setSession(session);
-        UI.getCurrent().getSession().lock();
-    }
 }
