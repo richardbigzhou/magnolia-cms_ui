@@ -179,10 +179,16 @@ public class PageEditorConnector extends AbstractComponentConnector implements P
         eventBus.addHandler(FrameNavigationEvent.TYPE, new FrameNavigationEventHandler() {
             @Override
             public void onFrameUrlChanged(FrameNavigationEvent frameUrlChangedEvent) {
+                String path = frameUrlChangedEvent.getPath();
+
                 final String platformId = getState().parameters.getPlatformType().getId();
+                path += path.indexOf('?') == -1 ? "?" : "&";
+                path += "mgnlChannel=" + platformId;
+
                 final boolean isPreview = getState().parameters.isPreview();
-                final String queryString = "?mgnlChannel=" + platformId + "&mgnlPreview=" + isPreview;
-                view.setUrl(frameUrlChangedEvent.getPath() + queryString);
+                path += "&mgnlPreview=" + isPreview;
+
+                view.setUrl(path);
             }
         });
 
