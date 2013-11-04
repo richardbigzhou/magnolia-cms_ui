@@ -54,6 +54,7 @@ import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.security.app.container.GroupDropConstraint;
 import info.magnolia.security.app.container.RoleDropConstraint;
 import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
+import info.magnolia.ui.admincentral.setup.ConvertAclToAppPermissionTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +66,11 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
 
 
     public SecurityModuleVersionHandler() {
+
+        register(DeltaBuilder.update("5.0", "")
+                .addTask(new ConvertAclToAppPermissionTask("Convert permissions for 'Security' app", "Convert ACL permissions for old 'Security' menu to new 'security-app' permission",
+                        "/modules/adminInterface/config/menu/security", "/modules/security-app/apps/security", true)));
+
         register(DeltaBuilder.update("5.0.1", "")
 
                 .addTask(new NodeExistsDelegateTask("Change label of folder creation action to 'Add folder'", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/addFolder",

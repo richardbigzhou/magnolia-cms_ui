@@ -51,6 +51,7 @@ import info.magnolia.module.delta.RenameNodesTask;
 import info.magnolia.nodebuilder.task.ErrorHandling;
 import info.magnolia.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.admincentral.setup.ConvertAclToAppPermissionTask;
 import info.magnolia.ui.contentapp.availability.IsNotVersionedDetailLocationRule;
 import info.magnolia.ui.contentapp.browser.action.ShowVersionsActionDefinition;
 
@@ -64,7 +65,9 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
 
         register(DeltaBuilder.update("5.0", "Configuration update for Magnolia 5.0")
                 .addTask(new IsModuleInstalledOrRegistered("", "", "adminInterface",
-                        new BootstrapConditionally("Bootstrap activation commands", "Bootstraps the default activation and deletion commands which no longer reside under adminInterface.", "config.modules.pages.commands.xml"))));
+                        new BootstrapConditionally("Bootstrap activation commands", "Bootstraps the default activation and deletion commands which no longer reside under adminInterface.", "config.modules.pages.commands.xml")))
+                .addTask(new ConvertAclToAppPermissionTask("Convert permissions for Pages app", "Convert ACL permissions for old 'Website' menu to new 'pages-app' permission", "/modules/adminInterface/config/menu/website", "/modules/pages/apps/pages", true)));
+
 
         register(DeltaBuilder.update("5.0.1", "")
                 .addTask(new NodeExistsDelegateTask("Remove dialog links Node", "Remove dialog definition in pages/dialogs/links", RepositoryConstants.CONFIG, "/modules/pages/dialogs/link",
@@ -142,7 +145,7 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new PartialBootstrapTask("Bootstrap move action to Pages app actionbar", "Adds action move to folder/editingActions section in actionbar.",
                         "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actionbar/sections/pageActions/groups/editingActions/items/move"))
         );
-        
+
         register(DeltaBuilder.update("5.1.1", "")
                 .addTask(new NodeExistsDelegateTask("Add root availability to import", "Add root availability to import action in Pages app", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/import/availability",
                         new NewPropertyTask("Add root availability to import", "Add root availability to import action in Pages app", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/import/availability", "root", true)))

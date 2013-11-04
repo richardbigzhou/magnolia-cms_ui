@@ -57,7 +57,9 @@ import info.magnolia.ui.framework.favorite.FavoriteStore;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeTypeDefinition;
@@ -71,6 +73,10 @@ import org.apache.jackrabbit.JcrConstants;
 public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandler {
 
     public AdmincentralModuleVersionHandler() {
+
+        register(DeltaBuilder.update("5.0", "")
+                .addTask(new ConvertListAclToAppPermissionsTask("Convert permissions for 'ui-admincentral' apps", "Convert ACL permissions to old menus to new admincentral apps permission", this.getAclsToAppsPermissionsMap(), true)));
+
         register(DeltaBuilder.update("5.0.1", "")
                 .addTask(new NodeExistsDelegateTask("Remove dialog links Node", "Remove dialog definition in ui-admincentral/dialogs/links", RepositoryConstants.CONFIG, "/modules/ui-admincentral/dialogs/link",
                         new RemoveNodeTask("Remove dialog links Node", "Remove dialog definition in ui-admincentral/dialogs/links", RepositoryConstants.CONFIG, "/modules/ui-admincentral/dialogs/link")))
@@ -124,8 +130,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         new RemovePropertyTask("Remove widgetset servlet param", "Removes the widgetset property from AdminCentral servlet parameters", RepositoryConstants.CONFIG, "/server/filters/servlets/AdminCentral/parameters", "widgetset")))
 
                 .addTask(new PartialBootstrapTask("Bootstrap move action in Configuration app", "", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actions/move"))
-                .addTask(new PartialBootstrapTask("Bootstrap move action to Configuration app actionbar", "Adds action move to folder/editActions actionbar.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actionbar/sections/folders/groups/editActions/items/move"))
-            );
+                .addTask(new PartialBootstrapTask("Bootstrap move action to Configuration app actionbar", "Adds action move to folder/editActions actionbar.", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actionbar/sections/folders/groups/editActions/items/move")));
 
         register(DeltaBuilder.update("5.1.1", "")
 
@@ -151,8 +156,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
 
                         return types;
                     }
-                })
-        );
+                }));
 
     }
 
@@ -176,5 +180,22 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 new RemoveNodeTask("Remove PageEditorServlet from configuration", "Remove 4.5.x PageEditorServlet from the servlet registration. ", RepositoryConstants.CONFIG, "/server/filters/servlets/PageEditorServlet")));
 
         return list;
+    }
+
+    private Map<String, String[]> getAclsToAppsPermissionsMap() {
+        Map<String, String[]> permissionsMap = new HashMap<String, String[]>();
+
+        // DEV and TOOLS menu
+        permissionsMap.put("/modules/adminInterface/config/menu/tools", new String[] { // old 'Tools' menu is in 5 is split into two
+                "/modules/ui-admincentral/config/appLauncherLayout/groups/tools", "/modules/ui-admincentral/config/appLauncherLayout/groups/dev"
+        });
+
+        permissionsMap.put("/modules/adminInterface/config/menu/tools/websiteJCR", new String[] { "/modules/ui-admincentral/apps/websiteJcrBrowser" });
+        permissionsMap.put("/.magnolia/pages/configuration", new String[] { "/modules/ui-admincentral/apps/configuration" });
+
+        // DATA menu
+        permissionsMap.put("/modules/adminInterface/config/menu/templating-kit/data", new String[] { "/modules/ui-admincentral/config/appLauncherLayout/groups/data" });
+
+        return permissionsMap;
     }
 }
