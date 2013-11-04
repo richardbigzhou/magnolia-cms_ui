@@ -38,6 +38,7 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.ArrayDelegateTask;
+import info.magnolia.module.delta.BootstrapSingleResource;
 import info.magnolia.module.delta.CheckAndModifyPartOfPropertyValueTask;
 import info.magnolia.module.delta.CreateNodeTask;
 import info.magnolia.module.delta.DeltaBuilder;
@@ -135,6 +136,7 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                     new NodeExistsDelegateTask("Configure add folder action in actionbar in roles sub app.", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/root/groups/addActions/items",
                         new CreateNodeTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/root/groups/addActions/items", "addFolder", NodeTypes.ContentNode.NAME))
                 ))
+                .addTask(new BootstrapSingleResource("Bootstrap new dialog", "Bootstraps new 'superuserRole' dialog", "/mgnl-bootstrap/security-app/config.modules.security-app.dialogs.superuserRole.xml"))
         );
     }
 

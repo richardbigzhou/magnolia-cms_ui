@@ -33,15 +33,16 @@
  */
 package info.magnolia.security.app.action;
 
+import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.event.EventBus;
 import info.magnolia.repository.RepositoryManager;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
-import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
-import info.magnolia.ui.dialog.definition.FormDialogDefinition;
-import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
+import info.magnolia.ui.dialog.definition.FormDialogDefinition;
+import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
+import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.inject.Inject;
@@ -72,7 +73,7 @@ public class OpenEditRoleDialogAction<D extends OpenEditRoleDialogActionDefiniti
     @Override
     public void execute() throws ActionExecutionException {
 
-        FormDialogDefinition dialogDefinition = getDialogDefinition("role");
+        FormDialogDefinition dialogDefinition = AccessDefinition.DEFAULT_SUPERUSER_ROLE.equals(itemToEdit.getNodeName()) ? getDialogDefinition(AccessDefinition.DEFAULT_SUPERUSER_ROLE + "Role") : getDialogDefinition("role");
 
         formDialogPresenter.start(itemToEdit, dialogDefinition, uiContext, new EditorCallback() {
 
