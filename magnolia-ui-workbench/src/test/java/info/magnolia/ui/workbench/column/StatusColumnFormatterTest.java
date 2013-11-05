@@ -75,7 +75,7 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         super.setUp();
         // Init parent Node
         String nodeProperties =
-                "/parent.@type=mgnl:content\n" +
+                "/parent.@type=mgnl:page\n" +
                         "/parent.propertyString=hello\n" +
                         "/parent/child.@type=mgnl:content\n" +
                         "/parent/child.propertyString=chield1\n";
@@ -85,6 +85,8 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         session.save();
 
         node = session.getRootNode().getNode("parent");
+        node.addMixin(NodeTypes.LastModified.NAME);
+        node.addMixin(NodeTypes.Activatable.NAME);
         itemId = node.getIdentifier();
 
         ConfiguredWorkbenchDefinition configuredWorkbench = new ConfiguredWorkbenchDefinition();
@@ -148,7 +150,8 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
     public void testActivationStatusModified() throws RepositoryException {
         // GIVEN
         NodeTypes.Activatable.update(node, "superuser", true);
-        NodeTypes.LastModified.update(node);
+        node.setProperty("blabla", "He - I just modified the node. LUD wrapper should trigger updated of lastModified property...");
+        node.getSession().save();
         StatusColumnFormatter statusColumnFormater = new StatusColumnFormatter(statusColumnDefinition);
 
         // WHEN
