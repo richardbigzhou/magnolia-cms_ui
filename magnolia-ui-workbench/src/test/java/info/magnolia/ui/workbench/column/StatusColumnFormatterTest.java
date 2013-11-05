@@ -120,10 +120,10 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
     @Test
     public void testActivationStatusNotActivated() {
         // GIVEN
-        StatusColumnFormatter statusColumnFormater = new StatusColumnFormatter(statusColumnDefinition);
+        StatusColumnFormatter statusColumnFormatter = new StatusColumnFormatter(statusColumnDefinition);
 
         // WHEN
-        Object res = statusColumnFormater.generateCell(table, itemId, null);
+        Object res = statusColumnFormatter.generateCell(table, itemId, null);
 
         // THEN
         assertNotNull(res);
@@ -135,10 +135,10 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
     public void testActivationStatusActivated() throws RepositoryException {
         // GIVEN
         NodeTypes.Activatable.update(node, "superuser", true);
-        StatusColumnFormatter statusColumnFormater = new StatusColumnFormatter(statusColumnDefinition);
+        StatusColumnFormatter statusColumnFormatter = new StatusColumnFormatter(statusColumnDefinition);
 
         // WHEN
-        Object res = statusColumnFormater.generateCell(table, itemId, null);
+        Object res = statusColumnFormatter.generateCell(table, itemId, null);
 
         // THEN
         assertNotNull(res);
@@ -152,16 +152,15 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         NodeTypes.Activatable.update(node, "superuser", true);
         node.setProperty("blabla", "He - I just modified the node. LUD wrapper should trigger updated of lastModified property...");
         node.getSession().save();
-        StatusColumnFormatter statusColumnFormater = new StatusColumnFormatter(statusColumnDefinition);
+        StatusColumnFormatter statusColumnFormatter = new StatusColumnFormatter(statusColumnDefinition);
 
         // WHEN
-        Object res = statusColumnFormater.generateCell(table, itemId, null);
+        Object res = statusColumnFormatter.generateCell(table, itemId, null);
 
         // THEN
         assertNotNull(res);
         // YELLOW, was activated and then modified
         assertEquals("<span class=\"icon-shape-circle activation-status color-yellow\"></span>", res.toString());
     }
-
 
 }
