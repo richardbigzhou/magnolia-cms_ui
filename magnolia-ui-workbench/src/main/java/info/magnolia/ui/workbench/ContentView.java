@@ -61,7 +61,7 @@ public interface ContentView extends View {
      */
     void expand(String itemId);
 
-    public void onShortcutKey(int keyCode, int[] modifierKeys);
+    void onShortcutKey(int keyCode, int[] modifierKeys);
 
     /**
      * Decides whether the user can select multiple items.

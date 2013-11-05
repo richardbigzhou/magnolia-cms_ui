@@ -67,7 +67,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
-import com.vaadin.event.Action.Container;
 
 /**
  * Abstract generic logic for content presenters.
@@ -100,7 +99,7 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
     }
 
     @Override
-    public ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName, Container shortcutActionManager) {
+    public ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName) {
         this.workbenchDefinition = workbenchDefinition;
         this.eventBus = eventBus;
         this.viewTypeName = viewTypeName;

@@ -39,6 +39,7 @@ import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
+import info.magnolia.ui.workbench.tree.TreeView;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -49,7 +50,6 @@ import javax.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Property;
-import com.vaadin.event.Action.Container;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
@@ -171,11 +171,6 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         bindKeyboardHandlers();
     }
 
-    @Override
-    public Container getshortcutActionManager() {
-        return keyboardEventPanel;
-    }
-
     public void bindKeyboardHandlers() {
 
         final ShortcutListener enterShortcut = new ShortcutListener("Enter shortcut", ShortcutAction.KeyCode.ENTER, null) {
@@ -218,6 +213,10 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
     @Override
     public void addContentView(String viewType, ContentView view, ContentPresenterDefinition contentViewDefintion) {
         contentViews.put(viewType, view);
+
+        if (view instanceof TreeView) {
+            ((TreeView) view).setActionManager(keyboardEventPanel);
+        }
 
         // display search-box only if both list and search content presenters are configured
         if (contentViews.containsKey(ListPresenterDefinition.VIEW_TYPE) && contentViews.containsKey(SearchPresenterDefinition.VIEW_TYPE)) {

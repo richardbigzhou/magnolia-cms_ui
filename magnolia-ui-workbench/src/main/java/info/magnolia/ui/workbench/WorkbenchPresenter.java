@@ -120,7 +120,8 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                     presenter = componentProvider.newInstance(presenterClass);
                 }
                 contentPresenters.put(presenterDefinition.getViewType(), presenter);
-                ContentView contentView = presenter.start(workbenchDefinition, eventBus, presenterDefinition.getViewType(), view.getshortcutActionManager());
+                ContentView contentView = presenter.start(workbenchDefinition, eventBus, presenterDefinition.getViewType());
+
                 if (presenterDefinition.isActive()) {
                     activePresenter = presenter;
                     try {
