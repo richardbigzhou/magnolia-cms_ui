@@ -135,7 +135,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
         register(DeltaBuilder.update("5.1.1", "")
 
                 // update favorite node type
-                .addTask(new AbstractNodeTypeRegistrationTask("Update favorite node type", "This tasks ensures the mgnl:favorite node type is updated with its appropriate mixin supertypes.", FavoriteStore.WORKSPACE_NAME) {
+                .addTask(new AbstractNodeTypeRegistrationTask("Update favorite node type", "This task ensures the mgnl:favorite node type is updated with its appropriate mixin supertypes.", FavoriteStore.WORKSPACE_NAME) {
 
                     @Override
                     public List<String> getNodeTypesToUnregister(NodeTypeManager nodeTypeManager) {
