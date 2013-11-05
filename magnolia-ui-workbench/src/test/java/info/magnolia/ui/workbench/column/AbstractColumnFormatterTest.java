@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,38 +33,41 @@
  */
 package info.magnolia.ui.workbench.column;
 
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
-import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
 
-import javax.jcr.Item;
+import org.junit.Test;
 
+import com.vaadin.data.Item;
 import com.vaadin.ui.Table;
 
 /**
- * Abstract ColumnFormatter implementation, initializes common attributes.
- *
- * @param <D> definition type
+ * Test for AbstractColumnFormatter.
  */
-public abstract class AbstractColumnFormatter<D extends ColumnDefinition> implements ColumnFormatter {
+public class AbstractColumnFormatterTest {
 
-    protected D definition;
+    @Test
+    public void testGetJcrItem() {
+        // GIVEN
+        AbstractColumnFormatter<ColumnDefinition> dummy = new AbstractColumnFormatter<ColumnDefinition>(null) {
 
-    public AbstractColumnFormatter(D definition) {
-        this.definition = definition;
+            @Override
+            public Object generateCell(Table source, Object itemId, Object columnId) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+        };
+
+        Table table = mock(Table.class);
+        Item value = mock(Item.class);
+        when(table.getItem("someItemId")).thenReturn(value);
+
+        // WHEN
+        javax.jcr.Item item = dummy.getJcrItem(table, "someItemId");
+        // THEN - don't fail w/ ClassCastException
+        assertNull(item);
     }
 
-    /**
-     * @param source table to get jcrItem from
-     * @param itemId id of the item to get
-     * @return the jcrItem with the provided id
-     */
-    protected Item getJcrItem(Table source, Object itemId) {
-        com.vaadin.data.Item vaadinItem = source.getItem(itemId);
-        if (vaadinItem instanceof JcrItemAdapter) {
-            final JcrItemAdapter item = (JcrItemAdapter) vaadinItem;
-            return item == null ? null : item.getJcrItem();
-        }
-        return null;
-    }
 }
