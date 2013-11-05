@@ -173,7 +173,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     private void setViewType(String viewType) {
         ContentPresenter oldPresenter = activePresenter;
-        List<String> itemIds = oldPresenter.getSelectedItemIds();
+        List<String> itemIds = oldPresenter == null ? null : oldPresenter.getSelectedItemIds();
 
         activePresenter = contentPresenters.get(viewType);
         activePresenter.refresh();

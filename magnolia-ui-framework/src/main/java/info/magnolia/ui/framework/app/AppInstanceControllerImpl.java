@@ -355,18 +355,23 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
         SubAppDetails subAppDetails = createSubAppComponentProvider(appDescriptor.getName(), subAppContext.getSubAppId(), subAppContext, componentProvider);
         subAppDetails.context = subAppContext;
 
-        SubApp subApp = subAppDetails.componentProvider.newInstance(subAppDescriptor.getSubAppClass());
-        subAppContext.setSubApp(subApp);
+        Class<? extends SubApp> subAppClass = subAppDescriptor.getSubAppClass();
+        if (subAppClass == null) {
+            log.warn("Sub App {} doesn't define its sub app class or class doesn't exist or can't be instantiated.", subAppDescriptor.getName());
+        } else {
+            SubApp subApp = subAppDetails.componentProvider.newInstance(subAppClass);
+            subAppContext.setSubApp(subApp);
 
-        View subAppView = subApp.start(location);
+            View subAppView = subApp.start(location);
 
-        boolean closable = allowClose && subApp.isCloseable();
+            boolean closable = allowClose && subApp.isCloseable();
 
-        String instanceId = app.getView().addSubAppView(subAppView, subApp.getCaption(), closable);
+            String instanceId = app.getView().addSubAppView(subAppView, subApp.getCaption(), closable);
 
-        subAppContext.setInstanceId(instanceId);
+            subAppContext.setInstanceId(instanceId);
 
-        subApps.put(instanceId, subAppDetails);
+            subApps.put(instanceId, subAppDetails);
+        }
         return subAppContext;
     }
 
