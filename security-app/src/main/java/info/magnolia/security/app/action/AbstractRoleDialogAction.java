@@ -140,8 +140,10 @@ public abstract class AbstractRoleDialogAction<D extends ActionDefinition> exten
             addNodeType(nodeTypes, NodeTypes.Folder.NAME, "icon-folder");
             addNodeType(nodeTypes, NodeTypes.User.NAME, "icon-user-magnolia");
         } else if (workspaceName.equals(RepositoryConstants.USER_ROLES)) {
+            addNodeType(nodeTypes, NodeTypes.Folder.NAME, "icon-folder");
             addNodeType(nodeTypes, NodeTypes.Role.NAME, "icon-user-role");
         } else if (workspaceName.equals(RepositoryConstants.USER_GROUPS)) {
+            addNodeType(nodeTypes, NodeTypes.Folder.NAME, "icon-folder");
             addNodeType(nodeTypes, NodeTypes.Group.NAME, "icon-user-group");
         } else {
             // Let the field use a default set of node types instead
