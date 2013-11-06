@@ -88,9 +88,11 @@ public class MultiValueChildrenNodeTransformerTest extends RepositoryTestCase {
         // GIVEN
         JcrNodeAdapter parent = new JcrNodeAdapter(rootNode);
         MultiValueChildrenNodeTransformer delegate = new MultiValueChildrenNodeTransformer(parent, definition, PropertysetItem.class);
-
+        PropertysetItem properties = new PropertysetItem();
+        properties.addItemProperty("0", new ObjectProperty<String>("value1"));
+        properties.addItemProperty("1", null);
         // WHEN
-        delegate.writeToItem(new PropertysetItem());
+        delegate.writeToItem(properties);
 
         // THEN
         assertTrue(parent.getItemProperty(propertyName) == null);

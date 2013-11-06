@@ -44,7 +44,7 @@ import info.magnolia.module.delta.AbstractTask;
 import info.magnolia.module.delta.TaskExecutionException;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.dialog.setup.migration.ActionCreator;
-import info.magnolia.ui.dialog.setup.migration.BaseActionCreation;
+import info.magnolia.ui.dialog.setup.migration.BaseActionCreator;
 import info.magnolia.ui.dialog.setup.migration.CheckBoxRadioControlMigrator;
 import info.magnolia.ui.dialog.setup.migration.CheckBoxSwitchControlMigrator;
 import info.magnolia.ui.dialog.setup.migration.ControlMigrator;
@@ -112,6 +112,13 @@ public class DialogMigrationTask extends AbstractTask {
 
     public DialogMigrationTask(String taskName, String taskDescription, String moduleName) {
         super(taskName, taskDescription);
+        this.moduleName = moduleName;
+        registerControlsToMigrate(null);
+        registerDialogActionToCreate(null);
+    }
+
+    public DialogMigrationTask(String moduleName) {
+        super("Dialog Migration for 5.x", "Migrate dialog for the following module: " + moduleName);
         this.moduleName = moduleName;
         registerControlsToMigrate(null);
         registerDialogActionToCreate(null);
@@ -215,9 +222,9 @@ public class DialogMigrationTask extends AbstractTask {
         this.dialogActionsToMigrate = new HashMap<String, List<ActionCreator>>();
         // Register default
         // Save
-        ActionCreator saveAction = new BaseActionCreation("commit", "save changes", "info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition");
+        ActionCreator saveAction = new BaseActionCreator("commit", "save changes", "info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition");
         // Cancel
-        ActionCreator cancelAction = new BaseActionCreation("cancel", "cancel", "info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition");
+        ActionCreator cancelAction = new BaseActionCreator("cancel", "cancel", "info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition");
         // Create an entry
         this.dialogActionsToMigrate.put(this.defaultDialogActions, Arrays.asList(saveAction, cancelAction));
         // Register custom

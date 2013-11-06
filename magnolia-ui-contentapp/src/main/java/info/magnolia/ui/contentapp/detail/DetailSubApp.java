@@ -109,18 +109,17 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
         super.start(detailLocation);
         // set caption
         setCaption(detailLocation);
-        String absPath = getPath() + detailLocation.getNodePath();
         try {
-            this.itemId = JcrItemUtil.getItemId(getWorkspace(), absPath);
+            this.itemId = JcrItemUtil.getItemId(getWorkspace(), detailLocation.getNodePath());
         } catch (RepositoryException e) {
-            log.warn("Could not retrieve item at path {} in workspace {}", absPath, getWorkspace());
+            log.warn("Could not retrieve item at path {} in workspace {}", detailLocation.getNodePath(), getWorkspace());
         }
 
         View view;
         if (detailLocation.hasVersion()) {
-            view = presenter.start(absPath, detailLocation.getViewType(), detailLocation.getVersion());
+            view = presenter.start(detailLocation.getNodePath(), detailLocation.getViewType(), detailLocation.getVersion());
         } else {
-            view = presenter.start(absPath, detailLocation.getViewType());
+            view = presenter.start(detailLocation.getNodePath(), detailLocation.getViewType());
         }
         getView().setContentView(view);
         return getView();
@@ -167,12 +166,11 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
             public void onContentChanged(ContentChangedEvent event) {
                 // See if workspaces match
                 if (event.getWorkspace().equals(getWorkspace())) {
-                    String absPath = getPath() + getCurrentLocation().getNodePath();
                     // New item
                     if (itemId == null) {
                         try {
                             // Check if parent is still existing, close supApp if it doesn't
-                            String currentNodePath = absPath;
+                            String currentNodePath = getCurrentLocation().getNodePath();
 
                             // resolve parent, removing trailing slash except for root
                             int splitIndex = currentNodePath.lastIndexOf("/");
@@ -198,7 +196,7 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
                             }
                             // Item still exists: update location if necessary
                             else {
-                                String currentNodePath = absPath;
+                                String currentNodePath = getCurrentLocation().getNodePath();
 
                                 if (!item.getPath().equals(currentNodePath)) {
                                     DetailLocation location = DetailLocation.wrap(getSubAppContext().getLocation());
@@ -222,12 +220,6 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
     protected String getWorkspace() {
         DetailSubAppDescriptor subAppDescriptor = (DetailSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
         return subAppDescriptor.getEditor().getWorkspace();
-    }
-
-    protected String getPath() {
-        DetailSubAppDescriptor subAppDescriptor = (DetailSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
-        String path = subAppDescriptor.getEditor().getRootPath();
-        return StringUtils.isBlank(path) ? "" : path;
     }
 
     /**

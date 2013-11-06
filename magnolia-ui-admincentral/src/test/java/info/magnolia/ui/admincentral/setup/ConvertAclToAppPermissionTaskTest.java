@@ -60,6 +60,7 @@ public class ConvertAclToAppPermissionTaskTest extends RepositoryTestCase {
     private Node permission;
     private ConvertAclToAppPermissionTask task;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();

@@ -36,8 +36,6 @@ package info.magnolia.ui.workbench;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 
-import com.vaadin.event.Action.Container;
-
 /**
  * WorkbenchView.
  */
@@ -78,5 +76,4 @@ public interface WorkbenchView extends View {
      */
     void setMultiselect(boolean multiselect);
 
-    Container getshortcutActionManager();
 }

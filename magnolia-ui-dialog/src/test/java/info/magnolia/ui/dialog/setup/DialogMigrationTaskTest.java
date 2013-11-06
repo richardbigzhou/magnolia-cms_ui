@@ -43,7 +43,7 @@ import info.magnolia.module.delta.TaskExecutionException;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.dialog.setup.migration.ActionCreator;
-import info.magnolia.ui.dialog.setup.migration.BaseActionCreation;
+import info.magnolia.ui.dialog.setup.migration.BaseActionCreator;
 import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
@@ -149,8 +149,8 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
     public void testExecuteCustomActionMigration() throws RepositoryException, TaskExecutionException {
         // GIVEN
         HashMap<String, List<ActionCreator>> customActions = new HashMap<String, List<ActionCreator>>();
-        ActionCreator saveAction = new BaseActionCreation("commit", "saveTeaser", "TeaserSaveActionDefinition");
-        ActionCreator cancelAction = new BaseActionCreation("cancel", "cancelTeaser", "TeaserCancelActionDefinition");
+        ActionCreator saveAction = new BaseActionCreator("commit", "saveTeaser", "TeaserSaveActionDefinition");
+        ActionCreator cancelAction = new BaseActionCreator("cancel", "cancelTeaser", "TeaserCancelActionDefinition");
         customActions.put("baseTeaserDownload", Arrays.asList(saveAction, cancelAction));
 
         DialogMigrationTask task = new DialogMigrationTask("", "", "testModule", null, customActions);

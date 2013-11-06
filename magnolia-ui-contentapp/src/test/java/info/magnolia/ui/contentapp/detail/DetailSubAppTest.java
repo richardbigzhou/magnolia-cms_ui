@@ -130,23 +130,4 @@ public class DetailSubAppTest {
         assertEquals(node.getPath(), editedNodePath);
     }
 
-    @Test
-    public void testStartWithNonRootBasedEditor() throws Exception {
-        // GIVEN
-        editorDefinition = new ConfiguredEditorDefinition() {
-            {
-                setRootPath("/supernode");
-            }
-        };
-        Node node = NodeUtil.createPath(session.getRootNode(), "supernode", NodeTypes.ContentNode.NAME);
-        Node subNode = NodeUtil.createPath(node, "node", NodeTypes.ContentNode.NAME);
-
-        // WHEN
-        detailSubApp.start(new DetailLocation("appName", "subAppId", "/node"));
-
-        // THEN
-        assertEquals(subNode.getPath(), editedNodePath);
-    }
-
-
 }

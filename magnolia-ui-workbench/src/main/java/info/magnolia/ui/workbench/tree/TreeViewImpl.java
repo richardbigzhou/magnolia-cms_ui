@@ -96,12 +96,17 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     @Override
     public void setActionManager(Container shortcutActionManager) {
         this.shortcutActionManager = shortcutActionManager;
+        bindKeyboardShortcuts();
     }
 
     @Override
     public void setEditable(boolean editable) {
         treeTable.setEditable(editable);
-        if (editable && treeTable instanceof InplaceEditingTreeTable) {
+        bindKeyboardShortcuts();
+    }
+
+    private void bindKeyboardShortcuts() {
+        if (treeTable.isEditable() && treeTable instanceof InplaceEditingTreeTable) {
             ((InplaceEditingTreeTable) treeTable).addItemEditedListener(itemEditedListener);
             if (shortcutActionManager != null) {
                 if (editingKeyboardHandler == null) {
@@ -173,7 +178,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
                 } else {
                     // Check if item is root.
                     if (!StringUtils.equals(((Node) item).getPath(), workbenchPath)) {
-                        node = (Node) item.getParent();
+                        node = item.getParent();
                     }
                 }
 

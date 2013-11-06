@@ -135,19 +135,24 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
 
         // Set modifier key based on OS.
         int osSpecificModifierKey;
-        WebBrowser browser = UI.getCurrent().getSession().getBrowser();
-        if (browser.isWindows()) {
-            osSpecificModifierKey = ModifierKey.CTRL;
-        } else {
-            // osx and linux
-            osSpecificModifierKey = ModifierKey.META;
-        }
+        UI ui = UI.getCurrent();
+        if (ui != null) {
+            WebBrowser browser = ui.getPage().getWebBrowser();
+            if (browser.isWindows()) {
+                osSpecificModifierKey = ModifierKey.CTRL;
+            } else {
+                // osx and linux
+                osSpecificModifierKey = ModifierKey.META;
+            }
 
-        if (definition.getActions().containsKey(BaseDialog.COMMIT_ACTION_NAME)) {
-            addShortcut(BaseDialog.COMMIT_ACTION_NAME, KeyCode.S, osSpecificModifierKey);
-        }
-        if (definition.getActions().containsKey(BaseDialog.CANCEL_ACTION_NAME)) {
-            addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.W, osSpecificModifierKey);
+            if (definition.getActions().containsKey(BaseDialog.COMMIT_ACTION_NAME)) {
+                addShortcut(BaseDialog.COMMIT_ACTION_NAME, KeyCode.S, osSpecificModifierKey);
+            }
+            if (definition.getActions().containsKey(BaseDialog.CANCEL_ACTION_NAME)) {
+                addShortcut(BaseDialog.CANCEL_ACTION_NAME, KeyCode.W, osSpecificModifierKey);
+            }
+        } else {
+            log.warn("The current Vaadin UI was null when starting {}, as a result dialog keyboard shortcuts will not work.", this);
         }
         this.view.setActionAreaView(editorActionAreaView);
         return this.view;

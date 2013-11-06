@@ -52,7 +52,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
-import com.vaadin.event.Action.Container;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.ui.TreeTable;
 
@@ -69,8 +68,8 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
     }
 
     @Override
-    public TreeView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName, Container shortcutActionManager) {
-        TreeView view = (TreeView) super.start(workbench, eventBus, viewTypeName, shortcutActionManager);
+    public TreeView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName) {
+        TreeView view = (TreeView) super.start(workbench, eventBus, viewTypeName);
 
         // inplace-editing
         if (workbench.isEditable()) {
@@ -86,7 +85,6 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
                     editableColumns.add(propertyId);
                 }
             }
-            view.setActionManager(shortcutActionManager);
             view.setEditableColumns(editableColumns.toArray());
             view.setEditable(true);
         }

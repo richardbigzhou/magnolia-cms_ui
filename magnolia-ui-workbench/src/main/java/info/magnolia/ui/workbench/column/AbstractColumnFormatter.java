@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.workbench.column;
 
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.column.definition.ColumnFormatter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import javax.jcr.Item;
 
@@ -60,7 +60,11 @@ public abstract class AbstractColumnFormatter<D extends ColumnDefinition> implem
      * @return the jcrItem with the provided id
      */
     protected Item getJcrItem(Table source, Object itemId) {
-        final JcrItemAdapter item = (JcrItemAdapter) source.getItem(itemId);
-        return item == null ? null : item.getJcrItem();
+        com.vaadin.data.Item vaadinItem = source.getItem(itemId);
+        if (vaadinItem instanceof JcrItemAdapter) {
+            final JcrItemAdapter item = (JcrItemAdapter) vaadinItem;
+            return item == null ? null : item.getJcrItem();
+        }
+        return null;
     }
 }

@@ -31,37 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.definition;
+package info.magnolia.ui.workbench.column;
 
-import info.magnolia.i18nsystem.I18nText;
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
-import info.magnolia.ui.dialog.actionarea.definition.FormActionItemDefinition;
-import info.magnolia.ui.form.definition.FormDefinition;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.*;
 
-import java.util.List;
+import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
+
+import org.junit.Test;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.Table;
 
 /**
- * Defines an editor.
+ * Test for AbstractColumnFormatter.
  */
-@I18nable
-public interface EditorDefinition {
-    @I18nText
-    String getLabel();
+public class AbstractColumnFormatterTest {
 
-    String getI18nBasename();
+    @Test
+    public void testGetJcrItem() {
+        // GIVEN
+        AbstractColumnFormatter<ColumnDefinition> dummy = new AbstractColumnFormatter<ColumnDefinition>(null) {
 
-    @I18nText
-    String getDescription();
+            @Override
+            public Object generateCell(Table source, Object itemId, Object columnId) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+        };
 
-    String getWorkspace();
+        Table table = mock(Table.class);
+        Item value = mock(Item.class);
+        when(table.getItem("someItemId")).thenReturn(value);
 
-    NodeTypeDefinition getNodeType();
+        // WHEN
+        javax.jcr.Item item = dummy.getJcrItem(table, "someItemId");
+        // THEN - don't fail w/ ClassCastException
+        assertNull(item);
+    }
 
-    FormDefinition getForm();
-
-    List<FormActionItemDefinition> getActions();
-
-    EditorActionAreaDefinition getActionArea();
 }

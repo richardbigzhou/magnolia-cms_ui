@@ -69,10 +69,6 @@ import com.vaadin.event.Action;
 import com.vaadin.event.ActionManager;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.KeyMapper;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinSession;
-import com.vaadin.server.WebBrowser;
-import com.vaadin.ui.UI;
 
 /**
  * Test class for {@link BaseDialogPresenter}.
@@ -85,11 +81,11 @@ public class BaseDialogPresenterTest {
 
     private DialogActionExecutor executor = new DialogActionExecutor(componentProvider);
 
-    private TestBaseDialogViewImpl view  = new TestBaseDialogViewImpl();
+    private TestBaseDialogViewImpl view = new TestBaseDialogViewImpl();
 
     private EditorActionAreaView actionAreaView = new EditorActionAreaViewImpl();
 
-    private TestEditorActionAreaPresenterImpl actionAreaPresenter  = new TestEditorActionAreaPresenterImpl(actionAreaView);
+    private TestEditorActionAreaPresenterImpl actionAreaPresenter = new TestEditorActionAreaPresenterImpl(actionAreaView);
 
     private ConfiguredDialogDefinition definition = new ConfiguredDialogDefinition();
 
@@ -113,7 +109,6 @@ public class BaseDialogPresenterTest {
         when(componentProvider.newInstance(EditorActionAreaPresenter.class)).thenReturn(actionAreaPresenter);
         when(componentProvider.getComponent(ActionRenderer.class)).thenReturn(new DefaultEditorActionRenderer());
 
-        initializeVaadinUI();
         initializeActions();
 
         definition.setId("testDialog");
@@ -123,81 +118,80 @@ public class BaseDialogPresenterTest {
 
     @Test
     public void testGetView() throws Exception {
-        //WHEN
+        // WHEN
         presenter.start(definition, uiContext);
 
-        //THEN
+        // THEN
         assertEquals(presenter.getView(), this.view);
     }
 
     @Test
     public void testGetActionArea() throws Exception {
-        //WHEN
+        // WHEN
         presenter.start(definition, uiContext);
 
-        //THEN
+        // THEN
         assertEquals(presenter.getActionArea(), this.actionAreaPresenter);
     }
 
-
     @Test
     public void testAddShortcut() throws Exception {
-        //WHEN
+        // WHEN
         presenter.addShortcut("action1", ShortcutAction.KeyCode.T, new int[0]);
         presenter.start(definition, uiContext);
         view.getActionManager().handleAction("action1");
 
-        //THEN
-        assert(action1.isExecuted());
+        // THEN
+        assert (action1.isExecuted());
     }
 
     @Test
     public void testStart() throws Exception {
-        //WHEN
+        // WHEN
         View view = presenter.start(definition, uiContext);
 
-        //THEN
+        // THEN
         assertEquals(view, this.view);
     }
 
     @Test
     public void testFilterActions() throws Exception {
-        //WHEN
+        // WHEN
         presenter.start(definition, uiContext);
 
-        //THEN
+        // THEN
         Collection<?> result = (Collection<?>) presenter.filterActions();
         assertEquals(result.size(), 2);
     }
 
     @Test
     public void testGetActionParameters() throws Exception {
-        //WHEN
+        // WHEN
         Object[] params = presenter.getActionParameters("");
 
-        //THEN
+        // THEN
         assertEquals(params.length, 1);
         assertEquals(params[0], presenter);
     }
 
     @Test
     public void testOnActionFired() throws Exception {
-        //WHEN
+        // WHEN
         presenter.start(definition, uiContext);
         presenter.onActionFired("action1");
 
-        //THEN
-        assert(action1.isExecuted());
+        // THEN
+        assert (action1.isExecuted());
     }
 
     @Test
     public void testExecuteAction() throws Exception {
-        //WHEN
+        // WHEN
         presenter.start(definition, uiContext);
         presenter.executeAction("action1", new Object[0]);
 
-        //THEN
-        assert(action1.isExecuted());
+        // THEN
+        assert (action1.isExecuted());
     }
 
     /**
@@ -219,6 +213,7 @@ public class BaseDialogPresenterTest {
         public void reloadMessageBundles() {
         }
     }
+
     private static class ToggleableAction extends AbstractAction<ConfiguredActionDefinition> {
 
         private boolean isExecuted = false;
@@ -237,9 +232,10 @@ public class BaseDialogPresenterTest {
         }
 
     }
+
     private static class TestBaseDialogViewImpl extends BaseDialogViewImpl {
 
-        private TestActionManager mgr =  new TestActionManager();
+        private TestActionManager mgr = new TestActionManager();
 
         @Override
         public TestActionManager getActionManager() {
@@ -268,17 +264,20 @@ public class BaseDialogPresenterTest {
 
         }
     }
+
     private class TestEditorActionAreaPresenterImpl extends EditorActionAreaPresenterImpl {
 
         public TestEditorActionAreaPresenterImpl(EditorActionAreaView actionAreaView) {
             super(actionAreaView, BaseDialogPresenterTest.this.componentProvider);
         }
+
         @Override
         public EditorActionAreaView getView() {
             return super.getView();
         }
 
     }
+
     private void initializeActions() {
         ConfiguredActionDefinition actionDef1 = new ConfiguredActionDefinition();
         actionDef1.setName("action1");
@@ -297,27 +296,4 @@ public class BaseDialogPresenterTest {
         when(componentProvider.newInstance(ToggleableAction.class, actionDef2, presenter)).thenReturn(action2);
     }
 
-    private void initializeVaadinUI() {
-        UI.setCurrent(new UI() {
-            @Override
-            protected void init(VaadinRequest request) {
-            }
-
-            @Override
-            public Locale getLocale() {
-                return Locale.ENGLISH;
-            }
-        });
-
-        VaadinSession session = mock(VaadinSession.class);
-        when(session.getBrowser()).thenReturn(new WebBrowser() {
-            @Override
-            public boolean isWindows() {
-                return false;
-            }
-        });
-        when(session.hasLock()).thenReturn(true);
-        UI.getCurrent().setSession(session);
-        UI.getCurrent().getSession().lock();
-    }
 }

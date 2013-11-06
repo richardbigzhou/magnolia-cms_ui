@@ -58,8 +58,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import com.vaadin.data.Container;
-
 /**
  * Tests for ContentPresenter.
  */
@@ -107,7 +105,7 @@ public class ContentPresenterTest {
     public void testOnItemSelectionFiresOnEventBus() throws Exception {
         // GIVEN
         final AbstractContentPresenter presenter = new DummyContentPresenter();
-        presenter.start(workbench, eventBus, "", null);
+        presenter.start(workbench, eventBus, "");
         // WHEN
         presenter.onItemSelection(items);
 
@@ -123,7 +121,7 @@ public class ContentPresenterTest {
     public void testOnDoubleClickFiresOnEventBus() throws Exception {
         // GIVEN
         final AbstractContentPresenter presenter = new DummyContentPresenter();
-        presenter.start(workbench, eventBus, "", null);
+        presenter.start(workbench, eventBus, "");
 
         // WHEN
         presenter.onDoubleClick(item);
@@ -139,7 +137,7 @@ public class ContentPresenterTest {
     public void testOnItemSelectionWithNullItemSetSelectedPath() {
         // GIVEN
         AbstractContentPresenter presenter = new DummyContentPresenter();
-        presenter.start(workbench, eventBus, "", null);
+        presenter.start(workbench, eventBus, "");
         items = new HashSet<String>();
         items.add(null);
 
@@ -158,11 +156,5 @@ public class ContentPresenterTest {
         @Override
         public void refresh() {
         }
-
-        @Override
-        public Container getContainer() {
-            return mock(Container.class);
-        }
-
     }
 }

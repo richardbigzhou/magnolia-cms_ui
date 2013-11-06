@@ -139,7 +139,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertEquals(" where (([jcr:primaryType] = 'mgnl:content') and (localname() LIKE 'foo%' or t.['foo'] IS NOT NULL or contains(t.*, 'foo')) )", stmt);
+        assertEquals(" where (([jcr:primaryType] = 'mgnl:content') and (lower(localname()) LIKE 'foo%' or t.['foo'] IS NOT NULL or contains(t.*, 'foo')) )", stmt);
     }
 
     @Test
@@ -164,7 +164,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertContains(" where ( ISDESCENDANTNODE('/qux') and ([jcr:primaryType] = 'mgnl:content') and (localname() LIKE 'foo%'", stmt);
+        assertContains(" where ( ISDESCENDANTNODE('/qux') and ([jcr:primaryType] = 'mgnl:content') and (lower(localname()) LIKE 'foo%'", stmt);
     }
 
     @Test
@@ -176,7 +176,19 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertContains("localname() LIKE '%2Afoo%' or t.['%2Afoo'] IS NOT NULL", stmt);
+        assertContains("lower(localname()) LIKE '%2Afoo%' or t.['%2Afoo'] IS NOT NULL", stmt);
+    }
+
+    @Test
+    public void testFullTextExpressionIsLowercasedSoThatInsensitiveCaseSearchCanWork() throws Exception {
+        // GIVEN
+        jcrContainer.setFullTextExpression("FOOBaRbaZ");
+
+        // WHEN
+        String stmt = jcrContainer.getQueryWhereClause();
+
+        // THEN
+        assertContains("lower(localname()) LIKE 'foobarbaz%' or t.['foobarbaz'] IS NOT NULL", stmt);
     }
 
     @Test
@@ -188,7 +200,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertContains("localname() LIKE '1%' or t.['1'] IS NOT NULL", stmt);
+        assertContains("lower(localname()) LIKE '1%' or t.['1'] IS NOT NULL", stmt);
     }
 
     @Test

@@ -60,7 +60,7 @@ public class SearchJcrContainer extends FlatJcrContainer {
 
     private static final Logger log = LoggerFactory.getLogger(SearchJcrContainer.class);
 
-    protected static final String WHERE_TEMPLATE_FOR_SEARCH = "localname() LIKE '%1$s%%' or " + SELECTOR_NAME + ".['%2$s'] IS NOT NULL %3$s";
+    protected static final String WHERE_TEMPLATE_FOR_SEARCH = "lower(localname()) LIKE '%1$s%%' or " + SELECTOR_NAME + ".['%2$s'] IS NOT NULL %3$s";
 
     protected static final String CONTAINS_TEMPLATE_FOR_SEARCH = "contains(" + SELECTOR_NAME + ".*, '%1$s')";
 
@@ -145,7 +145,7 @@ public class SearchJcrContainer extends FlatJcrContainer {
         if (StringUtils.isBlank(getFullTextExpression())) {
             return "";
         }
-        final String unescapedFullTextExpression = getFullTextExpression();
+        final String unescapedFullTextExpression = getFullTextExpression().toLowerCase();
 
         final String escapedSearch = Text.escapeIllegalJcrChars(unescapedFullTextExpression);
         final String stmt = String.format(WHERE_TEMPLATE_FOR_SEARCH, escapedSearch, escapedSearch, String.format("or " + CONTAINS_TEMPLATE_FOR_SEARCH, escapeFullTextExpression(unescapedFullTextExpression)));

@@ -58,8 +58,6 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
 
     private String workspace;
 
-    private String rootPath;
-
     private NodeTypeDefinition nodeType;
 
     private EditorActionAreaDefinition actionArea = new ConfiguredEditorActionAreaDefinition();
@@ -84,15 +82,6 @@ public class ConfiguredEditorDefinition implements EditorDefinition {
     @Override
     public String getWorkspace() {
         return workspace;
-    }
-
-    @Override
-    public String getRootPath() {
-        return rootPath;
-    }
-
-    public void setRootPath(String rootPath) {
-        this.rootPath = rootPath;
     }
 
     @Override

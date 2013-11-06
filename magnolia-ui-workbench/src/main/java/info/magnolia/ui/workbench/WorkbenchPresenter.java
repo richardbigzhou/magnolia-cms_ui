@@ -120,7 +120,8 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
                     presenter = componentProvider.newInstance(presenterClass);
                 }
                 contentPresenters.put(presenterDefinition.getViewType(), presenter);
-                ContentView contentView = presenter.start(workbenchDefinition, eventBus, presenterDefinition.getViewType(), view.getshortcutActionManager());
+                ContentView contentView = presenter.start(workbenchDefinition, eventBus, presenterDefinition.getViewType());
+
                 if (presenterDefinition.isActive()) {
                     activePresenter = presenter;
                     try {
@@ -152,11 +153,15 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     @Override
     public void onSearch(final String searchExpression) {
-        if (StringUtils.isNotBlank(searchExpression)) {
-            eventBus.fireEvent(new SearchEvent(searchExpression));
+        if (hasViewType(SearchPresenterDefinition.VIEW_TYPE)) {
+            if (StringUtils.isNotBlank(searchExpression)) {
+                eventBus.fireEvent(new SearchEvent(searchExpression));
+            } else {
+                // if search expression is empty switch to list view
+                onViewTypeChanged(ListPresenterDefinition.VIEW_TYPE);
+            }
         } else {
-            // if search expression is empty switch to list view
-            onViewTypeChanged(ListPresenterDefinition.VIEW_TYPE);
+            log.warn("Workbench view triggered search although the search view type is not configured in this workbench {}", this);
         }
     }
 
@@ -168,7 +173,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     private void setViewType(String viewType) {
         ContentPresenter oldPresenter = activePresenter;
-        List<String> itemIds = oldPresenter.getSelectedItemIds();
+        List<String> itemIds = oldPresenter == null ? null : oldPresenter.getSelectedItemIds();
 
         activePresenter = contentPresenters.get(viewType);
         activePresenter.refresh();

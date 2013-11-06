@@ -33,9 +33,8 @@
  */
 package info.magnolia.ui.workbench;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
@@ -48,27 +47,24 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.vaadin.data.Container;
-
 /**
  * Tests.
  */
 public class AbstractContentPresenterTest {
 
     private AbstractContentPresenter presenter;
+
     private class DummyContentPresenter extends AbstractContentPresenter {
         private DummyContentPresenter(final ComponentProvider componentProvider) {
             super(componentProvider);
         }
+
         @Override
         public void refresh() {
             // do nothing;
         }
-        @Override
-        public Container getContainer() {
-            return null;
-        };
     }
+
     @Before
     public void setUp() throws Exception {
         final ComponentProvider componentProvider = mock(ComponentProvider.class);

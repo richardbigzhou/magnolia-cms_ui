@@ -66,7 +66,7 @@ public class ComponentProcessor extends AbstractMgnlElementProcessor {
 
     private boolean hasControlBar(Map<String, String> attributes) {
 
-        boolean isInherited = Boolean.parseBoolean(attributes.get("inherited"));
+        boolean isInherited = getMgnlElement().isInherited();
         boolean editable = true;
 
         if (attributes.containsKey("editable")) {
@@ -76,8 +76,8 @@ public class ComponentProcessor extends AbstractMgnlElementProcessor {
         if (isInherited || !editable) {
             return false;
         }
+        
         return true;
-
     }
 
     @Override

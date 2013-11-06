@@ -63,7 +63,6 @@ import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
-import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.definition.ContentSubAppDescriptor;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
@@ -96,7 +95,7 @@ import org.slf4j.LoggerFactory;
 /**
  * PagesEditorSubApp.
  */
-public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppView.Listener, ActionbarPresenter.Listener, PageBarView.Listener {
+public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> implements PagesEditorSubAppView.Listener, ActionbarPresenter.Listener, PageBarView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(PagesEditorSubApp.class);
 
@@ -155,7 +154,7 @@ public class PagesEditorSubApp extends BaseSubApp implements PagesEditorSubAppVi
     }
 
     @Override
-    public View start(Location location) {
+    public PagesEditorSubAppView start(Location location) {
         DetailLocation detailLocation = DetailLocation.wrap(location);
         super.start(detailLocation);
 
