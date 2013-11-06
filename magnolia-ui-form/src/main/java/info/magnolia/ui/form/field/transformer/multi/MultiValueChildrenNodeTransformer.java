@@ -58,6 +58,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertysetItem;
 
 /**
@@ -208,7 +209,12 @@ public class MultiValueChildrenNodeTransformer extends BasicTransformer<Property
         try {
             Iterator<?> it = newValue.getItemPropertyIds().iterator();
             while (it.hasNext()) {
-                Object value = newValue.getItemProperty(it.next()).getValue();
+                Property<?> p = newValue.getItemProperty(it.next());
+                // Do not handle null values
+                if (p == null || p.getValue() == null) {
+                    continue;
+                }
+                Object value = p.getValue();
                 // Create the child Item Name
                 String childName = createChildItemName(childNames, value, rootItem);
                 // Get or create the childItem
