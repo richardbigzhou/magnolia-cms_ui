@@ -55,7 +55,6 @@ public class AbstractColumnFormatterTest {
 
             @Override
             public Object generateCell(Table source, Object itemId, Object columnId) {
-                // TODO Auto-generated method stub
                 return null;
             }
         };
