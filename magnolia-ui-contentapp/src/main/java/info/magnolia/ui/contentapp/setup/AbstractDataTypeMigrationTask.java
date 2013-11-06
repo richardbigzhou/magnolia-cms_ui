@@ -203,7 +203,16 @@ public abstract class AbstractDataTypeMigrationTask extends AbstractTask {
         MetaDataAsMixinConversionHelper conversionHelper = new MetaDataAsMixinConversionHelper();
         conversionHelper.setDeleteMetaDataIfEmptied(true);
         conversionHelper.setPeriodicSaves(true);
-        conversionHelper.convertNodeAndChildren(newSession.getRootNode());
+
+        NodeIterator childRootNodes = newSession.getRootNode().getNodes();
+        while (childRootNodes.hasNext()) {
+            Node child = childRootNodes.nextNode();
+            if (!child.getName().startsWith(NodeTypes.JCR_PREFIX) && !child.getName().startsWith(NodeTypes.REP_PREFIX)) {
+                conversionHelper.convertNodeAndChildren(child);
+            } else {
+                log.debug("Node '{}' are not handled by this task", child.getName());
+            }
+        }
         log.info("Converted MetaData in workspace '{}'", newSession.getWorkspace().getName());
     }
 
