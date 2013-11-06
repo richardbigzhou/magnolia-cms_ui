@@ -41,13 +41,13 @@ import javax.jcr.RepositoryException;
 /**
  * Base implementation of {@link ActionCreation}.
  */
-public class BaseActionCreation implements ActionCreator {
+public class BaseActionCreator implements ActionCreator {
 
     private final String name;
     private final String label;
     private final String className;
 
-    public BaseActionCreation(String name, String label, String className) {
+    public BaseActionCreator(String name, String label, String className) {
         this.className = className;
         this.label = label;
         this.name = name;
