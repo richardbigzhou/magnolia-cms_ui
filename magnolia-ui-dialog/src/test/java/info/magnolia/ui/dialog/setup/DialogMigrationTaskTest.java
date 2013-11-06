@@ -59,6 +59,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -94,6 +95,7 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
     }
 
     @Test
+    @Ignore
     public void testExecuteRemoveTmpPath() throws RepositoryException, TaskExecutionException {
         // GIVEN
         DialogMigrationTask task = new DialogMigrationTask("", "", "testModule", null, null);
@@ -106,6 +108,7 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
     }
 
     @Test
+    @Ignore
     public void testExecuteControlsMigration() throws RepositoryException, TaskExecutionException {
         // GIVEN
         DialogMigrationTask task = new DialogMigrationTask("", "", "testModule", null, null);
@@ -128,6 +131,7 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
     }
 
     @Test
+    @Ignore
     public void testExecuteActionMigration() throws RepositoryException, TaskExecutionException {
         // GIVEN
         DialogMigrationTask task = new DialogMigrationTask("", "", "testModule", null, null);
@@ -146,6 +150,7 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
     }
 
     @Test
+    @Ignore
     public void testExecuteCustomActionMigration() throws RepositoryException, TaskExecutionException {
         // GIVEN
         HashMap<String, List<ActionCreator>> customActions = new HashMap<String, List<ActionCreator>>();
@@ -170,6 +175,7 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
     }
 
     @Test
+    @Ignore
     public void testExecuteTabsMigration() throws RepositoryException, TaskExecutionException {
         // GIVEN
         DialogMigrationTask task = new DialogMigrationTask("", "", "testModule", null, null);
@@ -191,6 +197,7 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
     }
 
     @Test
+    @Ignore
     public void testExecuteExtendsMigration() throws RepositoryException, TaskExecutionException {
         // GIVEN
         DialogMigrationTask task = new DialogMigrationTask("", "", "testModule", null, null);
