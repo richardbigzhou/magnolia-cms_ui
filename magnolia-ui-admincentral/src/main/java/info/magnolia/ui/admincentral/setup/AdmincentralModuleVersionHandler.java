@@ -154,6 +154,11 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 })
         );
 
+        register(DeltaBuilder.update("5.1.2", "")
+                .addTask(new RemovePropertyTask("Remove hardcoded icon", "Remove hardcoded icon of Configuration app", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration", "icon"))
+                .addTask(new RemovePropertyTask("Remove hardcoded icon", "Remove hardcoded icon of JCR app", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/websiteJcrBrowser", "icon"))
+        );
+
     }
 
     @Override

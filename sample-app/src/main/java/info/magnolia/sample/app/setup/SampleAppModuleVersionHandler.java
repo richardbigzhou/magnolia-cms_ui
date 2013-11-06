@@ -34,9 +34,19 @@
 package info.magnolia.sample.app.setup;
 
 import info.magnolia.module.DefaultModuleVersionHandler;
+import info.magnolia.module.delta.DeltaBuilder;
+import info.magnolia.module.delta.RemovePropertyTask;
+import info.magnolia.repository.RepositoryConstants;
 
 /**
  * Version handler for sample app module.
  */
 public class SampleAppModuleVersionHandler extends DefaultModuleVersionHandler {
+    public SampleAppModuleVersionHandler() {
+        register(DeltaBuilder.update("5.1.2", "")
+
+                .addTask(new RemovePropertyTask("Remove hardcoded label", "Remove hardcoded label of Sample app", RepositoryConstants.CONFIG, "/modules/sample-app/apps/sample", "label"))
+                .addTask(new RemovePropertyTask("Remove hardcoded icon",  "Remove hardcoded icon of Sample app", RepositoryConstants.CONFIG, "/modules/sample-app/apps/sample", "icon"))
+        );
+    }
 }
