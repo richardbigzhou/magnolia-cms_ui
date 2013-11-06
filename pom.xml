@@ -7,7 +7,7 @@
   </parent>
   <groupId>info.magnolia.ui</groupId>
   <artifactId>magnolia-ui-project</artifactId>
-  <version>5.1.1</version>
+  <version>5.1.2-SNAPSHOT</version>
   <name>magnolia-ui-project</name>
   <packaging>pom</packaging>
   <properties>
