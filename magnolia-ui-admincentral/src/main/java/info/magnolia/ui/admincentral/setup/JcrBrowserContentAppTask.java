@@ -172,7 +172,7 @@ public class JcrBrowserContentAppTask extends AbstractTask {
         app.setProperty("class", "info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor");
         app.setProperty("appClass", "info.magnolia.ui.contentapp.ContentApp");
         if (StringUtils.isNotBlank(icon)){
-            app.setProperty("icon", StringUtils.isNotBlank(icon) ? icon : "icon-app");
+            app.setProperty("icon", icon);
         }
         if (StringUtils.isNotBlank(label)){
             app.setProperty("label", label);
