@@ -86,9 +86,6 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         super.setUp();
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         i18n = NodeUtil.createPath(session.getRootNode(), "/server/i18n", NodeTypes.ContentNode.NAME);
-        i18n.addNode("authoring", NodeTypes.ContentNode.NAME);
-        i18n.addNode("authoring50", NodeTypes.ContentNode.NAME);
-        i18n.getSession().save();
 
         framework = NodeUtil.createPath(session.getRootNode(), "/modules/ui-framework", NodeTypes.ContentNode.NAME);
         framework.addNode("dialogs", NodeTypes.ContentNode.NAME);
@@ -99,6 +96,8 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
     @Test
     public void testUpdateTo5_0_1WithoutLegacyModule() throws ModuleManagementException, RepositoryException {
         // GIVEN
+        i18n.addNode("authoring50", NodeTypes.ContentNode.NAME);
+        i18n.getSession().save();
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
@@ -113,6 +112,10 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         // GIVEN
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         NodeUtil.createPath(session.getRootNode(), "/modules/adminInterface", NodeTypes.ContentNode.NAME);
+        i18n.addNode("authoring", NodeTypes.ContentNode.NAME);
+        i18n.addNode("authoring50", NodeTypes.ContentNode.NAME);
+        i18n.getSession().save();
+
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
 
@@ -125,6 +128,8 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
     @Test
     public void testUpdateTo5_0_1ThatDialogsAreInstalled() throws ModuleManagementException, RepositoryException {
         // GIVEN
+        i18n.addNode("authoring50", NodeTypes.ContentNode.NAME);
+        i18n.getSession().save();
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
