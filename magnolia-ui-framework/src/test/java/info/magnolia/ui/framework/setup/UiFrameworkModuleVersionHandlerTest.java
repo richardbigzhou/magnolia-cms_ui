@@ -75,6 +75,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         return "/META-INF/magnolia/ui-framework.xml";
     }
 
+
     @Override
     protected ModuleVersionHandler newModuleVersionHandlerForTests() {
         return new UiFrameworkModuleVersionHandler();
@@ -85,6 +86,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
     public void setUp() throws Exception {
         super.setUp();
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        NodeUtil.createPath(session.getRootNode(), "/modules/adminInterface", NodeTypes.ContentNode.NAME);
         i18n = NodeUtil.createPath(session.getRootNode(), "/server/i18n", NodeTypes.ContentNode.NAME);
         i18n.addNode("authoring", NodeTypes.ContentNode.NAME);
         i18n.addNode("authoring50", NodeTypes.ContentNode.NAME);
