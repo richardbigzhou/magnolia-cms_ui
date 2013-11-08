@@ -161,8 +161,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
 
         register(DeltaBuilder.update("5.2", "")
                 .addTask(new BootstrapSingleModuleResource("Bootstrap virtualURIMapping", "Bootstrap virtual URI mappings which have moved from adminInterface module.", "config.modules.ui-admincentral.virtualURIMapping.xml"))
-        );
-
+                .addTask(new AddActivationToDevAppGroupTask()));
     }
 
     @Override
@@ -183,7 +182,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         "/.resources/defaultLoginForm")));
         list.add(new NodeExistsDelegateTask("Remove PageEditorServlet from configuration", "Remove 4.5.x PageEditorServlet from the servlet registration. ", RepositoryConstants.CONFIG, "/server/filters/servlets/PageEditorServlet",
                 new RemoveNodeTask("Remove PageEditorServlet from configuration", "Remove 4.5.x PageEditorServlet from the servlet registration. ", RepositoryConstants.CONFIG, "/server/filters/servlets/PageEditorServlet")));
-
+        list.add(new AddActivationToDevAppGroupTask());
         return list;
     }
 

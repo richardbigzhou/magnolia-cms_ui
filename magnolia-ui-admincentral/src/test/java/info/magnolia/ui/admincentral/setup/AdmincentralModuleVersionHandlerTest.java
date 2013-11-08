@@ -39,7 +39,6 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypeTemplateUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.module.ModuleManagementException;
 import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
@@ -51,7 +50,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.NodeTypeTemplate;
@@ -78,7 +76,6 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     private String appLauncherLayoutConfigNodeTargetParent_path = "/modules/ui-admincentral/config";
     private Node appLauncherLayoutConfigNodeSourceParent;
     private Node appLauncherLayoutConfigNodeTargetParent;
-
 
     @Override
     protected String getModuleDescriptorPath() {
@@ -120,12 +117,12 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         confirmDeleteActionAvailability = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/confirmDeletion/availability", NodeTypes.ContentNode.NAME);
         configActionbarSections = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections", NodeTypes.ContentNode.NAME);
         servletParameters = NodeUtil.createPath(session.getRootNode(), "/server/filters/servlets/AdminCentral/parameters", NodeTypes.ContentNode.NAME);
-        appLauncherLayoutConfigNodeSourceParent = NodeUtil.createPath(session.getRootNode(),appLauncherLayoutConfigNodeSourceParent_path, NodeTypes.ContentNode.NAME);
-        appLauncherLayoutConfigNodeTargetParent = NodeUtil.createPath(session.getRootNode(),appLauncherLayoutConfigNodeTargetParent_path, NodeTypes.ContentNode.NAME);
+        appLauncherLayoutConfigNodeSourceParent = NodeUtil.createPath(session.getRootNode(), appLauncherLayoutConfigNodeSourceParent_path, NodeTypes.ContentNode.NAME);
+        appLauncherLayoutConfigNodeTargetParent = NodeUtil.createPath(session.getRootNode(), appLauncherLayoutConfigNodeTargetParent_path, NodeTypes.ContentNode.NAME);
     }
 
     @Test
-    public void testUpdateTo501WithoutExistingLinkDefinition() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo501WithoutExistingLinkDefinition() throws Exception {
         // GIVEN
         dialogs.addNode("link", NodeTypes.ContentNode.NAME);
         assertTrue(dialogs.hasNode("link"));
@@ -138,7 +135,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo501WithoutNonExistingLinkDefinition() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo501WithoutNonExistingLinkDefinition() throws Exception {
         // GIVEN
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
@@ -148,7 +145,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo501EditPropertyDialogExists() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo501EditPropertyDialogExists() throws Exception {
         // GIVEN
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
@@ -158,7 +155,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo501renameItemDialogExists() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo501renameItemDialogExists() throws Exception {
         // GIVEN
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
@@ -168,7 +165,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo501EditPropertyActionInstalled() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo501EditPropertyActionInstalled() throws Exception {
         // GIVEN
 
         // WHEN
@@ -181,7 +178,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo501RenameActionInstalled() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo501RenameActionInstalled() throws Exception {
         // GIVEN
 
         // WHEN
@@ -194,7 +191,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo501ConfigurationAppDuplicateActionsGroupIsRemoved() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo501ConfigurationAppDuplicateActionsGroupIsRemoved() throws Exception {
         // GIVEN
         configActionbarFolderGroups.addNode("duplicateActions", NodeTypes.ContentNode.NAME);
         assertTrue(configActionbarFolderGroups.hasNode("duplicateActions"));
@@ -207,7 +204,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo501ConfigurationAppEditActionsGroupIsAdded() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo501ConfigurationAppEditActionsGroupIsAdded() throws Exception {
         // GIVEN
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
@@ -218,7 +215,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo501JCRBrowserAppExtendsConfigurationApp() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo501JCRBrowserAppExtendsConfigurationApp() throws Exception {
         // GIVEN
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
@@ -231,7 +228,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo502HasNewActions() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo502HasNewActions() throws Exception {
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
@@ -241,7 +238,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo502CleanupDeleteAction() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo502CleanupDeleteAction() throws Exception {
         // GIVEN
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         Node action = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actions/delete", NodeTypes.ContentNode.NAME);
@@ -262,7 +259,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo502ActionbarNodesUpdated() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo502ActionbarNodesUpdated() throws Exception {
 
         // GIVEN
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
@@ -279,7 +276,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo51SetsNodeTypesForConfigurationAppAsStrict() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo51SetsNodeTypesForConfigurationAppAsStrict() throws Exception {
 
         // GIVEN
         assertFalse(mainNodeType.hasProperty("strict"));
@@ -294,7 +291,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo51ConfirmDeletionActionAllowsMultipleItems() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo51ConfirmDeletionActionAllowsMultipleItems() throws Exception {
 
         // GIVEN
         assertFalse(confirmDeleteActionAvailability.hasProperty("multiple"));
@@ -308,7 +305,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo51CreatesNewActionbarSectionInConfigApp() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo51CreatesNewActionbarSectionInConfigApp() throws Exception {
 
         // GIVEN
         assertFalse(configActionbarSections.hasNode("multiple"));
@@ -321,7 +318,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo51SetsJCRBrowserAppNodeTypesAsNotStrict() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo51SetsJCRBrowserAppNodeTypesAsNotStrict() throws Exception {
         // GIVEN
         Node jcrBrowserSubApp = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/websiteJcrBrowser/subApps/browser/workbench", NodeTypes.ContentNode.NAME);
         assertFalse(jcrBrowserSubApp.hasNode("nodeTypes"));
@@ -338,7 +335,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo51ChangesAdmincentralServletParameters() throws ModuleManagementException, RepositoryException {
+    public void testUpdateTo51ChangesAdmincentralServletParameters() throws Exception {
         // GIVEN
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         servletParameters.setProperty("widgetset", "some.gwt.package.SomeWidgetset");
@@ -352,11 +349,11 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo51ChangesAppLauncherLayoutConfigLocation() throws RepositoryException, ModuleManagementException{
+    public void testUpdateTo51ChangesAppLauncherLayoutConfigLocation() throws Exception {
         String applauncherlayoutNodeName = "appLauncherLayout";
         // GIVEN
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        Node applauncherLayoutConfig = NodeUtil.createPath( session.getRootNode(),appLauncherLayoutConfigNodeSourceParent_path+"/"+applauncherlayoutNodeName,NodeTypes.ContentNode.NAME);
+        Node applauncherLayoutConfig = NodeUtil.createPath(session.getRootNode(), appLauncherLayoutConfigNodeSourceParent_path + "/" + applauncherlayoutNodeName, NodeTypes.ContentNode.NAME);
         Node appLauncherLayoutConfigNodeSourceGrandParent = appLauncherLayoutConfigNodeSourceParent.getParent();
 
         // WHEN
@@ -369,7 +366,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo511UpdatesFavoriteNodeType() throws RepositoryException, ModuleManagementException {
+    public void testUpdateTo511UpdatesFavoriteNodeType() throws Exception {
         // GIVEN
         Session session = MgnlContext.getJCRSession(FavoriteStore.WORKSPACE_NAME);
         NodeTypeManager nodeTypeManager = session.getWorkspace().getNodeTypeManager();
@@ -386,7 +383,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     }
 
     @Test
-    public void testUpdateTo52BootstrapsVirtualURIMapping() throws RepositoryException, ModuleManagementException {
+    public void testUpdateTo52BootstrapsVirtualURIMapping() throws Exception {
         // GIVEN
 
         // WHEN
@@ -396,4 +393,30 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         assertTrue(session.itemExists("/modules/ui-admincentral/virtualURIMapping/default"));
     }
 
+    public void testActivationAppIsAddedToTheDevAppGroupConfigurationWhenActivationModuleIsInstalled() throws Exception {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node devAppGroup = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config/appLauncherLayout/groups/dev/apps", "mgnl:contentNode");
+        NodeUtil.createPath(session.getRootNode(), "/modules/activation", "mgnl:content");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1.1"));
+
+        // THEN
+        assertTrue(devAppGroup.hasNode("activation"));
+
+    }
+
+    @Test
+    public void testActivationAppIsAddedToTheDevAppGroupConfigurationWhenActivationModuleIsNotInstalled() throws Exception {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node devAppGroup = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config/appLauncherLayout/groups/dev/apps", "mgnl:contentNode");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1.1"));
+
+        // THEN
+        assertFalse(devAppGroup.hasNode("activation"));
+    }
 }
