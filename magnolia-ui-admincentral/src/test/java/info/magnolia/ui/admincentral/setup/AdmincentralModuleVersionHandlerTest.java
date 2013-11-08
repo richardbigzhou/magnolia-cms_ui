@@ -385,4 +385,15 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         assertTrue(nodeTypeManager.getNodeType(AdmincentralNodeTypes.Favorite.NAME).isNodeType(NodeTypes.LastModified.NAME));
     }
 
+    @Test
+    public void testUpdateTo52BootstrapsVirtualURIMapping() throws RepositoryException, ModuleManagementException {
+        // GIVEN
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1"));
+
+        // THEN
+        assertTrue(session.itemExists("/modules/ui-admincentral/virtualURIMapping/default"));
+    }
+
 }

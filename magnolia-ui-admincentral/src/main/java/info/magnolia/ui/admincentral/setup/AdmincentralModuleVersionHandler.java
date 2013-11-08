@@ -37,6 +37,7 @@ import info.magnolia.jcr.util.NodeTypeTemplateUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
+import info.magnolia.module.delta.BootstrapSingleModuleResource;
 import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
@@ -157,6 +158,10 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         return types;
                     }
                 }));
+
+        register(DeltaBuilder.update("5.2", "")
+                .addTask(new BootstrapSingleModuleResource("Bootstrap virtualURIMapping", "Bootstrap virtual URI mappings which have moved from adminInterface module.", "config.modules.ui-admincentral.virtualURIMapping.xml"))
+        );
 
     }
 
