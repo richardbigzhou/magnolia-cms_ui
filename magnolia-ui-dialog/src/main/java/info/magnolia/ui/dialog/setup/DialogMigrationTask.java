@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.dialog.setup;
 
-import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.jcr.predicate.NodeTypePredicate;
 import info.magnolia.jcr.util.NodeTypes;
@@ -60,23 +59,17 @@ import info.magnolia.ui.dialog.setup.migration.SelectControlMigrator;
 import info.magnolia.ui.dialog.setup.migration.StaticControlMigrator;
 import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,24 +123,20 @@ public class DialogMigrationTask extends AbstractTask {
     @Override
     public void execute(InstallContext installContext) throws TaskExecutionException {
         Session session = null;
-        String tempDialogPath = null;
         try {
             addCustomControlsToMigrate(controlsToMigrate);
             addCustomDialogActionToCreate(dialogActionsToMigrate);
 
             String dialogNodeName = "dialogs";
             String dialogPath = "/modules/" + moduleName + "/" + dialogNodeName;
-            // Temp Path
-            tempDialogPath = dialogPath + "50";
-
             session = installContext.getJCRSession(RepositoryConstants.CONFIG);
+
             // Check
             if (!session.itemExists(dialogPath)) {
                 log.warn("Dialog definition do not exist for the following module {}. No Dialog migration task will be performed", moduleName);
                 return;
             }
             Node dialog = session.getNode(dialogPath);
-            copyInSession(dialog, tempDialogPath);
             NodeUtil.visit(dialog, new NodeVisitor() {
                 @Override
                 public void visit(Node current) throws RepositoryException {
@@ -156,8 +145,6 @@ public class DialogMigrationTask extends AbstractTask {
                     }
                 }
             }, new NodeTypePredicate(NodeTypes.Content.NAME));
-            session.removeItem(dialogPath);
-            session.move(tempDialogPath, dialogPath);
 
             // Try to resolve references for extends.
             postProcessForExtendsAndReference();
@@ -166,15 +153,6 @@ public class DialogMigrationTask extends AbstractTask {
             log.error("", e);
             installContext.warn("Could not Migrate Dialog for the following module " + moduleName);
             throw new TaskExecutionException("Could not Migrate Dialog ", e);
-        } finally {
-            try {
-                // In any cases remove the tmp dialog migration node.
-                if (session != null && session.nodeExists(tempDialogPath)) {
-                    session.getNode(tempDialogPath).remove();
-                }
-            } catch (RepositoryException re) {
-                log.warn("", re);
-            }
         }
     }
 
@@ -472,38 +450,4 @@ public class DialogMigrationTask extends AbstractTask {
         return beging + toInsert + end;
     }
 
-    /**
-     * Session based copy operation. As JCR only supports workspace based copies this operation is performed.
-     * by using export import operations.
-     */
-    private void copyInSession(Node src, String dest) throws RepositoryException {
-        final String destParentPath = StringUtils.defaultIfEmpty(StringUtils.substringBeforeLast(dest, "/"), "/");
-        final String destNodeName = StringUtils.substringAfterLast(dest, "/");
-        final Session session = src.getSession();
-        try {
-            final File file = File.createTempFile("mgnl", null, Path.getTempDirectory());
-            final FileOutputStream outStream = new FileOutputStream(file);
-            session.exportSystemView(src.getPath(), outStream, false, false);
-            outStream.flush();
-            IOUtils.closeQuietly(outStream);
-            FileInputStream inStream = new FileInputStream(file);
-            session.importXML(
-                    destParentPath,
-                    inStream,
-                    ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
-            IOUtils.closeQuietly(inStream);
-            file.delete();
-            if (!StringUtils.equals(src.getName(), destNodeName)) {
-                String currentPath;
-                if (destParentPath.equals("/")) {
-                    currentPath = "/" + src.getName();
-                } else {
-                    currentPath = destParentPath + "/" + src.getName();
-                }
-                session.move(currentPath, dest);
-            }
-        } catch (IOException e) {
-            throw new RepositoryException("Can't copy node " + src + " to " + dest, e);
-        }
-    }
 }
