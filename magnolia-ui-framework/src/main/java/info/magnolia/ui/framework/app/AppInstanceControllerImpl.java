@@ -304,13 +304,18 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
     public void openSubApp(Location location) {
         // main sub app has always to be there - open it if not yet running
         final Location defaultLocation = getDefaultLocation();
-        boolean isDefaultSubApp = defaultLocation.getSubAppId().equals(location.getSubAppId());
-        if (!isDefaultSubApp) {
-            SubAppContext subAppContext = getSupportingSubAppContext(defaultLocation);
-            if (subAppContext == null) {
-                startSubApp(defaultLocation, false);
+        boolean isDefaultSubApp = false;
+
+        if (defaultLocation != null) {
+            isDefaultSubApp = defaultLocation.getSubAppId().equals(location.getSubAppId());
+            if (!isDefaultSubApp) {
+                SubAppContext subAppContext = getSupportingSubAppContext(defaultLocation);
+                if (subAppContext == null) {
+                    startSubApp(defaultLocation, false);
+                }
             }
         }
+
         // If the location targets an existing sub app then activate it and update its location
         // launch running subapp
         SubAppContext subAppContext = getSupportingSubAppContext(location);
@@ -346,6 +351,10 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
 
         if (subAppDescriptor == null) {
             subAppDescriptor = getDefaultSubAppDescriptor();
+            if (subAppDescriptor == null) {
+                log.warn("No subapp could be found for the '{}' app, please check configuration.", appDescriptor.getName());
+                return null;
+            }
         }
         SubAppContext subAppContext = new SubAppContextImpl(subAppDescriptor, shell);
 
@@ -440,20 +449,24 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
      * Only subApps with matching subAppId will be asked whether they support the location.
      */
     private SubAppContext getSupportingSubAppContext(Location location) {
+        SubAppContext supportingContext = null;
+
         // If the location has no subAppId defined, get default
+        if (getDefaultSubAppDescriptor() != null) {
         String subAppId = (location.getSubAppId().isEmpty()) ? getDefaultSubAppDescriptor().getName() : location.getSubAppId();
 
-        SubAppContext supportingContext = null;
-        for (SubAppDetails subAppDetails : subApps.values()) {
-            SubAppContext context = subAppDetails.context;
-            if (!subAppId.equals(context.getSubAppId())) {
-                continue;
-            }
-            if (context.getSubApp().supportsLocation(location)) {
-                supportingContext = context;
-                break;
+            for (SubAppDetails subAppDetails : subApps.values()) {
+                SubAppContext context = subAppDetails.context;
+                if (!subAppId.equals(context.getSubAppId())) {
+                    continue;
+                }
+                if (context.getSubApp().supportsLocation(location)) {
+                    supportingContext = context;
+                    break;
+                }
             }
         }
+
         return supportingContext;
     }
 

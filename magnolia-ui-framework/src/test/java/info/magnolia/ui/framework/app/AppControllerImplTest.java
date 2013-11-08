@@ -95,6 +95,7 @@ public class AppControllerImplTest {
 
     private static final String APP_NAME_1 = "app1";
     private static final String APP_NAME_2 = "app2";
+    private static final String APP_NAME_3 = "app3";
     private static final String APP_NAME_THEMED = "appThemed";
 
     private static final String SUBAPP_NAME_1 = "subApp1";
@@ -427,6 +428,36 @@ public class AppControllerImplTest {
     }
 
     @Test
+    public void testOnLocationChangeDoesntCrashWithNoDefaultSubApp() {
+        // GIVEN
+        Location newLocation = new DefaultLocation(Location.LOCATION_TYPE_APP, APP_NAME_3 + "_name", null);
+        LocationChangedEvent newLocationEvent = new LocationChangedEvent(newLocation);
+
+        // WHEN
+        appController.onLocationChanged(newLocationEvent);
+
+        // THEN - no exception
+        assertNotNull(appController.getCurrentApp());
+        assertEquals(APP_NAME_3 + "_name", appController.getCurrentAppLocation().getAppName());
+        assertNotNull(appController.getCurrentAppLocation());
+    }
+
+    @Test
+    public void testOnLocationChangeDoesntCrashWithNoDefaultAndUnknownSubApp() {
+        // GIVEN
+        Location newLocation = new DefaultLocation(Location.LOCATION_TYPE_APP, APP_NAME_3 + "_name", "unknown");
+        LocationChangedEvent newLocationEvent = new LocationChangedEvent(newLocation);
+
+        // WHEN
+        appController.onLocationChanged(newLocationEvent);
+
+        // THEN - no exception
+        assertNotNull(appController.getCurrentApp());
+        assertEquals(APP_NAME_3 + "_name", appController.getCurrentAppLocation().getAppName());
+        assertNotNull(appController.getCurrentAppLocation());
+    }
+
+    @Test
     public void testOnLocationChangePreservesParameters() {
         // GIVEN
         Location location = new DefaultLocation(Location.LOCATION_TYPE_APP, APP_NAME_1 + "_name", SUBAPP_NAME_1 + "_name");
@@ -488,12 +519,14 @@ public class AppControllerImplTest {
 
         AppDescriptor app1 = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_1, AppTestImpl.class, subApps);
         AppDescriptor app2 = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_2, AppTestImpl.class, subApps);
+        AppDescriptor app3 = AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_3, AppTestImpl.class, new HashMap<String, SubAppDescriptor>());
         ConfiguredAppDescriptor appThemed = (ConfiguredAppDescriptor) AppTestUtility.createAppDescriptorWithSubApps(APP_NAME_THEMED, AppTestImpl.class, subApps);
         appThemed.setTheme("testtheme");
 
         try {
             when(appRegistry.getAppDescriptor(APP_NAME_1 + "_name")).thenReturn(app1);
             when(appRegistry.getAppDescriptor(APP_NAME_2 + "_name")).thenReturn(app2);
+            when(appRegistry.getAppDescriptor(APP_NAME_3 + "_name")).thenReturn(app3);
             when(appRegistry.getAppDescriptor(APP_NAME_THEMED + "_name")).thenReturn(appThemed);
         } catch (RegistrationException e) {
             // won't happen

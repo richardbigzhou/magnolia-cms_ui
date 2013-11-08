@@ -358,7 +358,12 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
                 AppInstanceController runningAppContext = runningApps.get(appName);
                 subAppId = runningAppContext.getCurrentLocation().getSubAppId();
             } else if (StringUtils.isBlank(subAppId)) {
-                subAppId = appInstanceController.getDefaultLocation().getSubAppId();
+                Location defaultLocation = appInstanceController.getDefaultLocation();
+                if (defaultLocation != null) {
+                    subAppId = defaultLocation.getSubAppId();
+                } else {
+                    log.warn("No default location could be found for the '{}' app, please check subapp configuration.", appName);
+                }
 
             }
         }

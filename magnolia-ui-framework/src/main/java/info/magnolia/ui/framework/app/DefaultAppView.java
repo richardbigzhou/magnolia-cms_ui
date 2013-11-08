@@ -83,7 +83,7 @@ public class DefaultAppView implements AppView {
 
     @Override
     public String addSubAppView(View view, String caption, boolean closable) {
-        final MagnoliaTab tab = tabsheet.addTab(caption, view.asVaadinComponent());
+        final MagnoliaTab tab = tabsheet.addTab(caption, view != null ? view.asVaadinComponent() : null);
         tab.setClosable(closable);
         if(tabsheet.getActiveTab() != tab) {
             tabsheet.setActiveTab(tab);
