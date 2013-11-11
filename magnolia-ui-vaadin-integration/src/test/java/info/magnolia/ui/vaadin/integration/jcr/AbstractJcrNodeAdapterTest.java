@@ -56,6 +56,9 @@ import org.mockito.stubbing.Answer;
 
 import com.vaadin.data.Property;
 
+/**
+ * Test of {@link AbstractJcrNodeAdapter}.
+ */
 public class AbstractJcrNodeAdapterTest {
 
     private static final String WORKSPACE_NAME = "workspace";

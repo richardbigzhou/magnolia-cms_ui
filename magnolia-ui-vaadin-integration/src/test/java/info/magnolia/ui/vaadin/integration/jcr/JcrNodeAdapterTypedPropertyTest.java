@@ -53,6 +53,9 @@ import org.junit.Test;
 
 import com.vaadin.data.Property;
 
+/**
+ * Test of {@link JcrNodeAdapter} property handling.
+ */
 public class JcrNodeAdapterTypedPropertyTest {
 
     private final String workspaceName = "workspace";

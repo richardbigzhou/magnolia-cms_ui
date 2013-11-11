@@ -45,6 +45,9 @@ import javax.jcr.PropertyType;
 
 import org.junit.Test;
 
+/**
+ * Test of {@link DefaultPropertyUtil}.
+ */
 public class DefaultPropertyUtilTest {
 
     @Test

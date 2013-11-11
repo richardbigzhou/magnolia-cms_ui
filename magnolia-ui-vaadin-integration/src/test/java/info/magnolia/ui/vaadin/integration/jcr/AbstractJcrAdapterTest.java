@@ -50,6 +50,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Test of {@link AbstractJcrAdapter}.
+ */
 public class AbstractJcrAdapterTest {
 
     private final String workspaceName = "workspace";
