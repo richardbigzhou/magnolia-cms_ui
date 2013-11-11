@@ -110,7 +110,7 @@ public class ImportZipCommand extends BaseRepositoryCommand {
         }
 
         if (isValid(tmpFile)) {
-            ZipFile zip = new ZipFile(tmpFile, "utf-8");
+            ZipFile zip = new ZipFile(tmpFile, getEncoding());
             // We use the ant-1.6.5 zip package to workaround encoding issues of the sun implementation (http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4244499)
             // For some reason, entries are not in the opposite order as how they appear in most tools - reversing here.
             // Note that java.util.zip does not show this behaviour, and ant-1.7.1 seems to enumerate entries in alphabetical or random order.
