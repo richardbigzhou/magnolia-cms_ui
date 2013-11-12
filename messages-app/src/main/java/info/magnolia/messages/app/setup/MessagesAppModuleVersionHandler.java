@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.sample.app.setup;
+package info.magnolia.messages.app.setup;
 
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.delta.DeltaBuilder;
@@ -41,12 +41,12 @@ import info.magnolia.repository.RepositoryConstants;
 /**
  * Version handler for sample app module.
  */
-public class SampleAppModuleVersionHandler extends DefaultModuleVersionHandler {
-    public SampleAppModuleVersionHandler() {
+public class MessagesAppModuleVersionHandler extends DefaultModuleVersionHandler {
+    public MessagesAppModuleVersionHandler() {
         register(DeltaBuilder.update("5.1.2", "")
 
-                .addTask(new RemovePropertyTask("Remove hardcoded label", "Remove hardcoded label of Sample app", RepositoryConstants.CONFIG, "/modules/sample-app/apps/sample", "label"))
-                .addTask(new RemovePropertyTask("Remove hardcoded icon",  "Remove hardcoded icon of Sample app", RepositoryConstants.CONFIG, "/modules/sample-app/apps/sample", "icon"))
+                .addTask(new RemovePropertyTask("Remove hardcoded label", "Remove hardcoded label of Messages app", RepositoryConstants.CONFIG, "/modules/messages-app/apps/messages", "label"))
+                .addTask(new RemovePropertyTask("Remove hardcoded icon",  "Remove hardcoded icon of Messages app", RepositoryConstants.CONFIG, "/modules/messages-app/apps/messages", "icon"))
         );
     }
 }
