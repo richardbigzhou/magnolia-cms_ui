@@ -182,8 +182,14 @@ public class ImportZipCommand extends BaseRepositoryCommand {
         }
     }
 
-    protected void doHandleEntryFromReceiver(Node folder, UploadReceiver receiver) throws RepositoryException {
-    }
+    /**
+     * Actually produce an asset or a node based on the entry data aggregated into an
+     * {@link UploadReceiver} object.
+     * @param folder parent folder node for a new entry.
+     * @param receiver wraps the entry file and its basic meta-information.
+     * @throws RepositoryException
+     */
+    protected void doHandleEntryFromReceiver(Node folder, UploadReceiver receiver) throws RepositoryException {}
 
     private void ensureFolder(ZipArchiveEntry entry) throws RepositoryException {
         String path = extractEntryPath(entry);
