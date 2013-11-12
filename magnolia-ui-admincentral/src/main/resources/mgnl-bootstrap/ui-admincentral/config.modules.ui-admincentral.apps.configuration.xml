@@ -152,6 +152,32 @@
             <sv:property sv:name="root" sv:type="String">
               <sv:value>true</sv:value>
             </sv:property>
+            <sv:node sv:name="nodeTypes">
+              <sv:property sv:name="jcr:primaryType" sv:type="Name">
+                <sv:value>mgnl:contentNode</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:uuid" sv:type="String">
+                <sv:value>a8502000-ebc7-4547-a793-cd60c3ef2569</sv:value>
+              </sv:property>
+              <sv:property sv:name="content" sv:type="String">
+                <sv:value>mgnl:content</sv:value>
+              </sv:property>
+              <sv:property sv:name="jcr:createdBy" sv:type="String">
+                <sv:value>admin</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:created" sv:type="Date">
+                <sv:value>2013-11-12T12:24:36.460+01:00</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:createdBy" sv:type="String">
+                <sv:value>superuser</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+                <sv:value>2013-11-12T12:25:25.047+01:00</sv:value>
+              </sv:property>
+              <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+                <sv:value>superuser</sv:value>
+              </sv:property>
+            </sv:node>
           </sv:node>
         </sv:node>
         <sv:node sv:name="addNode">
