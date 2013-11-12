@@ -32,7 +32,7 @@
   </sv:property>
   <sv:node sv:name="subApps">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
-      <sv:value>mgnl:contentnode</sv:value>
+      <sv:value>mgnl:contentNode</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
       <sv:value>mix:lockable</sv:value>
