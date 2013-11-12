@@ -159,6 +159,9 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                     }
                 }));
 
+        register(DeltaBuilder.update("5.1.2", "")
+                .addTask(new PartialBootstrapTask("Configuration app", "Change availability of add folder action", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actions/addFolder/availability/nodeTypes")));
+
         register(DeltaBuilder.update("5.2", "")
                 .addTask(new BootstrapSingleModuleResource("Bootstrap virtualURIMapping", "Bootstrap virtual URI mappings which have moved from adminInterface module.", "config.modules.ui-admincentral.virtualURIMapping.xml"))
                 .addTask(new AddActivationToDevAppGroupTask()));
