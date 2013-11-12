@@ -88,7 +88,7 @@ public class EmbeddedPageSubApp extends BaseSubApp<EmbeddedPageView> {
     /**
      * Add the context path to internal urls.
      */
-    private String updateUrl(String url) {
+    protected String updateUrl(String url) {
         boolean isInternalPage = !url.startsWith("http");
 
         if(isInternalPage) {
