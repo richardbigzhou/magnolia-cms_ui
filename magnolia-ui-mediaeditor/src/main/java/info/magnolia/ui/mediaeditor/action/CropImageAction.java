@@ -39,6 +39,7 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.dialog.actionarea.ActionListener;
 import info.magnolia.ui.mediaeditor.MediaEditorEventBus;
 import info.magnolia.ui.mediaeditor.MediaEditorView;
+import info.magnolia.ui.mediaeditor.action.feature.Scalable;
 import info.magnolia.ui.mediaeditor.data.EditHistoryTrackingProperty;
 import info.magnolia.ui.mediaeditor.event.MediaEditorInternalEvent;
 import info.magnolia.ui.mediaeditor.event.MediaEditorInternalEvent.EventType;
@@ -74,6 +75,10 @@ public class CropImageAction extends MediaEditorUIAction {
     public void execute() throws ActionExecutionException {
         super.execute();
         view.getDialog().asVaadinComponent().addStyleName("active-footer");
+        if (view.getDialog().getContentView().asVaadinComponent() instanceof  Scalable) {
+            Scalable scalable = (Scalable)view.getDialog().getContentView().asVaadinComponent();
+            scalable.scaleToFit();
+        }
     }
 
     @Override
