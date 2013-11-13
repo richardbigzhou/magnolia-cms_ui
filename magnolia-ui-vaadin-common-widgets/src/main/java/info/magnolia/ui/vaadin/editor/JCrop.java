@@ -181,7 +181,6 @@ public class JCrop extends AbstractJavaScriptExtension {
 
     public void invalidate() {
         getState().isValid = false;
-        getState().selection = null;
     }
 
     public void setTrueHeight(int height) {
