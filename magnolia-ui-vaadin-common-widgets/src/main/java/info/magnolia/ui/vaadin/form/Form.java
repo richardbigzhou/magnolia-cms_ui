@@ -157,6 +157,11 @@ public class Form extends AbstractSingleComponentContainer implements FormViewRe
         });
     }
 
+    public void setErrorLabels(String errorsLabel, String nextErrorLabel){
+        getState().errorsLabel = errorsLabel;
+        getState().nextErrorLabel = nextErrorLabel;
+    }
+
     private void invalidateErrorAmount() {
         getState().errorAmount = -1;
     }

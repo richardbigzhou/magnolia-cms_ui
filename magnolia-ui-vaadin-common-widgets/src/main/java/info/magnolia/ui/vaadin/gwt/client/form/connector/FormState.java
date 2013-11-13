@@ -43,4 +43,8 @@ public class FormState extends AbstractLayoutState {
     public boolean descriptionsVisible = false;
 
     public int errorAmount = 0;
+
+    public String errorsLabel;
+
+    public String nextErrorLabel;
 }

@@ -40,12 +40,16 @@ import com.google.gwt.user.client.ui.Widget;
  * Interface of {@link FormViewImpl}.
  */
 public interface FormView extends IsWidget {
-    
+
     void setPresenter(Presenter presenter);
-    
+
     void setDescriptionVisible(boolean isVisible);
-    
+
     void setContent(Widget widget);
+
+    void setErrorsLabel(String errorsLabel);
+
+    void setNextErrorLabel(String nextErrorLabel);
 
     void setErrorAmount(int errorAmount);
 

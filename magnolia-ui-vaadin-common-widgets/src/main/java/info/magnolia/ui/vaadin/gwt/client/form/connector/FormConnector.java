@@ -76,6 +76,20 @@ public class FormConnector extends AbstractSingleComponentContainerConnector imp
                 getView().setErrorAmount(getState().errorAmount);
             }
         });
+
+        addStateChangeHandler("errorsLabel", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent stateChangeEvent) {
+                getView().setErrorsLabel(getState().errorsLabel);
+            }
+        });
+
+        addStateChangeHandler("nextErrorLabel", new StateChangeHandler() {
+            @Override
+            public void onStateChanged(StateChangeEvent stateChangeEvent) {
+                getView().setNextErrorLabel(getState().nextErrorLabel);
+            }
+        });
     }
 
     @Override

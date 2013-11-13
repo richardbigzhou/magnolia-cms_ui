@@ -80,6 +80,10 @@ public class FormViewImpl extends FlowPanel implements FormView {
 
     private FlowPanel errorPanel = new FlowPanel();
 
+    private String errorsLabel;
+
+    private String nextErrorLabel;
+
     public FormViewImpl() {
         super();
         setStylePrimaryName(CLASSNAME);
@@ -147,11 +151,22 @@ public class FormViewImpl extends FlowPanel implements FormView {
     }
 
     @Override
+    public void setErrorsLabel(String errorsLabel) {
+        this.errorsLabel = errorsLabel;
+    }
+
+    @Override
+    public void setNextErrorLabel(String nextErrorLabel) {
+        this.nextErrorLabel = nextErrorLabel;
+    }
+
+    @Override
     public void setErrorAmount(int totalProblematicFields) {
         errorPanel.setVisible(totalProblematicFields > 0);
         if (totalProblematicFields > 0) {
-            errorPanel.getElement().setInnerHTML("<span>Please correct the <b>" + totalProblematicFields + " errors </b> in this form </span>"); //TODO-TRANSLATE, but not with MessageUtil
-            final HTML errorButton = new HTML("[Jump to next error]");  //TODO-TRANSLATE, but not with MessageUtil
+            String formattedTotal = String.valueOf(totalProblematicFields);
+            errorPanel.getElement().setInnerHTML("<span>" + errorsLabel.replaceFirst("#", formattedTotal) + "</span>");
+            final HTML errorButton = new HTML("[" + nextErrorLabel + "]");
             errorButton.setStyleName("action-jump-to-next-error");
             DOM.sinkEvents(errorButton.getElement(), Event.MOUSEEVENTS);
             errorButton.addDomHandler(new ClickHandler() {
