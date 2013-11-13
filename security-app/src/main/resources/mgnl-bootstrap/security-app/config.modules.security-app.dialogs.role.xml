@@ -303,9 +303,6 @@
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
             </sv:property>
-            <sv:property sv:name="value" sv:type="String">
-              <sv:value>Access control is using access control lists (ACLs) to control access to nodes inside a workspace.</sv:value>
-            </sv:property>
           </sv:node>
           <sv:node sv:name="static2">
             <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -337,9 +334,6 @@
             </sv:property>
             <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
               <sv:value>superuser</sv:value>
-            </sv:property>
-            <sv:property sv:name="value" sv:type="String">
-              <sv:value>You may specify any number and combination of ACLs: it's always the best-matching ACL that is applied. ACLs are executed in no particular order.</sv:value>
             </sv:property>
           </sv:node>
         </sv:node>

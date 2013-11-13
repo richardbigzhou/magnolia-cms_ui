@@ -143,6 +143,9 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                         new CreateNodeTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/root/groups/addActions/items", "addFolder", NodeTypes.ContentNode.NAME))
                 ))
                 .addTask(new BootstrapSingleResource("Bootstrap new dialog", "Bootstraps new 'superuserRole' dialog", "/mgnl-bootstrap/security-app/config.modules.security-app.dialogs.superuserRole.xml"))
+                .addTask(new RemovePropertyTask("Remove hardcoded field", "Remove hardcoded description of acl tab from role dialog: static1", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/acls/fields/static1", "value"))
+                .addTask(new RemovePropertyTask("Remove hardcoded field", "Remove hardcoded description of acl tab from role dialog: static2", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/acls/fields/static2", "value"))
+
         );
     }
 
