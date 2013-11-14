@@ -33,6 +33,9 @@
  */
 package info.magnolia.ui.admincentral.dialog.action;
 
+import info.magnolia.cms.core.Path;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.form.EditorCallback;
@@ -40,6 +43,7 @@ import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -76,6 +80,7 @@ public class SaveDialogAction extends AbstractAction<SaveDialogActionDefinition>
             final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
             try {
                 final Node node = itemChanged.applyChanges();
+                setNodeName(node, itemChanged);
                 node.getSession().save();
             } catch (final RepositoryException e) {
                 throw new ActionExecutionException(e);
@@ -86,4 +91,21 @@ public class SaveDialogAction extends AbstractAction<SaveDialogActionDefinition>
         }
     }
 
+    /**
+     * Set the node Name.
+     * Node name is set to: <br>
+     * the value of the property 'name' if it is present.
+     */
+    protected void setNodeName(Node node, JcrNodeAdapter item) throws RepositoryException {
+        String propertyName = "name";
+        if (node.hasProperty(propertyName) && !node.hasProperty(ModelConstants.JCR_NAME)) {
+            Property property = node.getProperty(propertyName);
+            String newNodeName = property.getString();
+            if (!node.getName().equals(newNodeName)) {
+                newNodeName = Path.getUniqueLabel(node.getSession(), node.getParent().getPath(), Path.getValidatedLabel(newNodeName));
+                item.setNodeName(newNodeName);
+                NodeUtil.renameNode(node, newNodeName);
+            }
+        }
+    }
 }
