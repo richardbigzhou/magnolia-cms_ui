@@ -111,7 +111,7 @@ public class ListViewImpl implements ListView {
             public void valueChange(ValueChangeEvent event) {
                 Object value = event.getProperty().getValue();
 
-                log.debug("Handle value change Event: {}", value);
+                log.debug("Handle value change Event: {}:{} for listener {}", value.getClass(), value, listener);
 
                 if (listener != null) {
                     Set<String> items;

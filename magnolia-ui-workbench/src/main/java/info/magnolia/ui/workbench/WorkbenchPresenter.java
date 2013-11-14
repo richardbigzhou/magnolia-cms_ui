@@ -100,37 +100,28 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         this.workbenchDefinition = workbenchDefinition;
         this.eventBus = eventBus;
 
-        if (workbenchDefinition == null) {
-            throw new IllegalArgumentException("Trying to init a workbench but got null definition.");
-        }
-        if (StringUtils.isBlank(workbenchDefinition.getWorkspace())) {
-            throw new IllegalStateException(workbenchDefinition.getName() + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
-        }
+        sanityCheck(workbenchDefinition);
 
         // add content views
         for (final ContentPresenterDefinition presenterDefinition : workbenchDefinition.getContentViews()) {
-
-            Class<? extends ContentPresenter> presenterClass = presenterDefinition.getImplementationClass();
             ContentPresenter presenter = null;
+            Class<? extends ContentPresenter> presenterClass = presenterDefinition.getImplementationClass();
             if (presenterClass != null) {
-                if (imageProviderDefinition != null) {
-                    ImageProvider imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
-                    presenter = componentProvider.newInstance(presenterClass, imageProvider);
-                } else {
-                    presenter = componentProvider.newInstance(presenterClass);
-                }
+                presenter = newPresenterInstance(componentProvider, imageProviderDefinition, presenterClass);
                 contentPresenters.put(presenterDefinition.getViewType(), presenter);
                 ContentView contentView = presenter.start(workbenchDefinition, eventBus, presenterDefinition.getViewType());
 
                 if (presenterDefinition.isActive()) {
                     activePresenter = presenter;
-                    try {
-                        String workbenchRootItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
-                        List<String> ids = new ArrayList<String>(1);
-                        ids.add(workbenchRootItemId);
-                        activePresenter.setSelectedItemIds(ids);
-                    } catch (RepositoryException e) {
-                        log.error("Could not find workbench root node", e);
+                    List<String> ids = new ArrayList<String>(1);
+                    if (workbenchDefinition.getWorkspace() != null) {
+                        try {
+                            String workbenchRootItemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), workbenchDefinition.getPath());
+                            ids.add(workbenchRootItemId);
+                            activePresenter.setSelectedItemIds(ids);
+                        } catch (RepositoryException e) {
+                            log.error("Could not find workbench root node", e);
+                        }
                     }
                 }
                 view.addContentView(presenterDefinition.getViewType(), contentView, presenterDefinition);
@@ -149,6 +140,27 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
         view.setListener(this);
         return view;
+    }
+
+    protected void sanityCheck(WorkbenchDefinition workbenchDefinition) {
+        if (workbenchDefinition == null) {
+            throw new IllegalArgumentException("Trying to init a workbench but got null definition.");
+        }
+
+        if (StringUtils.isBlank(workbenchDefinition.getWorkspace())) {
+            throw new IllegalStateException(workbenchDefinition.getName() + " workbench definition must specify a workspace to connect to. Please, check your configuration.");
+        }
+    }
+
+    protected ContentPresenter newPresenterInstance(ComponentProvider componentProvider, ImageProviderDefinition imageProviderDefinition, Class<? extends ContentPresenter> presenterClass) {
+        ContentPresenter presenter;
+        if (imageProviderDefinition != null) {
+            ImageProvider imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
+            presenter = componentProvider.newInstance(presenterClass, imageProvider);
+        } else {
+            presenter = componentProvider.newInstance(presenterClass);
+        }
+        return presenter;
     }
 
     @Override
@@ -284,5 +296,18 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         } else {
             searchPresenter.search(searchExpression);
         }
+    }
+
+    // exposed only for extending classes. these methods should not be public!
+    protected final ContentPresenter getActivePresenter() {
+        return activePresenter;
+    }
+
+    protected final EventBus getEventBus() {
+        return this.eventBus;
+    }
+
+    protected final WorkbenchDefinition getWorkspaceDefinition() {
+        return this.workbenchDefinition;
     }
 }

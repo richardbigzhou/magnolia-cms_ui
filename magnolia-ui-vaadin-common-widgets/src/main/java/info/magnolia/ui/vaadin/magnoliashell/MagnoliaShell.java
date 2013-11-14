@@ -195,7 +195,10 @@ public class MagnoliaShell extends AbstractComponent implements HasComponents, V
 
     public void setUriFragment(Fragment fragment) {
         getState().uriFragment = fragment;
-        Page.getCurrent().setUriFragment(fragment.toFragment(), false);
+        Page current = Page.getCurrent();
+        if (current != null) {
+            current.setUriFragment(fragment.toFragment(), false);
+        }
     }
 
     public String getUriFragment() {
