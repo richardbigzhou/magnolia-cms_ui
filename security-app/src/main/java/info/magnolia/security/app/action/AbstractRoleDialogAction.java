@@ -135,15 +135,15 @@ public abstract class AbstractRoleDialogAction<D extends ActionDefinition> exten
             addNodeType(nodeTypes, NodeTypes.Content.NAME, "icon-file-webpage", false);
         } else if (workspaceName.equals(RepositoryConstants.CONFIG)) {
             addNodeType(nodeTypes, NodeTypes.ContentNode.NAME, "icon-node-content");
-            addNodeType(nodeTypes, NodeTypes.Content.NAME, "icon-folder");
+            addNodeType(nodeTypes, NodeTypes.Content.NAME, "icon-folder-l");
         } else if (workspaceName.equals(RepositoryConstants.USERS)) {
-            addNodeType(nodeTypes, NodeTypes.Folder.NAME, "icon-folder");
+            addNodeType(nodeTypes, NodeTypes.Folder.NAME, "icon-folder-l");
             addNodeType(nodeTypes, NodeTypes.User.NAME, "icon-user-magnolia");
         } else if (workspaceName.equals(RepositoryConstants.USER_ROLES)) {
-            addNodeType(nodeTypes, NodeTypes.Folder.NAME, "icon-folder");
+            addNodeType(nodeTypes, NodeTypes.Folder.NAME, "icon-folder-l");
             addNodeType(nodeTypes, NodeTypes.Role.NAME, "icon-user-role");
         } else if (workspaceName.equals(RepositoryConstants.USER_GROUPS)) {
-            addNodeType(nodeTypes, NodeTypes.Folder.NAME, "icon-folder");
+            addNodeType(nodeTypes, NodeTypes.Folder.NAME, "icon-folder-l");
             addNodeType(nodeTypes, NodeTypes.Group.NAME, "icon-user-group");
         } else {
             // Let the field use a default set of node types instead
