@@ -35,7 +35,6 @@ package info.magnolia.security.app.action;
 
 import static org.junit.Assert.assertEquals;
 
-import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
@@ -76,32 +75,12 @@ public class OpenEditRoleDialogActionTest extends RepositoryTestCase {
         super.setUp();
         config = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
 
-        NodeUtil.createPath(config.getRootNode(), "/modules/security-app/dialogs/superuserRole", NodeTypes.ContentNode.NAME).setProperty("label", AccessDefinition.DEFAULT_SUPERUSER_ROLE);
-        NodeUtil.createPath(config.getRootNode(), "/modules/security-app/dialogs/superuserRole/form/tabs", NodeTypes.ContentNode.NAME);
-
         NodeUtil.createPath(config.getRootNode(), "/modules/security-app/dialogs/role", NodeTypes.ContentNode.NAME).setProperty("label", "someRole");
         NodeUtil.createPath(config.getRootNode(), "/modules/security-app/dialogs/role/form/tabs", NodeTypes.ContentNode.NAME);
 
         ComponentsTestUtil.setImplementation(FormDefinition.class, ConfiguredFormDefinition.class);
         ComponentsTestUtil.setImplementation(TabDefinition.class, ConfiguredTabDefinition.class);
         ComponentsTestUtil.setImplementation(FormDialogDefinition.class, ConfiguredFormDialogDefinition.class);
-    }
-
-    @Test
-    public void testOpenSuperuserRoleDialog() throws Exception {
-        // GIVEN
-        Session session = new MockSession(RepositoryConstants.USER_ROLES);
-        Node jcrNode = session.getRootNode().addNode(AccessDefinition.DEFAULT_SUPERUSER_ROLE);
-        JcrNodeAdapter itemToEdit = new JcrNodeAdapter(jcrNode);
-        MockFormDialogPresenter formDialogPresenter = new MockFormDialogPresenter();
-
-        OpenEditRoleDialogAction<OpenEditRoleDialogActionDefinition> dialogAction = new OpenEditRoleDialogAction<OpenEditRoleDialogActionDefinition>(null, itemToEdit, formDialogPresenter, null, null, null);
-
-        // WHEN
-        dialogAction.execute();
-
-        // THEN
-        assertEquals(AccessDefinition.DEFAULT_SUPERUSER_ROLE, formDialogPresenter.getDialogDefinition().getLabel());
     }
 
     @Test
