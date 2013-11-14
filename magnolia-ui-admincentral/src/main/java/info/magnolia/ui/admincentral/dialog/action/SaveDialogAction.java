@@ -55,8 +55,9 @@ import com.vaadin.data.Item;
  * Saves a dialog.
  *
  * @see SaveDialogActionDefinition
+ * @param <T> definition type
  */
-public class SaveDialogAction extends AbstractAction<SaveDialogActionDefinition> {
+public class SaveDialogAction<T extends  SaveDialogActionDefinition> extends AbstractAction<T> {
 
     private static final Logger log = LoggerFactory.getLogger(SaveDialogAction.class);
 
@@ -65,7 +66,7 @@ public class SaveDialogAction extends AbstractAction<SaveDialogActionDefinition>
     protected final EditorValidator validator;
     protected final EditorCallback callback;
 
-    public SaveDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback) {
+    public SaveDialogAction(T definition, Item item, EditorValidator validator, EditorCallback callback) {
         super(definition);
         this.item = item;
         this.validator = validator;
