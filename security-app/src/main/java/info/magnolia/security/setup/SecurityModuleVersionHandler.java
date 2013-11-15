@@ -142,10 +142,13 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                     new NodeExistsDelegateTask("Configure add folder action in actionbar in roles sub app.", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/root/groups/addActions/items",
                         new CreateNodeTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/root/groups/addActions/items", "addFolder", NodeTypes.ContentNode.NAME))
                 ))
-                .addTask(new BootstrapSingleResource("Bootstrap new dialog", "Bootstraps new 'superuserRole' dialog", "/mgnl-bootstrap/security-app/config.modules.security-app.dialogs.superuserRole.xml"))
                 .addTask(new RemovePropertyTask("Remove hardcoded field", "Remove hardcoded description of acl tab from role dialog: static1", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/acls/fields/static1", "value"))
                 .addTask(new RemovePropertyTask("Remove hardcoded field", "Remove hardcoded description of acl tab from role dialog: static2", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/acls/fields/static2", "value"))
-
+                .addTask(new NodeExistsDelegateTask("Disallow renaming the superuser role.", "", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/role/fields/jcrName",
+                        new ArrayDelegateTask("Configure role name field to be read only", "",
+                                new SetPropertyTask("Change the field type", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/role/fields/jcrName", "class", ConditionalReadOnlyTextFieldDefinition.class.getName()),
+                                new SetPropertyTask("Set the conditional value to superuser", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/role/fields/jcrName", "conditionalValue", "superuser"))
+                ))
         );
     }
 

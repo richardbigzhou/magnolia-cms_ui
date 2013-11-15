@@ -33,7 +33,6 @@
  */
 package info.magnolia.security.app.action;
 
-import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.event.EventBus;
 import info.magnolia.repository.RepositoryManager;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -73,7 +72,7 @@ public class OpenEditRoleDialogAction<D extends OpenEditRoleDialogActionDefiniti
     @Override
     public void execute() throws ActionExecutionException {
 
-        FormDialogDefinition dialogDefinition = AccessDefinition.DEFAULT_SUPERUSER_ROLE.equals(itemToEdit.getNodeName()) ? getDialogDefinition(AccessDefinition.DEFAULT_SUPERUSER_ROLE + "Role") : getDialogDefinition("role");
+        FormDialogDefinition dialogDefinition = getDialogDefinition("role");
 
         formDialogPresenter.start(itemToEdit, dialogDefinition, uiContext, new EditorCallback() {
 
