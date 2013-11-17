@@ -46,7 +46,9 @@ import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.Assertion;
 import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.TestUtil;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockEvent;
 import info.magnolia.test.mock.jcr.MockObservationManager;
@@ -141,41 +143,54 @@ public class ConfiguredAppDescriptorManagerTest {
         // Remove app a:
         session.getNode("/modules/aModule/apps/app1").remove();
         observationManager.fireEvent(MockEvent.nodeRemoved("/modules/aModule/apps/app1"));
-        Thread.sleep(6000);
+
         // THEN a is gone
-        try {
-            a = appRegistry.getAppDescriptor("appNameA");
-            fail();
-        } catch (RegistrationException expected) {
-        }
+        assertAppIsRemoved("appNameA");
 
         // WHEN
         // Add a property and fire event
+        session.getNode("/modules/bModule/apps/app1").setProperty("theme", "aTheme");
         observationManager.fireEvent(MockEvent.propertyAdded("/modules/bModule/apps/app1"));
-        Thread.sleep(6000);
+
         // THEN
         // app b has his property modified.
-        AppDescriptor b = appRegistry.getAppDescriptor("appNameB");
+        TestUtil.delayedAssert(new Assertion() {
+
+            @Override
+            public void evaluate() throws RegistrationException {
+                AppDescriptor b = appRegistry.getAppDescriptor("appNameB");
+                assertEquals("aTheme", b.getTheme());
+            }
+        });
 
         // WHEN
-        // Rename app b, chnge the app name.
+        // Rename app b, change the app name.
         session.getNode("/modules/bModule/apps/app1").getProperty("name").setValue("appNameB_B");
         MockEvent event = new MockEvent();
         event.setType(Event.PROPERTY_CHANGED);
         event.setPath("/modules/bModule/apps/app1");
 
         observationManager.fireEvent(event);
-        Thread.sleep(6000);
 
         // THEN
         // app b has gone.
-        try {
-            b = appRegistry.getAppDescriptor("appNameB");
-            fail();
-        } catch (RegistrationException expected) {
-        }
-        b = appRegistry.getAppDescriptor("appNameB_B");
+        assertAppIsRemoved("appNameB");
+
+        AppDescriptor b = appRegistry.getAppDescriptor("appNameB_B");
         assertNotNull(b);
     }
 
+    private void assertAppIsRemoved(final String name) {
+        TestUtil.delayedAssert(new Assertion() {
+            @Override
+            public void evaluate() {
+                try {
+                    appRegistry.getAppDescriptor(name);
+                    fail();
+                } catch (RegistrationException expected) {
+                    // expected
+                }
+            }
+        });
+    }
 }
