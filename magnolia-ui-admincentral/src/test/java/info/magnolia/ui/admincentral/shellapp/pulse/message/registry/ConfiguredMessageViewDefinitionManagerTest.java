@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.admincentral.shellapp.pulse.message.registry;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.operations.AccessDefinition;
@@ -46,8 +46,10 @@ import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.Assertion;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
+import info.magnolia.test.TestUtil;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockEvent;
 import info.magnolia.test.mock.jcr.MockObservationManager;
@@ -81,6 +83,7 @@ public class ConfiguredMessageViewDefinitionManagerTest extends MgnlTestCase {
     private static final String A_MESSAGE_VIEW_PATH = "/modules/aModule/" + ConfiguredMessageViewDefinitionManager.MESSAGE_VIEW_CONFIG_NODE_NAME + "/aMessageView";
     private static final String B_MESSAGE_VIEW_PATH = "/modules/bModule/" + ConfiguredMessageViewDefinitionManager.MESSAGE_VIEW_CONFIG_NODE_NAME + "/bMessageView";
     private static final String C_MESSAGE_VIEW_PATH = "/modules/bModule/" + ConfiguredMessageViewDefinitionManager.MESSAGE_VIEW_CONFIG_NODE_NAME + "/bMessageView";
+
     private Session session;
     private ModuleRegistry moduleRegistry;
     private MessageViewDefinitionRegistry messageViewRegistry;
@@ -99,14 +102,12 @@ public class ConfiguredMessageViewDefinitionManagerTest extends MgnlTestCase {
         ComponentsTestUtil.setImplementation(ActionDefinition.class, ConfiguredActionDefinition.class);
 
         session = SessionTestUtil.createSession(RepositoryConstants.CONFIG,
-                A_MESSAGE_VIEW_PATH + ".id=aModule:aMessageView",
                 A_MESSAGE_VIEW_PATH + ".class=" + ConfiguredMessageViewDefinition.class.getName(),
                 A_MESSAGE_VIEW_PATH + "/form/tabs/taba",
                 A_MESSAGE_VIEW_PATH + "/form/tabs/taba.label=labelA",
-                B_MESSAGE_VIEW_PATH + ".id=bModule:bMessageView",
                 B_MESSAGE_VIEW_PATH + "/actions/actionb",
                 B_MESSAGE_VIEW_PATH + "/actions/actionb.label=labelB",
-                C_MESSAGE_VIEW_PATH + ".id=cModule:cMessageView"
+                C_MESSAGE_VIEW_PATH + "/form/tabs/tabc"
                 );
         MockUtil.initMockContext();
         MockUtil.setSystemContextSessionAndHierarchyManager(session);
@@ -153,12 +154,11 @@ public class ConfiguredMessageViewDefinitionManagerTest extends MgnlTestCase {
         messageViewManager.start();
 
         // THEN
-        MessageViewDefinition aMessageView = messageViewRegistry.get("cModule:cMessageView");
-
+        messageViewRegistry.get("cModule:cMessageView");
     }
 
     @Test
-    public void testMessageViewDefinitionReloadsOnChange() throws RegistrationException, RepositoryException, InterruptedException {
+    public void testMessageViewDefinitionReloadsOnAddition() throws RegistrationException, RepositoryException, InterruptedException {
         // GIVEN
         MockObservationManager observationManager = (MockObservationManager) session.getWorkspace().getObservationManager();
         ConfiguredMessageViewDefinitionManager messageViewManager = new ConfiguredMessageViewDefinitionManager(moduleRegistry, messageViewRegistry);
@@ -171,20 +171,19 @@ public class ConfiguredMessageViewDefinitionManagerTest extends MgnlTestCase {
         MessageViewDefinition aMessageView = messageViewRegistry.get("aModule:aMessageView");
         assertNotNull(aMessageView);
 
-
         // WHEN
-        // add messageView c:
+        // add messageView c
         String newPath = session.getNode(A_MESSAGE_VIEW_PATH).getParent().addNode("cMessageView").getPath();
         MockEvent event = new MockEvent();
         event.setType(Event.NODE_ADDED);
         event.setPath(newPath);
         observationManager.fireEvent(event);
-        Thread.sleep(6000);
-        // THEN c
-        MessageViewDefinition cMessageView = messageViewRegistry.get("aModule:cMessageView");
+
+        // THEN c is added
+        assertMessageViewIsAdded("aModule:cMessageView");
     }
 
-    @Test(expected = RegistrationException.class)
+    @Test
     public void testMessageViewDefinitionReloadsOnRemoval() throws RegistrationException, RepositoryException, InterruptedException {
         // GIVEN
         MockObservationManager observationManager = (MockObservationManager) session.getWorkspace().getObservationManager();
@@ -205,8 +204,33 @@ public class ConfiguredMessageViewDefinitionManagerTest extends MgnlTestCase {
         event2.setType(Event.NODE_REMOVED);
         event2.setPath(A_MESSAGE_VIEW_PATH);
         observationManager.fireEvent(event2);
-        Thread.sleep(6000);
+
         // THEN a is gone
-        aMessageView = messageViewRegistry.get("aModule:aMessageView");
+        assertMessageViewIsRemoved("aModule:cMessageView");
+    }
+
+    private void assertMessageViewIsAdded(final String id) {
+        TestUtil.delayedAssert(new Assertion() {
+
+            @Override
+            public void evaluate() throws RegistrationException {
+                messageViewRegistry.get(id);
+            }
+        });
+    }
+
+    private void assertMessageViewIsRemoved(final String id) {
+        TestUtil.delayedAssert(2000, 5000, new Assertion() {
+
+            @Override
+            public void evaluate() {
+                try {
+                    messageViewRegistry.get(id);
+                    fail();
+                } catch (RegistrationException e) {
+                    // expected
+                }
+            }
+        });
     }
 }

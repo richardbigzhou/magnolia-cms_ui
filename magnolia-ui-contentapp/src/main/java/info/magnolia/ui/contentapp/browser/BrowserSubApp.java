@@ -143,7 +143,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
      * </ul>
      */
     @Override
-    public final ContentSubAppView start(final Location location) {
+    public ContentSubAppView start(final Location location) {
         BrowserLocation l = BrowserLocation.wrap(location);
         super.start(l);
         getView().setContentView(browser.start());
@@ -173,7 +173,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
      * @see BrowserSubApp#start(Location)
      * @see Location
      */
-    protected final void restoreBrowser(final BrowserLocation location) {
+    protected void restoreBrowser(final BrowserLocation location) {
         String path = ("/".equals(workbenchRoot) ? "" : workbenchRoot) + location.getNodePath();
         String viewType = location.getViewType();
 
@@ -206,7 +206,9 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
             log.warn("Could not retrieve item at path {} in workspace {}", path, workspaceName);
         }
         List<String> ids = new ArrayList<String>();
-        ids.add(itemId);
+        if (itemId != null) {
+            ids.add(itemId);
+        }
         getBrowser().resync(ids, viewType, query);
         updateActionbar(getBrowser().getActionbarPresenter());
     }
@@ -378,10 +380,12 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
             return false;
         }
 
-        // section must be visible for all items
-        for (Item item : items) {
-            if (!isSectionVisible(section, item)) {
-                return false;
+        if (items != null) {
+            // section must be visible for all items
+            for (Item item : items) {
+                if (!isSectionVisible(section, item)) {
+                    return false;
+                }
             }
         }
         return true;
@@ -464,7 +468,12 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
                 BrowserLocation location = getCurrentLocation();
                 try {
                     Item selected = JcrItemUtil.getJcrItem(event.getWorkspace(), JcrItemUtil.parseNodeIdentifier(event.getFirstItemId()));
-                    location.updateNodePath(StringUtils.removeStart(selected.getPath(), "/".equals(workbenchRoot) ? "" : workbenchRoot));
+                    if (selected == null) {
+                        // nothing is selected at the moment
+                        location.updateNodePath("");
+                    } else {
+                        location.updateNodePath(StringUtils.removeStart(selected.getPath(), "/".equals(workbenchRoot) ? "" : workbenchRoot));
+                    }
                 } catch (RepositoryException e) {
                     log.warn("Could not get jcrItem with itemId " + event.getFirstItemId() + " from workspace " + event.getWorkspace(), e);
                 }

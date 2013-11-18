@@ -95,7 +95,9 @@ public class WorkbenchStatusBarPresenter {
     }
 
     public void setSelectedItems(List<JcrItemAdapter> items) {
-        setSelectedItem(items.get(0));
+        if (!items.isEmpty()) {
+            setSelectedItem(items.get(0));
+        }
     }
 
     public void setSelectedItem(JcrItemAdapter item) {

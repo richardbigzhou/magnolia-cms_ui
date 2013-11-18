@@ -41,7 +41,9 @@ import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.Assertion;
 import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.TestUtil;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockEvent;
 import info.magnolia.test.mock.jcr.MockObservationManager;
@@ -59,7 +61,6 @@ import org.junit.Test;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.observation.Event;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -91,14 +92,11 @@ public class ConfiguredDialogDefinitionManagerTest {
         ComponentsTestUtil.setImplementation(ActionDefinition.class, ConfiguredActionDefinition.class);
 
         session = SessionTestUtil.createSession(RepositoryConstants.CONFIG,
-                A_DIALOG_PATH + ".id=aModule:aDialog",
                 A_DIALOG_PATH + ".class=" + ConfiguredFormDialogDefinition.class.getName(),
                 A_DIALOG_PATH + "/form/tabs/taba",
                 A_DIALOG_PATH + "/form/tabs/taba.label=label",
-                B_DIALOG_PATH + ".id=bModule:bDialog",
                 B_DIALOG_PATH + "/actions/actionb",
-                B_DIALOG_PATH + "/actions/actionb.label=label",
-                C_DIALOG_PATH + ".id=cModule:cDialog"
+                B_DIALOG_PATH + "/actions/actionb.label=label"
         );
         MockUtil.initMockContext();
         MockUtil.setSystemContextSessionAndHierarchyManager(session);
@@ -135,8 +133,8 @@ public class ConfiguredDialogDefinitionManagerTest {
         assertEquals("bModule:bDialog", bDialog.getId());
     }
 
-    @Test(expected = RegistrationException.class)
-    public void testDialogDefinitionReloadsOnChange() throws RegistrationException, UnsupportedRepositoryOperationException, RepositoryException, InterruptedException {
+    @Test
+    public void testDialogDefinitionReloadsOnChange() throws RegistrationException, RepositoryException, InterruptedException {
         // GIVEN
         MockObservationManager observationManager = (MockObservationManager) session.getWorkspace().getObservationManager();
         ConfiguredDialogDefinitionManager dialogManager = new ConfiguredDialogDefinitionManager(moduleRegistry, dialogRegistry);
@@ -153,43 +151,55 @@ public class ConfiguredDialogDefinitionManagerTest {
         // Remove dialog a:
         session.getNode(A_DIALOG_PATH).remove();
         observationManager.fireEvent(MockEvent.nodeRemoved(A_DIALOG_PATH));
-        Thread.sleep(6000);
+
         // THEN a is gone
-        try {
-            aDialog = dialogRegistry.getDialogDefinition("aModule:aDialog");
-            fail();
-        } catch (RegistrationException expected) {
-        }
+        assertDialogDefinitionIsRemoved("aModule:aDialog");
 
         // WHEN
         // Add a property and fire event
         session.getNode(B_DIALOG_PATH).setProperty("description", "dialog for bItems");
         observationManager.fireEvent(MockEvent.propertyAdded(B_DIALOG_PATH));
-        Thread.sleep(6000);
+
         // THEN
         // dialog b has its property modified.
-        FormDialogDefinition bDialog = dialogRegistry.getDialogDefinition("bModule:bDialog");
-        assertNotNull(bDialog);
-        assertEquals("dialog for bItems", bDialog.getDescription());
+        TestUtil.delayedAssert(new Assertion() {
+
+            @Override
+            public void evaluate() throws RegistrationException {
+                FormDialogDefinition bDialog = dialogRegistry.getDialogDefinition("bModule:bDialog");
+                assertNotNull(bDialog);
+                assertEquals("dialog for bItems", bDialog.getDescription());
+            }
+        });
 
         // WHEN
-        // Rename dialog b, change the dialog name.
-        session.getNode(B_DIALOG_PATH).getParent().addNode("cDialog").setProperty("id", "bModule:cDialog");
+        // add dialog c, remove dialog b
+        session.getNode(B_DIALOG_PATH).getParent().addNode("cDialog").addNode("form");
         session.getNode(B_DIALOG_PATH).remove();
         MockEvent event = new MockEvent();
-        event.setType(Event.NODE_MOVED);
-        event.setPath(B_DIALOG_PATH);
+        event.setType(Event.NODE_ADDED);
+        event.setPath(C_DIALOG_PATH);
         observationManager.fireEvent(event);
-        Thread.sleep(6000);
 
         // THEN
         // dialog b is gone.
-        try {
-            bDialog = dialogRegistry.getDialogDefinition("bModule:bDialog");
-            fail();
-        } catch (RegistrationException expected) {
-        }
-        bDialog = dialogRegistry.getDialogDefinition("cModule:cDialog");
+        assertDialogDefinitionIsRemoved("bModule:bDialog");
+        // and dialog c is present.
+        dialogRegistry.getDialogDefinition("bModule:cDialog");
     }
 
+    private void assertDialogDefinitionIsRemoved(final String dialogId) {
+        TestUtil.delayedAssert(new Assertion() {
+
+            @Override
+            public void evaluate() {
+                try {
+                    dialogRegistry.getDialogDefinition(dialogId);
+                    fail();
+                } catch (RegistrationException e) {
+                    // expected
+                }
+            }
+        });
+    }
 }

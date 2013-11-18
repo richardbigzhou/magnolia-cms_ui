@@ -78,7 +78,7 @@ public class JcrItemUtil {
     }
 
     public static boolean isPropertyItemId(final String itemId) {
-        return itemId.contains(PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR);
+        return itemId != null && itemId.contains(PROPERTY_NAME_AND_IDENTIFIER_SEPARATOR);
     }
 
     /**
@@ -139,10 +139,11 @@ public class JcrItemUtil {
 
     public static List<Item> getJcrItems(final String workspaceName, List<String> ids) {
         // sanity check
-        if (StringUtils.isBlank(workspaceName) || ids == null) {
-            return null;
-        }
         List<Item> items = new ArrayList<Item>();
+        if (StringUtils.isBlank(workspaceName) || ids == null) {
+            // there is lot of code calling this method that would fail w/ NPE if conditions above are met so we need to be either nice and return empty list or throw exception
+            return items;
+        }
         for (String id : ids) {
             Item item;
             try {

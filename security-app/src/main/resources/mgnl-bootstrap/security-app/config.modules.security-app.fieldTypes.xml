@@ -204,4 +204,42 @@
       <sv:value>superuser</sv:value>
     </sv:property>
   </sv:node>
+  <sv:node sv:name="conditionalReadOnlyTextField">
+    <sv:property sv:name="jcr:primaryType" sv:type="Name">
+      <sv:value>mgnl:contentNode</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:mixinTypes" sv:type="Name" sv:multiple="true">
+      <sv:value>mix:lockable</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:uuid" sv:type="String">
+      <sv:value>a159c227-af9c-44d3-9a07-9168ec2ef574</sv:value>
+    </sv:property>
+    <sv:property sv:name="definitionClass" sv:type="String">
+      <sv:value>info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldDefinition</sv:value>
+    </sv:property>
+    <sv:property sv:name="factoryClass" sv:type="String">
+      <sv:value>info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldFactory</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:createdBy" sv:type="String">
+      <sv:value>admin</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:activationStatus" sv:type="Boolean">
+      <sv:value>false</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:created" sv:type="Date">
+      <sv:value>2012-06-27T13:56:44.073+02:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastActivated" sv:type="Date">
+      <sv:value>2013-11-13T16:40:29.524+01:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastActivatedBy" sv:type="String">
+      <sv:value>superuser</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastModified" sv:type="Date">
+      <sv:value>2013-11-13T16:47:54.901+01:00</sv:value>
+    </sv:property>
+    <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
+      <sv:value>superuser</sv:value>
+    </sv:property>
+  </sv:node>
 </sv:node>

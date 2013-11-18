@@ -38,7 +38,6 @@ import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.ArrayDelegateTask;
-import info.magnolia.module.delta.BootstrapSingleResource;
 import info.magnolia.module.delta.CheckAndModifyPartOfPropertyValueTask;
 import info.magnolia.module.delta.CreateNodeTask;
 import info.magnolia.module.delta.DeltaBuilder;
@@ -53,6 +52,7 @@ import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.security.app.container.GroupDropConstraint;
 import info.magnolia.security.app.container.RoleDropConstraint;
+import info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldDefinition;
 import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
 import info.magnolia.ui.admincentral.setup.ConvertAclToAppPermissionTask;
 
@@ -74,7 +74,7 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
         register(DeltaBuilder.update("5.0.1", "")
 
                 .addTask(new NodeExistsDelegateTask("Change label of folder creation action to 'Add folder'", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/addFolder",
-                        new CheckAndModifyPartOfPropertyValueTask("Change label of foldercreation action to 'Add folder'", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/addFolder", "label", "New folder", "Add folder")))
+                        new CheckAndModifyPartOfPropertyValueTask("Change label of folder creation action to 'Add folder'", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/addFolder", "label", "New folder", "Add folder")))
 
                 .addTask(new NodeExistsDelegateTask("Change label of user creation action to 'Add user'", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/addUser",
                         new CheckAndModifyPartOfPropertyValueTask("Change label of user creation action to 'Add user'", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/addUser", "label", "New user", "Add user")))
@@ -128,24 +128,27 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                         new CreateNodeTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actionbar/sections/root/groups/addActions/items", "addFolder", NodeTypes.ContentNode.NAME))
                 ))
                 .addTask(new ArrayDelegateTask("Add folder support to roles sub app.", "",
-                    new PartialBootstrapTask("Bootstrap add folder action in roles sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/addFolder"),
-                    new PartialBootstrapTask("Bootstrap delete folder action in roles sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/deleteFolder"),
-                    new PartialBootstrapTask("Bootstrap edit folder action in roles sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/editFolder"),
-                    new PartialBootstrapTask("Bootstrap availability of add role action.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/addRole/availability/nodeTypes"),
-                    new NodeExistsDelegateTask("Remove constraint on add role action on nodes.", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/addRole/availability",
-                        new RemovePropertyTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/addRole/availability", "nodes")),
-                    new PartialBootstrapTask("Bootstrap availability for delete role action.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/deleteRole/availability"),
-                    new PartialBootstrapTask("Bootstrap availability for edit role action.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/editRole/availability"),
-                    new NodeExistsDelegateTask("Set drop constraint for drag and drop support in roles sub app.", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/workbench",
-                        new SetPropertyTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/workbench", "dropConstraintClass", RoleDropConstraint.class.getName())),
-                    new PartialBootstrapTask("Bootstrap action bar section for folders in roles sub app..", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actionbar/sections/folder"),
-                    new NodeExistsDelegateTask("Configure add folder action in actionbar in roles sub app.", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/root/groups/addActions/items",
-                        new CreateNodeTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/root/groups/addActions/items", "addFolder", NodeTypes.ContentNode.NAME))
+                        new PartialBootstrapTask("Bootstrap add folder action in roles sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/addFolder"),
+                        new PartialBootstrapTask("Bootstrap delete folder action in roles sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/deleteFolder"),
+                        new PartialBootstrapTask("Bootstrap edit folder action in roles sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/editFolder"),
+                        new PartialBootstrapTask("Bootstrap availability of add role action.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/addRole/availability/nodeTypes"),
+                        new NodeExistsDelegateTask("Remove constraint on add role action on nodes.", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/addRole/availability",
+                                new RemovePropertyTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/addRole/availability", "nodes")),
+                        new PartialBootstrapTask("Bootstrap availability for delete role action.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/deleteRole/availability"),
+                        new PartialBootstrapTask("Bootstrap availability for edit role action.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/editRole/availability"),
+                        new NodeExistsDelegateTask("Set drop constraint for drag and drop support in roles sub app.", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/workbench",
+                                new SetPropertyTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/workbench", "dropConstraintClass", RoleDropConstraint.class.getName())),
+                        new PartialBootstrapTask("Bootstrap action bar section for folders in roles sub app..", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actionbar/sections/folder"),
+                        new NodeExistsDelegateTask("Configure add folder action in actionbar in roles sub app.", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/root/groups/addActions/items",
+                                new CreateNodeTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/root/groups/addActions/items", "addFolder", NodeTypes.ContentNode.NAME))
                 ))
-                .addTask(new BootstrapSingleResource("Bootstrap new dialog", "Bootstraps new 'superuserRole' dialog", "/mgnl-bootstrap/security-app/config.modules.security-app.dialogs.superuserRole.xml"))
                 .addTask(new RemovePropertyTask("Remove hardcoded field", "Remove hardcoded description of acl tab from role dialog: static1", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/acls/fields/static1", "value"))
                 .addTask(new RemovePropertyTask("Remove hardcoded field", "Remove hardcoded description of acl tab from role dialog: static2", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/acls/fields/static2", "value"))
-
+                .addTask(new NodeExistsDelegateTask("Disallow renaming the superuser role.", "", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/role/fields/jcrName",
+                        new ArrayDelegateTask("Configure role name field to be read only", "",
+                                new SetPropertyTask("Change the field type", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/role/fields/jcrName", "class", ConditionalReadOnlyTextFieldDefinition.class.getName()),
+                                new SetPropertyTask("Set the conditional value to superuser", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/role/fields/jcrName", "conditionalValue", "superuser"))
+                ))
         );
     }
 

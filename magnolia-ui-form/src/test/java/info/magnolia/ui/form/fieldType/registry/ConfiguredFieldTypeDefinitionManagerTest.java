@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.form.fieldType.registry;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.jcr.node2bean.Node2BeanProcessor;
@@ -44,7 +44,9 @@ import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.test.Assertion;
 import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.test.TestUtil;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockEvent;
 import info.magnolia.test.mock.jcr.MockObservationManager;
@@ -79,7 +81,6 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
     private Session session;
     private ModuleRegistry moduleRegistry;
     private FieldTypeDefinitionRegistry fieldTypeRegistry;
-
 
     @Before
     public void setUp() throws Exception {
@@ -141,7 +142,6 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
         assertNotNull(aFieldType);
         assertEquals(TextFieldDefinition.class.getName(), aFieldType.getDefinitionClass().getName());
         assertEquals(TextFieldFactory.class.getName(), aFieldType.getFactoryClass().getName());
-
     }
 
     @Test(expected = RegistrationException.class)
@@ -153,12 +153,11 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
         fieldTypeManager.start();
 
         // THEN
-        FieldTypeDefinition aFieldType = fieldTypeRegistry.get("cFieldType");
-
+        fieldTypeRegistry.get("cFieldType");
     }
 
     @Test
-    public void testFieldTypeDefinitionReloadsOnChange() throws RegistrationException, RepositoryException, InterruptedException {
+    public void testFieldTypeDefinitionReloadsOnAddition() throws RegistrationException, RepositoryException, InterruptedException {
         // GIVEN
         MockObservationManager observationManager = (MockObservationManager) session.getWorkspace().getObservationManager();
         ConfiguredFieldTypeDefinitionManager fieldTypeManager = new ConfiguredFieldTypeDefinitionManager(moduleRegistry, fieldTypeRegistry);
@@ -171,21 +170,19 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
         FieldTypeDefinition aFieldType = fieldTypeRegistry.get("aFieldType");
         assertNotNull(aFieldType);
 
-
         // WHEN
-        // add fieldType c:
+        // add fieldType c.
         String newPath = session.getNode(A_FIELD_TYPE_PATH).getParent().addNode("cFieldType").getPath();
         MockEvent event = new MockEvent();
         event.setType(Event.NODE_ADDED);
         event.setPath(newPath);
         observationManager.fireEvent(event);
-        Thread.sleep(6000);
-        // THEN c
-        FieldTypeDefinition cFieldType = fieldTypeRegistry.get("cFieldType");
 
+        // THEN c is added
+        assertFieldTypeIsAdded("cFieldType");
     }
 
-    @Test(expected = RegistrationException.class)
+    @Test
     public void testFieldTypeDefinitionReloadsOnRemoval() throws RegistrationException, RepositoryException, InterruptedException {
         // GIVEN
         MockObservationManager observationManager = (MockObservationManager) session.getWorkspace().getObservationManager();
@@ -205,8 +202,33 @@ public class ConfiguredFieldTypeDefinitionManagerTest {
         event2.setType(Event.NODE_REMOVED);
         event2.setPath(A_FIELD_TYPE_PATH);
         observationManager.fireEvent(event2);
-        Thread.sleep(6000);
+
         // THEN a is gone
-        aFieldType = fieldTypeRegistry.get("aFieldType");
+        assertFieldTypeIsRemoved("aFieldType");
+    }
+
+    private void assertFieldTypeIsRemoved(final String id) {
+        TestUtil.delayedAssert(new Assertion() {
+
+            @Override
+            public void evaluate() {
+                try {
+                    fieldTypeRegistry.get(id);
+                    fail();
+                } catch (RegistrationException e) {
+                    // expected
+                }
+            }
+        });
+    }
+
+    private void assertFieldTypeIsAdded(final String id) {
+        TestUtil.delayedAssert(new Assertion() {
+
+            @Override
+            public void evaluate() throws RegistrationException {
+                fieldTypeRegistry.get(id);
+            }
+        });
     }
 }

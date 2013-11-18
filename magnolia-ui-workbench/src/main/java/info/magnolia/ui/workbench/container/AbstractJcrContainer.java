@@ -654,7 +654,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     /**
      * @see #getPage().
      */
-    public final void updateSize() {
+    public void updateSize() {
         final String stmt = constructJCRQuery(false);
         try {
             // query for all items in order to get the size
@@ -759,7 +759,10 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
         }
 
         final Set<NodeType> searchableNodeTypes = new HashSet<NodeType>();
-
+        if (workbenchDefinition.getWorkspace() == null) {
+            // no workspace, no searchable types
+            return searchableNodeTypes;
+        }
         try {
             final NodeTypeManager nodeTypeManager = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getWorkspace().getNodeTypeManager();
 

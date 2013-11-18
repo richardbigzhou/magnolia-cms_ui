@@ -43,6 +43,7 @@ import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
+import info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.factory.SelectFieldFactory;
 
@@ -291,5 +292,21 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         assertTrue(session.propertyExists(base + "/workbench/dropConstraintClass"));
         assertTrue(session.nodeExists(base + "/actionbar/sections/folder"));
         assertTrue(session.nodeExists(base + "/actionbar/sections/root/groups/addActions/items/addFolder"));
+    }
+
+    @Test
+    public void roleNameFieldIsConfiguredToUserConditionalReadOnlyTextFieldOnUpdateTo52() throws RepositoryException, ModuleManagementException {
+        // GIVEN
+        String fieldPath = "/modules/security-app/dialogs/role/form/tabs/role/fields/jcrName";
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        NodeUtil.createPath(session.getRootNode(), fieldPath, NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1.1"));
+
+        // THEN
+        assertTrue(session.nodeExists(fieldPath));
+        assertEquals(ConditionalReadOnlyTextFieldDefinition.class.getName(), session.getProperty(fieldPath + "/class").getString());
+        assertEquals("superuser", session.getProperty(fieldPath + "/conditionalValue").getString());
     }
 }
