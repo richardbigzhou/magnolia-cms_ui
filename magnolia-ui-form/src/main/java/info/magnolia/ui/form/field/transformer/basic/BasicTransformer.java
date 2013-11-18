@@ -47,11 +47,11 @@ import com.vaadin.data.Property;
 
 /**
  * Basic implementation of a {@link Transformer}.<br>
- * This handler is used for most of the basic fields (textBox, Date, ...).<br>
+ * This transformer is used for most of the basic fields (textBox, Date, ...).<br>
  * His responsibility is to: <br>
  * - retrieve or create a basic property from the related item <br>
  * - update the item property value in case of changes performed on the related field.
- *
+ * 
  * @param <T>
  */
 public class BasicTransformer<T> implements Transformer<T> {
@@ -83,7 +83,6 @@ public class BasicTransformer<T> implements Transformer<T> {
 
     @Override
     public T readFromItem() {
-        String defaultValue = definition.getDefaultValue();
         Property<T> p = getOrCreateProperty(type);
         if (definition.isReadOnly()) {
             p.setReadOnly(true);
@@ -117,7 +116,6 @@ public class BasicTransformer<T> implements Transformer<T> {
      *
      * @param <T>
      */
-    @SuppressWarnings("unchecked")
     protected <T> Property<T> getOrCreateProperty(Class<T> type) {
         String propertyName = definePropertyName();
         Property<T> property = relatedFormItem.getItemProperty(propertyName);
