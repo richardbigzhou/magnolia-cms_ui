@@ -71,6 +71,8 @@ public class LinkControlMigrator implements ControlMigrator {
                     controlNode.getProperty("repository").remove();
                 }
 
+            } else if (controlNode.getProperty("repository").getString().equals("website")) {
+                controlNode.getProperty("repository").remove();
             }
         }
 

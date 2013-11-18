@@ -243,7 +243,7 @@ public class ControlMigratorTest {
         assertTrue(controlNode.hasNode("identifierToPathConverter"));
         assertTrue(controlNode.getNode("identifierToPathConverter").hasProperty("class"));
         assertEquals(BaseIdentifierToPathConverter.class.getName(), controlNode.getNode("identifierToPathConverter").getProperty("class").getString());
-
+        assertFalse(controlNode.hasProperty("repository"));
     }
 
     @Test
@@ -265,6 +265,7 @@ public class ControlMigratorTest {
         assertEquals("contacts", controlNode.getProperty("appName").getString());
         assertTrue(controlNode.hasProperty("targetWorkspace"));
         assertEquals("contacts", controlNode.getProperty("targetWorkspace").getString());
+        assertFalse(controlNode.hasProperty("repository"));
     }
 
     @Test
