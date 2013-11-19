@@ -57,6 +57,7 @@ import java.util.Collection;
 import javax.jcr.Node;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -112,6 +113,9 @@ public class SaveUserDialogAction extends SaveDialogAction {
                 if ("/".equals(parentPath)) {
                     throw new ActionExecutionException("Users cannot be created directly under root");
                 }
+
+                // Make sure this user is allowed to add a user here, the user manager would happily do it and then we'd fail to read the node
+                parentNode.getSession().checkPermission(parentNode.getPath(), Session.ACTION_ADD_NODE);
 
                 user = userManager.createUser(parentPath, newUserName, newPassword);
                 userNode = parentNode.getNode(user.getName());
