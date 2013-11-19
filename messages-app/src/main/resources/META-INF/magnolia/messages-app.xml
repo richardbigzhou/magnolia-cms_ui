@@ -4,7 +4,7 @@
   <name>messages-app</name>
   <displayName>Messages app</displayName>
   <description>Messages app</description>
-  <versionHandler>info.magnolia.messages.app.setup.MessagesAppModuleVersionHandler</versionHandler>
+  <versionHandler>info.magnolia.messages.setup.MessagesModuleVersionHandler</versionHandler>
   <version>${project.version}</version>
 
   <!-- Components App definition. -->

@@ -34,12 +34,12 @@
 package info.magnolia.ui.dialog.setup.migration;
 
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueChildNodeTransformer;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueJSONTransformer;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueSubChildrenNodeTransformer;
-import info.magnolia.ui.form.field.transformer.multi.MultiValueTransformer;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -59,20 +59,32 @@ public class MultiSelectControlMigrator implements ControlMigrator {
     public void migrate(Node controlNode) throws RepositoryException {
         controlNode.getProperty("controlType").remove();
         controlNode.setProperty("class", MultiValueFieldDefinition.class.getName());
+
         // Set transformerClass
         setTransformerClass(controlNode);
         // Create a Field sub node
         Node field = controlNode.addNode("field", NodeTypes.ContentNode.NAME);
+        // Set converter
+        if (useIdentifier) {
+            field.addNode("identifierToPathConverter", NodeTypes.ContentNode.NAME).setProperty("class", BaseIdentifierToPathConverter.class.getName());
+        }
         field.setProperty("class", LinkFieldDefinition.class.getName());
         // Set Related Select (App)
         if (controlNode.hasProperty("tree")) {
             setSeletionApp(controlNode, field);
         }
-        field.setProperty("identifier", this.useIdentifier);
         controlNode.setProperty("buttonSelectAddLabel", "field.link.select.add");
         field.setProperty("buttonSelectNewLabel", "field.link.select.new");
         field.setProperty("buttonSelectOtherLabel", "field.link.select.another");
 
+        if (controlNode.hasProperty("saveHandler")) {
+            controlNode.getProperty("saveHandler").remove();
+        }
+        // set type if define
+        if (controlNode.hasProperty("type")) {
+            field.setProperty("type", controlNode.getProperty("type").getString());
+            controlNode.getProperty("type").remove();
+        }
     }
 
     /**
@@ -80,7 +92,7 @@ public class MultiSelectControlMigrator implements ControlMigrator {
      */
     protected void setSeletionApp(Node controlNode, Node fieldNode) throws RepositoryException {
         String workspace = controlNode.getProperty("tree").getString();
-        fieldNode.setProperty("workspace", workspace);
+        fieldNode.setProperty("targetWorkspace", workspace);
         controlNode.getProperty("tree").remove();
         if (workspace.equals("category")) {
             fieldNode.setProperty("appName", "categories");
@@ -99,8 +111,6 @@ public class MultiSelectControlMigrator implements ControlMigrator {
                 controlNode.setProperty("transformerClass", MultiValueJSONTransformer.class.getName());
             } else if (saveMode.equals("multiple")) {
                 controlNode.setProperty("transformerClass", MultiValueChildNodeTransformer.class.getName());
-            } else {
-                controlNode.setProperty("transformerClass", MultiValueTransformer.class.getName());
             }
             controlNode.getProperty("saveMode").remove();
         } else {

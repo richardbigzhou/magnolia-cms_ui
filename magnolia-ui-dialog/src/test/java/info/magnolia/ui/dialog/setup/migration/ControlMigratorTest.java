@@ -284,8 +284,8 @@ public class ControlMigratorTest {
         assertEquals(MultiValueFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
         assertTrue(controlNode.hasNode("field"));
         Node field = controlNode.getNode("field");
-        assertTrue(field.hasProperty("identifier"));
-        assertEquals("true", field.getProperty("identifier").getString());
+        assertTrue(field.hasNode("identifierToPathConverter"));
+        assertEquals(BaseIdentifierToPathConverter.class.getName(), field.getNode("identifierToPathConverter").getProperty("class").getString());
         assertTrue(controlNode.hasProperty("transformerClass"));
         assertEquals(MultiValueJSONTransformer.class.getName(), controlNode.getProperty("transformerClass").getString());
         assertFalse(controlNode.hasProperty("saveHandler"));
