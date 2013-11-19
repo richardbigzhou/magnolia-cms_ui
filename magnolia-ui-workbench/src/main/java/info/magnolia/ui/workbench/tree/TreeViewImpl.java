@@ -141,7 +141,7 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
 
     @Override
     public void select(List<String> itemIds) {
-        String firstItemId = itemIds.get(0);
+        String firstItemId = itemIds == null || itemIds.isEmpty() ? null : itemIds.get(0);
         expandTreeToNode(firstItemId, false);
 
         treeTable.setValue(null);

@@ -103,7 +103,7 @@ public class ThumbnailViewImpl implements ThumbnailView {
     public void select(List<String> itemIds) {
         // ThumbnailLayout only supports single selection and because the client requests thumbnails we set the
         // selected itemId so it can update selection when that happens
-        String itemId = itemIds.isEmpty() ? null: itemIds.get(0);
+        String itemId = itemIds == null || itemIds.isEmpty() ? null : itemIds.get(0);
         thumbnailLayout.setSelectedItemId(itemId);
     }
 
