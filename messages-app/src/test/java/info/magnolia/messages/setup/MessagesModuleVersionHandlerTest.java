@@ -103,6 +103,8 @@ public class MessagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         Node devApps = NodeUtil.createPath(session.getRootNode(), "modules/ui-admincentral/config/appLauncherLayout/groups/dev/apps", NodeTypes.ContentNode.NAME);
         NodeUtil.createPath(devApps, "dummyApp", NodeTypes.ContentNode.NAME);
+        // we have to create the messages node artificially before bootstrapping, otherwise test would fail in maven
+        NodeUtil.createPath(devApps, "messages", NodeTypes.ContentNode.NAME);
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(null);
