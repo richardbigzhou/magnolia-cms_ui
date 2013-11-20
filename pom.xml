@@ -16,7 +16,7 @@
     <javaVersion>1.6</javaVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <magnoliaVersion>5.2-rc2</magnoliaVersion>
+    <magnoliaVersion>5.2-SNAPSHOT</magnoliaVersion>
     <imagingVersion>3.0.1</imagingVersion>
     <vaadinVersion>7.1.7</vaadinVersion>
     <scmTagPrefix>magnolia-ui</scmTagPrefix>
