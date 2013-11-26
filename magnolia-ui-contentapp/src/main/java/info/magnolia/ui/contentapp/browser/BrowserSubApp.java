@@ -79,13 +79,13 @@ import com.vaadin.server.ExternalResource;
 
 /**
  * Base implementation of a content subApp. A content subApp displays a collection of data represented inside a {@link info.magnolia.ui.workbench.ContentView} created by the {@link info.magnolia.ui.workbench.WorkbenchPresenter}.
- *
+ * 
  * <pre>
  *  <p>
  *      This class Provides sensible implementation for services shared by all content subApps.
  *      Out-of-the-box it will handle the following:
  *  </p>
- *
+ * 
  *  <ul>
  *      <li>location updates when switching views, selecting items or performing searches: see {@link #locationChanged(Location)}
  *      <li>restoring the browser app status when i.e. coming from a bookmark: see {@link #start(Location)}
@@ -103,7 +103,7 @@ import com.vaadin.server.ExternalResource;
  *      <li>{@link #updateActionbar(ActionbarPresenter)}
  *  </ul>
  * </pre>
- *
+ * 
  * @see BrowserPresenter
  * @see info.magnolia.ui.contentapp.ContentSubAppView
  * @see info.magnolia.ui.contentapp.ContentApp
@@ -168,7 +168,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
      * }
      * <p>
      * then this method will select the root path, set the view type as <code>search</code>, perform a search for "qux" in the workspace used by the app and finally update the available actions.
-     *
+     * 
      * @see BrowserSubApp#updateActionbar(ActionbarPresenter)
      * @see BrowserSubApp#start(Location)
      * @see Location
@@ -303,7 +303,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
     /**
      * Update the items in the actionbar based on the selected item and the action availability configuration.
      * This method can be overriden to implement custom conditions diverging from {@link #updateActionPopup(info.magnolia.ui.vaadin.actionbar.ActionPopup)}.
-     *
+     * 
      * @see #restoreBrowser(BrowserLocation)
      * @see #locationChanged(Location)
      * @see ActionbarPresenter
@@ -440,7 +440,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
     @Override
     public void locationChanged(final Location location) {
         super.locationChanged(location);
-        restoreBrowser(getCurrentLocation());
+        restoreBrowser(BrowserLocation.wrap(location));
     }
 
     /**

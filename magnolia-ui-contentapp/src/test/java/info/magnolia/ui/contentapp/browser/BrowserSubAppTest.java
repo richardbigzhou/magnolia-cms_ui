@@ -218,6 +218,35 @@ public class BrowserSubAppTest extends MgnlTestCase {
     }
 
     @Test
+    public void testLocationChangedRestoresBrowserWithNewLocation() {
+        // GIVEN
+        BrowserSubApp subappSpy = spy(subApp);
+        when(browserPresenter.hasViewType(anyString())).thenReturn(true);
+
+        AppContext mockAppContext = mock(AppContext.class);
+        doAnswer(new Answer<Void>() {
+
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                subAppContext.setLocation((Location) args[1]);
+                return null;
+            }
+        }).when(mockAppContext).updateSubAppLocation(any(SubAppContext.class), any(Location.class));
+        subAppContext.setAppContext(mockAppContext);
+
+        subAppContext.setLocation(new DefaultLocation("app", "someApp", "someContentApp", "/foo/bar:someView"));
+
+        DefaultLocation newLocation = new DefaultLocation("app", "someApp", "someContentApp", "/foo/baz/qux/node:someView");
+
+        // WHEN
+        subappSpy.locationChanged(newLocation);
+
+        // THEN
+        verify(subappSpy).restoreBrowser(BrowserLocation.wrap(newLocation));
+    }
+
+    @Test
     public void testAlwaysVisibleSectionOnRoot() throws Exception {
         // GIVEN
         List<String> ids = new ArrayList<String>(1);
