@@ -106,11 +106,13 @@ public class FieldDefinitionKeyGeneratorTest {
         generator.keysFor(keys, dialog.getForm().getTabs().get(0).getFields().get(0), field.getClass().getMethod("getLabel"));
 
         // THEN
-        assertEquals(4, keys.size());
+        assertEquals(6, keys.size());
         assertEquals("test-module.testFolder.testDialog.testTab.mgnl-testField.label", keys.get(0));
         assertEquals("test-module.testFolder.testDialog.testTab.mgnl-testField", keys.get(1));
-        assertEquals("test-module.testFolder.testDialog.mgnl-testField.label", keys.get(2));
-        assertEquals("test-module.testFolder.testDialog.mgnl-testField", keys.get(3));
+        assertEquals("testTab.mgnl-testField.label", keys.get(2));
+        assertEquals("testTab.mgnl-testField", keys.get(3));
+        assertEquals("test-module.testFolder.testDialog.mgnl-testField.label", keys.get(4));
+        assertEquals("test-module.testFolder.testDialog.mgnl-testField", keys.get(5));
     }
 
     @Test
@@ -147,13 +149,15 @@ public class FieldDefinitionKeyGeneratorTest {
                 field.getClass().getMethod("getLabel"));
 
         // THEN
-        assertEquals(6, keys.size());
+        assertEquals(8, keys.size());
         assertEquals("test-module.testFolder.testDialog.testTab.mgnl-parentField1.mgnl-parentField2.mgnl-testField.label", keys.get(0));
         assertEquals("test-module.testFolder.testDialog.testTab.mgnl-parentField1.mgnl-parentField2.mgnl-testField", keys.get(1));
         assertEquals("test-module.testFolder.testDialog.testTab.mgnl-testField.label", keys.get(2));
         assertEquals("test-module.testFolder.testDialog.testTab.mgnl-testField", keys.get(3));
-        assertEquals("test-module.testFolder.testDialog.mgnl-testField.label", keys.get(4));
-        assertEquals("test-module.testFolder.testDialog.mgnl-testField", keys.get(5));
+        assertEquals("testTab.mgnl-testField.label", keys.get(4));
+        assertEquals("testTab.mgnl-testField", keys.get(5));
+        assertEquals("test-module.testFolder.testDialog.mgnl-testField.label", keys.get(6));
+        assertEquals("test-module.testFolder.testDialog.mgnl-testField", keys.get(7));
     }
 
     /**

@@ -103,6 +103,8 @@ public class FieldDefinitionKeyGenerator extends AbstractFormKeyGenerator<FieldD
             // <dialogId>.<tabName>.<fieldName>.<property>
             // <dialogId>.<tabName>.<fieldName> (in case of property==label)
             addKey(list, dialogID, tabName, fieldName, property);
+            // <tabName>.<fieldName> (in case of property==label)
+            addKey(list, tabName, fieldName, property);
             // <dialogId>.<fieldName>.<property>
             // <dialogId>.<fieldName> (in case property==label)
             addKey(list, dialogID, fieldName, property);
