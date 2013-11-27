@@ -183,7 +183,6 @@ public final class FavoritesForm extends CustomComponent {
         public InternalFavoriteEntryForm(final JcrNewNodeAdapter newFavorite, final Map<String, String> availableGroups) {
             addStyleName("favorites-form-content");
             FormLayout layout = new FormLayout();
-            layout.setSizeUndefined();
 
             title.setRequired(true);
             url.setRequired(true);
@@ -259,6 +258,7 @@ public final class FavoritesForm extends CustomComponent {
             FormLayout layout = new FormLayout();
 
             title.setRequired(true);
+            title.addStyleName("group-title");
             layout.addComponent(title);
 
             // Now use a binder to bind the members

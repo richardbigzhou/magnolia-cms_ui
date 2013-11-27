@@ -179,7 +179,7 @@
 }
 
 .favorites-form-content .v-formlayout-captioncell {
-  padding-left: 70px;
+  padding-left: 50px;
 }
 
 .favorites-tabs .v-tabsheet-tabitem {
@@ -208,8 +208,17 @@
   width: 600px !important;
  }
 
+.favorites-form-content input[type="text"].group-title {
+  width: 715px !important;
+ }
+
+.favorites-form-content input[type="text"].v-filterselect-input {
+  width: 590px !important;
+ }
+
 .favorites-form-content .v-button-commit {
-   margin-left: 567px;
+   float:right;
+   margin-right: 28px;
  }
 
 .favorites-form-content span.v-required-field-indicator {
