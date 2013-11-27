@@ -240,7 +240,7 @@ public class AppEventTest {
         return builder.build(eventBusConfigurer);
     }
 
-    public class TestEventBusConfigurer extends AbstractGuiceComponentConfigurer {
+    private class TestEventBusConfigurer extends AbstractGuiceComponentConfigurer {
 
         private final EventBus eventBus;
 

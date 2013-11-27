@@ -46,6 +46,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Tests for the {@link Message}.
+ */
 public class MessageTest {
 
     private Message message;

@@ -65,7 +65,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test case for AbstractActionExecutor.
+ * Test case for the {@link AbstractActionExecutor}.
  */
 public class AbstractActionExecutorTest extends MgnlTestCase {
 
