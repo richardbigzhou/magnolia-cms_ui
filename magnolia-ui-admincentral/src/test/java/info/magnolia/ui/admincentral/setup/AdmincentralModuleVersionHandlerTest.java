@@ -419,5 +419,120 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         // THEN
         assertFalse(devAppGroup.hasNode("activation"));
     }
+    
+    @Test
+    public void testUpdateTo54AddConfigurationWithContentAssistAppWhenParentNodeExistsAndTheAddedAppNodeDoesNotExist()
+            throws Exception {
+        // GIVEN
+        // modules/ui-admincentral/apps/configuration-with-content-assist node does not exist
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node apps = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps", NodeTypes.ContentNode.NAME);
+        
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
+        
+        // THEN
+        Node iConfig = apps.getNode("configuration-with-content-assist");
+        assertNotNull(iConfig);
+        assertEquals("iConfig", iConfig.getProperty("label").getString());
+    }
+    
+    @Test
+    public void testUpdateTo54AddConfigurationWithContentAssistAppWhenParentNodeExistsAndTheAddedAppNodeExists() throws Exception {
+        // GIVEN
+        // modules/ui-admincentral/apps/configuration-with-content-assist node exists
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node iConfig = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration-with-content-assist", NodeTypes.ContentNode.NAME);
+        iConfig.setProperty("label", "configuration");
+        
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
+        
+        // THEN
+        assertEquals("configuration", iConfig.getProperty("label").getString());
+    }
+    
+    @Test
+    public void testUpdateTo54AddConfigurationWithContentAssistAppWhenParentNodeDoesNotExist()
+            throws Exception {
+        // GIVEN
+        // modules/ui-admincentral/apps does not exist
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        if (session.itemExists("/modules/ui-admincentral/apps")) {
+            session.removeItem("/modules/ui-admincentral/apps");
+        }
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
+        
+        // THEN
+        assertFalse(session.getRootNode().hasNode("modules/ui-admincentral/apps"));
+        assertFalse(session.getRootNode().hasNode("modules/ui-admincentral/apps/configuration-with-content-assist"));
+    }
+    
+    @Test
+    public void testUpdateTo54AddConfigurationWithContentAssistAppToManageAppGroupWhenTheAppExists() throws Exception {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node manageAppGroup = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps", NodeTypes.ContentNode.NAME);
+        NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration-with-content-assist", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
+
+        // THEN
+        assertTrue(manageAppGroup.hasNode("configuration-with-content-assist"));
+    }
+    
+    @Test
+    public void testUpdateTo54AddConfigurationWithContentAssistAppToManageAppGroupWhenTheAppDoesNotExist()
+            throws Exception {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node manageAppGroup = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps", NodeTypes.ContentNode.NAME);
+        if (session.itemExists("/modules/ui-admincentral/apps")) {
+            session.removeItem("/modules/ui-admincentral/apps");
+        }
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
+
+        // THEN
+        assertFalse(manageAppGroup.hasNode("configuration-with-content-assist"));
+    }
+    
+    @Test
+    public void testUpdateTo54MoveConfigurationWithContentAssistAppAfterConfigurationAppWhenMovedNodeExists() throws Exception {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        Node configurationApp = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration", NodeTypes.ContentNode.NAME);
+        Node configurationWithCotentAssistApp = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration-with-content-assist", NodeTypes.ContentNode.NAME);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
+
+        // THEN
+        assertTrue(session.getRootNode().hasNode("modules/ui-admincentral/apps/configuration"));
+        assertTrue(session.getRootNode().hasNode("modules/ui-admincentral/apps/configuration-with-content-assist"));
+        Node nodeAfterConfigurationApp = NodeUtil.getSiblingAfter(configurationApp);
+        assertNotNull(nodeAfterConfigurationApp);
+        assertTrue(NodeUtil.isSame(configurationWithCotentAssistApp, nodeAfterConfigurationApp));
+    }
+    
+    @Test
+    public void testUpdateTo54MoveConfigurationWithContentAssistAppAfterConfigurationAppWhenMovedNodeWithoutExisting() throws Exception {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        if (session.itemExists("/modules/ui-admincentral/apps")) {
+            session.removeItem("/modules/ui-admincentral/apps");
+        }
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.3"));
+
+        // THEN
+        assertFalse(session.getRootNode().hasNode("modules/ui-admincentral/apps"));
+        assertFalse(session.getRootNode().hasNode("modules/ui-admincentral/apps/configuration-with-content-assist"));
+    }
 
 }

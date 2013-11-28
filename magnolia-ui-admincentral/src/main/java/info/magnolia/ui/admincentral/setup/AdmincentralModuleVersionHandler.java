@@ -169,7 +169,20 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                 .addTask(new BootstrapSingleModuleResource("Bootstrap virtualURIMapping", "Bootstrap virtual URI mappings which have moved from adminInterface module.", "config.modules.ui-admincentral.virtualURIMapping.xml"))
                 .addTask(new AddActivationToDevAppGroupTask()));
 
-
+        register(DeltaBuilder.update("5.4", "")
+                // add configuration-with-content-assist app
+                .addTask(new NodeExistsDelegateTask("Add an app", "Add new configuration-with-content-assist app to ui-admincentral module", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps",
+                        new NodeExistsDelegateTask("Add an app", "Add new configuration-with-content-assist app to ui-admincentral module", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration-with-content-assist", null, 
+                        new BootstrapSingleModuleResource("Add an app", "Add new configuration-with-content-assist app to ui-admincentral module", "config.modules.ui-admincentral.apps.configuration-with-content-assist.xml"))))
+                // add configuration-with-content-assist app to manage group
+                .addTask(new NodeExistsDelegateTask("Add an app to appLauncherLayout", "Add configuration-with-content-assist app to appLauncherLayout's manage group", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps",
+                        new NodeExistsDelegateTask("Add an app to appLauncherLayout", "Add configuration-with-content-assist app to appLauncherLayout's manage group", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps/configuration-with-content-assist", null, 
+                        new NodeExistsDelegateTask("Add an app to appLauncherLayout", "Add configuration-with-content-assist app to appLauncherLayout's manage group", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration-with-content-assist",                
+                        new BootstrapSingleModuleResource("Add an app to appLauncherLayout", "Add configuration-with-content-assist app to appLauncherLayout's manage group", "config.modules.ui-admincentral.config.appLauncherLayout.groups.manage.apps.configuration-with-content-assist.xml")))))
+                // move configuration-with-content-assist app after configuration
+                .addTask(new NodeExistsDelegateTask("Change display location of configuration-with-content-assist", "Move configuration-with-content-assist app after configuration app", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration-with-content-assist",
+                        new OrderNodeAfterTask("Change display location of configuration-with-content-assist", "Move configuration-with-content-assist app after configuration app", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration-with-content-assist", "configuration")))
+        );
 
     }
 
