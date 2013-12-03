@@ -87,7 +87,7 @@ public class DialogMigrationTask extends AbstractTask {
     private HashMap<String, ControlMigrator> controlsToMigrate;
     private String defaultDialogActions = "defaultDialogActions";
     private HashMap<String, List<ActionCreator>> dialogActionsToMigrate;
-
+    protected InstallContext installContext;
 
     /**
      * @param taskName
@@ -123,6 +123,7 @@ public class DialogMigrationTask extends AbstractTask {
     @Override
     public void execute(InstallContext installContext) throws TaskExecutionException {
         Session session = null;
+        this.installContext = installContext;
         try {
             addCustomControlsToMigrate(controlsToMigrate);
             addCustomDialogActionToCreate(dialogActionsToMigrate);
