@@ -33,10 +33,6 @@
  */
 package info.magnolia.security.app.dialog.action;
 
-import info.magnolia.cms.security.Permission;
-import info.magnolia.cms.security.PermissionImpl;
-import info.magnolia.cms.security.PermissionUtil;
-import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.security.app.dialog.field.AccessControlList;
 import info.magnolia.security.app.dialog.field.WorkspaceAccessFieldFactory;
@@ -52,8 +48,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 
@@ -61,8 +55,6 @@ import com.vaadin.data.Item;
  * Save role dialog action. Transforms nodes added by {@link info.magnolia.security.app.dialog.field.WorkspaceAccessFieldFactory} to its final representation.
  */
 public class SaveRoleDialogAction extends SaveDialogAction {
-
-    private static final Logger log = LoggerFactory.getLogger(SaveRoleDialogAction.class);
 
     public SaveRoleDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback) {
         super(definition, item, validator, callback);
@@ -102,10 +94,6 @@ public class SaveRoleDialogAction extends SaveDialogAction {
                                     path = StringUtils.removeEnd(path, "/");
                                 }
 
-                                if (!isCurrentUserEntitledToGrantRights(aclNode, permissions, path)) {
-                                    throw new ActionExecutionException("Access violation: could not create role. Have you the necessary grants to create such a role?");
-                                }
-
                                 if (StringUtils.isNotBlank(path)) {
                                     acl.addEntry(new AccessControlList.Entry(permissions, accessType, path));
                                 }
@@ -114,17 +102,8 @@ public class SaveRoleDialogAction extends SaveDialogAction {
                             entryNode.remove();
                         }
 
-                        aclNode.setProperty(WorkspaceAccessFieldFactory.INTERMEDIARY_FORMAT_PROPERTY_NAME, (Value) null);
+                        aclNode.setProperty(WorkspaceAccessFieldFactory.INTERMEDIARY_FORMAT_PROPERTY_NAME, (Value)null);
                         acl.saveEntries(aclNode);
-                    } else {
-                        // Validate nodes that do not use the intermediary format too
-                        for (Node entryNode : NodeUtil.getNodes(aclNode)) {
-                            String path = entryNode.getProperty(AccessControlList.PATH_PROPERTY_NAME).getString();
-                            long permissions = entryNode.getProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME).getLong();
-                            if (!isCurrentUserEntitledToGrantRights(aclNode, permissions, path)) {
-                                throw new ActionExecutionException("Access violation: could not create role. Have you the necessary grants to create such a role?");
-                            }
-                        }
                     }
                 }
 
@@ -136,24 +115,6 @@ public class SaveRoleDialogAction extends SaveDialogAction {
 
         } else {
             // validation errors are displayed in the UI.
-        }
-    }
-
-    /**
-     * Ensures that the current user creating/editing a role has he himself at least the grants he wants to give. See MGNLUI-2357.
-     * The method has package visibility for testing purposes only.
-     */
-    final boolean isCurrentUserEntitledToGrantRights(Node node, long permission, String path) throws RepositoryException {
-        if (permission == Permission.NONE) {
-            return true;
-        }
-        String workspaceName = StringUtils.replace(node.getName(), "acl_", "");
-
-        if ("uri".equals(workspaceName)) {
-            String permissionString = PermissionImpl.getPermissionAsName(permission);
-            return PermissionUtil.isGranted("uri", path, permissionString);
-        } else {
-            return PermissionUtil.isGranted(MgnlContext.getJCRSession(workspaceName), path, permission);
         }
     }
 
