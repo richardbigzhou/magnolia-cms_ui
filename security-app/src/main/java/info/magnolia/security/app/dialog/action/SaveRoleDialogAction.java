@@ -33,18 +33,25 @@
  */
 package info.magnolia.security.app.dialog.action;
 
+import info.magnolia.cms.security.Role;
+import info.magnolia.cms.security.RoleManager;
+import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.security.app.dialog.field.AccessControlList;
 import info.magnolia.security.app.dialog.field.WorkspaceAccessFieldFactory;
+import info.magnolia.security.app.util.UsersWorkspaceUtil;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
+import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.Value;
 
 import org.apache.commons.lang.StringUtils;
@@ -56,8 +63,19 @@ import com.vaadin.data.Item;
  */
 public class SaveRoleDialogAction extends SaveDialogAction {
 
-    public SaveRoleDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback) {
+    private final SecuritySupport securitySupport;
+
+    public SaveRoleDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback, SecuritySupport securitySupport) {
         super(definition, item, validator, callback);
+        this.securitySupport = securitySupport;
+
+    }
+
+    /**
+     * @deprecated since 5.2.1 - use {@link SaveRoleDialogAction#SaveRoleDialogAction(info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition, com.vaadin.data.Item, info.magnolia.ui.form.EditorValidator, info.magnolia.ui.form.EditorCallback, info.magnolia.cms.security.SecuritySupport)} instead.
+     */
+    public SaveRoleDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback) {
+        this(definition, item, validator, callback, Components.getComponent(SecuritySupport.class));
     }
 
     @Override
@@ -65,52 +83,8 @@ public class SaveRoleDialogAction extends SaveDialogAction {
         // First Validate
         validator.showValidation(true);
         if (validator.isValid()) {
-            final JcrNodeAdapter itemChanged = (JcrNodeAdapter) item;
-
-            try {
-
-                final Node node = itemChanged.applyChanges();
-
-                for (Node aclNode : NodeUtil.getNodes(node)) {
-
-                    // Any node marked as using the intermediary format we read in, remove all its sub nodes and then
-                    // add new sub nodes based on the read in ACL
-                    if (aclNode.hasProperty(WorkspaceAccessFieldFactory.INTERMEDIARY_FORMAT_PROPERTY_NAME)) {
-
-                        AccessControlList acl = new AccessControlList();
-
-                        for (Node entryNode : NodeUtil.getNodes(aclNode)) {
-
-                            if (entryNode.hasProperty(WorkspaceAccessFieldFactory.INTERMEDIARY_FORMAT_PROPERTY_NAME)) {
-                                String path = entryNode.getProperty(AccessControlList.PATH_PROPERTY_NAME).getString();
-                                long accessType = (int) entryNode.getProperty(WorkspaceAccessFieldFactory.ACCESS_TYPE_PROPERTY_NAME).getLong();
-                                long permissions = entryNode.getProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME).getLong();
-
-                                if (path.equals("/")) {
-                                } else if (path.equals("/*")) {
-                                    path = "/";
-                                } else {
-                                    path = StringUtils.removeEnd(path, "/*");
-                                    path = StringUtils.removeEnd(path, "/");
-                                }
-
-                                if (StringUtils.isNotBlank(path)) {
-                                    acl.addEntry(new AccessControlList.Entry(permissions, accessType, path));
-                                }
-                            }
-
-                            entryNode.remove();
-                        }
-
-                        aclNode.setProperty(WorkspaceAccessFieldFactory.INTERMEDIARY_FORMAT_PROPERTY_NAME, (Value)null);
-                        acl.saveEntries(aclNode);
-                    }
-                }
-
-                node.getSession().save();
-            } catch (final RepositoryException e) {
-                throw new ActionExecutionException(e);
-            }
+            final JcrNodeAdapter nodeAdapter = (JcrNodeAdapter) item;
+            createOrUpdateRole(nodeAdapter);
             callback.onSuccess(getDefinition().getName());
 
         } else {
@@ -118,4 +92,79 @@ public class SaveRoleDialogAction extends SaveDialogAction {
         }
     }
 
+    private void createOrUpdateRole(final JcrNodeAdapter roleItem) throws ActionExecutionException {
+        try {
+
+            final RoleManager roleManager = securitySupport.getRoleManager();
+
+            final String newRoleName = (String) roleItem.getItemProperty(ModelConstants.JCR_NAME).getValue();
+
+            Role role;
+            Node roleNode;
+            if (roleItem instanceof JcrNewNodeAdapter) {
+
+                // JcrNewNodeAdapter returns the parent JCR item here
+                Node parentNode = roleItem.getJcrItem();
+                String parentPath = parentNode.getPath();
+
+                // Make sure this user is allowed to add a role here, the role manager would happily do it and then we'd fail to read the node
+                parentNode.getSession().checkPermission(parentNode.getPath(), Session.ACTION_ADD_NODE);
+
+                role = roleManager.createRole(parentPath, newRoleName);
+                roleNode = parentNode.getNode(role.getName());
+            } else {
+                roleNode = roleItem.getJcrItem();
+                String existingRoleName = roleNode.getName();
+                role = roleManager.getRole(existingRoleName);
+
+                if (!StringUtils.equals(existingRoleName, newRoleName)) {
+                    String pathBefore = roleNode.getPath();
+                    NodeUtil.renameNode(roleNode, newRoleName);
+                    roleNode.setProperty("name", newRoleName);
+                    UsersWorkspaceUtil.updateAcls(roleNode, pathBefore);
+                }
+            }
+
+            for (Node aclNode : NodeUtil.getNodes(roleNode)) {
+
+                // Any node marked as using the intermediary format we read in, remove all its sub nodes and then
+                // add new sub nodes based on the read in ACL
+                if (aclNode.hasProperty(WorkspaceAccessFieldFactory.INTERMEDIARY_FORMAT_PROPERTY_NAME)) {
+
+                    AccessControlList acl = new AccessControlList();
+
+                    for (Node entryNode : NodeUtil.getNodes(aclNode)) {
+
+                        if (entryNode.hasProperty(WorkspaceAccessFieldFactory.INTERMEDIARY_FORMAT_PROPERTY_NAME)) {
+                            String path = entryNode.getProperty(AccessControlList.PATH_PROPERTY_NAME).getString();
+                            long accessType = (int) entryNode.getProperty(WorkspaceAccessFieldFactory.ACCESS_TYPE_PROPERTY_NAME).getLong();
+                            long permissions = entryNode.getProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME).getLong();
+
+                            if (path.equals("/")) {
+                            } else if (path.equals("/*")) {
+                                path = "/";
+                            } else {
+                                path = StringUtils.removeEnd(path, "/*");
+                                path = StringUtils.removeEnd(path, "/");
+                            }
+
+                            if (StringUtils.isNotBlank(path)) {
+                                acl.addEntry(new AccessControlList.Entry(permissions, accessType, path));
+                            }
+                        }
+
+                        entryNode.remove();
+                    }
+
+                    aclNode.setProperty(WorkspaceAccessFieldFactory.INTERMEDIARY_FORMAT_PROPERTY_NAME, (Value)null);
+                    acl.saveEntries(aclNode);
+                }
+            }
+
+            roleNode.getSession().save();
+        } catch (final Exception e) {
+            throw new ActionExecutionException(e);
+        }
+
+    }
 }
