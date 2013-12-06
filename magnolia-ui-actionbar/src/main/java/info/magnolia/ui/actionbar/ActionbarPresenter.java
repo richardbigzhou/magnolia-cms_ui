@@ -34,6 +34,7 @@
 package info.magnolia.ui.actionbar;
 
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.actionbar.builder.ActionbarFactory;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
@@ -79,6 +80,13 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     @Inject
     public ActionbarPresenter(SimpleTranslator translator) {
         this.translator = translator;
+    }
+
+    /**
+     * @deprecated since 5.2.1 - please use {@link #ActionbarPresenter(SimpleTranslator)}.
+     */
+    public ActionbarPresenter() {
+        this.translator = Components.getComponent(SimpleTranslator.class);
     }
 
     public void setListener(Listener listener) {
