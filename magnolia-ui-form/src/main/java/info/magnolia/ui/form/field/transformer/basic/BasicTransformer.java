@@ -37,10 +37,14 @@ import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
 import info.magnolia.ui.form.field.transformer.UndefinedPropertyType;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
+import java.util.HashSet;
 import java.util.Locale;
 
 import javax.inject.Inject;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -112,8 +116,8 @@ public class BasicTransformer<T> implements Transformer<T> {
     /**
      * If the desired property (propertyName) already exist in the JcrNodeAdapter, return this property<br>
      * else create a new {@link Property}.<br>
-     * If the defaultValueString is empty or null, return a typed null value property.
-     *
+     * If the returned property is not of the desired type, cast this property to the proper type.
+     * 
      * @param <T>
      */
     protected <T> Property<T> getOrCreateProperty(Class<T> type) {
@@ -123,7 +127,20 @@ public class BasicTransformer<T> implements Transformer<T> {
         if (property == null) {
             property = new DefaultProperty<T>(type, null);
             relatedFormItem.addItemProperty(propertyName, property);
+        } else if (!type.isAssignableFrom(HashSet.class) && !type.isAssignableFrom(property.getType())) {
+            String stringValue = ((property.getValue() != null && StringUtils.isNotBlank(property.getValue().toString()))
+                    ? property.getValue().toString()
+                    : null);
+            T value = null;
+            try {
+                value = (T) DefaultPropertyUtil.createTypedValue(type, stringValue);
+            } catch (Exception e) {
+                // Ignore. In case of exception, set a null value.
+            }
+            property = new DefaultProperty<T>(type, value);
+            relatedFormItem.addItemProperty(propertyName, property);
         }
+
         return property;
     }
 

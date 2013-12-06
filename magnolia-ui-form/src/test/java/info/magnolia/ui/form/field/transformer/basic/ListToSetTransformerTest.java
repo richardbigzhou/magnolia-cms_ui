@@ -116,7 +116,7 @@ public class ListToSetTransformerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, new String[] { "a", "b", "c" });
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        ListToSetTransformer<String> handler = new ListToSetTransformer<String>(rootItem, definition, String.class);
+        ListToSetTransformer<List> handler = new ListToSetTransformer<List>(rootItem, definition, List.class);
 
         // WHEN
         Object value = handler.readFromItem();
@@ -135,7 +135,7 @@ public class ListToSetTransformerTest extends RepositoryTestCase {
         rootNode.setProperty(propertyName, new String[] { "a", "b", "c" });
         JcrNodeAdapter rootItem = new JcrNodeAdapter(rootNode);
 
-        ListToSetTransformer handler = new ListToSetTransformer(rootItem, definition, String.class);
+        ListToSetTransformer handler = new ListToSetTransformer(rootItem, definition, List.class);
         Object value = handler.readFromItem();
         assertNotNull(value);
         assertTrue(value instanceof HashSet);
