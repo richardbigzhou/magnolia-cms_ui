@@ -34,6 +34,7 @@
 package info.magnolia.security.app.dialog.action;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.Permission;
@@ -103,7 +104,7 @@ public class SaveRoleDialogActionTest {
     @Test
     public void allowRoleCreationForUserWithNoPermissionsOnAGivenNodeWhenDenyingGrants() throws Exception {
         // GIVEN
-        when(session.hasPermission("/foo", Session.ACTION_READ)).thenReturn(false);
+        when(session.hasPermission(eq("/foo"), anyString())).thenReturn(false);
 
         // WHEN
         boolean isEntitled = saveRoleDialogAction.isCurrentUserEntitledToGrantRights(aclNode, Permission.NONE, "/foo");
