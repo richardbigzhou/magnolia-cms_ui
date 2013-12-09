@@ -39,7 +39,6 @@ import info.magnolia.ui.form.field.transformer.UndefinedPropertyType;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
-import java.util.HashSet;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -121,28 +120,43 @@ public class BasicTransformer<T> implements Transformer<T> {
      * @param <T>
      */
     protected <T> Property<T> getOrCreateProperty(Class<T> type) {
+        return getOrCreateProperty(type, true);
+    }
+
+    /**
+     * If the desired property (propertyName) already exist in the JcrNodeAdapter, return this property<br>
+     * else create a new {@link Property}.<br>
+     * If 'checkTypes' is set to true and if the returned property is not of the desired type, cast this property to the proper type.
+     */
+    protected <T> Property<T> getOrCreateProperty(Class<T> type, boolean checkTypes) {
         String propertyName = definePropertyName();
         Property<T> property = relatedFormItem.getItemProperty(propertyName);
 
         if (property == null) {
             property = new DefaultProperty<T>(type, null);
             relatedFormItem.addItemProperty(propertyName, property);
-        } else if (!type.isAssignableFrom(HashSet.class) && !type.isAssignableFrom(property.getType())) {
+        } else if (checkTypes && !type.isAssignableFrom(property.getType())) {
+            // solve MGNLUI-2494
+            // as we have type inconsistency (type of the jcr value is diff. of the definition one), try to convert the jcr type to the type coming from the definition.
+            // get the value as String
             String stringValue = ((property.getValue() != null && StringUtils.isNotBlank(property.getValue().toString()))
                     ? property.getValue().toString()
                     : null);
             T value = null;
             try {
+                // Convert the String value to the desired type.
                 value = (T) DefaultPropertyUtil.createTypedValue(type, stringValue);
             } catch (Exception e) {
                 // Ignore. In case of exception, set a null value.
             }
             property = new DefaultProperty<T>(type, value);
+            // This will replace the previous property (with the wrong type) with the new one (correctly typed).
             relatedFormItem.addItemProperty(propertyName, property);
         }
 
         return property;
     }
+
 
     /**
      * Based on the i18n information, define the property name to use.
