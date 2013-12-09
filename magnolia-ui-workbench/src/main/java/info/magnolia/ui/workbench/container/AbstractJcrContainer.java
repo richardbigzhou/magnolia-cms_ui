@@ -220,7 +220,7 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
     }
 
     public javax.jcr.Item getJcrItem(Object itemId) {
-        if (itemId == null) {
+        if (itemId == null || !(itemId instanceof String)) {
             return null;
         }
         try {
