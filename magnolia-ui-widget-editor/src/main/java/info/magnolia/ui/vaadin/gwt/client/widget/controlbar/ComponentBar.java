@@ -40,6 +40,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.DragDropEventBase;
 import com.google.gwt.event.dom.client.DragEndEvent;
@@ -59,11 +60,13 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
+import com.vaadin.client.BrowserInfo;
 
 /**
  * Control bar for components. Injected at the beginning of a component.
@@ -113,119 +116,207 @@ public class ComponentBar extends AbstractBar {
     @Override
     protected void createControls() {
         if (listener.hasEditButton()) {
-            final Label edit = new Label();
+            final Widget edit = new Widget() {{setElement(DOM.createDiv());}};
             edit.setStyleName(ICON_CLASS_NAME);
             edit.addStyleName(EDIT_CLASS_NAME);
 
-            TouchDelegate td = new TouchDelegate(edit);
-            td.addTouchEndHandler(new TouchEndHandler() {
-                @Override
-                public void onTouchEnd(TouchEndEvent touchEndEvent) {
-                    listener.editComponent();
-                }
-            });
-
+            if (!BrowserInfo.get().isIE8()) {
+                TouchDelegate td = new TouchDelegate(edit);
+                td.addTouchEndHandler(new TouchEndHandler() {
+                    @Override
+                    public void onTouchEnd(TouchEndEvent touchEndEvent) {
+                        listener.editComponent();
+                    }
+                });
+            } else {
+              addEventListener("onmouseup",edit.getElement(), new JSNIEventListener() {
+                  @Override
+                  public void onEvent(NativeEvent event) {
+                      listener.editComponent();
+                  }
+              });
+            };
             addButton(edit);
         }
         if (listener.isMovable()) {
-            final Label move = new Label();
+            final Widget move = new Widget() {{setElement(DOM.createDiv());}};
             move.setStyleName(ICON_CLASS_NAME);
             move.addStyleName(MOVE_ICON_CLASS_NAME);
-
-            TouchDelegate td = new TouchDelegate(move);
-            td.addTouchEndHandler(new TouchEndHandler() {
-                @Override
-                public void onTouchEnd(TouchEndEvent touchEndEvent) {
-                    listener.onMoveStart(false);
-                }
-            });
+            if (BrowserInfo.get().isIE8()) {
+                addEventListener("onmouseup", move.getElement(), new JSNIEventListener() {
+                    @Override
+                    public void onEvent(NativeEvent event) {
+                        listener.onMoveStart(false);
+                    }
+                });
+            } else {
+                TouchDelegate td = new TouchDelegate(move);
+                td.addTouchEndHandler(new TouchEndHandler() {
+                    @Override
+                    public void onTouchEnd(TouchEndEvent touchEndEvent) {
+                        listener.onMoveStart(false);
+                    }
+                });
+            }
 
             addButton(move);
         }
 
     }
+
     private void registerDragStartHandler() {
+        if (!BrowserInfo.get().isIE8()) {
+            addDomHandler(new DragStartHandler() {
+                @Override
+                public void onDragStart(DragStartEvent event) {
+                    event.setData("text", "dummyPayload");
+                    event.getDataTransfer().setDragImage(getElement(), 10, 10);
 
-        addDomHandler(new DragStartHandler() {
-            @Override
-            public void onDragStart(DragStartEvent event) {
-                event.setData("text", "dummyPayload");
-                event.getDataTransfer().setDragImage(getElement(), 10, 10);
+                    listener.onMoveStart(true);
+                }
+            }, DragStartEvent.getType());
 
-                listener.onMoveStart(true);
-            }
-        }, DragStartEvent.getType());
+            addDomHandler(new DragEndHandler() {
+                @Override
+                public void onDragEnd(DragEndEvent event) {
+                    listener.onMoveCancel();
+                }
+            }, DragEndEvent.getType());
+        } else {
+            addEventListener("ondragstart", getElement(), new JSNIEventListener() {
+                @Override
+                public void onEvent(NativeEvent event) {
+                    //event.setData("text", "dummyPayload");
+                    event.getDataTransfer().setDragImage(getElement(), 10, 10);
+                    listener.onMoveStart(true);
+                }
+            });
 
-        addDomHandler(new DragEndHandler() {
-            @Override
-            public void onDragEnd(DragEndEvent event) {
-                listener.onMoveCancel();
-            }
-        }, DragEndEvent.getType());
-
+            addEventListener("ondragend", getElement(), new JSNIEventListener() {
+                @Override
+                public void onEvent(NativeEvent event) {
+                    listener.onMoveCancel();
+                }
+            });
+        }
     }
+
     public void registerDragAndDropHandlers() {
+        if (!BrowserInfo.get().isIE8()) {
+            dndHandlers.add(addDomHandler(new DragOverHandler() {
+                @Override
+                public void onDragOver(DragOverEvent event) {
+                    setMoveOver(true);
+                    event.stopPropagation();
+                }
+            }, DragOverEvent.getType()));
 
-        dndHandlers.add(addDomHandler(new DragOverHandler() {
-            @Override
-            public void onDragOver(DragOverEvent event) {
-                setMoveOver(true);
-                event.stopPropagation();
-            }
-        }, DragOverEvent.getType()));
+            dndHandlers.add(addDomHandler(new DragLeaveHandler() {
 
-        dndHandlers.add(addDomHandler(new DragLeaveHandler() {
+                @Override
+                public void onDragLeave(DragLeaveEvent event) {
+                    setMoveOver(false);
+                    event.stopPropagation();
+                }
+            }, DragLeaveEvent.getType()));
 
-            @Override
-            public void onDragLeave(DragLeaveEvent event) {
-                setMoveOver(false);
-                event.stopPropagation();
-            }
-        }, DragLeaveEvent.getType()));
+            dndHandlers.add(addDomHandler(new DropHandler() {
+                @Override
+                public void onDrop(DropEvent event) {
+                    listener.onMoveStop();
+                    event.preventDefault();
+                }
+            }, DropEvent.getType()));
+        } else {
+            addEventListener("ondragover", getElement(), new JSNIEventListener() {
+                @Override
+                public void onEvent(NativeEvent event) {
+                    setMoveOver(true);
+                    event.stopPropagation();
+                }
+            });
 
-        dndHandlers.add(addDomHandler(new DropHandler() {
-            @Override
-            public void onDrop(DropEvent event) {
-                listener.onMoveStop();
-                event.preventDefault();
-            }
-        }, DropEvent.getType()));
+            addEventListener("ondragleave", getElement(), new JSNIEventListener() {
+                @Override
+                public void onEvent(NativeEvent event) {
+                    setMoveOver(false);
+                    event.stopPropagation();
+                }
+            });
+
+            addEventListener("ondrop", getElement(), new JSNIEventListener() {
+                @Override
+                public void onEvent(NativeEvent event) {
+                    listener.onMoveStop();
+                    event.preventDefault();
+                }
+            });
+        }
     }
 
     public void unregisterDragAndDropHandlers() {
-        Iterator<HandlerRegistration> it = dndHandlers.iterator();
-        while (it.hasNext()) {
-            it.next().removeHandler();
-            it.remove();
+        if (!BrowserInfo.get().isIE8()) {
+            Iterator<HandlerRegistration> it = dndHandlers.iterator();
+            while (it.hasNext()) {
+                it.next().removeHandler();
+                it.remove();
+            }
+        } else {
+            unregisterEventHandler("ondragover", getElement());
+            unregisterEventHandler("ondragleave", getElement());
+            unregisterEventHandler("ondrop", getElement());
         }
     }
 
     public void registerMoveHandlers() {
+        if (!BrowserInfo.get().isIE8()) {
+            moveHandlers.add(addDomHandler(new MouseDownHandler() {
 
-        moveHandlers.add(addDomHandler(new MouseDownHandler() {
+                @Override
+                public void onMouseDown(MouseDownEvent event) {
+                    listener.onMoveStop();
+                }
+            }, MouseDownEvent.getType()));
 
-            @Override
-            public void onMouseDown(MouseDownEvent event) {
-                listener.onMoveStop();
-            }
-        }, MouseDownEvent.getType()));
+            moveHandlers.add(addDomHandler(new MouseOverHandler() {
 
-        moveHandlers.add(addDomHandler(new MouseOverHandler() {
+                @Override
+                public void onMouseOver(MouseOverEvent event) {
+                    setMoveOver(true);
+                }
+            }, MouseOverEvent.getType()));
 
-            @Override
-            public void onMouseOver(MouseOverEvent event) {
-                setMoveOver(true);
-            }
-        }, MouseOverEvent.getType()));
+            moveHandlers.add(addDomHandler(new MouseOutHandler() {
 
-        moveHandlers.add(addDomHandler(new MouseOutHandler() {
+                @Override
+                public void onMouseOut(MouseOutEvent event) {
+                    setMoveOver(false);
+                }
+            }, MouseOutEvent.getType()));
+        } else {
+            addEventListener("onmousedown", getElement(), new JSNIEventListener() {
+                @Override
+                public void onEvent(NativeEvent event) {
+                    listener.onMoveStop();
+                }
+            });
 
-            @Override
-            public void onMouseOut(MouseOutEvent event) {
-                setMoveOver(false);
-            }
-        }, MouseOutEvent.getType()));
+            addEventListener("onmouseover", getElement(), new JSNIEventListener() {
+                @Override
+                public void onEvent(NativeEvent event) {
+                    setMoveOver(true);
+                }
+            });
+            addEventListener("onmouseout", getElement(), new JSNIEventListener() {
+                @Override
+                public void onEvent(NativeEvent event) {
+                    setMoveOver(false);
+                }
+            });
+        }
     }
+
+
 
     public void unregisterMoveHandlers() {
         Iterator<HandlerRegistration> it = moveHandlers.iterator();

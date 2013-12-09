@@ -35,13 +35,15 @@ package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
 
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
 import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
 import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
+import com.vaadin.client.BrowserInfo;
 
 /**
  * A Widget for adding components to area. Marks where a newly created component will be injected.
@@ -114,18 +116,30 @@ public class ComponentPlaceHolder extends FlowPanel {
         protected void createControls() {
 
             if (listener.hasAddComponentButton()) {
-                final Label add = new Label();
+                final Widget add = new Widget() {
+                    {
+                        setElement(DOM.createDiv());
+                    }
+                };
                 add.setStyleName(ICON_CLASS_NAME);
                 add.addStyleName(ADD_CLASS_NAME);
 
-                TouchDelegate td = new TouchDelegate(add);
-                td.addTouchEndHandler(new TouchEndHandler() {
-                    @Override
-                    public void onTouchEnd(TouchEndEvent touchEndEvent) {
-                        listener.createNewComponent();
-                    }
-                });
-
+                if (!BrowserInfo.get().isIE8()) {
+                    TouchDelegate td = new TouchDelegate(add);
+                    td.addTouchEndHandler(new TouchEndHandler() {
+                        @Override
+                        public void onTouchEnd(TouchEndEvent touchEndEvent) {
+                            listener.createNewComponent();
+                        }
+                    });
+                } else {
+                    addEventListener("onmouseup", add.getElement(), new JSNIEventListener() {
+                        @Override
+                        public void onEvent(NativeEvent event) {
+                            listener.createNewComponent();
+                        }
+                    });
+                }
                 addButton(add);
             }
         }
