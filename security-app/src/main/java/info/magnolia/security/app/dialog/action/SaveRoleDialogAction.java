@@ -102,7 +102,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
                                     path = StringUtils.removeEnd(path, "/");
                                 }
 
-                                if (!isRoleCreatorEntitledToGrantRights(aclNode, permissions, path)) {
+                                if (!isCurrentUserEntitledToGrantRights(aclNode, permissions, path)) {
                                     throw new ActionExecutionException("Access violation: could not create role. Have you the necessary grants to create such a role?");
                                 }
 
@@ -121,7 +121,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
                         for (Node entryNode : NodeUtil.getNodes(aclNode)) {
                             String path = entryNode.getProperty(AccessControlList.PATH_PROPERTY_NAME).getString();
                             long permissions = entryNode.getProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME).getLong();
-                            if (!isRoleCreatorEntitledToGrantRights(aclNode, permissions, path)) {
+                            if (!isCurrentUserEntitledToGrantRights(aclNode, permissions, path)) {
                                 throw new ActionExecutionException("Access violation: could not create role. Have you the necessary grants to create such a role?");
                             }
                         }
@@ -143,7 +143,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
      * Ensures that the current user creating/editing a role has he himself at least the grants he wants to give. See MGNLUI-2357.
      * The method has package visibility for testing purposes only.
      */
-    final boolean isRoleCreatorEntitledToGrantRights(Node node, long permission, String path) throws RepositoryException {
+    final boolean isCurrentUserEntitledToGrantRights(Node node, long permission, String path) throws RepositoryException {
         if (permission == Permission.NONE) {
             return true;
         }

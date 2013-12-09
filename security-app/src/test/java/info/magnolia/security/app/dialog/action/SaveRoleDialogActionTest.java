@@ -82,7 +82,7 @@ public class SaveRoleDialogActionTest {
         when(session.hasPermission("/foo", Session.ACTION_READ)).thenReturn(true);
 
         // WHEN
-        boolean isEntitled = saveRoleDialogAction.isRoleCreatorEntitledToGrantRights(aclNode, Permission.WRITE, "/foo");
+        boolean isEntitled = saveRoleDialogAction.isCurrentUserEntitledToGrantRights(aclNode, Permission.WRITE, "/foo");
 
         // THEN
         assertFalse(isEntitled);
@@ -94,7 +94,7 @@ public class SaveRoleDialogActionTest {
         when(session.hasPermission("/foo", Session.ACTION_READ)).thenReturn(true);
 
         // WHEN
-        boolean isEntitled = saveRoleDialogAction.isRoleCreatorEntitledToGrantRights(aclNode, Permission.READ, "/foo");
+        boolean isEntitled = saveRoleDialogAction.isCurrentUserEntitledToGrantRights(aclNode, Permission.READ, "/foo");
 
         // THEN
         assertTrue(isEntitled);
@@ -106,7 +106,7 @@ public class SaveRoleDialogActionTest {
         when(session.hasPermission("/foo", Session.ACTION_READ)).thenReturn(false);
 
         // WHEN
-        boolean isEntitled = saveRoleDialogAction.isRoleCreatorEntitledToGrantRights(aclNode, Permission.NONE, "/foo");
+        boolean isEntitled = saveRoleDialogAction.isCurrentUserEntitledToGrantRights(aclNode, Permission.NONE, "/foo");
 
         // THEN
         assertTrue(isEntitled);
