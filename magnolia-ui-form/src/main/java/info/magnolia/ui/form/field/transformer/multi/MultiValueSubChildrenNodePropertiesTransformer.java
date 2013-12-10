@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.form.field.transformer.multi;
 
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.jcr.wrapper.JCRMgnlPropertiesFilteringNodeWrapper;
@@ -87,7 +86,7 @@ public class MultiValueSubChildrenNodePropertiesTransformer extends MultiValueCh
     protected JcrNodeAdapter getRootItem() {
         JcrNodeAdapter res = null;
         try {
-            res = getOrCreateChildNode(definition.getName(), NodeTypes.Content.NAME);
+            res = getOrCreateChildNode(definition.getName(), childNodeType);
         } catch (RepositoryException re) {
             log.warn("Not able to retrieve or create a sub node for the parent node {}", ((JcrNodeAdapter) relatedFormItem).getItemId());
         }
