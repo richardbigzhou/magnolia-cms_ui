@@ -38,8 +38,10 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.Permission;
+import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.test.MgnlTestCase;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
@@ -51,8 +53,10 @@ import org.junit.Test;
 /**
  * Test case for SaveRoleDialogActionTest.
  */
-public class SaveRoleDialogActionTest {
+public class SaveRoleDialogActionTest extends MgnlTestCase {
+
     private static final String SOMEWORKSPACE = "someworkspace";
+
     private Session session;
     private Context context;
     private SaveRoleDialogAction saveRoleDialogAction;
@@ -69,7 +73,7 @@ public class SaveRoleDialogActionTest {
         when(context.getJCRSession(SOMEWORKSPACE)).thenReturn(session);
         MgnlContext.setInstance(context);
 
-        saveRoleDialogAction = new SaveRoleDialogAction(null, null, null, null);
+        saveRoleDialogAction = new SaveRoleDialogAction(null, null, null, null, mock(SecuritySupport.class));
     }
 
     @After
