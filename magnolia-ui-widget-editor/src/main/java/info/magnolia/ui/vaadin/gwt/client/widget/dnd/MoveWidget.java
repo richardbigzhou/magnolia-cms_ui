@@ -34,8 +34,10 @@
 package info.magnolia.ui.vaadin.gwt.client.widget.dnd;
 
 import info.magnolia.ui.vaadin.gwt.client.widget.PageEditorFrame;
-import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.JSNIEventListener;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.eventmanager.ControlBarEventHandler;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.eventmanager.ControlBarEventManager;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
@@ -45,7 +47,6 @@ import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.BrowserInfo;
 
 /**
  * Widget used for moving {@link info.magnolia.ui.vaadin.gwt.client.widget.controlbar.ComponentBar}.
@@ -57,9 +58,10 @@ public class MoveWidget extends Widget {
     public static final int OFFSET_FROM_MOUSE = 15;
 
     private FrameBodyWrapper wrapper;
-    private PageEditorFrame frame;
-    private HandlerRegistration moveHandler;
 
+    private PageEditorFrame frame;
+
+    private ControlBarEventManager eventManager = GWT.create(ControlBarEventManager.class);
 
     public MoveWidget(Element element) {
         setElement(element);
@@ -79,61 +81,32 @@ public class MoveWidget extends Widget {
 
         this.wrapper = new FrameBodyWrapper(frameBody);
         wrapper.onAttach();
-        if (!BrowserInfo.get().isIE8()) {
-            this.moveHandler = wrapper.addMouseMoveHandler(new MouseMoveHandler() {
-                @Override
-                public void onMouseMove(MouseMoveEvent event) {
-                    int x = event.getNativeEvent().getClientX() + frame.getContentDocument().getScrollLeft();
-                    int y = event.getNativeEvent().getClientY() + OFFSET_FROM_MOUSE + frame.getContentDocument().getScrollTop();
-                    int maxX = frame.getBody().getOffsetWidth() - width;
-                    int maxY = frame.getBody().getOffsetHeight() - height - OFFSET_FROM_MOUSE;
 
-                    x = (x > maxX) ? maxX : x;
-                    y = (y > maxY) ? maxY : y;
+        eventManager.addMouseMoveHandler(wrapper, new ControlBarEventHandler() {
+            @Override
+            public void handle(NativeEvent event) {
+                int x = event.getClientX() + frame.getContentDocument().getScrollLeft();
+                int y = event.getClientY() + OFFSET_FROM_MOUSE + frame.getContentDocument().getScrollTop();
+                int maxX = frame.getBody().getOffsetWidth() - width;
+                int maxY = frame.getBody().getOffsetHeight() - height - OFFSET_FROM_MOUSE;
 
-                    getElement().getStyle().setTop(y, Unit.PX);
-                    getElement().getStyle().setLeft(x, Unit.PX);
-                }
-            });
-        } else {
-            addEventListener("onmousemove", wrapper.getElement(), new JSNIEventListener() {
-                @Override
-                public void onEvent(NativeEvent event) {
-                    int x = event.getClientX() + frame.getContentDocument().getScrollLeft();
-                    int y = event.getClientY() + OFFSET_FROM_MOUSE + frame.getContentDocument().getScrollTop();
-                    int maxX = frame.getBody().getOffsetWidth() - width;
-                    int maxY = frame.getBody().getOffsetHeight() - height - OFFSET_FROM_MOUSE;
+                x = (x > maxX) ? maxX : x;
+                y = (y > maxY) ? maxY : y;
 
-                    x = (x > maxX) ? maxX : x;
-                    y = (y > maxY) ? maxY : y;
-
-                    getElement().getStyle().setTop(y, Unit.PX);
-                    getElement().getStyle().setLeft(x, Unit.PX);
-                }
-            });
-        }
-
+                getElement().getStyle().setTop(y, Unit.PX);
+                getElement().getStyle().setLeft(x, Unit.PX);
+            }
+        });
         super.onAttach();
 
     }
 
     public void detach() {
         frame.getBody().removeChild(this.getElement());
-        if (!BrowserInfo.get().isIE8()) {
-            moveHandler.removeHandler();
-        } else {
-
-        }
-
+        eventManager.removeMouseMoveHandler(wrapper);
         wrapper.onDetach();
         super.onDetach();
     }
-
-    protected native void addEventListener(String mouseEvent, com.google.gwt.user.client.Element element, JSNIEventListener jsniEventListener) /*-{
-        element[mouseEvent] = function() {
-            $entry(jsniEventListener.@info.magnolia.ui.vaadin.gwt.client.widget.controlbar.JSNIEventListener::onEvent(Lcom/google/gwt/dom/client/NativeEvent;)($wnd.__page_editor_iframe.contentWindow.event));
-        }
-    }-*/;
 
     /**
      * Wrapper to attach {@link HasMouseMoveHandlers} to the frames body element.

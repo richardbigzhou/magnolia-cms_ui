@@ -34,16 +34,15 @@
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.eventmanager.ControlBarEventHandler;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.eventmanager.ControlBarEventManager;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
-import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
-import com.vaadin.client.BrowserInfo;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * A Widget for adding components to area. Marks where a newly created component will be injected.
@@ -98,6 +97,8 @@ public class ComponentPlaceHolder extends FlowPanel {
 
         private final MgnlArea listener;
 
+        private ControlBarEventManager impl = GWT.create(ControlBarEventManager.class);
+
         public PlaceHolderBar(MgnlArea area) {
             super(area);
             this.listener = area;
@@ -116,30 +117,15 @@ public class ComponentPlaceHolder extends FlowPanel {
         protected void createControls() {
 
             if (listener.hasAddComponentButton()) {
-                final Widget add = new Widget() {
-                    {
-                        setElement(DOM.createDiv());
-                    }
-                };
+                final Label add = new Label();
                 add.setStyleName(ICON_CLASS_NAME);
                 add.addStyleName(ADD_CLASS_NAME);
-
-                if (!BrowserInfo.get().isIE8()) {
-                    TouchDelegate td = new TouchDelegate(add);
-                    td.addTouchEndHandler(new TouchEndHandler() {
-                        @Override
-                        public void onTouchEnd(TouchEndEvent touchEndEvent) {
-                            listener.createNewComponent();
-                        }
-                    });
-                } else {
-                    addEventListener("onmouseup", add.getElement(), new JSNIEventListener() {
-                        @Override
-                        public void onEvent(NativeEvent event) {
-                            listener.createNewComponent();
-                        }
-                    });
-                }
+                impl.addClickOrTouchHandler(this, new ControlBarEventHandler() {
+                    @Override
+                    public void handle(NativeEvent event) {
+                        listener.createNewComponent();
+                    }
+                });
                 addButton(add);
             }
         }

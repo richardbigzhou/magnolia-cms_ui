@@ -34,39 +34,16 @@
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlComponent;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.eventmanager.ControlBarEventHandler;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.eventmanager.ControlBarEventManager;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.ComponentListener;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.DragDropEventBase;
-import com.google.gwt.event.dom.client.DragEndEvent;
-import com.google.gwt.event.dom.client.DragEndHandler;
-import com.google.gwt.event.dom.client.DragLeaveEvent;
-import com.google.gwt.event.dom.client.DragLeaveHandler;
-import com.google.gwt.event.dom.client.DragOverEvent;
-import com.google.gwt.event.dom.client.DragOverHandler;
-import com.google.gwt.event.dom.client.DragStartEvent;
-import com.google.gwt.event.dom.client.DragStartHandler;
-import com.google.gwt.event.dom.client.DropEvent;
-import com.google.gwt.event.dom.client.DropHandler;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Widget;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
-import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
-import com.vaadin.client.BrowserInfo;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * Control bar for components. Injected at the beginning of a component.
@@ -79,8 +56,8 @@ public class ComponentBar extends AbstractBar {
     private static final String MOVE_OVER_CLASS_NAME = "moveOver";
 
     private final ComponentListener listener;
-    List<HandlerRegistration> dndHandlers = new LinkedList<HandlerRegistration>();
-    List<HandlerRegistration> moveHandlers = new LinkedList<HandlerRegistration>();
+
+    private ControlBarEventManager eventManager = GWT.create(ControlBarEventManager.class);
 
     public ComponentBar(MgnlComponent mgnlElement) {
         super(mgnlElement);
@@ -116,214 +93,106 @@ public class ComponentBar extends AbstractBar {
     @Override
     protected void createControls() {
         if (listener.hasEditButton()) {
-            final Widget edit = new Widget() {{setElement(DOM.createDiv());}};
+            final Label edit = new Label();
             edit.setStyleName(ICON_CLASS_NAME);
             edit.addStyleName(EDIT_CLASS_NAME);
-
-            if (!BrowserInfo.get().isIE8()) {
-                TouchDelegate td = new TouchDelegate(edit);
-                td.addTouchEndHandler(new TouchEndHandler() {
-                    @Override
-                    public void onTouchEnd(TouchEndEvent touchEndEvent) {
-                        listener.editComponent();
-                    }
-                });
-            } else {
-              addEventListener("onmouseup",edit.getElement(), new JSNIEventListener() {
-                  @Override
-                  public void onEvent(NativeEvent event) {
-                      listener.editComponent();
-                  }
-              });
-            };
+            eventManager.addClickOrTouchHandler(edit, new ControlBarEventHandler() {
+                @Override
+                public void handle(NativeEvent event) {
+                    listener.editComponent();
+                }
+            });
             addButton(edit);
         }
         if (listener.isMovable()) {
-            final Widget move = new Widget() {{setElement(DOM.createDiv());}};
+            final Label move = new Label();
             move.setStyleName(ICON_CLASS_NAME);
             move.addStyleName(MOVE_ICON_CLASS_NAME);
-            if (BrowserInfo.get().isIE8()) {
-                addEventListener("onmouseup", move.getElement(), new JSNIEventListener() {
-                    @Override
-                    public void onEvent(NativeEvent event) {
-                        listener.onMoveStart(false);
-                    }
-                });
-            } else {
-                TouchDelegate td = new TouchDelegate(move);
-                td.addTouchEndHandler(new TouchEndHandler() {
-                    @Override
-                    public void onTouchEnd(TouchEndEvent touchEndEvent) {
-                        listener.onMoveStart(false);
-                    }
-                });
-            }
-
+            eventManager.addClickOrTouchHandler(move, new ControlBarEventHandler() {
+                @Override
+                public void handle(NativeEvent event) {
+                    listener.onMoveStart(false);
+                }
+            });
             addButton(move);
         }
 
     }
 
     private void registerDragStartHandler() {
-        if (!BrowserInfo.get().isIE8()) {
-            addDomHandler(new DragStartHandler() {
-                @Override
-                public void onDragStart(DragStartEvent event) {
-                    event.setData("text", "dummyPayload");
-                    event.getDataTransfer().setDragImage(getElement(), 10, 10);
+        eventManager.addDragStartHandler(this, new ControlBarEventHandler() {
+            @Override
+            public void handle(NativeEvent event) {
+                event.getDataTransfer().setData("text", "dummyPayload");
+                event.getDataTransfer().setDragImage(getElement(), 10, 10);
+                listener.onMoveStart(true);
+            }
+        });
 
-                    listener.onMoveStart(true);
-                }
-            }, DragStartEvent.getType());
-
-            addDomHandler(new DragEndHandler() {
-                @Override
-                public void onDragEnd(DragEndEvent event) {
-                    listener.onMoveCancel();
-                }
-            }, DragEndEvent.getType());
-        } else {
-            addEventListener("ondragstart", getElement(), new JSNIEventListener() {
-                @Override
-                public void onEvent(NativeEvent event) {
-                    //event.setData("text", "dummyPayload");
-                    event.getDataTransfer().setDragImage(getElement(), 10, 10);
-                    listener.onMoveStart(true);
-                }
-            });
-
-            addEventListener("ondragend", getElement(), new JSNIEventListener() {
-                @Override
-                public void onEvent(NativeEvent event) {
-                    listener.onMoveCancel();
-                }
-            });
-        }
+        eventManager.addDragEndHandler(this, new ControlBarEventHandler() {
+            @Override
+            public void handle(NativeEvent event) {
+                listener.onMoveCancel();
+            }
+        });
     }
 
     public void registerDragAndDropHandlers() {
-        if (!BrowserInfo.get().isIE8()) {
-            dndHandlers.add(addDomHandler(new DragOverHandler() {
-                @Override
-                public void onDragOver(DragOverEvent event) {
-                    setMoveOver(true);
-                    event.stopPropagation();
-                }
-            }, DragOverEvent.getType()));
+        eventManager.addDragOverHandler(this, new ControlBarEventHandler() {
+            @Override
+            public void handle(NativeEvent event) {
+                setMoveOver(true);
+                event.stopPropagation();
+            }
+        });
 
-            dndHandlers.add(addDomHandler(new DragLeaveHandler() {
 
-                @Override
-                public void onDragLeave(DragLeaveEvent event) {
-                    setMoveOver(false);
-                    event.stopPropagation();
-                }
-            }, DragLeaveEvent.getType()));
+        eventManager.addDragLeaveHandler(this, new ControlBarEventHandler() {
+            @Override
+            public void handle(NativeEvent event) {
+                setMoveOver(false);
+                event.stopPropagation();
+            }
+        });
 
-            dndHandlers.add(addDomHandler(new DropHandler() {
-                @Override
-                public void onDrop(DropEvent event) {
-                    listener.onMoveStop();
-                    event.preventDefault();
-                }
-            }, DropEvent.getType()));
-        } else {
-            addEventListener("ondragover", getElement(), new JSNIEventListener() {
-                @Override
-                public void onEvent(NativeEvent event) {
-                    setMoveOver(true);
-                    event.stopPropagation();
-                }
-            });
-
-            addEventListener("ondragleave", getElement(), new JSNIEventListener() {
-                @Override
-                public void onEvent(NativeEvent event) {
-                    setMoveOver(false);
-                    event.stopPropagation();
-                }
-            });
-
-            addEventListener("ondrop", getElement(), new JSNIEventListener() {
-                @Override
-                public void onEvent(NativeEvent event) {
-                    listener.onMoveStop();
-                    event.preventDefault();
-                }
-            });
-        }
+        eventManager.addDropHandler(this, new ControlBarEventHandler() {
+            @Override
+            public void handle(NativeEvent event) {
+                listener.onMoveStop();
+                event.preventDefault();
+            }
+        });
     }
 
     public void unregisterDragAndDropHandlers() {
-        if (!BrowserInfo.get().isIE8()) {
-            Iterator<HandlerRegistration> it = dndHandlers.iterator();
-            while (it.hasNext()) {
-                it.next().removeHandler();
-                it.remove();
-            }
-        } else {
-            unregisterEventHandler("ondragover", getElement());
-            unregisterEventHandler("ondragleave", getElement());
-            unregisterEventHandler("ondrop", getElement());
-        }
+        eventManager.unregisterDnDHandlers(this);
     }
 
     public void registerMoveHandlers() {
-        if (!BrowserInfo.get().isIE8()) {
-            moveHandlers.add(addDomHandler(new MouseDownHandler() {
+        eventManager.addMouseDownHandler(this, new ControlBarEventHandler() {
+            @Override
+            public void handle(NativeEvent event) {
+                listener.onMoveStop();
+            }
+        });
 
-                @Override
-                public void onMouseDown(MouseDownEvent event) {
-                    listener.onMoveStop();
-                }
-            }, MouseDownEvent.getType()));
+        eventManager.addMouseOverHandler(this, new ControlBarEventHandler() {
+            @Override
+            public void handle(NativeEvent event) {
+                setMoveOver(true);
+            }
+        });
 
-            moveHandlers.add(addDomHandler(new MouseOverHandler() {
-
-                @Override
-                public void onMouseOver(MouseOverEvent event) {
-                    setMoveOver(true);
-                }
-            }, MouseOverEvent.getType()));
-
-            moveHandlers.add(addDomHandler(new MouseOutHandler() {
-
-                @Override
-                public void onMouseOut(MouseOutEvent event) {
-                    setMoveOver(false);
-                }
-            }, MouseOutEvent.getType()));
-        } else {
-            addEventListener("onmousedown", getElement(), new JSNIEventListener() {
-                @Override
-                public void onEvent(NativeEvent event) {
-                    listener.onMoveStop();
-                }
-            });
-
-            addEventListener("onmouseover", getElement(), new JSNIEventListener() {
-                @Override
-                public void onEvent(NativeEvent event) {
-                    setMoveOver(true);
-                }
-            });
-            addEventListener("onmouseout", getElement(), new JSNIEventListener() {
-                @Override
-                public void onEvent(NativeEvent event) {
-                    setMoveOver(false);
-                }
-            });
-        }
+        eventManager.addMouseOutHandler(this, new ControlBarEventHandler() {
+            @Override
+            public void handle(NativeEvent event) {
+                setMoveOver(false);
+            }
+        });
     }
 
-
-
     public void unregisterMoveHandlers() {
-        Iterator<HandlerRegistration> it = moveHandlers.iterator();
-        while (it.hasNext()) {
-            it.next().removeHandler();
-            it.remove();
-        }
+        eventManager.unregisterMoveHandlers(this);
     }
 
     public void setMoveTarget(boolean target) {

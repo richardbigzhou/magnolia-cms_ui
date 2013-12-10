@@ -34,16 +34,14 @@
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.eventmanager.ControlBarEventHandler;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.eventmanager.ControlBarEventManager;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.AreaListener;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Widget;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
-import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
-import com.vaadin.client.BrowserInfo;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * Control bar for areas. Injected at the beginning of an area.
@@ -51,6 +49,8 @@ import com.vaadin.client.BrowserInfo;
 public class AreaBar extends AbstractBar {
 
     private final AreaListener listener;
+
+    private ControlBarEventManager eventManager = GWT.create(ControlBarEventManager.class);
 
     public AreaBar(MgnlArea mgnlElement) {
         super(mgnlElement);
@@ -71,50 +71,25 @@ public class AreaBar extends AbstractBar {
             final HTML add = new HTML();
             add.setStyleName(ICON_CLASS_NAME);
             add.addStyleName(ADD_CLASS_NAME);
-
-            if (!BrowserInfo.get().isIE8()) {
-                TouchDelegate td = new TouchDelegate(add);
-                td.addTouchEndHandler(new TouchEndHandler() {
-                    @Override
-                    public void onTouchEnd(TouchEndEvent touchEndEvent) {
-                        listener.createOptionalArea();
-                    }
-                });
-            } else {
-                addEventListener("onmouseup", add.getElement(), new JSNIEventListener() {
-                    @Override
-                    public void onEvent(NativeEvent event) {
-                        listener.createOptionalArea();
-                    }
-                });
-            }
-
-
+            eventManager.addClickOrTouchHandler(add, new ControlBarEventHandler() {
+                @Override
+                public void handle(NativeEvent event) {
+                    listener.createOptionalArea();
+                }
+            });
             addButton(add);
         }
 
         if (listener.hasEditButton()) {
-            final Widget edit = new Widget() {
-                {setElement(DOM.createDiv());}
-            };
+            final Label edit = new Label();
             edit.setStyleName(ICON_CLASS_NAME);
             edit.addStyleName(EDIT_CLASS_NAME);
-            if (!BrowserInfo.get().isIE8()) {
-                TouchDelegate td = new TouchDelegate(edit);
-                td.addTouchEndHandler(new TouchEndHandler() {
-                    @Override
-                    public void onTouchEnd(TouchEndEvent touchEndEvent) {
-                        listener.editArea();
-                    }
-                });
-            } else {
-                addEventListener("onmouseup", edit.getElement(), new JSNIEventListener() {
-                    @Override
-                    public void onEvent(NativeEvent event) {
-                        listener.editArea();
-                    }
-                });
-            }
+            eventManager.addClickOrTouchHandler(edit, new ControlBarEventHandler() {
+                @Override
+                public void handle(NativeEvent event) {
+                    listener.editArea();
+                }
+            });
             addButton(edit);
         }
 

@@ -36,7 +36,6 @@ package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlElement;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -134,14 +133,4 @@ public abstract class AbstractBar extends FlowPanel {
         String CLASS_NAME = (child) ? CHILD_FOCUS_CLASS_NAME : FOCUS_CLASS_NAME;
         addStyleName(CLASS_NAME);
     }
-
-    protected native void addEventListener(String mouseEvent, Element element, JSNIEventListener jsniEventListener) /*-{
-        element[mouseEvent] = function() {
-            $entry(jsniEventListener.@info.magnolia.ui.vaadin.gwt.client.widget.controlbar.JSNIEventListener::onEvent(Lcom/google/gwt/dom/client/NativeEvent;)($wnd.__page_editor_iframe.contentWindow.event));
-        }
-    }-*/;
-
-    protected native void unregisterEventHandler(String eventId, Element element) /*-{
-        element[eventId] = null;
-    }-*/;
 }
