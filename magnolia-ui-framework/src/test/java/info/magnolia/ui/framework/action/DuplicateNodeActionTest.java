@@ -52,6 +52,7 @@ import info.magnolia.jcr.node2bean.impl.Node2BeanProcessorImpl;
 import info.magnolia.jcr.node2bean.impl.Node2BeanTransformerImpl;
 import info.magnolia.jcr.node2bean.impl.TypeMappingImpl;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeTypes.Activatable;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.RepositoryTestCase;
@@ -101,6 +102,35 @@ public class DuplicateNodeActionTest extends RepositoryTestCase {
         nodeToCopy.setProperty("property", "property");
         nodeToCopy.addNode("subNode", NodeTypes.Page.NAME);
         nodeToCopy.getNode("subNode").setProperty("property_subNode", "property_subNode");
+        nodeToCopy.getNode("subNode").setProperty(Activatable.ACTIVATION_STATUS, true);
+
+        
+        nodeToCopy.addNode("subNode2", NodeTypes.Page.NAME);
+        Node subNode2 = nodeToCopy.getNode("subNode2");
+        subNode2.setProperty("property_subNode", "property_subNode");
+        subNode2.setProperty(Activatable.ACTIVATION_STATUS, true);
+
+        subNode2.addNode("subNode2_1", NodeTypes.Page.NAME);
+        subNode2.getNode("subNode2_1").setProperty("property_subNode", "property_subNode");
+        subNode2.getNode("subNode2_1").setProperty(Activatable.ACTIVATION_STATUS, true);
+
+        nodeToCopy.addNode("subNode3", NodeTypes.Page.NAME);
+        Node subNode3 = nodeToCopy.getNode("subNode3");
+        subNode3.setProperty("property_subNode", "property_subNode");
+        subNode3.setProperty(Activatable.ACTIVATION_STATUS, true);
+
+        subNode3.addNode("subNode3_1", NodeTypes.Page.NAME);
+        subNode3.getNode("subNode3_1").setProperty("property_subNode", "property_subNode");
+        subNode3.getNode("subNode3_1").setProperty(Activatable.ACTIVATION_STATUS, true);
+
+        subNode3.addNode("subNode3_2", NodeTypes.Page.NAME);
+        subNode3.getNode("subNode3_2").setProperty("property_subNode", "property_subNode");
+        subNode3.getNode("subNode3_2").setProperty(Activatable.ACTIVATION_STATUS, true);
+
+        nodeToCopy.addNode("subNode4", NodeTypes.Page.NAME);
+        nodeToCopy.getNode("subNode4").setProperty("property_subNode", "property_subNode");
+        nodeToCopy.getNode("subNode4").setProperty(Activatable.ACTIVATION_STATUS, true);
+
         session.save();
 
         eventBus = new RecordingEventBus();
@@ -129,6 +159,14 @@ public class DuplicateNodeActionTest extends RepositoryTestCase {
         assertTrue(parent.getNode("nodeToCopy0").hasProperty(NodeTypes.Created.CREATED));
         assertTrue(parent.getNode("nodeToCopy0").hasProperty(NodeTypes.Created.CREATED_BY));
         assertFalse(NodeTypes.Activatable.isActivated(parent.getNode("nodeToCopy0")));
+        
+        assertFalse(NodeTypes.Activatable.isActivated(parent.getNode("nodeToCopy0/subNode")));
+        assertFalse(NodeTypes.Activatable.isActivated(parent.getNode("nodeToCopy0/subNode2")));
+        assertFalse(NodeTypes.Activatable.isActivated(parent.getNode("nodeToCopy0/subNode2/subNode2_1")));
+        assertFalse(NodeTypes.Activatable.isActivated(parent.getNode("nodeToCopy0/subNode3")));
+        assertFalse(NodeTypes.Activatable.isActivated(parent.getNode("nodeToCopy0/subNode3/subNode3_1")));
+        assertFalse(NodeTypes.Activatable.isActivated(parent.getNode("nodeToCopy0/subNode3/subNode3_2")));
+        assertFalse(NodeTypes.Activatable.isActivated(parent.getNode("nodeToCopy0/subNode4")));
 
         Calendar init = parent.getNode("nodeToCopy").getProperty(NodeTypes.LastModified.LAST_MODIFIED).getDate();
         Calendar duplicate = parent.getNode("nodeToCopy0").getProperty(NodeTypes.LastModified.LAST_MODIFIED).getDate();

@@ -37,6 +37,8 @@ import info.magnolia.cms.core.Path;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
@@ -44,6 +46,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import javax.inject.Named;
 import javax.jcr.Item;
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -78,12 +81,24 @@ public class DuplicateNodeAction extends AbstractRepositoryAction<DuplicateNodeA
 
             // Update metadata
             Node duplicateNode = node.getSession().getNode(newPath);
-            NodeTypes.Activatable.update(duplicateNode, MgnlContext.getUser().getName(), false);
 
+            activatableUpdate(duplicateNode, MgnlContext.getUser().getName());
             // Set item of the new node for the ContentChangedEvent
             setItemIdOfChangedItem(JcrItemUtil.getItemId(duplicateNode));
 
             log.debug("Created a copy of {} with new path {}", node.getPath(), newPath);
+        }
+    }
+
+    private void activatableUpdate(Node node, String userName) throws RepositoryException {
+        if (NodeUtil.isNodeType(node, NodeTypes.Activatable.NAME) ||
+                (RepositoryConstants.CONFIG.equals(node.getSession().getWorkspace().getName()) && NodeUtil.isNodeType(node, NodeTypes.ContentNode.NAME))) {
+            NodeTypes.Activatable.update(node, userName, false);
+        }
+
+        NodeIterator nodeIterator = node.getNodes();
+        while (nodeIterator.hasNext()) {
+            activatableUpdate(nodeIterator.nextNode(), userName);
         }
     }
 }
