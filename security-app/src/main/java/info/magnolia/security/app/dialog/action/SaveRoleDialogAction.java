@@ -57,6 +57,7 @@ import javax.jcr.Value;
 import org.apache.commons.lang.StringUtils;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 
 /**
  * Save role dialog action. Transforms nodes added by {@link info.magnolia.security.app.dialog.field.WorkspaceAccessFieldFactory} to its final representation.
@@ -92,7 +93,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
         }
     }
 
-    private void createOrUpdateRole(final JcrNodeAdapter roleItem) throws ActionExecutionException {
+    private void createOrUpdateRole(JcrNodeAdapter roleItem) throws ActionExecutionException {
         try {
 
             final RoleManager roleManager = securitySupport.getRoleManager();
@@ -112,10 +113,26 @@ public class SaveRoleDialogAction extends SaveDialogAction {
 
                 role = roleManager.createRole(parentPath, newRoleName);
                 roleNode = parentNode.getNode(role.getName());
+
+                // Repackage the JcrNewNodeAdapter as a JcrNodeAdapter so we can update the node
+                JcrNodeAdapter adapter = new JcrNodeAdapter(roleNode);
+
+                for (Object propertyId : roleItem.getItemPropertyIds()) {
+                    Property property = adapter.getItemProperty(propertyId);
+                    if (property == null) {
+                        adapter.addItemProperty(propertyId, roleItem.getItemProperty(propertyId));
+                    } else {
+                        property.setValue(roleItem.getItemProperty(propertyId).getValue());
+                    }
+                }
+                adapter.getChildren().clear();
+                adapter.getChildren().putAll(roleItem.getChildren());
+
+                roleItem = adapter;
+
             } else {
                 roleNode = roleItem.getJcrItem();
                 String existingRoleName = roleNode.getName();
-                role = roleManager.getRole(existingRoleName);
 
                 if (!StringUtils.equals(existingRoleName, newRoleName)) {
                     String pathBefore = roleNode.getPath();
@@ -124,6 +141,8 @@ public class SaveRoleDialogAction extends SaveDialogAction {
                     UsersWorkspaceUtil.updateAcls(roleNode, pathBefore);
                 }
             }
+
+            roleNode = roleItem.applyChanges();
 
             for (Node aclNode : NodeUtil.getNodes(roleNode)) {
 
@@ -162,6 +181,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
             }
 
             roleNode.getSession().save();
+
         } catch (final Exception e) {
             throw new ActionExecutionException(e);
         }
