@@ -102,7 +102,7 @@ public class SaveDialogAction<T extends  SaveDialogActionDefinition> extends Abs
         if (node.hasProperty(propertyName) && !node.hasProperty(ModelConstants.JCR_NAME)) {
             Property property = node.getProperty(propertyName);
             String newNodeName = property.getString();
-            if (!node.getName().equals(newNodeName)) {
+            if (!node.getName().equals(Path.getValidatedLabel(newNodeName))) {
                 newNodeName = Path.getUniqueLabel(node.getSession(), node.getParent().getPath(), Path.getValidatedLabel(newNodeName));
                 item.setNodeName(newNodeName);
                 NodeUtil.renameNode(node, newNodeName);

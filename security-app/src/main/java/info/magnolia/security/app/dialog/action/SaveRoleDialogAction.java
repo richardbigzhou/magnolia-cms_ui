@@ -33,6 +33,7 @@
  */
 package info.magnolia.security.app.dialog.action;
 
+import info.magnolia.cms.security.Permission;
 import info.magnolia.cms.security.PermissionImpl;
 import info.magnolia.cms.security.PermissionUtil;
 import info.magnolia.context.MgnlContext;
@@ -101,8 +102,8 @@ public class SaveRoleDialogAction extends SaveDialogAction {
                                     path = StringUtils.removeEnd(path, "/");
                                 }
 
-                                if (!validate(aclNode, permissions, path)) {
-                                    throw new ActionExecutionException("Access violation: Could not create role.");
+                                if (!isCurrentUserEntitledToGrantRights(aclNode, permissions, path)) {
+                                    throw new ActionExecutionException("Access violation: could not create role. Have you the necessary grants to create such a role?");
                                 }
 
                                 if (StringUtils.isNotBlank(path)) {
@@ -113,15 +114,15 @@ public class SaveRoleDialogAction extends SaveDialogAction {
                             entryNode.remove();
                         }
 
-                        aclNode.setProperty(WorkspaceAccessFieldFactory.INTERMEDIARY_FORMAT_PROPERTY_NAME, (Value)null);
+                        aclNode.setProperty(WorkspaceAccessFieldFactory.INTERMEDIARY_FORMAT_PROPERTY_NAME, (Value) null);
                         acl.saveEntries(aclNode);
                     } else {
                         // Validate nodes that do not use the intermediary format too
                         for (Node entryNode : NodeUtil.getNodes(aclNode)) {
                             String path = entryNode.getProperty(AccessControlList.PATH_PROPERTY_NAME).getString();
                             long permissions = entryNode.getProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME).getLong();
-                            if (!validate(aclNode, permissions, path)) {
-                                throw new ActionExecutionException("Access violation: Could not create role.");
+                            if (!isCurrentUserEntitledToGrantRights(aclNode, permissions, path)) {
+                                throw new ActionExecutionException("Access violation: could not create role. Have you the necessary grants to create such a role?");
                             }
                         }
                     }
@@ -139,17 +140,14 @@ public class SaveRoleDialogAction extends SaveDialogAction {
     }
 
     /**
-     * Validates permissions to be set in role.
-     * @throws RepositoryException
+     * Ensures that the current user creating/editing a role has he himself at least the grants he wants to give. See MGNLUI-2357.
+     * The method has package visibility for testing purposes only.
      */
-    private boolean validate(Node node, long permission, String path) throws RepositoryException {
-        String workspaceName = null;
-
-        try {
-            workspaceName = StringUtils.replace(node.getName(), "acl_", "");
-        } catch (RepositoryException e) {
-            log.error("Could not get name of node [{}]", node, e);
+    final boolean isCurrentUserEntitledToGrantRights(Node node, long permission, String path) throws RepositoryException {
+        if (permission == Permission.NONE) {
+            return true;
         }
+        String workspaceName = StringUtils.replace(node.getName(), "acl_", "");
 
         if ("uri".equals(workspaceName)) {
             String permissionString = PermissionImpl.getPermissionAsName(permission);

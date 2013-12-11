@@ -33,6 +33,8 @@
  */
 package info.magnolia.security.setup;
 
+import static org.junit.Assert.*;
+
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
@@ -42,27 +44,30 @@ import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
 import info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldDefinition;
+import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.factory.SelectFieldFactory;
 
-import org.junit.Test;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import java.util.Arrays;
-import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 /**
  * Test class for Security App.
  */
 public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCase {
+
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        setupConfigNode("/modules/security-app/apps/security/subApps/users/actionbar");
+    }
 
     @Override
     protected String getModuleDescriptorPath() {
@@ -73,15 +78,13 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     protected List<String> getModuleDescriptorPathsForTests() {
         return Arrays.asList(
                 "/META-INF/magnolia/core.xml"
-        );
+                );
     }
 
     @Override
     protected ModuleVersionHandler newModuleVersionHandlerForTests() {
         return new SecurityModuleVersionHandler();
     }
-
-
 
     @Test
     public void testUpdateTo51DeleteUserActionAvailability() throws ModuleManagementException, RepositoryException {
@@ -308,5 +311,17 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         assertTrue(session.nodeExists(fieldPath));
         assertEquals(ConditionalReadOnlyTextFieldDefinition.class.getName(), session.getProperty(fieldPath + "/class").getString());
         assertEquals("superuser", session.getProperty(fieldPath + "/conditionalValue").getString());
+    }
+
+    @Test
+    public void setEditUserActionAsDefaultOnUpdateto521() throws RepositoryException, ModuleManagementException {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2"));
+
+        // THEN
+        assertEquals("editUser", session.getProperty("/modules/security-app/apps/security/subApps/users/actionbar/defaultAction").getString());
     }
 }

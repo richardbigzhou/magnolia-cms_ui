@@ -393,31 +393,4 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         assertTrue(session.itemExists("/modules/ui-admincentral/virtualURIMapping/default"));
     }
 
-    public void testActivationAppIsAddedToTheDevAppGroupConfigurationWhenActivationModuleIsInstalled() throws Exception {
-        // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        Node devAppGroup = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config/appLauncherLayout/groups/dev/apps", NodeTypes.ContentNode.NAME);
-        NodeUtil.createPath(session.getRootNode(), "/modules/activation", "mgnl:content");
-
-        // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1.1"));
-
-        // THEN
-        assertTrue(devAppGroup.hasNode("activation"));
-
-    }
-
-    @Test
-    public void testActivationAppIsAddedToTheDevAppGroupConfigurationWhenActivationModuleIsNotInstalled() throws Exception {
-        // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-        Node devAppGroup = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config/appLauncherLayout/groups/dev/apps", NodeTypes.ContentNode.NAME);
-
-        // WHEN
-        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1.1"));
-
-        // THEN
-        assertFalse(devAppGroup.hasNode("activation"));
-    }
-
 }
