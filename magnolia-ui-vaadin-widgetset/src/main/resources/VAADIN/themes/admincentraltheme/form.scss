@@ -251,12 +251,12 @@ fieldset {
     margin: 2px 0 0 3px;
 }
 
-.v-form-field-label  span.requiredfield {
-    color: black;
-    font-family: inherit;
-    font-size: 18px;
-    vertical-align: -20%;
-    margin-left: 3px;
+.v-form-field-label span.requiredfield,
+.v-required-field-indicator {
+  color: $c90;
+  font-size: 18px;
+  vertical-align: -20%;
+  margin-left: 3px;
 }
 
 /*
