@@ -80,7 +80,7 @@ public class MultiValueChildrenNodeTransformer extends BasicTransformer<Property
 
     private static final Logger log = LoggerFactory.getLogger(MultiValueChildrenNodeTransformer.class);
 
-    private String childNodeType = NodeTypes.Content.NAME;
+    protected String childNodeType = NodeTypes.ContentNode.NAME;
     private String childValuePropertyName;
 
     public MultiValueChildrenNodeTransformer(Item relatedFormItem, ConfiguredFieldDefinition definition, Class<PropertysetItem> type) {
@@ -311,7 +311,7 @@ public class MultiValueChildrenNodeTransformer extends BasicTransformer<Property
             child = new JcrNodeAdapter(node.getNode(childNodeName));
             child.setParent(((JcrNodeAdapter) relatedFormItem));
         } else {
-            child = new JcrNewNodeAdapter(node, NodeTypes.Content.NAME, childNodeName);
+            child = new JcrNewNodeAdapter(node, childNodeType, childNodeName);
             child.setParent(((JcrNodeAdapter) relatedFormItem));
         }
         return child;
