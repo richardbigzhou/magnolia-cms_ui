@@ -87,7 +87,7 @@ public class DialogMigrationTask extends AbstractTask {
     private HashMap<String, ControlMigrator> controlsToMigrate;
     private String defaultDialogActions = "defaultDialogActions";
     private HashMap<String, List<ActionCreator>> dialogActionsToMigrate;
-    protected InstallContext installContext;
+    private InstallContext installContext;
 
     /**
      * @param taskName
@@ -342,13 +342,13 @@ public class DialogMigrationTask extends AbstractTask {
 
             if (controlsToMigrate.containsKey(controlTypeName)) {
                 ControlMigrator controlMigration = controlsToMigrate.get(controlTypeName);
-                controlMigration.migrate(fieldNode);
+                controlMigration.migrate(fieldNode, installContext);
             } else {
                 fieldNode.setProperty("class", StaticFieldDefinition.class.getName());
                 if (!fieldNode.hasProperty("value")) {
                     fieldNode.setProperty("value", "Field not yet supported");
                 }
-                log.warn("No dialog define for control '{}' for node '{}'", controlTypeName, fieldNode.getPath());
+                log.warn("No field defined for control '{}' for node '{}'", controlTypeName, fieldNode.getPath());
             }
         } else {
             // Handle Field Extends/Reference
