@@ -65,6 +65,7 @@ public class ListViewImpl implements ListView {
     private static final Logger log = LoggerFactory.getLogger(ListViewImpl.class);
 
     private static final int MINIMUM_COLUMN_WIDTH = 46;
+    private static final String DELETED_ROW_STYLENAME = "deleted";
 
     private final Table table;
 
@@ -90,11 +91,19 @@ public class ListViewImpl implements ListView {
 
         table.setCellStyleGenerator(new Table.CellStyleGenerator() {
 
+
             @Override
             public String getStyle(Table source, Object itemId, Object propertyId) {
-
-                final Item item = source.getContainerDataSource().getItem(itemId);
-                return listener.getIcon(item);
+                // icon style is expected on the whole table row, not on a column matching a specific propertyId
+                if (propertyId == null) {
+                    final Item item = source.getContainerDataSource().getItem(itemId);
+                    if (item == null) {
+                        return DELETED_ROW_STYLENAME;
+                    } else {
+                        return listener.getIcon(item);
+                    }
+                }
+                return null;
             }
         });
 

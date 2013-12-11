@@ -36,11 +36,14 @@ package info.magnolia.ui.form.field.factory;
 import info.magnolia.ui.form.field.definition.DateFieldDefinition;
 
 import java.util.Date;
+import java.util.TimeZone;
 
 import com.vaadin.data.Item;
+import com.vaadin.server.Page;
 import com.vaadin.server.Sizeable;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.datefield.Resolution;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.PopupDateField;
 
@@ -65,6 +68,7 @@ public class DateFieldFactory extends AbstractFieldFactory<DateFieldDefinition, 
         DateFieldDefinition definition = getFieldDefinition();
         PopupDateField popupDateField = new PopupDateField();
 
+        setTimeZone(popupDateField);
         String dateFormat = "";
 
         // set Resolution
@@ -84,5 +88,22 @@ public class DateFieldFactory extends AbstractFieldFactory<DateFieldDefinition, 
     @Override
     protected Class<?> getDefaultFieldType() {
         return Date.class;
+    }
+
+    /**
+     * When not explicitly setting the current time using {@link Field#setValue} the client side implementation will set
+     * it to the browsers time, ignoring timezone differences and therefor making it impossible to get the UTC time.
+     */
+    private void setTimeZone(DateField popupDateField) {
+
+        TimeZone timeZone = TimeZone.getDefault();
+        try {
+            int offset = Page.getCurrent().getWebBrowser().getRawTimezoneOffset();
+            timeZone.setRawOffset(offset);
+        }
+        catch (NullPointerException e) {
+            // don't throw null pointer
+        }
+        popupDateField.setTimeZone(timeZone);
     }
 }

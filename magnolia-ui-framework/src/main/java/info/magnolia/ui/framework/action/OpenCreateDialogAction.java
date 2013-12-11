@@ -82,7 +82,7 @@ public class OpenCreateDialogAction extends AbstractAction<OpenCreateDialogActio
 
             @Override
             public void onSuccess(String actionName) {
-                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId()));
+                eventBus.fireEvent(new ContentChangedEvent(item.getWorkspace(), item.getItemId(), true));
                 formDialogPresenter.closeDialog();
             }
 

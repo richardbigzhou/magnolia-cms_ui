@@ -116,6 +116,14 @@ public class MoveAclPermissionsBetweenWorkspaces  extends AbstractRepositoryTask
      * Rename the ACL node and check the related permission path.
      */
     private void handleAclNode(Session targetSession, Node aclNode, String newAclNodeName, InstallContext installContext) throws RepositoryException {
+        // If node already exist, return
+        final Node parent = aclNode.getParent();
+        final String newAclPath = NodeUtil.combinePathAndName(parent.getPath(), newAclNodeName);
+        if (aclNode.getSession().nodeExists(newAclPath)) {
+            log.warn("{} already exist. No migration will be performed.", newAclPath);
+            return;
+        }
+
         // Rename node
         String oldAclNodePath = aclNode.getPath();
         NodeUtil.renameNode(aclNode, newAclNodeName);

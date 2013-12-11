@@ -42,6 +42,7 @@ import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
@@ -428,7 +429,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
     private static class TestActionbarPresenter extends ActionbarPresenter {
         public TestActionbarPresenter() {
-            super();
+            super(mock(SimpleTranslator.class));
         }
 
         public Set<String> visibleSections;
