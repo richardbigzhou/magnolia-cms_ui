@@ -41,12 +41,15 @@ import info.magnolia.cms.security.Permission;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
+import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.repository.RepositoryManager;
+import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
 
+import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.Node;
 import javax.jcr.Session;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -55,30 +58,29 @@ import org.junit.Test;
  */
 public class SaveRoleDialogActionTest extends MgnlTestCase {
 
-    private static final String SOMEWORKSPACE = "someworkspace";
-
     private Session session;
     private Context context;
+    private RepositoryManager repositoryManager;
     private SaveRoleDialogAction saveRoleDialogAction;
     private Node aclNode;
 
     @Before
     public void setUp() throws Exception {
+        super.setUp();
         context = mock(Context.class);
         session = mock(Session.class);
 
         aclNode = mock(Node.class);
-        when(aclNode.getName()).thenReturn("acl_" + SOMEWORKSPACE);
+        when(aclNode.getName()).thenReturn("acl_" + RepositoryConstants.CONFIG);
 
-        when(context.getJCRSession(SOMEWORKSPACE)).thenReturn(session);
+        when(context.getJCRSession(RepositoryConstants.CONFIG)).thenReturn(session);
         MgnlContext.setInstance(context);
 
-        saveRoleDialogAction = new SaveRoleDialogAction(null, null, null, null, mock(SecuritySupport.class));
-    }
+        repositoryManager = mock(RepositoryManager.class);
+        when(repositoryManager.hasWorkspace(RepositoryConstants.CONFIG)).thenReturn(true);
+        ComponentsTestUtil.setInstance(RepositoryManager.class, repositoryManager);
 
-    @After
-    public void tearDown() throws Exception {
-        MgnlContext.setInstance(null);
+        saveRoleDialogAction = new SaveRoleDialogAction(null, null, null, null, mock(SecuritySupport.class));
     }
 
     @Test
@@ -112,6 +114,19 @@ public class SaveRoleDialogActionTest extends MgnlTestCase {
 
         // WHEN
         boolean isEntitled = saveRoleDialogAction.isCurrentUserEntitledToGrantRights(aclNode, Permission.NONE, "/foo");
+
+        // THEN
+        assertTrue(isEntitled);
+    }
+
+    @Test
+    public void allowRoleCreationWhenWorkspaceDoesNotExist() throws Exception {
+        // GIVEN
+        when(repositoryManager.hasWorkspace(RepositoryConstants.CONFIG)).thenReturn(false);
+        when(context.getJCRSession(RepositoryConstants.CONFIG)).thenThrow(new NoSuchWorkspaceException());
+
+        // WHEN
+        boolean isEntitled = saveRoleDialogAction.isCurrentUserEntitledToGrantRights(aclNode, Permission.READ, "/foo");
 
         // THEN
         assertTrue(isEntitled);

@@ -33,11 +33,16 @@
  */
 package info.magnolia.security.app.dialog.action;
 
+import info.magnolia.cms.security.Permission;
+import info.magnolia.cms.security.PermissionImpl;
+import info.magnolia.cms.security.PermissionUtil;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.cms.security.Role;
 import info.magnolia.cms.security.RoleManager;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.Components;
+import info.magnolia.repository.RepositoryManager;
 import info.magnolia.security.app.dialog.field.AccessControlList;
 import info.magnolia.security.app.dialog.field.WorkspaceAccessFieldFactory;
 import info.magnolia.security.app.util.UsersWorkspaceUtil;
@@ -51,6 +56,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 
@@ -63,6 +69,7 @@ import com.vaadin.data.Property;
  * Save role dialog action. Transforms nodes added by {@link info.magnolia.security.app.dialog.field.WorkspaceAccessFieldFactory} to its final representation.
  */
 public class SaveRoleDialogAction extends SaveDialogAction {
+
 
     private final SecuritySupport securitySupport;
 
@@ -167,6 +174,10 @@ public class SaveRoleDialogAction extends SaveDialogAction {
                                 path = StringUtils.removeEnd(path, "/");
                             }
 
+                            if (!isCurrentUserEntitledToGrantRights(aclNode, permissions, path)) {
+                                throw new ActionExecutionException("Access violation: could not create role. Have you the necessary grants to create such a role?");
+                            }
+
                             if (StringUtils.isNotBlank(path)) {
                                 acl.addEntry(new AccessControlList.Entry(permissions, accessType, path));
                             }
@@ -185,6 +196,28 @@ public class SaveRoleDialogAction extends SaveDialogAction {
         } catch (final Exception e) {
             throw new ActionExecutionException(e);
         }
+    }
 
+    /**
+     * Ensures that the current user creating/editing a role has he himself at least the grants he wants to give. See MGNLUI-2357.
+     * The method has package visibility for testing purposes only.
+     */
+    final boolean isCurrentUserEntitledToGrantRights(Node node, long permission, String path) throws RepositoryException {
+        if (permission == Permission.NONE) {
+            return true;
+        }
+        String workspaceName = StringUtils.replace(node.getName(), "acl_", "");
+
+        RepositoryManager repositoryManager = Components.getComponent(RepositoryManager.class);
+        if (!repositoryManager.hasWorkspace(workspaceName)) {
+            return true;
+        }
+
+        if ("uri".equals(workspaceName)) {
+            String permissionString = PermissionImpl.getPermissionAsName(permission);
+            return PermissionUtil.isGranted("uri", path, permissionString);
+        } else {
+            return PermissionUtil.isGranted(MgnlContext.getJCRSession(workspaceName), path, permission);
+        }
     }
 }
