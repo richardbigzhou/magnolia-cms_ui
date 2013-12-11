@@ -43,6 +43,7 @@ import info.magnolia.module.ModuleManagementException;
 import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
@@ -52,6 +53,7 @@ import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
 import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueJSONTransformer;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueSubChildrenNodeTransformer;
+import info.magnolia.ui.framework.setup.migration.for5_0.ControlMigratorsRegistry;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -78,7 +80,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
 
     @Override
     protected ModuleVersionHandler newModuleVersionHandlerForTests() {
-        return new UiFrameworkModuleVersionHandler();
+        return new UiFrameworkModuleVersionHandler(Components.getComponent(ControlMigratorsRegistry.class));
     }
 
     @Override
