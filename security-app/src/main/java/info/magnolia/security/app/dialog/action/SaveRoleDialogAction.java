@@ -42,6 +42,7 @@ import info.magnolia.cms.security.RoleManager;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.Components;
+import info.magnolia.repository.RepositoryManager;
 import info.magnolia.security.app.dialog.field.AccessControlList;
 import info.magnolia.security.app.dialog.field.WorkspaceAccessFieldFactory;
 import info.magnolia.security.app.util.UsersWorkspaceUtil;
@@ -187,15 +188,6 @@ public class SaveRoleDialogAction extends SaveDialogAction {
 
                     aclNode.setProperty(WorkspaceAccessFieldFactory.INTERMEDIARY_FORMAT_PROPERTY_NAME, (Value)null);
                     acl.saveEntries(aclNode);
-                } else {
-                    // Validate nodes that do not use the intermediary format too
-                    for (Node entryNode : NodeUtil.getNodes(aclNode)) {
-                        String path = entryNode.getProperty(AccessControlList.PATH_PROPERTY_NAME).getString();
-                        long permissions = entryNode.getProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME).getLong();
-                        if (!isCurrentUserEntitledToGrantRights(aclNode, permissions, path)) {
-                            throw new ActionExecutionException("Access violation: could not create role. Have you the necessary grants to create such a role?");
-                        }
-                    }
                 }
             }
 
@@ -215,6 +207,11 @@ public class SaveRoleDialogAction extends SaveDialogAction {
             return true;
         }
         String workspaceName = StringUtils.replace(node.getName(), "acl_", "");
+
+        RepositoryManager repositoryManager = Components.getComponent(RepositoryManager.class);
+        if (!repositoryManager.hasWorkspace(workspaceName)) {
+            return true;
+        }
 
         if ("uri".equals(workspaceName)) {
             String permissionString = PermissionImpl.getPermissionAsName(permission);
