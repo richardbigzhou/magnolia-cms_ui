@@ -33,6 +33,7 @@
  */
 package info.magnolia.security.app.dialog.action;
 
+import info.magnolia.cms.security.Permission;
 import info.magnolia.cms.security.PermissionImpl;
 import info.magnolia.cms.security.PermissionUtil;
 import info.magnolia.context.MgnlContext;
@@ -143,9 +144,9 @@ public class SaveRoleDialogAction extends SaveDialogAction {
      * The method has package visibility for testing purposes only.
      */
     final boolean isCurrentUserEntitledToGrantRights(Node node, long permission, String path) throws RepositoryException {
-        // if (permission == Permission.NONE) {
-        // return true;
-        // }
+        if (permission == Permission.NONE) {
+            return true;
+        }
         String workspaceName = StringUtils.replace(node.getName(), "acl_", "");
 
         if ("uri".equals(workspaceName)) {
