@@ -31,16 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.setup.migration;
+package info.magnolia.ui.framework.setup.migration.for5_0;
 
-import info.magnolia.module.InstallContext;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.dialog.setup.DialogMigrationTask;
+import info.magnolia.ui.dialog.setup.migration.ActionCreator;
 import info.magnolia.ui.dialog.setup.migration.ControlMigrator;
 
-import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
 
 /**
- * ControlMigrators interface used by module that may want to register in a global way {@ControlMigrator}'s.
+ * {@link DialogMigrationTask} implementation that use the {@link ControlMigratorsRegistry} in order to populate the list of dialogMigrator.<br>
+ * This is the base DialogMigrator to use in order to have the all controlMigrator defined in the version handlers.
  */
-public interface ControlMigrators {
-    void register(Map<String, ControlMigrator> map, InstallContext installContext);
+public class RegistryDialogMigrationTask extends DialogMigrationTask {
+
+    private final ControlMigratorsRegistry controlMigratorsRegistry;
+
+    public RegistryDialogMigrationTask(String moduleName) {
+        this(moduleName, null);
+    }
+
+    public RegistryDialogMigrationTask(String moduleName, HashMap<String, List<ActionCreator>> customDialogActionsToMigrate) {
+        super("Dialog Migration for 5.x", "Migrate dialog for the following module: " + moduleName, moduleName, null, customDialogActionsToMigrate);
+        this.controlMigratorsRegistry = Components.getComponent(ControlMigratorsRegistry.class);
+    }
+
+    @Override
+    protected void addCustomControlsToMigrate(final HashMap<String, ControlMigrator> controlsToMigrate) {
+        controlsToMigrate.putAll(controlMigratorsRegistry.getAllMigrators());
+    }
+
 }
