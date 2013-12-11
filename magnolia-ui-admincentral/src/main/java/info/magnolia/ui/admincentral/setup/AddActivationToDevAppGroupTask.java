@@ -31,16 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.setup.migration;
+package info.magnolia.ui.admincentral.setup;
 
-import info.magnolia.module.InstallContext;
-import info.magnolia.ui.dialog.setup.migration.ControlMigrator;
-
-import java.util.Map;
+import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.module.delta.CreateNodeTask;
+import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
+import info.magnolia.module.delta.Task;
 
 /**
- * ControlMigrators interface used by module that may want to register in a global way {@ControlMigrator}'s.
+ * If the activation module is installed, adds activation app to dev app group.
  */
-public interface ControlMigrators {
-    void register(Map<String, ControlMigrator> map, InstallContext installContext);
+public class AddActivationToDevAppGroupTask extends IsModuleInstalledOrRegistered {
+
+    private static Task createActivationConfigApp = new CreateNodeTask("", "", "config", "/modules/ui-admincentral/config/appLauncherLayout/groups/dev/apps", "activation", NodeTypes.ContentNode.NAME);
+
+    public AddActivationToDevAppGroupTask() {
+        super("Add activation app to dev app group", "If the activation module is installed, adds the activation app to the dev app group.", "activation", createActivationConfigApp);
+    }
 }

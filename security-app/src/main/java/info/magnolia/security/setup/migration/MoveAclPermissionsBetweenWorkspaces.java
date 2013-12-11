@@ -127,34 +127,16 @@ public class MoveAclPermissionsBetweenWorkspaces  extends AbstractRepositoryTask
             Property pathProperty = childNodeIterator.next().getProperty("path");
             String originalPath = pathProperty.getString();
             String extraParameter = getExtraAclParameter(originalPath);
-            String pathToHandle = StringUtils.removeEnd(originalPath, extraParameter);
-            // If the path is blank, handle the next one.
-            if (StringUtils.isBlank(pathToHandle)) {
-                continue;
-            }
-
-            // Check if the path is well-formed
-            if (!isPathWellFormed(targetSession, pathToHandle)) {
-                log.info("Following ACL link is not a well-formed path '{}'. ", originalPath);
-            } else if (!targetSession.itemExists(pathToHandle)) {
-                // Path is well-formed but not valid
-                handleNoNoValidACLPath(targetSession, pathToHandle, extraParameter, pathProperty, installContext);
+            originalPath = StringUtils.removeEnd(originalPath, extraParameter);
+            // Check if the defined path exist
+            if (StringUtils.isNotBlank(originalPath) && !targetSession.itemExists(originalPath)) {
+                handleNoNoValidACLPath(targetSession, originalPath, extraParameter, pathProperty, installContext);
             } else {
                 log.info("Following ACL link is valid '{}'. ", originalPath);
             }
-        }
-    }
 
-    /**
-     * @return true if the path is well formed, false otherwise.
-     */
-    private boolean isPathWellFormed(Session targetSession, String path) {
-        try {
-            targetSession.itemExists(path);
-            return true;
-        } catch (RepositoryException e) {
-            return false;
         }
+
     }
 
     /**
@@ -181,7 +163,7 @@ public class MoveAclPermissionsBetweenWorkspaces  extends AbstractRepositoryTask
 
     /**
      * Iterate the subPaths list and try to found a valid one.
-     *
+     * 
      * @return the first valid path found or null otherwise.
      */
     private String getValidPathWithSubPath(Session targetSession, String originalPath) throws RepositoryException {

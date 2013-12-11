@@ -35,7 +35,6 @@ package info.magnolia.ui.form.field.factory;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition;
-import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.transformer.Transformer;
 
 import java.util.HashSet;
@@ -48,10 +47,8 @@ import com.vaadin.ui.OptionGroup;
 
 /**
  * Creates and initializes a select field based on a field definition.
- * 
- * @param <D> type of definition
  */
-public class OptionGroupFieldFactory<D extends SelectFieldDefinition> extends SelectFieldFactory<OptionGroupFieldDefinition> {
+public class OptionGroupFieldFactory extends SelectFieldFactory<OptionGroupFieldDefinition> {
 
     private ComponentProvider componentProvider;
 

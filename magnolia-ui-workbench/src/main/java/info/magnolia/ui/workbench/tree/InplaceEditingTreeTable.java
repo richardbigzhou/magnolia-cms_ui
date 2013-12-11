@@ -38,7 +38,6 @@ import info.magnolia.ui.workbench.event.ItemEditedEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -364,12 +363,8 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
 
         // get first selected itemId, handles multiple selection mode
         Object firstSelectedId = getValue();
-        if (firstSelectedId instanceof Collection) {
-            if (((Collection<?>) firstSelectedId).size() > 0) {
-                firstSelectedId = ((Set<?>) firstSelectedId).iterator().next();
-            } else {
-                firstSelectedId = null;
-            }
+        if (firstSelectedId instanceof Set && ((Set<?>) firstSelectedId).size() > 0) {
+            firstSelectedId = ((Set<?>) firstSelectedId).iterator().next();
         }
         // Edit selected row at first column
         Object propertyId = getVisibleColumns()[0];

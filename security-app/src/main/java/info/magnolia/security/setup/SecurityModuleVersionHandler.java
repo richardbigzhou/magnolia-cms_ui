@@ -64,6 +64,7 @@ import java.util.List;
  */
 public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
 
+
     public SecurityModuleVersionHandler() {
 
         register(DeltaBuilder.update("5.0", "")
@@ -81,10 +82,11 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new NodeExistsDelegateTask("Change label of user creation action to 'Add group'", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actions/addGroup",
                         new CheckAndModifyPartOfPropertyValueTask("Change label of user creation action to 'Add group'", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actions/addGroup", "label", "New group", "Add group")))
 
+
                 .addTask(new NodeExistsDelegateTask("Change label of role creation action to 'Add role'", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/addRole",
                         new CheckAndModifyPartOfPropertyValueTask("Change label of role creation action to 'Add role'", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/addRole", "label", "New role", "Add role")))
 
-        );
+                );
 
         register(DeltaBuilder.update("5.1", "")
                 .addTask(new PartialBootstrapTask("Bootstrap Delete Items action in Security app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/users/actions/deleteItems"))
@@ -98,31 +100,33 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new RemovePropertyTask("Remove label from form field", "Remove label property from the static1 field of the ACL tab of the Role dialog", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/acls/fields/static1", "label"))
                 .addTask(new RemovePropertyTask("Remove label from form field", "Remove label property from the static1 field of the ACL tab of the Role dialog", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/acls/fields/static2", "label"))
                 // Remove hardcoded i18n properties, e.g. label, description, etc.
-                .addTask(new RemoveHardcodedI18nPropertiesFromSubappsTask("security-app")));
+                .addTask(new RemoveHardcodedI18nPropertiesFromSubappsTask("security-app"))
+        );
 
         register(DeltaBuilder.update("5.1.1", "")
                 .addTask(new PartialBootstrapTask("Bootstrap SystemLanguages field type.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.fieldTypes.xml", "/fieldTypes/systemLanguagesField"))
                 .addTask(new NodeExistsDelegateTask("Update definition class for language field in user dialog.", "", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/user/form/tabs/user/fields/language",
                         new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/dialogs/user/form/tabs/user/fields/language", "class", SystemLanguagesFieldDefinition.class.getName())))
                 .addTask(new NodeExistsDelegateTask("Remove now unnecessary options from language field in user dialog.", "", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/user/form/tabs/user/fields/language/options",
-                        new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/user/form/tabs/user/fields/language/options"))));
+                        new RemoveNodeTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/user/form/tabs/user/fields/language/options")))
+        );
 
         register(DeltaBuilder.update("5.2", "")
                 .addTask(new ArrayDelegateTask("Add folder support to groups sub app.", "",
-                        new PartialBootstrapTask("Bootstrap add folder action in groups sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/addFolder"),
-                        new PartialBootstrapTask("Bootstrap delete folder action in groups sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/deleteFolder"),
-                        new PartialBootstrapTask("Bootstrap edit folder action in groups sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/editFolder"),
-                        new PartialBootstrapTask("Bootstrap availability of add group action.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/addGroup/availability/nodeTypes"),
-                        new NodeExistsDelegateTask("Remove constraint on add group action on nodes.", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actions/addGroup/availability",
-                                new RemovePropertyTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actions/addGroup/availability", "nodes")),
-                        new PartialBootstrapTask("Bootstrap availability for delete group action.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/deleteGroup/availability"),
-                        new PartialBootstrapTask("Bootstrap availability for edit group action.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/editGroup/availability"),
-                        new NodeExistsDelegateTask("Set drop constraint for drag and drop support in groups sub app.", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/workbench",
-                                new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/workbench", "dropConstraintClass", GroupDropConstraint.class.getName())),
-                        new PartialBootstrapTask("Bootstrap action bar section for folders in groups sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actionbar/sections/folder"),
-                        new NodeExistsDelegateTask("Configure add folder action in actionbar in groups sub app.", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actionbar/sections/root/groups/addActions/items",
-                                new CreateNodeTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actionbar/sections/root/groups/addActions/items", "addFolder", NodeTypes.ContentNode.NAME))
-                        ))
+                    new PartialBootstrapTask("Bootstrap add folder action in groups sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/addFolder"),
+                    new PartialBootstrapTask("Bootstrap delete folder action in groups sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/deleteFolder"),
+                    new PartialBootstrapTask("Bootstrap edit folder action in groups sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/editFolder"),
+                    new PartialBootstrapTask("Bootstrap availability of add group action.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/addGroup/availability/nodeTypes"),
+                    new NodeExistsDelegateTask("Remove constraint on add group action on nodes.", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actions/addGroup/availability",
+                        new RemovePropertyTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actions/addGroup/availability", "nodes")),
+                    new PartialBootstrapTask("Bootstrap availability for delete group action.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/deleteGroup/availability"),
+                    new PartialBootstrapTask("Bootstrap availability for edit group action.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/editGroup/availability"),
+                    new NodeExistsDelegateTask("Set drop constraint for drag and drop support in groups sub app.", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/workbench",
+                        new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/workbench", "dropConstraintClass", GroupDropConstraint.class.getName())),
+                    new PartialBootstrapTask("Bootstrap action bar section for folders in groups sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actionbar/sections/folder"),
+                    new NodeExistsDelegateTask("Configure add folder action in actionbar in groups sub app.", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actionbar/sections/root/groups/addActions/items",
+                        new CreateNodeTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actionbar/sections/root/groups/addActions/items", "addFolder", NodeTypes.ContentNode.NAME))
+                ))
                 .addTask(new ArrayDelegateTask("Add folder support to roles sub app.", "",
                         new PartialBootstrapTask("Bootstrap add folder action in roles sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/addFolder"),
                         new PartialBootstrapTask("Bootstrap delete folder action in roles sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/deleteFolder"),
@@ -134,28 +138,28 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                         new PartialBootstrapTask("Bootstrap availability for edit role action.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/editRole/availability"),
                         new NodeExistsDelegateTask("Set drop constraint for drag and drop support in roles sub app.", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/workbench",
                                 new SetPropertyTask("", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/workbench", "dropConstraintClass", RoleDropConstraint.class.getName())),
-                        new PartialBootstrapTask("Bootstrap action bar section for folders in roles sub app.", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actionbar/sections/folder"),
+                        new PartialBootstrapTask("Bootstrap action bar section for folders in roles sub app..", "", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actionbar/sections/folder"),
                         new NodeExistsDelegateTask("Configure add folder action in actionbar in roles sub app.", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/root/groups/addActions/items",
                                 new CreateNodeTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/root/groups/addActions/items", "addFolder", NodeTypes.ContentNode.NAME))
-                        ))
+                ))
                 .addTask(new RemovePropertyTask("Remove hardcoded field", "Remove hardcoded description of acl tab from role dialog: static1", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/acls/fields/static1", "value"))
                 .addTask(new RemovePropertyTask("Remove hardcoded field", "Remove hardcoded description of acl tab from role dialog: static2", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/acls/fields/static2", "value"))
                 .addTask(new NodeExistsDelegateTask("Disallow renaming the superuser role.", "", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/role/fields/jcrName",
                         new ArrayDelegateTask("Configure role name field to be read only", "",
                                 new SetPropertyTask("Change the field type", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/role/fields/jcrName", "class", ConditionalReadOnlyTextFieldDefinition.class.getName()),
                                 new SetPropertyTask("Set the conditional value to superuser", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/role/fields/jcrName", "conditionalValue", "superuser"))
-                        )));
-        register(DeltaBuilder.update("5.2.1", "")
-                .addTask(new NewPropertyTask("Add user default action", "Adds edit user default action when a user is selected.", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actionbar", "defaultAction", "editUser")));
+                ))
+        );
     }
 
     @Override
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
         List<Task> tasks = new ArrayList<Task>();
-        Task orderNodeTo1stPosTask = new OrderNodeTo1stPosTask("Security app ordering", "Moves the security app before the configuration app", RepositoryConstants.CONFIG, "modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps/security");
+        Task orderNodeTo1stPosTask  = new OrderNodeTo1stPosTask("Security app ordering", "Moves the security app before the configuration app",RepositoryConstants.CONFIG,"modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps/security");
         NodeExistsDelegateTask delegateTask = new NodeExistsDelegateTask("Security app ordering delegate task", "Moves the security app before the configuration app if the node exists", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps/security", orderNodeTo1stPosTask);
         tasks.add(delegateTask);
         return tasks;
     }
+
 
 }

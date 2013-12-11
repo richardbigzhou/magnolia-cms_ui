@@ -128,23 +128,6 @@ public class SaveFormActionTest extends RepositoryTestCase {
     }
 
     @Test
-    public void executeKeepsNamePropertyWithSpaces() throws Exception {
-        // GIVEN
-        Node node = session.getRootNode().addNode("No Culture");
-        node.setProperty("name", "No Culture");
-        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
-        SaveFormAction formAction = new SaveFormAction(ACTION_DEFINITION, adapter, callback, validator);
-
-        // WHEN
-        formAction.execute();
-
-        // THEN
-        assertTrue(session.getRootNode().hasNode("No-Culture"));
-        assertTrue(session.getRootNode().getNode("No-Culture").hasProperty("name"));
-        assertEquals("No Culture", session.getRootNode().getNode("No-Culture").getProperty("name").getString());
-    }
-
-    @Test
     public void executeRenamesNodeAndKeepsNameProperty() throws Exception {
         // GIVEN
         Node node = session.getRootNode().addNode("Culture");

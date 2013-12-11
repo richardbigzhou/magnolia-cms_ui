@@ -37,7 +37,6 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionExecutor;
@@ -79,7 +78,7 @@ public class ContentSubAppTest {
         view = mock(ContentSubAppView.class);
         workbench = mock(BrowserPresenter.class);
 
-        ActionbarPresenter actionbar = new ActionbarPresenter(mock(SimpleTranslator.class));
+        ActionbarPresenter actionbar = new ActionbarPresenter();
         when(workbench.getActionbarPresenter()).thenReturn(actionbar);
 
         subAppEventBus = mock(EventBus.class);

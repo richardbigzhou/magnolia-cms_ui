@@ -61,7 +61,7 @@ public class ListToSetTransformer<T> extends BasicTransformer<T> {
 
     @Override
     public void writeToItem(T newValue) {
-        Property<T> p = getOrCreateProperty(type, false);
+        Property<T> p = getOrCreateProperty(type);
 
         if (p.getValue() instanceof List && newValue instanceof Set) {
             newValue = (T) new LinkedList((Set) newValue);
@@ -72,22 +72,17 @@ public class ListToSetTransformer<T> extends BasicTransformer<T> {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public T readFromItem() {
-
+        T value = super.readFromItem();
         if (!multiselect) {
-            return super.readFromItem();
+            return value;
+        }
+
+        if (value == null) {
+            return (T) new HashSet();
+        } else if (value instanceof List) {
+            return (T) new HashSet((List) value);
         } else {
-            Property<T> p = getOrCreateProperty(type, false);
-            if (definition.isReadOnly()) {
-                p.setReadOnly(true);
-            }
-            T value = p.getValue();
-            if (value == null) {
-                return (T) new HashSet();
-            } else if (value instanceof List) {
-                return (T) new HashSet((List) value);
-            } else {
-                return null;
-            }
+            return null;
         }
     }
 

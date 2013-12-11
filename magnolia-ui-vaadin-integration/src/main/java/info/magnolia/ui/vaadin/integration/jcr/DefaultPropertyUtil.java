@@ -152,7 +152,9 @@ public class DefaultPropertyUtil {
             } else if (type.isAssignableFrom(List.class)) {
                 return Arrays.asList(defaultValue.split(","));
             } else {
-                throw new IllegalArgumentException("Unsupported property type " + type.getName());
+                String msg = "Unsupported property type " + type.getName();
+                log.error(msg);
+                throw new IllegalArgumentException(msg);
             }
         }
         return null;

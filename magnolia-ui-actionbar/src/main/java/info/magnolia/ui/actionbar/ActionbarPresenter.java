@@ -33,14 +33,10 @@
  */
 package info.magnolia.ui.actionbar;
 
-import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.actionbar.builder.ActionbarFactory;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
-
-import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,18 +71,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
 
     private Listener listener;
 
-    private SimpleTranslator translator;
-
-    @Inject
-    public ActionbarPresenter(SimpleTranslator translator) {
-        this.translator = translator;
-    }
-
-    /**
-     * @deprecated since 5.2.1 - please use {@link #ActionbarPresenter(SimpleTranslator)}.
-     */
     public ActionbarPresenter() {
-        this.translator = Components.getComponent(SimpleTranslator.class);
     }
 
     public void setListener(Listener listener) {
@@ -107,7 +92,7 @@ public class ActionbarPresenter implements ActionbarView.Listener {
     public void setPreview(final Resource previewResource) {
         if (previewResource != null) {
             if (!((Actionbar) actionbar).getSections().containsKey(PREVIEW_SECTION_NAME)) {
-                actionbar.addSection(PREVIEW_SECTION_NAME, translator.translate("actionbar.preview"));
+                actionbar.addSection(PREVIEW_SECTION_NAME, "Preview");
             }
             actionbar.setSectionPreview(previewResource, PREVIEW_SECTION_NAME);
         } else {

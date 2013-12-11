@@ -112,7 +112,7 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
         }
 
         if (mediaEditorDefinition == null) {
-            throw new IllegalArgumentException("No media editor definition registered for name [" + id + "]"); // TODO-TRANSLATE-EXCEPTION
+            throw new IllegalArgumentException("No media editor definition registered for name [" + id + "]");  //TODO-TRANSLATE-EXCEPTION
         }
         return i18nizer.decorate(mediaEditorDefinition);
     }
@@ -140,7 +140,7 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
     public MediaEditorPresenter getPresenterByDefinition(MediaEditorDefinition definition) {
         ComponentProvider mediaEditorComponentProvider = createMediaEditorComponentProvider();
         MediaEditorView view = mediaEditorComponentProvider.getComponent(MediaEditorView.class);
-        ActionbarPresenter actionbarPresenter = new ActionbarPresenter(i18n);
+        ActionbarPresenter actionbarPresenter = new ActionbarPresenter();
         ActionExecutor mediaActionExecutor = mediaEditorComponentProvider.getComponent(ActionExecutor.class);
         DialogPresenter dialogPresenter = new BaseDialogPresenter(mediaEditorComponentProvider, mediaActionExecutor, new BaseDialogViewImpl(), this.i18nizer, i18n);
         AppContext appContext = mediaEditorComponentProvider.getComponent(AppContext.class);
@@ -154,7 +154,7 @@ public class MediaEditorPresenterFactoryImpl implements MediaEditorPresenterFact
                         appContext,
                         i18n);
 
-        ((MediaEditorActionExecutor) mediaActionExecutor).setDef(definition);
+        ((MediaEditorActionExecutor)mediaActionExecutor).setDef(definition);
         mediaEditorPresenter.setActionExecutor(mediaActionExecutor);
         return mediaEditorPresenter;
     }

@@ -53,7 +53,7 @@
   }
 
   .v-csslayout-container {
-    overflow: hidden;
+  	overflow: hidden;
   }
 
   .clearfix:after { content: ""; display: table; clear: both; }
@@ -64,9 +64,9 @@
 
   /*AdminCentral module styles */
   button.btn-dialog-selectCallBack {
-    background: none repeat scroll 0px 0px $c40;
-    margin-left:10px;
-    float: right;
+  	background: none repeat scroll 0px 0px $c40;
+  	margin-left:10px;
+  	float: right;
   }
 
   /*TwinCol styles*/
@@ -109,40 +109,34 @@
   }
 
   .cke_contents {
-    height: 180px;
+  	height: 180px;
   }
 
-  .v-tooltip {
-    .v-tooltip-text {
-      background-color: #d1dfb2;
-      width: auto;
-      height: 13px;
-      line-height: 13px;
-      padding: 5px;
-      font-size: 12px;
-      font-family: Verdana, sans-serif;
-      text-align: left;
-      color: #000;
-      -webkit-box-shadow: 3px 3px 5px rgba(50, 50, 50, 0.65);
-      -moz-box-shadow:    3px 3px 5px rgba(50, 50, 50, 0.65);
-      box-shadow:         3px 3px 5px rgba(50, 50, 50, 0.65);
-    }
+  .v-tooltip-text {
+    background-color: #d1dfb2;
+    width: auto;
+    height: 13px;
+    line-height: 13px;
+    padding: 5px;
+    font-size: 12px;
+    font-family: Verdana, sans-serif;
+    text-align: left;
+    color: #000;
+    -webkit-box-shadow: 3px 3px 5px rgba(50, 50, 50, 0.65);
+    -moz-box-shadow:    3px 3px 5px rgba(50, 50, 50, 0.65);
+    box-shadow:         3px 3px 5px rgba(50, 50, 50, 0.65);
+  }
 
-    .v-tooltip-text:after {
-      position: absolute;
-      border-style: solid;
-      border-color: transparent transparent #D1DFB2;
-      border-left: 0px solid transparent !important; /*half triangle trick*/
-      border-width: 10px;
-      content: "";
-      height: 0;
-      left: 0;
-      top: -20px;
-      width: 0;
-    }
-
-    .v-errormessage {
-      display: none;
-    }
+  .v-tooltip-text:after {
+    position: absolute;
+    border-style: solid;
+    border-color: transparent transparent #D1DFB2;
+    border-left: 0px solid transparent !important; /*half triangle trick*/
+    border-width: 10px;
+    content: "";
+    height: 0;
+    left: 0;
+    top: -20px;
+    width: 0;
   }
 }

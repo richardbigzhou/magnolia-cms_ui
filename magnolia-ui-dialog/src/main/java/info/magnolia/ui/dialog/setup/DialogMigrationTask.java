@@ -104,11 +104,17 @@ public class DialogMigrationTask extends AbstractTask {
     }
 
     public DialogMigrationTask(String taskName, String taskDescription, String moduleName) {
-        this(taskName, taskDescription, moduleName, null, null);
+        super(taskName, taskDescription);
+        this.moduleName = moduleName;
+        registerControlsToMigrate(null);
+        registerDialogActionToCreate(null);
     }
 
     public DialogMigrationTask(String moduleName) {
-        this("Dialog Migration for 5.x", "Migrate dialog for the following module: " + moduleName, moduleName, null, null);
+        super("Dialog Migration for 5.x", "Migrate dialog for the following module: " + moduleName);
+        this.moduleName = moduleName;
+        registerControlsToMigrate(null);
+        registerDialogActionToCreate(null);
     }
 
     /**

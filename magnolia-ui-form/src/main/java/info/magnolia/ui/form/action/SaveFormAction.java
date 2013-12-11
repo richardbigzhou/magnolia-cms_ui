@@ -110,7 +110,7 @@ public class SaveFormAction extends AbstractAction<SaveFormActionDefinition> {
         if (node.hasProperty(propertyName) && !node.hasProperty(ModelConstants.JCR_NAME)) {
             Property property = node.getProperty(propertyName);
             String newNodeName = property.getString();
-            if (!node.getName().equals(Path.getValidatedLabel(newNodeName))) {
+            if (!node.getName().equals(newNodeName)) {
                 newNodeName = Path.getUniqueLabel(node.getSession(), node.getParent().getPath(), Path.getValidatedLabel(newNodeName));
                 item.setNodeName(newNodeName);
                 NodeUtil.renameNode(node, newNodeName);

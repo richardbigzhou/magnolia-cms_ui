@@ -36,7 +36,6 @@ package info.magnolia.ui.form.field.transformer.multi;
 import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.PropertiesImportExport;
 import info.magnolia.jcr.wrapper.JCRPropertiesFilteringNodeWrapper;
 import info.magnolia.repository.RepositoryConstants;
@@ -103,7 +102,6 @@ public class MultiValueChildNodeTransformerTest extends RepositoryTestCase {
         // THEN
         assertNotNull(parent.getChild(propertyName));
         JcrNodeAdapter child = (JcrNodeAdapter) parent.getChild(propertyName);
-        assertEquals(NodeTypes.ContentNode.NAME, child.getPrimaryNodeTypeName());
         assertEquals(2, child.getItemPropertyIds().size());
         assertNotNull(child.getItemProperty("0"));
         assertEquals("/xx/xxx", child.getItemProperty("0").getValue().toString());
