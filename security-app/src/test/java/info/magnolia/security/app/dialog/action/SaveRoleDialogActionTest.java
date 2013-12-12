@@ -75,7 +75,7 @@ public class SaveRoleDialogActionTest extends MgnlTestCase {
         when(repositoryManager.hasWorkspace(RepositoryConstants.CONFIG)).thenReturn(true);
         ComponentsTestUtil.setInstance(RepositoryManager.class, repositoryManager);
 
-        saveRoleDialogAction = new SaveRoleDialogAction(null, null, null, null, mock(SecuritySupport.class));
+        saveRoleDialogAction = new SaveRoleDialogAction(null, null, null, null, mock(SecuritySupport.class), repositoryManager);
     }
 /*
     @Test
