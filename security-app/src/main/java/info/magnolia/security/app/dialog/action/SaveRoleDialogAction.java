@@ -119,7 +119,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
                 roleNode = parentNode.getNode(role.getName());
 
                 // Repackage the JcrNewNodeAdapter as a JcrNodeAdapter so we can update the node
-                roleItem = convertNewNodeAdapterForUpdating(roleItem, roleNode);
+                roleItem = convertNewNodeAdapterForUpdating((JcrNewNodeAdapter) roleItem, roleNode);
 
             } else {
                 roleNode = roleItem.getJcrItem();
@@ -172,7 +172,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
         }
     }
 
-    private JcrNodeAdapter convertNewNodeAdapterForUpdating(JcrNodeAdapter newNodeAdapter, Node node) {
+    private JcrNodeAdapter convertNewNodeAdapterForUpdating(JcrNewNodeAdapter newNodeAdapter, Node node) throws RepositoryException {
 
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
 
@@ -187,8 +187,16 @@ public class SaveRoleDialogAction extends SaveDialogAction {
 
         adapter.getChildren().clear();
         for (AbstractJcrNodeAdapter child : newNodeAdapter.getChildren().values()) {
-            child.setParent(adapter);
-            child.setItemId(adapter.getItemId());
+
+            if (child instanceof JcrNewNodeAdapter) {
+                if (node.hasNode(child.getNodeName())) {
+                    child = convertNewNodeAdapterForUpdating((JcrNewNodeAdapter) child, node.getNode(child.getNodeName()));
+                    adapter.addChild(child);
+                } else {
+                    child.setParent(adapter);
+                    child.setItemId(adapter.getItemId());
+                }
+            }
             adapter.addChild(child);
         }
 
@@ -229,7 +237,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
 
                             RepositoryManager repositoryManager = Components.getComponent(RepositoryManager.class);
                             if (!repositoryManager.hasWorkspace(workspaceName)) {
-                                return true;
+                                continue;
                             }
 
                             if (!isCurrentUserEntitledToGrantRights(workspaceName, path, accessType, permissions)) {
