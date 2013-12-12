@@ -283,8 +283,6 @@ public class SaveRoleDialogAction extends SaveDialogAction {
 
         boolean recursive = (accessType & AccessControlList.ACCESS_TYPE_CHILDREN) != 0;
 
-        // TODO R+W is 63, Permission.ALL is 63, but 63 implies add-node
-
         // If trying to give recursive access we test using an imaginary sub-node
         if (recursive) {
             path += (path.equals("/") ? "" : "/") + "test";
