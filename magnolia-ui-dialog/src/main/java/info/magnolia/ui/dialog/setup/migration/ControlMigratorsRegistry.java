@@ -31,36 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.setup.migration.for5_0;
+package info.magnolia.ui.dialog.setup.migration;
 
-import info.magnolia.objectfactory.Components;
-import info.magnolia.ui.dialog.setup.DialogMigrationTask;
-import info.magnolia.ui.dialog.setup.migration.ActionCreator;
-import info.magnolia.ui.dialog.setup.migration.ControlMigrator;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
+
+import javax.inject.Singleton;
 
 /**
- * {@link DialogMigrationTask} implementation that use the {@link ControlMigratorsRegistry} in order to populate the list of dialogMigrator.<br>
- * This is the base DialogMigrator to use in order to have the all controlMigrator defined in the version handlers.
+ * Registry used to store the {@link ControlMigrator} defined the module version handler.
  */
-public class RegistryDialogMigrationTask extends DialogMigrationTask {
+@Singleton
+public class ControlMigratorsRegistry {
+    private final Map<String, ControlMigrator> allMigrators;
 
-    private final ControlMigratorsRegistry controlMigratorsRegistry;
-
-    public RegistryDialogMigrationTask(String moduleName) {
-        this(moduleName, null);
+    public ControlMigratorsRegistry() {
+        this.allMigrators = new HashMap<String, ControlMigrator>();
     }
 
-    public RegistryDialogMigrationTask(String moduleName, HashMap<String, List<ActionCreator>> customDialogActionsToMigrate) {
-        super("Dialog Migration for 5.x", "Migrate dialog for the following module: " + moduleName, moduleName, null, customDialogActionsToMigrate);
-        this.controlMigratorsRegistry = Components.getComponent(ControlMigratorsRegistry.class);
+    public void register(String controlName, ControlMigrator migrator) {
+        allMigrators.put(controlName, migrator);
     }
 
-    @Override
-    protected void addCustomControlsToMigrate(final HashMap<String, ControlMigrator> controlsToMigrate) {
-        controlsToMigrate.putAll(controlMigratorsRegistry.getAllMigrators());
+    public Map<String, ControlMigrator> getAllMigrators() {
+        return allMigrators;
     }
-
 }

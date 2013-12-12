@@ -47,13 +47,13 @@ import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
+import info.magnolia.ui.dialog.setup.migration.ControlMigratorsRegistry;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
 import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueJSONTransformer;
 import info.magnolia.ui.form.field.transformer.multi.MultiValueSubChildrenNodeTransformer;
-import info.magnolia.ui.framework.setup.migration.for5_0.ControlMigratorsRegistry;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;

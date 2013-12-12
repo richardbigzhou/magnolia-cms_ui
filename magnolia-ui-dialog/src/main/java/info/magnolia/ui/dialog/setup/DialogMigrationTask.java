@@ -41,22 +41,12 @@ import info.magnolia.jcr.util.NodeVisitor;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.AbstractTask;
 import info.magnolia.module.delta.TaskExecutionException;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.dialog.setup.migration.ActionCreator;
 import info.magnolia.ui.dialog.setup.migration.BaseActionCreator;
-import info.magnolia.ui.dialog.setup.migration.CheckBoxRadioControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.CheckBoxSwitchControlMigrator;
 import info.magnolia.ui.dialog.setup.migration.ControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.DateControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.EditCodeControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.EditControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.FckEditControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.FileControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.HiddenControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.LinkControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.MultiSelectControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.SelectControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.StaticControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.ControlMigratorsRegistry;
 import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
 
 import java.util.Arrays;
@@ -83,6 +73,7 @@ public class DialogMigrationTask extends AbstractTask {
     private static final Logger log = LoggerFactory.getLogger(DialogMigrationTask.class);
     private final String moduleName;
     private final HashSet<Property> extendsAndReferenceProperty = new HashSet<Property>();
+    private final ControlMigratorsRegistry controlMigratorsRegistry;
 
     private HashMap<String, ControlMigrator> controlsToMigrate;
     private String defaultDialogActions = "defaultDialogActions";
@@ -99,6 +90,7 @@ public class DialogMigrationTask extends AbstractTask {
     public DialogMigrationTask(String taskName, String taskDescription, String moduleName, HashMap<String, ControlMigrator> customControlsToMigrate, HashMap<String, List<ActionCreator>> customDialogActionsToMigrate) {
         super(taskName, taskDescription);
         this.moduleName = moduleName;
+        this.controlMigratorsRegistry = Components.getComponent(ControlMigratorsRegistry.class);
         registerControlsToMigrate(customControlsToMigrate);
         registerDialogActionToCreate(customDialogActionsToMigrate);
     }
@@ -156,21 +148,8 @@ public class DialogMigrationTask extends AbstractTask {
      */
     private void registerControlsToMigrate(HashMap<String, ControlMigrator> customControlsToMigrate) {
         this.controlsToMigrate = new HashMap<String, ControlMigrator>();
-        // Register default controls
-        this.controlsToMigrate.put("edit", new EditControlMigrator());
-        this.controlsToMigrate.put("fckEdit", new FckEditControlMigrator());
-        this.controlsToMigrate.put("date", new DateControlMigrator());
-        this.controlsToMigrate.put("select", new SelectControlMigrator());
-        this.controlsToMigrate.put("checkbox", new CheckBoxRadioControlMigrator(true));
-        this.controlsToMigrate.put("checkboxSwitch", new CheckBoxSwitchControlMigrator());
-        this.controlsToMigrate.put("radio", new CheckBoxRadioControlMigrator(false));
-        this.controlsToMigrate.put("uuidLink", new LinkControlMigrator());
-        this.controlsToMigrate.put("link", new LinkControlMigrator());
-        this.controlsToMigrate.put("multiselect", new MultiSelectControlMigrator(false));
-        this.controlsToMigrate.put("file", new FileControlMigrator());
-        this.controlsToMigrate.put("static", new StaticControlMigrator());
-        this.controlsToMigrate.put("hidden", new HiddenControlMigrator());
-        this.controlsToMigrate.put("editCode", new EditCodeControlMigrator());
+        // Register default controls (defined in the ui-framwork version handler class)
+        this.controlsToMigrate.putAll(controlMigratorsRegistry.getAllMigrators());
         // Register custom
         if (customControlsToMigrate != null) {
             this.controlsToMigrate.putAll(customControlsToMigrate);

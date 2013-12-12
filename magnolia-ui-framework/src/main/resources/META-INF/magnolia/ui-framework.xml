@@ -82,8 +82,8 @@
 
     <!-- Migration -->
     <component>
-      <type>info.magnolia.ui.framework.setup.migration.for5_0.ControlMigratorsRegistry</type>
-      <implementation>info.magnolia.ui.framework.setup.migration.for5_0.ControlMigratorsRegistry</implementation>
+      <type>info.magnolia.ui.dialog.setup.migration.ControlMigratorsRegistry</type>
+      <implementation>info.magnolia.ui.dialog.setup.migration.ControlMigratorsRegistry</implementation>
     </component>
 
     <!-- Ui Api -->

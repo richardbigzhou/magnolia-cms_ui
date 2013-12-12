@@ -52,6 +52,7 @@ import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
 import info.magnolia.ui.dialog.setup.migration.CheckBoxRadioControlMigrator;
 import info.magnolia.ui.dialog.setup.migration.CheckBoxSwitchControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.ControlMigratorsRegistry;
 import info.magnolia.ui.dialog.setup.migration.DateControlMigrator;
 import info.magnolia.ui.dialog.setup.migration.EditCodeControlMigrator;
 import info.magnolia.ui.dialog.setup.migration.EditControlMigrator;
@@ -70,7 +71,6 @@ import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
 import info.magnolia.ui.form.field.factory.CompositeFieldFactory;
 import info.magnolia.ui.form.field.factory.MultiValueFieldFactory;
 import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
-import info.magnolia.ui.framework.setup.migration.for5_0.ControlMigratorsRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
