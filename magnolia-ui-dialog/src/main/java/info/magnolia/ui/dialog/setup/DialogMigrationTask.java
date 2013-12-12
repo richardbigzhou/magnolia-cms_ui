@@ -90,6 +90,8 @@ public class DialogMigrationTask extends AbstractTask {
     public DialogMigrationTask(String taskName, String taskDescription, String moduleName, HashMap<String, ControlMigrator> customControlsToMigrate, HashMap<String, List<ActionCreator>> customDialogActionsToMigrate) {
         super(taskName, taskDescription);
         this.moduleName = moduleName;
+        // Use Components else we will need to inject ControlMigratorsRegistry in all version handler that uses DialogMigrationTask.
+        // Version handler needs ControlMigratorsRegistry only for registrating custom dialogMigrators.
         this.controlMigratorsRegistry = Components.getComponent(ControlMigratorsRegistry.class);
         registerControlsToMigrate(customControlsToMigrate);
         registerDialogActionToCreate(customDialogActionsToMigrate);
