@@ -34,7 +34,6 @@
 package info.magnolia.security.app.dialog.action;
 
 import info.magnolia.cms.security.Permission;
-import info.magnolia.cms.security.PermissionImpl;
 import info.magnolia.cms.security.PermissionUtil;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.cms.security.Role;
@@ -52,6 +51,7 @@ import info.magnolia.ui.api.ModelConstants;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -70,13 +70,11 @@ import com.vaadin.data.Property;
  */
 public class SaveRoleDialogAction extends SaveDialogAction {
 
-
     private final SecuritySupport securitySupport;
 
     public SaveRoleDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback, SecuritySupport securitySupport) {
         super(definition, item, validator, callback);
         this.securitySupport = securitySupport;
-
     }
 
     /**
@@ -88,10 +86,12 @@ public class SaveRoleDialogAction extends SaveDialogAction {
 
     @Override
     public void execute() throws ActionExecutionException {
-        // First Validate
+
+        final JcrNodeAdapter nodeAdapter = (JcrNodeAdapter) item;
+
+        // First validate
         validator.showValidation(true);
-        if (validator.isValid()) {
-            final JcrNodeAdapter nodeAdapter = (JcrNodeAdapter) item;
+        if (validator.isValid() && validateAccessControlLists(nodeAdapter)) {
             createOrUpdateRole(nodeAdapter);
             callback.onSuccess(getDefinition().getName());
 
@@ -115,27 +115,11 @@ public class SaveRoleDialogAction extends SaveDialogAction {
                 Node parentNode = roleItem.getJcrItem();
                 String parentPath = parentNode.getPath();
 
-                // Make sure this user is allowed to add a role here, the role manager would happily do it and then we'd fail to read the node
-                parentNode.getSession().checkPermission(parentNode.getPath(), Session.ACTION_ADD_NODE);
-
                 role = roleManager.createRole(parentPath, newRoleName);
                 roleNode = parentNode.getNode(role.getName());
 
                 // Repackage the JcrNewNodeAdapter as a JcrNodeAdapter so we can update the node
-                JcrNodeAdapter adapter = new JcrNodeAdapter(roleNode);
-
-                for (Object propertyId : roleItem.getItemPropertyIds()) {
-                    Property property = adapter.getItemProperty(propertyId);
-                    if (property == null) {
-                        adapter.addItemProperty(propertyId, roleItem.getItemProperty(propertyId));
-                    } else {
-                        property.setValue(roleItem.getItemProperty(propertyId).getValue());
-                    }
-                }
-                adapter.getChildren().clear();
-                adapter.getChildren().putAll(roleItem.getChildren());
-
-                roleItem = adapter;
+                roleItem = convertNewNodeAdapterForUpdating(roleItem, roleNode);
 
             } else {
                 roleNode = roleItem.getJcrItem();
@@ -166,17 +150,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
                             long accessType = (int) entryNode.getProperty(WorkspaceAccessFieldFactory.ACCESS_TYPE_PROPERTY_NAME).getLong();
                             long permissions = entryNode.getProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME).getLong();
 
-                            if (path.equals("/")) {
-                            } else if (path.equals("/*")) {
-                                path = "/";
-                            } else {
-                                path = StringUtils.removeEnd(path, "/*");
-                                path = StringUtils.removeEnd(path, "/");
-                            }
-
-                            if (!isCurrentUserEntitledToGrantRights(aclNode, permissions, path)) {
-                                throw new ActionExecutionException("Access violation: could not create role. Have you the necessary grants to create such a role?");
-                            }
+                            path = stripWildcardsFromPath(path);
 
                             if (StringUtils.isNotBlank(path)) {
                                 acl.addEntry(new AccessControlList.Entry(permissions, accessType, path));
@@ -198,26 +172,159 @@ public class SaveRoleDialogAction extends SaveDialogAction {
         }
     }
 
+    private JcrNodeAdapter convertNewNodeAdapterForUpdating(JcrNodeAdapter newNodeAdapter, Node node) {
+
+        JcrNodeAdapter adapter = new JcrNodeAdapter(node);
+
+        for (Object propertyId : newNodeAdapter.getItemPropertyIds()) {
+            Property property = adapter.getItemProperty(propertyId);
+            if (property == null) {
+                adapter.addItemProperty(propertyId, newNodeAdapter.getItemProperty(propertyId));
+            } else {
+                property.setValue(newNodeAdapter.getItemProperty(propertyId).getValue());
+            }
+        }
+
+        adapter.getChildren().clear();
+        for (AbstractJcrNodeAdapter child : newNodeAdapter.getChildren().values()) {
+            child.setParent(adapter);
+            child.setItemId(adapter.getItemId());
+            adapter.addChild(child);
+        }
+
+        return adapter;
+    }
+
     /**
-     * Ensures that the current user creating/editing a role has he himself at least the grants he wants to give. See MGNLUI-2357.
-     * The method has package visibility for testing purposes only.
+     * Validates the ACLs present in the dialog. The validation is done on the JcrNodeAdapter because we have to validate
+     * before calling applyChanges. applyChanges() modifies the adapter and it needs to be untouched when validation
+     * fails because it is then still used in the dialog.
      */
-    final boolean isCurrentUserEntitledToGrantRights(Node node, long permission, String path) throws RepositoryException {
+    private boolean validateAccessControlLists(JcrNodeAdapter roleItem) throws ActionExecutionException {
+        try {
+            if (roleItem instanceof JcrNewNodeAdapter) {
+                Node parentNode = roleItem.getJcrItem();
+
+                // Make sure this user is allowed to add a role here, the role manager would happily do it and then we'd fail to read the node
+                parentNode.getSession().checkPermission(parentNode.getPath(), Session.ACTION_ADD_NODE);
+            }
+
+            for (AbstractJcrNodeAdapter aclItem : roleItem.getChildren().values()) {
+
+                String aclNodeName = aclItem.getNodeName();
+
+                if (aclNodeName.startsWith("acl_")) {
+
+                    if (aclItem.getItemProperty(WorkspaceAccessFieldFactory.INTERMEDIARY_FORMAT_PROPERTY_NAME) != null) {
+
+                        // This is an ACL added using WorkspaceAccessFieldFactory
+
+                        for (AbstractJcrNodeAdapter entryItem : aclItem.getChildren().values()) {
+
+                            String path = (String) entryItem.getItemProperty(AccessControlList.PATH_PROPERTY_NAME).getValue();
+                            long accessType = (Long) entryItem.getItemProperty(WorkspaceAccessFieldFactory.ACCESS_TYPE_PROPERTY_NAME).getValue();
+                            long permissions = (Long) entryItem.getItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME).getValue();
+
+                            String workspaceName = StringUtils.replace(aclItem.getNodeName(), "acl_", "");
+
+                            RepositoryManager repositoryManager = Components.getComponent(RepositoryManager.class);
+                            if (!repositoryManager.hasWorkspace(workspaceName)) {
+                                return true;
+                            }
+
+                            if (!isCurrentUserEntitledToGrantRights(workspaceName, path, accessType, permissions)) {
+                                throw new ActionExecutionException("Access violation: could not create role. Have you the necessary grants to create such a role?");
+                            }
+                        }
+                    } else if (aclNodeName.equals("acl_uri")) {
+
+                        // This is an ACL added using WebAccessFieldFactory
+
+                        for (AbstractJcrNodeAdapter entryItem : aclItem.getChildren().values()) {
+
+                            String path = (String) entryItem.getItemProperty(AccessControlList.PATH_PROPERTY_NAME).getValue();
+                            long permissions = (Long) entryItem.getItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME).getValue();
+
+                            if (!isCurrentUserEntitledToGrantUriRights(path, permissions)) {
+                                throw new ActionExecutionException("Access violation: could not create role. Have you the necessary grants to create such a role?");
+                            }
+                        }
+                    }
+                }
+            }
+
+            return true;
+
+        } catch (RepositoryException e) {
+            throw new ActionExecutionException(e);
+        }
+    }
+
+    /**
+     * Examines whether the current user creating/editing a role has himself the required permissions to the workspaces
+     * he's specifying in the ACLs. We See MGNLUI-2357.
+     */
+    private boolean isCurrentUserEntitledToGrantRights(String workspaceName, String path, long accessType, long permission) throws RepositoryException {
+
+        // Granting DENY access is only allowed if the user has READ access to the node
         if (permission == Permission.NONE) {
-            return true;
-        }
-        String workspaceName = StringUtils.replace(node.getName(), "acl_", "");
-
-        RepositoryManager repositoryManager = Components.getComponent(RepositoryManager.class);
-        if (!repositoryManager.hasWorkspace(workspaceName)) {
-            return true;
+            permission = Permission.READ;
         }
 
-        if ("uri".equals(workspaceName)) {
-            String permissionString = PermissionImpl.getPermissionAsName(permission);
-            return PermissionUtil.isGranted("uri", path, permissionString);
+        path = stripWildcardsFromPath(path);
+
+        boolean recursive = (accessType & AccessControlList.ACCESS_TYPE_CHILDREN) != 0;
+
+        // TODO R+W is 63, Permission.ALL is 63, but 63 implies add-node
+
+        // If trying to give recursive access we test using an imaginary sub-node
+        if (recursive) {
+            path += (path.equals("/") ? "" : "/") + "test";
+        }
+
+        return PermissionUtil.isGranted(MgnlContext.getJCRSession(workspaceName), path, permission);
+    }
+
+    /**
+     * Examines whether the current user creating/editing a role has himself the required permissions to the URIs
+     * he's specifying in the ACLs. We See MGNLUI-2357.
+     */
+    private boolean isCurrentUserEntitledToGrantUriRights(String path, long permissions) throws RepositoryException {
+
+        // Granting DENY access is only allowed if the user has READ access to the path
+        if (permissions == Permission.NONE) {
+            permissions = Permission.READ;
+        }
+
+        String permissionsString;
+        if (permissions == Permission.READ) {
+            permissionsString = Session.ACTION_READ;
+        } else if (permissions == Permission.ALL) {
+            permissionsString = Session.ACTION_ADD_NODE;
         } else {
-            return PermissionUtil.isGranted(MgnlContext.getJCRSession(workspaceName), path, permission);
+            throw new IllegalArgumentException("unexpected permissions " + permissions);
         }
+
+        boolean recursive = path.endsWith("*");
+
+        path = stripWildcardsFromPath(path);
+
+        // If trying to give recursive access we test using an imaginary sub-path
+        if (recursive) {
+            path += (path.equals("/") ? "" : "/") + "test";
+        }
+
+        return PermissionUtil.isGranted("uri", path, permissionsString);
+    }
+
+    private String stripWildcardsFromPath(String path) {
+        if (path.equals("/")) {
+        } else if (path.equals("/*")) {
+            path = "/";
+        } else {
+            path = StringUtils.removeEnd(path, "/*");
+            path = StringUtils.removeEnd(path, "/");
+        }
+        return path;
     }
 }
