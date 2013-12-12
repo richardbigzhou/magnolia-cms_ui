@@ -157,27 +157,30 @@ public class AccessControlList {
 
     public void readEntries(Node aclNode) throws RepositoryException {
         for (Node entryNode : NodeUtil.getNodes(aclNode)) {
-
-            long permissions = entryNode.getProperty(PERMISSIONS_PROPERTY_NAME).getLong();
-            String path = entryNode.getProperty(PATH_PROPERTY_NAME).getString();
-
-            long accessType;
-
-            if (path.equals("/")) {
-                accessType = ACCESS_TYPE_NODE;
-            } else if (path.equals("/*")) {
-                accessType = ACCESS_TYPE_NODE_AND_CHILDREN;
-                path = "/";
-            } else if (path.endsWith("/*")) {
-                accessType = ACCESS_TYPE_CHILDREN;
-                path = StringUtils.substringBeforeLast(path, "/*");
-            } else {
-                accessType = ACCESS_TYPE_NODE;
-                path = StringUtils.removeEnd(path, "/");
-            }
-
-            addEntry(new Entry(permissions, accessType, path));
+            readEntry(entryNode);
         }
+    }
+
+    public void readEntry(Node entryNode) throws RepositoryException {
+        long permissions = entryNode.getProperty(PERMISSIONS_PROPERTY_NAME).getLong();
+        String path = entryNode.getProperty(PATH_PROPERTY_NAME).getString();
+
+        long accessType;
+
+        if (path.equals("/")) {
+            accessType = ACCESS_TYPE_NODE;
+        } else if (path.equals("/*")) {
+            accessType = ACCESS_TYPE_NODE_AND_CHILDREN;
+            path = "/";
+        } else if (path.endsWith("/*")) {
+            accessType = ACCESS_TYPE_CHILDREN;
+            path = StringUtils.substringBeforeLast(path, "/*");
+        } else {
+            accessType = ACCESS_TYPE_NODE;
+            path = StringUtils.removeEnd(path, "/");
+        }
+
+        addEntry(new Entry(permissions, accessType, path));
     }
 
     public void saveEntries(Node aclNode) throws RepositoryException {

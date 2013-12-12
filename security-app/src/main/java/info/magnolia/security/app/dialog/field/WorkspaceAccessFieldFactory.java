@@ -121,38 +121,41 @@ public class WorkspaceAccessFieldFactory<D extends WorkspaceAccessFieldDefinitio
         try {
 
             final JcrNodeAdapter roleItem = (JcrNodeAdapter) item;
-            Node roleNode = roleItem.getJcrItem();
 
             final VerticalLayout aclLayout = new VerticalLayout();
 
             final Label emptyLabel = new Label(i18n.translate("security.workspace.field.noAccess"));
 
-            if (roleNode.hasNode(aclName)) {
+            // Since JcrNewNodeAdapter.getJcrItem() returns the parent node we need to skip this step because we don't want to inspect the parent node
+            if (!(roleItem instanceof JcrNewNodeAdapter)) {
+                Node roleNode = roleItem.getJcrItem();
+                if (roleNode.hasNode(aclName)) {
 
-                final Node aclNode = roleNode.getNode(aclName);
+                    final Node aclNode = roleNode.getNode(aclName);
 
-                AccessControlList acl = new AccessControlList();
-                acl.readEntries(aclNode);
+                    AccessControlList acl = new AccessControlList();
+                    acl.readEntries(aclNode);
 
-                AbstractJcrNodeAdapter aclItem = new JcrNodeAdapter(aclNode);
-                roleItem.addChild(aclItem);
+                    AbstractJcrNodeAdapter aclItem = new JcrNodeAdapter(aclNode);
+                    roleItem.addChild(aclItem);
 
-                aclItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
+                    aclItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
 
-                for (AccessControlList.Entry entry : acl.getEntries()) {
+                    for (AccessControlList.Entry entry : acl.getEntries()) {
 
-                    long permissions = entry.getPermissions();
-                    long accessType = entry.getAccessType();
-                    String path = entry.getPath();
+                        long permissions = entry.getPermissions();
+                        long accessType = entry.getAccessType();
+                        String path = entry.getPath();
 
-                    JcrNewNodeAdapter entryItem = addAclEntryItem(aclItem);
-                    entryItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
-                    entryItem.addItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, permissions));
-                    entryItem.addItemProperty(ACCESS_TYPE_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, accessType));
-                    entryItem.addItemProperty(AccessControlList.PATH_PROPERTY_NAME, new DefaultProperty<String>(String.class, path));
+                        JcrNewNodeAdapter entryItem = addAclEntryItem(aclItem);
+                        entryItem.addItemProperty(INTERMEDIARY_FORMAT_PROPERTY_NAME, new DefaultProperty<String>(String.class, "true"));
+                        entryItem.addItemProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, permissions));
+                        entryItem.addItemProperty(ACCESS_TYPE_PROPERTY_NAME, new DefaultProperty<Long>(Long.class, accessType));
+                        entryItem.addItemProperty(AccessControlList.PATH_PROPERTY_NAME, new DefaultProperty<String>(String.class, path));
 
-                    Component ruleRow = createRuleRow(aclLayout, entryItem, emptyLabel);
-                    aclLayout.addComponent(ruleRow);
+                        Component ruleRow = createRuleRow(aclLayout, entryItem, emptyLabel);
+                        aclLayout.addComponent(ruleRow);
+                    }
                 }
             }
 
