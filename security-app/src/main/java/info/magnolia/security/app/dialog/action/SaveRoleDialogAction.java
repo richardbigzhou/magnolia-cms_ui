@@ -71,17 +71,19 @@ import com.vaadin.data.Property;
 public class SaveRoleDialogAction extends SaveDialogAction {
 
     private final SecuritySupport securitySupport;
+    private final RepositoryManager repositoryManager;
 
-    public SaveRoleDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback, SecuritySupport securitySupport) {
+    public SaveRoleDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback, SecuritySupport securitySupport, RepositoryManager repositoryManager) {
         super(definition, item, validator, callback);
         this.securitySupport = securitySupport;
+        this.repositoryManager = repositoryManager;
     }
 
     /**
-     * @deprecated since 5.2.1 - use {@link SaveRoleDialogAction#SaveRoleDialogAction(info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition, com.vaadin.data.Item, info.magnolia.ui.form.EditorValidator, info.magnolia.ui.form.EditorCallback, info.magnolia.cms.security.SecuritySupport)} instead.
+     * @deprecated since 5.2.1 - use {@link SaveRoleDialogAction#SaveRoleDialogAction(info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition, com.vaadin.data.Item, info.magnolia.ui.form.EditorValidator, info.magnolia.ui.form.EditorCallback, info.magnolia.cms.security.SecuritySupport, info.magnolia.repository.RepositoryManager)} instead.
      */
     public SaveRoleDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback) {
-        this(definition, item, validator, callback, Components.getComponent(SecuritySupport.class));
+        this(definition, item, validator, callback, Components.getComponent(SecuritySupport.class), Components.getComponent(RepositoryManager.class));
     }
 
     @Override
@@ -235,7 +237,6 @@ public class SaveRoleDialogAction extends SaveDialogAction {
 
                             String workspaceName = StringUtils.replace(aclItem.getNodeName(), "acl_", "");
 
-                            RepositoryManager repositoryManager = Components.getComponent(RepositoryManager.class);
                             if (!repositoryManager.hasWorkspace(workspaceName)) {
                                 continue;
                             }
