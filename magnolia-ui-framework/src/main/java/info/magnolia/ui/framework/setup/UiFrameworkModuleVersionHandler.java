@@ -75,7 +75,7 @@ import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 /**
  * Version handler for the Ui framework module.
