@@ -80,6 +80,7 @@ import info.magnolia.ui.vaadin.gwt.client.shared.PageEditorParameters;
 import info.magnolia.ui.vaadin.gwt.client.shared.PageElement;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -166,7 +167,6 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         view.setPageBarView(pageBarView);
         view.setPageEditorView(pageEditorPresenter.start());
         goToLocation(detailLocation);
-        pageBarView.setCurrentLanguage(i18nContentSupport.getLocale());
         return view;
     }
 
@@ -257,6 +257,15 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         setPageEditorParameters(location);
         hideAllSections();
         pageEditorPresenter.loadPageEditor(parameters);
+        updatePageBarAvailableLanguages(location);
+    }
+
+    private void updatePageBarAvailableLanguages(DetailLocation location) {
+        Node node = SessionUtil.getNode(workspace, location.getNodePath());
+        List<Locale> locales = i18NAuthoringSupport.getAvailableLocales(node);
+        pageBarView.setAvailableLanguages(locales);
+        Locale locale = currentLocale != null ? currentLocale : i18nContentSupport.getLocale();
+        pageBarView.setCurrentLanguage(locale);
     }
 
     private void setPageEditorParameters(DetailLocation location) {
@@ -406,14 +415,18 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
 
     @Override
     public void languageSelected(Locale locale) {
-        this.currentLocale = locale;
-        doGoToLocation(getCurrentLocation());
+        if (locale != null && !locale.equals(currentLocale)) {
+            this.currentLocale = locale;
+            doGoToLocation(getCurrentLocation());
+        }
     }
 
     @Override
     public void platformSelected(PlatformType platformType) {
-        this.targetPreviewPlatform = platformType;
-        doGoToLocation(getCurrentLocation());
+        if (platformType != null && !platformType.equals(targetPreviewPlatform)) {
+            this.targetPreviewPlatform = platformType;
+            doGoToLocation(getCurrentLocation());
+        }
     }
 
     /**

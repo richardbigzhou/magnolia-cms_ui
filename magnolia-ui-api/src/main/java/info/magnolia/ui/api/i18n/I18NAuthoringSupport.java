@@ -33,11 +33,11 @@
  */
 package info.magnolia.ui.api.i18n;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.jcr.Node;
 
-import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.HasComponents;
 
 /**
@@ -45,7 +45,10 @@ import com.vaadin.ui.HasComponents;
  */
 public interface I18NAuthoringSupport {
 
-    AbstractSelect getLanguageChooser();
+    /**
+     * Returns the available locales for the given page, area or component node.
+     */
+    List<Locale> getAvailableLocales(Node node);
 
     void i18nize(HasComponents fieldContainer, Locale locale);
 
