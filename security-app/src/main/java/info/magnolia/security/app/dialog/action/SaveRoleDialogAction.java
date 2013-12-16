@@ -35,10 +35,10 @@ package info.magnolia.security.app.dialog.action;
 
 import info.magnolia.cms.security.Permission;
 import info.magnolia.cms.security.PermissionUtil;
-import info.magnolia.context.MgnlContext;
 import info.magnolia.cms.security.Role;
 import info.magnolia.cms.security.RoleManager;
 import info.magnolia.cms.security.SecuritySupport;
+import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.security.app.dialog.field.AccessControlList;
@@ -353,12 +353,10 @@ public class SaveRoleDialogAction extends SaveDialogAction {
     }
 
     private String stripWildcardsFromPath(String path) {
-        if (path.equals("/")) {
-        } else if (path.equals("/*")) {
+        path = StringUtils.removeEnd(path, "/*");
+        path = StringUtils.removeEnd(path, "/");
+        if (StringUtils.isBlank(path)) {
             path = "/";
-        } else {
-            path = StringUtils.removeEnd(path, "/*");
-            path = StringUtils.removeEnd(path, "/");
         }
         return path;
     }
