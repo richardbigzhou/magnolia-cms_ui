@@ -41,7 +41,6 @@ import info.magnolia.cms.security.RoleManager;
 import info.magnolia.cms.security.SecuritySupport;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.Components;
-import info.magnolia.repository.RepositoryManager;
 import info.magnolia.security.app.dialog.field.AccessControlList;
 import info.magnolia.security.app.dialog.field.WorkspaceAccessFieldFactory;
 import info.magnolia.security.app.util.UsersWorkspaceUtil;
@@ -54,6 +53,8 @@ import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
+import java.security.AccessControlException;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -71,19 +72,17 @@ import com.vaadin.data.Property;
 public class SaveRoleDialogAction extends SaveDialogAction {
 
     private final SecuritySupport securitySupport;
-    private final RepositoryManager repositoryManager;
 
-    public SaveRoleDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback, SecuritySupport securitySupport, RepositoryManager repositoryManager) {
+    public SaveRoleDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback, SecuritySupport securitySupport) {
         super(definition, item, validator, callback);
         this.securitySupport = securitySupport;
-        this.repositoryManager = repositoryManager;
     }
 
     /**
-     * @deprecated since 5.2.1 - use {@link SaveRoleDialogAction#SaveRoleDialogAction(info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition, com.vaadin.data.Item, info.magnolia.ui.form.EditorValidator, info.magnolia.ui.form.EditorCallback, info.magnolia.cms.security.SecuritySupport, info.magnolia.repository.RepositoryManager)} instead.
+     * @deprecated since 5.2.1 - use {@link SaveRoleDialogAction#SaveRoleDialogAction(info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition, com.vaadin.data.Item, info.magnolia.ui.form.EditorValidator, info.magnolia.ui.form.EditorCallback, info.magnolia.cms.security.SecuritySupport)} instead.
      */
     public SaveRoleDialogAction(SaveDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback) {
-        this(definition, item, validator, callback, Components.getComponent(SecuritySupport.class), Components.getComponent(RepositoryManager.class));
+        this(definition, item, validator, callback, Components.getComponent(SecuritySupport.class));
     }
 
     @Override
@@ -139,9 +138,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
 
             for (Node aclNode : NodeUtil.getNodes(roleNode)) {
 
-                // Any node marked as using the intermediary format we read in, remove all its sub nodes and then
-                // add new sub nodes based on the read in ACL
-                if (aclNode.hasProperty(WorkspaceAccessFieldFactory.INTERMEDIARY_FORMAT_PROPERTY_NAME)) {
+                if (aclNode.getName().startsWith("acl_") && !aclNode.getName().equals("acl_uri")) {
 
                     AccessControlList acl = new AccessControlList();
 
@@ -157,6 +154,8 @@ public class SaveRoleDialogAction extends SaveDialogAction {
                             if (StringUtils.isNotBlank(path)) {
                                 acl.addEntry(new AccessControlList.Entry(permissions, accessType, path));
                             }
+                        } else {
+                            acl.readEntry(entryNode);
                         }
 
                         entryNode.remove();
@@ -192,8 +191,14 @@ public class SaveRoleDialogAction extends SaveDialogAction {
 
             if (child instanceof JcrNewNodeAdapter) {
                 if (node.hasNode(child.getNodeName())) {
-                    child = convertNewNodeAdapterForUpdating((JcrNewNodeAdapter) child, node.getNode(child.getNodeName()));
-                    adapter.addChild(child);
+                    if (child.getNodeName().startsWith("acl_")) {
+                        child = convertNewNodeAdapterForUpdating((JcrNewNodeAdapter) child, node.getNode(child.getNodeName()));
+                        adapter.addChild(child);
+                    } else {
+                        child.setNodeName(getUniqueNodeNameForChild(child.getParent()));
+                        child.setParent(adapter);
+                        child.setItemId(adapter.getItemId());
+                    }
                 } else {
                     child.setParent(adapter);
                     child.setItemId(adapter.getItemId());
@@ -203,6 +208,31 @@ public class SaveRoleDialogAction extends SaveDialogAction {
         }
 
         return adapter;
+    }
+
+    protected String getUniqueNodeNameForChild(AbstractJcrNodeAdapter parentItem) throws RepositoryException {
+
+        // The adapter cannot handle more than one unnamed child, see MGNLUI-1459, so we have to generate unique ones
+
+        Node parentNode = null;
+        if (!(parentItem instanceof JcrNewNodeAdapter)) {
+            parentNode = parentItem.getJcrItem();
+        }
+
+        int newNodeName = 0;
+        while (true) {
+            if (parentItem.getChild(String.valueOf(newNodeName)) != null) {
+                newNodeName++;
+                continue;
+            }
+            if (parentNode != null && parentNode.hasNode(String.valueOf(newNodeName))) {
+                newNodeName++;
+                continue;
+            }
+            break;
+        }
+
+        return String.valueOf(newNodeName);
     }
 
     /**
@@ -237,10 +267,6 @@ public class SaveRoleDialogAction extends SaveDialogAction {
 
                             String workspaceName = StringUtils.replace(aclItem.getNodeName(), "acl_", "");
 
-                            if (!repositoryManager.hasWorkspace(workspaceName)) {
-                                continue;
-                            }
-
                             if (!isCurrentUserEntitledToGrantRights(workspaceName, path, accessType, permissions)) {
                                 throw new ActionExecutionException("Access violation: could not create role. Have you the necessary grants to create such a role?");
                             }
@@ -264,6 +290,8 @@ public class SaveRoleDialogAction extends SaveDialogAction {
 
             return true;
 
+        } catch (AccessControlException e) {
+            throw new ActionExecutionException(e);
         } catch (RepositoryException e) {
             throw new ActionExecutionException(e);
         }
