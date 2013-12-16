@@ -40,10 +40,24 @@ import info.magnolia.importexport.DataTransporter;
 import info.magnolia.module.InstallContextImpl;
 import info.magnolia.module.ModuleRegistryImpl;
 import info.magnolia.module.delta.TaskExecutionException;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.dialog.setup.migration.ActionCreator;
 import info.magnolia.ui.dialog.setup.migration.BaseActionCreator;
+import info.magnolia.ui.dialog.setup.migration.CheckBoxRadioControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.CheckBoxSwitchControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.ControlMigratorsRegistry;
+import info.magnolia.ui.dialog.setup.migration.DateControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.EditCodeControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.EditControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.FckEditControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.FileControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.HiddenControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.LinkControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.MultiSelectControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.SelectControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.StaticControlMigrator;
 import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.CheckboxFieldDefinition;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
@@ -91,6 +105,22 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
 
         session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         dialogNode = session.getNode("/modules/testModule/dialogs");
+
+        ControlMigratorsRegistry registery = Components.getComponent(ControlMigratorsRegistry.class);
+        registery.register("edit", new EditControlMigrator());
+        registery.register("fckEdit", new FckEditControlMigrator());
+        registery.register("date", new DateControlMigrator());
+        registery.register("select", new SelectControlMigrator());
+        registery.register("checkbox", new CheckBoxRadioControlMigrator(true));
+        registery.register("checkboxSwitch", new CheckBoxSwitchControlMigrator());
+        registery.register("radio", new CheckBoxRadioControlMigrator(false));
+        registery.register("uuidLink", new LinkControlMigrator());
+        registery.register("link", new LinkControlMigrator());
+        registery.register("multiselect", new MultiSelectControlMigrator(false));
+        registery.register("file", new FileControlMigrator());
+        registery.register("static", new StaticControlMigrator());
+        registery.register("hidden", new HiddenControlMigrator());
+        registery.register("editCode", new EditCodeControlMigrator());
     }
 
     @Test

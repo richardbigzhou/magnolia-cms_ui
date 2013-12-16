@@ -39,6 +39,7 @@ import info.magnolia.objectfactory.Components;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.definition.ConfiguredFieldDefinition;
 import info.magnolia.ui.form.field.definition.FieldDefinition;
+import info.magnolia.ui.form.field.definition.HiddenFieldDefinition;
 import info.magnolia.ui.form.field.transformer.TransformedProperty;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
@@ -271,6 +272,45 @@ public class AbstractFieldFactoryTest extends AbstractFieldFactoryTestCase<Confi
 
         // THEN
         assertNull(field.getCaption());
+    }
+    
+    @Test
+    public void testGetHiddenFieldPropertyDataSourceWhenItemNodeDoesNotIncludeHiddenProperty() throws Exception {
+        // GIVEN
+        ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new HiddenFieldDefinition(), "hiddenProperty");
+        def.setDefaultValue("test");
+        AbstractFieldFactory<HiddenFieldDefinition, String> hiddenFieldFactory = new HiddenFieldFactory((HiddenFieldDefinition) def, baseItem);
+        hiddenFieldFactory.setComponentProvider(new MockComponentProvider());
+
+        // WHEN
+        Field<?> field = hiddenFieldFactory.createField();
+
+        // THEN
+        Property<?> p = field.getPropertyDataSource();
+        assertNotNull(p);
+        assertEquals("test", p.getValue().toString());
+        assertEquals("test", baseItem.getItemProperty("hiddenProperty").getValue());
+        assertEquals("test", field.getValue());
+    }
+    
+    @Test
+    public void testGetHiddenFieldPropertyDataSourceWhenItemNodeIncludesHiddenProperty() throws Exception {
+        // GIVEN
+        baseItem.addItemProperty("hiddenProperty", new ObjectProperty<String>("test1"));
+        ConfiguredFieldDefinition def = createConfiguredFieldDefinition(new HiddenFieldDefinition(), "hiddenProperty");
+        def.setDefaultValue("test2");
+        AbstractFieldFactory<HiddenFieldDefinition, String> hiddenFieldFactory = new HiddenFieldFactory((HiddenFieldDefinition) def, baseItem);
+        hiddenFieldFactory.setComponentProvider(new MockComponentProvider());
+
+        // WHEN
+        Field<?> field = hiddenFieldFactory.createField();
+
+        // THEN
+        Property<?> p = field.getPropertyDataSource();
+        assertNotNull(p);
+        assertEquals("test1", p.getValue().toString());
+        assertEquals("test1", baseItem.getItemProperty("hiddenProperty").getValue());
+        assertEquals("test1", field.getValue());
     }
 
     public static ConfiguredFieldDefinition createConfiguredFieldDefinition(ConfiguredFieldDefinition configureFieldDefinition, String propertyName) {

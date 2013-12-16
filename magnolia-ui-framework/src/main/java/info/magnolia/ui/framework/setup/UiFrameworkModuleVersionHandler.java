@@ -50,6 +50,19 @@ import info.magnolia.nodebuilder.task.ErrorHandling;
 import info.magnolia.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
+import info.magnolia.ui.dialog.setup.migration.CheckBoxRadioControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.CheckBoxSwitchControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.ControlMigratorsRegistry;
+import info.magnolia.ui.dialog.setup.migration.DateControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.EditCodeControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.EditControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.FckEditControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.FileControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.HiddenControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.LinkControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.MultiSelectControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.SelectControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.StaticControlMigrator;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.CompositeFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
@@ -62,6 +75,8 @@ import info.magnolia.ui.form.field.factory.SwitchableFieldFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Version handler for the Ui framework module.
  */
@@ -73,7 +88,24 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
         }
     }
 
-    public UiFrameworkModuleVersionHandler() {
+    @Inject
+    public UiFrameworkModuleVersionHandler(ControlMigratorsRegistry controlMigratorsRegistry) {
+        // Register control migration task.
+        controlMigratorsRegistry.register("edit", new EditControlMigrator());
+        controlMigratorsRegistry.register("fckEdit", new FckEditControlMigrator());
+        controlMigratorsRegistry.register("date", new DateControlMigrator());
+        controlMigratorsRegistry.register("select", new SelectControlMigrator());
+        controlMigratorsRegistry.register("checkbox", new CheckBoxRadioControlMigrator(true));
+        controlMigratorsRegistry.register("checkboxSwitch", new CheckBoxSwitchControlMigrator());
+        controlMigratorsRegistry.register("radio", new CheckBoxRadioControlMigrator(false));
+        controlMigratorsRegistry.register("uuidLink", new LinkControlMigrator());
+        controlMigratorsRegistry.register("link", new LinkControlMigrator());
+        controlMigratorsRegistry.register("multiselect", new MultiSelectControlMigrator(false));
+        controlMigratorsRegistry.register("file", new FileControlMigrator());
+        controlMigratorsRegistry.register("static", new StaticControlMigrator());
+        controlMigratorsRegistry.register("hidden", new HiddenControlMigrator());
+        controlMigratorsRegistry.register("editCode", new EditCodeControlMigrator());
+
         register(DeltaBuilder.update("5.0.1", "")
                 .addTask(new RenameLegacyI18nNodeIfExistingTask())
                 .addTask(new RenameNodesTask("Rename 5.0 i18n node", "Renames /server/i18n/authoring50 as authoring.", RepositoryConstants.CONFIG, "/server/i18n", "authoring50", "authoring", NodeTypes.ContentNode.NAME))

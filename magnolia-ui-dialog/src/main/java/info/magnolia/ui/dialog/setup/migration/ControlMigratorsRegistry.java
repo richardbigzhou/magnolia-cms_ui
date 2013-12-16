@@ -31,16 +31,30 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.setup.migration;
+package info.magnolia.ui.dialog.setup.migration;
 
-import info.magnolia.module.InstallContext;
-import info.magnolia.ui.dialog.setup.migration.ControlMigrator;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Singleton;
+
 /**
- * ControlMigrators interface used by module that may want to register in a global way {@ControlMigrator}'s.
+ * Registry used to store the {@link ControlMigrator} defined the module version handler.
  */
-public interface ControlMigrators {
-    void register(Map<String, ControlMigrator> map, InstallContext installContext);
+@Singleton
+public class ControlMigratorsRegistry {
+    private final Map<String, ControlMigrator> allMigrators;
+
+    public ControlMigratorsRegistry() {
+        this.allMigrators = new HashMap<String, ControlMigrator>();
+    }
+
+    public void register(String controlName, ControlMigrator migrator) {
+        allMigrators.put(controlName, migrator);
+    }
+
+    public Map<String, ControlMigrator> getAllMigrators() {
+        return allMigrators;
+    }
 }

@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.dialog.setup.migration;
 
+import info.magnolia.module.InstallContext;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -45,6 +47,8 @@ public interface ControlMigrator {
      * Take a specific control's migration action.
      * 
      * @param controlNode on which the migration is done. Topically, remove, rename, add properties, nodes.
+     * @param installContext used to log migration issues or warn user for interaction.
+     * @throws RepositoryException
      */
-    public void migrate(Node controlNode) throws RepositoryException;
+    public void migrate(Node controlNode, InstallContext installContext) throws RepositoryException;
 }
