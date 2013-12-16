@@ -38,6 +38,7 @@ import info.magnolia.cms.security.PermissionUtil;
 import info.magnolia.cms.security.Role;
 import info.magnolia.cms.security.RoleManager;
 import info.magnolia.cms.security.SecuritySupport;
+import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.Components;
@@ -241,6 +242,11 @@ public class SaveRoleDialogAction extends SaveDialogAction {
      * fails because it is then still used in the dialog.
      */
     private boolean validateAccessControlLists(JcrNodeAdapter roleItem) throws ActionExecutionException {
+
+        if (MgnlContext.getUser().hasRole(AccessDefinition.DEFAULT_SUPERUSER_ROLE)) {
+            return true;
+        }
+
         try {
             if (roleItem instanceof JcrNewNodeAdapter) {
                 Node parentNode = roleItem.getJcrItem();
@@ -303,6 +309,10 @@ public class SaveRoleDialogAction extends SaveDialogAction {
      */
     private boolean isCurrentUserEntitledToGrantRights(String workspaceName, String path, long accessType, long permission) throws RepositoryException {
 
+        if (MgnlContext.getUser().hasRole(AccessDefinition.DEFAULT_SUPERUSER_ROLE)) {
+            return true;
+        }
+
         // Granting DENY access is only allowed if the user has READ access to the node
         if (permission == Permission.NONE) {
             permission = Permission.READ;
@@ -325,6 +335,10 @@ public class SaveRoleDialogAction extends SaveDialogAction {
      * he's specifying in the ACLs. We See MGNLUI-2357.
      */
     private boolean isCurrentUserEntitledToGrantUriRights(String path, long permissions) throws RepositoryException {
+
+        if (MgnlContext.getUser().hasRole(AccessDefinition.DEFAULT_SUPERUSER_ROLE)) {
+            return true;
+        }
 
         // Granting DENY access is only allowed if the user has READ access to the path
         if (permissions == Permission.NONE) {
@@ -353,8 +367,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
     }
 
     private String stripWildcardsFromPath(String path) {
-        path = StringUtils.removeEnd(path, "/*");
-        path = StringUtils.removeEnd(path, "/");
+        path = StringUtils.stripEnd(path, "/*");
         if (StringUtils.isBlank(path)) {
             path = "/";
         }

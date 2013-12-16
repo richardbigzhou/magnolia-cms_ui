@@ -41,6 +41,7 @@ import static org.mockito.Mockito.when;
 
 import info.magnolia.cms.security.ACLImpl;
 import info.magnolia.cms.security.AccessManagerImpl;
+import info.magnolia.cms.security.DummyUser;
 import info.magnolia.cms.security.MgnlRoleManager;
 import info.magnolia.cms.security.Permission;
 import info.magnolia.cms.security.PermissionImpl;
@@ -107,6 +108,12 @@ public class SaveRoleDialogActionTest extends RepositoryTestCase {
         grant(RepositoryConstants.USER_ROLES, "/*", Permission.ALL);
         MockWebContext context = (MockWebContext) MgnlContext.getInstance();
         context.setSubject(subject);
+        context.setUser(new DummyUser(){
+            @Override
+            public boolean hasRole(String roleName) {
+                return false;
+            }
+        });
 
         final JCRSessionStrategy repositoryStrategy = context.getRepositoryStrategy();
         context.setRepositoryStrategy(new JCRSessionStrategy() {
