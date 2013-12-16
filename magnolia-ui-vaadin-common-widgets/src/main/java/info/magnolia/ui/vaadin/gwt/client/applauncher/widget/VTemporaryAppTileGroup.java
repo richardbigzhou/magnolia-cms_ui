@@ -69,7 +69,8 @@ public class VTemporaryAppTileGroup extends VAppTileGroup {
         JQueryWrapper.select(this).animate(VISIBILITY_TOGGLE_SPEED, new AnimationSettings() {
 
             {
-                setProperty("height", OPEN_STATE_HEIGHT_PX);
+                int heightRatio = 1 + getChildren().size() / 9;
+                setProperty("height", OPEN_STATE_HEIGHT_PX * heightRatio);
             }
         });
     }
