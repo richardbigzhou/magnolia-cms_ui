@@ -34,10 +34,11 @@
 package info.magnolia.security.app.dialog.action;
 
 import info.magnolia.cms.security.Permission;
-import info.magnolia.cms.security.PermissionUtil;
+import info.magnolia.cms.security.PrincipalUtil;
 import info.magnolia.cms.security.Role;
 import info.magnolia.cms.security.RoleManager;
 import info.magnolia.cms.security.SecuritySupport;
+import info.magnolia.cms.security.auth.ACL;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeUtil;
@@ -56,6 +57,8 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.security.AccessControlException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -307,27 +310,34 @@ public class SaveRoleDialogAction extends SaveDialogAction {
      * Examines whether the current user creating/editing a role has himself the required permissions to the workspaces
      * he's specifying in the ACLs. We See MGNLUI-2357.
      */
-    private boolean isCurrentUserEntitledToGrantRights(String workspaceName, String path, long accessType, long permission) throws RepositoryException {
+    private boolean isCurrentUserEntitledToGrantRights(String workspaceName, String path, long accessType, long permissions) throws RepositoryException {
 
         if (MgnlContext.getUser().hasRole(AccessDefinition.DEFAULT_SUPERUSER_ROLE)) {
             return true;
         }
 
         // Granting DENY access is only allowed if the user has READ access to the node
-        if (permission == Permission.NONE) {
-            permission = Permission.READ;
+        if (permissions == Permission.NONE) {
+            permissions = Permission.READ;
         }
 
-        path = stripWildcardsFromPath(path);
+        ACL acl = PrincipalUtil.findAccessControlList(MgnlContext.getSubject(), workspaceName);
+        if (acl == null) {
+            return false;
+        }
+
+        Permission ownPermissions = findBestMatchingPermissions(acl.getList(), stripWildcardsFromPath(path));
+        if (ownPermissions == null) {
+            return false;
+        }
 
         boolean recursive = (accessType & AccessControlList.ACCESS_TYPE_CHILDREN) != 0;
 
-        // If trying to give recursive access we test using an imaginary sub-node
-        if (recursive) {
-            path += (path.equals("/") ? "" : "/") + "test";
+        if (recursive && !ownPermissions.getPattern().getPatternString().endsWith("/*")) {
+            return false;
         }
 
-        return PermissionUtil.isGranted(MgnlContext.getJCRSession(workspaceName), path, permission);
+        return granted(ownPermissions, permissions);
     }
 
     /**
@@ -345,25 +355,23 @@ public class SaveRoleDialogAction extends SaveDialogAction {
             permissions = Permission.READ;
         }
 
-        String permissionsString;
-        if (permissions == Permission.READ) {
-            permissionsString = Session.ACTION_READ;
-        } else if (permissions == Permission.ALL) {
-            permissionsString = Session.ACTION_ADD_NODE;
-        } else {
-            throw new IllegalArgumentException("unexpected permissions " + permissions);
+        ACL acl = PrincipalUtil.findAccessControlList(MgnlContext.getSubject(), "uri");
+        if (acl == null) {
+            return false;
         }
 
         boolean recursive = path.endsWith("*");
 
-        path = stripWildcardsFromPath(path);
-
-        // If trying to give recursive access we test using an imaginary sub-path
-        if (recursive) {
-            path += (path.equals("/") ? "" : "/") + "test";
+        Permission ownPermissions = findBestMatchingPermissions(acl.getList(), stripWildcardsFromPath(path));
+        if (ownPermissions == null) {
+            return false;
         }
 
-        return PermissionUtil.isGranted("uri", path, permissionsString);
+        if (recursive && !ownPermissions.getPattern().getPatternString().endsWith("*")) {
+            return false;
+        }
+
+        return granted(ownPermissions, permissions);
     }
 
     private String stripWildcardsFromPath(String path) {
@@ -372,5 +380,34 @@ public class SaveRoleDialogAction extends SaveDialogAction {
             path = "/";
         }
         return path;
+    }
+
+    private boolean granted(Permission permissionsGranted, long permissionsNeeded) {
+        return (permissionsGranted.getPermissions() & permissionsNeeded) == permissionsNeeded;
+    }
+
+    private Permission findBestMatchingPermissions(List<Permission> permissions, String path) {
+        if (permissions == null) {
+            return null;
+        }
+        Permission bestMatch = null;
+        long permission = 0;
+        int patternLength = 0;
+        ArrayList<Permission> temp = new ArrayList<Permission>();
+        temp.addAll(permissions);
+        for (Permission p : temp) {
+            if (p.match(path)) {
+                int l = p.getPattern().getLength();
+                if (patternLength == l && (permission < p.getPermissions())) {
+                    permission = p.getPermissions();
+                    bestMatch = p;
+                } else if (patternLength < l) {
+                    patternLength = l;
+                    permission = p.getPermissions();
+                    bestMatch = p;
+                }
+            }
+        }
+        return bestMatch;
     }
 }
