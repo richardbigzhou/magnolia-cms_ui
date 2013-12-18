@@ -324,4 +324,19 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         // THEN
         assertEquals("editUser", session.getProperty("/modules/security-app/apps/security/subApps/users/actionbar/defaultAction").getString());
     }
+
+    @Test
+    public void setRegisterConditionalReadOnlyTextFieldTypeOnUpdateto521() throws RepositoryException, ModuleManagementException {
+        // GIVEN
+        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2"));
+
+        // THEN
+        assertTrue(session.getRootNode().hasNode("modules/security-app/fieldTypes/conditionalReadOnlyTextField"));
+        assertEquals("info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldDefinition", session.getProperty("/modules/security-app/fieldTypes/conditionalReadOnlyTextField/definitionClass").getString());
+        assertEquals("info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldFactory", session.getProperty("/modules/security-app/fieldTypes/conditionalReadOnlyTextField/factoryClass").getString());
+    }
+
 }

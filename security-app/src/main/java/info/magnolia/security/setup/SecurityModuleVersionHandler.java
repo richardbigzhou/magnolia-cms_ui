@@ -146,7 +146,10 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                                 new SetPropertyTask("Set the conditional value to superuser", RepositoryConstants.CONFIG, "/modules/security-app/dialogs/role/form/tabs/role/fields/jcrName", "conditionalValue", "superuser"))
                         )));
         register(DeltaBuilder.update("5.2.1", "")
-                .addTask(new NewPropertyTask("Add user default action", "Adds edit user default action when a user is selected.", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actionbar", "defaultAction", "editUser")));
+                .addTask(new NewPropertyTask("Add user default action", "Adds edit user default action when a user is selected.", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actionbar", "defaultAction", "editUser"))
+                .addTask(new NodeExistsDelegateTask("Add conditionalReadOnlyTextField field type", "Add conditionalReadOnlyTextField field type if it is not exist", RepositoryConstants.CONFIG, "/modules/security-app/fieldTypes/conditionalReadOnlyTextField", null,
+                        new PartialBootstrapTask("Bootsrap conditionalReadOnlyTextField field type", "", "/mgnl-bootstrap/security-app/config.modules.security-app.fieldTypes.xml", "/fieldTypes/conditionalReadOnlyTextField")))
+        );
     }
 
     @Override
