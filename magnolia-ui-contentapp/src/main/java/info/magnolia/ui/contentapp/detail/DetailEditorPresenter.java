@@ -182,10 +182,10 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
 
         } catch (RepositoryException e) {
             Message error = new Message(MessageType.ERROR, i18n.translate("ui-contentapp.detailEditorPresenter.error.repository", nodePath), e.getMessage());
-            appContext.broadcastMessage(error);
+            appContext.sendLocalMessage(error);
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, i18n.translate("ui-contentapp.error.action.execution"), e.getMessage());
-            appContext.broadcastMessage(error);
+            appContext.sendLocalMessage(error);
         }
     }
 
