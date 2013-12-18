@@ -150,7 +150,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
 
                         if (entryNode.hasProperty(WorkspaceAccessFieldFactory.INTERMEDIARY_FORMAT_PROPERTY_NAME)) {
                             String path = entryNode.getProperty(AccessControlList.PATH_PROPERTY_NAME).getString();
-                            long accessType = (int) entryNode.getProperty(WorkspaceAccessFieldFactory.ACCESS_TYPE_PROPERTY_NAME).getLong();
+                            long accessType = entryNode.getProperty(WorkspaceAccessFieldFactory.ACCESS_TYPE_PROPERTY_NAME).getLong();
                             long permissions = entryNode.getProperty(AccessControlList.PERMISSIONS_PROPERTY_NAME).getLong();
 
                             path = stripWildcardsFromPath(path);
@@ -165,7 +165,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
                         entryNode.remove();
                     }
 
-                    aclNode.setProperty(WorkspaceAccessFieldFactory.INTERMEDIARY_FORMAT_PROPERTY_NAME, (Value)null);
+                    aclNode.setProperty(WorkspaceAccessFieldFactory.INTERMEDIARY_FORMAT_PROPERTY_NAME, (Value) null);
                     acl.saveEntries(aclNode);
                 }
             }
