@@ -33,11 +33,8 @@
  */
 package info.magnolia.security.app.dialog.action;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.security.ACLImpl;
 import info.magnolia.cms.security.AccessManagerImpl;
@@ -93,6 +90,7 @@ public class SaveRoleDialogActionTest extends RepositoryTestCase {
     private MgnlRoleManager roleManager;
     private Subject subject;
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
