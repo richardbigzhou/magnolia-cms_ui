@@ -214,7 +214,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
         return adapter;
     }
 
-    protected String getUniqueNodeNameForChild(AbstractJcrNodeAdapter parentItem) throws RepositoryException {
+    private String getUniqueNodeNameForChild(AbstractJcrNodeAdapter parentItem) throws RepositoryException {
 
         // The adapter cannot handle more than one unnamed child, see MGNLUI-1459, so we have to generate unique ones
 
