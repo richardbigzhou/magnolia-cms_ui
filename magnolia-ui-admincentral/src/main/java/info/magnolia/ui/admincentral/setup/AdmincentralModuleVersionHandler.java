@@ -37,8 +37,10 @@ import info.magnolia.jcr.util.NodeTypeTemplateUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
+import info.magnolia.module.delta.ArrayDelegateTask;
 import info.magnolia.module.delta.BootstrapSingleModuleResource;
 import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
+import info.magnolia.module.delta.CreateNodeTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
 import info.magnolia.module.delta.MoveNodeTask;
@@ -173,6 +175,11 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
         register(DeltaBuilder.update("5.2.1", "")
                 .addTask(new NodeExistsDelegateTask("Reorder JCR in TOOLS group", "This reorders the JCR app before Activation in the Tools group of the applauncher.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activation",
                         new OrderNodeBeforeTask("", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/websiteJcrBrowser", "activation")))
+                .addTask(new IsModuleInstalledOrRegistered("Create node", "Create entry in tools group of appLauncher for Activation tools.", "activation",
+                        new ArrayDelegateTask("",
+                                new CreateNodeTask("Create node", "Create entry in tools group of appLauncher for Activation tools.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps", "activation", NodeTypes.ContentNode.NAME),
+                                new CreateNodeTask("Create node", "Create entry in appLauncher for Activation monitor.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps", "activationMonitor", NodeTypes.ContentNode.NAME))
+                        ))
         );
 
 

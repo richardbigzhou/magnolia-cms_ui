@@ -393,4 +393,27 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         assertTrue(session.itemExists("/modules/ui-admincentral/virtualURIMapping/default"));
     }
 
+    @Test
+    public void testUpdateTo52RegisterActivationApp() throws Exception {
+        // GIVEN
+        NodeUtil.createPath(session.getRootNode(), "/modules/activation", NodeTypes.ContentNode.NAME);
+        NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps", NodeTypes.ContentNode.NAME);
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1"));
+
+        // THEN
+        assertTrue(session.itemExists("/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activation"));
+        assertTrue(session.itemExists("/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activationMonitor"));
+    }
+
+    @Test
+    public void testUpdateTo52DoNotRegisterActivationApp() throws Exception {
+        // GIVEN
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1"));
+
+        // THEN
+        assertFalse(session.itemExists("/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activation"));
+    }
 }
