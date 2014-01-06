@@ -40,11 +40,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.converter.AbstractStringToNumberConverter;
 import com.vaadin.event.ActionManager;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
@@ -279,12 +281,37 @@ public class InplaceEditingTreeTable extends MagnoliaTreeTable implements ItemCl
             if (type == null) {
                 return null;
             }
-
-            return new TextField();
+            Field<?> field = new TextField();
+            // FIXME MGNLUI-1855 To remove once Vaadin 7.2 will be used. Currently we need to assign converter for properties with type Long because otherwise Vaadin assigns incompatible StringToNumberConverter.
+            if (Long.class.equals(type)) {
+                ((AbstractTextField) field).setConverter(new StringToLongConverter());
+            }
+            return field;
         }
 
     }
 
+    /**
+     * The StringToLongConverter.<br>
+     * MGNLUI-1855 This should be handled by vaadin, but StringToNumberConverter throws conversion exception when used
+     * with a Long property in Vaadin 7.1. This should be fixed, unfortunately not before 7.2, so we need that converter
+     * for the time being.<br>
+     * As a result, this class will have a short life span, this is why it is kept private and deprecated.
+     */
+    @Deprecated
+    private static class StringToLongConverter extends AbstractStringToNumberConverter<Long> {
+        // FIXME MGNLUI-1855 To remove once Vaadin 7.2 will be used.
+        @Override
+        public Long convertToModel(String value, Class<? extends Long> targetType, Locale locale) throws ConversionException {
+            Number n = convertToNumber(value, targetType, locale);
+            return n == null ? null : n.longValue();
+        }
+
+        @Override
+        public Class<Long> getModelType() {
+            return Long.class;
+        }
+    }
 
 
     // FIRING ITEM EDITED EVENTS
