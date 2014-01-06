@@ -163,6 +163,13 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         assertEquals(SwitchableFieldDefinition.class.getName(), switchableField.getProperty("definitionClass").getString());
         assertTrue(switchableField.hasProperty("factoryClass"));
         assertEquals(SwitchableFieldFactory.class.getName(), switchableField.getProperty("factoryClass").getString());
+        //
+        assertTrue(framework.hasNode("fieldTypes/workbenchField"));
+        Node workbenchField = framework.getNode("fieldTypes/workbenchField");
+        assertTrue(workbenchField.hasProperty("definitionClass"));
+        assertEquals("info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition", workbenchField.getProperty("definitionClass").getString());
+        assertTrue(workbenchField.hasProperty("factoryClass"));
+        assertEquals("info.magnolia.ui.contentapp.field.WorkbenchFieldFactory", workbenchField.getProperty("factoryClass").getString());
     }
 
     @Test
