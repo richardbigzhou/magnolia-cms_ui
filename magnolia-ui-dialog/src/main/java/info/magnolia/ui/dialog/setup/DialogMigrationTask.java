@@ -73,12 +73,15 @@ public class DialogMigrationTask extends AbstractTask {
     private static final Logger log = LoggerFactory.getLogger(DialogMigrationTask.class);
     private final String moduleName;
     private final HashSet<Property> extendsAndReferenceProperty = new HashSet<Property>();
-    private final ControlMigratorsRegistry controlMigratorsRegistry;
+    private ControlMigratorsRegistry controlMigratorsRegistry;
 
     private HashMap<String, ControlMigrator> controlsToMigrate;
     private String defaultDialogActions = "defaultDialogActions";
     private HashMap<String, List<ActionCreator>> dialogActionsToMigrate;
     private InstallContext installContext;
+
+    private HashMap<String, ControlMigrator> customControlsToMigrate;
+    private HashMap<String, List<ActionCreator>> customDialogActionsToMigrate;
 
     /**
      * @param taskName
@@ -90,11 +93,12 @@ public class DialogMigrationTask extends AbstractTask {
     public DialogMigrationTask(String taskName, String taskDescription, String moduleName, HashMap<String, ControlMigrator> customControlsToMigrate, HashMap<String, List<ActionCreator>> customDialogActionsToMigrate) {
         super(taskName, taskDescription);
         this.moduleName = moduleName;
+
         // Use Components else we will need to inject ControlMigratorsRegistry in all version handler that uses DialogMigrationTask.
         // Version handler needs ControlMigratorsRegistry only for registrating custom dialogMigrators.
         this.controlMigratorsRegistry = Components.getComponent(ControlMigratorsRegistry.class);
-        registerControlsToMigrate(customControlsToMigrate);
-        registerDialogActionToCreate(customDialogActionsToMigrate);
+        this.customControlsToMigrate = customControlsToMigrate;
+        this.customDialogActionsToMigrate = customDialogActionsToMigrate;
     }
 
     public DialogMigrationTask(String taskName, String taskDescription, String moduleName) {
@@ -113,8 +117,7 @@ public class DialogMigrationTask extends AbstractTask {
         Session session = null;
         this.installContext = installContext;
         try {
-            addCustomControlsToMigrate(controlsToMigrate);
-            addCustomDialogActionToCreate(dialogActionsToMigrate);
+            registerControlsAndActionsMigrators();
 
             String dialogNodeName = "dialogs";
             String dialogPath = "/modules/" + moduleName + "/" + dialogNodeName;
@@ -143,6 +146,15 @@ public class DialogMigrationTask extends AbstractTask {
             installContext.warn("Could not Migrate Dialog for the following module " + moduleName);
             throw new TaskExecutionException("Could not Migrate Dialog ", e);
         }
+    }
+
+    private void registerControlsAndActionsMigrators() {
+        // Register default and passed during class initialization
+        registerControlsToMigrate(customControlsToMigrate);
+        registerDialogActionToCreate(customDialogActionsToMigrate);
+        // Add custom
+        addCustomControlsToMigrate(controlsToMigrate);
+        addCustomDialogActionToCreate(dialogActionsToMigrate);
     }
 
     /**
