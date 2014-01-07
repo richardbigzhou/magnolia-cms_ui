@@ -56,12 +56,14 @@ import javax.inject.Inject;
 import javax.jcr.Node;
 
 import org.apache.commons.lang.StringUtils;
+import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.TextArea;
 
 /**
  * Builder for forms.
@@ -170,7 +172,11 @@ public class FormBuilder {
                 if (StringUtils.isNotBlank(helpDescription) && !isMessageKey(helpDescription)) {
                     tab.setComponentHelpDescription(field, helpDescription);
                 }
-                TextAreaStretcher.extend(field);
+
+                if (field instanceof TextArea || field instanceof CKEditorTextField) {
+                    TextAreaStretcher.extend(field);
+                }
+
                 view.addField(field);
             }
             view.addFormSection(tabDefinition.getLabel(), tab.getContainer());
