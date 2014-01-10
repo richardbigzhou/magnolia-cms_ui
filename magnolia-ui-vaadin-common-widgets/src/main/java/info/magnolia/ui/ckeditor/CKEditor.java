@@ -34,12 +34,14 @@
 package info.magnolia.ui.ckeditor;
 
 import com.vaadin.annotations.JavaScript;
+import com.vaadin.annotations.StyleSheet;
 import com.vaadin.ui.AbstractJavaScriptComponent;
 
 /**
  * CKEditor.
  */
 @JavaScript({ "//cdnjs.cloudflare.com/ajax/libs/ckeditor/4.2/ckeditor.js", "ckeditor_connector.js" })
+@StyleSheet("mgnl-ckeditor.css")
 public class CKEditor extends AbstractJavaScriptComponent {
 
     public void insertText(String text) {
