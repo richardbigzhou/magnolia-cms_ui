@@ -49,7 +49,7 @@ public class StatusColumnDefinition extends AbstractColumnDefinition {
     private boolean activation = true;
 
     // Show Permission Status
-    private boolean permissions = false;
+    private boolean permissions = true;
 
     public boolean isActivation() {
         return activation;
