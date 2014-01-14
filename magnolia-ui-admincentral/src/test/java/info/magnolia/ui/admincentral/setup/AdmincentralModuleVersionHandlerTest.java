@@ -397,7 +397,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     public void testUpdateTo52RegisterActivationApp() throws Exception {
         // GIVEN
         NodeUtil.createPath(session.getRootNode(), "/modules/activation", NodeTypes.ContentNode.NAME);
-        NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps", NodeTypes.ContentNode.NAME);
+        NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/websiteJcrBrowser", NodeTypes.ContentNode.NAME);
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1"));
 

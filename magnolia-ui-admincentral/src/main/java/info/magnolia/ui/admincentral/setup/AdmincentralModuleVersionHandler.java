@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.admincentral.setup;
 
+import info.magnolia.cms.core.ItemType;
 import info.magnolia.jcr.util.NodeTypeTemplateUtil;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
@@ -40,6 +41,8 @@ import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.ArrayDelegateTask;
 import info.magnolia.module.delta.BootstrapSingleModuleResource;
 import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
+import info.magnolia.module.delta.ConditionalDelegateTask;
+import info.magnolia.module.delta.CreateNodePathTask;
 import info.magnolia.module.delta.CreateNodeTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
@@ -75,6 +78,35 @@ import org.apache.jackrabbit.JcrConstants;
  * VersionHandler for the Admincentral module.
  */
 public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandler {
+
+    /**
+     * Check if the activation module is install and correctly configured.
+     */
+    private class RunConfigureActivationDelegateTask extends ConditionalDelegateTask {
+
+        public RunConfigureActivationDelegateTask(String taskName, String taskDescription, Task ifTrue) {
+            super(taskName, taskDescription, ifTrue);
+        }
+
+        @Override
+        public boolean condition(InstallContext ctx) {
+            try {
+                return ctx.isModuleRegistered("activation") && ctx.getConfigJCRSession().nodeExists("/modules/activation")
+                        && (!ctx.getConfigJCRSession().nodeExists("/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activation")
+                        || !ctx.getConfigJCRSession().nodeExists("/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activationMonitor"));
+            } catch (RepositoryException e) {
+                return false;
+            }
+        }
+    }
+
+    private ArrayDelegateTask createActivationConfig =  new ArrayDelegateTask("",
+            new NodeExistsDelegateTask("Create node", "Create path.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps", null,
+                    new CreateNodePathTask("Create node", "Create path.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps", ItemType.CONTENTNODE)),
+            new NodeExistsDelegateTask("Create node", "Create entry in tools group of appLauncher for Activation tools.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activation", null,
+                    new CreateNodeTask("Create node", "Create entry in tools group of appLauncher for Activation tools.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps", "activation", NodeTypes.ContentNode.NAME)),
+            new NodeExistsDelegateTask("Create node", "Create entry in tools group of appLauncher for Activation monitor.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activationMonitor", null,
+                    new CreateNodeTask("Create node", "Create entry in appLauncher for Activation monitor.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps", "activationMonitor", NodeTypes.ContentNode.NAME)));
 
     public AdmincentralModuleVersionHandler() {
 
@@ -173,15 +205,14 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
         );
 
         register(DeltaBuilder.update("5.2.1", "")
+                .addTask(new IsModuleInstalledOrRegistered("Create node", "Create entry in tools group of appLauncher for Activation tools.", "activation",
+                        createActivationConfig))
                 .addTask(new NodeExistsDelegateTask("Reorder JCR in TOOLS group", "This reorders the JCR app before Activation in the Tools group of the applauncher.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activation",
                         new OrderNodeBeforeTask("", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/websiteJcrBrowser", "activation")))
-                .addTask(new IsModuleInstalledOrRegistered("Create node", "Create entry in tools group of appLauncher for Activation tools.", "activation",
-                        new ArrayDelegateTask("",
-                                new CreateNodeTask("Create node", "Create entry in tools group of appLauncher for Activation tools.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps", "activation", NodeTypes.ContentNode.NAME),
-                                new CreateNodeTask("Create node", "Create entry in appLauncher for Activation monitor.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps", "activationMonitor", NodeTypes.ContentNode.NAME))
-                        ))
         );
-
+        register(DeltaBuilder.update("5.2.2", "")
+                .addTask(new RunConfigureActivationDelegateTask("Correct miss configuration of the activation module", "", createActivationConfig))
+         );
 
 
     }
