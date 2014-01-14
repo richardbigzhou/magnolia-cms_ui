@@ -119,6 +119,22 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
     }
 
     @Override
+    protected void executeOnItem(JcrItemAdapter item) throws ActionExecutionException {
+        if (item.isNode()) {
+            super.executeOnItem(item);
+        } else {
+            try {
+                onPreExecute();
+                item.getJcrItem().remove();
+                onPostExecute();
+            } catch (Exception e) {
+                onError(e);
+                throw new ActionExecutionException(e);
+            }
+        }
+    }
+
+    @Override
     protected String getSuccessMessage() {
         return i18n.translate(getDefinition().getSuccessMessage(), "" + getItems().size());
     }
