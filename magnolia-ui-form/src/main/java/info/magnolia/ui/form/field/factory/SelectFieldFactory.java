@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.form.field.factory;
 
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldOptionDefinition;
@@ -42,10 +43,10 @@ import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
@@ -262,19 +263,21 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
     private void buildRemoteOptions(List<SelectFieldOptionDefinition> res) {
         Node parent = SessionUtil.getNode(definition.getRepository(), definition.getPath());
         if (parent != null) {
-            // Iterate parent children
             try {
-                NodeIterator iterator = parent.getNodes();
+                // Get only relevant child nodes
+                Iterable<Node> iterable = NodeUtil.getNodes(parent, NodeUtil.MAGNOLIA_FILTER);
+                Iterator<Node> iterator = iterable.iterator();
+                // Iterate parent children
                 while (iterator.hasNext()) {
                     SelectFieldOptionDefinition option = new SelectFieldOptionDefinition();
-                    Node child = iterator.nextNode();
+                    Node child = iterator.next();
                     // Get Label and Value
                     String label = getRemoteOptionsName(child, optionLabelName);
                     String value = getRemoteOptionsName(child, optionValueName);
                     option.setLabel(getMessage(label));
                     option.setValue(value);
 
-                    if (child.hasProperty(SelectFieldDefinition.OPTION_SELECTED_PROPERTY_NAME)) {
+                    if (child.hasProperty(SelectFieldDefinition.OPTION_SELECTED_PROPERTY_NAME) && Boolean.parseBoolean(child.getProperty(SelectFieldDefinition.OPTION_SELECTED_PROPERTY_NAME).getString())) {
                         option.setSelected(true);
                         initialSelectedKey = option.getValue();
                     }
