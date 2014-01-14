@@ -50,11 +50,13 @@
     color: $c80 !important;
   }
 
-  .label {
+  .label, .sectionLabel {
     display: inline-block;
     padding: 9px 0 0 10px;
     text-transform: uppercase;
   }
+
+
 }
 
 .app-list .item .icon {
@@ -62,7 +64,7 @@
   margin-top: 8px;
 }
 
-.app-list .item:not(.section) .label {
+.app-list .label {
   bottom: 8px;
   left: 0;
   margin-left: auto;
@@ -94,7 +96,7 @@
     border-color: $c41 !important;
   }
 
-  .label {
+  .label,.sectionLabel {
     position: absolute;
     z-index: 1;
   }

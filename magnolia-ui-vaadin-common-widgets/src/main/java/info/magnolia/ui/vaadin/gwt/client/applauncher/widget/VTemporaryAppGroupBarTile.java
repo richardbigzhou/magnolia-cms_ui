@@ -86,7 +86,7 @@ public class VTemporaryAppGroupBarTile extends FlowPanel {
          */
 
         final Element label = DOM.createSpan();
-        label.addClassName("label");
+        label.addClassName("sectionLabel");
         label.setInnerText(caption);
 
         Element notch = DOM.createSpan();

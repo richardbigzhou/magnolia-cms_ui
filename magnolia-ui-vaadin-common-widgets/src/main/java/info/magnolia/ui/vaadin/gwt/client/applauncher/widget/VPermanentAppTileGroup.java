@@ -63,7 +63,7 @@ public class VPermanentAppTileGroup extends VAppTileGroup {
         sectionEl.addClassName("item");
         sectionEl.addClassName("section");
 
-        sectionLabel.addClassName("label");
+        sectionLabel.addClassName("sectionLabel");
         sectionLabel.setInnerText(caption);
         sectionEl.getStyle().setBackgroundColor(getColor());
         getElement().appendChild(sectionEl);
