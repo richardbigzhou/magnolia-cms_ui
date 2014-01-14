@@ -247,4 +247,20 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         assertEquals(CallbackDialogActionDefinition.class.getName(), path.getProperty("callbackDialogActionDefinition").getString());
     }
 
+    @Test
+    public void testUpdateTo5_2AddFieldTypeIfNotExisiting() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        framework.addNode("fieldTypes", NodeTypes.ContentNode.NAME);
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1"));
+
+        // THEN
+        assertTrue(framework.hasNode("fieldTypes/workbenchField"));
+        Node workbenchField = framework.getNode("fieldTypes/workbenchField");
+        assertTrue(workbenchField.hasProperty("definitionClass"));
+        assertEquals("info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition", workbenchField.getProperty("definitionClass").getString());
+        assertTrue(workbenchField.hasProperty("factoryClass"));
+        assertEquals("info.magnolia.ui.contentapp.field.WorkbenchFieldFactory", workbenchField.getProperty("factoryClass").getString());
+    }
+
 }
