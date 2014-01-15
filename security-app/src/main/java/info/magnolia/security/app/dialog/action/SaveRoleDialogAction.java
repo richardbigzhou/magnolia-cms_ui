@@ -140,6 +140,13 @@ public class SaveRoleDialogAction extends SaveDialogAction {
 
             roleNode = roleItem.applyChanges();
 
+            if (roleNode.hasNode("acl_userroles/0")) {
+                Node entryNode = roleNode.getNode("acl_userroles/0");
+                entryNode.setProperty(WorkspaceAccessFieldFactory.INTERMEDIARY_FORMAT_PROPERTY_NAME, "true");
+                entryNode.setProperty(WorkspaceAccessFieldFactory.ACCESS_TYPE_PROPERTY_NAME, AccessControlList.ACCESS_TYPE_NODE);
+                entryNode.getSession().save();
+            }
+
             for (Node aclNode : NodeUtil.getNodes(roleNode)) {
 
                 if (aclNode.getName().startsWith("acl_") && !aclNode.getName().equals("acl_uri")) {
@@ -158,10 +165,7 @@ public class SaveRoleDialogAction extends SaveDialogAction {
                             if (StringUtils.isNotBlank(path)) {
                                 acl.addEntry(new AccessControlList.Entry(permissions, accessType, path));
                             }
-                        } else {
-                            acl.readEntry(entryNode);
                         }
-
                         entryNode.remove();
                     }
 
