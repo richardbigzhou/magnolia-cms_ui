@@ -264,4 +264,15 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         assertEquals("info.magnolia.ui.contentapp.field.WorkbenchFieldFactory", workbenchField.getProperty("factoryClass").getString());
     }
 
+    @Test
+    public void testUpdateFrom52() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        this.setupConfigNode("/modules/ui-framework/commands/deafult");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2"));
+
+        // THEN
+        assertTrue(session.nodeExists("/modules/ui-framework/commands/default"));
+    }
 }
