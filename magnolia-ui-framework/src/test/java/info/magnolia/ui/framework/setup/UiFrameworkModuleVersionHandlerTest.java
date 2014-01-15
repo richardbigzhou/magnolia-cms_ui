@@ -72,6 +72,8 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
 
     private Node framework;
 
+    private Session session;
+
     @Override
     protected String getModuleDescriptorPath() {
         return "/META-INF/magnolia/ui-framework.xml";
@@ -87,7 +89,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         NodeUtil.createPath(session.getRootNode(), "/modules/adminInterface", NodeTypes.ContentNode.NAME);
         i18n = NodeUtil.createPath(session.getRootNode(), "/server/i18n", NodeTypes.ContentNode.NAME);
         i18n.addNode("authoring", NodeTypes.ContentNode.NAME);
@@ -115,7 +117,6 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
     @Test
     public void testUpdateTo5_0_1WithLegacyModule() throws ModuleManagementException, RepositoryException {
         // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         NodeUtil.createPath(session.getRootNode(), "/modules/adminInterface", NodeTypes.ContentNode.NAME);
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
@@ -182,7 +183,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         Node fields = framework.addNode("fields", NodeTypes.ContentNode.NAME);
         Node saveModeType = fields.addNode("saveModeType", NodeTypes.ContentNode.NAME);
         saveModeType.setProperty("multiValueHandlerClass", "info.magnolia.ui.form.field.property.MultiValuesHandler");
-        framework.getSession().save();
+        session.save();
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
@@ -201,7 +202,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         Node fields = framework.addNode("fields", NodeTypes.ContentNode.NAME);
         Node saveModeType = fields.addNode("saveModeType", NodeTypes.ContentNode.NAME);
         saveModeType.setProperty("multiValueHandlerClass", "info.magnolia.ui.form.field.property.SubNodesValueHandler");
-        framework.getSession().save();
+        session.save();
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
@@ -219,7 +220,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         Node fields = framework.addNode("fields", NodeTypes.ContentNode.NAME);
         Node saveModeType = fields.addNode("saveModeType", NodeTypes.ContentNode.NAME);
         saveModeType.setProperty("multiValueHandlerClass", "info.magnolia.ui.form.field.property.CommaSeparatedValueHandler");
-        framework.getSession().save();
+        session.save();
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
@@ -237,7 +238,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         // GIVEN
         Node path = framework.addNode("path", NodeTypes.ContentNode.NAME);
         path.setProperty("callbackDialogActionDefinition", "info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinition");
-        framework.getSession().save();
+        session.save();
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
