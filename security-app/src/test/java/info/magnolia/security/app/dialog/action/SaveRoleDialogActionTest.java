@@ -263,6 +263,8 @@ public class SaveRoleDialogActionTest extends RepositoryTestCase {
         Node entryNode = aclNode.addNode("0", NodeTypes.ContentNode.NAME);
         entryNode.setProperty("path", "/read");
         entryNode.setProperty("permissions", Permission.READ);
+        entryNode.setProperty("__intermediary_format", true);
+        entryNode.setProperty("accessType", 1);
 
         // WHEN
         JcrNodeAdapter roleItem = new JcrNodeAdapter(session.getRootNode().getNode("testRole"));
@@ -293,6 +295,30 @@ public class SaveRoleDialogActionTest extends RepositoryTestCase {
             assertEquals(AccessControlException.class, e.getCause().getClass());
             // expected
         }
+    }
+
+    @Test
+    public void testRemoveAclEntry() throws Exception {
+        // GIVEN
+        roleManager.createRole("testRole");
+        Node roleNode = session.getRootNode().getNode("testRole");
+        Node aclNode = roleNode.addNode("acl_data", NodeTypes.ContentNode.NAME);
+        Node entryNode = aclNode.addNode("0", NodeTypes.ContentNode.NAME);
+        entryNode.setProperty("path", "/read");
+        entryNode.setProperty("permissions", Permission.READ);
+        entryNode.setProperty("__intermediary_format", true);
+        entryNode.setProperty("accessType", 1);
+        entryNode = aclNode.addNode("00", NodeTypes.ContentNode.NAME);
+        entryNode.setProperty("path", "/test");
+        entryNode.setProperty("permissions", Permission.READ);
+        JcrNodeAdapter roleItem = new JcrNodeAdapter(session.getRootNode().getNode("testRole"));
+
+        // WHEN
+        createAction(roleItem).execute();
+
+        // THEN
+        assertTrue(session.itemExists("/testRole/acl_data/0"));
+        assertFalse(session.itemExists("/testRole/acl_data/00"));
     }
 
     // Workspace permission tests
