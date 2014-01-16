@@ -46,6 +46,7 @@ import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.pages.setup.PagesModuleVersionHandler;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
 import info.magnolia.ui.contentapp.availability.IsNotVersionedDetailLocationRule;
 
 import java.util.Arrays;
@@ -92,7 +93,7 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         dialog = NodeUtil.createPath(session.getRootNode(), "/modules/pages/dialogs", NodeTypes.ContentNode.NAME);
         dialog.getSession().save();
 
@@ -102,6 +103,9 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         editPageAction = NodeUtil.createPath(detailActions, "edit", NodeTypes.ContentNode.NAME);
         activatePageAction = NodeUtil.createPath(detailActions, "activate", NodeTypes.ContentNode.NAME);
         deactivatePageAction = NodeUtil.createPath(detailActions, "deactivate", NodeTypes.ContentNode.NAME);
+
+        this.setupConfigNode("/modules/pages/apps/pages");
+        this.setupConfigNode("/pages/apps/pages/subApps/browser/actions/import/availability");
     }
 
     @Test
@@ -273,18 +277,32 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertTrue(deactivatePageAction.getNode("availability").hasProperty("ruleClass"));
         assertEquals(IsNotVersionedDetailLocationRule.class.getName(), deactivatePageAction.getNode("availability").getProperty("ruleClass").getString());
     }
-    
+
     @Test
     public void testUpdateTo511ImportActionAvailabilityHasRootProperty() throws ModuleManagementException, RepositoryException {
         // GIVEN
         Node availability = NodeUtil.createPath(MgnlContext.getJCRSession(RepositoryConstants.CONFIG).getRootNode(), "/modules/pages/apps/pages/subApps/browser/actions/import/availability", NodeTypes.ContentNode.NAME);
-        
+
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1"));
 
         // THEN
         assertTrue(availability.hasProperty("root"));
         assertTrue(availability.getProperty("root").getBoolean());
+    }
+
+    @Test
+    public void testUpdateFrom50() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        this.setupConfigProperty("/modules/pages/dialogs/editTemplate/form", "i18nBasename", "someI18nBasename");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
+
+        // THEN
+        assertTrue(session.propertyExists("/modules/pages/apps/pages/class"));
+        assertEquals(ConfiguredContentAppDescriptor.class.getName(), session.getProperty("/modules/pages/apps/pages/class").getString());
+        assertFalse(session.propertyExists("/modules/pages/dialogs/editTemplate/form/i18nBasename"));
     }
 
 }

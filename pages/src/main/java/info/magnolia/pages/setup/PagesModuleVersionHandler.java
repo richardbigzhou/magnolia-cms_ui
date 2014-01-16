@@ -35,6 +35,7 @@ package info.magnolia.pages.setup;
 
 import static info.magnolia.nodebuilder.Ops.*;
 
+import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromDialogsTask;
 import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromSubappsTask;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
@@ -48,10 +49,12 @@ import info.magnolia.module.delta.PropertyExistsDelegateTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RemovePropertyTask;
 import info.magnolia.module.delta.RenameNodesTask;
+import info.magnolia.module.delta.SetPropertyTask;
 import info.magnolia.nodebuilder.task.ErrorHandling;
 import info.magnolia.nodebuilder.task.NodeBuilderTask;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.setup.ConvertAclToAppPermissionTask;
+import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
 import info.magnolia.ui.contentapp.availability.IsNotVersionedDetailLocationRule;
 import info.magnolia.ui.contentapp.browser.action.ShowVersionsActionDefinition;
 
@@ -151,6 +154,10 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
                         new NewPropertyTask("Add root availability to import", "Add root availability to import action in Pages app", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/import/availability", "root", true)))
         );
 
+        register(DeltaBuilder.update("5.2.2", "")
+                .addTask(new RemoveHardcodedI18nPropertiesFromDialogsTask("pages"))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages", "class", ConfiguredContentAppDescriptor.class.getName()))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/pages/apps/pages/subApps/browser/actions/import/availability", "root", "true")));
     }
 
 }
