@@ -287,5 +287,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         // THEN
         assertTrue(session.nodeExists("/modules/ui-framework/commands/default/importZip"));
         assertTrue(session.nodeExists("/modules/ui-framework/fieldTypes/compositeField"));
+        assertTrue(session.propertyExists("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/utf-8/label"));
+        assertTrue(session.propertyExists("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/windows/label"));
     }
 }

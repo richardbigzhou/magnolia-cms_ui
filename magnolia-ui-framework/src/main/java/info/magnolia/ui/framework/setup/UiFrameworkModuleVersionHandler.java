@@ -47,6 +47,7 @@ import info.magnolia.module.delta.MoveNodeTask;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RenameNodesTask;
+import info.magnolia.module.delta.SetPropertyTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.nodebuilder.task.ErrorHandling;
 import info.magnolia.nodebuilder.task.NodeBuilderTask;
@@ -136,6 +137,8 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
                         ))
                 .addTask(new NodeExistsDelegateTask("Bootstrap 'importZip' command it doesn't exists yet", "Bootstrap 'importZip' command it doesn't exists yet", RepositoryConstants.CONFIG, "/modules/ui-framework/commands/default/importZip", null, new BootstrapSingleModuleResource("Bootstrap 'importZip' command", "Bootstrap 'importZip' command", "config.modules.ui-framework.commands.xml"
                         )))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/utf-8", "label", "UTF-8"))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/windows", "label", "CP437"))
         );
 
     }
