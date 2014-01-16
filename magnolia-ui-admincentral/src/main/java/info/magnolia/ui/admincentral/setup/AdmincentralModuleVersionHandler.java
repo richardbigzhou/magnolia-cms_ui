@@ -100,7 +100,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
         }
     }
 
-    private ArrayDelegateTask createActivationConfig =  new ArrayDelegateTask("",
+    private ArrayDelegateTask createActivationConfig = new ArrayDelegateTask("",
             new NodeExistsDelegateTask("Create node", "Create path.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps", null,
                     new CreateNodePathTask("Create node", "Create path.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps", ItemType.CONTENTNODE)),
             new NodeExistsDelegateTask("Create node", "Create entry in tools group of appLauncher for Activation tools.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activation", null,
@@ -197,23 +197,18 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
         register(DeltaBuilder.update("5.1.2", "")
                 .addTask(new PartialBootstrapTask("Configuration app", "Change availability of add folder action", "/mgnl-bootstrap/ui-admincentral/config.modules.ui-admincentral.apps.configuration.xml", "/configuration/subApps/browser/actions/addFolder/availability/nodeTypes"))
                 .addTask(new RemovePropertyTask("Remove hardcoded icon", "Remove hardcoded icon of Configuration app", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration", "icon"))
-                .addTask(new RemovePropertyTask("Remove hardcoded icon", "Remove hardcoded icon of JCR app", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/websiteJcrBrowser", "icon"))
-        );
+                .addTask(new RemovePropertyTask("Remove hardcoded icon", "Remove hardcoded icon of JCR app", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/websiteJcrBrowser", "icon")));
 
         register(DeltaBuilder.update("5.2", "")
-                .addTask(new BootstrapSingleModuleResource("Bootstrap virtualURIMapping", "Bootstrap virtual URI mappings which have moved from adminInterface module.", "config.modules.ui-admincentral.virtualURIMapping.xml"))
-        );
+                .addTask(new BootstrapSingleModuleResource("Bootstrap virtualURIMapping", "Bootstrap virtual URI mappings which have moved from adminInterface module.", "config.modules.ui-admincentral.virtualURIMapping.xml")));
 
         register(DeltaBuilder.update("5.2.1", "")
                 .addTask(new IsModuleInstalledOrRegistered("Create node", "Create entry in tools group of appLauncher for Activation tools.", "activation",
                         createActivationConfig))
                 .addTask(new NodeExistsDelegateTask("Reorder JCR in TOOLS group", "This reorders the JCR app before Activation in the Tools group of the applauncher.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activation",
-                        new OrderNodeBeforeTask("", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/websiteJcrBrowser", "activation")))
-        );
+                        new OrderNodeBeforeTask("", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/websiteJcrBrowser", "activation"))));
         register(DeltaBuilder.update("5.2.2", "")
-                .addTask(new RunConfigureActivationDelegateTask("Correct miss configuration of the activation module", "", createActivationConfig))
-         );
-
+                .addTask(new RunConfigureActivationDelegateTask("Correct miss configuration of the activation module", "", createActivationConfig)));
 
     }
 
@@ -236,7 +231,7 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
         list.add(new NodeExistsDelegateTask("Remove PageEditorServlet from configuration", "Remove 4.5.x PageEditorServlet from the servlet registration. ", RepositoryConstants.CONFIG, "/server/filters/servlets/PageEditorServlet",
                 new RemoveNodeTask("Remove PageEditorServlet from configuration", "Remove 4.5.x PageEditorServlet from the servlet registration. ", RepositoryConstants.CONFIG, "/server/filters/servlets/PageEditorServlet")));
         list.add(new NodeExistsDelegateTask("Reorder JCR in TOOLS group", "This reorders the JCR app before Activation in the Tools group of the applauncher.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activation",
-                        new OrderNodeBeforeTask("", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/websiteJcrBrowser", "activation")));
+                new OrderNodeBeforeTask("", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/websiteJcrBrowser", "activation")));
         return list;
     }
 
