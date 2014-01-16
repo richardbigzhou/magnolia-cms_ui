@@ -44,6 +44,7 @@ import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.security.app.container.RoleTreePresenter;
 import info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldDefinition;
 import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
@@ -63,10 +64,20 @@ import org.junit.Test;
  */
 public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCase {
 
+    private Session session;
+
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        setupConfigNode("/modules/security-app/apps/security/subApps/users/actionbar");
+        session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        this.setupConfigNode("/modules/security-app/apps/security/subApps/users/actionbar");
+        this.setupConfigNode("/modules/security_app/apps/security/subApps/users/actions/deleteFolder/availability");
+        this.setupConfigNode("/modules/security_app/apps/security/subApps/users/actions/deleteUser/availability");
+        this.setupConfigNode("/modules/security_app/apps/security/subApps/roles/workbench/contentViews/tree");
+        // for 5.2.2 update:
+        this.setupConfigNode("/modules/security-app/apps/security/subApps/roles/workbench/contentViews/tree");
+        this.setupConfigNode("/modules/security-app/apps/security/subApps/users/actions/deleteUser/availability");
+        this.setupConfigNode("/modules/security-app/apps/security/subApps/users/actions/deleteFolder/availability");
     }
 
     @Override
@@ -89,7 +100,6 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     @Test
     public void testUpdateTo51DeleteUserActionAvailability() throws ModuleManagementException, RepositoryException {
         // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         Node action = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/users/actions/deleteUser/availability", NodeTypes.ContentNode.NAME);
         action.getSession().save();
 
@@ -104,7 +114,6 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     @Test
     public void testUpdateTo51DeleteGroupActionClass() throws ModuleManagementException, RepositoryException {
         // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         Node action = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/groups/actions/deleteGroup", NodeTypes.ContentNode.NAME);
         action.setProperty("class", "oldValue");
         action.getSession().save();
@@ -120,7 +129,6 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     @Test
     public void testUpdateTo51DeleteRoleActionClass() throws ModuleManagementException, RepositoryException {
         // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         Node action = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/roles/actions/deleteRole", NodeTypes.ContentNode.NAME);
         action.setProperty("class", "oldValue");
         action.getSession().save();
@@ -136,7 +144,6 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     @Test
     public void testUpdateTo51DeleteItemsAction() throws ModuleManagementException, RepositoryException {
         // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         Node actions = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/users/actions", NodeTypes.ContentNode.NAME);
         assertFalse(actions.hasNode("deleteItems"));
 
@@ -150,7 +157,6 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     @Test
     public void testUpdateTo51NewActionbarSectionInUsers() throws ModuleManagementException, RepositoryException {
         // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         Node sections = NodeUtil.createPath(session.getRootNode(), "/modules/security-app/apps/security/subApps/users/actionbar/sections", NodeTypes.ContentNode.NAME);
         assertFalse(sections.hasNode("multiple"));
 
@@ -164,7 +170,6 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     @Test
     public void testTo51EnsureSecurityAppLauncherConfigOrderAfterExtraInstallTask() throws RepositoryException, ModuleManagementException {
         // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         String applauncherManageGroupParentPath = "/modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps";
         Node appsNode = NodeUtil.createPath(session.getRootNode(), applauncherManageGroupParentPath, NodeTypes.ContentNode.NAME);
         appsNode.addNode("configuration", NodeTypes.ContentNode.NAME);
@@ -182,7 +187,6 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     @Test
     public void emptyLabelsAreRemovedOnUpdateTo51() throws RepositoryException, ModuleManagementException {
         // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         String static1 = "/modules/security-app/dialogs/role/form/tabs/acls/fields/static1";
         String static2 = "/modules/security-app/dialogs/role/form/tabs/acls/fields/static2";
         Node static1Node = NodeUtil.createPath(session.getRootNode(), static1, NodeTypes.ContentNode.NAME);
@@ -203,7 +207,6 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     @Test
     public void systemLanguagesFieldAddedOnUpdateTo511() throws Exception {
         // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         String fieldTypes = "/modules/security-app/fieldTypes";
         Node fieldTypesNode = NodeUtil.createPath(session.getRootNode(), fieldTypes, NodeTypes.ContentNode.NAME);
         assertFalse(fieldTypesNode.hasNode("systemLanguagesField"));
@@ -220,7 +223,6 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     @Test
     public void userDialogLanguageFieldHasNewDefinitionOnUpdateTo511() throws Exception {
         // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         String languageField = "/modules/security-app/dialogs/user/form/tabs/user/fields/language";
         Node languageNode = NodeUtil.createPath(session.getRootNode(), languageField, NodeTypes.ContentNode.NAME);
         PropertyUtil.setProperty(languageNode, "class", SelectFieldDefinition.class.getName());
@@ -235,7 +237,6 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     @Test
     public void userDialogLanguageFieldOptionsHaveBeenRemovedOnUpdateTo511() throws Exception {
         // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         String languageField = "/modules/security-app/dialogs/user/form/tabs/user/fields/language";
         Node languageNode = NodeUtil.createPath(session.getRootNode(), languageField, NodeTypes.ContentNode.NAME);
         NodeUtil.createPath(languageNode, "options", NodeTypes.ContentNode.NAME);
@@ -251,7 +252,6 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     public void folderSupportAddedToGroupsSubAppOnUpdateTo52() throws Exception {
         // GIVEN
         String base = "/modules/security-app/apps/security/subApps/groups";
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         NodeUtil.createPath(session.getRootNode(), base + "/actions/addGroup/availability", NodeTypes.ContentNode.NAME).setProperty("nodes", "foobar");
         NodeUtil.createPath(session.getRootNode(), base + "/workbench", NodeTypes.ContentNode.NAME);
         NodeUtil.createPath(session.getRootNode(), base + "/actionbar/sections/root/groups/addActions/items", NodeTypes.ContentNode.NAME);
@@ -276,7 +276,6 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     public void folderSupportAddedToRolesSubAppOnUpdateTo52() throws Exception {
         // GIVEN
         String base = "/modules/security-app/apps/security/subApps/roles";
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         NodeUtil.createPath(session.getRootNode(), base + "/actions/addRole/availability", NodeTypes.ContentNode.NAME).setProperty("nodes", "foobar");
         NodeUtil.createPath(session.getRootNode(), base + "/workbench", NodeTypes.ContentNode.NAME);
         NodeUtil.createPath(session.getRootNode(), base + "/actionbar/sections/root/groups/addActions/items", NodeTypes.ContentNode.NAME);
@@ -301,7 +300,6 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     public void roleNameFieldIsConfiguredToUserConditionalReadOnlyTextFieldOnUpdateTo52() throws RepositoryException, ModuleManagementException {
         // GIVEN
         String fieldPath = "/modules/security-app/dialogs/role/form/tabs/role/fields/jcrName";
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         NodeUtil.createPath(session.getRootNode(), fieldPath, NodeTypes.ContentNode.NAME);
 
         // WHEN
@@ -315,9 +313,6 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
 
     @Test
     public void setEditUserActionAsDefaultOnUpdateto521() throws RepositoryException, ModuleManagementException {
-        // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2"));
 
@@ -327,9 +322,6 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
 
     @Test
     public void setRegisterConditionalReadOnlyTextFieldTypeOnUpdateto521() throws RepositoryException, ModuleManagementException {
-        // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
-
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2"));
 
@@ -337,6 +329,22 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         assertTrue(session.getRootNode().hasNode("modules/security-app/fieldTypes/conditionalReadOnlyTextField"));
         assertEquals("info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldDefinition", session.getProperty("/modules/security-app/fieldTypes/conditionalReadOnlyTextField/definitionClass").getString());
         assertEquals("info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldFactory", session.getProperty("/modules/security-app/fieldTypes/conditionalReadOnlyTextField/factoryClass").getString());
+    }
+
+    @Test
+    public void testUpdateFrom50() throws RepositoryException, ModuleManagementException {
+        // GIVEN
+        this.setupConfigProperty("/modules/security-app/dialogs/folder/actions/cancel", "label", "someLabel");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
+
+        // THEN
+        assertFalse(session.propertyExists("/modules/security-app/dialogs/folder/actions/cancel/label"));
+        assertTrue(session.propertyExists("/modules/security-app/apps/security/subApps/users/actions/deleteFolder/availability/multiple"));
+        assertTrue(session.propertyExists("/modules/security-app/apps/security/subApps/users/actions/deleteUser/availability/multiple"));
+        assertTrue(session.propertyExists("/modules/security-app/apps/security/subApps/roles/workbench/contentViews/tree/implementationClass"));
+        assertEquals(RoleTreePresenter.class.getName(), session.getProperty("/modules/security-app/apps/security/subApps/roles/workbench/contentViews/tree/implementationClass").getString());
     }
 
 }
