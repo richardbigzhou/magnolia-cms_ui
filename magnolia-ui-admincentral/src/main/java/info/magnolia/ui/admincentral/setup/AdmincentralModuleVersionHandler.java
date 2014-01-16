@@ -56,9 +56,11 @@ import info.magnolia.module.delta.PropertyExistsDelegateTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RemovePropertyTask;
 import info.magnolia.module.delta.RenameNodesTask;
+import info.magnolia.module.delta.SetPropertyTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.setup.for5_0.AbstractNodeTypeRegistrationTask;
+import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
 import info.magnolia.ui.framework.AdmincentralNodeTypes;
 import info.magnolia.ui.framework.favorite.FavoriteStore;
 
@@ -207,8 +209,19 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                         createActivationConfig))
                 .addTask(new NodeExistsDelegateTask("Reorder JCR in TOOLS group", "This reorders the JCR app before Activation in the Tools group of the applauncher.", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activation",
                         new OrderNodeBeforeTask("", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/websiteJcrBrowser", "activation"))));
+
         register(DeltaBuilder.update("5.2.2", "")
-                .addTask(new RunConfigureActivationDelegateTask("Correct miss configuration of the activation module", "", createActivationConfig)));
+                .addTask(new RunConfigureActivationDelegateTask("Correct miss configuration of the activation module", "", createActivationConfig))
+                .addTask(new PropertyExistsDelegateTask("Remove obsolete property if exists", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/stkSiteApp", "app",
+                        new RemovePropertyTask("Remove obsolete property", "Remove obsolete '/modules/ui-admincentral/apps/stkSiteApp/app'",
+                                RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/stkSiteApp", "app")))
+                .addTask(new PropertyExistsDelegateTask("Remove obsolete property if exists", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/stkSiteApp", "icon",
+                        new RemovePropertyTask("Remove obsolete property", "Remove obsolete '/modules/ui-admincentral/apps/stkSiteApp/icon'",
+                                RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/stkSiteApp", "icon")))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/commands/default/delete/deactivate", "enabled", "true"))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/templates/deleted", "i18nBasename", "info.magnolia.module.admininterface.messages"))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration", "class", ConfiguredAppDescriptor.class.getName()))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/websiteJcrBrowser", "class", "info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor")));
 
     }
 
