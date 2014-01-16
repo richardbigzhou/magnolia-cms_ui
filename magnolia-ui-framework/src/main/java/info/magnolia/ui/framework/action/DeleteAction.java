@@ -49,6 +49,7 @@ import java.util.List;
 
 import javax.inject.Named;
 import javax.jcr.Item;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -125,7 +126,9 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
         } else {
             try {
                 onPreExecute();
-                item.getJcrItem().remove();
+                Property property = (Property) item.getJcrItem();
+                property.remove();
+                property.getSession().save();
                 onPostExecute();
             } catch (Exception e) {
                 onError(e);
