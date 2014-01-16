@@ -157,7 +157,7 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
         register(DeltaBuilder.update("5.2.2", "")
                 .addTask(new RemoveHardcodedI18nPropertiesFromDialogsTask("pages"))
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages", "class", ConfiguredContentAppDescriptor.class.getName()))
-                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/pages/apps/pages/subApps/browser/actions/import/availability", "root", "true")));
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/import/availability", "root", "true")));
     }
 
 }

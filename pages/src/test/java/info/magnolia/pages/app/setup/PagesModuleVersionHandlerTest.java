@@ -105,7 +105,7 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         deactivatePageAction = NodeUtil.createPath(detailActions, "deactivate", NodeTypes.ContentNode.NAME);
 
         this.setupConfigNode("/modules/pages/apps/pages");
-        this.setupConfigNode("/pages/apps/pages/subApps/browser/actions/import/availability");
+        this.setupConfigNode("/modules/pages/apps/pages/subApps/browser/actions/import/availability");
     }
 
     @Test
