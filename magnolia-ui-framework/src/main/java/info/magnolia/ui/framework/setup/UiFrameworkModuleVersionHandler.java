@@ -127,10 +127,17 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
 
         register(DeltaBuilder.update("5.2.2", "")
                 .addTask(new NodeExistsDelegateTask("Register WorkbenchFieldDefinition if not yet done", "", RepositoryConstants.CONFIG, "/modules/ui-framework/fieldTypes/workbenchField", null, new BootstrapSingleModuleResource("Register WorkbenchFieldDefinition", "", "config.modules.ui-framework.fieldTypes.workbenchField.xml")))
+                .addTask(new NodeExistsDelegateTask("Rename 'compositField' if exists", "Rename Rename 'compositField' to 'compositeField' if exists", RepositoryConstants.CONFIG, "/ui-framework/fieldTypes/compositField",
+                        new MoveNodeTask("", "", RepositoryConstants.CONFIG, "/ui-framework/fieldTypes/compositField", "/ui-framework/fieldTypes/compositeField", false)
+                        ))
                 .addTask(new NodeExistsDelegateTask("Rename command catalog if it's incorrect", "Rename command catalog to 'default' if it's incorrect", RepositoryConstants.CONFIG, "/modules/ui-framework/commands/deafult",
                         new MoveNodeTask("Rename command catalog", "Rename command catalog to 'default'", RepositoryConstants.CONFIG, "/modules/ui-framework/commands/deafult",
                                 "/modules/ui-framework/commands/default", false)
-                        )));
+                        ))
+                .addTask(new NodeExistsDelegateTask("Bootstrap 'importZip' command it doesn't exists yet", "Bootstrap 'importZip' command it doesn't exists yet", RepositoryConstants.CONFIG, "/modules/ui-framework/commands/default/importZip", null, new BootstrapSingleModuleResource("Bootstrap 'importZip' command", "Bootstrap 'importZip' command", "config.modules.ui-framework.commands.xml"
+                        )))
+        );
+
     }
 
     @Override

@@ -275,4 +275,17 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         // THEN
         assertTrue(session.nodeExists("/modules/ui-framework/commands/default"));
     }
+
+    @Test
+    public void testUpdateFrom50() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        this.setupConfigNode("/modules/ui-framework/fieldTypes/compositField");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
+
+        // THEN
+        assertTrue(session.nodeExists("/modules/ui-framework/commands/default/importZip"));
+        assertTrue(session.nodeExists("/modules/ui-framework/fieldTypes/compositeField"));
+    }
 }
