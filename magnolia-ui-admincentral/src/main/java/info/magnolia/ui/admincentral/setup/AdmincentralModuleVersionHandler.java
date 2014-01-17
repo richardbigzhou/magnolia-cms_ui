@@ -212,16 +212,12 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
 
         register(DeltaBuilder.update("5.2.2", "")
                 .addTask(new RunConfigureActivationDelegateTask("Correct miss configuration of the activation module", "", createActivationConfig))
-                .addTask(new PropertyExistsDelegateTask("Remove obsolete property if exists", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/stkSiteApp", "app",
-                        new RemovePropertyTask("Remove obsolete property", "Remove obsolete '/modules/ui-admincentral/apps/stkSiteApp/app'",
-                                RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/stkSiteApp", "app")))
                 .addTask(new PropertyExistsDelegateTask("Remove obsolete property if exists", "", RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/stkSiteApp", "icon",
                         new RemovePropertyTask("Remove obsolete property", "Remove obsolete '/modules/ui-admincentral/apps/stkSiteApp/icon'",
                                 RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/stkSiteApp", "icon")))
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/commands/default/delete/deactivate", "enabled", "true"))
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/templates/deleted", "i18nBasename", "info.magnolia.module.admininterface.messages"))
-                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration", "class", ConfiguredAppDescriptor.class.getName()))
-                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/websiteJcrBrowser", "class", "info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor")));
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration", "class", ConfiguredAppDescriptor.class.getName())));
 
     }
 

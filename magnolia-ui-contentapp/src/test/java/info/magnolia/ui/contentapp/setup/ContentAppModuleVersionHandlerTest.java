@@ -45,6 +45,8 @@ import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
+import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
+import info.magnolia.ui.contentapp.ContentApp;
 import info.magnolia.ui.contentapp.movedialog.action.MoveNodeActionDefinition;
 
 import java.util.Arrays;
@@ -63,8 +65,8 @@ import org.junit.Test;
 public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTestCase {
 
     private Node i18n;
-
     private Node contentapp;
+    private Session session;
 
     @Override
     protected String getModuleDescriptorPath() {
@@ -88,7 +90,7 @@ public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTest
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         i18n = NodeUtil.createPath(session.getRootNode(), "/server/i18n", NodeTypes.ContentNode.NAME);
         i18n.addNode("authoring", NodeTypes.ContentNode.NAME);
         i18n.addNode("authoring50", NodeTypes.ContentNode.NAME);
@@ -112,5 +114,26 @@ public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTest
         // THEN
         assertTrue(path.hasProperty("moveNodeActionDefinition"));
         assertEquals(MoveNodeActionDefinition.class.getName(), path.getProperty("moveNodeActionDefinition").getString());
+    }
+
+    @Test
+    public void testUpdateFrom50() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        this.setupConfigNode("/modules/ui-admincentral/apps/configuration/subApps");
+        this.setupConfigProperty("/modules/ui-admincentral/apps/configuration", "appClass", ContentApp.class.getCanonicalName());
+        // obsolete 'app' property:
+        this.setupConfigNode("/modules/ui-admincentral/apps/stkSiteApp/subApps");
+        this.setupConfigProperty("/modules/ui-admincentral/apps/stkSiteApp", "app", "info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
+
+        // THEN
+        assertTrue(session.propertyExists("/modules/ui-admincentral/apps/configuration/class"));
+        assertEquals(ConfiguredContentAppDescriptor.class.getCanonicalName(), session.getProperty("/modules/ui-admincentral/apps/configuration/class").getString());
+
+        assertFalse(session.propertyExists("/modules/ui-admincentral/apps/stkSiteApp/app"));
+        assertTrue(session.propertyExists("/modules/ui-admincentral/apps/stkSiteApp/class"));
+        assertEquals(ConfiguredContentAppDescriptor.class.getCanonicalName(), session.getProperty("/modules/ui-admincentral/apps/stkSiteApp/class").getString());
     }
 }
