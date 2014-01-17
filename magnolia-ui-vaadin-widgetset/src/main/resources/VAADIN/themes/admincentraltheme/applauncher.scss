@@ -52,8 +52,15 @@
 
   .label, .sectionLabel {
     display: inline-block;
+    max-height: 56px;
+    max-width: 64px;
+    overflow: hidden;
     padding: 9px 0 0 10px;
     text-transform: uppercase;
+  }
+
+  .wordwrap {
+    word-wrap: break-word;
   }
 
 
