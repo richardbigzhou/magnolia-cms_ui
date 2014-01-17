@@ -100,6 +100,10 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         framework.addNode("dialogs", NodeTypes.ContentNode.NAME);
 
         ComponentsTestUtil.setImplementation(UnicodeNormalizer.Normalizer.class, "info.magnolia.cms.util.UnicodeNormalizer$NonNormalizer");
+
+        // for 5.2.2 update:
+        this.setupConfigNode("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/utf-8/");
+        this.setupConfigNode("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/windows/");
     }
 
     @Test
