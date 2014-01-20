@@ -47,13 +47,20 @@ import info.magnolia.ui.framework.setup.ReplaceSaveModeTypeFieldDefinitionTask;
  */
 public class ContentAppModuleVersionHandler extends DefaultModuleVersionHandler {
 
+    private final String subAppsQuery = " select * from [nt:base] as t where name(t) = 'subApps' ";
+
     public ContentAppModuleVersionHandler() {
         register(DeltaBuilder.update("5.1", "")
                 .addTask(new RemoveNodeTask("Remove MultiLinkField definition mapping", "", RepositoryConstants.CONFIG, "/modules/ui-framework/fieldTypes/multiLinkField"))
                 .addTask((new ReplaceMultiLinkFieldDefinitionTask("Change the MultiLinkFieldDefinition by MultiFieldDefinition ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where contains(t.*,'info.magnolia.ui.form.field.definition.MultiLinkFieldDefinition') ")))
                 .addTask((new ReplaceSaveModeTypeFieldDefinitionTask("Update field definition sub task from 'saveModeType' to 'transformerClass' ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where name(t) = 'saveModeType' ")))
-                .addTask((new ContentAppDescriptorMigrationTask("Update descriptor class properties to ConfiguredContentAppDescriptor for Content Apps ", "", RepositoryConstants.CONFIG, " select * from [nt:base] as t where name(t) = 'subApps' ")))
+                .addTask((new ContentAppDescriptorMigrationTask("Update descriptor class properties to ConfiguredContentAppDescriptor for Content Apps ", "", RepositoryConstants.CONFIG,
+                        subAppsQuery)))
                 .addTask(new ChangeAllPropertiesWithCertainValueTask("Change package name of MoveNodeActionDefinition class", "", RepositoryConstants.CONFIG, "info.magnolia.ui.framework.action.MoveNodeActionDefinition", MoveNodeActionDefinition.class.getName()))
         );
+
+        register(DeltaBuilder.update("5.2.2", "")
+                .addTask((new ContentAppDescriptorMigrationTask("Remove 'app' properties", "Removes obsolete 'app' properties from Content Apps.", RepositoryConstants.CONFIG,
+                        subAppsQuery, new AppPropertyRemoverVisitor()))));
     }
 }

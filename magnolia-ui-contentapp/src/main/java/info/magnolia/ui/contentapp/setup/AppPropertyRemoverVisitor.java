@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,40 +33,23 @@
  */
 package info.magnolia.ui.contentapp.setup;
 
-import info.magnolia.jcr.util.NodeVisitor;
 import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
-import info.magnolia.ui.contentapp.ContentApp;
 
 import javax.jcr.Node;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Changes descriptor type for a single content app.
  */
-public class AppNodeVisitor implements NodeVisitor {
+public class AppPropertyRemoverVisitor extends AppNodeVisitor {
 
-    public static final String CLASS_PROPERTY_NAME  = "class";
-    private final static String APP_CLASS_PROPERTY_NAME = "appClass";
     private final static String OBSOLETE_APP_PROPERTY_NAME = "app"; // was in Magnolia 5.0
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public void visit(Node node) throws RepositoryException {
-        if (node.hasProperty(APP_CLASS_PROPERTY_NAME)) {
-            Property p = node.getProperty(APP_CLASS_PROPERTY_NAME);
-            try {
-                Class<?> clazz = Class.forName(p.getValue().getString());
-                if (ContentApp.class.isAssignableFrom(clazz)) {
-                    node.setProperty(CLASS_PROPERTY_NAME, ConfiguredContentAppDescriptor.class.getCanonicalName());
-                }
-            } catch (ClassNotFoundException e) {
-                log.error("Failed to resolve app class: " +  p.getValue().getString(), e);
-            }
+        if (node.hasProperty(OBSOLETE_APP_PROPERTY_NAME)) {
+            node.getProperty(OBSOLETE_APP_PROPERTY_NAME).remove();
+            node.setProperty(CLASS_PROPERTY_NAME, ConfiguredContentAppDescriptor.class.getCanonicalName());
         }
     }
 }

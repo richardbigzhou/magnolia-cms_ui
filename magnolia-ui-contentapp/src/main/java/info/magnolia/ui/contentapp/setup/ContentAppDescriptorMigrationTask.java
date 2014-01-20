@@ -34,14 +34,16 @@
 package info.magnolia.ui.contentapp.setup;
 
 import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.jcr.util.NodeVisitor;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.QueryTask;
 import info.magnolia.module.delta.TaskExecutionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Changes type of content app descriptors to {@link info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor}.
@@ -49,9 +51,15 @@ import javax.jcr.RepositoryException;
 public class ContentAppDescriptorMigrationTask extends QueryTask {
 
     private static final Logger log = LoggerFactory.getLogger(ContentAppDescriptorMigrationTask.class);
+    private NodeVisitor nodeVisitor = new AppNodeVisitor();
 
     public ContentAppDescriptorMigrationTask(String name, String description, String configRepository, String query) {
         super(name, description, configRepository, query);
+    }
+
+    public ContentAppDescriptorMigrationTask(String name, String description, String configRepository, String query, NodeVisitor nodeVisitor) {
+        super(name, description, configRepository, query);
+        this.nodeVisitor = nodeVisitor;
     }
 
     @Override
@@ -72,7 +80,7 @@ public class ContentAppDescriptorMigrationTask extends QueryTask {
     @Override
     protected void operateOnNode(InstallContext ctx, Node node) {
         try {
-            NodeUtil.visit(node.getParent(), new AppNodeVisitor());
+            NodeUtil.visit(node.getParent(), nodeVisitor);
         } catch (RepositoryException e) {
             log.error("Unable to process app node ", e);
         }
