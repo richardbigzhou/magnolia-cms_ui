@@ -44,12 +44,14 @@ import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
-import info.magnolia.security.app.action.DeleteEmptyFolderAction;
+import info.magnolia.security.app.action.DeleteEmptyFolderActionDefinition;
 import info.magnolia.security.app.container.RoleTreePresenter;
 import info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldDefinition;
 import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
 import info.magnolia.ui.form.field.definition.SelectFieldDefinition;
 import info.magnolia.ui.form.field.factory.SelectFieldFactory;
+import info.magnolia.ui.framework.action.DeleteActionDefinition;
+import info.magnolia.ui.framework.action.DeleteItemActionDefinition;
 
 import java.util.Arrays;
 import java.util.List;
@@ -58,8 +60,6 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import info.magnolia.ui.framework.action.DeleteActionDefinition;
-import info.magnolia.ui.framework.action.DeleteItemActionDefinition;
 import org.junit.Test;
 
 /**
@@ -353,10 +353,10 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
     @Test
     public void testUpdateFrom521() throws RepositoryException, ModuleManagementException {
         // GIVEN
-        this.setupConfigProperty("/modules/security-app/apps/security/subApps/roles/actions/deleteFolder", "implementationClass", DeleteEmptyFolderAction.class.getName());
-        this.setupConfigProperty("/modules/security-app/apps/security/subApps/groups/actions/deleteFolder", "implementationClass", DeleteEmptyFolderAction.class.getName());
         this.setupConfigProperty("/modules/security-app/apps/security/subApps/users/actions/deleteUser", "class", DeleteItemActionDefinition.class.getName());
         this.setupConfigProperty("/modules/security-app/apps/security/subApps/users/actions/deleteFolder", "class", DeleteItemActionDefinition.class.getName());
+        this.setupConfigProperty("/modules/security-app/apps/security/subApps/roles/actions/deleteFolder", "class", "info.magnolia.ui.framework.action.DeleteItemActionDefinition");
+        this.setupConfigProperty("/modules/security-app/apps/security/subApps/groups/actions/deleteFolder", "class", "info.magnolia.ui.framework.action.DeleteItemActionDefinition");
 
 
         // WHEN
@@ -365,10 +365,9 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         // THEN
         assertFalse(session.propertyExists("/modules/security-app/apps/security/subApps/roles/actions/deleteFolder/implementationClass"));
         assertFalse(session.propertyExists("/modules/security-app/apps/security/subApps/groups/actions/deleteFolder/implementationClass"));
+        assertEquals(session.getProperty("/modules/security-app/apps/security/subApps/roles/actions/deleteFolder/class").getString(), DeleteEmptyFolderActionDefinition.class.getName());
+        assertEquals(session.getProperty("/modules/security-app/apps/security/subApps/groups/actions/deleteFolder/class").getString(), DeleteEmptyFolderActionDefinition.class.getName());
         assertEquals(DeleteActionDefinition.class.getName() ,session.getProperty("/modules/security-app/apps/security/subApps/users/actions/deleteUser/class").getString());
         assertEquals(DeleteActionDefinition.class.getName() ,session.getProperty("/modules/security-app/apps/security/subApps/users/actions/deleteFolder/class").getString());
-
-
     }
-
 }
