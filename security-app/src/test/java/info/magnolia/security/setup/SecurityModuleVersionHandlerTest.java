@@ -44,6 +44,7 @@ import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.security.app.action.DeleteEmptyFolderAction;
 import info.magnolia.security.app.container.RoleTreePresenter;
 import info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldDefinition;
 import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
@@ -345,6 +346,20 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         assertTrue(session.propertyExists("/modules/security-app/apps/security/subApps/users/actions/deleteUser/availability/multiple"));
         assertTrue(session.propertyExists("/modules/security-app/apps/security/subApps/roles/workbench/contentViews/tree/implementationClass"));
         assertEquals(RoleTreePresenter.class.getName(), session.getProperty("/modules/security-app/apps/security/subApps/roles/workbench/contentViews/tree/implementationClass").getString());
+    }
+
+    @Test
+    public void testUpdateFrom521() throws RepositoryException, ModuleManagementException {
+        // GIVEN
+        this.setupConfigProperty("/modules/security-app/apps/security/subApps/roles/actions/deleteFolder", "implementationClass", DeleteEmptyFolderAction.class.getName());
+        this.setupConfigProperty("/modules/security-app/apps/security/subApps/groups/actions/deleteFolder", "implementationClass", DeleteEmptyFolderAction.class.getName());
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.1"));
+
+        // THEN
+        assertFalse(session.propertyExists("/modules/security-app/apps/security/subApps/roles/actions/deleteFolder/implementationClass"));
+        assertFalse(session.propertyExists("/modules/security-app/apps/security/subApps/groups/actions/deleteFolder/implementationClass"));
     }
 
 }
