@@ -2533,7 +2533,7 @@
             <sv:value>be45fc8e-137e-408d-9948-edca42810646</sv:value>
           </sv:property>
           <sv:property sv:name="extends" sv:type="String">
-            <sv:value>/modules/standard-templating-kit/dialogs/generic/teasers/highlighted</sv:value>
+            <sv:value>../../../../teasers/highlighted</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -2693,7 +2693,7 @@
             <sv:value>d03ef51c-ff87-4c9e-aa76-a80bbe1c5929</sv:value>
           </sv:property>
           <sv:property sv:name="extends" sv:type="String">
-            <sv:value>/modules/standard-templating-kit/dialogs/generic/teasers/highlighted</sv:value>
+            <sv:value>../../../teasers/highlighted</sv:value>aaaa
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -2911,7 +2911,7 @@
             <sv:value>d5e96d82-a0fa-4d75-90fe-974107c68e00</sv:value>
           </sv:property>
           <sv:property sv:name="extends" sv:type="String">
-            <sv:value>/modules/standard-templating-kit/dialogs/generic/teasers/highlighted</sv:value>
+            <sv:value>/modules/testModule/dialogs/generic/teasers/highlighted</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -3034,7 +3034,7 @@
             <sv:value>66b230ff-c67c-4f9f-b83d-92ac1eefef8f</sv:value>
           </sv:property>
           <sv:property sv:name="extends" sv:type="String">
-            <sv:value>/modules/standard-templating-kit/dialogs/generic/teasers/teaserImg</sv:value>
+            <sv:value>/modules/testModule/dialogs/generic/teasers/teaserImg</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -3166,7 +3166,7 @@
             <sv:value>5d6ade66-9d2f-4de8-8810-358eb3831c34</sv:value>
           </sv:property>
           <sv:property sv:name="extends" sv:type="String">
-            <sv:value>/modules/standard-templating-kit/dialogs/generic/controls/hideInNav</sv:value>
+            <sv:value>/modules/testModule/dialogs/generic/controls/hideInNav</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -3203,7 +3203,7 @@
             <sv:value>77330ed1-cd97-4a34-85b4-9d57877afd93</sv:value>
           </sv:property>
           <sv:property sv:name="extends" sv:type="String">
-            <sv:value>/modules/standard-templating-kit/dialogs/generic/pages/windowTitle</sv:value>
+            <sv:value>/modules/testModule/dialogs/generic/pages/windowTitle</sv:value>
           </sv:property>
           <sv:property sv:name="i18n" sv:type="Boolean">
             <sv:value>true</sv:value>
@@ -3243,7 +3243,7 @@
             <sv:value>cb1428ca-80de-4e4d-8e4b-800a0574c2f8</sv:value>
           </sv:property>
           <sv:property sv:name="extends" sv:type="String">
-            <sv:value>/modules/standard-templating-kit/dialogs/generic/pages/navigationTitle</sv:value>
+            <sv:value>/modules/testModule/dialogs/generic/pages/navigationTitle</sv:value>
           </sv:property>
           <sv:property sv:name="i18n" sv:type="Boolean">
             <sv:value>true</sv:value>
@@ -3281,7 +3281,7 @@
           <sv:value>9098408e-bed3-41b3-aada-e89cc0d4cb10</sv:value>
         </sv:property>
         <sv:property sv:name="extends" sv:type="String">
-          <sv:value>/modules/standard-templating-kit/dialogs/generic/pages/tabMetaData</sv:value>
+          <sv:value>/modules/testModule/dialogs/generic/pages/tabMetaData</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
@@ -3324,7 +3324,7 @@
           <sv:value>b35bfa7c-79a7-4946-b0c6-7e184cf6d47b</sv:value>
         </sv:property>
         <sv:property sv:name="extends" sv:type="String">
-          <sv:value>/modules/standard-templating-kit/dialogs/generic/pages/tabChannels</sv:value>
+          <sv:value>/modules/testModule/dialogs/generic/pages/tabChannels</sv:value>
         </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
@@ -3504,7 +3504,7 @@
             <sv:value>30bb1446-a69b-41dc-8c87-656708a20e8d</sv:value>
           </sv:property>
           <sv:property sv:name="extends" sv:type="String">
-            <sv:value>/modules/standard-templating-kit/dialogs/generic/teasers/hideTeaserImage</sv:value>
+            <sv:value>/modules/testModule/dialogs/generic/teasers/hideTeaserImage</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -3541,7 +3541,7 @@
             <sv:value>71b9a1d8-df1d-4fa0-8447-ec9a032550bb</sv:value>
           </sv:property>
           <sv:property sv:name="extends" sv:type="String">
-            <sv:value>/modules/standard-templating-kit/dialogs/generic/teasers/highlighted</sv:value>
+            <sv:value>/modules/testModule/dialogs/generic/teasers/highlighted</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -3713,7 +3713,7 @@
             <sv:value>bfe03202-f47d-4037-a483-be4eb6a98728</sv:value>
           </sv:property>
           <sv:property sv:name="extends" sv:type="String">
-            <sv:value>/modules/standard-templating-kit/dialogs/generic/teasers/teaserImg</sv:value>
+            <sv:value>/modules/testModule/dialogs/generic/teasers/teaserImg</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -3934,7 +3934,7 @@
             <sv:value>23851ef6-71a1-4f0f-b668-09da4419311a</sv:value>
           </sv:property>
           <sv:property sv:name="extends" sv:type="String">
-            <sv:value>/modules/standard-templating-kit/dialogs/generic/teasers/highlighted</sv:value>
+            <sv:value>/modules/testModule/dialogs/generic/teasers/highlighted</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -4057,7 +4057,7 @@
             <sv:value>08423d3e-6ff4-460e-9118-9b28f015e9d3</sv:value>
           </sv:property>
           <sv:property sv:name="extends" sv:type="String">
-            <sv:value>/modules/standard-templating-kit/dialogs/generic/teasers/teaserImg</sv:value>
+            <sv:value>/modules/testModule/dialogs/generic/teasers/teaserImg</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
