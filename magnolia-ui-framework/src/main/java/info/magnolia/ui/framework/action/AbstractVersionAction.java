@@ -75,7 +75,7 @@ public abstract class AbstractVersionAction<D extends ActionDefinition> extends 
     private final D definition;
     protected final LocationController locationController;
     protected final UiContext uiContext;
-    private final SimpleTranslator i18n;
+    protected final SimpleTranslator i18n;
     protected final FormDialogPresenter formDialogPresenter;
     protected final AbstractJcrNodeAdapter nodeAdapter;
     private BeanItem<?> item;
