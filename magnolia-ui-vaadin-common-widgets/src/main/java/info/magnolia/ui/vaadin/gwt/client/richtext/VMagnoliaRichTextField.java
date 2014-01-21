@@ -117,6 +117,11 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
         }
     }
 
+    @Override
+    public void onChange() {
+        clientToServer.updateVariable(paintableId, VAR_TEXT, editor.getData(), true);
+    }
+
     /**
      * Initializes CKEditor if not done already and get editor instance
      * injected.

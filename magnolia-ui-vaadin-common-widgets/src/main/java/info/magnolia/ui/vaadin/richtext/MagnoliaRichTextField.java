@@ -42,7 +42,6 @@ import java.util.Map;
 import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
 import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.VCKEditorTextField;
 
-import com.vaadin.event.FieldEvents;
 import com.vaadin.server.PaintException;
 import com.vaadin.server.PaintTarget;
 
@@ -81,13 +80,6 @@ public class MagnoliaRichTextField extends CKEditorTextField {
         config.setFilebrowserImageBrowseLinkUrl("dummy");
         config.setFilebrowserImageBrowseUrl("dummy");
         serverPlugins = config.getServerPlugins();
-
-        addBlurListener(new FieldEvents.BlurListener() {
-            @Override
-            public void blur(FieldEvents.BlurEvent event) {
-                commit();
-            }
-        });
     }
 
     @Override
