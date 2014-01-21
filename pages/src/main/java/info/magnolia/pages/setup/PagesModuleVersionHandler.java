@@ -39,11 +39,13 @@ import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromDialogsTa
 import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromSubappsTask;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
+import info.magnolia.module.delta.ArrayDelegateTask;
 import info.magnolia.module.delta.BootstrapConditionally;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
 import info.magnolia.module.delta.NewPropertyTask;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
+import info.magnolia.module.delta.OrderNodeAfterTask;
 import info.magnolia.module.delta.PartialBootstrapTask;
 import info.magnolia.module.delta.PropertyExistsDelegateTask;
 import info.magnolia.module.delta.RemoveNodeTask;
@@ -157,7 +159,14 @@ public class PagesModuleVersionHandler extends DefaultModuleVersionHandler {
         register(DeltaBuilder.update("5.2.2", "")
                 .addTask(new RemoveHardcodedI18nPropertiesFromDialogsTask("pages"))
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages", "class", ConfiguredContentAppDescriptor.class.getName()))
-                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/import/availability", "root", "true")));
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actions/import/availability", "root", "true"))
+                .addTask(new PartialBootstrapTask("Bootstrap restore version action", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actions/restoreVersion"))
+                .addTask(new NodeExistsDelegateTask("Bootstrap restore version action to actionbar", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items",
+                        new ArrayDelegateTask("",
+                                new PartialBootstrapTask("", "", "/mgnl-bootstrap/pages/config.modules.pages.apps.pages.xml", "/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items/restoreVersion"),
+                                new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items/showVersions",
+                                    new OrderNodeAfterTask("", "", RepositoryConstants.CONFIG, "/modules/pages/apps/pages/subApps/browser/actionbar/sections/pageActions/groups/versionActions/items/restoreVersion", "showVersions")))))
+        );
     }
 
 }
