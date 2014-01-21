@@ -1358,9 +1358,6 @@
           <sv:property sv:name="class" sv:type="String">
             <sv:value>info.magnolia.ui.contentapp.browser.action.RestoreVersionActionDefinition</sv:value>
           </sv:property>
-          <sv:property sv:name="createVersionPriorRestore" sv:type="String">
-            <sv:value>false</sv:value>
-          </sv:property>
           <sv:property sv:name="icon" sv:type="String">
             <sv:value>icon-retrieve-versions</sv:value>
           </sv:property>
