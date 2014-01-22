@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.framework.action;
 
-import com.google.common.collect.Ordering;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
@@ -41,16 +40,19 @@ import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.jcr.RepositoryException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.jcr.RepositoryException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Ordering;
 
 /**
  * Abstract multi-item Action that defines the default behavior.
@@ -113,13 +115,13 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
 
         if (failedItems.isEmpty()) {
             String message = getSuccessMessage();
-            if (StringUtils.isNotBlank(message)) {
-                uiContext.openNotification(MessageStyleTypeEnum.INFO, true, message);
+            if (message != null) {
+                uiContext.openNotification(MessageStyleTypeEnum.INFO, true, getSuccessMessage());
             }
         } else {
-            String message = getErrorNotification();
-            if (StringUtils.isNotBlank(message)) {
-                uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, message);
+            String message = getSuccessMessage();
+            if (message != null) {
+                uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, getErrorNotification());
             }
         }
     }
