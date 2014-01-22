@@ -74,6 +74,7 @@ public class RestoreVersionAction extends ShowVersionsAction<RestoreVersionActio
         this.dialogID = "ui-contentapp:code:RestoreVersionAction.selectVersion";
     }
 
+    @Override
     protected EditorCallback getEditorCallback() {
         return new EditorCallback() {
             @Override

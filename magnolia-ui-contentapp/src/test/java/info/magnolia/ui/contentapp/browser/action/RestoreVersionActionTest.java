@@ -193,6 +193,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
             super(definition, appContext, locationController, uiContext, formDialogPresenter, nodeAdapter, i18n, versionManager, eventBus);
         }
 
+        @Override
         protected BeanItem<?> getItem() {
 
             BeanItem<?> item = super.getItem();
