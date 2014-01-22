@@ -50,6 +50,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.PropertyType;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.NodeTypeTemplate;
@@ -119,6 +120,11 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         servletParameters = NodeUtil.createPath(session.getRootNode(), "/server/filters/servlets/AdminCentral/parameters", NodeTypes.ContentNode.NAME);
         appLauncherLayoutConfigNodeSourceParent = NodeUtil.createPath(session.getRootNode(), appLauncherLayoutConfigNodeSourceParent_path, NodeTypes.ContentNode.NAME);
         appLauncherLayoutConfigNodeTargetParent = NodeUtil.createPath(session.getRootNode(), appLauncherLayoutConfigNodeTargetParent_path, NodeTypes.ContentNode.NAME);
+
+        // for 5.2.2 update:
+        this.setupConfigNode("/modules/ui-admincentral/templates/deleted");
+        Node command = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/commands/default/delete/deactivate", NodeTypes.ContentNode.NAME);
+        command.setProperty("enabled", true);
     }
 
     @Test
@@ -397,7 +403,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     public void testUpdateTo52RegisterActivationApp() throws Exception {
         // GIVEN
         NodeUtil.createPath(session.getRootNode(), "/modules/activation", NodeTypes.ContentNode.NAME);
-        NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps", NodeTypes.ContentNode.NAME);
+        NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/websiteJcrBrowser", NodeTypes.ContentNode.NAME);
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1"));
 
@@ -415,5 +421,24 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
 
         // THEN
         assertFalse(session.itemExists("/modules/ui-admincentral/config/appLauncherLayout/groups/tools/apps/activation"));
+    }
+
+    @Test
+    public void testUpdateFrom50() throws Exception {
+        // GIVEN
+        this.setupConfigNode("/modules/ui-admincentral/apps/stkSiteApp/subApps");
+        this.setupConfigProperty("/modules/ui-admincentral/apps/stkSiteApp", "icon", "someIcon");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
+
+        // THEN
+        assertEquals("info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor", session.getProperty("/modules/ui-admincentral/apps/configuration/class").getString());
+        assertFalse(session.itemExists("/modules/ui-admincentral/apps/stkSiteApp/app"));
+        assertFalse(session.itemExists("/modules/ui-admincentral/apps/stkSiteApp/icon"));
+
+        assertTrue(session.itemExists("/modules/ui-admincentral/templates/deleted/i18nBasename"));
+        assertEquals("info.magnolia.module.admininterface.messages", session.getProperty("/modules/ui-admincentral/templates/deleted/i18nBasename").getString());
+        assertEquals(PropertyType.STRING, session.getProperty("/modules/ui-admincentral/commands/default/delete/deactivate/enabled").getType());
     }
 }

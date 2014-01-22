@@ -33,6 +33,7 @@
  */
 package info.magnolia.security.setup;
 
+import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromDialogsTask;
 import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromSubappsTask;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
@@ -52,6 +53,7 @@ import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.security.app.container.GroupDropConstraint;
 import info.magnolia.security.app.container.RoleDropConstraint;
+import info.magnolia.security.app.container.RoleTreePresenter;
 import info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldDefinition;
 import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
 import info.magnolia.ui.admincentral.setup.ConvertAclToAppPermissionTask;
@@ -150,6 +152,12 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new NodeExistsDelegateTask("Add conditionalReadOnlyTextField field type", "Add conditionalReadOnlyTextField field type if it is not exist", RepositoryConstants.CONFIG, "/modules/security-app/fieldTypes/conditionalReadOnlyTextField", null,
                         new PartialBootstrapTask("Bootsrap conditionalReadOnlyTextField field type", "", "/mgnl-bootstrap/security-app/config.modules.security-app.fieldTypes.xml", "/fieldTypes/conditionalReadOnlyTextField")))
         );
+
+        register(DeltaBuilder.update("5.2.2", "")
+                .addTask(new RemoveHardcodedI18nPropertiesFromDialogsTask("security-app"))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/workbench/contentViews/tree", "implementationClass", RoleTreePresenter.class.getName()))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteUser/availability", "multiple", "true"))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteFolder/availability", "multiple", "true")));
     }
 
     @Override

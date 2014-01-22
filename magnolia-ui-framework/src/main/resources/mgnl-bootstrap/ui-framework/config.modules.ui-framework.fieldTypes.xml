@@ -590,7 +590,7 @@
       <sv:value>superuser</sv:value>
     </sv:property>
   </sv:node>
-  <sv:node sv:name="compositField" >
+  <sv:node sv:name="compositeField" >
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
     <sv:value>mgnl:contentNode</sv:value>
     </sv:property>

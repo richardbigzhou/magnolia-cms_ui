@@ -80,8 +80,14 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
         iframeElement.setAttribute("frameborder", "0");
 
         handler.init();
-
+        if (BrowserInfo.get().isIE8()) {
+            registerPageEditorIframe(iframeElement);
+        }
     }
+
+    private native void registerPageEditorIframe(Element iframeElement) /*-{
+        $wnd.__page_editor_iframe = iframeElement;
+    }-*/;
 
     @Override
     public PageEditorFrame getFrame() {
@@ -130,7 +136,7 @@ public class PageEditorViewImpl extends Composite implements PageEditorView {
         if (BrowserInfo.get().isTouchDevice()) {
             handler.initNativeTouchSelectionListener(iframe.getBody(), listener);
         } else {
-            handler.initNativeMouseSelectionListener(iframe.getBody(), listener);
+            handler.initNativeMouseSelectionListener(iframe.getElement(), iframe.getBody(), listener);
         }
         handler.initNativeKeyListener(iframe.getElement());
         handler.initScrollListener(content.getElement());

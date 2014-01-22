@@ -34,20 +34,23 @@
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.eventmanager.ControlBarEventHandler;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.eventmanager.ControlBarEventManager;
 import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.listener.AreaListener;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
-import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
  * Control bar for areas. Injected at the beginning of an area.
  */
 public class AreaBar extends AbstractBar {
 
-
     private final AreaListener listener;
+
+    private ControlBarEventManager eventManager = GWT.create(ControlBarEventManager.class);
 
     public AreaBar(MgnlArea mgnlElement) {
         super(mgnlElement);
@@ -65,18 +68,15 @@ public class AreaBar extends AbstractBar {
     @Override
     protected void createControls() {
         if (listener.hasAddButton()) {
-            final Label add = new Label();
+            final HTML add = new HTML();
             add.setStyleName(ICON_CLASS_NAME);
             add.addStyleName(ADD_CLASS_NAME);
-
-            TouchDelegate td = new TouchDelegate(add);
-            td.addTouchEndHandler(new TouchEndHandler() {
+            eventManager.addClickOrTouchHandler(add, new ControlBarEventHandler() {
                 @Override
-                public void onTouchEnd(TouchEndEvent touchEndEvent) {
+                public void handle(NativeEvent event) {
                     listener.createOptionalArea();
                 }
             });
-
             addButton(add);
         }
 
@@ -84,16 +84,12 @@ public class AreaBar extends AbstractBar {
             final Label edit = new Label();
             edit.setStyleName(ICON_CLASS_NAME);
             edit.addStyleName(EDIT_CLASS_NAME);
-
-            TouchDelegate td = new TouchDelegate(edit);
-            td.addTouchEndHandler(new TouchEndHandler() {
+            eventManager.addClickOrTouchHandler(edit, new ControlBarEventHandler() {
                 @Override
-                public void onTouchEnd(TouchEndEvent touchEndEvent) {
+                public void handle(NativeEvent event) {
                     listener.editArea();
-
                 }
             });
-
             addButton(edit);
         }
 
