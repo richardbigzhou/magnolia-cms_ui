@@ -153,12 +153,12 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
 
     protected List<ToolbarGroup> initializeToolbarConfig() {
         List<ToolbarGroup> toolbars = new ArrayList<ToolbarGroup>();
-        toolbars.add(new ToolbarGroup("basictyles", new String[]{"Bold", "Italic", "Underline", "SpecialChar"}));
-        toolbars.add(new ToolbarGroup("paragraph", new String[]{"NumberedList", "BulletedList"}));
-        toolbars.add(new ToolbarGroup("insert", new String[]{"Link", "InternalLink", "DamLink", "Unlink"}));
-        toolbars.add(new ToolbarGroup("clipboard", new String[]{"Cut", "Copy", "Paste", "PasteText", "PasteFromWord"}));
-        toolbars.add(new ToolbarGroup("objects", new String[]{"Table", "NumberedList", "BulletedList"}));
-        toolbars.add(new ToolbarGroup("special", new String[]{"Undo", "Redo"}));
+        toolbars.add(new ToolbarGroup("basictyles", new String[] { "Bold", "Italic", "Underline", "SpecialChar" }));
+        toolbars.add(new ToolbarGroup("paragraph", new String[] { "NumberedList", "BulletedList" }));
+        toolbars.add(new ToolbarGroup("insert", new String[] { "Link", "InternalLink", "DamLink", "Unlink" }));
+        toolbars.add(new ToolbarGroup("clipboard", new String[] { "Cut", "Copy", "Paste", "PasteText", "PasteFromWord" }));
+        toolbars.add(new ToolbarGroup("objects", new String[] { "Table" }));
+        toolbars.add(new ToolbarGroup("special", new String[] { "Undo", "Redo" }));
         return toolbars;
     }
 
