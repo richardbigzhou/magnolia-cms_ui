@@ -55,12 +55,15 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.vaadin.data.Item;
+import com.vaadin.server.ClientConnector.AttachEvent;
+import com.vaadin.server.ClientConnector.AttachListener;
+import com.vaadin.server.Page;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.Field;
 
 /**
- * Creates and initializes an edit field based on a field definition.
+ * Creates and configures a rich-text field based on its definition.
  */
 public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefinition, String> {
 
@@ -71,19 +74,19 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
     private static final String PLUGIN_PATH_MAGNOLIALINK = "/VAADIN/js/magnolialink/";
 
     /**
-     * Event is emit from server to client when link has been selected.
+     * Event is transmitted from server to client when link has been selected.
      */
     public static final String EVENT_SEND_MAGNOLIA_LINK = "mgnlLinkSelected";
 
     /**
-     * Event is emit from server to client when link dialog has been
+     * Event is transmitted from server to client when link dialog has been
      * canceled or exception has occurred. In case of exception
      * the event will carry error message.
      */
     public static final String EVENT_CANCEL_LINK = "mgnlLinkCancel";
 
     /**
-     * Event is emit from client to server when user requests a link dialog.
+     * Event is transmitted from client to server when user requests a link dialog.
      * Event carries optional link that should be treated as default link value.
      */
     public static final String EVENT_GET_MAGNOLIA_LINK = "mgnlGetLink";
@@ -92,7 +95,6 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
     protected final UiContext uiContext;
     protected final SimpleTranslator i18n;
     protected MagnoliaRichTextField richTextEditor;
-
 
     @Inject
     public RichTextFieldFactory(RichTextFieldDefinition definition, Item relatedFieldItem, AppController appController, UiContext uiContext, SimpleTranslator i18n) {
@@ -104,12 +106,14 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
 
     @Override
     protected Field<String> createFieldComponent() {
-        final MagnoliaRichTextFieldConfig config = initializeCKEditorConfig();
-        richTextEditor = new MagnoliaRichTextField(config) {
+
+        MagnoliaRichTextFieldConfig config = initializeCKEditorConfig();
+        richTextEditor = new MagnoliaRichTextField(config);
+
+        richTextEditor.addAttachListener(new AttachListener() {
             @Override
-            public void attach() {
-                super.attach();
-                WebBrowser browser = getSession().getBrowser();
+            public void attach(AttachEvent event) {
+                WebBrowser browser = Page.getCurrent().getWebBrowser();
                 if (browser.isIOS() || browser.isAndroid()) {
                     // MGNLUI-1582: Workaround disabling non-operational ckeditor on the iPad or on android devices.
                     richTextEditor.setEnabled(false);
@@ -117,7 +121,7 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
                     richTextEditor.addStyleName("richtextfield-disabled");
                 }
             }
-        };
+        });
 
         richTextEditor.addListener(new MagnoliaRichTextField.PluginListener() {
             @Override
@@ -139,15 +143,17 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
     }
 
     protected MagnoliaRichTextFieldConfig initializeCKEditorConfig() {
-        final MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
+
+        MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
+        config.setBaseFloatZIndex(150);
+        String path = VaadinService.getCurrentRequest().getContextPath();
 
         List<ToolbarGroup> toolbars = initializeToolbarConfig();
         config.addToolbarLine(toolbars);
-        config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
         config.setResizeEnabled(false);
 
-        String path = VaadinService.getCurrentRequest().getContextPath();
         config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path + PLUGIN_PATH_MAGNOLIALINK);
+        config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
         return config;
     }
 

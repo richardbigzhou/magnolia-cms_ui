@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -54,12 +54,12 @@ import com.vaadin.server.PaintTarget;
 
 public class MagnoliaRichTextField extends CKEditorTextField {
 
-    private String fireEvent = null;
-    private String fireEventValue = null;
-    private String[] customEvents = null;
-    private Map<String, String> serverPlugins = null;
+    private String fireEvent;
+    private String fireEventValue;
+    private String[] customEvents;
+    private Map<String, String> serverPlugins;
     private List<PluginListener> listeners = new ArrayList<PluginListener>();
-    private MagnoliaRichTextFieldConfig config = null;
+    private MagnoliaRichTextFieldConfig config;
 
     public MagnoliaRichTextField() {
         super();
