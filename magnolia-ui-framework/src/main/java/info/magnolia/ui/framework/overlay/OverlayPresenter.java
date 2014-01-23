@@ -130,7 +130,7 @@ public abstract class OverlayPresenter implements OverlayLayer {
                 cb.onOk();
             }
         });
-        confirmButton.addStyleName("default");
+        confirmButton.focus();
         footer.addComponent(confirmButton);
         return dialog;
     }
