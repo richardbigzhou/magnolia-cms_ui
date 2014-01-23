@@ -50,6 +50,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.commons.predicate.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -265,7 +266,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
         if (parent != null) {
             try {
                 // Get only relevant child nodes
-                Iterable<Node> iterable = NodeUtil.getNodes(parent, NodeUtil.MAGNOLIA_FILTER);
+                Iterable<Node> iterable = NodeUtil.getNodes(parent, createRemoteOptionFilterPredicate());
                 Iterator<Node> iterator = iterable.iterator();
                 // Iterate parent children
                 while (iterator.hasNext()) {
@@ -295,6 +296,13 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
                 log.warn("Not able to build options based on option node " + parent.toString(), e);
             }
         }
+    }
+
+    /**
+     * @return {@link Predicate} used to filter the remote children option nodes.
+     */
+    protected Predicate createRemoteOptionFilterPredicate() {
+        return NodeUtil.MAGNOLIA_FILTER;
     }
 
     /**
