@@ -441,4 +441,17 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         assertEquals("info.magnolia.module.admininterface.messages", session.getProperty("/modules/ui-admincentral/templates/deleted/i18nBasename").getString());
         assertEquals(PropertyType.STRING, session.getProperty("/modules/ui-admincentral/commands/default/delete/deactivate/enabled").getType());
     }
+
+
+    @Test
+    public void testICEPushMimeMappingRemovedIn522() throws Exception {
+        // GIVEN
+        this.setupConfigNode("/server/MIMEMapping/icepush");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.1"));
+
+        //THEN
+        assertFalse("ICEPush MIMEMapping is gone", session.itemExists("/server/MIMEMapping/icepush"));
+    }
 }

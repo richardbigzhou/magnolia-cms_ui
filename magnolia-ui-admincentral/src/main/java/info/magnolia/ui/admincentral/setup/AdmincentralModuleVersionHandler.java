@@ -217,7 +217,8 @@ public class AdmincentralModuleVersionHandler extends DefaultModuleVersionHandle
                                 RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/stkSiteApp", "icon")))
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/commands/default/delete/deactivate", "enabled", "true"))
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/templates/deleted", "i18nBasename", "info.magnolia.module.admininterface.messages"))
-                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration", "class", ConfiguredAppDescriptor.class.getName())));
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-admincentral/apps/configuration", "class", ConfiguredAppDescriptor.class.getName()))
+                .addTask(new RemoveNodeTask("Delete ICEPush MIME mapping", "ICEPush is no longer used an thus its MIME-mapping should be removed", RepositoryConstants.CONFIG, "/server/MIMEMapping/icepush")));
 
     }
 
