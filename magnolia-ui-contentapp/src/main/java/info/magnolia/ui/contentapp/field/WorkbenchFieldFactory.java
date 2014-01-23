@@ -33,14 +33,16 @@
  */
 package info.magnolia.ui.contentapp.field;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.Field;
 import info.magnolia.event.EventBus;
-import info.magnolia.event.SimpleEventBus;
+import info.magnolia.ui.dialog.choosedialog.eventbus.ChooseDialogEventBus;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactory;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 
 import javax.inject.Inject;
+import javax.inject.Named;
+
+import com.vaadin.data.Item;
+import com.vaadin.ui.Field;
 
 /**
  * Factory capable of producing {@link WorkbenchField}.
@@ -57,11 +59,12 @@ public class WorkbenchFieldFactory extends AbstractFieldFactory<WorkbenchFieldDe
     public WorkbenchFieldFactory(
             WorkbenchFieldDefinition definition,
             Item relatedFieldItem,
-            WorkbenchPresenter workbenchPresenter) {
+            WorkbenchPresenter workbenchPresenter,
+            @Named(ChooseDialogEventBus.NAME)EventBus eventBus) {
         super(definition, relatedFieldItem);
         this.definition = definition;
         this.workbenchPresenter = workbenchPresenter;
-        this.eventBus = new SimpleEventBus();
+        this.eventBus = eventBus;
     }
 
     @Override

@@ -34,7 +34,17 @@
 package info.magnolia.ui.contentapp;
 
 
+import info.magnolia.event.EventBus;
+import info.magnolia.event.SimpleEventBus;
+import info.magnolia.module.ModuleRegistry;
+import info.magnolia.module.model.ModuleDefinition;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.objectfactory.configuration.ComponentConfigurer;
+import info.magnolia.objectfactory.configuration.ComponentProviderConfiguration;
+import info.magnolia.objectfactory.configuration.ComponentProviderConfigurationBuilder;
+import info.magnolia.objectfactory.guice.AbstractGuiceComponentConfigurer;
+import info.magnolia.objectfactory.guice.GuiceComponentProvider;
+import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
@@ -45,12 +55,19 @@ import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
 import info.magnolia.ui.framework.app.BaseApp;
 
+import java.util.List;
+
 import javax.inject.Inject;
+
+import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 
 /**
  * Extends the {@link BaseApp} by the ability to open a choose dialog.
  */
 public class ContentApp extends BaseApp {
+
+    private static final String CHOOSE_DIALOG_COMPONENT_ID = "choosedialog";
 
     private ComponentProvider componentProvider;
 
@@ -64,14 +81,34 @@ public class ContentApp extends BaseApp {
     public void openChooseDialog(UiContext overlayLayer, String selectedId, final ChooseDialogCallback callback) {
         ChooseDialogPresenter presenter;
         ChooseDialogDefinition chooseDialogDefinition;
+        ComponentProvider chooseDialogComponentProvider = createChooseDialogComponentProvider();
         if (appContext.getAppDescriptor() instanceof ContentAppDescriptor) {
             ContentAppDescriptor contentAppDescriptor = (ContentAppDescriptor)appContext.getAppDescriptor();
-            presenter = componentProvider.getComponent(contentAppDescriptor.getChooseDialog().getPresenterClass());
+            presenter = chooseDialogComponentProvider.getComponent(contentAppDescriptor.getChooseDialog().getPresenterClass());
             chooseDialogDefinition = contentAppDescriptor.getChooseDialog();
         } else {
             chooseDialogDefinition = new ConfiguredChooseDialogDefinition();
-            presenter = componentProvider.newInstance(ContentAppChooseDialogPresenter.class);
+            presenter = componentProvider.newInstance(ContentAppChooseDialogPresenter.class, chooseDialogComponentProvider);
         }
         presenter.start(callback, chooseDialogDefinition, overlayLayer, selectedId) ;
+    }
+
+    private ComponentProvider createChooseDialogComponentProvider() {
+        ModuleRegistry moduleRegistry = componentProvider.getComponent(ModuleRegistry.class);
+        final EventBus eventBus = new SimpleEventBus();
+        ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
+        List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
+        ComponentProviderConfiguration configuration =
+            configurationBuilder.getComponentsFromModules(CHOOSE_DIALOG_COMPONENT_ID, moduleDefinitions);
+        GuiceComponentProviderBuilder builder = new GuiceComponentProviderBuilder();
+        builder.withConfiguration(configuration);
+        builder.withParent((GuiceComponentProvider) componentProvider);
+        ComponentConfigurer c = new AbstractGuiceComponentConfigurer() {
+            @Override
+            protected void configure() {
+                bind(EventBus.class).annotatedWith(Names.named("choose_dialog_event_bus")).toProvider(Providers.of(eventBus));
+            }
+        };
+        return builder.build(c);
     }
 }

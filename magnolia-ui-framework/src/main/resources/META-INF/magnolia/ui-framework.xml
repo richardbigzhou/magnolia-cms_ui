@@ -308,6 +308,14 @@
   </components>
 
   <components>
+    <id>choosedialog</id>
+    <component>
+      <type>info.magnolia.ui.form.field.factory.FieldFactoryFactory</type>
+      <implementation>info.magnolia.ui.form.field.factory.FieldFactoryFactory</implementation>
+    </component>
+  </components>
+
+  <components>
     <id>app</id>
 
     <component>
