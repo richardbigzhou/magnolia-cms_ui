@@ -82,8 +82,8 @@ public class RestoreVersionAction extends ShowVersionsAction<RestoreVersionActio
                 try {
                     Node node = getNode();
 
-                    if(getDefinition().isCreateVersionPriorRestore()){
-                        createVersionPriorRestore(node);
+                    if(getDefinition().isCreateVersionBeforeRestore()){
+                        createVersionBeforeRestore(node);
                     }
 
                     String versionName = (String) getItem().getItemProperty("versionName").getValue();
@@ -106,7 +106,7 @@ public class RestoreVersionAction extends ShowVersionsAction<RestoreVersionActio
         };
     }
 
-    protected Version createVersionPriorRestore(Node node) throws RepositoryException {
+    protected Version createVersionBeforeRestore(Node node) throws RepositoryException {
         NodeTypes.Versionable.set(node, i18n.translate("ui-contentapp.actions.restoreVersion.comment.restore"));
         node.getSession().save();
         Version version = versionManager.addVersion(node);
