@@ -33,30 +33,22 @@
  */
 package info.magnolia.ui.dialog.setup;
 
+import info.magnolia.cms.util.QueryUtil;
 import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.jcr.predicate.NodeTypePredicate;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.NodeVisitor;
+import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.AbstractTask;
 import info.magnolia.module.delta.TaskExecutionException;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.dialog.setup.migration.ActionCreator;
 import info.magnolia.ui.dialog.setup.migration.BaseActionCreator;
-import info.magnolia.ui.dialog.setup.migration.CheckBoxRadioControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.CheckBoxSwitchControlMigrator;
 import info.magnolia.ui.dialog.setup.migration.ControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.DateControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.EditCodeControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.EditControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.FckEditControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.FileControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.HiddenControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.LinkControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.MultiSelectControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.SelectControlMigrator;
-import info.magnolia.ui.dialog.setup.migration.StaticControlMigrator;
+import info.magnolia.ui.dialog.setup.migration.ControlMigratorsRegistry;
 import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
 
 import java.util.Arrays;
@@ -66,9 +58,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.query.Query;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -82,12 +76,18 @@ public class DialogMigrationTask extends AbstractTask {
 
     private static final Logger log = LoggerFactory.getLogger(DialogMigrationTask.class);
     private final String moduleName;
+    private final String propertyNameExtends = "extends";
+    private final String propertyNameReference = "reference";
     private final HashSet<Property> extendsAndReferenceProperty = new HashSet<Property>();
+    private ControlMigratorsRegistry controlMigratorsRegistry;
 
     private HashMap<String, ControlMigrator> controlsToMigrate;
     private String defaultDialogActions = "defaultDialogActions";
     private HashMap<String, List<ActionCreator>> dialogActionsToMigrate;
+    private InstallContext installContext;
 
+    private HashMap<String, ControlMigrator> customControlsToMigrate;
+    private HashMap<String, List<ActionCreator>> customDialogActionsToMigrate;
 
     /**
      * @param taskName
@@ -99,22 +99,20 @@ public class DialogMigrationTask extends AbstractTask {
     public DialogMigrationTask(String taskName, String taskDescription, String moduleName, HashMap<String, ControlMigrator> customControlsToMigrate, HashMap<String, List<ActionCreator>> customDialogActionsToMigrate) {
         super(taskName, taskDescription);
         this.moduleName = moduleName;
-        registerControlsToMigrate(customControlsToMigrate);
-        registerDialogActionToCreate(customDialogActionsToMigrate);
+
+        // Use Components else we will need to inject ControlMigratorsRegistry in all version handler that uses DialogMigrationTask.
+        // Version handler needs ControlMigratorsRegistry only for registrating custom dialogMigrators.
+        this.controlMigratorsRegistry = Components.getComponent(ControlMigratorsRegistry.class);
+        this.customControlsToMigrate = customControlsToMigrate;
+        this.customDialogActionsToMigrate = customDialogActionsToMigrate;
     }
 
     public DialogMigrationTask(String taskName, String taskDescription, String moduleName) {
-        super(taskName, taskDescription);
-        this.moduleName = moduleName;
-        registerControlsToMigrate(null);
-        registerDialogActionToCreate(null);
+        this(taskName, taskDescription, moduleName, null, null);
     }
 
     public DialogMigrationTask(String moduleName) {
-        super("Dialog Migration for 5.x", "Migrate dialog for the following module: " + moduleName);
-        this.moduleName = moduleName;
-        registerControlsToMigrate(null);
-        registerDialogActionToCreate(null);
+        this("Dialog Migration for 5.x", "Migrate dialog for the following module: " + moduleName, moduleName, null, null);
     }
 
     /**
@@ -123,9 +121,9 @@ public class DialogMigrationTask extends AbstractTask {
     @Override
     public void execute(InstallContext installContext) throws TaskExecutionException {
         Session session = null;
+        this.installContext = installContext;
         try {
-            addCustomControlsToMigrate(controlsToMigrate);
-            addCustomDialogActionToCreate(dialogActionsToMigrate);
+            registerControlsAndActionsMigrators();
 
             String dialogNodeName = "dialogs";
             String dialogPath = "/modules/" + moduleName + "/" + dialogNodeName;
@@ -137,6 +135,8 @@ public class DialogMigrationTask extends AbstractTask {
                 return;
             }
             Node dialog = session.getNode(dialogPath);
+            // Convert extends/reference path from relative to absolute.
+            resolveRelativeExtendsPath(dialog);
             NodeUtil.visit(dialog, new NodeVisitor() {
                 @Override
                 public void visit(Node current) throws RepositoryException {
@@ -156,26 +156,22 @@ public class DialogMigrationTask extends AbstractTask {
         }
     }
 
+    private void registerControlsAndActionsMigrators() {
+        // Register default and passed during class initialization
+        registerControlsToMigrate(customControlsToMigrate);
+        registerDialogActionToCreate(customDialogActionsToMigrate);
+        // Add custom
+        addCustomControlsToMigrate(controlsToMigrate);
+        addCustomDialogActionToCreate(dialogActionsToMigrate);
+    }
+
     /**
      * Register default UI controls to migrate.
      */
     private void registerControlsToMigrate(HashMap<String, ControlMigrator> customControlsToMigrate) {
         this.controlsToMigrate = new HashMap<String, ControlMigrator>();
-        // Register default controls
-        this.controlsToMigrate.put("edit", new EditControlMigrator());
-        this.controlsToMigrate.put("fckEdit", new FckEditControlMigrator());
-        this.controlsToMigrate.put("date", new DateControlMigrator());
-        this.controlsToMigrate.put("select", new SelectControlMigrator());
-        this.controlsToMigrate.put("checkbox", new CheckBoxRadioControlMigrator(true));
-        this.controlsToMigrate.put("checkboxSwitch", new CheckBoxSwitchControlMigrator());
-        this.controlsToMigrate.put("radio", new CheckBoxRadioControlMigrator(false));
-        this.controlsToMigrate.put("uuidLink", new LinkControlMigrator());
-        this.controlsToMigrate.put("link", new LinkControlMigrator());
-        this.controlsToMigrate.put("multiselect", new MultiSelectControlMigrator(false));
-        this.controlsToMigrate.put("file", new FileControlMigrator());
-        this.controlsToMigrate.put("static", new StaticControlMigrator());
-        this.controlsToMigrate.put("hidden", new HiddenControlMigrator());
-        this.controlsToMigrate.put("editCode", new EditCodeControlMigrator());
+        // Register default controls (defined in the ui-framwork version handler class)
+        this.controlsToMigrate.putAll(controlMigratorsRegistry.getAllMigrators());
         // Register custom
         if (customControlsToMigrate != null) {
             this.controlsToMigrate.putAll(customControlsToMigrate);
@@ -233,7 +229,7 @@ public class DialogMigrationTask extends AbstractTask {
                 handleTab(dialog);
             } else {
                 // Handle action
-                if (!dialog.hasProperty("controlType") && !dialog.hasProperty("extends") && !dialog.hasProperty("reference")) {
+                if (!dialog.hasProperty("controlType") && !dialog.hasProperty(propertyNameExtends) && !dialog.hasProperty(propertyNameReference)) {
                     handleAction(dialog);
                 }
                 // Handle tab
@@ -311,7 +307,7 @@ public class DialogMigrationTask extends AbstractTask {
      * Handle a Tab.
      */
     private void handleTab(Node tab) throws RepositoryException {
-        if ((tab.hasProperty("controlType") && StringUtils.equals(tab.getProperty("controlType").getString(), "tab")) || (tab.getParent().hasProperty("extends"))) {
+        if ((tab.hasProperty("controlType") && StringUtils.equals(tab.getProperty("controlType").getString(), "tab")) || (tab.getParent().hasProperty(propertyNameExtends))) {
             if (tab.hasProperty("controlType") && StringUtils.equals(tab.getProperty("controlType").getString(), "tab")) {
                 // Remove controlType Property
                 tab.getProperty("controlType").remove();
@@ -347,13 +343,13 @@ public class DialogMigrationTask extends AbstractTask {
 
             if (controlsToMigrate.containsKey(controlTypeName)) {
                 ControlMigrator controlMigration = controlsToMigrate.get(controlTypeName);
-                controlMigration.migrate(fieldNode);
+                controlMigration.migrate(fieldNode, installContext);
             } else {
                 fieldNode.setProperty("class", StaticFieldDefinition.class.getName());
                 if (!fieldNode.hasProperty("value")) {
                     fieldNode.setProperty("value", "Field not yet supported");
                 }
-                log.warn("No dialog define for control '{}' for node '{}'", controlTypeName, fieldNode.getPath());
+                log.warn("No field defined for control '{}' for node '{}'", controlTypeName, fieldNode.getPath());
             }
         } else {
             // Handle Field Extends/Reference
@@ -365,10 +361,10 @@ public class DialogMigrationTask extends AbstractTask {
     private void handleExtendsAndReference(Node node) throws RepositoryException {
         if (node.hasProperty("extends")) {
             // Handle Field Extends
-            extendsAndReferenceProperty.add(node.getProperty("extends"));
+            extendsAndReferenceProperty.add(node.getProperty(propertyNameExtends));
         } else if (node.hasProperty("reference")) {
             // Handle Field Extends
-            extendsAndReferenceProperty.add(node.getProperty("reference"));
+            extendsAndReferenceProperty.add(node.getProperty(propertyNameReference));
         }
     }
 
@@ -398,6 +394,11 @@ public class DialogMigrationTask extends AbstractTask {
             if (path.equals("override")) {
                 continue;
             }
+            if (!isAbsoulutePath(p, path)) {
+                log.warn("Reference from propertyName '{}' to '{}' is an relative path and could not be linked. The initial value will be keeped", p.getPath(), path);
+                continue;
+            }
+
             if (!p.getSession().nodeExists(path)) {
 
                 String newPath = insertBeforeLastSlashAndTest(p.getSession(), path, "/tabs", "/fields", "/tabs/fields", "/form/tabs");
@@ -420,9 +421,21 @@ public class DialogMigrationTask extends AbstractTask {
                 if (p.getSession().nodeExists(newPath)) {
                     p.setValue(newPath);
                 } else {
-                    log.warn("reference to " + path + " not found");
+                    log.warn("Reference from propertyName '{}' to '{}' not found. The initial value will be keeped", p.getPath(), newPath);
                 }
             }
+        }
+    }
+
+    /**
+     * @return true if the path refers to an absolute path, false otherwise.
+     */
+    private boolean isAbsoulutePath(Property p, String path) {
+        try {
+            p.getSession().nodeExists(path);
+            return true;
+        } catch (RepositoryException e) {
+            return false;
         }
     }
 
@@ -448,6 +461,38 @@ public class DialogMigrationTask extends AbstractTask {
         String beging = reference.substring(0, reference.lastIndexOf("/"));
         String end = reference.substring(reference.lastIndexOf("/"));
         return beging + toInsert + end;
+    }
+
+    /**
+     * Get All nodes defining an extends or reference property.
+     * If the property value refers to a relative path, <br>
+     * - try to resolve this path <br>
+     * - if the equivalent absolute path is found, replace in the property value the relative path by the absolute path.
+     */
+    private void resolveRelativeExtendsPath(Node dialog) {
+        try {
+            final String queryString = "SELECT * FROM [nt:base] AS t WHERE   ISDESCENDANTNODE(t, '" + dialog.getPath() + "') AND (" + propertyNameExtends + " is not null OR " + propertyNameReference + " is not null)";
+            NodeIterator iterator = QueryUtil.search(RepositoryConstants.CONFIG, queryString, Query.JCR_SQL2);
+            while (iterator.hasNext()) {
+                Node node = iterator.nextNode();
+                String propertyValue = PropertyUtil.getString(node, propertyNameExtends);
+                Property property = null;
+
+                if (StringUtils.isNotBlank(propertyValue)) {
+                    property = node.getProperty(propertyNameExtends);
+                } else {
+                    propertyValue = PropertyUtil.getString(node, propertyNameReference);
+                    property = node.getProperty(propertyNameReference);
+                }
+                // Check if it's a relative path
+                if (StringUtils.isNotBlank(propertyValue) && !isAbsoulutePath(property, propertyValue) && node.hasNode(propertyValue)) {
+                    property.setValue(node.getNode(propertyValue).getPath());
+                    log.info("Change propertyValue of '{}' from '{}' to '{}'", property.getPath(), propertyValue, node.getNode(propertyValue).getPath());
+                }
+            }
+        } catch (RepositoryException e) {
+            log.warn("Could not handle extends/reference property for the following definition ", NodeUtil.getNodePathIfPossible(dialog));
+        }
     }
 
 }

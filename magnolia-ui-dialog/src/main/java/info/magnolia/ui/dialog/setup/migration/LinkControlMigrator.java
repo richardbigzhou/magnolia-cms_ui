@@ -34,6 +34,7 @@
 package info.magnolia.ui.dialog.setup.migration;
 
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.module.InstallContext;
 import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 
@@ -46,9 +47,8 @@ import javax.jcr.RepositoryException;
  */
 public class LinkControlMigrator implements ControlMigrator {
 
-
     @Override
-    public void migrate(Node controlNode) throws RepositoryException {
+    public void migrate(Node controlNode, InstallContext installContext) throws RepositoryException {
         Property controlType = controlNode.getProperty("controlType");
         String appName = "pages";
         String className = LinkFieldDefinition.class.getName();

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -63,7 +63,10 @@ public class VPermanentAppTileGroup extends VAppTileGroup {
         sectionEl.addClassName("item");
         sectionEl.addClassName("section");
 
-        sectionLabel.addClassName("label");
+        sectionLabel.addClassName("sectionLabel");
+        if (caption != null && !caption.contains("\u00AD")) {
+            sectionLabel.addClassName("wordwrap");
+        }
         sectionLabel.setInnerText(caption);
         sectionEl.getStyle().setBackgroundColor(getColor());
         getElement().appendChild(sectionEl);

@@ -97,12 +97,13 @@ public class SelectFieldOptionDefinitionKeyGeneratorTest {
 
         // WHEN
         List<String> keys = new ArrayList<String>(4);
-        generator.keysFor(keys, ((SelectFieldDefinition)dialog.getForm().getTabs().get(0).getFields().get(0)).getOptions().get(0), option.getClass().getMethod("getLabel"));
+        generator.keysFor(keys, ((SelectFieldDefinition) dialog.getForm().getTabs().get(0).getFields().get(0)).getOptions().get(0), option.getClass().getMethod("getLabel"));
 
         // THEN
-        assertEquals(2, keys.size());
+        assertEquals(3, keys.size());
         assertEquals("test-module.testFolder.testDialog.testTab.mgnl-testField.options.testOption", keys.get(0));
-        assertEquals("test-module.testFolder.testDialog.mgnl-testField.options.testOption", keys.get(1));
+        assertEquals("testTab.mgnl-testField.options.testOption", keys.get(1));
+        assertEquals("test-module.testFolder.testDialog.mgnl-testField.options.testOption", keys.get(2));
     }
 
     @Test
@@ -127,11 +128,12 @@ public class SelectFieldOptionDefinitionKeyGeneratorTest {
 
         // WHEN
         List<String> keys = new ArrayList<String>(4);
-        generator.keysFor(keys, ((SwitchableFieldDefinition)dialog.getForm().getTabs().get(0).getFields().get(0)).getOptions().get(0), option.getClass().getMethod("getLabel"));
+        generator.keysFor(keys, ((SwitchableFieldDefinition) dialog.getForm().getTabs().get(0).getFields().get(0)).getOptions().get(0), option.getClass().getMethod("getLabel"));
 
         // THEN
-        assertEquals(2, keys.size());
+        assertEquals(3, keys.size());
         assertEquals("test-module.testFolder.testDialog.testTab.mgnl-testField.options.testOption", keys.get(0));
-        assertEquals("test-module.testFolder.testDialog.mgnl-testField.options.testOption", keys.get(1));
+        assertEquals("testTab.mgnl-testField.options.testOption", keys.get(1));
+        assertEquals("test-module.testFolder.testDialog.mgnl-testField.options.testOption", keys.get(2));
     }
 }

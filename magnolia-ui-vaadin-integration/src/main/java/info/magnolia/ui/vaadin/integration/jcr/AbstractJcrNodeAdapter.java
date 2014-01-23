@@ -128,7 +128,7 @@ public abstract class AbstractJcrNodeAdapter extends AbstractJcrAdapter {
      */
     @Override
     public boolean addItemProperty(Object id, Property property) {
-
+        // REMOVE ME: Never called as overrides by sub class.
         log.debug("Add new Property Item name " + id + " with value " + property.getValue());
         try {
             Node node = getJcrItem();

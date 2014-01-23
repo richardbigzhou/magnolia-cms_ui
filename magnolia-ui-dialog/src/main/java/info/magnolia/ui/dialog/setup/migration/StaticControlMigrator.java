@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.dialog.setup.migration;
 
+import info.magnolia.module.InstallContext;
 import info.magnolia.ui.form.field.definition.StaticFieldDefinition;
 
 import javax.jcr.Node;
@@ -43,11 +44,9 @@ import javax.jcr.RepositoryException;
  */
 public class StaticControlMigrator implements ControlMigrator {
 
-
     @Override
-    public void migrate(Node controlNode) throws RepositoryException {
+    public void migrate(Node controlNode, InstallContext installContext) throws RepositoryException {
         controlNode.getProperty("controlType").remove();
         controlNode.setProperty("class", StaticFieldDefinition.class.getName());
     }
-
 }

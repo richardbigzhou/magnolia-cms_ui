@@ -49,6 +49,7 @@ import java.util.List;
 
 import javax.inject.Named;
 import javax.jcr.Item;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -116,6 +117,24 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
     protected void onPostExecute() throws Exception {
         // Propagate event
         eventBus.fireEvent(new ContentChangedEvent((String) getParams().get(Context.ATTRIBUTE_REPOSITORY), itemIdOfChangedItem));
+    }
+
+    @Override
+    protected void executeOnItem(JcrItemAdapter item) throws ActionExecutionException {
+        if (item.isNode()) {
+            super.executeOnItem(item);
+        } else {
+            try {
+                onPreExecute();
+                Property property = (Property) item.getJcrItem();
+                property.remove();
+                property.getSession().save();
+                onPostExecute();
+            } catch (Exception e) {
+                onError(e);
+                throw new ActionExecutionException(e);
+            }
+        }
     }
 
     @Override

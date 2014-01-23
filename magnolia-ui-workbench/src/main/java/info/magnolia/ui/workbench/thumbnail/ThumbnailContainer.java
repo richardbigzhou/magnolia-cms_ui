@@ -125,7 +125,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
     protected String prepareFilterQueryStatement() {
         String nodeTypes = getQueryWhereClauseNodeTypes();
         boolean pathIsNotRoot = StringUtils.isNotBlank(workbenchDefinition.getPath()) && !"/".equals(workbenchDefinition.getPath());
-        return String.format(WHERE_TEMPLATE_FOR_PATH, nodeTypes, pathIsNotRoot ? " AND ISDESCENDANTNODE(" + workbenchDefinition.getPath() + ")" : "");
+        return String.format(WHERE_TEMPLATE_FOR_PATH, nodeTypes, pathIsNotRoot ? " AND ISDESCENDANTNODE('" + workbenchDefinition.getPath() + "')" : "");
 
     }
 

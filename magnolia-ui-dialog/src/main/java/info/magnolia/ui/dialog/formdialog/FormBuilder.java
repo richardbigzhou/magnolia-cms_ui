@@ -46,18 +46,24 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.vaadin.form.FormViewReduced;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.richtext.TextAreaStretcher;
 
+import java.util.List;
+import java.util.Locale;
+
 import javax.inject.Inject;
+import javax.jcr.Node;
 
 import org.apache.commons.lang.StringUtils;
+import org.vaadin.openesignforms.ckeditor.CKEditorTextField;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.AbstractComponent;
-import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.TextArea;
 
 /**
  * Builder for forms.
@@ -66,16 +72,16 @@ public class FormBuilder {
 
     private FieldFactoryFactory fieldFactoryFactory;
     private I18nContentSupport i18nContentSupport;
-    private I18NAuthoringSupport i18NAuthoringSupport;
+    private I18NAuthoringSupport i18nAuthoringSupport;
     private ComponentProvider componentProvider;
 
     @Inject
     public FormBuilder(FieldFactoryFactory fieldFactoryFactory, I18nContentSupport i18nContentSupport,
-            I18NAuthoringSupport i18NAuthoringSupport, ComponentProvider componentProvider) {
+            I18NAuthoringSupport i18nAuthoringSupport, ComponentProvider componentProvider) {
         this.fieldFactoryFactory = fieldFactoryFactory;
         this.componentProvider = componentProvider;
         this.i18nContentSupport = i18nContentSupport;
-        this.i18NAuthoringSupport = i18NAuthoringSupport;
+        this.i18nAuthoringSupport = i18nAuthoringSupport;
     }
 
     /**
@@ -101,10 +107,13 @@ public class FormBuilder {
         boolean hasI18NAwareFields = hasI18NAwareFields(formDefinition);
 
         if (hasI18NAwareFields) {
-            final AbstractSelect languageChooser = i18NAuthoringSupport.getLanguageChooser();
-            if (languageChooser != null) {
-                view.setLocaleSelector(languageChooser);
-                view.setCurrentLocale(i18nContentSupport.getFallbackLocale());
+            if (item instanceof JcrItemAdapter) {
+                javax.jcr.Item jcrItem = ((JcrItemAdapter) item).getJcrItem();
+                if (jcrItem.isNode()) {
+                    List<Locale> locales = i18nAuthoringSupport.getAvailableLocales((Node) jcrItem);
+                    view.setAvailableLocales(locales);
+                    view.setCurrentLocale(i18nContentSupport.getFallbackLocale());
+                }
             }
         }
     }
@@ -163,7 +172,11 @@ public class FormBuilder {
                 if (StringUtils.isNotBlank(helpDescription) && !isMessageKey(helpDescription)) {
                     tab.setComponentHelpDescription(field, helpDescription);
                 }
-                TextAreaStretcher.extend(field);
+
+                if (field instanceof TextArea || field instanceof CKEditorTextField) {
+                    TextAreaStretcher.extend(field);
+                }
+
                 view.addField(field);
             }
             view.addFormSection(tabDefinition.getLabel(), tab.getContainer());

@@ -90,7 +90,7 @@ public class ControlMigratorTest {
         ControlMigrator controlMigration = new EditControlMigrator();
 
         // WHEN
-        controlMigration.migrate(controlNode);
+        controlMigration.migrate(controlNode, null);
 
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));
@@ -106,7 +106,7 @@ public class ControlMigratorTest {
         ControlMigrator controlMigration = new EditCodeControlMigrator();
 
         // WHEN
-        controlMigration.migrate(controlNode);
+        controlMigration.migrate(controlNode, null);
 
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));
@@ -122,7 +122,7 @@ public class ControlMigratorTest {
         ControlMigrator controlMigration = new HiddenControlMigrator();
 
         // WHEN
-        controlMigration.migrate(controlNode);
+        controlMigration.migrate(controlNode, null);
 
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));
@@ -137,7 +137,7 @@ public class ControlMigratorTest {
         ControlMigrator controlMigration = new FckEditControlMigrator();
 
         // WHEN
-        controlMigration.migrate(controlNode);
+        controlMigration.migrate(controlNode, null);
 
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));
@@ -152,7 +152,7 @@ public class ControlMigratorTest {
         ControlMigrator controlMigration = new DateControlMigrator();
 
         // WHEN
-        controlMigration.migrate(controlNode);
+        controlMigration.migrate(controlNode, null);
 
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));
@@ -167,7 +167,7 @@ public class ControlMigratorTest {
         ControlMigrator controlMigration = new SelectControlMigrator();
 
         // WHEN
-        controlMigration.migrate(controlNode);
+        controlMigration.migrate(controlNode, null);
 
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));
@@ -182,7 +182,7 @@ public class ControlMigratorTest {
         ControlMigrator controlMigration = new CheckBoxRadioControlMigrator(false);
 
         // WHEN
-        controlMigration.migrate(controlNode);
+        controlMigration.migrate(controlNode, null);
 
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));
@@ -198,7 +198,7 @@ public class ControlMigratorTest {
         ControlMigrator controlMigration = new CheckBoxRadioControlMigrator(true);
 
         // WHEN
-        controlMigration.migrate(controlNode);
+        controlMigration.migrate(controlNode, null);
 
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));
@@ -214,7 +214,7 @@ public class ControlMigratorTest {
         ControlMigrator controlMigration = new CheckBoxSwitchControlMigrator();
 
         // WHEN
-        controlMigration.migrate(controlNode);
+        controlMigration.migrate(controlNode, null);
 
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));
@@ -232,7 +232,7 @@ public class ControlMigratorTest {
         ControlMigrator controlMigration = new LinkControlMigrator();
 
         // WHEN
-        controlMigration.migrate(controlNode);
+        controlMigration.migrate(controlNode, null);
 
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));
@@ -255,7 +255,7 @@ public class ControlMigratorTest {
         ControlMigrator controlMigration = new LinkControlMigrator();
 
         // WHEN
-        controlMigration.migrate(controlNode);
+        controlMigration.migrate(controlNode, null);
 
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));
@@ -276,7 +276,7 @@ public class ControlMigratorTest {
         ControlMigrator controlMigration = new MultiSelectControlMigrator(true);
 
         // WHEN
-        controlMigration.migrate(controlNode);
+        controlMigration.migrate(controlNode, null);
 
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));
@@ -300,7 +300,7 @@ public class ControlMigratorTest {
         ControlMigrator controlMigration = new FileControlMigrator();
 
         // WHEN
-        controlMigration.migrate(controlNode);
+        controlMigration.migrate(controlNode, null);
 
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));
@@ -315,7 +315,7 @@ public class ControlMigratorTest {
         ControlMigrator controlMigration = new StaticControlMigrator();
 
         // WHEN
-        controlMigration.migrate(controlNode);
+        controlMigration.migrate(controlNode, null);
 
         // THEN
         assertFalse(controlNode.hasProperty("controlType"));

@@ -101,7 +101,7 @@ public class TextAreaStretcherConnector extends AbstractExtensionConnector {
     @Override
     protected void extend(ServerConnector target) {
         this.textWidget = ((ComponentConnector)target).getWidget();
-        this.isRichTextEditor = !"textarea".equalsIgnoreCase(textWidget.getElement().getTagName());
+        this.isRichTextEditor = target instanceof RichTextConnector;
         this.stretchControl.setClassName("textarea-stretcher");
         textWidget.addAttachHandler(new AttachEvent.Handler() {
             @Override

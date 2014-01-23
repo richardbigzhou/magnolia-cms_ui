@@ -43,9 +43,11 @@ import info.magnolia.module.ModuleManagementException;
 import info.magnolia.module.ModuleVersionHandler;
 import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
+import info.magnolia.objectfactory.Components;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.ui.dialog.action.CallbackDialogActionDefinition;
+import info.magnolia.ui.dialog.setup.migration.ControlMigratorsRegistry;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
 import info.magnolia.ui.form.field.definition.SwitchableFieldDefinition;
 import info.magnolia.ui.form.field.factory.BasicTextCodeFieldFactory;
@@ -70,6 +72,8 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
 
     private Node framework;
 
+    private Session session;
+
     @Override
     protected String getModuleDescriptorPath() {
         return "/META-INF/magnolia/ui-framework.xml";
@@ -78,14 +82,14 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
 
     @Override
     protected ModuleVersionHandler newModuleVersionHandlerForTests() {
-        return new UiFrameworkModuleVersionHandler();
+        return new UiFrameworkModuleVersionHandler(Components.getComponent(ControlMigratorsRegistry.class));
     }
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
+        session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         NodeUtil.createPath(session.getRootNode(), "/modules/adminInterface", NodeTypes.ContentNode.NAME);
         i18n = NodeUtil.createPath(session.getRootNode(), "/server/i18n", NodeTypes.ContentNode.NAME);
         i18n.addNode("authoring", NodeTypes.ContentNode.NAME);
@@ -113,7 +117,6 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
     @Test
     public void testUpdateTo5_0_1WithLegacyModule() throws ModuleManagementException, RepositoryException {
         // GIVEN
-        Session session = MgnlContext.getJCRSession(RepositoryConstants.CONFIG);
         NodeUtil.createPath(session.getRootNode(), "/modules/adminInterface", NodeTypes.ContentNode.NAME);
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
@@ -161,6 +164,13 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         assertEquals(SwitchableFieldDefinition.class.getName(), switchableField.getProperty("definitionClass").getString());
         assertTrue(switchableField.hasProperty("factoryClass"));
         assertEquals(SwitchableFieldFactory.class.getName(), switchableField.getProperty("factoryClass").getString());
+        //
+        assertTrue(framework.hasNode("fieldTypes/workbenchField"));
+        Node workbenchField = framework.getNode("fieldTypes/workbenchField");
+        assertTrue(workbenchField.hasProperty("definitionClass"));
+        assertEquals("info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition", workbenchField.getProperty("definitionClass").getString());
+        assertTrue(workbenchField.hasProperty("factoryClass"));
+        assertEquals("info.magnolia.ui.contentapp.field.WorkbenchFieldFactory", workbenchField.getProperty("factoryClass").getString());
     }
 
     @Test
@@ -173,7 +183,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         Node fields = framework.addNode("fields", NodeTypes.ContentNode.NAME);
         Node saveModeType = fields.addNode("saveModeType", NodeTypes.ContentNode.NAME);
         saveModeType.setProperty("multiValueHandlerClass", "info.magnolia.ui.form.field.property.MultiValuesHandler");
-        framework.getSession().save();
+        session.save();
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
@@ -192,7 +202,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         Node fields = framework.addNode("fields", NodeTypes.ContentNode.NAME);
         Node saveModeType = fields.addNode("saveModeType", NodeTypes.ContentNode.NAME);
         saveModeType.setProperty("multiValueHandlerClass", "info.magnolia.ui.form.field.property.SubNodesValueHandler");
-        framework.getSession().save();
+        session.save();
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
@@ -210,7 +220,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         Node fields = framework.addNode("fields", NodeTypes.ContentNode.NAME);
         Node saveModeType = fields.addNode("saveModeType", NodeTypes.ContentNode.NAME);
         saveModeType.setProperty("multiValueHandlerClass", "info.magnolia.ui.form.field.property.CommaSeparatedValueHandler");
-        framework.getSession().save();
+        session.save();
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
@@ -228,7 +238,7 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         // GIVEN
         Node path = framework.addNode("path", NodeTypes.ContentNode.NAME);
         path.setProperty("callbackDialogActionDefinition", "info.magnolia.ui.admincentral.dialog.action.CallbackDialogActionDefinition");
-        framework.getSession().save();
+        session.save();
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.1"));
@@ -238,4 +248,59 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         assertEquals(CallbackDialogActionDefinition.class.getName(), path.getProperty("callbackDialogActionDefinition").getString());
     }
 
+    @Test
+    public void testUpdateTo5_2AddFieldTypeIfNotExisiting() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        framework.addNode("fieldTypes", NodeTypes.ContentNode.NAME);
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.1"));
+
+        // THEN
+        assertTrue(framework.hasNode("fieldTypes/workbenchField"));
+        Node workbenchField = framework.getNode("fieldTypes/workbenchField");
+        assertTrue(workbenchField.hasProperty("definitionClass"));
+        assertEquals("info.magnolia.ui.contentapp.field.WorkbenchFieldDefinition", workbenchField.getProperty("definitionClass").getString());
+        assertTrue(workbenchField.hasProperty("factoryClass"));
+        assertEquals("info.magnolia.ui.contentapp.field.WorkbenchFieldFactory", workbenchField.getProperty("factoryClass").getString());
+    }
+
+    @Test
+    public void testUpdateFrom52() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        this.setupConfigNode("/modules/ui-framework/commands/deafult");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2"));
+
+        // THEN
+        assertTrue(session.nodeExists("/modules/ui-framework/commands/default"));
+    }
+
+    @Test
+    public void testUpdateFrom50() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        this.setupConfigNode("/modules/ui-framework/fieldTypes/compositField");
+        this.setupConfigNode("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/utf-8/");
+        this.setupConfigNode("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/windows/");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
+
+        // THEN
+        assertTrue(session.nodeExists("/modules/ui-framework/commands/default/importZip"));
+        assertTrue(session.nodeExists("/modules/ui-framework/fieldTypes/compositeField"));
+        assertTrue(session.propertyExists("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/utf-8/label"));
+        assertTrue(session.propertyExists("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/windows/label"));
+    }
+
+    @Test
+    public void testUpdateFrom504() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.4"));
+
+        // THEN
+        assertTrue(session.nodeExists("/modules/ui-framework/dialogs/importZip/"));
+    }
 }

@@ -44,7 +44,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 
 /**
- * Tests.
+ * Tests for the {@link AbstractContainer}.
  */
 public class AbstractContainerTest {
 
@@ -94,7 +94,7 @@ public class AbstractContainerTest {
         assertEquals(String.class, container.getType(id));
     }
 
-    public class ContainerTestImpl extends AbstractContainer {
+    private class ContainerTestImpl extends AbstractContainer {
         @Override
         public Item getItem(Object itemId) {
             return null;

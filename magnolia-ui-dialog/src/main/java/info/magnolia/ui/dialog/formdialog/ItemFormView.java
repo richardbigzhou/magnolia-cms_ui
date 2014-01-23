@@ -33,8 +33,8 @@
  */
 package info.magnolia.ui.dialog.formdialog;
 
+import info.magnolia.context.MgnlContext;
 import info.magnolia.i18nsystem.SimpleTranslator;
-import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.i18n.I18NAuthoringSupport;
 import info.magnolia.ui.dialog.BaseDialogViewImpl;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
@@ -44,13 +44,14 @@ import info.magnolia.ui.vaadin.form.Form;
 import info.magnolia.ui.vaadin.form.FormSection;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
 
 /**
@@ -58,24 +59,19 @@ import com.vaadin.ui.Field;
  */
 public class ItemFormView extends BaseDialogViewImpl implements FormView {
 
-    private AbstractSelect languageSelector;
+    private ComboBox languageSelector;
 
     private Form form = new Form();
 
     private final SimpleTranslator i18n;
 
-    /**
-     * @deprecated As of 5.1.1 please use {@link #ItemFormView(SimpleTranslator)} instead.
-     */
-    @Deprecated
-    public ItemFormView() {
-        this(Components.getComponent(SimpleTranslator.class));
-    }
+    private final I18NAuthoringSupport i18nAuthoringSupport;
 
     @Inject
-    public ItemFormView(SimpleTranslator i18n) {
+    public ItemFormView(SimpleTranslator i18n, I18NAuthoringSupport i18nAuthoringSupport) {
         super(new FormDialog());
         this.i18n = i18n;
+        this.i18nAuthoringSupport = i18nAuthoringSupport;
 
         form.setErrorLabels(i18n.translate("validation.message.errors"), i18n.translate("validation.message.nextError"));
         setWidth("720px");
@@ -87,6 +83,8 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
                 form.setDescriptionVisibility(event.isVisible());
             }
         });
+
+        createLocaleSelector();
     }
 
     @Override
@@ -146,17 +144,30 @@ public class ItemFormView extends BaseDialogViewImpl implements FormView {
     }
 
     @Override
-    public void setLocaleSelector(AbstractSelect languageChooser) {
-        this.languageSelector = languageChooser;
+    public void setAvailableLocales(List<Locale> locales) {
+        if (locales != null && !locales.isEmpty()) {
+            languageSelector.removeAllItems();
+            for (Locale locale : locales) {
+                languageSelector.addItem(locale);
+                languageSelector.setItemCaption(locale, locale.getDisplayLanguage(MgnlContext.getLocale()));
+            }
+            getActionAreaView().setToolbarComponent(languageSelector);
+        }
+    }
+
+    private void createLocaleSelector() {
+        languageSelector = new ComboBox();
+        languageSelector.setSizeUndefined();
+        languageSelector.setImmediate(true);
+        languageSelector.setNullSelectionAllowed(false);
+        languageSelector.setTextInputAllowed(false);
         languageSelector.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                I18NAuthoringSupport i18NAuthoringSupport = Components.getComponent(I18NAuthoringSupport.class);
-                if (i18NAuthoringSupport != null) {
-                    i18NAuthoringSupport.i18nize(form, (Locale) event.getProperty().getValue());
+                if (i18nAuthoringSupport != null) {
+                    i18nAuthoringSupport.i18nize(form, (Locale) event.getProperty().getValue());
                 }
             }
         });
-        getActionAreaView().setToolbarComponent(languageSelector);
     }
 }

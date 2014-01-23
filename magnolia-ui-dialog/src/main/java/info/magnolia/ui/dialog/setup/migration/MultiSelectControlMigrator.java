@@ -34,6 +34,7 @@
 package info.magnolia.ui.dialog.setup.migration;
 
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.module.InstallContext;
 import info.magnolia.ui.form.field.converter.BaseIdentifierToPathConverter;
 import info.magnolia.ui.form.field.definition.LinkFieldDefinition;
 import info.magnolia.ui.form.field.definition.MultiValueFieldDefinition;
@@ -49,14 +50,14 @@ import javax.jcr.RepositoryException;
  */
 public class MultiSelectControlMigrator implements ControlMigrator {
 
-    protected boolean useIdentifier;
+    private final boolean useIdentifier;
 
     public MultiSelectControlMigrator(boolean useIdentifier) {
         this.useIdentifier = useIdentifier;
     }
 
     @Override
-    public void migrate(Node controlNode) throws RepositoryException {
+    public void migrate(Node controlNode, InstallContext installContext) throws RepositoryException {
         controlNode.getProperty("controlType").remove();
         controlNode.setProperty("class", MultiValueFieldDefinition.class.getName());
 

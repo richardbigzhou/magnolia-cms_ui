@@ -65,7 +65,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test case for AbstractActionExecutor.
+ * Test case for the {@link AbstractActionExecutor}.
  */
 public class AbstractActionExecutorTest extends MgnlTestCase {
 
@@ -191,6 +191,9 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
         }
     }
 
+    /**
+     * This test action class is public so that componentProvider can resolve it when running tests.
+     */
     public static class ActionThatCompletesNormally implements Action {
 
         public static boolean executed = false;
@@ -201,6 +204,9 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
         }
     }
 
+    /**
+     * This test action class is public so that componentProvider can resolve it when running tests.
+     */
     public static class ActionThatThrowsRuntimeException implements Action {
         @Override
         public void execute() throws ActionExecutionException {
@@ -209,6 +215,9 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
     }
 
+    /**
+     * This test action class is public so that componentProvider can resolve it when running tests.
+     */
     public static class ActionThatThrowsActionExecutionException implements Action {
         @Override
         public void execute() throws ActionExecutionException {

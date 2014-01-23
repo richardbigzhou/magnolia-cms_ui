@@ -34,14 +34,15 @@
 package info.magnolia.ui.vaadin.gwt.client.widget.controlbar;
 
 import info.magnolia.ui.vaadin.gwt.client.editor.dom.MgnlArea;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.eventmanager.ControlBarEventHandler;
+import info.magnolia.ui.vaadin.gwt.client.widget.controlbar.eventmanager.ControlBarEventManager;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndEvent;
-import com.googlecode.mgwt.dom.client.event.touch.TouchEndHandler;
-import com.googlecode.mgwt.ui.client.widget.touch.TouchDelegate;
 
 /**
  * A Widget for adding components to area. Marks where a newly created component will be injected.
@@ -96,6 +97,8 @@ public class ComponentPlaceHolder extends FlowPanel {
 
         private final MgnlArea listener;
 
+        private ControlBarEventManager impl = GWT.create(ControlBarEventManager.class);
+
         public PlaceHolderBar(MgnlArea area) {
             super(area);
             this.listener = area;
@@ -117,15 +120,12 @@ public class ComponentPlaceHolder extends FlowPanel {
                 final Label add = new Label();
                 add.setStyleName(ICON_CLASS_NAME);
                 add.addStyleName(ADD_CLASS_NAME);
-
-                TouchDelegate td = new TouchDelegate(add);
-                td.addTouchEndHandler(new TouchEndHandler() {
+                impl.addClickOrTouchHandler(this, new ControlBarEventHandler() {
                     @Override
-                    public void onTouchEnd(TouchEndEvent touchEndEvent) {
+                    public void handle(NativeEvent event) {
                         listener.createNewComponent();
                     }
                 });
-
                 addButton(add);
             }
         }

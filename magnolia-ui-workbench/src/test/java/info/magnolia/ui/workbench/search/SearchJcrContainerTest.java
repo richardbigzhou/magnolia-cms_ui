@@ -52,6 +52,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Tests for the {@link SearchJcrContainer}.
+ */
 public class SearchJcrContainerTest extends RepositoryTestCase {
 
     private SearchJcrContainer jcrContainer;
@@ -180,7 +183,7 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testFullTextExpressionIsLowercasedSoThatInsensitiveCaseSearchCanWork() throws Exception {
+    public void testFullTextExpressionIsLowercasedSoThatInsensitiveCaseSearchOnNodeNamesCanWork() throws Exception {
         // GIVEN
         jcrContainer.setFullTextExpression("FOOBaRbaZ");
 
@@ -188,7 +191,19 @@ public class SearchJcrContainerTest extends RepositoryTestCase {
         String stmt = jcrContainer.getQueryWhereClause();
 
         // THEN
-        assertContains("lower(localname()) LIKE 'foobarbaz%' or t.['foobarbaz'] IS NOT NULL", stmt);
+        assertContains("lower(localname()) LIKE 'foobarbaz%'", stmt);
+    }
+
+    @Test
+    public void testFullTextExpressionIsNotLowercasedOnPropertNames() throws Exception {
+        // GIVEN
+        jcrContainer.setFullTextExpression("FOOBaRbaZ");
+
+        // WHEN
+        String stmt = jcrContainer.getQueryWhereClause();
+
+        // THEN
+        assertContains("t.['FOOBaRbaZ'] IS NOT NULL or contains(t.*, 'FOOBaRbaZ')", stmt);
     }
 
     @Test

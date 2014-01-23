@@ -80,6 +80,12 @@
       <implementation>info.magnolia.ui.dialog.registry.DialogDefinitionRegistry</implementation>
     </component>
 
+    <!-- Migration -->
+    <component>
+      <type>info.magnolia.ui.dialog.setup.migration.ControlMigratorsRegistry</type>
+      <implementation>info.magnolia.ui.dialog.setup.migration.ControlMigratorsRegistry</implementation>
+    </component>
+
     <!-- Ui Api -->
     <type-mapping>
       <type>info.magnolia.ui.api.action.ActionDefinition</type>

@@ -68,10 +68,13 @@ public class ShowVersionsAction<D extends ShowVersionsActionDefinition> extends 
 
     private final AppContext appContext;
 
+    protected String dialogID;
+
     @Inject
     public ShowVersionsAction(D definition, AppContext appContext, LocationController locationController, UiContext uiContext, FormDialogPresenter formDialogPresenter, AbstractJcrNodeAdapter nodeAdapter, SimpleTranslator i18n) {
         super(definition, locationController, uiContext, formDialogPresenter, nodeAdapter, i18n);
         this.appContext = appContext;
+        this.dialogID = "ui-contentapp:code:ShowVersionsAction.selectVersion";
     }
 
     @Override
@@ -100,7 +103,7 @@ public class ShowVersionsAction<D extends ShowVersionsActionDefinition> extends 
         }
 
         ConfiguredFormDialogDefinition dialog = new ConfiguredFormDialogDefinition();
-        dialog.setId("ui-contentapp:code:ShowVersionsAction.selectVersion");
+        dialog.setId(dialogID);
         dialog.setForm(form);
 
         CallbackDialogActionDefinition callbackAction = new CallbackDialogActionDefinition();

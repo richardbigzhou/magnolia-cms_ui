@@ -183,9 +183,9 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
             Message error = new Message(MessageType.ERROR, exceptionStatement, e.getMessage());
             log.error(exceptionStatement, e);
             if (uiContext instanceof AppContext) {
-                ((AppContext) uiContext).broadcastMessage(error);
+                ((AppContext) uiContext).sendLocalMessage(error);
             } else if (uiContext instanceof SubAppContext) {
-                ((SubAppContext) uiContext).getAppContext().broadcastMessage(error);
+                ((SubAppContext) uiContext).getAppContext().sendLocalMessage(error);
             }
 
         }

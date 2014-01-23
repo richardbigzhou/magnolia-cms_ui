@@ -31,21 +31,40 @@
  * intact.
  *
  */
-package info.magnolia.ui.admincentral.setup;
+package info.magnolia.ui.vaadin.gwt.client.widget.controlbar.eventmanager;
 
-import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.module.delta.CreateNodeTask;
-import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
-import info.magnolia.module.delta.Task;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * If the activation module is installed, adds activation app to dev app group.
+ * Common interface for adding and removing event handlers in page editor. Exists for IE8 support.
+ * @see ControlBarEventManagerGeneric
+ * @see ControlBarEventManagerIE8
  */
-public class AddActivationToDevAppGroupTask extends IsModuleInstalledOrRegistered {
+public interface ControlBarEventManager {
 
-    private static Task createActivationConfigApp = new CreateNodeTask("", "", "config", "/modules/ui-admincentral/config/appLauncherLayout/groups/dev/apps", "activation", NodeTypes.ContentNode.NAME);
+    void unregisterMoveHandlers(Widget widget);
 
-    public AddActivationToDevAppGroupTask() {
-        super("Add activation app to dev app group", "If the activation module is installed, adds the activation app to the dev app group.", "activation", createActivationConfigApp);
-    }
+    void unregisterDnDHandlers(Widget widget);
+
+    void addClickOrTouchHandler(Widget target, ControlBarEventHandler listener);
+
+    void addMouseDownHandler(Widget target, ControlBarEventHandler listener);
+
+    void addMouseOverHandler(Widget target, ControlBarEventHandler listener);
+
+    void addMouseOutHandler(Widget target, ControlBarEventHandler listener);
+
+    void addDragStartHandler(Widget target, ControlBarEventHandler listener);
+
+    void addDragEndHandler(Widget target, ControlBarEventHandler listener);
+
+    void addDragOverHandler(Widget target, ControlBarEventHandler listener);
+
+    void addDragLeaveHandler(Widget target, ControlBarEventHandler listener);
+
+    void addDropHandler(Widget target, ControlBarEventHandler listener);
+
+    void addMouseMoveHandler(Widget target, ControlBarEventHandler listener);
+
+    void removeMouseMoveHandler(Widget widget);
 }

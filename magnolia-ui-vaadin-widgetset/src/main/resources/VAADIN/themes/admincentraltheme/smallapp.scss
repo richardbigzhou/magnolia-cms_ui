@@ -49,6 +49,28 @@
   .smallapp-section {
     border-bottom: 5px solid $c15 !important;
   }
+
+  .v-csslayout.smallapp-section {
+    .section-title {
+      margin-top: 12px;
+      margin-left: 152px;
+    }
+
+    .v-shell-tabsheet {
+      .single-tab {
+        display: none;
+
+        & + .v-shell-tabsheet-scroller .v-shell-tab > .v-form-layout {
+          margin-top: 0;
+        }
+      }
+
+      .v-form-field-label {
+        color: $c11;
+      }
+    }
+  }
+
 }
 
 @mixin smallappactions {

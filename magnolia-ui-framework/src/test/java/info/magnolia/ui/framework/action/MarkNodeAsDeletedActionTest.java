@@ -34,18 +34,21 @@
 package info.magnolia.ui.framework.action;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.cms.exchange.ActivationManager;
 import info.magnolia.cms.exchange.Subscriber;
 import info.magnolia.cms.i18n.DefaultMessagesManager;
 import info.magnolia.cms.i18n.MessagesManager;
+import info.magnolia.cms.security.AccessManager;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.cms.util.ContentUtil;
 import info.magnolia.commands.CommandsManager;
 import info.magnolia.commands.impl.DeleteCommand;
 import info.magnolia.commands.impl.MarkNodeAsDeletedCommand;
+import info.magnolia.context.Context;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.ContextLocaleProvider;
@@ -93,10 +96,20 @@ public class MarkNodeAsDeletedActionTest extends RepositoryTestCase {
     private Node referenceNode;
     private EventBus eventBus;
 
+    private Context systemContext;
+    private AccessManager ami;
+
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        systemContext = spy(MgnlContext.getInstance());
+        MgnlContext.setInstance(systemContext);
+
+        ami = mock(AccessManager.class);
+        doReturn(true).when(ami).isGranted(anyString(), anyLong());
+        doReturn(ami).when(systemContext).getAccessManager(anyString());
+
         ComponentsTestUtil.setImplementation(AccessDefinition.class, ConfiguredAccessDefinition.class);
         ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
 

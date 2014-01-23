@@ -42,6 +42,7 @@ import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.I18nizer;
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.PropertyUtil;
@@ -215,6 +216,35 @@ public class BrowserSubAppTest extends MgnlTestCase {
         // THEN
         assertNotNull(subApp.getCurrentLocation().getViewType());
         assertEquals(defaultViewType, subApp.getCurrentLocation().getViewType());
+    }
+
+    @Test
+    public void testLocationChangedRestoresBrowserWithNewLocation() {
+        // GIVEN
+        BrowserSubApp subappSpy = spy(subApp);
+        when(browserPresenter.hasViewType(anyString())).thenReturn(true);
+
+        AppContext mockAppContext = mock(AppContext.class);
+        doAnswer(new Answer<Void>() {
+
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                subAppContext.setLocation((Location) args[1]);
+                return null;
+            }
+        }).when(mockAppContext).updateSubAppLocation(any(SubAppContext.class), any(Location.class));
+        subAppContext.setAppContext(mockAppContext);
+
+        subAppContext.setLocation(new DefaultLocation("app", "someApp", "someContentApp", "/foo/bar:someView"));
+
+        DefaultLocation newLocation = new DefaultLocation("app", "someApp", "someContentApp", "/foo/baz/qux/node:someView");
+
+        // WHEN
+        subappSpy.locationChanged(newLocation);
+
+        // THEN
+        verify(subappSpy).restoreBrowser(BrowserLocation.wrap(newLocation));
     }
 
     @Test
@@ -399,7 +429,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
     private static class TestActionbarPresenter extends ActionbarPresenter {
         public TestActionbarPresenter() {
-            super();
+            super(mock(SimpleTranslator.class));
         }
 
         public Set<String> visibleSections;

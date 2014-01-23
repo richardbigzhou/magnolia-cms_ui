@@ -40,8 +40,8 @@ import info.magnolia.event.SystemEventBus;
 import info.magnolia.i18nsystem.I18nizer;
 import info.magnolia.registry.RegistrationException;
 import info.magnolia.ui.api.app.AppDescriptor;
-import info.magnolia.ui.api.app.registry.AppRegistryEvent;
 import info.magnolia.ui.api.app.registry.AppDescriptorRegistry;
+import info.magnolia.ui.api.app.registry.AppRegistryEvent;
 import info.magnolia.ui.api.app.registry.AppRegistryEventHandler;
 
 import java.util.ArrayList;
@@ -129,10 +129,12 @@ public class AppLauncherLayoutManagerImpl implements AppLauncherLayoutManager {
                 try {
                     appDescriptor = i18nizer.decorate(appDescriptorRegistry.getAppDescriptor(entryDefinition.getName()));
                 } catch (RegistrationException e) {
+                    logger.warn(e.getMessage());
                     continue;
                 }
 
                 if (StringUtils.isBlank(appDescriptor.getLabel()) || StringUtils.isBlank(appDescriptor.getIcon())) {
+                    logger.warn("Label and/or icon for app [{}] are blank. App won't be displayed in the app launcher. Please either define them in the configuration tree or in the app's i18n properties file.", entryDefinition.getName());
                     continue;
                 }
 

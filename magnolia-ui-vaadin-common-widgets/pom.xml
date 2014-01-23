@@ -4,7 +4,7 @@
   <parent>
     <groupId>info.magnolia.ui</groupId>
     <artifactId>magnolia-ui-project</artifactId>
-    <version>5.2.1-SNAPSHOT</version>
+    <version>5.2.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>magnolia-ui-vaadin-common-widgets</artifactId>
@@ -199,7 +199,14 @@
                   <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
                 </artifactItem>
               </artifactItems>
-              <includes>**\/*VScrollTable.java, **\/*VTreeTable.java, **\/*TreeTableConnector.java, **\/*TableConnector.java, **\/DragAndDropWrapper.java</includes>
+              <includes>
+                com/vaadin/client/ui/VScrollTable.java,
+                com/vaadin/client/ui/VTreeTable.java,
+                com/vaadin/client/ui/table/TableConnector.java,
+                com/vaadin/client/ui/treetable/TreeTableConnector.java,
+                com/vaadin/client/ui/upload/UploadConnector.java,
+                com/vaadin/ui/DragAndDropWrapper.java
+              </includes>
             </configuration>
           </execution>
         </executions>
@@ -209,11 +216,12 @@
         <artifactId>maven-patch-plugin</artifactId>
           <configuration>
           <patches>
-            <patch>draganddropwrapper.txt</patch>
             <patch>vscrolltable.txt</patch>
             <patch>vtreetable.txt</patch>
-            <patch>treetableconnector.txt</patch>
             <patch>scrolltableconnector.txt</patch>
+            <patch>treetableconnector.txt</patch>
+            <patch>uploadconnector.txt</patch>
+            <patch>draganddropwrapper.txt</patch>
           </patches>
           <strip>4</strip>
         </configuration>
@@ -262,7 +270,11 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
-          <excludes>**/*Patched.java, **/org/vaadin/openesignforms/**/*.java, **/org/vaadin/peter/contextmenu/**, **/DragAndDropWrapper.java</excludes>
+          <excludes>
+            com/vaadin/ui/**,
+            com/vaadin/client/ui/**,
+            org/vaadin/peter/contextmenu/**
+          </excludes>
         </configuration>
       </plugin>
       <plugin>

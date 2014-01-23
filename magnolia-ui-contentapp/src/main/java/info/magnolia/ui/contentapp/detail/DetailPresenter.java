@@ -222,7 +222,7 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
         } catch (ActionExecutionException e) {
             log.error("An error occurred while executing an action.", e);
             Message error = new Message(MessageType.ERROR, i18n.translate("ui-contentapp.error.action.execution"), e.getMessage());
-            subAppContext.getAppContext().broadcastMessage(error);
+            subAppContext.getAppContext().sendLocalMessage(error);
         }
     }
 }

@@ -179,7 +179,7 @@
 }
 
 .favorites-form-content .v-formlayout-captioncell {
-  padding-left: 70px;
+  padding-left: 20px;
 }
 
 .favorites-tabs .v-tabsheet-tabitem {
@@ -204,13 +204,23 @@
 .favorites-tabs .v-tabsheet-tabitem-selected .v-caption {
   color: black;
 }
-.favorites-form-content input[type="text"] {
-  width: 600px !important;
+.favorites-form-content input[type="text"], .favorites-form-content .buttons {
+  width: 650px !important;
+ }
+
+.favorites-form-content input[type="text"].v-filterselect-input {
+  width: 640px !important;
  }
 
 .favorites-form-content .v-button-commit {
-   margin-left: 567px;
+   float:right;
  }
+
+.favorites-form-content .v-formlayout-captioncell .v-caption {
+  width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 .favorites-form-content span.v-required-field-indicator {
    color: black;
