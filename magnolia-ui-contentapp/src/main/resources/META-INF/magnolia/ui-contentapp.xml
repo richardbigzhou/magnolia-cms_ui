@@ -34,18 +34,19 @@
   </components>
 
 
-    <components>
-        <id>app</id>
-        <component>
-            <type>info.magnolia.ui.dialog.choosedialog.ChooseDialogView</type>
-            <implementation>info.magnolia.ui.dialog.choosedialog.ChooseDialogViewImpl</implementation>
-        </component>
+  <components>
+    <id>choosedialog</id>
+    <component>
+      <type>info.magnolia.ui.dialog.choosedialog.ChooseDialogView</type>
+      <implementation>info.magnolia.ui.dialog.choosedialog.ChooseDialogViewImpl</implementation>
+    </component>
+    <component>
+      <type>info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.choosedialog.ContentAppChooseDialogPresenter</implementation>
+    </component>
+  </components>
 
-        <component>
-            <type>info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter</type>
-            <implementation>info.magnolia.ui.contentapp.choosedialog.ContentAppChooseDialogPresenter</implementation>
-        </component>
-    </components>
+
 
   <components>
     <id>subapp</id>
