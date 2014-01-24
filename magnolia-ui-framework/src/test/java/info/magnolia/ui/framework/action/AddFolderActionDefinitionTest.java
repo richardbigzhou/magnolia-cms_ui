@@ -116,10 +116,6 @@ public class AddFolderActionDefinitionTest extends MgnlTestCase {
         assertEquals(nodeCount + 1, node.getNodes().getSize());
         Node newNode = node.getNode(AbstractRepositoryAction.DEFAULT_NEW_ITEM_NAME);
         assertEquals(NodeTypes.Folder.NAME, newNode.getPrimaryNodeType().getName());
-        assertTrue(newNode.hasProperty(NodeTypes.Created.CREATED));
-        assertTrue(newNode.hasProperty(NodeTypes.Created.CREATED_BY));
-        assertTrue(newNode.hasProperty(NodeTypes.LastModified.LAST_MODIFIED));
-        assertTrue(newNode.hasProperty(NodeTypes.LastModified.LAST_MODIFIED_BY));
         assertFalse(eventBus.isEmpty());
         assertTrue(((ContentChangedEvent) eventBus.getEvent()).getItemId().equals(JcrItemUtil.getItemId(node)));
     }
