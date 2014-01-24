@@ -187,6 +187,9 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new PartialBootstrapTask("Add confirmDeleteRole action into roles subApp", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/confirmDeleteRole"))
                 .addTask(new NodeExistsDelegateTask("Reconfigure actionbar of roles subApp to use confirmDeleteRole action", "/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items/deleteRole",
                         new RenameNodeTask("Reconfigure actionbar of roles subApp to use confirmDeleteRole action", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items", "deleteRole", "confirmDeleteRole", false)))
+                .addTask(new RemovePropertyTask("Remove implementation class property from delete folder action of roles sub-app", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/deleteFolder/", "implementationClass"))
+                .addTask(new RemovePropertyTask("Remove implementation class property from delete folder action of groups sub-app", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actions/deleteFolder/", "implementationClass"))
+                .addTask(new AddDuplicateAndMoveActionsToSecurityAppTask())
         );
     }
 
