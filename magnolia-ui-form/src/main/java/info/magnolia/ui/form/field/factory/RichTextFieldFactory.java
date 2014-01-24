@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -110,8 +110,8 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
             public void attach() {
                 super.attach();
                 WebBrowser browser = getSession().getBrowser();
-                if (browser.isTouchDevice()) {
-                    // MGNLUI-1528: Workaround.
+                if (browser.isIOS() || browser.isAndroid()) {
+                    // MGNLUI-1582: Workaround disabling non-operational ckeditor on the iPad or on android devices.
                     richTextEditor.setEnabled(false);
                     richTextEditor.setReadOnly(true);
                     richTextEditor.addStyleName("richtextfield-disabled");
