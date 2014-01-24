@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -46,6 +46,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
+import javax.jcr.Binary;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -100,10 +101,11 @@ public class BasicFileItemWrapper implements FileItemWrapper {
             log.warn("Item {} is not a JcrItemAdapter. Wrapper will not be initialized", jcrItem);
             return;
         }
-        if (item instanceof JcrNewNodeAdapter) {
-            log.debug("BaseFileWrapper will be empty as the related Item is a new Item");
-            initJcrItemProperty(item);
-        } else {
+
+        // call init for both new nodes and old ones so that potentially missing properties are initialized too.
+        initJcrItemProperty(item);
+
+        if (!(item instanceof JcrNewNodeAdapter)) {
             log.debug("BaseFileWrapper will be initialized with on the current Item values");
             populateWrapperFromItem();
         }
@@ -230,15 +232,27 @@ public class BasicFileItemWrapper implements FileItemWrapper {
     }
 
     /**
-     * Initialize a Item Node Adapter with the mandatory File property.
+     * Initializes the JCR node adapter with the mandatory default properties.
      */
     protected void initJcrItemProperty(AbstractJcrNodeAdapter jcrItem) {
-        jcrItem.addItemProperty(JcrConstants.JCR_DATA, DefaultPropertyUtil.newDefaultProperty("Binary", null));
-        jcrItem.addItemProperty(FileProperties.PROPERTY_FILENAME, DefaultPropertyUtil.newDefaultProperty("String", null));
-        jcrItem.addItemProperty(FileProperties.PROPERTY_CONTENTTYPE, DefaultPropertyUtil.newDefaultProperty("String", null));
-        jcrItem.addItemProperty(FileProperties.PROPERTY_LASTMODIFIED, DefaultPropertyUtil.newDefaultProperty("Date", null));
-        jcrItem.addItemProperty(FileProperties.PROPERTY_SIZE, DefaultPropertyUtil.newDefaultProperty("Long", null));
-        jcrItem.addItemProperty(FileProperties.PROPERTY_EXTENSION, DefaultPropertyUtil.newDefaultProperty("String", null));
+        if (jcrItem.getItemProperty(JcrConstants.JCR_DATA) == null) {
+            jcrItem.addItemProperty(JcrConstants.JCR_DATA, DefaultPropertyUtil.newDefaultProperty(Binary.class, null));
+        }
+        if (jcrItem.getItemProperty(FileProperties.PROPERTY_FILENAME) == null) {
+            jcrItem.addItemProperty(FileProperties.PROPERTY_FILENAME, DefaultPropertyUtil.newDefaultProperty(String.class, null));
+        }
+        if (jcrItem.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE) == null) {
+            jcrItem.addItemProperty(FileProperties.PROPERTY_CONTENTTYPE, DefaultPropertyUtil.newDefaultProperty(String.class, null));
+        }
+        if (jcrItem.getItemProperty(FileProperties.PROPERTY_LASTMODIFIED) == null) {
+            jcrItem.addItemProperty(FileProperties.PROPERTY_LASTMODIFIED, DefaultPropertyUtil.newDefaultProperty(Date.class, null));
+        }
+        if (jcrItem.getItemProperty(FileProperties.PROPERTY_SIZE) == null) {
+            jcrItem.addItemProperty(FileProperties.PROPERTY_SIZE, DefaultPropertyUtil.newDefaultProperty(Long.class, null));
+        }
+        if (jcrItem.getItemProperty(FileProperties.PROPERTY_EXTENSION) == null) {
+            jcrItem.addItemProperty(FileProperties.PROPERTY_EXTENSION, DefaultPropertyUtil.newDefaultProperty(String.class, null));
+        }
     }
 
 

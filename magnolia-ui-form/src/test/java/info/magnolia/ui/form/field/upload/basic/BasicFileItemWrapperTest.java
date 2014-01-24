@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -308,5 +308,33 @@ public class BasicFileItemWrapperTest {
         outputStream.close();
         assertEquals(uploadFileMe.length(), tmpFile.length());
         assertEquals("image/jpeg", String.valueOf(jcrNewItem.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue()));
+    }
+
+    @Test
+    public void testPopulateFromReceiverWithMissingProperty() throws Exception {
+        // GIVEN
+        Node photo = session.getRootNode().addNode("photo", "nt:resource");
+        photo.setProperty("fileName", "me.jpg");
+        photo.setProperty("size", uploadFileMe.length());
+        photo.setProperty("extension", "jpg");
+        // Voluntarily missing jcr:mimeType property
+        photo.setProperty("jcr:lastModified", Calendar.getInstance());
+        photo.setProperty("jcr:data", ValueFactoryImpl.getInstance().createBinary(new FileInputStream(uploadFileMe)));
+
+        JcrNodeAdapter item = new JcrNodeAdapter(photo);
+        item.setParent(new JcrNodeAdapter(session.getRootNode()));
+        basicFileItemWrapper = new BasicFileItemWrapper(item, directory);
+
+        UploadReceiver receiver = new UploadReceiver(directory, i18n);
+        receiver.receiveUpload("you.jpg", "image/jpeg");
+        receiver.setValue(uploadFileYou);
+
+        // WHEN
+        basicFileItemWrapper.populateFromReceiver(receiver);
+
+        // THEN
+        // 1. No exception
+        // 2. missing property was successfully added
+        assertEquals("image/jpeg", String.valueOf(item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue()));
     }
 }
