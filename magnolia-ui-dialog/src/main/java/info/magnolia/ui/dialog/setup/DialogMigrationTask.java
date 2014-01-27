@@ -76,8 +76,8 @@ public class DialogMigrationTask extends AbstractTask {
 
     private static final Logger log = LoggerFactory.getLogger(DialogMigrationTask.class);
     private final String moduleName;
-    private final String propertyNameExtends = "extends";
-    private final String propertyNameReference = "reference";
+    private static final String propertyNameExtends = "extends";
+    private static final String propertyNameReference = "reference";
     private final HashSet<Property> extendsAndReferenceProperty = new HashSet<Property>();
     private ControlMigratorsRegistry controlMigratorsRegistry;
 
