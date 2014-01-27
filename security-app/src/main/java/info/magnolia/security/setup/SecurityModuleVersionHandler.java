@@ -44,7 +44,7 @@ import info.magnolia.module.delta.CreateNodeTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.NewPropertyTask;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
-import info.magnolia.module.delta.OrderNodeTo1stPosTask;
+import info.magnolia.module.delta.OrderNodeToFirstPositionTask;
 import info.magnolia.module.delta.PartialBootstrapTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RemovePropertyTask;
@@ -165,7 +165,7 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
     @Override
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
         List<Task> tasks = new ArrayList<Task>();
-        Task orderNodeTo1stPosTask = new OrderNodeTo1stPosTask("Security app ordering", "Moves the security app before the configuration app", RepositoryConstants.CONFIG, "modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps/security");
+        Task orderNodeTo1stPosTask = new OrderNodeToFirstPositionTask("Security app ordering", "Moves the security app before the configuration app", RepositoryConstants.CONFIG, "modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps/security");
         NodeExistsDelegateTask delegateTask = new NodeExistsDelegateTask("Security app ordering delegate task", "Moves the security app before the configuration app if the node exists", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps/security", orderNodeTo1stPosTask);
         tasks.add(delegateTask);
         return tasks;
