@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.contentapp.browser.action;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.TextField;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
@@ -55,18 +55,22 @@ import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import org.junit.Before;
-import org.junit.Test;
 
 import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.Session;
 import javax.jcr.version.Version;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.Before;
+import org.junit.Test;
 
+import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.ui.TextField;
+
+/**
+ * Tests for the {@link RestoreVersionAction}.
+ */
 public class RestoreVersionActionTest extends RepositoryTestCase {
 
     private final String CREATED_VERSION_BEFORE_RESTORE = "Created automatically before performing restore.";
