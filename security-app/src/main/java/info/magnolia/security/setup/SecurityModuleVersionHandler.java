@@ -52,6 +52,7 @@ import info.magnolia.module.delta.RemovePropertyTask;
 import info.magnolia.module.delta.SetPropertyTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.security.app.action.DeleteEmptyFolderActionDefinition;
 import info.magnolia.security.app.container.GroupDropConstraint;
 import info.magnolia.security.app.container.RoleDropConstraint;
 import info.magnolia.security.app.container.RoleTreePresenter;
@@ -159,10 +160,12 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/workbench/contentViews/tree", "implementationClass", RoleTreePresenter.class.getName()))
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteUser/availability", "multiple", "true"))
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteFolder/availability", "multiple", "true"))
-                .addTask(new RemovePropertyTask("Remove implementation class property from delete folder action of roles sub-app", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/deleteFolder/", "implementationClass"))
-                .addTask(new RemovePropertyTask("Remove implementation class property from delete folder action of groups sub-app", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actions/deleteFolder/", "implementationClass"))
                 .addTask(new NodeExistsDelegateTask("Reconfigure deleteUser action", "Change class to info.magnolia.ui.framework.action.DeleteActionDefinition", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteUser",
                                 new CheckAndModifyPropertyValueTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteUser", "class", "info.magnolia.ui.framework.action.DeleteItemActionDefinition", "info.magnolia.ui.framework.action.DeleteActionDefinition")))
+                .addTask(new RemovePropertyTask("Remove implementation class property from delete folder action of roles sub-app", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/deleteFolder/", "implementationClass"))
+                .addTask(new RemovePropertyTask("Remove implementation class property from delete folder action of groups sub-app", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actions/deleteFolder/", "implementationClass"))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actions/deleteFolder/", "class", DeleteEmptyFolderActionDefinition.class.getName()))
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/deleteFolder/", "class", DeleteEmptyFolderActionDefinition.class.getName()))
         );
     }
 

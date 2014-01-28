@@ -45,6 +45,7 @@ import info.magnolia.module.ModuleVersionHandlerTestCase;
 import info.magnolia.module.model.Version;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.security.app.action.DeleteEmptyFolderAction;
+import info.magnolia.security.app.action.DeleteEmptyFolderActionDefinition;
 import info.magnolia.security.app.container.RoleTreePresenter;
 import info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldDefinition;
 import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
@@ -360,6 +361,8 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         // THEN
         assertFalse(session.propertyExists("/modules/security-app/apps/security/subApps/roles/actions/deleteFolder/implementationClass"));
         assertFalse(session.propertyExists("/modules/security-app/apps/security/subApps/groups/actions/deleteFolder/implementationClass"));
-    }
 
+        assertEquals(session.getProperty("/modules/security-app/apps/security/subApps/roles/actions/deleteFolder/class").getString(), DeleteEmptyFolderActionDefinition.class.getName());
+        assertEquals(session.getProperty("/modules/security-app/apps/security/subApps/groups/actions/deleteFolder/class").getString(), DeleteEmptyFolderActionDefinition.class.getName());
+    }
 }
