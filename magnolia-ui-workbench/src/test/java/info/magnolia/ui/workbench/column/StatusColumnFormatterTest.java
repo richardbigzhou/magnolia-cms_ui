@@ -67,7 +67,7 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
     private Node node;
     private String itemId;
     private Session session;
-    private StatusColumnDefinition statusColumnDefinition = new StatusColumnDefinition();
+    private final StatusColumnDefinition statusColumnDefinition = new StatusColumnDefinition();
 
     @Override
     @Before
@@ -115,6 +115,7 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         table = new Table();
         table.setContainerDataSource(hierarchicalJcrContainer);
 
+        statusColumnDefinition.setPermissions(false);
     }
 
     @Test
@@ -161,6 +162,21 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
         assertNotNull(res);
         // YELLOW, was activated and then modified
         assertEquals("<span class=\"icon-shape-circle activation-status color-yellow\"></span>", res.toString());
+    }
+
+    @Test
+    public void testPermissionStatus() throws RepositoryException {
+        // GIVEN
+        statusColumnDefinition.setPermissions(true);
+        statusColumnDefinition.setActivation(false);
+        StatusColumnFormatter statusColumnFormatter = new StatusColumnFormatter(statusColumnDefinition);
+
+        // WHEN
+        Object res = statusColumnFormatter.generateCell(table, itemId, null);
+
+        // THEN
+        assertNotNull(res);
+        assertEquals("<span class=\"icon-edit\"></span>", res.toString());
     }
 
 }

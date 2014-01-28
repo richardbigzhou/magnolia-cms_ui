@@ -163,6 +163,35 @@ public class SelectFieldFactoryTest extends AbstractFieldFactoryTestCase<SelectF
     }
 
     @Test
+    public void selectFieldTest_RemoteOptionsFilterNodeType() throws Exception {
+        // GIVEN
+        // Create a Options node.
+        Node options = session.getRootNode().addNode("options");
+        Node optionEn = options.addNode("en");
+        optionEn.setProperty("value", "en");
+        optionEn.setProperty("label", "English");
+        Node optionFr = options.addNode("fr", "nt:hierarchyNode");
+        optionFr.setProperty("value", "fr");
+        optionFr.setProperty("label", "Francais");
+        // Set remote Options in configuration
+        definition.setPath(options.getPath());
+        definition.setRepository(workspaceName);
+        definition.setOptions(new ArrayList<SelectFieldOptionDefinition>());
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
+        dialogSelect = new SelectFieldFactory<SelectFieldDefinition>(definition, baseItem);
+        dialogSelect.setI18nContentSupport(i18nContentSupport);
+        dialogSelect.setComponentProvider(new MockComponentProvider());
+
+        // WHEN
+        Field field = dialogSelect.createField();
+
+        // THEN
+        Collection<?> items = ((ComboBox) field).getItemIds();
+        assertEquals("Only get one option as fr option node is not of 'mgnl' type", 1, items.size());
+        assertEquals("en", field.getValue().toString());
+    }
+
+    @Test
     public void selectFieldTest_RemoteOptions_OtherValueANdLabelName() throws Exception {
         // GIVEN
         // Create a Options node.

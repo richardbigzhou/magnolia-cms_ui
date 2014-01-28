@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -49,6 +49,7 @@ import java.util.Map;
 
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,28 +116,32 @@ public abstract class AbstractMultiItemAction<D extends ActionDefinition> extend
 
         if (failedItems.isEmpty()) {
             String message = getSuccessMessage();
-            if (message != null) {
-                uiContext.openNotification(MessageStyleTypeEnum.INFO, true, getSuccessMessage());
+            if (StringUtils.isNotBlank(message)) {
+                uiContext.openNotification(MessageStyleTypeEnum.INFO, true, message);
             }
         } else {
-            String message = getSuccessMessage();
-            if (message != null) {
-                uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, getErrorNotification());
+            String message = getErrorNotification();
+            if (StringUtils.isNotBlank(message)) {
+                uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, message);
             }
         }
     }
 
     protected String getErrorNotification() {
-        StringBuilder notification = new StringBuilder(getFailureMessage());
-        notification.append("<ul>");
-        for (JcrItemAdapter item : failedItems.keySet()) {
-            Exception ex = failedItems.get(item);
-            notification.append("<li>").append("<b>");
-            notification.append(JcrItemUtil.getItemPath(item.getJcrItem())).append("</b>: ").append(ex.getMessage());
-            notification.append("</li>");
+        String failureMessage = getFailureMessage();
+        if (failureMessage != null) {
+            StringBuilder notification = new StringBuilder(failureMessage);
+            notification.append("<ul>");
+            for (JcrItemAdapter item : failedItems.keySet()) {
+                Exception ex = failedItems.get(item);
+                notification.append("<li>").append("<b>");
+                notification.append(JcrItemUtil.getItemPath(item.getJcrItem())).append("</b>: ").append(ex.getMessage());
+                notification.append("</li>");
+            }
+            notification.append("</ul>");
+            return notification.toString();
         }
-        notification.append("</ul>");
-        return notification.toString();
+        return null;
     }
 
     protected List<JcrItemAdapter> getItems() {

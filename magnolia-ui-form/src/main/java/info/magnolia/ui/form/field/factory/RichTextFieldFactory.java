@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -110,8 +110,8 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
             public void attach() {
                 super.attach();
                 WebBrowser browser = getSession().getBrowser();
-                if (browser.isTouchDevice()) {
-                    // MGNLUI-1528: Workaround.
+                if (browser.isIOS() || browser.isAndroid()) {
+                    // MGNLUI-1582: Workaround disabling non-operational ckeditor on the iPad or on android devices.
                     richTextEditor.setEnabled(false);
                     richTextEditor.setReadOnly(true);
                     richTextEditor.addStyleName("richtextfield-disabled");
@@ -153,12 +153,12 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
 
     protected List<ToolbarGroup> initializeToolbarConfig() {
         List<ToolbarGroup> toolbars = new ArrayList<ToolbarGroup>();
-        toolbars.add(new ToolbarGroup("basictyles", new String[]{"Bold", "Italic", "Underline", "SpecialChar"}));
-        toolbars.add(new ToolbarGroup("paragraph", new String[]{"NumberedList", "BulletedList"}));
-        toolbars.add(new ToolbarGroup("insert", new String[]{"Link", "InternalLink", "DamLink", "Unlink"}));
-        toolbars.add(new ToolbarGroup("clipboard", new String[]{"Cut", "Copy", "Paste", "PasteText", "PasteFromWord"}));
-        toolbars.add(new ToolbarGroup("objects", new String[]{"Table", "NumberedList", "BulletedList"}));
-        toolbars.add(new ToolbarGroup("special", new String[]{"Undo", "Redo"}));
+        toolbars.add(new ToolbarGroup("basictyles", new String[] { "Bold", "Italic", "Underline", "SpecialChar" }));
+        toolbars.add(new ToolbarGroup("paragraph", new String[] { "NumberedList", "BulletedList" }));
+        toolbars.add(new ToolbarGroup("insert", new String[] { "Link", "InternalLink", "DamLink", "Unlink" }));
+        toolbars.add(new ToolbarGroup("clipboard", new String[] { "Cut", "Copy", "Paste", "PasteText", "PasteFromWord" }));
+        toolbars.add(new ToolbarGroup("objects", new String[] { "Table" }));
+        toolbars.add(new ToolbarGroup("special", new String[] { "Undo", "Redo" }));
         return toolbars;
     }
 

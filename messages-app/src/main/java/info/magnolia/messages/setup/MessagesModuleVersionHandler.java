@@ -36,7 +36,7 @@ package info.magnolia.messages.setup;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.DeltaBuilder;
-import info.magnolia.module.delta.OrderNodeTo1stPosTask;
+import info.magnolia.module.delta.OrderNodeToFirstPositionTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.ui.admincentral.setup.ConvertAclToAppPermissionTask;
@@ -57,14 +57,14 @@ public class MessagesModuleVersionHandler extends DefaultModuleVersionHandler {
                         "/.magnolia/pages/messages", "/modules/messages-app/apps/messages ", true)));
 
         register(DeltaBuilder.update("5.2", "")
-                .addTask(new OrderNodeTo1stPosTask("Reorder Messages in DEV", "This reorders the Messages app as first in the Dev group in the applauncher.", RepositoryConstants.CONFIG, "modules/ui-admincentral/config/appLauncherLayout/groups/dev/apps/messages"))
+                .addTask(new OrderNodeToFirstPositionTask("Reorder Messages in DEV", "This reorders the Messages app as first in the Dev group in the applauncher.", RepositoryConstants.CONFIG, "modules/ui-admincentral/config/appLauncherLayout/groups/dev/apps/messages"))
                 );
     }
 
     @Override
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
         List<Task> tasks = new ArrayList<Task>();
-        tasks.add(new OrderNodeTo1stPosTask("Reorder Messages in DEV", "This reorders the Messages app as first in the Dev group in the applauncher.", RepositoryConstants.CONFIG, "modules/ui-admincentral/config/appLauncherLayout/groups/dev/apps/messages"));
+        tasks.add(new OrderNodeToFirstPositionTask("Reorder Messages in DEV", "This reorders the Messages app as first in the Dev group in the applauncher.", RepositoryConstants.CONFIG, "modules/ui-admincentral/config/appLauncherLayout/groups/dev/apps/messages"));
         return tasks;
     }
 

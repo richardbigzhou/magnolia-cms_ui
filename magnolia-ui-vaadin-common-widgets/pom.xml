@@ -45,18 +45,6 @@
     </dependency>
     <dependency>
       <groupId>org.vaadin.addons</groupId>
-      <artifactId>icepush</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.icefaces</groupId>
-      <artifactId>icepush</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.icepush</groupId>
-      <artifactId>icepush-gwt</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.vaadin.addons</groupId>
       <artifactId>aceeditor</artifactId>
     </dependency>
     <dependency>

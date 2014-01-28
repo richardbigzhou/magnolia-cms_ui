@@ -230,9 +230,9 @@ public class DialogMigrationTaskTest extends RepositoryTestCase {
 
         // THEN
         assertTrue(dialogNode.hasNode("generic/master/baseTeaserList/form/tabs/tabTeaser/fields/highlighted"));
-        assertEquals("/modules/standard-templating-kit/dialogs/generic/teasers/highlighted", dialogNode.getNode("generic/master/baseTeaserList/form/tabs/tabTeaser/fields/highlighted").getProperty("extends").getString());
+        assertEquals("Check relative path reference", "/modules/testModule/dialogs/generic/teasers/highlighted", dialogNode.getNode("generic/master/baseTeaserList/form/tabs/tabTeaser/fields/highlighted").getProperty("extends").getString());
         assertTrue(dialogNode.hasNode("generic/master/basePageProperties/form/tabs/tabMetaData"));
-        assertEquals("/modules/standard-templating-kit/dialogs/generic/pages/tabMetaData", dialogNode.getNode("generic/master/basePageProperties/form/tabs/tabMetaData").getProperty("extends").getString());
-
+        assertEquals("/modules/testModule/dialogs/generic/pages/tabMetaData", dialogNode.getNode("generic/master/basePageProperties/form/tabs/tabMetaData").getProperty("extends").getString());
+        assertEquals("Do not change invalid path", "../../../teasers/highlighted", dialogNode.getNode("generic/master/baseTeaserGroup/form/tabs/tabTeaser/fields/highlighted").getProperty("extends").getString());
     }
 }

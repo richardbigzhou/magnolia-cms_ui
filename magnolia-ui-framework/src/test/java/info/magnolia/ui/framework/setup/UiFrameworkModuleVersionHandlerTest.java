@@ -100,10 +100,6 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         framework.addNode("dialogs", NodeTypes.ContentNode.NAME);
 
         ComponentsTestUtil.setImplementation(UnicodeNormalizer.Normalizer.class, "info.magnolia.cms.util.UnicodeNormalizer$NonNormalizer");
-
-        // for 5.2.2 update:
-        this.setupConfigNode("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/utf-8/");
-        this.setupConfigNode("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/windows/");
     }
 
     @Test
@@ -284,6 +280,8 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
     public void testUpdateFrom50() throws ModuleManagementException, RepositoryException {
         // GIVEN
         this.setupConfigNode("/modules/ui-framework/fieldTypes/compositField");
+        this.setupConfigNode("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/utf-8/");
+        this.setupConfigNode("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/windows/");
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0"));
@@ -293,5 +291,16 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         assertTrue(session.nodeExists("/modules/ui-framework/fieldTypes/compositeField"));
         assertTrue(session.propertyExists("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/utf-8/label"));
         assertTrue(session.propertyExists("/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/windows/label"));
+    }
+
+    @Test
+    public void testUpdateFrom504() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.0.4"));
+
+        // THEN
+        assertTrue(session.nodeExists("/modules/ui-framework/dialogs/importZip/"));
     }
 }

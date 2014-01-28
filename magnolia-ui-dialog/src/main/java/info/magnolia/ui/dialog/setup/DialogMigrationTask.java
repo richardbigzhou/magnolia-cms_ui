@@ -33,11 +33,13 @@
  */
 package info.magnolia.ui.dialog.setup;
 
+import info.magnolia.cms.util.QueryUtil;
 import info.magnolia.jcr.predicate.AbstractPredicate;
 import info.magnolia.jcr.predicate.NodeTypePredicate;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.NodeVisitor;
+import info.magnolia.jcr.util.PropertyUtil;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.AbstractTask;
 import info.magnolia.module.delta.TaskExecutionException;
@@ -56,9 +58,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.query.Query;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -72,6 +76,8 @@ public class DialogMigrationTask extends AbstractTask {
 
     private static final Logger log = LoggerFactory.getLogger(DialogMigrationTask.class);
     private final String moduleName;
+    private static final String propertyNameExtends = "extends";
+    private static final String propertyNameReference = "reference";
     private final HashSet<Property> extendsAndReferenceProperty = new HashSet<Property>();
     private ControlMigratorsRegistry controlMigratorsRegistry;
 
@@ -129,6 +135,8 @@ public class DialogMigrationTask extends AbstractTask {
                 return;
             }
             Node dialog = session.getNode(dialogPath);
+            // Convert extends/reference path from relative to absolute.
+            resolveRelativeExtendsPath(dialog);
             NodeUtil.visit(dialog, new NodeVisitor() {
                 @Override
                 public void visit(Node current) throws RepositoryException {
@@ -221,7 +229,7 @@ public class DialogMigrationTask extends AbstractTask {
                 handleTab(dialog);
             } else {
                 // Handle action
-                if (!dialog.hasProperty("controlType") && !dialog.hasProperty("extends") && !dialog.hasProperty("reference")) {
+                if (!dialog.hasProperty("controlType") && !dialog.hasProperty(propertyNameExtends) && !dialog.hasProperty(propertyNameReference)) {
                     handleAction(dialog);
                 }
                 // Handle tab
@@ -299,7 +307,7 @@ public class DialogMigrationTask extends AbstractTask {
      * Handle a Tab.
      */
     private void handleTab(Node tab) throws RepositoryException {
-        if ((tab.hasProperty("controlType") && StringUtils.equals(tab.getProperty("controlType").getString(), "tab")) || (tab.getParent().hasProperty("extends"))) {
+        if ((tab.hasProperty("controlType") && StringUtils.equals(tab.getProperty("controlType").getString(), "tab")) || (tab.getParent().hasProperty(propertyNameExtends))) {
             if (tab.hasProperty("controlType") && StringUtils.equals(tab.getProperty("controlType").getString(), "tab")) {
                 // Remove controlType Property
                 tab.getProperty("controlType").remove();
@@ -353,10 +361,10 @@ public class DialogMigrationTask extends AbstractTask {
     private void handleExtendsAndReference(Node node) throws RepositoryException {
         if (node.hasProperty("extends")) {
             // Handle Field Extends
-            extendsAndReferenceProperty.add(node.getProperty("extends"));
+            extendsAndReferenceProperty.add(node.getProperty(propertyNameExtends));
         } else if (node.hasProperty("reference")) {
             // Handle Field Extends
-            extendsAndReferenceProperty.add(node.getProperty("reference"));
+            extendsAndReferenceProperty.add(node.getProperty(propertyNameReference));
         }
     }
 
@@ -386,6 +394,11 @@ public class DialogMigrationTask extends AbstractTask {
             if (path.equals("override")) {
                 continue;
             }
+            if (!isAbsoulutePath(p, path)) {
+                log.warn("Reference from propertyName '{}' to '{}' is an relative path and could not be linked. The initial value will be keeped", p.getPath(), path);
+                continue;
+            }
+
             if (!p.getSession().nodeExists(path)) {
 
                 String newPath = insertBeforeLastSlashAndTest(p.getSession(), path, "/tabs", "/fields", "/tabs/fields", "/form/tabs");
@@ -408,9 +421,21 @@ public class DialogMigrationTask extends AbstractTask {
                 if (p.getSession().nodeExists(newPath)) {
                     p.setValue(newPath);
                 } else {
-                    log.warn("reference to " + path + " not found");
+                    log.warn("Reference from propertyName '{}' to '{}' not found. The initial value will be keeped", p.getPath(), newPath);
                 }
             }
+        }
+    }
+
+    /**
+     * @return true if the path refers to an absolute path, false otherwise.
+     */
+    private boolean isAbsoulutePath(Property p, String path) {
+        try {
+            p.getSession().nodeExists(path);
+            return true;
+        } catch (RepositoryException e) {
+            return false;
         }
     }
 
@@ -436,6 +461,38 @@ public class DialogMigrationTask extends AbstractTask {
         String beging = reference.substring(0, reference.lastIndexOf("/"));
         String end = reference.substring(reference.lastIndexOf("/"));
         return beging + toInsert + end;
+    }
+
+    /**
+     * Get All nodes defining an extends or reference property.
+     * If the property value refers to a relative path, <br>
+     * - try to resolve this path <br>
+     * - if the equivalent absolute path is found, replace in the property value the relative path by the absolute path.
+     */
+    private void resolveRelativeExtendsPath(Node dialog) {
+        try {
+            final String queryString = "SELECT * FROM [nt:base] AS t WHERE   ISDESCENDANTNODE(t, '" + dialog.getPath() + "') AND (" + propertyNameExtends + " is not null OR " + propertyNameReference + " is not null)";
+            NodeIterator iterator = QueryUtil.search(RepositoryConstants.CONFIG, queryString, Query.JCR_SQL2);
+            while (iterator.hasNext()) {
+                Node node = iterator.nextNode();
+                String propertyValue = PropertyUtil.getString(node, propertyNameExtends);
+                Property property = null;
+
+                if (StringUtils.isNotBlank(propertyValue)) {
+                    property = node.getProperty(propertyNameExtends);
+                } else {
+                    propertyValue = PropertyUtil.getString(node, propertyNameReference);
+                    property = node.getProperty(propertyNameReference);
+                }
+                // Check if it's a relative path
+                if (StringUtils.isNotBlank(propertyValue) && !isAbsoulutePath(property, propertyValue) && node.hasNode(propertyValue)) {
+                    property.setValue(node.getNode(propertyValue).getPath());
+                    log.info("Change propertyValue of '{}' from '{}' to '{}'", property.getPath(), propertyValue, node.getNode(propertyValue).getPath());
+                }
+            }
+        } catch (RepositoryException e) {
+            log.warn("Could not handle extends/reference property for the following definition ", NodeUtil.getNodePathIfPossible(dialog));
+        }
     }
 
 }

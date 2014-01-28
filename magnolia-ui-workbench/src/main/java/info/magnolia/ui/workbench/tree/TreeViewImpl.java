@@ -92,7 +92,6 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         this.treeTable = tree;
     }
 
-
     @Override
     public void setActionManager(Container shortcutActionManager) {
         this.shortcutActionManager = shortcutActionManager;
@@ -138,17 +137,20 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         }
     }
 
-
     @Override
     public void select(List<String> itemIds) {
         String firstItemId = itemIds == null || itemIds.isEmpty() ? null : itemIds.get(0);
+        if (firstItemId == null || treeTable.isSelected(firstItemId)) {
+            return;
+        }
+        treeTable.focus();
         expandTreeToNode(firstItemId, false);
 
         treeTable.setValue(null);
         for (String id : itemIds) {
             treeTable.select(id);
+            treeTable.setCurrentPageFirstItemId(id);
         }
-        // do not #setCurrentPageFirstItemId because AbstractJcrContainer's index resolution is super slow.
     }
 
     @Override

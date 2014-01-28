@@ -198,7 +198,7 @@ public class AdmincentralVaadinServlet extends VaadinServlet {
                 "<div class=\"error-message v-shell-viewport-slot\">" +
                 "<h2>Sorry.</h2>" +
                 "<p>You're trying to use Magnolia 5 on a browser we currently do not support.</p>" +
-                "<p>Please log in using either Firefox, Chrome, Safari or IE9+.<br />" +
+                "<p>Please log in using either Firefox, Chrome, Safari or IE8+.<br />" +
                 "We apologize for any inconvenience caused.</p>");
         output.append("</div></div>");
 

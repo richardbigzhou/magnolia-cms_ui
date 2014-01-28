@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -87,6 +87,9 @@ public class VTemporaryAppGroupBarTile extends FlowPanel {
 
         final Element label = DOM.createSpan();
         label.addClassName("sectionLabel");
+        if (caption != null && !caption.contains("\u00AD")) {
+            label.addClassName("wordwrap");
+        }
         label.setInnerText(caption);
 
         Element notch = DOM.createSpan();

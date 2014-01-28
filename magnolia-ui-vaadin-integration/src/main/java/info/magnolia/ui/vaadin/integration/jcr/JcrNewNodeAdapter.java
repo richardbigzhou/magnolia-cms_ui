@@ -34,7 +34,6 @@
 package info.magnolia.ui.vaadin.integration.jcr;
 
 import info.magnolia.cms.core.Path;
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.api.ModelConstants;
 
 import javax.jcr.Item;
@@ -115,8 +114,6 @@ public class JcrNewNodeAdapter extends JcrNodeAdapter {
         Node node = parent.addNode(getNodeName(), getPrimaryNodeTypeName());
         log.debug("create a new node for parent " + parent.getPath() + " with name " + getNodeName());
 
-        // set mgnl:created & mgnl:createdBy
-        NodeTypes.Created.set(node);
         // Update properties
         updateProperties(node);
 

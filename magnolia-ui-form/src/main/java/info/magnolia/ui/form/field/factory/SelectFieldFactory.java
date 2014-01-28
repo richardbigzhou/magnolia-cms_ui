@@ -50,6 +50,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.commons.predicate.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -265,7 +266,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
         if (parent != null) {
             try {
                 // Get only relevant child nodes
-                Iterable<Node> iterable = NodeUtil.getNodes(parent, NodeUtil.MAGNOLIA_FILTER);
+                Iterable<Node> iterable = NodeUtil.getNodes(parent, createRemoteOptionFilterPredicate());
                 Iterator<Node> iterator = iterable.iterator();
                 // Iterate parent children
                 while (iterator.hasNext()) {
@@ -273,7 +274,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
                     Node child = iterator.next();
                     // Get Label and Value
                     String label = getRemoteOptionsName(child, optionLabelName);
-                    String value = getRemoteOptionsName(child, optionValueName);
+                    String value = getRemoteOptionsValue(child, optionValueName);
                     option.setLabel(getMessage(label));
                     option.setValue(value);
 
@@ -298,10 +299,18 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
     }
 
     /**
+     * @return {@link Predicate} used to filter the remote children option nodes.
+     */
+    protected Predicate createRemoteOptionFilterPredicate() {
+        return NodeUtil.MAGNOLIA_FILTER;
+    }
+
+    /**
      * Get the specific node property. <br>
      * If this property is not defined, return the node name.
+     * Expose this method in order to let subclass define their own implementation.
      */
-    private String getRemoteOptionsName(Node option, String propertyName) throws RepositoryException {
+    protected String getRemoteOptionsName(Node option, String propertyName) throws RepositoryException {
         if (option.hasProperty(propertyName)) {
             return option.getProperty(propertyName).getString();
         } else {
@@ -309,4 +318,12 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
         }
     }
 
+    /**
+     * Get the specific node property. <br>
+     * If this property is not defined, return the node name.
+     * Expose this method in order to let subclass define their own implementation.
+     */
+    protected String getRemoteOptionsValue(Node option, String propertyName) throws RepositoryException {
+        return getRemoteOptionsName(option, propertyName);
+    }
 }

@@ -121,9 +121,9 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         appLauncherLayoutConfigNodeSourceParent = NodeUtil.createPath(session.getRootNode(), appLauncherLayoutConfigNodeSourceParent_path, NodeTypes.ContentNode.NAME);
         appLauncherLayoutConfigNodeTargetParent = NodeUtil.createPath(session.getRootNode(), appLauncherLayoutConfigNodeTargetParent_path, NodeTypes.ContentNode.NAME);
 
+        NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/apps/configuration/subApps/browser/actionbar/sections/folders/groups/addingActions/items", NodeTypes.ContentNode.NAME);
+
         // for 5.2.2 update:
-        this.setupConfigProperty("/modules/ui-admincentral/apps/configuration/", "class", "info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor");
-        this.setupConfigProperty("/modules/ui-admincentral/apps/websiteJcrBrowser/", "class", "someClass");
         this.setupConfigNode("/modules/ui-admincentral/templates/deleted");
         Node command = NodeUtil.createPath(session.getRootNode(), "/modules/ui-admincentral/commands/default/delete/deactivate", NodeTypes.ContentNode.NAME);
         command.setProperty("enabled", true);
@@ -428,7 +428,7 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
     @Test
     public void testUpdateFrom50() throws Exception {
         // GIVEN
-        this.setupConfigProperty("/modules/ui-admincentral/apps/stkSiteApp", "app", "someValue");
+        this.setupConfigNode("/modules/ui-admincentral/apps/stkSiteApp/subApps");
         this.setupConfigProperty("/modules/ui-admincentral/apps/stkSiteApp", "icon", "someIcon");
 
         // WHEN
@@ -442,5 +442,31 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         assertTrue(session.itemExists("/modules/ui-admincentral/templates/deleted/i18nBasename"));
         assertEquals("info.magnolia.module.admininterface.messages", session.getProperty("/modules/ui-admincentral/templates/deleted/i18nBasename").getString());
         assertEquals(PropertyType.STRING, session.getProperty("/modules/ui-admincentral/commands/default/delete/deactivate/enabled").getType());
+    }
+
+    @Test
+    public void testUpdateFrom521AddEmptyItemTypesInToParamsOfActivateAction() throws Exception {
+        // GIVEN
+        this.setupConfigNode("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activate");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.1"));
+
+        // THEN
+        assertTrue(session.itemExists("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activate/params/itemTypes"));
+        assertEquals("", session.getProperty("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activate/params/itemTypes").getString());
+    }
+
+
+    @Test
+    public void testICEPushMimeMappingRemovedIn522() throws Exception {
+        // GIVEN
+        this.setupConfigNode("/server/MIMEMapping/icepush");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.1"));
+
+        //THEN
+        assertFalse("ICEPush MIMEMapping is gone", session.itemExists("/server/MIMEMapping/icepush"));
     }
 }

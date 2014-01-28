@@ -190,10 +190,6 @@ public class AddNodeActionTest extends MgnlTestCase {
         assertTrue(parent.hasNode(nodeName));
         Node newNode = parent.getNode(nodeName);
         assertEquals(nodeType, newNode.getPrimaryNodeType().getName());
-        assertTrue(newNode.hasProperty(NodeTypes.Created.CREATED));
-        assertTrue(newNode.hasProperty(NodeTypes.Created.CREATED_BY));
-        assertTrue(newNode.hasProperty(NodeTypes.LastModified.LAST_MODIFIED));
-        assertTrue(newNode.hasProperty(NodeTypes.LastModified.LAST_MODIFIED_BY));
         assertFalse(eventBus.isEmpty());
         assertTrue(((ContentChangedEvent) eventBus.getEvent()).getItemId().equals(JcrItemUtil.getItemId(parent)));
     }

@@ -34,7 +34,6 @@
 package info.magnolia.ui.framework.action;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
@@ -59,8 +58,7 @@ public class AddNodeAction extends AbstractRepositoryAction<AddNodeActionDefinit
         if (item.getJcrItem().isNode()) {
             Node node = (Node) item.getJcrItem();
             String name = getUniqueNewItemName(node);
-            Node newNode = node.addNode(name, getDefinition().getNodeType());
-            NodeTypes.Created.set(newNode);
+            node.addNode(name, getDefinition().getNodeType());
             // Pass the item which had the node added to it.
             setItemIdOfChangedItem(JcrItemUtil.getItemId(node));
             setItemContentChanged(true);

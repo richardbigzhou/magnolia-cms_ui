@@ -40,11 +40,12 @@ import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
 import info.magnolia.module.delta.ArrayDelegateTask;
 import info.magnolia.module.delta.CheckAndModifyPartOfPropertyValueTask;
+import info.magnolia.module.delta.CheckAndModifyPropertyValueTask;
 import info.magnolia.module.delta.CreateNodeTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.NewPropertyTask;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
-import info.magnolia.module.delta.OrderNodeTo1stPosTask;
+import info.magnolia.module.delta.OrderNodeToFirstPositionTask;
 import info.magnolia.module.delta.PartialBootstrapTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RemovePropertyTask;
@@ -159,13 +160,16 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteUser/availability", "multiple", "true"))
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteFolder/availability", "multiple", "true"))
                 .addTask(new RemovePropertyTask("Remove implementation class property from delete folder action of roles sub-app", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/deleteFolder/", "implementationClass"))
-                .addTask(new RemovePropertyTask("Remove implementation class property from delete folder action of groups sub-app", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actions/deleteFolder/", "implementationClass")));
+                .addTask(new RemovePropertyTask("Remove implementation class property from delete folder action of groups sub-app", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actions/deleteFolder/", "implementationClass"))
+                .addTask(new NodeExistsDelegateTask("Reconfigure deleteUser action", "Change class to info.magnolia.ui.framework.action.DeleteActionDefinition", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteUser",
+                                new CheckAndModifyPropertyValueTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteUser", "class", "info.magnolia.ui.framework.action.DeleteItemActionDefinition", "info.magnolia.ui.framework.action.DeleteActionDefinition")))
+        );
     }
 
     @Override
     protected List<Task> getExtraInstallTasks(InstallContext installContext) {
         List<Task> tasks = new ArrayList<Task>();
-        Task orderNodeTo1stPosTask = new OrderNodeTo1stPosTask("Security app ordering", "Moves the security app before the configuration app", RepositoryConstants.CONFIG, "modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps/security");
+        Task orderNodeTo1stPosTask = new OrderNodeToFirstPositionTask("Security app ordering", "Moves the security app before the configuration app", RepositoryConstants.CONFIG, "modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps/security");
         NodeExistsDelegateTask delegateTask = new NodeExistsDelegateTask("Security app ordering delegate task", "Moves the security app before the configuration app if the node exists", RepositoryConstants.CONFIG, "/modules/ui-admincentral/config/appLauncherLayout/groups/manage/apps/security", orderNodeTo1stPosTask);
         tasks.add(delegateTask);
         return tasks;
