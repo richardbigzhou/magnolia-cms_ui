@@ -354,6 +354,8 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         // GIVEN
         this.setupConfigProperty("/modules/security-app/apps/security/subApps/roles/actions/deleteFolder", "implementationClass", DeleteEmptyFolderAction.class.getName());
         this.setupConfigProperty("/modules/security-app/apps/security/subApps/groups/actions/deleteFolder", "implementationClass", DeleteEmptyFolderAction.class.getName());
+        this.setupConfigProperty("/modules/security-app/apps/security/subApps/roles/actions/deleteFolder", "class", "info.magnolia.ui.framework.action.DeleteItemActionDefinition");
+        this.setupConfigProperty("/modules/security-app/apps/security/subApps/groups/actions/deleteFolder", "class", "info.magnolia.ui.framework.action.DeleteItemActionDefinition");
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.1"));
