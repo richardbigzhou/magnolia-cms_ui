@@ -444,6 +444,19 @@ public class AdmincentralModuleVersionHandlerTest extends ModuleVersionHandlerTe
         assertEquals(PropertyType.STRING, session.getProperty("/modules/ui-admincentral/commands/default/delete/deactivate/enabled").getType());
     }
 
+    @Test
+    public void testUpdateFrom521AddEmptyItemTypesInToParamsOfActivateAction() throws Exception {
+        // GIVEN
+        this.setupConfigNode("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activate");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.1"));
+
+        // THEN
+        assertTrue(session.itemExists("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activate/params/itemTypes"));
+        assertEquals("", session.getProperty("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/activate/params/itemTypes").getString());
+    }
+
 
     @Test
     public void testICEPushMimeMappingRemovedIn522() throws Exception {
