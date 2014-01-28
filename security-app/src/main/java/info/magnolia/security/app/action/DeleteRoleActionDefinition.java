@@ -42,7 +42,6 @@ import info.magnolia.ui.framework.action.DeleteActionDefinition;
 public class DeleteRoleActionDefinition extends DeleteActionDefinition {
 
     public DeleteRoleActionDefinition() {
-        super();
         setImplementationClass(DeleteRoleAction.class);
     }
 }

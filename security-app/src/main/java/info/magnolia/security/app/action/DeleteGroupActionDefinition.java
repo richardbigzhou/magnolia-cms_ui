@@ -41,7 +41,6 @@ import info.magnolia.ui.framework.action.DeleteActionDefinition;
 public class DeleteGroupActionDefinition extends DeleteActionDefinition {
 
     public DeleteGroupActionDefinition() {
-        super();
         setImplementationClass(DeleteGroupAction.class);
     }
 }

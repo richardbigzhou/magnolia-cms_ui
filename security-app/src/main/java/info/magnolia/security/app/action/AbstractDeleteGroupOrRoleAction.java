@@ -67,9 +67,12 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
 
     private static final Logger log = LoggerFactory.getLogger(AbstractDeleteGroupOrRoleAction.class);
 
+    private final JcrItemAdapter item;
+
     @Inject
     public AbstractDeleteGroupOrRoleAction(D definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
         super(definition, item, commandsManager, eventBus, uiContext, i18n);
+        this.item = item;
     }
 
     /**
@@ -78,6 +81,14 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
     @Deprecated
     public AbstractDeleteGroupOrRoleAction(D definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
        this(definition, item, Components.getComponent(CommandsManager.class), eventBus, uiContext, i18n);
+    }
+
+    /**
+     * @deprecated since 5.2.2 instead of use {@link #getCurrentItem()}
+     */
+    @Deprecated
+    public JcrItemAdapter getItem() {
+        return this.item;
     }
 
     /**
@@ -99,6 +110,14 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefi
      * Gets a collection of group or role names (according to where it is implemented) assigned to the group.
      */
     protected abstract Collection<String> getGroupsOrRoles(Group group);
+
+    /**
+     * @deprecated since 5.2.2 instead of use {@link #onPreExecute()}
+     */
+    @Deprecated
+    protected void executeAfterConfirmation() {
+        log.warn("This method was deprecated. Use #onPreExecute() method instead.");
+    }
 
     @Override
     protected void onPreExecute() throws Exception {

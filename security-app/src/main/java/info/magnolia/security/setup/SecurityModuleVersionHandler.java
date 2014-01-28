@@ -58,6 +58,7 @@ import info.magnolia.security.app.container.RoleTreePresenter;
 import info.magnolia.security.app.dialog.field.ConditionalReadOnlyTextFieldDefinition;
 import info.magnolia.security.app.dialog.field.SystemLanguagesFieldDefinition;
 import info.magnolia.ui.admincentral.setup.ConvertAclToAppPermissionTask;
+import info.magnolia.ui.framework.action.DeleteActionDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -161,8 +162,10 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteFolder/availability", "multiple", "true"))
                 .addTask(new RemovePropertyTask("Remove implementation class property from delete folder action of roles sub-app", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actions/deleteFolder/", "implementationClass"))
                 .addTask(new RemovePropertyTask("Remove implementation class property from delete folder action of groups sub-app", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actions/deleteFolder/", "implementationClass"))
-                .addTask(new NodeExistsDelegateTask("Reconfigure deleteUser action", "Change class to info.magnolia.ui.framework.action.DeleteActionDefinition", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteUser",
-                                new CheckAndModifyPropertyValueTask("", "", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actions/deleteUser", "class", "info.magnolia.ui.framework.action.DeleteItemActionDefinition", "info.magnolia.ui.framework.action.DeleteActionDefinition")))
+                .addTask(new NodeExistsDelegateTask("Reconfigure deleteUser action", "/modules/security-app/apps/security/subApps/users/actions/deleteUser",
+                        new CheckAndModifyPropertyValueTask("/modules/security-app/apps/security/subApps/users/actions/deleteUser", "class", "info.magnolia.ui.framework.action.DeleteItemActionDefinition", DeleteActionDefinition.class.getName())))
+                .addTask(new NodeExistsDelegateTask("Reconfigure deleteFolder action of user subApp", "/modules/security-app/apps/security/subApps/users/actions/deleteFolder",
+                        new CheckAndModifyPropertyValueTask("/modules/security-app/apps/security/subApps/users/actions/deleteFolder", "class", "info.magnolia.ui.framework.action.DeleteItemActionDefinition", DeleteActionDefinition.class.getName())))
         );
     }
 
