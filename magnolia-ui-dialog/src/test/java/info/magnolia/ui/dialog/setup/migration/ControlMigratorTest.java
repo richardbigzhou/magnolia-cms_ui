@@ -220,6 +220,26 @@ public class ControlMigratorTest {
         assertFalse(controlNode.hasProperty("controlType"));
         assertTrue(controlNode.hasProperty("class"));
         assertEquals(CheckboxFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
+        assertTrue(controlNode.hasProperty("type"));
+        assertEquals("String", controlNode.getProperty("type").getString());
+    }
+
+    @Test
+    public void CheckBoxSwitchControlMigrationTestTypeDefined() throws RepositoryException {
+        // GIVEN
+        controlNode.setProperty("controlType", "checkboxSwitch");
+        controlNode.setProperty("type", "Boolean");
+        ControlMigrator controlMigration = new CheckBoxSwitchControlMigrator();
+
+        // WHEN
+        controlMigration.migrate(controlNode, null);
+
+        // THEN
+        assertFalse(controlNode.hasProperty("controlType"));
+        assertTrue(controlNode.hasProperty("class"));
+        assertEquals(CheckboxFieldDefinition.class.getName(), controlNode.getProperty("class").getString());
+        assertTrue(controlNode.hasProperty("type"));
+        assertEquals("Boolean", controlNode.getProperty("type").getString());
     }
 
 
