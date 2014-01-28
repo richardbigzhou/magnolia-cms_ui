@@ -37,6 +37,7 @@ import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.ui.form.field.upload.FileItemWrapper;
 import info.magnolia.ui.form.field.upload.UploadReceiver;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
@@ -121,7 +122,7 @@ public class BasicFileItemWrapper implements FileItemWrapper {
         fileName = item.getItemProperty(FileProperties.PROPERTY_FILENAME) != null ? (String) item.getItemProperty(FileProperties.PROPERTY_FILENAME).getValue() : "";
         Property<?> data = item.getItemProperty(JcrConstants.JCR_DATA);
         if (data != null) {
-            fileSize = item.getItemProperty(FileProperties.PROPERTY_SIZE) != null ? Long.parseLong(item.getItemProperty(FileProperties.PROPERTY_SIZE).getValue().toString()) : 0;
+            fileSize = item.getItemProperty(FileProperties.PROPERTY_SIZE) != null ? Long.parseLong(String.valueOf(item.getItemProperty(FileProperties.PROPERTY_SIZE).getValue())) : 0;
             mimeType = item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE) != null ? String.valueOf(item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue()) : "";
             extension = item.getItemProperty(FileProperties.PROPERTY_EXTENSION) != null ? String.valueOf(item.getItemProperty(FileProperties.PROPERTY_EXTENSION).getValue()) : "";
             // Create a file based on the Items Binary informations.
@@ -227,7 +228,14 @@ public class BasicFileItemWrapper implements FileItemWrapper {
         item.getItemProperty(FileProperties.PROPERTY_FILENAME).setValue(fileName);
         item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).setValue(mimeType);
         item.getItemProperty(FileProperties.PROPERTY_LASTMODIFIED).setValue(new Date());
-        item.getItemProperty(FileProperties.PROPERTY_SIZE).setValue(fileSize);
+
+        if (!item.getItemProperty(FileProperties.PROPERTY_SIZE).getType().isAssignableFrom(Long.class)) {
+            item.removeItemProperty(FileProperties.PROPERTY_SIZE);
+            item.addItemProperty(FileProperties.PROPERTY_SIZE, new DefaultProperty<Long>(fileSize));
+        } else {
+            item.getItemProperty(FileProperties.PROPERTY_SIZE).setValue(fileSize);
+        }
+
         item.getItemProperty(FileProperties.PROPERTY_EXTENSION).setValue(extension);
     }
 

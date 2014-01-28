@@ -337,4 +337,33 @@ public class BasicFileItemWrapperTest {
         // 2. missing property was successfully added
         assertEquals("image/jpeg", String.valueOf(item.getItemProperty(FileProperties.PROPERTY_CONTENTTYPE).getValue()));
     }
+
+    @Test
+    public void testPopulateFromReceiverWithMistypedProperty() throws Exception {
+        // GIVEN
+        Node photo = session.getRootNode().addNode("photo", "nt:resource");
+        photo.setProperty("fileName", "me.jpg");
+        // Voluntarily set size property with String type
+        photo.setProperty("size", String.valueOf(uploadFileMe.length()));
+        photo.setProperty("extension", "jpg");
+        photo.setProperty("jcr:mimeType", "image/jpeg");
+        photo.setProperty("jcr:lastModified", Calendar.getInstance());
+        photo.setProperty("jcr:data", ValueFactoryImpl.getInstance().createBinary(new FileInputStream(uploadFileMe)));
+
+        JcrNodeAdapter item = new JcrNodeAdapter(photo);
+        item.setParent(new JcrNodeAdapter(session.getRootNode()));
+        basicFileItemWrapper = new BasicFileItemWrapper(item, directory);
+
+        UploadReceiver receiver = new UploadReceiver(directory, i18n);
+        receiver.receiveUpload("you.jpg", "image/jpeg");
+        receiver.setValue(uploadFileYou);
+
+        // WHEN
+        basicFileItemWrapper.populateFromReceiver(receiver);
+
+        // THEN
+        // 1. No conversion exception
+        // 2. mistyped property now has correct type
+        assertEquals(uploadFileYou.length(), item.getItemProperty(FileProperties.PROPERTY_SIZE).getValue());
+    }
 }
