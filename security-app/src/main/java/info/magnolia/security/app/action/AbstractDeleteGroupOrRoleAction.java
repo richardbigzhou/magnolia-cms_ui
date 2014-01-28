@@ -36,14 +36,16 @@ package info.magnolia.security.app.action;
 import info.magnolia.cms.security.Group;
 import info.magnolia.cms.security.Security;
 import info.magnolia.cms.security.User;
+import info.magnolia.commands.CommandsManager;
 import info.magnolia.event.EventBus;
 import info.magnolia.i18nsystem.SimpleTranslator;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.context.UiContext;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
-import info.magnolia.ui.framework.action.DeleteItemAction;
-import info.magnolia.ui.framework.action.DeleteItemActionDefinition;
+import info.magnolia.ui.framework.action.DeleteAction;
+import info.magnolia.ui.framework.action.DeleteActionDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.overlay.MessageStyleTypeEnum;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,33 +61,23 @@ import org.slf4j.LoggerFactory;
 /**
  * Abstract common supertype for {@link DeleteGroupAction} and {@link DeleteRoleAction}.
  *
- * @param <D> the action definition type, must extend the {@link DeleteItemActionDefinition} class.
+ * @param <D> the action definition type, must extend the {@link DeleteActionDefinition} class.
  */
-public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteItemActionDefinition> extends DeleteItemAction {
+public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteActionDefinition> extends DeleteAction {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractDeleteGroupOrRoleAction.class);
 
-    private final JcrItemAdapter item;
-    private final UiContext uiContext;
-
-
-
-    private final SimpleTranslator i18n;
-
     @Inject
+    public AbstractDeleteGroupOrRoleAction(D definition, JcrItemAdapter item, CommandsManager commandsManager, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
+        super(definition, item, commandsManager, eventBus, uiContext, i18n);
+    }
+
+    /**
+     * @deprecated since 5.2.2 instead of use {@link #AbstractDeleteGroupOrRoleAction(info.magnolia.ui.framework.action.DeleteActionDefinition, info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter, info.magnolia.commands.CommandsManager, info.magnolia.event.EventBus, info.magnolia.ui.api.context.UiContext, info.magnolia.i18nsystem.SimpleTranslator)}
+     */
+    @Deprecated
     public AbstractDeleteGroupOrRoleAction(D definition, JcrItemAdapter item, @Named(AdmincentralEventBus.NAME) EventBus eventBus, UiContext uiContext, SimpleTranslator i18n) {
-        super(definition, item, eventBus, uiContext, i18n);
-        this.item = item;
-        this.uiContext = uiContext;
-        this.i18n = i18n;
-    }
-
-    protected SimpleTranslator getI18n() {
-        return i18n;
-    }
-
-    public JcrItemAdapter getItem() {
-        return this.item;
+       this(definition, item, Components.getComponent(CommandsManager.class), eventBus, uiContext, i18n);
     }
 
     /**
@@ -109,19 +101,18 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteItemAction
     protected abstract Collection<String> getGroupsOrRoles(Group group);
 
     @Override
-    protected void executeAfterConfirmation() {
+    protected void onPreExecute() throws Exception {
+        super.onPreExecute();
+
         List<String> assignedTo;
         try {
             assignedTo = getUsersAndGroupsThisItemIsAssignedTo();
         } catch (RepositoryException e) {
             log.error("Cannot get the users/groups the group or role is assigned to.", e);
-            uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, getVerificationErrorMessage() + e.getMessage());
-            return;
+            throw new ActionExecutionException(getVerificationErrorMessage() + e.getMessage());
         }
-        if (assignedTo == null || assignedTo.isEmpty()) {
-            super.executeAfterConfirmation();
-        } else {
-            uiContext.openNotification(MessageStyleTypeEnum.ERROR, false, getBaseErrorMessage() + getUserAndGroupListForErrorMessage(assignedTo));
+        if (assignedTo != null && !assignedTo.isEmpty()) {
+            throw new ActionExecutionException(getBaseErrorMessage() + getUserAndGroupListForErrorMessage(assignedTo));
         }
     }
 
@@ -131,17 +122,17 @@ public abstract class AbstractDeleteGroupOrRoleAction<D extends DeleteItemAction
     private List<String> getUsersAndGroupsThisItemIsAssignedTo() throws RepositoryException {
         List<String> assignedTo = new ArrayList<String>();
 
-        String groupName = getItem().getJcrItem().getName();
+        String groupName = getCurrentItem().getJcrItem().getName();
         // users
         for (User user : Security.getUserManager().getAllUsers()) {
             if (getGroupsOrRoles(user).contains(groupName)) {
-                assignedTo.add(i18n.translate("security.delete.userIdentifier", user.getName()));
+                assignedTo.add(getI18n().translate("security.delete.userIdentifier", user.getName()));
             }
         }
         // groups
         for (Group group : Security.getGroupManager().getAllGroups()) {
             if (getGroupsOrRoles(group).contains(groupName)) {
-                assignedTo.add(i18n.translate("security.delete.groupIdentifier", group.getName()));
+                assignedTo.add(getI18n().translate("security.delete.groupIdentifier", group.getName()));
             }
         }
 

@@ -147,4 +147,8 @@ public class DeleteAction<D extends CommandActionDefinition> extends AbstractCom
         return getDefinition().getFailureMessage();
     }
 
+    protected SimpleTranslator getI18n() {
+        return i18n;
+    }
+
 }
