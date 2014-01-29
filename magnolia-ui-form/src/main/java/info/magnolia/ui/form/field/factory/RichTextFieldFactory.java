@@ -49,6 +49,7 @@ import java.util.List;
 
 import javax.jcr.Node;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +59,7 @@ import com.vaadin.data.Item;
 import com.vaadin.server.ClientConnector.AttachEvent;
 import com.vaadin.server.ClientConnector.AttachListener;
 import com.vaadin.server.Page;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.Field;
@@ -109,6 +111,9 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
 
         MagnoliaRichTextFieldConfig config = initializeCKEditorConfig();
         richTextEditor = new MagnoliaRichTextField(config);
+        if (definition.getHeight() > 0) {
+            richTextEditor.setHeight(definition.getHeight(), Unit.PIXELS);
+        }
 
         richTextEditor.addAttachListener(new AttachListener() {
             @Override
@@ -148,9 +153,55 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
         config.setBaseFloatZIndex(150);
         String path = VaadinService.getCurrentRequest().getContextPath();
 
+        // CUSTOM CKEDITOR CONFIGURATION
+        // config.js file provided, skip further configuration since CKEditor wrapper add-on ignores it too.
+        if (StringUtils.isNotBlank(definition.getConfigJsFile())) {
+            config.addExtraConfig("customConfig", "'" + path + definition.getConfigJsFile() + "'");
+            return config;
+        }
+
         // BASIC CONFIGURATION FROM DEFINITION
+        if (!definition.isAlignment()) {
+            config.addToRemovePlugins("justify");
+        }
         if (!definition.isImages()) {
             config.addToRemovePlugins("image");
+        }
+        if (!definition.isLists()) {
+            // In CKEditor 4.1.1 enterkey depends on indent which itself depends on list
+            config.addToRemovePlugins("enterkey");
+            config.addToRemovePlugins("indent");
+            config.addToRemovePlugins("list");
+        }
+        if (!definition.isSource()) {
+            config.addToRemovePlugins("sourcearea");
+        }
+        if (!definition.isTables()) {
+            config.addToRemovePlugins("table");
+            config.addToRemovePlugins("tabletools");
+        }
+
+        if (definition.getColors() != null) {
+            config.addExtraConfig("colorButton_colors", "'" + definition.getColors() + "'");
+            config.addExtraConfig("colorButton_enableMore", "'false'");
+            config.addToRemovePlugins("colordialog");
+        } else {
+            config.addToRemovePlugins("colorbutton");
+            config.addToRemovePlugins("colordialog");
+        }
+        if (definition.getFonts() != null) {
+            config.addExtraConfig("font_names", "'" + definition.getFonts() + "'");
+        } else {
+            config.addExtraConfig("removeButtons", "'Font'");
+        }
+        if (definition.getFontSizes() != null) {
+            config.addExtraConfig("fontSize_sizes", "'" + definition.getFontSizes() + "'");
+        } else {
+            config.addExtraConfig("removeButtons", "'FontSize'");
+        }
+        if (definition.getFonts() == null && definition.getFontSizes() == null) {
+            config.addToRemovePlugins("font");
+            config.addToRemovePlugins("fontSize");
         }
 
         // STATIC CONFIGURATION
