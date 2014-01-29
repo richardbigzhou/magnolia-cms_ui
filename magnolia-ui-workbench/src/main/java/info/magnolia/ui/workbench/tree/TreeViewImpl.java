@@ -149,8 +149,8 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         treeTable.setValue(null);
         for (String id : itemIds) {
             treeTable.select(id);
-            treeTable.setCurrentPageFirstItemId(id);
         }
+        treeTable.setCurrentPageFirstItemId(firstItemId);
     }
 
     @Override
