@@ -81,6 +81,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+
 /**
  * Version handler for the Ui framework module.
  */
@@ -129,8 +130,8 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
 
         register(DeltaBuilder.update("5.2.2", "")
                 .addTask(new NodeExistsDelegateTask("Register WorkbenchFieldDefinition if not yet done", "", RepositoryConstants.CONFIG, "/modules/ui-framework/fieldTypes/workbenchField", null, new BootstrapSingleModuleResource("Register WorkbenchFieldDefinition", "", "config.modules.ui-framework.fieldTypes.workbenchField.xml")))
-                .addTask(new NodeExistsDelegateTask("Rename 'compositField' if exists", "Rename Rename 'compositField' to 'compositeField' if exists", RepositoryConstants.CONFIG, "/ui-framework/fieldTypes/compositField",
-                        new MoveNodeTask("", "", RepositoryConstants.CONFIG, "/ui-framework/fieldTypes/compositField", "/ui-framework/fieldTypes/compositeField", false)
+                .addTask(new NodeExistsDelegateTask("Rename fieldType if it's misspelled", "/modules/ui-framework/fieldTypes/compositField",
+                        new MoveNodeTask("Rename misspelled fieldType", "/modules/ui-framework/fieldTypes/compositField", "/modules/ui-framework/fieldTypes/compositeField", false)
                         ))
                 .addTask(new NodeExistsDelegateTask("Rename command catalog if it's incorrect", "Rename command catalog to 'default' if it's incorrect", RepositoryConstants.CONFIG, "/modules/ui-framework/commands/deafult",
                         new MoveNodeTask("Rename command catalog", "Rename command catalog to 'default'", RepositoryConstants.CONFIG, "/modules/ui-framework/commands/deafult",
