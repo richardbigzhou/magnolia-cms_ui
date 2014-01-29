@@ -148,8 +148,17 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
         config.setBaseFloatZIndex(150);
         String path = VaadinService.getCurrentRequest().getContextPath();
 
+        // BASIC CONFIGURATION FROM DEFINITION
+        if (!definition.isImages()) {
+            config.addToRemovePlugins("image");
+        }
+
+        // STATIC CONFIGURATION
         List<ToolbarGroup> toolbars = initializeToolbarConfig();
         config.addToolbarLine(toolbars);
+
+        config.addToRemovePlugins("elementspath");
+        config.addToRemovePlugins("filebrowser");
         config.setResizeEnabled(false);
 
         config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path + PLUGIN_PATH_MAGNOLIALINK);
@@ -160,10 +169,11 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
     protected List<ToolbarGroup> initializeToolbarConfig() {
         List<ToolbarGroup> toolbars = new ArrayList<ToolbarGroup>();
         toolbars.add(new ToolbarGroup("basictyles", new String[] { "Bold", "Italic", "Underline", "SpecialChar" }));
-        toolbars.add(new ToolbarGroup("paragraph", new String[] { "NumberedList", "BulletedList" }));
+        toolbars.add(new ToolbarGroup("paragraph", new String[] { "NumberedList", "BulletedList", "JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock", "Image", "Table" }));
         toolbars.add(new ToolbarGroup("insert", new String[] { "Link", "InternalLink", "DamLink", "Unlink" }));
+        toolbars.add(new ToolbarGroup("objects", new String[] { "Source" }));
+        toolbars.add(new ToolbarGroup("fonts", new String[] { "Font", "FontSize", "TextColor" }));
         toolbars.add(new ToolbarGroup("clipboard", new String[] { "Cut", "Copy", "Paste", "PasteText", "PasteFromWord" }));
-        toolbars.add(new ToolbarGroup("objects", new String[] { "Table" }));
         toolbars.add(new ToolbarGroup("special", new String[] { "Undo", "Redo" }));
         return toolbars;
     }

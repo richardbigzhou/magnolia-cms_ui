@@ -72,13 +72,6 @@ public class MagnoliaRichTextField extends CKEditorTextField {
     public MagnoliaRichTextField(MagnoliaRichTextFieldConfig config) {
         super(config);
         this.config = config;
-        /**
-         * Dummy is not intended, but anything meaningful is not intended either.
-         * It is just that we don't need those urls any longer, but CK Editor won't show
-         * some controls unless we set them.
-         */
-        config.setFilebrowserImageBrowseLinkUrl("dummy");
-        config.setFilebrowserImageBrowseUrl("dummy");
         serverPlugins = config.getServerPlugins();
     }
 
