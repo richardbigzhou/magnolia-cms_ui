@@ -177,6 +177,12 @@
     &.color-red {color: $c70;}
   }
 
+  .icon-read-only {
+    font-size: 18px;
+    text-align: center;
+    color: $c10;
+  }
+
   .datetimefield {
     cursor: pointer;
   }
