@@ -47,8 +47,6 @@ import info.magnolia.ui.form.field.transformer.basic.BasicTransformer;
 import info.magnolia.ui.form.validator.definition.FieldValidatorDefinition;
 import info.magnolia.ui.form.validator.factory.FieldValidatorFactory;
 import info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory;
-import info.magnolia.ui.vaadin.integration.ItemAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.DefaultPropertyUtil;
 
 import java.util.Locale;
 
