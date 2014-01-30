@@ -355,9 +355,14 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         // GIVEN
         this.setupConfigProperty("/modules/security-app/apps/security/subApps/users/actions/deleteUser", "class", DeleteItemActionDefinition.class.getName());
         this.setupConfigProperty("/modules/security-app/apps/security/subApps/users/actions/deleteFolder", "class", DeleteItemActionDefinition.class.getName());
+        this.setupConfigProperty("/modules/security-app/apps/security/subApps/users/actions/deleteItems", "class", DeleteItemActionDefinition.class.getName());
+        this.setupConfigNode("/modules/security-app/apps/security/subApps/users/actionbar/sections/user/groups/deleteActions/items/deleteUser");
+        this.setupConfigNode("/modules/security-app/apps/security/subApps/users/actionbar/sections/folder/groups/addActions/items/deleteFolder");
+        this.setupConfigNode("/modules/security-app/apps/security/subApps/users/actionbar/sections/multiple/groups/addActions/items/deleteItems");
+        this.setupConfigNode("/modules/security-app/apps/security/subApps/groups/actionbar/sections/group/groups/deleteActions/items/deleteGroup");
+        this.setupConfigNode("/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items/deleteRole");
         this.setupConfigProperty("/modules/security-app/apps/security/subApps/roles/actions/deleteFolder", "class", "info.magnolia.ui.framework.action.DeleteItemActionDefinition");
         this.setupConfigProperty("/modules/security-app/apps/security/subApps/groups/actions/deleteFolder", "class", "info.magnolia.ui.framework.action.DeleteItemActionDefinition");
-
 
         // WHEN
         executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.1"));
@@ -369,5 +374,16 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         assertEquals(session.getProperty("/modules/security-app/apps/security/subApps/groups/actions/deleteFolder/class").getString(), DeleteEmptyFolderActionDefinition.class.getName());
         assertEquals(DeleteActionDefinition.class.getName() ,session.getProperty("/modules/security-app/apps/security/subApps/users/actions/deleteUser/class").getString());
         assertEquals(DeleteActionDefinition.class.getName() ,session.getProperty("/modules/security-app/apps/security/subApps/users/actions/deleteFolder/class").getString());
+        assertEquals(DeleteActionDefinition.class.getName() ,session.getProperty("/modules/security-app/apps/security/subApps/users/actions/deleteItems/class").getString());
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/users/actions/confirmDeleteUser"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/users/actions/confirmDeleteFolder"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/users/actions/confirmDeleteItems"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actions/confirmDeleteGroup"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actions/confirmDeleteRole"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/users/actionbar/sections/user/groups/deleteActions/items/confirmDeleteUser"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/users/actionbar/sections/folder/groups/addActions/items/confirmDeleteFolder"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/users/actionbar/sections/multiple/groups/addActions/items/confirmDeleteItems"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/groups/actionbar/sections/group/groups/deleteActions/items/confirmDeleteGroup"));
+        assertTrue(session.itemExists("/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items/confirmDeleteRole"));
     }
 }
