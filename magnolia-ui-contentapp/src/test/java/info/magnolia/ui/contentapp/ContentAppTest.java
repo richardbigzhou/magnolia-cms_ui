@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.contentapp;
 
-import static junit.framework.Assert.assertNull;
 import static junit.framework.TestCase.assertNotNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -41,7 +40,6 @@ import static org.mockito.Mockito.mock;
 import info.magnolia.event.EventBus;
 import info.magnolia.module.ModuleRegistry;
 import info.magnolia.module.model.ModuleDefinition;
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.AppView;
