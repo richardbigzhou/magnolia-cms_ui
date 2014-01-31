@@ -34,7 +34,7 @@
 package info.magnolia.ui.contentapp.field;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.dialog.choosedialog.eventbus.ChooseDialogEventBus;
+import info.magnolia.ui.api.event.ChooseDialogEventBus;
 import info.magnolia.ui.form.field.factory.AbstractFieldFactory;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 
