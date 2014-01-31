@@ -183,6 +183,10 @@
     color: $c10;
   }
 
+  tr.v-selected .icon-read-only {
+    color: $c80;
+  }
+
   .datetimefield {
     cursor: pointer;
   }
