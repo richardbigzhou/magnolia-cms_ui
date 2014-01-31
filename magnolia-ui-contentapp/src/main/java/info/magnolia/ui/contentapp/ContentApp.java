@@ -49,6 +49,7 @@ import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.event.ChooseDialogEventBus;
 import info.magnolia.ui.contentapp.choosedialog.ContentAppChooseDialogPresenter;
 import info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
@@ -93,7 +94,7 @@ public class ContentApp extends BaseApp {
         presenter.start(callback, chooseDialogDefinition, overlayLayer, selectedId) ;
     }
 
-    private ComponentProvider createChooseDialogComponentProvider() {
+    ComponentProvider createChooseDialogComponentProvider() {
         ModuleRegistry moduleRegistry = componentProvider.getComponent(ModuleRegistry.class);
         final EventBus eventBus = new SimpleEventBus();
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
@@ -106,7 +107,7 @@ public class ContentApp extends BaseApp {
         ComponentConfigurer c = new AbstractGuiceComponentConfigurer() {
             @Override
             protected void configure() {
-                bind(EventBus.class).annotatedWith(Names.named("choose_dialog_event_bus")).toProvider(Providers.of(eventBus));
+                bind(EventBus.class).annotatedWith(Names.named(ChooseDialogEventBus.NAME)).toProvider(Providers.of(eventBus));
             }
         };
         return builder.build(c);
