@@ -34,7 +34,9 @@
 package info.magnolia.ui.actionbar;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
@@ -85,6 +87,7 @@ public class ActionbarPresenterTest {
     public void setUp() throws Exception {
         ComponentsTestUtil.setImplementation(AvailabilityDefinition.class, ConfiguredAvailabilityDefinition.class);
         ComponentsTestUtil.setImplementation(ActionbarView.class, ActionbarViewImpl.class);
+        ComponentsTestUtil.setInstance(SimpleTranslator.class, mock(SimpleTranslator.class));
         presenter = Components.newInstance(ActionbarPresenter.class);
         definition = initDefinitions();
     }
