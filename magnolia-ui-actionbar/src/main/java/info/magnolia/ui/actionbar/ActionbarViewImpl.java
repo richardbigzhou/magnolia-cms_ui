@@ -33,10 +33,13 @@
  */
 package info.magnolia.ui.actionbar;
 
+import info.magnolia.i18nsystem.SimpleTranslator;
 import info.magnolia.ui.vaadin.actionbar.Actionbar;
 import info.magnolia.ui.vaadin.actionbar.Actionbar.ActionTriggerEvent;
 import info.magnolia.ui.vaadin.actionbar.Actionbar.ActionTriggerListener;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
+
+import javax.inject.Inject;
 
 import com.vaadin.server.Resource;
 
@@ -51,7 +54,11 @@ public class ActionbarViewImpl implements ActionbarView {
 
     private ActionbarView.Listener listener;
 
-    public ActionbarViewImpl() {
+    private SimpleTranslator i18n;
+
+    @Inject
+    public ActionbarViewImpl(SimpleTranslator i18n) {
+        this.i18n = i18n;
         actionBar.addActionTriggerListener(new ActionTriggerListener() {
 
             @Override
@@ -82,7 +89,8 @@ public class ActionbarViewImpl implements ActionbarView {
     public void setPreview(Resource previewResource) {
         if (previewResource != null) {
             if (!actionBar.getSections().containsKey(PREVIEW_SECTION_NAME)) {
-                actionBar.addSection(PREVIEW_SECTION_NAME, "Preview");
+                actionBar.addSection(PREVIEW_SECTION_NAME, i18n.translate("actionbar.preview"));
+
             }
             actionBar.setSectionPreview(previewResource, PREVIEW_SECTION_NAME);
         } else {
