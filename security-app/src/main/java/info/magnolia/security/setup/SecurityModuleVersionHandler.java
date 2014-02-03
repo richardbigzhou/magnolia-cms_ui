@@ -45,6 +45,7 @@ import info.magnolia.module.delta.CreateNodeTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.NewPropertyTask;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
+import info.magnolia.module.delta.OrderNodeToFirstPositionTask;
 import info.magnolia.module.delta.PartialBootstrapTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RemovePropertyTask;
@@ -52,6 +53,7 @@ import info.magnolia.module.delta.RenameNodeTask;
 import info.magnolia.module.delta.SetPropertyTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
+import info.magnolia.security.app.action.DeleteEmptyFolderActionDefinition;
 import info.magnolia.security.app.container.GroupDropConstraint;
 import info.magnolia.security.app.container.RoleDropConstraint;
 import info.magnolia.security.app.container.RoleTreePresenter;
@@ -185,7 +187,8 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new PartialBootstrapTask("Add confirmDeleteRole action into roles subApp", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/confirmDeleteRole"))
                 .addTask(new NodeExistsDelegateTask("Reconfigure actionbar of roles subApp to use confirmDeleteRole action", "/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items/deleteRole",
                         new RenameNodeTask("Reconfigure actionbar of roles subApp to use confirmDeleteRole action", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items", "deleteRole", "confirmDeleteRole", false)))
-        );       .addTask(new AddDuplicateAndMoveActionsToSecurityAppTask())
+                .addTask(new AddDuplicateAndMoveActionsToSecurityAppTask())
+        );
     }
 
     @Override
