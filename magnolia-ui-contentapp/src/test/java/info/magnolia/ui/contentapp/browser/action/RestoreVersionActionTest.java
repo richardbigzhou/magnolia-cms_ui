@@ -33,9 +33,9 @@
  */
 package info.magnolia.ui.contentapp.browser.action;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.util.BeanItem;
-import com.vaadin.ui.TextField;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.cms.security.operations.AccessDefinition;
 import info.magnolia.cms.security.operations.ConfiguredAccessDefinition;
@@ -55,21 +55,25 @@ import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.dialog.formdialog.FormDialogPresenter;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import org.junit.Before;
-import org.junit.Test;
 
 import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.Session;
 import javax.jcr.version.Version;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.Before;
+import org.junit.Test;
 
+import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.ui.TextField;
+
+/**
+ * Tests for the {@link RestoreVersionAction}.
+ */
 public class RestoreVersionActionTest extends RepositoryTestCase {
 
-    private final String CREATED_VERSION_PRIOR_RESTORE = "Automatically created version prior restore";
+    private final String CREATED_VERSION_BEFORE_RESTORE = "Created automatically before performing restore.";
 
     private Node node;
 
@@ -93,7 +97,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
         uiContext = mock(UiContext.class);
         eventBus = mock(EventBus.class);
         i18n = mock(SimpleTranslator.class);
-        when(i18n.translate("ui-contentapp.actions.restoreVersion.comment.restore")).thenReturn(CREATED_VERSION_PRIOR_RESTORE);
+        when(i18n.translate("ui-contentapp.actions.restoreVersion.comment.restore")).thenReturn(CREATED_VERSION_BEFORE_RESTORE);
 
         Session webSiteSession = MgnlContext.getJCRSession(RepositoryConstants.WEBSITE);
         node = webSiteSession.getRootNode().addNode("test", NodeTypes.Page.NAME);
@@ -132,7 +136,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testCheckVersionCreatedPriorRestore() throws Exception {
+    public void testCheckVersionCreatedBeforeRestore() throws Exception {
         // GIVEN
         VersionManager versionMan = VersionManager.getInstance();
         versionMan.addVersion(node);
@@ -154,13 +158,13 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
         // THEN
         assertEquals(3, versionMan.getAllVersions(node).getSize());
         Version version =versionMan.getVersion(node,"1.1");
-        assertEquals(CREATED_VERSION_PRIOR_RESTORE, NodeTypes.Versionable.getComment(version));
+        assertEquals(CREATED_VERSION_BEFORE_RESTORE, NodeTypes.Versionable.getComment(version));
         assertEquals("section", version.getProperty("mgnl:template").getString());
         assertFalse(version.hasNode("areaSubNode"));
     }
 
     @Test
-    public void testDoNotCreateVersionPriorRestoreIfNotAllowed() throws Exception {
+    public void testDoNotCreateVersionBeforeRestoreIfNotAllowed() throws Exception {
         // GIVEN
         VersionManager versionMan = VersionManager.getInstance();
         versionMan.addVersion(node);
@@ -172,7 +176,7 @@ public class RestoreVersionActionTest extends RepositoryTestCase {
 
         assertEquals(2, versionMan.getAllVersions(node).getSize());
 
-        definition.setCreateVersionPriorRestore(false);
+        definition.setCreateVersionBeforeRestore(false);
 
         AbstractJcrNodeAdapter item = new JcrNodeAdapter(node);
         MockRestoreVersionAction restoreVersionAction = new MockRestoreVersionAction(definition, null, null, uiContext, formDialogPresenter, item, i18n, versionMan, eventBus);

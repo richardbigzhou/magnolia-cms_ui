@@ -42,6 +42,7 @@ import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.VCKEditorTextField
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.Timer;
 import com.vaadin.client.ApplicationConnection;
 import com.vaadin.client.UIDL;
 import com.vaadin.client.ValueMap;
@@ -59,6 +60,7 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
     protected VMagnoliaRichTextEditor editor;
     public List<String> pluginEvents;
     ValueMap customPlugins = null;
+    protected boolean immediate;
 
     public VMagnoliaRichTextField() {
         super();
@@ -97,6 +99,10 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
                     uidl.getStringAttribute(VAR_FIRE_PLUGIN_EVENT_VALUE)
             );
         }
+
+        if ( uidl.hasAttribute(ATTR_IMMEDIATE) ) {
+            immediate = uidl.getBooleanAttribute(ATTR_IMMEDIATE);
+        }
     }
 
     private static native void loadExternalPlugin(String pluginName, String path) /*-{
@@ -114,6 +120,21 @@ public class VMagnoliaRichTextField extends VCKEditorTextField implements VMagno
                     VAR_EVENT_PREFIX + eventName,
                     data == null ? "" : data,
                     true);
+        }
+    }
+
+    private Timer valueUpdateTimer = new Timer() {
+        @Override
+        public void run() {
+            clientToServer.sendPendingVariableChanges();
+        }
+    };
+
+    @Override
+    public void onChange() {
+        clientToServer.updateVariable(paintableId, VAR_TEXT, editor.getData(), false);
+        if (immediate) {
+            valueUpdateTimer.schedule(200);
         }
     }
 

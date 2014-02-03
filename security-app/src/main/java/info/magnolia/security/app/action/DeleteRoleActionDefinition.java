@@ -33,12 +33,13 @@
  */
 package info.magnolia.security.app.action;
 
-import info.magnolia.ui.framework.action.DeleteItemActionDefinition;
+
+import info.magnolia.ui.framework.action.DeleteActionDefinition;
 
 /**
  * Used to configure {@link DeleteRoleAction}.
  */
-public class DeleteRoleActionDefinition extends DeleteItemActionDefinition {
+public class DeleteRoleActionDefinition extends DeleteActionDefinition {
 
     public DeleteRoleActionDefinition() {
         setImplementationClass(DeleteRoleAction.class);

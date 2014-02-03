@@ -128,7 +128,6 @@ public class MultiValueChildNodeTransformerTest extends RepositoryTestCase {
         parent.applyChanges();
         assertNotNull(rootNode.hasNode(propertyName));
         Node child = new JCRPropertiesFilteringNodeWrapper(rootNode.getNode(propertyName));
-        assertEquals(1, child.getProperties().getSize());
         assertTrue(child.hasProperty("0"));
         assertEquals("/xx/xxx", child.getProperty("0").getString());
     }
@@ -190,7 +189,8 @@ public class MultiValueChildNodeTransformerTest extends RepositoryTestCase {
         parent.applyChanges();
         assertNotNull(rootNode.hasNode(propertyName));
         Node child = new JCRPropertiesFilteringNodeWrapper(rootNode.getNode(propertyName));
-        assertEquals(2, child.getProperties().getSize());
+        // in the meantime mgnl:created, mgnl:createdBy, mgnl:lastUpdate & mgnl:lastUpdateBy have been set
+        assertEquals(6, child.getProperties().getSize());
         assertFalse(child.hasProperty("0"));
         assertTrue(child.hasProperty("3"));
         assertEquals("/yy", child.getProperty("3").getString());

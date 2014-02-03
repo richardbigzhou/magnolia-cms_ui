@@ -54,6 +54,10 @@ public class CheckBoxSwitchControlMigrator implements ControlMigrator {
             String defaultValue = controlNode.getProperty("selected").getString();
             controlNode.setProperty("defaultValue", defaultValue);
         }
+        // As the 4.5 control saved a String value per default and the 5.x a boolean per default, we have to specified the type
+        if(!controlNode.hasProperty("type")) {
+            controlNode.setProperty("type", "String");
+        }
     }
 
 }

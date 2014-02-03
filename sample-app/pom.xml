@@ -11,18 +11,6 @@
   <artifactId>magnolia-sample-app</artifactId>
   <packaging>jar</packaging>
   <name>magnolia-sample-app</name>
-    <build>
-    <plugins>
-      <plugin>
-        <groupId>org.zeroturnaround</groupId>
-        <artifactId>jrebel-maven-plugin</artifactId>
-        <configuration>
-          <relativePath>../${basedir}</relativePath>
-          <rootPath>$${admincentral.root}</rootPath>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
   <dependencies>
     <dependency>
       <groupId>info.magnolia.ui</groupId>

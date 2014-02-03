@@ -97,9 +97,9 @@ public class ConfirmationDialog extends LightDialog {
 
         // Add a class to the default button
         if (cancelIsDefault) {
-            cancelButton.addStyleName("default");
+            cancelButton.focus();
         } else {
-            confirmButton.addStyleName("default");
+            confirmButton.focus();
         }
     }
 

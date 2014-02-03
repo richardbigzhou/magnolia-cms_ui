@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -49,18 +49,23 @@ import java.util.List;
 
 import javax.jcr.Node;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.vaadin.data.Item;
+import com.vaadin.server.ClientConnector.AttachEvent;
+import com.vaadin.server.ClientConnector.AttachListener;
+import com.vaadin.server.Page;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.Field;
 
 /**
- * Creates and initializes an edit field based on a field definition.
+ * Creates and configures a rich-text field based on its definition.
  */
 public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefinition, String> {
 
@@ -71,19 +76,19 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
     private static final String PLUGIN_PATH_MAGNOLIALINK = "/VAADIN/js/magnolialink/";
 
     /**
-     * Event is emit from server to client when link has been selected.
+     * Event is transmitted from server to client when link has been selected.
      */
     public static final String EVENT_SEND_MAGNOLIA_LINK = "mgnlLinkSelected";
 
     /**
-     * Event is emit from server to client when link dialog has been
+     * Event is transmitted from server to client when link dialog has been
      * canceled or exception has occurred. In case of exception
      * the event will carry error message.
      */
     public static final String EVENT_CANCEL_LINK = "mgnlLinkCancel";
 
     /**
-     * Event is emit from client to server when user requests a link dialog.
+     * Event is transmitted from client to server when user requests a link dialog.
      * Event carries optional link that should be treated as default link value.
      */
     public static final String EVENT_GET_MAGNOLIA_LINK = "mgnlGetLink";
@@ -92,7 +97,6 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
     protected final UiContext uiContext;
     protected final SimpleTranslator i18n;
     protected MagnoliaRichTextField richTextEditor;
-
 
     @Inject
     public RichTextFieldFactory(RichTextFieldDefinition definition, Item relatedFieldItem, AppController appController, UiContext uiContext, SimpleTranslator i18n) {
@@ -104,20 +108,25 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
 
     @Override
     protected Field<String> createFieldComponent() {
-        final MagnoliaRichTextFieldConfig config = initializeCKEditorConfig();
-        richTextEditor = new MagnoliaRichTextField(config) {
+
+        MagnoliaRichTextFieldConfig config = initializeCKEditorConfig();
+        richTextEditor = new MagnoliaRichTextField(config);
+        if (definition.getHeight() > 0) {
+            richTextEditor.setHeight(definition.getHeight(), Unit.PIXELS);
+        }
+
+        richTextEditor.addAttachListener(new AttachListener() {
             @Override
-            public void attach() {
-                super.attach();
-                WebBrowser browser = getSession().getBrowser();
-                if (browser.isTouchDevice()) {
-                    // MGNLUI-1528: Workaround.
+            public void attach(AttachEvent event) {
+                WebBrowser browser = Page.getCurrent().getWebBrowser();
+                if (browser.isIOS() || browser.isAndroid()) {
+                    // MGNLUI-1582: Workaround disabling non-operational ckeditor on the iPad or on android devices.
                     richTextEditor.setEnabled(false);
                     richTextEditor.setReadOnly(true);
                     richTextEditor.addStyleName("richtextfield-disabled");
                 }
             }
-        };
+        });
 
         richTextEditor.addListener(new MagnoliaRichTextField.PluginListener() {
             @Override
@@ -139,25 +148,83 @@ public class RichTextFieldFactory extends AbstractFieldFactory<RichTextFieldDefi
     }
 
     protected MagnoliaRichTextFieldConfig initializeCKEditorConfig() {
-        final MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
 
+        MagnoliaRichTextFieldConfig config = new MagnoliaRichTextFieldConfig();
+        config.setBaseFloatZIndex(150);
+        String path = VaadinService.getCurrentRequest().getContextPath();
+
+        // CUSTOM CKEDITOR CONFIGURATION
+        // config.js file provided, skip further configuration since CKEditor wrapper add-on ignores it too.
+        if (StringUtils.isNotBlank(definition.getConfigJsFile())) {
+            config.addExtraConfig("customConfig", "'" + path + definition.getConfigJsFile() + "'");
+            return config;
+        }
+
+        // BASIC CONFIGURATION FROM DEFINITION
+        if (!definition.isAlignment()) {
+            config.addToRemovePlugins("justify");
+        }
+        if (!definition.isImages()) {
+            config.addToRemovePlugins("image");
+        }
+        if (!definition.isLists()) {
+            // In CKEditor 4.1.1 enterkey depends on indent which itself depends on list
+            config.addToRemovePlugins("enterkey");
+            config.addToRemovePlugins("indent");
+            config.addToRemovePlugins("list");
+        }
+        if (!definition.isSource()) {
+            config.addToRemovePlugins("sourcearea");
+        }
+        if (!definition.isTables()) {
+            config.addToRemovePlugins("table");
+            config.addToRemovePlugins("tabletools");
+        }
+
+        if (definition.getColors() != null) {
+            config.addExtraConfig("colorButton_colors", "'" + definition.getColors() + "'");
+            config.addExtraConfig("colorButton_enableMore", "'false'");
+            config.addToRemovePlugins("colordialog");
+        } else {
+            config.addToRemovePlugins("colorbutton");
+            config.addToRemovePlugins("colordialog");
+        }
+        if (definition.getFonts() != null) {
+            config.addExtraConfig("font_names", "'" + definition.getFonts() + "'");
+        } else {
+            config.addExtraConfig("removeButtons", "'Font'");
+        }
+        if (definition.getFontSizes() != null) {
+            config.addExtraConfig("fontSize_sizes", "'" + definition.getFontSizes() + "'");
+        } else {
+            config.addExtraConfig("removeButtons", "'FontSize'");
+        }
+        if (definition.getFonts() == null && definition.getFontSizes() == null) {
+            config.addToRemovePlugins("font");
+            config.addToRemovePlugins("fontSize");
+        }
+
+        // STATIC CONFIGURATION
         List<ToolbarGroup> toolbars = initializeToolbarConfig();
         config.addToolbarLine(toolbars);
-        config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
+
+        config.addToRemovePlugins("elementspath");
+        config.addToRemovePlugins("filebrowser");
         config.setResizeEnabled(false);
 
-        String path = VaadinService.getCurrentRequest().getContextPath();
         config.addPlugin(PLUGIN_NAME_MAGNOLIALINK, path + PLUGIN_PATH_MAGNOLIALINK);
+        config.addListenedEvent(EVENT_GET_MAGNOLIA_LINK);
         return config;
     }
 
     protected List<ToolbarGroup> initializeToolbarConfig() {
         List<ToolbarGroup> toolbars = new ArrayList<ToolbarGroup>();
         toolbars.add(new ToolbarGroup("basictyles", new String[] { "Bold", "Italic", "Underline", "SpecialChar" }));
-        toolbars.add(new ToolbarGroup("paragraph", new String[] { "NumberedList", "BulletedList" }));
+        toolbars.add(new ToolbarGroup("paragraph", new String[] { "NumberedList", "BulletedList", "JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock", "Image", "Table" }));
         toolbars.add(new ToolbarGroup("insert", new String[] { "Link", "InternalLink", "DamLink", "Unlink" }));
+        toolbars.add(new ToolbarGroup("objects", new String[] { "Source" }));
+        toolbars.add(new ToolbarGroup("fonts", new String[] { "Font", "FontSize", "TextColor" }));
         toolbars.add(new ToolbarGroup("clipboard", new String[] { "Cut", "Copy", "Paste", "PasteText", "PasteFromWord" }));
-        toolbars.add(new ToolbarGroup("objects", new String[] { "Table" }));
         toolbars.add(new ToolbarGroup("special", new String[] { "Undo", "Redo" }));
         return toolbars;
     }

@@ -33,12 +33,12 @@
  */
 package info.magnolia.security.app.action;
 
-import info.magnolia.ui.framework.action.DeleteItemActionDefinition;
+import info.magnolia.ui.framework.action.DeleteActionDefinition;
 
 /**
  * Used to configure {@link DeleteGroupAction}.
  */
-public class DeleteGroupActionDefinition extends DeleteItemActionDefinition {
+public class DeleteGroupActionDefinition extends DeleteActionDefinition {
 
     public DeleteGroupActionDefinition() {
         setImplementationClass(DeleteGroupAction.class);

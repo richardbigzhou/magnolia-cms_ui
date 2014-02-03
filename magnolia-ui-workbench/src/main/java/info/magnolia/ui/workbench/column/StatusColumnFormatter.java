@@ -36,12 +36,13 @@ package info.magnolia.ui.workbench.column;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.workbench.column.definition.StatusColumnDefinition;
 
+import java.security.AccessControlException;
+
 import javax.inject.Inject;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.security.AccessControlException;
 
 import com.vaadin.ui.Table;
 
@@ -93,17 +94,12 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
             // permission status
             if (definition.isPermissions()) {
                 try {
-                    permissionStatus += "icon-edit ";
                     node.getSession().checkPermission(node.getPath(), Session.ACTION_ADD_NODE + "," + Session.ACTION_REMOVE + "," + Session.ACTION_SET_PROPERTY);
-                    permissionStatus += "color-blue";
                 } catch (AccessControlException e) {
-                    // does not have permission to set properties - in that case will return two Icons
-                    // in a layout for being displayed...
-                    permissionStatus += "color-red";
+                    permissionStatus = "<span class=\"icon-read-only\"></span>";
                 } catch (RepositoryException e) {
                     throw new RuntimeException("Could not access the JCR permissions for the following node identifier " + itemId, e);
                 }
-                permissionStatus = "<span class=\"" + permissionStatus + "\"></span>";
             }
 
             return activationStatus + permissionStatus;

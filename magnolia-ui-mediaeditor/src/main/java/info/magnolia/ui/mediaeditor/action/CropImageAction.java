@@ -75,8 +75,8 @@ public class CropImageAction extends MediaEditorUIAction {
     public void execute() throws ActionExecutionException {
         super.execute();
         view.getDialog().asVaadinComponent().addStyleName("active-footer");
-        if (view.getDialog().getContentView().asVaadinComponent() instanceof  Scalable) {
-            Scalable scalable = (Scalable)view.getDialog().getContentView().asVaadinComponent();
+        if (view.getDialog().getContentView().asVaadinComponent() instanceof Scalable) {
+            Scalable scalable = (Scalable) view.getDialog().getContentView().asVaadinComponent();
             scalable.scaleToFit();
         }
     }
@@ -92,6 +92,14 @@ public class CropImageAction extends MediaEditorUIAction {
                 eventBus.fireEvent(new MediaEditorInternalEvent(EventType.APPLY));
             }
         }));
+
+        result.add(new ActionContext(new InternalMediaEditorActionDefinition("cancel", i18n.translate("ui-mediaeditor.internalAction.cancel.label"), true), new ActionListener() {
+            @Override
+            public void onActionFired(String actionName, Object... actionContextParams) {
+                eventBus.fireEvent(new MediaEditorInternalEvent(EventType.CANCEL_ALL));
+            }
+        }));
+
         return result;
     }
 

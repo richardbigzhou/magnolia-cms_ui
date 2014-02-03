@@ -45,6 +45,7 @@ import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
 import info.magnolia.module.delta.MoveNodeTask;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
+import info.magnolia.module.delta.PartialBootstrapTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RenameNodesTask;
 import info.magnolia.module.delta.SetPropertyTask;
@@ -79,6 +80,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
 
 /**
  * Version handler for the Ui framework module.
@@ -128,8 +130,8 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
 
         register(DeltaBuilder.update("5.2.2", "")
                 .addTask(new NodeExistsDelegateTask("Register WorkbenchFieldDefinition if not yet done", "", RepositoryConstants.CONFIG, "/modules/ui-framework/fieldTypes/workbenchField", null, new BootstrapSingleModuleResource("Register WorkbenchFieldDefinition", "", "config.modules.ui-framework.fieldTypes.workbenchField.xml")))
-                .addTask(new NodeExistsDelegateTask("Rename 'compositField' if exists", "Rename Rename 'compositField' to 'compositeField' if exists", RepositoryConstants.CONFIG, "/ui-framework/fieldTypes/compositField",
-                        new MoveNodeTask("", "", RepositoryConstants.CONFIG, "/ui-framework/fieldTypes/compositField", "/ui-framework/fieldTypes/compositeField", false)
+                .addTask(new NodeExistsDelegateTask("Rename fieldType if it's misspelled", "/modules/ui-framework/fieldTypes/compositField",
+                        new MoveNodeTask("Rename misspelled fieldType", "/modules/ui-framework/fieldTypes/compositField", "/modules/ui-framework/fieldTypes/compositeField", false)
                         ))
                 .addTask(new NodeExistsDelegateTask("Rename command catalog if it's incorrect", "Rename command catalog to 'default' if it's incorrect", RepositoryConstants.CONFIG, "/modules/ui-framework/commands/deafult",
                         new MoveNodeTask("Rename command catalog", "Rename command catalog to 'default'", RepositoryConstants.CONFIG, "/modules/ui-framework/commands/deafult",
@@ -137,6 +139,8 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
                         ))
                 .addTask(new NodeExistsDelegateTask("Bootstrap 'importZip' command it doesn't exists yet", "Bootstrap 'importZip' command it doesn't exists yet", RepositoryConstants.CONFIG, "/modules/ui-framework/commands/default/importZip", null, new BootstrapSingleModuleResource("Bootstrap 'importZip' command", "Bootstrap 'importZip' command", "config.modules.ui-framework.commands.xml"
                         )))
+                .addTask(new NodeExistsDelegateTask("Bootstrap 'importZip' dialog it doesn't exists yet", "Bootstrap 'importZip' dialog it doesn't exists yet", RepositoryConstants.CONFIG, "/modules/ui-framework/dialog/importZip", null,
+                        new PartialBootstrapTask("Bootstrap 'importZip' dialog", "Bootstraps 'importZip' dialog.", "/mgnl-bootstrap/ui-framework/config.modules.ui-framework.dialogs.xml", "dialogs/importZip")))
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/utf-8", "label", "UTF-8"))
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/windows", "label", "CP437"))
         );

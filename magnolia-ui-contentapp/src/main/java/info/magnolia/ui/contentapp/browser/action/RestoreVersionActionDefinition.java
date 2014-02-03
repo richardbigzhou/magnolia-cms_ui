@@ -38,17 +38,17 @@ package info.magnolia.ui.contentapp.browser.action;
  */
 public class RestoreVersionActionDefinition extends ShowVersionsActionDefinition {
 
-    private boolean createVersionPriorRestore = true;
+    private boolean createVersionBeforeRestore = true;
 
     public RestoreVersionActionDefinition(){
         setImplementationClass(RestoreVersionAction.class);
     }
 
-    public void setCreateVersionPriorRestore(boolean createVersionPriorRestore) {
-        this.createVersionPriorRestore = createVersionPriorRestore;
+    public void setCreateVersionBeforeRestore(boolean createVersionBeforeRestore) {
+        this.createVersionBeforeRestore = createVersionBeforeRestore;
     }
 
-    public boolean isCreateVersionPriorRestore() {
-        return createVersionPriorRestore;
+    public boolean isCreateVersionBeforeRestore() {
+        return createVersionBeforeRestore;
     }
 }
