@@ -52,6 +52,16 @@
     <id>subapp</id>
 
     <component>
+      <type>info.magnolia.ui.dialog.choosedialog.ChooseDialogView</type>
+      <implementation>info.magnolia.ui.dialog.choosedialog.ChooseDialogViewImpl</implementation>
+    </component>
+
+    <component>
+      <type>info.magnolia.ui.dialog.choosedialog.ChooseDialogPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.choosedialog.ContentAppChooseDialogPresenter</implementation>
+    </component>
+
+    <component>
       <type>info.magnolia.ui.contentapp.browser.BrowserView</type>
       <implementation>info.magnolia.ui.contentapp.browser.BrowserViewImpl</implementation>
     </component>
