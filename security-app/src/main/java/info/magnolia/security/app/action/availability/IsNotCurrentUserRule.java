@@ -35,13 +35,14 @@ package info.magnolia.security.app.action.availability;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
-import javax.jcr.Item;
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
 
 /**
  * The rule to verify that the item does not represent the current user.
@@ -52,11 +53,19 @@ public class IsNotCurrentUserRule extends AbstractAvailabilityRule {
 
     @Override
     protected boolean isAvailableForItem(Item item) {
-        if (item == null || !item.isNode()) {
+        if (!(item instanceof JcrItemAdapter)) {
+            return true;
+        }
+
+        JcrItemAdapter jcrItemAdapter = (JcrItemAdapter)item;
+        javax.jcr.Item jcrItem = jcrItemAdapter.getJcrItem();
+
+
+        if (!jcrItem.isNode()) {
             return true;
         }
         try {
-            String nodeName = ((Node) item).getName();
+            String nodeName = jcrItem.getName();
             return !nodeName.equals(MgnlContext.getUser().getName());
         } catch (RepositoryException ex) {
             log.warn("Error verifying availability for item [{}]: " + ex.getMessage(), item);

@@ -48,7 +48,7 @@ import info.magnolia.security.app.dialog.field.WorkspaceAccessFieldFactory;
 import info.magnolia.security.app.util.UsersWorkspaceUtil;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogAction;
 import info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition;
-import info.magnolia.ui.api.ModelConstants;
+import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;

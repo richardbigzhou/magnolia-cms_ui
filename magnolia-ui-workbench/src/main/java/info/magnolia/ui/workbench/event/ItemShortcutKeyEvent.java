@@ -35,6 +35,7 @@ package info.magnolia.ui.workbench.event;
 
 import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 /**
  * This event is fired when a registered key shortcut is pressed while an item is selected (i.e. a row in the data grid within the workbench representing

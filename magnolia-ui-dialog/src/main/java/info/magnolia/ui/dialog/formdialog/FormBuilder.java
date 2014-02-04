@@ -46,12 +46,14 @@ import info.magnolia.ui.form.field.definition.FieldDefinition;
 import info.magnolia.ui.form.field.factory.FieldFactory;
 import info.magnolia.ui.form.field.factory.FieldFactoryFactory;
 import info.magnolia.ui.vaadin.form.FormViewReduced;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.richtext.TextAreaStretcher;
 
 import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
+import javax.jcr.Node;
 
 import org.apache.commons.lang.StringUtils;
 import org.vaadin.openesignforms.ckeditor.CKEditorTextField;

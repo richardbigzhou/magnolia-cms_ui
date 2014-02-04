@@ -36,12 +36,15 @@ package info.magnolia.pages.app.availability;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
-import javax.jcr.Item;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
 
 /**
  * This rule returns true, if the item is node of the mgnl:page type and has a subnode of the same type.
@@ -52,9 +55,16 @@ public class PageHasSubpagesRule extends AbstractAvailabilityRule {
 
     @Override
     public boolean isAvailableForItem(Item item) {
+        if (!(item instanceof JcrItemAdapter)) {
+            return false;
+        }
+
+        JcrItemAdapter jcrItemAdapter = (JcrItemAdapter)item;
+        javax.jcr.Item jcrItem = jcrItemAdapter.getJcrItem();
+
         // item must be a Node
-        if (item != null && item.isNode()) {
-            Node node = (Node) item;
+        if (item != null && jcrItem.isNode()) {
+            Node node = (Node) jcrItem;
             try {
                 // node must be of the Page type
                 if (NodeUtil.isNodeType(node, NodeTypes.Page.NAME)) {

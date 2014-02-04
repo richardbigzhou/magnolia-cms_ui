@@ -33,7 +33,8 @@
  */
 package info.magnolia.ui.api.availability;
 
-import javax.jcr.Item;
+
+import com.vaadin.data.Item;
 
 /**
  * Abstract rule class.

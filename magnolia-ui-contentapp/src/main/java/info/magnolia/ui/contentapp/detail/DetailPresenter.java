@@ -159,7 +159,7 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
         boolean isJcrItemAdapter = (item instanceof JcrItemAdapter);
         for (FormActionItemDefinition editorAction : editorActions) {
             ActionDefinition def = subAppActions.get(editorAction.getName());
-            if (def != null && (!isJcrItemAdapter || (isJcrItemAdapter && executor.isAvailable(editorAction.getName(), ((JcrItemAdapter) item).getJcrItem())))) {
+            if (def != null && (!isJcrItemAdapter || (isJcrItemAdapter && executor.isAvailable(editorAction.getName(), item)))) {
                 filteredActions.add(def);
             } else {
                 log.debug("Action is configured for an editor but not configured for sub-app: " + editorAction.getName());

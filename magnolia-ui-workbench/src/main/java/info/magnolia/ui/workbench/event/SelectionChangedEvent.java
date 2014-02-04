@@ -35,10 +35,14 @@ package info.magnolia.ui.workbench.event;
 
 import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

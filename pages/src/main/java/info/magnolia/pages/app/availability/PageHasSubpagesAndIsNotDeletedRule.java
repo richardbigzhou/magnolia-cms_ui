@@ -37,7 +37,7 @@ import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.api.availability.AvailabilityRule;
 import info.magnolia.ui.api.availability.IsNotDeletedRule;
 
-import javax.jcr.Item;
+import com.vaadin.data.Item;
 
 /**
  * This rule returns true, if the item is node of the mgnl:page type, has a subnode of the same type, and is not deleted (i.e. has not the mgnl:deleted mixin type).

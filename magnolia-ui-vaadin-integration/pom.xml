@@ -35,12 +35,12 @@
       <artifactId>magnolia-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-server</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>

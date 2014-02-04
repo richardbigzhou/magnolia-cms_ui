@@ -34,9 +34,9 @@
 package info.magnolia.ui.api.availability;
 
 import info.magnolia.cms.core.version.VersionManager;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import javax.inject.Inject;
-import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
@@ -44,6 +44,8 @@ import javax.jcr.version.VersionHistory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
 
 /**
  * Checks if versioning is enabled for an item and whether it has versions.
@@ -60,8 +62,14 @@ public class HasVersionsRule extends AbstractAvailabilityRule {
 
     @Override
     protected boolean isAvailableForItem(Item item) {
-        if (item != null && item.isNode()) {
-            Node node = (Node) item;
+        if (!(item instanceof JcrItemAdapter)) {
+            return false;
+        }
+
+        JcrItemAdapter jcrItemAdapter = (JcrItemAdapter)item;
+        javax.jcr.Item jcrItem = jcrItemAdapter.getJcrItem();
+        if (jcrItem != null && jcrItem.isNode()) {
+            Node node = (Node) jcrItem;
 
             try {
                 VersionHistory versionHistory = versionManager.getVersionHistory(node);

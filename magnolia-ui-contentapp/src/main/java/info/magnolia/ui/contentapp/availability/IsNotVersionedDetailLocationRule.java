@@ -38,7 +38,8 @@ import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 
 import javax.inject.Inject;
-import javax.jcr.Item;
+
+import com.vaadin.data.Item;
 
 /**
  * Availability rule that checks if the current {@link DetailLocation} is versioned or not.

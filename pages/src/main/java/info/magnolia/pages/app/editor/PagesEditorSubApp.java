@@ -511,7 +511,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
             for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
 
                 String actionName = itemDefinition.getName();
-                if (actionExecutor.isAvailable(actionName, node)) {
+                if (actionExecutor.isAvailable(actionName, new JcrNodeAdapter(node))) {
                     actionbarPresenter.enable(actionName);
                 } else {
                     actionbarPresenter.disable(actionName);

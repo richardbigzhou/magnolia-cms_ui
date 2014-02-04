@@ -41,12 +41,13 @@ import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.AvailabilityRule;
 
 import javax.inject.Inject;
-import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
 
 /**
  * Abstract base implementation of {@link ActionExecutor}. Creates the {@link Action} from the implementation class
@@ -149,13 +150,14 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
 
     private boolean isAvailableForItem(AvailabilityDefinition availability, Item item) {
 
-        if (item == null) {
-            return availability.isRoot();
-        }
-
-        if (!item.isNode()) {
-            return availability.isProperties();
-        }
+        //TODO JCRFREE - resolve this  node/property logic
+//        if (item == null) {
+//            return availability.isRoot();
+//        }
+//
+//        if (!item.isNode()) {
+//            return availability.isProperties();
+//        }
 
         // Must have _any_ of the node types if any are specified, otherwise its available by default
         if (availability.getNodeTypes().isEmpty()) {

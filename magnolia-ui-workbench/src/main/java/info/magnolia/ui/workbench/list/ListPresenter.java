@@ -38,6 +38,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 
+import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.util.Iterator;

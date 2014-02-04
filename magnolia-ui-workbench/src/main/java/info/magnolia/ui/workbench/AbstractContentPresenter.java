@@ -38,6 +38,11 @@ import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
@@ -54,6 +59,9 @@ import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -197,7 +205,8 @@ public abstract class AbstractContentPresenter implements ContentPresenter, Cont
                 }
                 String clickedItemId = ((JcrItemAdapter) item).getItemId();
                 log.debug("com.vaadin.data.Item at {} was right clicked. Firing ItemRightClickedEvent...", clickedItemId);
-                eventBus.fireEvent(new ItemRightClickedEvent(workbenchDefinition.getWorkspace(), (JcrItemAdapter) item, clickX, clickY));
+                //TODO JCRFREE Here we'd better use some id instead of path, but so far should be okay
+                eventBus.fireEvent(new ItemRightClickedEvent(((JcrNodeAdapter) item).getJcrItem().getPath(), clickX, clickY));
             } catch (Exception e) {
                 log.error("An error occurred while right clicking on a row in the data grid", e);
             }
