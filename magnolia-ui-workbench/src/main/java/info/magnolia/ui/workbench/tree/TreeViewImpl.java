@@ -57,7 +57,7 @@ import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.TreeTable;
 
 /**
- * Vaadin UI component that displays a tree.
+ * Default Vaadin implementation of the tree view.
  */
 public class TreeViewImpl extends ListViewImpl implements TreeView {
 
@@ -149,8 +149,8 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         treeTable.setValue(null);
         for (String id : itemIds) {
             treeTable.select(id);
-            treeTable.setCurrentPageFirstItemId(id);
         }
+        treeTable.setCurrentPageFirstItemId(firstItemId);
     }
 
     @Override

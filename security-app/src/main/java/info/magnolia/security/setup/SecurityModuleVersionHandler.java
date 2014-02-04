@@ -49,6 +49,7 @@ import info.magnolia.module.delta.OrderNodeToFirstPositionTask;
 import info.magnolia.module.delta.PartialBootstrapTask;
 import info.magnolia.module.delta.RemoveNodeTask;
 import info.magnolia.module.delta.RemovePropertyTask;
+import info.magnolia.module.delta.RenameNodeTask;
 import info.magnolia.module.delta.SetPropertyTask;
 import info.magnolia.module.delta.Task;
 import info.magnolia.repository.RepositoryConstants;
@@ -167,8 +168,25 @@ public class SecurityModuleVersionHandler extends DefaultModuleVersionHandler {
                 .addTask(new DeleteFolderActionReconfigurationTask("roles"))
                 .addTask(new NodeExistsDelegateTask("Reconfigure deleteUser action", "/modules/security-app/apps/security/subApps/users/actions/deleteUser",
                         new CheckAndModifyPropertyValueTask("/modules/security-app/apps/security/subApps/users/actions/deleteUser", "class", "info.magnolia.ui.framework.action.DeleteItemActionDefinition", DeleteActionDefinition.class.getName())))
-                .addTask(new NodeExistsDelegateTask("Reconfigure deleteFolder action of user subApp", "/modules/security-app/apps/security/subApps/users/actions/deleteFolder",
+                .addTask(new NodeExistsDelegateTask("Reconfigure deleteFolder action of users subApp", "/modules/security-app/apps/security/subApps/users/actions/deleteFolder",
                         new CheckAndModifyPropertyValueTask("/modules/security-app/apps/security/subApps/users/actions/deleteFolder", "class", "info.magnolia.ui.framework.action.DeleteItemActionDefinition", DeleteActionDefinition.class.getName())))
+                .addTask(new NodeExistsDelegateTask("Reconfigure deleteItems action of users subApp", "/modules/security-app/apps/security/subApps/users/actions/deleteItems",
+                        new CheckAndModifyPropertyValueTask("/modules/security-app/apps/security/subApps/users/actions/deleteItems", "class", "info.magnolia.ui.framework.action.DeleteItemActionDefinition", DeleteActionDefinition.class.getName())))
+                .addTask(new PartialBootstrapTask("Add confirmDeleteUser action into users subApp", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/users/actions/confirmDeleteUser"))
+                .addTask(new PartialBootstrapTask("Add confirmDeleteFolder action into users subApp", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/users/actions/confirmDeleteFolder"))
+                .addTask(new PartialBootstrapTask("Add confirmDeleteItems action into users subApp", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/users/actions/confirmDeleteItems"))
+                .addTask(new NodeExistsDelegateTask("Reconfigure actionbar of users subApp to use confirmDeleteUser action", "/modules/security-app/apps/security/subApps/users/actionbar/sections/user/groups/deleteActions/items/deleteUser",
+                        new RenameNodeTask("Reconfigure actionbar of users subApp to use confirmDeleteUser action", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actionbar/sections/user/groups/deleteActions/items", "deleteUser", "confirmDeleteUser", false)))
+                .addTask(new NodeExistsDelegateTask("Reconfigure actionbar of users subApp to use confirmDeleteFolder action", "/modules/security-app/apps/security/subApps/users/actionbar/sections/folder/groups/addActions/items/deleteFolder",
+                        new RenameNodeTask("Reconfigure actionbar of users subApp to use confirmDeleteUser action", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actionbar/sections/folder/groups/addActions/items", "deleteFolder", "confirmDeleteFolder", false)))
+                .addTask(new NodeExistsDelegateTask("Reconfigure actionbar of users subApp to use confirmDeleteItems action", "/modules/security-app/apps/security/subApps/users/actionbar/sections/multiple/groups/addActions/items/deleteItems",
+                        new RenameNodeTask("Reconfigure actionbar of users subApp to use confirmDeleteUser action", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/users/actionbar/sections/multiple/groups/addActions/items", "deleteItems", "confirmDeleteItems", false)))
+                .addTask(new PartialBootstrapTask("Add confirmDeleteGroup action into groups subApp", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/groups/actions/confirmDeleteGroup"))
+                .addTask(new NodeExistsDelegateTask("Reconfigure actionbar of groups subApp to use confirmDeleteGroup action", "/modules/security-app/apps/security/subApps/groups/actionbar/sections/group/groups/deleteActions/items/deleteGroup",
+                        new RenameNodeTask("Reconfigure actionbar of groups subApp to use confirmDeleteGroup action", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/groups/actionbar/sections/group/groups/deleteActions/items", "deleteGroup", "confirmDeleteGroup", false)))
+                .addTask(new PartialBootstrapTask("Add confirmDeleteRole action into roles subApp", "/mgnl-bootstrap/security-app/config.modules.security-app.apps.security.xml", "/security/subApps/roles/actions/confirmDeleteRole"))
+                .addTask(new NodeExistsDelegateTask("Reconfigure actionbar of roles subApp to use confirmDeleteRole action", "/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items/deleteRole",
+                        new RenameNodeTask("Reconfigure actionbar of roles subApp to use confirmDeleteRole action", RepositoryConstants.CONFIG, "/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/deleteActions/items", "deleteRole", "confirmDeleteRole", false)))
         );
     }
 

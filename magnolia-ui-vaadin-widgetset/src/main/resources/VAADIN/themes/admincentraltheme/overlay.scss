@@ -42,6 +42,10 @@
     filter:alpha(opacity = 80);
 }
 
+.cke_dialog_background_cover {
+    background-color: $c90 !important;
+}
+
 .overlay.modality-light .modal-curtain{
     background-color:transparent;
 }

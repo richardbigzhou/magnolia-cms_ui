@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -52,11 +52,6 @@ public class MagnoliaRichTextFieldConfig extends CKEditorConfig {
     private List<String> events = new ArrayList<String>();
 
     private Map<String, String> serverSidePlugins = new HashMap<String, String>();
-
-    public MagnoliaRichTextFieldConfig() {
-        addToRemovePlugins("elementspath");
-        addToRemovePlugins("image");
-    }
 
     /**
      * Adds list of toolbar groups. Groups are placed in one

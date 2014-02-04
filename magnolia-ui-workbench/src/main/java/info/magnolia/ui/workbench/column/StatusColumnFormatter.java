@@ -95,13 +95,11 @@ public class StatusColumnFormatter extends AbstractColumnFormatter<StatusColumnD
             if (definition.isPermissions()) {
                 try {
                     node.getSession().checkPermission(node.getPath(), Session.ACTION_ADD_NODE + "," + Session.ACTION_REMOVE + "," + Session.ACTION_SET_PROPERTY);
-                    permissionStatus += "icon-edit";
                 } catch (AccessControlException e) {
-                    permissionStatus += "icon-read-only";
+                    permissionStatus = "<span class=\"icon-read-only\"></span>";
                 } catch (RepositoryException e) {
                     throw new RuntimeException("Could not access the JCR permissions for the following node identifier " + itemId, e);
                 }
-                permissionStatus = "<span class=\"" + permissionStatus + "\"></span>";
             }
 
             return activationStatus + permissionStatus;

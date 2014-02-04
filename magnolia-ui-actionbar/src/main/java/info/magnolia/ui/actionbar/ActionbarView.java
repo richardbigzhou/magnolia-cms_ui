@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.actionbar;
+package info.magnolia.ui.actionbar;
 
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.gwt.client.actionbar.shared.ActionbarItem;
@@ -49,11 +49,12 @@ public interface ActionbarView extends View {
 
     void removeSection(String sectionName);
 
-    void setSectionPreview(Resource previewResource, String sectionName);
+    void setPreview(final Resource previewResource);
 
     void addAction(ActionbarItem action, String sectionName);
 
     void removeAction(String actionName);
+
 
     // ENABLE / DISABLE
     void setActionEnabled(String actionName, boolean isEnabled);

@@ -165,9 +165,8 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
     }
 
     @Test
-    public void testPermissionStatus() throws RepositoryException {
+    public void testReadPermissionsAreNotShown() throws RepositoryException {
         // GIVEN
-        statusColumnDefinition.setPermissions(true);
         statusColumnDefinition.setActivation(false);
         StatusColumnFormatter statusColumnFormatter = new StatusColumnFormatter(statusColumnDefinition);
 
@@ -176,7 +175,7 @@ public class StatusColumnFormatterTest extends RepositoryTestCase {
 
         // THEN
         assertNotNull(res);
-        assertEquals("<span class=\"icon-edit\"></span>", res.toString());
+        assertEquals("", res.toString());
     }
 
 }
