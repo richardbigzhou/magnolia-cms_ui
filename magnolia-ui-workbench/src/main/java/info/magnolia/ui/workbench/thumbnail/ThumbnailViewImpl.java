@@ -43,7 +43,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.vaadin.data.Container;
-import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
 
 /**
@@ -66,7 +65,7 @@ public class ThumbnailViewImpl implements ThumbnailView {
 
             @Override
             public void onThumbnailSelected(final String itemId) {
-                Set<String> items = new LinkedHashSet<String>();
+                Set<Object> items = new LinkedHashSet<Object>();
                 items.add(itemId);
                 listener.onItemSelection(items);
             }
@@ -76,8 +75,7 @@ public class ThumbnailViewImpl implements ThumbnailView {
 
             @Override
             public void onThumbnailDblClicked(final String itemId) {
-                Item node = thumbnailLayout.getContainerDataSource().getItem(itemId);
-                listener.onDoubleClick(node);
+                listener.onDoubleClick(itemId);
             }
         });
 
@@ -85,11 +83,10 @@ public class ThumbnailViewImpl implements ThumbnailView {
 
             @Override
             public void onThumbnailRightClicked(final String itemId, int clickX, int clickY) {
-                Item node = thumbnailLayout.getContainerDataSource().getItem(itemId);
-                Set<String> items = new LinkedHashSet<String>();
+                Set<Object> items = new LinkedHashSet<Object>();
                 items.add(itemId);
                 listener.onItemSelection(items);
-                listener.onRightClick(node, clickX, clickY);
+                listener.onRightClick(itemId, clickX, clickY);
             }
         });
     }
@@ -100,11 +97,11 @@ public class ThumbnailViewImpl implements ThumbnailView {
     }
 
     @Override
-    public void select(List<String> itemIds) {
+    public void select(List<Object> itemIds) {
         // ThumbnailLayout only supports single selection and because the client requests thumbnails we set the
         // selected itemId so it can update selection when that happens
-        String itemId = itemIds == null || itemIds.isEmpty() ? null : itemIds.get(0);
-        thumbnailLayout.setSelectedItemId(itemId);
+        Object itemId = itemIds == null || itemIds.isEmpty() ? null : itemIds.get(0);
+        thumbnailLayout.setSelectedItemId((String)itemId);
     }
 
     @Override
@@ -140,7 +137,7 @@ public class ThumbnailViewImpl implements ThumbnailView {
     }
 
     @Override
-    public void expand(String itemId) {
+    public void expand(Object itemId) {
     }
 
 }

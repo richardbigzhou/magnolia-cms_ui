@@ -47,12 +47,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,26 +137,26 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
      */
     protected List<String> getAllIdentifiers(final String workspaceName) {
         List<String> uuids = new ArrayList<String>();
-        final String query = constructQuery();
-        try {
-            QueryManager qm = MgnlContext.getJCRSession(workspaceName).getWorkspace().getQueryManager();
-            Query q = qm.createQuery(query, Query.JCR_SQL2);
-
-            log.debug("Executing query statement [{}] on workspace [{}]", query, workspaceName);
-            long start = System.currentTimeMillis();
-
-            QueryResult queryResult = q.execute();
-            NodeIterator iter = queryResult.getNodes();
-
-            while (iter.hasNext()) {
-                uuids.add(iter.nextNode().getIdentifier());
-            }
-
-            log.debug("Done collecting {} nodes in {}ms", uuids.size(), System.currentTimeMillis() - start);
-
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
+//        final String query = constructQuery();
+//        try {
+//            QueryManager qm = MgnlContext.getJCRSession(workspaceName).getWorkspace().getQueryManager();
+//            Query q = qm.createQuery(query, Query.JCR_SQL2);
+//
+//            log.debug("Executing query statement [{}] on workspace [{}]", query, workspaceName);
+//            long start = System.currentTimeMillis();
+//
+//            QueryResult queryResult = q.execute();
+//            NodeIterator iter = queryResult.getNodes();
+//
+//            while (iter.hasNext()) {
+//                uuids.add(iter.nextNode().getIdentifier());
+//            }
+//
+//            log.debug("Done collecting {} nodes in {}ms", uuids.size(), System.currentTimeMillis() - start);
+//
+//        } catch (RepositoryException e) {
+//            throw new RuntimeRepositoryException(e);
+//        }
         return uuids;
     }
 

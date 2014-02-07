@@ -33,29 +33,21 @@
  */
 package info.magnolia.ui.workbench.thumbnail;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.imageprovider.ImageProvider;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.thumbnail.ThumbnailContainer.ThumbnailItem;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vaadin.data.Item;
 
 /**
  * The ThumbnailPresenter is responsible for creating, configuring and updating a thumbnail grid of items according to the workbench definition.
@@ -104,42 +96,26 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     }
 
     @Override
-    public void onItemSelection(Set<String> items) {
-        super.onItemSelection(items);
+    public void onItemSelection(Set<Object> itemIds) {
+        super.onItemSelection(itemIds);
     }
 
     @Override
-    public void onDoubleClick(Item item) {
-        JcrItemAdapter jcrItem = getJcrItemByThumbnailItem(item);
-        super.onDoubleClick(jcrItem);
+    public void onDoubleClick(Object itemId) {
+        super.onDoubleClick(itemId);
     }
 
     @Override
-    public void onRightClick(Item item, int clickX, int clickY) {
-        JcrItemAdapter jcrItem = getJcrItemByThumbnailItem(item);
-        super.onRightClick(jcrItem, clickX, clickY);
+    public void onRightClick(Object itemId, int clickX, int clickY) {
+        super.onRightClick(itemId, clickX, clickY);
     }
 
     @Override
     public void select(List<String> itemIds) {
-        view.select(itemIds);
-    }
-
-    /**
-     * Thumbnail container uses specific Thumbnail items, so we have to convert those into JcrItemAdapters.
-     */
-    private JcrItemAdapter getJcrItemByThumbnailItem(final Item item) {
-        if (item instanceof ThumbnailItem) {
-            String itemId = ((ThumbnailItem) item).getItemId();
-            try {
-                Session session = MgnlContext.getJCRSession(workbenchDefinition.getWorkspace());
-                final Node imageNode = session.getNodeByIdentifier(itemId);
-                return new JcrNodeAdapter(imageNode);
-            } catch (RepositoryException e) {
-                log.error(e.getMessage());
-            }
+        List<Object> objectIds = new ArrayList<Object>();
+        for (Object itemId : itemIds) {
+            objectIds.add(itemId);
         }
-        return null;
+        view.select(objectIds);
     }
-
 }

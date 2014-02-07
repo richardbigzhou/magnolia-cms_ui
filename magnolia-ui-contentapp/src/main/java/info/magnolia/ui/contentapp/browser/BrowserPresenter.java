@@ -37,12 +37,13 @@ import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionExecutor;
-import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.imageprovider.ImageProvider;
+import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
@@ -61,6 +62,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,9 +79,17 @@ public class BrowserPresenter extends BrowserPresenterBase {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
+    private final ImageProvider imageProvider;
+
     @Inject
     public BrowserPresenter(ActionExecutor actionExecutor, SubAppContext subAppContext, BrowserView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, @Named(SubAppEventBus.NAME) EventBus subAppEventBus, ActionbarPresenter actionbarPresenter, ComponentProvider componentProvider, WorkbenchPresenter workbenchPresenter) {
-        super(actionExecutor, subAppContext, view, admincentralEventBus, subAppEventBus, actionbarPresenter, componentProvider, workbenchPresenter);
+        super(actionExecutor, subAppContext, view, admincentralEventBus, subAppEventBus, actionbarPresenter, workbenchPresenter);
+        ImageProviderDefinition imageProviderDefinition = ((BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor()).getImageProvider();
+        if (imageProviderDefinition == null) {
+            this.imageProvider = null;
+        } else {
+            this.imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
+        }
     }
 
     @Override
@@ -130,13 +140,15 @@ public class BrowserPresenter extends BrowserPresenterBase {
     }
 
     @Override
-    protected List<Item> getSelectedItems() {
+    public List<Item> getSelectedItems() {
         List<Item> items = new ArrayList<Item>(getSelectedItemIds().size());
         List<javax.jcr.Item> jcrItems = new ArrayList<javax.jcr.Item>(getSelectedItemIds().size());
-        for (String itemId : getSelectedItemIds()) {
-            javax.jcr.Item item = null;
+        for (Object itemId : getSelectedItemIds()) {
             try {
-                item = JcrItemUtil.getJcrItem(getWorkspace(), itemId);
+                javax.jcr.Item item = JcrItemUtil.getJcrItem(getWorkspace(), String.valueOf(itemId));
+                jcrItems.add(item);
+                JcrItemAdapter adapter = item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((Property) item);
+                items.add(adapter);
             } catch (PathNotFoundException p) {
                 Message error = new Message(MessageType.ERROR, "Could not get item ", "Following Item not found :" + getSelectedItemIds().get(0));
                 getAppContext().sendLocalMessage(error);
@@ -144,22 +156,31 @@ public class BrowserPresenter extends BrowserPresenterBase {
                 Message error = new Message(MessageType.ERROR, "Could not get item: " + getSelectedItemIds().get(0), e.getMessage());
                 //log.error("An error occurred while executing action [{}]", actionName, e);
                 getAppContext().sendLocalMessage(error);
-                jcrItems.add(item);
-                JcrItemAdapter adapter = item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((Property) item);
-                items.add(adapter);
             }
         }
         return items;
     }
 
     @Override
-    protected boolean verifyItemExists(String itemId) {
+    protected boolean verifyItemExists(Object itemId) {
         try {
-            return JcrItemUtil.itemExists(getWorkspace(), itemId);
+            return JcrItemUtil.itemExists(getWorkspace(), String.valueOf(itemId));
         } catch (RepositoryException e) {
             log.warn("Unable to get node or property [{}] for preview image", itemId, e);
             return false;
         }
+    }
+
+    @Override
+    protected Object getPreviewImageForId(Object itemId) {
+        if (StringUtils.isBlank(String.valueOf(itemId))) {
+            return null;
+        } else {
+            if (imageProvider != null) {
+                return imageProvider.getThumbnailResourceById(getWorkbenchPresenter().getWorkspace(), String.valueOf(itemId), ImageProvider.PORTRAIT_GENERATOR);
+            }
+        }
+        return null;
     }
 
 }

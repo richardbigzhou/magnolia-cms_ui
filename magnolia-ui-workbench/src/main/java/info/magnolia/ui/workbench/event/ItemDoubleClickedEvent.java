@@ -50,20 +50,13 @@ public class ItemDoubleClickedEvent implements Event<ItemDoubleClickedEvent.Hand
         void onItemDoubleClicked(ItemDoubleClickedEvent event);
     }
 
-    private String workspace;
+    private Object path;
 
-    private String path;
-
-    public ItemDoubleClickedEvent(String workspace, String path) {
-        this.workspace = workspace;
+    public ItemDoubleClickedEvent(Object path) {
         this.path = path;
     }
 
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public String getPath() {
+    public Object getId() {
         return path;
     }
 

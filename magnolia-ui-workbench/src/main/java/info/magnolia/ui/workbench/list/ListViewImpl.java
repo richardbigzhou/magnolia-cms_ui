@@ -123,12 +123,12 @@ public class ListViewImpl implements ListView {
                 log.debug("Handle value change Event: {}:{} for listener {}", value.getClass(), value, listener);
 
                 if (listener != null) {
-                    Set<String> items;
+                    Set<Object> items;
                     if (value instanceof Set) {
                         items = (Set) value;
                     } else {
-                        items = new LinkedHashSet<String>();
-                        items.add((String) value);
+                        items = new LinkedHashSet<Object>();
+                        items.add(value);
                     }
                     listener.onItemSelection(items);
                 }
@@ -142,21 +142,21 @@ public class ListViewImpl implements ListView {
 
                 if (event.getButton() == MouseButton.RIGHT) {
                     if (listener != null) {
-                        listener.onRightClick(event.getItem(), event.getClientX(), event.getClientY());
+                        listener.onRightClick(String.valueOf(event.getItemId()), event.getClientX(), event.getClientY());
                     }
                 } else if (event.isDoubleClick()) {
                     if (listener != null) {
-                        listener.onDoubleClick(event.getItem());
+                        listener.onDoubleClick(String.valueOf(event.getItemId()));
                     }
                 } else {
                     Object value = table.getValue();
                     if (value != null) {
-                        Set<String> items;
+                        Set<Object> items;
                         if (value instanceof Set) {
-                            items = (Set<String>) value;
+                            items = (Set<Object>) value;
                         } else {
-                            items = new LinkedHashSet<String>();
-                            items.add((String) value);
+                            items = new LinkedHashSet<Object>();
+                            items.add(value);
                         }
                         if (items.size() == 1 && items.iterator().next().equals(event.getItemId())) {
                             table.setValue(null);
@@ -217,10 +217,10 @@ public class ListViewImpl implements ListView {
     }
 
     @Override
-    public void select(List<String> itemIds) {
+    public void select(List<Object> itemIds) {
         table.setValue(null);
         if (itemIds != null && !itemIds.isEmpty()) {
-            for (String id : itemIds) {
+            for (Object id : itemIds) {
                 table.select(id);
             }
         }
@@ -228,7 +228,7 @@ public class ListViewImpl implements ListView {
     }
 
     @Override
-    public void expand(String itemId) {
+    public void expand(Object itemId) {
     }
 
     @Override

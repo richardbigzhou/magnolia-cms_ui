@@ -60,6 +60,7 @@ import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -108,14 +109,14 @@ public abstract class BrowserSubAppBase extends BaseSubApp<ContentSubAppView> {
 
     private static final Logger log = LoggerFactory.getLogger(BrowserSubApp.class);
 
-    private final BrowserPresenter browser;
+    private final BrowserPresenterBase browser;
     private final EventBus subAppEventBus;
     private ActionExecutor actionExecutor;
     private ComponentProvider componentProvider;
     protected String workbenchRoot;
 
     @Inject
-    public BrowserSubAppBase(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final ComponentProvider componentProvider) {
+    public BrowserSubAppBase(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenterBase browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final ComponentProvider componentProvider) {
         super(subAppContext, view);
         if (subAppContext == null || view == null || browser == null || subAppEventBus == null) {
             throw new IllegalArgumentException("Constructor does not allow for null args. Found SubAppContext = " + subAppContext + ", ContentSubAppView = " + view + ", BrowserPresenter = " + browser + ", EventBus = " + subAppEventBus);
@@ -127,14 +128,24 @@ public abstract class BrowserSubAppBase extends BaseSubApp<ContentSubAppView> {
         this.workbenchRoot = getWorkbench().getPath();
     }
 
-    protected abstract String ensureSelection(String path, WorkbenchDefinition workbench);
+    protected abstract Object ensureSelection(String urlFragmentPath, WorkbenchDefinition workbench);
 
-    protected abstract String getRootItemId(WorkbenchDefinition workbench);
+    protected Object getRootItemId() {
+        return browser.getWorkbenchPresenter().resolveWorkbenchRoot();
+    }
+
 
     //TODO JCRFREE - consider Actionbar availability interface that would encapsulate JCR/Non-JCR availability logic
-    protected abstract boolean verifyAvailability(Item item, AvailabilityDefinition availability);
+    protected boolean verifyAvailability(Item item, AvailabilityDefinition availability) {
+        // If this is the root item we display the section only if the root property is set
+        if (item == null) {
+            return availability.isRoot();
+        }
 
-    protected abstract void applySelectionToLocation(BrowserLocation location, String selectedId);
+        return false;
+    }
+
+    protected abstract void applySelectionToLocation(BrowserLocation location, Object selectedId);
 
     /**
      * Performs some routine tasks needed by all content subapps before the view is displayed.
@@ -193,9 +204,11 @@ public abstract class BrowserSubAppBase extends BaseSubApp<ContentSubAppView> {
 
         BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
 
-        String itemId = ensureSelection(path, subAppDescriptor.getWorkbench());
-        getBrowser().resync(Arrays.asList(itemId), viewType, query);
-        updateActionbar(getBrowser().getActionbarPresenter());
+        Object itemId = ensureSelection(path, subAppDescriptor.getWorkbench());
+        if (itemId != null) {
+            getBrowser().resync(Arrays.asList(itemId), viewType, query);
+            updateActionbar(getBrowser().getActionbarPresenter());
+        }
     }
 
 
@@ -233,9 +246,9 @@ public abstract class BrowserSubAppBase extends BaseSubApp<ContentSubAppView> {
         }
         List<ActionbarSectionDefinition> sections = actionbarDefinition.getSections();
 
-        String workbenchRootItemId = getRootItemId(workbench);
-        List<String> selectedItemIds = getBrowser().getSelectedItemIds();
-        List<Item> items = getSelectedItems(workbench, selectedItemIds, workbenchRootItemId);
+        Object workbenchRootItemId = getRootItemId();
+        List<Object> selectedItemIds = getBrowser().getSelectedItemIds();
+        List<Item> items = getSelectedItems();
 
         // Figure out which section to show, only one
         ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, items);
@@ -265,7 +278,9 @@ public abstract class BrowserSubAppBase extends BaseSubApp<ContentSubAppView> {
         }
     }
 
-    protected abstract List<Item> getSelectedItems(WorkbenchDefinition workbench, List<String> selectedItemIds, String workbenchRootItemId);
+    protected List<Item> getSelectedItems() {
+        return browser.getSelectedItems();
+    }
 
     /**
      * Add an additional menu item on the actionPopup.
@@ -302,9 +317,9 @@ public abstract class BrowserSubAppBase extends BaseSubApp<ContentSubAppView> {
         }
         List<ActionbarSectionDefinition> sections = actionbarDefinition.getSections();
 
-        String workbenchRootItemId = getRootItemId(workbench);
-        List<String> selectedItemIds = getBrowser().getSelectedItemIds();
-        List<Item> items = getSelectedItems(workbench, selectedItemIds, workbenchRootItemId);
+        Object workbenchRootItemId = getRootItemId();
+        List<Object> selectedItemIds = getBrowser().getSelectedItemIds();
+        List<Item> items = getSelectedItems();
 
         // Figure out which section to show, only one
         ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, items);
@@ -387,7 +402,7 @@ public abstract class BrowserSubAppBase extends BaseSubApp<ContentSubAppView> {
     }
 
 
-    protected final BrowserPresenter getBrowser() {
+    protected final BrowserPresenterBase getBrowser() {
         return browser;
     }
 
@@ -465,9 +480,14 @@ public abstract class BrowserSubAppBase extends BaseSubApp<ContentSubAppView> {
         });
     }
 
-    private void handleSelectionChange(List<String> selectionIds, ActionbarPresenter actionbar) {
+    /**
+     * TODO call applySelectionToLocation with proper parameters (convert id to string value)
+     * @param selectionIds
+     * @param actionbar
+     */
+    private void handleSelectionChange(Set<Object> selectionIds, ActionbarPresenter actionbar) {
         BrowserLocation location = getCurrentLocation();
-        applySelectionToLocation(location, selectionIds.isEmpty() ? "" : selectionIds.get(0));
+        applySelectionToLocation(location, selectionIds.isEmpty() ? "" : selectionIds.iterator().next());
         getAppContext().updateSubAppLocation(getSubAppContext(), location);
         updateActionbar(actionbar);
 

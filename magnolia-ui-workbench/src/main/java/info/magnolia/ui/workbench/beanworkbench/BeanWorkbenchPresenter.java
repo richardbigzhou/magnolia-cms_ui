@@ -31,43 +31,62 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.search;
+package info.magnolia.ui.workbench.beanworkbench;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.list.ListPresenter;
-import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
+import info.magnolia.ui.workbench.WorkbenchPresenterBase;
+import info.magnolia.ui.workbench.WorkbenchStatusBarPresenter;
+import info.magnolia.ui.workbench.WorkbenchView;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
+import com.vaadin.data.Container;
+import com.vaadin.data.Item;
+import com.vaadin.data.util.FilesystemContainer;
+
 /**
- * The SearchPresenter is responsible for handling a list of search results according to the workbench definition.
+ * Created with IntelliJ IDEA.
+ * User: sasha
+ * Date: 04/02/14
+ * Time: 22:36
+ * To change this template use File | Settings | File Templates.
  */
-public class SearchPresenter extends ListPresenter implements SearchView.Listener {
+public class BeanWorkbenchPresenter extends WorkbenchPresenterBase<Object> {
+
+    private FilesystemContainer container = new FilesystemContainer(new File("/Users/sasha/test"));
 
     @Inject
-    public SearchPresenter(SearchView view, ComponentProvider componentProvider, HierarchicalJcrContainer container) {
-        super(view, componentProvider, container);
+    public BeanWorkbenchPresenter(WorkbenchView view, ComponentProvider componentProvider, WorkbenchStatusBarPresenter statusBarPresenter) {
+        super(view, componentProvider, statusBarPresenter);
     }
 
     @Override
-    protected SearchJcrContainer createContainer(WorkbenchDefinition workbench) {
-        return new SearchJcrContainer(workbench);
+    public Object resolveWorkbenchRoot() {
+        return new File("/Users/sasha/test");
     }
 
     @Override
-    public SearchJcrContainer getContainer() {
-        return (SearchJcrContainer) super.getContainer();
+    public Item getItemFor(Object itemId) {
+        return container.getItem(itemId);
     }
 
-    public void search(String fulltextExpr) {
-        getContainer().setFullTextExpression(fulltextExpr);
-        refresh();
+    @Override
+    protected List<Object> filterExistingItems(List<Object> itemIds) {
+        List<Object> result = new ArrayList<Object>();
+        for (Object id : itemIds) {
+            if (container.containsId(id)) {
+                result.add(id);
+            }
+        }
+        return result;
     }
 
-    public void clear() {
-        getContainer().setFullTextExpression(null);
-        refresh();
+    @Override
+    protected Container getContainer() {
+        return container;
     }
-
 }

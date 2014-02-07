@@ -31,43 +31,45 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.search;
+package info.magnolia.ui.contentapp.browser.beanbrowser;
 
+import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.api.action.ActionExecutor;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.api.app.SubAppEventBus;
+import info.magnolia.ui.contentapp.ContentSubAppView;
+import info.magnolia.ui.contentapp.browser.BrowserLocation;
+import info.magnolia.ui.contentapp.browser.BrowserSubAppBase;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.list.ListPresenter;
-import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
+
+import java.io.File;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
- * The SearchPresenter is responsible for handling a list of search results according to the workbench definition.
+ * Created with IntelliJ IDEA.
+ * User: sasha
+ * Date: 04/02/14
+ * Time: 23:46
+ * To change this template use File | Settings | File Templates.
  */
-public class SearchPresenter extends ListPresenter implements SearchView.Listener {
+public class BeanBrowserSubApp extends BrowserSubAppBase {
 
     @Inject
-    public SearchPresenter(SearchView view, ComponentProvider componentProvider, HierarchicalJcrContainer container) {
-        super(view, componentProvider, container);
+    public BeanBrowserSubApp(ActionExecutor actionExecutor, SubAppContext subAppContext, ContentSubAppView view, BeanBrowserPresenter browser, @Named(SubAppEventBus.NAME) EventBus subAppEventBus, ComponentProvider componentProvider) {
+        super(actionExecutor, subAppContext, view, browser, subAppEventBus, componentProvider);
     }
 
     @Override
-    protected SearchJcrContainer createContainer(WorkbenchDefinition workbench) {
-        return new SearchJcrContainer(workbench);
+    protected Object ensureSelection(String urlFragmentPath, WorkbenchDefinition workbench) {
+        return getBrowser().getWorkbenchPresenter().getItemFor(new File("/Users/sasha/test"));
     }
 
     @Override
-    public SearchJcrContainer getContainer() {
-        return (SearchJcrContainer) super.getContainer();
-    }
+    protected void applySelectionToLocation(BrowserLocation location, Object selectedId) {
 
-    public void search(String fulltextExpr) {
-        getContainer().setFullTextExpression(fulltextExpr);
-        refresh();
-    }
-
-    public void clear() {
-        getContainer().setFullTextExpression(null);
-        refresh();
     }
 
 }

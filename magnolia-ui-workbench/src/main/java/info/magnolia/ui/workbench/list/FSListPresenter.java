@@ -35,30 +35,39 @@ package info.magnolia.ui.workbench.list;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.workbench.AbstractContentPresenter;
+import info.magnolia.ui.workbench.AbstractContentPresenterBase;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
-
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
+import info.magnolia.ui.workbench.tree.TreeView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import com.vaadin.data.Item;
+import com.vaadin.data.util.FilesystemContainer;
+import com.vaadin.ui.Table;
+
 /**
- * The ListPresenter is responsible for creating, configuring and updating a list of items according to the workbench definition.
+ * Created with IntelliJ IDEA.
+ * User: sasha
+ * Date: 05/02/14
+ * Time: 11:18
+ * To change this template use File | Settings | File Templates.
  */
-public class ListPresenter extends AbstractContentPresenter implements ListView.Listener {
+public class FSListPresenter extends AbstractContentPresenterBase<File> implements ListView.Listener {
+
 
     protected final ListView view;
 
-    protected AbstractJcrContainer container;
+    protected FilesystemContainer container;
 
     @Inject
-    public ListPresenter(final ListView view, final ComponentProvider componentProvider, HierarchicalJcrContainer container) {
+    public FSListPresenter(final TreeView view, final ComponentProvider componentProvider, FilesystemContainer container) {
         super(componentProvider);
         this.view = view;
         this.container = container;
@@ -71,6 +80,7 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
         //this.container = createContainer(workbench);
         view.setListener(this);
         view.setContainer(container);
+        ((Table)view.asVaadinComponent()).setVisibleColumns(new Object[]{});
 
         // build columns
         Iterator<ColumnDefinition> it = getColumnsIterator();
@@ -80,7 +90,7 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
 
             String propertyId = column.getPropertyName() != null ? column.getPropertyName() : column.getName();
             String title = column.getLabel();
-            container.addContainerProperty(propertyId, column.getType(), null);
+            //container.addContainerProperty(propertyId, column.getType(), null);
 
             if (column.getWidth() > 0) {
                 view.addColumn(propertyId, title, column.getWidth());
@@ -95,7 +105,7 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
             }
 
             if (column.isSortable()) {
-                container.addSortableProperty(propertyId);
+                //container.addSortableProperty(propertyId);
             }
         }
 
@@ -103,7 +113,22 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     }
 
     @Override
-    public void select(List<String> itemIds) {
+    protected File resolveWorkbenchRootId() {
+        return new File("/Users/sasha/test");
+    }
+
+    @Override
+    protected String getItemId(Item item) {
+        return null;//getContainer().;
+    }
+
+    @Override
+    public String getIcon(Item item) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void select(List<File> itemIds) {
         List<Object> objectIds = new ArrayList<Object>();
         for (Object itemId : itemIds) {
             objectIds.add(itemId);
@@ -114,16 +139,12 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     @Override
     public void refresh() {
         // This will update the row count and display the newly created items.
-        container.refresh();
-        container.fireItemSetChange();
-    }
-
-    protected AbstractJcrContainer createContainer(WorkbenchDefinition workbench) {
-        return new FlatJcrContainer(workbench);
+        //container.refresh();
+        //container.fireItemSetChange();
     }
 
     @Override
-    protected AbstractJcrContainer getContainer() {
+    protected FilesystemContainer getContainer() {
         return container;
     }
 

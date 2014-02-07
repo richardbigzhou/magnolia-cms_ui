@@ -48,7 +48,7 @@ import java.util.List;
  * Content presenters are configured using the <code>implentationClass</code> property of a {@link info.magnolia.ui.workbench.definition.ContentPresenterDefinition},
  * and by registering such definition in the workbench's contentViews node in configuration.
  */
-public interface ContentPresenter {
+public interface ContentPresenter<IDTYPE> {
 
     /**
      * Initializes the presenter with the workbench definition, eventBus and viewType name.
@@ -68,17 +68,17 @@ public interface ContentPresenter {
     /**
      * @return the selected item ids in the content view.
      */
-    List<String> getSelectedItemIds();
+    List<IDTYPE> getSelectedItemIds();
 
     /**
      * Sets the selected item ids for this presenter to react on, e.g. with keyboard shortcuts.
      */
-    void setSelectedItemIds(List<String> itemId);
+    void setSelectedItemIds(List<IDTYPE> itemId);
 
     /**
      * Selects the given items in the content view.
      */
-    void select(List<String> itemIds);
+    void select(List<IDTYPE> itemIds);
 
     /**
      * Make sure the given items are visible in the content view.

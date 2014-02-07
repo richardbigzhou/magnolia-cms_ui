@@ -160,20 +160,21 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
 //        }
 
         // Must have _any_ of the node types if any are specified, otherwise its available by default
-        if (availability.getNodeTypes().isEmpty()) {
-            return availability.isNodes();
-        }
-
-        for (String nodeType : availability.getNodeTypes()) {
-            try {
-                if (NodeUtil.isNodeType((Node) item, nodeType)) {
-                    return true;
-                }
-            } catch (RepositoryException e) {
-                log.error("Could not determine node type of node " + NodeUtil.getNodePathIfPossible((Node) item));
-            }
-        }
-
-        return false;
+//        if (availability.getNodeTypes().isEmpty()) {
+//            return availability.isNodes();
+//        }
+//
+//        for (String nodeType : availability.getNodeTypes()) {
+//            try {
+//                if (NodeUtil.isNodeType(item, nodeType)) {
+//                    return true;
+//                }
+//            } catch (RepositoryException e) {
+//                log.error("Could not determine node type of node " + NodeUtil.getNodePathIfPossible((Node) item));
+//            }
+//        }
+//
+//        return false;
+        return true;
     }
 }

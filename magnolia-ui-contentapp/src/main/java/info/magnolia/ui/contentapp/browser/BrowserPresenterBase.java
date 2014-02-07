@@ -34,10 +34,9 @@
 package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
+import info.magnolia.ui.actionbar.ActionbarView;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.AppContext;
@@ -47,11 +46,8 @@ import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
-import info.magnolia.ui.imageprovider.ImageProvider;
-import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.integration.NullItem;
-import info.magnolia.ui.workbench.WorkbenchPresenter;
+import info.magnolia.ui.workbench.WorkbenchPresenterBase;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
@@ -59,6 +55,7 @@ import info.magnolia.ui.workbench.event.ItemShortcutKeyEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Named;
@@ -82,12 +79,13 @@ import com.vaadin.server.Resource;
  * </ul>
  * <p>
  * Its main configuration point is the {@link info.magnolia.ui.workbench.definition.WorkbenchDefinition} through which one defines the JCR workspace to connect to, the columns/properties to display, the available actions and so on.
+ * TODO JCRFREE - consider generic id type here.
  */
 public abstract class BrowserPresenterBase implements ActionbarPresenter.Listener, BrowserView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(BrowserPresenter.class);
 
-    private WorkbenchPresenter workbenchPresenter;
+    private WorkbenchPresenterBase workbenchPresenter;
 
     private final ActionExecutor actionExecutor;
 
@@ -101,13 +99,11 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
 
     private final ActionbarPresenter actionbarPresenter;
 
-    private final ImageProvider imageProvider;
-
     private final AppContext appContext;
 
     public BrowserPresenterBase(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final BrowserView view, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
                                 final @Named(SubAppEventBus.NAME) EventBus subAppEventBus,
-                                final ActionbarPresenter actionbarPresenter, final ComponentProvider componentProvider, WorkbenchPresenter workbenchPresenter) {
+                                final ActionbarPresenter actionbarPresenter, WorkbenchPresenterBase workbenchPresenter) {
         this.workbenchPresenter = workbenchPresenter;
         this.actionExecutor = actionExecutor;
         this.view = view;
@@ -116,13 +112,6 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
         this.actionbarPresenter = actionbarPresenter;
         this.appContext = subAppContext.getAppContext();
         this.subAppDescriptor = (BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor();
-
-        ImageProviderDefinition imageProviderDefinition = subAppDescriptor.getImageProvider();
-        if (imageProviderDefinition == null) {
-            this.imageProvider = null;
-        } else {
-            this.imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
-        }
     }
 
 
@@ -132,7 +121,7 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
         actionbarPresenter.setListener(this);
 
         WorkbenchView workbenchView = workbenchPresenter.start(subAppDescriptor.getWorkbench(), subAppDescriptor.getImageProvider(), subAppEventBus);
-        ActionbarView actionbar = actionbarPresenter.start(subAppDescriptor.getActionbar());
+        ActionbarView actionbar = actionbarPresenter.start(subAppDescriptor.getActionbar(), subAppDescriptor.getActions());
 
         view.setWorkbenchView(workbenchView);
         view.setActionbarView(actionbar);
@@ -158,9 +147,9 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
                     }
 
                     // use just the first selected item to show the preview image
-                    String itemId = getSelectedItemIds().get(0);
+                    Object itemId = getSelectedItemIds().get(0);
                     if (verifyItemExists(itemId)) {
-                        refreshActionbarPreviewImage(itemId, event.getWorkspace());
+                        refreshActionbarPreviewImage(itemId);
                     }
 
                 }
@@ -172,7 +161,7 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
             @Override
             public void onSelectionChanged(SelectionChangedEvent event) {
                 // if exactly one node is selected, use it for preview
-                refreshActionbarPreviewImage(event.getFirstItemId(), event.getWorkspace());
+                refreshActionbarPreviewImage(event.getFirstItemId());
             }
         });
 
@@ -218,9 +207,20 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
         });
     }
 
-    protected abstract boolean verifyItemExists(String itemId);
+    private void refreshActionbarPreviewImage(Object itemId) {
+        Object previewResource = getPreviewImageForId(itemId);
+        if (previewResource instanceof Resource) {
+            getActionbarPresenter().setPreview((Resource) previewResource);
+        } else {
+            getActionbarPresenter().setPreview(null);
+        }
+    }
 
-    public List<String> getSelectedItemIds() {
+    protected boolean verifyItemExists(Object itemId) {
+        return getWorkbenchPresenter().getItemFor(itemId) != null;
+    }
+
+    public List<Object> getSelectedItemIds() {
         return workbenchPresenter.getSelectedIds();
     }
 
@@ -251,25 +251,13 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
     /**
      * Synchronizes the underlying view to reflect the status extracted from the Location token, i.e. selected itemId,
      * view type and optional query (in case of a search view).
+     * TODO JCRFREE - consider generic id type here
      */
-    public void resync(final List<String> itemIds, final String viewType, final String query) {
+    public void resync(final List<Object> itemIds, final String viewType, final String query) {
         workbenchPresenter.resynch(itemIds, viewType, query);
     }
 
-    private void refreshActionbarPreviewImage(final String itemId, final String workspace) {
-        if (StringUtils.isBlank(itemId)) {
-            actionbarPresenter.setPreview(null);
-        } else {
-            if (imageProvider != null) {
-                Object previewResource = imageProvider.getThumbnailResourceById(workspace, itemId, ImageProvider.PORTRAIT_GENERATOR);
-                if (previewResource instanceof Resource) {
-                    actionbarPresenter.setPreview((Resource) previewResource);
-                } else {
-                    actionbarPresenter.setPreview(null);
-                }
-            }
-        }
-    }
+    protected abstract Object getPreviewImageForId(final Object itemId);
 
     @Override
     public void onActionbarItemClicked(String itemName) {
@@ -283,19 +271,7 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
         executeAction(actionName);
     }
 
-    @Override
-    public String getLabel(String itemName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(itemName);
-        return actionDefinition != null ? actionDefinition.getLabel() : null;
-    }
-
-    @Override
-    public String getIcon(String itemName) {
-        ActionDefinition actionDefinition = actionExecutor.getActionDefinition(itemName);
-        return actionDefinition != null ? actionDefinition.getIcon() : null;
-    }
-
-    public WorkbenchPresenter getWorkbenchPresenter() {
+    public WorkbenchPresenterBase getWorkbenchPresenter() {
         return workbenchPresenter;
     }
 
@@ -329,19 +305,6 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
 
     private void executeAction(String actionName) {
         try {
-//            if (getSelectedItemIds().size() == 1) {
-//                // This is done this way, because most actions do not support multiple items, and expect just one Item
-//                // in the constructor. So if we passed List<Item> containing this one Item to the ActionExecutor, it'd
-//                // fail, because the ComponentProvider wouldn't find suitable constructor for the Action.
-//                // Changing this would require to rewrite all the actions to accept the List<Item> in the constructor...
-//                javax.jcr.Item item = JcrItemUtil.getJcrItem(getWorkspace(), getSelectedItemIds().get(0));
-//                String workbenchRootId = JcrItemUtil.getItemId(getWorkspace(), subAppDescriptor.getWorkbench().getPath());
-//                boolean isWorkbenchRoot = JcrItemUtil.getItemId(item).equals(workbenchRootId);
-//                // if the item is workbench root (i.e. no real item is selected), we have to pass null to the isAvailable method
-//                if (actionExecutor.isAvailable(actionName, isWorkbenchRoot ? null : item)) {
-//                    actionExecutor.execute(actionName, item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((Property) item));
-//                }
-//            } else {
             List<Item> items = getSelectedItems();
             if (actionExecutor.isAvailable(actionName, items.toArray(new Item[items.size()]))) {
                 actionExecutor.execute(actionName, items, items.isEmpty() ? new NullItem() : items.get(0));
@@ -357,7 +320,13 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
         return appContext;
     }
 
-    protected abstract List<Item> getSelectedItems();
-
-
+    public List<Item> getSelectedItems() {
+        WorkbenchPresenterBase workbenchPresenter = getWorkbenchPresenter();
+        List<Object> selectedIds = workbenchPresenter.getSelectedIds();
+        List<Item> result = new ArrayList<Item>(selectedIds.size());
+        for (Object id : selectedIds) {
+            result.add(workbenchPresenter.getItemFor(id));
+        }
+        return result;
+    }
 }

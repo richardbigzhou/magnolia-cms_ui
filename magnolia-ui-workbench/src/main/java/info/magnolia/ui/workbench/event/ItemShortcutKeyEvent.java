@@ -35,7 +35,8 @@ package info.magnolia.ui.workbench.event;
 
 import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+
+import com.vaadin.data.Item;
 
 /**
  * This event is fired when a registered key shortcut is pressed while an item is selected (i.e. a row in the data grid within the workbench representing
@@ -51,31 +52,20 @@ public class ItemShortcutKeyEvent implements Event<ItemShortcutKeyEvent.Handler>
         void onItemShortcutKeyEvent(ItemShortcutKeyEvent event);
     }
 
-    private String workspace;
-
-    private final JcrItemAdapter item;
+    private final Item item;
 
     private final int keyCode;
 
     private final int[] modifierKeys;
 
-    public ItemShortcutKeyEvent(String workspace, JcrItemAdapter item, int keyCode, int... modifierKeys) {
-        this.workspace = workspace;
+    public ItemShortcutKeyEvent(Item item, int keyCode, int... modifierKeys) {
         this.item = item;
         this.keyCode = keyCode;
         this.modifierKeys = modifierKeys;
     }
 
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public JcrItemAdapter getItem() {
+    public Item getItem() {
         return item;
-    }
-
-    public String getItemId() {
-        return item != null ? item.getItemId() : null;
     }
 
     public int getKeyCode() {

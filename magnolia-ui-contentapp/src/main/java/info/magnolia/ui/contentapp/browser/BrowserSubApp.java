@@ -74,56 +74,41 @@ public class BrowserSubApp extends BrowserSubAppBase {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
-
     @Inject
     public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final ComponentProvider componentProvider) {
         super(actionExecutor, subAppContext, view, browser, subAppEventBus, componentProvider);
     }
 
     @Override
-    protected String ensureSelection(String path, WorkbenchDefinition workbench) {
+    protected Object ensureSelection(String urlFragmentPath, WorkbenchDefinition workbench) {
         String workspaceName = workbench.getWorkspace();
         String itemId = null;
         try {
-            itemId = JcrItemUtil.getItemId(SessionUtil.getNode(workspaceName, path));
+            itemId = JcrItemUtil.getItemId(SessionUtil.getNode(workspaceName, urlFragmentPath));
 
             // MGNLUI-1475: item might have not been found if path doesn't exist
             if (itemId == null) {
-                itemId = JcrItemUtil.getItemId(SessionUtil.getNode(workspaceName, workbenchRoot));
+                itemId = String.valueOf(getRootItemId());
                 BrowserLocation newLocation = getCurrentLocation();
                 newLocation.updateNodePath("/");
                 getAppContext().updateSubAppLocation(getSubAppContext(), newLocation);
             }
         } catch (RepositoryException e) {
-            log.warn("Could not retrieve item at path {} in workspace {}", path, workspaceName);
+            log.warn("Could not retrieve item at path {} in workspace {}", urlFragmentPath, workspaceName);
         }
         return itemId;
     }
 
     @Override
-    protected List<Item> getSelectedItems(WorkbenchDefinition workbench, List<String> selectedItemIds, String workbenchRootItemId) {
-        return getItemsExceptOne(workbench.getWorkspace(), selectedItemIds, workbenchRootItemId);
-    }
-
-    @Override
-    protected String getRootItemId(WorkbenchDefinition workbench) {
-        try {
-            return JcrItemUtil.getItemId(workbench.getWorkspace(), workbench.getPath());
-        } catch (RepositoryException e) {
-            log.error("Error occurred while trying to obtain workbench root element id", e);
-            return null;
-        }
+    protected List<Item> getSelectedItems() {
+        WorkbenchDefinition workbench = getWorkbench();
+        return getItemsExceptOne(workbench.getWorkspace(), getBrowser().getSelectedItemIds(), getRootItemId());
     }
 
     @Override
     protected boolean verifyAvailability(Item item, AvailabilityDefinition availability) {
         if (item instanceof JcrItemAdapter) {
             JcrItemAdapter jcrItemAdapter = (JcrItemAdapter)item;
-
-            // If this is the root item we display the section only if the root property is set
-            if (jcrItemAdapter == null) {
-                return availability.isRoot();
-            }
 
             // If its a property we display it only if the properties property is set
             if (!jcrItemAdapter.isNode()) {
@@ -139,7 +124,7 @@ public class BrowserSubApp extends BrowserSubAppBase {
                 // else the node must match at least one of the configured node types
                 for (String nodeType : availability.getNodeTypes()) {
                     try {
-                        if (NodeUtil.isNodeType((Node) jcrItemAdapter, nodeType)) {
+                        if (NodeUtil.isNodeType((Node) jcrItemAdapter.getJcrItem(), nodeType)) {
                             return true;
                         }
                     } catch (RepositoryException e) {
@@ -148,38 +133,38 @@ public class BrowserSubApp extends BrowserSubAppBase {
                 }
 
             }
+
         }
-        return false;
+
+        return super.verifyAvailability(item, availability);
     }
 
     @Override
-    protected void applySelectionToLocation(BrowserLocation location, String selectedId) {
-        {
-            try {
-                location.updateNodePath("");
-                javax.jcr.Item selected = JcrItemUtil.getJcrItem(getWorkbench().getWorkspace(), JcrItemUtil.parseNodeIdentifier(selectedId));
-                if (selected == null) {
-                    // nothing is selected at the moment
-                } else {
-                    location.updateNodePath(StringUtils.removeStart(selected.getPath(), "/".equals(workbenchRoot) ? "" : workbenchRoot));
-                }
-            } catch (RepositoryException e) {
-                //log.warn("Could not get jcrItem with itemId " + event.getFirstItemId() + " from workspace " + event.getWorkspace(), e);
-                log.warn("Could not updated the location", e);
+    protected void applySelectionToLocation(BrowserLocation location, Object selectedId) {
+        try {
+            location.updateNodePath("");
+            javax.jcr.Item selected = JcrItemUtil.getJcrItem(getWorkbench().getWorkspace(), JcrItemUtil.parseNodeIdentifier(String.valueOf(selectedId)));
+            if (selected == null) {
+                // nothing is selected at the moment
+            } else {
+                location.updateNodePath(StringUtils.removeStart(selected.getPath(), "/".equals(workbenchRoot) ? "" : workbenchRoot));
             }
+        } catch (RepositoryException e) {
+            //log.warn("Could not get jcrItem with itemId " + event.getFirstItemId() + " from workspace " + event.getWorkspace(), e);
+            log.warn("Could not updated the location", e);
         }
     }
 
-    public static List<Item> getItemsExceptOne(final String workspaceName, List<String> ids, String itemIdToExclude) {
+    public static List<Item> getItemsExceptOne(final String workspaceName, List<Object> ids, Object itemIdToExclude) {
         List<Item> items = new ArrayList<Item>();
         if (itemIdToExclude == null) {
             return items;
         }
 
-        for (String itemId : ids) {
+        for (Object itemId : ids) {
             if (!itemIdToExclude.equals(itemId)) {
                 try {
-                    javax.jcr.Item jcrItem = JcrItemUtil.getJcrItem(workspaceName, itemId);
+                    javax.jcr.Item jcrItem = JcrItemUtil.getJcrItem(workspaceName, String.valueOf(itemId));
                     if (jcrItem.isNode()) {
                         items.add(new JcrNodeAdapter((Node)jcrItem));
                     } else {

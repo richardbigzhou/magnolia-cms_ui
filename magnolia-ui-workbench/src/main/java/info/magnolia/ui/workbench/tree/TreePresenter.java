@@ -63,8 +63,8 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
     private static final Logger log = LoggerFactory.getLogger(TreePresenter.class);
 
     @Inject
-    public TreePresenter(TreeView view, ComponentProvider componentProvider) {
-        super(view, componentProvider);
+    public TreePresenter(TreeView view, ComponentProvider componentProvider, HierarchicalJcrContainer container) {
+        super(view, componentProvider, container);
     }
 
     @Override

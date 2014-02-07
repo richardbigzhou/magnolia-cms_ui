@@ -66,6 +66,11 @@
     </component>
 
     <component>
+      <type>info.magnolia.ui.contentapp.browser.beanbrowser.BeanBrowserPresenter</type>
+      <implementation>info.magnolia.ui.contentapp.browser.beanbrowser.BeanBrowserPresenter</implementation>
+    </component>
+
+    <component>
       <type>info.magnolia.ui.contentapp.detail.DetailEditorPresenter</type>
       <implementation>info.magnolia.ui.contentapp.detail.DetailEditorPresenter</implementation>
     </component>

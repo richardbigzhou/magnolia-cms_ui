@@ -102,7 +102,8 @@ public class LinkFieldSelectionFactory extends AbstractFieldFactory<LinkFieldSel
         chooseDialogEventBus.addHandler(SelectionChangedEvent.class, new SelectionChangedEvent.Handler() {
             @Override
             public void onSelectionChanged(SelectionChangedEvent event) {
-                final Node selected = SessionUtil.getNodeByIdentifier(event.getWorkspace(), event.getFirstItemId());
+                final String workspaceName = workbenchPresenter.getWorkspace();
+                final Node selected = SessionUtil.getNodeByIdentifier(workspaceName, String.valueOf(event.getFirstItemId()));
                 if (selected != null) {
                     try {
                         boolean isPropertyExisting = StringUtils.isNotBlank(propertyName)
