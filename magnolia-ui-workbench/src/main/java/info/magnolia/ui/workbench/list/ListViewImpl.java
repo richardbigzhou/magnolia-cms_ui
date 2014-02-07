@@ -142,7 +142,7 @@ public class ListViewImpl implements ListView {
 
                 if (event.getButton() == MouseButton.RIGHT) {
                     if (listener != null) {
-                        listener.onRightClick(String.valueOf(event.getItemId()), event.getClientX(), event.getClientY());
+                        listener.onRightClick(event.getItemId(), event.getClientX(), event.getClientY());
                     }
                 } else if (event.isDoubleClick()) {
                     if (listener != null) {

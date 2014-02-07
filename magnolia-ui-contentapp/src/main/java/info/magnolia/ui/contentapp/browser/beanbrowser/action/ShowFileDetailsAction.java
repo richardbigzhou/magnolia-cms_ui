@@ -31,52 +31,34 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.browser.beanbrowser;
+package info.magnolia.ui.contentapp.browser.beanbrowser.action;
 
-import info.magnolia.event.EventBus;
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.action.ActionExecutor;
-import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.api.app.SubAppEventBus;
-import info.magnolia.ui.api.availability.AvailabilityDefinition;
-import info.magnolia.ui.contentapp.ContentSubAppView;
-import info.magnolia.ui.contentapp.browser.BrowserLocation;
-import info.magnolia.ui.contentapp.browser.BrowserSubAppBase;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-
-import java.io.File;
-
-import javax.inject.Inject;
-import javax.inject.Named;
+import info.magnolia.ui.api.action.AbstractAction;
+import info.magnolia.ui.api.action.ActionExecutionException;
 
 import com.vaadin.data.Item;
+import com.vaadin.ui.Notification;
 
 /**
  * Created with IntelliJ IDEA.
  * User: sasha
- * Date: 04/02/14
- * Time: 23:46
+ * Date: 07/02/14
+ * Time: 11:33
  * To change this template use File | Settings | File Templates.
  */
-public class BeanBrowserSubApp extends BrowserSubAppBase {
+public class ShowFileDetailsAction extends AbstractAction<ShowFileDetailsActionDefinition> {
 
-    @Inject
-    public BeanBrowserSubApp(ActionExecutor actionExecutor, SubAppContext subAppContext, ContentSubAppView view, BeanBrowserPresenter browser, @Named(SubAppEventBus.NAME) EventBus subAppEventBus, ComponentProvider componentProvider) {
-        super(actionExecutor, subAppContext, view, browser, subAppEventBus, componentProvider);
+    private Item item;
+
+    public ShowFileDetailsAction(ShowFileDetailsActionDefinition definition, Item item) {
+        super(definition);
+        this.item = item;
     }
 
     @Override
-    protected Object ensureSelection(String urlFragmentPath, WorkbenchDefinition workbench) {
-        return getBrowser().getWorkbenchPresenter().getItemFor(new File("/Users/sasha/test"));
-    }
-
-    @Override
-    protected void applySelectionToLocation(BrowserLocation location, Object selectedId) {
-
-    }
-
-    @Override
-    protected boolean verifyAvailability(Item item, AvailabilityDefinition availability) {
-        return true;
+    public void execute() throws ActionExecutionException {
+        StringBuilder sb = new StringBuilder();
+        sb.append("File name:").append(item.getItemProperty("Name").getValue()).append("|Size:").append(item.getItemProperty("Size").getValue()).append("|Last Modified:").append(item.getItemProperty("Last Modified").getValue());
+        Notification.show(sb.toString());
     }
 }

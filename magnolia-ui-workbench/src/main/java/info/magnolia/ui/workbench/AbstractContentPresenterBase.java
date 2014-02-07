@@ -182,8 +182,6 @@ public abstract class AbstractContentPresenterBase<IDTYPE> implements ContentPre
                     select(ids);
                 }
                 log.debug("com.vaadin.data.Item at {} was right clicked. Firing ItemRightClickedEvent...", itemId);
-                //TODO JCRFREE Here we'd better use some id instead of path, but so far should be okay
-                //eventBus.fireEvent(new ItemRightClickedEvent(((JcrNodeAdapter) item).getJcrItem().getId(), clickX, clickY));
                 eventBus.fireEvent(new ItemRightClickedEvent(itemId, clickX, clickY));
             } catch (Exception e) {
                 log.error("An error occurred while right clicking on a row in the data grid", e);
