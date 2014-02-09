@@ -93,7 +93,7 @@ public class PageEditorPresenter implements PageEditorListener {
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                    view.refresh();
+                view.refresh();
             }
         });
         subAppEventBus.addHandler(ComponentMoveEvent.class, new ComponentMoveEvent.Handler() {
@@ -102,8 +102,7 @@ public class PageEditorPresenter implements PageEditorListener {
                 moving = event.isStart();
                 if (moving) {
                     view.startMoveComponent();
-                }
-                else if (event.isServerSide()) {
+                } else if (event.isServerSide()) {
                     view.cancelMoveComponent();
                 }
             }
