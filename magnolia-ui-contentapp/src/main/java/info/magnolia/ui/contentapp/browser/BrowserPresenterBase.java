@@ -46,7 +46,9 @@ import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.contentapp.dsmanager.DataSourceManagerProvider;
 import info.magnolia.ui.vaadin.integration.NullItem;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
 import info.magnolia.ui.workbench.WorkbenchPresenterBase;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
@@ -101,9 +103,11 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
 
     private final AppContext appContext;
 
+    private DataSourceManager dsManager;
+
     public BrowserPresenterBase(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final BrowserView view, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
                                 final @Named(SubAppEventBus.NAME) EventBus subAppEventBus,
-                                final ActionbarPresenter actionbarPresenter, WorkbenchPresenterBase workbenchPresenter) {
+                                final ActionbarPresenter actionbarPresenter, WorkbenchPresenterBase workbenchPresenter, DataSourceManagerProvider dsManagerProvider) {
         this.workbenchPresenter = workbenchPresenter;
         this.actionExecutor = actionExecutor;
         this.view = view;
@@ -112,6 +116,7 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
         this.actionbarPresenter = actionbarPresenter;
         this.appContext = subAppContext.getAppContext();
         this.subAppDescriptor = (BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor();
+        this.dsManager = dsManagerProvider.getDSManager(subAppContext.getAppContext());
     }
 
 
@@ -217,7 +222,7 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
     }
 
     protected boolean verifyItemExists(Object itemId) {
-        return getWorkbenchPresenter().getItemFor(itemId) != null;
+        return dsManager.getItemById(itemId) != null;
     }
 
     public List<Object> getSelectedItemIds() {
@@ -260,11 +265,9 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
     protected abstract Object getPreviewImageForId(final Object itemId);
 
     @Override
-    public void onActionbarItemClicked(String itemName) {
-        executeAction(itemName);
+    public void onActionbarItemClicked(String actionName) {
+        executeAction(actionName);
     }
-
-
 
     @Override
     public void onActionBarSelection(String actionName) {
@@ -321,12 +324,10 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
     }
 
     public List<Item> getSelectedItems() {
-        WorkbenchPresenterBase workbenchPresenter = getWorkbenchPresenter();
-        List<Object> selectedIds = workbenchPresenter.getSelectedIds();
-        List<Item> result = new ArrayList<Item>(selectedIds.size());
-        for (Object id : selectedIds) {
-            result.add(workbenchPresenter.getItemFor(id));
+        List<Item> items = new ArrayList<Item>(getSelectedItemIds().size());
+        for (Object itemId : getSelectedItemIds()) {
+            items.add(dsManager.getItemById(itemId));
         }
-        return result;
+        return items;
     }
 }

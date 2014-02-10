@@ -46,13 +46,17 @@ import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.MockUtil;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockProperty;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
-import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.vaadin.data.Item;
 
 /**
  * Test for the {@link IsNotCurrentUserRule}.
@@ -89,7 +93,7 @@ public class IsNotCurrentUserRuleTest extends MgnlTestCase {
         // GIVEN
 
         // WHEN
-        item = new MockProperty("foo", "bar", new MockNode());
+        item = new JcrPropertyAdapter(new MockProperty("foo", "bar", new MockNode()));
 
         // THEN
         assertTrue(rule.isAvailable(item));
@@ -100,7 +104,7 @@ public class IsNotCurrentUserRuleTest extends MgnlTestCase {
         // GIVEN
 
         // WHEN
-        item = new MockNode("foo");
+        item = new JcrNodeAdapter(new MockNode("foo"));
 
         // THEN
         assertTrue(rule.isAvailable(item));
@@ -111,7 +115,7 @@ public class IsNotCurrentUserRuleTest extends MgnlTestCase {
         // GIVEN
 
         // WHEN
-        item = new MockNode("test");
+        item = new JcrNodeAdapter(new MockNode("test"));
 
         // THEN
         assertFalse(rule.isAvailable(item));
@@ -120,11 +124,11 @@ public class IsNotCurrentUserRuleTest extends MgnlTestCase {
     @Test
     public void testFalseOnException() throws RepositoryException {
         // GIVEN
-        item = mock(Node.class);
-        when(item.isNode()).thenReturn(true);
+        item = new JcrNodeAdapter(mock(Node.class));
+        when(((JcrItemAdapter)item).isNode()).thenReturn(true);
 
         // WHEN
-        when(item.getName()).thenThrow(new RepositoryException("Test exception."));
+        when(((JcrItemAdapter)item).getJcrItem().getName()).thenThrow(new RepositoryException("Test exception."));
 
         // THEN
         assertFalse(rule.isAvailable(item));

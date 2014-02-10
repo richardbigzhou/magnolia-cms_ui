@@ -167,7 +167,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
         sectionToShow.setAvailability(sAvailabilityAlways);
         initBrowser();
-        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider);
+        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider, null);
     }
 
     @Test
@@ -244,7 +244,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
     @Test
     public void testAlwaysVisibleSectionOnRoot() throws Exception {
         // GIVEN
-        List<String> ids = new ArrayList<String>(1);
+        List<Object> ids = new ArrayList<Object>(1);
         ids.add(JcrItemUtil.getItemId(session.getRootNode()));
         when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
 
@@ -261,7 +261,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
     @Test
     public void testAlwaysVisibleSectionOnNonRootNode() throws Exception {
         // GIVEN
-        List<String> ids = new ArrayList<String>(1);
+        List<Object> ids = new ArrayList<Object>(1);
         ids.add(JcrItemUtil.getItemId(testContentNode));
         when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
 
@@ -279,7 +279,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
     @Test
     public void testAlwaysVisibleSectionOnProperty() throws Exception {
         // GIVEN
-        List<String> ids = new ArrayList<String>(1);
+        List<Object> ids = new ArrayList<Object>(1);
         ids.add(JcrItemUtil.getItemId(testContentNode.getProperty(TEST_PROPERTY)));
         when(browserPresenter.getSelectedItemIds()).thenReturn(ids);
 

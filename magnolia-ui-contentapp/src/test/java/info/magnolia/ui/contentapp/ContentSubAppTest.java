@@ -44,6 +44,7 @@ import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.contentapp.browser.BrowserPresenter;
+import info.magnolia.ui.contentapp.browser.BrowserSubAppBase;
 
 import javax.jcr.Item;
 
@@ -84,11 +85,11 @@ public class ContentSubAppTest {
         this.subApp = new DummyContentSubApp(null, subAppContext, view, workbench, subAppEventBus);
     }
 
-    private class DummyContentSubApp extends BrowserSubApp {
+    private class DummyContentSubApp extends BrowserSubAppBase {
         public int foo = 0;
 
         public DummyContentSubApp(ActionExecutor actionExecutor, SubAppContext subAppContext, ContentSubAppView view, BrowserPresenter workbench, EventBus subAppEventBus) {
-            super(actionExecutor, subAppContext, view, workbench, subAppEventBus, componentProvider);
+            super(actionExecutor, subAppContext, view, workbench, subAppEventBus, componentProvider, null);
         }
 
         @Override
@@ -109,7 +110,7 @@ public class ContentSubAppTest {
 
     private class DummyRule extends AbstractAvailabilityRule {
         @Override
-        public boolean isAvailableForItem(Item item) {
+        protected boolean isAvailableForItem(com.vaadin.data.Item item) {
             return true;
         }
     }

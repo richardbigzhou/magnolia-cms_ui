@@ -41,6 +41,7 @@ import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.contentapp.browser.BrowserPresenterBase;
 import info.magnolia.ui.contentapp.browser.BrowserView;
+import info.magnolia.ui.contentapp.dsmanager.DataSourceManagerProvider;
 import info.magnolia.ui.workbench.beanworkbench.BeanWorkbenchPresenter;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
 
@@ -64,8 +65,8 @@ public class BeanBrowserPresenter extends BrowserPresenterBase {
             @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus,
             @Named(SubAppEventBus.NAME) EventBus subAppEventBus,
             ActionbarPresenter actionbarPresenter,
-            BeanWorkbenchPresenter workbenchPresenter) {
-        super(actionExecutor, subAppContext, view, admincentralEventBus, subAppEventBus, actionbarPresenter, workbenchPresenter);
+            BeanWorkbenchPresenter workbenchPresenter, DataSourceManagerProvider dsManagerProvider) {
+        super(actionExecutor, subAppContext, view, admincentralEventBus, subAppEventBus, actionbarPresenter, workbenchPresenter, dsManagerProvider);
     }
 
     @Override

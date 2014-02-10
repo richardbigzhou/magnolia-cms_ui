@@ -114,7 +114,7 @@ public class DetailSubAppTest {
         }).when(presenter).start(anyString(), any(DetailView.ViewType.class));
 
         editedNodePath = null;
-        detailSubApp = new DetailSubApp(subAppContext, view, adminCentralEventBus, presenter, i18n);
+        detailSubApp = new DetailSubApp(subAppContext, view, adminCentralEventBus, presenter, i18n, null);
     }
 
     @Test

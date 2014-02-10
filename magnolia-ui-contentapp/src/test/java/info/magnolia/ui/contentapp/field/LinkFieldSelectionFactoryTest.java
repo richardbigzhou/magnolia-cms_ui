@@ -59,6 +59,7 @@ import javax.jcr.RepositoryException;
 
 import org.junit.Test;
 
+import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 
@@ -73,14 +74,14 @@ public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<
 
     private EventBus eventBus;
 
-    private Set<JcrItemAdapter> items;
+    private Set<Object> itemIds;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
         workbenchPresenter = mock(WorkbenchPresenter.class);
         eventBus = new SimpleEventBus();
-        items = new HashSet<JcrItemAdapter>();
+        itemIds = new HashSet<Object>();
         // make sure that workbench view registers a content view so that restore selection doesn't fail.
         WorkbenchView workbenchView = mock(WorkbenchView.class);
         doReturn(mock(Component.class)).when(workbenchView).asVaadinComponent();
@@ -111,10 +112,10 @@ public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<
         builder.setI18nContentSupport(i18nContentSupport);
         builder.setComponentProvider(new MockComponentProvider());
         Field field = builder.createField();
-        items.add((JcrItemAdapter) baseItem);
+        itemIds.add(baseNode.getIdentifier());
 
         // WHEN
-        eventBus.fireEvent(new SelectionChangedEvent(baseNode.getSession().getWorkspace().getName(), items));
+        eventBus.fireEvent(new SelectionChangedEvent(itemIds));
 
         // THEN
         // as No columnName defined return the Item path as Value property
@@ -131,10 +132,10 @@ public class LinkFieldSelectionFactoryTest extends AbstractFieldFactoryTestCase<
         builder.setI18nContentSupport(i18nContentSupport);
         builder.setComponentProvider(new MockComponentProvider());
         Field field = builder.createField();
-        items.add((JcrItemAdapter) baseItem);
+        itemIds.add(baseNode.getIdentifier());
 
         // WHEN
-        eventBus.fireEvent(new SelectionChangedEvent(baseNode.getSession().getWorkspace().getName(), items));
+        eventBus.fireEvent(new SelectionChangedEvent(itemIds));
 
         // THEN
         assertEquals("initial", field.getValue());

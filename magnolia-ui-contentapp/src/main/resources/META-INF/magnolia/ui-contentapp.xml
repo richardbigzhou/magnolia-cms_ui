@@ -48,6 +48,15 @@
     </components>
 
   <components>
+    <id>admincentral</id>
+    <component>
+      <type>info.magnolia.ui.contentapp.dsmanager.DataSourceManagerProvider</type>
+      <implementation>info.magnolia.ui.contentapp.dsmanager.DataSourceManagerProvider</implementation>
+      <scope>singleton</scope>
+    </component>
+  </components>
+
+  <components>
     <id>subapp</id>
 
     <component>

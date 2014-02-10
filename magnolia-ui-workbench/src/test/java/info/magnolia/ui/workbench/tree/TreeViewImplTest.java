@@ -96,7 +96,7 @@ public class TreeViewImplTest extends RepositoryTestCase {
         assertTrue(view.asVaadinComponent().isCollapsed(child.getIdentifier()));
 
         // WHEN
-        view.select(Arrays.asList(node.getIdentifier()));
+        view.select(Arrays.asList((Object)node.getIdentifier()));
 
         // THEN
         assertFalse(view.asVaadinComponent().isCollapsed(visibleRoot.getIdentifier()));
@@ -114,7 +114,7 @@ public class TreeViewImplTest extends RepositoryTestCase {
         node.setProperty(NODE_PROPERTY, "112");
 
         // WHEN
-        view.select(Arrays.asList(node.getIdentifier()));
+        view.select(Arrays.asList((Object)node.getIdentifier()));
 
         // THEN
         assertTrue(view.asVaadinComponent().isCollapsed(node.getIdentifier()));
@@ -129,7 +129,7 @@ public class TreeViewImplTest extends RepositoryTestCase {
         visibleRoot.addNode(NODE_PARENT);
 
         // WHEN
-        view.select(Arrays.asList(visibleRoot.getIdentifier()));
+        view.select(Arrays.asList((Object)visibleRoot.getIdentifier()));
 
         // THEN
         assertFalse(view.asVaadinComponent().isCollapsed(visibleRoot.getIdentifier()));
@@ -148,7 +148,7 @@ public class TreeViewImplTest extends RepositoryTestCase {
         String propertyFakeId = node.getIdentifier() + AbstractJcrContainer.PROPERTY_NAME_AND_UUID_SEPARATOR + NODE_PROPERTY;
 
         // WHEN
-        view.select(Arrays.asList(propertyFakeId));
+        view.select(Arrays.asList((Object)propertyFakeId));
 
         // THEN
         assertFalse(view.asVaadinComponent().isCollapsed(visibleRoot.getIdentifier()));

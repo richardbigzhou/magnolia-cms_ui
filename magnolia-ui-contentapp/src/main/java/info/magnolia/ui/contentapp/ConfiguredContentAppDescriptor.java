@@ -34,8 +34,10 @@
 package info.magnolia.ui.contentapp;
 
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
+import info.magnolia.ui.contentapp.dsmanager.JcrDataSourceManager;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
 
 /**
  * Implementation of {@link ContentAppDescriptor}.
@@ -44,12 +46,23 @@ public class ConfiguredContentAppDescriptor extends ConfiguredAppDescriptor impl
 
     private ChooseDialogDefinition chooseDialog = new ConfiguredChooseDialogDefinition();
 
+    private Class<? extends DataSourceManager> dataSourceManagerClass = JcrDataSourceManager.class;
+
     @Override
     public ChooseDialogDefinition getChooseDialog() {
         return chooseDialog;
     }
 
+    @Override
+    public Class<? extends DataSourceManager> getDataSourceManagerClass() {
+        return dataSourceManagerClass;
+    }
+
     public void setChooseDialog(ChooseDialogDefinition chooseDialog) {
         this.chooseDialog = chooseDialog;
+    }
+
+    public void setDataSourceManagerClass(Class<? extends DataSourceManager> dataSourceManagerClass) {
+        this.dataSourceManagerClass = dataSourceManagerClass;
     }
 }

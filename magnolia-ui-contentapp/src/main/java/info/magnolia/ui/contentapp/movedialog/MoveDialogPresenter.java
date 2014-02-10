@@ -39,10 +39,12 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.List;
 
+import com.vaadin.data.Item;
+
 /**
  * Presenter interface for node move dialogs.
  */
 public interface MoveDialogPresenter {
 
-    DialogView start(BrowserSubAppDescriptor subAppDescriptor, List<JcrNodeAdapter> nodesToMove, MoveActionCallback callback);
+    DialogView start(BrowserSubAppDescriptor subAppDescriptor, List<Item> nodesToMove, MoveActionCallback callback);
 }

@@ -42,6 +42,7 @@ import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.contentapp.browser.BrowserLocation;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppBase;
+import info.magnolia.ui.contentapp.dsmanager.DataSourceManagerProvider;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.io.File;
@@ -61,18 +62,8 @@ import com.vaadin.data.Item;
 public class BeanBrowserSubApp extends BrowserSubAppBase {
 
     @Inject
-    public BeanBrowserSubApp(ActionExecutor actionExecutor, SubAppContext subAppContext, ContentSubAppView view, BeanBrowserPresenter browser, @Named(SubAppEventBus.NAME) EventBus subAppEventBus, ComponentProvider componentProvider) {
-        super(actionExecutor, subAppContext, view, browser, subAppEventBus, componentProvider);
-    }
-
-    @Override
-    protected Object ensureSelection(String urlFragmentPath, WorkbenchDefinition workbench) {
-        return getBrowser().getWorkbenchPresenter().getItemFor(new File("/Users/sasha/test"));
-    }
-
-    @Override
-    protected void applySelectionToLocation(BrowserLocation location, Object selectedId) {
-
+    public BeanBrowserSubApp(ActionExecutor actionExecutor, SubAppContext subAppContext, ContentSubAppView view, BeanBrowserPresenter browser, @Named(SubAppEventBus.NAME) EventBus subAppEventBus, ComponentProvider componentProvider, DataSourceManagerProvider dsManagerProvider) {
+        super(actionExecutor, subAppContext, view, browser, subAppEventBus, componentProvider, dsManagerProvider);
     }
 
     @Override

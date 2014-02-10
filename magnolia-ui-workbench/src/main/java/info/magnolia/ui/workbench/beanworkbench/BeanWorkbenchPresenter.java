@@ -55,7 +55,7 @@ import com.vaadin.data.util.FilesystemContainer;
  * Time: 22:36
  * To change this template use File | Settings | File Templates.
  */
-public class BeanWorkbenchPresenter extends WorkbenchPresenterBase<Object> {
+public class BeanWorkbenchPresenter extends WorkbenchPresenterBase {
 
     private FilesystemContainer container = new FilesystemContainer(new File("/Users/sasha/test"));
 
@@ -69,10 +69,10 @@ public class BeanWorkbenchPresenter extends WorkbenchPresenterBase<Object> {
         return new File("/Users/sasha/test");
     }
 
-    @Override
-    public Item getItemFor(Object itemId) {
-        return container.getItem(itemId);
-    }
+//    @Override
+//    public Item getItemFor(Object itemId) {
+//        return container.getItem(itemId);
+//    }
 
     @Override
     protected List<Object> filterExistingItems(List<Object> itemIds) {
@@ -89,4 +89,18 @@ public class BeanWorkbenchPresenter extends WorkbenchPresenterBase<Object> {
     protected Container getContainer() {
         return container;
     }
+
+//    @Override
+//    public Object fragmentToItemId(String urlFragmentPath) {
+//        return new File(urlFragmentPath);
+//    }
+//
+//    @Override
+//    public String itemIdToFragment(Object selectedId) {
+//        if (selectedId instanceof File) {
+//            File file = (File)selectedId;
+//            return file.getAbsolutePath();
+//        }
+//        return null;
+//    }
 }

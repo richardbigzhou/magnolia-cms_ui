@@ -103,7 +103,7 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     }
 
     @Override
-    public void select(List<String> itemIds) {
+    public void select(List<Object> itemIds) {
         List<Object> objectIds = new ArrayList<Object>();
         for (Object itemId : itemIds) {
             objectIds.add(itemId);

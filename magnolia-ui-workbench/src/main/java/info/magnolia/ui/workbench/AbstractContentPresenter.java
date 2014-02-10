@@ -57,7 +57,7 @@ import com.vaadin.data.Item;
 /**
  * Abstract generic logic for content presenters.
  */
-public abstract class AbstractContentPresenter extends AbstractContentPresenterBase<String> {
+public abstract class AbstractContentPresenter extends AbstractContentPresenterBase {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractContentPresenterBase.class);
 

@@ -59,7 +59,7 @@ import com.vaadin.ui.Table;
  * Time: 11:18
  * To change this template use File | Settings | File Templates.
  */
-public class FSListPresenter extends AbstractContentPresenterBase<File> implements ListView.Listener {
+public class FSListPresenter extends AbstractContentPresenterBase implements ListView.Listener {
 
 
     protected final ListView view;
@@ -128,7 +128,7 @@ public class FSListPresenter extends AbstractContentPresenterBase<File> implemen
     }
 
     @Override
-    public void select(List<File> itemIds) {
+    public void select(List<Object> itemIds) {
         List<Object> objectIds = new ArrayList<Object>();
         for (Object itemId : itemIds) {
             objectIds.add(itemId);

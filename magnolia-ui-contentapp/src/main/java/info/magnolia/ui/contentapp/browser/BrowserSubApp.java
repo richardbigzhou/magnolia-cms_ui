@@ -35,13 +35,13 @@ package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.contentapp.ContentSubAppView;
+import info.magnolia.ui.contentapp.dsmanager.DataSourceManagerProvider;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -57,7 +57,6 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,34 +74,19 @@ public class BrowserSubApp extends BrowserSubAppBase {
     private Logger log = LoggerFactory.getLogger(getClass());
 
     @Inject
-    public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final ComponentProvider componentProvider) {
-        super(actionExecutor, subAppContext, view, browser, subAppEventBus, componentProvider);
-    }
-
-    @Override
-    protected Object ensureSelection(String urlFragmentPath, WorkbenchDefinition workbench) {
-        String workspaceName = workbench.getWorkspace();
-        String itemId = null;
-        try {
-            itemId = JcrItemUtil.getItemId(SessionUtil.getNode(workspaceName, urlFragmentPath));
-
-            // MGNLUI-1475: item might have not been found if path doesn't exist
-            if (itemId == null) {
-                itemId = String.valueOf(getRootItemId());
-                BrowserLocation newLocation = getCurrentLocation();
-                newLocation.updateNodePath("/");
-                getAppContext().updateSubAppLocation(getSubAppContext(), newLocation);
-            }
-        } catch (RepositoryException e) {
-            log.warn("Could not retrieve item at path {} in workspace {}", urlFragmentPath, workspaceName);
-        }
-        return itemId;
+    public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final ComponentProvider componentProvider, DataSourceManagerProvider dsManagerProvider) {
+        super(actionExecutor, subAppContext, view, browser, subAppEventBus, componentProvider, dsManagerProvider);
     }
 
     @Override
     protected List<Item> getSelectedItems() {
         WorkbenchDefinition workbench = getWorkbench();
-        return getItemsExceptOne(workbench.getWorkspace(), getBrowser().getSelectedItemIds(), getRootItemId());
+        List<Object> selectedItemIds = getBrowser().getSelectedItemIds();
+        if (selectedItemIds.size() > 1) {
+            return getItemsExceptOne(workbench.getWorkspace(), selectedItemIds, getRootItemId());
+        } else {
+            return getItemsExceptOne(workbench.getWorkspace(), selectedItemIds, null);
+        }
     }
 
     @Override
@@ -139,30 +123,11 @@ public class BrowserSubApp extends BrowserSubAppBase {
         return super.verifyAvailability(item, availability);
     }
 
-    @Override
-    protected void applySelectionToLocation(BrowserLocation location, Object selectedId) {
-        try {
-            location.updateNodePath("");
-            javax.jcr.Item selected = JcrItemUtil.getJcrItem(getWorkbench().getWorkspace(), JcrItemUtil.parseNodeIdentifier(String.valueOf(selectedId)));
-            if (selected == null) {
-                // nothing is selected at the moment
-            } else {
-                location.updateNodePath(StringUtils.removeStart(selected.getPath(), "/".equals(workbenchRoot) ? "" : workbenchRoot));
-            }
-        } catch (RepositoryException e) {
-            //log.warn("Could not get jcrItem with itemId " + event.getFirstItemId() + " from workspace " + event.getWorkspace(), e);
-            log.warn("Could not updated the location", e);
-        }
-    }
-
-    public static List<Item> getItemsExceptOne(final String workspaceName, List<Object> ids, Object itemIdToExclude) {
+    public List<Item> getItemsExceptOne(final String workspaceName, List<Object> ids, Object itemIdToExclude) {
         List<Item> items = new ArrayList<Item>();
-        if (itemIdToExclude == null) {
-            return items;
-        }
 
         for (Object itemId : ids) {
-            if (!itemIdToExclude.equals(itemId)) {
+            if (!itemId.equals(itemIdToExclude)) {
                 try {
                     javax.jcr.Item jcrItem = JcrItemUtil.getJcrItem(workspaceName, String.valueOf(itemId));
                     if (jcrItem.isNode()) {

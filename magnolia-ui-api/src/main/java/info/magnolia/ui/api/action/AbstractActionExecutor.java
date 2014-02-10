@@ -34,15 +34,12 @@
 package info.magnolia.ui.api.action;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.MgnlInstantiationException;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.AvailabilityRule;
 
 import javax.inject.Inject;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

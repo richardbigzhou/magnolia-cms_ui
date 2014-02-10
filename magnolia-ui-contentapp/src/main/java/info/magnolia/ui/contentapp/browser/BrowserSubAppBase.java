@@ -49,6 +49,8 @@ import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.AvailabilityRule;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.contentapp.ContentSubAppView;
+import info.magnolia.ui.contentapp.dsmanager.DataSourceManagerProvider;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
@@ -114,9 +116,10 @@ public abstract class BrowserSubAppBase extends BaseSubApp<ContentSubAppView> {
     private ActionExecutor actionExecutor;
     private ComponentProvider componentProvider;
     protected String workbenchRoot;
+    protected DataSourceManager dsManager;
 
     @Inject
-    public BrowserSubAppBase(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenterBase browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final ComponentProvider componentProvider) {
+    public BrowserSubAppBase(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenterBase browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final ComponentProvider componentProvider, DataSourceManagerProvider dsManagerProvider) {
         super(subAppContext, view);
         if (subAppContext == null || view == null || browser == null || subAppEventBus == null) {
             throw new IllegalArgumentException("Constructor does not allow for null args. Found SubAppContext = " + subAppContext + ", ContentSubAppView = " + view + ", BrowserPresenter = " + browser + ", EventBus = " + subAppEventBus);
@@ -126,9 +129,28 @@ public abstract class BrowserSubAppBase extends BaseSubApp<ContentSubAppView> {
         this.actionExecutor = actionExecutor;
         this.componentProvider = componentProvider;
         this.workbenchRoot = getWorkbench().getPath();
+        this.dsManager = dsManagerProvider.getDSManager(getSubAppContext().getAppContext());
     }
 
-    protected abstract Object ensureSelection(String urlFragmentPath, WorkbenchDefinition workbench);
+    @Override
+    protected void onSubAppStart() {
+        super.onSubAppStart();
+
+    }
+
+    protected Object ensureLocationUpToDate(String urlFragmentPath) {
+        Object actualItemId = dsManager.deserializeItemId(urlFragmentPath);
+
+        // MGNLUI-1475: item might have not been found if path doesn't exist
+        if (dsManager.itemExists(actualItemId)) {
+            actualItemId = getRootItemId();
+            BrowserLocation newLocation = getCurrentLocation();
+            newLocation.updateNodePath("/");
+            getAppContext().updateSubAppLocation(getSubAppContext(), newLocation);
+        }
+
+        return actualItemId;
+    }
 
     protected Object getRootItemId() {
         return browser.getWorkbenchPresenter().resolveWorkbenchRoot();
@@ -142,10 +164,19 @@ public abstract class BrowserSubAppBase extends BaseSubApp<ContentSubAppView> {
             return availability.isRoot();
         }
 
-        return false;
+        return true;
     }
 
-    protected abstract void applySelectionToLocation(BrowserLocation location, Object selectedId);
+
+    protected void applySelectionToLocation(BrowserLocation location, Object selectedId) {
+        location.updateNodePath("");
+        Item selected = dsManager.getItemById(selectedId);
+        if (selected == null) {
+            // nothing is selected at the moment
+        } else {
+            location.updateNodePath(dsManager.serializeItemId(selectedId));
+        }
+    }
 
     /**
      * Performs some routine tasks needed by all content subapps before the view is displayed.
@@ -202,9 +233,7 @@ public abstract class BrowserSubAppBase extends BaseSubApp<ContentSubAppView> {
         }
         String query = location.getQuery();
 
-        BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
-
-        Object itemId = ensureSelection(path, subAppDescriptor.getWorkbench());
+        Object itemId = ensureLocationUpToDate(path);
         if (itemId != null) {
             getBrowser().resync(Arrays.asList(itemId), viewType, query);
             updateActionbar(getBrowser().getActionbarPresenter());
@@ -239,15 +268,11 @@ public abstract class BrowserSubAppBase extends BaseSubApp<ContentSubAppView> {
         actionPopup.removeAllItems();
 
         BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
-        WorkbenchDefinition workbench = subAppDescriptor.getWorkbench();
         ActionbarDefinition actionbarDefinition = subAppDescriptor.getActionbar();
         if (actionbarDefinition == null) {
             return;
         }
         List<ActionbarSectionDefinition> sections = actionbarDefinition.getSections();
-
-        Object workbenchRootItemId = getRootItemId();
-        List<Object> selectedItemIds = getBrowser().getSelectedItemIds();
         List<Item> items = getSelectedItems();
 
         // Figure out which section to show, only one
@@ -310,15 +335,12 @@ public abstract class BrowserSubAppBase extends BaseSubApp<ContentSubAppView> {
     public void updateActionbar(ActionbarPresenter actionbar) {
 
         BrowserSubAppDescriptor subAppDescriptor = (BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor();
-        WorkbenchDefinition workbench = subAppDescriptor.getWorkbench();
         ActionbarDefinition actionbarDefinition = subAppDescriptor.getActionbar();
         if (actionbarDefinition == null) {
             return;
         }
         List<ActionbarSectionDefinition> sections = actionbarDefinition.getSections();
 
-        Object workbenchRootItemId = getRootItemId();
-        List<Object> selectedItemIds = getBrowser().getSelectedItemIds();
         List<Item> items = getSelectedItems();
 
         // Figure out which section to show, only one
@@ -357,8 +379,6 @@ public abstract class BrowserSubAppBase extends BaseSubApp<ContentSubAppView> {
 
     }
 
-
-
     private ActionbarSectionDefinition getVisibleSection(List<ActionbarSectionDefinition> sections, List<Item> items) {
         for (ActionbarSectionDefinition section : sections) {
             if (isSectionVisible(section, items))
@@ -383,6 +403,7 @@ public abstract class BrowserSubAppBase extends BaseSubApp<ContentSubAppView> {
                 }
             }
         }
+
         return true;
     }
 

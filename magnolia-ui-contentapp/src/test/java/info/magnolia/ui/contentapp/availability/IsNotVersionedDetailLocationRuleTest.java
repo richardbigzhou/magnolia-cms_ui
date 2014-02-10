@@ -52,10 +52,11 @@ import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 
-import javax.jcr.Item;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.vaadin.data.Item;
 
 /**
  * Tests for {@link IsNotVersionedDetailLocationRule}.

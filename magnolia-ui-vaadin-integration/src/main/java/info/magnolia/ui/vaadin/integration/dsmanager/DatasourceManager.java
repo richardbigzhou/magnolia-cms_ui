@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,39 +31,27 @@
  * intact.
  *
  */
-package info.magnolia.ui.api.app;
+package info.magnolia.ui.vaadin.integration.dsmanager;
 
-import info.magnolia.cms.security.operations.AccessDefinition;
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.i18nsystem.I18nText;
-
-import java.io.Serializable;
-import java.util.Map;
+import com.vaadin.data.Item;
 
 /**
- * Describes an app.
+ * Created with IntelliJ IDEA.
+ * User: sasha
+ * Date: 09/02/14
+ * Time: 00:45
+ * To change this template use File | Settings | File Templates.
  */
-@I18nable(keyGenerator = AppDescriptorKeyGenerator.class)
-public interface AppDescriptor extends Serializable {
+public interface DataSourceManager {
 
-    String getName();
+    String serializeItemId(Object itemId);
 
-    @I18nText
-    String getLabel();
+    Object deserializeItemId(String strPath);
 
-    boolean isEnabled();
+    Item getItemById(Object itemId);
 
-    @I18nText
-    String getIcon();
+    Object getItemId(Item item);
 
-    String getTheme();
-
-    Class<? extends App> getAppClass();
-
-    Map<String, SubAppDescriptor> getSubApps();
-
-    AccessDefinition getPermissions();
-
-    String getI18nBasename();
+    boolean itemExists(Object itemId);
 
 }

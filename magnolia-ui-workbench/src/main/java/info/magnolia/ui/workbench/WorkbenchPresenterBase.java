@@ -70,7 +70,7 @@ import com.vaadin.data.Item;
  * Time: 10:57
  * To change this template use File | Settings | File Templates.
  */
-public abstract class WorkbenchPresenterBase<IDTYPE> implements WorkbenchView.Listener {
+public abstract class WorkbenchPresenterBase implements WorkbenchView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(WorkbenchPresenter.class);
 
@@ -111,9 +111,9 @@ public abstract class WorkbenchPresenterBase<IDTYPE> implements WorkbenchView.Li
 
                 if (presenterDefinition.isActive()) {
                     activePresenter = presenter;
-                    List<IDTYPE> ids = new ArrayList<IDTYPE>(1);
+                    List<Object> ids = new ArrayList<Object>(1);
                     if (workbenchDefinition.getWorkspace() != null) {
-                        IDTYPE workbenchRootItemId = resolveWorkbenchRoot();
+                        Object workbenchRootItemId = resolveWorkbenchRoot();
                         ids.add(workbenchRootItemId);
                         activePresenter.setSelectedItemIds(ids);
                     }
@@ -136,7 +136,7 @@ public abstract class WorkbenchPresenterBase<IDTYPE> implements WorkbenchView.Li
         return view;
     }
 
-    public abstract IDTYPE resolveWorkbenchRoot();
+    public abstract Object resolveWorkbenchRoot();
 
     protected void sanityCheck(WorkbenchDefinition workbenchDefinition) {
         if (workbenchDefinition == null) {
@@ -188,7 +188,7 @@ public abstract class WorkbenchPresenterBase<IDTYPE> implements WorkbenchView.Li
 
     private void setViewType(String viewType) {
         ContentPresenter oldPresenter = activePresenter;
-        List<IDTYPE> itemIds = oldPresenter == null ? null : oldPresenter.getSelectedItemIds();
+        List<Object> itemIds = oldPresenter == null ? null : oldPresenter.getSelectedItemIds();
 
         activePresenter = contentPresenters.get(viewType);
         activePresenter.refresh();
@@ -208,22 +208,21 @@ public abstract class WorkbenchPresenterBase<IDTYPE> implements WorkbenchView.Li
         return activePresenter.getSelectedItemIds();
     }
 
-    public void expand(String itemId) {
+    public void expand(Object itemId) {
         activePresenter.expand(itemId);
     }
 
-    public void select(IDTYPE itemId) {
-        List<IDTYPE> ids = new ArrayList<IDTYPE>(1);
+    public void select(Object itemId) {
+        List<Object> ids = new ArrayList<Object>(1);
         ids.add(itemId);
         select(ids);
     }
 
-    public void select(List<IDTYPE> itemIds) {
-        final List<IDTYPE> selectedIds = filterExistingItems(itemIds);
-            // restore selection
-        Set<Item> items = new LinkedHashSet<Item>();
+    public void select(List<Object> itemIds) {
+        final List<Object> selectedIds = filterExistingItems(itemIds);
+        // restore selection
         if (selectedIds.isEmpty()) {
-            IDTYPE workbenchRootItemId = resolveWorkbenchRoot();
+            Object workbenchRootItemId = resolveWorkbenchRoot();
             selectedIds.add(workbenchRootItemId);
         }
 
@@ -233,9 +232,7 @@ public abstract class WorkbenchPresenterBase<IDTYPE> implements WorkbenchView.Li
         eventBus.fireEvent(new SelectionChangedEvent(new HashSet<Object>(itemIds)));
     }
 
-    public abstract Item getItemFor(IDTYPE itemId);
-
-    protected abstract List<IDTYPE> filterExistingItems(List<IDTYPE> itemIds);
+    protected abstract List<Object> filterExistingItems(List<Object> itemIds);
 
     public void refresh() {
         activePresenter.refresh();
@@ -254,7 +251,7 @@ public abstract class WorkbenchPresenterBase<IDTYPE> implements WorkbenchView.Li
         return contentPresenters.containsKey(viewType);
     }
 
-    public void resynch(final List<IDTYPE> itemIds, final String viewType, final String query) {
+    public void resynch(final List<Object> itemIds, final String viewType, final String query) {
         setViewType(viewType);
         select(itemIds);
 
@@ -294,5 +291,4 @@ public abstract class WorkbenchPresenterBase<IDTYPE> implements WorkbenchView.Li
     protected Container getContainer() {
         return null;
     }
-
 }

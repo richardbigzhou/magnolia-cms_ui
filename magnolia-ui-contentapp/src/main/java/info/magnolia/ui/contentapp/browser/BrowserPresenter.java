@@ -42,6 +42,7 @@ import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.contentapp.dsmanager.DataSourceManagerProvider;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
@@ -82,8 +83,8 @@ public class BrowserPresenter extends BrowserPresenterBase {
     private final ImageProvider imageProvider;
 
     @Inject
-    public BrowserPresenter(ActionExecutor actionExecutor, SubAppContext subAppContext, BrowserView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, @Named(SubAppEventBus.NAME) EventBus subAppEventBus, ActionbarPresenter actionbarPresenter, ComponentProvider componentProvider, WorkbenchPresenter workbenchPresenter) {
-        super(actionExecutor, subAppContext, view, admincentralEventBus, subAppEventBus, actionbarPresenter, workbenchPresenter);
+    public BrowserPresenter(ActionExecutor actionExecutor, SubAppContext subAppContext, BrowserView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, @Named(SubAppEventBus.NAME) EventBus subAppEventBus, ActionbarPresenter actionbarPresenter, ComponentProvider componentProvider, WorkbenchPresenter workbenchPresenter, DataSourceManagerProvider dsManagerProvider) {
+        super(actionExecutor, subAppContext, view, admincentralEventBus, subAppEventBus, actionbarPresenter, workbenchPresenter, dsManagerProvider);
         ImageProviderDefinition imageProviderDefinition = ((BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor()).getImageProvider();
         if (imageProviderDefinition == null) {
             this.imageProvider = null;
@@ -136,38 +137,6 @@ public class BrowserPresenter extends BrowserPresenterBase {
             } catch (RepositoryException e) {
                 log.error("Could not save changes to property", e);
             }
-        }
-    }
-
-    @Override
-    public List<Item> getSelectedItems() {
-        List<Item> items = new ArrayList<Item>(getSelectedItemIds().size());
-        List<javax.jcr.Item> jcrItems = new ArrayList<javax.jcr.Item>(getSelectedItemIds().size());
-        for (Object itemId : getSelectedItemIds()) {
-            try {
-                javax.jcr.Item item = JcrItemUtil.getJcrItem(getWorkspace(), String.valueOf(itemId));
-                jcrItems.add(item);
-                JcrItemAdapter adapter = item.isNode() ? new JcrNodeAdapter((Node) item) : new JcrPropertyAdapter((Property) item);
-                items.add(adapter);
-            } catch (PathNotFoundException p) {
-                Message error = new Message(MessageType.ERROR, "Could not get item ", "Following Item not found :" + getSelectedItemIds().get(0));
-                getAppContext().sendLocalMessage(error);
-            } catch (RepositoryException e) {
-                Message error = new Message(MessageType.ERROR, "Could not get item: " + getSelectedItemIds().get(0), e.getMessage());
-                //log.error("An error occurred while executing action [{}]", actionName, e);
-                getAppContext().sendLocalMessage(error);
-            }
-        }
-        return items;
-    }
-
-    @Override
-    protected boolean verifyItemExists(Object itemId) {
-        try {
-            return JcrItemUtil.itemExists(getWorkspace(), String.valueOf(itemId));
-        } catch (RepositoryException e) {
-            log.warn("Unable to get node or property [{}] for preview image", itemId, e);
-            return false;
         }
     }
 

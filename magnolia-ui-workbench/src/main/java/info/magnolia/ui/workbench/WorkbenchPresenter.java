@@ -34,31 +34,26 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.jcr.Node;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Container;
-import com.vaadin.data.Item;
 
 /**
  * The WorkbenchPresenter is responsible for creating, configuring and updating the workbench view, as well as handling its interaction.
  */
-public class WorkbenchPresenter extends WorkbenchPresenterBase<String> {
+public class WorkbenchPresenter extends WorkbenchPresenterBase {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -78,27 +73,11 @@ public class WorkbenchPresenter extends WorkbenchPresenterBase<String> {
     }
 
     @Override
-    public Item getItemFor(String itemId) {
-        javax.jcr.Item jcrItem;
-        try {
-            jcrItem = JcrItemUtil.getJcrItem(getWorkspace(), itemId);
-            JcrItemAdapter itemAdapter;
-            if (jcrItem.isNode()) {
-                itemAdapter = new JcrNodeAdapter((Node) jcrItem);
-            } else {
-                itemAdapter = new JcrPropertyAdapter((Property) jcrItem);
-            }
-            return itemAdapter;
-        } catch (RepositoryException e) {
-            log.error("Failed to find item for id", e);
-            return null;
-        }
-    }
-
-    @Override
-    protected List<String> filterExistingItems(List<String> itemIds) {
-        List<String> filteredIds = new ArrayList<String>();
-        for (String itemId : itemIds) {
+    protected List<Object> filterExistingItems(List<Object> itemIds) {
+        List<Object> filteredIds = new ArrayList<Object>();
+        Iterator<Object> it = itemIds.iterator();
+        while (it.hasNext()) {
+            String itemId = String.valueOf(it.next());
             try {
                 if (JcrItemUtil.itemExists(getWorkspace(), itemId)) {
                     filteredIds.add(itemId);

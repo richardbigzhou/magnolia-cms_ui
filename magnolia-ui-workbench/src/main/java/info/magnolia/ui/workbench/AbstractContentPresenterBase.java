@@ -45,7 +45,6 @@ import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -62,7 +61,7 @@ import com.vaadin.data.Item;
  * Time: 16:05
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AbstractContentPresenterBase<IDTYPE> implements ContentPresenter<IDTYPE>, ContentView.Listener {
+public abstract class AbstractContentPresenterBase implements ContentPresenter, ContentView.Listener {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractContentPresenter.class);
 
@@ -74,7 +73,7 @@ public abstract class AbstractContentPresenterBase<IDTYPE> implements ContentPre
 
     protected WorkbenchDefinition workbenchDefinition;
 
-    private List<IDTYPE> selectedItemIds = new ArrayList<IDTYPE>();
+    private List<Object> selectedItemIds = new ArrayList<Object>();
 
     protected String viewTypeName;
 
@@ -97,16 +96,16 @@ public abstract class AbstractContentPresenterBase<IDTYPE> implements ContentPre
     }
 
     @Override
-    public List<IDTYPE> getSelectedItemIds() {
+    public List<Object> getSelectedItemIds() {
         return this.selectedItemIds;
     }
 
-    public IDTYPE getSelectedItemId() {
+    public Object getSelectedItemId() {
         return selectedItemIds.isEmpty() ? null : selectedItemIds.get(0);
     }
 
     @Override
-    public void setSelectedItemIds(List<IDTYPE> selectedItemIds) {
+    public void setSelectedItemIds(List<Object> selectedItemIds) {
         this.selectedItemIds = selectedItemIds;
     }
 
@@ -114,17 +113,17 @@ public abstract class AbstractContentPresenterBase<IDTYPE> implements ContentPre
 
     @Override
     public void onItemSelection(Set<Object> itemIds) {
-        IDTYPE rootItemId = resolveWorkbenchRootId();
+        Object rootItemId = resolveWorkbenchRootId();
         if (itemIds == null || itemIds.isEmpty()) {
             log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
-            List<IDTYPE> ids = new ArrayList<IDTYPE>(1);
+            List<Object> ids = new ArrayList<Object>(1);
 
             ids.add(rootItemId);
             setSelectedItemIds(ids);
         } else {
             Iterator<Object> itemIdIt = itemIds.iterator();
             while (itemIdIt.hasNext()) {
-                IDTYPE item = (IDTYPE) itemIdIt.next();
+                Object item = (Object) itemIdIt.next();
                 // if the selection is done by clicking the checkbox, the root item is added to the set - so it has to be ignored
                 // but only if there is any other item in the set
                 // TODO MGNLUI-1521
@@ -137,26 +136,26 @@ public abstract class AbstractContentPresenterBase<IDTYPE> implements ContentPre
                 }
             }
 
-            List<IDTYPE> selectedIds = new ArrayList<IDTYPE>(itemIds.size());
+            List<Object> selectedIds = new ArrayList<Object>(itemIds.size());
             for (Object id : itemIds) {
-                selectedIds.add((IDTYPE) id);
+                selectedIds.add((Object) id);
             }
 
-            setSelectedItemIds(new ArrayList<IDTYPE>(selectedIds));
+            setSelectedItemIds(new ArrayList<Object>(selectedIds));
             log.debug("com.vaadin.data.Item at {} was selected. Firing ItemSelectedEvent...", itemIds.toArray());
         }
         eventBus.fireEvent(new SelectionChangedEvent(itemIds));
 
     }
 
-    protected abstract IDTYPE resolveWorkbenchRootId();
+    protected abstract Object resolveWorkbenchRootId();
 
     @Override
     public void onDoubleClick(Object itemId) {
         if (itemId != null) {
             try {
-                List<IDTYPE> ids = new ArrayList<IDTYPE>(1);
-                ids.add((IDTYPE) itemId);
+                List<Object> ids = new ArrayList<Object>(1);
+                ids.add((Object) itemId);
                 setSelectedItemIds(ids);
                 log.debug("com.vaadin.data.Item at {} was double clicked. Firing ItemDoubleClickedEvent...", getSelectedItemId());
                 eventBus.fireEvent(new ItemDoubleClickedEvent(getSelectedItemId()));
@@ -176,8 +175,8 @@ public abstract class AbstractContentPresenterBase<IDTYPE> implements ContentPre
             try {
                 // if the right-clicket item is not yet selected
                 if (!selectedItemIds.contains(itemId)) {
-                    List<IDTYPE> ids = new ArrayList<IDTYPE>(1);
-                    ids.add((IDTYPE) itemId);
+                    List<Object> ids = new ArrayList<Object>(1);
+                    ids.add((Object) itemId);
                     setSelectedItemIds(ids);
                     select(ids);
                 }
@@ -238,10 +237,10 @@ public abstract class AbstractContentPresenterBase<IDTYPE> implements ContentPre
     }
 
     @Override
-    public void select(List<IDTYPE> itemIds) {}
+    public void select(List<Object> itemIds) {}
 
     @Override
-    public void expand(String itemId) {}
+    public void expand(Object itemId) {}
 
     protected abstract Container getContainer();
 }

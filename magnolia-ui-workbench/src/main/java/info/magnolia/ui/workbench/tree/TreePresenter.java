@@ -131,7 +131,7 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
     }
 
     @Override
-    public void expand(String itemId) {
+    public void expand(Object itemId) {
         view.expand(itemId);
     }
 
