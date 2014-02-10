@@ -370,6 +370,22 @@ public class SecurityModuleVersionHandlerTest extends ModuleVersionHandlerTestCa
         // THEN
         assertFalse(session.propertyExists("/modules/security-app/apps/security/subApps/roles/actions/deleteFolder/implementationClass"));
         assertFalse(session.propertyExists("/modules/security-app/apps/security/subApps/groups/actions/deleteFolder/implementationClass"));
+
+        assertTrue(session.nodeExists("/modules/security-app/apps/security/subApps/groups/actions/moveGroup"));
+        assertTrue(session.nodeExists("/modules/security-app/apps/security/subApps/roles/actions/moveRole"));
+        assertTrue(session.nodeExists("/modules/security-app/apps/security/subApps/users/actions/moveUser"));
+
+        assertTrue(session.nodeExists("/modules/security-app/apps/security/subApps/groups/actions/duplicateGroup"));
+        assertTrue(session.nodeExists("/modules/security-app/apps/security/subApps/roles/actions/duplicateRole"));
+        assertTrue(session.nodeExists("/modules/security-app/apps/security/subApps/users/actions/duplicateUser"));
+
+        assertTrue(session.nodeExists("/modules/security-app/apps/security/subApps/users/actionbar/sections/user/groups/editActions/items/moveUser"));
+        assertTrue(session.nodeExists("/modules/security-app/apps/security/subApps/groups/actionbar/sections/group/groups/editActions/items/moveGroup"));
+        assertTrue(session.nodeExists("/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/editActions/items/moveRole"));
+
+        assertTrue(session.nodeExists("/modules/security-app/apps/security/subApps/users/actionbar/sections/user/groups/editActions/items/duplicateUser"));
+        assertTrue(session.nodeExists("/modules/security-app/apps/security/subApps/groups/actionbar/sections/group/groups/editActions/items/duplicateGroup"));
+        assertTrue(session.nodeExists("/modules/security-app/apps/security/subApps/roles/actionbar/sections/role/groups/editActions/items/duplicateRole"));
         assertEquals(session.getProperty("/modules/security-app/apps/security/subApps/roles/actions/deleteFolder/class").getString(), DeleteEmptyFolderActionDefinition.class.getName());
         assertEquals(session.getProperty("/modules/security-app/apps/security/subApps/groups/actions/deleteFolder/class").getString(), DeleteEmptyFolderActionDefinition.class.getName());
         assertEquals(DeleteActionDefinition.class.getName() ,session.getProperty("/modules/security-app/apps/security/subApps/users/actions/deleteUser/class").getString());

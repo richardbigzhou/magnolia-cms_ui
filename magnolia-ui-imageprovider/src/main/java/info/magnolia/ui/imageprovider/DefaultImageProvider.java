@@ -52,7 +52,9 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.server.ExternalResource;
 
 /**
- * Superclass for all thumbnail providers.
+ * This implementation of image provider, is able to provide portrait or thumbnail images only for objects of mime
+ * type image/*. It will not store preview of image under the image node itself, instead it relies on imaging module
+ * to generate and store the preview.
  */
 public class DefaultImageProvider implements ImageProvider {
 

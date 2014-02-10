@@ -77,7 +77,7 @@ public class UserContainer extends HierarchicalJcrContainer {
     public boolean moveItemBefore(Item source, Item target) {
         try {
             String pathBefore = source.getPath();
-            if (super.moveItem(source, target)) {
+            if (super.moveItemBefore(source, target)) {
                 if (source.isNode()) {
                     UsersWorkspaceUtil.updateAcls((Node) source, pathBefore);
                     source.getSession().save();
@@ -94,7 +94,7 @@ public class UserContainer extends HierarchicalJcrContainer {
     public boolean moveItemAfter(Item source, Item target) {
         try {
             String pathBefore = source.getPath();
-            if (super.moveItem(source, target)) {
+            if (super.moveItemAfter(source, target)) {
                 if (source.isNode()) {
                     UsersWorkspaceUtil.updateAcls((Node) source, pathBefore);
                     source.getSession().save();
