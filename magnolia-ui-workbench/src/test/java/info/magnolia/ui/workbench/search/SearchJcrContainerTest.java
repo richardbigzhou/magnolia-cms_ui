@@ -37,7 +37,7 @@ import static org.junit.Assert.*;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.test.RepositoryTestCase;
-import info.magnolia.ui.api.ModelConstants;
+import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.workbench.container.OrderBy;
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;

@@ -35,13 +35,16 @@ package info.magnolia.ui.workbench.event;
 
 import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 /**
  * This event is fired when an item is right clicked (i.e. a row in the data grid within the workbench representing
  * either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
  */
 public class ItemRightClickedEvent implements Event<ItemRightClickedEvent.Handler> {
+
+    public Object getItemId() {
+        return itemId;
+    }
 
     /**
      * Handles {@link ItemRightClickedEvent} events.
@@ -51,30 +54,16 @@ public class ItemRightClickedEvent implements Event<ItemRightClickedEvent.Handle
         void onItemRightClicked(ItemRightClickedEvent event);
     }
 
-    private String workspace;
-
-    private final JcrItemAdapter item;
+    private Object itemId;
 
     private int clickX;
+
     private int clickY;
 
-    public ItemRightClickedEvent(String workspace, JcrItemAdapter item, int clickX, int clickY) {
-        this.workspace = workspace;
-        this.item = item;
+    public ItemRightClickedEvent(Object itemId, int clickX, int clickY) {
+        this.itemId = itemId;
         this.clickX = clickX;
         this.clickY = clickY;
-    }
-
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    public JcrItemAdapter getItem() {
-        return item;
-    }
-
-    public String getItemId() {
-        return item != null ? item.getItemId() : null;
     }
 
     public int getClickX() {
