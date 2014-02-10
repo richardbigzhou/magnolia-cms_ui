@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.api;
+package info.magnolia.ui.vaadin.integration.jcr;
 
 /**
  * Constants used UI Model layer and higher.

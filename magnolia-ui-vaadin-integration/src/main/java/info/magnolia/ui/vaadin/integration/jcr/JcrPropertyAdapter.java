@@ -36,7 +36,6 @@ package info.magnolia.ui.vaadin.integration.jcr;
 import info.magnolia.cms.core.Path;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.PropertyUtil;
-import info.magnolia.ui.api.ModelConstants;
 
 import java.util.Collection;
 import java.util.Collections;

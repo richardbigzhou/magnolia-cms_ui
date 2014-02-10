@@ -34,19 +34,17 @@
 package info.magnolia.ui.api.action;
 
 import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.MgnlInstantiationException;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.AvailabilityRule;
 
 import javax.inject.Inject;
-import javax.jcr.Item;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
 
 /**
  * Abstract base implementation of {@link ActionExecutor}. Creates the {@link Action} from the implementation class
@@ -149,29 +147,32 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
 
     private boolean isAvailableForItem(AvailabilityDefinition availability, Item item) {
 
+
         if (item == null) {
             return availability.isRoot();
         }
-
-        if (!item.isNode()) {
-            return availability.isProperties();
-        }
+        //TODO JCRFREE - resolve this  node/property logic
+//
+//        if (!item.isNode()) {
+//            return availability.isProperties();
+//        }
 
         // Must have _any_ of the node types if any are specified, otherwise its available by default
-        if (availability.getNodeTypes().isEmpty()) {
-            return availability.isNodes();
-        }
-
-        for (String nodeType : availability.getNodeTypes()) {
-            try {
-                if (NodeUtil.isNodeType((Node) item, nodeType)) {
-                    return true;
-                }
-            } catch (RepositoryException e) {
-                log.error("Could not determine node type of node " + NodeUtil.getNodePathIfPossible((Node) item));
-            }
-        }
-
-        return false;
+//        if (availability.getNodeTypes().isEmpty()) {
+//            return availability.isNodes();
+//        }
+//
+//        for (String nodeType : availability.getNodeTypes()) {
+//            try {
+//                if (NodeUtil.isNodeType(item, nodeType)) {
+//                    return true;
+//                }
+//            } catch (RepositoryException e) {
+//                log.error("Could not determine node type of node " + NodeUtil.getNodePathIfPossible((Node) item));
+//            }
+//        }
+//
+//        return false;
+        return true;
     }
 }

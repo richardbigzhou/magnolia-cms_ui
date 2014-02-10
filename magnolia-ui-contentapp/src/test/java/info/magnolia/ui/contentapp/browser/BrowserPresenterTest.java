@@ -53,7 +53,6 @@ import info.magnolia.ui.api.shell.Shell;
 import info.magnolia.ui.framework.app.SubAppContextImpl;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
-import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
@@ -141,7 +140,7 @@ public class BrowserPresenterTest {
         ActionbarPresenter mockActionbarPresenter = mock(ActionbarPresenter.class);
         actionExecutor = mock(ActionExecutor.class);
 
-        presenter = new BrowserPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus, mockActionbarPresenter, null, mockWorkbenchPresenter);
+        presenter = new BrowserPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus, mockActionbarPresenter, null, mockWorkbenchPresenter, null);
 
         // start presenter (binds event handlers)
         presenter.start();
@@ -204,14 +203,14 @@ public class BrowserPresenterTest {
         browserSubAppDescriptor.setActionbar(actionbar);
 
         Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
-        when(actionExecutor.isAvailable("testDefaultAction", node)).thenReturn(false);
-        List<String> ids = new ArrayList<String>(1);
+        when(actionExecutor.isAvailable("testDefaultAction", new JcrNodeAdapter(node))).thenReturn(false);
+        List<Object> ids = new ArrayList<Object>(1);
         ids.add(node.getIdentifier());
         when(mockWorkbenchPresenter.getSelectedIds()).thenReturn(ids);
         when(mockWorkbenchPresenter.getWorkspace()).thenReturn(WORKSPACE);
 
         // WHEN
-        subAppEventBus.fireEvent(new ItemDoubleClickedEvent(WORKSPACE, node.getPath()));
+        subAppEventBus.fireEvent(new ItemDoubleClickedEvent(node.getPath()));
 
         // THEN
         // just verifying that the method has NOT been called with the proper action name, not the Item(s) passed to it
@@ -226,14 +225,14 @@ public class BrowserPresenterTest {
         browserSubAppDescriptor.setActionbar(actionbar);
 
         Node node = session.getRootNode().addNode(DUMMY_NODE_NAME);
-        when(actionExecutor.isAvailable("testDefaultAction", node)).thenReturn(true);
-        List<String> ids = new ArrayList<String>(1);
+        when(actionExecutor.isAvailable("testDefaultAction", new JcrNodeAdapter(node))).thenReturn(true);
+        List<Object> ids = new ArrayList<Object>(1);
         ids.add(node.getIdentifier());
         when(mockWorkbenchPresenter.getSelectedIds()).thenReturn(ids);
         when(mockWorkbenchPresenter.getWorkspace()).thenReturn(WORKSPACE);
 
         // WHEN
-        subAppEventBus.fireEvent(new ItemDoubleClickedEvent(WORKSPACE, node.getPath()));
+        subAppEventBus.fireEvent(new ItemDoubleClickedEvent(node.getPath()));
 
         // THEN
         // just verifying that the method has been called with the proper action name, not the Item(s) passed to it
@@ -252,13 +251,13 @@ public class BrowserPresenterTest {
         when(wb.getWorkspace()).thenReturn(WORKSPACE);
         when(wb.getPath()).thenReturn(node.getPath());
         browserSubAppDescriptor.setWorkbench(wb);
-        List<String> ids = new ArrayList<String>(1);
+        List<Object> ids = new ArrayList<Object>(1);
         ids.add(node.getIdentifier());
         when(mockWorkbenchPresenter.getSelectedIds()).thenReturn(ids);
         when(mockWorkbenchPresenter.getWorkspace()).thenReturn(WORKSPACE);
 
         // WHEN
-        subAppEventBus.fireEvent(new ItemDoubleClickedEvent(WORKSPACE, node.getPath()));
+        subAppEventBus.fireEvent(new ItemDoubleClickedEvent(node.getPath()));
 
         // THEN
         // just verifying that null is passed to the isAvailable() method instead of the actual item

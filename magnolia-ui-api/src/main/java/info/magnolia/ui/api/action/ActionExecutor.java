@@ -33,7 +33,8 @@
  */
 package info.magnolia.ui.api.action;
 
-import javax.jcr.Item;
+
+import com.vaadin.data.Item;
 
 /**
  * Responsible for executing actions, doing lookups of action definitions based on action names and evaluating if an
