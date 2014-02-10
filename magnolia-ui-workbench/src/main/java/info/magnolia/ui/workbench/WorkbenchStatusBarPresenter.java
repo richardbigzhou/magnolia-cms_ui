@@ -39,6 +39,7 @@ import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.jcr.RepositoryException;
@@ -47,12 +48,14 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Item;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 
 /**
  * The browser features a status bar at the bottom with selected path and item count information.
+ * TODO JCRFREE - get rid of JcrItemAdapter dependency here.
  */
 public class WorkbenchStatusBarPresenter {
 
@@ -76,7 +79,7 @@ public class WorkbenchStatusBarPresenter {
 
             @Override
             public void onSelectionChanged(SelectionChangedEvent event) {
-                setSelectedItems(event.getItems());
+                setSelectedItems(event.getItemIds());
             }
         });
     }
@@ -94,9 +97,9 @@ public class WorkbenchStatusBarPresenter {
         return view;
     }
 
-    public void setSelectedItems(List<JcrItemAdapter> items) {
+    public void setSelectedItems(Set<Object> items) {
         if (!items.isEmpty()) {
-            setSelectedItem(items.get(0));
+            //setSelectedItem((JcrItemAdapter) items.get(0));
         }
     }
 

@@ -35,7 +35,9 @@ package info.magnolia.ui.contentapp.definition;
 
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor;
+import info.magnolia.ui.contentapp.dsmanager.JcrDataSourceManager;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
 
 /**
  * Simple implementation for {@link ContentSubAppDescriptor}.
@@ -47,6 +49,12 @@ public class ConfiguredContentSubAppDescriptor extends ConfiguredSubAppDescripto
     private ActionbarDefinition actionbar;
 
     private ImageProviderDefinition imageProvider;
+
+    private Class<? extends DataSourceManager> dataSourceManagerClass;
+
+    public ConfiguredContentSubAppDescriptor() {
+        setDataSourceManagerClass(JcrDataSourceManager.class);
+    }
 
     @Override
     public ActionbarDefinition getActionbar() {
@@ -64,5 +72,14 @@ public class ConfiguredContentSubAppDescriptor extends ConfiguredSubAppDescripto
 
     public void setImageProvider(ImageProviderDefinition imageProvider) {
         this.imageProvider = imageProvider;
+    }
+
+    @Override
+    public Class<? extends DataSourceManager> getDataSourceManagerClass() {
+        return this.dataSourceManagerClass;
+    }
+
+    public void setDataSourceManagerClass(Class<? extends DataSourceManager> dataSourceManagerClass) {
+        this.dataSourceManagerClass = dataSourceManagerClass;
     }
 }

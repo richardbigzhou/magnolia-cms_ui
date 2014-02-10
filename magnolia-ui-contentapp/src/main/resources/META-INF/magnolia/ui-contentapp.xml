@@ -49,8 +49,17 @@
 
 
   <components>
-    <id>subapp</id>
+    <id>app</id>
 
+  </components>
+
+  <components>
+    <id>subapp</id>
+    <component>
+      <type>info.magnolia.ui.workbench.dsmanager.DataSourceManagerProvider</type>
+      <implementation>info.magnolia.ui.contentapp.dsmanager.DataSourceManagerProviderImpl</implementation>
+      <scope>singleton</scope>
+    </component>
     <component>
       <type>info.magnolia.ui.dialog.choosedialog.ChooseDialogView</type>
       <implementation>info.magnolia.ui.dialog.choosedialog.ChooseDialogViewImpl</implementation>

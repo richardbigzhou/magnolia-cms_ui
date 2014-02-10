@@ -153,7 +153,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      */
     private App getAppWithoutStarting(String appName) {
         AppInstanceController appInstanceController = createNewAppInstance(appName);
-        ComponentProvider appComponentProvider = createAppComponentProvider(appInstanceController.getAppDescriptor().getName(), appInstanceController);
+        ComponentProvider appComponentProvider = createAppComponentProvider(appInstanceController.getAppDescriptor().getName(), appInstanceController, new SimpleEventBus());
         App app = appComponentProvider.newInstance(appInstanceController.getAppDescriptor().getAppClass());
 
         appInstanceController.setApp(app);
@@ -384,8 +384,9 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
             return null;
         }
 
-        AppInstanceController appInstanceController = componentProvider.newInstance(AppInstanceController.class, descriptor);
-        createAppComponentProvider(descriptor.getName(), appInstanceController);
+        SimpleEventBus subAppEventBus = new SimpleEventBus();
+        AppInstanceController appInstanceController = componentProvider.newInstance(AppInstanceController.class, descriptor, subAppEventBus);
+        createAppComponentProvider(descriptor.getName(), appInstanceController, subAppEventBus);
         return appInstanceController;
     }
 
@@ -431,7 +432,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
      * descriptors using the convention "app-" + name of the app and merged with the components defined for all apps
      * with the id "app".
      */
-    private ComponentProvider createAppComponentProvider(String name, AppInstanceController appInstanceController) {
+    private ComponentProvider createAppComponentProvider(String name, AppInstanceController appInstanceController, final SimpleEventBus subAppEventBus) {
 
         ComponentProviderConfigurationBuilder configurationBuilder = new ComponentProviderConfigurationBuilder();
         List<ModuleDefinition> moduleDefinitions = moduleRegistry.getModuleDefinitions();
@@ -454,7 +455,7 @@ public class AppControllerImpl implements AppController, LocationChangedEvent.Ha
 
             @Override
             protected void configure() {
-                bind(EventBus.class).annotatedWith(Names.named(AppEventBus.NAME)).toProvider(Providers.of(new SimpleEventBus()));
+                bind(EventBus.class).annotatedWith(Names.named(AppEventBus.NAME)).toProvider(Providers.of(subAppEventBus));
                 bind(EventBus.class).annotatedWith(Names.named(ChooseDialogEventBus.NAME)).toProvider(Providers.of(new SimpleEventBus()));
             }
         });

@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp;
+package info.magnolia.ui.workbench.dsmanager;
 
-import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
-import info.magnolia.ui.contentapp.dsmanager.JcrDataSourceManager;
-import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
-import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
+import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
 
 /**
- * Implementation of {@link ContentAppDescriptor}.
+ * Created with IntelliJ IDEA.
+ * User: sasha
+ * Date: 11/02/14
+ * Time: 23:24
+ * To change this template use File | Settings | File Templates.
  */
-public class ConfiguredContentAppDescriptor extends ConfiguredAppDescriptor implements ContentAppDescriptor {
+public interface DataSourceManagerProvider {
 
-    private ChooseDialogDefinition chooseDialog = new ConfiguredChooseDialogDefinition();
-
-    @Override
-    public ChooseDialogDefinition getChooseDialog() {
-        return chooseDialog;
-    }
-
-    public void setChooseDialog(ChooseDialogDefinition chooseDialog) {
-        this.chooseDialog = chooseDialog;
-    }
+    DataSourceManager getDSManager();
 }

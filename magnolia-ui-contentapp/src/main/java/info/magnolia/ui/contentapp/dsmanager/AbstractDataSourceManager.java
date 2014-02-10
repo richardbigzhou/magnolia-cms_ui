@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,49 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp;
+package info.magnolia.ui.contentapp.dsmanager;
 
-import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
-import info.magnolia.ui.contentapp.dsmanager.JcrDataSourceManager;
-import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
-import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
+import info.magnolia.event.EventBus;
 import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
+import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.vaadin.data.Container;
 
 /**
- * Implementation of {@link ContentAppDescriptor}.
+ * Created with IntelliJ IDEA.
+ * User: sasha
+ * Date: 11/02/14
+ * Time: 16:23
+ * To change this template use File | Settings | File Templates.
  */
-public class ConfiguredContentAppDescriptor extends ConfiguredAppDescriptor implements ContentAppDescriptor {
+public abstract class AbstractDataSourceManager implements DataSourceManager, ViewTypeChangedEvent.Handler {
 
-    private ChooseDialogDefinition chooseDialog = new ConfiguredChooseDialogDefinition();
+    private Map<String, Container> subAppContainers = new HashMap<String, Container>();
 
-    @Override
-    public ChooseDialogDefinition getChooseDialog() {
-        return chooseDialog;
+    private String activeContentViewId;
+
+    protected AbstractDataSourceManager(EventBus subAppEventEventBus) {
+        subAppEventEventBus.addHandler(ViewTypeChangedEvent.class, this);
     }
 
-    public void setChooseDialog(ChooseDialogDefinition chooseDialog) {
-        this.chooseDialog = chooseDialog;
+    public void registerContentView(String contentViewId, Container container) {
+        subAppContainers.put(contentViewId, container);
+    }
+
+    @Override
+    public Container getContainerForViewType(String contentViewId) {
+        return subAppContainers.get(contentViewId);
+    }
+
+    protected Container getActiveContainer() {
+        return subAppContainers.get(activeContentViewId);
+    }
+
+    @Override
+    public void onViewChanged(ViewTypeChangedEvent event) {
+        activeContentViewId = event.getViewType();
     }
 }
