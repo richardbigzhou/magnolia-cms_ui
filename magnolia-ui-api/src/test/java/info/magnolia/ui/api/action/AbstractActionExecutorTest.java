@@ -47,11 +47,15 @@ import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.objectfactory.guice.GuiceComponentProviderBuilder;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.test.MgnlTestCase;
+import info.magnolia.test.mock.MockNodeType;
 import info.magnolia.test.mock.MockWebContext;
 import info.magnolia.test.mock.jcr.MockNode;
 import info.magnolia.test.mock.jcr.MockProperty;
+import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,17 +63,20 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.jcr.Item;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.vaadin.data.Item;
 
 /**
  * Test case for the {@link AbstractActionExecutor}.
  */
 public class AbstractActionExecutorTest extends MgnlTestCase {
 
-    private static final Item[] ROOT_ITEM = new Item[] { null };
+    private static final Item ROOT_ITEM = null;
+
+    private MockSession session = new MockSession("default");
 
     @Override
     @Before
@@ -257,8 +264,8 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         // THEN
         assertFalse(actionExecutor.isAvailable("foobar", ROOT_ITEM));
-        assertFalse(actionExecutor.isAvailable("foobar", new MockNode()));
-        assertFalse(actionExecutor.isAvailable("foobar", new MockProperty("propertyName", "propertyValue", new MockNode())));
+        assertFalse(actionExecutor.isAvailable("foobar", new JcrNodeAdapter(new MockNode(session))));
+        assertFalse(actionExecutor.isAvailable("foobar", new JcrPropertyAdapter(new MockProperty("propertyName", "propertyValue", new MockNode(session)))));
     }
 
     @Test
@@ -276,8 +283,8 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         // THEN
         assertTrue(actionExecutor.isAvailable("foobar", ROOT_ITEM));
-        assertTrue(actionExecutor.isAvailable("foobar", new MockNode()));
-        assertFalse(actionExecutor.isAvailable("foobar", new MockProperty("propertyName", "propertyValue", new MockNode())));
+        assertTrue(actionExecutor.isAvailable("foobar", new JcrNodeAdapter(new MockNode(session))));
+        assertFalse(actionExecutor.isAvailable("foobar", new JcrPropertyAdapter(new MockProperty("propertyName", "propertyValue", new MockNode(session)))));
     }
 
     @Test
@@ -295,8 +302,8 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         // THEN
         assertFalse(actionExecutor.isAvailable("foobar", ROOT_ITEM));
-        assertTrue(actionExecutor.isAvailable("foobar", new MockProperty("propertyName", "propertyValue", new MockNode())));
-        assertTrue(actionExecutor.isAvailable("foobar", new MockNode()));
+        assertTrue(actionExecutor.isAvailable("foobar", new JcrPropertyAdapter(new MockProperty("propertyName", "propertyValue", new MockNode(session)))));
+        assertTrue(actionExecutor.isAvailable("foobar", new JcrNodeAdapter(new MockNode(session))));
     }
 
     @Test
@@ -312,8 +319,8 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         // THEN
         assertFalse(actionExecutor.isAvailable("foobar", ROOT_ITEM));
-        assertFalse(actionExecutor.isAvailable("foobar", new MockProperty("propertyName", "propertyValue", new MockNode())));
-        assertTrue(actionExecutor.isAvailable("foobar", new MockNode()));
+        assertFalse(actionExecutor.isAvailable("foobar", new JcrPropertyAdapter(new MockProperty("propertyName", "propertyValue", new MockNode(session)))));
+        assertTrue(actionExecutor.isAvailable("foobar", new JcrNodeAdapter(new MockNode(session))));
     }
 
     @Test
@@ -331,9 +338,12 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         // THEN
         assertFalse(actionExecutor.isAvailable("foobar", ROOT_ITEM));
-        assertFalse(actionExecutor.isAvailable("foobar", new MockProperty("propertyName", "propertyValue", new MockNode())));
-        assertTrue(actionExecutor.isAvailable("foobar", new MockNode("", NodeTypes.Content.NAME)));
-        assertFalse(actionExecutor.isAvailable("foobar", new MockNode("", NodeTypes.ContentNode.NAME)));
+        assertFalse(actionExecutor.isAvailable("foobar", new JcrPropertyAdapter(new MockProperty("propertyName", "propertyValue", new MockNode(session)))));
+        MockNode jcrNode = new MockNode(session);
+        jcrNode.setPrimaryNodeType(new MockNodeType(NodeTypes.Content.NAME));
+        assertTrue(actionExecutor.isAvailable("foobar", new JcrNodeAdapter(jcrNode)));
+        jcrNode.setPrimaryNodeType(new MockNodeType(NodeTypes.ContentNode.NAME));
+        assertFalse(actionExecutor.isAvailable("foobar", new JcrNodeAdapter(jcrNode)));
     }
 
     @Test
@@ -376,7 +386,7 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
         actionExecutor.add(actionDefinition);
 
         // THEN
-        assertFalse(actionExecutor.isAvailable("foobar", new MockNode("a", NodeTypes.Content.NAME), new MockNode("b", NodeTypes.Content.NAME)));
+        assertFalse(actionExecutor.isAvailable("foobar", new JcrNodeAdapter(new MockNode("a", NodeTypes.Content.NAME)), new JcrNodeAdapter(new MockNode("b", NodeTypes.Content.NAME))));
     }
 
     @Test
@@ -392,7 +402,7 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
         actionExecutor.add(actionDefinition);
 
         // THEN
-        assertTrue(actionExecutor.isAvailable("foobar", new MockNode("a", NodeTypes.Content.NAME), new MockNode("b", NodeTypes.Content.NAME)));
+        assertTrue(actionExecutor.isAvailable("foobar", new JcrNodeAdapter(new MockNode("a", NodeTypes.Content.NAME)), new JcrNodeAdapter(new MockNode("b", NodeTypes.Content.NAME))));
     }
 
     private SimpleActionExecutor createSimpleActionExecutor() {

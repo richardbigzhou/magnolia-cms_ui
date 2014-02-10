@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import info.magnolia.ui.api.ModelConstants;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;

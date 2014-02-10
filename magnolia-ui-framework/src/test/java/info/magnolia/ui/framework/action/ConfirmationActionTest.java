@@ -73,13 +73,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.Session;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.vaadin.data.Item;
 
 /**
  * Test covering execution of {@link ConfirmationAction}.

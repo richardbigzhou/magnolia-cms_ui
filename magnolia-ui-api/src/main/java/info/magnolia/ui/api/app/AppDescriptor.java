@@ -65,4 +65,5 @@ public interface AppDescriptor extends Serializable {
     AccessDefinition getPermissions();
 
     String getI18nBasename();
+
 }

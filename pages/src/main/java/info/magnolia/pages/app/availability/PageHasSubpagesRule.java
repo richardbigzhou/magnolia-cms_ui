@@ -36,12 +36,15 @@ package info.magnolia.pages.app.availability;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
-import javax.jcr.Item;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Item;
 
 /**
  * This rule returns true, if the item is node of the mgnl:page type and has a subnode of the same type.
@@ -53,22 +56,25 @@ public class PageHasSubpagesRule extends AbstractAvailabilityRule {
     @Override
     public boolean isAvailableForItem(Item item) {
         // item must be a Node
-        if (item != null && item.isNode()) {
-            Node node = (Node) item;
-            try {
-                // node must be of the Page type
-                if (NodeUtil.isNodeType(node, NodeTypes.Page.NAME)) {
-                    // has sub-pages?
-                    return NodeUtil.getNodes(node, NodeTypes.Page.NAME).iterator().hasNext();
-                }
-            } catch (RepositoryException e) {
-                String path = "unknown";
+        if (item instanceof JcrNodeAdapter) {
+            JcrNodeAdapter jcrItemAdapter = (JcrNodeAdapter)item;
+            Node node = jcrItemAdapter.getJcrItem();
+            if (node != null) {
                 try {
-                    path = node.getPath();
-                } catch (RepositoryException e1) {
-                    // nothing to do
+                    // node must be of the Page type
+                    if (NodeUtil.isNodeType(node, NodeTypes.Page.NAME)) {
+                        // has sub-pages?
+                        return NodeUtil.getNodes(node, NodeTypes.Page.NAME).iterator().hasNext();
+                    }
+                } catch (RepositoryException e) {
+                    String path = "unknown";
+                    try {
+                        path = node.getPath();
+                    } catch (RepositoryException e1) {
+                        // nothing to do
+                    }
+                    log.warn("Error evaluating availability for node [{}], returning false: {}", path, e.getMessage());
                 }
-                log.warn("Error evaluating availability for node [{}], returning false: {}", path, e.getMessage());
             }
         }
         return false;
