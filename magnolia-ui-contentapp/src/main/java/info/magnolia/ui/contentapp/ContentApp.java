@@ -35,7 +35,6 @@ package info.magnolia.ui.contentapp;
 
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.objectfactory.guice.GuiceComponentProvider;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.api.app.ChooseDialogCallback;
