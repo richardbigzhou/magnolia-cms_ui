@@ -48,8 +48,9 @@ public class RoleTreePresenter extends TreePresenter {
         super(view, componentProvider, container);
     }
 
-    @Override
-    protected HierarchicalJcrContainer createContainer(WorkbenchDefinition workbench) {
-        return new RoleContainer(workbench);
-    }
+    // TODO JCRFREE - this has to be configured on the DataSourceManagr level!
+//    @Override
+//    protected HierarchicalJcrContainer createContainer(WorkbenchDefinition workbench) {
+//        return new RoleContainer(workbench);
+//    }
 }
