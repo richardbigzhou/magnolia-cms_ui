@@ -37,9 +37,11 @@ import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
+
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -55,16 +57,17 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     protected AbstractJcrContainer container;
 
     @Inject
-    public ListPresenter(final ListView view, final ComponentProvider componentProvider) {
+    public ListPresenter(final ListView view, final ComponentProvider componentProvider, AbstractJcrContainer container) {
         super(componentProvider);
         this.view = view;
+        this.container = container;
     }
 
     @Override
     public ListView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName) {
         super.start(workbench, eventBus, viewTypeName);
 
-        this.container = createContainer(workbench);
+        //this.container = createContainer(workbench);
         view.setListener(this);
         view.setContainer(container);
 
@@ -99,8 +102,12 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     }
 
     @Override
-    public void select(List<String> itemIds) {
-        view.select(itemIds);
+    public void select(List<Object> itemIds) {
+        List<Object> objectIds = new ArrayList<Object>();
+        for (Object itemId : itemIds) {
+            objectIds.add(itemId);
+        }
+        view.select(objectIds);
     }
 
     @Override
@@ -110,10 +117,7 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
         container.fireItemSetChange();
     }
 
-    protected AbstractJcrContainer createContainer(WorkbenchDefinition workbench) {
-        return new FlatJcrContainer(workbench);
-    }
-
+    @Override
     protected AbstractJcrContainer getContainer() {
         return container;
     }

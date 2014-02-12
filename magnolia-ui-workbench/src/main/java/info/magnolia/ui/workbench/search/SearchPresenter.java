@@ -36,6 +36,7 @@ package info.magnolia.ui.workbench.search;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.list.ListPresenter;
+import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
 
 import javax.inject.Inject;
 
@@ -45,13 +46,8 @@ import javax.inject.Inject;
 public class SearchPresenter extends ListPresenter implements SearchView.Listener {
 
     @Inject
-    public SearchPresenter(SearchView view, ComponentProvider componentProvider) {
-        super(view, componentProvider);
-    }
-
-    @Override
-    protected SearchJcrContainer createContainer(WorkbenchDefinition workbench) {
-        return new SearchJcrContainer(workbench);
+    public SearchPresenter(SearchView view, ComponentProvider componentProvider, SearchJcrContainer container) {
+        super(view, componentProvider, container);
     }
 
     @Override

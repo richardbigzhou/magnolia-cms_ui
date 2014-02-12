@@ -63,8 +63,8 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
     private static final Logger log = LoggerFactory.getLogger(TreePresenter.class);
 
     @Inject
-    public TreePresenter(TreeView view, ComponentProvider componentProvider) {
-        super(view, componentProvider);
+    public TreePresenter(TreeView view, ComponentProvider componentProvider, HierarchicalJcrContainer container) {
+        super(view, componentProvider, container);
     }
 
     @Override
@@ -106,11 +106,6 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
         ((TreeView) view).setDragAndDropHandler(null);
     }
 
-    @Override
-    protected HierarchicalJcrContainer createContainer(WorkbenchDefinition workbench) {
-        return new HierarchicalJcrContainer(workbench);
-    }
-
     // TREE VIEW LISTENER IMPL
 
     @Override
@@ -131,7 +126,7 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
     }
 
     @Override
-    public void expand(String itemId) {
+    public void expand(Object itemId) {
         view.expand(itemId);
     }
 
