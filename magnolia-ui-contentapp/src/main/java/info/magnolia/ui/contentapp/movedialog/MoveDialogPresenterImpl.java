@@ -100,7 +100,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private AppContext appContext;
 
-    private List<JcrNodeAdapter> nodesToMove;
+    private List<Item> nodesToMove;
 
     private Map<MoveLocation, ActionDefinition> actionMap = new HashMap<MoveLocation, ActionDefinition>();
 
@@ -110,7 +110,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
 
     private MoveActionCallback callback;
 
-    private JcrNodeAdapter currentHostCandidate;
+    private Item currentHostCandidate;
 
     private ConfiguredWorkbenchDefinition workbenchDefinition;
 
@@ -132,7 +132,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
     }
 
     @Override
-    public DialogView start(BrowserSubAppDescriptor subAppDescriptor, List<JcrNodeAdapter> nodesToMove, MoveActionCallback callback) {
+    public DialogView start(BrowserSubAppDescriptor subAppDescriptor, List<Item> nodesToMove, MoveActionCallback callback) {
 
         final ConfiguredImageProviderDefinition imageProviderDefinition = prepareImageProviderDefinition(subAppDescriptor);
         this.workbenchDefinition = prepareWorkbenchDefinition(subAppDescriptor);
@@ -283,7 +283,7 @@ public class MoveDialogPresenterImpl extends BaseDialogPresenter implements Move
         return (DialogActionExecutor) super.getExecutor();
     }
 
-    private JcrNodeAdapter getHostCandidate() {
+    private Item getHostCandidate() {
         if (currentHostCandidate != null) {
             return currentHostCandidate;
         } else {

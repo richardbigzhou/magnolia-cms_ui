@@ -140,7 +140,7 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
             throw new RuntimeException(e);
         }
 
-        DetailView itemView = detailPresenter.start(editorDefinition, item, viewType);
+        DetailView itemView = detailPresenter.start(editorDefinition, item, viewType, item.getItemId());
 
         view.setItemView(itemView);
         actionbarPresenter.setListener(this);
