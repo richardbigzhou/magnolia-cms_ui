@@ -44,8 +44,8 @@ import info.magnolia.ui.workbench.tree.TreeView;
  */
 public class RoleTreePresenter extends TreePresenter {
 
-    public RoleTreePresenter(TreeView view, ComponentProvider componentProvider) {
-        super(view, componentProvider);
+    public RoleTreePresenter(TreeView view, ComponentProvider componentProvider, HierarchicalJcrContainer container) {
+        super(view, componentProvider, container);
     }
 
     @Override
