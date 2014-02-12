@@ -60,7 +60,7 @@ public class OpenMoveDialogAction extends AbstractAction<OpenMoveDialogActionDef
 
     private JcrNodeAdapter sourceNodeAdapter;
 
-    private List<JcrNodeAdapter> sourceNodeAdapters;
+    private List<Item> sourceNodeAdapters;
 
     private MoveDialogPresenter moveDialogPresenter;
 
@@ -70,7 +70,7 @@ public class OpenMoveDialogAction extends AbstractAction<OpenMoveDialogActionDef
             OpenMoveDialogActionDefinition definition,
             AppContext appContext,
             ComponentProvider componentProvider,
-            JcrNodeAdapter sourceNodeAdapter,
+            Item sourceNodeAdapter,
             MoveDialogPresenter moveDialogPresenter) {
         this(definition, appContext, componentProvider, moveDialogPresenter, Arrays.asList(sourceNodeAdapter));
     }
@@ -80,7 +80,7 @@ public class OpenMoveDialogAction extends AbstractAction<OpenMoveDialogActionDef
             AppContext appContext,
             ComponentProvider componentProvider,
             MoveDialogPresenter moveDialogPresenter,
-            List<JcrNodeAdapter> sourceNodeAdapters) {
+            List<Item> sourceNodeAdapters) {
         super(definition);
         this.appContext = appContext;
         this.componentProvider = componentProvider;

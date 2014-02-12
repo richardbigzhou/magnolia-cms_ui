@@ -49,7 +49,6 @@ import info.magnolia.ui.dialog.definition.FormDialogDefinition;
 import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -106,11 +105,11 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
      */
     @Override
     public DialogView start(final Item item, FormDialogDefinition dialogDefinition, final UiContext uiContext, EditorCallback callback) {
-        start(dialogDefinition, uiContext);
         this.callback = callback;
         this.item = item;
-
         getExecutor().setDialogDefinition(dialogDefinition);
+
+        start(dialogDefinition, uiContext);
 
         buildView(dialogDefinition);
 
@@ -167,9 +166,8 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     @Override
     protected Iterable<ActionDefinition> filterActions() {
         List<ActionDefinition> result = new LinkedList<ActionDefinition>();
-        boolean isJcrItemAdapter = (item instanceof JcrItemAdapter);
         for (ActionDefinition action : getDefinition().getActions().values()) {
-            if (!isJcrItemAdapter || getExecutor().isAvailable(action.getName(), ((JcrItemAdapter) item).getJcrItem())) {
+            if (getExecutor().isAvailable(action.getName(), item)) {
                 result.add(action);
             }
         }
