@@ -36,6 +36,7 @@ package info.magnolia.ui.workbench.thumbnail;
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.imageprovider.ImageProvider;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
@@ -70,8 +71,8 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     }
 
     @Override
-    public ContentView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName) {
-        super.start(workbench, eventBus, viewTypeName);
+    public ContentView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName, DataSourceManager dsManager) {
+        super.start(workbench, eventBus, viewTypeName, dsManager);
 
         container = new ThumbnailContainer(workbench, imageProvider);
         container.setWorkspaceName(workbench.getWorkspace());

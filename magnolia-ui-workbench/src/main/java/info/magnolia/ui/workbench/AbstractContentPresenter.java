@@ -33,17 +33,13 @@
  */
 package info.magnolia.ui.workbench;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
-
 
 import javax.inject.Inject;
 import javax.jcr.Node;
@@ -64,21 +60,6 @@ public abstract class AbstractContentPresenter extends AbstractContentPresenterB
     @Inject
     public AbstractContentPresenter(ComponentProvider componentProvider) {
         super(componentProvider);
-    }
-
-    @Override
-    protected String resolveWorkbenchRootId() {
-        try {
-            return JcrItemUtil.getItemId(getWorkbenchRoot());
-        } catch (RepositoryException e) {
-            log.error("Failed to resolve workbench root id", e);
-            return null;
-        }
-    }
-
-    @Override
-    protected String getItemId(Item item) {
-        return ((JcrItemAdapter) item).getItemId();
     }
 
     @Override
@@ -121,14 +102,5 @@ public abstract class AbstractContentPresenter extends AbstractContentPresenterB
     @Override
     public void refresh() {
 
-    }
-
-    private Node getWorkbenchRoot() {
-        try {
-            return MgnlContext.getJCRSession(workbenchDefinition.getWorkspace()).getNode(workbenchDefinition.getPath());
-        } catch (RepositoryException e) {
-            log.debug("Cannot find workbench root node for workspace=[" + workbenchDefinition.getWorkspace() + "] and path=[" + workbenchDefinition.getPath() + "]. Error: " + e.getMessage());
-            return null;
-        }
     }
 }

@@ -35,7 +35,6 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
@@ -111,7 +110,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
             if (presenterClass != null) {
                 presenter = newPresenterInstance(componentProvider, imageProviderDefinition, presenterClass, dsManager.getContainerForViewType(presenterDefinition.getViewType()));
                 contentPresenters.put(presenterDefinition.getViewType(), presenter);
-                ContentView contentView = presenter.start(workbenchDefinition, eventBus, presenterDefinition.getViewType());
+                ContentView contentView = presenter.start(workbenchDefinition, eventBus, presenterDefinition.getViewType(), dsManager);
 
                 if (presenterDefinition.isActive()) {
                     activePresenter = presenter;
