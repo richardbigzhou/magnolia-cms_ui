@@ -119,14 +119,6 @@ public class JcrDataSourceManager extends AbstractDataSourceManager {
     }
 
     @Override
-    public Object getItemId(Item item) {
-        if (item instanceof JcrItemAdapter) {
-            return ((JcrItemAdapter) item).getItemId();
-        }
-        return null;
-    }
-
-    @Override
     public Object getRootItemId() {
         return deserializeItemId(getWorkbenchDefinition().getPath());
     }
