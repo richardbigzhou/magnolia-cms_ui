@@ -34,9 +34,7 @@
 package info.magnolia.ui.workbench.search;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.list.ListPresenter;
-import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
 
 import javax.inject.Inject;
 
