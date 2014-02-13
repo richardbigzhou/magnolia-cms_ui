@@ -35,6 +35,7 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
@@ -73,6 +74,8 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
 
     protected String viewTypeName;
 
+    protected DataSourceManager dsManager;
+
     private final ComponentProvider componentProvider;
 
     public AbstractContentPresenterBase(ComponentProvider componentProvider) {
@@ -84,10 +87,11 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
     }
 
     @Override
-    public ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName) {
+    public ContentView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName, DataSourceManager dsManager) {
         this.workbenchDefinition = workbenchDefinition;
         this.eventBus = eventBus;
         this.viewTypeName = viewTypeName;
+        this.dsManager = dsManager;
         return null;
     }
 
@@ -109,7 +113,7 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
 
     @Override
     public void onItemSelection(Set<Object> itemIds) {
-        Object rootItemId = resolveWorkbenchRootId();
+        Object rootItemId = dsManager.getRootItemId();
         if (itemIds == null || itemIds.isEmpty()) {
             log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
             List<Object> ids = new ArrayList<Object>(1);
@@ -134,7 +138,7 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
 
             List<Object> selectedIds = new ArrayList<Object>(itemIds.size());
             for (Object id : itemIds) {
-                selectedIds.add((Object) id);
+                selectedIds.add(id);
             }
 
             setSelectedItemIds(new ArrayList<Object>(selectedIds));
@@ -144,14 +148,12 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
 
     }
 
-    protected abstract Object resolveWorkbenchRootId();
-
     @Override
     public void onDoubleClick(Object itemId) {
         if (itemId != null) {
             try {
                 List<Object> ids = new ArrayList<Object>(1);
-                ids.add((Object) itemId);
+                ids.add(itemId);
                 setSelectedItemIds(ids);
                 log.debug("com.vaadin.data.Item at {} was double clicked. Firing ItemDoubleClickedEvent...", getSelectedItemId());
                 eventBus.fireEvent(new ItemDoubleClickedEvent(getSelectedItemId()));
@@ -162,8 +164,6 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
             log.warn("Got null com.vaadin.data.Item. No event will be fired.");
         }
     }
-
-    protected abstract String getItemId(Item item);
 
     @Override
     public void onRightClick(Object itemId, int clickX, int clickY) {

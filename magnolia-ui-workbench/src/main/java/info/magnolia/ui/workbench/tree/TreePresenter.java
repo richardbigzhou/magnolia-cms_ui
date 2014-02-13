@@ -35,6 +35,7 @@ package info.magnolia.ui.workbench.tree;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemEditedEvent;
@@ -68,8 +69,8 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
     }
 
     @Override
-    public TreeView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName) {
-        TreeView view = (TreeView) super.start(workbench, eventBus, viewTypeName);
+    public TreeView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName, DataSourceManager dsManager) {
+        TreeView view = (TreeView) super.start(workbench, eventBus, viewTypeName, dsManager);
 
         // inplace-editing
         if (workbench.isEditable()) {
