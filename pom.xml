@@ -307,6 +307,13 @@
           <artifactId>vaadin-maven-plugin</artifactId>
           <version>${vaadinVersion}</version>
         </plugin>
+        <plugin>
+          <!-- We don't want the release plugin to generate a site for this big project, we'll generate it manually as a separate process -->
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <goals>deploy</goals>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
