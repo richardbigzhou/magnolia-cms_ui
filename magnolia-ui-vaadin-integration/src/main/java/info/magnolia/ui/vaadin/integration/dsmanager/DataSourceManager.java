@@ -48,8 +48,6 @@ public interface DataSourceManager {
 
     Item getItemById(Object itemId);
 
-    Object getItemId(Item item);
-
     Object getRootItemId();
 
     boolean itemExists(Object itemId);
