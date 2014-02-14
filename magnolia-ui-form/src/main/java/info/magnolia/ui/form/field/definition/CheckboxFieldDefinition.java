@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.form.field.definition;
 
+import info.magnolia.i18nsystem.I18nText;
+
 /**
  * Field definition for a checkbox.
  */
@@ -40,6 +42,7 @@ public class CheckboxFieldDefinition extends ConfiguredFieldDefinition {
 
     private String buttonLabel;
 
+    @I18nText
     public String getButtonLabel() {
         return buttonLabel;
     }
