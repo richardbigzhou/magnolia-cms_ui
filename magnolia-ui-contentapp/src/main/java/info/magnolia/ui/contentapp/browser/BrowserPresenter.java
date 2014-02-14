@@ -71,17 +71,9 @@ public class BrowserPresenter extends BrowserPresenterBase {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    private final ImageProvider imageProvider;
-
     @Inject
-    public BrowserPresenter(ActionExecutor actionExecutor, SubAppContext subAppContext, BrowserView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, @Named(SubAppEventBus.NAME) EventBus subAppEventBus, ActionbarPresenter actionbarPresenter, ComponentProvider componentProvider, WorkbenchPresenter workbenchPresenter, DataSourceManagerProvider dsManagerProvider) {
+    public BrowserPresenter(ActionExecutor actionExecutor, SubAppContext subAppContext, BrowserView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, @Named(SubAppEventBus.NAME) EventBus subAppEventBus, ActionbarPresenter actionbarPresenter, WorkbenchPresenter workbenchPresenter, DataSourceManagerProvider dsManagerProvider) {
         super(actionExecutor, subAppContext, view, admincentralEventBus, subAppEventBus, actionbarPresenter, workbenchPresenter, dsManagerProvider);
-        ImageProviderDefinition imageProviderDefinition = ((BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor()).getImageProvider();
-        if (imageProviderDefinition == null) {
-            this.imageProvider = null;
-        } else {
-            this.imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
-        }
     }
 
     @Override
@@ -129,18 +121,6 @@ public class BrowserPresenter extends BrowserPresenterBase {
                 log.error("Could not save changes to property", e);
             }
         }
-    }
-
-    @Override
-    protected Object getPreviewImageForId(Object itemId) {
-        if (StringUtils.isBlank(String.valueOf(itemId))) {
-            return null;
-        } else {
-            if (imageProvider != null) {
-                return imageProvider.getThumbnailResourceById(getWorkbenchPresenter().getWorkspace(), String.valueOf(itemId), ImageProvider.PORTRAIT_GENERATOR);
-            }
-        }
-        return null;
     }
 
 }

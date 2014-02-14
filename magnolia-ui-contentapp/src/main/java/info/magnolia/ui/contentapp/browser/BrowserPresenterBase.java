@@ -34,6 +34,7 @@
 package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.event.EventBus;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.ActionbarView;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
@@ -46,6 +47,8 @@ import info.magnolia.ui.api.event.AdmincentralEventBus;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
+import info.magnolia.ui.imageprovider.ImageProvider;
+import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.NullItem;
 import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
@@ -104,12 +107,14 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
 
     private final AppContext appContext;
 
-    private DataSourceManager dsManager;
+    protected DataSourceManager dsManager;
+
+    private final ImageProvider imageProvider;
 
     @Inject
     public BrowserPresenterBase(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final BrowserView view, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
                                 final @Named(SubAppEventBus.NAME) EventBus subAppEventBus,
-                                final ActionbarPresenter actionbarPresenter, WorkbenchPresenter workbenchPresenter, DataSourceManagerProvider dsManagerProvider) {
+                                final ActionbarPresenter actionbarPresenter, WorkbenchPresenter workbenchPresenter, DataSourceManagerProvider dsManagerProvider, ComponentProvider componentProvider) {
         this.workbenchPresenter = workbenchPresenter;
         this.actionExecutor = actionExecutor;
         this.view = view;
@@ -119,6 +124,12 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
         this.appContext = subAppContext.getAppContext();
         this.subAppDescriptor = (BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor();
         this.dsManager = dsManagerProvider.getDSManager();
+        ImageProviderDefinition imageProviderDefinition = ((BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor()).getImageProvider();
+        if (imageProviderDefinition == null) {
+            this.imageProvider = null;
+        } else {
+            this.imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition, dsManagerProvider.getDSManager());
+        }
     }
 
 
@@ -264,7 +275,12 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
         workbenchPresenter.resynch(itemIds, viewType, query);
     }
 
-    protected abstract Object getPreviewImageForId(final Object itemId);
+    protected Object getPreviewImageForId(Object itemId) {
+        if (imageProvider != null) {
+            return imageProvider.getThumbnailResource(itemId, ImageProvider.PORTRAIT_GENERATOR);
+        }
+        return null;
+    }
 
     @Override
     public void onActionbarItemClicked(String actionName) {
