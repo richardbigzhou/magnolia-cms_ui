@@ -39,6 +39,7 @@ import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
+import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
 import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
@@ -81,7 +82,7 @@ public class JcrDataSourceManager extends AbstractDataSourceManager {
     public String serializeItemId(Object itemId) {
         try {
             WorkbenchDefinition workbenchDefinition = getWorkbenchDefinition();
-            javax.jcr.Item selected = JcrItemUtil.getJcrItem(workbenchDefinition.getWorkspace(), JcrItemUtil.parseNodeIdentifier(String.valueOf(itemId)));
+            javax.jcr.Item selected = JcrItemUtil.getJcrItem(getWorkspace(), JcrItemUtil.parseNodeIdentifier(String.valueOf(itemId)));
             String workbenchPath = workbenchDefinition.getPath();
             return StringUtils.removeStart(selected.getPath(), "/".equals(workbenchPath) ? "" : workbenchPath);
         } catch (RepositoryException e) {
@@ -90,10 +91,22 @@ public class JcrDataSourceManager extends AbstractDataSourceManager {
         }
     }
 
+    private String getWorkspace() {
+        SubAppDescriptor subAppDescriptor = subAppContext.getSubAppDescriptor();
+        if (subAppDescriptor instanceof BrowserSubAppDescriptor) {
+            return ((BrowserSubAppDescriptor) subAppDescriptor).getWorkbench().getWorkspace();
+        }
+
+        if (subAppDescriptor instanceof DetailSubAppDescriptor) {
+            return ((DetailSubAppDescriptor) subAppDescriptor).getEditor().getWorkspace();
+        }
+        return null;
+    }
+
     @Override
     public Object deserializeItemId(String strPath) {
         try {
-            return JcrItemUtil.getItemId(getWorkbenchDefinition().getWorkspace(), strPath);
+            return JcrItemUtil.getItemId(getWorkspace(), strPath);
         } catch (RepositoryException e) {
             log.error("Failed to obtain JCR id for fragment: " + e.getMessage(), e);
             return null;
@@ -104,11 +117,12 @@ public class JcrDataSourceManager extends AbstractDataSourceManager {
     public Item getItemById(Object itemId) {
         javax.jcr.Item jcrItem;
         try {
-            jcrItem = JcrItemUtil.getJcrItem(getWorkbenchDefinition().getWorkspace(), String.valueOf(itemId));
+            jcrItem = JcrItemUtil.getJcrItem(getWorkspace(), String.valueOf(itemId));
             JcrItemAdapter itemAdapter;
             if (jcrItem.isNode()) {
                 itemAdapter = new JcrNodeAdapter((Node) jcrItem);
             } else {
+
                 itemAdapter = new JcrPropertyAdapter((Property) jcrItem);
             }
             return itemAdapter;
