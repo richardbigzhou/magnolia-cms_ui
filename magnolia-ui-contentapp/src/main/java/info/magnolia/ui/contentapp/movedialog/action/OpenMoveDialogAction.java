@@ -41,6 +41,7 @@ import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.movedialog.MoveActionCallback;
 import info.magnolia.ui.contentapp.movedialog.MoveDialogPresenter;
+import info.magnolia.ui.dialog.DialogCloseHandler;
 import info.magnolia.ui.dialog.DialogView;
 import info.magnolia.ui.framework.action.MoveLocation;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -106,6 +107,12 @@ public class OpenMoveDialogAction extends AbstractAction<OpenMoveDialogActionDef
             });
 
             this.closeHandle = appContext.openOverlay(moveDialog, moveDialog.getModalityLevel());
+            moveDialog.addDialogCloseHandler(new DialogCloseHandler() {
+                @Override
+                public void onDialogClose(DialogView dialogView) {
+                    closeHandle.close();
+                }
+            });
         }
     }
 }

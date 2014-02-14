@@ -189,9 +189,9 @@ public class BaseDialogViewImpl extends Panel implements DialogView {
     public void setModalityLevel(ModalityLevel modalityLevel) {
         this.modalityLevel = modalityLevel;
         if (modalityLevel == ModalityLevel.LIGHT) {
-            dialog.addStyleName("light-dialog");
-        } else {
-            dialog.removeStyleName("light-dialog");
+            dialog.removeStyleName("dialog-panel");
+            dialog.addStyleName("light");
+            setWidth("620px");
         }
     }
 }
