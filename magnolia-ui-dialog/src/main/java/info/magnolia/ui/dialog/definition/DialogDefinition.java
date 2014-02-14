@@ -33,9 +33,10 @@
  */
 package info.magnolia.ui.dialog.definition;
 
-import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.i18nsystem.I18nText;
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.ui.api.action.ActionDefinition;
+import info.magnolia.ui.api.overlay.OverlayLayer.ModalityLevel;
 import info.magnolia.ui.dialog.DialogPresenter;
 import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
 
@@ -61,4 +62,6 @@ public interface DialogDefinition {
     Class<? extends DialogPresenter> getPresenterClass();
 
     EditorActionAreaDefinition getActionArea();
+
+    ModalityLevel getModalityLevel();
 }
