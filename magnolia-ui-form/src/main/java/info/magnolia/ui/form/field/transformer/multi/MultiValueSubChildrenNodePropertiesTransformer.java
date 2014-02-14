@@ -130,11 +130,12 @@ public class MultiValueSubChildrenNodePropertiesTransformer extends MultiValueCh
             String propertyName = (String) propertyNames.next();
             com.vaadin.data.Property<Object> storedProperty = childItem.getItemProperty(propertyName);
 
-            if (storedProperty != null) {
-                storedProperty.setValue(((PropertysetItem) newValues).getItemProperty(propertyName).getValue());
-            } else {
-                storedProperty = ((PropertysetItem) newValues).getItemProperty(propertyName);
-                childItem.addItemProperty(propertyName, storedProperty);
+            if (((PropertysetItem) newValues).getItemProperty(propertyName) != null) {
+                if (storedProperty != null) {
+                    storedProperty.setValue(((PropertysetItem) newValues).getItemProperty(propertyName).getValue());
+                } else {
+                    childItem.addItemProperty(propertyName, ((PropertysetItem) newValues).getItemProperty(propertyName));
+                }
             }
         }
     }
