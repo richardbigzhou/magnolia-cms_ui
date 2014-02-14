@@ -46,12 +46,16 @@ import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 /**
  * PageEditorViewImpl.
  */
 public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
+
+    // the purpose of this wrapper is to keep keyboard events scoped to it
+    private final Panel wrapper = new Panel();
 
     private final HorizontalLayout root = new HorizontalLayout();
 
@@ -77,12 +81,6 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
         root.setExpandRatio(container, 1);
         root.setSpacing(true);
         root.setMargin(false);
-        root.addShortcutListener(new ShortcutListener("", ShortcutAction.KeyCode.ESCAPE, null) {
-            @Override
-            public void handleAction(Object sender, Object target) {
-                listener.onEscape();
-            }
-        });
 
         container.setSizeFull();
         container.addStyleName("editor");
@@ -91,6 +89,16 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
         actionBarWrapper.addStyleName("actionbar");
         root.addComponent(actionBarWrapper);
         root.setExpandRatio(actionBarWrapper, 0);
+
+        wrapper.setSizeFull();
+        wrapper.setContent(root);
+        wrapper.addShortcutListener(new ShortcutListener("", ShortcutAction.KeyCode.ESCAPE, null) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                listener.onEscape();
+            }
+        });
+        wrapper.focus();
 
     }
 
@@ -127,7 +135,7 @@ public class PagesEditorSubAppViewImpl implements PagesEditorSubAppView {
 
     @Override
     public Component asVaadinComponent() {
-        return root;
+        return wrapper;
     }
 
     @Override
