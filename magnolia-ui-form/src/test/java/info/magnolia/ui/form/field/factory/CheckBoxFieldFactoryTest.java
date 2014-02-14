@@ -87,6 +87,22 @@ public class CheckBoxFieldFactoryTest extends AbstractFieldFactoryTestCase<Check
         assertEquals(false, field.getValue());
     }
 
+    @Test
+    public void testDefaultValue() throws Exception {
+        // GIVEN
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
+        checkBoxField = new CheckBoxFieldFactory(definition, baseItem);
+        checkBoxField.setI18nContentSupport(i18nContentSupport);
+        checkBoxField.setComponentProvider(new MockComponentProvider());
+        definition.setDefaultValue("true");
+
+        // WHEN
+        Field<Boolean> field = checkBoxField.createField();
+
+        // THEN
+        assertEquals(true, field.getPropertyDataSource().getValue());
+    }
+
     @Override
     protected void createConfiguredFieldDefinition() {
         CheckboxFieldDefinition fieldDefinition = new CheckboxFieldDefinition();
