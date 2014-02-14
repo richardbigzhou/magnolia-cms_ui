@@ -33,9 +33,11 @@
  */
 package info.magnolia.ui.dialog;
 
-import com.vaadin.event.ShortcutListener;
+import info.magnolia.ui.api.overlay.OverlayLayer.ModalityLevel;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.actionarea.view.EditorActionAreaView;
+
+import com.vaadin.event.ShortcutListener;
 
 /**
  * Interface for {@link info.magnolia.ui.vaadin.dialog.BaseDialog}.
@@ -67,4 +69,8 @@ public interface DialogView extends View {
     View getContentView();
 
     EditorActionAreaView getActionAreaView();
+
+    ModalityLevel getModalityLevel();
+
+    void setModalityLevel(ModalityLevel modalityLevel);
 }

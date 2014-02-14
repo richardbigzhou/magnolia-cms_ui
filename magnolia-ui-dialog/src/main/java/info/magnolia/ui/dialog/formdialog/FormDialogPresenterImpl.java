@@ -99,7 +99,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
      * <ul>
      * <li>Sets the created {@link FormView} as content of the created {@link DialogView}.</li>
      * </ul>
-     *
+     * 
      * @param item passed on to{@link info.magnolia.ui.dialog.formdialog.FormDialogPresenter}
      * @param dialogDefinition
      * @param uiContext
@@ -114,7 +114,7 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
 
         buildView(dialogDefinition);
 
-        final OverlayCloser overlayCloser = uiContext.openOverlay(getView());
+        final OverlayCloser overlayCloser = uiContext.openOverlay(getView(), getView().getModalityLevel());
         getView().addDialogCloseHandler(new DialogCloseHandler() {
             @Override
             public void onDialogClose(DialogView dialogView) {

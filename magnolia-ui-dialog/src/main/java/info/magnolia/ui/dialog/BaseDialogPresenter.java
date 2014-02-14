@@ -155,6 +155,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
             log.warn("The current Vaadin UI was null when starting {}, as a result dialog keyboard shortcuts will not work.", this);
         }
         this.view.setActionAreaView(editorActionAreaView);
+        this.view.setModalityLevel(definition.getModalityLevel());
         return this.view;
     }
 
@@ -163,7 +164,7 @@ public class BaseDialogPresenter implements DialogPresenter, ActionListener {
     }
 
     protected Object[] getActionParameters(String actionName) {
-        return new Object[]{this};
+        return new Object[] { this };
     }
 
     @Override

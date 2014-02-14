@@ -33,7 +33,7 @@
  */
 package info.magnolia.ui.dialog;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import info.magnolia.i18nsystem.ContextLocaleProvider;
@@ -47,6 +47,7 @@ import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.action.ConfiguredActionDefinition;
 import info.magnolia.ui.api.context.UiContext;
+import info.magnolia.ui.api.overlay.OverlayLayer.ModalityLevel;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.dialog.actionarea.DialogActionExecutor;
 import info.magnolia.ui.dialog.actionarea.EditorActionAreaPresenter;
@@ -181,7 +182,7 @@ public class BaseDialogPresenterTest {
         presenter.onActionFired("action1");
 
         // THEN
-        assert (action1.isExecuted());
+        assertTrue(action1.isExecuted());
     }
 
     @Test
@@ -191,7 +192,20 @@ public class BaseDialogPresenterTest {
         presenter.executeAction("action1", new Object[0]);
 
         // THEN
-        assert (action1.isExecuted());
+        assertTrue(action1.isExecuted());
+    }
+
+    @Test
+    public void testModalityLevelIsSetToView() throws Exception {
+        // GIVEN
+        definition.setModalityLevel(ModalityLevel.LIGHT);
+        assertEquals(ModalityLevel.STRONG, view.getModalityLevel());
+
+        // WHEN
+        DialogView view = presenter.start(definition, uiContext);
+
+        // THEN
+        assertEquals(ModalityLevel.LIGHT, view.getModalityLevel());
     }
 
     /**
