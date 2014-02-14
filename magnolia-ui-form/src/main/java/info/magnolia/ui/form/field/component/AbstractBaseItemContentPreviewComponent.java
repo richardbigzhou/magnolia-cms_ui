@@ -97,14 +97,10 @@ public abstract class AbstractBaseItemContentPreviewComponent extends AbstractCo
     @Override
     public Component refreshContentPreview(Item item) {
         Image thumbnail = new Image();
-        try {
-            String path = imageProvider.getPortraitPath(workspace, ((JcrNodeAdapter) item).getJcrItem().getPath());
-            if (StringUtils.isNotBlank(path)) {
-                thumbnail = new Image("", new ExternalResource(path));
-                thumbnail.addStyleName("file-preview-area");
-            }
-        } catch (RepositoryException e) {
-            log.warn("Could not get the related File node", e);
+        String path = imageProvider.getPortraitPath(item);
+        if (StringUtils.isNotBlank(path)) {
+            thumbnail = new Image("", new ExternalResource(path));
+            thumbnail.addStyleName("file-preview-area");
         }
         return thumbnail;
     }

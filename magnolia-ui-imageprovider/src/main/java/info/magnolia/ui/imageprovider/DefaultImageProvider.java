@@ -37,8 +37,9 @@ import info.magnolia.cms.beans.runtime.FileProperties;
 import info.magnolia.cms.util.LinkUtil;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
-import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Calendar;
 
@@ -49,6 +50,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Item;
 import com.vaadin.server.ExternalResource;
 
 /**
@@ -60,11 +62,14 @@ public class DefaultImageProvider implements ImageProvider {
 
     private ImageProviderDefinition definition;
 
+    private DataSourceManager dsManager;
+
     public DefaultImageProvider() {
     }
 
-    public DefaultImageProvider(ImageProviderDefinition definition) {
+    public DefaultImageProvider(ImageProviderDefinition definition, DataSourceManager dsManager) {
         this.definition = definition;
+        this.dsManager = dsManager;
     }
 
     private static final Logger log = LoggerFactory.getLogger(DefaultImageProvider.class);
@@ -72,31 +77,24 @@ public class DefaultImageProvider implements ImageProvider {
     public final String ICON_CLASS_DEFAULT = "file";
 
     @Override
-    public String getPortraitPath(final String workspace, final String path) {
-        Node node = SessionUtil.getNode(workspace, path);
-
-        return getGeneratorImagePath(workspace, node, PORTRAIT_GENERATOR);
+    public String getPortraitPath(Object itemId) {
+        Item item = dsManager.getItemById(itemId);
+        if (item instanceof JcrNodeAdapter) {
+            JcrNodeAdapter jcrAdapter = (JcrNodeAdapter) item;
+            return getGeneratorImagePath(jcrAdapter.getWorkspace(), jcrAdapter.getJcrItem(), PORTRAIT_GENERATOR);
+        }
+        throw new IllegalArgumentException("DefaultImageProvider works with info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter only.");
     }
 
     @Override
-    public String getThumbnailPath(final String workspace, final String path) {
-        Node node = SessionUtil.getNode(workspace, path);
-
-        return getGeneratorImagePath(workspace, node, THUMBNAIL_GENERATOR);
-    }
-
-    @Override
-    public String getPortraitPathByIdentifier(String workspace, String identifier) {
-        Node node = SessionUtil.getNodeByIdentifier(workspace, identifier);
-
-        return getGeneratorImagePath(workspace, node, PORTRAIT_GENERATOR);
-    }
-
-    @Override
-    public String getThumbnailPathByIdentifier(String workspace, String identifier) {
-        Node node = SessionUtil.getNodeByIdentifier(workspace, identifier);
-
-        return getGeneratorImagePath(workspace, node, THUMBNAIL_GENERATOR);
+    public String getThumbnailPath(Object itemId) {
+        Item item = dsManager.getItemById(itemId);
+        if (item instanceof JcrNodeAdapter) {
+            JcrNodeAdapter jcrAdapter = (JcrNodeAdapter) item;
+            Node node = jcrAdapter.getJcrItem();
+            return getGeneratorImagePath(jcrAdapter.getWorkspace(), node, THUMBNAIL_GENERATOR);
+        }
+        throw new IllegalArgumentException("DefaultImageProvider works with info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter only.");
     }
 
     private String getGeneratorImagePath(String workspace, Node node, String generator) {
@@ -128,23 +126,19 @@ public class DefaultImageProvider implements ImageProvider {
     }
 
     @Override
-    public Object getThumbnailResourceByPath(String workspace, String path, String generator) {
-        Object resource = null;
-        Node node = SessionUtil.getNode(workspace, path);
-        if (node != null) {
-            resource = getThumbnailResource(node, workspace, generator);
-        }
-        return resource;
-    }
+    public Object getThumbnailResource(Object itemId, String generator) {
+        Item item = dsManager.getItemById(itemId);
+        if (item instanceof JcrNodeAdapter) {
+            JcrNodeAdapter jcrAdapter = (JcrNodeAdapter) item;
+            Node node = jcrAdapter.getJcrItem();
 
-    @Override
-    public Object getThumbnailResourceById(String workspace, String identifier, String generator) {
-        Object resource = null;
-        Node node = SessionUtil.getNodeByIdentifier(workspace, identifier);
-        if (node != null) {
-            resource = getThumbnailResource(node, workspace, generator);
+            Object resource = null;
+            if (node != null) {
+                resource = getThumbnailResource(node,jcrAdapter.getWorkspace(), generator);
+            }
+            return resource;
         }
-        return resource;
+        throw new IllegalArgumentException("DefaultImageProvider works with info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter only.");
     }
 
     private Object getThumbnailResource(Node node, String workspace, String generator) {

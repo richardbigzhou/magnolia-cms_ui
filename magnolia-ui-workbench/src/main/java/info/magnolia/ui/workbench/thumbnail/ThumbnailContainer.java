@@ -33,10 +33,10 @@
  */
 package info.magnolia.ui.workbench.thumbnail;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.imageprovider.ImageProvider;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
@@ -46,6 +46,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -284,7 +286,12 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
             if (imageProvider == null) {
                 return null;
             }
-            return imageProvider.getThumbnailResourceById(getWorkspaceName(), resourcePath, ImageProvider.THUMBNAIL_GENERATOR);
+            try {
+                return imageProvider.getThumbnailResource(new JcrNodeAdapter(NodeUtil.getNodeByIdentifier(getWorkspaceName(), resourcePath)), ImageProvider.THUMBNAIL_GENERATOR);
+            } catch (RepositoryException e) {
+                log.error("Failed to get thumbnail resource due to: " + e.getMessage(), e);
+                return null;
+            }
         }
 
         @Override

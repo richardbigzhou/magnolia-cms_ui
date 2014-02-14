@@ -33,6 +33,8 @@
  */
 package info.magnolia.ui.imageprovider;
 
+import com.vaadin.data.Item;
+
 /**
  * Defines a provider for Thumbnail images.
  */
@@ -42,21 +44,14 @@ public interface ImageProvider {
 
     static final String THUMBNAIL_GENERATOR = "thumbnail";
 
-    String getPortraitPath(String workspace, String path);
+    String getPortraitPath(Object itemId);
 
-    String getThumbnailPath(String workspace, String path);
-
-    String getPortraitPathByIdentifier(String workspace, String uuid);
-
-    String getThumbnailPathByIdentifier(String workspace, String uuid);
+    String getThumbnailPath(Object itemId);
 
     String resolveIconClassName(String mimeType);
-
     /**
      * Get a Preview Resource.
      * This preview is an image or an icon representing the Document type.
      */
-    Object getThumbnailResourceByPath(String workspace, String path, String generator);
-
-    Object getThumbnailResourceById(String workspace, String identifier, String generator);
+    Object getThumbnailResource(Object itemId, String generator);
 }
