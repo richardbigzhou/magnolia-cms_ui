@@ -49,7 +49,6 @@ import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.AvailabilityRule;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.contentapp.ContentSubAppView;
-import info.magnolia.ui.contentapp.dsmanager.DataSourceManagerProviderImpl;
 import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
@@ -171,8 +170,7 @@ public class BrowserSubAppBase extends BaseSubApp<ContentSubAppView> {
 
     protected void applySelectionToLocation(BrowserLocation location, Object selectedId) {
         location.updateNodePath("");
-        Item selected = dsManager.getItemById(selectedId);
-        if (selected == null) {
+        if (!dsManager.itemExists(selectedId)) {
             // nothing is selected at the moment
         } else {
             location.updateNodePath(dsManager.serializeItemId(selectedId));

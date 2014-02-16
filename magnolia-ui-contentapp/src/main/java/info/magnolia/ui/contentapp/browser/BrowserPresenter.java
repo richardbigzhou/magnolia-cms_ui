@@ -40,8 +40,6 @@ import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.event.AdmincentralEventBus;
-import info.magnolia.ui.imageprovider.ImageProvider;
-import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
@@ -58,7 +56,6 @@ import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,8 +69,8 @@ public class BrowserPresenter extends BrowserPresenterBase {
     private Logger log = LoggerFactory.getLogger(getClass());
 
     @Inject
-    public BrowserPresenter(ActionExecutor actionExecutor, SubAppContext subAppContext, BrowserView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, @Named(SubAppEventBus.NAME) EventBus subAppEventBus, ActionbarPresenter actionbarPresenter, WorkbenchPresenter workbenchPresenter, DataSourceManagerProvider dsManagerProvider) {
-        super(actionExecutor, subAppContext, view, admincentralEventBus, subAppEventBus, actionbarPresenter, workbenchPresenter, dsManagerProvider);
+    public BrowserPresenter(ActionExecutor actionExecutor, SubAppContext subAppContext, BrowserView view, @Named(AdmincentralEventBus.NAME) EventBus admincentralEventBus, @Named(SubAppEventBus.NAME) EventBus subAppEventBus, ActionbarPresenter actionbarPresenter, ComponentProvider componentProvider, WorkbenchPresenter workbenchPresenter, DataSourceManagerProvider dsManagerProvider) {
+        super(actionExecutor, subAppContext, view, admincentralEventBus, subAppEventBus,  actionbarPresenter,  workbenchPresenter, dsManagerProvider, componentProvider);
     }
 
     @Override
