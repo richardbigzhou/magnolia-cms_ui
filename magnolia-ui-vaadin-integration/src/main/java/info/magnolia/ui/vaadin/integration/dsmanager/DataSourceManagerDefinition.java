@@ -31,28 +31,12 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.definition;
-
-import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.api.app.SubAppDescriptor;
-import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManagerDefinition;
+package info.magnolia.ui.vaadin.integration.dsmanager;
 
 /**
- * Describes a content sub app.
- *
- * @see SubAppDescriptor
+ * Defines {@link DataSourceManager}.
  */
-public interface ContentSubAppDescriptor extends SubAppDescriptor {
+public interface DataSourceManagerDefinition {
 
-    /**
-     * Gets the definition for the action bar.
-     */
-    ActionbarDefinition getActionbar();
-
-    ImageProviderDefinition getImageProvider();
-
-    DataSourceManagerDefinition getDataSourceManager();
-
+    Class<? extends DataSourceManager> getImplementationClass();
 }

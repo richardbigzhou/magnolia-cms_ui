@@ -40,6 +40,7 @@ import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.contentapp.definition.ContentSubAppDescriptor;
 import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManagerDefinition;
 import info.magnolia.ui.workbench.dsmanager.DataSourceManagerProvider;
 
 import javax.inject.Inject;
@@ -70,9 +71,8 @@ public class DataSourceManagerProviderImpl implements DataSourceManagerProvider 
         if (manager == null) {
             SubAppDescriptor subAppDescriptor = ctx.getSubAppDescriptor();
             if (subAppDescriptor instanceof ContentSubAppDescriptor) {
-                manager = provider.newInstance(((ContentSubAppDescriptor)subAppDescriptor).getDataSourceManagerClass(), ctx, subAppEventBus);
-            } else {
-                manager = provider.newInstance(JcrDataSourceManager.class, ctx, subAppEventBus);
+                DataSourceManagerDefinition dsManagerDefinition = ((ContentSubAppDescriptor)subAppDescriptor).getDataSourceManager();
+                manager = provider.newInstance(dsManagerDefinition.getImplementationClass(), ctx, subAppEventBus, dsManagerDefinition);
             }
         }
         return manager;

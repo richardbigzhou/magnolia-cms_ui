@@ -31,28 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.definition;
+package info.magnolia.ui.vaadin.integration.dsmanager;
 
-import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.api.app.SubAppDescriptor;
-import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManagerDefinition;
+import com.vaadin.data.Item;
 
 /**
- * Describes a content sub app.
- *
- * @see SubAppDescriptor
+ * Created with IntelliJ IDEA.
+ * User: sasha
+ * Date: 14/02/14
+ * Time: 16:19
+ * To change this template use File | Settings | File Templates.
  */
-public interface ContentSubAppDescriptor extends SubAppDescriptor {
+public interface SupportsEditing extends DataSourceManager {
 
-    /**
-     * Gets the definition for the action bar.
-     */
-    ActionbarDefinition getActionbar();
-
-    ImageProviderDefinition getImageProvider();
-
-    DataSourceManagerDefinition getDataSourceManager();
+    Item createNew(String newItemPath);
 
 }

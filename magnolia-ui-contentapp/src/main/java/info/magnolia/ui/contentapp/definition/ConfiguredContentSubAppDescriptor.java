@@ -36,8 +36,10 @@ package info.magnolia.ui.contentapp.definition;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor;
 import info.magnolia.ui.contentapp.dsmanager.JcrDataSourceManager;
+import info.magnolia.ui.contentapp.dsmanager.JcrDataSourceManagerDefinition;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManagerDefinition;
 
 /**
  * Simple implementation for {@link ContentSubAppDescriptor}.
@@ -50,10 +52,10 @@ public class ConfiguredContentSubAppDescriptor extends ConfiguredSubAppDescripto
 
     private ImageProviderDefinition imageProvider;
 
-    private Class<? extends DataSourceManager> dataSourceManagerClass;
+    private DataSourceManagerDefinition dataSourceManager;
 
     public ConfiguredContentSubAppDescriptor() {
-        setDataSourceManagerClass(JcrDataSourceManager.class);
+        setDataSourceManager(new JcrDataSourceManagerDefinition());
     }
 
     @Override
@@ -70,16 +72,16 @@ public class ConfiguredContentSubAppDescriptor extends ConfiguredSubAppDescripto
         return imageProvider;
     }
 
+    @Override
+    public DataSourceManagerDefinition getDataSourceManager() {
+        return dataSourceManager;
+    }
+
     public void setImageProvider(ImageProviderDefinition imageProvider) {
         this.imageProvider = imageProvider;
     }
 
-    @Override
-    public Class<? extends DataSourceManager> getDataSourceManagerClass() {
-        return this.dataSourceManagerClass;
-    }
-
-    public void setDataSourceManagerClass(Class<? extends DataSourceManager> dataSourceManagerClass) {
-        this.dataSourceManagerClass = dataSourceManagerClass;
+    public void setDataSourceManager(DataSourceManagerDefinition dataSourceManager) {
+        this.dataSourceManager = dataSourceManager;
     }
 }

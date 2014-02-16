@@ -33,16 +33,21 @@
  */
 package info.magnolia.ui.contentapp.dsmanager;
 
+import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.api.app.AppDescriptor;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.jcr.util.SessionUtil;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
 import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
+import info.magnolia.ui.vaadin.integration.dsmanager.SupportsEditing;
+import info.magnolia.ui.vaadin.integration.dsmanager.SupportsVersions;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
@@ -55,6 +60,7 @@ import javax.inject.Named;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.version.Version;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -66,16 +72,19 @@ import com.vaadin.data.Item;
 /**
  * JCR-based implementation of {@link DataSourceManager}.
  */
-public class JcrDataSourceManager extends AbstractDataSourceManager {
+public class JcrDataSourceManager extends AbstractDataSourceManager implements SupportsVersions, SupportsEditing {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
     private SubAppContext subAppContext;
 
+    private VersionManager versionManager;
+
     @Inject
-    public JcrDataSourceManager(SubAppContext subAppContext, @Named(SubAppEventBus.NAME) EventBus eventBus) {
+    public JcrDataSourceManager(SubAppContext subAppContext, @Named(SubAppEventBus.NAME) EventBus eventBus, final VersionManager versionManager) {
         super(eventBus);
         this.subAppContext = subAppContext;
+        this.versionManager = versionManager;
     }
 
     @Override
@@ -102,6 +111,7 @@ public class JcrDataSourceManager extends AbstractDataSourceManager {
         }
         return null;
     }
+
 
     @Override
     public Object deserializeItemId(String strPath) {
@@ -139,7 +149,7 @@ public class JcrDataSourceManager extends AbstractDataSourceManager {
 
     @Override
     public boolean itemExists(Object itemId) {
-        return getItemById(itemId) != null;
+        return itemId != null && getItemById(itemId) != null;
     }
 
     private WorkbenchDefinition getWorkbenchDefinition() {
@@ -158,5 +168,36 @@ public class JcrDataSourceManager extends AbstractDataSourceManager {
             return new SearchJcrContainer(getWorkbenchDefinition());
         }
         return new FlatJcrContainer(getWorkbenchDefinition());
+    }
+
+    @Override
+    public JcrNodeAdapter getItemVersion(Object itemId, String versionName) {
+        try {
+            Node node = NodeUtil.getNodeByIdentifier(getWorkspace(), String.valueOf(itemId));
+            Version version = versionManager.getVersion(node, versionName);
+            return new JcrNodeAdapter(version.getFrozenNode());
+        } catch (RepositoryException e) {
+            log.error("Failed to find item version for id: " + itemId, e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public Item createNew(String newItemPath) {
+        SubAppDescriptor subAppDescriptor = subAppContext.getSubAppDescriptor();
+
+        String primaryNodeType = null;
+        if (subAppDescriptor instanceof DetailSubAppDescriptor) {
+            primaryNodeType = ((DetailSubAppDescriptor) subAppDescriptor).getEditor().getNodeType().getName();
+        }
+
+        if (primaryNodeType != null) {
+            String parentPath = StringUtils.substringBeforeLast(newItemPath, "/");
+            parentPath = parentPath.isEmpty() ? "/" : parentPath;
+            Node parent = SessionUtil.getNode(getWorkspace(), parentPath);
+            return new JcrNewNodeAdapter(parent, primaryNodeType);
+        }
+
+        return null;
     }
 }
