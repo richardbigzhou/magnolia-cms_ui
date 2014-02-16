@@ -112,13 +112,13 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
         super.start(detailLocation);
         // set caption
         setCaption(detailLocation);
-         this.itemId = dsManager.deserializeItemId(detailLocation.getNodePath());
+        this.itemId = dsManager.deserializeItemId(detailLocation.getNodePath());
 
         View view;
         if (detailLocation.hasVersion()) {
-            view = presenter.start(detailLocation.getNodePath(), detailLocation.getViewType(), detailLocation.getVersion());
+            view = presenter.start(detailLocation.getNodePath(), detailLocation.getViewType(), dsManager, detailLocation.getVersion());
         } else {
-            view = presenter.start(detailLocation.getNodePath(), detailLocation.getViewType());
+            view = presenter.start(detailLocation.getNodePath(), detailLocation.getViewType(), dsManager);
         }
         getView().setContentView(view);
         return getView();
@@ -175,16 +175,14 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
                             splitIndex = 1;
                         }
                         String parentNodePath = currentNodePath.substring(0, splitIndex);
-                        Item item = dsManager.getItemById(dsManager.deserializeItemId(parentNodePath));
-                        if (item == null) {
+                        Object parentItemId = dsManager.deserializeItemId(parentNodePath);
+                        if (!dsManager.itemExists(parentItemId)) {
                             getSubAppContext().close();
                         }
                         // Editing existing item
                     } else {
-                        Item item = dsManager.getItemById(itemId);
-
                         // Item (or parent) was deleted: close subApp
-                        if (item == null) {
+                        if (!dsManager.itemExists(itemId)) {
                             getSubAppContext().close();
                         }
                         // Item still exists: update location if necessary

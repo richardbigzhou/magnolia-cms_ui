@@ -97,6 +97,7 @@ public class DetailPresenter implements EditorCallback, EditorValidator, ActionL
     private EditorDefinition editorDefinition;
 
     private Item item;
+
     private Object itemId;
 
     private DialogView dialogView;
