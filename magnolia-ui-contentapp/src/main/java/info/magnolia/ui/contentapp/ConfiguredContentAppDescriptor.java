@@ -34,10 +34,8 @@
 package info.magnolia.ui.contentapp;
 
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
-import info.magnolia.ui.contentapp.dsmanager.JcrDataSourceManager;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
 import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
 
 /**
  * Implementation of {@link ContentAppDescriptor}.

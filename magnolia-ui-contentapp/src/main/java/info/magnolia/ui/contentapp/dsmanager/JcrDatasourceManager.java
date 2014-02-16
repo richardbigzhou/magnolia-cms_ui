@@ -42,7 +42,6 @@ import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
 import info.magnolia.ui.vaadin.integration.dsmanager.SupportsEditing;
 import info.magnolia.ui.vaadin.integration.dsmanager.SupportsVersions;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -70,7 +69,7 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 
 /**
- * JCR-based implementation of {@link DataSourceManager}.
+ * JCR-based implementation of {@link info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager}.
  */
 public class JcrDataSourceManager extends AbstractDataSourceManager implements SupportsVersions, SupportsEditing {
 

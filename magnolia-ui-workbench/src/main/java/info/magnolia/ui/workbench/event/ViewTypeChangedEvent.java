@@ -35,7 +35,6 @@ package info.magnolia.ui.workbench.event;
 
 import info.magnolia.event.Event;
 import info.magnolia.event.EventHandler;
-import info.magnolia.ui.api.app.SubAppContext;
 
 /**
  * This event is fired when switching views, i.e. from tree view to list view.

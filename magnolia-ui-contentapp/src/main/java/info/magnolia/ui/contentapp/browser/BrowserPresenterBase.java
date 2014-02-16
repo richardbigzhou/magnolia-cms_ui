@@ -61,7 +61,10 @@ import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -235,7 +238,7 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
     }
 
     protected boolean verifyItemExists(Object itemId) {
-        return dsManager.getItemById(itemId) != null;
+        return dsManager.itemExists(itemId);
     }
 
     public List<Object> getSelectedItemIds() {
@@ -328,13 +331,31 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
         try {
             List<Item> items = getSelectedItems();
             if (actionExecutor.isAvailable(actionName, items.toArray(new Item[items.size()]))) {
-                actionExecutor.execute(actionName, items, items.isEmpty() ? new NullItem() : items.get(0));
+                Object[] args = prepareActionArgs();
+                actionExecutor.execute(actionName, args);
             }
         } catch (ActionExecutionException e) {
             Message error = new Message(MessageType.ERROR, "An error occurred while executing an action.", e.getMessage());
             log.error("An error occurred while executing action [{}]", actionName, e);
             appContext.sendLocalMessage(error);
         }
+    }
+
+    protected Object[] prepareActionArgs() {
+        List<Object> argList = new ArrayList<Object>();
+        List<Item> selectedItems = getSelectedItems();
+        List<Object> selectedIds = getSelectedItemIds();
+        Iterator<Item> itemIt = selectedItems.iterator();
+        Iterator<Object> idIt = selectedIds.iterator();
+        Map<Object, Item> idToItem = new HashMap<Object, Item>();
+        while (idIt.hasNext() && itemIt.hasNext()) {
+            idToItem.put(idIt.next(), itemIt.next());
+        }
+
+        argList.add(selectedItems);
+        argList.add(idToItem);
+        argList.add(selectedItems.isEmpty() ? new NullItem() : selectedItems.get(0));
+        return argList.toArray(new Object[argList.size()]);
     }
 
     protected AppContext getAppContext() {

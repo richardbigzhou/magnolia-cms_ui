@@ -33,8 +33,6 @@
  */
 package info.magnolia.ui.imageprovider;
 
-import com.vaadin.data.Item;
-
 /**
  * Defines a provider for Thumbnail images.
  */

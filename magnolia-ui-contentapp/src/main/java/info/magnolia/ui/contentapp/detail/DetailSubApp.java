@@ -52,8 +52,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Item;
-
 /**
  * Base implementation of an item subApp. Provides sensible implementation for
  * services shared by all item subApps. Implementers of this class represent a
