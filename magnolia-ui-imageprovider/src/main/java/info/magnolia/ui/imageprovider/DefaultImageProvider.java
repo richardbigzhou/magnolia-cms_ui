@@ -138,7 +138,7 @@ public class DefaultImageProvider implements ImageProvider {
             }
             return resource;
         }
-        throw new IllegalArgumentException("DefaultImageProvider works with info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter only.");
+        return null;
     }
 
     private Object getThumbnailResource(Node node, String workspace, String generator) {

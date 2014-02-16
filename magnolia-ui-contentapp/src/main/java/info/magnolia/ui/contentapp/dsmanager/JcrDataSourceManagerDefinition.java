@@ -31,28 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.definition;
+package info.magnolia.ui.contentapp.dsmanager;
 
-import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
-import info.magnolia.ui.api.app.SubAppDescriptor;
-import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManagerDefinition;
+import info.magnolia.ui.vaadin.integration.dsmanager.ConfiguredDataSourceManagerDefinition;
 
 /**
- * Describes a content sub app.
- *
- * @see SubAppDescriptor
+ * Created with IntelliJ IDEA.
+ * User: sasha
+ * Date: 16/02/14
+ * Time: 19:36
+ * To change this template use File | Settings | File Templates.
  */
-public interface ContentSubAppDescriptor extends SubAppDescriptor {
+public class JcrDataSourceManagerDefinition extends ConfiguredDataSourceManagerDefinition {
 
-    /**
-     * Gets the definition for the action bar.
-     */
-    ActionbarDefinition getActionbar();
-
-    ImageProviderDefinition getImageProvider();
-
-    DataSourceManagerDefinition getDataSourceManager();
-
+    public JcrDataSourceManagerDefinition() {
+        setImplementationClass(JcrDataSourceManager.class);
+    }
 }
