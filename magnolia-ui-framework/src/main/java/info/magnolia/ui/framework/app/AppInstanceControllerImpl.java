@@ -52,7 +52,6 @@ import info.magnolia.ui.api.app.App;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.AppDescriptor;
-import info.magnolia.ui.api.app.AppEventBus;
 import info.magnolia.ui.api.app.AppInstanceController;
 import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.api.app.SubApp;
@@ -83,8 +82,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Provider;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;

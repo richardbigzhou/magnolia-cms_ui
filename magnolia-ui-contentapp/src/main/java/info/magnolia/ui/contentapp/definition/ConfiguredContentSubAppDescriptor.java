@@ -35,10 +35,8 @@ package info.magnolia.ui.contentapp.definition;
 
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor;
-import info.magnolia.ui.contentapp.dsmanager.JcrDataSourceManager;
 import info.magnolia.ui.contentapp.dsmanager.JcrDataSourceManagerDefinition;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
 import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManagerDefinition;
 
 /**

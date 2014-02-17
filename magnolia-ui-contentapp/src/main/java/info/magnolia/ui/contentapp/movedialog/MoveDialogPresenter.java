@@ -35,7 +35,6 @@ package info.magnolia.ui.contentapp.movedialog;
 
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.dialog.DialogView;
-import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.List;
 

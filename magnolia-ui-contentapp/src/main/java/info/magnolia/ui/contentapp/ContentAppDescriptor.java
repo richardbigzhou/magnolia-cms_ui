@@ -35,7 +35,6 @@ package info.magnolia.ui.contentapp;
 
 import info.magnolia.ui.api.app.AppDescriptor;
 import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
 
 /**
  * Extends {@link AppDescriptor} by providing definition of choose dialog.

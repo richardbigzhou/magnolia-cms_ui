@@ -42,6 +42,9 @@ import info.magnolia.event.EventHandler;
  */
 public class SubAppLifecycleEvent implements Event<SubAppLifecycleEvent.Handler> {
 
+    /**
+     * Handler interface.
+     */
     public interface Handler extends EventHandler {
 
         void onSubAppFocused(SubAppLifecycleEvent event);
@@ -67,6 +70,10 @@ public class SubAppLifecycleEvent implements Event<SubAppLifecycleEvent.Handler>
         }
 
     }
+
+    /**
+     * Possible lifecycle states.
+     */
     public static enum Type {
         STARTED, STOPPED, FOCUSED;
     }

@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.workbench.dsmanager;
 
-import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
 
 /**
