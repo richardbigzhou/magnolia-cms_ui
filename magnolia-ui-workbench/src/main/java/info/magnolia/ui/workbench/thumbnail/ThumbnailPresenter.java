@@ -50,6 +50,8 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Container;
+
 /**
  * The ThumbnailPresenter is responsible for creating, configuring and updating a thumbnail grid of items according to the workbench definition.
  */
@@ -92,7 +94,8 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
         view.refresh();
     }
 
-    protected com.vaadin.data.Container getContainer() {
+    @Override
+    protected Container getContainer() {
         return container;
     }
 

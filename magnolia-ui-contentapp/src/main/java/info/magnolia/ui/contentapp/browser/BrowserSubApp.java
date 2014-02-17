@@ -538,7 +538,8 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
     }
 
     /**
-     * TODO call applySelectionToLocation with proper parameters (convert id to string value).
+     * TODO Call applySelectionToLocation with proper parameters (convert id to string value).
+     * 
      * @param selectionIds
      * @param actionbar
      */
