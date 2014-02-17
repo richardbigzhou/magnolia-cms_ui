@@ -80,7 +80,7 @@
             <configuration>
               <!-- currently using default, change carefully as this param applies to all forked JVMs
                    i.e. GWT compilation will take up to this max memory, times the number of local workers (defaults to platform processors number) -->
-              <extraJvmArgs>-Xmx512m</extraJvmArgs>
+              <extraJvmArgs>-Xmx1536M -Xss1024k</extraJvmArgs>
               <!-- put the created resources on the classpath -->
               <webappDirectory>${project.build.outputDirectory}/VAADIN/widgetsets</webappDirectory>
               <warSourceDirectory>src/main/resources/VAADIN/widgetsets</warSourceDirectory>
