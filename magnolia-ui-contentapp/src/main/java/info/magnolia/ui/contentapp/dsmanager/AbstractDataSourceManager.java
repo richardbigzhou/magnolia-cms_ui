@@ -43,17 +43,11 @@ import java.util.Map;
 import com.vaadin.data.Container;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 11/02/14
- * Time: 16:23
- * To change this template use File | Settings | File Templates.
+ * Abstract implementation of {@link DataSourceManager}.
  */
 public abstract class AbstractDataSourceManager implements DataSourceManager, ViewTypeChangedEvent.Handler {
 
     private Map<String, Container> subAppContainers = new HashMap<String, Container>();
-
-    private String activeContentViewId;
 
     protected AbstractDataSourceManager(EventBus subAppEventEventBus) {
         subAppEventEventBus.addHandler(ViewTypeChangedEvent.class, this);
@@ -68,12 +62,12 @@ public abstract class AbstractDataSourceManager implements DataSourceManager, Vi
         return subAppContainers.get(contentViewId);
     }
 
-    protected Container getActiveContainer() {
-        return subAppContainers.get(activeContentViewId);
-    }
-
     @Override
     public void onViewChanged(ViewTypeChangedEvent event) {
-        activeContentViewId = event.getViewType();
+        doOnViewChanged(event.getViewType());
+    }
+
+    protected void doOnViewChanged(String viewType) {
+
     }
 }

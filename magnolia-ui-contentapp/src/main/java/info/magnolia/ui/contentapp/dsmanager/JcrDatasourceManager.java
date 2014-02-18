@@ -42,7 +42,7 @@ import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
-import info.magnolia.ui.vaadin.integration.dsmanager.SupportsEditing;
+import info.magnolia.ui.vaadin.integration.dsmanager.SupportsCreation;
 import info.magnolia.ui.vaadin.integration.dsmanager.SupportsVersions;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
@@ -71,7 +71,7 @@ import com.vaadin.data.Item;
 /**
  * JCR-based implementation of {@link info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager}.
  */
-public class JcrDataSourceManager extends AbstractDataSourceManager implements SupportsVersions, SupportsEditing {
+public class JcrDataSourceManager extends AbstractDataSourceManager implements SupportsVersions, SupportsCreation {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -87,7 +87,7 @@ public class JcrDataSourceManager extends AbstractDataSourceManager implements S
     }
 
     @Override
-    public String serializeItemId(Object itemId) {
+    public String getItemPath(Object itemId) {
         try {
             WorkbenchDefinition workbenchDefinition = getWorkbenchDefinition();
             javax.jcr.Item selected = JcrItemUtil.getJcrItem(getWorkspace(), JcrItemUtil.parseNodeIdentifier(String.valueOf(itemId)));
@@ -113,7 +113,7 @@ public class JcrDataSourceManager extends AbstractDataSourceManager implements S
 
 
     @Override
-    public Object deserializeItemId(String strPath) {
+    public Object getItemIdFromPath(String strPath) {
         try {
             return JcrItemUtil.getItemId(getWorkspace(), strPath);
         } catch (RepositoryException e) {
@@ -123,7 +123,7 @@ public class JcrDataSourceManager extends AbstractDataSourceManager implements S
     }
 
     @Override
-    public Item getItemById(Object itemId) {
+    public Item getItem(Object itemId) {
         javax.jcr.Item jcrItem;
         try {
             jcrItem = JcrItemUtil.getJcrItem(getWorkspace(), String.valueOf(itemId));
@@ -143,12 +143,12 @@ public class JcrDataSourceManager extends AbstractDataSourceManager implements S
 
     @Override
     public Object getRootItemId() {
-        return deserializeItemId(getWorkbenchDefinition().getPath());
+        return getItemIdFromPath(getWorkbenchDefinition().getPath());
     }
 
     @Override
     public boolean itemExists(Object itemId) {
-        return itemId != null && getItemById(itemId) != null;
+        return itemId != null && getItem(itemId) != null;
     }
 
     private WorkbenchDefinition getWorkbenchDefinition() {

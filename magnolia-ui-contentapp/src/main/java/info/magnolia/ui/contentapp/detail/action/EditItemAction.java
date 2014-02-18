@@ -83,7 +83,7 @@ public class EditItemAction extends AbstractAction<EditItemActionDefinition> {
 //                        getPrimaryNodeType().getName());
 //                return;
 //            }
-            final String path = dsManager.serializeItemId(getItemId(nodeItemToEdit));
+            final String path = dsManager.getItemPath(getItemId(nodeItemToEdit));
             DetailLocation location = new DetailLocation(getDefinition().getAppName(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path, "");
             locationController.goTo(location);
 

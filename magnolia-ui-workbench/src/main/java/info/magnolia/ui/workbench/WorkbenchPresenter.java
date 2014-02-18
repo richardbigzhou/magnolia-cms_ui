@@ -227,7 +227,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         final List<Object> selectedIds = filterExistingItems(itemIds);
         // restore selection
         if (selectedIds.isEmpty()) {
-            Object workbenchRootItemId = dsManager.deserializeItemId(getWorkbenchDefinition().getPath());
+            Object workbenchRootItemId = dsManager.getItemIdFromPath(getWorkbenchDefinition().getPath());
             selectedIds.add(workbenchRootItemId);
         }
 

@@ -36,13 +36,9 @@ package info.magnolia.ui.vaadin.integration.dsmanager;
 import com.vaadin.data.Item;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 14/02/14
- * Time: 16:19
- * To change this template use File | Settings | File Templates.
+ * Interface of {@link DataSourceManager} that supports creation of new items.
  */
-public interface SupportsEditing extends DataSourceManager {
+public interface SupportsCreation extends DataSourceManager {
 
     Item createNew(String newItemPath);
 

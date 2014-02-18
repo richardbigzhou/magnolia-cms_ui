@@ -376,7 +376,7 @@ public abstract class BrowserPresenterBase implements ActionbarPresenter.Listene
 
         for (Object itemId : ids) {
             if (!itemId.equals(itemIdToExclude)) {
-                items.add(dsManager.getItemById(itemId));
+                items.add(dsManager.getItem(itemId));
             }
         }
         return items;

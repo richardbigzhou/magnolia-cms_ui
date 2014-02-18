@@ -42,11 +42,11 @@ import com.vaadin.data.Item;
  */
 public interface DataSourceManager {
 
-    String serializeItemId(Object itemId);
+    String getItemPath(Object itemId);
 
-    Object deserializeItemId(String strPath);
+    Object getItemIdFromPath(String strPath);
 
-    Item getItemById(Object itemId);
+    Item getItem(Object itemId);
 
     Object getRootItemId();
 

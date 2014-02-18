@@ -110,7 +110,7 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
         super.start(detailLocation);
         // set caption
         setCaption(detailLocation);
-        this.itemId = dsManager.deserializeItemId(detailLocation.getNodePath());
+        this.itemId = dsManager.getItemIdFromPath(detailLocation.getNodePath());
 
         View view;
         if (detailLocation.hasVersion()) {
@@ -173,7 +173,7 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
                             splitIndex = 1;
                         }
                         String parentNodePath = currentNodePath.substring(0, splitIndex);
-                        Object parentItemId = dsManager.deserializeItemId(parentNodePath);
+                        Object parentItemId = dsManager.getItemIdFromPath(parentNodePath);
                         if (!dsManager.itemExists(parentItemId)) {
                             getSubAppContext().close();
                         }
@@ -186,7 +186,7 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
                         // Item still exists: update location if necessary
                         else {
                             String currentNodePath = getCurrentLocation().getNodePath();
-                            String itemPath = dsManager.serializeItemId(itemId);
+                            String itemPath = dsManager.getItemPath(itemId);
                             if (!currentNodePath.equals(itemPath)) {
                                 DetailLocation location = DetailLocation.wrap(getSubAppContext().getLocation());
                                 location.updateNodePath(itemPath);
