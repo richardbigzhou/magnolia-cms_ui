@@ -46,15 +46,13 @@ import com.vaadin.ui.Component;
  */
 public class AlertView extends BaseAlertView {
 
-    private Button confirmButton;
-
     public AlertView(final Component contents, String confirmLabel, MessageStyleType styleType, AlertCallback alertCallback) {
         super(contents, styleType);
         init(confirmLabel, alertCallback);
     }
 
     private void init(String confirmLabel, final AlertCallback cb) {
-        confirmButton = new Button(confirmLabel, new ClickListener() {
+        final Button confirmButton = new Button(confirmLabel, new ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
                 cb.onOk();

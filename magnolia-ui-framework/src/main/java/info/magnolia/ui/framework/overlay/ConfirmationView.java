@@ -46,10 +46,6 @@ import com.vaadin.ui.Component;
  */
 public class ConfirmationView extends BaseAlertView {
 
-    private Button confirmButton;
-
-    private Button cancelButton;
-
     public ConfirmationView(final Component contents, String confirmLabel, String cancelLabel, MessageStyleType styleType, boolean cancelIsDefault) {
         super(contents, styleType);
         init(confirmLabel, cancelLabel, cancelIsDefault);
@@ -57,7 +53,7 @@ public class ConfirmationView extends BaseAlertView {
 
     private void init(String confirmLabel, String cancelLabel, boolean cancelIsDefault) {
 
-        confirmButton = new Button(confirmLabel, new ClickListener() {
+        final Button confirmButton = new Button(confirmLabel, new ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
                 fireConfirmationEvent(new ConfirmationEvent(asVaadinComponent(), true));
@@ -68,7 +64,7 @@ public class ConfirmationView extends BaseAlertView {
         addButton(confirmButton);
         setButtonAlignment(confirmButton, Alignment.MIDDLE_RIGHT);
 
-        cancelButton = new Button(cancelLabel, new ClickListener() {
+        final Button cancelButton = new Button(cancelLabel, new ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
                 fireConfirmationEvent(new ConfirmationEvent(asVaadinComponent(), false));
