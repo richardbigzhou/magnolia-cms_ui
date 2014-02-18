@@ -67,6 +67,7 @@ public class DataSourceManagerProviderImpl implements DataSourceManagerProvider 
         this.subAppEventBus = subAppEventBus;
     }
 
+    @Override
     public DataSourceManager getDSManager() {
         if (manager == null) {
             SubAppDescriptor subAppDescriptor = ctx.getSubAppDescriptor();
