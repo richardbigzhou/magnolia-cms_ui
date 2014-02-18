@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.dialog;
+package info.magnolia.ui.framework.overlay;
 
 import info.magnolia.objectfactory.Classes;
 import info.magnolia.ui.api.overlay.MessageStyleType;
@@ -43,17 +43,18 @@ import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Panel;
 
 /**
  * Component for showing notification messages.
  */
-public class Notification implements View {
-
+public class NotificationView implements View {
+    private Panel wrapper;
     private CssLayout layout;
 
     private Button closeButton = new Button();
 
-    public Notification(final MessageStyleType type) {
+    public NotificationView(final MessageStyleType type) {
         layout = new CssLayout();
         layout.addStyleName("light-dialog-panel");
         layout.addStyleName("notification-dialog");
@@ -74,6 +75,7 @@ public class Notification implements View {
         closeButton.addStyleName("m-closebutton");
 
         layout.addComponent(closeButton);
+        wrapper = new Panel(layout);
     }
 
     public void setContent(Component content) {
@@ -91,6 +93,6 @@ public class Notification implements View {
 
     @Override
     public Component asVaadinComponent() {
-        return layout;
+        return wrapper;
     }
 }

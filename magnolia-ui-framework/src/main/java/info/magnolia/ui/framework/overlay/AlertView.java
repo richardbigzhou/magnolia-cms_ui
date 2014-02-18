@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2010-2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,16 +31,36 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.dialog;
+package info.magnolia.ui.framework.overlay;
+
+import info.magnolia.ui.api.overlay.AlertCallback;
+import info.magnolia.ui.api.overlay.MessageStyleType;
+
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
 
 /**
- * A thin component to create a dialog with a light style.
- * LightDialogs are used for small simple dialogs like Confirmations and Alerts.
- * Currently LightDialog client side implementation just sets the css style name.
+ * AlertView.
  */
-public class LightDialog extends BaseDialog {
+public class AlertView extends BaseAlertView {
 
-    public LightDialog() {
-        setStyleName("light-dialog-panel");
+    private Button confirmButton;
+
+    public AlertView(final Component contents, String confirmLabel, MessageStyleType styleType, AlertCallback alertCallback) {
+        super(contents, styleType);
+        init(confirmLabel, alertCallback);
+    }
+
+    private void init(String confirmLabel, final AlertCallback cb) {
+        confirmButton = new Button(confirmLabel, new ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                cb.onOk();
+            }
+        });
+        confirmButton.focus();
+        addButton(confirmButton);
     }
 }
