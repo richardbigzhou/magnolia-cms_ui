@@ -45,7 +45,7 @@ import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
 import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
-import info.magnolia.ui.vaadin.integration.dsmanager.SupportsEditing;
+import info.magnolia.ui.vaadin.integration.dsmanager.SupportsCreation;
 import info.magnolia.ui.vaadin.integration.dsmanager.SupportsVersions;
 
 import javax.inject.Inject;
@@ -99,18 +99,18 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
         this.item = null;
 
         view.setListener(this);
-        Object itemId = dsManager.deserializeItemId(nodePath);
+        Object itemId = dsManager.getItemIdFromPath(nodePath);
 
 
         if (dsManager.itemExists(itemId) /* && session.getNode(nodePath).getPrimaryNodeType().getName().equals(editorDefinition.getNodeType().getName())*/) {
             if (StringUtils.isNotEmpty(versionName) && DetailView.ViewType.VIEW.equals(viewType) && dsManager instanceof SupportsVersions) {
                 item = ((SupportsVersions)dsManager).getItemVersion(itemId, versionName);
-            } else if (dsManager instanceof SupportsEditing) {
-                item = dsManager.getItemById(itemId);
+            } else if (dsManager instanceof SupportsCreation) {
+                item = dsManager.getItem(itemId);
             }
         } else {
-            if (dsManager instanceof SupportsEditing) {
-                item = ((SupportsEditing)dsManager).createNew(nodePath);
+            if (dsManager instanceof SupportsCreation) {
+                item = ((SupportsCreation)dsManager).createNew(nodePath);
             }
         }
 //        } catch (RepositoryException e) {

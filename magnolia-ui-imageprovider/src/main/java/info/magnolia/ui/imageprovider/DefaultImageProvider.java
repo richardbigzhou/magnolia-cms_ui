@@ -78,7 +78,7 @@ public class DefaultImageProvider implements ImageProvider {
 
     @Override
     public String getPortraitPath(Object itemId) {
-        Item item = dsManager.getItemById(itemId);
+        Item item = dsManager.getItem(itemId);
         if (item instanceof JcrNodeAdapter) {
             JcrNodeAdapter jcrAdapter = (JcrNodeAdapter) item;
             return getGeneratorImagePath(jcrAdapter.getWorkspace(), jcrAdapter.getJcrItem(), PORTRAIT_GENERATOR);
@@ -88,7 +88,7 @@ public class DefaultImageProvider implements ImageProvider {
 
     @Override
     public String getThumbnailPath(Object itemId) {
-        Item item = dsManager.getItemById(itemId);
+        Item item = dsManager.getItem(itemId);
         if (item instanceof JcrNodeAdapter) {
             JcrNodeAdapter jcrAdapter = (JcrNodeAdapter) item;
             Node node = jcrAdapter.getJcrItem();
@@ -127,7 +127,7 @@ public class DefaultImageProvider implements ImageProvider {
 
     @Override
     public Object getThumbnailResource(Object itemId, String generator) {
-        Item item = dsManager.getItemById(itemId);
+        Item item = dsManager.getItem(itemId);
         if (item instanceof JcrNodeAdapter) {
             JcrNodeAdapter jcrAdapter = (JcrNodeAdapter) item;
             Node node = jcrAdapter.getJcrItem();

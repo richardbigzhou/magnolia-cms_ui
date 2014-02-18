@@ -38,16 +38,11 @@ import info.magnolia.event.EventHandler;
 
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * This event is fired when an item is selected (i.e. a row in the data grid within the workbench
  * representing either a {@link javax.jcr.Node} or a {@link javax.jcr.Property}).
  */
 public class SelectionChangedEvent implements Event<SelectionChangedEvent.Handler> {
-
-    private static final Logger log = LoggerFactory.getLogger(SelectionChangedEvent.class);
 
     /**
      * Handles {@link SelectionChangedEvent} events.

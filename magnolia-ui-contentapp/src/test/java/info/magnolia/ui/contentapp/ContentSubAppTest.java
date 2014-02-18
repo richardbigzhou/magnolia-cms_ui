@@ -44,7 +44,7 @@ import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
 import info.magnolia.ui.contentapp.browser.BrowserPresenter;
-import info.magnolia.ui.contentapp.browser.BrowserSubAppBase;
+import info.magnolia.ui.contentapp.browser.BrowserSubApp;
 
 
 import org.junit.Before;
@@ -84,7 +84,7 @@ public class ContentSubAppTest {
         this.subApp = new DummyContentSubApp(null, subAppContext, view, workbench, subAppEventBus);
     }
 
-    private class DummyContentSubApp extends BrowserSubAppBase {
+    private class DummyContentSubApp extends BrowserSubApp {
         public int foo = 0;
 
         public DummyContentSubApp(ActionExecutor actionExecutor, SubAppContext subAppContext, ContentSubAppView view, BrowserPresenter workbench, EventBus subAppEventBus) {
