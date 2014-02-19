@@ -305,4 +305,20 @@ public class PagesModuleVersionHandlerTest extends ModuleVersionHandlerTestCase 
         assertFalse(session.propertyExists("/modules/pages/dialogs/editTemplate/form/i18nBasename"));
     }
 
+    @Test
+    public void testDialogsAreAddedModalityLevelProperty() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        this.setupConfigNode("/modules/pages/dialogs/editPage");
+        this.setupConfigNode("/modules/pages/dialogs/createPage");
+        this.setupConfigNode("/modules/pages/dialogs/editTemplate");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.2"));
+
+        // THEN
+        assertEquals("light", session.getProperty("/modules/pages/dialogs/editPage/modalityLevel").getString());
+        assertEquals("strong", session.getProperty("/modules/pages/dialogs/createPage/modalityLevel").getString());
+        assertEquals("light", session.getProperty("/modules/pages/dialogs/editTemplate/modalityLevel").getString());
+    }
+
 }
