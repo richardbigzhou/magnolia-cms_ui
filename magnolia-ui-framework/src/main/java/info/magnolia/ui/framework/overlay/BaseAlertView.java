@@ -98,6 +98,7 @@ public class BaseAlertView implements View {
         dialog.addStyleName(styleType.getCssClass());
         dialog.addShortcutListener(new CloseDialogShortcutListener());
         wrapper = new Panel(dialog);
+        wrapper.setWidth(null);
 
     }
 
