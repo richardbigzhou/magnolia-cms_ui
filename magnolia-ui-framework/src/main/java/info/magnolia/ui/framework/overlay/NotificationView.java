@@ -76,6 +76,7 @@ public class NotificationView implements View {
 
         layout.addComponent(closeButton);
         wrapper = new Panel(layout);
+        wrapper.setWidth(null);
     }
 
     public void setContent(Component content) {
