@@ -33,8 +33,11 @@
  */
 package info.magnolia.ui.framework.overlay;
 
+import info.magnolia.ui.api.overlay.ConfirmationCallback;
 import info.magnolia.ui.api.overlay.MessageStyleType;
+import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.view.View;
+import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent.Handler;
 
 import com.vaadin.ui.Alignment;
@@ -155,5 +158,28 @@ public class BaseAlertView implements View {
 
     public void addStyleName(String style) {
         dialog.addStyleName(style);
+    }
+
+    public static BaseDialog.DialogCloseEvent.Handler createCloseHandler(final OverlayCloser overlayCloser) {
+        return new BaseDialog.DialogCloseEvent.Handler() {
+            @Override
+            public void onClose(BaseDialog.DialogCloseEvent event) {
+                overlayCloser.close();
+            }
+        };
+    }
+
+    public static BaseAlertView.ConfirmationEvent.Handler createConfirmationHandler(final OverlayCloser overlayCloser, final ConfirmationCallback callback) {
+        return new BaseAlertView.ConfirmationEvent.Handler() {
+            @Override
+            public void onConfirmation(ConfirmationEvent event) {
+                if (event.isConfirmed()) {
+                    callback.onSuccess();
+                } else {
+                    callback.onCancel();
+                }
+                overlayCloser.close();
+            }
+        };
     }
 }

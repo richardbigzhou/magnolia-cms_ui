@@ -41,8 +41,6 @@ import info.magnolia.ui.api.overlay.NotificationCallback;
 import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.overlay.OverlayLayer;
 import info.magnolia.ui.api.view.View;
-import info.magnolia.ui.framework.overlay.BaseAlertView.ConfirmationEvent;
-import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.icon.CompositeIcon;
 
 import com.vaadin.event.LayoutEvents;
@@ -76,10 +74,10 @@ public abstract class OverlayPresenter implements OverlayLayer {
      */
     @Override
     public void openAlert(MessageStyleType type, View viewToShow, String confirmButtonText, final AlertCallback cb) {
-        AlertView view = createAlertDialogView(viewToShow, confirmButtonText, type, cb);
+        final AlertView view = new AlertView(viewToShow.asVaadinComponent(), confirmButtonText, type, cb);
 
         final OverlayCloser overlayCloser = openOverlay(view, ModalityLevel.LIGHT);
-        view.addCloseHandler(createCloseHandler(overlayCloser));
+        view.addCloseHandler(BaseAlertView.createCloseHandler(overlayCloser));
     }
 
     /**
@@ -90,42 +88,17 @@ public abstract class OverlayPresenter implements OverlayLayer {
         openAlert(type, createConfirmationView(type, title, body), confirmButtonText, cb);
     }
 
-    private ConfirmationView createConfirmationDialog(View contentView, String confirmButtonText, String cancelButtonText, MessageStyleType styleType, boolean cancelIsDefault) {
-        return new ConfirmationView(contentView.asVaadinComponent(), confirmButtonText, cancelButtonText, styleType, cancelIsDefault);
-    }
-
-    private AlertView createAlertDialogView(View contentView, String confirmLabel, MessageStyleType styleType, final AlertCallback cb) {
-        return new AlertView(contentView.asVaadinComponent(), confirmLabel, styleType, cb);
-    }
-
-    private View createConfirmationView(final MessageStyleType type, final String title, final String body) {
-        Layout layout = new CssLayout();
-
-        Label titleLabel = new Label(title, ContentMode.HTML);
-        titleLabel.addStyleName("title");
-        layout.addComponent(titleLabel);
-
-        Label bodyLabel = new Label(body, ContentMode.HTML);
-        bodyLabel.addStyleName("body");
-        layout.addComponent(bodyLabel);
-
-        CompositeIcon icon = (CompositeIcon) Classes.getClassFactory().newInstance(type.getIconClass());
-        icon.setStyleName("dialog-icon");
-        layout.addComponent(icon);
-        return new ViewAdapter(layout);
-    }
-
     /**
      * Present modal confirmation dialog with light modality level. Allow any Vaadin content to be presented.
      */
     @Override
     public void openConfirmation(MessageStyleType type, View contentView, String confirmButtonText, String cancelButtonText,
             boolean cancelIsDefault, ConfirmationCallback callback) {
-        ConfirmationView view = createConfirmationDialog(contentView, confirmButtonText, cancelButtonText, type, cancelIsDefault);
+        final ConfirmationView view = new ConfirmationView(contentView.asVaadinComponent(), confirmButtonText, cancelButtonText, type, cancelIsDefault);
 
         final OverlayCloser overlayCloser = openOverlay(view, ModalityLevel.LIGHT);
-        view.addConfirmationHandler(createConfirmationHandler(overlayCloser, callback));
-        view.addCloseHandler(createCloseHandler(overlayCloser));
+        view.addConfirmationHandler(BaseAlertView.createConfirmationHandler(overlayCloser, callback));
+        view.addCloseHandler(BaseAlertView.createCloseHandler(overlayCloser));
 
     }
 
@@ -191,30 +164,23 @@ public abstract class OverlayPresenter implements OverlayLayer {
 
         layout.addComponent(button);
         openNotification(type, doesTimeout, new ViewAdapter(layout));
-
     }
 
-    private BaseDialog.DialogCloseEvent.Handler createCloseHandler(final OverlayCloser overlayCloser) {
-        return new BaseDialog.DialogCloseEvent.Handler() {
-            @Override
-            public void onClose(BaseDialog.DialogCloseEvent event) {
-                overlayCloser.close();
-            }
-        };
-    }
+    private View createConfirmationView(final MessageStyleType type, final String title, final String body) {
+        Layout layout = new CssLayout();
 
-    private BaseAlertView.ConfirmationEvent.Handler createConfirmationHandler(final OverlayCloser overlayCloser, final ConfirmationCallback callback) {
-        return new BaseAlertView.ConfirmationEvent.Handler() {
-            @Override
-            public void onConfirmation(ConfirmationEvent event) {
-                if (event.isConfirmed()) {
-                    callback.onSuccess();
-                } else {
-                    callback.onCancel();
-                }
-                overlayCloser.close();
-            }
-        };
+        Label titleLabel = new Label(title, ContentMode.HTML);
+        titleLabel.addStyleName("title");
+        layout.addComponent(titleLabel);
+
+        Label bodyLabel = new Label(body, ContentMode.HTML);
+        bodyLabel.addStyleName("body");
+        layout.addComponent(bodyLabel);
+
+        CompositeIcon icon = (CompositeIcon) Classes.getClassFactory().newInstance(type.getIconClass());
+        icon.setStyleName("dialog-icon");
+        layout.addComponent(icon);
+        return new ViewAdapter(layout);
     }
 
 }
