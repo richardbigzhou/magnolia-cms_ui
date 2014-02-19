@@ -47,7 +47,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
 
 /**
  * BaseAlertView. It provides basic methods implementation common to different types of alerting notification requiring user interaction (confirmations, alerts proper, etc.).
@@ -64,9 +63,6 @@ public class BaseAlertView implements View {
     private MessageStyleType styleType;
 
     private HorizontalLayout footer;
-
-    // keeps keyboards events scoped to it.
-    private Panel wrapper;
 
     /**
      * A shortcut listener used to close dialog.
@@ -97,8 +93,6 @@ public class BaseAlertView implements View {
         dialog.showCloseButton();
         dialog.addStyleName(styleType.getCssClass());
         dialog.addShortcutListener(new CloseDialogShortcutListener());
-        wrapper = new Panel(dialog);
-        wrapper.setWidth(null);
 
     }
 
@@ -166,7 +160,7 @@ public class BaseAlertView implements View {
 
     @Override
     public Component asVaadinComponent() {
-        return wrapper;
+        return dialog;
     }
 
     public void addCloseHandler(Handler closeHandler) {
