@@ -81,7 +81,7 @@ public abstract class OverlayPresenter implements OverlayLayer {
     }
 
     /**
-     * Convenience method with string content. for opening an alert.
+     * Convenience method with string content for opening an alert.
      */
     @Override
     public void openAlert(MessageStyleType type, String title, String body, String confirmButtonText, AlertCallback cb) {

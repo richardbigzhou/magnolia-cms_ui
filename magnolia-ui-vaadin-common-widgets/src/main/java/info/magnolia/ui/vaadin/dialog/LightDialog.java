@@ -31,9 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.framework.overlay;
-
-import info.magnolia.ui.vaadin.dialog.BaseDialog;
+package info.magnolia.ui.vaadin.dialog;
 
 import java.lang.reflect.Method;
 import java.util.EventObject;
@@ -50,17 +48,17 @@ public class LightDialog extends BaseDialog {
     }
 
     @Override
-    protected void fireEvent(EventObject event) {
+    public void fireEvent(EventObject event) {
         super.fireEvent(event);
     }
 
     @Override
-    protected void addListener(String eventIdentifier, Class<?> eventType, Object target, Method method) {
+    public void addListener(String eventIdentifier, Class<?> eventType, Object target, Method method) {
         super.addListener(eventIdentifier, eventType, target, method);
     }
 
     @Override
-    protected void removeListener(String eventIdentifier, Class<?> eventType, Object target) {
+    public void removeListener(String eventIdentifier, Class<?> eventType, Object target) {
         super.removeListener(eventIdentifier, eventType, target);
     }
 }

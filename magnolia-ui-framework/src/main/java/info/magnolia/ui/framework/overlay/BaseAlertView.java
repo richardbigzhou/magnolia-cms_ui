@@ -39,15 +39,19 @@ import info.magnolia.ui.api.overlay.OverlayCloser;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.vaadin.dialog.BaseDialog;
 import info.magnolia.ui.vaadin.dialog.BaseDialog.DialogCloseEvent.Handler;
+import info.magnolia.ui.vaadin.dialog.LightDialog;
 
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 
 /**
- * BaseAlertView.
+ * BaseAlertView. It provides basic methods implementation common to different types of alerting notification requiring user interaction (confirmations, alerts proper, etc.).
+ * By default it registers a shortcut listener allowing the alert to close itself upon hitting the ESC key.
  */
 public class BaseAlertView implements View {
 
@@ -60,6 +64,24 @@ public class BaseAlertView implements View {
     private MessageStyleType styleType;
 
     private HorizontalLayout footer;
+
+    // keeps keyboards events scoped to it.
+    private Panel wrapper;
+
+    /**
+     * A shortcut listener used to close dialog.
+     */
+    private final class CloseDialogShortcutListener extends ShortcutListener {
+
+        public CloseDialogShortcutListener() {
+            super("", KeyCode.ESCAPE, null);
+        }
+
+        @Override
+        public void handleAction(Object sender, Object target) {
+            dialog.closeSelf();
+        }
+    }
 
     public BaseAlertView(final Component contents, final MessageStyleType styleType) {
         message = "";
@@ -74,6 +96,8 @@ public class BaseAlertView implements View {
         dialog.setFooterToolbar(footer);
         dialog.showCloseButton();
         dialog.addStyleName(styleType.getCssClass());
+        dialog.addShortcutListener(new CloseDialogShortcutListener());
+        wrapper = new Panel(dialog);
 
     }
 
@@ -141,7 +165,7 @@ public class BaseAlertView implements View {
 
     @Override
     public Component asVaadinComponent() {
-        return dialog;
+        return wrapper;
     }
 
     public void addCloseHandler(Handler closeHandler) {
