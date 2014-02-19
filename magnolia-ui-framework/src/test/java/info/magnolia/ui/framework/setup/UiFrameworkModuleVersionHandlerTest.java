@@ -79,7 +79,6 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         return "/META-INF/magnolia/ui-framework.xml";
     }
 
-
     @Override
     protected ModuleVersionHandler newModuleVersionHandlerForTests() {
         return new UiFrameworkModuleVersionHandler(Components.getComponent(ControlMigratorsRegistry.class));
@@ -313,5 +312,19 @@ public class UiFrameworkModuleVersionHandlerTest extends ModuleVersionHandlerTes
         // THEN
         assertFalse(session.nodeExists("/modules/ui-framework/fieldTypes/compositField"));
         assertTrue(session.nodeExists("/modules/ui-framework/fieldTypes/compositeField"));
+    }
+
+    @Test
+    public void testDialogsAreAddedModalityLevelProperty() throws ModuleManagementException, RepositoryException {
+        // GIVEN
+        this.setupConfigNode("/modules/ui-framework/dialogs/rename");
+        this.setupConfigNode("/modules/ui-framework/dialogs/folder");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.2"));
+
+        // THEN
+        assertEquals("light", session.getProperty("/modules/ui-framework/dialogs/rename/modalityLevel").getString());
+        assertEquals("light", session.getProperty("/modules/ui-framework/dialogs/folder/modalityLevel").getString());
     }
 }
