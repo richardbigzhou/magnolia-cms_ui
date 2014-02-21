@@ -68,8 +68,10 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
 
     // - key : Field name. Should be the same as the related select value.<br>
     // - value : Related Field. Created based on the definition coming from the Fields Definition list.
-    private HashMap<String, Field<?>> fieldMap;
+    private HashMap<String, Field<?>> fieldMap = new HashMap<String, Field<?>>();
     private AbstractSelect selectField;
+
+    private HashMap<String, ConfiguredFieldDefinition> fieldDefinitions = new HashMap<String, ConfiguredFieldDefinition>();
 
     // Define layout and component
     private final VerticalLayout root = new VerticalLayout();
@@ -91,6 +93,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
         // Create and Add Select section
         selectField = createSelectionField();
         selectField.addValueChangeListener(createSelectValueChangeListener());
+        selectField.addValueChangeListener(selectionListener);
 
         // Initialize Existing field
         initFields();
@@ -106,18 +109,11 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
         root.addComponent(selectField);
         // add Field section
 
-        fieldMap = new HashMap<String, Field<?>>();
         // Create Switchable Fields
         for (ConfiguredFieldDefinition fieldDefinition : definition.getFields()) {
             String name = fieldDefinition.getName();
-            Field<?> field = createLocalField(fieldDefinition, relatedFieldItem, false);
-            if (fieldValues.getItemProperty(fieldDefinition.getName()) != null) {
-                field.setPropertyDataSource(fieldValues.getItemProperty(fieldDefinition.getName()));
-            } else {
-                fieldValues.addItemProperty(fieldDefinition.getName(), field.getPropertyDataSource());
-            }
-            field.addValueChangeListener(selectionListener);
-            fieldMap.put(name, field);
+            // we only store definitions at init, we create the fields lazily when required
+            fieldDefinitions.put(name, fieldDefinition);
         }
 
         if (fieldValues.getItemProperty(definition.getName()) != null) {
@@ -155,6 +151,7 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
             selectDefinition.setTransformerClass(null);
             selectDefinition.setLabel("");
             selectDefinition.setRequired(false);
+            selectDefinition.setSortOptions(false);
 
             // Create the field
             field = (AbstractSelect) createLocalField(selectDefinition, relatedFieldItem, false);
@@ -192,13 +189,31 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
             // detach previous field
             root.removeComponent(root.getComponent(1));
         }
-        if (fieldMap.containsKey(fieldName)) {
+        if (fieldDefinitions.containsKey(fieldName)) {
+            Field<?> field = getField(fieldName);
             // add after combobox
-            root.addComponent(fieldMap.get(fieldName), 1);
+            root.addComponent(field, 1);
         } else {
             log.warn("{} is not associated to a field. Nothing will be displayed.", fieldName);
             root.addComponent(new Label("No field defined for the following selection: " + fieldName), 1);
         }
+    }
+
+    private Field<?> getField(String fieldName) {
+        if (!fieldMap.containsKey(fieldName)) {
+            ConfiguredFieldDefinition fieldDefinition = fieldDefinitions.get(fieldName);
+            String name = fieldDefinition.getName();
+            Field<?> field = createLocalField(fieldDefinition, relatedFieldItem, false);
+            PropertysetItem propertySetItem = (PropertysetItem) getPropertyDataSource().getValue();
+            if (propertySetItem.getItemProperty(fieldDefinition.getName()) != null) {
+                field.setPropertyDataSource(propertySetItem.getItemProperty(fieldDefinition.getName()));
+            } else {
+                propertySetItem.addItemProperty(fieldDefinition.getName(), field.getPropertyDataSource());
+            }
+            field.addValueChangeListener(selectionListener);
+            fieldMap.put(name, field);
+        }
+        return fieldMap.get(fieldName);
     }
 
     @Override
