@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2011-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,21 +33,25 @@
  */
 package info.magnolia.ui.workbench.tree;
 
-import info.magnolia.ui.workbench.event.ItemEditedEvent;
+import info.magnolia.ui.vaadin.grid.MagnoliaTreeTable;
 import info.magnolia.ui.workbench.list.ListViewImpl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.vaadin.event.Action;
-import com.vaadin.event.Action.Container;
-import com.vaadin.event.Action.Handler;
-import com.vaadin.event.ShortcutAction;
+import com.vaadin.data.Property;
+import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.event.FieldEvents.BlurListener;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.ui.Field;
-import com.vaadin.ui.Table.TableDragMode;
+import com.vaadin.ui.Table.ColumnGenerator;
+import com.vaadin.ui.Tree.CollapseEvent;
+import com.vaadin.ui.Tree.CollapseListener;
+import com.vaadin.ui.Tree.ExpandEvent;
+import com.vaadin.ui.Tree.ExpandListener;
 import com.vaadin.ui.TreeTable;
 
 /**
@@ -55,140 +59,44 @@ import com.vaadin.ui.TreeTable;
  */
 public class TreeViewImpl extends ListViewImpl implements TreeView {
 
-    private static final Logger log = LoggerFactory.getLogger(TreeViewImpl.class);
+    private final MagnoliaTreeTable tree;
 
-    private final TreeTable treeTable;
-
-    private Container shortcutActionManager;
-
-    private Handler editingKeyboardHandler;
-
-    private final ItemEditedEvent.Handler itemEditedListener = new ItemEditedEvent.Handler() {
-
-        @Override
-        public void onItemEdited(ItemEditedEvent event) {
-            if (getListener() != null) {
-                getListener().onItemEdited(event.getItem());
-            }
-        }
-    };
+    private boolean editable;
+    private final List<Object> editableColumns = new ArrayList<Object>();
+    private InplaceEditingFieldFactory fieldFactory;
+    private ExpandListener expandListener;
+    private CollapseListener collapseListener;
+    private ColumnGenerator bypassedColumnGenerator;
 
     public TreeViewImpl() {
-        this(new InplaceEditingTreeTable());
+        this(new MagnoliaTreeTable());
     }
 
-    public TreeViewImpl(TreeTable tree) {
+    public TreeViewImpl(MagnoliaTreeTable tree) {
         super(tree);
         tree.setSortEnabled(false);
-
         tree.setCollapsed(tree.firstItemId(), false);
-
-        this.treeTable = tree;
-    }
-
-    @Override
-    public void setActionManager(Container shortcutActionManager) {
-        this.shortcutActionManager = shortcutActionManager;
-        bindKeyboardShortcuts();
-    }
-
-    @Override
-    public void setEditable(boolean editable) {
-        treeTable.setEditable(editable);
-        bindKeyboardShortcuts();
-    }
-
-    private void bindKeyboardShortcuts() {
-        if (treeTable.isEditable() && treeTable instanceof InplaceEditingTreeTable) {
-            ((InplaceEditingTreeTable) treeTable).addItemEditedListener(itemEditedListener);
-            if (shortcutActionManager != null) {
-                if (editingKeyboardHandler == null) {
-                    editingKeyboardHandler = new EditingKeyboardHandler((InplaceEditingTreeTable) treeTable);
-                }
-                shortcutActionManager.addActionHandler(editingKeyboardHandler);
-            }
-        } else {
-            ((InplaceEditingTreeTable) treeTable).removeItemEditedListener(itemEditedListener);
-            if (shortcutActionManager != null) {
-                shortcutActionManager.removeActionHandler(editingKeyboardHandler);
-            }
-        }
-    }
-
-    @Override
-    public void setEditableColumns(Object... propertyIds) {
-        ((InplaceEditingTreeTable) treeTable).setEditableColumns(propertyIds);
-    }
-
-    @Override
-    public void setDragAndDropHandler(DropHandler dropHandler) {
-        if (dropHandler != null) {
-            treeTable.setDragMode(TableDragMode.ROW);
-            treeTable.setDropHandler(dropHandler);
-        } else {
-            treeTable.setDragMode(TableDragMode.NONE);
-            treeTable.setDropHandler(null);
-        }
+        this.tree = tree;
     }
 
     @Override
     public void select(List<Object> itemIds) {
         Object firstItemId = itemIds == null || itemIds.isEmpty() ? null : itemIds.get(0);
-        if (firstItemId == null || treeTable.isSelected(firstItemId)) {
+        if (firstItemId == null || tree.isSelected(firstItemId)) {
             return;
         }
-        treeTable.focus();
-        expandTreeToNode(firstItemId, false);
+        tree.focus();
+        // expandTreeToNode(firstItemId, false);
 
-        treeTable.setValue(null);
+        tree.setValue(null);
         for (Object id : itemIds) {
-            treeTable.select(id);
+            tree.select(id);
         }
-        treeTable.setCurrentPageFirstItemId(firstItemId);
+        tree.setCurrentPageFirstItemId(firstItemId);
     }
 
     @Override
     public void expand(Object itemId) {
-        expandTreeToNode(itemId, true);
-    }
-
-    private void expandTreeToNode(Object nodeId, boolean expandNode) {
-//        HierarchicalJcrContainer container = (HierarchicalJcrContainer) treeTable.getContainerDataSource();
-//        String workbenchPath = container.getWorkbenchDefinition().getPath();
-//
-//        try {
-//            Item item = container.getJcrItem(nodeId);
-//            if (item == null || !item.getPath().contains(workbenchPath)) {
-//                return;
-//            }
-//
-//            // Determine node to expand.
-//            Node node = null;
-//
-//            if (item instanceof Property) {
-//                node = item.getParent();
-//            } else {
-//
-//                if (expandNode) {
-//                    node = (Node) item;
-//                } else {
-//                    // Check if item is root.
-//                    if (!StringUtils.equals(((Node) item).getPath(), workbenchPath)) {
-//                        node = item.getParent();
-//                    }
-//                }
-//
-//            }
-//
-//            // as long as parent is within the scope of the workbench
-//            while (node != null && !StringUtils.equals(node.getPath(), workbenchPath)) {
-//                treeTable.setCollapsed(node.getIdentifier(), false);
-//                node = node.getParent();
-//            }
-//
-//        } catch (RepositoryException e) {
-//            log.warn("Could not collect the parent hierarchy of node {}", nodeId, e);
-//        }
     }
 
     @Override
@@ -198,75 +106,108 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
 
     @Override
     public TreeTable asVaadinComponent() {
-        return treeTable;
+        return tree;
     }
 
-    // KEYBOARD SHORTCUTS
+    @Override
+    public void setEditable(boolean editable) {
+        if (editable) {
+            // field factory
+            fieldFactory = new InplaceEditingFieldFactory();
+            fieldFactory.setFieldBlurListener(new BlurListener() {
 
-    /**
-     * The Class EditingKeyboardHandler for keyboard shortcuts with inplace editing.
-     */
-    private class EditingKeyboardHandler implements Handler {
+                @Override
+                public void blur(BlurEvent event) {
+                    Object source = event.getSource();
+                    if (source instanceof Field<?>) {
+                        saveItemProperty(((Field<?>) source).getPropertyDataSource());
+                    }
+                    setEditing(null, null);
+                }
+            });
+            tree.setTableFieldFactory(fieldFactory);
 
-        private final ShortcutAction enter = new ShortcutAction("Enter", ShortcutAction.KeyCode.ENTER, null);
+            // expanding and collapsing tree must turn off editing
+            expandListener = new ExpandListener() {
 
-        private final ShortcutAction tabNext = new ShortcutAction("Tab", ShortcutAction.KeyCode.TAB, null);
+                @Override
+                public void nodeExpand(ExpandEvent event) {
+                    setEditing(null, null);
+                }
+            };
+            collapseListener = new CollapseListener() {
 
-        private final ShortcutAction tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB, new int[] { ShortcutAction.ModifierKey.SHIFT });
+                @Override
+                public void nodeCollapse(CollapseEvent event) {
+                    setEditing(null, null);
+                }
+            };
+            tree.addExpandListener(expandListener);
+            tree.addCollapseListener(collapseListener);
 
-        private final ShortcutAction escape = new ShortcutAction("Esc", ShortcutAction.KeyCode.ESCAPE, null);
+            // double-click listener
+            ItemClickListener clickListener = new ItemClickListener() {
 
-        private final InplaceEditingTreeTable tree;
+                @Override
+                public void itemClick(ItemClickEvent event) {
+                    if (event.isDoubleClick()) {
+                        setEditing(event.getItemId(), event.getPropertyId());
+                    }
+                }
+            };
+            tree.addItemClickListener(clickListener);
 
-        public EditingKeyboardHandler(InplaceEditingTreeTable tree) {
-            this.tree = tree;
+        } else {
+            tree.setTableFieldFactory(null);
+            fieldFactory = null;
+            tree.removeExpandListener(expandListener);
+            tree.removeCollapseListener(collapseListener);
+            expandListener = null;
+            collapseListener = null;
         }
 
-        @Override
-        public Action[] getActions(Object target, Object sender) {
-            // TODO: Find a better solution for handling tab key events: MGNLUI-1384
-            return new Action[] { enter, tabNext, tabPrev, escape };
+        tree.setEditable(editable);
+        this.editable = editable;
+    }
+
+    @Override
+    public void setEditableColumns(Object... editablePropertyIds) {
+        editableColumns.clear();
+        editableColumns.addAll(Arrays.asList(editablePropertyIds));
+    }
+
+    private void setEditing(Object itemId, Object propertyId) {
+
+        // if (itemId != null && propertyId != null) {
+        // Item item = getItem(itemId);
+        // Property<?> property = item.getItemProperty(propertyId);
+        // } else {
+        // if ((bypassedColumnGenerator = tree.getColumnGenerator(propertyId)) != null) {
+        // tree.removeGeneratedColumn(propertyId);
+        // }
+        // }
+        // } else {
+        // if (bypassedColumnGenerator != null) {
+        // addGeneratedColumn(editingPropertyId, bypassedColumnGenerator);
+        // bypassedColumnGenerator = null;
+        // }
+        // }
+
+        if (editable && editableColumns.contains(propertyId)) {
+            fieldFactory.setEditing(itemId, propertyId);
+        } else {
+            fieldFactory.setEditing(null, null);
         }
+        tree.refreshRowCache();
+    }
 
-        @Override
-        public void handleAction(Action action, Object sender, Object target) {
-            /*
-             * In case of enter the Action needs to be casted back to
-             * ShortcutAction because for some reason the object is not same
-             * as this.enter object. In that case keycode is used in comparison.
-             */
-            if (!(action instanceof ShortcutAction)) {
-                return;
-            }
-            ShortcutAction shortcut = (ShortcutAction) action;
+    private void saveItemProperty(Property<?> propertyDataSource) {
+        getListener().onItemEdited(fieldFactory.getEditingItemId(), fieldFactory.getEditingPropertyId(), propertyDataSource);
+    }
 
-            if (target != tree && target instanceof Field) {
-                Field<?> field = (Field<?>) target;
-
-                if (shortcut == enter || shortcut.getKeyCode() == enter.getKeyCode()) {
-                    tree.fireItemEditedEvent(field.getPropertyDataSource());
-                    tree.setEditing(null, null);
-
-                } else if (action == tabNext) {
-                    tree.editNextCell(field);
-
-                } else if (action == tabPrev) {
-                    tree.editPreviousCell(field);
-
-                } else if (action == escape) {
-                    tree.setEditing(null, null);
-                }
-            } else if (target == treeTable) {
-                if (tree.getValue() == null) {
-                    return;
-                }
-
-                if (shortcut == enter || shortcut.getKeyCode() == enter.getKeyCode()) {
-                    tree.editFirstCellofFirstSelectedRow();
-
-                }
-            }
-        }
+    @Override
+    public void setDragAndDropHandler(DropHandler dropHandler) {
+        // TODO
     }
 
 }

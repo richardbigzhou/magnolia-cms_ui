@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -39,10 +39,18 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.form.EditorCallback;
 import info.magnolia.ui.form.EditorValidator;
-import info.magnolia.ui.workbench.event.ItemEditedEvent;
+import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
+import info.magnolia.ui.workbench.event.SelectionChangedEvent;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,11 +58,7 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 
 /**
- * Responsible for triggering (by sending an Event) the saving of the changes made to node properties in the Configuration app.
- * Sends an ItemEditedEvent so that the BrowserPresenter will handle updating the item in the same manner as if it had
- * been changed via inplace editing.
- * 
- * @see SaveConfigDialogActionDefinition
+ * The SaveConfigDialogAction is a special dialog commit action for saving configuration properties, when editing them in the Configuration app.
  */
 public class SaveConfigDialogAction extends AbstractAction<SaveConfigDialogActionDefinition> {
 
@@ -65,15 +69,15 @@ public class SaveConfigDialogAction extends AbstractAction<SaveConfigDialogActio
     protected final EditorValidator validator;
     protected final EditorCallback callback;
 
-    private final EventBus subAppEventBus;
+    private final EventBus eventBus;
 
     @Inject
-    public SaveConfigDialogAction(SaveConfigDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
+    public SaveConfigDialogAction(SaveConfigDialogActionDefinition definition, Item item, EditorValidator validator, EditorCallback callback, final @Named(SubAppEventBus.NAME) EventBus eventBus) {
         super(definition);
         this.item = item;
         this.validator = validator;
         this.callback = callback;
-        this.subAppEventBus = subAppEventBus;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -81,7 +85,47 @@ public class SaveConfigDialogAction extends AbstractAction<SaveConfigDialogActio
         // First Validate
         validator.showValidation(true);
         if (validator.isValid()) {
-            subAppEventBus.fireEvent(new ItemEditedEvent(item));
+
+            // we support only JCR item adapters
+            if (!(item instanceof JcrItemAdapter)) {
+                return;
+            }
+
+            // don't save if no value changes occurred on adapter
+            if (!((JcrItemAdapter) item).hasChangedProperties()) {
+                return;
+            }
+
+            if (item instanceof AbstractJcrNodeAdapter) {
+                // Saving JCR Node, getting updated node first
+                AbstractJcrNodeAdapter nodeAdapter = (AbstractJcrNodeAdapter) item;
+                try {
+                    // get modifications
+                    Node node = nodeAdapter.applyChanges();
+                    node.getSession().save();
+                } catch (RepositoryException e) {
+                    log.error("Could not save changes to node", e);
+                }
+
+            } else if (item instanceof JcrPropertyAdapter) {
+                // Saving JCR Property, update it first
+                JcrPropertyAdapter propertyAdapter = (JcrPropertyAdapter) item;
+                try {
+                    // get parent first because once property is updated, it won't exist anymore if the name changes
+                    Node parent = propertyAdapter.getJcrItem().getParent();
+
+                    // get modifications
+                    propertyAdapter.applyChanges();
+                    parent.getSession().save();
+
+                    // update workbench selection in case the property changed name
+                    String newItemId = propertyAdapter.getItemId();
+                    eventBus.fireEvent(new SelectionChangedEvent(new HashSet<Object>(Arrays.asList(newItemId))));
+
+                } catch (RepositoryException e) {
+                    log.error("Could not save changes to property", e);
+                }
+            }
             callback.onSuccess(getDefinition().getName());
         } else {
             log.debug("Validation error(s) occurred. No save performed.");

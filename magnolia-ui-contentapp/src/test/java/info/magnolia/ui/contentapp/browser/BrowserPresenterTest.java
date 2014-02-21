@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -46,6 +46,7 @@ import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ConfiguredActionbarDefinition;
+import info.magnolia.ui.admincentral.dialog.action.SaveConfigDialogActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
@@ -56,8 +57,8 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.workbench.event.ActionEvent;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
-import info.magnolia.ui.workbench.event.ItemEditedEvent;
 import info.magnolia.ui.workbench.list.ListPresenterDefinition;
 import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
@@ -70,6 +71,8 @@ import javax.jcr.Node;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.vaadin.data.Property;
 
 /**
  * Tests covering business logic in {@link BrowserPresenter}.
@@ -141,7 +144,7 @@ public class BrowserPresenterTest {
         ActionbarPresenter mockActionbarPresenter = mock(ActionbarPresenter.class);
         actionExecutor = mock(ActionExecutor.class);
 
-        presenter = new BrowserPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus, mockActionbarPresenter, null, mockWorkbenchPresenter, null);
+        presenter = new BrowserPresenter(actionExecutor, subAppContext, mockView, adminCentralEventBus, subAppEventBus, mockActionbarPresenter, mockWorkbenchPresenter, null, null);
 
         // start presenter (binds event handlers)
         presenter.start();
@@ -166,10 +169,11 @@ public class BrowserPresenterTest {
         node.setProperty(DUMMY_PROPERTY_NAME, false);
         JcrNodeAdapter adapter = new JcrNodeAdapter(node);
         boolean newValue = true;
-        adapter.getItemProperty(DUMMY_PROPERTY_NAME).setValue(newValue);
+        Property<Boolean> itemProperty = adapter.getItemProperty(DUMMY_PROPERTY_NAME);
+        itemProperty.setValue(newValue);
 
         // WHEN
-        subAppEventBus.fireEvent(new ItemEditedEvent(adapter));
+        subAppEventBus.fireEvent(new ActionEvent(SaveConfigDialogActionDefinition.class.getSimpleName(), adapter.getItemId(), DUMMY_PROPERTY_NAME, itemProperty));
 
         // THEN
         assertEquals(newValue, node.getProperty(DUMMY_PROPERTY_NAME).getBoolean());
@@ -186,8 +190,10 @@ public class BrowserPresenterTest {
         Calendar firstModified = LastModified.getLastModified(node);
         String firstModifiedBy = LastModified.getLastModifiedBy(node);
 
+        Property<?> itemProperty = adapter.getItemProperty(DUMMY_PROPERTY_NAME);
+
         // WHEN
-        subAppEventBus.fireEvent(new ItemEditedEvent(adapter));
+        subAppEventBus.fireEvent(new ActionEvent(SaveConfigDialogActionDefinition.class.getSimpleName(), adapter.getItemId(), DUMMY_PROPERTY_NAME, itemProperty));
 
         // THEN
         assertNotNull(LastModified.getLastModified(node));

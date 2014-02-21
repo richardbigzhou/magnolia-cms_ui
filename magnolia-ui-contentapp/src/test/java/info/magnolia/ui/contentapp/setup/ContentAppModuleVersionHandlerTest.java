@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2013 Magnolia International
+ * This file Copyright (c) 2013-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -47,6 +47,7 @@ import info.magnolia.repository.RepositoryConstants;
 import info.magnolia.test.ComponentsTestUtil;
 import info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor;
 import info.magnolia.ui.contentapp.ContentApp;
+import info.magnolia.ui.contentapp.browser.action.SaveItemPropertyActionDefinition;
 import info.magnolia.ui.contentapp.movedialog.action.MoveNodeActionDefinition;
 
 import java.util.Arrays;
@@ -135,5 +136,18 @@ public class ContentAppModuleVersionHandlerTest extends ModuleVersionHandlerTest
         assertFalse(session.propertyExists("/modules/ui-admincentral/apps/stkSiteApp/app"));
         assertTrue(session.propertyExists("/modules/ui-admincentral/apps/stkSiteApp/class"));
         assertEquals(ConfiguredContentAppDescriptor.class.getCanonicalName(), session.getProperty("/modules/ui-admincentral/apps/stkSiteApp/class").getString());
+    }
+
+    @Test
+    public void testUpdateTo53AddsSaveItemPropertyAction() throws Exception {
+        // GIVEN
+        setupConfigNode("/modules/ui-admincentral/apps/configuration/subApps/browser/actions");
+
+        // WHEN
+        executeUpdatesAsIfTheCurrentlyInstalledVersionWas(Version.parseVersion("5.2.2"));
+
+        // THEN
+        assertTrue(session.itemExists("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/saveItemProperty"));
+        assertEquals(SaveItemPropertyActionDefinition.class.getCanonicalName(), session.getNode("/modules/ui-admincentral/apps/configuration/subApps/browser/actions/saveItemProperty").getProperty("class").getString());
     }
 }
