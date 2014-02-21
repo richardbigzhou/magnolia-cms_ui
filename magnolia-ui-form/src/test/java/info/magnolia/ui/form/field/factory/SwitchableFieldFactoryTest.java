@@ -35,6 +35,7 @@ package info.magnolia.ui.form.field.factory;
 
 import static org.junit.Assert.*;
 
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.test.mock.MockComponentProvider;
 import info.magnolia.ui.form.field.SwitchableField;
 import info.magnolia.ui.form.field.definition.BasicTextCodeFieldDefinition;
@@ -46,12 +47,16 @@ import info.magnolia.ui.form.field.definition.TextFieldDefinition;
 import info.magnolia.ui.form.fieldType.registry.FieldTypeDefinitionRegistryTest.TestFieldTypeDefinitionProvider;
 import info.magnolia.ui.form.fieldtype.definition.ConfiguredFieldTypeDefinition;
 import info.magnolia.ui.form.fieldtype.registry.FieldTypeDefinitionRegistry;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 
 import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.ui.AbstractOrderedLayout;
+import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Field;
 
 /**
@@ -60,35 +65,111 @@ import com.vaadin.ui.Field;
 public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<SwitchableFieldDefinition> {
 
     private SwitchableFieldFactory<SwitchableFieldDefinition> factory;
+    private MockComponentProvider componentProvider;
+    private FieldFactoryFactory subfieldFactory;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
 
-        MockComponentProvider componentProvider = new MockComponentProvider();
-
+        componentProvider = new MockComponentProvider();
+        componentProvider.registerInstance(ComponentProvider.class, componentProvider);
         FieldTypeDefinitionRegistry fieldDefinitionRegistery = createFieldTypeRegistery();
-
-        FieldFactoryFactory fieldFactory = new FieldFactoryFactory(componentProvider, fieldDefinitionRegistery, null);
-
-
-        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, fieldFactory, i18nContentSupport, componentProvider);
-        factory.setComponentProvider(componentProvider);
+        subfieldFactory = new FieldFactoryFactory(componentProvider, fieldDefinitionRegistery, null);
     }
 
     @Test
     public void createFieldComponentTest() {
         // GIVEN
+        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, i18nContentSupport, componentProvider);
+        factory.setComponentProvider(componentProvider);
 
         // WHEN
-        Field field = factory.createField();
+        Field<PropertysetItem> field = factory.createField();
+
         // THEN
         assertNotNull(field);
         assertTrue(field instanceof SwitchableField);
     }
 
+    @Test
+    public void testSelectHasNoDefaultValueIfNotConfigured() {
+        // GIVEN
+        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, i18nContentSupport, componentProvider);
+        factory.setComponentProvider(componentProvider);
 
+        // WHEN
+        SwitchableField field = (SwitchableField) factory.createField();
+
+        // THEN
+        AbstractOrderedLayout layout = (AbstractOrderedLayout) field.iterator().next();
+        AbstractSelect select = (AbstractSelect) layout.iterator().next();
+        assertTrue(select.isNullSelectionAllowed());
+        assertNull(select.getValue());
+    }
+
+    @Test
+    public void testSelectHasDefaultValueIfConfigured() throws Exception {
+        // GIVEN
+        definition.getOptions().get(1).setSelected(true);
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
+        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, i18nContentSupport, componentProvider);
+        factory.setComponentProvider(componentProvider);
+
+        // WHEN
+        SwitchableField field = (SwitchableField) factory.createField();
+
+        // THEN
+        AbstractOrderedLayout layout = (AbstractOrderedLayout) field.iterator().next();
+        AbstractSelect select = (AbstractSelect) layout.iterator().next();
+        assertTrue(select.isNullSelectionAllowed());
+        assertEquals("code", select.getValue());
+    }
+
+    @Test
+    public void testSwitchingWritesToItem() throws Exception {
+        // GIVEN
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
+        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, i18nContentSupport, componentProvider);
+        factory.setComponentProvider(componentProvider);
+        SwitchableField field = (SwitchableField) factory.createField();
+        AbstractOrderedLayout layout = (AbstractOrderedLayout) field.iterator().next();
+        AbstractSelect select = (AbstractSelect) layout.iterator().next();
+        assertNull(baseItem.getItemProperty(propertyName));
+
+        // WHEN
+        select.setValue("text");
+        baseNode = ((JcrNewNodeAdapter) baseItem).applyChanges();
+
+        // THEN
+        assertEquals("text", baseItem.getItemProperty(propertyName).getValue());
+        assertEquals("text", baseNode.getProperty(propertyName).getString());
+        assertFalse(baseNode.hasProperty(propertyName + "text"));
+        assertFalse(baseNode.hasProperty(propertyName + "code"));
+    }
+
+    @Test
+    public void testSwitchingWritesToItemWithDefaultValue() throws Exception {
+        // GIVEN
+        definition.getFields().get(0).setDefaultValue("hop!");
+        baseItem = new JcrNewNodeAdapter(baseNode, baseNode.getPrimaryNodeType().getName());
+        factory = new SwitchableFieldFactory<SwitchableFieldDefinition>(definition, baseItem, subfieldFactory, i18nContentSupport, componentProvider);
+        factory.setComponentProvider(componentProvider);
+        SwitchableField field = (SwitchableField) factory.createField();
+        AbstractOrderedLayout layout = (AbstractOrderedLayout) field.iterator().next();
+        AbstractSelect select = (AbstractSelect) layout.iterator().next();
+
+        // WHEN
+        select.setValue("text");
+        baseNode = ((JcrNewNodeAdapter) baseItem).applyChanges();
+
+        // THEN
+        assertEquals("text", baseNode.getProperty(propertyName).getString());
+        assertTrue(baseNode.hasProperty(propertyName + "text"));
+        assertEquals("hop!", baseNode.getProperty(propertyName + "text").getString());
+        assertFalse(baseNode.hasProperty(propertyName + "code"));
+    }
 
     private FieldTypeDefinitionRegistry createFieldTypeRegistery() {
         FieldTypeDefinitionRegistry registery = new FieldTypeDefinitionRegistry();
@@ -116,11 +197,11 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         SwitchableFieldDefinition definition = new SwitchableFieldDefinition();
         definition = (SwitchableFieldDefinition) AbstractFieldFactoryTest.createConfiguredFieldDefinition(definition, propertyName);
         definition.setDefaultValue(null);
+
         // Define options
         SelectFieldOptionDefinition option1 = new SelectFieldOptionDefinition();
         option1.setLabel("Text");
         option1.setValue("text");
-        option1.setSelected(true);
         SelectFieldOptionDefinition option2 = new SelectFieldOptionDefinition();
         option2.setLabel("Code");
         option2.setValue("code");
@@ -128,6 +209,7 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         options.add(option1);
         options.add(option2);
         definition.setOptions(options);
+
         // Set fields
         TextFieldDefinition textFieldDefinition = new TextFieldDefinition();
         textFieldDefinition = (TextFieldDefinition) AbstractFieldFactoryTest.createConfiguredFieldDefinition(textFieldDefinition, propertyName);
@@ -138,8 +220,8 @@ public class SwitchableFieldFactoryTest extends AbstractFieldFactoryTestCase<Swi
         codeFieldDefinition.setName(propertyName);
         codeFieldDefinition.setName("code");
         ArrayList<ConfiguredFieldDefinition> fields = new ArrayList<ConfiguredFieldDefinition>();
-        fields.add(codeFieldDefinition);
         fields.add(textFieldDefinition);
+        fields.add(codeFieldDefinition);
         definition.setFields(fields);
 
         this.definition = definition;
