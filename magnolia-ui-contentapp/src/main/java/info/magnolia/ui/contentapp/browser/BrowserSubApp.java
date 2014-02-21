@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2012-2014 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -115,7 +115,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    private final BrowserPresenterBase browser;
+    private final BrowserPresenter browser;
     private final EventBus subAppEventBus;
     private ActionExecutor actionExecutor;
     private ComponentProvider componentProvider;
@@ -459,7 +459,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
         return true;
     }
 
-    protected final BrowserPresenterBase getBrowser() {
+    protected final BrowserPresenter getBrowser() {
         return browser;
     }
 
