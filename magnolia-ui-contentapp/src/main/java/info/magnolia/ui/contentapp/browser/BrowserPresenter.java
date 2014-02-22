@@ -50,7 +50,7 @@ import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.NullItem;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
 import info.magnolia.ui.workbench.dsmanager.DataSourceManagerProvider;
@@ -112,7 +112,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
     private final AppContext appContext;
 
-    protected DataSourceManager dsManager;
+    protected DataSource dataSource;
 
     private final ImageProvider imageProvider;
 
@@ -128,7 +128,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         this.actionbarPresenter = actionbarPresenter;
         this.appContext = subAppContext.getAppContext();
         this.subAppDescriptor = (BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor();
-        this.dsManager = dsManagerProvider.getDSManager();
+        this.dataSource = dsManagerProvider.getDSManager();
         ImageProviderDefinition imageProviderDefinition = ((BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor()).getImageProvider();
         if (imageProviderDefinition == null) {
             this.imageProvider = null;
@@ -237,7 +237,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
     }
 
     protected boolean verifyItemExists(Object itemId) {
-        return dsManager.itemExists(itemId);
+        return dataSource.itemExists(itemId);
     }
 
     public List<Object> getSelectedItemIds() {
@@ -391,7 +391,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
         for (Object itemId : ids) {
             if (!itemId.equals(itemIdToExclude)) {
-                items.add(dsManager.getItem(itemId));
+                items.add(dataSource.getItem(itemId));
             } else {
                 items.add(null);
             }

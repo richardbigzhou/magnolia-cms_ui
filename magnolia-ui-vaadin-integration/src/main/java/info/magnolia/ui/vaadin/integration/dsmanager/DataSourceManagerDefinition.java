@@ -34,9 +34,9 @@
 package info.magnolia.ui.vaadin.integration.dsmanager;
 
 /**
- * Defines {@link DataSourceManager}.
+ * Defines {@link DataSource}.
  */
 public interface DataSourceManagerDefinition {
 
-    Class<? extends DataSourceManager> getImplementationClass();
+    Class<? extends DataSource> getImplementationClass();
 }

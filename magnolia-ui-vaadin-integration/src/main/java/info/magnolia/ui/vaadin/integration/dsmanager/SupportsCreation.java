@@ -36,9 +36,9 @@ package info.magnolia.ui.vaadin.integration.dsmanager;
 import com.vaadin.data.Item;
 
 /**
- * Interface of {@link DataSourceManager} that supports creation of new items.
+ * Interface of {@link DataSource} that supports creation of new items.
  */
-public interface SupportsCreation extends DataSourceManager {
+public interface SupportsCreation extends DataSource {
 
     Item createNew(String newItemPath);
 

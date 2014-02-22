@@ -36,13 +36,9 @@ package info.magnolia.ui.vaadin.integration.dsmanager;
 import com.vaadin.data.Item;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 14/02/14
- * Time: 15:58
- * To change this template use File | Settings | File Templates.
+ * Allows to query the versions of an item.
  */
-public interface SupportsVersions extends DataSourceManager {
+public interface SupportsVersions extends DataSource {
 
     Item getItemVersion(Object itemId, String version);
 }

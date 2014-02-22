@@ -43,7 +43,7 @@ import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.contentapp.dsmanager.DataSourceManagerProviderImpl;
 import info.magnolia.ui.framework.app.BaseSubApp;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -81,7 +81,7 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
 
     private String caption;
 
-    private DataSourceManager dsManager;
+    private DataSource dataSource;
 
     @Inject
     protected DetailSubApp(final SubAppContext subAppContext, final ContentSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus adminCentralEventBus,
@@ -91,7 +91,7 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
         this.adminCentralEventBus = adminCentralEventBus;
         this.presenter = presenter;
         this.i18n = i18n;
-        this.dsManager = dsManagerProvider.getDSManager();
+        this.dataSource = dsManagerProvider.getDSManager();
         bindHandlers();
     }
 
@@ -110,13 +110,13 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
         super.start(detailLocation);
         // set caption
         setCaption(detailLocation);
-        this.itemId = dsManager.getItemIdFromPath(detailLocation.getNodePath());
+        this.itemId = dataSource.getItemIdFromPath(detailLocation.getNodePath());
 
         View view;
         if (detailLocation.hasVersion()) {
-            view = presenter.start(detailLocation.getNodePath(), detailLocation.getViewType(), dsManager, detailLocation.getVersion());
+            view = presenter.start(detailLocation.getNodePath(), detailLocation.getViewType(), dataSource, detailLocation.getVersion());
         } else {
-            view = presenter.start(detailLocation.getNodePath(), detailLocation.getViewType(), dsManager);
+            view = presenter.start(detailLocation.getNodePath(), detailLocation.getViewType(), dataSource);
         }
         getView().setContentView(view);
         return getView();
@@ -173,20 +173,20 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
                             splitIndex = 1;
                         }
                         String parentNodePath = currentNodePath.substring(0, splitIndex);
-                        Object parentItemId = dsManager.getItemIdFromPath(parentNodePath);
-                        if (!dsManager.itemExists(parentItemId)) {
+                        Object parentItemId = dataSource.getItemIdFromPath(parentNodePath);
+                        if (!dataSource.itemExists(parentItemId)) {
                             getSubAppContext().close();
                         }
                         // Editing existing item
                     } else {
                         // Item (or parent) was deleted: close subApp
-                        if (!dsManager.itemExists(itemId)) {
+                        if (!dataSource.itemExists(itemId)) {
                             getSubAppContext().close();
                         }
                         // Item still exists: update location if necessary
                         else {
                             String currentNodePath = getCurrentLocation().getNodePath();
-                            String itemPath = dsManager.getItemPath(itemId);
+                            String itemPath = dataSource.getItemPath(itemId);
                             if (!currentNodePath.equals(itemPath)) {
                                 DetailLocation location = DetailLocation.wrap(getSubAppContext().getLocation());
                                 location.updateNodePath(itemPath);

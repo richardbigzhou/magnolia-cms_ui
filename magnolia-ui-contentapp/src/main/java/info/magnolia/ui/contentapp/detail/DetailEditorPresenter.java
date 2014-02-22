@@ -44,7 +44,7 @@ import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
 import info.magnolia.ui.vaadin.integration.dsmanager.SupportsCreation;
 import info.magnolia.ui.vaadin.integration.dsmanager.SupportsVersions;
 
@@ -73,7 +73,7 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
     private final EditorDefinition editorDefinition;
     private final SimpleTranslator i18n;
     private String nodePath;
-    private DataSourceManager dsManager;
+    private DataSource dataSource;
     private Item item;
 
     @Inject
@@ -88,32 +88,32 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
         this.i18n = i18n;
     }
 
-    public View start(String nodePath, DetailView.ViewType viewType, DataSourceManager dsManager) {
+    public View start(String nodePath, DetailView.ViewType viewType, DataSource dataSource) {
 
-        return start(nodePath, viewType, dsManager, null);
+        return start(nodePath, viewType, dataSource, null);
     }
 
-    public View start(String nodePath, DetailView.ViewType viewType, DataSourceManager dsManager, String versionName) {
-        this.dsManager = dsManager;
+    public View start(String nodePath, DetailView.ViewType viewType, DataSource dataSource, String versionName) {
+        this.dataSource = dataSource;
         this.nodePath = nodePath;
         this.item = null;
 
         view.setListener(this);
-        Object itemId = dsManager.getItemIdFromPath(nodePath);
+        Object itemId = dataSource.getItemIdFromPath(nodePath);
 
 
-        if (dsManager.itemExists(itemId) /* && session.getNode(nodePath).getPrimaryNodeType().getName().equals(editorDefinition.getNodeType().getName())*/) {
-            if (StringUtils.isNotEmpty(versionName) && DetailView.ViewType.VIEW.equals(viewType) && dsManager instanceof SupportsVersions) {
-                item = ((SupportsVersions)dsManager).getItemVersion(itemId, versionName);
-            } else if (dsManager instanceof SupportsCreation) {
-                item = dsManager.getItem(itemId);
+        if (dataSource.itemExists(itemId) /* && session.getNode(nodePath).getPrimaryNodeType().getName().equals(editorDefinition.getNodeType().getName())*/) {
+            if (StringUtils.isNotEmpty(versionName) && DetailView.ViewType.VIEW.equals(viewType) && dataSource instanceof SupportsVersions) {
+                item = ((SupportsVersions)dataSource).getItemVersion(itemId, versionName);
+            } else if (dataSource instanceof SupportsCreation) {
+                item = dataSource.getItem(itemId);
             }
         } else {
-            if (dsManager instanceof SupportsCreation) {
+            if (dataSource instanceof SupportsCreation) {
                 /**
                  * TODO - consider passing parent's id.
                  */
-                item = ((SupportsCreation)dsManager).createNew(nodePath);
+                item = ((SupportsCreation)dataSource).createNew(nodePath);
             }
         }
 
@@ -129,7 +129,7 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
     }
 
     public View update(DetailLocation location) {
-        return this.start(location.getNodePath(), location.getViewType(), dsManager, location.getVersion());
+        return this.start(location.getNodePath(), location.getViewType(), dataSource, location.getVersion());
     }
 
     public String getNodePath() {

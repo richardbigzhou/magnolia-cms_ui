@@ -45,6 +45,6 @@ import info.magnolia.ui.vaadin.integration.dsmanager.ConfiguredDataSourceManager
 public class JcrDataSourceManagerDefinition extends ConfiguredDataSourceManagerDefinition {
 
     public JcrDataSourceManagerDefinition() {
-        setImplementationClass(JcrDataSourceManager.class);
+        setImplementationClass(JcrDataSource.class);
     }
 }

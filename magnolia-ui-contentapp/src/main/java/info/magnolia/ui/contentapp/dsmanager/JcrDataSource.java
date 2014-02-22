@@ -69,9 +69,9 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 
 /**
- * JCR-based implementation of {@link info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager}.
+ * JCR-based implementation of {@link info.magnolia.ui.vaadin.integration.dsmanager.DataSource}.
  */
-public class JcrDataSourceManager extends AbstractDataSourceManager implements SupportsVersions, SupportsCreation {
+public class JcrDataSource extends AbstractDataSource implements SupportsVersions, SupportsCreation {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -80,7 +80,7 @@ public class JcrDataSourceManager extends AbstractDataSourceManager implements S
     private VersionManager versionManager;
 
     @Inject
-    public JcrDataSourceManager(SubAppContext subAppContext, @Named(SubAppEventBus.NAME) EventBus eventBus, final VersionManager versionManager) {
+    public JcrDataSource(SubAppContext subAppContext, @Named(SubAppEventBus.NAME) EventBus eventBus, final VersionManager versionManager) {
         super(eventBus);
         this.subAppContext = subAppContext;
         this.versionManager = versionManager;

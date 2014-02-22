@@ -40,17 +40,17 @@ import com.vaadin.data.Item;
  * Simple component capable of serializing item id to string, fetching Vaadin {@link Item} by id
  * and vice versa.
  */
-public interface DataSourceManager {
+public interface DataSource {
 
     String getItemPath(Object itemId);
 
     Object getItemIdFromPath(String strPath);
 
-    Item getItem(Object itemId);
-
     Object getRootItemId();
 
-    boolean itemExists(Object itemId);
+    Item getItem(Object itemId);
 
     Container getContainerForViewType(String viewType);
+
+    boolean itemExists(Object itemId);
 }

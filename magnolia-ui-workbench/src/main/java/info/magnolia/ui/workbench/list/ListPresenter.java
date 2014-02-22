@@ -35,7 +35,7 @@ package info.magnolia.ui.workbench.list;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 
@@ -65,8 +65,8 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     }
 
     @Override
-    public ListView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName, DataSourceManager dsManager) {
-        super.start(workbench, eventBus, viewTypeName, dsManager);
+    public ListView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName, DataSource dataSource) {
+        super.start(workbench, eventBus, viewTypeName, dataSource);
 
         //this.container = createContainer(workbench);
         view.setListener(this);
