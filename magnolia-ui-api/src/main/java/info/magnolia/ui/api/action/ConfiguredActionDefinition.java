@@ -33,8 +33,11 @@
  */
 package info.magnolia.ui.api.action;
 
+import info.magnolia.jcr.node2bean.TransformedBy;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.AvailabilityTransformer;
 import info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition;
+import info.magnolia.ui.api.availability.VoterBasedAvailability;
 
 /**
  * Simple implementation of {@link ActionDefinition}.
@@ -51,6 +54,7 @@ public class ConfiguredActionDefinition implements ActionDefinition {
     private String successMessage;
     private String failureMessage;
     private String errorMessage;
+    private VoterBasedAvailability voterBasedAvailability = new VoterBasedAvailability();
 
     @Override
     public String getName() {
@@ -107,11 +111,16 @@ public class ConfiguredActionDefinition implements ActionDefinition {
     }
 
     @Override
-    public AvailabilityDefinition getAvailability() {
+    public AvailabilityDefinition getOldAvailability() {
         return availability;
     }
 
-    public void setAvailability(AvailabilityDefinition availability) {
+    @Override
+    public VoterBasedAvailability getAvailability() {
+        return this.voterBasedAvailability;
+    }
+
+    public void setOldAvailability(AvailabilityDefinition availability) {
         this.availability = availability;
     }
 
@@ -140,6 +149,11 @@ public class ConfiguredActionDefinition implements ActionDefinition {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    @TransformedBy(AvailabilityTransformer.class)
+    public void setAvailability(VoterBasedAvailability voterBasedAvailability) {
+        this.voterBasedAvailability = voterBasedAvailability;
     }
 }
 

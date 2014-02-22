@@ -33,16 +33,10 @@
  */
 package info.magnolia.ui.api.action;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.MgnlInstantiationException;
-import info.magnolia.ui.api.availability.AvailabilityDefinition;
-import info.magnolia.ui.api.availability.AvailabilityRule;
 
 import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 
@@ -55,8 +49,6 @@ import com.vaadin.data.Item;
  * @see ActionExecutor
  */
 public abstract class AbstractActionExecutor implements ActionExecutor {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private ComponentProvider componentProvider;
 
@@ -106,73 +98,11 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
     @Override
     public boolean isAvailable(String actionName, Item... items) {
 
-        // sanity check
-        if (items == null || items.length == 0) {
-            return false;
-        }
-
         ActionDefinition actionDefinition = getActionDefinition(actionName);
         if (actionDefinition == null) {
             return false;
         }
 
-        AvailabilityDefinition availability = actionDefinition.getAvailability();
-
-        // If a rule class is set, evaluate it first
-        if ((availability.getRuleClass() != null)) {
-            // if the rule class cannot be instantiated, or the rule returns false
-            AvailabilityRule rule = componentProvider.newInstance(availability.getRuleClass());
-            if (rule == null || !rule.isAvailable(items)) {
-                return false;
-            }
-        }
-
-        if (items.length > 1 && !availability.isMultiple()) {
-            return false;
-        }
-
-        // Validate that the user has all the required roles
-        if (!availability.getAccess().hasAccess(MgnlContext.getUser())) {
-            return false;
-        }
-
-        for (Item item : items) {
-            if (!isAvailableForItem(availability, item)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private boolean isAvailableForItem(AvailabilityDefinition availability, Item item) {
-
-
-        if (item == null) {
-            return availability.isRoot();
-        }
-        //TODO JCRFREE - resolve this  node/property logic
-//
-//        if (!item.isNode()) {
-//            return availability.isProperties();
-//        }
-
-        // Must have _any_ of the node types if any are specified, otherwise its available by default
-//        if (availability.getNodeTypes().isEmpty()) {
-//            return availability.isNodes();
-//        }
-//
-//        for (String nodeType : availability.getNodeTypes()) {
-//            try {
-//                if (NodeUtil.isNodeType(item, nodeType)) {
-//                    return true;
-//                }
-//            } catch (RepositoryException e) {
-//                log.error("Could not determine node type of node " + NodeUtil.getNodePathIfPossible((Node) item));
-//            }
-//        }
-//
-//        return false;
-        return true;
+        return actionDefinition.getAvailability().isAvailableForItems(items);
     }
 }

@@ -276,7 +276,7 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
         actionDefinition.setName("foobar");
-        ConfiguredAvailabilityDefinition restrictions = (ConfiguredAvailabilityDefinition) actionDefinition.getAvailability();
+        ConfiguredAvailabilityDefinition restrictions = (ConfiguredAvailabilityDefinition) actionDefinition.getOldAvailability();
         restrictions.setAccess(new ConfiguredAccessDefinition());
         restrictions.setRoot(true);
         actionExecutor.add(actionDefinition);
@@ -295,7 +295,7 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
         actionDefinition.setName("foobar");
-        ConfiguredAvailabilityDefinition restrictions = (ConfiguredAvailabilityDefinition) actionDefinition.getAvailability();
+        ConfiguredAvailabilityDefinition restrictions = (ConfiguredAvailabilityDefinition) actionDefinition.getOldAvailability();
         restrictions.setProperties(true);
         restrictions.setAccess(new ConfiguredAccessDefinition());
         actionExecutor.add(actionDefinition);
@@ -314,7 +314,7 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
         actionDefinition.setName("foobar");
-        ((ConfiguredAvailabilityDefinition) actionDefinition.getAvailability()).setAccess(new ConfiguredAccessDefinition());
+        ((ConfiguredAvailabilityDefinition) actionDefinition.getOldAvailability()).setAccess(new ConfiguredAccessDefinition());
         actionExecutor.add(actionDefinition);
 
         // THEN
@@ -331,7 +331,7 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
         actionDefinition.setName("foobar");
-        ConfiguredAvailabilityDefinition restrictions = (ConfiguredAvailabilityDefinition) actionDefinition.getAvailability();
+        ConfiguredAvailabilityDefinition restrictions = (ConfiguredAvailabilityDefinition) actionDefinition.getOldAvailability();
         restrictions.getNodeTypes().add(NodeTypes.Content.NAME);
         restrictions.setAccess(new ConfiguredAccessDefinition());
         actionExecutor.add(actionDefinition);
@@ -354,7 +354,7 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
         actionDefinition.setName("requiresTestRole");
-        ConfiguredAvailabilityDefinition availability = (ConfiguredAvailabilityDefinition) actionDefinition.getAvailability();
+        ConfiguredAvailabilityDefinition availability = (ConfiguredAvailabilityDefinition) actionDefinition.getOldAvailability();
         availability.setRoot(true);
         ConfiguredAccessDefinition access = new ConfiguredAccessDefinition();
         access.addRole("testRole");
@@ -363,7 +363,7 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
 
         ConfiguredActionDefinition actionDefinition2 = new ConfiguredActionDefinition();
         actionDefinition2.setName("requiresTestRole2");
-        availability = (ConfiguredAvailabilityDefinition) actionDefinition2.getAvailability();
+        availability = (ConfiguredAvailabilityDefinition) actionDefinition2.getOldAvailability();
         availability.setRoot(true);
         access = new ConfiguredAccessDefinition();
         access.addRole("testRole2");
@@ -397,7 +397,7 @@ public class AbstractActionExecutorTest extends MgnlTestCase {
         // WHEN
         ConfiguredActionDefinition actionDefinition = new ConfiguredActionDefinition();
         actionDefinition.setName("foobar");
-        ConfiguredAvailabilityDefinition availability = (ConfiguredAvailabilityDefinition) actionDefinition.getAvailability();
+        ConfiguredAvailabilityDefinition availability = (ConfiguredAvailabilityDefinition) actionDefinition.getOldAvailability();
         availability.setMultiple(true);
         actionExecutor.add(actionDefinition);
 

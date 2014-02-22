@@ -31,34 +31,51 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.availability;
+package info.magnolia.ui.api.availability.voters;
 
-import info.magnolia.objectfactory.Components;
-import info.magnolia.ui.api.app.AppContext;
-import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
-import info.magnolia.ui.contentapp.detail.DetailLocation;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import javax.inject.Inject;
+import java.util.Map;
+
+import javax.jcr.RepositoryException;
 
 import com.vaadin.data.Item;
 
 /**
- * Availability rule that checks if the current {@link DetailLocation} is versioned or not.
+ * Action availability voter which returns positive result in case action is capable
+ * of operating over any of the specified JCR node types.
  */
-public class IsNotVersionedDetailLocationRule extends AbstractAvailabilityRule {
+public class ActionAvailableForNodeTypesVoter extends AbstractActionAvailabilityVoter {
 
-    //private final AppContext appContext;
+    private Map<String, String> nodeTypes;
 
-    @Inject
-    public IsNotVersionedDetailLocationRule(/*AppContext appContext*/) {
-        //this.appContext = appContext;
+    public ActionAvailableForNodeTypesVoter(Map<String, String> nodeTypes) {
+        this.nodeTypes = nodeTypes;
     }
 
     @Override
     protected boolean isAvailableForItem(Item item) {
-        AppContext appContext = Components.getComponent(AppContext.class);
-        DetailLocation location = DetailLocation.wrap(appContext.getActiveSubAppContext().getLocation());
-        return !location.hasVersion();
-    }
+        // if no node type defined, then valid for all node types
+        if (nodeTypes.isEmpty()) {
+            return true;
+        }
 
+        if (item instanceof JcrNodeAdapter) {
+            // else the node must match at least one of the configured node types
+            for (String nodeType : nodeTypes.values()) {
+                try {
+                    if (NodeUtil.isNodeType(((JcrNodeAdapter) item).getJcrItem(), nodeType)) {
+                        return true;
+                    }
+                } catch (RepositoryException e) {
+                    continue;
+                }
+            }
+
+            return false;
+        }
+
+        return true;
+    }
 }

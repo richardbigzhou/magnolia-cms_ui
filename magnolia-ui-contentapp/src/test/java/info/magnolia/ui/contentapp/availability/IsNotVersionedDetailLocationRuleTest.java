@@ -85,7 +85,7 @@ public class IsNotVersionedDetailLocationRuleTest {
         DetailLocation detailLocation = new DetailLocation("testAppName", "testSubAppId", "testParameter");
         subAppContext.setLocation(detailLocation);
 
-        isNotVersionedDetailLocationRule = new IsNotVersionedDetailLocationRule(appContext);
+        isNotVersionedDetailLocationRule = new IsNotVersionedDetailLocationRule(/*appContext*/);
 
         // WHEN
         boolean isAvailable = isNotVersionedDetailLocationRule.isAvailable(nullItem);
@@ -102,7 +102,7 @@ public class IsNotVersionedDetailLocationRuleTest {
         DetailLocation detailLocation = new DetailLocation("testAppName", "testSubAppId", "/test:view:1.0");
         subAppContext.setLocation(detailLocation);
 
-        isNotVersionedDetailLocationRule = new IsNotVersionedDetailLocationRule(appContext);
+        isNotVersionedDetailLocationRule = new IsNotVersionedDetailLocationRule(/*appContext*/);
 
         // WHEN
         boolean isAvailable = isNotVersionedDetailLocationRule.isAvailable(nullItem);

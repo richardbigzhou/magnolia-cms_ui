@@ -379,11 +379,11 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
     protected List<Item> getSelectedItems() {
         List<Object> selectedItemIds = getSelectedItemIds();
-        if (selectedItemIds.size() > 1) {
+        //if (selectedItemIds.size() > 1) {
             return getItemsExceptOne(selectedItemIds, workbenchPresenter.resolveWorkbenchRoot());
-        } else {
-            return getItemsExceptOne(selectedItemIds, null);
-        }
+        //} else {
+          //  return getItemsExceptOne(selectedItemIds, null);
+        //}
     }
 
     public List<Item> getItemsExceptOne(List<Object> ids, Object itemIdToExclude) {
@@ -392,6 +392,8 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         for (Object itemId : ids) {
             if (!itemId.equals(itemIdToExclude)) {
                 items.add(dsManager.getItem(itemId));
+            } else {
+                items.add(null);
             }
         }
         return items;

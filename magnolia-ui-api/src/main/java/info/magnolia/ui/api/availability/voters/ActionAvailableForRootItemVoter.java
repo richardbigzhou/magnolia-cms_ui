@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,51 @@
  * intact.
  *
  */
-package info.magnolia.ui.actionbar.definition;
+package info.magnolia.ui.api.availability.voters;
 
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.i18nsystem.I18nText;
-import info.magnolia.ui.api.availability.AvailabilityDefinition;
-import info.magnolia.ui.api.availability.VoterBasedAvailability;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
-import java.util.List;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import com.vaadin.data.Item;
 
 /**
- * The definition for a section of the action bar, made of groups of actions.
+ * Action availability voter which returns positive result in case action is capable
+ * of operating over root JCR items.
  */
-@I18nable(keyGenerator = ActionbarSectionDefinitionKeyGenerator.class)
-public interface ActionbarSectionDefinition {
+public class ActionAvailableForRootItemVoter extends AbstractActionAvailabilityVoter {
 
-    String getName();
+    private boolean root;
 
-    @I18nText
-    String getLabel();
+    public ActionAvailableForRootItemVoter(Boolean isRoot) {
+        root = isRoot;
+    }
 
-    String getI18nBasename();
+    public ActionAvailableForRootItemVoter(String isRoot) {
+        this(Boolean.parseBoolean(isRoot));
+    }
 
-    /**
-     * Gets the groups within this section.
-     * 
-     * @return the list of groups
-     */
-    List<ActionbarGroupDefinition> getGroups();
+    private boolean isRoot(Object value) {
+        if (value instanceof JcrNodeAdapter) {
+            JcrNodeAdapter nodeAdapter = (JcrNodeAdapter)value;
+            Node node = nodeAdapter.getJcrItem();
+            try {
+                node.getParent();
+                return false;
+            } catch (RepositoryException e) {
+                return root;
+            }
 
-    AvailabilityDefinition getOldAvailability();
+        }
+        return false;
+    }
 
-    VoterBasedAvailability getAvailability();
+    @Override
+    protected boolean isAvailableForItem(Item item) {
+        if (item == null || isRoot(item)) {
+            return root;
+        }
+        return true;
+    }
 }
