@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,39 @@
  * intact.
  *
  */
-package info.magnolia.ui.actionbar.definition;
+package info.magnolia.ui.api.availability.voters;
 
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.i18nsystem.I18nText;
-import info.magnolia.ui.api.availability.AvailabilityDefinition;
-import info.magnolia.ui.api.availability.VoterBasedAvailability;
+import info.magnolia.objectfactory.Components;
+import info.magnolia.ui.api.availability.AvailabilityRule;
 
-import java.util.List;
+import com.vaadin.data.Item;
 
 /**
- * The definition for a section of the action bar, made of groups of actions.
+ * Action availability voter which returns positive result in case a specified {@link AvailabilityRule}
+ * holds for an item.
  */
-@I18nable(keyGenerator = ActionbarSectionDefinitionKeyGenerator.class)
-public interface ActionbarSectionDefinition {
+public class ActionAvailableForRuleVoter extends AbstractActionAvailabilityVoter {
 
-    String getName();
+    private AvailabilityRule rule;
 
-    @I18nText
-    String getLabel();
+    public ActionAvailableForRuleVoter(String ruleClassName) {
+        Class<? extends AvailabilityRule> ruleClass;
+        try {
+            ruleClass = (Class<? extends AvailabilityRule>) Class.forName(ruleClassName);
+            this.rule = Components.newInstance(ruleClass);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
-    String getI18nBasename();
-
-    /**
-     * Gets the groups within this section.
-     * 
-     * @return the list of groups
-     */
-    List<ActionbarGroupDefinition> getGroups();
-
-    AvailabilityDefinition getOldAvailability();
-
-    VoterBasedAvailability getAvailability();
+    @Override
+    protected boolean isAvailableForItem(Item item) {
+        boolean isApplicable;
+        if (item != null) {
+            isApplicable = rule.isAvailable(item);
+        } else {
+            isApplicable = rule.isAvailable(null);
+        }
+        return isApplicable;
+    }
 }

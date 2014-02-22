@@ -165,7 +165,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
         initActionbarGroupsAndSections();
         initSubAppComponents();
 
-        sectionToShow.setAvailability(sAvailabilityAlways);
+        sectionToShow.setOldAvailability(sAvailabilityAlways);
         initBrowser();
         subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider, null);
     }
@@ -374,11 +374,11 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
         actAlways = new ConfiguredActionDefinition();
         actAlways.setName(ALWAYS);
-        actAlways.setAvailability(availabilityAlways);
+        actAlways.setOldAvailability(availabilityAlways);
 
         actRootOnly = new ConfiguredActionDefinition();
         actRootOnly.setName(ROOT_ONLY);
-        actRootOnly.setAvailability(availabilityRootOnly);
+        actRootOnly.setOldAvailability(availabilityRootOnly);
 
         ConfiguredAccessDefinition access = new ConfiguredAccessDefinition();
         access.setRoles(Arrays.asList(REQUIRED_ROLE));

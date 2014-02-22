@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,36 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.actionbar.definition;
+package info.magnolia.ui.api.availability.voters;
 
-import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.i18nsystem.I18nText;
-import info.magnolia.ui.api.availability.AvailabilityDefinition;
-import info.magnolia.ui.api.availability.VoterBasedAvailability;
-
-import java.util.List;
+import com.vaadin.data.Item;
 
 /**
- * The definition for a section of the action bar, made of groups of actions.
+ * Action availability voter which returns positive result in case action is claimed to
+ * work with multiple items.
  */
-@I18nable(keyGenerator = ActionbarSectionDefinitionKeyGenerator.class)
-public interface ActionbarSectionDefinition {
+public class ActionAvailableForMultipleItemsVoter extends AbstractActionAvailabilityVoter {
 
-    String getName();
+    private boolean multipleAllowed;
 
-    @I18nText
-    String getLabel();
+    public ActionAvailableForMultipleItemsVoter(Boolean isMultipleAllowed) {
+        multipleAllowed = isMultipleAllowed;
+    }
 
-    String getI18nBasename();
+    public ActionAvailableForMultipleItemsVoter(String isMultipleAllowed) {
+        this(Boolean.parseBoolean(isMultipleAllowed));
+    }
 
-    /**
-     * Gets the groups within this section.
-     * 
-     * @return the list of groups
-     */
-    List<ActionbarGroupDefinition> getGroups();
-
-    AvailabilityDefinition getOldAvailability();
-
-    VoterBasedAvailability getAvailability();
+    @Override
+    protected boolean isAvailableForItem(Item item) {
+        return !isMultiple() || multipleAllowed;
+    }
 }

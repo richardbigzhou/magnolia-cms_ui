@@ -35,7 +35,6 @@ package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
-import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
@@ -47,20 +46,20 @@ import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
-import info.magnolia.ui.api.availability.AvailabilityRule;
+import info.magnolia.ui.api.availability.VoterBasedAvailability;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
 import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.dsmanager.DataSourceManagerProvider;
 import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
+import info.magnolia.voting.Voter;
+import info.magnolia.voting.Voting;
 
 import java.util.Arrays;
 import java.util.List;
@@ -68,8 +67,6 @@ import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -118,7 +115,6 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
     private final BrowserPresenter browser;
     private final EventBus subAppEventBus;
     private ActionExecutor actionExecutor;
-    private ComponentProvider componentProvider;
     protected DataSourceManager dsManager;
 
     @Inject
@@ -130,7 +126,6 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
         this.browser = browser;
         this.subAppEventBus = subAppEventBus;
         this.actionExecutor = actionExecutor;
-        this.componentProvider = componentProvider;
         this.dsManager = dsManagerProvider.getDSManager();
     }
 
@@ -145,7 +140,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
 
         // MGNLUI-1475: item might have not been found if path doesn't exist
         if (!dsManager.itemExists(actualItemId)) {
-            actualItemId = getRootItemId();
+            actualItemId = dsManager.getRootItemId();
             BrowserLocation newLocation = getCurrentLocation();
             newLocation.updateNodePath("/");
             getAppContext().updateSubAppLocation(getSubAppContext(), newLocation);
@@ -153,11 +148,6 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
 
         return actualItemId;
     }
-
-    protected Object getRootItemId() {
-        return browser.getWorkbenchPresenter().resolveWorkbenchRoot();
-    }
-
 
 
     protected void applySelectionToLocation(BrowserLocation location, Object selectedId) {
@@ -380,7 +370,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
     }
 
     private boolean isSectionVisible(ActionbarSectionDefinition section, List<Item> items) {
-        AvailabilityDefinition availability = section.getAvailability();
+        AvailabilityDefinition availability = section.getOldAvailability();
 
         // Validate that the user has all required roles - only once
         if (!availability.getAccess().hasAccess(MgnlContext.getUser())) {
@@ -400,63 +390,10 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
     }
 
     protected boolean isSectionVisible(ActionbarSectionDefinition section, Item item) {
-        AvailabilityDefinition availability = section.getAvailability();
-
-        // if a rule class is set, verify it first
-        if ((availability.getRuleClass() != null)) {
-            // if the rule class cannot be instantiated, or the rule returns false
-            AvailabilityRule rule = componentProvider.newInstance(availability.getRuleClass());
-            if (rule == null || !rule.isAvailable(item)) {
-                return false;
-            }
-        }
-
-        return verifyAvailability(item, availability);
-    }
-
-
-    /**
-     * TODO JCR-dependent logic is still here!
-     * @param item
-     * @param availability
-     * @return
-     */
-    protected boolean verifyAvailability(Item item, AvailabilityDefinition availability) {
-        if (item instanceof JcrItemAdapter) {
-            JcrItemAdapter jcrItemAdapter = (JcrItemAdapter)item;
-
-            // If its a property we display it only if the properties property is set
-            if (!jcrItemAdapter.isNode()) {
-                return availability.isProperties();
-            }
-
-            // If node is selected and the section is available for nodes
-            if (availability.isNodes()) {
-                // if no node type defined, the for all node types
-                if (availability.getNodeTypes().isEmpty()) {
-                    return true;
-                }
-                // else the node must match at least one of the configured node types
-                for (String nodeType : availability.getNodeTypes()) {
-                    try {
-                        if (NodeUtil.isNodeType((Node) jcrItemAdapter.getJcrItem(), nodeType)) {
-                            return true;
-                        }
-                    } catch (RepositoryException e) {
-                        continue;
-                    }
-                }
-
-            }
-
-        }
-
-        // If this is the root item we display the section only if the root property is set
-        if (item == null) {
-            return availability.isRoot();
-        }
-
-        return true;
+        VoterBasedAvailability availability = section.getAvailability();
+        List<Voter> voters = availability.getCriterias();
+        int score = Voting.AND.vote(voters.toArray(new Voter[voters.size()]), item);
+        return score > 0;
     }
 
     protected final BrowserPresenter getBrowser() {
@@ -549,10 +486,5 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
         getAppContext().updateSubAppLocation(getSubAppContext(), location);
         updateActionbar(actionbar);
 
-    }
-
-
-    protected WorkbenchDefinition getWorkbench() {
-        return ((BrowserSubAppDescriptor) getSubAppContext().getSubAppDescriptor()).getWorkbench();
     }
 }

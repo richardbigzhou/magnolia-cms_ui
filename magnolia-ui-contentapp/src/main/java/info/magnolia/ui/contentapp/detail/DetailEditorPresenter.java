@@ -110,13 +110,12 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
             }
         } else {
             if (dsManager instanceof SupportsCreation) {
+                /**
+                 * TODO - consider passing parent's id.
+                 */
                 item = ((SupportsCreation)dsManager).createNew(nodePath);
             }
         }
-//        } catch (RepositoryException e) {
-//            log.warn("Not able to create an Item based on the following path {} ", nodePath, e);
-//            throw new RuntimeException(e);
-//        }
 
         DetailView itemView = detailPresenter.start(editorDefinition, item, viewType, itemId);
 

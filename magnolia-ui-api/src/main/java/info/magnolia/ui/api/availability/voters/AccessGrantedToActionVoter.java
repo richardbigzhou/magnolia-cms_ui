@@ -31,34 +31,53 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.availability;
+package info.magnolia.ui.api.availability.voters;
 
-import info.magnolia.objectfactory.Components;
-import info.magnolia.ui.api.app.AppContext;
-import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
-import info.magnolia.ui.contentapp.detail.DetailLocation;
+import info.magnolia.cms.security.User;
+import info.magnolia.context.MgnlContext;
+import info.magnolia.voting.Voter;
 
-import javax.inject.Inject;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 
-import com.vaadin.data.Item;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
- * Availability rule that checks if the current {@link DetailLocation} is versioned or not.
+ * {@link Voter} implementation which returns positive result if current user obtains any of the
+ * specified roles.
  */
-public class IsNotVersionedDetailLocationRule extends AbstractAvailabilityRule {
+public class AccessGrantedToActionVoter implements Voter {
 
-    //private final AppContext appContext;
+    public static final String DEFAULT_SUPERUSER_ROLE = "superuser";
 
-    @Inject
-    public IsNotVersionedDetailLocationRule(/*AppContext appContext*/) {
-        //this.appContext = appContext;
+    public static final String ROLES = "roles";
+
+    private Collection<String> roles;
+
+    public AccessGrantedToActionVoter(Map<String, Object> accessParameters) {
+        if (accessParameters.containsKey(ROLES)) {
+            roles = ((Map<String, String>)accessParameters.get(ROLES)).values();
+        } else {
+            roles = Collections.EMPTY_LIST;
+        }
     }
 
     @Override
-    protected boolean isAvailableForItem(Item item) {
-        AppContext appContext = Components.getComponent(AppContext.class);
-        DetailLocation location = DetailLocation.wrap(appContext.getActiveSubAppContext().getLocation());
-        return !location.hasVersion();
+    public int vote(Object value) {
+        User user = MgnlContext.getUser();
+        // Validate that the user has all the required roles
+        Collection<String> userRoles = user.getAllRoles();
+
+        if (roles.isEmpty() || userRoles.contains(DEFAULT_SUPERUSER_ROLE) || CollectionUtils.containsAny(userRoles, roles)) {
+            return 1;
+        }
+
+        return 0;
     }
 
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

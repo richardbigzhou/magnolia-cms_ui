@@ -33,9 +33,10 @@
  */
 package info.magnolia.ui.api.action;
 
-import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.i18nsystem.I18nText;
+import info.magnolia.i18nsystem.I18nable;
 import info.magnolia.ui.api.availability.AvailabilityDefinition;
+import info.magnolia.ui.api.availability.VoterBasedAvailability;
 
 /**
  * Action definitions are used to configure actions in many parts of the UI. The definition holds a name which is used
@@ -72,5 +73,7 @@ public interface ActionDefinition {
 
     Class<? extends Action> getImplementationClass();
 
-    AvailabilityDefinition getAvailability();
+    AvailabilityDefinition getOldAvailability();
+
+    VoterBasedAvailability getAvailability();
 }
