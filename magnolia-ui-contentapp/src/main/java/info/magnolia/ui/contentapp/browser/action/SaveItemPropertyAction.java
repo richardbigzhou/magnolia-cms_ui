@@ -37,7 +37,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.ui.api.action.AbstractAction;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.app.SubAppEventBus;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
@@ -66,7 +66,7 @@ public class SaveItemPropertyAction extends AbstractAction<SaveItemPropertyActio
 
     private static final Logger log = LoggerFactory.getLogger(SaveItemPropertyAction.class);
     private final EventBus eventBus;
-    private final DataSourceManager dataSource;
+    private final DataSource dataSource;
     private final Object itemId;
     private final Object propertyId;
     private final Property<?> propertyDataSource;

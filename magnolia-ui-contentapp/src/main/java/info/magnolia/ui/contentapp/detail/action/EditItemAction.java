@@ -38,7 +38,7 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
 import info.magnolia.ui.workbench.dsmanager.DataSourceManagerProvider;
 
 import java.util.Iterator;
@@ -64,14 +64,14 @@ public class EditItemAction extends AbstractAction<EditItemActionDefinition> {
 
     private final LocationController locationController;
 
-    private DataSourceManager dsManager;
+    private DataSource dataSource;
 
     public EditItemAction(EditItemActionDefinition definition, Map<Object, Item> idToItem, Item nodeItemToEdit, LocationController locationController, DataSourceManagerProvider dsManagerProvider) {
         super(definition);
         this.idToItem = idToItem;
         this.nodeItemToEdit = nodeItemToEdit;
         this.locationController = locationController;
-        this.dsManager = dsManagerProvider.getDSManager();
+        this.dataSource = dsManagerProvider.getDSManager();
     }
 
     @Override
@@ -83,7 +83,7 @@ public class EditItemAction extends AbstractAction<EditItemActionDefinition> {
 //                        getPrimaryNodeType().getName());
 //                return;
 //            }
-            final String path = dsManager.getItemPath(getItemId(nodeItemToEdit));
+            final String path = dataSource.getItemPath(getItemId(nodeItemToEdit));
             DetailLocation location = new DetailLocation(getDefinition().getAppName(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path, "");
             locationController.goTo(location);
 

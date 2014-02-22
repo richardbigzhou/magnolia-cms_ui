@@ -51,7 +51,7 @@ import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
 import info.magnolia.ui.workbench.dsmanager.DataSourceManagerProvider;
 import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
@@ -115,7 +115,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
     private final BrowserPresenter browser;
     private final EventBus subAppEventBus;
     private ActionExecutor actionExecutor;
-    protected DataSourceManager dsManager;
+    protected DataSource dataSource;
 
     @Inject
     public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final ComponentProvider componentProvider, DataSourceManagerProvider dsManagerProvider) {
@@ -126,7 +126,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
         this.browser = browser;
         this.subAppEventBus = subAppEventBus;
         this.actionExecutor = actionExecutor;
-        this.dsManager = dsManagerProvider.getDSManager();
+        this.dataSource = dsManagerProvider.getDSManager();
     }
 
     @Override
@@ -136,11 +136,11 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
     }
 
     protected Object ensureLocationUpToDate(String urlFragmentPath) {
-        Object actualItemId = dsManager.getItemIdFromPath(urlFragmentPath);
+        Object actualItemId = dataSource.getItemIdFromPath(urlFragmentPath);
 
         // MGNLUI-1475: item might have not been found if path doesn't exist
-        if (!dsManager.itemExists(actualItemId)) {
-            actualItemId = dsManager.getRootItemId();
+        if (!dataSource.itemExists(actualItemId)) {
+            actualItemId = dataSource.getRootItemId();
             BrowserLocation newLocation = getCurrentLocation();
             newLocation.updateNodePath("/");
             getAppContext().updateSubAppLocation(getSubAppContext(), newLocation);
@@ -152,10 +152,10 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
 
     protected void applySelectionToLocation(BrowserLocation location, Object selectedId) {
         location.updateNodePath("");
-        if (!dsManager.itemExists(selectedId)) {
+        if (!dataSource.itemExists(selectedId)) {
             // nothing is selected at the moment
         } else {
-            location.updateNodePath(dsManager.getItemPath(selectedId));
+            location.updateNodePath(dataSource.getItemPath(selectedId));
         }
     }
 
@@ -201,7 +201,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
      * @see Location
      */
     protected void restoreBrowser(final BrowserLocation location) {
-        String workbenchRoot = dsManager.getItemPath(dsManager.getRootItemId());
+        String workbenchRoot = dataSource.getItemPath(dataSource.getRootItemId());
         String path = ("/".equals(workbenchRoot) ? "" : workbenchRoot) + location.getNodePath();
         String viewType = location.getViewType();
 

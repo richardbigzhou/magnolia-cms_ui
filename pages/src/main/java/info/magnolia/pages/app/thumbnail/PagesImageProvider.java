@@ -35,7 +35,7 @@ package info.magnolia.pages.app.thumbnail;
 
 import info.magnolia.ui.imageprovider.DefaultImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
 
 /**
  * PagesImageProvider.
@@ -45,8 +45,8 @@ public class PagesImageProvider extends DefaultImageProvider {
     /**
      * @param definition
      */
-    public PagesImageProvider(ImageProviderDefinition definition, DataSourceManager dataSourceManager) {
-        super(definition, dataSourceManager);
+    public PagesImageProvider(ImageProviderDefinition definition, DataSource dataSource) {
+        super(definition, dataSource);
     }
 
 }

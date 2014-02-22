@@ -37,7 +37,7 @@ import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.dsmanager.DataSourceManagerProvider;
@@ -86,14 +86,14 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
     private EventBus eventBus;
 
-    protected DataSourceManager dsManager;
+    protected DataSource dataSource;
 
     @Inject
     public WorkbenchPresenter(WorkbenchView view, ComponentProvider componentProvider, WorkbenchStatusBarPresenter statusBarPresenter, DataSourceManagerProvider dsManagerProvider) {
         this.view = view;
         this.componentProvider = componentProvider;
         this.statusBarPresenter = statusBarPresenter;
-        this.dsManager = dsManagerProvider.getDSManager();
+        this.dataSource = dsManagerProvider.getDSManager();
     }
 
     public WorkbenchView start(WorkbenchDefinition workbenchDefinition, ImageProviderDefinition imageProviderDefinition, EventBus eventBus) {
@@ -108,9 +108,9 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
             ContentPresenter presenter = null;
             Class<? extends ContentPresenter> presenterClass = presenterDefinition.getImplementationClass();
             if (presenterClass != null) {
-                presenter = newPresenterInstance(componentProvider, imageProviderDefinition, presenterClass, dsManager.getContainerForViewType(presenterDefinition.getViewType()));
+                presenter = newPresenterInstance(componentProvider, imageProviderDefinition, presenterClass, dataSource.getContainerForViewType(presenterDefinition.getViewType()));
                 contentPresenters.put(presenterDefinition.getViewType(), presenter);
-                ContentView contentView = presenter.start(workbenchDefinition, eventBus, presenterDefinition.getViewType(), dsManager);
+                ContentView contentView = presenter.start(workbenchDefinition, eventBus, presenterDefinition.getViewType(), dataSource);
 
                 if (presenterDefinition.isActive()) {
                     activePresenter = presenter;
@@ -140,7 +140,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     }
 
     public Object resolveWorkbenchRoot() {
-        return dsManager.getRootItemId();
+        return dataSource.getRootItemId();
     }
 
     protected void sanityCheck(WorkbenchDefinition workbenchDefinition) {
@@ -227,7 +227,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         final List<Object> selectedIds = filterExistingItems(itemIds);
         // restore selection
         if (selectedIds.isEmpty()) {
-            Object workbenchRootItemId = dsManager.getItemIdFromPath(getWorkbenchDefinition().getPath());
+            Object workbenchRootItemId = dataSource.getItemIdFromPath(getWorkbenchDefinition().getPath());
             selectedIds.add(workbenchRootItemId);
         }
 
@@ -242,7 +242,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         Iterator<Object> it = itemIds.iterator();
         while (it.hasNext()) {
             Object itemId = it.next();
-            if (dsManager.itemExists(itemId)) {
+            if (dataSource.itemExists(itemId)) {
                 filteredIds.add(itemId);
             } else {
                 WorkbenchDefinition def = getWorkbenchDefinition();

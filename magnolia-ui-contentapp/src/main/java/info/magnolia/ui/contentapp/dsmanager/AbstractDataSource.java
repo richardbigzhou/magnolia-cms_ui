@@ -34,7 +34,7 @@
 package info.magnolia.ui.contentapp.dsmanager;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 
 import java.util.HashMap;
@@ -43,13 +43,13 @@ import java.util.Map;
 import com.vaadin.data.Container;
 
 /**
- * Abstract implementation of {@link DataSourceManager}.
+ * Abstract implementation of {@link info.magnolia.ui.vaadin.integration.dsmanager.DataSource}.
  */
-public abstract class AbstractDataSourceManager implements DataSourceManager, ViewTypeChangedEvent.Handler {
+public abstract class AbstractDataSource implements DataSource, ViewTypeChangedEvent.Handler {
 
     private Map<String, Container> subAppContainers = new HashMap<String, Container>();
 
-    protected AbstractDataSourceManager(EventBus subAppEventEventBus) {
+    protected AbstractDataSource(EventBus subAppEventEventBus) {
         subAppEventEventBus.addHandler(ViewTypeChangedEvent.class, this);
     }
 
