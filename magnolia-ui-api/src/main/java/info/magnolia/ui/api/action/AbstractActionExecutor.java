@@ -35,16 +35,8 @@ package info.magnolia.ui.api.action;
 
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.objectfactory.MgnlInstantiationException;
-import info.magnolia.ui.api.availability.VoterBasedAvailability;
-import info.magnolia.voting.Voter;
-import info.magnolia.voting.Voting;
-
-import java.util.List;
 
 import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 
@@ -57,8 +49,6 @@ import com.vaadin.data.Item;
  * @see ActionExecutor
  */
 public abstract class AbstractActionExecutor implements ActionExecutor {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private ComponentProvider componentProvider;
 
@@ -113,11 +103,6 @@ public abstract class AbstractActionExecutor implements ActionExecutor {
             return false;
         }
 
-        VoterBasedAvailability availability = actionDefinition.getAvailability();
-
-        List<Voter> criterias = availability.getCriterias();
-        int score = Voting.AND.vote(criterias.toArray(new Voter[criterias.size()]), items);
-
-        return score > 0;
+        return actionDefinition.getAvailability().isAvailableForItems(items);
     }
 }

@@ -42,10 +42,13 @@ import info.magnolia.ui.api.availability.voters.ActionAvailableForRootItemVoter;
 import info.magnolia.ui.api.availability.voters.ActionAvailableForRuleVoter;
 import info.magnolia.ui.api.availability.voters.AlwaysTrueAvailabilityRule;
 import info.magnolia.voting.Voter;
+import info.magnolia.voting.Voting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import com.vaadin.data.Item;
 
 /**
  * Availability definition based on {@link Voter} objects.
@@ -78,4 +81,12 @@ public class VoterBasedAvailability {
         this.criterias.add(voter);
     }
 
+    public boolean isAvailableForItems(List<Item> items) {
+        return isAvailableForItems(items.toArray(new Item[items.size()]));
+    }
+
+    public boolean isAvailableForItems(Item[] items) {
+        final Voter[] voters = criterias.toArray(new Voter[criterias.size()]);
+        return Voting.AND.vote(voters, items) > 0;
+    }
 }

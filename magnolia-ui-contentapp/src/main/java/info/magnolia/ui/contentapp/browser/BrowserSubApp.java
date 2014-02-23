@@ -33,7 +33,6 @@
  */
 package info.magnolia.ui.contentapp.browser;
 
-import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
@@ -44,8 +43,6 @@ import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutor;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppEventBus;
-import info.magnolia.ui.api.availability.AvailabilityDefinition;
-import info.magnolia.ui.api.availability.VoterBasedAvailability;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
@@ -56,8 +53,6 @@ import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
 import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
-import info.magnolia.voting.Voter;
-import info.magnolia.voting.Voting;
 
 import java.util.Arrays;
 import java.util.List;
@@ -356,7 +351,6 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
                 }
             }
         }
-
     }
 
     private ActionbarSectionDefinition getVisibleSection(List<ActionbarSectionDefinition> sections, List<Item> items) {
@@ -368,30 +362,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
     }
 
     private boolean isSectionVisible(ActionbarSectionDefinition section, List<Item> items) {
-        AvailabilityDefinition availability = section.getOldAvailability();
-
-        // Validate that the user has all required roles - only once
-        if (!availability.getAccess().hasAccess(MgnlContext.getUser())) {
-            return false;
-        }
-
-        if (items != null) {
-            // section must be visible for all items
-            for (Item item : items) {
-                if (!isSectionVisible(section, item)) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    protected boolean isSectionVisible(ActionbarSectionDefinition section, Item item) {
-        VoterBasedAvailability availability = section.getAvailability();
-        List<Voter> voters = availability.getCriterias();
-        int score = Voting.AND.vote(voters.toArray(new Voter[voters.size()]), item);
-        return score > 0;
+        return section.getAvailability().isAvailableForItems(items);
     }
 
     protected final BrowserPresenter getBrowser() {
