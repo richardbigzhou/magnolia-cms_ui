@@ -56,8 +56,8 @@
   <components>
     <id>subapp</id>
     <component>
-      <type>info.magnolia.ui.vaadin.integration.dsmanager.DataSource</type>
-      <provider>info.magnolia.ui.contentapp.dsmanager.DataSourceProvider</provider>
+      <type>info.magnolia.ui.vaadin.integration.datasource.DataSource</type>
+      <provider>info.magnolia.ui.contentapp.datasource.DataSourceProvider</provider>
       <scope>singleton</scope>
     </component>
 

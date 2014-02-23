@@ -31,26 +31,43 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.dsmanager;
+package info.magnolia.ui.contentapp.datasource;
+
+import info.magnolia.event.EventBus;
+import info.magnolia.ui.vaadin.integration.datasource.DataSource;
+import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import com.vaadin.data.Container;
-import com.vaadin.data.Item;
 
 /**
- * Simple component capable of serializing item id to string, fetching Vaadin {@link Item} by id
- * and vice versa.
+ * Abstract implementation of {@link info.magnolia.ui.vaadin.integration.datasource.DataSource}.
  */
-public interface DataSource {
+public abstract class AbstractDataSource implements DataSource, ViewTypeChangedEvent.Handler {
 
-    String getItemPath(Object itemId);
+    private Map<String, Container> subAppContainers = new HashMap<String, Container>();
 
-    Object getItemIdFromPath(String strPath);
+    protected AbstractDataSource(EventBus subAppEventEventBus) {
+        subAppEventEventBus.addHandler(ViewTypeChangedEvent.class, this);
+    }
 
-    Object getRootItemId();
+    public void registerContentView(String contentViewId, Container container) {
+        subAppContainers.put(contentViewId, container);
+    }
 
-    Item getItem(Object itemId);
+    @Override
+    public Container getContainerForViewType(String contentViewId) {
+        return subAppContainers.get(contentViewId);
+    }
 
-    Container getContainerForViewType(String viewType);
+    @Override
+    public void onViewChanged(ViewTypeChangedEvent event) {
+        doOnViewChanged(event.getViewType());
+    }
 
-    boolean itemExists(Object itemId);
+    protected void doOnViewChanged(String viewType) {
+
+    }
 }

@@ -47,7 +47,7 @@ import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
+import info.magnolia.ui.vaadin.integration.datasource.DataSource;
 import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;

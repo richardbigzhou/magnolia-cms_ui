@@ -44,9 +44,9 @@ import info.magnolia.ui.api.message.Message;
 import info.magnolia.ui.api.message.MessageType;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.definition.EditorDefinition;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
-import info.magnolia.ui.vaadin.integration.dsmanager.SupportsCreation;
-import info.magnolia.ui.vaadin.integration.dsmanager.SupportsVersions;
+import info.magnolia.ui.vaadin.integration.datasource.DataSource;
+import info.magnolia.ui.vaadin.integration.datasource.SupportsCreation;
+import info.magnolia.ui.vaadin.integration.datasource.SupportsVersions;
 
 import javax.inject.Inject;
 

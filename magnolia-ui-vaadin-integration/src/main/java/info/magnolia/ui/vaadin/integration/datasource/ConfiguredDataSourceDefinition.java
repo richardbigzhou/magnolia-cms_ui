@@ -31,20 +31,21 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.dsmanager;
-
-import info.magnolia.ui.vaadin.integration.dsmanager.ConfiguredDataSourceManagerDefinition;
+package info.magnolia.ui.vaadin.integration.datasource;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 16/02/14
- * Time: 19:36
- * To change this template use File | Settings | File Templates.
+ * Defines {@link DataSource}.
  */
-public class JcrDataSourceManagerDefinition extends ConfiguredDataSourceManagerDefinition {
+public class ConfiguredDataSourceDefinition implements DataSourceDefinition {
 
-    public JcrDataSourceManagerDefinition() {
-        setImplementationClass(JcrDataSource.class);
+    private Class<? extends DataSource> implementationClass;
+
+    @Override
+    public Class<? extends DataSource> getImplementationClass() {
+        return implementationClass;
+    }
+
+    public void setImplementationClass(Class<? extends DataSource> implementationClass) {
+        this.implementationClass = implementationClass;
     }
 }

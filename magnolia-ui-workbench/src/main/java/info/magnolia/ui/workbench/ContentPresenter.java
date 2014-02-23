@@ -34,7 +34,7 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
+import info.magnolia.ui.vaadin.integration.datasource.DataSource;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.util.List;

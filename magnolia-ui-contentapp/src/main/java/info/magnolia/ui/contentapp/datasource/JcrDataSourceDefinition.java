@@ -31,14 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.dsmanager;
+package info.magnolia.ui.contentapp.datasource;
 
-import com.vaadin.data.Item;
+import info.magnolia.ui.vaadin.integration.datasource.ConfiguredDataSourceDefinition;
 
 /**
- * Allows to query the versions of an item.
+ * Created with IntelliJ IDEA.
+ * User: sasha
+ * Date: 16/02/14
+ * Time: 19:36
+ * To change this template use File | Settings | File Templates.
  */
-public interface SupportsVersions extends DataSource {
+public class JcrDataSourceDefinition extends ConfiguredDataSourceDefinition {
 
-    Item getItemVersion(Object itemId, String version);
+    public JcrDataSourceDefinition() {
+        setImplementationClass(JcrDataSource.class);
+    }
 }

@@ -35,7 +35,7 @@ package info.magnolia.pages.app.thumbnail;
 
 import info.magnolia.ui.imageprovider.DefaultImageProvider;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
+import info.magnolia.ui.vaadin.integration.datasource.DataSource;
 
 /**
  * PagesImageProvider.

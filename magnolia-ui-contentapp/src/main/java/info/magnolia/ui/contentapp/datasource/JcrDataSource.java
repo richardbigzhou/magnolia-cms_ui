@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.dsmanager;
+package info.magnolia.ui.contentapp.datasource;
 
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.event.EventBus;
@@ -42,8 +42,8 @@ import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
-import info.magnolia.ui.vaadin.integration.dsmanager.SupportsCreation;
-import info.magnolia.ui.vaadin.integration.dsmanager.SupportsVersions;
+import info.magnolia.ui.vaadin.integration.datasource.SupportsCreation;
+import info.magnolia.ui.vaadin.integration.datasource.SupportsVersions;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
@@ -69,7 +69,7 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 
 /**
- * JCR-based implementation of {@link info.magnolia.ui.vaadin.integration.dsmanager.DataSource}.
+ * JCR-based implementation of {@link info.magnolia.ui.vaadin.integration.datasource.DataSource}.
  */
 public class JcrDataSource extends AbstractDataSource implements SupportsVersions, SupportsCreation {
 

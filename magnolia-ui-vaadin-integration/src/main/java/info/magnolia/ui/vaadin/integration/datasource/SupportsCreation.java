@@ -31,21 +31,15 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.dsmanager;
+package info.magnolia.ui.vaadin.integration.datasource;
+
+import com.vaadin.data.Item;
 
 /**
- * Defines {@link DataSource}.
+ * Interface of {@link DataSource} that supports creation of new items.
  */
-public class ConfiguredDataSourceManagerDefinition implements DataSourceManagerDefinition {
+public interface SupportsCreation extends DataSource {
 
-    private Class<? extends DataSource> implementationClass;
+    Item createNew(String newItemPath);
 
-    @Override
-    public Class<? extends DataSource> getImplementationClass() {
-        return implementationClass;
-    }
-
-    public void setImplementationClass(Class<? extends DataSource> implementationClass) {
-        this.implementationClass = implementationClass;
-    }
 }
