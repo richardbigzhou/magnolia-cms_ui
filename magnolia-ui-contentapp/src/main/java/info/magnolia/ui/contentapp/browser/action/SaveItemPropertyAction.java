@@ -41,7 +41,6 @@ import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
-import info.magnolia.ui.workbench.dsmanager.DataSourceManagerProvider;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import java.util.Arrays;
@@ -72,10 +71,10 @@ public class SaveItemPropertyAction extends AbstractAction<SaveItemPropertyActio
     private final Property<?> propertyDataSource;
 
     @Inject
-    public SaveItemPropertyAction(SaveItemPropertyActionDefinition definition, @Named(SubAppEventBus.NAME) EventBus eventBus, DataSourceManagerProvider dataSourceProvider, Object... args) {
+    public SaveItemPropertyAction(SaveItemPropertyActionDefinition definition, @Named(SubAppEventBus.NAME) EventBus eventBus, DataSource dataSource, Object... args) {
         super(definition);
         this.eventBus = eventBus;
-        this.dataSource = dataSourceProvider.getDSManager();
+        this.dataSource = dataSource;
         this.itemId = ((Set<Object>) args[0]).iterator().next();
         this.propertyId = args[1];
         this.propertyDataSource = (Property<?>) args[2];

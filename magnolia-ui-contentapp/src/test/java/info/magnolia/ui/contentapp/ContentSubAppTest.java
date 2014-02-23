@@ -88,7 +88,7 @@ public class ContentSubAppTest {
         public int foo = 0;
 
         public DummyContentSubApp(ActionExecutor actionExecutor, SubAppContext subAppContext, ContentSubAppView view, BrowserPresenter workbench, EventBus subAppEventBus) {
-            super(actionExecutor, subAppContext, view, workbench, subAppEventBus, componentProvider, null);
+            super(actionExecutor, subAppContext, view, workbench, subAppEventBus, null);
         }
 
         @Override

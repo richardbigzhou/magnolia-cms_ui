@@ -35,7 +35,6 @@ package info.magnolia.ui.contentapp.browser;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.event.EventBus;
-import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.actionbar.definition.ActionbarDefinition;
 import info.magnolia.ui.actionbar.definition.ActionbarGroupDefinition;
@@ -52,7 +51,6 @@ import info.magnolia.ui.contentapp.ContentSubAppView;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.vaadin.actionbar.ActionPopup;
 import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
-import info.magnolia.ui.workbench.dsmanager.DataSourceManagerProvider;
 import info.magnolia.ui.workbench.event.ItemRightClickedEvent;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
@@ -118,7 +116,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
     protected DataSource dataSource;
 
     @Inject
-    public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, final ComponentProvider componentProvider, DataSourceManagerProvider dsManagerProvider) {
+    public BrowserSubApp(ActionExecutor actionExecutor, final SubAppContext subAppContext, final ContentSubAppView view, final BrowserPresenter browser, final @Named(SubAppEventBus.NAME) EventBus subAppEventBus, DataSource dataSource) {
         super(subAppContext, view);
         if (subAppContext == null || view == null || browser == null || subAppEventBus == null) {
             throw new IllegalArgumentException("Constructor does not allow for null args. Found SubAppContext = " + subAppContext + ", ContentSubAppView = " + view + ", BrowserPresenter = " + browser + ", EventBus = " + subAppEventBus);
@@ -126,7 +124,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
         this.browser = browser;
         this.subAppEventBus = subAppEventBus;
         this.actionExecutor = actionExecutor;
-        this.dataSource = dsManagerProvider.getDSManager();
+        this.dataSource = dataSource;
     }
 
     @Override

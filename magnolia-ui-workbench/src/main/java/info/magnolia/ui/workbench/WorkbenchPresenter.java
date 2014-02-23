@@ -40,7 +40,6 @@ import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.dsmanager.DataSourceManagerProvider;
 import info.magnolia.ui.workbench.event.SearchEvent;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
@@ -55,7 +54,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 
 import javax.inject.Inject;
 
@@ -89,11 +87,11 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     protected DataSource dataSource;
 
     @Inject
-    public WorkbenchPresenter(WorkbenchView view, ComponentProvider componentProvider, WorkbenchStatusBarPresenter statusBarPresenter, DataSourceManagerProvider dsManagerProvider) {
+    public WorkbenchPresenter(WorkbenchView view, ComponentProvider componentProvider, WorkbenchStatusBarPresenter statusBarPresenter, DataSource dataSource) {
         this.view = view;
         this.componentProvider = componentProvider;
         this.statusBarPresenter = statusBarPresenter;
-        this.dataSource = dsManagerProvider.getDSManager();
+        this.dataSource = dataSource;
     }
 
     public WorkbenchView start(WorkbenchDefinition workbenchDefinition, ImageProviderDefinition imageProviderDefinition, EventBus eventBus) {

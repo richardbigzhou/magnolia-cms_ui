@@ -39,45 +39,44 @@ import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.contentapp.definition.ContentSubAppDescriptor;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
 import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManagerDefinition;
-import info.magnolia.ui.workbench.dsmanager.DataSourceManagerProvider;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
 /**
- * Provides {@link DataSourceManager} to the apps. This class exists as a workaround - the process of app
- * {@link ComponentProvider} creation is hard to break in without major changes.
+ * Provides {@link info.magnolia.ui.vaadin.integration.dsmanager.DataSource} to the sub-apps.
  */
 @Singleton
-public class DataSourceManagerProviderImpl implements DataSourceManagerProvider {
+public class DataSourceProvider implements Provider<DataSource> {
 
-    private DataSourceManager manager;
-
-    private SubAppContext ctx;
     private ComponentProvider provider;
+
     private EventBus subAppEventBus;
 
+    private DataSource dataSource;
+
+    private SubAppContext ctx;
+
     @Inject
-    public DataSourceManagerProviderImpl(SubAppContext ctx, final ComponentProvider provider, @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
+    public DataSourceProvider(SubAppContext ctx, final ComponentProvider provider, @Named(SubAppEventBus.NAME) EventBus subAppEventBus) {
         this.ctx = ctx;
         this.provider = provider;
         this.subAppEventBus = subAppEventBus;
     }
 
     @Override
-    public DataSourceManager getDSManager() {
-        if (manager == null) {
+    public DataSource get() {
+        if (dataSource == null) {
             SubAppDescriptor subAppDescriptor = ctx.getSubAppDescriptor();
             if (subAppDescriptor instanceof ContentSubAppDescriptor) {
                 DataSourceManagerDefinition dsManagerDefinition = ((ContentSubAppDescriptor)subAppDescriptor).getDataSourceManager();
-                manager = provider.newInstance(dsManagerDefinition.getImplementationClass(), ctx, subAppEventBus, dsManagerDefinition);
+                dataSource = provider.newInstance(dsManagerDefinition.getImplementationClass(), ctx, subAppEventBus, dsManagerDefinition);
             }
         }
-        return manager;
+        return dataSource;
     }
-
-
 }

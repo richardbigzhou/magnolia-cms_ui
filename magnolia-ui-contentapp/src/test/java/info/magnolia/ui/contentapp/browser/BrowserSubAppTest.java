@@ -167,7 +167,7 @@ public class BrowserSubAppTest extends MgnlTestCase {
 
         sectionToShow.setOldAvailability(sAvailabilityAlways);
         initBrowser();
-        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, componentProvider, null);
+        subApp = new BrowserSubApp(actionExecutor, subAppContext, view, browserPresenter, subAppEventBus, null);
     }
 
     @Test
