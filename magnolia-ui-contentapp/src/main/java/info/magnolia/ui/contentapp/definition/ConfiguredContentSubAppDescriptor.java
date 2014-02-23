@@ -50,10 +50,10 @@ public class ConfiguredContentSubAppDescriptor extends ConfiguredSubAppDescripto
 
     private ImageProviderDefinition imageProvider;
 
-    private DataSourceDefinition dataSourceManager;
+    private DataSourceDefinition dataSource;
 
     public ConfiguredContentSubAppDescriptor() {
-        setDataSourceManager(new JcrDataSourceDefinition());
+        setDataSource(new JcrDataSourceDefinition());
     }
 
     @Override
@@ -72,14 +72,14 @@ public class ConfiguredContentSubAppDescriptor extends ConfiguredSubAppDescripto
 
     @Override
     public DataSourceDefinition getDataSource() {
-        return dataSourceManager;
+        return dataSource;
     }
 
     public void setImageProvider(ImageProviderDefinition imageProvider) {
         this.imageProvider = imageProvider;
     }
 
-    public void setDataSourceManager(DataSourceDefinition dataSourceManager) {
-        this.dataSourceManager = dataSourceManager;
+    public void setDataSource(DataSourceDefinition dataSource) {
+        this.dataSource = dataSource;
     }
 }
