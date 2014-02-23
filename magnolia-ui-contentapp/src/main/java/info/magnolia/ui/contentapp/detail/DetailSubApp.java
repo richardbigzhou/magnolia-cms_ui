@@ -41,7 +41,6 @@ import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.api.location.Location;
 import info.magnolia.ui.api.view.View;
 import info.magnolia.ui.contentapp.ContentSubAppView;
-import info.magnolia.ui.contentapp.dsmanager.DataSourceManagerProviderImpl;
 import info.magnolia.ui.framework.app.BaseSubApp;
 import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
 
@@ -85,13 +84,13 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
 
     @Inject
     protected DetailSubApp(final SubAppContext subAppContext, final ContentSubAppView view, @Named(AdmincentralEventBus.NAME) EventBus adminCentralEventBus,
-            DetailEditorPresenter presenter, SimpleTranslator i18n, DataSourceManagerProviderImpl dsManagerProvider) {
+            DetailEditorPresenter presenter, SimpleTranslator i18n, DataSource dataSource) {
         super(subAppContext, view);
 
         this.adminCentralEventBus = adminCentralEventBus;
         this.presenter = presenter;
         this.i18n = i18n;
-        this.dataSource = dsManagerProvider.getDSManager();
+        this.dataSource = dataSource;
         bindHandlers();
     }
 

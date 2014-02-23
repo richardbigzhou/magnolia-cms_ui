@@ -53,7 +53,6 @@ import info.magnolia.ui.vaadin.integration.NullItem;
 import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
 import info.magnolia.ui.workbench.WorkbenchPresenter;
 import info.magnolia.ui.workbench.WorkbenchView;
-import info.magnolia.ui.workbench.dsmanager.DataSourceManagerProvider;
 import info.magnolia.ui.workbench.event.ActionEvent;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
 import info.magnolia.ui.workbench.event.ItemShortcutKeyEvent;
@@ -119,7 +118,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
     @Inject
     public BrowserPresenter(final ActionExecutor actionExecutor, final SubAppContext subAppContext, final BrowserView view, @Named(AdmincentralEventBus.NAME) final EventBus admincentralEventBus,
                                 final @Named(SubAppEventBus.NAME) EventBus subAppEventBus,
-                                final ActionbarPresenter actionbarPresenter, WorkbenchPresenter workbenchPresenter, DataSourceManagerProvider dsManagerProvider, ComponentProvider componentProvider) {
+                                final ActionbarPresenter actionbarPresenter, WorkbenchPresenter workbenchPresenter, DataSource dataSource, ComponentProvider componentProvider) {
         this.workbenchPresenter = workbenchPresenter;
         this.actionExecutor = actionExecutor;
         this.view = view;
@@ -128,12 +127,12 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         this.actionbarPresenter = actionbarPresenter;
         this.appContext = subAppContext.getAppContext();
         this.subAppDescriptor = (BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor();
-        this.dataSource = dsManagerProvider.getDSManager();
+        this.dataSource = dataSource;
         ImageProviderDefinition imageProviderDefinition = ((BrowserSubAppDescriptor) subAppContext.getSubAppDescriptor()).getImageProvider();
         if (imageProviderDefinition == null) {
             this.imageProvider = null;
         } else {
-            this.imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition, dsManagerProvider.getDSManager());
+            this.imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition, dataSource);
         }
     }
 
