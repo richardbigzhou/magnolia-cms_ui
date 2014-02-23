@@ -35,7 +35,7 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
+import info.magnolia.ui.vaadin.integration.datasource.DataSource;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;

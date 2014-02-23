@@ -38,7 +38,7 @@ import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.location.LocationController;
 import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailView;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
+import info.magnolia.ui.vaadin.integration.datasource.DataSource;
 
 import java.util.Iterator;
 import java.util.Map;

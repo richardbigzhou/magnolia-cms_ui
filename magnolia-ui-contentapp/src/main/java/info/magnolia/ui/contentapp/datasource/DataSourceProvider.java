@@ -31,7 +31,7 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp.dsmanager;
+package info.magnolia.ui.contentapp.datasource;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
@@ -39,8 +39,8 @@ import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.app.SubAppEventBus;
 import info.magnolia.ui.contentapp.definition.ContentSubAppDescriptor;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManagerDefinition;
+import info.magnolia.ui.vaadin.integration.datasource.DataSource;
+import info.magnolia.ui.vaadin.integration.datasource.DataSourceDefinition;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -48,7 +48,7 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 /**
- * Provides {@link info.magnolia.ui.vaadin.integration.dsmanager.DataSource} to the sub-apps.
+ * Provides {@link info.magnolia.ui.vaadin.integration.datasource.DataSource} to the sub-apps.
  */
 @Singleton
 public class DataSourceProvider implements Provider<DataSource> {
@@ -73,8 +73,8 @@ public class DataSourceProvider implements Provider<DataSource> {
         if (dataSource == null) {
             SubAppDescriptor subAppDescriptor = ctx.getSubAppDescriptor();
             if (subAppDescriptor instanceof ContentSubAppDescriptor) {
-                DataSourceManagerDefinition dsManagerDefinition = ((ContentSubAppDescriptor)subAppDescriptor).getDataSourceManager();
-                dataSource = provider.newInstance(dsManagerDefinition.getImplementationClass(), ctx, subAppEventBus, dsManagerDefinition);
+                DataSourceDefinition dataSourceDefinition = ((ContentSubAppDescriptor)subAppDescriptor).getDataSource();
+                dataSource = provider.newInstance(dataSourceDefinition.getImplementationClass(), ctx, subAppEventBus, dataSourceDefinition);
             }
         }
         return dataSource;

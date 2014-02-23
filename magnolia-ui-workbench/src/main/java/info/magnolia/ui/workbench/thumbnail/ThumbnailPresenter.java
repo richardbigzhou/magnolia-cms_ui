@@ -36,7 +36,7 @@ package info.magnolia.ui.workbench.thumbnail;
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.imageprovider.ImageProvider;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
+import info.magnolia.ui.vaadin.integration.datasource.DataSource;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.ContentView;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;

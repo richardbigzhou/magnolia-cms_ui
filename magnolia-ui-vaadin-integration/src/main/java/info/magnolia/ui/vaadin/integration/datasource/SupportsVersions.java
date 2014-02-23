@@ -31,12 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.dsmanager;
+package info.magnolia.ui.vaadin.integration.datasource;
+
+import com.vaadin.data.Item;
 
 /**
- * Defines {@link DataSource}.
+ * Allows to query the versions of an item.
  */
-public interface DataSourceManagerDefinition {
+public interface SupportsVersions extends DataSource {
 
-    Class<? extends DataSource> getImplementationClass();
+    Item getItemVersion(Object itemId, String version);
 }

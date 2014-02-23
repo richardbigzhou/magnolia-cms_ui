@@ -38,7 +38,7 @@ import info.magnolia.cms.util.LinkUtil;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSource;
+import info.magnolia.ui.vaadin.integration.datasource.DataSource;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import java.util.Calendar;

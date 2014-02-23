@@ -31,15 +31,26 @@
  * intact.
  *
  */
-package info.magnolia.ui.vaadin.integration.dsmanager;
+package info.magnolia.ui.vaadin.integration.datasource;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 
 /**
- * Interface of {@link DataSource} that supports creation of new items.
+ * Simple component capable of serializing item id to string, fetching Vaadin {@link Item} by id
+ * and vice versa.
  */
-public interface SupportsCreation extends DataSource {
+public interface DataSource {
 
-    Item createNew(String newItemPath);
+    String getItemPath(Object itemId);
 
+    Object getItemIdFromPath(String strPath);
+
+    Object getRootItemId();
+
+    Item getItem(Object itemId);
+
+    Container getContainerForViewType(String viewType);
+
+    boolean itemExists(Object itemId);
 }
