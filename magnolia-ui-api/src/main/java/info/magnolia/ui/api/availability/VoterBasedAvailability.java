@@ -48,7 +48,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Availability definition based on {@link Voter} obejcts.
+ * Availability definition based on {@link Voter} objects.
  */
 public class VoterBasedAvailability {
 
