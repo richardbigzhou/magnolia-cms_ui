@@ -34,7 +34,7 @@
 package info.magnolia.ui.api.availability;
 
 import info.magnolia.cms.core.version.VersionManager;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
@@ -62,29 +62,25 @@ public class HasVersionsRule extends AbstractAvailabilityRule {
 
     @Override
     protected boolean isAvailableForItem(Item item) {
-        if (!(item instanceof JcrItemAdapter)) {
-            return false;
-        }
-
-        JcrItemAdapter jcrItemAdapter = (JcrItemAdapter)item;
-        javax.jcr.Item jcrItem = jcrItemAdapter.getJcrItem();
-        if (jcrItem != null && jcrItem.isNode()) {
-            Node node = (Node) jcrItem;
-
-            try {
-                VersionHistory versionHistory = versionManager.getVersionHistory(node);
-                if (versionHistory == null || versionHistory.getAllVersions() == null) {
-                    log.debug("Node [{}] doesn't have versions.", node);
+        if (item instanceof JcrNodeAdapter) {
+            JcrNodeAdapter jcrItemAdapter = (JcrNodeAdapter)item;
+            Node node = jcrItemAdapter.getJcrItem();
+            if (node != null) {
+                try {
+                    VersionHistory versionHistory = versionManager.getVersionHistory(node);
+                    if (versionHistory == null || versionHistory.getAllVersions() == null) {
+                        log.debug("Node [{}] doesn't have versions.", node);
+                        return false;
+                    }
+                    // We need at least one version (without root version - which will be included)
+                    return versionHistory.getAllVersions().getSize() > 1;
+                } catch (UnsupportedRepositoryOperationException e) {
+                    log.debug("Item [{}] doesn't support versioning.", new Object[] {node, e});
+                    return false;
+                } catch (RepositoryException e) {
+                    log.debug("Item [{}] doesn't have versions.", new Object[] {node, e});
                     return false;
                 }
-                // We need at least one version (without root version - which will be included)
-                return versionHistory.getAllVersions().getSize() > 1;
-            } catch (UnsupportedRepositoryOperationException e) {
-                log.debug("Item [{}] doesn't support versioning.", new Object[] {node, e});
-                return false;
-            } catch (RepositoryException e) {
-                log.debug("Item [{}] doesn't have versions.", new Object[] {node, e});
-                return false;
             }
         }
 

@@ -35,7 +35,7 @@ package info.magnolia.ui.api.availability;
 
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.jcr.util.NodeUtil;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -54,18 +54,15 @@ public class IsDeletedRule extends AbstractAvailabilityRule {
 
     @Override
     protected boolean isAvailableForItem(Item item) {
-        if (!(item instanceof JcrItemAdapter)) {
-            return false;
-        }
-
-        JcrItemAdapter jcrItemAdapter = (JcrItemAdapter)item;
-        javax.jcr.Item jcrItem = jcrItemAdapter.getJcrItem();
-        if (jcrItem != null && jcrItem.isNode()) {
-            Node node = (Node) jcrItem;
-            try {
-                return NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
-            } catch (RepositoryException e) {
-                log.warn("Error evaluating availability for node [{}], returning false: {}", NodeUtil.getPathIfPossible(node), e.getMessage());
+        if (item instanceof JcrNodeAdapter) {
+            JcrNodeAdapter jcrNodeAdapter = (JcrNodeAdapter)item;
+            Node node = jcrNodeAdapter.getJcrItem();
+            if (node != null) {
+                try {
+                    return NodeUtil.hasMixin(node, NodeTypes.Deleted.NAME);
+                } catch (RepositoryException e) {
+                    log.warn("Error evaluating availability for node [{}], returning false: {}", NodeUtil.getPathIfPossible(node), e.getMessage());
+                }
             }
         }
         return false;

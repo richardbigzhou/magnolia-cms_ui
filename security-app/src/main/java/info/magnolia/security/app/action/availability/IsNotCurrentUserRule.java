@@ -35,8 +35,9 @@ package info.magnolia.security.app.action.availability;
 
 import info.magnolia.context.MgnlContext;
 import info.magnolia.ui.api.availability.AbstractAvailabilityRule;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.slf4j.Logger;
@@ -53,23 +54,17 @@ public class IsNotCurrentUserRule extends AbstractAvailabilityRule {
 
     @Override
     protected boolean isAvailableForItem(Item item) {
-        if (!(item instanceof JcrItemAdapter)) {
-            return true;
+        if (item instanceof JcrNodeAdapter) {
+            JcrNodeAdapter jcrItemAdapter = (JcrNodeAdapter)item;
+            Node node = jcrItemAdapter.getJcrItem();
+            try {
+                String nodeName = node.getName();
+                return !nodeName.equals(MgnlContext.getUser().getName());
+            } catch (RepositoryException ex) {
+                log.warn("Error verifying availability for item [{}]: " + ex.getMessage(), item);
+                return false;
+            }
         }
-
-        JcrItemAdapter jcrItemAdapter = (JcrItemAdapter)item;
-        javax.jcr.Item jcrItem = jcrItemAdapter.getJcrItem();
-
-
-        if (!jcrItem.isNode()) {
-            return true;
-        }
-        try {
-            String nodeName = jcrItem.getName();
-            return !nodeName.equals(MgnlContext.getUser().getName());
-        } catch (RepositoryException ex) {
-            log.warn("Error verifying availability for item [{}]: " + ex.getMessage(), item);
-        }
-        return false;
+        return true;
     }
 }
