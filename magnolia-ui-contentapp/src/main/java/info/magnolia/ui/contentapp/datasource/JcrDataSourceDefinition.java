@@ -36,11 +36,7 @@ package info.magnolia.ui.contentapp.datasource;
 import info.magnolia.ui.vaadin.integration.datasource.ConfiguredDataSourceDefinition;
 
 /**
- * Created with IntelliJ IDEA.
- * User: sasha
- * Date: 16/02/14
- * Time: 19:36
- * To change this template use File | Settings | File Templates.
+ * {@link info.magnolia.ui.vaadin.integration.datasource.DataSourceDefinition} for JCR-specific sub-apps.
  */
 public class JcrDataSourceDefinition extends ConfiguredDataSourceDefinition {
 
