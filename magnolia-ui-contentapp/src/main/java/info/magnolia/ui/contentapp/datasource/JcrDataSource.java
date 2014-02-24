@@ -49,10 +49,14 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
+import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.list.FlatJcrContainer;
 import info.magnolia.ui.workbench.search.SearchJcrContainer;
 import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -89,26 +93,13 @@ public class JcrDataSource extends AbstractDataSource implements SupportsVersion
     @Override
     public String getItemPath(Object itemId) {
         try {
-            WorkbenchDefinition workbenchDefinition = getWorkbenchDefinition();
             javax.jcr.Item selected = JcrItemUtil.getJcrItem(getWorkspace(), JcrItemUtil.parseNodeIdentifier(String.valueOf(itemId)));
-            String workbenchPath = workbenchDefinition.getPath();
-            return StringUtils.removeStart(selected.getPath(), "/".equals(workbenchPath) ? "" : workbenchPath);
+            String path = getPath();
+            return StringUtils.removeStart(selected.getPath(), "/".equals(path) ? "" : path);
         } catch (RepositoryException e) {
             log.error("Failed to convert item id to URL fragment: " + e.getMessage(), e);
             return null;
         }
-    }
-
-    private String getWorkspace() {
-        SubAppDescriptor subAppDescriptor = subAppContext.getSubAppDescriptor();
-        if (subAppDescriptor instanceof BrowserSubAppDescriptor) {
-            return ((BrowserSubAppDescriptor) subAppDescriptor).getWorkbench().getWorkspace();
-        }
-
-        if (subAppDescriptor instanceof DetailSubAppDescriptor) {
-            return ((DetailSubAppDescriptor) subAppDescriptor).getEditor().getWorkspace();
-        }
-        return null;
     }
 
 
@@ -122,8 +113,9 @@ public class JcrDataSource extends AbstractDataSource implements SupportsVersion
         }
     }
 
+
     @Override
-    public Item getItem(Object itemId) {
+    public JcrItemAdapter getItem(Object itemId) {
         javax.jcr.Item jcrItem;
         try {
             jcrItem = JcrItemUtil.getJcrItem(getWorkspace(), String.valueOf(itemId));
@@ -148,7 +140,31 @@ public class JcrDataSource extends AbstractDataSource implements SupportsVersion
 
     @Override
     public boolean itemExists(Object itemId) {
-        return itemId != null && getItem(itemId) != null;
+        boolean containsItem = itemId instanceof String;
+        final JcrItemAdapter itemAdapter = getItem(itemId);
+        containsItem &= itemAdapter != null;
+
+        if (itemAdapter instanceof JcrPropertyAdapter) {
+            return true;
+        }
+
+        if (itemAdapter != null) {
+            final Node node = ((JcrNodeAdapter)itemAdapter).getJcrItem();
+            final Collection <NodeTypeDefinition> nodeTypes = getNodeTypes();
+            containsItem = !nodeTypes.isEmpty();
+            for (NodeTypeDefinition nodeTypeDefinition : nodeTypes) {
+                try {
+                    if (nodeTypeDefinition.getName().equalsIgnoreCase(node.getPrimaryNodeType().getName())) {
+                        containsItem = true;
+                        break;
+                    }
+                } catch (RepositoryException e) {
+                    log.warn("Failed to resolve node's primary type: " + e.getMessage(), e);
+                }
+            }
+        }
+
+        return containsItem;
     }
 
     private WorkbenchDefinition getWorkbenchDefinition() {
@@ -197,6 +213,39 @@ public class JcrDataSource extends AbstractDataSource implements SupportsVersion
             return new JcrNewNodeAdapter(parent, primaryNodeType);
         }
 
+        return null;
+    }
+
+    private String getPath() {
+        SubAppDescriptor subAppDescriptor = subAppContext.getSubAppDescriptor();
+        if (subAppDescriptor instanceof BrowserSubAppDescriptor) {
+            return ((BrowserSubAppDescriptor) subAppDescriptor).getWorkbench().getPath();
+        }
+
+        return "/";
+    }
+
+    private String getWorkspace() {
+        SubAppDescriptor subAppDescriptor = subAppContext.getSubAppDescriptor();
+        if (subAppDescriptor instanceof BrowserSubAppDescriptor) {
+            return ((BrowserSubAppDescriptor) subAppDescriptor).getWorkbench().getWorkspace();
+        }
+
+        if (subAppDescriptor instanceof DetailSubAppDescriptor) {
+            return ((DetailSubAppDescriptor) subAppDescriptor).getEditor().getWorkspace();
+        }
+        return null;
+    }
+
+    private Collection<NodeTypeDefinition> getNodeTypes() {
+        SubAppDescriptor subAppDescriptor = subAppContext.getSubAppDescriptor();
+        if (subAppDescriptor instanceof BrowserSubAppDescriptor) {
+            return ((BrowserSubAppDescriptor) subAppDescriptor).getWorkbench().getNodeTypes();
+        }
+
+        if (subAppDescriptor instanceof DetailSubAppDescriptor) {
+            return Arrays.asList(((DetailSubAppDescriptor) subAppDescriptor).getEditor().getNodeType());
+        }
         return null;
     }
 }
