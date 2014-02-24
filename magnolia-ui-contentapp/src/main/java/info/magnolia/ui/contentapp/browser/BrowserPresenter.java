@@ -155,7 +155,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                if (event.getWorkspace().equals(getWorkspace())) {
+                if (dataSource.itemExists(event.getItemId())) {
 
                     workbenchPresenter.refresh();
 
@@ -263,10 +263,6 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         return actionbarPresenter;
     }
 
-    public String getWorkspace() {
-        return workbenchPresenter.getWorkspace();
-    }
-
     /**
      * Synchronizes the underlying view to reflect the status extracted from the Location token, i.e. selected itemId,
      * view type and optional query (in case of a search view).
@@ -291,10 +287,6 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
     @Override
     public void onActionBarSelection(String actionName) {
         executeAction(actionName);
-    }
-
-    public WorkbenchPresenter getWorkbenchPresenter() {
-        return workbenchPresenter;
     }
 
     /**
@@ -383,7 +375,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         return getSelectedItemsWithoutRoot(selectedItemIds, workbenchPresenter.resolveWorkbenchRoot());
     }
 
-    public List<Item> getSelectedItemsWithoutRoot(List<Object> ids, Object itemIdToExclude) {
+    protected List<Item> getSelectedItemsWithoutRoot(List<Object> ids, Object itemIdToExclude) {
         List<Item> items = new ArrayList<Item>();
 
         for (Object itemId : ids) {
