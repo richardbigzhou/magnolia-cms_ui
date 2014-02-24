@@ -36,6 +36,9 @@ package info.magnolia.ui.api.availability.voters;
 import info.magnolia.objectfactory.Components;
 import info.magnolia.ui.api.availability.AvailabilityRule;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.data.Item;
 
 /**
@@ -43,6 +46,8 @@ import com.vaadin.data.Item;
  * holds for an item.
  */
 public class ActionAvailableForRuleVoter extends AbstractActionAvailabilityVoter {
+
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     private AvailabilityRule rule;
 
@@ -52,18 +57,12 @@ public class ActionAvailableForRuleVoter extends AbstractActionAvailabilityVoter
             ruleClass = (Class<? extends AvailabilityRule>) Class.forName(ruleClassName);
             this.rule = Components.newInstance(ruleClass);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            log.error("Failed to instantiate availability rule: " + e.getMessage(), e);
         }
     }
 
     @Override
     protected boolean isAvailableForItem(Item item) {
-        boolean isApplicable;
-        if (item != null) {
-            isApplicable = rule.isAvailable(item);
-        } else {
-            isApplicable = rule.isAvailable(null);
-        }
-        return isApplicable;
+        return rule.isAvailable(item);
     }
 }

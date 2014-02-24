@@ -57,14 +57,14 @@ public class AvailabilityTransformer extends Node2BeanTransformerImpl {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    public static final String CRITERIAS = "criterias";
+    public static final String VOTERS = "voters";
 
     @Override
     public void setProperty(TypeMapping mapping, TransformationState state, PropertyTypeDescriptor descriptor, Map<String, Object> values) throws RepositoryException {
         Object currentBean = state.getCurrentBean();
-        if (CRITERIAS.equalsIgnoreCase(descriptor.getName()) && (currentBean instanceof VoterBasedAvailability)) {
+        if (VOTERS.equalsIgnoreCase(descriptor.getName()) && (currentBean instanceof VoterBasedAvailability)) {
             VoterBasedAvailability availability = (VoterBasedAvailability)currentBean;
-            availability.getCriterias().clear();
+            availability.getVoters().clear();
             for (DefaultJCRAvailabilityRules rule : DefaultJCRAvailabilityRules.values()) {
                 Object arg = values.get(rule.toString());
                 if (arg == null) {
@@ -72,7 +72,7 @@ public class AvailabilityTransformer extends Node2BeanTransformerImpl {
                 }
                 try {
                     Voter voter = Components.newInstance(rule.getVoterClass(), arg);
-                    availability.addCriteria(voter);
+                    availability.addVoter(voter);
                 } catch (Exception e) {
                     log.error("Failed to create voter: " + e.getMessage() + " for arg: " + arg, e);
                 }

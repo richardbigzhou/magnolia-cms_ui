@@ -55,7 +55,7 @@ import com.vaadin.data.Item;
  */
 public class VoterBasedAvailability {
 
-    private List<Voter> criterias = new ArrayList<Voter>();
+    private List<Voter> voters = new ArrayList<Voter>();
 
     public VoterBasedAvailability() {
         List<Voter> voters = new ArrayList<Voter>();
@@ -66,19 +66,19 @@ public class VoterBasedAvailability {
         voters.add(new ActionAvailableForRuleVoter(AlwaysTrueAvailabilityRule.class.getName()));
         voters.add(new ActionAvailableForNodeTypesVoter(new HashMap<String, String>()));
         voters.add(new AccessGrantedToActionVoter(new HashMap<String, Object>()));
-        setCriterias(voters);
+        setVoters(voters);
     }
 
-    public List<Voter> getCriterias() {
-        return criterias;
+    public List<Voter> getVoters() {
+        return voters;
     }
 
-    public void setCriterias(List<Voter> criterias) {
-        this.criterias = criterias;
+    public void setVoters(List<Voter> voters) {
+        this.voters = voters;
     }
 
-    public void addCriteria(Voter voter) {
-        this.criterias.add(voter);
+    public void addVoter(Voter voter) {
+        this.voters.add(voter);
     }
 
     public boolean isAvailableForItems(List<Item> items) {
@@ -86,7 +86,7 @@ public class VoterBasedAvailability {
     }
 
     public boolean isAvailableForItems(Item[] items) {
-        final Voter[] voters = criterias.toArray(new Voter[criterias.size()]);
+        final Voter[] voters = this.voters.toArray(new Voter[this.voters.size()]);
         return Voting.AND.vote(voters, items) > 0;
     }
 }

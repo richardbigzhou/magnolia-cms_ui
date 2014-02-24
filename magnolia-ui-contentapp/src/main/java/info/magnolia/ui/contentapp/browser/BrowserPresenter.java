@@ -357,13 +357,19 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
     protected Object[] prepareActionArgs() {
         List<Object> argList = new ArrayList<Object>();
-        List<Item> selectedItems = getSelectedItems();
+        List<Item> selectedItems = new ArrayList<Item>();
+
         List<Object> selectedIds = getSelectedItemIds();
-        Iterator<Item> itemIt = selectedItems.iterator();
+        if (selectedIds.isEmpty()) {
+            selectedIds.add(dataSource.getRootItemId());
+        }
         Iterator<Object> idIt = selectedIds.iterator();
         Map<Object, Item> idToItem = new HashMap<Object, Item>();
-        while (idIt.hasNext() && itemIt.hasNext()) {
-            idToItem.put(idIt.next(), itemIt.next());
+        while (idIt.hasNext()) {
+            Object id = idIt.next();
+            Item item = dataSource.getItem(id);
+            idToItem.put(id, item);
+            selectedItems.add(item);
         }
 
         argList.add(selectedItems);
@@ -372,31 +378,22 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
         return argList.toArray(new Object[argList.size()]);
     }
 
-    protected AppContext getAppContext() {
-        return appContext;
-    }
-
     protected List<Item> getSelectedItems() {
         List<Object> selectedItemIds = getSelectedItemIds();
-        //if (selectedItemIds.size() > 1) {
-            return getItemsExceptOne(selectedItemIds, workbenchPresenter.resolveWorkbenchRoot());
-        //} else {
-          //  return getItemsExceptOne(selectedItemIds, null);
-        //}
+        return getSelectedItemsWithoutRoot(selectedItemIds, workbenchPresenter.resolveWorkbenchRoot());
     }
 
-    public List<Item> getItemsExceptOne(List<Object> ids, Object itemIdToExclude) {
+    public List<Item> getSelectedItemsWithoutRoot(List<Object> ids, Object itemIdToExclude) {
         List<Item> items = new ArrayList<Item>();
 
         for (Object itemId : ids) {
             if (!itemId.equals(itemIdToExclude)) {
                 items.add(dataSource.getItem(itemId));
-            } else {
+            }
+            else {
                 items.add(null);
             }
         }
         return items;
     }
-
-
 }

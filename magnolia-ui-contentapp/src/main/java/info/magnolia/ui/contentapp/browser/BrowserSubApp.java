@@ -321,33 +321,25 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
         // Figure out which section to show, only one
         ActionbarSectionDefinition sectionDefinition = getVisibleSection(sections, items);
 
-        // If there no section matched the selection we just hide everything
-        if (sectionDefinition == null) {
-            for (ActionbarSectionDefinition section : sections) {
-                actionbar.hideSection(section.getName());
-            }
-            return;
-        }
-
         // Hide all other sections
         for (ActionbarSectionDefinition section : sections) {
-            if (section != sectionDefinition) {
-                actionbar.hideSection(section.getName());
-            }
+            actionbar.hideSection(section.getName());
         }
 
-        // Show our section
-        actionbar.showSection(sectionDefinition.getName());
+        if (sectionDefinition != null) {
+            // Show our section
+            actionbar.showSection(sectionDefinition.getName());
 
-        // Evaluate availability of each action within the section
-        for (ActionbarGroupDefinition groupDefinition : sectionDefinition.getGroups()) {
-            for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
+            // Evaluate availability of each action within the section
+            for (ActionbarGroupDefinition groupDefinition : sectionDefinition.getGroups()) {
+                for (ActionbarItemDefinition itemDefinition : groupDefinition.getItems()) {
 
-                String actionName = itemDefinition.getName();
-                if (actionExecutor.isAvailable(actionName, items.toArray(new Item[items.size()]))) {
-                    actionbar.enable(actionName);
-                } else {
-                    actionbar.disable(actionName);
+                    String actionName = itemDefinition.getName();
+                    if (actionExecutor.isAvailable(actionName, items.toArray(new Item[items.size()]))) {
+                        actionbar.enable(actionName);
+                    } else {
+                        actionbar.disable(actionName);
+                    }
                 }
             }
         }

@@ -33,6 +33,7 @@
  */
 package info.magnolia.ui.api.availability.voters;
 
+import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 
 import javax.jcr.Node;
@@ -57,6 +58,10 @@ public class ActionAvailableForRootItemVoter extends AbstractActionAvailabilityV
     }
 
     private boolean isRoot(Object value) {
+        if (value instanceof JcrNewNodeAdapter) {
+            return false;
+        }
+
         if (value instanceof JcrNodeAdapter) {
             JcrNodeAdapter nodeAdapter = (JcrNodeAdapter)value;
             Node node = nodeAdapter.getJcrItem();
@@ -64,7 +69,7 @@ public class ActionAvailableForRootItemVoter extends AbstractActionAvailabilityV
                 node.getParent();
                 return false;
             } catch (RepositoryException e) {
-                return root;
+                return true;
             }
 
         }
