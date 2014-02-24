@@ -64,7 +64,7 @@ public class ActionAvailableForRootItemVoter extends AbstractActionAvailabilityV
                 node.getParent();
                 return false;
             } catch (RepositoryException e) {
-                return root;
+                return true;
             }
 
         }
