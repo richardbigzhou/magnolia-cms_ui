@@ -54,4 +54,6 @@ public interface I18NAuthoringSupport {
 
     String createI18NURI(Node node, Locale locale);
 
+    Locale getAuthorLocale();
+
 }
