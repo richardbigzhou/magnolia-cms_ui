@@ -35,7 +35,6 @@ package info.magnolia.ui.api.action;
 
 import info.magnolia.i18nsystem.I18nText;
 import info.magnolia.i18nsystem.I18nable;
-import info.magnolia.ui.api.availability.AvailabilityDefinition;
 import info.magnolia.ui.api.availability.VoterBasedAvailability;
 
 /**
@@ -72,8 +71,6 @@ public interface ActionDefinition {
     String getErrorMessage();
 
     Class<? extends Action> getImplementationClass();
-
-    AvailabilityDefinition getOldAvailability();
 
     VoterBasedAvailability getAvailability();
 }
