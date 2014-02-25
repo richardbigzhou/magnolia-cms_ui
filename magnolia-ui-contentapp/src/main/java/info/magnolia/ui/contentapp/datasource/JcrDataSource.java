@@ -94,7 +94,7 @@ public class JcrDataSource extends AbstractDataSource implements SupportsVersion
     }
 
     @Override
-    public String getItemUrlFragmentPath(Object itemId) {
+    public String getItemUrlFragment(Object itemId) {
         try {
             javax.jcr.Item selected = JcrItemUtil.getJcrItem(getWorkspace(), JcrItemUtil.parseNodeIdentifier(String.valueOf(itemId)));
             String path = getPath();
@@ -107,9 +107,9 @@ public class JcrDataSource extends AbstractDataSource implements SupportsVersion
 
 
     @Override
-    public Object getItemIdByUrlFragment(String strPath) {
+    public Object getItemIdByUrlFragment(String urlFragment) {
         try {
-            return JcrItemUtil.getItemId(getWorkspace(), strPath);
+            return JcrItemUtil.getItemId(getWorkspace(), urlFragment);
         } catch (RepositoryException e) {
             log.error("Failed to obtain JCR id for fragment: " + e.getMessage(), e);
             return null;
