@@ -155,7 +155,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
             @Override
             public void onContentChanged(ContentChangedEvent event) {
-                if (dataSource.itemExists(event.getItemId())) {
+                if (dataSource.hasItem(event.getItemId())) {
 
                     workbenchPresenter.refresh();
 
@@ -236,7 +236,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
     }
 
     protected boolean verifyItemExists(Object itemId) {
-        return dataSource.itemExists(itemId);
+        return dataSource.hasItem(itemId);
     }
 
     public List<Object> getSelectedItemIds() {
@@ -353,7 +353,7 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
 
         List<Object> selectedIds = getSelectedItemIds();
         if (selectedIds.isEmpty()) {
-            selectedIds.add(dataSource.getRootItemId());
+            selectedIds.add(dataSource.getDefaultItemId());
         }
         Iterator<Object> idIt = selectedIds.iterator();
         Map<Object, Item> idToItem = new HashMap<Object, Item>();

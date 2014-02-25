@@ -109,7 +109,7 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
         super.start(detailLocation);
         // set caption
         setCaption(detailLocation);
-        this.itemId = dataSource.getItemIdFromPath(detailLocation.getNodePath());
+        this.itemId = dataSource.getItemIdByUrlFragment(detailLocation.getNodePath());
 
         View view;
         if (detailLocation.hasVersion()) {
@@ -172,20 +172,20 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
                             splitIndex = 1;
                         }
                         String parentNodePath = currentNodePath.substring(0, splitIndex);
-                        Object parentItemId = dataSource.getItemIdFromPath(parentNodePath);
-                        if (!dataSource.itemExists(parentItemId)) {
+                        Object parentItemId = dataSource.getItemIdByUrlFragment(parentNodePath);
+                        if (!dataSource.hasItem(parentItemId)) {
                             getSubAppContext().close();
                         }
                         // Editing existing item
                     } else {
                         // Item (or parent) was deleted: close subApp
-                        if (!dataSource.itemExists(itemId)) {
+                        if (!dataSource.hasItem(itemId)) {
                             getSubAppContext().close();
                         }
                         // Item still exists: update location if necessary
                         else {
                             String currentNodePath = getCurrentLocation().getNodePath();
-                            String itemPath = dataSource.getItemPath(itemId);
+                            String itemPath = dataSource.getItemUrlFragmentPath(itemId);
                             if (!currentNodePath.equals(itemPath)) {
                                 DetailLocation location = DetailLocation.wrap(getSubAppContext().getLocation());
                                 location.updateNodePath(itemPath);

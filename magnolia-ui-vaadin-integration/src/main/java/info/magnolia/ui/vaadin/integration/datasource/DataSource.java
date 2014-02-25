@@ -42,15 +42,15 @@ import com.vaadin.data.Item;
  */
 public interface DataSource {
 
-    String getItemPath(Object itemId);
+    String getItemUrlFragmentPath(Object itemId);
 
-    Object getItemIdFromPath(String strPath);
+    Object getItemIdByUrlFragment(String strPath);
 
-    Object getRootItemId();
+    Object getDefaultItemId();
 
     Item getItem(Object itemId);
 
-    Container getContainerForViewType(String viewType);
+    boolean hasItem(Object itemId);
 
-    boolean itemExists(Object itemId);
+    Container createContentViewContainer(ContainerConfiguration configuration);
 }

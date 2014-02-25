@@ -122,18 +122,12 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
         this.dataSource = dataSource;
     }
 
-    @Override
-    protected void onSubAppStart() {
-        super.onSubAppStart();
-
-    }
-
     protected Object ensureLocationUpToDate(String urlFragmentPath) {
-        Object actualItemId = dataSource.getItemIdFromPath(urlFragmentPath);
+        Object actualItemId = dataSource.getItemIdByUrlFragment(urlFragmentPath);
 
         // MGNLUI-1475: item might have not been found if path doesn't exist
-        if (!dataSource.itemExists(actualItemId)) {
-            actualItemId = dataSource.getRootItemId();
+        if (!dataSource.hasItem(actualItemId)) {
+            actualItemId = dataSource.getDefaultItemId();
             BrowserLocation newLocation = getCurrentLocation();
             newLocation.updateNodePath("/");
             getAppContext().updateSubAppLocation(getSubAppContext(), newLocation);
@@ -145,10 +139,10 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
 
     protected void applySelectionToLocation(BrowserLocation location, Object selectedId) {
         location.updateNodePath("");
-        if (!dataSource.itemExists(selectedId)) {
+        if (!dataSource.hasItem(selectedId)) {
             // nothing is selected at the moment
         } else {
-            location.updateNodePath(dataSource.getItemPath(selectedId));
+            location.updateNodePath(dataSource.getItemUrlFragmentPath(selectedId));
         }
     }
 
@@ -194,7 +188,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
      * @see Location
      */
     protected void restoreBrowser(final BrowserLocation location) {
-        String workbenchRoot = dataSource.getItemPath(dataSource.getRootItemId());
+        String workbenchRoot = dataSource.getItemUrlFragmentPath(dataSource.getDefaultItemId());
         String path = ("/".equals(workbenchRoot) ? "" : workbenchRoot) + location.getNodePath();
         String viewType = location.getViewType();
 
@@ -443,7 +437,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
      */
     private void handleSelectionChange(Set<Object> selectionIds, ActionbarPresenter actionbar) {
         BrowserLocation location = getCurrentLocation();
-        applySelectionToLocation(location, selectionIds.isEmpty() ? "" : selectionIds.iterator().next());
+        applySelectionToLocation(location, selectionIds.isEmpty() ? null : selectionIds.iterator().next());
         getAppContext().updateSubAppLocation(getSubAppContext(), location);
         updateActionbar(actionbar);
 

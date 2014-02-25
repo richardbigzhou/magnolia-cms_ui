@@ -99,10 +99,10 @@ public class DetailEditorPresenter implements DetailEditorView.Listener, Actionb
         this.item = null;
 
         view.setListener(this);
-        Object itemId = dataSource.getItemIdFromPath(nodePath);
+        Object itemId = dataSource.getItemIdByUrlFragment(nodePath);
 
 
-        if (dataSource.itemExists(itemId)) {
+        if (dataSource.hasItem(itemId)) {
             if (StringUtils.isNotEmpty(versionName) && DetailView.ViewType.VIEW.equals(viewType) && dataSource instanceof SupportsVersions) {
                 item = ((SupportsVersions)dataSource).getItemVersion(itemId, versionName);
             } else if (dataSource instanceof SupportsCreation) {
