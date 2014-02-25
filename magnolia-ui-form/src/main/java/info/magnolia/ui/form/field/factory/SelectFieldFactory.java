@@ -65,7 +65,7 @@ import com.vaadin.ui.ComboBox;
 
 /**
  * Creates and initializes a selection field based on a field definition.
- * 
+ *
  * @param <D> type of definition
  */
 public class SelectFieldFactory<D extends SelectFieldDefinition> extends AbstractFieldFactory<D, Object> {
@@ -221,6 +221,17 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
     }
 
     /**
+     * Make sure to set defaultValue whenever value is null and nullSelectionAllowed is false, i.e. not just for new node adapters.
+     */
+    @Override
+    public void setPropertyDataSourceAndDefaultValue(Property<?> property) {
+        if (!((AbstractSelect) field).isNullSelectionAllowed() && property.getValue() == null) {
+            setPropertyDataSourceDefaultValue(property);
+        }
+        super.setPropertyDataSourceAndDefaultValue(property);
+    }
+
+    /**
      * Set the value selected.
      * Set selectedItem to the last stored value.
      * If not yet stored, set initialSelectedKey as selectedItem
@@ -234,7 +245,7 @@ public class SelectFieldFactory<D extends SelectFieldDefinition> extends Abstrac
         if (initialSelectedKey != null) {
             selectedValue = initialSelectedKey;
         } else if (!select.isNullSelectionAllowed() && definition.getOptions() != null && !definition.getOptions().isEmpty() && !(definition instanceof TwinColSelectFieldDefinition)) {
-            selectedValue = definition.getOptions().get(0).getValue();
+            selectedValue = ((AbstractSelect) field).getItemIds().iterator().next();
         }
         // Type the selected value
         selectedValue = DefaultPropertyUtil.createTypedValue(getDefinitionType(), (String) selectedValue);

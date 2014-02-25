@@ -65,8 +65,8 @@ public class OptionGroupFieldFactory<D extends SelectFieldDefinition> extends Se
     protected AbstractSelect createFieldComponent() {
         super.createFieldComponent();
         select.setMultiSelect(getFieldDefinition().isMultiselect());
+        select.setNullSelectionAllowed(true);
         if (select.isMultiSelect()) {
-            select.setNullSelectionAllowed(true);
             // In case of MultiSelect, type will be set by the getDefaultFieldType().
             // In any case it should be set to a simple type (String, Long...)
             definition.setType(null);
@@ -78,7 +78,6 @@ public class OptionGroupFieldFactory<D extends SelectFieldDefinition> extends Se
     protected AbstractSelect createSelectionField() {
         return new OptionGroup();
     }
-
 
     /**
      * Override in order to define the field property type.<br>
