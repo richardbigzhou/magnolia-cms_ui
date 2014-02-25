@@ -69,6 +69,7 @@ import info.magnolia.ui.contentapp.detail.DetailLocation;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailView;
 import info.magnolia.ui.framework.app.BaseSubApp;
+import info.magnolia.ui.framework.i18n.DefaultI18NAuthoringSupport;
 import info.magnolia.ui.vaadin.actionbar.ActionbarView;
 import info.magnolia.ui.vaadin.editor.PageEditorListener;
 import info.magnolia.ui.vaadin.editor.gwt.shared.PlatformType;
@@ -417,6 +418,9 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
     public void languageSelected(Locale locale) {
         if (locale != null && !locale.equals(currentLocale)) {
             this.currentLocale = locale;
+            if (i18NAuthoringSupport instanceof DefaultI18NAuthoringSupport) {
+                ((DefaultI18NAuthoringSupport) i18NAuthoringSupport).setAuthorLocale(locale);
+            }
             doGoToLocation(getCurrentLocation());
         }
     }

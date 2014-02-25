@@ -60,6 +60,8 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
 
     private boolean enabled = true;
 
+    private Locale authorLocale;
+
     public DefaultI18NAuthoringSupport() {
         this.i18nContentSupport = Components.getComponent(I18nContentSupport.class);
     }
@@ -68,7 +70,7 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
      * Returns the available locales for the given page, area or component node.<br>
      * Please note though that this default implementation exclusively resolves locales through {@link i18nContentSupport},
      * i.e. as configured in /server/i18n/content/locales, regardless of the passed node.
-     * 
+     *
      * @return the list of locales if both i18nAuthoringSupport and i18nContentSupport are enabled, <code>null</code> otherwise.
      */
     @Override
@@ -141,6 +143,14 @@ public class DefaultI18NAuthoringSupport implements I18NAuthoringSupport {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public Locale getAuthorLocale() {
+        return authorLocale;
+    }
+
+    public void setAuthorLocale(Locale locale) {
+        this.authorLocale = locale;
     }
 
 }
