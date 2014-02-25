@@ -31,36 +31,13 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.search;
+package info.magnolia.ui.workbench.container;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.workbench.list.ListPresenter;
-
-import javax.inject.Inject;
+import com.vaadin.data.Container;
 
 /**
- * The SearchPresenter is responsible for handling a list of search results according to the workbench definition.
+ * Extension of Vaadin {@link Container} interface which supports refreshment of the content.
  */
-public class SearchPresenter extends ListPresenter implements SearchView.Listener {
-
-    @Inject
-    public SearchPresenter(SearchView view, ComponentProvider componentProvider) {
-        super(view, componentProvider);
-    }
-
-    @Override
-    public SearchJcrContainer getContainer() {
-        return (SearchJcrContainer) super.getContainer();
-    }
-
-    public void search(String fulltextExpr) {
-        getContainer().setFullTextExpression(fulltextExpr);
-        refresh();
-    }
-
-    public void clear() {
-        getContainer().setFullTextExpression(null);
-        refresh();
-    }
-
+public interface Refreshable extends Container {
+    void refresh();
 }

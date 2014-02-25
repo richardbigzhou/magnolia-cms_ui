@@ -86,16 +86,16 @@ public abstract class AbstractContentPresenter extends AbstractContentPresenterB
     }
 
     private NodeTypeDefinition getNodeTypeDefinitionForNode(Node node) throws RepositoryException {
-        String primaryNodeTypeName = node.getPrimaryNodeType().getName();
-        for (NodeTypeDefinition nodeTypeDefinition : workbenchDefinition.getNodeTypes()) {
-            if (nodeTypeDefinition.isStrict()) {
-                if (primaryNodeTypeName.equals(nodeTypeDefinition.getName())) {
-                    return nodeTypeDefinition;
-                }
-            } else if (NodeUtil.isNodeType(node, nodeTypeDefinition.getName())) {
-                return nodeTypeDefinition;
-            }
-        }
+//        String primaryNodeTypeName = node.getPrimaryNodeType().getName();
+//        for (NodeTypeDefinition nodeTypeDefinition : contentPresenterDefinition.getNodeTypes()) {
+//            if (nodeTypeDefinition.isStrict()) {
+//                if (primaryNodeTypeName.equals(nodeTypeDefinition.getName())) {
+//                    return nodeTypeDefinition;
+//                }
+//            } else if (NodeUtil.isNodeType(node, nodeTypeDefinition.getName())) {
+//                return nodeTypeDefinition;
+//            }
+//        }
         return null;
     }
 
@@ -103,4 +103,6 @@ public abstract class AbstractContentPresenter extends AbstractContentPresenterB
     public void refresh() {
 
     }
+
+
 }

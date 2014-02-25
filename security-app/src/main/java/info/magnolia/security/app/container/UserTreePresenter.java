@@ -34,7 +34,6 @@
 package info.magnolia.security.app.container;
 
 import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
 import info.magnolia.ui.workbench.tree.TreePresenter;
 import info.magnolia.ui.workbench.tree.TreeView;
 
@@ -43,13 +42,7 @@ import info.magnolia.ui.workbench.tree.TreeView;
  */
 public class UserTreePresenter extends TreePresenter {
 
-    public UserTreePresenter(TreeView view, ComponentProvider componentProvider, HierarchicalJcrContainer container) {
-        super(view, componentProvider, container);
+    public UserTreePresenter(TreeView view, ComponentProvider componentProvider) {
+        super(view, componentProvider);
     }
-
-    // TODO JCRFREE - this has to be configured on the DataSourceManagr level!
-//    @Override
-//    protected HierarchicalJcrContainer createContainer(WorkbenchDefinition workbench) {
-//        return new UserContainer(workbench);
-//    }
 }

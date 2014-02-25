@@ -31,36 +31,16 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.search;
+package info.magnolia.security.app.datasource;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.workbench.list.ListPresenter;
-
-import javax.inject.Inject;
+import info.magnolia.ui.contentapp.datasource.JcrDataSourceDefinition;
 
 /**
- * The SearchPresenter is responsible for handling a list of search results according to the workbench definition.
+ * Definition of {@link UserDataSource}.
  */
-public class SearchPresenter extends ListPresenter implements SearchView.Listener {
+public class UserDataSourceDefinition extends JcrDataSourceDefinition {
 
-    @Inject
-    public SearchPresenter(SearchView view, ComponentProvider componentProvider) {
-        super(view, componentProvider);
+    public UserDataSourceDefinition() {
+        setImplementationClass(UserDataSource.class);
     }
-
-    @Override
-    public SearchJcrContainer getContainer() {
-        return (SearchJcrContainer) super.getContainer();
-    }
-
-    public void search(String fulltextExpr) {
-        getContainer().setFullTextExpression(fulltextExpr);
-        refresh();
-    }
-
-    public void clear() {
-        getContainer().setFullTextExpression(null);
-        refresh();
-    }
-
 }

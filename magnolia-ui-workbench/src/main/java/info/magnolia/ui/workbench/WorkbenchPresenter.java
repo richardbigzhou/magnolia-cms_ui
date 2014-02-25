@@ -61,8 +61,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Container;
-
 /**
  * The WorkbenchPresenter is responsible for creating, configuring and updating the workbench view, as well as handling its interaction.
  */
@@ -103,10 +101,10 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
 
         // add content views
         for (final ContentPresenterDefinition presenterDefinition : workbenchDefinition.getContentViews()) {
-            ContentPresenter presenter = null;
+            ContentPresenter presenter;
             Class<? extends ContentPresenter> presenterClass = presenterDefinition.getImplementationClass();
             if (presenterClass != null) {
-                presenter = newPresenterInstance(componentProvider, imageProviderDefinition, presenterClass, dataSource.getContainerForViewType(presenterDefinition.getViewType()));
+                presenter = newPresenterInstance(componentProvider, imageProviderDefinition, presenterClass);
                 contentPresenters.put(presenterDefinition.getViewType(), presenter);
                 ContentView contentView = presenter.start(workbenchDefinition, eventBus, presenterDefinition.getViewType(), dataSource);
 
@@ -138,7 +136,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
     }
 
     public Object resolveWorkbenchRoot() {
-        return dataSource.getRootItemId();
+        return dataSource.getDefaultItemId();
     }
 
     protected void sanityCheck(WorkbenchDefinition workbenchDefinition) {
@@ -151,18 +149,13 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         }
     }
 
-    protected ContentPresenter newPresenterInstance(ComponentProvider componentProvider, ImageProviderDefinition imageProviderDefinition, Class<? extends ContentPresenter> presenterClass, Container dataSource) {
+    protected ContentPresenter newPresenterInstance(ComponentProvider componentProvider, ImageProviderDefinition imageProviderDefinition, Class<? extends ContentPresenter> presenterClass) {
         ContentPresenter presenter;
-
         List<Object> args = new ArrayList<Object>();
         args.add(componentProvider);
         if (imageProviderDefinition != null) {
             ImageProvider imageProvider = componentProvider.newInstance(imageProviderDefinition.getImageProviderClass(), imageProviderDefinition);
             args.add(imageProvider);
-        }
-
-        if (dataSource != null) {
-            args.add(dataSource);
         }
 
         presenter = componentProvider.newInstance(presenterClass, args.toArray(new Object[args.size()]));
@@ -225,7 +218,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         final List<Object> selectedIds = filterExistingItems(itemIds);
         // restore selection
         if (selectedIds.isEmpty()) {
-            Object workbenchRootItemId = dataSource.getItemIdFromPath(getWorkbenchDefinition().getPath());
+            Object workbenchRootItemId = dataSource.getItemIdByUrlFragment(getWorkbenchDefinition().getPath());
             selectedIds.add(workbenchRootItemId);
         }
 
@@ -240,7 +233,7 @@ public class WorkbenchPresenter implements WorkbenchView.Listener {
         Iterator<Object> it = itemIds.iterator();
         while (it.hasNext()) {
             Object itemId = it.next();
-            if (dataSource.itemExists(itemId)) {
+            if (dataSource.hasItem(itemId)) {
                 filteredIds.add(itemId);
             } else {
                 WorkbenchDefinition def = getWorkbenchDefinition();

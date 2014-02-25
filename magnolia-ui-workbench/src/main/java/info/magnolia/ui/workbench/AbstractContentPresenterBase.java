@@ -35,6 +35,7 @@ package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
 import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.vaadin.integration.datasource.ContainerConfiguration;
 import info.magnolia.ui.vaadin.integration.datasource.DataSource;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
 import info.magnolia.ui.workbench.definition.ContentPresenterDefinition;
@@ -113,7 +114,7 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
 
     @Override
     public void onItemSelection(Set<Object> itemIds) {
-        Object rootItemId = dataSource.getRootItemId();
+        Object rootItemId = dataSource.getDefaultItemId();
         if (itemIds == null || itemIds.isEmpty()) {
             log.debug("Got null com.vaadin.data.Item. ItemSelectedEvent will be fired with null path.");
             List<Object> ids = new ArrayList<Object>(1);
@@ -238,5 +239,29 @@ public abstract class AbstractContentPresenterBase implements ContentPresenter, 
     @Override
     public void expand(Object itemId) {}
 
+    protected ContainerConfiguration prepareContainerConfiguration(ContentPresenterDefinition presenterDefinition) {
+        ContainerConfiguration config = new ContainerConfiguration();
+        config.setViewTypeId(presenterDefinition.getViewType());
+        for (ColumnDefinition column : presenterDefinition.getColumns()) {
+            String propertyId = column.getPropertyName() != null ? column.getPropertyName() : column.getName();
+            config.addProperty(propertyId, column.getType());
+            config.addSortableProperty(propertyId);
+        }
+        return config;
+    }
+
     protected abstract Container getContainer();
+
+
+    protected ContentPresenterDefinition getPresenterDefinition() {
+        Iterator<ContentPresenterDefinition> viewsIterator = workbenchDefinition.getContentViews().iterator();
+        while (viewsIterator.hasNext()) {
+            ContentPresenterDefinition contentPresenterDefinition = viewsIterator.next();
+            String viewType = contentPresenterDefinition.getViewType();
+            if (viewType != null && viewType.equals(viewTypeName)) {
+                return contentPresenterDefinition;
+            }
+        }
+        return null;
+    }
 }

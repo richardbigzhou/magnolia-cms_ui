@@ -65,16 +65,16 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
     private static final Logger log = LoggerFactory.getLogger(TreePresenter.class);
 
     @Inject
-    public TreePresenter(TreeView view, ComponentProvider componentProvider, HierarchicalJcrContainer container) {
-        super(view, componentProvider, container);
+    public TreePresenter(TreeView view, ComponentProvider componentProvider) {
+        super(view, componentProvider);
     }
 
     @Override
-    public TreeView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName, DataSource dataSource) {
-        TreeView view = (TreeView) super.start(workbench, eventBus, viewTypeName, dataSource);
+    public TreeView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName, DataSource dataSource) {
+        TreeView view = (TreeView) super.start(workbenchDefinition, eventBus, viewTypeName, dataSource);
 
         // inplace-editing
-        if (workbench.isEditable()) {
+        if (workbenchDefinition.isEditable()) {
 
             List<Object> editableColumns = new ArrayList<Object>();
 
@@ -92,7 +92,7 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
         }
 
         // Drag and Drop
-        Class<? extends DropConstraint> dropConstraintClass = workbench.getDropConstraintClass();
+        Class<? extends DropConstraint> dropConstraintClass = workbenchDefinition.getDropConstraintClass();
         if (dropConstraintClass != null) {
             DropConstraint constraint = getComponentProvider().newInstance(dropConstraintClass);
             DropHandler dropHandler = new TreeViewDropHandler((TreeTable) view.asVaadinComponent(), constraint);
@@ -117,7 +117,7 @@ public class TreePresenter extends ListPresenter implements TreeView.Listener {
         }
 
         // Clear preOrder cache of itemIds in case node was renamed
-        getContainer().fireItemSetChange();
+        refresh();
     }
 
     @Override
