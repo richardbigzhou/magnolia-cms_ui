@@ -31,18 +31,33 @@
  * intact.
  *
  */
-package info.magnolia.security.app.datasource;
+package info.magnolia.ui.contentapp.datasource;
 
-import info.magnolia.ui.contentapp.datasource.JcrDataSourceDefinition;
-import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
+import info.magnolia.ui.vaadin.integration.datasource.ContainerProvider;
+import info.magnolia.ui.workbench.thumbnail.JcrThumbnailContainerConfiguration;
+import info.magnolia.ui.workbench.thumbnail.ThumbnailContainer;
+
+import javax.inject.Inject;
 
 /**
- * Definition of {@link info.magnolia.ui.vaadin.integration.datasource.DataSource} used in Role sub-app
- * of Security app.
+ * Creates an instance of {@link ThumbnailContainer}.
  */
-public class RoleDataSourceDefinition extends JcrDataSourceDefinition {
+public class JcrThumbnailContainerProvider implements ContainerProvider<ThumbnailContainer, JcrThumbnailContainerConfiguration> {
 
-    public RoleDataSourceDefinition() {
-        addContainerProvider(TreePresenterDefinition.VIEW_TYPE, RoleContainerProvider.class);
+    private JcrDataSource dataSource;
+
+    @Inject
+    public JcrThumbnailContainerProvider(JcrDataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    @Override
+    public ThumbnailContainer createContainer(JcrThumbnailContainerConfiguration configuration) {
+        JcrThumbnailContainerConfiguration thumbnailConfig = configuration;
+        ThumbnailContainer c = new ThumbnailContainer(dataSource.getWorkbenchDefinition(), thumbnailConfig.getImageProvider());
+        c.setThumbnailHeight(thumbnailConfig.getThumbnailHeight());
+        c.setThumbnailWidth(thumbnailConfig.getThumbnailWidth());
+        c.setWorkspaceName(dataSource.getWorkbenchDefinition().getWorkspace());
+        return c;
     }
 }

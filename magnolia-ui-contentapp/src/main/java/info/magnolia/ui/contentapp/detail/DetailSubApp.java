@@ -185,7 +185,7 @@ public class DetailSubApp extends BaseSubApp<ContentSubAppView> {
                         // Item still exists: update location if necessary
                         else {
                             String currentNodePath = getCurrentLocation().getNodePath();
-                            String itemPath = dataSource.getItemUrlFragmentPath(itemId);
+                            String itemPath = dataSource.getItemUrlFragment(itemId);
                             if (!currentNodePath.equals(itemPath)) {
                                 DetailLocation location = DetailLocation.wrap(getSubAppContext().getLocation());
                                 location.updateNodePath(itemPath);

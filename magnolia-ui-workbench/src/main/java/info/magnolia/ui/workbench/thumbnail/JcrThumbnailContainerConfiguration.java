@@ -31,18 +31,51 @@
  * intact.
  *
  */
-package info.magnolia.security.app.datasource;
+package info.magnolia.ui.workbench.thumbnail;
 
-import info.magnolia.ui.contentapp.datasource.JcrDataSourceDefinition;
-import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
+import info.magnolia.ui.imageprovider.ImageProvider;
+import info.magnolia.ui.vaadin.integration.datasource.ContainerConfiguration;
 
 /**
- * Definition of {@link info.magnolia.ui.vaadin.integration.datasource.DataSource} used in Role sub-app
- * of Security app.
+ * Created with IntelliJ IDEA.
+ * User: sasha
+ * Date: 27/02/14
+ * Time: 09:43
+ * To change this template use File | Settings | File Templates.
  */
-public class RoleDataSourceDefinition extends JcrDataSourceDefinition {
+public class JcrThumbnailContainerConfiguration extends ContainerConfiguration {
 
-    public RoleDataSourceDefinition() {
-        addContainerProvider(TreePresenterDefinition.VIEW_TYPE, RoleContainerProvider.class);
+    private ImageProvider imageProvider;
+
+    private int thumbnailHeight;
+
+    private int thumbnailWidth;
+
+    public JcrThumbnailContainerConfiguration() {
+        setViewTypeId(ThumbnailPresenterDefinition.VIEW_TYPE);
+    }
+
+    public ImageProvider getImageProvider() {
+        return imageProvider;
+    }
+
+    public void setImageProvider(ImageProvider imageProvider) {
+        this.imageProvider = imageProvider;
+    }
+
+    public int getThumbnailHeight() {
+        return thumbnailHeight;
+    }
+
+    public void setThumbnailHeight(int thumbnailHeight) {
+        this.thumbnailHeight = thumbnailHeight;
+    }
+
+    public int getThumbnailWidth() {
+        return thumbnailWidth;
+    }
+
+    public void setThumbnailWidth(int thumbnailWidth) {
+        this.thumbnailWidth = thumbnailWidth;
     }
 }

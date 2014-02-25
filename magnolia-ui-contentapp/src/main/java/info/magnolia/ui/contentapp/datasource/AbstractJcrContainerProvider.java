@@ -36,34 +36,51 @@ package info.magnolia.ui.contentapp.datasource;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.vaadin.integration.datasource.ContainerConfiguration;
 import info.magnolia.ui.vaadin.integration.datasource.ContainerProvider;
-import info.magnolia.ui.vaadin.integration.datasource.DataSource;
-import info.magnolia.ui.vaadin.integration.datasource.DataSourceDefinition;
+import info.magnolia.ui.workbench.container.AbstractJcrContainer;
+import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
-import com.vaadin.data.Container;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
- * Abstract implementation of {@link info.magnolia.ui.vaadin.integration.datasource.DataSource}.
+ * Abstract implementation of {@link ContainerProvider} for JCR-based containers.
+ * @param <T> Type of JCR-based Vaadin container.
  */
-public abstract class AbstractDataSource implements DataSource {
+public class AbstractJcrContainerProvider<T extends AbstractJcrContainer> implements ContainerProvider<T, ContainerConfiguration> {
 
-    private DataSourceDefinition dataSourceDefinition;
+    private JcrDataSource dataSource;
+
+    private Class<T> clazz;
 
     private ComponentProvider componentProvider;
 
-    public AbstractDataSource(DataSourceDefinition dataSourceDefinition, ComponentProvider componentProvider) {
-        this.dataSourceDefinition = dataSourceDefinition;
+
+    public AbstractJcrContainerProvider(JcrDataSource dataSource, Class<T> clazz, ComponentProvider componentProvider) {
+        this.dataSource = dataSource;
+        this.clazz = clazz;
         this.componentProvider = componentProvider;
     }
 
     @Override
-    public Container createContentViewContainer(ContainerConfiguration configuration) {
-        Class<? extends ContainerProvider> containerProviderClass = dataSourceDefinition.getContainerProviders().get(configuration.getViewTypeId());
-        if (containerProviderClass == null) {
-            containerProviderClass = getDefaultContainerProviderClass();
-        }
-        ContainerProvider provider = componentProvider.newInstance(containerProviderClass, this, dataSourceDefinition, componentProvider);
-        return provider.createContainer(configuration);
+    public T createContainer(ContainerConfiguration configuration) {
+        T c = doCreateJcrContainer(dataSource.getWorkbenchDefinition());
+        configureContainer(c, configuration);
+        return c;
     }
 
-    protected abstract Class<? extends ContainerProvider> getDefaultContainerProviderClass();
+    protected T doCreateJcrContainer(WorkbenchDefinition workbenchDefinition) {
+        return componentProvider.newInstance(clazz, workbenchDefinition);
+    }
+
+    protected void configureContainer(AbstractJcrContainer c, ContainerConfiguration config) {
+        Iterator<Map.Entry<Object, Object>> entryIt = config.getPropertyTypes().entrySet().iterator();
+        while (entryIt.hasNext()) {
+            Map.Entry<Object, Object> entry = entryIt.next();
+            c.addContainerProperty(entry.getKey(), (Class)entry.getValue(), null);
+        }
+
+        for (Object sortableProperty : config.getSortableProperties()) {
+            c.addSortableProperty(String.valueOf(sortableProperty));
+        }
+    }
 }

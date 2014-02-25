@@ -31,35 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.security.app.datasource;
+package info.magnolia.ui.contentapp.datasource;
 
-import info.magnolia.cms.core.version.VersionManager;
-import info.magnolia.security.app.container.UserContainer;
-import info.magnolia.ui.api.app.SubAppContext;
-import info.magnolia.ui.contentapp.datasource.JcrDataSource;
-import info.magnolia.ui.vaadin.integration.datasource.ContainerConfiguration;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
 
 import javax.inject.Inject;
 
-import com.vaadin.data.Container;
-
 /**
- * {@link JcrDataSource} extension used by Users/System users sub-apps of Security app.
+ * Creates an instance of {@link HierarchicalJcrContainer}.
  */
-public class UserDataSource extends JcrDataSource {
+public class HierarchicalJcrContainerProvider extends AbstractJcrContainerProvider<HierarchicalJcrContainer> {
 
     @Inject
-    public UserDataSource(SubAppContext subAppContext, VersionManager versionManager) {
-        super(subAppContext, versionManager);
-    }
-
-    @Override
-    public Container createContentViewContainer(ContainerConfiguration config) {
-        if (TREEVIEW_ID.equalsIgnoreCase(config.getViewTypeId())) {
-            UserContainer userContainer = new UserContainer(getWorkbenchDefinition());
-            configureContainer(userContainer, config);
-            return userContainer;
-        }
-        return super.createContentViewContainer(config);
+    public HierarchicalJcrContainerProvider(JcrDataSource dataSource, ComponentProvider componentProvider) {
+        super(dataSource, HierarchicalJcrContainer.class, componentProvider);
     }
 }

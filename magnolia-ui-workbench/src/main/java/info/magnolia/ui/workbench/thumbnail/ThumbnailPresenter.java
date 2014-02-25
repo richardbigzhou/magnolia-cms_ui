@@ -39,6 +39,7 @@ import info.magnolia.ui.imageprovider.ImageProvider;
 import info.magnolia.ui.vaadin.integration.datasource.DataSource;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.ContentView;
+import info.magnolia.ui.workbench.container.Refreshable;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
 
     private final ImageProvider imageProvider;
 
-    private ThumbnailContainer container;
+    private Container container;
 
     @Inject
     public ThumbnailPresenter(final ThumbnailView view, final ImageProvider imageProvider, ComponentProvider componentProvider) {
@@ -76,10 +77,13 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     public ContentView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName, DataSource dataSource) {
         super.start(workbench, eventBus, viewTypeName, dataSource);
 
-        container = new ThumbnailContainer(workbench, imageProvider);
-        container.setWorkspaceName(workbench.getWorkspace());
-        container.setThumbnailHeight(73);
-        container.setThumbnailWidth(73);
+        JcrThumbnailContainerConfiguration configuration = new JcrThumbnailContainerConfiguration();
+        configuration.setThumbnailHeight(73);
+        configuration.setThumbnailWidth(73);
+        configuration.setImageProvider(imageProvider);
+
+        container = dataSource.createContentViewContainer(configuration);
+
 
         view.setListener(this);
         view.setContainer(container);
@@ -90,7 +94,9 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
 
     @Override
     public void refresh() {
-        container.refresh();
+        if (container instanceof Refreshable) {
+            ((Refreshable)container).refresh();
+        }
         view.refresh();
     }
 

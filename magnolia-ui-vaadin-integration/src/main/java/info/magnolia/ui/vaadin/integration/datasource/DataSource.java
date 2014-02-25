@@ -37,20 +37,64 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 
 /**
- * Simple component capable of serializing item id to string, fetching Vaadin {@link Item} by id
- * and vice versa.
+ * Simple stateless component used to bridge arbitrary object by their identifier to a Vaadin {@link Item}
+ * and vice-versa.
  */
 public interface DataSource {
 
-    String getItemUrlFragmentPath(Object itemId);
+    /**
+     * Convert an item id (arbitrary object) to its string representation which can be
+     * appended to a URL fragment and later be used to fetch the item id back.
+     * @see DataSource#getItemIdByUrlFragment(java.lang.String).
+     *
+     * @param itemId id of an item to be converted to a string representation.
+     * @return string representation of an item id.
+     */
+    String getItemUrlFragment(Object itemId);
 
-    Object getItemIdByUrlFragment(String strPath);
+    /**
+     * Fetch item id from its string representation. Used primarily for restoring selection in views
+     * from URL fragments.
+     *
+     * @param urlFragment URL fragment that points to an item.
+     * @return item id that corresponds to the URL fragment.
+     */
+    Object getItemIdByUrlFragment(String urlFragment);
 
+    /**
+     * Get the default item id which for instance could be used as a view selection if
+     * no actual item is selected. Most common example of such an item is a root node of
+     * the tree hierarchy.
+     *
+     * @return default item id.
+     */
     Object getDefaultItemId();
 
+    /**
+     * Fetch Vaadin {@link Item} by its id. Such item is not bound to any container and
+     * can eventually be used in actions for editing.
+     *
+     * @param itemId item id.
+     * @return Vaadin {@link Item} that corresponds to the id.
+     */
     Item getItem(Object itemId);
 
+    /**
+     * Check whether current {@link DataSource} is capable of fetching a Vaadin {@link Item}
+     * with a specific id.
+     *
+     * @param itemId id of a Vaadin {@link Item} to look up.
+     * @return true if such a Vaadin {@link Item} exists, false - otherwise.
+     */
     boolean hasItem(Object itemId);
 
+    /**
+     * Create a Vaadin {@link Container} data source for a tabular or a select Vaadin component.
+     * Should typically create a container for read operations.
+     *
+     * @param configuration configuration object that keeps the essential information
+     * about container (e.g. property ids and their types).
+     * @return Vaadin {@link Container} created n the basis of the provided configuration.
+     */
     Container createContentViewContainer(ContainerConfiguration configuration);
 }

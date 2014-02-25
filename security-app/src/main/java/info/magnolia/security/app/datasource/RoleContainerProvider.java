@@ -33,16 +33,24 @@
  */
 package info.magnolia.security.app.datasource;
 
-import info.magnolia.ui.contentapp.datasource.JcrDataSourceDefinition;
-import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.security.app.container.RoleContainer;
+import info.magnolia.ui.contentapp.datasource.AbstractJcrContainerProvider;
+import info.magnolia.ui.contentapp.datasource.JcrDataSource;
+
+import javax.inject.Inject;
 
 /**
- * Definition of {@link info.magnolia.ui.vaadin.integration.datasource.DataSource} used in Role sub-app
- * of Security app.
+ * Created with IntelliJ IDEA.
+ * User: sasha
+ * Date: 27/02/14
+ * Time: 00:10
+ * To change this template use File | Settings | File Templates.
  */
-public class RoleDataSourceDefinition extends JcrDataSourceDefinition {
+public class RoleContainerProvider extends AbstractJcrContainerProvider {
 
-    public RoleDataSourceDefinition() {
-        addContainerProvider(TreePresenterDefinition.VIEW_TYPE, RoleContainerProvider.class);
+    @Inject
+    public RoleContainerProvider(JcrDataSource dataSource, ComponentProvider componentProvider) {
+        super(dataSource, RoleContainer.class, componentProvider);
     }
 }

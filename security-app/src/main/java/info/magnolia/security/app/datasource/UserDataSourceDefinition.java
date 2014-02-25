@@ -34,13 +34,16 @@
 package info.magnolia.security.app.datasource;
 
 import info.magnolia.ui.contentapp.datasource.JcrDataSourceDefinition;
+import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 /**
- * Definition of {@link UserDataSource}.
+ * Definition of {@link info.magnolia.ui.vaadin.integration.datasource.DataSource} extension used
+ * in Users/System Users sub-apps of Security app.
  */
 public class UserDataSourceDefinition extends JcrDataSourceDefinition {
 
     public UserDataSourceDefinition() {
-        setImplementationClass(UserDataSource.class);
+        addContainerProvider(TreePresenterDefinition.VIEW_TYPE, UserContainerProvider.class);
     }
 }
+

@@ -142,7 +142,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
         if (!dataSource.hasItem(selectedId)) {
             // nothing is selected at the moment
         } else {
-            location.updateNodePath(dataSource.getItemUrlFragmentPath(selectedId));
+            location.updateNodePath(dataSource.getItemUrlFragment(selectedId));
         }
     }
 
@@ -188,7 +188,7 @@ public class BrowserSubApp extends BaseSubApp<ContentSubAppView> {
      * @see Location
      */
     protected void restoreBrowser(final BrowserLocation location) {
-        String workbenchRoot = dataSource.getItemUrlFragmentPath(dataSource.getDefaultItemId());
+        String workbenchRoot = dataSource.getItemUrlFragment(dataSource.getDefaultItemId());
         String path = ("/".equals(workbenchRoot) ? "" : workbenchRoot) + location.getNodePath();
         String viewType = location.getViewType();
 

@@ -36,11 +36,12 @@ package info.magnolia.ui.contentapp.datasource;
 import info.magnolia.cms.core.version.VersionManager;
 import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.jcr.util.SessionUtil;
+import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor;
 import info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor;
-import info.magnolia.ui.vaadin.integration.datasource.ContainerConfiguration;
+import info.magnolia.ui.vaadin.integration.datasource.ContainerProvider;
 import info.magnolia.ui.vaadin.integration.datasource.SupportsCreation;
 import info.magnolia.ui.vaadin.integration.datasource.SupportsVersions;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
@@ -48,17 +49,11 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
-import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
-import info.magnolia.ui.workbench.list.FlatJcrContainer;
-import info.magnolia.ui.workbench.search.SearchJcrContainer;
-import info.magnolia.ui.workbench.tree.HierarchicalJcrContainer;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.jcr.Node;
@@ -70,7 +65,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 
 /**
@@ -78,8 +72,6 @@ import com.vaadin.data.Item;
  */
 public class JcrDataSource extends AbstractDataSource implements SupportsVersions, SupportsCreation {
 
-    public static final String TREEVIEW_ID = "treeview";
-    public static final String SEARCHVIEW_ID = "searchview";
     private Logger log = LoggerFactory.getLogger(getClass());
 
     private SubAppContext subAppContext;
@@ -87,14 +79,14 @@ public class JcrDataSource extends AbstractDataSource implements SupportsVersion
     private VersionManager versionManager;
 
     @Inject
-    public JcrDataSource(SubAppContext subAppContext, final VersionManager versionManager) {
-        super();
+    public JcrDataSource(SubAppContext subAppContext, final VersionManager versionManager, JcrDataSourceDefinition definition, ComponentProvider componentProvider) {
+        super(definition, componentProvider);
         this.subAppContext = subAppContext;
         this.versionManager = versionManager;
     }
 
     @Override
-    public String getItemUrlFragmentPath(Object itemId) {
+    public String getItemUrlFragment(Object itemId) {
         try {
             javax.jcr.Item selected = JcrItemUtil.getJcrItem(getWorkspace(), JcrItemUtil.parseNodeIdentifier(String.valueOf(itemId)));
             String path = getPath();
@@ -107,9 +99,9 @@ public class JcrDataSource extends AbstractDataSource implements SupportsVersion
 
 
     @Override
-    public Object getItemIdByUrlFragment(String strPath) {
+    public Object getItemIdByUrlFragment(String urlFragment) {
         try {
-            return JcrItemUtil.getItemId(getWorkspace(), strPath);
+            return JcrItemUtil.getItemId(getWorkspace(), urlFragment);
         } catch (RepositoryException e) {
             log.error("Failed to obtain JCR id for fragment: " + e.getMessage(), e);
             return null;
@@ -261,30 +253,7 @@ public class JcrDataSource extends AbstractDataSource implements SupportsVersion
     }
 
     @Override
-    public Container createContentViewContainer(ContainerConfiguration config) {
-        AbstractJcrContainer c;
-        if (TREEVIEW_ID.equalsIgnoreCase(config.getViewTypeId())) {
-            c = new HierarchicalJcrContainer(getWorkbenchDefinition());
-        } else if (SEARCHVIEW_ID.equalsIgnoreCase(config.getViewTypeId())) {
-            c=  new SearchJcrContainer(getWorkbenchDefinition());
-        } else {
-            c = new FlatJcrContainer(getWorkbenchDefinition());
-        }
-
-        configureContainer(c, config);
-
-        return c;
-    }
-
-    protected void configureContainer(AbstractJcrContainer c, ContainerConfiguration config) {
-        Iterator<Map.Entry<Object, Object>> entryIt = config.getPropertyTypes().entrySet().iterator();
-        while (entryIt.hasNext()) {
-            Map.Entry<Object, Object> entry = entryIt.next();
-            c.addContainerProperty(entry.getKey(), (Class)entry.getValue(), null);
-        }
-
-        for (Object sortableProperty : config.getSortableProperties()) {
-            c.addSortableProperty(String.valueOf(sortableProperty));
-        }
+    protected Class<? extends ContainerProvider> getDefaultContainerProviderClass() {
+        return FlatJcrContainerProvider.class;
     }
 }

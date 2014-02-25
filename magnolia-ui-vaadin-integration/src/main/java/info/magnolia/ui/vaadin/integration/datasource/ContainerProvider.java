@@ -31,18 +31,14 @@
  * intact.
  *
  */
-package info.magnolia.security.app.datasource;
+package info.magnolia.ui.vaadin.integration.datasource;
 
-import info.magnolia.ui.contentapp.datasource.JcrDataSourceDefinition;
-import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
+import com.vaadin.data.Container;
 
 /**
- * Definition of {@link info.magnolia.ui.vaadin.integration.datasource.DataSource} used in Role sub-app
- * of Security app.
+ * Instantiates a Vaadin {@link Container} instance based on configuration properties.
  */
-public class RoleDataSourceDefinition extends JcrDataSourceDefinition {
+public interface ContainerProvider<T extends Container, C extends ContainerConfiguration> {
 
-    public RoleDataSourceDefinition() {
-        addContainerProvider(TreePresenterDefinition.VIEW_TYPE, RoleContainerProvider.class);
-    }
+    public T createContainer(C configuration);
 }
