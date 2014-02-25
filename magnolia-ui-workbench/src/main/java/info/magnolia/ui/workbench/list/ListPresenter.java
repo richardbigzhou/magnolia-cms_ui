@@ -38,8 +38,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.vaadin.integration.datasource.DataSource;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.column.definition.ColumnDefinition;
-
-import info.magnolia.ui.workbench.container.AbstractJcrContainer;
+import info.magnolia.ui.workbench.container.Refreshable;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 
 import java.util.ArrayList;
@@ -48,6 +47,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import com.vaadin.data.Container;
+import com.vaadin.ui.Table;
+
 /**
  * The ListPresenter is responsible for creating, configuring and updating a list of items according to the workbench definition.
  */
@@ -55,22 +57,21 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
 
     protected final ListView view;
 
-    protected AbstractJcrContainer container;
+    protected Container container;
 
     @Inject
-    public ListPresenter(final ListView view, final ComponentProvider componentProvider, AbstractJcrContainer container) {
+    public ListPresenter(final ListView view, final ComponentProvider componentProvider) {
         super(componentProvider);
         this.view = view;
-        this.container = container;
     }
 
     @Override
-    public ListView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName, DataSource dataSource) {
-        super.start(workbench, eventBus, viewTypeName, dataSource);
-
-        //this.container = createContainer(workbench);
+    public ListView start(WorkbenchDefinition workbenchDefinition, EventBus eventBus, String viewTypeName, DataSource dataSource) {
+        super.start(workbenchDefinition, eventBus, viewTypeName, dataSource);
+        this.container = dataSource.createContentViewContainer(prepareContainerConfiguration(getPresenterDefinition()));
         view.setListener(this);
         view.setContainer(container);
+        ((Table)view.asVaadinComponent()).setVisibleColumns(new Object[]{});
 
         // build columns
         Iterator<ColumnDefinition> it = getColumnsIterator();
@@ -80,7 +81,6 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
 
             String propertyId = column.getPropertyName() != null ? column.getPropertyName() : column.getName();
             String title = column.getLabel();
-            container.addContainerProperty(propertyId, column.getType(), null);
 
             if (column.getWidth() > 0) {
                 view.addColumn(propertyId, title, column.getWidth());
@@ -92,10 +92,6 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
 
             if (column.getFormatterClass() != null) {
                 view.setColumnFormatter(propertyId, getComponentProvider().newInstance(column.getFormatterClass(), column));
-            }
-
-            if (column.isSortable()) {
-                container.addSortableProperty(propertyId);
             }
         }
 
@@ -114,12 +110,15 @@ public class ListPresenter extends AbstractContentPresenter implements ListView.
     @Override
     public void refresh() {
         // This will update the row count and display the newly created items.
-        container.refresh();
-        container.fireItemSetChange();
+        if (container instanceof Refreshable) {
+            ((Refreshable)container).refresh();
+        }
+
+        //container.fireItemSetChange();
     }
 
     @Override
-    protected AbstractJcrContainer getContainer() {
+    protected Container getContainer() {
         return container;
     }
 

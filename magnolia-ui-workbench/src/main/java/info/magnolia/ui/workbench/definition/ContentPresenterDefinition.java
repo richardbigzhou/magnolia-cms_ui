@@ -54,4 +54,5 @@ public interface ContentPresenterDefinition {
     String getIcon();
 
     boolean isActive();
+
 }

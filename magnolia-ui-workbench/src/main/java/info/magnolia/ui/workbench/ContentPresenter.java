@@ -53,7 +53,7 @@ public interface ContentPresenter {
 
     /**
      * Initializes the presenter with the workbench definition, eventBus and viewType name.
-     * 
+     *
      *
      * @param workbenchDefinition the workbench definition that defines which data to present
      * @param eventBus the event bus to fire e.g. selection events on

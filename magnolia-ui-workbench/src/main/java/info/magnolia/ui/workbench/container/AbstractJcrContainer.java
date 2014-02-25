@@ -78,7 +78,7 @@ import com.vaadin.data.Property;
  * Vaadin container that reads its items from a JCR repository. Implements a simple mechanism for lazy loading items
  * from a JCR repository and a cache for items and item ids.
  */
-public abstract class AbstractJcrContainer extends AbstractContainer implements Container.Sortable, Container.Indexed, Container.ItemSetChangeNotifier {
+public abstract class AbstractJcrContainer extends AbstractContainer implements Container.Sortable, Container.Indexed, Container.ItemSetChangeNotifier, Refreshable {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractJcrContainer.class);
 
@@ -686,10 +686,12 @@ public abstract class AbstractJcrContainer extends AbstractContainer implements 
      * Refreshes the container - clears all caches and resets size and offset. Does NOT remove sorting or filtering
      * rules!
      */
+    @Override
     public void refresh() {
         resetOffset();
         clearItemIndexes();
         updateSize();
+        fireItemSetChange();
     }
 
     protected void resetOffset() {

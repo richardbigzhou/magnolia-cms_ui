@@ -195,7 +195,9 @@ public class ListViewImpl implements ListView {
     public void addColumn(String propertyId, String title) {
         table.setColumnHeader(propertyId, title);
         List<Object> visibleColumns = new ArrayList<Object>(Arrays.asList(table.getVisibleColumns()));
-        visibleColumns.add(propertyId);
+        if (!visibleColumns.contains(propertyId)) {
+            visibleColumns.add(propertyId);
+        }
         table.setVisibleColumns(visibleColumns.toArray());
     }
 

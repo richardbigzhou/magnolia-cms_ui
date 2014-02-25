@@ -31,36 +31,35 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench.search;
+package info.magnolia.security.app.datasource;
 
-import info.magnolia.objectfactory.ComponentProvider;
-import info.magnolia.ui.workbench.list.ListPresenter;
+import info.magnolia.cms.core.version.VersionManager;
+import info.magnolia.security.app.container.RoleContainer;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.contentapp.datasource.JcrDataSource;
+import info.magnolia.ui.vaadin.integration.datasource.ContainerConfiguration;
 
 import javax.inject.Inject;
 
+import com.vaadin.data.Container;
+
 /**
- * The SearchPresenter is responsible for handling a list of search results according to the workbench definition.
+ * {@link JcrDataSource} extension used by Roles sub-app of Security app.
  */
-public class SearchPresenter extends ListPresenter implements SearchView.Listener {
+public class RoleDataSource extends JcrDataSource {
 
     @Inject
-    public SearchPresenter(SearchView view, ComponentProvider componentProvider) {
-        super(view, componentProvider);
+    public RoleDataSource(SubAppContext subAppContext, VersionManager versionManager) {
+        super(subAppContext, versionManager);
     }
 
     @Override
-    public SearchJcrContainer getContainer() {
-        return (SearchJcrContainer) super.getContainer();
+    public Container createContentViewContainer(ContainerConfiguration config) {
+        if (TREEVIEW_ID.equalsIgnoreCase(config.getViewTypeId())) {
+            RoleContainer roleContainer = new RoleContainer(getWorkbenchDefinition());
+            configureContainer(roleContainer, config);
+            return roleContainer;
+        }
+        return super.createContentViewContainer(config);
     }
-
-    public void search(String fulltextExpr) {
-        getContainer().setFullTextExpression(fulltextExpr);
-        refresh();
-    }
-
-    public void clear() {
-        getContainer().setFullTextExpression(null);
-        refresh();
-    }
-
 }
