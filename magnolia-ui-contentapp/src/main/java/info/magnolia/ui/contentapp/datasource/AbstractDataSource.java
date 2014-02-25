@@ -33,41 +33,13 @@
  */
 package info.magnolia.ui.contentapp.datasource;
 
-import info.magnolia.event.EventBus;
 import info.magnolia.ui.vaadin.integration.datasource.DataSource;
-import info.magnolia.ui.workbench.event.ViewTypeChangedEvent;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import com.vaadin.data.Container;
 
 /**
  * Abstract implementation of {@link info.magnolia.ui.vaadin.integration.datasource.DataSource}.
  */
-public abstract class AbstractDataSource implements DataSource, ViewTypeChangedEvent.Handler {
+public abstract class AbstractDataSource implements DataSource {
 
-    private Map<String, Container> subAppContainers = new HashMap<String, Container>();
-
-    protected AbstractDataSource(EventBus subAppEventEventBus) {
-        subAppEventEventBus.addHandler(ViewTypeChangedEvent.class, this);
-    }
-
-    public void registerContentView(String contentViewId, Container container) {
-        subAppContainers.put(contentViewId, container);
-    }
-
-    @Override
-    public Container getContainerForViewType(String contentViewId) {
-        return subAppContainers.get(contentViewId);
-    }
-
-    @Override
-    public void onViewChanged(ViewTypeChangedEvent event) {
-        doOnViewChanged(event.getViewType());
-    }
-
-    protected void doOnViewChanged(String viewType) {
-
+    public AbstractDataSource() {
     }
 }

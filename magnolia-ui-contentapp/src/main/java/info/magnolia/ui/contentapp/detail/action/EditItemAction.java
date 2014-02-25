@@ -84,7 +84,7 @@ public class EditItemAction extends AbstractAction<EditItemActionDefinition> {
 //                return;
 //            }
             Object itemId = getItemId(nodeItemToEdit);
-            final String path = dataSource.getItemPath(itemId);
+            final String path = dataSource.getItemUrlFragmentPath(itemId);
             DetailLocation location = new DetailLocation(getDefinition().getAppName(), getDefinition().getSubAppId(), DetailView.ViewType.EDIT, path, "");
             locationController.goTo(location);
 
