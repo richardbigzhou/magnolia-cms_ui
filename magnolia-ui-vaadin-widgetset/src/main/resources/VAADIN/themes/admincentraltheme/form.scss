@@ -11,13 +11,13 @@
 
 .form-content {
   overflow:hidden;
-	transition-property:height;
-	transition-duration:1s;
+  transition-property:height;
+  transition-duration:1s;
 }
 
 .form-content .v-shell-tabsheet-scroller {
-	position:static !important;
-	max-height:450px;
+  position:static !important;
+  max-height:450px;
 }
 .tablet .form-content .v-shell-tabsheet-scroller {max-height:385px;} /* Ensure form footer is visible on the iPad */
 
@@ -54,7 +54,7 @@
     vertical-align: middle;
 }
 .v-form-layout .v-form-field.textcodefield {
-	height : 200px;
+  height : 200px;
 }
 
 .form-error {
@@ -133,7 +133,7 @@ button.btn-form-help {
 
 /*vaadin delivers error message in html form - here we make sure it is at least inlined*/
 .validation-message-inline span > div {
-	display: inline-block;
+  display: inline-block;
 }
 
 .validation-message,.help-message {
@@ -335,6 +335,13 @@ fieldset {
 
 .v-magnolia-form.textarea-stretched .v-form-field-label {
   display: none;
+}
+
+.switchablefield {
+  & > .v-verticallayout > .v-spacing {
+    height: 2px;
+  }
+  padding-bottom: 4px;
 }
 
 }
