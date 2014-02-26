@@ -219,7 +219,7 @@ public class PagesEditorSubApp extends BaseSubApp<PagesEditorSubAppView> impleme
         } else if (element instanceof AreaElement) {
             AreaElement areaElement = (AreaElement) element;
 
-            if (areaElement.getAddible() != null && !areaElement.getAddible()) {
+            if (areaElement.getAddible() != null && !areaElement.getAddible() || StringUtils.isBlank(areaElement.getAvailableComponents())) {
                 actionbarPresenter.disable(PageEditorListener.ACTION_ADD_COMPONENT);
             } else {
                 actionbarPresenter.enable(PageEditorListener.ACTION_ADD_COMPONENT);
