@@ -81,8 +81,11 @@ public class SwitchableField extends AbstractCustomMultiField<SwitchableFieldDef
     @Override
     protected Component initContent() {
         // Initialize root
-        setSizeFull();
-        root.setSizeFull();
+        setWidth(100, Unit.PERCENTAGE);
+        setHeight(-1, Unit.PIXELS);
+        addStyleName("switchablefield");
+        root.setWidth(100, Unit.PERCENTAGE);
+        root.setHeight(-1, Unit.PIXELS);
         root.setSpacing(true);
 
         // Create and Add Select section
