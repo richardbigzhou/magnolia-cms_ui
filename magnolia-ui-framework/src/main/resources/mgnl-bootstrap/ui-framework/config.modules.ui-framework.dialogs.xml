@@ -154,13 +154,10 @@
       <sv:value>superuser</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-      <sv:value>2014-02-14T10:05:19.225+01:00</sv:value>
+      <sv:value>2013-07-01T16:52:49.792+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
       <sv:value>superuser</sv:value>
-    </sv:property>
-    <sv:property sv:name="modalityLevel" sv:type="String">
-      <sv:value>light</sv:value>
     </sv:property>
     <sv:node sv:name="actions">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -333,13 +330,10 @@
       <sv:value>superuser</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-      <sv:value>2014-02-19T16:04:37.563+01:00</sv:value>
+      <sv:value>2013-07-05T14:32:39.410+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
       <sv:value>superuser</sv:value>
-    </sv:property>
-    <sv:property sv:name="modalityLevel" sv:type="String">
-      <sv:value>light</sv:value>
     </sv:property>
     <sv:node sv:name="actions">
       <sv:property sv:name="jcr:primaryType" sv:type="Name">

@@ -9,6 +9,9 @@
   <sv:property sv:name="jcr:uuid" sv:type="String">
     <sv:value>0922c83e-dfa9-4dc9-8eb4-845c531b4a89</sv:value>
   </sv:property>
+  <sv:property sv:name="jcr:created" sv:type="Date">
+    <sv:value>2013-06-14T17:02:01.962+02:00</sv:value>
+  </sv:property>
   <sv:property sv:name="jcr:createdBy" sv:type="String">
     <sv:value>admin</sv:value>
   </sv:property>
@@ -19,13 +22,10 @@
     <sv:value>2012-06-11T13:54:31.240+02:00</sv:value>
   </sv:property>
   <sv:property sv:name="mgnl:lastModified" sv:type="Date">
-    <sv:value>2014-02-14T11:16:27.785+01:00</sv:value>
+    <sv:value>2013-06-14T17:21:45.068+02:00</sv:value>
   </sv:property>
   <sv:property sv:name="mgnl:lastModifiedBy" sv:type="String">
     <sv:value>superuser</sv:value>
-  </sv:property>
-  <sv:property sv:name="modalityLevel" sv:type="String">
-    <sv:value>light</sv:value>
   </sv:property>
   <sv:node sv:name="form">
     <sv:property sv:name="jcr:primaryType" sv:type="Name">
@@ -36,6 +36,9 @@
     </sv:property>
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>8930d3e2-15ad-4cc4-b6ef-50842070139a</sv:value>
+    </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-06-14T17:02:01.963+02:00</sv:value>
     </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
@@ -58,6 +61,9 @@
       </sv:property>
       <sv:property sv:name="jcr:uuid" sv:type="String">
         <sv:value>19699202-c433-4873-a43b-7d4759432c23</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:created" sv:type="Date">
+        <sv:value>2013-06-14T17:02:01.964+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -84,6 +90,9 @@
         <sv:property sv:name="jcr:uuid" sv:type="String">
           <sv:value>0e2fd3d5-f8af-4512-8273-ff3d8450ff92</sv:value>
         </sv:property>
+        <sv:property sv:name="jcr:created" sv:type="Date">
+          <sv:value>2013-06-14T17:02:01.964+02:00</sv:value>
+        </sv:property>
         <sv:property sv:name="jcr:createdBy" sv:type="String">
           <sv:value>admin</sv:value>
         </sv:property>
@@ -108,6 +117,9 @@
           </sv:property>
           <sv:property sv:name="jcr:uuid" sv:type="String">
             <sv:value>efec3dab-c53a-44ee-b9ff-46fcf2d889bc</sv:value>
+          </sv:property>
+          <sv:property sv:name="jcr:created" sv:type="Date">
+            <sv:value>2013-06-14T17:02:01.965+02:00</sv:value>
           </sv:property>
           <sv:property sv:name="jcr:createdBy" sv:type="String">
             <sv:value>admin</sv:value>
@@ -136,6 +148,9 @@
             </sv:property>
             <sv:property sv:name="class" sv:type="String">
               <sv:value>info.magnolia.pages.app.field.TemplateSelectorDefinition</sv:value>
+            </sv:property>
+            <sv:property sv:name="jcr:created" sv:type="Date">
+              <sv:value>2013-06-14T17:02:01.966+02:00</sv:value>
             </sv:property>
             <sv:property sv:name="jcr:createdBy" sv:type="String">
               <sv:value>admin</sv:value>
@@ -173,6 +188,9 @@
     <sv:property sv:name="jcr:uuid" sv:type="String">
       <sv:value>4d2256d0-d9d8-43ec-b9ca-aee8b0511a9a</sv:value>
     </sv:property>
+    <sv:property sv:name="jcr:created" sv:type="Date">
+      <sv:value>2013-06-14T17:02:01.948+02:00</sv:value>
+    </sv:property>
     <sv:property sv:name="jcr:createdBy" sv:type="String">
       <sv:value>admin</sv:value>
     </sv:property>
@@ -200,6 +218,9 @@
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:created" sv:type="Date">
+        <sv:value>2013-06-14T17:02:01.949+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>
@@ -229,6 +250,9 @@
       </sv:property>
       <sv:property sv:name="class" sv:type="String">
         <sv:value>info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition</sv:value>
+      </sv:property>
+      <sv:property sv:name="jcr:created" sv:type="Date">
+        <sv:value>2013-06-14T17:02:01.950+02:00</sv:value>
       </sv:property>
       <sv:property sv:name="jcr:createdBy" sv:type="String">
         <sv:value>admin</sv:value>

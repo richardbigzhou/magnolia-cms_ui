@@ -39,13 +39,11 @@ import info.magnolia.i18nsystem.setup.RemoveHardcodedI18nPropertiesFromDialogsTa
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.module.DefaultModuleVersionHandler;
 import info.magnolia.module.InstallContext;
-import info.magnolia.module.delta.ArrayDelegateTask;
 import info.magnolia.module.delta.BootstrapSingleModuleResource;
 import info.magnolia.module.delta.ChangeAllPropertiesWithCertainValueTask;
 import info.magnolia.module.delta.DeltaBuilder;
 import info.magnolia.module.delta.IsModuleInstalledOrRegistered;
 import info.magnolia.module.delta.MoveNodeTask;
-import info.magnolia.module.delta.NewPropertyTask;
 import info.magnolia.module.delta.NodeExistsDelegateTask;
 import info.magnolia.module.delta.PartialBootstrapTask;
 import info.magnolia.module.delta.RemoveNodeTask;
@@ -82,6 +80,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
 
 /**
  * Version handler for the Ui framework module.
@@ -143,15 +142,8 @@ public class UiFrameworkModuleVersionHandler extends DefaultModuleVersionHandler
                 .addTask(new NodeExistsDelegateTask("Bootstrap 'importZip' dialog it doesn't exists yet", "Bootstrap 'importZip' dialog it doesn't exists yet", RepositoryConstants.CONFIG, "/modules/ui-framework/dialog/importZip", null,
                         new PartialBootstrapTask("Bootstrap 'importZip' dialog", "Bootstraps 'importZip' dialog.", "/mgnl-bootstrap/ui-framework/config.modules.ui-framework.dialogs.xml", "dialogs/importZip")))
                 .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/utf-8", "label", "UTF-8"))
-                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/windows", "label", "CP437")));
-
-        register(DeltaBuilder.update("5.3", "")
-                .addTask(new ArrayDelegateTask("Make dialogs light", "Turns edit node name and edit folder name dialogs into light dialogs.",
-                        new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/rename",
-                                new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/rename", "modalityLevel", "light")),
-                        new NodeExistsDelegateTask("", "", RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/folder",
-                                new NewPropertyTask("", "", RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/folder", "modalityLevel", "light"))
-                        )));
+                .addTask(new SetPropertyTask(RepositoryConstants.CONFIG, "/modules/ui-framework/dialogs/importZip/form/tabs/import/fields/encoding/options/windows", "label", "CP437"))
+        );
 
     }
 

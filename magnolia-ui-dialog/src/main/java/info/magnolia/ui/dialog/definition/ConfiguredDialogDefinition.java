@@ -34,7 +34,6 @@
 package info.magnolia.ui.dialog.definition;
 
 import info.magnolia.ui.api.action.ActionDefinition;
-import info.magnolia.ui.api.overlay.OverlayLayer.ModalityLevel;
 import info.magnolia.ui.dialog.DialogPresenter;
 import info.magnolia.ui.dialog.actionarea.definition.ConfiguredEditorActionAreaDefinition;
 import info.magnolia.ui.dialog.actionarea.definition.EditorActionAreaDefinition;
@@ -62,10 +61,7 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
 
     private EditorActionAreaDefinition actionArea = new ConfiguredEditorActionAreaDefinition();
 
-    private ModalityLevel modalityLevel = ModalityLevel.STRONG;
-
-    public ConfiguredDialogDefinition() {
-    }
+    public ConfiguredDialogDefinition() {}
 
     @Override
     public String getId() {
@@ -123,17 +119,5 @@ public class ConfiguredDialogDefinition implements DialogDefinition {
 
     public void setActionArea(EditorActionAreaDefinition actionArea) {
         this.actionArea = actionArea;
-    }
-
-    /**
-     * @return the currently set {@link ModalityLevel}. If not set, it is {@link ModalityLevel#STRONG} by default.
-     */
-    @Override
-    public ModalityLevel getModalityLevel() {
-        return this.modalityLevel;
-    }
-
-    public void setModalityLevel(ModalityLevel modalityLevel) {
-        this.modalityLevel = modalityLevel;
     }
 }
