@@ -64,7 +64,7 @@ public class ThumbnailViewImpl implements ThumbnailView {
         thumbnailLayout.addThumbnailSelectionListener(new ThumbnailSelectionListener() {
 
             @Override
-            public void onThumbnailSelected(final String itemId) {
+            public void onThumbnailSelected(final Object itemId) {
                 Set<Object> items = new LinkedHashSet<Object>();
                 items.add(itemId);
                 listener.onItemSelection(items);
@@ -74,7 +74,7 @@ public class ThumbnailViewImpl implements ThumbnailView {
         thumbnailLayout.addDoubleClickListener(new ThumbnailDblClickListener() {
 
             @Override
-            public void onThumbnailDblClicked(final String itemId) {
+            public void onThumbnailDblClicked(final Object itemId) {
                 listener.onDoubleClick(itemId);
             }
         });
@@ -82,7 +82,7 @@ public class ThumbnailViewImpl implements ThumbnailView {
         thumbnailLayout.addRightClickListener(new ThumbnailRightClickListener() {
 
             @Override
-            public void onThumbnailRightClicked(final String itemId, int clickX, int clickY) {
+            public void onThumbnailRightClicked(final Object itemId, int clickX, int clickY) {
                 Set<Object> items = new LinkedHashSet<Object>();
                 items.add(itemId);
                 listener.onItemSelection(items);
@@ -101,7 +101,7 @@ public class ThumbnailViewImpl implements ThumbnailView {
         // ThumbnailLayout only supports single selection and because the client requests thumbnails we set the
         // selected itemId so it can update selection when that happens
         Object itemId = itemIds == null || itemIds.isEmpty() ? null : itemIds.get(0);
-        thumbnailLayout.setSelectedItemId((String)itemId);
+        thumbnailLayout.setSelectedItemId(itemId);
     }
 
     @Override

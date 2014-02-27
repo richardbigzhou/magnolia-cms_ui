@@ -266,7 +266,6 @@ public class BrowserPresenter implements ActionbarPresenter.Listener, BrowserVie
     /**
      * Synchronizes the underlying view to reflect the status extracted from the Location token, i.e. selected itemId,
      * view type and optional query (in case of a search view).
-     * TODO JCRFREE - consider generic id type here
      */
     public void resync(final List<Object> itemIds, final String viewType, final String query) {
         workbenchPresenter.resynch(itemIds, viewType, query);

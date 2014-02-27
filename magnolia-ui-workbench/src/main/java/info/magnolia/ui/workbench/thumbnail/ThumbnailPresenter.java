@@ -77,7 +77,7 @@ public class ThumbnailPresenter extends AbstractContentPresenter implements Thum
     public ContentView start(WorkbenchDefinition workbench, EventBus eventBus, String viewTypeName, DataSource dataSource) {
         super.start(workbench, eventBus, viewTypeName, dataSource);
 
-        JcrThumbnailContainerConfiguration configuration = new JcrThumbnailContainerConfiguration();
+        ThumbnailContainerConfiguration configuration = new ThumbnailContainerConfiguration();
         configuration.setThumbnailHeight(73);
         configuration.setThumbnailWidth(73);
         configuration.setImageProvider(imageProvider);

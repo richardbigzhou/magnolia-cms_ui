@@ -80,7 +80,7 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
         configuredWorkbench.setPath("/");
         configuredWorkbench.setNodeTypes(nodeTypes);
 
-        container = new ThumbnailContainer(configuredWorkbench, new DefaultImageProvider());
+        container = new ThumbnailContainer(new DefaultImageProvider(), new JcrThumbnailItemIdProvider(configuredWorkbench));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
         Node folderNode = NodeUtil.createPath(session.getRootNode(), "/content2/folderNode", NodeTypes.Folder.NAME);
         session.save();
         // WHEN
-        List<String> res = container.getAllIdentifiers(RepositoryConstants.CONFIG);
+        List<Object> res = container.getAllIdentifiers();
 
         // THEN
         assertNotNull(res);
@@ -112,7 +112,7 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
         Node folderNode = NodeUtil.createPath(session.getRootNode(), "/content2/folderNode", NodeTypes.Folder.NAME);
         session.save();
         // WHEN
-        List<String> res = container.getAllIdentifiers(RepositoryConstants.CONFIG);
+        List<Object> res = container.getAllIdentifiers();
 
         // THEN
         assertNotNull(res);
