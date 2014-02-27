@@ -34,18 +34,12 @@
 package info.magnolia.ui.workbench;
 
 import info.magnolia.event.EventBus;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
+import info.magnolia.ui.vaadin.integration.datasource.DataSource;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import java.util.Set;
 
 import javax.inject.Inject;
-import javax.jcr.RepositoryException;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
@@ -53,23 +47,22 @@ import com.vaadin.ui.Label;
 
 /**
  * The browser features a status bar at the bottom with selected path and item count information.
- * TODO JCRFREE - get rid of JcrItemAdapter dependency here.
  */
 public class WorkbenchStatusBarPresenter {
 
-    private final Logger log = LoggerFactory.getLogger(WorkbenchStatusBarPresenter.class);
-
     private final StatusBarView view;
+
+    private DataSource dataSource;
 
     private EventBus eventBus;
 
     private final Label selectionLabel = new Label();
 
-    private String workbenchRootPath;
 
     @Inject
-    public WorkbenchStatusBarPresenter(StatusBarView view) {
+    public WorkbenchStatusBarPresenter(StatusBarView view, DataSource dataSource) {
         this.view = view;
+        this.dataSource = dataSource;
     }
 
     private void bindHandlers() {
@@ -82,8 +75,7 @@ public class WorkbenchStatusBarPresenter {
         });
     }
 
-    public StatusBarView start(EventBus eventBus, WorkbenchDefinition workbenchDefinition) {
-        workbenchRootPath = StringUtils.defaultIfEmpty(workbenchDefinition.getPath(), "/");
+    public StatusBarView start(EventBus eventBus) {
 
         this.eventBus = eventBus;
 
@@ -95,29 +87,17 @@ public class WorkbenchStatusBarPresenter {
         return view;
     }
 
-    public void setSelectedItems(Set<Object> items) {
-        if (!items.isEmpty()) {
-            //setSelectedItem((JcrItemAdapter) items.get(0));
+    public void setSelectedItems(Set<Object> itemIds) {
+        if (!itemIds.isEmpty()) {
+            setSelectedItem(itemIds.iterator().next());
+        } else {
+            setSelectedItem(dataSource.getDefaultItemId());
         }
     }
 
-    public void setSelectedItem(JcrItemAdapter item) {
-        String newValue = "";
-        String newDescription = null;
-        if (item != null) {
-            javax.jcr.Item jcrItem = item.getJcrItem();
-            try {
-                newValue = jcrItem.getPath();
-
-                if (!workbenchRootPath.equals("/")) {
-                    newValue = StringUtils.removeStart(newValue, workbenchRootPath);
-                }
-
-                newDescription = newValue;
-            } catch (RepositoryException e) {
-                log.warn("Could not retrieve path from item with id " + item.getItemId(), e);
-            }
-        }
+    public void setSelectedItem(Object itemId) {
+        String newValue = dataSource.getItemUrlFragment(itemId);
+        String newDescription = newValue;
         selectionLabel.setValue(newValue);
         selectionLabel.setDescription(newDescription);
     }
