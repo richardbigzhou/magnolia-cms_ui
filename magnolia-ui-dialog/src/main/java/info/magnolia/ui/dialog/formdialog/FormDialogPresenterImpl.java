@@ -110,9 +110,9 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
         this.callback = callback;
         this.item = item;
 
-        getExecutor().setDialogDefinition(dialogDefinition);
+        getExecutor().setDialogDefinition(getDefinition());
 
-        buildView(dialogDefinition);
+        buildView((FormDialogDefinition) getDefinition());
 
         final OverlayCloser overlayCloser = uiContext.openOverlay(getView());
         getView().addDialogCloseHandler(new DialogCloseHandler() {
@@ -126,14 +126,12 @@ public class FormDialogPresenterImpl extends BaseDialogPresenter implements Form
     }
 
     private void buildView(FormDialogDefinition dialogDefinition) {
-        final FormDialogDefinition decoratedDialogDefinition = getI18nizer().decorate(dialogDefinition);
-        final Dialog dialog = new Dialog(decoratedDialogDefinition);
+        final Dialog dialog = new Dialog(dialogDefinition);
 
-        // setView(formBuilder.buildForm(dialogDefinition.getForm(), item, dialog)); // TODO check and delete/uncomment - and remove the next line
-        formBuilder.buildForm(getView(), decoratedDialogDefinition.getForm(), item, dialog);
+        formBuilder.buildForm(getView(), dialogDefinition.getForm(), item, dialog);
 
-        final String description = decoratedDialogDefinition.getDescription();
-        final String label = decoratedDialogDefinition.getLabel();
+        final String description = dialogDefinition.getDescription();
+        final String label = dialogDefinition.getLabel();
 
         if (StringUtils.isNotBlank(description) && !isMessageKey(description)) {
             getView().setDescription(description);
