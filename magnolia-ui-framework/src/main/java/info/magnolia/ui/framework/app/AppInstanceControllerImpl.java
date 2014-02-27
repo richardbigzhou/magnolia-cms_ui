@@ -52,12 +52,14 @@ import info.magnolia.ui.api.app.App;
 import info.magnolia.ui.api.app.AppContext;
 import info.magnolia.ui.api.app.AppController;
 import info.magnolia.ui.api.app.AppDescriptor;
+import info.magnolia.ui.api.app.AppEventBus;
 import info.magnolia.ui.api.app.AppInstanceController;
 import info.magnolia.ui.api.app.AppView;
 import info.magnolia.ui.api.app.SubApp;
 import info.magnolia.ui.api.app.SubAppContext;
 import info.magnolia.ui.api.app.SubAppDescriptor;
 import info.magnolia.ui.api.app.SubAppEventBus;
+import info.magnolia.ui.api.app.SubAppLifecycleEvent;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroup;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherGroupEntry;
 import info.magnolia.ui.api.app.launcherlayout.AppLauncherLayoutManager;
@@ -81,6 +83,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Provider;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -119,6 +123,8 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
 
     private MessagesManager messagesManager;
 
+    private EventBus eventBus;
+
     private ComponentProvider componentProvider;
 
     private App app;
@@ -135,12 +141,14 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
 
     @Inject
     public AppInstanceControllerImpl(ModuleRegistry moduleRegistry, AppController appController, LocationController locationController, Shell shell,
-            MessagesManager messagesManager, AppDescriptor appDescriptor, AppLauncherLayoutManager appLauncherLayoutManager, SystemMonitor systemMonitor, I18nizer i18nizer, SimpleTranslator i18n) {
+            MessagesManager messagesManager, AppDescriptor appDescriptor, AppLauncherLayoutManager appLauncherLayoutManager, SystemMonitor systemMonitor, I18nizer i18nizer,
+            SimpleTranslator i18n, EventBus eventBus) {
         this.moduleRegistry = moduleRegistry;
         this.appController = appController;
         this.locationController = locationController;
         this.shell = shell;
         this.messagesManager = messagesManager;
+        this.eventBus = eventBus;
         this.appDescriptor = i18nizer.decorate(appDescriptor);
         this.appLauncherLayoutManager = appLauncherLayoutManager;
         this.systemMonitor = systemMonitor;
@@ -247,6 +255,7 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
         if (subApps.containsKey(instanceId)) {
             SubAppContext subAppContext = subApps.get(instanceId).context;
             locationController.goTo(subAppContext.getLocation());
+            eventBus.fireEvent(new SubAppLifecycleEvent(subAppContext, SubAppLifecycleEvent.Type.FOCUSED));
         }
     }
 
@@ -279,6 +288,7 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
         subAppDetails.componentProvider.destroy();
         subAppDetails.eventBusProtector.resetEventBuses();
         subApps.remove(instanceId);
+        eventBus.fireEvent(new SubAppLifecycleEvent(subAppDetails.context, SubAppLifecycleEvent.Type.STOPPED));
     }
 
     @Override
@@ -381,6 +391,8 @@ public class AppInstanceControllerImpl extends AbstractUIContext implements AppC
 
             subApps.put(instanceId, subAppDetails);
         }
+
+        eventBus.fireEvent(new SubAppLifecycleEvent(subAppDetails.context, SubAppLifecycleEvent.Type.STARTED));
         return subAppContext;
     }
 

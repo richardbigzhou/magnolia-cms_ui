@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2010-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,27 +31,28 @@
  * intact.
  *
  */
-package info.magnolia.ui.contentapp;
+package info.magnolia.ui.vaadin.integration.dsmanager;
 
-import info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor;
-import info.magnolia.ui.contentapp.dsmanager.JcrDataSourceManager;
-import info.magnolia.ui.dialog.definition.ChooseDialogDefinition;
-import info.magnolia.ui.dialog.definition.ConfiguredChooseDialogDefinition;
-import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
+import com.vaadin.data.Container;
+import com.vaadin.data.Item;
 
 /**
- * Implementation of {@link ContentAppDescriptor}.
+ * Simple component capable of serializing item id to string, fetching Vaadin {@link Item} by id
+ * and vice versa.
  */
-public class ConfiguredContentAppDescriptor extends ConfiguredAppDescriptor implements ContentAppDescriptor {
+public interface DataSourceManager {
 
-    private ChooseDialogDefinition chooseDialog = new ConfiguredChooseDialogDefinition();
+    String serializeItemId(Object itemId);
 
-    @Override
-    public ChooseDialogDefinition getChooseDialog() {
-        return chooseDialog;
-    }
+    Object deserializeItemId(String strPath);
 
-    public void setChooseDialog(ChooseDialogDefinition chooseDialog) {
-        this.chooseDialog = chooseDialog;
-    }
+    Item getItemById(Object itemId);
+
+    Object getItemId(Item item);
+
+    Object getRootItemId();
+
+    boolean itemExists(Object itemId);
+
+    Container getContainerForViewType(String viewType);
 }

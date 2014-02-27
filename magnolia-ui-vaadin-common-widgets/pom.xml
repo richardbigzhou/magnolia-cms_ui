@@ -20,7 +20,7 @@
   <dependencies>
     <dependency>
       <groupId>info.magnolia.ui</groupId>
-      <artifactId>magnolia-ui-vaadin-integration</artifactId>
+      <artifactId>magnolia-ui-api</artifactId>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>

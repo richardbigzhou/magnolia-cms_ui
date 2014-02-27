@@ -335,11 +335,21 @@
       <implementation>info.magnolia.ui.form.validator.registry.FieldValidatorFactoryFactory</implementation>
     </component>
 
+    <!--<component>-->
+    <!--<type>info.magnolia.event.EventBus</type>-->
+    <!--<implementation>info.magnolia.event.SimpleEventBus</implementation>-->
+    <!--</component>-->
+  </components>
+
+  <components>
+    <id>subapp</id>
+
     <!-- Workbench -->
     <component>
       <type>info.magnolia.ui.workbench.WorkbenchPresenter</type>
       <implementation>info.magnolia.ui.workbench.WorkbenchPresenter</implementation>
     </component>
+
     <component>
       <type>info.magnolia.ui.workbench.WorkbenchView</type>
       <implementation>info.magnolia.ui.workbench.WorkbenchViewImpl</implementation>
@@ -364,15 +374,6 @@
       <type>info.magnolia.ui.workbench.StatusBarView</type>
       <implementation>info.magnolia.ui.workbench.StatusBarViewImpl</implementation>
     </component>
-
-    <!--<component>-->
-    <!--<type>info.magnolia.event.EventBus</type>-->
-    <!--<implementation>info.magnolia.event.SimpleEventBus</implementation>-->
-    <!--</component>-->
-  </components>
-
-  <components>
-    <id>subapp</id>
 
     <!-- Form -->
     <component>
