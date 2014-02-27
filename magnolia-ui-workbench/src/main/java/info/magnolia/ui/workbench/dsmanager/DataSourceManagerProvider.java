@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2011-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -31,56 +31,19 @@
  * intact.
  *
  */
-package info.magnolia.ui.workbench;
+package info.magnolia.ui.workbench.dsmanager;
 
-import info.magnolia.ui.api.view.View;
-
-import java.util.List;
-import java.util.Set;
-
-import com.vaadin.data.Item;
+import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.ui.vaadin.integration.dsmanager.DataSourceManager;
 
 /**
- * UI component that displays content in one of the supported view types (list, tree etc).
+ * Created with IntelliJ IDEA.
+ * User: sasha
+ * Date: 11/02/14
+ * Time: 23:24
+ * To change this template use File | Settings | File Templates.
  */
-public interface ContentView extends View {
+public interface DataSourceManagerProvider {
 
-    void setListener(ContentView.Listener listener);
-
-    /**
-     * Selects the items with given IDs in the content view.
-     *
-     * @param itemIds IDs
-     */
-    void select(List<Object> itemIds);
-
-    /**
-     * Expands an item if the view supports it.
-     *
-     * @param itemId ID
-     */
-    void expand(Object itemId);
-
-    void onShortcutKey(int keyCode, int[] modifierKeys);
-
-    /**
-     * Decides whether the user can select multiple items.
-     */
-    void setMultiselect(boolean multiselect);
-
-    /**
-     * Listener for the ContentView.
-     */
-    public interface Listener {
-
-        void onItemSelection(Set<Object> items);
-
-        void onDoubleClick(Object itemId);
-
-        void onRightClick(Object itemId, int clickX, int clickY);
-
-        void onShortcutKey(int keyCode, int... modifierKeys);
-
-        String getIcon(Item item);
-    }
+    DataSourceManager getDSManager();
 }

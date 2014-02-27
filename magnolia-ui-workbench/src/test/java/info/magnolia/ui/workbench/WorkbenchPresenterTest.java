@@ -71,7 +71,7 @@ public class WorkbenchPresenterTest extends MgnlTestCase {
         componentProvider = mock(ComponentProvider.class);
         doReturn(mock(ContentPresenter.class)).when(componentProvider).newInstance(any(Class.class), anyVararg());
 
-        presenter = new WorkbenchPresenter(view, componentProvider, statusBarPresenter);
+        presenter = new WorkbenchPresenter(view, componentProvider, statusBarPresenter, null);
         MockUtil.initMockContext();
         MockUtil.setSessionAndHierarchyManager(new MockSession(WORKSPACE));
     }

@@ -68,20 +68,21 @@ public interface ContentPresenter {
     /**
      * @return the selected item ids in the content view.
      */
-    List<String> getSelectedItemIds();
+    List<Object> getSelectedItemIds();
 
     /**
      * Sets the selected item ids for this presenter to react on, e.g. with keyboard shortcuts.
      */
-    void setSelectedItemIds(List<String> itemId);
+    void setSelectedItemIds(List<Object> itemId);
 
     /**
      * Selects the given items in the content view.
      */
-    void select(List<String> itemIds);
+    void select(List<Object> itemIds);
 
     /**
      * Make sure the given items are visible in the content view.
+     * @param itemId
      */
-    void expand(String itemId);
+    void expand(Object itemId);
 }
