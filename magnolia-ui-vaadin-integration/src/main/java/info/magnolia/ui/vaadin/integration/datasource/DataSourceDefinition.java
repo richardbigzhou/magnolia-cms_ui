@@ -33,10 +33,14 @@
  */
 package info.magnolia.ui.vaadin.integration.datasource;
 
+import java.util.Map;
+
 /**
  * Defines {@link DataSource}.
  */
 public interface DataSourceDefinition {
 
     Class<? extends DataSource> getImplementationClass();
+
+    Map<String, Class<? extends ContainerProvider>> getContainerProviders();
 }

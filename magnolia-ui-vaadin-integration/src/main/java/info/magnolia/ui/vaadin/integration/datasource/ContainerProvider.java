@@ -33,37 +33,12 @@
  */
 package info.magnolia.ui.vaadin.integration.datasource;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.vaadin.data.Container;
 
 /**
- * Defines {@link DataSource}.
+ * Instantiates a Vaadin {@link Container} instance based on configuration properties.
  */
-public class ConfiguredDataSourceDefinition implements DataSourceDefinition {
+public interface ContainerProvider<T extends Container, C extends ContainerConfiguration> {
 
-    private Class<? extends DataSource> implementationClass;
-
-    private Map<String, Class<? extends ContainerProvider>> containerProviders = new HashMap<String, Class<? extends ContainerProvider>>();
-
-    @Override
-    public Class<? extends DataSource> getImplementationClass() {
-        return implementationClass;
-    }
-
-    @Override
-    public Map<String, Class<? extends ContainerProvider>> getContainerProviders() {
-        return this.containerProviders;
-    }
-
-    public void setImplementationClass(Class<? extends DataSource> implementationClass) {
-        this.implementationClass = implementationClass;
-    }
-
-    public void setContainerProviders(Map<String, Class<? extends ContainerProvider>> containerProviders) {
-        this.containerProviders = containerProviders;
-    }
-
-    public void addContainerProvider(String viewType, Class<? extends ContainerProvider> providerClass) {
-        this.containerProviders.put(viewType, providerClass);
-    }
+    public T createContainer(C configuration);
 }
