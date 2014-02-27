@@ -91,6 +91,7 @@ public class CompositeField extends AbstractCustomMultiField<CompositeFieldDefin
                 fieldValues.addItemProperty(fieldDefinition.getName(), field.getPropertyDataSource());
             }
             field.addValueChangeListener(selectionListener);
+            field.setWidth(100, Unit.PERCENTAGE);
 
             root.addComponent(field);
         }
