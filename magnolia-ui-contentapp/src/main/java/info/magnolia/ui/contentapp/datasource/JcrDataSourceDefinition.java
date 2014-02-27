@@ -34,6 +34,10 @@
 package info.magnolia.ui.contentapp.datasource;
 
 import info.magnolia.ui.vaadin.integration.datasource.ConfiguredDataSourceDefinition;
+import info.magnolia.ui.workbench.list.ListPresenterDefinition;
+import info.magnolia.ui.workbench.search.SearchPresenterDefinition;
+import info.magnolia.ui.workbench.thumbnail.ThumbnailPresenterDefinition;
+import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
 
 /**
  * {@link info.magnolia.ui.vaadin.integration.datasource.DataSourceDefinition} for JCR-specific sub-apps.
@@ -42,5 +46,9 @@ public class JcrDataSourceDefinition extends ConfiguredDataSourceDefinition {
 
     public JcrDataSourceDefinition() {
         setImplementationClass(JcrDataSource.class);
+        addContainerProvider(ListPresenterDefinition.VIEW_TYPE, FlatJcrContainerProvider.class);
+        addContainerProvider(TreePresenterDefinition.VIEW_TYPE, HierarchicalJcrContainerProvider.class);
+        addContainerProvider(SearchPresenterDefinition.VIEW_TYPE, SearchJcrContainerProvider.class);
+        addContainerProvider(ThumbnailPresenterDefinition.VIEW_TYPE, JcrThumbnailContainerProvider.class);
     }
 }

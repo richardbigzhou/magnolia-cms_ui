@@ -33,33 +33,24 @@
  */
 package info.magnolia.security.app.datasource;
 
-import info.magnolia.cms.core.version.VersionManager;
-import info.magnolia.security.app.container.RoleContainer;
-import info.magnolia.ui.api.app.SubAppContext;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.security.app.container.UserContainer;
+import info.magnolia.ui.contentapp.datasource.AbstractJcrContainerProvider;
 import info.magnolia.ui.contentapp.datasource.JcrDataSource;
-import info.magnolia.ui.vaadin.integration.datasource.ContainerConfiguration;
 
 import javax.inject.Inject;
 
-import com.vaadin.data.Container;
-
 /**
- * {@link JcrDataSource} extension used by Roles sub-app of Security app.
+ * Created with IntelliJ IDEA.
+ * User: sasha
+ * Date: 27/02/14
+ * Time: 00:11
+ * To change this template use File | Settings | File Templates.
  */
-public class RoleDataSource extends JcrDataSource {
+public class UserContainerProvider extends AbstractJcrContainerProvider {
 
     @Inject
-    public RoleDataSource(SubAppContext subAppContext, VersionManager versionManager) {
-        super(subAppContext, versionManager);
-    }
-
-    @Override
-    public Container createContentViewContainer(ContainerConfiguration config) {
-        if (TREEVIEW_ID.equalsIgnoreCase(config.getViewTypeId())) {
-            RoleContainer roleContainer = new RoleContainer(getWorkbenchDefinition());
-            configureContainer(roleContainer, config);
-            return roleContainer;
-        }
-        return super.createContentViewContainer(config);
+    public UserContainerProvider(JcrDataSource dataSource, ComponentProvider componentProvider) {
+        super(dataSource, UserContainer.class, componentProvider);
     }
 }

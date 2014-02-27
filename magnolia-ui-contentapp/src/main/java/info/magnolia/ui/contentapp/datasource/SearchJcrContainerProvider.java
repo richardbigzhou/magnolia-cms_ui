@@ -31,18 +31,20 @@
  * intact.
  *
  */
-package info.magnolia.security.app.datasource;
+package info.magnolia.ui.contentapp.datasource;
 
-import info.magnolia.ui.contentapp.datasource.JcrDataSourceDefinition;
-import info.magnolia.ui.workbench.tree.TreePresenterDefinition;
+import info.magnolia.objectfactory.ComponentProvider;
+import info.magnolia.ui.workbench.search.SearchJcrContainer;
+
+import javax.inject.Inject;
 
 /**
- * Definition of {@link info.magnolia.ui.vaadin.integration.datasource.DataSource} used in Role sub-app
- * of Security app.
+ * Creates an instance of {@link SearchJcrContainer}.
  */
-public class RoleDataSourceDefinition extends JcrDataSourceDefinition {
+public class SearchJcrContainerProvider extends AbstractJcrContainerProvider<SearchJcrContainer> {
 
-    public RoleDataSourceDefinition() {
-        addContainerProvider(TreePresenterDefinition.VIEW_TYPE, RoleContainerProvider.class);
+    @Inject
+    public SearchJcrContainerProvider(JcrDataSource dataSource, ComponentProvider componentProvider) {
+        super(dataSource, SearchJcrContainer.class, componentProvider);
     }
 }
