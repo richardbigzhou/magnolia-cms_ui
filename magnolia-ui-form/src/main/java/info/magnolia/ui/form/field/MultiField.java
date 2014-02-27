@@ -44,6 +44,7 @@ import java.util.Iterator;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -79,7 +80,8 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
         // Init root layout
         addStyleName("linkfield");
         root = new VerticalLayout();
-        root.setSizeUndefined();
+        root.setSizeUndefined(); // => doesn't seem to really work as expected
+        root.setWidth(100, Unit.PERCENTAGE);
 
         // Init addButton
         addButton.setCaption(buttonCaptionAdd);
@@ -135,6 +137,14 @@ public class MultiField extends AbstractCustomMultiField<MultiValueFieldDefiniti
         deleteButton.setDescription(buttonCaptionRemove);
         deleteButton.addClickListener(removeButtonClickListener(layout));
         layout.addComponent(deleteButton);
+
+        // set layout to full width
+        layout.setWidth(100, Unit.PERCENTAGE);
+        // distribute place in favour of field over delete button
+        layout.setExpandRatio(field, 12);
+        layout.setExpandRatio(deleteButton, 1);
+        // make sure button stays aligned with the field and not with the optional field label when used
+        layout.setComponentAlignment(deleteButton, Alignment.BOTTOM_RIGHT);
 
         return layout;
     }

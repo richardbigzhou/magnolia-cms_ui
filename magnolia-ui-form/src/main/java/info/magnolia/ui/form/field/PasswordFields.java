@@ -68,12 +68,14 @@ public class PasswordFields extends CustomField<String> {
         layout = new VerticalLayout();
         passwordField = new PasswordField();
         passwordField.setNullRepresentation("");
+        passwordField.setWidth("100%");
         this.verification = verification;
         this.verificationErrorMessage = verificationErrorMessage;
         this.verificationMessage = verificationMessage;
         if (this.verification) {
             verificationField = new PasswordField();
             verificationField.setNullRepresentation("");
+            verificationField.setWidth("100%");
         }
         initContent();
     }

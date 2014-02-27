@@ -113,6 +113,7 @@ public abstract class AbstractCustomMultiField<D extends FieldDefinition, T> ext
         if (setCaptionToNull) {
             field.setCaption(null);
         }
+        field.setWidth(100, Unit.PERCENTAGE);
         return field;
     }
 
