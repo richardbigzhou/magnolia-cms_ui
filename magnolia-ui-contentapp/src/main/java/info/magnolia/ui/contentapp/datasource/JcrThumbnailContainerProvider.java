@@ -34,7 +34,8 @@
 package info.magnolia.ui.contentapp.datasource;
 
 import info.magnolia.ui.vaadin.integration.datasource.ContainerProvider;
-import info.magnolia.ui.workbench.thumbnail.JcrThumbnailContainerConfiguration;
+import info.magnolia.ui.workbench.thumbnail.ThumbnailContainerConfiguration;
+import info.magnolia.ui.workbench.thumbnail.JcrThumbnailItemIdProvider;
 import info.magnolia.ui.workbench.thumbnail.ThumbnailContainer;
 
 import javax.inject.Inject;
@@ -42,7 +43,7 @@ import javax.inject.Inject;
 /**
  * Creates an instance of {@link ThumbnailContainer}.
  */
-public class JcrThumbnailContainerProvider implements ContainerProvider<ThumbnailContainer, JcrThumbnailContainerConfiguration> {
+public class JcrThumbnailContainerProvider implements ContainerProvider<ThumbnailContainer, ThumbnailContainerConfiguration> {
 
     private JcrDataSource dataSource;
 
@@ -52,12 +53,11 @@ public class JcrThumbnailContainerProvider implements ContainerProvider<Thumbnai
     }
 
     @Override
-    public ThumbnailContainer createContainer(JcrThumbnailContainerConfiguration configuration) {
-        JcrThumbnailContainerConfiguration thumbnailConfig = configuration;
-        ThumbnailContainer c = new ThumbnailContainer(dataSource.getWorkbenchDefinition(), thumbnailConfig.getImageProvider());
+    public ThumbnailContainer createContainer(ThumbnailContainerConfiguration configuration) {
+        ThumbnailContainerConfiguration thumbnailConfig = configuration;
+        ThumbnailContainer c = new ThumbnailContainer(thumbnailConfig.getImageProvider(), new JcrThumbnailItemIdProvider(dataSource.getWorkbenchDefinition()));
         c.setThumbnailHeight(thumbnailConfig.getThumbnailHeight());
         c.setThumbnailWidth(thumbnailConfig.getThumbnailWidth());
-        c.setWorkspaceName(dataSource.getWorkbenchDefinition().getWorkspace());
         return c;
     }
 }

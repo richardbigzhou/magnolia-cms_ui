@@ -43,7 +43,7 @@ import info.magnolia.ui.vaadin.integration.datasource.ContainerConfiguration;
  * Time: 09:43
  * To change this template use File | Settings | File Templates.
  */
-public class JcrThumbnailContainerConfiguration extends ContainerConfiguration {
+public class ThumbnailContainerConfiguration extends ContainerConfiguration {
 
     private ImageProvider imageProvider;
 
@@ -51,7 +51,7 @@ public class JcrThumbnailContainerConfiguration extends ContainerConfiguration {
 
     private int thumbnailWidth;
 
-    public JcrThumbnailContainerConfiguration() {
+    public ThumbnailContainerConfiguration() {
         setViewTypeId(ThumbnailPresenterDefinition.VIEW_TYPE);
     }
 

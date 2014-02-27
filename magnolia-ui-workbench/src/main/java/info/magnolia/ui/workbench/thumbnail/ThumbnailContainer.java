@@ -33,30 +33,13 @@
  */
 package info.magnolia.ui.workbench.thumbnail;
 
-import info.magnolia.context.MgnlContext;
-import info.magnolia.jcr.RuntimeRepositoryException;
-import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.ui.imageprovider.ImageProvider;
-import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.container.Refreshable;
-import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
-import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.thumbnail.ThumbnailContainer.ThumbnailItem;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -66,28 +49,22 @@ import com.vaadin.data.util.AbstractProperty;
 /**
  * Container that provides thumbnails lazily.
  */
-public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object, ThumbnailItem> implements Refreshable {
-
-    private static final Logger log = LoggerFactory.getLogger(ThumbnailContainer.class);
+public class ThumbnailContainer extends AbstractInMemoryContainer<Object, Object, ThumbnailItem> implements Refreshable {
 
     public static final String THUMBNAIL_PROPERTY_ID = "thumbnail";
 
-    private final WorkbenchDefinition workbenchDefinition;
-
     private final ImageProvider imageProvider;
 
-    protected static final String WHERE_TEMPLATE_FOR_PATH = " WHERE (%s) %s ";
-
-    private String workspaceName = "";
+    private IdProvider idProvider;
 
     private int thumbnailWidth = 0;
 
     private int thumbnailHeight = 0;
 
-    public ThumbnailContainer(WorkbenchDefinition workbenchDefinition, ImageProvider imageProvider) {
+    public ThumbnailContainer(ImageProvider imageProvider, IdProvider idProvider) {
         super();
-        this.workbenchDefinition = workbenchDefinition;
         this.imageProvider = imageProvider;
+        this.idProvider = idProvider;
     }
 
     @Override
@@ -98,7 +75,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
     @Override
     public ThumbnailContainerProperty getContainerProperty(Object itemId, Object propertyId) {
         if (THUMBNAIL_PROPERTY_ID.equals(propertyId)) {
-            return new ThumbnailContainerProperty(String.valueOf(itemId), imageProvider);
+            return new ThumbnailContainerProperty(itemId, imageProvider);
         }
         return null;
     }
@@ -111,28 +88,6 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
         return null;
     }
 
-    /**
-     * Hint: could be dropped once this type bases on AbstractJcrContainer as well (BL-153).
-     */
-    protected String getMainNodeType() {
-        final List<NodeTypeDefinition> nodeTypes = workbenchDefinition.getNodeTypes();
-        return nodeTypes.isEmpty() ? AbstractJcrContainer.DEFAULT_NODE_TYPE : nodeTypes.get(0).getName();
-    }
-
-    protected String prepareSelectQueryStatement() {
-        return String.format("select * from [nt:base] as t ", getMainNodeType());
-    }
-
-    protected String prepareFilterQueryStatement() {
-        String nodeTypes = getQueryWhereClauseNodeTypes();
-        boolean pathIsNotRoot = StringUtils.isNotBlank(workbenchDefinition.getPath()) && !"/".equals(workbenchDefinition.getPath());
-        return String.format(WHERE_TEMPLATE_FOR_PATH, nodeTypes, pathIsNotRoot ? " AND ISDESCENDANTNODE('" + workbenchDefinition.getPath() + "')" : "");
-
-    }
-
-    protected String prepareOrderQueryStatement() {
-        return " order by name(t)";
-    }
 
     /**
      * @return a List of JCR identifiers for all the nodes recursively found
@@ -142,39 +97,15 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
      * displayed.
      * @see info.magnolia.ui.vaadin.layout.LazyThumbnailLayout#refresh()
      */
-    protected List<String> getAllIdentifiers(final String workspaceName) {
-        List<String> uuids = new ArrayList<String>();
-        final String query = constructQuery();
-        try {
-            QueryManager qm = MgnlContext.getJCRSession(workspaceName).getWorkspace().getQueryManager();
-            Query q = qm.createQuery(query, Query.JCR_SQL2);
-
-            log.debug("Executing query statement [{}] on workspace [{}]", query, workspaceName);
-            long start = System.currentTimeMillis();
-
-            QueryResult queryResult = q.execute();
-            NodeIterator iter = queryResult.getNodes();
-
-            while (iter.hasNext()) {
-                uuids.add(iter.nextNode().getIdentifier());
-            }
-
-            log.debug("Done collecting {} nodes in {}ms", uuids.size(), System.currentTimeMillis() - start);
-
-        } catch (RepositoryException e) {
-            throw new RuntimeRepositoryException(e);
-        }
-        return uuids;
+    protected List<Object> getAllIdentifiers() {
+        return idProvider.getItemIds();
     }
 
-    private String constructQuery() {
-        return prepareSelectQueryStatement() + prepareFilterQueryStatement() + prepareOrderQueryStatement();
-    }
 
     @Override
     public void refresh() {
         getAllItemIds().clear();
-        getAllItemIds().addAll(getAllIdentifiers(workbenchDefinition.getWorkspace()));
+        getAllItemIds().addAll(getAllIdentifiers());
     }
 
     @Override
@@ -232,58 +163,17 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
         return thumbnailWidth;
     }
 
-    public String getWorkspaceName() {
-        return workspaceName;
-    }
-
-    public void setWorkspaceName(String workspaceName) {
-        this.workspaceName = workspaceName;
-    }
-
-    /**
-     * @return a String containing the node types to be searched for in a query. All node types declared in a workbench definition are returned
-     * unless their <code>hideInList</code> property is true or they are of type <code>mgnl:folder</code>. E.g. assuming a node types declaration like the following
-     * 
-     * <pre>
-     * ...
-     * + workbench
-     *  + nodeTypes
-     *   + foo
-     *    * name = nt:foo
-     *   + bar
-     *    * name = nt:bar
-     *    * hideInList = true
-     *   + baz
-     *    * name = nt:baz
-     * ...
-     * </pre>
-     * 
-     * this method will return the following string <code>[jcr:primaryType] = 'nt:foo' or [jcr:primaryType] = 'baz'</code>. This will eventually be used to restrict the node types to be searched for
-     * in list and search views, i.e. <code>select * from [nt:base] where ([jcr:primaryType] = 'nt:foo' or [jcr:primaryType] = 'baz')</code>.
-     */
-    protected String getQueryWhereClauseNodeTypes() {
-        List<String> defs = new ArrayList<String>();
-        for (NodeTypeDefinition type : workbenchDefinition.getNodeTypes()) {
-            if (type.isHideInList() || NodeTypes.Folder.NAME.equals(type.getName())) {
-                log.debug("Skipping {} node type. Nodes of such type won't be searched for.", type.getName());
-                continue;
-            }
-            defs.add("[jcr:primaryType] = '" + type.getName() + "'");
-        }
-        return StringUtils.join(defs, " or ");
-    }
-
     /**
      * ThumbnailContainer property. Can have a Resource or a String as value.
      */
     public class ThumbnailContainerProperty extends AbstractProperty<Object> {
 
-        private String resourcePath;
+        private Object resourceId;
 
         private final ImageProvider imageProvider;
 
-        public ThumbnailContainerProperty(final String resourcePath, ImageProvider imageProvider) {
-            this.resourcePath = resourcePath;
+        public ThumbnailContainerProperty(final Object resourceId, ImageProvider imageProvider) {
+            this.resourceId = resourceId;
             this.imageProvider = imageProvider;
         }
 
@@ -292,12 +182,12 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
             if (imageProvider == null) {
                 return null;
             }
-            return imageProvider.getThumbnailResource(resourcePath, ImageProvider.THUMBNAIL_GENERATOR);
+            return imageProvider.getThumbnailResource(resourceId, ImageProvider.THUMBNAIL_GENERATOR);
         }
 
         @Override
         public void setValue(Object newValue) throws ReadOnlyException {
-            this.resourcePath = String.valueOf(newValue);
+            this.resourceId = newValue;
         }
 
         @Override
@@ -311,9 +201,9 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
      */
     public class ThumbnailItem implements Item {
 
-        private final String id;
+        private final Object id;
 
-        public ThumbnailItem(final String id) {
+        public ThumbnailItem(final Object id) {
             this.id = id;
         }
 
@@ -325,7 +215,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
             return null;
         }
 
-        public String getItemId() {
+        public Object getItemId() {
             return id;
         }
 
@@ -343,5 +233,9 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<String, Object
         public boolean removeItemProperty(Object id) throws UnsupportedOperationException {
             throw new UnsupportedOperationException();
         }
+    }
+
+    public static interface IdProvider {
+        List<Object> getItemIds();
     }
 }
