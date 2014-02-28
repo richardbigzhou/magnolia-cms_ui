@@ -36,6 +36,7 @@ package info.magnolia.ui.workbench.thumbnail;
 import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.RuntimeRepositoryException;
 import info.magnolia.jcr.util.NodeTypes;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.definition.NodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
@@ -73,8 +74,8 @@ public class JcrThumbnailItemIdProvider implements ThumbnailContainer.IdProvider
     }
 
     @Override
-    public List<Object> getItemIds() {
-        List<Object> uuids = new ArrayList<Object>();
+    public List<?> getItemIds() {
+        List<JcrItemId> uuids = new ArrayList<JcrItemId>();
         String workspaceName = workbenchDefinition.getWorkspace();
         final String query = constructQuery();
         try {
@@ -88,7 +89,7 @@ public class JcrThumbnailItemIdProvider implements ThumbnailContainer.IdProvider
             NodeIterator iter = queryResult.getNodes();
 
             while (iter.hasNext()) {
-                uuids.add(iter.nextNode().getIdentifier());
+                uuids.add(new JcrItemId(iter.nextNode().getIdentifier(), workspaceName));
             }
 
             log.debug("Done collecting {} nodes in {}ms", uuids.size(), System.currentTimeMillis() - start);

@@ -97,7 +97,7 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<Object, Object
      * displayed.
      * @see info.magnolia.ui.vaadin.layout.LazyThumbnailLayout#refresh()
      */
-    protected List<Object> getAllIdentifiers() {
+    protected List<?> getAllIdentifiers() {
         return idProvider.getItemIds();
     }
 
@@ -236,6 +236,6 @@ public class ThumbnailContainer extends AbstractInMemoryContainer<Object, Object
     }
 
     public static interface IdProvider {
-        List<Object> getItemIds();
+        List<?> getItemIds();
     }
 }

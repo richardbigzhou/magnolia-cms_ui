@@ -177,7 +177,8 @@ public class AbstractJcrAdapterTest {
 
         @Override
         public boolean isNode() {
-            return !JcrItemUtil.isPropertyItemId(getItemId());
+            //return !JcrItemUtil.isPropertyItemId(getItemId());
+            return !(getItemId() instanceof JcrPropertyItemId);
         }
 
         @Override

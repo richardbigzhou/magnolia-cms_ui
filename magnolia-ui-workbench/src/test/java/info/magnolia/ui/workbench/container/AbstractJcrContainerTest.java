@@ -39,6 +39,7 @@ import info.magnolia.context.MgnlContext;
 import info.magnolia.jcr.util.NodeTypes;
 import info.magnolia.test.RepositoryTestCase;
 import info.magnolia.ui.vaadin.integration.jcr.DefaultProperty;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.ModelConstants;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
@@ -209,10 +210,10 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         setSorter("name", true);
 
         // WHEN
-        String containerItemRes = (String) jcrContainer.firstItemId();
+        JcrItemId containerItemRes = jcrContainer.firstItemId();
 
         // THEN
-        assertEquals(containerItemId1, containerItemRes);
+        assertEquals(containerItemId1, containerItemRes.getUuid());
     }
 
     @Test
@@ -227,10 +228,10 @@ public class AbstractJcrContainerTest extends RepositoryTestCase {
         jcrContainer.updateSize();
 
         // WHEN
-        final String containerItemRes = (String) jcrContainer.lastItemId();
+        final JcrItemId containerItemRes = jcrContainer.lastItemId();
 
         // THEN
-        assertEquals(containerItemId2, containerItemRes);
+        assertEquals(containerItemId2, containerItemRes.getUuid());
     }
 
     @Test

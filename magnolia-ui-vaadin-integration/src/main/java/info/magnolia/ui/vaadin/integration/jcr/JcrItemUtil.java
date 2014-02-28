@@ -84,11 +84,11 @@ public class JcrItemUtil {
     /**
      * Returns the JCR Item represented by the given itemId or returns null if it doesn't exist.
      */
-    public static Item getJcrItem(final String workspaceName, final String itemId) throws RepositoryException {
+    public static Item getJcrItem(final String workspaceName, final JcrItemId itemId) throws RepositoryException {
         if (itemId == null) {
             return null;
         }
-        final String nodeId = parseNodeIdentifier(itemId);
+        final String nodeId = parseNodeIdentifier(itemId.getUuid());
 
         Node node;
         try {
@@ -98,18 +98,18 @@ public class JcrItemUtil {
             return null;
         }
 
-        if (!isPropertyItemId(itemId)) {
+        if (!(itemId instanceof JcrPropertyItemId)) {
             return node;
         }
 
-        final String propertyName = parsePropertyName(itemId);
+        final String propertyName = ((JcrPropertyItemId)itemId).getPropertyName();
         if (node.hasProperty(propertyName)) {
             return node.getProperty(propertyName);
         }
         return null;
     }
 
-    public static boolean itemExists(String workspaceName, String itemId) throws RepositoryException {
+    public static boolean itemExists(String workspaceName, JcrItemId itemId) throws RepositoryException {
         return getJcrItem(workspaceName, itemId) != null;
     }
 
@@ -137,14 +137,14 @@ public class JcrItemUtil {
         return getItemId(session.getNode(absPath));
     }
 
-    public static List<Item> getJcrItems(final String workspaceName, List<String> ids) {
+    public static List<Item> getJcrItems(final String workspaceName, List<JcrItemId> ids) {
         // sanity check
         List<Item> items = new ArrayList<Item>();
         if (StringUtils.isBlank(workspaceName) || ids == null) {
             // there is lot of code calling this method that would fail w/ NPE if conditions above are met so we need to be either nice and return empty list or throw exception
             return items;
         }
-        for (String id : ids) {
+        for (JcrItemId id : ids) {
             Item item;
             try {
                 item = getJcrItem(workspaceName, id);

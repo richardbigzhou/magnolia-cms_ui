@@ -45,6 +45,7 @@ import info.magnolia.ui.vaadin.integration.datasource.ContainerProvider;
 import info.magnolia.ui.vaadin.integration.datasource.SupportsCreation;
 import info.magnolia.ui.vaadin.integration.datasource.SupportsVersions;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNewNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
@@ -88,20 +89,23 @@ public class JcrDataSource extends AbstractDataSource implements SupportsVersion
     @Override
     public String getItemUrlFragment(Object itemId) {
         try {
-            javax.jcr.Item selected = JcrItemUtil.getJcrItem(getWorkspace(), JcrItemUtil.parseNodeIdentifier(String.valueOf(itemId)));
-            String path = getPath();
-            return StringUtils.removeStart(selected.getPath(), "/".equals(path) ? "" : path);
+            if (itemId instanceof JcrItemId) {
+                JcrItemId jcrItemId = (JcrItemId) itemId;
+                javax.jcr.Item selected = JcrItemUtil.getJcrItem(getWorkspace(), jcrItemId);
+                String path = getPath();
+                return StringUtils.removeStart(selected.getPath(), "/".equals(path) ? "" : path);
+            }
         } catch (RepositoryException e) {
             log.error("Failed to convert item id to URL fragment: " + e.getMessage(), e);
-            return null;
         }
+        return null;
     }
 
 
     @Override
-    public Object getItemIdByUrlFragment(String urlFragment) {
+    public JcrItemId getItemIdByUrlFragment(String urlFragment) {
         try {
-            return JcrItemUtil.getItemId(getWorkspace(), urlFragment);
+            return new JcrItemId(JcrItemUtil.getItemId(getWorkspace(), urlFragment), getWorkspace());
         } catch (RepositoryException e) {
             log.error("Failed to obtain JCR id for fragment: " + e.getMessage(), e);
             return null;
@@ -111,13 +115,13 @@ public class JcrDataSource extends AbstractDataSource implements SupportsVersion
 
     @Override
     public JcrItemAdapter getItem(Object itemId) {
-        if (!(itemId instanceof String)) {
+        if (!(itemId instanceof JcrItemId)) {
             return null;
         }
 
         javax.jcr.Item jcrItem;
         try {
-            jcrItem = JcrItemUtil.getJcrItem(getWorkspace(), String.valueOf(itemId));
+            jcrItem = JcrItemUtil.getJcrItem(getWorkspace(), (JcrItemId) itemId);
             JcrItemAdapter itemAdapter;
             if (jcrItem.isNode()) {
                 itemAdapter = new JcrNodeAdapter((Node) jcrItem);
@@ -141,43 +145,8 @@ public class JcrDataSource extends AbstractDataSource implements SupportsVersion
 
     @Override
     public boolean hasItem(Object itemId) {
-        javax.jcr.Item item;
-        if (itemId instanceof String) {
-            try {
-                item = JcrItemUtil.getJcrItem(getWorkspace(), String.valueOf(itemId));
-            } catch (RepositoryException e) {
-                return false;
-            }
-
-            if (item == null) {
-                return false;
-            }
-
-            if (!item.isNode()) {
-                return true;
-            }
-
-            boolean containsItem = true;
-            final JcrItemAdapter itemAdapter = getItem(itemId);
-            if (itemAdapter != null) {
-                final Node node = ((JcrNodeAdapter)itemAdapter).getJcrItem();
-                final Collection <NodeTypeDefinition> nodeTypes = getNodeTypes();
-                containsItem = !nodeTypes.isEmpty();
-                for (NodeTypeDefinition nodeTypeDefinition : nodeTypes) {
-                    try {
-                        if (nodeTypeDefinition.getName().equalsIgnoreCase(node.getPrimaryNodeType().getName())) {
-                            containsItem = true;
-                            break;
-                        }
-                    } catch (RepositoryException e) {
-                        log.warn("Failed to resolve node's primary type: " + e.getMessage(), e);
-                    }
-                }
-            }
-
-            return containsItem;
-        }
-        return false;
+        return (itemId instanceof JcrItemId) &&
+                ((JcrItemId)itemId).getWorkspace().equalsIgnoreCase(getWorkspace());
     }
 
     protected WorkbenchDefinition getWorkbenchDefinition() {

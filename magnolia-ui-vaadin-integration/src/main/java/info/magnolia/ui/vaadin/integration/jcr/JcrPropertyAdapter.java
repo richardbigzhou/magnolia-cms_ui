@@ -43,6 +43,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.jcr.Item;
+import javax.jcr.Node;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -75,8 +76,25 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
     }
 
     @Override
+    protected void initCommonAttributes(Item jcrItem) {
+        if (jcrItem instanceof javax.jcr.Property) {
+            try {
+                Node parent = jcrItem.getParent();
+                setItemId(new JcrPropertyItemId(parent.getIdentifier(), jcrItem.getSession().getWorkspace().getName(), jcrItem.getName()));
+            } catch (RepositoryException e) {
+                setItemId(new JcrPropertyItemId(UNIDENTIFIED, UNIDENTIFIED, UNIDENTIFIED));
+            }
+        }
+    }
+
+    @Override
     public boolean isNode() {
         return false;
+    }
+
+    @Override
+    public JcrPropertyItemId getItemId() {
+        return (JcrPropertyItemId) super.getItemId();
     }
 
     @Override
@@ -149,7 +167,7 @@ public class JcrPropertyAdapter extends AbstractJcrAdapter {
                         javax.jcr.Property newProperty = PropertyUtil.renameProperty(jcrProperty, jcrName);
 
                         // update internal state
-                        setItemId(JcrItemUtil.getItemId(newProperty));
+                        setItemId(new JcrPropertyItemId(newProperty.getParent().getIdentifier(), getWorkspace(), newProperty.getName()));
                     }
                 } catch (RepositoryException e) {
                     log.error("Could not rename JCR property", e);

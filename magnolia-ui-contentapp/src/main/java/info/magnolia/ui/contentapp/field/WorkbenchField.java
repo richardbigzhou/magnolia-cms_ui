@@ -38,6 +38,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.ui.imageprovider.definition.ImageProviderDefinition;
 import info.magnolia.ui.vaadin.integration.NullItem;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
 import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
@@ -55,7 +56,6 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -146,16 +146,17 @@ public class WorkbenchField extends CustomField<Object> {
             if (value instanceof  Item) {
                 return (Item)value;
             }
-            if (StringUtils.isBlank((String)value)) {
+
+            if (!(value instanceof JcrItemId)) {
                 return null;
             }
+
             String potentialPath = String.valueOf(value);
             try {
-                String itemId = JcrItemUtil.getItemId(workbenchDefinition.getWorkspace(), potentialPath);
-                if (!StringUtils.isBlank(itemId) || !JcrItemUtil.itemExists(workbenchDefinition.getWorkspace(), potentialPath)) {
-                    potentialPath = itemId;
-                }
-                javax.jcr.Item jcrItem = JcrItemUtil.getJcrItem(workbenchDefinition.getWorkspace(), potentialPath);
+                String workspace = workbenchDefinition.getWorkspace();
+                String uuid = JcrItemUtil.getItemId(workspace, potentialPath);
+                JcrItemId itemId = new JcrItemId(uuid, workspace);
+                javax.jcr.Item jcrItem = JcrItemUtil.getJcrItem(workspace, itemId);
                 return jcrItem.isNode() ?
                     new JcrNodeAdapter((Node) jcrItem):
                     new JcrPropertyAdapter((Property) jcrItem);

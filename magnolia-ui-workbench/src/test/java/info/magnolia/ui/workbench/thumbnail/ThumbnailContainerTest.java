@@ -92,7 +92,7 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
         Node folderNode = NodeUtil.createPath(session.getRootNode(), "/content2/folderNode", NodeTypes.Folder.NAME);
         session.save();
         // WHEN
-        List<Object> res = container.getAllIdentifiers();
+        List<?> res = container.getAllIdentifiers();
 
         // THEN
         assertNotNull(res);
@@ -112,7 +112,7 @@ public class ThumbnailContainerTest extends RepositoryTestCase {
         Node folderNode = NodeUtil.createPath(session.getRootNode(), "/content2/folderNode", NodeTypes.Folder.NAME);
         session.save();
         // WHEN
-        List<Object> res = container.getAllIdentifiers();
+        List<?> res = container.getAllIdentifiers();
 
         // THEN
         assertNotNull(res);

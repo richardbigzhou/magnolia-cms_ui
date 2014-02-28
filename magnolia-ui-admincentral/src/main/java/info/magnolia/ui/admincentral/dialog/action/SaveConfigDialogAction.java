@@ -42,6 +42,7 @@ import info.magnolia.ui.form.EditorValidator;
 import info.magnolia.ui.vaadin.integration.jcr.AbstractJcrNodeAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
 import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrPropertyItemId;
 import info.magnolia.ui.workbench.event.SelectionChangedEvent;
 
 import java.util.Arrays;
@@ -119,7 +120,7 @@ public class SaveConfigDialogAction extends AbstractAction<SaveConfigDialogActio
                     parent.getSession().save();
 
                     // update workbench selection in case the property changed name
-                    String newItemId = propertyAdapter.getItemId();
+                    JcrPropertyItemId newItemId = propertyAdapter.getItemId();
                     eventBus.fireEvent(new SelectionChangedEvent(new HashSet<Object>(Arrays.asList(newItemId))));
 
                 } catch (RepositoryException e) {

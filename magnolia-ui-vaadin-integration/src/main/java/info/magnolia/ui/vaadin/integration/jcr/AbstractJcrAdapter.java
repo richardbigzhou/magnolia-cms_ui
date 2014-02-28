@@ -54,9 +54,7 @@ public abstract class AbstractJcrAdapter implements JcrItemAdapter {
 
     protected static final String UNIDENTIFIED = "?";
 
-    private String workspace;
-
-    private String itemId;
+    private JcrItemId itemId;
 
     private final Map<String, Property> changedProperties = new HashMap<String, Property>();
 
@@ -71,33 +69,31 @@ public abstract class AbstractJcrAdapter implements JcrItemAdapter {
      */
     protected void initCommonAttributes(Item jcrItem) {
         try {
-            workspace = jcrItem.getSession().getWorkspace().getName();
-            itemId = JcrItemUtil.getItemId(jcrItem);
+            setItemId(new JcrItemId(JcrItemUtil.getItemId(jcrItem), jcrItem.getSession().getWorkspace().getName()));
         } catch (RepositoryException e) {
             log.error("Could not retrieve workspace or path of JCR Item.", e);
-            itemId = UNIDENTIFIED;
-            workspace = UNIDENTIFIED;
+            setItemId(new JcrItemId(UNIDENTIFIED, UNIDENTIFIED));
         }
     }
 
     @Override
     public String getWorkspace() {
-        return workspace;
+        return itemId.getWorkspace();
     }
 
     @Override
-    public String getItemId() {
+    public JcrItemId getItemId() {
         return itemId;
     }
 
-    public void setItemId(String itemId) {
+    public void setItemId(JcrItemId itemId) {
         this.itemId = itemId;
     }
 
     @Override
     public javax.jcr.Item getJcrItem() {
         try {
-            return JcrItemUtil.getJcrItem(workspace, itemId);
+            return JcrItemUtil.getJcrItem(itemId.getWorkspace(), itemId);
         } catch (RepositoryException re) {
             log.warn("Not able to retrieve the JcrItem ", re.getMessage());
             return null;

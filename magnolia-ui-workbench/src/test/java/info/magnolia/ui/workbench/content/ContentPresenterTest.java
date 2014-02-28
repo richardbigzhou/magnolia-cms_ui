@@ -43,6 +43,7 @@ import info.magnolia.jcr.util.NodeUtil;
 import info.magnolia.test.mock.MockContext;
 import info.magnolia.test.mock.jcr.MockSession;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.workbench.AbstractContentPresenter;
 import info.magnolia.ui.workbench.definition.WorkbenchDefinition;
 import info.magnolia.ui.workbench.event.ItemDoubleClickedEvent;
@@ -89,7 +90,7 @@ public class ContentPresenterTest {
         when(workbench.getPath()).thenReturn(TEST_WORKBENCHDEF_PATH);
         eventBus = mock(EventBus.class);
         item = mock(JcrItemAdapter.class);
-        when(item.getItemId()).thenReturn(testNode.getIdentifier());
+        when(item.getItemId()).thenReturn(new JcrItemId(testNode.getIdentifier(), workbench.getWorkspace()));
         items = new HashSet<Object>();
         items.add(item.getItemId());
 

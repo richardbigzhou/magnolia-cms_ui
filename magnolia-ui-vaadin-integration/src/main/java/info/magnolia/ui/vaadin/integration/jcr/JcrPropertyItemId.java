@@ -1,5 +1,5 @@
 /**
- * This file Copyright (c) 2012-2013 Magnolia International
+ * This file Copyright (c) 2013 Magnolia International
  * Ltd.  (http://www.magnolia-cms.com). All rights reserved.
  *
  *
@@ -33,33 +33,23 @@
  */
 package info.magnolia.ui.vaadin.integration.jcr;
 
-import info.magnolia.ui.vaadin.integration.ItemAdapter;
-
-import javax.jcr.RepositoryException;
-
 /**
- * Represents a JCR Item (node or property) as a Vaadin data Item.
- *
- * @see com.vaadin.data.Item
- * @see javax.jcr.Item
+ * Created with IntelliJ IDEA.
+ * User: sasha
+ * Date: 27/02/14
+ * Time: 19:10
+ * To change this template use File | Settings | File Templates.
  */
-public interface JcrItemAdapter extends ItemAdapter {
+public class JcrPropertyItemId extends JcrItemId {
 
-    boolean isNode();
+    private String propertyName;
 
-    String getWorkspace();
+    public JcrPropertyItemId(String uuid, String workspace,  String propertyName) {
+        super(uuid, workspace);
+        this.propertyName = propertyName;
+    }
 
-    JcrItemId getItemId();
-
-    /**
-     * Returns the JCR Item represented by this adapter, or null in case of {@link RepositoryException}.
-     */
-    javax.jcr.Item getJcrItem();
-
-    /**
-     * Returns the JCR Item represented by this Item with any changes applied.
-     */
-    javax.jcr.Item applyChanges() throws RepositoryException;
-
-    boolean hasChangedProperties();
+    public String getPropertyName() {
+        return propertyName;
+    }
 }

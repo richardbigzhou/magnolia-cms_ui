@@ -43,6 +43,7 @@ import info.magnolia.ui.vaadin.integration.jcr.JcrNodeAdapter;
 import info.magnolia.ui.workbench.column.definition.PropertyTypeColumnDefinition;
 import info.magnolia.ui.workbench.container.AbstractJcrContainer;
 import info.magnolia.ui.workbench.container.AbstractJcrContainerTest;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 import info.magnolia.ui.workbench.definition.ConfiguredContentPresenterDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredNodeTypeDefinition;
 import info.magnolia.ui.workbench.definition.ConfiguredWorkbenchDefinition;
@@ -178,7 +179,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         String containerItemId2 = node2.getIdentifier();
 
         // WHEN
-        Collection<String> res = hierarchicalJcrContainer.rootItemIds();
+        Collection<JcrItemId> res = hierarchicalJcrContainer.rootItemIds();
 
         // THEN
         assertEquals(2, res.size());
@@ -230,7 +231,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         String containerItemId1 = node1.getIdentifier();
 
         // WHEN
-        Collection<String> res = hierarchicalJcrContainer.getChildren(containerItemId1);
+        Collection<JcrItemId> res = hierarchicalJcrContainer.getChildren(containerItemId1);
 
         // THEN
         assertEquals(1, res.size());
@@ -249,7 +250,7 @@ public class HierarchicalJcrContainerTest extends RepositoryTestCase {
         String containerItemId1 = node1.getIdentifier();
 
         // WHEN
-        String res = hierarchicalJcrContainer.getParent(node1_1.getIdentifier());
+        JcrItemId res = hierarchicalJcrContainer.getParent(node1_1.getIdentifier());
 
         // THEN
         assertEquals(containerItemId1, res);

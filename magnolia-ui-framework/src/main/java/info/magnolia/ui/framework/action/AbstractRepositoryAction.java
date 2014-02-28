@@ -40,7 +40,7 @@ import info.magnolia.ui.api.action.ActionDefinition;
 import info.magnolia.ui.api.action.ActionExecutionException;
 import info.magnolia.ui.api.event.ContentChangedEvent;
 import info.magnolia.ui.vaadin.integration.jcr.JcrItemAdapter;
-import info.magnolia.ui.vaadin.integration.jcr.JcrItemUtil;
+import info.magnolia.ui.vaadin.integration.jcr.JcrItemId;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -66,7 +66,7 @@ public abstract class AbstractRepositoryAction<D extends ActionDefinition> exten
      *
      * @see ContentChangedEvent
      */
-    private String itemIdOfChangedItem;
+    private JcrItemId itemIdOfChangedItem;
 
     private boolean itemContentChanged;
 
@@ -76,7 +76,7 @@ public abstract class AbstractRepositoryAction<D extends ActionDefinition> exten
         this.eventBus = eventBus;
     }
 
-    protected void setItemIdOfChangedItem(String itemIdOfChangedItem) {
+    protected void setItemIdOfChangedItem(JcrItemId itemIdOfChangedItem) {
         this.itemIdOfChangedItem = itemIdOfChangedItem;
     }
 
@@ -96,7 +96,7 @@ public abstract class AbstractRepositoryAction<D extends ActionDefinition> exten
 
             // If the subclass set it to null this means no change was performed so we won't send an event
             if (itemIdOfChangedItem != null) {
-                boolean propertyChange = JcrItemUtil.isPropertyItemId(itemIdOfChangedItem);
+                //boolean propertyChange = JcrItemUtil.isPropertyItemId(itemIdOfChangedItem);
                 eventBus.fireEvent(new ContentChangedEvent(session.getWorkspace().getName(), itemIdOfChangedItem, itemContentChanged));
             }
 
