@@ -59,6 +59,7 @@ public class InplaceEditingFieldFactory implements TableFieldFactory {
     private Object editingItemId;
     private Object editingPropertyId;
 
+    private Field<?> field;
     private BlurListener fieldBlurListener;
 
     /**
@@ -75,12 +76,19 @@ public class InplaceEditingFieldFactory implements TableFieldFactory {
         return editingPropertyId;
     }
 
+    public Field<?> getField() {
+        return field;
+    }
+
     /**
      * Sets the item and property to edit.
      */
     public void setEditing(Object editingItemId, Object editingPropertyId) {
         this.editingItemId = editingItemId;
         this.editingPropertyId = editingPropertyId;
+        if (editingItemId == null || editingPropertyId == null) {
+            field = null;
+        }
     }
 
     /**
@@ -97,6 +105,7 @@ public class InplaceEditingFieldFactory implements TableFieldFactory {
             Field<?> field = createFieldAndRegister(container, itemId, propertyId);
             // register component on the table (only for partial updates)
             // uiContext.registerComponent(field);
+            this.field = field;
             return field;
         }
         return null;

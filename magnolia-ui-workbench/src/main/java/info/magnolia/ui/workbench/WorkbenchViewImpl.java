@@ -215,7 +215,7 @@ public class WorkbenchViewImpl extends VerticalLayout implements WorkbenchView, 
         contentViews.put(viewType, view);
 
         if (view instanceof TreeView) {
-            // ((TreeView) view).setActionManager(keyboardEventPanel);
+            ((TreeView) view).setActionManager(keyboardEventPanel);
         }
 
         // display search-box only if both list and search content presenters are configured

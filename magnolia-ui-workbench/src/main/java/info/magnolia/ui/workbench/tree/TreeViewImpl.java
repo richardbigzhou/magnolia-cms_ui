@@ -38,16 +38,23 @@ import info.magnolia.ui.workbench.list.ListViewImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import com.vaadin.data.Property;
+import com.vaadin.event.Action;
+import com.vaadin.event.Action.Container;
+import com.vaadin.event.Action.Handler;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Table.ColumnGenerator;
+import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.Tree.CollapseEvent;
 import com.vaadin.ui.Tree.CollapseListener;
 import com.vaadin.ui.Tree.ExpandEvent;
@@ -66,7 +73,10 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
     private InplaceEditingFieldFactory fieldFactory;
     private ExpandListener expandListener;
     private CollapseListener collapseListener;
+    private Container shortcutActionManager;
+    private EditingKeyboardHandler editingKeyboardHandler;
     private ColumnGenerator bypassedColumnGenerator;
+
 
     public TreeViewImpl() {
         this(new MagnoliaTreeTable());
@@ -157,6 +167,12 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
             };
             tree.addItemClickListener(clickListener);
 
+            // keyboard shortcuts
+            editingKeyboardHandler = new EditingKeyboardHandler(tree);
+            if (shortcutActionManager != null) {
+                shortcutActionManager.addActionHandler(editingKeyboardHandler);
+            }
+
         } else {
             tree.setTableFieldFactory(null);
             fieldFactory = null;
@@ -164,6 +180,10 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
             tree.removeCollapseListener(collapseListener);
             expandListener = null;
             collapseListener = null;
+            if (shortcutActionManager != null) {
+                shortcutActionManager.removeActionHandler(editingKeyboardHandler);
+            }
+            editingKeyboardHandler = null;
         }
 
         tree.setEditable(editable);
@@ -194,7 +214,12 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
         // }
 
         if (editable && editableColumns.contains(propertyId)) {
-            fieldFactory.setEditing(itemId, propertyId);
+            if (itemId == null || propertyId == null) {
+                tree.focus();
+                fieldFactory.setEditing(null, null);
+            } else {
+                fieldFactory.setEditing(itemId, propertyId);
+            }
         } else {
             fieldFactory.setEditing(null, null);
         }
@@ -207,7 +232,144 @@ public class TreeViewImpl extends ListViewImpl implements TreeView {
 
     @Override
     public void setDragAndDropHandler(DropHandler dropHandler) {
-        // TODO
+        if (dropHandler != null) {
+            tree.setDragMode(TableDragMode.ROW);
+            tree.setDropHandler(dropHandler);
+        } else {
+            tree.setDragMode(TableDragMode.NONE);
+            tree.setDropHandler(null);
+        }
+    }
+
+    // KEYBOARD SHORTCUTS
+
+    @Override
+    public void setActionManager(Container shortcutActionManager) {
+        if (editable) {
+            shortcutActionManager.addActionHandler(editingKeyboardHandler);
+        }
+        this.shortcutActionManager = shortcutActionManager;
+    }
+
+    /**
+     * The Class EditingKeyboardHandler for keyboard shortcuts with inplace editing.
+     */
+    private class EditingKeyboardHandler implements Handler {
+
+        private final ShortcutAction enter = new ShortcutAction("Enter", ShortcutAction.KeyCode.ENTER, null);
+
+        private final ShortcutAction tabNext = new ShortcutAction("Tab", ShortcutAction.KeyCode.TAB, null);
+
+        private final ShortcutAction tabPrev = new ShortcutAction("Shift+Tab", ShortcutAction.KeyCode.TAB, new int[] { ShortcutAction.ModifierKey.SHIFT });
+
+        private final ShortcutAction escape = new ShortcutAction("Esc", ShortcutAction.KeyCode.ESCAPE, null);
+
+        private final TreeTable tree;
+
+        public EditingKeyboardHandler(TreeTable tree) {
+            this.tree = tree;
+        }
+
+        @Override
+        public Action[] getActions(Object target, Object sender) {
+            // TODO: Find a better solution for handling tab key events: MGNLUI-1384
+            return new Action[] { enter, tabNext, tabPrev, escape };
+        }
+
+        @Override
+        public void handleAction(Action action, Object sender, Object target) {
+            /*
+             * In case of enter the Action needs to be casted back to
+             * ShortcutAction because for some reason the object is not same
+             * as this.enter object. In that case keycode is used in comparison.
+             */
+            if (!(action instanceof ShortcutAction)) {
+                return;
+            }
+            ShortcutAction shortcut = (ShortcutAction) action;
+
+            if (target != tree && target instanceof Field) {
+                Field<?> field = (Field<?>) target;
+
+                if (shortcut == enter || shortcut.getKeyCode() == enter.getKeyCode()) {
+                    saveItemProperty(fieldFactory.getField().getPropertyDataSource());
+                    setEditing(null, null);
+
+                } else if (action == tabNext) {
+                    saveItemProperty(fieldFactory.getField().getPropertyDataSource());
+                    editNextCell(fieldFactory.getEditingItemId(), fieldFactory.getEditingPropertyId());
+
+                } else if (action == tabPrev) {
+                    saveItemProperty(fieldFactory.getField().getPropertyDataSource());
+                    editPreviousCell(fieldFactory.getEditingItemId(), fieldFactory.getEditingPropertyId());
+
+                } else if (action == escape) {
+                    setEditing(null, null);
+                }
+            } else if (target == tree) {
+                if (tree.getValue() == null) {
+                    return;
+                }
+
+                if (shortcut == enter || shortcut.getKeyCode() == enter.getKeyCode()) {
+                    editFirstCell();
+
+                }
+            }
+        }
+    }
+
+    // EDITING API
+
+    private void editNextCell(Object itemId, Object propertyId) {
+
+        List<Object> visibleColumns = Arrays.asList(tree.getVisibleColumns());
+        Object newItemId = itemId;
+        int newColumn = visibleColumns.indexOf(propertyId);
+        do {
+            if (newColumn == visibleColumns.size() - 1) {
+                newItemId = tree.nextItemId(newItemId);
+            }
+            newColumn = (newColumn + 1) % visibleColumns.size();
+        } while (!editableColumns.contains(visibleColumns.get(newColumn)) && newItemId != null);
+
+        setEditing(newItemId, visibleColumns.get(newColumn));
+    }
+
+    public void editPreviousCell(Object itemId, Object propertyId) {
+
+        List<Object> visibleColumns = Arrays.asList(tree.getVisibleColumns());
+        Object newItemId = itemId;
+        int newColumn = visibleColumns.indexOf(propertyId);
+        do {
+            if (newColumn == 0) {
+                newItemId = tree.prevItemId(newItemId);
+            }
+            newColumn = (newColumn + visibleColumns.size() - 1) % visibleColumns.size();
+        } while (!editableColumns.contains(visibleColumns.get(newColumn)) && newItemId != null);
+
+        setEditing(newItemId, visibleColumns.get(newColumn));
+    }
+
+    public void editFirstCell() {
+
+        // get first selected itemId, handles multiple selection mode
+        Object firstSelectedId = tree.getValue();
+        if (firstSelectedId instanceof Collection) {
+            if (((Collection<?>) firstSelectedId).size() > 0) {
+                firstSelectedId = ((Set<?>) firstSelectedId).iterator().next();
+            } else {
+                firstSelectedId = null;
+            }
+        }
+
+        // Edit selected row at first column
+        Object propertyId = tree.getVisibleColumns()[0];
+        if (!editableColumns.contains(propertyId)) {
+            editNextCell(firstSelectedId, propertyId);
+        } else {
+            setEditing(firstSelectedId, propertyId);
+        }
     }
 
 }
